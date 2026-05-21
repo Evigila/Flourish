@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Vistara (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Vistara (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
