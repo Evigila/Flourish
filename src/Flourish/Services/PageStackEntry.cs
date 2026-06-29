@@ -1,5 +1,3 @@
-using System;
-
-namespace Vistara.Wpf.Services;
+namespace Flourish.Services;
 
 public sealed record PageStackEntry(Type SourcePageType, object? Parameter);

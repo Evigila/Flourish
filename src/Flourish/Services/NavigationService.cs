@@ -1,8 +1,6 @@
-using System;
 using System.Windows.Controls;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Vistara.Wpf.Services;
+namespace Flourish.Services;
 
 public sealed class NavigationService : INavigationService
 {
@@ -11,7 +9,10 @@ public sealed class NavigationService : INavigationService
     private Frame? contentFrame;
     private object? currentParameter;
 
-    public NavigationService(IServiceProvider serviceProvider, PageHistoryService pageHistoryService)
+    public NavigationService(
+        IServiceProvider serviceProvider,
+        PageHistoryService pageHistoryService
+    )
     {
         this.serviceProvider = serviceProvider;
         this.pageHistoryService = pageHistoryService;
@@ -58,7 +59,9 @@ public sealed class NavigationService : INavigationService
     {
         if (contentFrame is null)
         {
-            throw new InvalidOperationException("NavigationService must be initialized with a frame.");
+            throw new InvalidOperationException(
+                "NavigationService must be initialized with a frame."
+            );
         }
 
         if (CurrentSourcePageType == sourcePageType && Equals(currentParameter, parameter))
@@ -82,10 +85,12 @@ public sealed class NavigationService : INavigationService
 
     private Page CreatePage(Type sourcePageType)
     {
-        var page = serviceProvider.GetService(sourcePageType)
-            ?? ActivatorUtilities.CreateInstance(serviceProvider, sourcePageType);
+        var page =
+            serviceProvider.GetService(sourcePageType) ?? Activator.CreateInstance(sourcePageType);
 
         return page as Page
-            ?? throw new InvalidOperationException($"{sourcePageType.FullName} must derive from System.Windows.Controls.Page.");
+            ?? throw new InvalidOperationException(
+                $"{sourcePageType.FullName} must derive from System.Windows.Controls.Page."
+            );
     }
 }

@@ -1,5 +1,5 @@
 using System.Windows;
-using Vistara.Wpf.Views;
+using Flourish.Windows;
 
 namespace Vistara.Wpf;
 
@@ -14,7 +14,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        var mainWindow = Program.Fetch<MainWindow>();
+        var mainWindow = Program.Fetch<FlourishShellWindow>();
         MainWindow = mainWindow;
         mainWindow.Show();
     }

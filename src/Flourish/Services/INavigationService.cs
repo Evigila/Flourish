@@ -1,7 +1,6 @@
-using System;
 using System.Windows.Controls;
 
-namespace Vistara.Wpf.Services;
+namespace Flourish.Services;
 
 public interface INavigationService
 {

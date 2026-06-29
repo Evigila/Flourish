@@ -17,12 +17,13 @@
         HorizontalAlignment="Center"
         Background="{StaticResource AccentSoftBrush}"
         CornerRadius="24">
-        <Image
-          Width="52"
-          Height="52"
+        <TextBlock
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          Source="/Assets/Square150x150Logo.scale-200.png" />
+          FontFamily="Segoe MDL2 Assets"
+          FontSize="42"
+          Foreground="{StaticResource AccentBrush}"
+          Text="&#xE80F;" />
       </Border>
 
       <TextBlock
@@ -37,7 +38,7 @@
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
         Foreground="{StaticResource MutedTextBrush}"
-        Text="这是首页占位内容。后续可以在这里展示最近项目、快速操作和图库概览。"
+        Text="这里是首页占位内容。后续可以在这里展示最近项目、快速操作和图库概览。"
         TextAlignment="Center"
         TextWrapping="Wrap" />
     </StackPanel>

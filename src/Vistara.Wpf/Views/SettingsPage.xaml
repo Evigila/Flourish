@@ -28,7 +28,7 @@
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
         Foreground="{StaticResource MutedTextBrush}"
-        Text="这是设置页面占位内容，后续可在这里管理主题、偏好和应用配置。"
+        Text="这里是设置页面占位内容，后续可在这里管理主题、偏好和应用配置。"
         TextAlignment="Center"
         TextWrapping="Wrap" />
     </StackPanel>

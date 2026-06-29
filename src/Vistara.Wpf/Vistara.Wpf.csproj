@@ -15,8 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="..\Vistara\Assets\Square44x44Logo.scale-200.png" Link="Assets\Square44x44Logo.scale-200.png" />
-    <Resource Include="..\Vistara\Assets\Square150x150Logo.scale-200.png" Link="Assets\Square150x150Logo.scale-200.png" />
+    <ProjectReference Include="..\Flourish\Flourish.csproj" />
   </ItemGroup>
 
   <ItemGroup>

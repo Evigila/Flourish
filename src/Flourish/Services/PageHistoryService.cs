@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace Vistara.Wpf.Services;
+namespace Flourish.Services;
 
 public sealed class PageHistoryService
 {
