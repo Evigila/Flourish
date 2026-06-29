@@ -1,12 +1,12 @@
 using System.Windows.Controls;
-using Flourish.Internal;
+using AcksheedSys.Flourish.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AcksheedSys.Flourish.Abstract;
 
 public static class FlourishServiceCollectionExtensions
 {
-    public static IServiceCollection AddNavigablePage<TPage>(
+    public static IServiceCollection AddNavigable<TPage>(
         this IServiceCollection services,
         string displayName,
         string iconGlyph,
@@ -23,7 +23,7 @@ public static class FlourishServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddNavigablePage(
+    public static IServiceCollection AddNavigable(
         this IServiceCollection services,
         Type pageType,
         string displayName,
@@ -41,7 +41,9 @@ public static class FlourishServiceCollectionExtensions
 
         services.AddTransient(pageType);
         GetOrCreateState(services)
-            .NavigablePages.Add(new NavigablePageRegistration(pageType, displayName, iconGlyph, isInitial));
+            .NavigablePages.Add(
+                new NavigablePageRegistration(pageType, displayName, iconGlyph, isInitial)
+            );
 
         return services;
     }

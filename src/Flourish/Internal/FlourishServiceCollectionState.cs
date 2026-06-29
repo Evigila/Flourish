@@ -1,4 +1,4 @@
-namespace Flourish.Internal;
+namespace AcksheedSys.Flourish.Internal;
 
 internal sealed class FlourishServiceCollectionState
 {

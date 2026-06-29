@@ -1,8 +1,9 @@
 <Application
-  x:Class="Gallery.App"
+  x:Class="AcksheedSys.Gallery.App"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+>
   <Application.Resources>
-    <ResourceDictionary />
+    <Style x:Key="Test" />
   </Application.Resources>
 </Application>

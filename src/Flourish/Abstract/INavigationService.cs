@@ -1,16 +1,14 @@
 using System.Windows.Controls;
 
-namespace Flourish.Services;
+namespace AcksheedSys.Flourish.Abstract;
 
-internal interface INavigationService
+public interface INavigationService
 {
-    event EventHandler<PageNavigatedEventArgs>? Navigated;
+    event EventHandler<FlourishNavigatedEventArgs>? Navigated;
 
     bool CanGoBack { get; }
 
     Type? CurrentSourcePageType { get; }
-
-    void Initialize(Frame contentFrame);
 
     bool Navigate(Type sourcePageType, object? parameter = null, bool addToBackStack = true);
 

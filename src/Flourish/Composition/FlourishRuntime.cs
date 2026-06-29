@@ -1,19 +1,13 @@
 using System.Windows;
-using Flourish.Windows;
+using AcksheedSys.Flourish.Abstract;
+using AcksheedSys.Flourish.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AcksheedSys.Flourish.Abstract;
+namespace AcksheedSys.Flourish.Composition;
 
-internal sealed class FlourishRuntime : IFlourish
+internal sealed class FlourishRuntime(IHost host) : IFlourish
 {
-    private readonly IHost host;
-
-    public FlourishRuntime(IHost host)
-    {
-        this.host = host;
-    }
-
     public IServiceProvider Services => host.Services;
 
     public T GetRequiredService<T>()
@@ -54,11 +48,17 @@ internal sealed class FlourishRuntime : IFlourish
 
     private static void AddResourceDictionary(Application application, string source)
     {
-        if (application.Resources.MergedDictionaries.Any(dictionary => dictionary.Source?.OriginalString == source))
+        if (
+            application.Resources.MergedDictionaries.Any(dictionary =>
+                dictionary.Source?.OriginalString == source
+            )
+        )
         {
             return;
         }
 
-        application.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(source, UriKind.Relative) });
+        application.Resources.MergedDictionaries.Add(
+            new ResourceDictionary { Source = new Uri(source, UriKind.Relative) }
+        );
     }
 }

@@ -2,14 +2,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcksheedSys.Flourish.Abstract;
-using Flourish.Models;
-using Flourish.Services;
+using AcksheedSys.Flourish.Models;
+using AcksheedSys.Flourish.Services;
 
-namespace Flourish.Windows;
+namespace AcksheedSys.Flourish.Windows;
 
 internal partial class FlourishShellWindow : Window
 {
     private readonly INavigationService navigationService;
+    private readonly IFrameNavigationService frameNavigationService;
+    private readonly IFlourishToolbarService toolbarService;
+    private readonly IFlourishStatusService statusService;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
         StringComparer.Ordinal
@@ -18,11 +21,20 @@ internal partial class FlourishShellWindow : Window
     private readonly List<TextBlock> paneLabels = [];
     private bool isPaneOpen = true;
 
-    public FlourishShellWindow(INavigationService navigationService, FlourishShellOptions options)
+    public FlourishShellWindow(
+        INavigationService navigationService,
+        IFrameNavigationService frameNavigationService,
+        IFlourishToolbarService toolbarService,
+        IFlourishStatusService statusService,
+        FlourishShellOptions options
+    )
     {
         InitializeComponent();
 
         this.navigationService = navigationService;
+        this.frameNavigationService = frameNavigationService;
+        this.toolbarService = toolbarService;
+        this.statusService = statusService;
         this.options = options;
 
         ApplyOptions();
@@ -31,7 +43,7 @@ internal partial class FlourishShellWindow : Window
         BuildStatusItems();
 
         StateChanged += MainWindow_StateChanged;
-        navigationService.Initialize(RootFrame);
+        frameNavigationService.Initialize(RootFrame);
         navigationService.Navigated += RootFrame_Navigated;
 
         NavigateToInitialPage();
@@ -44,11 +56,19 @@ internal partial class FlourishShellWindow : Window
         AppSubtitleText.Text = options.Subtitle;
         PaneTitle.Text = options.PaneTitle;
         SearchBox.Text = options.SearchPlaceholder;
-        StatusTextBlock.Text = options.StatusText;
-        SearchBoxHost.Visibility = options.IsTitlebarSearchEnabled ? Visibility.Visible : Visibility.Collapsed;
-        NavigationPaneBorder.Visibility = options.IsNavigationPanelEnabled ? Visibility.Visible : Visibility.Collapsed;
-        PaneToggleButton.Visibility = options.IsNavigationPanelEnabled ? Visibility.Visible : Visibility.Collapsed;
-        BreadcrumbHost.Visibility = options.IsBreadcrumbEnabled ? Visibility.Visible : Visibility.Collapsed;
+        StatusTextBlock.Text = statusService.StatusText;
+        SearchBoxHost.Visibility = options.IsTitlebarSearchEnabled
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        NavigationPaneBorder.Visibility = options.IsNavigationPanelEnabled
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        PaneToggleButton.Visibility = options.IsNavigationPanelEnabled
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        BreadcrumbHost.Visibility = options.IsBreadcrumbEnabled
+            ? Visibility.Visible
+            : Visibility.Collapsed;
 
         ApplyNavigationPanelPlacement();
         SetPaneWidth(options.IsNavigationPanelEnabled ? options.OpenPaneWidth : 0);
@@ -98,16 +118,17 @@ internal partial class FlourishShellWindow : Window
     private void BuildToolbarItems(Type? pageType = null)
     {
         ToolbarItemsHost.Children.Clear();
-        var toolbarItems = GetToolbarItems(pageType);
-        ToolbarHostBorder.Visibility = toolbarItems.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        var toolbarItems = toolbarService.GetToolbarItems(pageType);
+        ToolbarHostBorder.Visibility =
+            toolbarItems.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         foreach (var item in toolbarItems)
         {
             var button = new Button
             {
-                Content = CreateIconTextContent(item.IconGlyph, item.Label),
-                Command = item.Command,
+                Content = CreateIconTextContent(item.IconGlyph, item.DisplayName),
                 Style = (Style)FindResource("FlourishToolbarButtonStyle"),
+                Tag = item.CommandKey,
             };
 
             if (ToolbarItemsHost.Children.Count > 0)
@@ -117,20 +138,6 @@ internal partial class FlourishShellWindow : Window
 
             ToolbarItemsHost.Children.Add(button);
         }
-    }
-
-    private IReadOnlyList<FlourishCommandItem> GetToolbarItems(Type? pageType)
-    {
-        if (
-            options.IsDynamicToolbarEnabled
-            && pageType is not null
-            && options.DynamicToolbarItems.TryGetValue(pageType, out var dynamicItems)
-        )
-        {
-            return dynamicItems;
-        }
-
-        return options.ToolbarItems;
     }
 
     private void BuildNavigationItems()
@@ -171,7 +178,7 @@ internal partial class FlourishShellWindow : Window
     {
         StatusItemsHost.Children.Clear();
 
-        foreach (var item in options.StatusItems)
+        foreach (var item in statusService.StatusItems)
         {
             var status = new StackPanel
             {
@@ -251,12 +258,13 @@ internal partial class FlourishShellWindow : Window
 
     private void NavigateToInitialPage()
     {
-        var initialKey =
-            options.InitialNavigationPageType is null
-                ? options.InitialNavigationKey ?? options.NavigationItems.FirstOrDefault()?.Key
-                : options
-                    .NavigationItems.FirstOrDefault(item => item.PageType == options.InitialNavigationPageType)
-                    ?.Key;
+        var initialKey = options.InitialNavigationPageType is null
+            ? options.InitialNavigationKey ?? options.NavigationItems.FirstOrDefault()?.Key
+            : options
+                .NavigationItems.FirstOrDefault(item =>
+                    item.PageType == options.InitialNavigationPageType
+                )
+                ?.Key;
         if (initialKey is null)
         {
             return;
@@ -301,7 +309,7 @@ internal partial class FlourishShellWindow : Window
         }
     }
 
-    private void RootFrame_Navigated(object? sender, PageNavigatedEventArgs e)
+    private void RootFrame_Navigated(object? sender, FlourishNavigatedEventArgs e)
     {
         BackButton.IsEnabled = navigationService.CanGoBack;
         BuildToolbarItems(e.SourcePageType);
@@ -315,7 +323,10 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateBreadcrumb(Type sourcePageType)
     {
-        if (!options.IsBreadcrumbEnabled || options.BreadcrumbShowOption == BreadcrumbShowOption.Hidden)
+        if (
+            !options.IsBreadcrumbEnabled
+            || options.BreadcrumbShowOption == BreadcrumbShowOption.Hidden
+        )
         {
             BreadcrumbHost.Visibility = Visibility.Collapsed;
             return;

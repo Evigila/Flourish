@@ -1,7 +1,7 @@
 using System.Windows.Media;
 using AcksheedSys.Flourish.Abstract;
 
-namespace Flourish.Models;
+namespace AcksheedSys.Flourish.Models;
 
 internal sealed class FlourishShellOptions
 {
@@ -41,9 +41,9 @@ internal sealed class FlourishShellOptions
 
     public List<FlourishNavigationItem> NavigationItems { get; } = [];
 
-    public List<FlourishCommandItem> ToolbarItems { get; } = [];
+    public List<FlourishToolbarItem> ToolbarItems { get; } = [];
 
-    public Dictionary<Type, IReadOnlyList<FlourishCommandItem>> DynamicToolbarItems { get; } = [];
+    public Dictionary<Type, IReadOnlyList<FlourishToolbarItem>> DynamicToolbarItems { get; } = [];
 
     public List<FlourishStatusItem> StatusItems { get; } = [];
 }

@@ -1,19 +1,21 @@
-namespace Flourish.Services;
+using AcksheedSys.Flourish.Abstract;
 
-internal sealed class PageHistoryService
+namespace AcksheedSys.Flourish.Services;
+
+internal sealed class PageHistoryService : IFlourishPageHistoryService
 {
-    private readonly Stack<PageStackEntry> backStack = new();
+    private readonly Stack<FlourishPageStackEntry> backStack = new();
 
     public bool CanGoBack => backStack.Count > 0;
 
-    public IReadOnlyCollection<PageStackEntry> BackStack => backStack;
+    public IReadOnlyCollection<FlourishPageStackEntry> BackStack => backStack;
 
-    public void Push(PageStackEntry entry)
+    public void Push(FlourishPageStackEntry entry)
     {
         backStack.Push(entry);
     }
 
-    public bool TryPop(out PageStackEntry entry)
+    public bool TryPop(out FlourishPageStackEntry entry)
     {
         if (backStack.Count == 0)
         {

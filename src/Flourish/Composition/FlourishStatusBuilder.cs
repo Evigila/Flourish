@@ -1,16 +1,10 @@
-using Flourish.Models;
+using AcksheedSys.Flourish.Abstract;
+using AcksheedSys.Flourish.Models;
 
-namespace AcksheedSys.Flourish.Abstract;
+namespace AcksheedSys.Flourish.Composition;
 
-internal sealed class FlourishStatusBuilder : IFlourishStatusBuilder
+internal sealed class FlourishStatusBuilder(FlourishShellOptions options) : IFlourishStatusBuilder
 {
-    private readonly FlourishShellOptions options;
-
-    public FlourishStatusBuilder(FlourishShellOptions options)
-    {
-        this.options = options;
-    }
-
     public IFlourishStatusBuilder SetStatusText(string text)
     {
         options.StatusText = text;

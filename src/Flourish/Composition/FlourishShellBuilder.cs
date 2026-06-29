@@ -1,17 +1,11 @@
 using System.Windows.Media.Imaging;
-using Flourish.Models;
+using AcksheedSys.Flourish.Abstract;
+using AcksheedSys.Flourish.Models;
 
-namespace AcksheedSys.Flourish.Abstract;
+namespace AcksheedSys.Flourish.Composition;
 
-internal sealed class FlourishShellBuilder : IFlourishShellBuilder
+internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlourishShellBuilder
 {
-    private readonly FlourishShellOptions options;
-
-    public FlourishShellBuilder(FlourishShellOptions options)
-    {
-        this.options = options;
-    }
-
     public IFlourishShellBuilder SetTitle(string title)
     {
         options.Title = title;
@@ -42,7 +36,10 @@ internal sealed class FlourishShellBuilder : IFlourishShellBuilder
         return this;
     }
 
-    public IFlourishShellBuilder UseSearchOnTitlebar(bool enabled = true, string placeholder = "Search")
+    public IFlourishShellBuilder UseSearchOnTitlebar(
+        bool enabled = true,
+        string placeholder = "Search"
+    )
     {
         options.IsTitlebarSearchEnabled = enabled;
         options.SearchPlaceholder = placeholder;

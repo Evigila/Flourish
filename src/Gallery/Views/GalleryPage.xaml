@@ -1,36 +1,37 @@
 <Page
-  x:Class="Gallery.Views.GalleryPage"
+  x:Class="AcksheedSys.Gallery.Views.GalleryPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Background="Transparent"
-  mc:Ignorable="d">
+  mc:Ignorable="d"
+>
   <Grid>
-    <StackPanel
-      Width="520"
-      HorizontalAlignment="Center"
-      VerticalAlignment="Center">
+    <StackPanel Width="520" HorizontalAlignment="Center" VerticalAlignment="Center">
       <TextBlock
         HorizontalAlignment="Center"
         FontFamily="Segoe MDL2 Assets"
         FontSize="42"
         Foreground="{StaticResource AccentBrush}"
-        Text="&#xE91B;" />
+        Text="&#xE91B;"
+      />
       <TextBlock
         Margin="0,12,0,0"
         HorizontalAlignment="Center"
         FontSize="28"
         FontWeight="SemiBold"
         Foreground="{StaticResource PrimaryTextBrush}"
-        Text="图库" />
+        Text="图库"
+      />
       <TextBlock
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
         Foreground="{StaticResource MutedTextBrush}"
         Text="这里是图库页面占位内容，用于展示图片集合、分组和筛选结果。"
         TextAlignment="Center"
-        TextWrapping="Wrap" />
+        TextWrapping="Wrap"
+      />
     </StackPanel>
   </Grid>
 </Page>

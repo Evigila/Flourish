@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace Gallery.Views;
+namespace AcksheedSys.Gallery.Views;
 
 public partial class HomePage : Page
 {

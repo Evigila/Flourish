@@ -1,24 +1,17 @@
 using System.Windows.Controls;
+using AcksheedSys.Flourish.Abstract;
 
-namespace Flourish.Services;
+namespace AcksheedSys.Flourish.Services;
 
-internal sealed class NavigationService : INavigationService
+internal sealed class NavigationService(
+    IServiceProvider serviceProvider,
+    PageHistoryService pageHistoryService
+) : INavigationService, IFrameNavigationService
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly PageHistoryService pageHistoryService;
     private Frame? contentFrame;
     private object? currentParameter;
 
-    public NavigationService(
-        IServiceProvider serviceProvider,
-        PageHistoryService pageHistoryService
-    )
-    {
-        this.serviceProvider = serviceProvider;
-        this.pageHistoryService = pageHistoryService;
-    }
-
-    public event EventHandler<PageNavigatedEventArgs>? Navigated;
+    public event EventHandler<FlourishNavigatedEventArgs>? Navigated;
 
     public bool CanGoBack => pageHistoryService.CanGoBack;
 
@@ -71,7 +64,9 @@ internal sealed class NavigationService : INavigationService
 
         if (addToBackStack && CurrentSourcePageType is not null)
         {
-            pageHistoryService.Push(new PageStackEntry(CurrentSourcePageType, currentParameter));
+            pageHistoryService.Push(
+                new FlourishPageStackEntry(CurrentSourcePageType, currentParameter)
+            );
         }
 
         var page = CreatePage(sourcePageType);
@@ -79,7 +74,7 @@ internal sealed class NavigationService : INavigationService
         CurrentSourcePageType = sourcePageType;
         currentParameter = parameter;
 
-        Navigated?.Invoke(this, new PageNavigatedEventArgs(sourcePageType, page, parameter));
+        Navigated?.Invoke(this, new FlourishNavigatedEventArgs(sourcePageType, page, parameter));
         return true;
     }
 
