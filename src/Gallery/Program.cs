@@ -55,6 +55,7 @@ internal static class Program
                         )
                         .UseDynamicToolbar()
                         .SetBreadcrumbBehavior(BreadcrumbShowOption.Auto)
+                        .UseMaterialEffect(MaterialEffect.Mica)
                         .SetTitle("Gallery")
                         .SetSubtitle("图片管理器")
                         .SetSearchPlaceholder("搜索图片")

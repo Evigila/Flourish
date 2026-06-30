@@ -37,6 +37,8 @@ public interface IFlourishShellBuilder
 
     IFlourishShellBuilder SetWindowResizeMode(ResizeMode resizeMode);
 
+    IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect);
+
     IFlourishShellBuilder UseTopmost(bool enabled = true);
 
     IFlourishShellBuilder ShowInTaskbar(bool enabled = true);

@@ -43,6 +43,8 @@ internal sealed class FlourishShellOptions
 
     public ResizeMode WindowResizeMode { get; set; } = ResizeMode.CanResize;
 
+    public MaterialEffect MaterialEffect { get; set; }
+
     public bool WindowTopmost { get; set; }
 
     public bool WindowShowInTaskbar { get; set; } = true;

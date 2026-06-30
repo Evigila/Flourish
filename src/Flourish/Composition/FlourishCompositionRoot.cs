@@ -119,6 +119,10 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<ITrayIconService>(provider =>
             provider.GetRequiredService<TrayIconService>()
         );
+        services.AddSingleton<MaterialEffectService>();
+        services.AddSingleton<IMaterialEffectService>(provider =>
+            provider.GetRequiredService<MaterialEffectService>()
+        );
         services.AddSingleton<PageHistoryService>();
         services.AddSingleton<IFlourishPageHistoryService>(provider =>
             provider.GetRequiredService<PageHistoryService>()

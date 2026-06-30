@@ -58,7 +58,7 @@
           <Border
             x:Name="NavigationPaneBorder"
             Grid.Column="0"
-            Background="#FBFCFE"
+            Background="#CCFBFCFE"
             BorderBrush="{StaticResource CardBorderBrush}"
             BorderThickness="0,0,1,0"
           >

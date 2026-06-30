@@ -122,6 +122,12 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect)
+    {
+        options.MaterialEffect = effect;
+        return this;
+    }
+
     public IFlourishShellBuilder UseTopmost(bool enabled = true)
     {
         options.WindowTopmost = enabled;
