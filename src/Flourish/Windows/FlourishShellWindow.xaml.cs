@@ -20,6 +20,7 @@ internal partial class FlourishShellWindow : Window
     private readonly IFlourishStatusService statusService;
     private readonly ITrayIconService trayIconService;
     private readonly IMaterialEffectService materialEffectService;
+    private readonly IWindowFrameFixService windowFrameFixService;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
         StringComparer.Ordinal
@@ -44,6 +45,7 @@ internal partial class FlourishShellWindow : Window
         IFlourishStatusService statusService,
         ITrayIconService trayIconService,
         IMaterialEffectService materialEffectService,
+        IWindowFrameFixService windowFrameFixService,
         FlourishShellOptions options
     )
     {
@@ -55,6 +57,7 @@ internal partial class FlourishShellWindow : Window
         this.statusService = statusService;
         this.trayIconService = trayIconService;
         this.materialEffectService = materialEffectService;
+        this.windowFrameFixService = windowFrameFixService;
         this.options = options;
 
         CacheResources();
@@ -109,6 +112,7 @@ internal partial class FlourishShellWindow : Window
 
         ApplyNavigationPanelPlacement();
         SetPaneWidth(options.IsNavigationPanelEnabled ? options.OpenPaneWidth : 0);
+        windowFrameFixService.Attach(this);
         materialEffectService.Attach(this, options.MaterialEffect);
         trayIconService.Initialize(this, options.Title);
     }
