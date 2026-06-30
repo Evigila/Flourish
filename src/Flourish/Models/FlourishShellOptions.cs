@@ -20,6 +20,12 @@ internal sealed class FlourishShellOptions
 
     public string LogoFallbackText { get; set; } = "F";
 
+    public string FontFamily { get; set; } = "Segoe UI";
+
+    public string IconFontFamily { get; set; } = "Segoe MDL2 Assets";
+
+    public double FontSize { get; set; } = 13;
+
     public double WindowWidth { get; set; } = 1100;
 
     public double WindowHeight { get; set; } = 720;

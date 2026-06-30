@@ -9,7 +9,7 @@ using Colors = System.Windows.Media.Colors;
 
 namespace AcksheedSys.Flourish.Services;
 
-internal sealed class MaterialEffectService : IMaterialEffectService
+internal sealed class MaterialEffectService
 {
     private const int Succeeded = 0;
     private const int DwmwaSystemBackdropType = 38;

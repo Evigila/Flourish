@@ -1,0 +1,36 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+>
+  <FontFamily x:Key="FlourishFontFamily">Segoe UI</FontFamily>
+  <FontFamily x:Key="FlourishIconFontFamily">Segoe MDL2 Assets</FontFamily>
+
+  <sys:Double
+    x:Key="FlourishFontSizeSmall"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >10</sys:Double>
+  <sys:Double
+    x:Key="FlourishFontSizeCaption"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >12</sys:Double>
+  <sys:Double
+    x:Key="FlourishFontSizeBase"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >13</sys:Double>
+  <sys:Double
+    x:Key="FlourishFontSizeTitle"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >13</sys:Double>
+  <sys:Double
+    x:Key="FlourishFontSizeTitlebarIcon"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >14</sys:Double>
+  <sys:Double
+    x:Key="FlourishFontSizeNavigationIcon"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >16</sys:Double>
+  <sys:Double
+    x:Key="FlourishFontSizeWindowButtonIcon"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  >11</sys:Double>
+</ResourceDictionary>

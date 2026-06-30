@@ -1,11 +1,10 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using AcksheedSys.Flourish.Abstract;
 
 namespace AcksheedSys.Flourish.Services;
 
-internal sealed class WindowFrameFixService : IWindowFrameFixService
+internal sealed class WindowFrameFixService
 {
     private const int WmGetMinMaxInfo = 0x0024;
 

@@ -188,8 +188,7 @@ internal partial class FlourishTitlebar : UserControl
             image.UriSource = new Uri(DefaultIconUri, UriKind.Absolute);
             image.CacheOption = BitmapCacheOption.OnLoad;
             image.EndInit();
-            image.Freeze();
-            return image;
+            return TrimTransparentPixels(image);
         }
         catch (InvalidOperationException)
         {
@@ -203,6 +202,52 @@ internal partial class FlourishTitlebar : UserControl
         {
             return null;
         }
+    }
+
+    private static ImageSource TrimTransparentPixels(BitmapSource source)
+    {
+        var bitmap = new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
+        var width = bitmap.PixelWidth;
+        var height = bitmap.PixelHeight;
+        var stride = width * 4;
+        var pixels = new byte[stride * height];
+        bitmap.CopyPixels(pixels, stride, 0);
+
+        var left = width;
+        var top = height;
+        var right = -1;
+        var bottom = -1;
+
+        for (var y = 0; y < height; y++)
+        {
+            var rowOffset = y * stride;
+            for (var x = 0; x < width; x++)
+            {
+                var alpha = pixels[rowOffset + x * 4 + 3];
+                if (alpha == 0)
+                {
+                    continue;
+                }
+
+                left = Math.Min(left, x);
+                top = Math.Min(top, y);
+                right = Math.Max(right, x);
+                bottom = Math.Max(bottom, y);
+            }
+        }
+
+        if (right < left || bottom < top)
+        {
+            source.Freeze();
+            return source;
+        }
+
+        var cropped = new CroppedBitmap(
+            bitmap,
+            new Int32Rect(left, top, right - left + 1, bottom - top + 1)
+        );
+        cropped.Freeze();
+        return cropped;
     }
 
     private void UpdateSearchPlaceholderVisibility()

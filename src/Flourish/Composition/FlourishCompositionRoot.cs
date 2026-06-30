@@ -119,14 +119,12 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<ITrayIconService>(provider =>
             provider.GetRequiredService<TrayIconService>()
         );
+        services.AddSingleton<FontService>();
+        services.AddSingleton<IFlourishFontService>(provider =>
+            provider.GetRequiredService<FontService>()
+        );
         services.AddSingleton<MaterialEffectService>();
-        services.AddSingleton<IMaterialEffectService>(provider =>
-            provider.GetRequiredService<MaterialEffectService>()
-        );
         services.AddSingleton<WindowFrameFixService>();
-        services.AddSingleton<IWindowFrameFixService>(provider =>
-            provider.GetRequiredService<WindowFrameFixService>()
-        );
         services.AddSingleton<PageHistoryService>();
         services.AddSingleton<IFlourishPageHistoryService>(provider =>
             provider.GetRequiredService<PageHistoryService>()

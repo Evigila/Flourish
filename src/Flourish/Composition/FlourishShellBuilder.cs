@@ -25,6 +25,32 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder SetFont(string fontFamily, double fontSize)
+    {
+        SetFontFamily(fontFamily);
+        SetFontSize(fontSize);
+        return this;
+    }
+
+    public IFlourishShellBuilder SetFontFamily(string fontFamily)
+    {
+        options.FontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
+        return this;
+    }
+
+    public IFlourishShellBuilder SetFontSize(double fontSize)
+    {
+        ValidatePositiveFinite(fontSize, nameof(fontSize));
+        options.FontSize = fontSize;
+        return this;
+    }
+
+    public IFlourishShellBuilder SetIconFontFamily(string fontFamily)
+    {
+        options.IconFontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
+        return this;
+    }
+
     public IFlourishShellBuilder UseTitlebar(
         bool EnableSearch = true,
         bool EnableBreadcrumb = true,
@@ -177,6 +203,16 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
                 "Value must be greater than 0."
             );
         }
+    }
+
+    private static string ValidateNotBlank(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Value cannot be empty.", parameterName);
+        }
+
+        return value;
     }
 
     private static void ValidatePositiveSize(double value, string parameterName)

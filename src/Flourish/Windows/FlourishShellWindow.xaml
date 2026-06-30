@@ -67,7 +67,7 @@
                 x:Name="PaneTitle"
                 Margin="20,16,16,8"
                 DockPanel.Dock="Top"
-                FontSize="12"
+                FontSize="{DynamicResource FlourishFontSizeCaption}"
                 FontWeight="SemiBold"
                 Foreground="{StaticResource MutedTextBrush}"
               />
@@ -99,8 +99,8 @@
                       <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="16"
+                        FontFamily="{DynamicResource FlourishIconFontFamily}"
+                        FontSize="{DynamicResource FlourishFontSizeNavigationIcon}"
                         Text="{Binding IconGlyph}"
                       />
                       <TextBlock
@@ -159,7 +159,7 @@
               <TextBlock
                 x:Name="BreadcrumbText"
                 VerticalAlignment="Center"
-                FontSize="12"
+                FontSize="{DynamicResource FlourishFontSizeCaption}"
                 Foreground="{StaticResource MutedTextBrush}"
               />
             </Border>

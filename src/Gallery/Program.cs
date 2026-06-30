@@ -48,17 +48,18 @@ internal static class Program
                             EnableProfile: true,
                             EnableTrayExit: false
                         )
+                        .SetTitle("Gallery")
+                        .SetSubtitle("Flourish示例")
+                        .SetFont("Microsoft YaHei", 14)
+                        .SetSearchPlaceholder("搜索图片")
+                        .SetBreadcrumbBehavior(BreadcrumbShowOption.Auto)
                         .UseNavigationPanel(
                             enabled: true,
                             direction: NavigationPanelDirection.Left,
                             title: "导航"
                         )
                         .UseDynamicToolbar()
-                        .SetBreadcrumbBehavior(BreadcrumbShowOption.Auto)
                         .UseMaterialEffect(MaterialEffect.Mica)
-                        .SetTitle("Gallery")
-                        .SetSubtitle("图片管理器")
-                        .SetSearchPlaceholder("搜索图片")
                         .SetWindowSize(1536, 864)
                         .SetWindowMinSize(1280, 720)
                         .SetWindowPosition(WindowStartupLocation.CenterScreen);

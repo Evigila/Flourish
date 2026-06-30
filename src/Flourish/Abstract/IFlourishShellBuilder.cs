@@ -10,6 +10,14 @@ public interface IFlourishShellBuilder
 
     IFlourishShellBuilder SetLogo(string packUri);
 
+    IFlourishShellBuilder SetFont(string fontFamily, double fontSize);
+
+    IFlourishShellBuilder SetFontFamily(string fontFamily);
+
+    IFlourishShellBuilder SetFontSize(double fontSize);
+
+    IFlourishShellBuilder SetIconFontFamily(string fontFamily);
+
     IFlourishShellBuilder UseTitlebar(
         bool EnableSearch = true,
         bool EnableBreadcrumb = true,

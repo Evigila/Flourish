@@ -19,8 +19,9 @@ internal partial class FlourishShellWindow : Window
     private readonly IFlourishToolbarService toolbarService;
     private readonly IFlourishStatusService statusService;
     private readonly ITrayIconService trayIconService;
-    private readonly IMaterialEffectService materialEffectService;
-    private readonly IWindowFrameFixService windowFrameFixService;
+    private readonly FontService fontService;
+    private readonly MaterialEffectService materialEffectService;
+    private readonly WindowFrameFixService windowFrameFixService;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
         StringComparer.Ordinal
@@ -44,8 +45,9 @@ internal partial class FlourishShellWindow : Window
         IFlourishToolbarService toolbarService,
         IFlourishStatusService statusService,
         ITrayIconService trayIconService,
-        IMaterialEffectService materialEffectService,
-        IWindowFrameFixService windowFrameFixService,
+        FontService fontService,
+        MaterialEffectService materialEffectService,
+        WindowFrameFixService windowFrameFixService,
         FlourishShellOptions options
     )
     {
@@ -56,10 +58,12 @@ internal partial class FlourishShellWindow : Window
         this.toolbarService = toolbarService;
         this.statusService = statusService;
         this.trayIconService = trayIconService;
+        this.fontService = fontService;
         this.materialEffectService = materialEffectService;
         this.windowFrameFixService = windowFrameFixService;
         this.options = options;
 
+        fontService.Apply(this);
         CacheResources();
         ApplyOptions();
         BuildToolbarItems();
@@ -80,7 +84,7 @@ internal partial class FlourishShellWindow : Window
         toolbarButtonStyle = (Style)FindResource("FlourishToolbarButtonStyle");
         navigationListBoxItemStyle = (Style)FindResource("FlourishNavigationListBoxItemStyle");
         mutedTextBrush = (Brush)FindResource("MutedTextBrush");
-        iconFontFamily = new FontFamily("Segoe MDL2 Assets");
+        iconFontFamily = (FontFamily)FindResource("FlourishIconFontFamily");
     }
 
     private void ApplyOptions()
