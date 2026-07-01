@@ -59,6 +59,8 @@ internal sealed class FlourishShellOptions
 
     public bool IsNavigationPanelEnabled { get; set; } = true;
 
+    public bool IsNavigationPanelInitiallyOpen { get; set; } = true;
+
     public NavigationPanelDirection NavigationPanelDirection { get; set; } = NavigationPanelDirection.Left;
 
     public bool IsTitlebarSearchEnabled { get; set; } = true;

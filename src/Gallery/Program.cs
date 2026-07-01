@@ -56,6 +56,7 @@ internal static class Program
                         .UseNavigationPanel(
                             enabled: true,
                             direction: NavigationPanelDirection.Left,
+                            isInitiallyOpen: false,
                             title: "导航"
                         )
                         .UseDynamicToolbar()

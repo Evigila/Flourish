@@ -115,7 +115,8 @@ internal partial class FlourishShellWindow : Window
         UpdateTitlebarBreadcrumbNavigation();
 
         ApplyNavigationPanelPlacement();
-        SetPaneWidth(options.IsNavigationPanelEnabled ? options.OpenPaneWidth : 0);
+        isPaneOpen = options.IsNavigationPanelInitiallyOpen;
+        ApplyNavigationPaneState();
         windowFrameFixService.Attach(this);
         materialEffectService.Attach(this, options.MaterialEffect);
         trayIconService.Initialize(this, options.Title);
@@ -186,6 +187,21 @@ internal partial class FlourishShellWindow : Window
 
         PaneColumn.Width = new GridLength(width);
         ContentColumn.Width = new GridLength(1, GridUnitType.Star);
+    }
+
+    private void ApplyNavigationPaneState()
+    {
+        var isNavigationVisible = options.IsNavigationPanelEnabled;
+        var isOpen = isNavigationVisible && isPaneOpen;
+        var paneWidth = !isNavigationVisible
+            ? 0
+            : isOpen
+                ? options.OpenPaneWidth
+                : options.ClosedPaneWidth;
+
+        SetPaneWidth(paneWidth);
+        PaneTitle.Visibility = isOpen ? Visibility.Visible : Visibility.Collapsed;
+        NavigationItemsHost.Tag = isOpen;
     }
 
     private void BuildToolbarItems(Type? pageType = null)
@@ -362,10 +378,13 @@ internal partial class FlourishShellWindow : Window
 
     private void Titlebar_NavigationToggleRequested(object? sender, EventArgs e)
     {
+        if (!options.IsNavigationPanelEnabled)
+        {
+            return;
+        }
+
         isPaneOpen = !isPaneOpen;
-        SetPaneWidth(isPaneOpen ? options.OpenPaneWidth : options.ClosedPaneWidth);
-        PaneTitle.Visibility = isPaneOpen ? Visibility.Visible : Visibility.Collapsed;
-        NavigationItemsHost.Tag = isPaneOpen;
+        ApplyNavigationPaneState();
     }
 
     private void NavigationItemsHost_SelectionChanged(object sender, SelectionChangedEventArgs e)

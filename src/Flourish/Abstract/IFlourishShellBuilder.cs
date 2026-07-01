@@ -54,7 +54,8 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseNavigationPanel(
         bool enabled = true,
         NavigationPanelDirection direction = NavigationPanelDirection.Left,
-        string title = "Navigation"
+        string title = "Navigation",
+        bool isInitiallyOpen = true
     );
 
     IFlourishShellBuilder UseDynamicToolbar(bool enabled = true);

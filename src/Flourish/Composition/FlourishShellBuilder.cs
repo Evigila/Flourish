@@ -169,12 +169,14 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
     public IFlourishShellBuilder UseNavigationPanel(
         bool enabled = true,
         NavigationPanelDirection direction = NavigationPanelDirection.Left,
-        string title = "Navigation"
+        string title = "Navigation",
+        bool isInitiallyOpen = true
     )
     {
         options.IsNavigationPanelEnabled = enabled;
         options.NavigationPanelDirection = direction;
         options.PaneTitle = title;
+        options.IsNavigationPanelInitiallyOpen = isInitiallyOpen;
         return this;
     }
 
