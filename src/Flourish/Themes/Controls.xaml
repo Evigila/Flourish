@@ -138,15 +138,15 @@
   </Style>
 
   <Style x:Key="FlourishToolbarButtonStyle" TargetType="{x:Type Button}">
-    <Setter Property="Height" Value="34" />
-    <Setter Property="MinWidth" Value="82" />
-    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="MinWidth" Value="30" />
+    <Setter Property="Padding" Value="8,0" />
     <Setter Property="Background" Value="White" />
     <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
-    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeBase}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="Template">
       <Setter.Value>
@@ -156,7 +156,7 @@
             Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}"
-            CornerRadius="7"
+            CornerRadius="5"
           >
             <ContentPresenter
               Margin="{TemplateBinding Padding}"

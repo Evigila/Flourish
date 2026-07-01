@@ -123,6 +123,7 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<IFlourishFontService>(provider =>
             provider.GetRequiredService<FontService>()
         );
+        services.AddSingleton<CommandParser>();
         services.AddSingleton<MaterialEffectService>();
         services.AddSingleton<WindowFrameFixService>();
         services.AddSingleton<PageHistoryService>();

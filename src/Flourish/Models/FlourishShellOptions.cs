@@ -95,5 +95,7 @@ internal sealed class FlourishShellOptions
 
     public Dictionary<Type, IReadOnlyList<FlourishToolbarItem>> DynamicToolbarItems { get; } = [];
 
+    public Dictionary<Type, bool> DynamicToolbarIconModes { get; } = [];
+
     public List<FlourishStatusItem> StatusItems { get; } = [];
 }

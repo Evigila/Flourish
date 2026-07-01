@@ -12,6 +12,15 @@ internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options
         params FlourishToolbarItem[] items
     )
     {
+        return CreateToolbarItems(pageType, true, items);
+    }
+
+    public IFlourishDynamicToolbarBuilder CreateToolbarItems(
+        Type pageType,
+        bool icon,
+        params FlourishToolbarItem[] items
+    )
+    {
         if (!typeof(Page).IsAssignableFrom(pageType))
         {
             throw new ArgumentException(
@@ -21,6 +30,7 @@ internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options
         }
 
         options.DynamicToolbarItems[pageType] = items;
+        options.DynamicToolbarIconModes[pageType] = icon;
         return this;
     }
 
@@ -30,5 +40,14 @@ internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options
         where TPage : Page
     {
         return CreateToolbarItems(typeof(TPage), items);
+    }
+
+    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
+        bool icon,
+        params FlourishToolbarItem[] items
+    )
+        where TPage : Page
+    {
+        return CreateToolbarItems(typeof(TPage), icon, items);
     }
 }

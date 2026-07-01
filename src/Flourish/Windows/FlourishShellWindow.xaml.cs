@@ -19,6 +19,7 @@ internal partial class FlourishShellWindow : Window
     private readonly IFlourishToolbarService toolbarService;
     private readonly IFlourishStatusService statusService;
     private readonly ITrayIconService trayIconService;
+    private readonly CommandParser commandParser;
     private readonly FontService fontService;
     private readonly MaterialEffectService materialEffectService;
     private readonly WindowFrameFixService windowFrameFixService;
@@ -45,6 +46,7 @@ internal partial class FlourishShellWindow : Window
         IFlourishToolbarService toolbarService,
         IFlourishStatusService statusService,
         ITrayIconService trayIconService,
+        CommandParser commandParser,
         FontService fontService,
         MaterialEffectService materialEffectService,
         WindowFrameFixService windowFrameFixService,
@@ -58,6 +60,7 @@ internal partial class FlourishShellWindow : Window
         this.toolbarService = toolbarService;
         this.statusService = statusService;
         this.trayIconService = trayIconService;
+        this.commandParser = commandParser;
         this.fontService = fontService;
         this.materialEffectService = materialEffectService;
         this.windowFrameFixService = windowFrameFixService;
@@ -229,35 +232,62 @@ internal partial class FlourishShellWindow : Window
     {
         if (pageType is null)
         {
-            return defaultToolbarButtons ??= CreateToolbarButtons(toolbarService.GetToolbarItems());
+            return defaultToolbarButtons ??= CreateToolbarButtons(
+                toolbarService.GetToolbarItems(),
+                showIconOnly: false
+            );
         }
 
         if (!toolbarButtonsByPageType.TryGetValue(pageType, out var toolbarButtons))
         {
-            toolbarButtons = CreateToolbarButtons(toolbarService.GetToolbarItems(pageType));
+            toolbarButtons = CreateToolbarButtons(
+                toolbarService.GetToolbarItems(pageType),
+                ShouldShowToolbarIconOnly(pageType)
+            );
             toolbarButtonsByPageType[pageType] = toolbarButtons;
         }
 
         return toolbarButtons;
     }
 
-    private IReadOnlyList<Button> CreateToolbarButtons(IReadOnlyList<FlourishToolbarItem> items)
+    private IReadOnlyList<Button> CreateToolbarButtons(
+        IReadOnlyList<FlourishToolbarItem> items,
+        bool showIconOnly
+    )
     {
         var buttons = new List<Button>(items.Count);
         foreach (var item in items)
         {
-            buttons.Add(
-                new Button
-                {
-                    Content = CreateIconTextContent(item.IconGlyph, item.DisplayName),
-                    Margin = buttons.Count > 0 ? new Thickness(6, 0, 0, 0) : new Thickness(),
-                    Style = toolbarButtonStyle,
-                    Tag = item.CommandKey,
-                }
-            );
+            var useIconOnly = showIconOnly && !string.IsNullOrWhiteSpace(item.IconGlyph);
+            var button = new Button
+            {
+                Content = useIconOnly
+                    ? CreateIconContent(item.IconGlyph)
+                    : CreateIconTextContent(item.IconGlyph, item.DisplayName),
+                Margin = buttons.Count > 0 ? new Thickness(4, 0, 0, 0) : new Thickness(),
+                ToolTip = item.DisplayName,
+                Style = toolbarButtonStyle,
+                Tag = item.CommandKey,
+                Width = useIconOnly ? 30 : double.NaN,
+            };
+            button.Click += ToolbarButton_Click;
+            buttons.Add(button);
         }
 
         return buttons;
+    }
+
+    private bool ShouldShowToolbarIconOnly(Type pageType)
+    {
+        return options.DynamicToolbarIconModes.GetValueOrDefault(pageType, true);
+    }
+
+    private void ToolbarButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: string commandKey })
+        {
+            commandParser.Parse(commandKey);
+        }
     }
 
     private void BuildNavigationItems()
@@ -325,18 +355,32 @@ internal partial class FlourishShellWindow : Window
             {
                 VerticalAlignment = VerticalAlignment.Center,
                 FontFamily = iconFontFamily,
+                FontSize = (double)FindResource("FlourishFontSizeTitlebarIcon"),
                 Text = iconGlyph,
             }
         );
         content.Children.Add(
             new TextBlock
             {
-                Margin = new Thickness(7, 0, 0, 0),
+                Margin = new Thickness(5, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 Text = label,
             }
         );
         return content;
+    }
+
+    private TextBlock CreateIconContent(string iconGlyph)
+    {
+        return new TextBlock
+        {
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+            VerticalAlignment = System.Windows.VerticalAlignment.Center,
+            FontFamily = iconFontFamily,
+            FontSize = (double)FindResource("FlourishFontSizeTitlebarIcon"),
+            Text = iconGlyph,
+            TextAlignment = System.Windows.TextAlignment.Center,
+        };
     }
 
     private void NavigateToInitialPage()

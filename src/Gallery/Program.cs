@@ -27,6 +27,7 @@ internal static class Program
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
+                    services.AddSingleton<ICommandParser, CommandParser>();
 
                     services.AddNavigable<HomePage>("首页", "\uE80F", isInitial: true);
                     services.AddNavigable<GalleryPage>("图库", "\uE91B");
@@ -56,7 +57,7 @@ internal static class Program
                         .UseNavigationPanel(
                             enabled: true,
                             direction: NavigationPanelDirection.Left,
-                            isInitiallyOpen: false,
+                            isInitiallyOpen: true,
                             title: "导航"
                         )
                         .UseDynamicToolbar()
@@ -70,11 +71,13 @@ internal static class Program
                 (_, tool) =>
                 {
                     tool.CreateToolbarItems<HomePage>(
+                        true,
                         new("打开", "\uE8E5", "home.open"),
                         new("保存", "\uE74E", "home.save")
                     );
 
                     tool.CreateToolbarItems<GalleryPage>(
+                        true,
                         new("打开", "\uE8E5", "gallery.open"),
                         new("保存", "\uE74E", "gallery.save"),
                         new("导入", "\uE898", "gallery.import")

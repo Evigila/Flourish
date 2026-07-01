@@ -146,12 +146,12 @@
             <Border
               x:Name="ToolbarHostBorder"
               Grid.Row="0"
-              Margin="12,12,12,8"
-              Padding="6"
+              Margin="8,8,8,6"
+              Padding="4"
               Background="{StaticResource CardBackgroundBrush}"
               BorderBrush="{StaticResource CardBorderBrush}"
               BorderThickness="1"
-              CornerRadius="8"
+              CornerRadius="6"
             >
               <StackPanel x:Name="ToolbarItemsHost" Orientation="Horizontal" />
             </Border>
