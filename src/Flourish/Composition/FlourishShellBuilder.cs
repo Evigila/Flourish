@@ -2,11 +2,43 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using AcksheedSys.Flourish.Abstract;
 using AcksheedSys.Flourish.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace AcksheedSys.Flourish.Composition;
 
-internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlourishShellBuilder
+internal sealed class FlourishShellBuilder(FlourishShellOptions options, HostBuilderContext context)
+    : IFlourishShellBuilder
 {
+    public IFlourishShellBuilder UseTitlebar(
+        Action<HostBuilderContext, IFlourishTitlebarBuilder> configureTitlebar
+    )
+    {
+        configureTitlebar(context, new FlourishTitlebarBuilder(options));
+        return this;
+    }
+
+    public IFlourishShellBuilder UseNavigationPanel(
+        Action<HostBuilderContext, IFlourishNavigationPanelBuilder> configureNavigationPanel
+    )
+    {
+        options.IsNavigationPanelEnabled = true;
+        configureNavigationPanel(context, new FlourishNavigationPanelBuilder(options));
+        return this;
+    }
+
+    public IFlourishShellBuilder SetWindowProperty(
+        Action<HostBuilderContext, IFlourishWindowPropertyBuilder> configureWindow
+    )
+    {
+        configureWindow(context, new FlourishWindowPropertyBuilder(this));
+        return this;
+    }
+
+    public IFlourishShellBuilder SetGlobalFont(string fontFamily, double fontSize)
+    {
+        return SetFont(fontFamily, fontSize);
+    }
+
     public IFlourishShellBuilder SetTitle(string title)
     {
         options.Title = title;
@@ -148,7 +180,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
-    public IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect)
+    public IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect = MaterialEffect.Mica)
     {
         options.MaterialEffect = effect;
         return this;

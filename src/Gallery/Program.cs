@@ -27,7 +27,7 @@ internal static class Program
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
-                    services.AddSingleton<ICommandParser, CommandParser>();
+                    services.AddSingleton<ICommandParser, GalleryCommandParser>();
 
                     services.AddNavigable<HomePage>("首页", "\uE80F", isInitial: true);
                     services.AddNavigable<GalleryPage>("图库", "\uE91B");
@@ -40,31 +40,43 @@ internal static class Program
                 {
                     shell
                         .UseTitlebar(
-                            EnableSearch: true,
-                            EnableBreadcrumb: true,
-                            EnableNavToggle: true,
-                            EnableLogo: true,
-                            EnableTitle: true,
-                            EnableSubTitle: true,
-                            EnableProfile: true,
-                            EnableTrayExit: false
+                            (_, titlebar) =>
+                            {
+                                titlebar
+                                    .ShowSearch()
+                                    .ShowBreadcrumb()
+                                    .ShowNavToggle()
+                                    .ShowLogo()
+                                    .ShowTitle()
+                                    .ShowSubTitle()
+                                    .ShowProfile()
+                                    .SetTrayExit()
+                                    .SetBreadcrumbBehavior()
+                                    .SetTitle("Gallery")
+                                    .SetSubtitle("Flourish 示例")
+                                    .SetSearchPlaceholder("搜索图片");
+                            }
                         )
-                        .SetTitle("Gallery")
-                        .SetSubtitle("Flourish示例")
-                        .SetFont("Microsoft YaHei", 14)
-                        .SetSearchPlaceholder("搜索图片")
-                        .SetBreadcrumbBehavior(BreadcrumbShowOption.Auto)
                         .UseNavigationPanel(
-                            enabled: true,
-                            direction: NavigationPanelDirection.Left,
-                            isInitiallyOpen: true,
-                            title: "导航"
+                            (_, nav) =>
+                            {
+                                nav.SetDirection(NavigationPanelDirection.Left)
+                                    .SetInitiallyOpen()
+                                    .SetTitle("导航");
+                            }
                         )
                         .UseDynamicToolbar()
                         .UseMaterialEffect(MaterialEffect.Mica)
-                        .SetWindowSize(1536, 864)
-                        .SetWindowMinSize(1280, 720)
-                        .SetWindowPosition(WindowStartupLocation.CenterScreen);
+                        .SetGlobalFont("Microsoft YaHei", 14)
+                        .SetWindowProperty(
+                            (_, window) =>
+                            {
+                                window
+                                    .SetWindowSize(1536, 864)
+                                    .SetWindowMinSize(1280, 720)
+                                    .SetWindowPosition(WindowStartupLocation.CenterScreen);
+                            }
+                        );
                 }
             )
             .ConfigureDynamicToolbar(

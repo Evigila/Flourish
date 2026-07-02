@@ -44,7 +44,7 @@ internal sealed class FlourishCompositionRoot(
 
     private void ApplyFlourishConfigurations(HostBuilderContext context)
     {
-        var shellBuilder = new FlourishShellBuilder(shellOptions);
+        var shellBuilder = new FlourishShellBuilder(shellOptions, context);
         foreach (var configureShell in shellConfigurations)
         {
             configureShell(context, shellBuilder);

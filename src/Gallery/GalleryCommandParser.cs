@@ -4,7 +4,7 @@ using AcksheedSys.Flourish.Abstract;
 
 namespace AcksheedSys.Gallery;
 
-internal sealed class CommandParser : ICommandParser
+internal sealed class GalleryCommandParser : ICommandParser
 {
     public bool TryParse(string commandKey)
     {
@@ -14,10 +14,12 @@ internal sealed class CommandParser : ICommandParser
                 MessageBox.Show("Hello, World!");
                 return true;
             case "home.save":
+                return true;
             case "gallery.open":
+                return true;
             case "gallery.save":
+                return true;
             case "gallery.import":
-                Debug.WriteLine($"Gallery command executed: {commandKey}");
                 return true;
 
             default:
