@@ -218,6 +218,21 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options, HostBui
         return this;
     }
 
+    public IFlourishShellBuilder UseMotion(bool enabled = true)
+    {
+        options.Motion.IsEnabled = enabled;
+        return this;
+    }
+
+    public IFlourishShellBuilder UseMotion(
+        Action<HostBuilderContext, IFlourishMotionBuilder> configureMotion
+    )
+    {
+        options.Motion.IsEnabled = true;
+        configureMotion(context, new FlourishMotionBuilder(options.Motion));
+        return this;
+    }
+
     public IFlourishShellBuilder SetBreadcrumbBehavior(
         BreadcrumbShowOption behavior = BreadcrumbShowOption.Auto
     )

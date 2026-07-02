@@ -60,12 +60,19 @@ internal static class Program
                         .UseNavigationPanel(
                             (_, nav) =>
                             {
-                                nav.SetDirection(NavigationPanelDirection.Left)
-                                    .SetInitiallyOpen()
-                                    .SetTitle("导航");
+                                nav.SetDirection().SetInitiallyOpen().SetTitle("导航");
                             }
                         )
                         .UseDynamicToolbar()
+                        .UseMotion(
+                            (_, motion) =>
+                            {
+                                motion
+                                    .SetDuration(TimeSpan.FromMilliseconds(180))
+                                    .SetNavigationPanelTransition()
+                                    .SetPageTransition();
+                            }
+                        )
                         .UseMaterialEffect(MaterialEffect.Mica)
                         .SetGlobalFont("Microsoft YaHei", 14)
                         .SetWindowProperty(

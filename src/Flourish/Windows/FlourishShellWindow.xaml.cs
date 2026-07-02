@@ -22,6 +22,7 @@ internal partial class FlourishShellWindow : Window
     private readonly CommandParser commandParser;
     private readonly FontService fontService;
     private readonly MaterialEffectService materialEffectService;
+    private readonly FlourishMotionService motionService;
     private readonly WindowFrameFixService windowFrameFixService;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
@@ -49,6 +50,7 @@ internal partial class FlourishShellWindow : Window
         CommandParser commandParser,
         FontService fontService,
         MaterialEffectService materialEffectService,
+        FlourishMotionService motionService,
         WindowFrameFixService windowFrameFixService,
         FlourishShellOptions options
     )
@@ -63,6 +65,7 @@ internal partial class FlourishShellWindow : Window
         this.commandParser = commandParser;
         this.fontService = fontService;
         this.materialEffectService = materialEffectService;
+        this.motionService = motionService;
         this.windowFrameFixService = windowFrameFixService;
         this.options = options;
 
@@ -179,6 +182,24 @@ internal partial class FlourishShellWindow : Window
         NavigationPaneBorder.BorderThickness = new Thickness(0, 0, 1, 0);
     }
 
+    private ColumnDefinition GetNavigationPaneColumn()
+    {
+        return options.NavigationPanelDirection == NavigationPanelDirection.Right
+            ? ContentColumn
+            : PaneColumn;
+    }
+
+    private void PreparePaneColumnsForAnimation()
+    {
+        if (options.NavigationPanelDirection == NavigationPanelDirection.Right)
+        {
+            PaneColumn.Width = new GridLength(1, GridUnitType.Star);
+            return;
+        }
+
+        ContentColumn.Width = new GridLength(1, GridUnitType.Star);
+    }
+
     private void SetPaneWidth(double width)
     {
         if (options.NavigationPanelDirection == NavigationPanelDirection.Right)
@@ -192,7 +213,7 @@ internal partial class FlourishShellWindow : Window
         ContentColumn.Width = new GridLength(1, GridUnitType.Star);
     }
 
-    private void ApplyNavigationPaneState()
+    private void ApplyNavigationPaneState(bool animate = false)
     {
         var isNavigationVisible = options.IsNavigationPanelEnabled;
         var isOpen = isNavigationVisible && isPaneOpen;
@@ -202,7 +223,36 @@ internal partial class FlourishShellWindow : Window
                 ? options.OpenPaneWidth
                 : options.ClosedPaneWidth;
 
-        SetPaneWidth(paneWidth);
+        if (isOpen)
+        {
+            ApplyNavigationPaneChrome(isOpen);
+        }
+
+        if (!animate)
+        {
+            SetPaneWidth(paneWidth);
+            ApplyNavigationPaneChrome(isOpen);
+            return;
+        }
+
+        PreparePaneColumnsForAnimation();
+        var paneColumn = GetNavigationPaneColumn();
+        var fromWidth = paneColumn.ActualWidth > 0 ? paneColumn.ActualWidth : paneColumn.Width.Value;
+
+        motionService.AnimateNavigationPane(
+            paneColumn,
+            fromWidth,
+            paneWidth,
+            () =>
+            {
+                SetPaneWidth(paneWidth);
+                ApplyNavigationPaneChrome(isOpen);
+            }
+        );
+    }
+
+    private void ApplyNavigationPaneChrome(bool isOpen)
+    {
         PaneTitle.Visibility = isOpen ? Visibility.Visible : Visibility.Collapsed;
         NavigationItemsHost.Tag = isOpen;
     }
@@ -428,7 +478,7 @@ internal partial class FlourishShellWindow : Window
         }
 
         isPaneOpen = !isPaneOpen;
-        ApplyNavigationPaneState();
+        ApplyNavigationPaneState(animate: true);
     }
 
     private void NavigationItemsHost_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -451,6 +501,7 @@ internal partial class FlourishShellWindow : Window
         UpdateBreadcrumb(e.SourcePageType);
 
         SelectNavigationItem(e.SourcePageType);
+        motionService.AnimatePageEntrance(RootFrame);
     }
 
     private void UpdateBreadcrumb(Type sourcePageType)

@@ -125,6 +125,7 @@ internal sealed class FlourishCompositionRoot(
         );
         services.AddSingleton<CommandParser>();
         services.AddSingleton<MaterialEffectService>();
+        services.AddSingleton<FlourishMotionService>();
         services.AddSingleton<WindowFrameFixService>();
         services.AddSingleton<PageHistoryService>();
         services.AddSingleton<IFlourishPageHistoryService>(provider =>

@@ -13,5 +13,5 @@ public interface IFlourish : IDisposable
 
     Task StopAsync(CancellationToken cancellationToken = default);
 
-    void ShowShell(Application application);
+    void Show(Application application);
 }

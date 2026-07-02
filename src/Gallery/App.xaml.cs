@@ -13,6 +13,6 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        Program.Flourish.ShowShell(this);
+        Program.Flourish.Show(this);
     }
 }

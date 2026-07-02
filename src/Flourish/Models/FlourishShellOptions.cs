@@ -51,6 +51,8 @@ internal sealed class FlourishShellOptions
 
     public MaterialEffect MaterialEffect { get; set; }
 
+    public FlourishMotionOptions Motion { get; } = new();
+
     public bool WindowTopmost { get; set; }
 
     public bool WindowShowInTaskbar { get; set; } = true;

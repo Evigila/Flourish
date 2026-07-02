@@ -21,4 +21,10 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect = MaterialEffect.Mica);
 
     IFlourishShellBuilder UseDynamicToolbar(bool enabled = true);
+
+    IFlourishShellBuilder UseMotion(bool enabled = true);
+
+    IFlourishShellBuilder UseMotion(
+        Action<HostBuilderContext, IFlourishMotionBuilder> configureMotion
+    );
 }

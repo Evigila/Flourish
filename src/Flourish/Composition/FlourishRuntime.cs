@@ -27,7 +27,7 @@ internal sealed class FlourishRuntime(IHost host) : IFlourish
         return host.StopAsync(cancellationToken);
     }
 
-    public void ShowShell(Application application)
+    public void Show(Application application)
     {
         EnsureApplicationResources(application);
 
