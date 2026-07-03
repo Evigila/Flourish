@@ -7,7 +7,7 @@ description: API documentation for Flourish.
 
 Flourish is a desktop application composition library for WPF applications. It provides a host-based application bootstrap flow, shell configuration, navigation registration, dynamic toolbar setup, status-bar integration, and motion options.
 
-This documentation is generated with DocFX from the source project and its XML documentation comments. The API reference is rebuilt by CI, so the published site follows the public API surface of the repository.
+This documentation is generated with DocFX from the source project and its XML documentation comments. The API reference is rebuilt by CI and intentionally exposes only the `AcksheedSys.Flourish.Abstract` public contract.
 
 ## Start here
 

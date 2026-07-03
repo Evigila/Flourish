@@ -2,7 +2,7 @@ using System.Windows;
 
 namespace AcksheedSys.Flourish.Controls;
 
-public static class HoverReveal
+internal static class HoverReveal
 {
     public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
         "IsEnabled",

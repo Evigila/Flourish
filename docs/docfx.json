@@ -47,12 +47,14 @@
     "output": "_site",
     "template": [
       "default",
-      "modern"
+      "modern",
+      "templates/flourish"
     ],
     "globalMetadata": {
       "_appTitle": "Flourish",
       "_appName": "Flourish",
       "_enableSearch": true,
+      "_lang": "en",
       "_appFooter": "Flourish API documentation"
     }
   }

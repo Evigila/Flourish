@@ -34,6 +34,9 @@ jobs:
     - name: Restore tools
       run: dotnet tool restore
 
+    - name: Clean generated documentation
+      run: Remove-Item -Recurse -Force docs/api, docs/_site -ErrorAction SilentlyContinue
+
     - name: Build documentation
       run: dotnet tool run docfx docs/docfx.json
 
