@@ -1,0 +1,9 @@
+items:
+- name: Getting started
+  href: getting-started.md
+- name: Shell configuration
+  href: shell-configuration.md
+- name: Navigation
+  href: navigation.md
+- name: Dynamic toolbar
+  href: dynamic-toolbar.md

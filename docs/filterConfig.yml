@@ -1,0 +1,7 @@
+apiRules:
+- include:
+    uidRegex: ^AcksheedSys\.Flourish\.Abstract
+- include:
+    uidRegex: ^AcksheedSys\.Flourish\.Controls\.HoverReveal
+- exclude:
+    uidRegex: ^AcksheedSys\.Flourish\.
