@@ -10,7 +10,7 @@
           ]
         }
       ],
-      "dest": "api",
+      "dest": "en-us/api",
       "properties": {
         "Configuration": "Release",
         "TargetFramework": "net10.0-windows"
@@ -23,28 +23,18 @@
   "build": {
     "content": [
       {
+        "src": "en-us",
         "files": [
           "index.md",
           "toc.yml",
           "articles/**/*.md",
-          "articles/**/*.yml"
-        ]
-      },
-      {
-        "files": [
+          "articles/**/*.yml",
           "api/**/*.yml"
-        ]
+        ],
+        "dest": "."
       }
     ],
-    "resource": [
-      {
-        "files": [
-          ".nojekyll",
-          "images/**"
-        ]
-      }
-    ],
-    "output": "_site",
+    "output": "_site/en-us",
     "template": [
       "default",
       "modern",
@@ -54,7 +44,7 @@
       "_appTitle": "Flourish",
       "_appName": "Flourish",
       "_enableSearch": true,
-      "_lang": "en",
+      "_lang": "en-us",
       "_appFooter": "Flourish API documentation"
     }
   }

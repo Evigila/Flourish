@@ -1,0 +1,9 @@
+items:
+- name: 快速开始
+  href: getting-started.md
+- name: Shell 配置
+  href: shell-configuration.md
+- name: 导航
+  href: navigation.md
+- name: 动态工具栏
+  href: dynamic-toolbar.md

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://dotnet.github.io/docfx/schemas/v2/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "..",
+          "files": [
+            "src/Flourish/Flourish.csproj"
+          ]
+        }
+      ],
+      "dest": "zh-cn/api",
+      "properties": {
+        "Configuration": "Release",
+        "TargetFramework": "net10.0-windows"
+      },
+      "filter": "filterConfig.yml",
+      "memberLayout": "samePage",
+      "namespaceLayout": "nested"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "src": "zh-cn",
+        "files": [
+          "index.md",
+          "toc.yml",
+          "articles/**/*.md",
+          "articles/**/*.yml",
+          "api/**/*.yml"
+        ],
+        "dest": "."
+      }
+    ],
+    "overwrite": [
+      {
+        "src": "zh-cn",
+        "files": [
+          "api-overwrites/**/*.md"
+        ]
+      }
+    ],
+    "output": "_site/zh-cn",
+    "template": [
+      "default",
+      "modern",
+      "templates/flourish"
+    ],
+    "globalMetadata": {
+      "_appTitle": "Flourish",
+      "_appName": "Flourish",
+      "_enableSearch": true,
+      "_lang": "zh-cn",
+      "_appFooter": "Flourish API 文档"
+    }
+  }
+}

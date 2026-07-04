@@ -368,4 +368,6 @@ FodyWeavers.xsd
 
 # DocFX generated files
 docs/api/
+docs/en-us/api/
+docs/zh-cn/api/
 docs/_site/

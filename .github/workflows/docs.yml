@@ -35,10 +35,18 @@ jobs:
       run: dotnet tool restore
 
     - name: Clean generated documentation
-      run: Remove-Item -Recurse -Force docs/api, docs/_site -ErrorAction SilentlyContinue
+      run: Remove-Item -Recurse -Force docs/api, docs/en-us/api, docs/zh-cn/api, docs/_site -ErrorAction SilentlyContinue
 
-    - name: Build documentation
-      run: dotnet tool run docfx docs/docfx.json
+    - name: Build English documentation
+      run: dotnet tool run docfx docs/docfx.en-us.json --warningsAsErrors
+
+    - name: Build Chinese documentation
+      run: dotnet tool run docfx docs/docfx.zh-cn.json --warningsAsErrors
+
+    - name: Copy Pages root
+      run: |
+        New-Item -ItemType Directory -Force docs/_site
+        Get-ChildItem docs/root -Force | Copy-Item -Destination docs/_site -Recurse -Force
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3

@@ -19,4 +19,4 @@ This documentation is generated with DocFX from the source project and its XML d
 
 ## Documentation source
 
-The generated API pages come from `src/Flourish/Flourish.csproj`. Conceptual pages live under `docs/articles`.
+The generated API pages come from `src/Flourish/Flourish.csproj`. Conceptual pages live under `docs/en-us/articles`.
