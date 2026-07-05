@@ -532,6 +532,13 @@ internal partial class FlourishShellWindow : Window
             return;
         }
 
+        if (item.IsCommandItem)
+        {
+            ActivateNavigationItem(item, true);
+            Keyboard.ClearFocus();
+            return;
+        }
+
         listBox.SelectedItem = item;
         ActivateNavigationItem(item, true);
     }
@@ -723,6 +730,8 @@ internal partial class FlourishShellWindow : Window
         suppressNavigationSelection = true;
         try
         {
+            UpdateActiveChildParent(item);
+
             if (item.IsFixed)
             {
                 NavigationItemsHost.SelectedItem = null;
@@ -736,6 +745,29 @@ internal partial class FlourishShellWindow : Window
         finally
         {
             suppressNavigationSelection = false;
+        }
+    }
+
+    private void UpdateActiveChildParent(FlourishNavigationItem activeItem)
+    {
+        foreach (var item in options.NavigationItems.Concat(options.FixedNavigationItems))
+        {
+            item.IsActiveChildParent = false;
+        }
+
+        if (!activeItem.IsPageItem || activeItem.ChildId == 0)
+        {
+            return;
+        }
+
+        var items = activeItem.IsFixed ? options.FixedNavigationItems : options.NavigationItems;
+        var parent = items.FirstOrDefault(item =>
+            item.GroupId == activeItem.GroupId && item.ParentId == activeItem.ChildId
+        );
+
+        if (parent is not null)
+        {
+            parent.IsActiveChildParent = true;
         }
     }
 

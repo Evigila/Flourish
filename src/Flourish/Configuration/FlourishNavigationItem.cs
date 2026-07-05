@@ -15,6 +15,7 @@ internal enum FlourishNavigationItemKind
 
 internal sealed class FlourishNavigationItem : INotifyPropertyChanged
 {
+    private bool isActiveChildParent;
     private bool isExpanded;
     private bool isVisible = true;
 
@@ -74,6 +75,21 @@ internal sealed class FlourishNavigationItem : INotifyPropertyChanged
     public int ChildId { get; }
 
     public bool HasChildren { get; internal set; }
+
+    public bool IsActiveChildParent
+    {
+        get => isActiveChildParent;
+        set
+        {
+            if (isActiveChildParent == value)
+            {
+                return;
+            }
+
+            isActiveChildParent = value;
+            OnPropertyChanged();
+        }
+    }
 
     public bool IsGroupHeader => Kind == FlourishNavigationItemKind.GroupHeader;
 

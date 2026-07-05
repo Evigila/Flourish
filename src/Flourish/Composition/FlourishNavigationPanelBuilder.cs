@@ -86,7 +86,8 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         string displayName,
         string? CommandKey,
         int parentID = 0,
-        int childID = 0
+        int childID = 0,
+        string? iconGlyph = null
     )
     {
         AddCommandItem(
@@ -96,7 +97,8 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
             displayName,
             CommandKey,
             parentID,
-            childID
+            childID,
+            iconGlyph
         );
         return this;
     }
@@ -137,7 +139,8 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         string displayName,
         string? commandKey,
         int parentID,
-        int childID
+        int childID,
+        string? iconGlyph
     )
     {
         if (string.IsNullOrWhiteSpace(displayName))
@@ -151,7 +154,7 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
             new FlourishNavigationItem(
                 $"command:{groupId}:{items.Count}:{commandKey ?? displayName}",
                 displayName,
-                null,
+                iconGlyph,
                 groupId,
                 FlourishNavigationItemKind.Command,
                 commandKey: commandKey,
@@ -210,7 +213,8 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
             string displayName,
             string? CommandKey,
             int parentID = 0,
-            int childID = 0
+            int childID = 0,
+            string? iconGlyph = null
         )
         {
             AddCommandItem(
@@ -220,7 +224,8 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
                 displayName,
                 CommandKey,
                 parentID,
-                childID
+                childID,
+                iconGlyph
             );
             return this;
         }

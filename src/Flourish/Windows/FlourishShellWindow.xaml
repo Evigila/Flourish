@@ -71,6 +71,13 @@
           <Setter TargetName="NavigationGroupHeader" Property="Visibility" Value="Visible" />
           <Setter TargetName="NavigationItemLayout" Property="Visibility" Value="Collapsed" />
         </DataTrigger>
+        <DataTrigger Binding="{Binding IsActiveChildParent}" Value="True">
+          <Setter
+            TargetName="NavigationItemLabel"
+            Property="Foreground"
+            Value="{StaticResource AccentBrush}"
+          />
+        </DataTrigger>
         <DataTrigger
           Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=ListBox}}"
           Value="False"

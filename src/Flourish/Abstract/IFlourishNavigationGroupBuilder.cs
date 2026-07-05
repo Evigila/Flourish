@@ -24,6 +24,7 @@ public interface IFlourishNavigationGroupBuilder
         string displayName,
         string? CommandKey,
         int parentID = 0,
-        int childID = 0
+        int childID = 0,
+        string? iconGlyph = null
     );
 }

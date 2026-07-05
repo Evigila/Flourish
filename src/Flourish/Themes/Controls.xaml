@@ -608,6 +608,18 @@
               <Setter TargetName="Chrome" Property="Background" Value="#CFE0FF" />
               <Setter TargetName="HoverChrome" Property="Background" Value="#CFE0FF" />
             </Trigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding IsCommandItem}" Value="True" />
+                <Condition
+                  Binding="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                  Value="True"
+                />
+              </MultiDataTrigger.Conditions>
+              <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
+              <Setter TargetName="Chrome" Property="Background" Value="Transparent" />
+              <Setter TargetName="HoverChrome" Property="Background" Value="#D6E8FF" />
+            </MultiDataTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
@@ -621,10 +633,13 @@
       </DataTrigger>
       <DataTrigger Binding="{Binding IsGroupHeader}" Value="True">
         <Setter Property="Height" Value="Auto" />
-        <Setter Property="Margin" Value="16,12,12,4" />
+        <Setter Property="Margin" Value="16,20,12,7" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="IsHitTestVisible" Value="False" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding IsCommandItem}" Value="True">
+        <Setter Property="Focusable" Value="False" />
       </DataTrigger>
       <DataTrigger
         Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"

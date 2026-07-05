@@ -32,7 +32,7 @@ internal static class Program
                     services.AddNavigable<GalleryPage>("图库", "\uE91B");
                     services.AddNavigable<EditorPage>("编辑", "\uE70F");
                     services.AddNavigable<SettingsPage>("设置", "\uE713");
-                    services.AddNavigable<TreeParentPage>("ViewItem 父节点", "\uE8A5");
+                    services.AddNavigable<TreeParentPage>("页面父节点", "\uE8A5");
                     services.AddNavigable<Page1>("Page1", "\uE8A5");
                     services.AddNavigable<Page2>("Page2", "\uE8A5");
                 }
@@ -79,8 +79,16 @@ internal static class Program
                                         GroupID: 1,
                                         group =>
                                         {
-                                            group.AddNavigableItem("Hello", "demo.hello");
-                                            group.AddNavigableItem("World", "demo.world");
+                                            group.AddNavigableItem(
+                                                "Hello",
+                                                "demo.hello",
+                                                iconGlyph: "\uE8F2"
+                                            );
+                                            group.AddNavigableItem(
+                                                "World",
+                                                "demo.world",
+                                                iconGlyph: "\uE774"
+                                            );
                                         }
                                     )
                                     .SetGroup(
@@ -92,20 +100,32 @@ internal static class Program
                                             group.AddNavigableItem(
                                                 "Button1",
                                                 "tree.button1",
-                                                childID: 1
+                                                childID: 1,
+                                                iconGlyph: "\uE8B7"
                                             );
                                             group.AddNavigableItem(
                                                 "Button2",
                                                 "tree.button2",
-                                                childID: 1
+                                                childID: 1,
+                                                iconGlyph: "\uE8B7"
                                             );
 
-                                            group.AddNavigableItem("页面父节点", null, parentID: 2);
+                                            group.AddNavigableItem(
+                                                "普通父节点",
+                                                null,
+                                                parentID: 2,
+                                                iconGlyph: "\uE8A5"
+                                            );
                                             group.AddNavigableViewItem<Page1>(childID: 2);
                                             group.AddNavigableViewItem<Page2>(childID: 2);
                                         }
                                     )
-                                    .AddFixedNavigableViewItem<SettingsPage>();
+                                    .AddFixedNavigableViewItem<SettingsPage>()
+                                    .AddFixedNavigableItem(
+                                        "关于",
+                                        "app.about",
+                                        iconGlyph: "\uE946"
+                                    );
                             }
                         )
                         .UseDynamicToolbar()

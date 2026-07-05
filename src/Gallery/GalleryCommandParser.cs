@@ -22,6 +22,9 @@ internal sealed class GalleryCommandParser : ICommandParser
             case "tree.button2":
                 ShowCommandOutput("Button2");
                 return true;
+            case "app.about":
+                ShowCommandOutput("关于");
+                return true;
             case "home.open":
                 MessageBox.Show("Hello, World!");
                 return true;
