@@ -34,6 +34,15 @@
         "dest": "."
       }
     ],
+    "resource": [
+      {
+        "src": "../src/Flourish/Assets",
+        "files": [
+          "favicon.ico"
+        ],
+        "dest": "assets"
+      }
+    ],
     "output": "_site/en-us",
     "template": [
       "default",
@@ -41,12 +50,21 @@
       "material/material",
       "templates/flourish"
     ],
+    "postProcessors": [
+      "ExtractSearchIndex"
+    ],
     "globalMetadata": {
       "_appTitle": "Flourish",
       "_appName": "Flourish",
+      "_appLogoPath": "assets/favicon.ico",
+      "_appFaviconPath": "assets/favicon.ico",
       "_enableSearch": true,
       "_lang": "en-us",
-      "_appFooter": "Flourish API documentation"
+      "_appFooter": "Flourish documentation",
+      "_gitContribute": {
+        "repo": "https://github.com/Evigila/Vistara"
+      },
+      "_gitUrlPattern": "github"
     }
   }
 }

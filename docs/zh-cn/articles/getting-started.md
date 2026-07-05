@@ -11,6 +11,9 @@ description: 用最短路径把 Flourish 接入 WPF 应用。
 
 `Run(Application)` 快捷方法和 `IFlourish.Show(Application)` 会在打开 Shell 前自动把 `/Flourish;component/Themes/Generic.xaml` 合并进应用资源。你仍然可以在 `App.xaml` 中显式引用它；这样 WPF 设计器和 Shell 显示前就需要使用的资源也能正常工作。
 
+> [!NOTE]
+> 当设计器资源或早期应用资源需要在 Shell 显示前使用 Flourish 样式时，建议在 `App.xaml` 中显式加入主题字典。
+
 ```xml
 <Application
   x:Class="MyApp.App"
@@ -108,6 +111,9 @@ internal static class Program
 ## 保持 App 简洁
 
 现在 Flourish 的启动流程由 `Program.Main` 承接，`App.xaml.cs` 只需要初始化 XAML 资源。
+
+> [!WARNING]
+> 使用 `flourish.Run<App>()` 后，不要再在 `App.OnStartup` 中调用 `Program.Flourish.Show(this)`。两条路径都会显示 Shell，同时使用会造成重复启动行为。
 
 ```csharp
 using System.Windows;

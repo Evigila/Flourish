@@ -56,6 +56,9 @@ internal sealed class AppCommandParser : ICommandParser
 
 `TryParse` 应保持快速、明确。不要用显示文本路由命令，应使用稳定的命令键。
 
+> [!CAUTION]
+> `TryParse` 运行在触发命令的 UI 路径上。耗时工作应交给应用服务或异步流程处理，不应阻塞解析器。
+
 ## 连接工具栏项
 
 ```csharp

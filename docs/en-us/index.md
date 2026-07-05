@@ -1,13 +1,26 @@
 ---
 title: Flourish
-description: API documentation for Flourish.
+description: Documentation for the Flourish WPF shell composition library.
 ---
 
 # Flourish
 
-Flourish is a desktop application composition library for WPF applications. It provides a host-based application bootstrap flow, shell configuration, navigation registration, dynamic toolbar setup, status-bar integration, and motion options.
+Flourish is an open-source desktop application composition library for WPF. It provides a simple shell layer for applications that need a host-based startup flow, configurable window chrome, navigation, dynamic toolbar commands, status-bar integration, page caching, material effects, and motion options.
 
-This documentation is generated with DocFX from the source project and its XML documentation comments. The API reference is rebuilt by CI and intentionally exposes only the `AcksheedSys.Flourish.Abstract` public contract.
+Flourish focuses on a small, teachable API surface. Application setup stays in `Program`, visual resources can be added from `App.xaml`, and shell behavior is configured with fluent builders.
+
+> [!NOTE]
+> Flourish targets WPF and therefore supports Windows desktop applications only. Projects should use a Windows target framework such as `net10.0-windows` and enable WPF.
+
+## What Flourish Provides
+
+- Host-based startup with `FlourishBuilder` and `IFlourish`
+- Shell window configuration for title bar, navigation panel, material effect, font, and window sizing
+- Page registration and navigation through dependency injection
+- Contextual dynamic toolbar items connected to command parsing
+- Status bar text, custom status items, and built-in LAN/power indicators
+- Motion settings for page transitions, navigation panel animation, and hover reveal
+- Theme resources that can be merged from `App.xaml`
 
 ## Start here
 
@@ -17,6 +30,10 @@ This documentation is generated with DocFX from the source project and its XML d
 - [Dynamic toolbar](articles/dynamic-toolbar.md)
 - [API reference](xref:AcksheedSys.Flourish.Abstract)
 
-## Documentation source
+## Project Links
 
-The generated API pages come from `src/Flourish/Flourish.csproj`. Conceptual pages live under `docs/en-us/articles`.
+- [GitHub repository](https://github.com/Evigila/Vistara)
+- [Issues](https://github.com/Evigila/Vistara/issues)
+- [Pull requests](https://github.com/Evigila/Vistara/pulls)
+
+Issues and pull requests are welcome for bug reports, documentation fixes, API feedback, and examples.

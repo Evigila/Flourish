@@ -56,6 +56,9 @@ internal sealed class AppCommandParser : ICommandParser
 
 `TryParse` should be fast and explicit. Avoid routing by display text; use stable command keys.
 
+> [!CAUTION]
+> `TryParse` runs on the UI path that triggered the command. Long-running work should be delegated to an application service or an asynchronous workflow instead of blocking the parser.
+
 ## Connect toolbar items
 
 ```csharp

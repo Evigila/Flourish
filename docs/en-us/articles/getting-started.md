@@ -11,6 +11,9 @@ The fastest way to use Flourish is to let the shell host your WPF `Application`:
 
 The `Run(Application)` helper and `IFlourish.Show(Application)` automatically merge `/Flourish;component/Themes/Generic.xaml` into the application resources before the shell is opened. You can still add it explicitly in `App.xaml`; this is useful for the WPF designer and for resources used before the shell is shown.
 
+> [!NOTE]
+> Add the theme dictionary in `App.xaml` when design-time resources or early application resources need Flourish styles before the shell is shown.
+
 ```xml
 <Application
   x:Class="MyApp.App"
@@ -108,6 +111,9 @@ internal static class Program
 ## Keep App simple
 
 `Program.Main` now owns the Flourish startup flow, so `App.xaml.cs` only needs to initialize the XAML resources.
+
+> [!WARNING]
+> When `flourish.Run<App>()` is used, do not also call `Program.Flourish.Show(this)` from `App.OnStartup`. Both paths show the shell, so using both creates duplicate startup behavior.
 
 ```csharp
 using System.Windows;

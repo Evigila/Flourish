@@ -106,6 +106,9 @@ Use `FlourishPageTransition.None` or `SetEnabled(false)` when predictable, stati
 
 `UseMaterialEffect` applies a Windows material effect to the shell window.
 
+> [!WARNING]
+> Material effects depend on Windows desktop composition support. Use `MaterialEffect.None` for fully opaque windows or when a deployment environment should avoid platform-specific visuals.
+
 ```csharp
 shell.UseMaterialEffect(MaterialEffect.Mica);
 ```

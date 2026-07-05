@@ -161,6 +161,9 @@ Tree rules:
 - A child follows the parent whose `parentId` matches its `childId`.
 - Flourish currently supports one visible child level.
 
+> [!CAUTION]
+> Tree IDs are scoped to the current group or fixed-item section. Reusing a `parentId` in the same scope or pointing a `childId` at a missing parent fails during build.
+
 A page item can be a parent. Clicking it navigates to the page and toggles its children. A command item can also be a parent, but parent command items toggle children only and do not execute their `commandKey`; passing `null` is recommended.
 
 When a page child is selected, Flourish automatically expands its parent and highlights the parent name. When the navigation panel is collapsed, closing first hides all child items so icons stay aligned. Clicking a collapsed parent that can expand opens the whole navigation panel before showing children.

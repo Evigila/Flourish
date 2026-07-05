@@ -23,6 +23,9 @@ builder.ConfigureShell((_, shell) =>
 
 `UseDynamicToolbar(false)` keeps the surface disabled even if items are registered.
 
+> [!NOTE]
+> Enabling the dynamic toolbar only creates the shell surface. A page shows toolbar buttons after matching items are registered with `ConfigureDynamicToolbar`.
+
 ## Register items for a page
 
 Use `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` when the page type is known at compile time.

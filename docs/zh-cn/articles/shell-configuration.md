@@ -106,6 +106,9 @@ shell.UseMotion((_, motion) =>
 
 `UseMaterialEffect` 用于给 Shell 窗口应用 Windows 材质效果。
 
+> [!WARNING]
+> 材质效果依赖 Windows 桌面合成能力。需要完全不透明窗口，或部署环境应避开平台相关视觉效果时，使用 `MaterialEffect.None`。
+
 ```csharp
 shell.UseMaterialEffect(MaterialEffect.Mica);
 ```

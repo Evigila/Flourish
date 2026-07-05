@@ -23,6 +23,9 @@ builder.ConfigureShell((_, shell) =>
 
 即使已经注册工具栏项，`UseDynamicToolbar(false)` 也会让该区域保持禁用。
 
+> [!NOTE]
+> 启用动态工具栏只会创建 Shell 区域。页面需要通过 `ConfigureDynamicToolbar` 注册匹配的工具栏项后，才会显示按钮。
+
 ## 为页面注册工具栏项
 
 页面类型在编译期已知时，使用 `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>`。
