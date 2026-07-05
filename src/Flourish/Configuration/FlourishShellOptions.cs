@@ -91,6 +91,8 @@ internal sealed class FlourishShellOptions
 
     public Type? InitialNavigationPageType { get; set; }
 
+    public Dictionary<Type, FlourishPageCacheMode> PageCacheModesByPageType { get; } = [];
+
     public List<FlourishNavigationGroup> NavigationGroups { get; } = [];
 
     public List<FlourishNavigationItem> NavigationItems { get; } = [];

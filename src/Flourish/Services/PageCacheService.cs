@@ -14,16 +14,7 @@ internal sealed class PageCacheService(IServiceProvider serviceProvider, Flouris
         FlourishShellOptions options
     )
     {
-        var cacheModes = new Dictionary<Type, FlourishPageCacheMode>();
-        foreach (var item in options.NavigationItems.Concat(options.FixedNavigationItems))
-        {
-            if (item.PageType is not null)
-            {
-                cacheModes[item.PageType] = item.CacheMode;
-            }
-        }
-
-        return cacheModes;
+        return new Dictionary<Type, FlourishPageCacheMode>(options.PageCacheModesByPageType);
     }
 
     public Page GetPage(Type sourcePageType)

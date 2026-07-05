@@ -92,6 +92,11 @@ internal sealed class FlourishCompositionRoot(
             shellOptions.NavigationGroups.Count > 0 || shellOptions.FixedNavigationItems.Count > 0;
 
         shellOptions.NavigationItems.Clear();
+        shellOptions.PageCacheModesByPageType.Clear();
+        foreach (var page in registeredPages.Values)
+        {
+            shellOptions.PageCacheModesByPageType[page.PageType] = page.CacheMode;
+        }
 
         if (!hasConfiguredNavigation)
         {
@@ -109,8 +114,7 @@ internal sealed class FlourishCompositionRoot(
                         page.IconGlyph,
                         0,
                         FlourishNavigationItemKind.Page,
-                        page.PageType,
-                        page.CacheMode
+                        page.PageType
                     )
                 );
             }
@@ -180,8 +184,6 @@ internal sealed class FlourishCompositionRoot(
                 {
                     item.IconGlyph = page.IconGlyph;
                 }
-
-                item.CacheMode = page.CacheMode;
             }
 
             if (item.IsInitial && item.PageType is not null)

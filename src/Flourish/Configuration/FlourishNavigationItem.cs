@@ -26,7 +26,6 @@ internal sealed class FlourishNavigationItem : INotifyPropertyChanged
         int groupId,
         FlourishNavigationItemKind kind,
         Type? pageType = null,
-        FlourishPageCacheMode cacheMode = FlourishPageCacheMode.Enabled,
         string? commandKey = null,
         bool isInitial = false,
         bool isFixed = false,
@@ -40,7 +39,6 @@ internal sealed class FlourishNavigationItem : INotifyPropertyChanged
         GroupId = groupId;
         Kind = kind;
         PageType = pageType;
-        CacheMode = cacheMode;
         CommandKey = commandKey;
         IsInitial = isInitial;
         IsFixed = isFixed;
@@ -61,8 +59,6 @@ internal sealed class FlourishNavigationItem : INotifyPropertyChanged
     public FlourishNavigationItemKind Kind { get; }
 
     public Type? PageType { get; }
-
-    public FlourishPageCacheMode CacheMode { get; internal set; }
 
     public string? CommandKey { get; }
 
