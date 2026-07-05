@@ -68,13 +68,13 @@ public interface IFlourishNavigationPanelBuilder
     /// <summary>
     /// Adds and configures a navigation group. Group IDs are unique and control display order.
     /// </summary>
-    /// <param name="displayName">The group heading. Required when <paramref name="GroupID" /> is not 0.</param>
-    /// <param name="GroupID">The unique group ID. Lower IDs are displayed first.</param>
+    /// <param name="displayName">The group heading. Required when <paramref name="groupId" /> is not 0.</param>
+    /// <param name="groupId">The unique group ID. Lower IDs are displayed first.</param>
     /// <param name="configureGroup">The group item configuration callback.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishNavigationPanelBuilder SetGroup(
         string? displayName = null,
-        int GroupID = 0,
+        int groupId = 0,
         Action<IFlourishNavigationGroupBuilder>? configureGroup = null
     );
 
@@ -83,8 +83,8 @@ public interface IFlourishNavigationPanelBuilder
     /// </summary>
     IFlourishNavigationPanelBuilder AddFixedNavigableViewItem<TPage>(
         bool isInitial = false,
-        int parentID = 0,
-        int childID = 0
+        int parentId = 0,
+        int childId = 0
     )
         where TPage : Page;
 
@@ -93,9 +93,9 @@ public interface IFlourishNavigationPanelBuilder
     /// </summary>
     IFlourishNavigationPanelBuilder AddFixedNavigableItem(
         string displayName,
-        string? CommandKey,
-        int parentID = 0,
-        int childID = 0,
+        string? commandKey,
+        int parentId = 0,
+        int childId = 0,
         string? iconGlyph = null
     );
 }

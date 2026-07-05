@@ -12,8 +12,8 @@ public interface IFlourishNavigationGroupBuilder
     /// </summary>
     IFlourishNavigationGroupBuilder AddNavigableViewItem<TPage>(
         bool isInitial = false,
-        int parentID = 0,
-        int childID = 0
+        int parentId = 0,
+        int childId = 0
     )
         where TPage : Page;
 
@@ -22,9 +22,9 @@ public interface IFlourishNavigationGroupBuilder
     /// </summary>
     IFlourishNavigationGroupBuilder AddNavigableItem(
         string displayName,
-        string? CommandKey,
-        int parentID = 0,
-        int childID = 0,
+        string? commandKey,
+        int parentId = 0,
+        int childId = 0,
         string? iconGlyph = null
     );
 }

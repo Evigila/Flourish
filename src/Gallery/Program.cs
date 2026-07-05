@@ -66,7 +66,7 @@ internal static class Program
                                     .SetInitiallyOpen()
                                     .SetGroup(
                                         "导航",
-                                        GroupID: 0,
+                                        groupId: 0,
                                         group =>
                                         {
                                             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -76,7 +76,7 @@ internal static class Program
                                     )
                                     .SetGroup(
                                         "按钮",
-                                        GroupID: 1,
+                                        groupId: 1,
                                         group =>
                                         {
                                             group.AddNavigableItem(
@@ -93,31 +93,31 @@ internal static class Program
                                     )
                                     .SetGroup(
                                         "树",
-                                        GroupID: 2,
+                                        groupId: 2,
                                         group =>
                                         {
-                                            group.AddNavigableViewItem<TreeParentPage>(parentID: 1);
+                                            group.AddNavigableViewItem<TreeParentPage>(parentId: 1);
                                             group.AddNavigableItem(
                                                 "Button1",
                                                 "tree.button1",
-                                                childID: 1,
+                                                childId: 1,
                                                 iconGlyph: "\uE8B7"
                                             );
                                             group.AddNavigableItem(
                                                 "Button2",
                                                 "tree.button2",
-                                                childID: 1,
+                                                childId: 1,
                                                 iconGlyph: "\uE8B7"
                                             );
 
                                             group.AddNavigableItem(
                                                 "普通父节点",
                                                 null,
-                                                parentID: 2,
+                                                parentId: 2,
                                                 iconGlyph: "\uE8A5"
                                             );
-                                            group.AddNavigableViewItem<Page1>(childID: 2);
-                                            group.AddNavigableViewItem<Page2>(childID: 2);
+                                            group.AddNavigableViewItem<Page1>(childId: 2);
+                                            group.AddNavigableViewItem<Page2>(childId: 2);
                                         }
                                     )
                                     .AddFixedNavigableViewItem<SettingsPage>()

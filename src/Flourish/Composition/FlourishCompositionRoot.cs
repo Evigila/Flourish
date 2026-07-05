@@ -270,7 +270,7 @@ internal sealed class FlourishCompositionRoot(
             if (item.ParentId != 0 && !parentsById.TryAdd(item.ParentId, item))
             {
                 throw new InvalidOperationException(
-                    $"Navigation parentID {item.ParentId} is duplicated in {scopeName}."
+                    $"Navigation parentId {item.ParentId} is duplicated in {scopeName}."
                 );
             }
 
@@ -305,7 +305,7 @@ internal sealed class FlourishCompositionRoot(
             if (!parentsById.TryGetValue(child.ChildId, out var parent))
             {
                 throw new InvalidOperationException(
-                    $"Navigation childID {child.ChildId} in {scopeName} does not match a parentID."
+                    $"Navigation childId {child.ChildId} in {scopeName} does not match a parentId."
                 );
             }
 
