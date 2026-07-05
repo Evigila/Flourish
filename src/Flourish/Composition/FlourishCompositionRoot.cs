@@ -122,6 +122,8 @@ internal sealed class FlourishCompositionRoot(
             shellOptions.NavigationGroups.Add(legacyGroup);
         }
 
+        ValidateUniqueNavigationPageItems();
+
         foreach (var group in shellOptions.NavigationGroups.OrderBy(group => group.GroupId))
         {
             if (!string.IsNullOrWhiteSpace(group.Title))
@@ -146,6 +148,63 @@ internal sealed class FlourishCompositionRoot(
             registeredPages,
             "fixed navigation items"
         );
+    }
+
+    private void ValidateUniqueNavigationPageItems()
+    {
+        var pageLocationsByType = new Dictionary<Type, List<string>>();
+
+        foreach (var group in shellOptions.NavigationGroups)
+        {
+            AddNavigationPageLocations(
+                pageLocationsByType,
+                group.Items,
+                $"group {group.GroupId}"
+            );
+        }
+
+        AddNavigationPageLocations(
+            pageLocationsByType,
+            shellOptions.FixedNavigationItems,
+            "fixed navigation items"
+        );
+
+        var duplicatePages = pageLocationsByType
+            .Where(pair => pair.Value.Count > 1)
+            .Select(pair => $"{pair.Key.FullName}: {string.Join(", ", pair.Value)}")
+            .ToArray();
+
+        if (duplicatePages.Length > 0)
+        {
+            throw new InvalidOperationException(
+                "A page can only be added to one navigation location. Duplicate navigable pages: "
+                    + string.Join("; ", duplicatePages)
+            );
+        }
+    }
+
+    private static void AddNavigationPageLocations(
+        Dictionary<Type, List<string>> pageLocationsByType,
+        IReadOnlyList<FlourishNavigationItem> items,
+        string scopeName
+    )
+    {
+        for (var index = 0; index < items.Count; index++)
+        {
+            var item = items[index];
+            if (!item.IsPageItem || item.PageType is null)
+            {
+                continue;
+            }
+
+            if (!pageLocationsByType.TryGetValue(item.PageType, out var locations))
+            {
+                locations = [];
+                pageLocationsByType[item.PageType] = locations;
+            }
+
+            locations.Add($"{scopeName} item {index + 1} ({item.Label})");
+        }
     }
 
     private void FinalizeNavigationItems(
