@@ -66,7 +66,7 @@
       Grid.Column="1"
       Width="38"
       Height="32"
-      Margin="2,4"
+      Margin="4,4"
       Click="NavigationToggleButton_Click"
       Style="{StaticResource FlourishIconButtonStyle}"
       ToolTip="Toggle navigation"
