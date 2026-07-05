@@ -29,6 +29,50 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         return this;
     }
 
+    public IFlourishNavigationPanelBuilder SetPaneWidth(
+        double openWidth = 220,
+        double closedWidth = 48
+    )
+    {
+        ValidatePositiveFinite(openWidth, nameof(openWidth));
+        ValidateNonNegativeFinite(closedWidth, nameof(closedWidth));
+
+        if (closedWidth > openWidth)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(closedWidth),
+                closedWidth,
+                "Closed navigation pane width cannot exceed open width."
+            );
+        }
+
+        options.OpenPaneWidth = openWidth;
+        options.ClosedPaneWidth = closedWidth;
+        return this;
+    }
+
+    public IFlourishNavigationPanelBuilder SetPaneWidthLimits(
+        double minWidth = 160,
+        double maxWidth = 420
+    )
+    {
+        ValidatePositiveFinite(minWidth, nameof(minWidth));
+        ValidatePositiveFinite(maxWidth, nameof(maxWidth));
+
+        if (minWidth > maxWidth)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(minWidth),
+                minWidth,
+                "Minimum navigation pane width cannot exceed maximum width."
+            );
+        }
+
+        options.NavigationPaneMinWidth = minWidth;
+        options.NavigationPaneMaxWidth = maxWidth;
+        return this;
+    }
+
     public IFlourishNavigationPanelBuilder SetTitle(string title)
     {
         options.PaneTitle = title;
@@ -228,6 +272,40 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
                 iconGlyph
             );
             return this;
+        }
+    }
+
+    private static void ValidatePositiveFinite(double value, string parameterName)
+    {
+        ValidateFinite(value, parameterName);
+        if (value <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "Value must be greater than 0."
+            );
+        }
+    }
+
+    private static void ValidateNonNegativeFinite(double value, string parameterName)
+    {
+        ValidateFinite(value, parameterName);
+        if (value < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "Value cannot be negative."
+            );
+        }
+    }
+
+    private static void ValidateFinite(double value, string parameterName)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value))
+        {
+            throw new ArgumentOutOfRangeException(parameterName, value, "Value must be finite.");
         }
     }
 }

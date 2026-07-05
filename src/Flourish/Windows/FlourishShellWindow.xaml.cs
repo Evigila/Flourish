@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shell;
@@ -51,6 +52,7 @@ internal partial class FlourishShellWindow : Window
     private bool isDefaultToolbarActive;
     private bool isPaneOpen = true;
     private bool suppressNavigationSelection;
+    private double navigationPaneDragStartWidth;
 
     private readonly record struct NavigationTreeKey(bool IsFixed, int GroupId, int RelationshipId);
 
@@ -136,6 +138,7 @@ internal partial class FlourishShellWindow : Window
         UpdateTitlebarBreadcrumbNavigation();
         ApplyMotionResources();
 
+        NormalizeNavigationPaneWidths();
         ApplyNavigationPanelPlacement();
         isPaneOpen = options.IsNavigationPanelInitiallyOpen;
         ApplyNavigationPaneState();
@@ -228,12 +231,18 @@ internal partial class FlourishShellWindow : Window
         {
             Grid.SetColumn(ContentAreaGrid, 0);
             Grid.SetColumn(NavigationPaneBorder, 1);
+            Grid.SetColumn(NavigationPaneSplitter, 1);
+            NavigationPaneSplitter.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            NavigationPaneSplitter.ResizeBehavior = GridResizeBehavior.PreviousAndCurrent;
             NavigationPaneBorder.BorderThickness = new Thickness(1, 0, 0, 0);
             return;
         }
 
         Grid.SetColumn(NavigationPaneBorder, 0);
         Grid.SetColumn(ContentAreaGrid, 1);
+        Grid.SetColumn(NavigationPaneSplitter, 0);
+        NavigationPaneSplitter.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+        NavigationPaneSplitter.ResizeBehavior = GridResizeBehavior.CurrentAndNext;
         NavigationPaneBorder.BorderThickness = new Thickness(0, 0, 1, 0);
     }
 
@@ -244,28 +253,54 @@ internal partial class FlourishShellWindow : Window
             : PaneColumn;
     }
 
+    private ColumnDefinition GetContentColumn()
+    {
+        return options.NavigationPanelDirection == NavigationPanelDirection.Right
+            ? PaneColumn
+            : ContentColumn;
+    }
+
     private void PreparePaneColumnsForAnimation()
     {
-        if (options.NavigationPanelDirection == NavigationPanelDirection.Right)
-        {
-            PaneColumn.Width = new GridLength(1, GridUnitType.Star);
-            return;
-        }
-
-        ContentColumn.Width = new GridLength(1, GridUnitType.Star);
+        GetContentColumn().Width = new GridLength(1, GridUnitType.Star);
     }
 
     private void SetPaneWidth(double width)
     {
-        if (options.NavigationPanelDirection == NavigationPanelDirection.Right)
-        {
-            PaneColumn.Width = new GridLength(1, GridUnitType.Star);
-            ContentColumn.Width = new GridLength(width);
-            return;
-        }
+        GetNavigationPaneColumn().Width = new GridLength(width);
+        GetContentColumn().Width = new GridLength(1, GridUnitType.Star);
+    }
 
-        PaneColumn.Width = new GridLength(width);
-        ContentColumn.Width = new GridLength(1, GridUnitType.Star);
+    private void NormalizeNavigationPaneWidths()
+    {
+        options.OpenPaneWidth = CoerceOpenPaneWidth(options.OpenPaneWidth);
+        options.ClosedPaneWidth = Math.Min(options.ClosedPaneWidth, options.OpenPaneWidth);
+    }
+
+    private double CoerceOpenPaneWidth(double width)
+    {
+        return Math.Min(
+            Math.Max(width, options.NavigationPaneMinWidth),
+            options.NavigationPaneMaxWidth
+        );
+    }
+
+    private void ApplyNavigationPaneColumnConstraints(bool isOpen)
+    {
+        var paneColumn = GetNavigationPaneColumn();
+        paneColumn.MinWidth = isOpen ? options.NavigationPaneMinWidth : 0;
+        paneColumn.MaxWidth = isOpen
+            ? options.NavigationPaneMaxWidth
+            : double.PositiveInfinity;
+    }
+
+    private void UpdateNavigationPaneSplitterState()
+    {
+        var isSplitterEnabled = options.IsNavigationPanelEnabled && isPaneOpen;
+        NavigationPaneSplitter.IsEnabled = isSplitterEnabled;
+        NavigationPaneSplitter.Visibility = isSplitterEnabled
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void ApplyNavigationPaneState(bool animate = false)
@@ -275,7 +310,7 @@ internal partial class FlourishShellWindow : Window
         var paneWidth = !isNavigationVisible
             ? 0
             : isOpen
-                ? options.OpenPaneWidth
+                ? CoerceOpenPaneWidth(options.OpenPaneWidth)
                 : options.ClosedPaneWidth;
 
         if (isOpen || animate)
@@ -285,11 +320,16 @@ internal partial class FlourishShellWindow : Window
 
         if (!animate)
         {
+            ApplyNavigationPaneColumnConstraints(isOpen);
             SetPaneWidth(paneWidth);
             ApplyNavigationPaneChrome(isOpen);
+            UpdateNavigationPaneSplitterState();
             return;
         }
 
+        ApplyNavigationPaneColumnConstraints(false);
+        NavigationPaneSplitter.IsEnabled = false;
+        NavigationPaneSplitter.Visibility = Visibility.Collapsed;
         PreparePaneColumnsForAnimation();
         var paneColumn = GetNavigationPaneColumn();
         var fromWidth = paneColumn.ActualWidth > 0 ? paneColumn.ActualWidth : paneColumn.Width.Value;
@@ -300,10 +340,47 @@ internal partial class FlourishShellWindow : Window
             paneWidth,
             () =>
             {
+                ApplyNavigationPaneColumnConstraints(isOpen);
                 SetPaneWidth(paneWidth);
                 ApplyNavigationPaneChrome(isOpen);
+                UpdateNavigationPaneSplitterState();
             }
         );
+    }
+
+    private void NavigationPaneSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
+    {
+        if (!options.IsNavigationPanelEnabled || !isPaneOpen)
+        {
+            return;
+        }
+
+        var horizontalChange =
+            options.NavigationPanelDirection == NavigationPanelDirection.Right
+                ? -e.HorizontalChange
+                : e.HorizontalChange;
+        var paneWidth = e.Canceled
+            ? navigationPaneDragStartWidth
+            : CoerceOpenPaneWidth(navigationPaneDragStartWidth + horizontalChange);
+
+        options.OpenPaneWidth = paneWidth;
+        ApplyNavigationPaneColumnConstraints(isOpen: true);
+        SetPaneWidth(paneWidth);
+        RefreshWorkAreaLayout();
+    }
+
+    private void NavigationPaneSplitter_DragStarted(object sender, DragStartedEventArgs e)
+    {
+        navigationPaneDragStartWidth = CoerceOpenPaneWidth(
+            GetNavigationPaneColumn().ActualWidth
+        );
+    }
+
+    private void RefreshWorkAreaLayout()
+    {
+        WorkAreaGrid.InvalidateMeasure();
+        WorkAreaGrid.InvalidateArrange();
+        WorkAreaGrid.UpdateLayout();
     }
 
     private void ApplyNavigationPaneChrome(bool isOpen)

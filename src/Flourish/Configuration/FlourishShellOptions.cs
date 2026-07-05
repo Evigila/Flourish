@@ -91,6 +91,10 @@ internal sealed class FlourishShellOptions
 
     public double ClosedPaneWidth { get; set; } = 48;
 
+    public double NavigationPaneMinWidth { get; set; } = 160;
+
+    public double NavigationPaneMaxWidth { get; set; } = 420;
+
     public string? InitialNavigationKey { get; set; }
 
     public Type? InitialNavigationPageType { get; set; }
