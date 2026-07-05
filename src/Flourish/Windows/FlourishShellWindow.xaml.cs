@@ -31,6 +31,12 @@ internal partial class FlourishShellWindow : Window
         StringComparer.Ordinal
     );
     private readonly Dictionary<Type, FlourishNavigationItem> navigationItemsByPage = [];
+    private readonly Dictionary<NavigationTreeKey, FlourishNavigationItem> navigationParentsByKey =
+        [];
+    private readonly Dictionary<
+        NavigationTreeKey,
+        List<FlourishNavigationItem>
+    > navigationChildrenByParentKey = [];
     private readonly Dictionary<Type, IReadOnlyList<Button>> toolbarButtonsByPageType = [];
     private IReadOnlyList<Button>? defaultToolbarButtons;
     private FlourishNavigationItem? firstNavigationItem;
@@ -40,9 +46,12 @@ internal partial class FlourishShellWindow : Window
     private FontFamily iconFontFamily = null!;
     private Type? activeToolbarPageType;
     private FlourishNavigationItem? selectedNavigationItem;
+    private FlourishNavigationItem? activeChildParentItem;
     private bool isDefaultToolbarActive;
     private bool isPaneOpen = true;
     private bool suppressNavigationSelection;
+
+    private readonly record struct NavigationTreeKey(bool IsFixed, int GroupId, int RelationshipId);
 
     public FlourishShellWindow(
         INavigationService navigationService,
@@ -358,6 +367,9 @@ internal partial class FlourishShellWindow : Window
     {
         navigationItemsByKey.Clear();
         navigationItemsByPage.Clear();
+        navigationParentsByKey.Clear();
+        navigationChildrenByParentKey.Clear();
+        activeChildParentItem = null;
         firstNavigationItem = null;
 
         foreach (var item in options.NavigationItems.Concat(options.FixedNavigationItems))
@@ -373,6 +385,8 @@ internal partial class FlourishShellWindow : Window
                 navigationItemsByKey[item.Key] = item;
             }
 
+            IndexNavigationTreeItem(item);
+
             if (item.PageType is not null)
             {
                 firstNavigationItem ??= item;
@@ -386,6 +400,28 @@ internal partial class FlourishShellWindow : Window
         FixedNavigationItemsHost.ItemsSource = options.FixedNavigationItems;
         FixedNavigationItemsBorder.Visibility =
             options.FixedNavigationItems.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void IndexNavigationTreeItem(FlourishNavigationItem item)
+    {
+        if (item.ParentId != 0)
+        {
+            navigationParentsByKey[CreateNavigationTreeKey(item, item.ParentId)] = item;
+        }
+
+        if (item.ChildId == 0)
+        {
+            return;
+        }
+
+        var childKey = CreateNavigationTreeKey(item, item.ChildId);
+        if (!navigationChildrenByParentKey.TryGetValue(childKey, out var children))
+        {
+            children = [];
+            navigationChildrenByParentKey[childKey] = children;
+        }
+
+        children.Add(item);
     }
 
     private void BuildStatusItems()
@@ -712,25 +748,30 @@ internal partial class FlourishShellWindow : Window
         FlourishNavigationItem parent
     )
     {
-        return GetNavigationScopeItems(parent)
-            .Where(item => item.GroupId == parent.GroupId && item.ChildId == parent.ParentId);
+        return parent.ParentId != 0
+            && navigationChildrenByParentKey.TryGetValue(
+                CreateNavigationTreeKey(parent, parent.ParentId),
+                out var children
+            )
+            ? children
+            : [];
     }
 
     private FlourishNavigationItem? FindParentNavigationItem(FlourishNavigationItem child)
     {
         return child.ChildId == 0
             ? null
-            : GetNavigationScopeItems(child)
-                .FirstOrDefault(item =>
-                    item.GroupId == child.GroupId && item.ParentId == child.ChildId
-                );
+            : navigationParentsByKey.GetValueOrDefault(
+                CreateNavigationTreeKey(child, child.ChildId)
+            );
     }
 
-    private IReadOnlyList<FlourishNavigationItem> GetNavigationScopeItems(
-        FlourishNavigationItem item
+    private static NavigationTreeKey CreateNavigationTreeKey(
+        FlourishNavigationItem item,
+        int relationshipId
     )
     {
-        return item.IsFixed ? options.FixedNavigationItems : options.NavigationItems;
+        return new NavigationTreeKey(item.IsFixed, item.GroupId, relationshipId);
     }
 
     private bool IsBreadcrumbFeatureEnabled()
@@ -881,21 +922,24 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateActiveChildParent(FlourishNavigationItem activeItem)
     {
-        foreach (var item in options.NavigationItems.Concat(options.FixedNavigationItems))
-        {
-            item.IsActiveChildParent = false;
-        }
+        var parent = activeItem.IsPageItem && activeItem.ChildId != 0
+            ? FindParentNavigationItem(activeItem)
+            : null;
 
-        if (!activeItem.IsPageItem || activeItem.ChildId == 0)
+        if (activeChildParentItem == parent)
         {
             return;
         }
 
-        var parent = FindParentNavigationItem(activeItem);
-
-        if (parent is not null)
+        if (activeChildParentItem is not null)
         {
-            parent.IsActiveChildParent = true;
+            activeChildParentItem.IsActiveChildParent = false;
+        }
+
+        activeChildParentItem = parent;
+        if (activeChildParentItem is not null)
+        {
+            activeChildParentItem.IsActiveChildParent = true;
         }
     }
 
