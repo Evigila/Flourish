@@ -98,6 +98,18 @@ public interface IFlourishTitlebarBuilder
     IFlourishTitlebarBuilder ShowProfile(bool enabled = true);
 
     /// <summary>
+    /// Shows or hides the title bar theme toggle.
+    /// </summary>
+    /// <param name="enabled">A value indicating whether the theme toggle should be shown.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// titlebar.ShowThemeToggle();
+    /// ]]></code>
+    /// </example>
+    IFlourishTitlebarBuilder ShowThemeToggle(bool enabled = true);
+
+    /// <summary>
     /// Sets whether closing the title bar should exit through the tray flow.
     /// </summary>
     /// <param name="enabled">A value indicating whether tray exit behavior should be enabled.</param>

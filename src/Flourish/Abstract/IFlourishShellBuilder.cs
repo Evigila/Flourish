@@ -102,6 +102,18 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect = MaterialEffect.Mica);
 
     /// <summary>
+    /// Enables Flourish theme support.
+    /// </summary>
+    /// <param name="defaultTheme">The theme used when no user preference has been saved.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// shell.UseThemes(FlourishTheme.System);
+    /// ]]></code>
+    /// </example>
+    IFlourishShellBuilder UseThemes(FlourishTheme defaultTheme = FlourishTheme.System);
+
+    /// <summary>
     /// Enables or disables the dynamic toolbar surface.
     /// </summary>
     /// <param name="enabled">A value indicating whether the dynamic toolbar should be enabled.</param>

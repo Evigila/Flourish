@@ -10,7 +10,7 @@
   MinWidth="820"
   MinHeight="560"
   x:ClassModifier="internal"
-  Background="{StaticResource AppBackgroundBrush}"
+  Background="{DynamicResource AppBackgroundBrush}"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d"
 >
@@ -54,7 +54,7 @@
           x:Name="NavigationGroupHeader"
           FontSize="{DynamicResource FlourishFontSizeSmall}"
           FontWeight="Normal"
-          Foreground="{StaticResource MutedTextBrush}"
+          Foreground="{DynamicResource MutedTextBrush}"
           Opacity="0.72"
           Text="{Binding Label}"
           Visibility="Collapsed"
@@ -106,7 +106,7 @@
           <Setter
             TargetName="NavigationItemLabel"
             Property="Foreground"
-            Value="{StaticResource AccentBrush}"
+            Value="{DynamicResource AccentBrush}"
           />
         </DataTrigger>
         <DataTrigger
@@ -124,7 +124,7 @@
 
   <Border
     x:Name="ShellBorder"
-    BorderBrush="{StaticResource CardBorderBrush}"
+    BorderBrush="{DynamicResource CardBorderBrush}"
     BorderThickness="1"
   >
     <Grid>
@@ -157,7 +157,7 @@
             x:Name="NavigationPaneBorder"
             Grid.Column="0"
             Background="Transparent"
-            BorderBrush="{StaticResource CardBorderBrush}"
+            BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="0,0,1,0"
           >
             <Grid>
@@ -191,7 +191,7 @@
                 x:Name="FixedNavigationItemsBorder"
                 Grid.Row="1"
                 Padding="0,6,0,6"
-                BorderBrush="{StaticResource CardBorderBrush}"
+                BorderBrush="{DynamicResource CardBorderBrush}"
                 BorderThickness="0,1,0,0"
                 Visibility="Collapsed"
               >
@@ -224,8 +224,8 @@
               Grid.Row="0"
               Margin="8,0,8,4"
               Padding="2"
-              Background="{StaticResource CardBackgroundBrush}"
-              BorderBrush="{StaticResource CardBorderBrush}"
+              Background="{DynamicResource CardBackgroundBrush}"
+              BorderBrush="{DynamicResource CardBorderBrush}"
               BorderThickness="1"
               CornerRadius="6"
             >
@@ -243,7 +243,7 @@
                 x:Name="BreadcrumbText"
                 VerticalAlignment="Center"
                 FontSize="{DynamicResource FlourishFontSizeCaption}"
-                Foreground="{StaticResource MutedTextBrush}"
+                Foreground="{DynamicResource MutedTextBrush}"
               />
             </Border>
 
@@ -271,8 +271,8 @@
         x:Name="StatusBarBorder"
         Grid.Row="2"
         Padding="10,4"
-        Background="{StaticResource CardSecondaryBackgroundBrush}"
-        BorderBrush="{StaticResource CardBorderBrush}"
+        Background="{DynamicResource CardSecondaryBackgroundBrush}"
+        BorderBrush="{DynamicResource CardBorderBrush}"
         BorderThickness="0,1,0,0"
       >
         <Grid>
@@ -285,7 +285,7 @@
             x:Name="StatusTextBlock"
             VerticalAlignment="Center"
             FontSize="{DynamicResource FlourishFontSizeCaption}"
-            Foreground="{StaticResource MutedTextBrush}"
+            Foreground="{DynamicResource MutedTextBrush}"
           />
 
           <StackPanel

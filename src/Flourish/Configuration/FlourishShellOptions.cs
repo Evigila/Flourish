@@ -51,6 +51,10 @@ internal sealed class FlourishShellOptions
 
     public MaterialEffect MaterialEffect { get; set; }
 
+    public bool IsThemeEnabled { get; set; }
+
+    public FlourishTheme DefaultTheme { get; set; } = FlourishTheme.System;
+
     public FlourishMotionOptions Motion { get; } = new();
 
     public FlourishTipOptions Tips { get; } = new();
@@ -80,6 +84,8 @@ internal sealed class FlourishShellOptions
     public bool IsTitlebarSubtitleEnabled { get; set; }
 
     public bool IsTitlebarProfileEnabled { get; set; }
+
+    public bool IsTitlebarThemeToggleEnabled { get; set; }
 
     public bool IsDynamicToolbarEnabled { get; set; }
 

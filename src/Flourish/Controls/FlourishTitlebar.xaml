@@ -18,6 +18,7 @@
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
 
     <StackPanel
@@ -90,7 +91,7 @@
         x:Name="LogoHost"
         Width="26"
         Height="26"
-        Background="{StaticResource AccentSoftBrush}"
+        Background="{DynamicResource AccentSoftBrush}"
         ClipToBounds="True"
         CornerRadius="6"
       >
@@ -102,7 +103,7 @@
             VerticalAlignment="Center"
             FontSize="{DynamicResource FlourishFontSizeTitle}"
             FontWeight="SemiBold"
-            Foreground="{StaticResource AccentBrush}"
+            Foreground="{DynamicResource AccentBrush}"
           />
         </Grid>
       </Border>
@@ -117,14 +118,14 @@
           VerticalAlignment="Center"
           FontSize="{DynamicResource FlourishFontSizeTitle}"
           FontWeight="SemiBold"
-          Foreground="{StaticResource PrimaryTextBrush}"
+          Foreground="{DynamicResource PrimaryTextBrush}"
         />
         <TextBlock
           x:Name="SubtitleText"
           Margin="8,1,0,0"
           VerticalAlignment="Center"
           FontSize="{DynamicResource FlourishFontSizeSmall}"
-          Foreground="{StaticResource MutedTextBrush}"
+          Foreground="{DynamicResource MutedTextBrush}"
         />
       </StackPanel>
     </StackPanel>
@@ -143,8 +144,8 @@
       Margin="8,0,10,0"
       Padding="10,0"
       VerticalAlignment="Center"
-      Background="White"
-      BorderBrush="{StaticResource CardBorderBrush}"
+      Background="{DynamicResource FlourishSearchBackgroundBrush}"
+      BorderBrush="{DynamicResource CardBorderBrush}"
       BorderThickness="1"
       CornerRadius="8"
     >
@@ -157,7 +158,7 @@
           VerticalAlignment="Center"
           FontFamily="{DynamicResource FlourishIconFontFamily}"
           FontSize="{DynamicResource FlourishFontSizeTitlebarIcon}"
-          Foreground="{StaticResource MutedTextBrush}"
+          Foreground="{DynamicResource MutedTextBrush}"
           Text="&#xE721;"
         />
         <TextBox
@@ -172,7 +173,7 @@
           BorderThickness="0"
           FontFamily="{DynamicResource FlourishFontFamily}"
           FontSize="{DynamicResource FlourishFontSizeCaption}"
-          Foreground="{StaticResource PrimaryTextBrush}"
+          Foreground="{DynamicResource PrimaryTextBrush}"
           GotKeyboardFocus="SearchBox_GotKeyboardFocus"
           LostKeyboardFocus="SearchBox_LostKeyboardFocus"
           TextChanged="SearchBox_TextChanged"
@@ -184,20 +185,38 @@
           VerticalAlignment="Center"
           FontFamily="{DynamicResource FlourishFontFamily}"
           FontSize="{DynamicResource FlourishFontSizeCaption}"
-          Foreground="{StaticResource MutedTextBrush}"
+          Foreground="{DynamicResource MutedTextBrush}"
           IsHitTestVisible="False"
         />
       </Grid>
     </Border>
 
+    <Button
+      x:Name="ThemeToggleButton"
+      Grid.Column="5"
+      Width="38"
+      Height="32"
+      Margin="0,4,6,4"
+      Click="ThemeToggleButton_Click"
+      Style="{StaticResource FlourishIconButtonStyle}"
+      ToolTip="Theme"
+    >
+      <TextBlock
+        x:Name="ThemeToggleButtonIcon"
+        FontFamily="{DynamicResource FlourishIconFontFamily}"
+        FontSize="{DynamicResource FlourishFontSizeTitlebarIcon}"
+        Text="&#xE706;"
+      />
+    </Button>
+
     <Border
       x:Name="ProfileHost"
-      Grid.Column="5"
+      Grid.Column="6"
       Width="26"
       Height="26"
       Margin="0,0,10,0"
       VerticalAlignment="Center"
-      Background="#E0F2FE"
+      Background="{DynamicResource FlourishProfileBackgroundBrush}"
       CornerRadius="13"
     >
       <TextBlock
@@ -205,13 +224,13 @@
         VerticalAlignment="Center"
         FontSize="{DynamicResource FlourishFontSizeCaption}"
         FontWeight="SemiBold"
-        Foreground="#0369A1"
+        Foreground="{DynamicResource FlourishProfileForegroundBrush}"
         Text="JD"
       />
     </Border>
 
     <Button
-      Grid.Column="6"
+      Grid.Column="7"
       Click="MinimizeButton_Click"
       Style="{StaticResource FlourishWindowCaptionButtonStyle}"
       ToolTip="Minimize"
@@ -225,7 +244,7 @@
 
     <Button
       x:Name="MaximizeButton"
-      Grid.Column="7"
+      Grid.Column="8"
       Click="MaximizeButton_Click"
       Style="{StaticResource FlourishWindowCaptionButtonStyle}"
       ToolTip="Maximize"
@@ -239,7 +258,7 @@
     </Button>
 
     <Button
-      Grid.Column="8"
+      Grid.Column="9"
       Click="CloseButton_Click"
       Style="{StaticResource FlourishWindowCaptionCloseButtonStyle}"
       ToolTip="Close"

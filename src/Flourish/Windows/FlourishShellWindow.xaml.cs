@@ -27,6 +27,7 @@ internal partial class FlourishShellWindow : Window
     private readonly CommandParser commandParser;
     private readonly FontService fontService;
     private readonly MaterialEffectService materialEffectService;
+    private readonly ThemeService themeService;
     private readonly FlourishMotionService motionService;
     private readonly WindowFrameFixService windowFrameFixService;
     private readonly FlourishShellOptions options;
@@ -67,11 +68,13 @@ internal partial class FlourishShellWindow : Window
         CommandParser commandParser,
         FontService fontService,
         MaterialEffectService materialEffectService,
+        ThemeService themeService,
         FlourishMotionService motionService,
         WindowFrameFixService windowFrameFixService,
         FlourishShellOptions options
     )
     {
+        themeService.Initialize(System.Windows.Application.Current);
         InitializeComponent();
 
         this.navigationService = navigationService;
@@ -83,6 +86,7 @@ internal partial class FlourishShellWindow : Window
         this.commandParser = commandParser;
         this.fontService = fontService;
         this.materialEffectService = materialEffectService;
+        this.themeService = themeService;
         this.motionService = motionService;
         this.windowFrameFixService = windowFrameFixService;
         this.options = options;
@@ -95,8 +99,10 @@ internal partial class FlourishShellWindow : Window
         BuildStatusItems();
         AttachTitlebarEvents();
 
+        themeService.ThemeChanged += ThemeService_ThemeChanged;
         StateChanged += MainWindow_StateChanged;
         Closing += ShellWindow_Closing;
+        Closed += ShellWindow_Closed;
         frameNavigationService.Initialize(RootFrame);
         navigationService.Navigated += RootFrame_Navigated;
 
@@ -126,6 +132,7 @@ internal partial class FlourishShellWindow : Window
             options.IsTitlebarLogoEnabled,
             options.IsTitlebarTitleEnabled,
             options.IsTitlebarSubtitleEnabled,
+            options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
             options.IsTitlebarProfileEnabled
         );
         StatusBarBorder.Visibility = options.IsStatusBarEnabled
@@ -148,6 +155,8 @@ internal partial class FlourishShellWindow : Window
         ApplyNavigationPaneState();
         windowFrameFixService.Attach(this);
         materialEffectService.Attach(this, options.MaterialEffect);
+        themeService.Attach(this);
+        ApplyThemeState();
         trayIconService.Initialize(this, options.Title);
     }
 
@@ -234,6 +243,7 @@ internal partial class FlourishShellWindow : Window
         Titlebar.CloseRequested += Titlebar_CloseRequested;
         Titlebar.DragRequested += Titlebar_DragRequested;
         Titlebar.ToggleWindowStateRequested += Titlebar_ToggleWindowStateRequested;
+        Titlebar.ThemeToggleRequested += Titlebar_ThemeToggleRequested;
     }
 
     private void ApplyNavigationPanelPlacement()
@@ -1007,6 +1017,22 @@ internal partial class FlourishShellWindow : Window
         Close();
     }
 
+    private void Titlebar_ThemeToggleRequested(object? sender, EventArgs e)
+    {
+        themeService.ToggleTheme();
+    }
+
+    private void ThemeService_ThemeChanged(object? sender, FlourishThemeChangedEventArgs e)
+    {
+        ApplyThemeState();
+    }
+
+    private void ApplyThemeState()
+    {
+        materialEffectService.SetDarkMode(this, themeService.IsDark);
+        Titlebar.SetThemeToggleState(themeService.CurrentTheme, themeService.EffectiveTheme);
+    }
+
     private bool ConfirmCloseRequest()
     {
         return messageService.Show(
@@ -1027,6 +1053,12 @@ internal partial class FlourishShellWindow : Window
         }
 
         e.Cancel = trayIconService.MinimizeToTray();
+    }
+
+    private void ShellWindow_Closed(object? sender, EventArgs e)
+    {
+        themeService.ThemeChanged -= ThemeService_ThemeChanged;
+        themeService.Detach(this);
     }
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
