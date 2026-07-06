@@ -9,6 +9,8 @@ namespace AcksheedSys.Flourish.Composition;
 
 internal sealed class FlourishCompositionRoot(
     FlourishShellOptions shellOptions,
+    FlourishDataOptions dataOptions,
+    IReadOnlyList<Action<HostBuilderContext, IFlourishDataBuilder>> dataConfigurations,
     IReadOnlyList<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations,
     IReadOnlyList<Action<HostBuilderContext, IFlourishShellBuilder>> shellConfigurations,
     IReadOnlyList<Action<HostBuilderContext, IFlourishDynamicToolbarBuilder>> toolbarConfigurations,
@@ -16,6 +18,10 @@ internal sealed class FlourishCompositionRoot(
 )
 {
     private readonly FlourishShellOptions shellOptions = shellOptions;
+    private readonly FlourishDataOptions dataOptions = dataOptions;
+    private readonly IReadOnlyList<
+        Action<HostBuilderContext, IFlourishDataBuilder>
+    > dataConfigurations = dataConfigurations;
     private readonly IReadOnlyList<
         Action<HostBuilderContext, IServiceCollection>
     > serviceConfigurations = serviceConfigurations;
@@ -37,6 +43,7 @@ internal sealed class FlourishCompositionRoot(
         }
 
         ApplyFlourishConfigurations(context);
+        ValidateDataConfiguration();
         ApplyServiceCollectionRegistrations(services);
         RegisterCoreServices(services);
     }
@@ -60,6 +67,23 @@ internal sealed class FlourishCompositionRoot(
         {
             configureStatus(context, statusBuilder);
         }
+
+        var dataBuilder = new FlourishDataBuilder(dataOptions);
+        foreach (var configureData in dataConfigurations)
+        {
+            configureData(context, dataBuilder);
+        }
+    }
+
+    private void ValidateDataConfiguration()
+    {
+        if (!shellOptions.IsThemeEnabled && !dataOptions.HasConfiguration)
+        {
+            return;
+        }
+
+        dataOptions.GetRequiredAppName(shellOptions);
+        dataOptions.GetRequiredCompanyName();
     }
 
     private void ApplyServiceCollectionRegistrations(IServiceCollection services)
@@ -321,6 +345,7 @@ internal sealed class FlourishCompositionRoot(
     private void RegisterCoreServices(IServiceCollection services)
     {
         services.AddSingleton(shellOptions);
+        services.AddSingleton(dataOptions);
         services.AddSingleton<FlourishShellWindow>();
         services.AddSingleton<FlourishToolbarService>();
         services.AddSingleton<FlourishStatusService>();
@@ -329,6 +354,8 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<FontService>();
         services.AddSingleton<CommandParser>();
         services.AddSingleton<MaterialEffectService>();
+        services.AddSingleton<AppPreferenceService>();
+        services.AddSingleton<ThemeService>();
         services.AddSingleton<FlourishMotionService>();
         services.AddSingleton<WindowFrameFixService>();
         services.AddSingleton<PageHistoryService>();

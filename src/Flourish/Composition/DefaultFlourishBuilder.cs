@@ -9,6 +9,9 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
 {
     private readonly IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
     private readonly FlourishShellOptions shellOptions = new();
+    private readonly FlourishDataOptions dataOptions = new();
+    private readonly List<Action<HostBuilderContext, IFlourishDataBuilder>> dataConfigurations =
+    [];
     private readonly List<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations =
     [];
     private readonly List<Action<HostBuilderContext, IFlourishShellBuilder>> shellConfigurations =
@@ -19,6 +22,14 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     private readonly List<
         Action<HostBuilderContext, IFlourishStatusBuilder>
     > statusConfigurations = [];
+
+    public IFlourishBuilder ConfigureData(
+        Action<HostBuilderContext, IFlourishDataBuilder> configureData
+    )
+    {
+        dataConfigurations.Add(configureData);
+        return this;
+    }
 
     public IFlourishBuilder ConfigureServices(
         Action<HostBuilderContext, IServiceCollection> configureServices
@@ -56,6 +67,8 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     {
         var compositionRoot = new FlourishCompositionRoot(
             shellOptions,
+            dataOptions,
+            dataConfigurations,
             serviceConfigurations,
             shellConfigurations,
             toolbarConfigurations,

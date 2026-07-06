@@ -49,6 +49,12 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
         return this;
     }
 
+    public IFlourishTitlebarBuilder ShowThemeToggle(bool enabled = true)
+    {
+        options.IsTitlebarThemeToggleEnabled = enabled;
+        return this;
+    }
+
     public IFlourishTitlebarBuilder SetTrayExit(bool enabled = false)
     {
         options.IsTrayExitEnabled = enabled;
@@ -57,7 +63,7 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
 
     public IFlourishTitlebarBuilder SetTitle(string title)
     {
-        options.Title = title;
+        options.Title = ValidateNotBlank(title, nameof(title));
         return this;
     }
 
@@ -85,5 +91,15 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
     {
         options.BreadcrumbShowOption = behavior;
         return this;
+    }
+
+    private static string ValidateNotBlank(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Value cannot be empty.", parameterName);
+        }
+
+        return value;
     }
 }

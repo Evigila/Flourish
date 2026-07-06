@@ -22,6 +22,12 @@ internal static class Program
     {
         flourish = FlourishBuilder
             .CreateDefaultBuilder(args)
+            .ConfigureData(
+                (_, data) =>
+                {
+                    data.SetAppCompany("AcksheedSys").SetAppName("Flourish Gallery");
+                }
+            )
             .ConfigureServices(
                 (_, services) =>
                 {
@@ -52,6 +58,7 @@ internal static class Program
                                     .ShowTitle()
                                     .ShowSubTitle()
                                     .ShowProfile()
+                                    .ShowThemeToggle()
                                     .SetTrayExit()
                                     .SetBreadcrumbBehavior()
                                     .SetTitle("Gallery")
@@ -152,6 +159,7 @@ internal static class Program
                             }
                         )
                         .UseMaterialEffect()
+                        .UseThemes()
                         .SetGlobalFont("Microsoft YaHei")
                         .SetWindowProperty(
                             (_, window) =>

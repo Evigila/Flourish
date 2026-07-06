@@ -17,6 +17,21 @@ namespace AcksheedSys.Flourish.Abstract;
 public interface IFlourishBuilder
 {
     /// <summary>
+    /// Configures application-level data and preference storage.
+    /// </summary>
+    /// <param name="configureData">A callback that receives the host context and data builder.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// builder.ConfigureData((_, data) =>
+    /// {
+    ///     data.SetAppCompany("Acksheed").SetAppName("Gallery");
+    /// });
+    /// ]]></code>
+    /// </example>
+    IFlourishBuilder ConfigureData(Action<HostBuilderContext, IFlourishDataBuilder> configureData);
+
+    /// <summary>
     /// Adds service registrations to the underlying .NET host builder.
     /// </summary>
     /// <param name="configureServices">A callback that receives the host context and service collection.</param>

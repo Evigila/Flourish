@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AcksheedSys.Flourish.Abstract;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -34,6 +35,8 @@ internal partial class FlourishTitlebar : UserControl
     public event EventHandler? DragRequested;
 
     public event EventHandler? ToggleWindowStateRequested;
+
+    public event EventHandler? ThemeToggleRequested;
 
     public void SetTitle(string title)
     {
@@ -90,6 +93,21 @@ internal partial class FlourishTitlebar : UserControl
         MaximizeButtonIcon.Text = isMaximized ? "\uE923" : "\uE922";
     }
 
+    public void SetThemeToggleState(FlourishTheme requestedTheme, FlourishTheme effectiveTheme)
+    {
+        ThemeToggleButtonIcon.Text = requestedTheme switch
+        {
+            FlourishTheme.System => "\uE713",
+            FlourishTheme.Dark => "\uE708",
+            _ => "\uE706",
+        };
+
+        var effectiveThemeText = effectiveTheme == FlourishTheme.Dark ? "Dark" : "Light";
+        ThemeToggleButton.ToolTip = requestedTheme == FlourishTheme.System
+            ? $"Theme: System ({effectiveThemeText})"
+            : $"Theme: {effectiveThemeText}";
+    }
+
     public void ConfigureVisibility(
         bool enableSearch,
         bool enableBreadcrumb,
@@ -97,6 +115,7 @@ internal partial class FlourishTitlebar : UserControl
         bool enableLogo,
         bool enableTitle,
         bool enableSubTitle,
+        bool enableThemeToggle,
         bool enableProfile
     )
     {
@@ -110,6 +129,7 @@ internal partial class FlourishTitlebar : UserControl
         TitleTextHost.Visibility = ToVisibility(enableTitle || enableSubTitle);
         BrandHost.Visibility = ToVisibility(enableLogo || enableTitle || enableSubTitle);
         SearchBoxHost.Visibility = ToVisibility(enableSearch);
+        ThemeToggleButton.Visibility = ToVisibility(enableThemeToggle);
         ProfileHost.Visibility = ToVisibility(enableProfile);
     }
 
@@ -141,6 +161,11 @@ internal partial class FlourishTitlebar : UserControl
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
         CloseRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
+    {
+        ThemeToggleRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

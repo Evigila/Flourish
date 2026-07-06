@@ -24,9 +24,6 @@
   <Window.Resources>
     <sys:Boolean x:Key="FlourishHoverRevealEnabled">True</sys:Boolean>
     <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">800</sys:Int32>
-    <SolidColorBrush x:Key="FlourishMessageBoxSurfaceBrush" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="FlourishMessageBoxSecondarySurfaceBrush" Color="#F4F7FB" />
-
     <Style x:Key="FlourishMessageBoxButtonStyle" TargetType="{x:Type Button}">
       <Setter Property="MinWidth" Value="82" />
       <Setter Property="Height" Value="32" />
@@ -115,12 +112,28 @@
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Chrome" Property="Background" Value="#1D4ED8" />
-                <Setter TargetName="Chrome" Property="BorderBrush" Value="#1D4ED8" />
+                <Setter
+                  TargetName="Chrome"
+                  Property="Background"
+                  Value="{DynamicResource FlourishPrimaryButtonHoverBrush}"
+                />
+                <Setter
+                  TargetName="Chrome"
+                  Property="BorderBrush"
+                  Value="{DynamicResource FlourishPrimaryButtonHoverBrush}"
+                />
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="Chrome" Property="Background" Value="#1E40AF" />
-                <Setter TargetName="Chrome" Property="BorderBrush" Value="#1E40AF" />
+                <Setter
+                  TargetName="Chrome"
+                  Property="Background"
+                  Value="{DynamicResource FlourishPrimaryButtonPressedBrush}"
+                />
+                <Setter
+                  TargetName="Chrome"
+                  Property="BorderBrush"
+                  Value="{DynamicResource FlourishPrimaryButtonPressedBrush}"
+                />
               </Trigger>
               <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.35" />

@@ -12,12 +12,15 @@ namespace AcksheedSys.Flourish.Services;
 internal sealed class MaterialEffectService
 {
     private const int Succeeded = 0;
+    private const int DwmwaUseImmersiveDarkMode = 20;
     private const int DwmwaSystemBackdropType = 38;
     private const int DwmsbtMainWindow = 2;
 
     public MaterialEffect CurrentEffect { get; private set; }
 
     public bool IsApplied { get; private set; }
+
+    public bool IsDarkMode { get; private set; }
 
     public void Attach(Window window, MaterialEffect effect)
     {
@@ -79,11 +82,57 @@ internal sealed class MaterialEffectService
                 ref backdropType,
                 Marshal.SizeOf<int>()
             ) == Succeeded;
+
+        ApplyDarkMode(hwnd, IsDarkMode);
+    }
+
+    public void SetDarkMode(Window window, bool isDarkMode)
+    {
+        IsDarkMode = isDarkMode;
+        if (!IsImmersiveDarkModeSupported())
+        {
+            return;
+        }
+
+        if (new WindowInteropHelper(window).Handle != IntPtr.Zero)
+        {
+            ApplyDarkMode(new WindowInteropHelper(window).Handle, isDarkMode);
+            return;
+        }
+
+        window.SourceInitialized += Window_SourceInitialized;
+
+        void Window_SourceInitialized(object? sender, EventArgs e)
+        {
+            window.SourceInitialized -= Window_SourceInitialized;
+            ApplyDarkMode(new WindowInteropHelper(window).Handle, isDarkMode);
+        }
+    }
+
+    private static void ApplyDarkMode(IntPtr hwnd, bool isDarkMode)
+    {
+        if (hwnd == IntPtr.Zero || !IsImmersiveDarkModeSupported())
+        {
+            return;
+        }
+
+        var darkMode = isDarkMode ? 1 : 0;
+        DwmSetWindowAttribute(
+            hwnd,
+            DwmwaUseImmersiveDarkMode,
+            ref darkMode,
+            Marshal.SizeOf<int>()
+        );
     }
 
     private static bool IsSystemBackdropSupported()
     {
         return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621);
+    }
+
+    private static bool IsImmersiveDarkModeSupported()
+    {
+        return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000);
     }
 
     [DllImport("dwmapi.dll", PreserveSig = true)]

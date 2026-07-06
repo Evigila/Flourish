@@ -47,6 +47,14 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options, HostBui
         return this;
     }
 
+    public IFlourishShellBuilder UseThemes(FlourishTheme defaultTheme = FlourishTheme.System)
+    {
+        ValidateTheme(defaultTheme, nameof(defaultTheme));
+        options.IsThemeEnabled = true;
+        options.DefaultTheme = defaultTheme;
+        return this;
+    }
+
     public IFlourishShellBuilder UseDynamicToolbar(bool enabled = true)
     {
         options.IsDynamicToolbarEnabled = enabled;
@@ -97,6 +105,14 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options, HostBui
         }
 
         return value;
+    }
+
+    private static void ValidateTheme(FlourishTheme theme, string parameterName)
+    {
+        if (!Enum.IsDefined(theme))
+        {
+            throw new ArgumentOutOfRangeException(parameterName, theme, "Unknown theme.");
+        }
     }
 
     private static void ValidateFinite(double value, string parameterName)
