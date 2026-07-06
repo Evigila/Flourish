@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using AcksheedSys.Flourish.Abstract;
 using Brush = System.Windows.Media.Brush;
 using Button = System.Windows.Controls.Button;
 using Color = System.Windows.Media.Color;
@@ -15,8 +16,8 @@ namespace AcksheedSys.Flourish.Windows;
 
 internal partial class FlourishMessageBoxWindow : Window
 {
-    private readonly MessageBoxButton buttons;
-    private MessageBoxResult result = MessageBoxResult.None;
+    private readonly object? closeSelection;
+    private object? selection;
 
     public FlourishMessageBoxWindow(
         string messageBoxText,
@@ -29,7 +30,59 @@ internal partial class FlourishMessageBoxWindow : Window
     {
         InitializeComponent();
 
-        this.buttons = buttons;
+        closeSelection = GetCloseResult(buttons);
+        ConfigureDialog(messageBoxText, caption, options);
+        ConfigureIcon(icon);
+        ConfigureButtons(CreateStandardButtons(buttons, defaultResult));
+    }
+
+    public FlourishMessageBoxWindow(
+        string messageBoxText,
+        string caption,
+        IReadOnlyList<FlourishMessageOption> choices,
+        MessageBoxImage icon,
+        MessageBoxOptions options
+    )
+    {
+        InitializeComponent();
+
+        closeSelection = choices.FirstOrDefault(choice => choice.IsCancel);
+        ConfigureDialog(messageBoxText, caption, options);
+        ConfigureIcon(icon);
+        ConfigureButtons(CreateCustomButtons(choices));
+    }
+
+    public MessageBoxResult Result =>
+        selection is MessageBoxResult result ? result : MessageBoxResult.None;
+
+    public FlourishMessageOption? SelectedOption => selection as FlourishMessageOption;
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        selection ??= closeSelection;
+
+        base.OnClosing(e);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
+        {
+            selection = closeSelection;
+            DialogResult = false;
+            e.Handled = true;
+            return;
+        }
+
+        base.OnKeyDown(e);
+    }
+
+    private void ConfigureDialog(
+        string messageBoxText,
+        string caption,
+        MessageBoxOptions options
+    )
+    {
         Title = caption;
         CaptionText.Text = caption;
         CaptionText.Visibility = string.IsNullOrWhiteSpace(caption)
@@ -42,41 +95,6 @@ internal partial class FlourishMessageBoxWindow : Window
         FlowDirection = options.HasFlag(MessageBoxOptions.RtlReading)
             ? WpfFlowDirection.RightToLeft
             : WpfFlowDirection.LeftToRight;
-
-        ConfigureIcon(icon);
-        ConfigureButtons(defaultResult);
-        CloseButton.IsEnabled = CanClose(buttons);
-    }
-
-    public MessageBoxResult Result => result;
-
-    protected override void OnClosing(CancelEventArgs e)
-    {
-        if (result == MessageBoxResult.None)
-        {
-            if (!CanClose(buttons))
-            {
-                e.Cancel = true;
-                return;
-            }
-
-            result = GetCloseResult(buttons);
-        }
-
-        base.OnClosing(e);
-    }
-
-    protected override void OnKeyDown(KeyEventArgs e)
-    {
-        if (e.Key == Key.Escape && CanClose(buttons))
-        {
-            result = GetCloseResult(buttons);
-            DialogResult = false;
-            e.Handled = true;
-            return;
-        }
-
-        base.OnKeyDown(e);
     }
 
     private void ConfigureIcon(MessageBoxImage icon)
@@ -94,28 +112,25 @@ internal partial class FlourishMessageBoxWindow : Window
         IconText.Foreground = foreground;
     }
 
-    private void ConfigureButtons(MessageBoxResult defaultResult)
+    private void ConfigureButtons(IReadOnlyList<MessageDialogButton> buttonDefinitions)
     {
-        var buttonResults = GetButtonResults(buttons);
-        var effectiveDefaultResult = GetEffectiveDefaultResult(buttons, defaultResult);
-
-        foreach (var buttonResult in buttonResults)
+        foreach (var buttonDefinition in buttonDefinitions)
         {
             var button = new Button
             {
-                Content = GetButtonText(buttonResult),
-                IsDefault = buttonResult == effectiveDefaultResult,
-                IsCancel = IsCancelResult(buttons, buttonResult),
+                Content = buttonDefinition.Text,
+                IsDefault = buttonDefinition.IsDefault,
+                IsCancel = buttonDefinition.IsCancel,
                 Margin =
                     ButtonsHost.Children.Count > 0
                         ? new Thickness(8, 0, 0, 0)
                         : new Thickness(),
                 Style = (Style)FindResource(
-                    buttonResult == effectiveDefaultResult
+                    buttonDefinition.IsPrimary
                         ? "FlourishMessageBoxPrimaryButtonStyle"
                         : "FlourishMessageBoxButtonStyle"
                 ),
-                Tag = buttonResult,
+                Tag = buttonDefinition.Selection,
             };
             button.Click += ResultButton_Click;
             ButtonsHost.Children.Add(button);
@@ -124,16 +139,16 @@ internal partial class FlourishMessageBoxWindow : Window
 
     private void ResultButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: MessageBoxResult selectedResult })
+        if (sender is Button { Tag: { } selectedResult })
         {
-            result = selectedResult;
+            selection = selectedResult;
             DialogResult = true;
         }
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        result = GetCloseResult(buttons);
+        selection = closeSelection;
         DialogResult = false;
     }
 
@@ -150,11 +165,11 @@ internal partial class FlourishMessageBoxWindow : Window
         return buttons switch
         {
             MessageBoxButton.OKCancel => [MessageBoxResult.OK, MessageBoxResult.Cancel],
-            MessageBoxButton.YesNo => [MessageBoxResult.Yes, MessageBoxResult.No],
+            MessageBoxButton.YesNo => [MessageBoxResult.No, MessageBoxResult.Yes],
             MessageBoxButton.YesNoCancel => [
-                MessageBoxResult.Yes,
-                MessageBoxResult.No,
                 MessageBoxResult.Cancel,
+                MessageBoxResult.No,
+                MessageBoxResult.Yes,
             ],
             _ => [MessageBoxResult.OK],
         };
@@ -171,7 +186,48 @@ internal partial class FlourishMessageBoxWindow : Window
             return defaultResult;
         }
 
-        return availableResults[0];
+        return buttons switch
+        {
+            MessageBoxButton.YesNo or MessageBoxButton.YesNoCancel => MessageBoxResult.Yes,
+            _ => availableResults[0],
+        };
+    }
+
+    private static IReadOnlyList<MessageDialogButton> CreateStandardButtons(
+        MessageBoxButton buttons,
+        MessageBoxResult defaultResult
+    )
+    {
+        var buttonResults = GetButtonResults(buttons);
+        var effectiveDefaultResult = GetEffectiveDefaultResult(buttons, defaultResult);
+
+        return buttonResults
+            .Select(buttonResult => new MessageDialogButton(
+                GetButtonText(buttonResult),
+                buttonResult,
+                buttonResult == effectiveDefaultResult,
+                IsCancelResult(buttons, buttonResult),
+                buttonResult == effectiveDefaultResult
+            ))
+            .ToArray();
+    }
+
+    private static IReadOnlyList<MessageDialogButton> CreateCustomButtons(
+        IReadOnlyList<FlourishMessageOption> choices
+    )
+    {
+        var defaultChoice = choices.FirstOrDefault(choice => choice.IsDefault) ?? choices[0];
+        var primaryChoice = choices.FirstOrDefault(choice => choice.IsPrimary) ?? defaultChoice;
+
+        return choices
+            .Select(choice => new MessageDialogButton(
+                choice.Text,
+                choice,
+                choice.Id == defaultChoice.Id,
+                choice.IsCancel,
+                choice.Id == primaryChoice.Id
+            ))
+            .ToArray();
     }
 
     private static bool IsCancelResult(MessageBoxButton buttons, MessageBoxResult result)
@@ -183,11 +239,6 @@ internal partial class FlourishMessageBoxWindow : Window
                 result == MessageBoxResult.Cancel,
             _ => false,
         };
-    }
-
-    private static bool CanClose(MessageBoxButton buttons)
-    {
-        return buttons != MessageBoxButton.YesNo;
     }
 
     private static MessageBoxResult GetCloseResult(MessageBoxButton buttons)
@@ -264,4 +315,12 @@ internal partial class FlourishMessageBoxWindow : Window
             Color.FromRgb((byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb)
         );
     }
+
+    private sealed record MessageDialogButton(
+        string Text,
+        object Selection,
+        bool IsDefault,
+        bool IsCancel,
+        bool IsPrimary
+    );
 }

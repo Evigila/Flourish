@@ -92,7 +92,7 @@ If a command item is a parent node, clicking it expands or collapses children an
 
 ## Use services inside a parser
 
-Because parsers are resolved from DI, they can depend on your own services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`.
+Because parsers are resolved from DI, they can depend on your own services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md).
 
 ```csharp
 internal sealed class GalleryCommandParser(ImageLibrary library) : ICommandParser

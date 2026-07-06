@@ -48,7 +48,7 @@ shell.UseTitlebar((_, titlebar) =>
 
 `SetBreadcrumbBehavior` 控制面包屑的显示时机。`Always` 始终显示，`Auto` 由 Flourish 根据导航状态决定，`Hidden` 则隐藏。
 
-`SetTrayExit` 控制标题栏关闭行为是否走托盘流程。普通桌面窗口通常保持关闭；如果应用需要最小化到通知区域或关闭后继续运行，可以启用。
+`SetTrayExit` 控制标题栏关闭行为是否走托盘流程。普通桌面窗口通常保持关闭；如果应用需要最小化到通知区域或关闭后继续运行，可以启用。标题栏关闭请求会先显示 Flourish 样式的确认窗口，只有确认后才会继续关闭或进入托盘流程。
 
 ## 导航栏
 

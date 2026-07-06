@@ -92,7 +92,7 @@ shell.UseNavigationPanel((_, nav) =>
 
 ## 在解析器中使用服务
 
-解析器由 DI 解析，因此可以依赖你自己的服务。Flourish 也会注册 `IMessageService`，用于显示符合 Flourish 样式的模态消息，并复用 WPF `MessageBox` 的按钮、图标和返回值枚举。
+解析器由 DI 解析，因此可以依赖你自己的服务。Flourish 也会注册 `IMessageService`，用于显示符合 Flourish 样式的模态消息，并复用 WPF `MessageBox` 的按钮、图标和返回值枚举。它也支持自定义选项；参见[消息服务](message-service.md)。
 
 ```csharp
 internal sealed class GalleryCommandParser(ImageLibrary library) : ICommandParser

@@ -22,6 +22,7 @@ internal partial class FlourishShellWindow : Window
     private readonly IFrameNavigationService frameNavigationService;
     private readonly FlourishToolbarService toolbarService;
     private readonly FlourishStatusService statusService;
+    private readonly IMessageService messageService;
     private readonly TrayIconService trayIconService;
     private readonly CommandParser commandParser;
     private readonly FontService fontService;
@@ -61,6 +62,7 @@ internal partial class FlourishShellWindow : Window
         IFrameNavigationService frameNavigationService,
         FlourishToolbarService toolbarService,
         FlourishStatusService statusService,
+        IMessageService messageService,
         TrayIconService trayIconService,
         CommandParser commandParser,
         FontService fontService,
@@ -76,6 +78,7 @@ internal partial class FlourishShellWindow : Window
         this.frameNavigationService = frameNavigationService;
         this.toolbarService = toolbarService;
         this.statusService = statusService;
+        this.messageService = messageService;
         this.trayIconService = trayIconService;
         this.commandParser = commandParser;
         this.fontService = fontService;
@@ -991,12 +994,29 @@ internal partial class FlourishShellWindow : Window
 
     private void Titlebar_CloseRequested(object? sender, EventArgs e)
     {
+        if (!ConfirmCloseRequest())
+        {
+            return;
+        }
+
         if (trayIconService.MinimizeToTray())
         {
             return;
         }
 
         Close();
+    }
+
+    private bool ConfirmCloseRequest()
+    {
+        return messageService.Show(
+            this,
+            "Are you sure you want to close this window?",
+            "Close",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No
+        ) == MessageBoxResult.Yes;
     }
 
     private void ShellWindow_Closing(object? sender, CancelEventArgs e)

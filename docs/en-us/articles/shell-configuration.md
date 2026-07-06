@@ -48,7 +48,7 @@ shell.UseTitlebar((_, titlebar) =>
 
 `SetBreadcrumbBehavior` controls when breadcrumb navigation appears. `Always` keeps it visible, `Auto` lets Flourish decide from navigation state, and `Hidden` suppresses it.
 
-`SetTrayExit` controls whether title bar close behavior should follow the tray flow. Leave it disabled for ordinary desktop windows; enable it for applications that minimize or stay alive in the notification area.
+`SetTrayExit` controls whether title bar close behavior should follow the tray flow. Leave it disabled for ordinary desktop windows; enable it for applications that minimize or stay alive in the notification area. Title bar close requests show a Flourish-styled confirmation dialog before the close or tray action is applied.
 
 ## Navigation panel
 
