@@ -5,7 +5,7 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-Flourish 将页面注册和可见导航模型拆分开。在服务配置中使用 `AddNavigable` 注册 WPF 页面，通过 `UseNavigation` 启用导航区域，再通过 `ConfigureNavigation` 配置导航栏展示参数和可见导航项。
+Flourish 将页面注册和可见导航模型拆分开。在 [`ConfigureServices`](configure-services.md) 中使用 `AddNavigable` 注册 WPF 页面，通过 [`ConfigureShell`](configure-shell.md) 启用导航区域，再通过 [`ConfigureNavigation`](configure-navigation.md) 配置导航栏展示参数和可见导航项。
 
 ## 注册页面
 
@@ -37,7 +37,7 @@ services.AddNavigable<EditorPage>("编辑", "\uE70F", cacheMode: FlourishPageCac
 
 ## 配置分组
 
-使用 `ConfigureNavigation` 构建可见的导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 [`ConfigureNavigation`](configure-navigation.md) 构建可见的导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -203,7 +203,7 @@ nav.SetGroup("Two", groupId: 2, group =>
 
 ## 从代码导航
 
-运行时导航可以从依赖注入中获取 `INavigationService`，再按页面类型跳转：
+运行时导航可以从依赖注入中获取 `INavigationService`，再按页面类型跳转。导航服务会在应用通过 [`ConfigureServices`](configure-services.md) 完成服务配置后可用：
 
 ```csharp
 public sealed class HomeViewModel(INavigationService navigation)

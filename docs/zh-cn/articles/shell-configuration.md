@@ -5,7 +5,7 @@ description: 配置 Flourish Shell 功能开关和详细 Shell 选项。
 
 # Shell 配置
 
-`ConfigureShell` 只负责高层 Shell 功能开关。每个 `Use...` 方法只有一个 `enabled` 参数，默认值为 `true`。
+[`ConfigureShell`](configure-shell.md) 只负责高层 Shell 功能开关。每个 `Use...` 方法只有一个 `enabled` 参数，默认值为 `true`。
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -22,11 +22,11 @@ builder.ConfigureShell(shell =>
 });
 ```
 
-`ConfigureShell` 拥有最高优先级。如果某项功能没有在这里启用，对应的详细配置仍会被构建过程接收，但 Shell 不会展示该区域或行为。
+[`ConfigureShell`](configure-shell.md) 拥有最高优先级。如果某项功能没有在这里启用，对应的详细配置仍会被构建过程接收，但 Shell 不会展示该区域或行为。
 
 ## 标题栏
 
-通过 `UseTitleBar` 启用标题栏，再通过 `ConfigureTitleBar` 配置细节。
+通过 `UseTitleBar` 启用标题栏，再通过 [`ConfigureTitleBar`](configure-title-bar.md) 配置细节。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseTitleBar());
@@ -55,7 +55,7 @@ builder.ConfigureTitleBar(titleBar =>
 
 ## 导航栏
 
-通过 `UseNavigation` 启用导航栏，再通过 `ConfigureNavigation` 配置导航栏展示参数和可见导航项。
+通过 `UseNavigation` 启用导航栏，再通过 [`ConfigureNavigation`](configure-navigation.md) 配置导航栏展示参数和可见导航项。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseNavigation());
@@ -81,7 +81,7 @@ builder.ConfigureNavigation(navigation =>
 
 ## 动态工具栏
 
-通过 `UseDynamicToolbar` 启用 Shell 工具栏区域，再通过 `ConfigureDynamicToolbar` 注册按页面变化的工具栏项。
+通过 `UseDynamicToolbar` 启用 Shell 工具栏区域，再通过 [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) 注册按页面变化的工具栏项。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseDynamicToolbar());
@@ -96,7 +96,7 @@ builder.ConfigureDynamicToolbar(toolbar =>
 
 ## Tips
 
-通过 `UseTips` 启用提示浮层，再通过 `ConfigureTips` 调整提示行为。
+通过 `UseTips` 启用提示浮层，再通过 [`ConfigureTips`](configure-tips.md) 调整提示行为。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseTips());
@@ -111,7 +111,7 @@ builder.ConfigureTips(tips =>
 
 ## 动效
 
-通过 `UseMotion` 启用动效，再通过 `ConfigureMotion` 配置动画细节。
+通过 `UseMotion` 启用动效，再通过 [`ConfigureMotion`](configure-motion.md) 配置动画细节。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseMotion());
@@ -131,7 +131,7 @@ builder.ConfigureMotion(motion =>
 
 ## 材质特效
 
-通过 `UseMaterialEffect` 启用材质特效，再通过 `ConfigureMaterialEffect` 选择材质类型。
+通过 `UseMaterialEffect` 启用材质特效，再通过 [`ConfigureMaterialEffect`](configure-material-effect.md) 选择材质类型。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseMaterialEffect());
@@ -143,7 +143,7 @@ builder.ConfigureMaterialEffect(MaterialEffect.Mica);
 
 ## 主题
 
-通过 `UseThemes` 启用主题支持，再通过 `ConfigureThemes` 设置默认主题。
+通过 `UseThemes` 启用主题支持，再通过 [`ConfigureThemes`](configure-themes.md) 设置默认主题。
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseThemes());
@@ -154,7 +154,7 @@ builder.ConfigureThemes(FlourishTheme.System);
 
 ## 字体
 
-通过 `ConfigureFont` 设置 Shell 字体和基础字号。
+通过 [`ConfigureFont`](configure-font.md) 设置 Shell 字体和基础字号。
 
 ```csharp
 builder.ConfigureFont("Microsoft YaHei", 14);
@@ -164,7 +164,7 @@ builder.ConfigureFont("Microsoft YaHei", 14);
 
 ## 窗口
 
-通过 `ConfigureWindow` 配置 Shell 窗口尺寸、最小/最大尺寸、启动位置、手动位置、初始状态、缩放模式、置顶行为和任务栏显示。
+通过 [`ConfigureWindow`](configure-window.md) 配置 Shell 窗口尺寸、最小/最大尺寸、启动位置、手动位置、初始状态、缩放模式、置顶行为和任务栏显示。
 
 ```csharp
 builder.ConfigureWindow(window =>

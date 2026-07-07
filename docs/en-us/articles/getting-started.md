@@ -5,14 +5,16 @@ description: Apply Flourish to a WPF application with the shortest useful path.
 
 # Getting started
 
-The fastest way to use Flourish is to let the shell host your WPF `Application`: add the theme resources, build an `IFlourish` runtime in `Program.Main`, register pages with `AddNavigable`, place them in the navigation model with `ConfigureNavigation`, then run the application with `flourish.Run<App>()`.
+The fastest way to use Flourish is to let the shell host a WPF `Application`: add the theme resources, build an `IFlourish` runtime from `App.xaml.cs` or another application entry point, register pages with `AddNavigable`, place them in the navigation model with [`ConfigureNavigation`](configure-navigation.md), then show the shell.
 
 ## Reference the theme
 
-The `Run(Application)` helper and `IFlourish.Show(Application)` automatically merge `/Flourish;component/Themes/Generic.xaml` into the application resources before the shell is opened. You can still add it explicitly in `App.xaml`; this is useful for the WPF designer and for resources used before the shell is shown.
+The `Run(Application)` helper and `IFlourish.Show(Application)` automatically merge `/Flourish;component/Themes/Generic.xaml` into the application resources before the shell is opened. The dictionary can still be added explicitly in `App.xaml`; this is useful for the WPF designer and for resources used before the shell is shown.
 
 > [!NOTE]
 > Add the theme dictionary in `App.xaml` when design-time resources or early application resources need Flourish styles before the shell is shown.
+
+When the Flourish shell owns the main window, `App.xaml` should not set `StartupUri`. The shell becomes `Application.MainWindow` when `IFlourish.Show(Application)` runs.
 
 ```xml
 <Application
@@ -29,31 +31,33 @@ The `Run(Application)` helper and `IFlourish.Show(Application)` automatically me
 </Application>
 ```
 
-## Create a Program entry point
+## Configure the application entry point
 
-Store the built runtime in a static property so `App` and pages can reach services consistently.
+Most WPF applications can build and own the Flourish runtime from `App.xaml.cs`. The application starts the host, shows the shell, and releases the runtime when WPF exits.
 
 ```csharp
+using System.Windows;
 using AckSS.Flourish.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MyApp;
 
-internal static class Program
+public partial class App : Application
 {
     private static IFlourish? flourish;
 
     public static IFlourish Flourish =>
         flourish ?? throw new InvalidOperationException("Flourish has not been built.");
 
-    [STAThread]
-    public static int Main(string[] args)
+    protected override void OnStartup(StartupEventArgs e)
     {
+        base.OnStartup(e);
+
         flourish = FlourishBuilder
-            .CreateDefaultBuilder(args)
+            .CreateDefaultBuilder(e.Args)
             .ConfigureServices((_, services) =>
             {
-                services.AddSingleton<App>();
+                services.AddSingleton(this);
                 services.AddSingleton<ICommandParser, AppCommandParser>();
 
                 services.AddNavigable<HomePage>("Home", "\uE80F");
@@ -98,45 +102,64 @@ internal static class Program
             .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
             .Build();
 
-        try
+        flourish.Start();
+        flourish.Show(this);
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        if (flourish is not null)
         {
-            return flourish.Run<App>();
-        }
-        finally
-        {
+            flourish.StopAsync().GetAwaiter().GetResult();
             flourish.Dispose();
             flourish = null;
         }
+
+        base.OnExit(e);
     }
 }
 ```
 
-`CreateDefaultBuilder(args)` creates a standard .NET Generic Host. That means `ConfigureServices` receives a normal `IServiceCollection`, so your application services, pages, and command parsers all use familiar dependency injection patterns.
+`CreateDefaultBuilder(e.Args)` creates a standard .NET Generic Host. That means [`ConfigureServices`](configure-services.md) receives a normal `IServiceCollection`, so application services, pages, and command parsers use familiar dependency injection patterns.
 
-## Keep App simple
+## Alternative startup paths
 
-`Program.Main` now owns the Flourish startup flow, so `App.xaml.cs` only needs to initialize the XAML resources.
-
-> [!WARNING]
-> When `flourish.Run<App>()` is used, do not also call `Program.Flourish.Show(this)` from `App.OnStartup`. Both paths show the shell, so using both creates duplicate startup behavior.
+Some applications use a custom generated entry point or a dedicated bootstrapper. Those entry points can build the same configured builder and call the `Run<App>()` shortcut.
 
 ```csharp
-using System.Windows;
-
-namespace MyApp;
-
-public partial class App : Application
-{
-    public App()
+return FlourishBuilder
+    .CreateDefaultBuilder(args)
+    .ConfigureServices((_, services) =>
     {
-        InitializeComponent();
-    }
-}
+        services.AddSingleton<App>();
+        services.AddNavigable<HomePage>("Home", "\uE80F");
+    })
+    .ConfigureShell(shell => shell.UseTitleBar().UseNavigation())
+    .ConfigureNavigation(navigation =>
+    {
+        navigation.SetGroup("Navigation", groupId: 0, group =>
+        {
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+        });
+    })
+    .Run<App>();
 ```
+
+An application should use either the `App.xaml.cs` lifetime path or the `Run<App>()` shortcut for a given launch flow. Using both would show the shell twice.
+
+## Configuration API pages
+
+The startup example intentionally keeps each configuration responsibility separate:
+
+- [`ConfigureServices`](configure-services.md) registers services, pages, and command parsers.
+- [`ConfigureShell`](configure-shell.md) enables high-level shell features.
+- [`ConfigureTitleBar`](configure-title-bar.md) configures the title bar.
+- [`ConfigureNavigation`](configure-navigation.md) configures navigation panel display and visible items.
+- [`ConfigureTips`](configure-tips.md), [`ConfigureFont`](configure-font.md), and [`ConfigureWindow`](configure-window.md) tune supporting shell behavior.
 
 ## Create pages
 
-Pages registered with `AddNavigable` are regular WPF `Page` classes. Flourish resolves them from dependency injection when navigation occurs. The page display name, icon, and cache mode come from `AddNavigable`; the visible navigation position and initial page are configured in `ConfigureNavigation`.
+Pages registered with `AddNavigable` are regular WPF `Page` classes. Flourish resolves them from dependency injection when navigation occurs. The page display name, icon, and cache mode come from `AddNavigable`; the visible navigation position and initial page are configured in [`ConfigureNavigation`](configure-navigation.md).
 
 ```csharp
 using System.Windows.Controls;
@@ -154,8 +177,8 @@ public partial class HomePage : Page
 
 ## First run checklist
 
-- `App` is registered with `services.AddSingleton<App>()`.
+- The WPF application starts Flourish from `App.xaml.cs` or another application entry point.
 - At least one page is registered with `AddNavigable`.
 - At least one visible page item is added with `AddNavigableViewItem`, preferably with `isInitial: true`.
-- `Program.Main` calls `flourish.Run<App>()`.
-- `Dispose()` is called in `finally`, or you use the builder shortcut `.Run<App>()`.
+- The shell surface needed by that page is enabled through [`ConfigureShell`](configure-shell.md).
+- The runtime is disposed during application exit, or the builder shortcut `.Run<App>()` owns disposal.

@@ -3,6 +3,36 @@ items:
   href: getting-started.md
 - name: IFlourishBuilder
   href: flourish-builder.md
+- name: 配置 API
+  items:
+  - name: ConfigureData
+    href: configure-data.md
+  - name: ConfigureServices
+    href: configure-services.md
+  - name: ConfigureShell
+    href: configure-shell.md
+  - name: ConfigureTitleBar
+    href: configure-title-bar.md
+  - name: ConfigureNavigation
+    href: configure-navigation.md
+  - name: ConfigureCustomHandler
+    href: configure-custom-handler.md
+  - name: ConfigureDynamicToolbar
+    href: configure-dynamic-toolbar.md
+  - name: ConfigureTips
+    href: configure-tips.md
+  - name: ConfigureMotion
+    href: configure-motion.md
+  - name: ConfigureWindow
+    href: configure-window.md
+  - name: ConfigureFont
+    href: configure-font.md
+  - name: ConfigureMaterialEffect
+    href: configure-material-effect.md
+  - name: ConfigureThemes
+    href: configure-themes.md
+  - name: ConfigureFooter
+    href: configure-footer.md
 - name: Shell 配置
   href: shell-configuration.md
 - name: 导航

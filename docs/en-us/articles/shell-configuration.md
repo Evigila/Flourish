@@ -5,7 +5,7 @@ description: Configure Flourish shell feature switches and detailed shell option
 
 # Shell configuration
 
-`ConfigureShell` controls only high-level shell feature switches. Each `Use...` method has a single `enabled` parameter and defaults to `true`.
+[`ConfigureShell`](configure-shell.md) controls only high-level shell feature switches. Each `Use...` method has a single `enabled` parameter and defaults to `true`.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -22,11 +22,11 @@ builder.ConfigureShell(shell =>
 });
 ```
 
-`ConfigureShell` has the highest priority. If a feature is not enabled there, the matching detailed configuration is still accepted during build but the shell does not display that area or behavior.
+[`ConfigureShell`](configure-shell.md) has the highest priority. If a feature is not enabled there, the matching detailed configuration is still accepted during build but the shell does not display that area or behavior.
 
 ## Title bar
 
-Enable the title bar with `UseTitleBar`, then configure its details with `ConfigureTitleBar`.
+Enable the title bar with `UseTitleBar`, then configure its details with [`ConfigureTitleBar`](configure-title-bar.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseTitleBar());
@@ -55,7 +55,7 @@ builder.ConfigureTitleBar(titleBar =>
 
 ## Navigation
 
-Enable navigation with `UseNavigation`, then configure panel display and visible items with `ConfigureNavigation`.
+Enable navigation with `UseNavigation`, then configure panel display and visible items with [`ConfigureNavigation`](configure-navigation.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseNavigation());
@@ -77,11 +77,11 @@ builder.ConfigureNavigation(navigation =>
 });
 ```
 
-Use `UseNavigation(false)` for applications that rely on custom navigation or a single-page shell. Use `SetDirection(NavigationPanelDirection.Right)` when your layout benefits from a right-side navigation rail.
+Use `UseNavigation(false)` for applications that rely on custom navigation or a single-page shell. Use `SetDirection(NavigationPanelDirection.Right)` when the layout benefits from a right-side navigation rail.
 
 ## Dynamic Toolbar
 
-Enable the shell surface with `UseDynamicToolbar`, then register page-specific items with `ConfigureDynamicToolbar`.
+Enable the shell surface with `UseDynamicToolbar`, then register page-specific items with [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseDynamicToolbar());
@@ -96,7 +96,7 @@ builder.ConfigureDynamicToolbar(toolbar =>
 
 ## Tips
 
-Enable tooltips with `UseTips`, then tune tooltip behavior with `ConfigureTips`.
+Enable tooltips with `UseTips`, then tune tooltip behavior with [`ConfigureTips`](configure-tips.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseTips());
@@ -111,7 +111,7 @@ By default, tips appear after `800` milliseconds and keep at least `5` pixels aw
 
 ## Motion
 
-Enable motion with `UseMotion`, then configure animation details with `ConfigureMotion`.
+Enable motion with `UseMotion`, then configure animation details with [`ConfigureMotion`](configure-motion.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseMotion());
@@ -131,7 +131,7 @@ Use `UseMotion(false)` when predictable, static UI is more important than motion
 
 ## Material Effect
 
-Enable material effects with `UseMaterialEffect`, then choose the material with `ConfigureMaterialEffect`.
+Enable material effects with `UseMaterialEffect`, then choose the material with [`ConfigureMaterialEffect`](configure-material-effect.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseMaterialEffect());
@@ -143,7 +143,7 @@ builder.ConfigureMaterialEffect(MaterialEffect.Mica);
 
 ## Themes
 
-Enable theme support with `UseThemes`, then choose the default theme with `ConfigureThemes`.
+Enable theme support with `UseThemes`, then choose the default theme with [`ConfigureThemes`](configure-themes.md).
 
 ```csharp
 builder.ConfigureShell(shell => shell.UseThemes());
@@ -154,17 +154,17 @@ When themes are enabled, Flourish stores the selected theme in application prefe
 
 ## Font
 
-Use `ConfigureFont` to set the shell font family and base size.
+Use [`ConfigureFont`](configure-font.md) to set the shell font family and base size.
 
 ```csharp
 builder.ConfigureFont("Microsoft YaHei", 14);
 ```
 
-Choose a font that supports the languages your application displays.
+Choose a font that supports the languages displayed by the application.
 
 ## Window
 
-Use `ConfigureWindow` to configure the shell window size, min/max constraints, startup location, manual position, initial state, resize mode, topmost behavior, and taskbar visibility.
+Use [`ConfigureWindow`](configure-window.md) to configure the shell window size, min/max constraints, startup location, manual position, initial state, resize mode, topmost behavior, and taskbar visibility.
 
 ```csharp
 builder.ConfigureWindow(window =>
@@ -181,7 +181,7 @@ builder.ConfigureWindow(window =>
 });
 ```
 
-Use `SetManualWindowPosition(left, top)` when you also set `WindowStartupLocation.Manual`.
+Use `SetManualWindowPosition(left, top)` together with `WindowStartupLocation.Manual`.
 
 ## Full Example
 
