@@ -32,8 +32,8 @@ Flourish 的 API 表面保持小而清晰。应用启动可以集中在 `Program
 
 ## 项目链接
 
-- [GitHub 仓库](https://github.com/Evigila/Vistara)
-- [Issues](https://github.com/Evigila/Vistara/issues)
-- [Pull requests](https://github.com/Evigila/Vistara/pulls)
+- [GitHub 仓库](https://github.com/typoo910/Flourish)
+- [Issues](https://github.com/typoo910/Flourish/issues)
+- [Pull requests](https://github.com/typoo910/Flourish/pulls)
 
 欢迎通过 issue 或 pull request 提交缺陷报告、文档修正、API 反馈和示例。

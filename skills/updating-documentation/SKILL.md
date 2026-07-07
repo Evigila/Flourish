@@ -68,7 +68,7 @@ This repository often needs access to user-level NuGet and tool caches.
 
 Common sandbox failures:
 
-- `dotnet tool restore` can fail with `Access to the path 'C:\Users\Evigila\AppData\Roaming\NuGet\NuGet.Config' is denied`.
+- `dotnet tool restore` can fail with `Access to the path '%APPDATA%\NuGet\NuGet.Config' is denied`.
 - `dotnet tool run docfx ...` can fail because the restored local tool is invisible inside the sandbox or because DocFX needs the user NuGet package cache.
 - `dotnet build .\Flourish.slnx` can fail with the same `NuGet.Config` access error.
 

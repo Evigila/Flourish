@@ -32,8 +32,8 @@ Flourish focuses on a small, teachable API surface. Application setup stays in `
 
 ## Project Links
 
-- [GitHub repository](https://github.com/Evigila/Vistara)
-- [Issues](https://github.com/Evigila/Vistara/issues)
-- [Pull requests](https://github.com/Evigila/Vistara/pulls)
+- [GitHub repository](https://github.com/typoo910/Flourish)
+- [Issues](https://github.com/typoo910/Flourish/issues)
+- [Pull requests](https://github.com/typoo910/Flourish/pulls)
 
 Issues and pull requests are welcome for bug reports, documentation fixes, API feedback, and examples.
