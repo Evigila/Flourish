@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using AckSS.Flourish.Abstract;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
+using WpfPanel = System.Windows.Controls.Panel;
 
 namespace AckSS.Flourish.Controls;
 
@@ -14,6 +15,8 @@ internal partial class FlourishTitlebar : UserControl
 {
     private const string DefaultIconUri = "pack://application:,,,/Flourish;component/Assets/favicon.ico";
     private static readonly ImageSource? DefaultLogoSource = CreateDefaultLogoSource();
+    private bool hasProfileRegionContent;
+    private bool isProfileEnabled;
 
     public FlourishTitlebar()
     {
@@ -130,7 +133,34 @@ internal partial class FlourishTitlebar : UserControl
         BrandHost.Visibility = ToVisibility(enableLogo || enableTitle || enableSubTitle);
         SearchBoxHost.Visibility = ToVisibility(enableSearch);
         ThemeToggleButton.Visibility = ToVisibility(enableThemeToggle);
-        ProfileHost.Visibility = ToVisibility(enableProfile);
+        isProfileEnabled = enableProfile;
+        UpdateProfileRegionVisibility();
+    }
+
+    public void SetRegionContent(
+        FlourishRegion region,
+        IReadOnlyList<FrameworkElement> elements
+    )
+    {
+        switch (region)
+        {
+            case FlourishRegion.TitlebarStart:
+                SetPanelContent(TitlebarStartRegionHost, elements);
+                break;
+            case FlourishRegion.TitlebarCenter:
+                SetPanelContent(TitlebarCenterRegionHost, elements);
+                break;
+            case FlourishRegion.TitlebarEnd:
+                SetPanelContent(TitlebarEndRegionHost, elements);
+                break;
+            case FlourishRegion.TitlebarProfile:
+                SetPanelContent(TitlebarProfileRegionHost, elements);
+                hasProfileRegionContent = elements.Count > 0;
+                UpdateProfileRegionVisibility();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(region), region, "Unsupported title bar region.");
+        }
     }
 
     private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -202,6 +232,28 @@ internal partial class FlourishTitlebar : UserControl
     private static Visibility ToVisibility(bool visible)
     {
         return visible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void UpdateProfileRegionVisibility()
+    {
+        var showProfileArea = isProfileEnabled || hasProfileRegionContent;
+        ProfileRegionContainer.Visibility = ToVisibility(showProfileArea);
+        ProfileHost.Visibility = ToVisibility(isProfileEnabled && !hasProfileRegionContent);
+        TitlebarProfileRegionHost.Visibility = ToVisibility(hasProfileRegionContent);
+    }
+
+    private static void SetPanelContent(
+        WpfPanel host,
+        IReadOnlyList<FrameworkElement> elements
+    )
+    {
+        host.Children.Clear();
+        foreach (var element in elements)
+        {
+            host.Children.Add(element);
+        }
+
+        host.Visibility = ToVisibility(elements.Count > 0);
     }
 
     private static ImageSource? CreateDefaultLogoSource()

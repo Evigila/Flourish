@@ -12,6 +12,7 @@ using Button = System.Windows.Controls.Button;
 using FontFamily = System.Windows.Media.FontFamily;
 using ListBox = System.Windows.Controls.ListBox;
 using Orientation = System.Windows.Controls.Orientation;
+using WpfPanel = System.Windows.Controls.Panel;
 
 namespace AckSS.Flourish.Windows;
 
@@ -29,6 +30,7 @@ internal partial class FlourishShellWindow : Window
     private readonly ThemeService themeService;
     private readonly FlourishMotionService motionService;
     private readonly WindowFrameFixService windowFrameFixService;
+    private readonly IServiceProvider serviceProvider;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
         StringComparer.Ordinal
@@ -69,6 +71,7 @@ internal partial class FlourishShellWindow : Window
         ThemeService themeService,
         FlourishMotionService motionService,
         WindowFrameFixService windowFrameFixService,
+        IServiceProvider serviceProvider,
         FlourishShellOptions options
     )
     {
@@ -87,11 +90,13 @@ internal partial class FlourishShellWindow : Window
         this.themeService = themeService;
         this.motionService = motionService;
         this.windowFrameFixService = windowFrameFixService;
+        this.serviceProvider = serviceProvider;
         this.options = options;
 
         fontService.Apply(this);
         CacheResources();
         ApplyOptions();
+        BuildRegionContents();
         BuildToolbarItems();
         BuildNavigationItems();
         BuildStatusItems();
@@ -132,7 +137,10 @@ internal partial class FlourishShellWindow : Window
             options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
             options.IsTitlebarProfileEnabled
         );
-        StatusBarBorder.Visibility = options.IsStatusBarEnabled
+        StatusBarBorder.Visibility = options.IsStatusBarEnabled || HasAnyRegionContent(
+                FlourishRegion.StatusStart,
+                FlourishRegion.StatusEnd
+            )
             ? Visibility.Visible
             : Visibility.Collapsed;
         StatusTextBlock.Text = statusService.StatusText;
@@ -416,16 +424,112 @@ internal partial class FlourishShellWindow : Window
 
         ToolbarItemsHost.Children.Clear();
         var toolbarButtons = GetToolbarButtons(pageType);
-        ToolbarHostBorder.Visibility =
-            toolbarButtons.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         foreach (var button in toolbarButtons)
         {
             ToolbarItemsHost.Children.Add(button);
         }
 
+        ToolbarHostBorder.Visibility =
+            toolbarButtons.Count > 0
+            || ToolbarStartRegionHost.Children.Count > 0
+            || ToolbarEndRegionHost.Children.Count > 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
         activeToolbarPageType = pageType;
         isDefaultToolbarActive = pageType is null;
+    }
+
+    private void BuildRegionContents()
+    {
+        foreach (var region in Enum.GetValues<FlourishRegion>())
+        {
+            var elements = options
+                .RegionContents.Where(content => content.Region == region)
+                .OrderBy(content => content.Order)
+                .Select(CreateRegionElement)
+                .ToList();
+
+            SetRegionContent(region, elements);
+        }
+    }
+
+    private FrameworkElement CreateRegionElement(FlourishRegionContent content)
+    {
+        var element = content.CreateContent(serviceProvider);
+        if (element.Parent is not null)
+        {
+            throw new InvalidOperationException(
+                $"The content factory for region {content.Region} returned an element that already has a parent."
+            );
+        }
+
+        return element;
+    }
+
+    private void SetRegionContent(
+        FlourishRegion region,
+        IReadOnlyList<FrameworkElement> elements
+    )
+    {
+        switch (region)
+        {
+            case FlourishRegion.TitlebarStart:
+            case FlourishRegion.TitlebarCenter:
+            case FlourishRegion.TitlebarEnd:
+            case FlourishRegion.TitlebarProfile:
+                Titlebar.SetRegionContent(region, elements);
+                break;
+            case FlourishRegion.NavigationHeader:
+                SetPanelContent(NavigationHeaderRegionHost, elements);
+                break;
+            case FlourishRegion.NavigationFooter:
+                SetPanelContent(NavigationFooterRegionHost, elements);
+                break;
+            case FlourishRegion.ContentHeader:
+                SetPanelContent(ContentHeaderRegionHost, elements);
+                break;
+            case FlourishRegion.ContentFooter:
+                SetPanelContent(ContentFooterRegionHost, elements);
+                break;
+            case FlourishRegion.ContentOverlay:
+                SetPanelContent(ContentOverlayRegionHost, elements);
+                break;
+            case FlourishRegion.ToolbarStart:
+                SetPanelContent(ToolbarStartRegionHost, elements);
+                break;
+            case FlourishRegion.ToolbarEnd:
+                SetPanelContent(ToolbarEndRegionHost, elements);
+                break;
+            case FlourishRegion.StatusStart:
+                SetPanelContent(StatusStartRegionHost, elements);
+                break;
+            case FlourishRegion.StatusEnd:
+                SetPanelContent(StatusEndRegionHost, elements);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(region), region, "Unknown shell region.");
+        }
+    }
+
+    private bool HasAnyRegionContent(params FlourishRegion[] regions)
+    {
+        return options.RegionContents.Any(content => regions.Contains(content.Region));
+    }
+
+    private static void SetPanelContent(
+        WpfPanel host,
+        IReadOnlyList<FrameworkElement> elements
+    )
+    {
+        host.Children.Clear();
+        foreach (var element in elements)
+        {
+            host.Children.Add(element);
+        }
+
+        host.Visibility = elements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private IReadOnlyList<Button> GetToolbarButtons(Type? pageType)

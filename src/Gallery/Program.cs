@@ -1,3 +1,4 @@
+// using System.Windows.Controls;
 using AckSS.Flourish.Abstract;
 using AckSS.Gallery.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -158,6 +159,10 @@ internal static class Program
                                     .SetPageTransition();
                             }
                         )
+                        // .UseRegions((_, region) =>
+                        // {
+                        //     region.Add(FlourishRegion.TitlebarStart, services => new Button { Content = "Account" });
+                        // })
                         .UseMaterialEffect()
                         .UseThemes()
                         .SetGlobalFont("Microsoft YaHei")

@@ -60,6 +60,25 @@ public interface IFlourishShellBuilder
     );
 
     /// <summary>
+    /// Configures custom WPF content displayed in predefined Flourish shell regions.
+    /// </summary>
+    /// <param name="configureRegions">A callback that receives the host context and region builder.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <example>
+    /// <code><![CDATA[
+    /// shell.UseRegions((_, regions) =>
+    /// {
+    ///     regions.Add(
+    ///         FlourishRegion.TitlebarEnd,
+    ///         services => new Button { Content = "Account" });
+    /// });
+    /// ]]></code>
+    /// </example>
+    IFlourishShellBuilder UseRegions(
+        Action<HostBuilderContext, IFlourishRegionBuilder> configureRegions
+    );
+
+    /// <summary>
     /// Configures shell window properties.
     /// </summary>
     /// <param name="configureWindow">A callback that receives the host context and window property builder.</param>

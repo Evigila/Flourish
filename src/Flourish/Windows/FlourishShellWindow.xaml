@@ -162,12 +162,20 @@
           >
             <Grid>
               <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
+              <StackPanel
+                x:Name="NavigationHeaderRegionHost"
+                Grid.Row="0"
+                Orientation="Vertical"
+                Visibility="Collapsed"
+              />
               <ListBox
                 x:Name="NavigationItemsHost"
-                Grid.Row="0"
+                Grid.Row="1"
                 ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
                 ItemContainerStyle="{StaticResource FlourishNavigationListBoxItemStyle}"
                 ItemsSource="{Binding}"
@@ -189,7 +197,7 @@
 
               <Border
                 x:Name="FixedNavigationItemsBorder"
-                Grid.Row="1"
+                Grid.Row="2"
                 Padding="0,6,0,6"
                 BorderBrush="{DynamicResource CardBorderBrush}"
                 BorderThickness="0,1,0,0"
@@ -209,6 +217,12 @@
                   Tag="True"
                 />
               </Border>
+              <StackPanel
+                x:Name="NavigationFooterRegionHost"
+                Grid.Row="3"
+                Orientation="Vertical"
+                Visibility="Collapsed"
+              />
             </Grid>
           </Border>
 
@@ -216,12 +230,21 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
               <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
               <RowDefinition Height="*" />
+              <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
+            <StackPanel
+              x:Name="ContentHeaderRegionHost"
+              Grid.Row="0"
+              Orientation="Vertical"
+              Visibility="Collapsed"
+            />
 
             <Border
               x:Name="ToolbarHostBorder"
-              Grid.Row="0"
+              Grid.Row="1"
               Margin="8,0,8,4"
               Padding="2"
               Background="{DynamicResource CardBackgroundBrush}"
@@ -229,12 +252,35 @@
               BorderThickness="1"
               CornerRadius="6"
             >
-              <StackPanel x:Name="ToolbarItemsHost" Orientation="Horizontal" />
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                  x:Name="ToolbarStartRegionHost"
+                  Grid.Column="0"
+                  Orientation="Horizontal"
+                  Visibility="Collapsed"
+                />
+                <StackPanel
+                  x:Name="ToolbarItemsHost"
+                  Grid.Column="1"
+                  Orientation="Horizontal"
+                />
+                <StackPanel
+                  x:Name="ToolbarEndRegionHost"
+                  Grid.Column="2"
+                  Orientation="Horizontal"
+                  Visibility="Collapsed"
+                />
+              </Grid>
             </Border>
 
             <Border
               x:Name="BreadcrumbHost"
-              Grid.Row="1"
+              Grid.Row="2"
               Margin="12,0,12,8"
               Padding="12,0"
               Background="Transparent"
@@ -247,12 +293,25 @@
               />
             </Border>
 
-            <Frame
-              x:Name="RootFrame"
-              Grid.Row="2"
-              Focusable="False"
-              JournalOwnership="OwnsJournal"
-              NavigationUIVisibility="Hidden"
+            <Grid x:Name="ContentFrameHost" Grid.Row="3">
+              <Frame
+                x:Name="RootFrame"
+                Focusable="False"
+                JournalOwnership="OwnsJournal"
+                NavigationUIVisibility="Hidden"
+              />
+              <Grid
+                x:Name="ContentOverlayRegionHost"
+                Panel.ZIndex="10"
+                Visibility="Collapsed"
+              />
+            </Grid>
+
+            <StackPanel
+              x:Name="ContentFooterRegionHost"
+              Grid.Row="4"
+              Orientation="Vertical"
+              Visibility="Collapsed"
             />
           </Grid>
 
@@ -277,12 +336,23 @@
       >
         <Grid>
           <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
 
+          <StackPanel
+            x:Name="StatusStartRegionHost"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Visibility="Collapsed"
+          />
+
           <TextBlock
             x:Name="StatusTextBlock"
+            Grid.Column="1"
             VerticalAlignment="Center"
             FontSize="{DynamicResource FlourishFontSizeCaption}"
             Foreground="{DynamicResource MutedTextBrush}"
@@ -290,9 +360,17 @@
 
           <StackPanel
             x:Name="StatusItemsHost"
-            Grid.Column="1"
+            Grid.Column="2"
             VerticalAlignment="Center"
             Orientation="Horizontal"
+          />
+
+          <StackPanel
+            x:Name="StatusEndRegionHost"
+            Grid.Column="3"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Visibility="Collapsed"
           />
         </Grid>
       </Border>

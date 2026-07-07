@@ -124,4 +124,6 @@ internal sealed class FlourishShellOptions
     public Dictionary<Type, bool> DynamicToolbarIconModes { get; } = [];
 
     public List<FlourishStatusItem> StatusItems { get; } = [];
+
+    public List<FlourishRegionContent> RegionContents { get; } = [];
 }

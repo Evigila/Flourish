@@ -25,6 +25,14 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options, HostBui
         return this;
     }
 
+    public IFlourishShellBuilder UseRegions(
+        Action<HostBuilderContext, IFlourishRegionBuilder> configureRegions
+    )
+    {
+        configureRegions(context, new FlourishRegionBuilder(options));
+        return this;
+    }
+
     public IFlourishShellBuilder SetWindowProperty(
         Action<HostBuilderContext, IFlourishWindowPropertyBuilder> configureWindow
     )
