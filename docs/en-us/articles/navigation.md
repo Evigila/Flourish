@@ -5,7 +5,7 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Flourish separates page registration from the visible navigation model. Register WPF pages with `AddNavigable` during service configuration, enable the navigation surface with `UseNavigation`, then configure panel display and visible items with `ConfigureNavigation`.
+Flourish separates page registration from the visible navigation model. Register WPF pages with `AddNavigable` during [`ConfigureServices`](configure-services.md), enable the navigation surface with [`ConfigureShell`](configure-shell.md), then configure panel display and visible items with [`ConfigureNavigation`](configure-navigation.md).
 
 ## Register pages
 
@@ -37,7 +37,7 @@ Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the u
 
 ## Configure groups
 
-Use `ConfigureNavigation` to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+Use [`ConfigureNavigation`](configure-navigation.md) to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -83,7 +83,7 @@ nav.SetGroup("Admin", groupId: 10, group =>
 });
 ```
 
-If you enable the navigation panel display but do not configure any groups or fixed items, Flourish falls back to a flat legacy list built from all registered pages.
+If the navigation panel is enabled but no groups or fixed items are configured, Flourish falls back to a flat legacy list built from all registered pages.
 
 ## Resize the panel
 
@@ -203,7 +203,7 @@ Common validation failures include duplicate group IDs, non-zero groups without 
 
 ## Navigate from code
 
-For runtime navigation, request `INavigationService` from dependency injection and navigate by page type:
+For runtime navigation, request `INavigationService` from dependency injection and navigate by page type. Navigation services are available after the application configures services through [`ConfigureServices`](configure-services.md):
 
 ```csharp
 public sealed class HomeViewModel(INavigationService navigation)

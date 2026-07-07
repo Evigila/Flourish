@@ -5,11 +5,11 @@ description: Understand the builder, hosting integration, services, and page reg
 
 # IFlourishBuilder
 
-`IFlourishBuilder` is the composition entry point for a Flourish application. It does not directly create windows or pages while you configure it. Instead, it collects service registrations and shell options, then builds an `IFlourish` runtime backed by a .NET Generic Host.
+`IFlourishBuilder` is the composition entry point for a Flourish application. It does not directly create windows or pages during configuration. Instead, it collects service registrations and shell options, then builds an `IFlourish` runtime backed by a .NET Generic Host.
 
 ## Hosting model
 
-`FlourishBuilder.CreateDefaultBuilder(args)` uses `Host.CreateDefaultBuilder(args)` internally. The resulting runtime therefore has the same basic hosting behavior you expect from modern .NET applications:
+`FlourishBuilder.CreateDefaultBuilder(args)` uses `Host.CreateDefaultBuilder(args)` internally. The resulting runtime therefore follows the familiar hosting behavior of modern .NET applications:
 
 - configuration and environment are available through `HostBuilderContext` in `ConfigureServices`
 - services are registered in `IServiceCollection`
@@ -37,25 +37,26 @@ The public builder separates high-level feature switches from detailed configura
 
 | Method | Purpose |
 | --- | --- |
-| `ConfigureServices` | Registers application services, pages, command parsers, view models, and any infrastructure you want in DI. |
-| `ConfigureShell` | Enables or disables shell features such as the title bar, navigation, dynamic toolbar, tips, motion, material effects, themes, and footer. |
-| `ConfigureTitleBar` | Configures title bar content and behavior when the title bar is enabled. |
-| `ConfigureNavigation` | Configures navigation panel display, registered page positions, command items, groups, and fixed items. |
-| `ConfigureCustomHandler` | Inserts custom WPF elements into predefined shell regions. |
-| `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
-| `ConfigureTips` | Configures tooltip delay and shell-edge spacing. |
-| `ConfigureMotion` | Configures animation duration, page transitions, navigation panel transitions, and hover reveal. |
-| `ConfigureWindow` | Configures shell window size, position, state, resize mode, taskbar visibility, and topmost behavior. |
-| `ConfigureFont` | Configures the shell font family and base size. |
-| `ConfigureMaterialEffect` | Configures the material effect used when material effects are enabled. |
-| `ConfigureThemes` | Configures the default theme used when themes are enabled. |
-| `ConfigureFooter` | Configures the status area in the shell footer. |
+| [`ConfigureData`](configure-data.md) | Configures application identity and preference storage. |
+| [`ConfigureServices`](configure-services.md) | Registers application services, pages, command parsers, view models, and infrastructure in DI. |
+| [`ConfigureShell`](configure-shell.md) | Enables or disables shell features such as the title bar, navigation, dynamic toolbar, tips, motion, material effects, themes, and footer. |
+| [`ConfigureTitleBar`](configure-title-bar.md) | Configures title bar content and behavior when the title bar is enabled. |
+| [`ConfigureNavigation`](configure-navigation.md) | Configures navigation panel display, registered page positions, command items, groups, and fixed items. |
+| [`ConfigureCustomHandler`](configure-custom-handler.md) | Inserts custom WPF elements into predefined shell regions. |
+| [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) | Registers page-specific toolbar items. |
+| [`ConfigureTips`](configure-tips.md) | Configures tooltip delay and shell-edge spacing. |
+| [`ConfigureMotion`](configure-motion.md) | Configures animation duration, page transitions, navigation panel transitions, and hover reveal. |
+| [`ConfigureWindow`](configure-window.md) | Configures shell window size, position, state, resize mode, taskbar visibility, and topmost behavior. |
+| [`ConfigureFont`](configure-font.md) | Configures the shell font family and base size. |
+| [`ConfigureMaterialEffect`](configure-material-effect.md) | Configures the material effect used when material effects are enabled. |
+| [`ConfigureThemes`](configure-themes.md) | Configures the default theme used when themes are enabled. |
+| [`ConfigureFooter`](configure-footer.md) | Configures the status area in the shell footer. |
 
 Each method can be called multiple times. Flourish stores the callbacks and applies them during `Build()`.
 
 ## Register services
 
-Use `ConfigureServices` for anything that belongs to dependency injection.
+Use [`ConfigureServices`](configure-services.md) for anything that belongs to dependency injection.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -67,7 +68,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-Flourish also registers its own internal services during build, including navigation, toolbar, footer status, message, tooltip, material effect, motion, page cache, and shell window services. You do not need to construct those directly.
+Flourish also registers its own internal services during build, including navigation, toolbar, footer status, message, tooltip, material effect, motion, page cache, and shell window services. Applications do not construct those services directly.
 
 ## Register pages with AddNavigable
 
@@ -98,7 +99,7 @@ services.AddNavigable(
 
 `displayName` is shown by `AddNavigableViewItem`. `iconGlyph` is typically a Segoe Fluent Icons glyph such as `"\uE80F"`. `cacheMode` controls whether the same page instance is reused.
 
-Place registered pages in the visible navigation model with `ConfigureNavigation`. Navigation panel display settings such as direction, width, and initial open state are also configured there.
+Place registered pages in the visible navigation model with [`ConfigureNavigation`](configure-navigation.md). Navigation panel display settings such as direction, width, and initial open state are also configured there.
 
 ```csharp
 builder.ConfigureNavigation(navigation =>

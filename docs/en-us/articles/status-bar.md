@@ -5,7 +5,7 @@ description: Configure the Flourish shell footer status area.
 
 # Footer status
 
-Enable the footer with `ConfigureShell`, then configure the status area through `ConfigureFooter`. It is intended for low-priority state such as readiness, connection state, power state, or short contextual messages.
+Enable the footer with [`ConfigureShell`](configure-shell.md), then configure the status area through [`ConfigureFooter`](configure-footer.md). It is intended for low-priority state such as readiness, connection state, power state, or short contextual messages.
 
 ```csharp
 builder
@@ -54,7 +54,7 @@ These are useful for desktop tools where network or battery state affects the us
 
 ## Where to configure it
 
-Footer status configuration belongs beside the rest of application composition. Custom footer controls belong in `ConfigureCustomHandler`.
+Footer status configuration belongs beside the rest of application composition. Custom footer controls belong in [`ConfigureCustomHandler`](configure-custom-handler.md).
 
 ```csharp
 var flourish = FlourishBuilder

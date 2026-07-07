@@ -37,25 +37,26 @@ return flourish.Run<App>();
 
 | 方法 | 作用 |
 | --- | --- |
-| `ConfigureServices` | 注册应用服务、页面、命令解析器、ViewModel 以及你希望放入 DI 的基础设施。 |
-| `ConfigureShell` | 启用或禁用标题栏、导航、动态工具栏、Tips、动效、材质特效、主题和 Footer 等 Shell 功能。 |
-| `ConfigureTitleBar` | 在标题栏启用时配置标题栏内容和行为。 |
-| `ConfigureNavigation` | 配置导航栏展示参数、已注册页面位置、命令项、分组和固定项。 |
-| `ConfigureCustomHandler` | 将自定义 WPF 元素插入预定义 Shell 区域。 |
-| `ConfigureDynamicToolbar` | 注册按页面变化的工具栏项。 |
-| `ConfigureTips` | 配置提示浮层延迟和 Shell 边缘间距。 |
-| `ConfigureMotion` | 配置动画时长、页面过渡、导航栏过渡和 Hover Reveal。 |
-| `ConfigureWindow` | 配置 Shell 窗口尺寸、位置、状态、缩放模式、任务栏显示和置顶行为。 |
-| `ConfigureFont` | 配置 Shell 字体和基础字号。 |
-| `ConfigureMaterialEffect` | 配置材质特效启用时使用的材质类型。 |
-| `ConfigureThemes` | 配置主题启用时使用的默认主题。 |
-| `ConfigureFooter` | 配置 Shell Footer 中的状态区域。 |
+| [`ConfigureData`](configure-data.md) | 配置应用标识和偏好存储。 |
+| [`ConfigureServices`](configure-services.md) | 在 DI 中注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
+| [`ConfigureShell`](configure-shell.md) | 启用或禁用标题栏、导航、动态工具栏、Tips、动效、材质特效、主题和 Footer 等 Shell 功能。 |
+| [`ConfigureTitleBar`](configure-title-bar.md) | 在标题栏启用时配置标题栏内容和行为。 |
+| [`ConfigureNavigation`](configure-navigation.md) | 配置导航栏展示参数、已注册页面位置、命令项、分组和固定项。 |
+| [`ConfigureCustomHandler`](configure-custom-handler.md) | 将自定义 WPF 元素插入预定义 Shell 区域。 |
+| [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) | 注册按页面变化的工具栏项。 |
+| [`ConfigureTips`](configure-tips.md) | 配置提示浮层延迟和 Shell 边缘间距。 |
+| [`ConfigureMotion`](configure-motion.md) | 配置动画时长、页面过渡、导航栏过渡和 Hover Reveal。 |
+| [`ConfigureWindow`](configure-window.md) | 配置 Shell 窗口尺寸、位置、状态、缩放模式、任务栏显示和置顶行为。 |
+| [`ConfigureFont`](configure-font.md) | 配置 Shell 字体和基础字号。 |
+| [`ConfigureMaterialEffect`](configure-material-effect.md) | 配置材质特效启用时使用的材质类型。 |
+| [`ConfigureThemes`](configure-themes.md) | 配置主题启用时使用的默认主题。 |
+| [`ConfigureFooter`](configure-footer.md) | 配置 Shell Footer 中的状态区域。 |
 
 这些方法都可以调用多次。Flourish 会保存回调，并在 `Build()` 时统一应用。
 
 ## 注册服务
 
-所有属于依赖注入的内容都放在 `ConfigureServices` 中。
+所有属于依赖注入的内容都放在 [`ConfigureServices`](configure-services.md) 中。
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -98,7 +99,7 @@ services.AddNavigable(
 
 `displayName` 会被 `AddNavigableViewItem` 显示出来。`iconGlyph` 通常是 Segoe Fluent Icons 字形，例如 `"\uE80F"`。`cacheMode` 控制页面实例是否复用。
 
-已注册页面需要通过 `ConfigureNavigation` 放入可见导航模型。导航栏方向、宽度和初始展开状态等展示设置也在这里配置。
+已注册页面需要通过 [`ConfigureNavigation`](configure-navigation.md) 放入可见导航模型。导航栏方向、宽度和初始展开状态等展示设置也在这里配置。
 
 ```csharp
 builder.ConfigureNavigation(navigation =>

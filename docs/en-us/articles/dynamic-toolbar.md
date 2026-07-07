@@ -10,7 +10,7 @@ The dynamic toolbar is a shell surface whose items change with the active page. 
 There are two steps:
 
 1. Enable the toolbar surface in shell configuration.
-2. Register page-specific toolbar items with `ConfigureDynamicToolbar`.
+2. Register page-specific toolbar items with [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md).
 
 ## Enable the surface
 
@@ -49,7 +49,7 @@ toolbar.CreateToolbarItems(
 
 ## Control icon visibility
 
-The overload with `icon: false` lets you keep text-only toolbar items.
+The overload with `icon: false` keeps text-only toolbar items.
 
 ```csharp
 toolbar.CreateToolbarItems<EditorPage>(
@@ -71,7 +71,7 @@ Prefer stable, namespaced command keys such as `gallery.import` or `editor.previ
 
 ## Handle commands
 
-Register one or more `ICommandParser` implementations in `ConfigureServices`.
+Register one or more `ICommandParser` implementations in [`ConfigureServices`](configure-services.md).
 
 ```csharp
 services.AddSingleton<ICommandParser, AppCommandParser>();
@@ -93,7 +93,7 @@ internal sealed class AppCommandParser : ICommandParser
 }
 ```
 
-Return `true` when the command was recognized and handled. Return `false` to allow other parsers to try the same key.
+Return `true` when the command was recognized and handled. Return `false` to allow other parsers to try the same key. [`ConfigureCustomHandler`](configure-custom-handler.md) can use the same command keys for title bar and footer commands.
 
 ## Complete example
 

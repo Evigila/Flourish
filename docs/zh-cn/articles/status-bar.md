@@ -5,7 +5,7 @@ description: 配置 Flourish Shell Footer 状态区域。
 
 # Footer 状态
 
-通过 `ConfigureShell` 启用 Footer，再通过 `ConfigureFooter` 配置状态区域。它适合显示低优先级状态，例如就绪状态、连接状态、电源状态或简短上下文信息。
+通过 [`ConfigureShell`](configure-shell.md) 启用 Footer，再通过 [`ConfigureFooter`](configure-footer.md) 配置状态区域。它适合显示低优先级状态，例如就绪状态、连接状态、电源状态或简短上下文信息。
 
 ```csharp
 builder
@@ -54,7 +54,7 @@ footer.ShowPowerStatus();
 
 ## 放在哪里配置
 
-Footer 状态配置应和其他应用组合配置放在一起。Footer 中的自定义控件应放在 `ConfigureCustomHandler`。
+Footer 状态配置应和其他应用组合配置放在一起。Footer 中的自定义控件应放在 [`ConfigureCustomHandler`](configure-custom-handler.md)。
 
 ```csharp
 var flourish = FlourishBuilder

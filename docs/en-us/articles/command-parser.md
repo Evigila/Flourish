@@ -9,7 +9,7 @@ description: Handle command keys raised by Flourish UI surfaces.
 
 ## Register a parser
 
-Register parser implementations in `ConfigureServices`.
+Register parser implementations in [`ConfigureServices`](configure-services.md).
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -18,7 +18,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-You can register more than one parser. Each parser returns `true` when it handled the command and `false` when the key is unknown to that parser.
+Multiple parsers can be registered. Each parser returns `true` when it handled the command and `false` when the key is unknown to that parser.
 
 ## Implement TryParse
 
@@ -70,11 +70,11 @@ toolbar.CreateToolbarItems<GalleryPage>(
     new FlourishToolbarItem("Import", "\uE898", "gallery.import"));
 ```
 
-The third constructor argument is the command key. It is optional, but toolbar actions that should do work should provide one.
+The third constructor argument is the command key. It is optional, but toolbar actions that should do work should provide one. Toolbar items are usually registered through [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md).
 
 ## Connect navigation command items
 
-Navigation command items use the same parser path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section.
+Navigation command items use the same parser path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section through [`ConfigureNavigation`](configure-navigation.md).
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
@@ -92,7 +92,7 @@ If a command item is a parent node, clicking it expands or collapses children an
 
 ## Use services inside a parser
 
-Because parsers are resolved from DI, they can depend on your own services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md).
+Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Custom title bar and footer commands registered through [`ConfigureCustomHandler`](configure-custom-handler.md) use the same parser path.
 
 ```csharp
 internal sealed class GalleryCommandParser(ImageLibrary library) : ICommandParser
