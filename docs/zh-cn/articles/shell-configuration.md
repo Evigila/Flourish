@@ -1,35 +1,39 @@
 ---
 title: Shell 配置
-description: 配置 Flourish Shell 窗口、标题栏、导航栏、动效、材质、字体和窗口行为。
+description: 配置 Flourish Shell 功能开关和详细 Shell 选项。
 ---
 
 # Shell 配置
 
-Shell 配置通过 `ConfigureShell` 完成。它会收到一个 `IFlourishShellBuilder`，用于集中配置应用的高层视觉和窗口行为。
+`ConfigureShell` 只负责高层 Shell 功能开关。每个 `Use...` 方法只有一个 `enabled` 参数，默认值为 `true`。
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
+builder.ConfigureShell(shell =>
 {
     shell
-        .UseTitlebar((_, titlebar) => { })
-        .UseNavigationPanel((_, nav) => { })
+        .UseTitleBar()
+        .UseNavigation()
         .UseDynamicToolbar()
-        .UseTips((_, tips) => { })
-        .UseMotion((_, motion) => { })
+        .UseTips()
+        .UseMotion()
         .UseMaterialEffect()
-        .SetGlobalFont("Microsoft YaHei")
-        .SetWindowProperty((_, window) => { });
+        .UseThemes()
+        .UseFooter();
 });
 ```
 
+`ConfigureShell` 拥有最高优先级。如果某项功能没有在这里启用，对应的详细配置仍会被构建过程接收，但 Shell 不会展示该区域或行为。
+
 ## 标题栏
 
-`UseTitlebar` 用于启用并配置 Flourish 标题栏。标题栏可以显示 Logo、标题、副标题、搜索框、面包屑、导航开关和用户区域。
+通过 `UseTitleBar` 启用标题栏，再通过 `ConfigureTitleBar` 配置细节。
 
 ```csharp
-shell.UseTitlebar((_, titlebar) =>
+builder.ConfigureShell(shell => shell.UseTitleBar());
+
+builder.ConfigureTitleBar(titleBar =>
 {
-    titlebar
+    titleBar
         .ShowLogo()
         .ShowTitle()
         .ShowSubTitle()
@@ -37,6 +41,7 @@ shell.UseTitlebar((_, titlebar) =>
         .ShowBreadcrumb()
         .ShowNavToggle()
         .ShowProfile()
+        .ShowThemeToggle()
         .SetTrayExit(false)
         .SetTitle("Gallery")
         .SetSubtitle("Flourish 示例")
@@ -48,17 +53,16 @@ shell.UseTitlebar((_, titlebar) =>
 
 `SetBreadcrumbBehavior` 控制面包屑的显示时机。`Always` 始终显示，`Auto` 由 Flourish 根据导航状态决定，`Hidden` 则隐藏。
 
-`SetTrayExit` 控制标题栏关闭行为是否走托盘流程。普通桌面窗口通常保持关闭；如果应用需要最小化到通知区域或关闭后继续运行，可以启用。标题栏关闭请求会先显示 Flourish 样式的确认窗口，只有确认后才会继续关闭或进入托盘流程。
-
 ## 导航栏
 
-`UseNavigationPanel` 配置左侧或右侧导航区域。页面元数据通过 `AddNavigable` 注册，可见页面项、命令项、分组和底部固定项则在这里放置。
+通过 `UseNavigation` 启用导航栏，再通过 `ConfigureNavigation` 配置导航栏展示参数和可见导航项。
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureShell(shell => shell.UseNavigation());
+
+builder.ConfigureNavigation(navigation =>
 {
-    nav
-        .SetEnabled()
+    navigation
         .SetDirection(NavigationPanelDirection.Left)
         .SetInitiallyOpen()
         .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
@@ -73,42 +77,48 @@ shell.UseNavigationPanel((_, nav) =>
 });
 ```
 
-如果应用使用自定义导航或只有单页 Shell，可以使用 `SetEnabled(false)`。如果布局更适合右侧导航，可以使用 `NavigationPanelDirection.Right`。分组项位于上方可滚动区域；固定项始终显示在底部区域。
+如果应用使用自定义导航或只有单页 Shell，可以使用 `UseNavigation(false)`。如果布局更适合右侧导航，可以使用 `NavigationPanelDirection.Right`。
 
-使用 `SetPanelWidth` 可以设置导航栏展开宽度、折叠宽度，以及拖拽调整时允许的最小和最大宽度。默认展开宽度为 `220`，折叠宽度为 `48`，可调整范围为 `160` 到 `420`。调整宽度的 splitter 在正常布局中不可见，仅在鼠标悬浮到边缘时显示，并使用预览模式，拖拽结束后才提交布局宽度。
+## 动态工具栏
 
-## 动态工具栏区域
-
-`UseDynamicToolbar()` 只负责启用 Shell 中的工具栏区域。具体按页面变化的工具栏项，需要通过 `ConfigureDynamicToolbar` 单独注册。
+通过 `UseDynamicToolbar` 启用 Shell 工具栏区域，再通过 `ConfigureDynamicToolbar` 注册按页面变化的工具栏项。
 
 ```csharp
-shell.UseDynamicToolbar(enabled: true);
-```
+builder.ConfigureShell(shell => shell.UseDynamicToolbar());
 
-如果应用没有上下文页面命令，可以关闭它。
+builder.ConfigureDynamicToolbar(toolbar =>
+{
+    toolbar.CreateToolbarItems<HomePage>(
+        new FlourishToolbarItem("打开", "\uE8E5", "home.open"),
+        new FlourishToolbarItem("保存", "\uE74E", "home.save"));
+});
+```
 
 ## Tips
 
-`UseTips` 配置 Flourish 的提示浮层。Tips 使用 Flourish 样式，并按 Shell 区域预设生成方向：左侧导航向右显示，右侧导航向左显示，标题栏和顶部工具栏向下显示，Footer 向上显示。
+通过 `UseTips` 启用提示浮层，再通过 `ConfigureTips` 调整提示行为。
 
 ```csharp
-shell.UseTips((_, tips) =>
+builder.ConfigureShell(shell => shell.UseTips());
+
+builder.ConfigureTips(tips =>
 {
     tips.SetDelay(600).SetSpawnableMargin(5);
 });
 ```
 
-默认情况下，Tips 在悬浮 `800` 毫秒后显示，并和 Shell 窗口边界至少保持 `5` 像素距离。使用 `SetDelay` 可以调整悬浮延迟，使用 `SetSpawnableMargin` 可以调整这个边界距离。
+默认情况下，Tips 在悬浮 `800` 毫秒后显示，并和 Shell 窗口边界至少保持 `5` 像素距离。
 
 ## 动效
 
-`UseMotion()` 会启用默认动效。接收 `IFlourishMotionBuilder` 的重载可以继续配置时长、页面过渡、导航栏过渡、Hover Reveal 和系统减少动画偏好。
+通过 `UseMotion` 启用动效，再通过 `ConfigureMotion` 配置动画细节。
 
 ```csharp
-shell.UseMotion((_, motion) =>
+builder.ConfigureShell(shell => shell.UseMotion());
+
+builder.ConfigureMotion(motion =>
 {
     motion
-        .SetEnabled()
         .SetDuration(TimeSpan.FromMilliseconds(180))
         .SetPageTransition(FlourishPageTransition.EntranceFromBottom)
         .SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize)
@@ -117,37 +127,47 @@ shell.UseMotion((_, motion) =>
 });
 ```
 
-如果应用更需要稳定、静态的界面，可以使用 `FlourishPageTransition.None` 或 `SetEnabled(false)`。
+如果应用更需要稳定、静态的界面，可以使用 `UseMotion(false)`。
 
 ## 材质特效
 
-`UseMaterialEffect` 用于给 Shell 窗口应用 Windows 材质效果。
+通过 `UseMaterialEffect` 启用材质特效，再通过 `ConfigureMaterialEffect` 选择材质类型。
+
+```csharp
+builder.ConfigureShell(shell => shell.UseMaterialEffect());
+builder.ConfigureMaterialEffect(MaterialEffect.Mica);
+```
 
 > [!WARNING]
 > 材质效果依赖 Windows 桌面合成能力。需要完全不透明窗口，或部署环境应避开平台相关视觉效果时，使用 `MaterialEffect.None`。
 
+## 主题
+
+通过 `UseThemes` 启用主题支持，再通过 `ConfigureThemes` 设置默认主题。
+
 ```csharp
-shell.UseMaterialEffect(MaterialEffect.Mica);
+builder.ConfigureShell(shell => shell.UseThemes());
+builder.ConfigureThemes(FlourishTheme.System);
 ```
 
-`MaterialEffect.Mica` 是默认的 Windows 11 风格。需要完全不透明窗口，或希望避开平台相关材质行为时，可以使用 `MaterialEffect.None`。
+启用主题后，Flourish 会把用户选择的主题保存到应用偏好中。
 
-## 全局字体
+## 字体
 
-`SetGlobalFont` 设置 Shell 的字体和基础字号。
+通过 `ConfigureFont` 设置 Shell 字体和基础字号。
 
 ```csharp
-shell.SetGlobalFont("Microsoft YaHei", 14);
+builder.ConfigureFont("Microsoft YaHei", 14);
 ```
 
-应选择能覆盖应用显示语言的字体。对于中英混排界面，Windows 上 `Microsoft YaHei` 是稳妥选择。
+应选择能覆盖应用显示语言的字体。
 
-## 窗口属性
+## 窗口
 
-`SetWindowProperty` 配置 Shell 窗口尺寸、最小/最大尺寸、启动位置、手动位置、初始状态、缩放模式、置顶行为和任务栏显示。
+通过 `ConfigureWindow` 配置 Shell 窗口尺寸、最小/最大尺寸、启动位置、手动位置、初始状态、缩放模式、置顶行为和任务栏显示。
 
 ```csharp
-shell.SetWindowProperty((_, window) =>
+builder.ConfigureWindow(window =>
 {
     window
         .SetWindowSize(1280, 720)
@@ -166,45 +186,49 @@ shell.SetWindowProperty((_, window) =>
 ## 完整示例
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
-{
-    shell
-        .UseTitlebar((_, titlebar) =>
-        {
-            titlebar
-                .ShowLogo()
-                .ShowTitle()
-                .ShowSubTitle()
-                .ShowSearch()
-                .ShowBreadcrumb()
-                .ShowNavToggle()
-                .SetTitle("Gallery")
-                .SetSubtitle("Flourish 示例");
-        })
-        .UseNavigationPanel((_, nav) =>
-        {
-            nav.SetDirection()
-               .SetInitiallyOpen()
-               .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-               .SetGroup("导航", groupId: 0, group =>
-               {
-                   group.AddNavigableViewItem<HomePage>(isInitial: true);
-               });
-        })
-        .UseDynamicToolbar()
-        .UseTips((_, tips) =>
-        {
-            tips.SetDelay(600).SetSpawnableMargin(5);
-        })
-        .UseMotion((_, motion) =>
-        {
-            motion.SetDuration().SetHoverReveal().SetNavigationPanelTransition().SetPageTransition();
-        })
-        .UseMaterialEffect()
-        .SetGlobalFont("Microsoft YaHei")
-        .SetWindowProperty((_, window) =>
-        {
-            window.SetWindowSize().SetWindowMinSize().SetWindowPosition();
-        });
-});
+builder
+    .ConfigureShell(shell =>
+    {
+        shell
+            .UseTitleBar()
+            .UseNavigation()
+            .UseDynamicToolbar()
+            .UseTips()
+            .UseMotion()
+            .UseMaterialEffect()
+            .UseThemes()
+            .UseFooter();
+    })
+    .ConfigureTitleBar(titleBar =>
+    {
+        titleBar
+            .ShowLogo()
+            .ShowTitle()
+            .ShowSubTitle()
+            .ShowSearch()
+            .ShowBreadcrumb()
+            .ShowNavToggle()
+            .SetTitle("Gallery")
+            .SetSubtitle("Flourish 示例");
+    })
+    .ConfigureNavigation(navigation =>
+    {
+        navigation
+            .SetDirection()
+            .SetInitiallyOpen()
+            .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+            .SetGroup("导航", groupId: 0, group =>
+            {
+                group.AddNavigableViewItem<HomePage>(isInitial: true);
+            });
+    })
+    .ConfigureTips(tips => tips.SetDelay(600).SetSpawnableMargin(5))
+    .ConfigureMotion(motion =>
+    {
+        motion.SetDuration().SetHoverReveal().SetNavigationPanelTransition().SetPageTransition();
+    })
+    .ConfigureMaterialEffect(MaterialEffect.Mica)
+    .ConfigureThemes(FlourishTheme.System)
+    .ConfigureFont("Microsoft YaHei")
+    .ConfigureWindow(window => window.SetWindowSize().SetWindowMinSize().SetWindowPosition());
 ```

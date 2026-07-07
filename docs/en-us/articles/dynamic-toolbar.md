@@ -15,7 +15,7 @@ There are two steps:
 ## Enable the surface
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
+builder.ConfigureShell(shell =>
 {
     shell.UseDynamicToolbar();
 });
@@ -31,7 +31,7 @@ builder.ConfigureShell((_, shell) =>
 Use `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` when the page type is known at compile time.
 
 ```csharp
-builder.ConfigureDynamicToolbar((_, toolbar) =>
+builder.ConfigureDynamicToolbar(toolbar =>
 {
     toolbar.CreateToolbarItems<HomePage>(
         new FlourishToolbarItem("Open", "\uE8E5", "home.open"),
@@ -107,20 +107,23 @@ var flourish = FlourishBuilder
         services.AddNavigable<HomePage>("Home", "\uE80F");
         services.AddNavigable<GalleryPage>("Gallery", "\uE91B");
     })
-    .ConfigureShell((_, shell) =>
+    .ConfigureShell(shell =>
     {
         shell
-            .UseNavigationPanel((_, nav) =>
-            {
-                nav.SetGroup("Navigation", groupId: 0, group =>
-                {
-                    group.AddNavigableViewItem<HomePage>(isInitial: true);
-                    group.AddNavigableViewItem<GalleryPage>();
-                });
-            })
+            .UseNavigation()
             .UseDynamicToolbar();
     })
-    .ConfigureDynamicToolbar((_, toolbar) =>
+    .ConfigureNavigation(navigation =>
+    {
+        navigation
+            .SetInitiallyOpen()
+            .SetGroup("Navigation", groupId: 0, group =>
+            {
+                group.AddNavigableViewItem<HomePage>(isInitial: true);
+                group.AddNavigableViewItem<GalleryPage>();
+            });
+    })
+    .ConfigureDynamicToolbar(toolbar =>
     {
         toolbar.CreateToolbarItems<HomePage>(
             new FlourishToolbarItem("Open", "\uE8E5", "home.open"),

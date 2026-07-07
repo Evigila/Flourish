@@ -1,3 +1,5 @@
+using System.Windows.Media;
+
 namespace AckSS.Flourish.Abstract;
 
 /// <summary>
@@ -5,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseTitlebar((_, titlebar) =>
+/// builder.ConfigureTitleBar(titlebar =>
 /// {
 ///     titlebar.ShowTitle().SetTitle("Gallery");
 /// });
@@ -158,6 +160,20 @@ public interface IFlourishTitlebarBuilder
     IFlourishTitlebarBuilder SetLogo(string packUri);
 
     /// <summary>
+    /// Sets the logo image directly.
+    /// </summary>
+    /// <param name="logoSource">The image source displayed in the logo area.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishTitlebarBuilder SetLogo(ImageSource logoSource);
+
+    /// <summary>
+    /// Sets the fallback text used when no logo image is available.
+    /// </summary>
+    /// <param name="fallbackText">The fallback text. Flourish displays the first character.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishTitlebarBuilder SetLogoFallbackText(string fallbackText);
+
+    /// <summary>
     /// Sets the search box placeholder text.
     /// </summary>
     /// <param name="placeholder">The placeholder text displayed in the search box.</param>
@@ -168,6 +184,22 @@ public interface IFlourishTitlebarBuilder
     /// ]]></code>
     /// </example>
     IFlourishTitlebarBuilder SetSearchPlaceholder(string placeholder);
+
+    /// <summary>
+    /// Handles title bar search text changes.
+    /// </summary>
+    /// <param name="searchTextChanged">The callback invoked whenever the search text changes.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishTitlebarBuilder SetSearchHandler(Action<string> searchTextChanged);
+
+    /// <summary>
+    /// Handles title bar search text changes with access to the application service provider.
+    /// </summary>
+    /// <param name="searchTextChanged">The callback invoked whenever the search text changes.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishTitlebarBuilder SetSearchHandler(
+        Action<IServiceProvider, string> searchTextChanged
+    );
 
     /// <summary>
     /// Sets when breadcrumb navigation should be displayed.

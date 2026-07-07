@@ -5,7 +5,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseTitlebar((_, titlebar) =>
+/// builder.ConfigureTitleBar(titlebar =>
 /// {
 ///     titlebar.SetBreadcrumbBehavior(BreadcrumbShowOption.Auto);
 /// });

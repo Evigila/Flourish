@@ -5,7 +5,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// builder.ConfigureData((_, data) =>
+/// builder.ConfigureData(data =>
 /// {
 ///     data.SetAppCompany("Acksheed System Team")
 ///         .SetAppName("Gallery");

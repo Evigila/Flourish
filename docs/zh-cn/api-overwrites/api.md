@@ -266,7 +266,7 @@ syntax:
 
 ---
 uid: AckSS.Flourish.Abstract.IFlourishBuilder
-summary: 在构建 Flourish 运行时之前配置服务、Shell 选项、工具栏项和状态栏项。
+summary: 在构建 Flourish 运行时之前配置服务、Shell 选项、导航项、自定义区域、工具栏项和 Footer 状态项。
 ---
 
 ---
@@ -281,34 +281,135 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureShell(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishShellBuilder})
-summary: 配置 Flourish Shell。
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureShell(System.Action{AckSS.Flourish.Abstract.IFlourishShellBuilder})
+summary: 配置 Flourish Shell 的高层功能开关。
 syntax:
   parameters:
   - id: configureShell
-    description: 接收 Host 上下文和 Shell builder 的配置回调。
+    description: 接收 Shell builder 的配置回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureDynamicToolbar(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishDynamicToolbarBuilder})
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureTitleBar(System.Action{AckSS.Flourish.Abstract.IFlourishTitlebarBuilder})
+summary: 配置标题栏内容和行为。
+syntax:
+  parameters:
+  - id: configureTitleBar
+    description: 接收标题栏 builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureNavigation(System.Action{AckSS.Flourish.Abstract.IFlourishNavigationBuilder})
+summary: 配置导航栏展示和可见导航模型。
+syntax:
+  parameters:
+  - id: configureNavigation
+    description: 接收导航 builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureCustomHandler(System.Action{AckSS.Flourish.Abstract.IFlourishCustomHandlerBuilder})
+summary: 配置预定义 Shell 区域中的自定义 WPF 内容。
+syntax:
+  parameters:
+  - id: configureCustomHandler
+    description: 接收自定义区域 builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureDynamicToolbar(System.Action{AckSS.Flourish.Abstract.IFlourishDynamicToolbarBuilder})
 summary: 配置按页面变化的动态工具栏项。
 syntax:
   parameters:
   - id: configureToolbar
-    description: 接收 Host 上下文和动态工具栏 builder 的配置回调。
+    description: 接收动态工具栏 builder 的配置回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureStatus(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishStatusBuilder})
-summary: 配置 Shell 状态区域。
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureTips(System.Action{AckSS.Flourish.Abstract.IFlourishTipsBuilder})
+summary: 配置 Flourish 提示浮层行为。
 syntax:
   parameters:
-  - id: configureStatus
-    description: 接收 Host 上下文和状态栏 builder 的配置回调。
+  - id: configureTips
+    description: 接收 Tips builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureMotion(System.Action{AckSS.Flourish.Abstract.IFlourishMotionBuilder})
+summary: 配置 Flourish 动效行为。
+syntax:
+  parameters:
+  - id: configureMotion
+    description: 接收动效 builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureWindow(System.Action{AckSS.Flourish.Abstract.IFlourishWindowPropertyBuilder})
+summary: 配置 Flourish Shell 窗口属性。
+syntax:
+  parameters:
+  - id: configureWindow
+    description: 接收窗口属性 builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureFont(System.String,System.Double)
+summary: 配置 Flourish Shell UI 使用的全局字体。
+syntax:
+  parameters:
+  - id: fontFamily
+    description: 字体系列名称。
+  - id: fontSize
+    description: 基础字号。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureMaterialEffect(AckSS.Flourish.Abstract.MaterialEffect)
+summary: 配置材质特效启用时应用到 Shell 窗口的系统材质。
+syntax:
+  parameters:
+  - id: effect
+    description: 要应用的材质效果。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureThemes(AckSS.Flourish.Abstract.FlourishTheme)
+summary: 配置主题启用时使用的默认主题。
+syntax:
+  parameters:
+  - id: defaultTheme
+    description: 尚未保存用户偏好时使用的默认主题。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishBuilder.ConfigureFooter(System.Action{AckSS.Flourish.Abstract.IFlourishFooterBuilder})
+summary: 配置 Shell Footer 状态区域。
+syntax:
+  parameters:
+  - id: configureFooter
+    description: 接收 Footer builder 的配置回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -390,17 +491,6 @@ summary: 配置 Flourish Shell 的动效和动画行为。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetEnabled(System.Boolean)
-summary: 启用或禁用 Flourish 动效。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否启用动效。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
 uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetDuration
 summary: 设置默认动效持续时间。
 syntax:
@@ -464,23 +554,12 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder
-summary: 配置 Flourish 导航面板。
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder
+summary: 配置 Flourish 导航栏展示和可见导航模型。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.SetEnabled(System.Boolean)
-summary: 启用或禁用导航面板。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否启用导航面板。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.SetDirection(AckSS.Flourish.Abstract.NavigationPanelDirection)
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.SetDirection(AckSS.Flourish.Abstract.NavigationPanelDirection)
 summary: 设置导航面板显示在 Shell 的哪一侧。
 syntax:
   parameters:
@@ -491,7 +570,7 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.SetInitiallyOpen(System.Boolean)
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.SetInitiallyOpen(System.Boolean)
 summary: 设置 Shell 首次显示时导航面板是否打开。
 syntax:
   parameters:
@@ -502,7 +581,24 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.SetTitle(System.String)
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.SetPanelWidth(System.Double,System.Double,System.Double,System.Double)
+summary: 设置导航栏宽度和 splitter 调整范围。
+syntax:
+  parameters:
+  - id: openWidth
+    description: 导航栏展开宽度。
+  - id: closedWidth
+    description: 导航栏折叠宽度。
+  - id: maxWidth
+    description: 导航栏最大展开宽度。
+  - id: minWidth
+    description: 导航栏最小展开宽度。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.SetTitle(System.String)
 summary: 设置旧版未分组导航界面使用的导航面板标题。
 syntax:
   parameters:
@@ -513,7 +609,7 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.SetGroup(System.String,System.Int32,System.Action{AckSS.Flourish.Abstract.IFlourishNavigationGroupBuilder})
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.SetGroup(System.String,System.Int32,System.Action{AckSS.Flourish.Abstract.IFlourishNavigationGroupBuilder})
 summary: 添加并配置一个可滚动导航分组。
 syntax:
   parameters:
@@ -528,7 +624,7 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.AddFixedNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.AddFixedNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
 summary: 在导航栏底部固定区域添加一个已注册页面导航项。
 syntax:
   typeParameters:
@@ -546,7 +642,7 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder.AddFixedNavigableItem(System.String,System.String,System.Int32,System.Int32,System.String)
+uid: AckSS.Flourish.Abstract.IFlourishNavigationBuilder.AddFixedNavigableItem(System.String,System.String,System.Int32,System.Int32,System.String)
 summary: 在导航栏底部固定区域添加一个按钮类型命令项。
 syntax:
   parameters:
@@ -608,62 +704,27 @@ syntax:
 
 ---
 uid: AckSS.Flourish.Abstract.IFlourishShellBuilder
-summary: 配置高层 Flourish Shell。
+summary: 配置高层 Flourish Shell 功能开关。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseTitlebar(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishTitlebarBuilder})
-summary: 启用并配置 Shell 标题栏。
+uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseTitleBar(System.Boolean)
+summary: 启用或禁用 Shell 标题栏。
 syntax:
   parameters:
-  - id: configureTitlebar
-    description: 接收 Host 上下文和标题栏 builder 的配置回调。
+  - id: enabled
+    description: 指示是否启用标题栏。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseNavigationPanel(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishNavigationPanelBuilder})
-summary: 启用并配置 Shell 导航面板，用于放置已注册页面项和按钮类型命令项。
+uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseNavigation(System.Boolean)
+summary: 启用或禁用 Shell 导航栏。
 syntax:
   parameters:
-  - id: configureNavigationPanel
-    description: 接收 Host 上下文和导航面板 builder 的配置回调。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.SetWindowProperty(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishWindowPropertyBuilder})
-summary: 配置 Shell 窗口属性。
-syntax:
-  parameters:
-  - id: configureWindow
-    description: 接收 Host 上下文和窗口属性 builder 的配置回调。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.SetGlobalFont(System.String,System.Double)
-summary: 设置 Flourish Shell UI 使用的全局字体。
-syntax:
-  parameters:
-  - id: fontFamily
-    description: 字体系列名称。
-  - id: fontSize
-    description: 基础字号。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseMaterialEffect(AckSS.Flourish.Abstract.MaterialEffect)
-summary: 为 Shell 窗口应用系统材质效果。
-syntax:
-  parameters:
-  - id: effect
-    description: 要应用的材质效果。
+  - id: enabled
+    description: 指示是否启用导航栏。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -680,8 +741,19 @@ syntax:
 ---
 
 ---
+uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseTips(System.Boolean)
+summary: 启用或禁用 Flourish 提示浮层。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用提示浮层。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
 uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseMotion(System.Boolean)
-summary: 使用默认动效设置启用或禁用 Flourish 动效。
+summary: 启用或禁用 Flourish 动效。
 syntax:
   parameters:
   - id: enabled
@@ -691,35 +763,57 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseMotion(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishMotionBuilder})
-summary: 启用并配置 Flourish 动效。
+uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseMaterialEffect(System.Boolean)
+summary: 启用或禁用 Shell 材质特效。
 syntax:
   parameters:
-  - id: configureMotion
-    description: 接收 Host 上下文和动效 builder 的配置回调。
+  - id: enabled
+    description: 指示是否启用材质特效。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishStatusBuilder
-summary: 配置 Flourish Shell 状态区域。
+uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseThemes(System.Boolean)
+summary: 启用或禁用 Flourish 主题支持。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用主题支持。
+  return:
+    description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishStatusBuilder.SetStatusText(System.String)
-summary: 设置主要状态文本。
+uid: AckSS.Flourish.Abstract.IFlourishShellBuilder.UseFooter(System.Boolean)
+summary: 启用或禁用 Shell Footer。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用 Footer。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishFooterBuilder
+summary: 配置 Flourish Shell Footer 状态区域。
+---
+
+---
+uid: AckSS.Flourish.Abstract.IFlourishFooterBuilder.SetStatusText(System.String)
+summary: 设置主要 Footer 状态文本。
 syntax:
   parameters:
   - id: text
-    description: 显示在 Shell 状态区域中的状态文本。
+    description: 显示在 Shell Footer 中的状态文本。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishStatusBuilder.AddStatusItem(System.String,System.String)
-summary: 添加包含显示文本和图标字形的状态项。
+uid: AckSS.Flourish.Abstract.IFlourishFooterBuilder.AddStatusItem(System.String,System.String)
+summary: 添加包含显示文本和图标字形的 Footer 状态项。
 syntax:
   parameters:
   - id: displayText
@@ -731,7 +825,7 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishStatusBuilder.ShowLANConnectionStatus
+uid: AckSS.Flourish.Abstract.IFlourishFooterBuilder.ShowLANConnectionStatus
 summary: 显示内置 LAN 连接状态项。
 syntax:
   return:
@@ -739,7 +833,7 @@ syntax:
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishStatusBuilder.ShowPowerStatus
+uid: AckSS.Flourish.Abstract.IFlourishFooterBuilder.ShowPowerStatus
 summary: 显示内置电源状态项。
 syntax:
   return:

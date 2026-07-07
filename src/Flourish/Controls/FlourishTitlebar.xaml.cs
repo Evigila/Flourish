@@ -41,6 +41,8 @@ internal partial class FlourishTitlebar : UserControl
 
     public event EventHandler? ThemeToggleRequested;
 
+    public event EventHandler<string>? SearchTextChanged;
+
     public void SetTitle(string title)
     {
         TitleText.Text = title;
@@ -211,6 +213,7 @@ internal partial class FlourishTitlebar : UserControl
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         UpdateSearchPlaceholderVisibility();
+        SearchTextChanged?.Invoke(this, SearchBox.Text);
     }
 
     private void Titlebar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

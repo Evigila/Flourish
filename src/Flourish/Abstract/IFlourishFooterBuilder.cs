@@ -1,42 +1,42 @@
 namespace AckSS.Flourish.Abstract;
 
 /// <summary>
-/// Configures the Flourish shell status area.
+/// Configures the Flourish shell footer status area.
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// builder.ConfigureStatus((_, status) =>
+/// builder.ConfigureFooter(footer =>
 /// {
-///     status.SetStatusText("Ready").ShowPowerStatus();
+///     footer.SetStatusText("Ready").ShowPowerStatus();
 /// });
 /// ]]></code>
 /// </example>
-public interface IFlourishStatusBuilder
+public interface IFlourishFooterBuilder
 {
     /// <summary>
-    /// Sets the primary status text.
+    /// Sets the primary footer status text.
     /// </summary>
-    /// <param name="text">The status text displayed in the shell status area.</param>
+    /// <param name="text">The status text displayed in the shell footer.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// status.SetStatusText("Ready");
+    /// footer.SetStatusText("Ready");
     /// ]]></code>
     /// </example>
-    IFlourishStatusBuilder SetStatusText(string text);
+    IFlourishFooterBuilder SetStatusText(string text);
 
     /// <summary>
-    /// Adds a status item with display text and an icon glyph.
+    /// Adds a footer status item with display text and an icon glyph.
     /// </summary>
     /// <param name="displayText">The status item display text.</param>
     /// <param name="iconGlyph">The icon glyph displayed before the text.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// status.AddStatusItem("Online", "\uE774");
+    /// footer.AddStatusItem("Online", "\uE774");
     /// ]]></code>
     /// </example>
-    IFlourishStatusBuilder AddStatusItem(string displayText, string iconGlyph);
+    IFlourishFooterBuilder AddStatusItem(string displayText, string iconGlyph);
 
     /// <summary>
     /// Shows the built-in LAN connection status item.
@@ -44,10 +44,10 @@ public interface IFlourishStatusBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// status.ShowLANConnectionStatus();
+    /// footer.ShowLANConnectionStatus();
     /// ]]></code>
     /// </example>
-    IFlourishStatusBuilder ShowLANConnectionStatus();
+    IFlourishFooterBuilder ShowLANConnectionStatus();
 
     /// <summary>
     /// Shows the built-in power status item.
@@ -55,8 +55,8 @@ public interface IFlourishStatusBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// status.ShowPowerStatus();
+    /// footer.ShowPowerStatus();
     /// ]]></code>
     /// </example>
-    IFlourishStatusBuilder ShowPowerStatus();
+    IFlourishFooterBuilder ShowPowerStatus();
 }

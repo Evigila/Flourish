@@ -5,7 +5,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseMotion((_, motion) =>
+/// builder.ConfigureMotion(motion =>
 /// {
 ///     motion.SetDuration(TimeSpan.FromMilliseconds(180));
 /// });
@@ -13,18 +13,6 @@ namespace AckSS.Flourish.Abstract;
 /// </example>
 public interface IFlourishMotionBuilder
 {
-    /// <summary>
-    /// Enables or disables Flourish motion.
-    /// </summary>
-    /// <param name="enabled">A value indicating whether motion should be enabled.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    /// <example>
-    /// <code><![CDATA[
-    /// motion.SetEnabled(false);
-    /// ]]></code>
-    /// </example>
-    IFlourishMotionBuilder SetEnabled(bool enabled = true);
-
     /// <summary>
     /// Sets the default motion duration.
     /// </summary>

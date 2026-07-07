@@ -11,7 +11,7 @@ description: Understand the builder, hosting integration, services, and page reg
 
 `FlourishBuilder.CreateDefaultBuilder(args)` uses `Host.CreateDefaultBuilder(args)` internally. The resulting runtime therefore has the same basic hosting behavior you expect from modern .NET applications:
 
-- configuration and environment are available through `HostBuilderContext`
+- configuration and environment are available through `HostBuilderContext` in `ConfigureServices`
 - services are registered in `IServiceCollection`
 - the final service provider is available from `IFlourish.Services`
 - application objects can be resolved with `flourish.GetRequiredService<T>()`
@@ -33,14 +33,23 @@ return flourish.Run<App>();
 
 ## Builder stages
 
-The public builder has four configuration stages.
+The public builder separates high-level feature switches from detailed configuration.
 
 | Method | Purpose |
 | --- | --- |
 | `ConfigureServices` | Registers application services, pages, command parsers, view models, and any infrastructure you want in DI. |
-| `ConfigureShell` | Configures the shell window, title bar, navigation panel, tooltips, motion, material effect, font, and dynamic toolbar surface. |
+| `ConfigureShell` | Enables or disables shell features such as the title bar, navigation, dynamic toolbar, tips, motion, material effects, themes, and footer. |
+| `ConfigureTitleBar` | Configures title bar content and behavior when the title bar is enabled. |
+| `ConfigureNavigation` | Configures navigation panel display, registered page positions, command items, groups, and fixed items. |
+| `ConfigureCustomHandler` | Inserts custom WPF elements into predefined shell regions. |
 | `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
-| `ConfigureStatus` | Configures the status area at the bottom of the shell. |
+| `ConfigureTips` | Configures tooltip delay and shell-edge spacing. |
+| `ConfigureMotion` | Configures animation duration, page transitions, navigation panel transitions, and hover reveal. |
+| `ConfigureWindow` | Configures shell window size, position, state, resize mode, taskbar visibility, and topmost behavior. |
+| `ConfigureFont` | Configures the shell font family and base size. |
+| `ConfigureMaterialEffect` | Configures the material effect used when material effects are enabled. |
+| `ConfigureThemes` | Configures the default theme used when themes are enabled. |
+| `ConfigureFooter` | Configures the status area in the shell footer. |
 
 Each method can be called multiple times. Flourish stores the callbacks and applies them during `Build()`.
 
@@ -58,7 +67,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-Flourish also registers its own internal services during build, including navigation, toolbar, status, message, tooltip, material effect, motion, page cache, and shell window services. You do not need to construct those directly.
+Flourish also registers its own internal services during build, including navigation, toolbar, footer status, message, tooltip, material effect, motion, page cache, and shell window services. You do not need to construct those directly.
 
 ## Register pages with AddNavigable
 
@@ -89,18 +98,20 @@ services.AddNavigable(
 
 `displayName` is shown by `AddNavigableViewItem`. `iconGlyph` is typically a Segoe Fluent Icons glyph such as `"\uE80F"`. `cacheMode` controls whether the same page instance is reused.
 
-Place registered pages in the visible navigation panel with `UseNavigationPanel`.
+Place registered pages in the visible navigation model with `ConfigureNavigation`. Navigation panel display settings such as direction, width, and initial open state are also configured there.
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureNavigation(navigation =>
 {
-    nav.SetGroup("Navigation", groupId: 0, group =>
-    {
-        group.AddNavigableViewItem<HomePage>(isInitial: true);
-        group.AddNavigableViewItem<SettingsPage>();
-    });
+    navigation
+        .SetInitiallyOpen()
+        .SetGroup("Navigation", groupId: 0, group =>
+        {
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+            group.AddNavigableViewItem<SettingsPage>();
+        });
 
-    nav.AddFixedNavigableViewItem<ReportPage>();
+    navigation.AddFixedNavigableViewItem<ReportPage>();
 });
 ```
 

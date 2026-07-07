@@ -3,47 +3,31 @@ using System.Windows.Controls;
 namespace AckSS.Flourish.Abstract;
 
 /// <summary>
-/// Configures the Flourish navigation panel.
+/// Configures the visible navigation panel and navigation model.
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseNavigationPanel((_, nav) =>
+/// builder.ConfigureNavigation(navigation =>
 /// {
-///     nav.SetInitiallyOpen()
-///        .SetGroup("Navigation", groupId: 0, group =>
-///        {
-///            group.AddNavigableViewItem<HomePage>(isInitial: true);
-///            group.AddNavigableItem("Refresh", "home.refresh", iconGlyph: "\uE72C");
-///        })
-///        .AddFixedNavigableViewItem<SettingsPage>();
+///     navigation.SetDirection()
+///         .SetInitiallyOpen()
+///         .SetPanelWidth(openWidth: 260, closedWidth: 48)
+///         .SetGroup("Navigation", groupId: 0, group =>
+///     {
+///         group.AddNavigableViewItem<HomePage>(isInitial: true);
+///         group.AddNavigableItem("Refresh", "navigation.refresh", iconGlyph: "\uE72C");
+///     });
 /// });
 /// ]]></code>
 /// </example>
-public interface IFlourishNavigationPanelBuilder
+public interface IFlourishNavigationBuilder
 {
-    /// <summary>
-    /// Enables or disables the navigation panel.
-    /// </summary>
-    /// <param name="enabled">A value indicating whether the navigation panel should be enabled.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    /// <example>
-    /// <code><![CDATA[
-    /// nav.SetEnabled(true);
-    /// ]]></code>
-    /// </example>
-    IFlourishNavigationPanelBuilder SetEnabled(bool enabled = true);
-
     /// <summary>
     /// Sets the side of the shell where the navigation panel is displayed.
     /// </summary>
     /// <param name="direction">The navigation panel direction.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    /// <example>
-    /// <code><![CDATA[
-    /// nav.SetDirection(NavigationPanelDirection.Left);
-    /// ]]></code>
-    /// </example>
-    IFlourishNavigationPanelBuilder SetDirection(
+    IFlourishNavigationBuilder SetDirection(
         NavigationPanelDirection direction = NavigationPanelDirection.Left
     );
 
@@ -52,12 +36,7 @@ public interface IFlourishNavigationPanelBuilder
     /// </summary>
     /// <param name="enabled">A value indicating whether the navigation panel should start open.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    /// <example>
-    /// <code><![CDATA[
-    /// nav.SetInitiallyOpen(false);
-    /// ]]></code>
-    /// </example>
-    IFlourishNavigationPanelBuilder SetInitiallyOpen(bool enabled = true);
+    IFlourishNavigationBuilder SetInitiallyOpen(bool enabled = true);
 
     /// <summary>
     /// Sets the navigation panel width and the resize range used by the splitter.
@@ -70,12 +49,7 @@ public interface IFlourishNavigationPanelBuilder
     /// <remarks>
     /// The open width is also updated when users resize the panel with the splitter.
     /// </remarks>
-    /// <example>
-    /// <code><![CDATA[
-    /// nav.SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180);
-    /// ]]></code>
-    /// </example>
-    IFlourishNavigationPanelBuilder SetPanelWidth(
+    IFlourishNavigationBuilder SetPanelWidth(
         double openWidth = 220,
         double closedWidth = 48,
         double maxWidth = 420,
@@ -88,16 +62,10 @@ public interface IFlourishNavigationPanelBuilder
     /// <param name="title">The title displayed above legacy navigation items.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// When groups are configured with <see cref="SetGroup" />, each group heading comes from the
-    /// group display name. If group 0 has no display name, Flourish does not reserve heading space
-    /// at the top of the navigation panel.
+    /// When groups are configured, each group heading comes from the group display name. If group 0
+    /// has no display name, Flourish does not reserve heading space at the top of the navigation panel.
     /// </remarks>
-    /// <example>
-    /// <code><![CDATA[
-    /// nav.SetTitle("Navigation");
-    /// ]]></code>
-    /// </example>
-    IFlourishNavigationPanelBuilder SetTitle(string title);
+    IFlourishNavigationBuilder SetTitle(string title);
 
     /// <summary>
     /// Adds and configures a scrollable navigation group.
@@ -113,19 +81,19 @@ public interface IFlourishNavigationPanelBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// nav.SetGroup("Navigation", groupId: 0, group =>
+    /// navigation.SetGroup("Navigation", groupId: 0, group =>
     /// {
     ///     group.AddNavigableViewItem<HomePage>(isInitial: true);
     ///     group.AddNavigableViewItem<GalleryPage>();
     /// });
     ///
-    /// nav.SetGroup("Tools", groupId: 1, group =>
+    /// navigation.SetGroup("Tools", groupId: 1, group =>
     /// {
     ///     group.AddNavigableItem("Refresh", "gallery.refresh", iconGlyph: "\uE72C");
     /// });
     /// ]]></code>
     /// </example>
-    IFlourishNavigationPanelBuilder SetGroup(
+    IFlourishNavigationBuilder SetGroup(
         string? displayName = null,
         int groupId = 0,
         Action<IFlourishNavigationGroupBuilder>? configureGroup = null
@@ -145,10 +113,10 @@ public interface IFlourishNavigationPanelBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// nav.AddFixedNavigableViewItem<SettingsPage>();
+    /// navigation.AddFixedNavigableViewItem<SettingsPage>();
     /// ]]></code>
     /// </example>
-    IFlourishNavigationPanelBuilder AddFixedNavigableViewItem<TPage>(
+    IFlourishNavigationBuilder AddFixedNavigableViewItem<TPage>(
         bool isInitial = false,
         int parentId = 0,
         int childId = 0
@@ -171,10 +139,10 @@ public interface IFlourishNavigationPanelBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// nav.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
+    /// navigation.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
     /// ]]></code>
     /// </example>
-    IFlourishNavigationPanelBuilder AddFixedNavigableItem(
+    IFlourishNavigationBuilder AddFixedNavigableItem(
         string displayName,
         string? commandKey,
         int parentId = 0,

@@ -1,3 +1,4 @@
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AckSS.Flourish.Abstract;
 using AckSS.Flourish.Configuration;
@@ -75,13 +76,45 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
 
     public IFlourishTitlebarBuilder SetLogo(string packUri)
     {
+        options.IsTitlebarLogoEnabled = true;
         options.LogoSource = new BitmapImage(new Uri(packUri, UriKind.RelativeOrAbsolute));
+        return this;
+    }
+
+    public IFlourishTitlebarBuilder SetLogo(ImageSource logoSource)
+    {
+        ArgumentNullException.ThrowIfNull(logoSource);
+        options.IsTitlebarLogoEnabled = true;
+        options.LogoSource = logoSource;
+        return this;
+    }
+
+    public IFlourishTitlebarBuilder SetLogoFallbackText(string fallbackText)
+    {
+        options.IsTitlebarLogoEnabled = true;
+        options.LogoFallbackText = ValidateNotBlank(fallbackText, nameof(fallbackText));
         return this;
     }
 
     public IFlourishTitlebarBuilder SetSearchPlaceholder(string placeholder)
     {
         options.SearchPlaceholder = placeholder;
+        return this;
+    }
+
+    public IFlourishTitlebarBuilder SetSearchHandler(Action<string> searchTextChanged)
+    {
+        ArgumentNullException.ThrowIfNull(searchTextChanged);
+        return SetSearchHandler((_, text) => searchTextChanged(text));
+    }
+
+    public IFlourishTitlebarBuilder SetSearchHandler(
+        Action<IServiceProvider, string> searchTextChanged
+    )
+    {
+        ArgumentNullException.ThrowIfNull(searchTextChanged);
+        options.IsTitlebarSearchEnabled = true;
+        options.TitlebarSearchTextChanged = searchTextChanged;
         return this;
     }
 
@@ -102,4 +135,5 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
 
         return value;
     }
+
 }

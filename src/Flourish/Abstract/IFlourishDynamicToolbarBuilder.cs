@@ -7,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// builder.ConfigureDynamicToolbar((_, toolbar) =>
+/// builder.ConfigureDynamicToolbar(toolbar =>
 /// {
 ///     toolbar.CreateToolbarItems<HomePage>(new FlourishToolbarItem("Open", "\uE8E5", "home.open"));
 /// });

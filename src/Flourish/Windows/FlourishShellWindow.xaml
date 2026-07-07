@@ -343,7 +343,7 @@
           </Grid.ColumnDefinitions>
 
           <StackPanel
-            x:Name="StatusStartRegionHost"
+            x:Name="FooterStartRegionHost"
             Grid.Column="0"
             VerticalAlignment="Center"
             Orientation="Horizontal"
@@ -366,7 +366,7 @@
           />
 
           <StackPanel
-            x:Name="StatusEndRegionHost"
+            x:Name="FooterEndRegionHost"
             Grid.Column="3"
             VerticalAlignment="Center"
             Orientation="Horizontal"

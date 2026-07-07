@@ -7,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// nav.SetGroup("Navigation", groupId: 0, group =>
+/// navigation.SetGroup("Navigation", groupId: 0, group =>
 /// {
 ///     group.AddNavigableViewItem<HomePage>(isInitial: true);
 ///     group.AddNavigableItem("Refresh", "navigation.refresh", iconGlyph: "\uE72C");

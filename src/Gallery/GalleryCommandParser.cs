@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Windows;
 using AckSS.Flourish.Abstract;
 
@@ -27,6 +26,12 @@ internal sealed class GalleryCommandParser(IMessageService messages) : ICommandP
             case "app.about":
                 ShowCommandOutput("关于");
                 return true;
+            case "titlebar.trace":
+                ShowCommandOutput("Titlebar command invoked");
+                return true;
+            case "footer.trace":
+                ShowCommandOutput("Footer command invoked");
+                return true;
             case "home.open":
                 messages.Show(
                     "Hello, World!",
@@ -51,7 +56,6 @@ internal sealed class GalleryCommandParser(IMessageService messages) : ICommandP
 
     private void ShowCommandOutput(string text)
     {
-        Debug.WriteLine(text);
         messages.Show(text, "Gallery", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 }

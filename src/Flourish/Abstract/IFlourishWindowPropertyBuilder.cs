@@ -7,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.SetWindowProperty((_, window) =>
+/// builder.ConfigureWindow(window =>
 /// {
 ///     window.SetWindowSize(1280, 720);
 /// });

@@ -11,7 +11,7 @@ description: 理解 builder、Hosting 集成、服务注册和页面注册。
 
 `FlourishBuilder.CreateDefaultBuilder(args)` 内部使用 `Host.CreateDefaultBuilder(args)`。因此构建出的运行时拥有现代 .NET 应用中熟悉的 Hosting 行为：
 
-- 可以通过 `HostBuilderContext` 访问配置和环境信息
+- 可以在 `ConfigureServices` 中通过 `HostBuilderContext` 访问配置和环境信息
 - 使用 `IServiceCollection` 注册服务
 - 最终服务提供器可通过 `IFlourish.Services` 获取
 - 应用对象可以用 `flourish.GetRequiredService<T>()` 解析
@@ -33,14 +33,23 @@ return flourish.Run<App>();
 
 ## Builder 阶段
 
-公开 builder 有四个配置阶段。
+公开 builder 将高层功能开关和详细配置拆分开。
 
 | 方法 | 作用 |
 | --- | --- |
 | `ConfigureServices` | 注册应用服务、页面、命令解析器、ViewModel 以及你希望放入 DI 的基础设施。 |
-| `ConfigureShell` | 配置 Shell 窗口、标题栏、导航栏、Tips、动效、材质特效、字体和动态工具栏区域。 |
+| `ConfigureShell` | 启用或禁用标题栏、导航、动态工具栏、Tips、动效、材质特效、主题和 Footer 等 Shell 功能。 |
+| `ConfigureTitleBar` | 在标题栏启用时配置标题栏内容和行为。 |
+| `ConfigureNavigation` | 配置导航栏展示参数、已注册页面位置、命令项、分组和固定项。 |
+| `ConfigureCustomHandler` | 将自定义 WPF 元素插入预定义 Shell 区域。 |
 | `ConfigureDynamicToolbar` | 注册按页面变化的工具栏项。 |
-| `ConfigureStatus` | 配置 Shell 底部状态栏。 |
+| `ConfigureTips` | 配置提示浮层延迟和 Shell 边缘间距。 |
+| `ConfigureMotion` | 配置动画时长、页面过渡、导航栏过渡和 Hover Reveal。 |
+| `ConfigureWindow` | 配置 Shell 窗口尺寸、位置、状态、缩放模式、任务栏显示和置顶行为。 |
+| `ConfigureFont` | 配置 Shell 字体和基础字号。 |
+| `ConfigureMaterialEffect` | 配置材质特效启用时使用的材质类型。 |
+| `ConfigureThemes` | 配置主题启用时使用的默认主题。 |
+| `ConfigureFooter` | 配置 Shell Footer 中的状态区域。 |
 
 这些方法都可以调用多次。Flourish 会保存回调，并在 `Build()` 时统一应用。
 
@@ -58,7 +67,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-Flourish 会在构建阶段注册自己的内部服务，包括导航、工具栏、状态栏、Message、Tips、材质特效、动效、页面缓存和 Shell 窗口服务。你不需要直接构造这些内部服务。
+Flourish 会在构建阶段注册自己的内部服务，包括导航、工具栏、Footer 状态、Message、Tips、材质特效、动效、页面缓存和 Shell 窗口服务。你不需要直接构造这些内部服务。
 
 ## 使用 AddNavigable 注册页面
 
@@ -89,18 +98,20 @@ services.AddNavigable(
 
 `displayName` 会被 `AddNavigableViewItem` 显示出来。`iconGlyph` 通常是 Segoe Fluent Icons 字形，例如 `"\uE80F"`。`cacheMode` 控制页面实例是否复用。
 
-已注册页面需要通过 `UseNavigationPanel` 放入可见导航栏。
+已注册页面需要通过 `ConfigureNavigation` 放入可见导航模型。导航栏方向、宽度和初始展开状态等展示设置也在这里配置。
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureNavigation(navigation =>
 {
-    nav.SetGroup("导航", groupId: 0, group =>
-    {
-        group.AddNavigableViewItem<HomePage>(isInitial: true);
-        group.AddNavigableViewItem<SettingsPage>();
-    });
+    navigation
+        .SetInitiallyOpen()
+        .SetGroup("导航", groupId: 0, group =>
+        {
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+            group.AddNavigableViewItem<SettingsPage>();
+        });
 
-    nav.AddFixedNavigableViewItem<ReportPage>();
+    navigation.AddFixedNavigableViewItem<ReportPage>();
 });
 ```
 

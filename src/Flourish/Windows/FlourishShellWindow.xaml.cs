@@ -137,10 +137,7 @@ internal partial class FlourishShellWindow : Window
             options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
             options.IsTitlebarProfileEnabled
         );
-        StatusBarBorder.Visibility = options.IsStatusBarEnabled || HasAnyRegionContent(
-                FlourishRegion.StatusStart,
-                FlourishRegion.StatusEnd
-            )
+        StatusBarBorder.Visibility = options.IsStatusBarEnabled
             ? Visibility.Visible
             : Visibility.Collapsed;
         StatusTextBlock.Text = statusService.StatusText;
@@ -159,7 +156,10 @@ internal partial class FlourishShellWindow : Window
         isPaneOpen = options.IsNavigationPanelInitiallyOpen;
         ApplyNavigationPaneState();
         windowFrameFixService.Attach(this);
-        materialEffectService.Attach(this, options.MaterialEffect);
+        materialEffectService.Attach(
+            this,
+            options.IsMaterialEffectEnabled ? options.MaterialEffect : MaterialEffect.None
+        );
         themeService.Attach(this);
         ApplyThemeState();
         trayIconService.Initialize(this, options.Title);
@@ -178,9 +178,12 @@ internal partial class FlourishShellWindow : Window
 
     private void ApplyToolTipResources()
     {
-        Resources["FlourishToolTipInitialShowDelay"] =
-            options.Tips.InitialShowDelayMilliseconds;
-        Resources["FlourishToolTipSpawnableMargin"] = options.Tips.SpawnableMargin;
+        Resources["FlourishToolTipInitialShowDelay"] = options.IsTipsEnabled
+            ? options.Tips.InitialShowDelayMilliseconds
+            : int.MaxValue;
+        Resources["FlourishToolTipSpawnableMargin"] = options.IsTipsEnabled
+            ? options.Tips.SpawnableMargin
+            : 0d;
     }
 
     private void ApplyWindowOptions()
@@ -249,6 +252,7 @@ internal partial class FlourishShellWindow : Window
         Titlebar.DragRequested += Titlebar_DragRequested;
         Titlebar.ToggleWindowStateRequested += Titlebar_ToggleWindowStateRequested;
         Titlebar.ThemeToggleRequested += Titlebar_ThemeToggleRequested;
+        Titlebar.SearchTextChanged += Titlebar_SearchTextChanged;
     }
 
     private void ApplyNavigationPanelPlacement()
@@ -417,6 +421,15 @@ internal partial class FlourishShellWindow : Window
 
     private void BuildToolbarItems(Type? pageType = null)
     {
+        if (!options.IsDynamicToolbarEnabled)
+        {
+            ToolbarItemsHost.Children.Clear();
+            ToolbarHostBorder.Visibility = Visibility.Collapsed;
+            activeToolbarPageType = null;
+            isDefaultToolbarActive = false;
+            return;
+        }
+
         if (activeToolbarPageType == pageType && isDefaultToolbarActive == (pageType is null))
         {
             return;
@@ -502,20 +515,15 @@ internal partial class FlourishShellWindow : Window
             case FlourishRegion.ToolbarEnd:
                 SetPanelContent(ToolbarEndRegionHost, elements);
                 break;
-            case FlourishRegion.StatusStart:
-                SetPanelContent(StatusStartRegionHost, elements);
+            case FlourishRegion.FooterStart:
+                SetPanelContent(FooterStartRegionHost, elements);
                 break;
-            case FlourishRegion.StatusEnd:
-                SetPanelContent(StatusEndRegionHost, elements);
+            case FlourishRegion.FooterEnd:
+                SetPanelContent(FooterEndRegionHost, elements);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(region), region, "Unknown shell region.");
         }
-    }
-
-    private bool HasAnyRegionContent(params FlourishRegion[] regions)
-    {
-        return options.RegionContents.Any(content => regions.Contains(content.Region));
     }
 
     private static void SetPanelContent(
@@ -1121,6 +1129,11 @@ internal partial class FlourishShellWindow : Window
     private void Titlebar_ThemeToggleRequested(object? sender, EventArgs e)
     {
         themeService.ToggleTheme();
+    }
+
+    private void Titlebar_SearchTextChanged(object? sender, string searchText)
+    {
+        options.TitlebarSearchTextChanged?.Invoke(serviceProvider, searchText);
     }
 
     private void ThemeService_ThemeChanged(object? sender, FlourishThemeChangedEventArgs e)

@@ -16,6 +16,8 @@ internal sealed class FlourishShellOptions
 
     public string StatusText { get; set; } = string.Empty;
 
+    public Action<IServiceProvider, string>? TitlebarSearchTextChanged { get; set; }
+
     public ImageSource? LogoSource { get; set; }
 
     public string LogoFallbackText { get; set; } = "F";
@@ -49,7 +51,9 @@ internal sealed class FlourishShellOptions
 
     public ResizeMode WindowResizeMode { get; set; } = ResizeMode.CanResize;
 
-    public MaterialEffect MaterialEffect { get; set; }
+    public MaterialEffect MaterialEffect { get; set; } = MaterialEffect.Mica;
+
+    public bool IsMaterialEffectEnabled { get; set; }
 
     public bool IsThemeEnabled { get; set; }
 
@@ -58,6 +62,8 @@ internal sealed class FlourishShellOptions
     public FlourishMotionOptions Motion { get; } = new();
 
     public FlourishTipOptions Tips { get; } = new();
+
+    public bool IsTipsEnabled { get; set; }
 
     public bool WindowTopmost { get; set; }
 

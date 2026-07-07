@@ -77,14 +77,14 @@ The third constructor argument is the command key. It is optional, but toolbar a
 Navigation command items use the same parser path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section.
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureNavigation(navigation =>
 {
-    nav.SetGroup("Commands", groupId: 1, group =>
+    navigation.SetGroup("Commands", groupId: 1, group =>
     {
         group.AddNavigableItem("Refresh", "gallery.refresh", iconGlyph: "\uE72C");
     });
 
-    nav.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
+    navigation.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
 });
 ```
 

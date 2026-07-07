@@ -5,7 +5,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseNavigationPanel((_, nav) =>
+/// builder.ConfigureNavigation(nav =>
 /// {
 ///     nav.SetDirection(NavigationPanelDirection.Left);
 /// });

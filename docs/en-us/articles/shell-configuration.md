@@ -1,35 +1,39 @@
 ---
 title: Shell configuration
-description: Configure the Flourish shell window, title bar, navigation, motion, material, font, and window behavior.
+description: Configure Flourish shell feature switches and detailed shell options.
 ---
 
 # Shell configuration
 
-Shell configuration is performed through `ConfigureShell`. It receives an `IFlourishShellBuilder`, which groups the high-level visual and window concerns of the application.
+`ConfigureShell` controls only high-level shell feature switches. Each `Use...` method has a single `enabled` parameter and defaults to `true`.
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
+builder.ConfigureShell(shell =>
 {
     shell
-        .UseTitlebar((_, titlebar) => { })
-        .UseNavigationPanel((_, nav) => { })
+        .UseTitleBar()
+        .UseNavigation()
         .UseDynamicToolbar()
-        .UseTips((_, tips) => { })
-        .UseMotion((_, motion) => { })
+        .UseTips()
+        .UseMotion()
         .UseMaterialEffect()
-        .SetGlobalFont("Microsoft YaHei")
-        .SetWindowProperty((_, window) => { });
+        .UseThemes()
+        .UseFooter();
 });
 ```
 
+`ConfigureShell` has the highest priority. If a feature is not enabled there, the matching detailed configuration is still accepted during build but the shell does not display that area or behavior.
+
 ## Title bar
 
-`UseTitlebar` enables and configures the Flourish title bar. The title bar can show the logo, title, subtitle, search box, breadcrumb, navigation toggle, and profile area.
+Enable the title bar with `UseTitleBar`, then configure its details with `ConfigureTitleBar`.
 
 ```csharp
-shell.UseTitlebar((_, titlebar) =>
+builder.ConfigureShell(shell => shell.UseTitleBar());
+
+builder.ConfigureTitleBar(titleBar =>
 {
-    titlebar
+    titleBar
         .ShowLogo()
         .ShowTitle()
         .ShowSubTitle()
@@ -37,6 +41,7 @@ shell.UseTitlebar((_, titlebar) =>
         .ShowBreadcrumb()
         .ShowNavToggle()
         .ShowProfile()
+        .ShowThemeToggle()
         .SetTrayExit(false)
         .SetTitle("Gallery")
         .SetSubtitle("Flourish sample")
@@ -48,17 +53,16 @@ shell.UseTitlebar((_, titlebar) =>
 
 `SetBreadcrumbBehavior` controls when breadcrumb navigation appears. `Always` keeps it visible, `Auto` lets Flourish decide from navigation state, and `Hidden` suppresses it.
 
-`SetTrayExit` controls whether title bar close behavior should follow the tray flow. Leave it disabled for ordinary desktop windows; enable it for applications that minimize or stay alive in the notification area. Title bar close requests show a Flourish-styled confirmation dialog before the close or tray action is applied.
+## Navigation
 
-## Navigation panel
-
-`UseNavigationPanel` configures the left or right navigation area. Register page metadata with `AddNavigable`, then place visible page items, command items, groups, and fixed bottom items here.
+Enable navigation with `UseNavigation`, then configure panel display and visible items with `ConfigureNavigation`.
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureShell(shell => shell.UseNavigation());
+
+builder.ConfigureNavigation(navigation =>
 {
-    nav
-        .SetEnabled()
+    navigation
         .SetDirection(NavigationPanelDirection.Left)
         .SetInitiallyOpen()
         .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
@@ -73,42 +77,48 @@ shell.UseNavigationPanel((_, nav) =>
 });
 ```
 
-Use `SetEnabled(false)` for applications that rely on custom navigation or a single-page shell. Use `SetDirection(NavigationPanelDirection.Right)` when your layout benefits from a right-side navigation rail. Grouped items live in the scrollable upper area; fixed items stay visible in the bottom area.
+Use `UseNavigation(false)` for applications that rely on custom navigation or a single-page shell. Use `SetDirection(NavigationPanelDirection.Right)` when your layout benefits from a right-side navigation rail.
 
-Use `SetPanelWidth` to set the open and collapsed panel widths and constrain the preview splitter resize range. By default, the panel opens at `220`, collapses to `48`, and can be resized between `160` and `420`. The splitter is invisible in the normal layout, appears only while hovering over the resize edge, and uses preview mode so the layout is committed after dragging finishes.
+## Dynamic Toolbar
 
-## Dynamic toolbar surface
-
-`UseDynamicToolbar()` only enables the shell surface. The page-specific items are registered separately through `ConfigureDynamicToolbar`.
+Enable the shell surface with `UseDynamicToolbar`, then register page-specific items with `ConfigureDynamicToolbar`.
 
 ```csharp
-shell.UseDynamicToolbar(enabled: true);
-```
+builder.ConfigureShell(shell => shell.UseDynamicToolbar());
 
-Disable it when the application does not have contextual page commands.
+builder.ConfigureDynamicToolbar(toolbar =>
+{
+    toolbar.CreateToolbarItems<HomePage>(
+        new FlourishToolbarItem("Open", "\uE8E5", "home.open"),
+        new FlourishToolbarItem("Save", "\uE74E", "home.save"));
+});
+```
 
 ## Tips
 
-`UseTips` configures Flourish tooltips. Tooltips use Flourish styling and predefined shell-region placement: left navigation opens right, right navigation opens left, title bar and top toolbar controls open downward, and footer controls open upward.
+Enable tooltips with `UseTips`, then tune tooltip behavior with `ConfigureTips`.
 
 ```csharp
-shell.UseTips((_, tips) =>
+builder.ConfigureShell(shell => shell.UseTips());
+
+builder.ConfigureTips(tips =>
 {
     tips.SetDelay(600).SetSpawnableMargin(5);
 });
 ```
 
-By default, tips appear after `800` milliseconds and keep at least `5` pixels away from the shell window bounds. Use `SetDelay` to tune the hover delay and `SetSpawnableMargin` to adjust that window-edge margin.
+By default, tips appear after `800` milliseconds and keep at least `5` pixels away from the shell window bounds.
 
 ## Motion
 
-`UseMotion()` enables default animation settings. The overload that receives `IFlourishMotionBuilder` lets you control duration, page transition, navigation panel transition, hover reveal, and reduced-motion behavior.
+Enable motion with `UseMotion`, then configure animation details with `ConfigureMotion`.
 
 ```csharp
-shell.UseMotion((_, motion) =>
+builder.ConfigureShell(shell => shell.UseMotion());
+
+builder.ConfigureMotion(motion =>
 {
     motion
-        .SetEnabled()
         .SetDuration(TimeSpan.FromMilliseconds(180))
         .SetPageTransition(FlourishPageTransition.EntranceFromBottom)
         .SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize)
@@ -117,37 +127,47 @@ shell.UseMotion((_, motion) =>
 });
 ```
 
-Use `FlourishPageTransition.None` or `SetEnabled(false)` when predictable, static UI is more important than motion.
+Use `UseMotion(false)` when predictable, static UI is more important than motion.
 
-## Material effect
+## Material Effect
 
-`UseMaterialEffect` applies a Windows material effect to the shell window.
+Enable material effects with `UseMaterialEffect`, then choose the material with `ConfigureMaterialEffect`.
+
+```csharp
+builder.ConfigureShell(shell => shell.UseMaterialEffect());
+builder.ConfigureMaterialEffect(MaterialEffect.Mica);
+```
 
 > [!WARNING]
 > Material effects depend on Windows desktop composition support. Use `MaterialEffect.None` for fully opaque windows or when a deployment environment should avoid platform-specific visuals.
 
+## Themes
+
+Enable theme support with `UseThemes`, then choose the default theme with `ConfigureThemes`.
+
 ```csharp
-shell.UseMaterialEffect(MaterialEffect.Mica);
+builder.ConfigureShell(shell => shell.UseThemes());
+builder.ConfigureThemes(FlourishTheme.System);
 ```
 
-Use `MaterialEffect.Mica` for the default Windows 11 style. Use `MaterialEffect.None` when you want a fully opaque window or need to avoid platform-specific material behavior.
+When themes are enabled, Flourish stores the selected theme in application preferences.
 
-## Global font
+## Font
 
-`SetGlobalFont` sets the shell font family and base size.
+Use `ConfigureFont` to set the shell font family and base size.
 
 ```csharp
-shell.SetGlobalFont("Microsoft YaHei", 14);
+builder.ConfigureFont("Microsoft YaHei", 14);
 ```
 
-Choose a font that supports the languages your application displays. For mixed Chinese and English UI, `Microsoft YaHei` is a safe default on Windows.
+Choose a font that supports the languages your application displays.
 
-## Window properties
+## Window
 
-`SetWindowProperty` configures the shell window size, min/max constraints, startup location, manual position, initial state, resize mode, topmost behavior, and taskbar visibility.
+Use `ConfigureWindow` to configure the shell window size, min/max constraints, startup location, manual position, initial state, resize mode, topmost behavior, and taskbar visibility.
 
 ```csharp
-shell.SetWindowProperty((_, window) =>
+builder.ConfigureWindow(window =>
 {
     window
         .SetWindowSize(1280, 720)
@@ -163,48 +183,52 @@ shell.SetWindowProperty((_, window) =>
 
 Use `SetManualWindowPosition(left, top)` when you also set `WindowStartupLocation.Manual`.
 
-## Full example
+## Full Example
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
-{
-    shell
-        .UseTitlebar((_, titlebar) =>
-        {
-            titlebar
-                .ShowLogo()
-                .ShowTitle()
-                .ShowSubTitle()
-                .ShowSearch()
-                .ShowBreadcrumb()
-                .ShowNavToggle()
-                .SetTitle("Gallery")
-                .SetSubtitle("Flourish sample");
-        })
-        .UseNavigationPanel((_, nav) =>
-        {
-            nav.SetDirection()
-               .SetInitiallyOpen()
-               .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-               .SetGroup("Navigation", groupId: 0, group =>
-               {
-                   group.AddNavigableViewItem<HomePage>(isInitial: true);
-               });
-        })
-        .UseDynamicToolbar()
-        .UseTips((_, tips) =>
-        {
-            tips.SetDelay(600).SetSpawnableMargin(5);
-        })
-        .UseMotion((_, motion) =>
-        {
-            motion.SetDuration().SetHoverReveal().SetNavigationPanelTransition().SetPageTransition();
-        })
-        .UseMaterialEffect()
-        .SetGlobalFont("Microsoft YaHei")
-        .SetWindowProperty((_, window) =>
-        {
-            window.SetWindowSize().SetWindowMinSize().SetWindowPosition();
-        });
-});
+builder
+    .ConfigureShell(shell =>
+    {
+        shell
+            .UseTitleBar()
+            .UseNavigation()
+            .UseDynamicToolbar()
+            .UseTips()
+            .UseMotion()
+            .UseMaterialEffect()
+            .UseThemes()
+            .UseFooter();
+    })
+    .ConfigureTitleBar(titleBar =>
+    {
+        titleBar
+            .ShowLogo()
+            .ShowTitle()
+            .ShowSubTitle()
+            .ShowSearch()
+            .ShowBreadcrumb()
+            .ShowNavToggle()
+            .SetTitle("Gallery")
+            .SetSubtitle("Flourish sample");
+    })
+    .ConfigureNavigation(navigation =>
+    {
+        navigation
+            .SetDirection()
+            .SetInitiallyOpen()
+            .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+            .SetGroup("Navigation", groupId: 0, group =>
+            {
+                group.AddNavigableViewItem<HomePage>(isInitial: true);
+            });
+    })
+    .ConfigureTips(tips => tips.SetDelay(600).SetSpawnableMargin(5))
+    .ConfigureMotion(motion =>
+    {
+        motion.SetDuration().SetHoverReveal().SetNavigationPanelTransition().SetPageTransition();
+    })
+    .ConfigureMaterialEffect(MaterialEffect.Mica)
+    .ConfigureThemes(FlourishTheme.System)
+    .ConfigureFont("Microsoft YaHei")
+    .ConfigureWindow(window => window.SetWindowSize().SetWindowMinSize().SetWindowPosition());
 ```

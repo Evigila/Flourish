@@ -3,23 +3,21 @@ using AckSS.Flourish.Configuration;
 
 namespace AckSS.Flourish.Composition;
 
-internal sealed class FlourishStatusBuilder(FlourishShellOptions options) : IFlourishStatusBuilder
+internal sealed class FlourishFooterBuilder(FlourishShellOptions options) : IFlourishFooterBuilder
 {
-    public IFlourishStatusBuilder SetStatusText(string text)
+    public IFlourishFooterBuilder SetStatusText(string text)
     {
-        options.IsStatusBarEnabled = true;
         options.StatusText = text;
         return this;
     }
 
-    public IFlourishStatusBuilder AddStatusItem(string displayText, string iconGlyph)
+    public IFlourishFooterBuilder AddStatusItem(string displayText, string iconGlyph)
     {
-        options.IsStatusBarEnabled = true;
         options.StatusItems.Add(new FlourishStatusItem(displayText, iconGlyph));
         return this;
     }
 
-    public IFlourishStatusBuilder ShowLANConnectionStatus()
+    public IFlourishFooterBuilder ShowLANConnectionStatus()
     {
         var text = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()
             ? "已连接"
@@ -28,7 +26,7 @@ internal sealed class FlourishStatusBuilder(FlourishShellOptions options) : IFlo
         return AddStatusItem(text, "\uE701");
     }
 
-    public IFlourishStatusBuilder ShowPowerStatus()
+    public IFlourishFooterBuilder ShowPowerStatus()
     {
         return AddStatusItem("电源", "\uE850");
     }

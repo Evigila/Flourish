@@ -10,30 +10,44 @@ namespace AckSS.Flourish.Composition;
 internal sealed class FlourishCompositionRoot(
     FlourishShellOptions shellOptions,
     FlourishDataOptions dataOptions,
-    IReadOnlyList<Action<HostBuilderContext, IFlourishDataBuilder>> dataConfigurations,
+    IReadOnlyList<Action<IFlourishDataBuilder>> dataConfigurations,
     IReadOnlyList<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations,
-    IReadOnlyList<Action<HostBuilderContext, IFlourishShellBuilder>> shellConfigurations,
-    IReadOnlyList<Action<HostBuilderContext, IFlourishDynamicToolbarBuilder>> toolbarConfigurations,
-    IReadOnlyList<Action<HostBuilderContext, IFlourishStatusBuilder>> statusConfigurations
+    IReadOnlyList<Action<IFlourishShellBuilder>> shellConfigurations,
+    IReadOnlyList<Action<IFlourishTitlebarBuilder>> titleBarConfigurations,
+    IReadOnlyList<Action<IFlourishNavigationBuilder>> navigationConfigurations,
+    IReadOnlyList<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations,
+    IReadOnlyList<Action<IFlourishDynamicToolbarBuilder>> toolbarConfigurations,
+    IReadOnlyList<Action<IFlourishTipsBuilder>> tipsConfigurations,
+    IReadOnlyList<Action<IFlourishMotionBuilder>> motionConfigurations,
+    IReadOnlyList<Action<IFlourishWindowPropertyBuilder>> windowConfigurations,
+    IReadOnlyList<Action<IFlourishFooterBuilder>> footerConfigurations
 )
 {
     private readonly FlourishShellOptions shellOptions = shellOptions;
     private readonly FlourishDataOptions dataOptions = dataOptions;
-    private readonly IReadOnlyList<
-        Action<HostBuilderContext, IFlourishDataBuilder>
-    > dataConfigurations = dataConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishDataBuilder>> dataConfigurations =
+        dataConfigurations;
     private readonly IReadOnlyList<
         Action<HostBuilderContext, IServiceCollection>
     > serviceConfigurations = serviceConfigurations;
-    private readonly IReadOnlyList<
-        Action<HostBuilderContext, IFlourishShellBuilder>
-    > shellConfigurations = shellConfigurations;
-    private readonly IReadOnlyList<
-        Action<HostBuilderContext, IFlourishDynamicToolbarBuilder>
-    > toolbarConfigurations = toolbarConfigurations;
-    private readonly IReadOnlyList<
-        Action<HostBuilderContext, IFlourishStatusBuilder>
-    > statusConfigurations = statusConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishShellBuilder>> shellConfigurations =
+        shellConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishTitlebarBuilder>> titleBarConfigurations =
+        titleBarConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishNavigationBuilder>> navigationConfigurations =
+        navigationConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations =
+        customHandlerConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishDynamicToolbarBuilder>> toolbarConfigurations =
+        toolbarConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishTipsBuilder>> tipsConfigurations =
+        tipsConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishMotionBuilder>> motionConfigurations =
+        motionConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishWindowPropertyBuilder>> windowConfigurations =
+        windowConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishFooterBuilder>> footerConfigurations =
+        footerConfigurations;
 
     public void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
@@ -42,36 +56,72 @@ internal sealed class FlourishCompositionRoot(
             configureServices(context, services);
         }
 
-        ApplyFlourishConfigurations(context);
+        ApplyFlourishConfigurations();
         ValidateDataConfiguration();
         ApplyServiceCollectionRegistrations(services);
         RegisterCoreServices(services);
     }
 
-    private void ApplyFlourishConfigurations(HostBuilderContext context)
+    private void ApplyFlourishConfigurations()
     {
-        var shellBuilder = new FlourishShellBuilder(shellOptions, context);
+        var shellBuilder = new FlourishShellBuilder(shellOptions);
         foreach (var configureShell in shellConfigurations)
         {
-            configureShell(context, shellBuilder);
+            configureShell(shellBuilder);
+        }
+
+        var titleBarBuilder = new FlourishTitlebarBuilder(shellOptions);
+        foreach (var configureTitleBar in titleBarConfigurations)
+        {
+            configureTitleBar(titleBarBuilder);
+        }
+
+        var navigationBuilder = new FlourishNavigationBuilder(shellOptions);
+        foreach (var configureNavigation in navigationConfigurations)
+        {
+            configureNavigation(navigationBuilder);
+        }
+
+        var customHandlerBuilder = new FlourishCustomHandlerBuilder(shellOptions);
+        foreach (var configureCustomHandler in customHandlerConfigurations)
+        {
+            configureCustomHandler(customHandlerBuilder);
         }
 
         var toolbarBuilder = new FlourishDynamicToolbarBuilder(shellOptions);
         foreach (var configureToolbar in toolbarConfigurations)
         {
-            configureToolbar(context, toolbarBuilder);
+            configureToolbar(toolbarBuilder);
         }
 
-        var statusBuilder = new FlourishStatusBuilder(shellOptions);
-        foreach (var configureStatus in statusConfigurations)
+        var tipsBuilder = new FlourishTipsBuilder(shellOptions.Tips);
+        foreach (var configureTips in tipsConfigurations)
         {
-            configureStatus(context, statusBuilder);
+            configureTips(tipsBuilder);
+        }
+
+        var motionBuilder = new FlourishMotionBuilder(shellOptions.Motion);
+        foreach (var configureMotion in motionConfigurations)
+        {
+            configureMotion(motionBuilder);
+        }
+
+        var windowBuilder = new FlourishWindowPropertyBuilder(shellOptions);
+        foreach (var configureWindow in windowConfigurations)
+        {
+            configureWindow(windowBuilder);
+        }
+
+        var footerBuilder = new FlourishFooterBuilder(shellOptions);
+        foreach (var configureFooter in footerConfigurations)
+        {
+            configureFooter(footerBuilder);
         }
 
         var dataBuilder = new FlourishDataBuilder(dataOptions);
         foreach (var configureData in dataConfigurations)
         {
-            configureData(context, dataBuilder);
+            configureData(dataBuilder);
         }
     }
 

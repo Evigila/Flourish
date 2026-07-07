@@ -5,12 +5,6 @@ namespace AckSS.Flourish.Composition;
 
 internal sealed class FlourishMotionBuilder(FlourishMotionOptions options) : IFlourishMotionBuilder
 {
-    public IFlourishMotionBuilder SetEnabled(bool enabled = true)
-    {
-        options.IsEnabled = enabled;
-        return this;
-    }
-
     public IFlourishMotionBuilder SetDuration()
     {
         return SetDuration(TimeSpan.FromMilliseconds(180));

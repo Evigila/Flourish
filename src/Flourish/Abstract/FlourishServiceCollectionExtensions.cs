@@ -24,8 +24,8 @@ public static class FlourishServiceCollectionExtensions
     /// This method records the page display name, icon glyph, and cache mode. It does not add
     /// the page to a visible navigation position by itself. Use
     /// <see cref="IFlourishNavigationGroupBuilder.AddNavigableViewItem{TPage}" /> or
-    /// <see cref="IFlourishNavigationPanelBuilder.AddFixedNavigableViewItem{TPage}" /> inside
-    /// <c>UseNavigationPanel</c> to decide where the registered page is displayed.
+    /// <see cref="IFlourishNavigationBuilder.AddFixedNavigableViewItem{TPage}" /> inside
+    /// <c>ConfigureNavigation</c> to decide where the registered page is displayed.
     /// </remarks>
     /// <typeparam name="TPage">The page type to register.</typeparam>
     /// <param name="services">The service collection that receives the page registration.</param>

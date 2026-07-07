@@ -5,7 +5,7 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Flourish separates page registration from navigation display. Register WPF pages with `AddNavigable` during service configuration, then decide where those pages appear with `UseNavigationPanel`.
+Flourish separates page registration from the visible navigation model. Register WPF pages with `AddNavigable` during service configuration, enable the navigation surface with `UseNavigation`, then configure panel display and visible items with `ConfigureNavigation`.
 
 ## Register pages
 
@@ -37,25 +37,28 @@ Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the u
 
 ## Configure groups
 
-Use `UseNavigationPanel` to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+Use `ConfigureNavigation` to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
+builder.ConfigureShell(shell =>
 {
-    shell.UseNavigationPanel((_, nav) =>
+    shell.UseNavigation();
+})
+.ConfigureNavigation(navigation =>
+{
+    navigation
+        .SetDirection(NavigationPanelDirection.Left)
+        .SetInitiallyOpen()
+        .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+        .SetGroup("Navigation", groupId: 0, group =>
+        {
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+            group.AddNavigableViewItem<GalleryPage>();
+        });
+
+    navigation.SetGroup("Tools", groupId: 1, group =>
     {
-        nav.SetDirection(NavigationPanelDirection.Left)
-           .SetInitiallyOpen()
-           .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-           .SetGroup("Navigation", groupId: 0, group =>
-           {
-               group.AddNavigableViewItem<HomePage>(isInitial: true);
-               group.AddNavigableViewItem<GalleryPage>();
-           })
-           .SetGroup("Tools", groupId: 1, group =>
-           {
-               group.AddNavigableViewItem<EditorPage>();
-           });
+        group.AddNavigableViewItem<EditorPage>();
     });
 });
 ```
@@ -80,7 +83,7 @@ nav.SetGroup("Admin", groupId: 10, group =>
 });
 ```
 
-If you enable the navigation panel but do not configure any groups or fixed items, Flourish falls back to a flat legacy list built from all registered pages.
+If you enable the navigation panel display but do not configure any groups or fixed items, Flourish falls back to a flat legacy list built from all registered pages.
 
 ## Resize the panel
 
@@ -132,16 +135,16 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
 Fixed items are displayed in the bottom section of the navigation panel. They are not affected by the scrollable group area, which is useful for settings, about, profile, or other persistent actions.
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureNavigation(navigation =>
 {
-    nav.SetGroup("Navigation", groupId: 0, group =>
+    navigation.SetGroup("Navigation", groupId: 0, group =>
     {
         group.AddNavigableViewItem<HomePage>(isInitial: true);
         group.AddNavigableViewItem<GalleryPage>();
     });
 
-    nav.AddFixedNavigableViewItem<SettingsPage>();
-    nav.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
+    navigation.AddFixedNavigableViewItem<SettingsPage>();
+    navigation.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
 });
 ```
 

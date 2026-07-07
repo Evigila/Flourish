@@ -5,7 +5,7 @@ namespace AckSS.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseMaterialEffect(MaterialEffect.Mica);
+/// builder.ConfigureMaterialEffect(MaterialEffect.Mica);
 /// ]]></code>
 /// </example>
 public enum MaterialEffect
@@ -15,7 +15,7 @@ public enum MaterialEffect
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// shell.UseMaterialEffect(MaterialEffect.None);
+    /// builder.ConfigureMaterialEffect(MaterialEffect.None);
     /// ]]></code>
     /// </example>
     None,
@@ -25,7 +25,7 @@ public enum MaterialEffect
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// shell.UseMaterialEffect(MaterialEffect.Mica);
+    /// builder.ConfigureMaterialEffect(MaterialEffect.Mica);
     /// ]]></code>
     /// </example>
     Mica,

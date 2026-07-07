@@ -77,14 +77,14 @@ toolbar.CreateToolbarItems<GalleryPage>(
 按钮类型导航项使用同一条解析路径。可以在分组内通过 `AddNavigableItem` 添加，也可以在底部固定区域通过 `AddFixedNavigableItem` 添加。
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureNavigation(navigation =>
 {
-    nav.SetGroup("命令", groupId: 1, group =>
+    navigation.SetGroup("命令", groupId: 1, group =>
     {
         group.AddNavigableItem("刷新", "gallery.refresh", iconGlyph: "\uE72C");
     });
 
-    nav.AddFixedNavigableItem("关于", "app.about", iconGlyph: "\uE946");
+    navigation.AddFixedNavigableItem("关于", "app.about", iconGlyph: "\uE946");
 });
 ```
 

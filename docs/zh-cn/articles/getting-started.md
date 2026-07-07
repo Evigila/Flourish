@@ -5,7 +5,7 @@ description: 用最短路径把 Flourish 接入 WPF 应用。
 
 # 快速开始
 
-使用 Flourish 最快的方式，是让 Flourish Shell 托管你的 WPF `Application`：引用主题资源，在 `Program.Main` 中构建 `IFlourish` 运行时，用 `AddNavigable` 注册页面，在 `UseNavigationPanel` 中放置导航项，然后通过 `flourish.Run<App>()` 运行应用。
+使用 Flourish 最快的方式，是让 Flourish Shell 托管你的 WPF `Application`：引用主题资源，在 `Program.Main` 中构建 `IFlourish` 运行时，用 `AddNavigable` 注册页面，在 `ConfigureNavigation` 中放置导航项，然后通过 `flourish.Run<App>()` 运行应用。
 
 ## 引用主题资源
 
@@ -59,43 +59,43 @@ internal static class Program
                 services.AddNavigable<HomePage>("首页", "\uE80F");
                 services.AddNavigable<SettingsPage>("设置", "\uE713");
             })
-            .ConfigureShell((_, shell) =>
+            .ConfigureShell(shell =>
             {
                 shell
-                    .UseTitlebar((_, titlebar) =>
-                    {
-                        titlebar
-                            .ShowLogo()
-                            .ShowTitle()
-                            .ShowSearch()
-                            .ShowBreadcrumb()
-                            .ShowNavToggle()
-                            .SetTitle("My App")
-                            .SetSubtitle("Flourish Shell");
-                    })
-                    .UseNavigationPanel((_, nav) =>
-                    {
-                        nav.SetInitiallyOpen()
-                           .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-                           .SetGroup("导航", groupId: 0, group =>
-                           {
-                               group.AddNavigableViewItem<HomePage>(isInitial: true);
-                           })
-                           .AddFixedNavigableViewItem<SettingsPage>();
-                    })
+                    .UseTitleBar()
+                    .UseNavigation()
                     .UseDynamicToolbar()
-                    .UseTips((_, tips) =>
-                    {
-                        tips.SetDelay(600).SetSpawnableMargin(5);
-                    })
+                    .UseTips()
                     .UseMotion()
                     .UseMaterialEffect()
-                    .SetGlobalFont("Microsoft YaHei")
-                    .SetWindowProperty((_, window) =>
-                    {
-                        window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540);
-                    });
+                    .UseThemes();
             })
+            .ConfigureTitleBar(titleBar =>
+            {
+                titleBar
+                    .ShowLogo()
+                    .ShowTitle()
+                    .ShowSearch()
+                    .ShowBreadcrumb()
+                    .ShowNavToggle()
+                    .SetTitle("My App")
+                    .SetSubtitle("Flourish Shell");
+            })
+            .ConfigureNavigation(navigation =>
+            {
+                navigation
+                    .SetInitiallyOpen()
+                    .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+                    .SetGroup("导航", groupId: 0, group =>
+                    {
+                        group.AddNavigableViewItem<HomePage>(isInitial: true);
+                    });
+
+                navigation.AddFixedNavigableViewItem<SettingsPage>();
+            })
+            .ConfigureTips(tips => tips.SetDelay(600).SetSpawnableMargin(5))
+            .ConfigureFont("Microsoft YaHei")
+            .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
             .Build();
 
         try
@@ -136,7 +136,7 @@ public partial class App : Application
 
 ## 创建页面
 
-通过 `AddNavigable` 注册的页面就是普通 WPF `Page`。导航发生时，Flourish 会从依赖注入容器解析页面实例。页面显示名称、图标和缓存模式来自 `AddNavigable`；可见导航位置和初始页则在 `UseNavigationPanel` 中配置。
+通过 `AddNavigable` 注册的页面就是普通 WPF `Page`。导航发生时，Flourish 会从依赖注入容器解析页面实例。页面显示名称、图标和缓存模式来自 `AddNavigable`；可见导航位置和初始页则在 `ConfigureNavigation` 中配置。
 
 ```csharp
 using System.Windows.Controls;

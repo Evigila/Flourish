@@ -4,8 +4,8 @@ namespace AckSS.Flourish.Abstract;
 /// Identifies a Flourish shell region that can host application-provided WPF content.
 /// </summary>
 /// <remarks>
-/// Region content is configured during shell composition with
-/// <see cref="IFlourishShellBuilder.UseRegions(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,AckSS.Flourish.Abstract.IFlourishRegionBuilder})" />.
+/// Region content is configured during application composition with
+/// <see cref="IFlourishBuilder.ConfigureCustomHandler(System.Action{AckSS.Flourish.Abstract.IFlourishCustomHandlerBuilder})" />.
 /// </remarks>
 public enum FlourishRegion
 {
@@ -65,12 +65,12 @@ public enum FlourishRegion
     ToolbarEnd,
 
     /// <summary>
-    /// The start of the status bar, before the primary status text.
+    /// The start of the footer, before the primary status text.
     /// </summary>
-    StatusStart,
+    FooterStart,
 
     /// <summary>
-    /// The end of the status bar, after built-in status items.
+    /// The end of the footer, after built-in status items.
     /// </summary>
-    StatusEnd,
+    FooterEnd,
 }

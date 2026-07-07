@@ -4,18 +4,12 @@ using AckSS.Flourish.Configuration;
 
 namespace AckSS.Flourish.Composition;
 
-internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions options)
-    : IFlourishNavigationPanelBuilder
+internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
+    : IFlourishNavigationBuilder
 {
     private const int FixedItemsGroupId = int.MaxValue;
 
-    public IFlourishNavigationPanelBuilder SetEnabled(bool enabled = true)
-    {
-        options.IsNavigationPanelEnabled = enabled;
-        return this;
-    }
-
-    public IFlourishNavigationPanelBuilder SetDirection(
+    public IFlourishNavigationBuilder SetDirection(
         NavigationPanelDirection direction = NavigationPanelDirection.Left
     )
     {
@@ -23,13 +17,13 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         return this;
     }
 
-    public IFlourishNavigationPanelBuilder SetInitiallyOpen(bool enabled = true)
+    public IFlourishNavigationBuilder SetInitiallyOpen(bool enabled = true)
     {
         options.IsNavigationPanelInitiallyOpen = enabled;
         return this;
     }
 
-    public IFlourishNavigationPanelBuilder SetPanelWidth(
+    public IFlourishNavigationBuilder SetPanelWidth(
         double openWidth = 220,
         double closedWidth = 48,
         double maxWidth = 420,
@@ -75,13 +69,13 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         return this;
     }
 
-    public IFlourishNavigationPanelBuilder SetTitle(string title)
+    public IFlourishNavigationBuilder SetTitle(string title)
     {
         options.PaneTitle = title;
         return this;
     }
 
-    public IFlourishNavigationPanelBuilder SetGroup(
+    public IFlourishNavigationBuilder SetGroup(
         string? displayName = null,
         int groupId = 0,
         Action<IFlourishNavigationGroupBuilder>? configureGroup = null
@@ -109,7 +103,7 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         return this;
     }
 
-    public IFlourishNavigationPanelBuilder AddFixedNavigableViewItem<TPage>(
+    public IFlourishNavigationBuilder AddFixedNavigableViewItem<TPage>(
         bool isInitial = false,
         int parentId = 0,
         int childId = 0
@@ -128,7 +122,7 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         return this;
     }
 
-    public IFlourishNavigationPanelBuilder AddFixedNavigableItem(
+    public IFlourishNavigationBuilder AddFixedNavigableItem(
         string displayName,
         string? commandKey,
         int parentId = 0,
@@ -191,7 +185,10 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
     {
         if (string.IsNullOrWhiteSpace(displayName))
         {
-            throw new ArgumentException("Navigation command items require a display name.", nameof(displayName));
+            throw new ArgumentException(
+                "Navigation command items require a display name.",
+                nameof(displayName)
+            );
         }
 
         ValidateParentChild(items, parentId, childId);
@@ -243,15 +240,7 @@ internal sealed class FlourishNavigationPanelBuilder(FlourishShellOptions option
         )
             where TPage : Page
         {
-            AddPageItem(
-                items,
-                groupId,
-                isFixed,
-                typeof(TPage),
-                isInitial,
-                parentId,
-                childId
-            );
+            AddPageItem(items, groupId, isFixed, typeof(TPage), isInitial, parentId, childId);
             return this;
         }
 

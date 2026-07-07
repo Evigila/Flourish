@@ -5,7 +5,7 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-Flourish 将页面注册和导航栏显示拆分为两个阶段。在服务配置中使用 `AddNavigable` 注册 WPF 页面，然后在 `UseNavigationPanel` 中决定这些页面显示在哪个导航位置。
+Flourish 将页面注册和可见导航模型拆分开。在服务配置中使用 `AddNavigable` 注册 WPF 页面，通过 `UseNavigation` 启用导航区域，再通过 `ConfigureNavigation` 配置导航栏展示参数和可见导航项。
 
 ## 注册页面
 
@@ -37,25 +37,28 @@ services.AddNavigable<EditorPage>("编辑", "\uE70F", cacheMode: FlourishPageCac
 
 ## 配置分组
 
-使用 `UseNavigationPanel` 构建可见的导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 `ConfigureNavigation` 构建可见的导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
-builder.ConfigureShell((_, shell) =>
+builder.ConfigureShell(shell =>
 {
-    shell.UseNavigationPanel((_, nav) =>
+    shell.UseNavigation();
+})
+.ConfigureNavigation(navigation =>
+{
+    navigation
+        .SetDirection(NavigationPanelDirection.Left)
+        .SetInitiallyOpen()
+        .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+        .SetGroup("导航", groupId: 0, group =>
+        {
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+            group.AddNavigableViewItem<GalleryPage>();
+        });
+
+    navigation.SetGroup("工具", groupId: 1, group =>
     {
-        nav.SetDirection(NavigationPanelDirection.Left)
-           .SetInitiallyOpen()
-           .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-           .SetGroup("导航", groupId: 0, group =>
-           {
-               group.AddNavigableViewItem<HomePage>(isInitial: true);
-               group.AddNavigableViewItem<GalleryPage>();
-           })
-           .SetGroup("工具", groupId: 1, group =>
-           {
-               group.AddNavigableViewItem<EditorPage>();
-           });
+        group.AddNavigableViewItem<EditorPage>();
     });
 });
 ```
@@ -80,7 +83,7 @@ nav.SetGroup("管理", groupId: 10, group =>
 });
 ```
 
-如果启用了导航栏，但没有配置任何分组或固定项，Flourish 会回退到旧的扁平模式：把所有已注册页面组成一个列表。
+如果启用了导航栏展示，但没有配置任何分组或固定项，Flourish 会回退到旧的扁平模式：把所有已注册页面组成一个列表。
 
 ## 调整导航栏宽度
 
@@ -132,16 +135,16 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
 固定项显示在导航栏底部区域，不受上半部分滚动视角影响，适合放置设置、关于、用户资料或其他持久操作。
 
 ```csharp
-shell.UseNavigationPanel((_, nav) =>
+builder.ConfigureNavigation(navigation =>
 {
-    nav.SetGroup("导航", groupId: 0, group =>
+    navigation.SetGroup("导航", groupId: 0, group =>
     {
         group.AddNavigableViewItem<HomePage>(isInitial: true);
         group.AddNavigableViewItem<GalleryPage>();
     });
 
-    nav.AddFixedNavigableViewItem<SettingsPage>();
-    nav.AddFixedNavigableItem("关于", "app.about", iconGlyph: "\uE946");
+    navigation.AddFixedNavigableViewItem<SettingsPage>();
+    navigation.AddFixedNavigableItem("关于", "app.about", iconGlyph: "\uE946");
 });
 ```
 
