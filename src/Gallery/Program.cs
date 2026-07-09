@@ -112,8 +112,7 @@ internal static class Program
                             maxWidth: 480,
                             minWidth: 150
                         )
-                        .SetGroup(
-                            "导航",
+                        .SetGroup(null,
                             groupId: 0,
                             group =>
                             {
@@ -176,10 +175,9 @@ internal static class Program
                 motion =>
                 {
                     motion
-                        .SetDuration()
-                        .SetHoverReveal()
-                        .SetNavigationPanelTransition()
-                        .SetPageTransition();
+                        .EnableHoverRevealAnimation()
+                        .EnableNavigationPanelTransition()
+                        .EnablePageTransition();
                 }
             )
             .ConfigureDynamicToolbar(

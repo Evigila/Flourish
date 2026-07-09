@@ -491,53 +491,38 @@ summary: 配置 Flourish Shell 的动效和动画行为。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetDuration
-summary: 设置默认动效持续时间。
-syntax:
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetDuration(System.TimeSpan)
-summary: 设置动效持续时间。
-syntax:
-  parameters:
-  - id: duration
-    description: Flourish 动画使用的持续时间。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetPageTransition(AckSS.Flourish.Abstract.FlourishPageTransition)
-summary: 设置页面进入内容框架时使用的过渡效果。
+uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.EnablePageTransition(AckSS.Flourish.Abstract.FlourishPageTransition,System.Nullable{System.TimeSpan})
+summary: 启用页面进入内容框架时使用的过渡效果。
 syntax:
   parameters:
   - id: transition
     description: 要使用的页面过渡效果。
+  - id: duration
+    description: 页面过渡使用的持续时间。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetNavigationPanelTransition(AckSS.Flourish.Abstract.FlourishNavigationPanelTransition)
-summary: 设置导航面板打开或关闭时使用的过渡效果。
+uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.EnableNavigationPanelTransition(AckSS.Flourish.Abstract.FlourishNavigationPanelTransition,System.Nullable{System.TimeSpan})
+summary: 启用导航面板打开或关闭时使用的过渡效果。
 syntax:
   parameters:
   - id: transition
     description: 要使用的导航面板过渡效果。
+  - id: duration
+    description: 导航面板过渡使用的持续时间。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.SetHoverReveal(System.Boolean)
-summary: 启用或禁用悬停揭示动画。
+uid: AckSS.Flourish.Abstract.IFlourishMotionBuilder.EnableHoverRevealAnimation(System.Nullable{System.TimeSpan})
+summary: 启用悬停揭示动画。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否启用悬停揭示动画。
+  - id: duration
+    description: 悬停揭示动画使用的持续时间。
   return:
     description: 用于链式配置的当前 builder。
 ---

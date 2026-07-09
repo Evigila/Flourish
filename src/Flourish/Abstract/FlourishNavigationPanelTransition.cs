@@ -7,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// <code><![CDATA[
 /// shell.UseMotion((_, motion) =>
 /// {
-///     motion.SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
+///     motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
 /// });
 /// ]]></code>
 /// </example>
@@ -18,7 +18,7 @@ public enum FlourishNavigationPanelTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetNavigationPanelTransition(FlourishNavigationPanelTransition.None);
+    /// motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.None);
     /// ]]></code>
     /// </example>
     None,
@@ -28,7 +28,7 @@ public enum FlourishNavigationPanelTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
+    /// motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
     /// ]]></code>
     /// </example>
     Resize,

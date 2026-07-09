@@ -14,7 +14,20 @@ namespace AckSS.Flourish.Controls;
 internal partial class FlourishTitlebar : UserControl
 {
     private const string DefaultIconUri = "pack://application:,,,/Flourish;component/Assets/favicon.ico";
+    private const string SunIconData =
+        "M12,2 L12,4 M12,20 L12,22 M4.93,4.93 L6.34,6.34 "
+        + "M17.66,17.66 L19.07,19.07 M2,12 L4,12 M20,12 L22,12 "
+        + "M4.93,19.07 L6.34,17.66 M17.66,6.34 L19.07,4.93 "
+        + "M8,12 C8,9.79 9.79,8 12,8 C14.21,8 16,9.79 16,12 "
+        + "C16,14.21 14.21,16 12,16 C9.79,16 8,14.21 8,12 Z";
+    private const string MoonIconData =
+        "M21,12.79 C20.17,13.07 19.29,13.22 18.38,13.22 "
+        + "C13.35,13.22 9.28,9.14 9.28,4.11 C9.28,3.2 9.42,2.32 9.7,1.49 "
+        + "C5.78,2.58 2.9,6.18 2.9,10.45 C2.9,15.42 6.93,19.45 11.9,19.45 "
+        + "C16.17,19.45 19.77,16.57 20.86,12.66 C20.91,12.7 20.96,12.75 21,12.79 Z";
     private static readonly ImageSource? DefaultLogoSource = CreateDefaultLogoSource();
+    private static readonly Geometry SunIconGeometry = CreateFrozenGeometry(SunIconData);
+    private static readonly Geometry MoonIconGeometry = CreateFrozenGeometry(MoonIconData);
     private bool hasProfileRegionContent;
     private bool isProfileEnabled;
 
@@ -100,12 +113,8 @@ internal partial class FlourishTitlebar : UserControl
 
     public void SetThemeToggleState(FlourishTheme requestedTheme, FlourishTheme effectiveTheme)
     {
-        ThemeToggleButtonIcon.Text = requestedTheme switch
-        {
-            FlourishTheme.System => "\uE713",
-            FlourishTheme.Dark => "\uE708",
-            _ => "\uE706",
-        };
+        ThemeToggleButtonIcon.Data =
+            effectiveTheme == FlourishTheme.Dark ? MoonIconGeometry : SunIconGeometry;
 
         var effectiveThemeText = effectiveTheme == FlourishTheme.Dark ? "Dark" : "Light";
         ThemeToggleButton.ToolTip = requestedTheme == FlourishTheme.System
@@ -282,6 +291,13 @@ internal partial class FlourishTitlebar : UserControl
         {
             return null;
         }
+    }
+
+    private static Geometry CreateFrozenGeometry(string pathData)
+    {
+        var geometry = Geometry.Parse(pathData);
+        geometry.Freeze();
+        return geometry;
     }
 
     private static ImageSource TrimTransparentPixels(BitmapSource source)

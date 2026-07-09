@@ -7,6 +7,7 @@ using System.Windows.Shell;
 using System.ComponentModel;
 using AckSS.Flourish.Abstract;
 using AckSS.Flourish.Configuration;
+using AckSS.Flourish.Controls;
 using AckSS.Flourish.Services;
 using Button = System.Windows.Controls.Button;
 using FontFamily = System.Windows.Media.FontFamily;
@@ -174,6 +175,7 @@ internal partial class FlourishShellWindow : Window
                 !options.Motion.RespectSystemReducedMotion
                 || SystemParameters.ClientAreaAnimation
             );
+        HoverReveal.SetAnimationDuration(this, options.Motion.HoverRevealAnimationDuration);
     }
 
     private void ApplyToolTipResources()

@@ -39,7 +39,7 @@ internal sealed class FlourishMotionService(FlourishShellOptions options)
         {
             From = new GridLength(fromWidth),
             To = new GridLength(toWidth),
-            Duration = new Duration(options.Motion.Duration),
+            Duration = new Duration(options.Motion.NavigationPanelTransitionDuration),
             EasingFunction = CreateEase(),
             FillBehavior = FillBehavior.Stop,
         };
@@ -70,7 +70,7 @@ internal sealed class FlourishMotionService(FlourishShellOptions options)
             return;
         }
 
-        var duration = new Duration(options.Motion.Duration);
+        var duration = new Duration(options.Motion.PageTransitionDuration);
         var opacityAnimation = new DoubleAnimation
         {
             From = 0,

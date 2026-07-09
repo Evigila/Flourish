@@ -103,11 +103,11 @@ builder.ConfigureShell(shell => shell.UseTips());
 
 builder.ConfigureTips(tips =>
 {
-    tips.SetDelay(600).SetSpawnableMargin(5);
+    tips.SetDelay(200).SetSpawnableMargin(5);
 });
 ```
 
-By default, tips appear after `800` milliseconds and keep at least `5` pixels away from the shell window bounds.
+By default, tips appear after `200` milliseconds and keep at least `5` pixels away from the shell window bounds.
 
 ## Motion
 
@@ -119,10 +119,13 @@ builder.ConfigureShell(shell => shell.UseMotion());
 builder.ConfigureMotion(motion =>
 {
     motion
-        .SetDuration(TimeSpan.FromMilliseconds(180))
-        .SetPageTransition(FlourishPageTransition.EntranceFromBottom)
-        .SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize)
-        .SetHoverReveal()
+        .EnablePageTransition(
+            FlourishPageTransition.EntranceFromBottom,
+            TimeSpan.FromMilliseconds(180))
+        .EnableNavigationPanelTransition(
+            FlourishNavigationPanelTransition.Resize,
+            TimeSpan.FromMilliseconds(180))
+        .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))
         .RespectSystemReducedMotion();
 });
 ```
@@ -222,10 +225,13 @@ builder
                 group.AddNavigableViewItem<HomePage>(isInitial: true);
             });
     })
-    .ConfigureTips(tips => tips.SetDelay(600).SetSpawnableMargin(5))
+    .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
     .ConfigureMotion(motion =>
     {
-        motion.SetDuration().SetHoverReveal().SetNavigationPanelTransition().SetPageTransition();
+        motion
+            .EnableHoverRevealAnimation()
+            .EnableNavigationPanelTransition()
+            .EnablePageTransition();
     })
     .ConfigureMaterialEffect(MaterialEffect.Mica)
     .ConfigureThemes(FlourishTheme.System)

@@ -7,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// <code><![CDATA[
 /// shell.UseMotion((_, motion) =>
 /// {
-///     motion.SetPageTransition(FlourishPageTransition.EntranceFromBottom);
+///     motion.EnablePageTransition(FlourishPageTransition.EntranceFromBottom);
 /// });
 /// ]]></code>
 /// </example>
@@ -18,7 +18,7 @@ public enum FlourishPageTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetPageTransition(FlourishPageTransition.None);
+    /// motion.EnablePageTransition(FlourishPageTransition.None);
     /// ]]></code>
     /// </example>
     None,
@@ -28,7 +28,7 @@ public enum FlourishPageTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetPageTransition(FlourishPageTransition.Fade);
+    /// motion.EnablePageTransition(FlourishPageTransition.Fade);
     /// ]]></code>
     /// </example>
     Fade,
@@ -38,7 +38,7 @@ public enum FlourishPageTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetPageTransition(FlourishPageTransition.EntranceFromBottom);
+    /// motion.EnablePageTransition(FlourishPageTransition.EntranceFromBottom);
     /// ]]></code>
     /// </example>
     EntranceFromBottom,

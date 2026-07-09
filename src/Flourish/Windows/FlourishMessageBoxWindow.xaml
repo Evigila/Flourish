@@ -23,7 +23,7 @@
 >
   <Window.Resources>
     <sys:Boolean x:Key="FlourishHoverRevealEnabled">True</sys:Boolean>
-    <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">800</sys:Int32>
+    <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">200</sys:Int32>
     <Style x:Key="FlourishMessageBoxButtonStyle" TargetType="{x:Type Button}">
       <Setter Property="MinWidth" Value="82" />
       <Setter Property="Height" Value="32" />

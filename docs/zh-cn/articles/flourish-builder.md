@@ -45,7 +45,7 @@ return flourish.Run<App>();
 | [`ConfigureCustomHandler`](configure-custom-handler.md) | 将自定义 WPF 元素插入预定义 Shell 区域。 |
 | [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) | 注册按页面变化的工具栏项。 |
 | [`ConfigureTips`](configure-tips.md) | 配置提示浮层延迟和 Shell 边缘间距。 |
-| [`ConfigureMotion`](configure-motion.md) | 配置动画时长、页面过渡、导航栏过渡和 Hover Reveal。 |
+| [`ConfigureMotion`](configure-motion.md) | 配置页面过渡、导航栏过渡和 Hover Reveal 动画。 |
 | [`ConfigureWindow`](configure-window.md) | 配置 Shell 窗口尺寸、位置、状态、缩放模式、任务栏显示和置顶行为。 |
 | [`ConfigureFont`](configure-font.md) | 配置 Shell 字体和基础字号。 |
 | [`ConfigureMaterialEffect`](configure-material-effect.md) | 配置材质特效启用时使用的材质类型。 |

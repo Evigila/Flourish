@@ -12,7 +12,7 @@ builder
     .ConfigureShell(shell => shell.UseTips())
     .ConfigureTips(tips =>
     {
-        tips.SetDelay(600).SetSpawnableMargin(5);
+        tips.SetDelay(200).SetSpawnableMargin(5);
     });
 ```
 

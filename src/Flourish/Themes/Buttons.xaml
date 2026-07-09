@@ -54,49 +54,6 @@
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="IsMouseOver" Value="True" />
-                <Condition Property="controls:HoverReveal.IsEnabled" Value="True" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
-                <BeginStoryboard x:Name="IconButtonHoverRevealStoryboard">
-                  <Storyboard>
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverChrome"
-                      Storyboard.TargetProperty="Opacity"
-                      To="1"
-                      Duration="0:0:0"
-                    />
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverRevealScale"
-                      Storyboard.TargetProperty="ScaleX"
-                      From="0"
-                      To="1"
-                      Duration="0:0:0.14"
-                    >
-                      <DoubleAnimation.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                      </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverRevealScale"
-                      Storyboard.TargetProperty="ScaleY"
-                      From="0"
-                      To="1"
-                      Duration="0:0:0.14"
-                    >
-                      <DoubleAnimation.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                      </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                  </Storyboard>
-                </BeginStoryboard>
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
-                <StopStoryboard BeginStoryboardName="IconButtonHoverRevealStoryboard" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsMouseOver" Value="True" />
                 <Condition Property="controls:HoverReveal.IsEnabled" Value="False" />
               </MultiTrigger.Conditions>
               <Setter
@@ -179,49 +136,6 @@
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Grid>
           <ControlTemplate.Triggers>
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsMouseOver" Value="True" />
-                <Condition Property="controls:HoverReveal.IsEnabled" Value="True" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
-                <BeginStoryboard x:Name="CaptionButtonHoverRevealStoryboard">
-                  <Storyboard>
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverChrome"
-                      Storyboard.TargetProperty="Opacity"
-                      To="1"
-                      Duration="0:0:0"
-                    />
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverRevealScale"
-                      Storyboard.TargetProperty="ScaleX"
-                      From="0"
-                      To="1"
-                      Duration="0:0:0.14"
-                    >
-                      <DoubleAnimation.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                      </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverRevealScale"
-                      Storyboard.TargetProperty="ScaleY"
-                      From="0"
-                      To="1"
-                      Duration="0:0:0.14"
-                    >
-                      <DoubleAnimation.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                      </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                  </Storyboard>
-                </BeginStoryboard>
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
-                <StopStoryboard BeginStoryboardName="CaptionButtonHoverRevealStoryboard" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="IsMouseOver" Value="True" />
@@ -316,49 +230,6 @@
             />
           </Grid>
           <ControlTemplate.Triggers>
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="IsMouseOver" Value="True" />
-                <Condition Property="controls:HoverReveal.IsEnabled" Value="True" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.EnterActions>
-                <BeginStoryboard x:Name="ToolbarButtonHoverRevealStoryboard">
-                  <Storyboard>
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverChrome"
-                      Storyboard.TargetProperty="Opacity"
-                      To="1"
-                      Duration="0:0:0"
-                    />
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverRevealScale"
-                      Storyboard.TargetProperty="ScaleX"
-                      From="0"
-                      To="1"
-                      Duration="0:0:0.14"
-                    >
-                      <DoubleAnimation.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                      </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                    <DoubleAnimation
-                      Storyboard.TargetName="HoverRevealScale"
-                      Storyboard.TargetProperty="ScaleY"
-                      From="0"
-                      To="1"
-                      Duration="0:0:0.14"
-                    >
-                      <DoubleAnimation.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                      </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                  </Storyboard>
-                </BeginStoryboard>
-              </MultiTrigger.EnterActions>
-              <MultiTrigger.ExitActions>
-                <StopStoryboard BeginStoryboardName="ToolbarButtonHoverRevealStoryboard" />
-              </MultiTrigger.ExitActions>
-            </MultiTrigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="IsMouseOver" Value="True" />

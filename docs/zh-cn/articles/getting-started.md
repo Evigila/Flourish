@@ -97,7 +97,7 @@ public partial class App : Application
 
                 navigation.AddFixedNavigableViewItem<SettingsPage>();
             })
-            .ConfigureTips(tips => tips.SetDelay(600).SetSpawnableMargin(5))
+            .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
             .ConfigureFont("Microsoft YaHei")
             .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
             .Build();

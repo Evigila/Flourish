@@ -45,7 +45,7 @@ The public builder separates high-level feature switches from detailed configura
 | [`ConfigureCustomHandler`](configure-custom-handler.md) | Inserts custom WPF elements into predefined shell regions. |
 | [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) | Registers page-specific toolbar items. |
 | [`ConfigureTips`](configure-tips.md) | Configures tooltip delay and shell-edge spacing. |
-| [`ConfigureMotion`](configure-motion.md) | Configures animation duration, page transitions, navigation panel transitions, and hover reveal. |
+| [`ConfigureMotion`](configure-motion.md) | Configures page transitions, navigation panel transitions, and hover reveal animations. |
 | [`ConfigureWindow`](configure-window.md) | Configures shell window size, position, state, resize mode, taskbar visibility, and topmost behavior. |
 | [`ConfigureFont`](configure-font.md) | Configures the shell font family and base size. |
 | [`ConfigureMaterialEffect`](configure-material-effect.md) | Configures the material effect used when material effects are enabled. |

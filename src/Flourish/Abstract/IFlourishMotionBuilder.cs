@@ -7,74 +7,57 @@ namespace AckSS.Flourish.Abstract;
 /// <code><![CDATA[
 /// builder.ConfigureMotion(motion =>
 /// {
-///     motion.SetDuration(TimeSpan.FromMilliseconds(180));
+///     motion.EnablePageTransition(
+///         FlourishPageTransition.EntranceFromBottom,
+///         TimeSpan.FromMilliseconds(180));
 /// });
 /// ]]></code>
 /// </example>
 public interface IFlourishMotionBuilder
 {
     /// <summary>
-    /// Sets the default motion duration.
-    /// </summary>
-    /// <returns>The current builder for chained configuration.</returns>
-    /// <example>
-    /// <code><![CDATA[
-    /// motion.SetDuration();
-    /// ]]></code>
-    /// </example>
-    IFlourishMotionBuilder SetDuration();
-
-    /// <summary>
-    /// Sets the motion duration.
-    /// </summary>
-    /// <param name="duration">The duration used by Flourish animations.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    /// <example>
-    /// <code><![CDATA[
-    /// motion.SetDuration(TimeSpan.FromMilliseconds(220));
-    /// ]]></code>
-    /// </example>
-    IFlourishMotionBuilder SetDuration(TimeSpan duration);
-
-    /// <summary>
-    /// Sets the transition used when pages enter the content frame.
+    /// Enables the transition used when pages enter the content frame.
     /// </summary>
     /// <param name="transition">The page transition to use.</param>
+    /// <param name="duration">The duration used by the page transition.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetPageTransition(FlourishPageTransition.Fade);
+    /// motion.EnablePageTransition(FlourishPageTransition.Fade);
     /// ]]></code>
     /// </example>
-    IFlourishMotionBuilder SetPageTransition(
-        FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom
+    IFlourishMotionBuilder EnablePageTransition(
+        FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom,
+        TimeSpan? duration = null
     );
 
     /// <summary>
-    /// Sets the transition used when the navigation panel opens or closes.
+    /// Enables the transition used when the navigation panel opens or closes.
     /// </summary>
     /// <param name="transition">The navigation panel transition to use.</param>
+    /// <param name="duration">The duration used by the navigation panel transition.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
+    /// motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
     /// ]]></code>
     /// </example>
-    IFlourishMotionBuilder SetNavigationPanelTransition(
-        FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize
+    IFlourishMotionBuilder EnableNavigationPanelTransition(
+        FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize,
+        TimeSpan? duration = null
     );
 
     /// <summary>
-    /// Enables or disables hover reveal animations.
+    /// Enables hover reveal animations.
     /// </summary>
-    /// <param name="enabled">A value indicating whether hover reveal animations should be enabled.</param>
+    /// <param name="duration">The duration used by hover reveal animations.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetHoverReveal(enabled: true);
+    /// motion.EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140));
     /// ]]></code>
     /// </example>
-    IFlourishMotionBuilder SetHoverReveal(bool enabled = true);
+    IFlourishMotionBuilder EnableHoverRevealAnimation(TimeSpan? duration = null);
 
     /// <summary>
     /// Controls whether Flourish should respect the operating system reduced-motion preference.

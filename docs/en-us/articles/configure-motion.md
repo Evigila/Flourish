@@ -1,6 +1,6 @@
 ---
 title: ConfigureMotion
-description: Configure Flourish animation duration and transitions.
+description: Configure Flourish transitions and animations.
 ---
 
 # ConfigureMotion
@@ -13,21 +13,24 @@ builder
     .ConfigureMotion(motion =>
     {
         motion
-            .SetDuration(TimeSpan.FromMilliseconds(180))
-            .SetPageTransition(FlourishPageTransition.EntranceFromBottom)
-            .SetNavigationPanelTransition(FlourishNavigationPanelTransition.Resize)
-            .SetHoverReveal()
+            .EnablePageTransition(
+                FlourishPageTransition.EntranceFromBottom,
+                TimeSpan.FromMilliseconds(180))
+            .EnableNavigationPanelTransition(
+                FlourishNavigationPanelTransition.Resize,
+                TimeSpan.FromMilliseconds(180))
+            .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))
             .RespectSystemReducedMotion();
     });
 ```
 
 ## Details
 
-`SetDuration` sets the shared animation duration. The default overload uses a balanced Flourish duration.
+Each transition or animation accepts its own optional duration. If no duration is supplied, Flourish uses that animation's default timing.
 
-`SetPageTransition` controls how pages enter the content frame. `SetNavigationPanelTransition` controls how the navigation panel opens and closes.
+`EnablePageTransition` controls how pages enter the content frame. `EnableNavigationPanelTransition` controls how the navigation panel opens and closes.
 
-`SetHoverReveal` enables subtle hover animation on supported controls. `RespectSystemReducedMotion` lets Flourish follow the operating system reduced-motion preference.
+`EnableHoverRevealAnimation` enables subtle hover animation on supported controls. `RespectSystemReducedMotion` lets Flourish follow the operating system reduced-motion preference.
 
 Disabling motion is done through `UseMotion(false)`, not through `ConfigureMotion`.
 

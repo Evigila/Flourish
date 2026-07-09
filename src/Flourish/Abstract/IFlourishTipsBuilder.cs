@@ -7,7 +7,7 @@ namespace AckSS.Flourish.Abstract;
 /// <code><![CDATA[
 /// shell.UseTips((_, tips) =>
 /// {
-///     tips.SetDelay(600).SetSpawnableMargin(5);
+///     tips.SetDelay(200).SetSpawnableMargin(5);
 /// });
 /// ]]></code>
 /// </example>
@@ -20,10 +20,10 @@ public interface IFlourishTipsBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// tips.SetDelay(600);
+    /// tips.SetDelay(200);
     /// ]]></code>
     /// </example>
-    IFlourishTipsBuilder SetDelay(int milliseconds = 800);
+    IFlourishTipsBuilder SetDelay(int milliseconds = 200);
 
     /// <summary>
     /// Sets the minimum distance between a tooltip and the shell window bounds.

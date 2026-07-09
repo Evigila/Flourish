@@ -5,7 +5,7 @@ namespace AckSS.Flourish.Composition;
 
 internal sealed class FlourishTipsBuilder(FlourishTipOptions options) : IFlourishTipsBuilder
 {
-    public IFlourishTipsBuilder SetDelay(int milliseconds = 800)
+    public IFlourishTipsBuilder SetDelay(int milliseconds = 200)
     {
         if (milliseconds < 0)
         {
