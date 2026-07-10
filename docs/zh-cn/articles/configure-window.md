@@ -1,11 +1,11 @@
 ---
 title: 窗口
-description: 配置 Flourish Shell 窗口的尺寸、位置和标准 WPF 窗口行为。
+description: 配置 Flourish Shell 窗口的尺寸、位置、任务栏和托盘关闭行为。
 ---
 
 # 窗口
 
-每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、调整大小方式、置顶行为和任务栏可见性。这些设置不需要额外的 Shell 功能开关。
+每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、调整大小方式、置顶行为、任务栏可见性和托盘关闭流程。这些设置不需要额外的 Shell 功能开关。
 
 ## 最小配置
 
@@ -48,8 +48,18 @@ window
 
 `SetWindowResizeMode` 也会影响自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `ShowInTaskbar` 对应标准 WPF 窗口行为。
 
+## 托盘关闭行为
+
+`SetTrayExit()` 启用通知区域流程。启用后，点击标题栏关闭按钮会直接隐藏窗口并显示托盘图标，不会打开退出确认对话框；双击托盘图标或选择 **Show** 可以恢复窗口，选择 **Exit** 才会退出应用。
+
+```csharp
+builder.ConfigureWindow(window => window.SetTrayExit());
+```
+
+调用 `SetTrayExit(false)` 会禁用该流程。此时标题栏关闭按钮会显示退出确认对话框，确认后关闭窗口。
+
 ## 相关功能
 
-- [标题栏](configure-title-bar.md)配置窗口中的标题与窗口命令。
+- [标题栏](configure-title-bar.md)配置窗口中的标题、Logo 与窗口命令。
 - [材质特效](configure-material-effect.md)配置窗口背景材质。
 - [Shell 配置](shell-configuration.md)控制窗口中显示的功能区域。

@@ -5,31 +5,27 @@ description: Configure profile identity, sign-in state, remembered credentials, 
 
 # Profile
 
-The profile surface provides compact account access from the title bar. It can show a default identity, collect sign-in information, remember a login for later sessions, or host an application-provided page.
+The profile surface provides compact account access from the title bar. It starts with the built-in profile page, can collect sign-in information, remember a login for later sessions, or host an application-provided page.
 
-Enable both the title bar and profile features before configuring the profile.
+Enable the title bar and call `SetProfile` to display the profile trigger. The `NameOrder` argument controls how the built-in page formats names and initials.
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar().UseProfile())
-    .ConfigureProfile(profile =>
-        profile
-            .SetNameOrder(NameOrder.FirstLast)
-            .SetDefaultProfile(
-                imagePath: null,
-                userName: "Foo Bar"));
+    .ConfigureShell(shell => shell.UseTitleBar())
+    .ConfigureTitleBar(titleBar =>
+        titleBar.SetProfile(NameOrder.FirstLast));
 ```
 
 ## Names and initials
 
-The built-in sign-in form collects first and last names separately. `SetNameOrder` controls their visual order, the resulting `ProfileUser.DisplayName`, and the initials shown when no image is available.
+The built-in sign-in form collects first and last names separately. The `NameOrder` passed to `SetProfile` controls their visual order, the resulting `ProfileUser.DisplayName`, and the initials shown when no image is available.
 
 | Value | Display name | Initials |
 | --- | --- | --- |
 | `NameOrder.FirstLast` | `Foo Bar` | `FB` |
 | `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
-`SetDefaultProfile()` uses `User` when no arguments are provided. A combined `userName` is split using the name order active when `SetDefaultProfile` is called, so call `SetNameOrder` first when configuring both values.
+Before sign-in, the built-in page uses its default profile identity. The user can replace it by signing in through the form.
 
 At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, `DisplayName`, and `Initials` expose the formatted result. `ProfileUser.UserName` returns the same formatted value as `DisplayName`.
 
@@ -89,12 +85,17 @@ Use a custom page when the application needs different profile content. The shel
 builder
     .ConfigureServices((_, services) =>
         services.AddTransient<FoobarProfilePage>())
+    .ConfigureShell(shell => shell.UseTitleBar())
+    .ConfigureTitleBar(titleBar =>
+        titleBar.SetProfile(NameOrder.FirstLast))
     .ConfigureProfile(profile =>
         profile.SetProfilePage<FoobarProfilePage>());
 ```
 
+`ConfigureProfile` selects the hosted page; it does not display the title bar trigger by itself. When `ConfigureProfile` is omitted, `SetProfile` uses the built-in page.
+
 ## Related features
 
-- [Shell configuration](shell-configuration.md) enables the title bar and profile surfaces.
-- [Title bar](configure-title-bar.md) controls whether the profile trigger is visible.
+- [Shell configuration](shell-configuration.md) enables the title bar surface.
+- [Title bar](configure-title-bar.md) displays the profile trigger and selects name order.
 - [Dependency injection](configure-services.md) registers custom profile services and pages.

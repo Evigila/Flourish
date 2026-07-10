@@ -68,20 +68,18 @@ public partial class App : Application
                 shell
                     .UseTitleBar()
                     .UseNavigation()
-                    .UseTips()
-                    .UseMaterialEffect();
+                    .UseTips(200)
+                    .UseMaterialEffect(MaterialEffect.Mica)
+                    .UseGlobalFont("Segoe UI");
             })
             .ConfigureTitleBar(titleBar =>
             {
                 titleBar
-                    .ShowLogo()
-                    .ShowTitle()
-                    .ShowSubTitle()
-                    .ShowSearch()
-                    .ShowBreadcrumb()
-                    .ShowNavToggle()
                     .SetTitle("Foobar")
-                    .SetSubtitle("Desktop workspace");
+                    .SetSubTitle("Desktop workspace")
+                    .SetSearch("Search", searchText => { })
+                    .SetBreadcrumbButton()
+                    .SetNavToggle();
             })
             .ConfigureNavigation(navigation =>
             {
@@ -95,8 +93,6 @@ public partial class App : Application
 
                 navigation.AddFixedNavigableViewItem<SettingsPage>();
             })
-            .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
-            .ConfigureFont("Segoe UI")
             .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
             .Build();
 

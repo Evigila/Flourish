@@ -5,7 +5,7 @@ description: Enable Flourish shell features and understand their prerequisites.
 
 # Shell configuration
 
-`ConfigureShell` controls which Flourish features participate in the shell. It enables surfaces and behaviors; each feature article explains its detailed configuration.
+`ConfigureShell` controls the main Flourish surfaces and the simple settings that belong to the shell as a whole. A method that accepts a setting configures and enables that feature in one step.
 
 ```csharp
 builder
@@ -15,45 +15,42 @@ builder
     {
         shell
             .UseTitleBar()
-            .UseProfile()
             .UseNavigation()
             .UseDynamicToolbar()
-            .UseTips()
+            .UseTips(200)
             .UseMotion()
-            .UseMaterialEffect()
-            .UseThemes()
-            .UseFooter();
+            .UseMaterialEffect(MaterialEffect.Mica)
+            .UseGlobalFont("Segoe UI", 14)
+            .UseStatusBar();
     });
 ```
 
-Each `Use...` method accepts an `enabled` value and defaults to `true`.
+`UseTitleBar`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an `enabled` value that defaults to `true`. The remaining methods take the setting they apply.
 
 ## Feature switches
 
 | Switch | Feature | Detailed configuration |
 | --- | --- | --- |
 | `UseTitleBar` | Displays the built-in window title bar. | [Title bar](configure-title-bar.md) |
-| `UseProfile` | Enables profile access through the title bar. | [Profile](configure-profile.md) |
 | `UseNavigation` | Displays the navigation panel. | [Navigation](navigation.md) |
 | `UseDynamicToolbar` | Displays page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
-| `UseTips` | Enables Flourish tooltips. | [Tooltips](configure-tips.md) |
+| `UseTips(delay)` | Enables Flourish tooltips with the requested initial delay. | [Tooltips](configure-tips.md) |
 | `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
-| `UseMaterialEffect` | Enables the selected window material. | [Material effects](configure-material-effect.md) |
-| `UseThemes` | Enables theme selection, system following, and preference handling. | [Themes](configure-themes.md) |
-| `UseFooter` | Displays the footer status area. | [Footer status](status-bar.md) |
+| `UseMaterialEffect(effect)` | Applies the selected window material. | [Material effects](configure-material-effect.md) |
+| `UseGlobalFont(family, size)` | Sets the font used by Flourish shell UI. | [Typography](configure-font.md) |
+| `UseStatusBar` | Displays the status bar. | [Status bar](status-bar.md) |
 
 ## Prerequisites and priority
 
-Feature switches take priority over detailed configuration. Detailed settings do not activate a feature; the corresponding surface or behavior remains inactive until its switch is enabled.
+Boolean feature switches take priority over their detailed configuration. For example, toolbar items registered for a page are not displayed when `UseDynamicToolbar(false)` is active, and status items remain hidden when `UseStatusBar(false)` is active.
 
-For example, toolbar items registered for a page are not displayed when `UseDynamicToolbar(false)` is active, and footer status items remain hidden when `UseFooter(false)` is active.
+Simple shell features use configuration as their activation point:
 
-Some controls depend on more than one switch:
+- `UseTips(delay)` uses the built-in tooltip boundary margin.
+- `UseMaterialEffect(effect)` applies the selected effect; `MaterialEffect.None` disables material composition.
+- `UseGlobalFont(family, size)` uses a default base size of `14` when the size is omitted.
 
-- The profile trigger requires both `UseTitleBar()` and `UseProfile()`.
-- The title bar theme toggle requires both `UseTitleBar()` and `UseThemes()`.
-- The title bar navigation toggle can be shown only when both the title bar and navigation panel are enabled.
-- Theme preference storage requires the identity or explicit directory described in [Application data](configure-data.md).
+Title bar elements follow the same configuration-first model. [Title bar](configure-title-bar.md) explains how `SetProfile`, `SetThemeToggle`, and the other `Set...` methods both configure and display their controls. The title bar navigation toggle additionally requires `UseNavigation()` because it controls that panel. Theme preference storage requires the identity or explicit directory described in [Application data](configure-data.md).
 
 ## Disable a feature
 
@@ -65,16 +62,17 @@ builder.ConfigureShell(shell =>
     shell
         .UseNavigation(showNavigation)
         .UseMotion(!useStaticInterface)
-        .UseMaterialEffect(false);
+        .UseStatusBar(showStatusBar);
 });
 ```
+
+Omit `UseTips` or `UseGlobalFont` when their default shell behavior should remain unchanged. Use `MaterialEffect.None` when shared configuration must explicitly disable a material effect.
 
 ## Related configuration areas
 
 These settings and extension points use their own configuration entry points:
 
 - [Window](configure-window.md) sets size, placement, and WPF window behavior.
-- [Typography](configure-font.md) sets the shell font family and base size.
 - [Application data](configure-data.md) identifies preference storage.
 - [Dependency injection](configure-services.md) registers application and replaceable Flourish services.
 - [Custom shell content](configure-custom-handler.md) inserts application elements into enabled shell regions.

@@ -39,21 +39,21 @@ The public builder separates hosting, application services, feature switches, an
 | --- | --- | --- |
 | [Application data](configure-data.md) | `ConfigureData` | Identifies application preference storage. |
 | [Dependency injection](configure-services.md) | `ConfigureServices` | Registers application and replaceable Flourish services. |
-| [Shell configuration](shell-configuration.md) | `ConfigureShell` | Enables or disables shell features. |
-| [Profile](configure-profile.md) | `ConfigureProfile` | Configures the default identity, name order, and hosted profile page. |
+| [Shell configuration](shell-configuration.md) | `ConfigureShell` | Configures shell surfaces, tooltips, typography, and material effects. |
+| [Profile](configure-profile.md) | `ConfigureProfile` | Selects a custom page for the profile enabled by the title bar. |
 | [Title bar](configure-title-bar.md) | `ConfigureTitleBar` | Configures title bar content and behavior. |
 | [Navigation](navigation.md) | `ConfigureNavigation` | Configures the navigation panel and visible model. |
 | [Custom shell content](configure-custom-handler.md) | `ConfigureCustomHandler` | Inserts custom WPF elements into shell regions. |
 | [Dynamic toolbar](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
-| [Tooltips](configure-tips.md) | `ConfigureTips` | Configures tooltip timing and placement. |
+| [Tooltips](configure-tips.md) | `ConfigureShell` | Configures and enables tooltips with `UseTips`. |
 | [Motion](configure-motion.md) | `ConfigureMotion` | Configures transitions and hover animation. |
 | [Window](configure-window.md) | `ConfigureWindow` | Configures shell window properties. |
-| [Typography](configure-font.md) | `ConfigureFont` | Configures shell typography. |
-| [Material effects](configure-material-effect.md) | `ConfigureMaterialEffect` | Selects the window material effect. |
-| [Themes](configure-themes.md) | `ConfigureThemes` | Selects the default theme. |
-| [Footer status](status-bar.md) | `ConfigureFooter` | Configures footer status content. |
+| [Typography](configure-font.md) | `ConfigureShell` | Configures shell typography with `UseGlobalFont`. |
+| [Material effects](configure-material-effect.md) | `ConfigureShell` | Applies the window material with `UseMaterialEffect`. |
+| [Themes](configure-themes.md) | `ConfigureTitleBar` | Enables theme handling with `SetThemeToggle`. |
+| [Status bar](status-bar.md) | `ConfigureStatusBar` | Configures status bar content. |
 
-Builder entry points can be called multiple times. Repeated callbacks for the same entry point are applied in registration order during `Build()`; direct value settings such as font, material, and theme use the last configured value.
+Builder entry points can be called multiple times. Repeated callbacks for the same entry point are applied in registration order during `Build()`; repeated setting methods use the last configured value.
 
 ## Register services
 

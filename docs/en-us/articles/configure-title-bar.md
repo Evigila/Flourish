@@ -5,7 +5,7 @@ description: Configure the built-in title bar content, search, navigation, profi
 
 # Title bar
 
-The Flourish title bar can display application identity, search, breadcrumb navigation, a navigation toggle, profile access, and theme controls. Enable the surface through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to choose its content.
+The Flourish title bar can display application identity, search, breadcrumb navigation, a navigation toggle, profile access, and theme controls. Enable the surface through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to configure the elements that should be visible. An element remains hidden when its `Set...` method is not called.
 
 ## Configure the title bar
 
@@ -14,42 +14,60 @@ builder
     .ConfigureData(data =>
         data.SetAppCompany("Example Company").SetAppName("Foobar"))
     .ConfigureShell(shell =>
-        shell.UseTitleBar().UseNavigation().UseProfile().UseThemes())
+        shell.UseTitleBar().UseNavigation())
     .ConfigureTitleBar(titleBar =>
     {
         titleBar
-            .ShowLogo()
-            .ShowTitle()
-            .ShowSubTitle()
-            .ShowSearch()
-            .ShowBreadcrumb()
-            .ShowNavToggle()
-            .ShowProfile()
-            .ShowThemeToggle()
+            .SetLogo("/MyApp;component/Assets/logo.png")
             .SetTitle("Foobar")
-            .SetSubtitle("Desktop workspace")
-            .SetSearchPlaceholder("Search");
+            .SetSubTitle("Desktop workspace")
+            .SetSearch("Search", searchText => UpdateSearch(searchText))
+            .SetBreadcrumbButton(BreadcrumbShowOption.Auto)
+            .SetNavToggle()
+            .SetProfile(NameOrder.FirstLast)
+            .SetThemeToggle(FlourishTheme.System);
     });
 ```
 
-`UseTitleBar()` is the surface prerequisite. `UseProfile()` and `UseThemes()` independently control whether the corresponding title bar controls can operate.
+`UseTitleBar()` is the surface prerequisite. `SetProfile` and `SetThemeToggle` activate the services needed by their controls. `SetNavToggle` is displayed only when [Navigation](navigation.md) is also enabled.
 
 ## Built-in content
 
-`Show...` methods control built-in title bar regions. They do not create custom content; [Custom shell content](configure-custom-handler.md) inserts application-provided WPF elements.
+Each configuration method also displays its corresponding element:
 
-`SetLogo` accepts a pack URI or an `ImageSource`. `SetLogoFallbackText` supplies text for the logo region when an image is not used.
+| Method | Result |
+| --- | --- |
+| `SetLogo(path)` | Displays the application logo. |
+| `SetTitle(title)` | Displays the primary title. |
+| `SetSubTitle(subTitle)` | Displays supporting title text. |
+| `SetSearch(placeholder, handler)` | Displays search and handles text changes. |
+| `SetBreadcrumbButton(option)` | Displays breadcrumb navigation with the selected behavior. |
+| `SetNavToggle()` | Displays the navigation panel toggle. |
+| `SetProfile(nameOrder)` | Displays the profile trigger with the built-in profile behavior. |
+| `SetThemeToggle(mode)` | Displays the theme toggle and selects its initial mode. |
 
-`SetBreadcrumbBehavior` controls when breadcrumb navigation is visible. `Always` keeps it visible, `Auto` follows navigation state, and `Hidden` suppresses it.
+These methods configure built-in title bar regions. [Custom shell content](configure-custom-handler.md) inserts application-provided WPF elements into the extension regions.
+
+## Logo and window icon
+
+`SetLogo` accepts a relative URI, absolute URI, or WPF pack URI. Flourish removes fully transparent edge pixels before fitting the image into the title bar logo region, allowing the visible artwork to use the available space. The same effective image is assigned to the shell window icon, so the taskbar icon and title bar logo remain synchronized.
+
+```csharp
+titleBar.SetLogo("pack://application:,,,/MyApp;component/Assets/logo.ico");
+```
+
+## Breadcrumb navigation
+
+`SetBreadcrumbButton` accepts a `BreadcrumbShowOption`. `Always` keeps breadcrumb navigation visible, `Auto` follows navigation state, and `Hidden` suppresses it. Omitting the argument uses `Auto`.
 
 ## Search
 
-`SetSearchHandler` receives search text changes. A handler can resolve services from `IServiceProvider`, which is useful for message services, view models, or application search coordinators.
+`SetSearch` receives a placeholder and a handler for search text changes. Use the service-provider overload when the handler needs application services.
 
 ```csharp
 builder.ConfigureTitleBar(titleBar =>
 {
-    titleBar.SetSearchHandler((services, searchText) =>
+    titleBar.SetSearch("Search", (services, searchText) =>
     {
         services.GetRequiredService<SearchCoordinator>().Update(searchText);
     });
@@ -58,17 +76,14 @@ builder.ConfigureTitleBar(titleBar =>
 
 ## Profile and theme controls
 
-`ShowProfile` controls the trigger while [Profile](configure-profile.md) defines its content and login behavior. The trigger requires both `UseTitleBar()` and `UseProfile()`.
+`SetProfile` displays the trigger, enables the built-in profile behavior, and selects the order used for names and initials. [Profile](configure-profile.md) explains login behavior and custom profile pages.
 
-`ShowThemeToggle` requires themes to be enabled. [Themes](configure-themes.md) selects the default theme and explains preference behavior.
-
-## Window close behavior
-
-`SetTrayExit(true)` makes the title bar close command hide the window in the Windows notification area. The tray menu can restore the window or exit the application. With tray exit disabled, the close command closes the window normally.
+`SetThemeToggle` displays the toggle, enables theme handling, and selects the theme used when no saved preference exists. [Themes](configure-themes.md) explains system following and preference behavior.
 
 ## Related features
 
 - [Custom shell content](configure-custom-handler.md) adds title bar actions and custom regions.
 - [Profile](configure-profile.md) configures profile content, authentication, and persistence.
-- [Navigation](navigation.md) provides the panel controlled by `ShowNavToggle`.
-- [Themes](configure-themes.md) provides the theme controlled by `ShowThemeToggle`.
+- [Navigation](navigation.md) provides the panel controlled by `SetNavToggle`.
+- [Themes](configure-themes.md) explains the theme controlled by `SetThemeToggle`.
+- [Window](configure-window.md) configures close-to-tray behavior.

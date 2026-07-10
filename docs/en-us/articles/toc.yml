@@ -31,7 +31,7 @@ items:
   href: configure-material-effect.md
 - name: Themes
   href: configure-themes.md
-- name: Footer status
+- name: Status bar
   href: status-bar.md
 - name: Message service
   href: message-service.md

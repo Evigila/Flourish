@@ -92,7 +92,7 @@ If a command item is a parent node, clicking it expands or collapses children an
 
 ## Use services inside a parser
 
-Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Title bar and footer commands described in [Custom shell content](configure-custom-handler.md) use the same parser path.
+Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Title bar and status bar commands described in [Custom shell content](configure-custom-handler.md) use the same parser path.
 
 ```csharp
 internal sealed class ReportsCommandParser(ReportExporter exporter) : ICommandParser

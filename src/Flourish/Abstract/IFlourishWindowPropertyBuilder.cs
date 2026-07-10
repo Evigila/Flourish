@@ -133,9 +133,14 @@ public interface IFlourishWindowPropertyBuilder
     IFlourishWindowPropertyBuilder ShowInTaskbar(bool enabled = true);
 
     /// <summary>
-    /// Sets whether closing the shell window exits through the tray flow.
+    /// Sets whether the title bar close button hides the shell window in the notification area.
     /// </summary>
-    /// <param name="enabled">A value indicating whether tray exit behavior should be enabled.</param>
+    /// <param name="enabled">A value indicating whether closing to the notification area should be enabled.</param>
     /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// When enabled, the close button hides the window without showing the exit confirmation.
+    /// Use the notification-area menu to restore the window or exit the application. When
+    /// disabled, the close button uses the normal exit confirmation flow.
+    /// </remarks>
     IFlourishWindowPropertyBuilder SetTrayExit(bool enabled = true);
 }

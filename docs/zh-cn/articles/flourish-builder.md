@@ -33,27 +33,27 @@ return flourish.Run<App>();
 
 ## Builder 阶段
 
-公开 builder 将高层功能开关和详细配置拆分开。
+公开 builder 通过功能型入口组织配置。复杂功能使用专用 builder，单一选项可在启用时直接配置。
 
 | 功能 | Builder 方法 | 作用 |
 | --- | --- | --- |
 | [应用数据](configure-data.md) | `ConfigureData` | 配置应用标识和偏好存储。 |
 | [依赖注入](configure-services.md) | `ConfigureServices` | 注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
-| [Shell 配置](shell-configuration.md) | `ConfigureShell` | 启用或禁用 Shell 高层功能。 |
-| [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` | 配置默认资料、名称顺序和承载页面。 |
+| [Shell 配置](shell-configuration.md) | `ConfigureShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
+| [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |
 | [标题栏](configure-title-bar.md) | `ConfigureTitleBar` | 配置标题栏内容和行为。 |
 | [导航](navigation.md) | `ConfigureNavigation` | 配置导航栏展示、页面位置、命令项、分组和固定项。 |
 | [自定义 Shell 内容](configure-custom-handler.md) | `ConfigureCustomHandler` | 将自定义 WPF 元素或命令插入预定义 Shell 区域。 |
 | [动态工具栏](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | 注册按页面变化的工具栏项。 |
-| [提示浮层](configure-tips.md) | `ConfigureTips` | 配置提示显示延迟和 Shell 边缘间距。 |
+| [提示浮层](configure-tips.md) | `ConfigureShell` | 使用 `UseTips` 配置并启用提示浮层。 |
 | [动效](configure-motion.md) | `ConfigureMotion` | 配置页面过渡、导航栏过渡和悬停揭示动画。 |
-| [窗口](configure-window.md) | `ConfigureWindow` | 配置 Shell 窗口尺寸、位置、状态、调整大小模式、任务栏显示和置顶行为。 |
-| [排版](configure-font.md) | `ConfigureFont` | 配置 Shell 字体和基础字号。 |
-| [材质特效](configure-material-effect.md) | `ConfigureMaterialEffect` | 选择 Shell 窗口材质。 |
-| [主题](configure-themes.md) | `ConfigureThemes` | 选择未保存偏好时使用的主题。 |
-| [状态栏（Footer）](status-bar.md) | `ConfigureFooter` | 配置状态文本和状态项。 |
+| [窗口](configure-window.md) | `ConfigureWindow` | 配置 Shell 窗口尺寸、位置、状态、任务栏、置顶和托盘行为。 |
+| [排版](configure-font.md) | `ConfigureShell` | 使用 `UseGlobalFont` 配置 Shell 排版。 |
+| [材质特效](configure-material-effect.md) | `ConfigureShell` | 使用 `UseMaterialEffect` 应用窗口材质。 |
+| [主题](configure-themes.md) | `ConfigureTitleBar` | 使用 `SetThemeToggle` 启用主题功能并显示切换入口。 |
+| [状态栏](status-bar.md) | `ConfigureStatusBar` | 配置状态文本和状态项。 |
 
-Builder 入口可以调用多次。同一入口的重复回调会在 `Build()` 时按注册顺序应用；字体、材质和主题等直接值设置使用最后一次配置的值。
+Builder 入口可以调用多次。同一入口的重复回调会在 `Build()` 时按注册顺序应用；重复设置同一选项时使用最后一次配置的值。提示、字体和材质等 Shell 选项分别由 `UseTips`、`UseGlobalFont` 和 `UseMaterialEffect` 配置；主题由标题栏的 `SetThemeToggle` 配置。
 
 ## 注册服务
 

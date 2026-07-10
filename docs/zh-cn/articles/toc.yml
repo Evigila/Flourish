@@ -31,7 +31,7 @@ items:
   href: configure-material-effect.md
 - name: 主题
   href: configure-themes.md
-- name: 状态栏（Footer）
+- name: 状态栏
   href: status-bar.md
 - name: 消息服务
   href: message-service.md
