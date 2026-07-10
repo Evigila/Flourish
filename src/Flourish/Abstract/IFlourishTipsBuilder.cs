@@ -5,10 +5,9 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseTips((_, tips) =>
-/// {
-///     tips.SetDelay(200).SetSpawnableMargin(5);
-/// });
+/// builder
+///     .ConfigureShell(shell => shell.UseTips())
+///     .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5));
 /// ]]></code>
 /// </example>
 public interface IFlourishTipsBuilder

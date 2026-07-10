@@ -57,13 +57,13 @@ public interface IFlourishNavigationBuilder
     );
 
     /// <summary>
-    /// Sets the navigation panel title used by the legacy ungrouped navigation surface.
+    /// Sets the navigation panel title used when registered pages are displayed without explicit groups or fixed items.
     /// </summary>
-    /// <param name="title">The title displayed above legacy navigation items.</param>
+    /// <param name="title">The title displayed above automatically listed navigation items.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// When groups are configured, each group heading comes from the group display name. If group 0
-    /// has no display name, Flourish does not reserve heading space at the top of the navigation panel.
+    /// When groups or fixed items are configured, the automatic registered-page list is not created.
+    /// Each configured group heading comes from its display name; group 0 can omit that heading.
     /// </remarks>
     IFlourishNavigationBuilder SetTitle(string title);
 
@@ -84,12 +84,12 @@ public interface IFlourishNavigationBuilder
     /// navigation.SetGroup("Navigation", groupId: 0, group =>
     /// {
     ///     group.AddNavigableViewItem<HomePage>(isInitial: true);
-    ///     group.AddNavigableViewItem<GalleryPage>();
+    ///     group.AddNavigableViewItem<ReportsPage>();
     /// });
     ///
     /// navigation.SetGroup("Tools", groupId: 1, group =>
     /// {
-    ///     group.AddNavigableItem("Refresh", "gallery.refresh", iconGlyph: "\uE72C");
+    ///     group.AddNavigableItem("Refresh", "reports.refresh", iconGlyph: "\uE72C");
     /// });
     /// ]]></code>
     /// </example>

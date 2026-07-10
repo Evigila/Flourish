@@ -1,11 +1,11 @@
 ---
 title: 快速开始
-description: 用最短路径把 Flourish 接入 WPF 应用。
+description: 使用 Flourish 构建并运行一个基本 WPF 应用。
 ---
 
 # 快速开始
 
-使用 Flourish 最快的方式，是让 Flourish Shell 托管 WPF `Application`：引用主题资源，在 `App.xaml.cs` 或其他应用起始点构建 `IFlourish` 运行时，用 `AddNavigable` 注册页面，在 [`ConfigureNavigation`](configure-navigation.md) 中放置导航项，然后显示 Shell。
+基本的 Flourish 应用由 Shell 托管 WPF `Application`：引用主题资源，在 `App.xaml.cs` 或其他应用起始点构建 `IFlourish` 运行时，用 `AddNavigable` 注册页面，在[导航](navigation.md)配置中放置导航项，然后显示 Shell。
 
 ## 引用主题资源
 
@@ -18,7 +18,7 @@ description: 用最短路径把 Flourish 接入 WPF 应用。
 
 ```xml
 <Application
-  x:Class="MyApp.App"
+  x:Class="Foobar.App"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
@@ -40,7 +40,7 @@ using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MyApp;
+namespace Foobar;
 
 public partial class App : Application
 {
@@ -68,21 +68,19 @@ public partial class App : Application
                 shell
                     .UseTitleBar()
                     .UseNavigation()
-                    .UseDynamicToolbar()
                     .UseTips()
-                    .UseMotion()
-                    .UseMaterialEffect()
-                    .UseThemes();
+                    .UseMaterialEffect();
             })
             .ConfigureTitleBar(titleBar =>
             {
                 titleBar
                     .ShowLogo()
                     .ShowTitle()
+                    .ShowSubTitle()
                     .ShowSearch()
                     .ShowBreadcrumb()
                     .ShowNavToggle()
-                    .SetTitle("My App")
+                    .SetTitle("Foobar")
                     .SetSubtitle("Flourish Shell");
             })
             .ConfigureNavigation(navigation =>
@@ -120,7 +118,7 @@ public partial class App : Application
 }
 ```
 
-`CreateDefaultBuilder(e.Args)` 会创建标准的 .NET Generic Host。因此 [`ConfigureServices`](configure-services.md) 拿到的是普通 `IServiceCollection`，应用服务、页面、命令解析器都可以按熟悉的依赖注入方式注册。
+`CreateDefaultBuilder(e.Args)` 会创建标准的 .NET Generic Host。因此[依赖注入](configure-services.md)配置拿到的是普通 `IServiceCollection`，应用服务、页面和命令解析器都可以按标准依赖注入方式注册。
 
 ## 其他起始点
 
@@ -147,24 +145,24 @@ return FlourishBuilder
 
 同一次启动流程应选择 `App.xaml.cs` 生命周期路径或 `Run<App>()` 快捷入口之一。两者同时使用会导致 Shell 显示两次。
 
-## 配置 API 页面
+## 按功能继续配置
 
-启动示例刻意让每个配置职责保持独立：
+启动示例将不同配置职责分开：
 
-- [`ConfigureServices`](configure-services.md) 注册服务、页面和命令解析器。
-- [`ConfigureShell`](configure-shell.md) 启用高层 Shell 功能。
-- [`ConfigureTitleBar`](configure-title-bar.md) 配置标题栏。
-- [`ConfigureNavigation`](configure-navigation.md) 配置导航栏展示和可见导航项。
-- [`ConfigureTips`](configure-tips.md)、[`ConfigureFont`](configure-font.md)、[`ConfigureWindow`](configure-window.md) 调整 Shell 辅助行为。
+- [依赖注入](configure-services.md)注册服务、页面和命令解析器。
+- [Shell 配置](shell-configuration.md)启用高层 Shell 功能。
+- [标题栏](configure-title-bar.md)配置标题栏内容和入口。
+- [导航](navigation.md)配置导航栏展示和可见导航项。
+- [提示浮层](configure-tips.md)、[排版](configure-font.md)和[窗口](configure-window.md)调整 Shell 的交互和外观。
 
 ## 创建页面
 
-通过 `AddNavigable` 注册的页面就是普通 WPF `Page`。导航发生时，Flourish 会从依赖注入容器解析页面实例。页面显示名称、图标和缓存模式来自 `AddNavigable`；可见导航位置和初始页则在 [`ConfigureNavigation`](configure-navigation.md) 中配置。
+通过 `AddNavigable` 注册的页面就是普通 WPF `Page`。导航发生时，Flourish 会从依赖注入容器解析页面实例。页面显示名称、图标和缓存模式来自 `AddNavigable`；可见导航位置和初始页则在[导航](navigation.md)配置中设置。
 
 ```csharp
 using System.Windows.Controls;
 
-namespace MyApp;
+namespace Foobar;
 
 public partial class HomePage : Page
 {
@@ -180,5 +178,5 @@ public partial class HomePage : Page
 - WPF 应用从 `App.xaml.cs` 或其他应用起始点启动 Flourish。
 - 至少一个页面已通过 `AddNavigable` 注册。
 - 至少一个可见页面项已通过 `AddNavigableViewItem` 添加，最好指定 `isInitial: true`。
-- 页面所需的 Shell 区域已通过 [`ConfigureShell`](configure-shell.md) 启用。
+- 页面所需的 Shell 区域已通过 [Shell 配置](shell-configuration.md)启用。
 - 运行时会在应用退出时释放，或由 builder 快捷入口 `.Run<App>()` 负责释放。

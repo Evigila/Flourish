@@ -1,11 +1,13 @@
 ---
-title: ConfigureWindow
-description: 配置 Flourish Shell 窗口尺寸、位置和窗口行为。
+title: 窗口
+description: 配置 Flourish Shell 窗口的尺寸、位置和标准 WPF 窗口行为。
 ---
 
-# ConfigureWindow
+# 窗口
 
-`ConfigureWindow` 配置 Shell 窗口属性。它独立于 [`ConfigureShell`](configure-shell.md) 功能开关，因为每个 Shell 都需要窗口。
+每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、调整大小方式、置顶行为和任务栏可见性。这些设置不需要额外的 Shell 功能开关。
+
+## 最小配置
 
 ```csharp
 builder.ConfigureWindow(window =>
@@ -13,25 +15,41 @@ builder.ConfigureWindow(window =>
     window
         .SetWindowSize(1280, 720)
         .SetWindowMinSize(960, 540)
-        .SetWindowMaxSize(1920, 1080)
-        .SetWindowPosition(WindowStartupLocation.CenterScreen)
-        .SetWindowState(WindowState.Normal)
-        .SetWindowResizeMode(ResizeMode.CanResize)
-        .UseTopmost(false)
-        .ShowInTaskbar(true);
+        .SetWindowPosition(WindowStartupLocation.CenterScreen);
 });
 ```
 
-## 细节
+## 尺寸与位置
 
-尺寸方法会校验有限正数，并保证最小值和最大值关系正确。`SetManualWindowPosition` 会把启动位置切换为 `Manual` 并保存指定坐标。
+`SetWindowSize` 设置初始尺寸，`SetWindowMinSize` 和 `SetWindowMaxSize` 限制用户可调整的范围。初始尺寸和最小尺寸必须是有限正数；最大尺寸可以是正数或 `double.PositiveInfinity`，且不能小于最小尺寸。
 
-`SetWindowResizeMode` 会影响自定义标题栏中的最大化命令是否可用。`ShowInTaskbar` 和 `UseTopmost` 对应普通 WPF 窗口行为。
+```csharp
+window
+    .SetWindowSize(1280, 720)
+    .SetWindowMinSize(960, 540)
+    .SetWindowMaxSize(1920, 1080);
+```
 
-窗口配置应靠近 Shell 组合配置；WPF 资源和应用生命周期仍属于 WPF 应用自身。
+`SetWindowPosition` 接收标准 WPF `WindowStartupLocation`。需要指定坐标时，使用 `SetManualWindowPosition(left, top)`；该方法会保存坐标并自动将启动位置设为 `Manual`。
 
-## 相关 API
+```csharp
+window.SetManualWindowPosition(left: 40, top: 40);
+```
 
-- [`快速开始`](getting-started.md) 展示从 `App.xaml.cs` 或其他应用起始点启动。
-- [`ConfigureTitleBar`](configure-title-bar.md) 控制已配置窗口中的标题栏按钮。
-- [`ConfigureMaterialEffect`](configure-material-effect.md) 改变窗口背景材质。
+## 窗口行为
+
+```csharp
+window
+    .SetWindowState(WindowState.Normal)
+    .SetWindowResizeMode(ResizeMode.CanResize)
+    .UseTopmost(false)
+    .ShowInTaskbar(true);
+```
+
+`SetWindowResizeMode` 也会影响自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `ShowInTaskbar` 对应标准 WPF 窗口行为。
+
+## 相关功能
+
+- [标题栏](configure-title-bar.md)配置窗口中的标题与窗口命令。
+- [材质特效](configure-material-effect.md)配置窗口背景材质。
+- [Shell 配置](shell-configuration.md)控制窗口中显示的功能区域。

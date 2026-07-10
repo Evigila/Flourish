@@ -1,11 +1,13 @@
 ---
-title: ConfigureTips
-description: Configure Flourish tooltip timing and placement constraints.
+title: Tooltips
+description: Configure tooltip timing and keep tooltips inside the shell boundary.
 ---
 
-# ConfigureTips
+# Tooltips
 
-`ConfigureTips` configures tooltip behavior. Tooltips are active only when [`ConfigureShell`](configure-shell.md) enables `UseTips()`.
+Tooltips make compact or icon-only shell controls discoverable. Enable them through [Shell configuration](shell-configuration.md), then use `ConfigureTips` to tune timing and placement.
+
+## Configure tooltips
 
 ```csharp
 builder
@@ -16,15 +18,17 @@ builder
     });
 ```
 
-## Details
+## Timing and placement
 
-`SetDelay` controls the initial hover delay in milliseconds. It should be long enough to avoid visual noise in dense WPF tools and short enough to help discover icon-only controls.
+`SetDelay` controls the initial hover delay in milliseconds. A shorter value shows help sooner; a longer value reduces unintended tooltips as the pointer moves across controls.
 
-`SetSpawnableMargin` keeps tooltips away from shell edges. This is useful when navigation is collapsed, footer commands are near the bottom edge, or toolbar commands sit close to the window border.
+`SetSpawnableMargin` keeps tooltips away from shell edges, including controls near the collapsed navigation panel, footer, or toolbar boundary.
 
-Disabling tips through `UseTips(false)` overrides these detailed settings.
+The delay must be non-negative. The margin must be a finite, non-negative value.
 
-## Related APIs
+`UseTips(false)` disables tooltips even when timing and margin values have been configured.
 
-- [`ConfigureShell`](configure-shell.md) owns the `UseTips` switch.
-- [`ConfigureTitleBar`](configure-title-bar.md), [`ConfigureNavigation`](configure-navigation.md), and [`ConfigureFooter`](configure-footer.md) contain built-in controls that can show tips.
+## Related features
+
+- [Shell configuration](shell-configuration.md) owns the `UseTips` switch.
+- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Footer status](status-bar.md) contain built-in controls that can show tooltips.

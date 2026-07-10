@@ -77,7 +77,7 @@ public sealed record ProfileUser
     public string DisplayName => FormatDisplayName(FirstName, LastName, NameOrder);
 
     /// <summary>
-    /// Gets the user display name. This compatibility alias returns <see cref="DisplayName" />.
+    /// Gets the same formatted profile display name as <see cref="DisplayName" />.
     /// </summary>
     public string UserName => DisplayName;
 

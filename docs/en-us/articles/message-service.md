@@ -49,7 +49,7 @@ if (selected?.Id == "replace")
 }
 ```
 
-Options are displayed in the order provided. The last option appears on the right side of the dialog footer. `IsDefault` controls the Enter key, `IsCancel` controls Escape and the titlebar close button, and `IsPrimary` applies the accent button style. Each custom option must have a unique non-empty `Id` and non-empty `Text`.
+Options are displayed in the order provided. The last option appears on the right side of the dialog footer. `IsDefault` controls the Enter key, `IsCancel` controls Escape and the title bar close button, and `IsPrimary` applies the accent button style. Each custom option must have a unique non-empty `Id` and non-empty `Text`.
 
 ## Owner window
 

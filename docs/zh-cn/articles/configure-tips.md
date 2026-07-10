@@ -1,30 +1,40 @@
 ---
-title: ConfigureTips
-description: 配置 Flourish 提示浮层时机和边界约束。
+title: 提示浮层
+description: 配置 Flourish 提示浮层的显示延迟和窗口边界距离。
 ---
 
-# ConfigureTips
+# 提示浮层
 
-`ConfigureTips` 配置提示浮层行为。提示浮层只有在 [`ConfigureShell`](configure-shell.md) 启用 `UseTips()` 后才会生效。
+提示浮层为图标按钮和紧凑命令提供补充说明。先在 [Shell 配置](shell-configuration.md)中启用 `UseTips()`，再使用 `ConfigureTips` 调整显示时机和可用区域。
+
+## 最小配置
 
 ```csharp
 builder
     .ConfigureShell(shell => shell.UseTips())
     .ConfigureTips(tips =>
     {
-        tips.SetDelay(200).SetSpawnableMargin(5);
+        tips
+            .SetDelay(200)
+            .SetSpawnableMargin(5);
     });
 ```
 
-## 细节
+## 显示延迟
 
-`SetDelay` 控制初始悬浮延迟，单位为毫秒。密集型 WPF 工具需要避免提示过于频繁，同时也要让图标按钮容易发现。
+`SetDelay` 设置指针悬停后到提示出现前的时间，单位为毫秒。较短延迟会更快显示提示；较长延迟可减少指针经过控件时的意外显示。
 
-`SetSpawnableMargin` 让提示浮层避开 Shell 边缘。导航栏折叠、Footer 命令靠近底部、工具栏命令靠近窗口边框时，这个设置尤其有用。
+## 窗口边界
 
-通过 `UseTips(false)` 关闭提示会覆盖这些详细设置。
+`SetSpawnableMargin` 设置提示浮层与 Shell 窗口边缘之间保留的最小距离。该约束适用于靠近标题栏、折叠导航栏、动态工具栏和状态栏边缘的提示。
 
-## 相关 API
+边距必须是有限非负数，延迟不能为负数。
 
-- [`ConfigureShell`](configure-shell.md) 拥有 `UseTips` 开关。
-- [`ConfigureTitleBar`](configure-title-bar.md)、[`ConfigureNavigation`](configure-navigation.md)、[`ConfigureFooter`](configure-footer.md) 都包含可能显示提示的内置控件。
+## 启用关系
+
+调用 `UseTips(false)` 会禁用提示浮层，即使已经提供 `ConfigureTips` 设置。重新启用后，已配置的延迟和边距会继续生效。
+
+## 相关功能
+
+- [标题栏](configure-title-bar.md)、[导航](navigation.md)、[动态工具栏](dynamic-toolbar.md)和[状态栏（Footer）](status-bar.md)包含可显示提示的 Shell 控件。
+- [动效](configure-motion.md)配置与提示浮层相互独立的过渡和悬停动画。

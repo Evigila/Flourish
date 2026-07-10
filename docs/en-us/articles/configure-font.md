@@ -1,25 +1,27 @@
 ---
-title: ConfigureFont
-description: Configure the Flourish shell font family and base size.
+title: Typography
+description: Set the font family and base size used by Flourish shell surfaces.
 ---
 
-# ConfigureFont
+# Typography
 
-`ConfigureFont` sets the font family and base font size used by the Flourish shell UI.
+Use `ConfigureFont` to set the font family and base size for Flourish shell surfaces.
+
+## Configure shell typography
 
 ```csharp
-builder.ConfigureFont("Microsoft YaHei", 14);
+builder.ConfigureFont("Segoe UI", 14);
 ```
 
-## Details
+When only the font family is supplied, `ConfigureFont` uses a base size of `14`.
 
-The font family should support every language the application displays. Native WPF applications with mixed CJK and Latin text commonly choose a Windows system font that covers both scripts.
+Choose a font family that supports every language displayed by the application. The base size must be positive and finite.
 
-The font size must be positive and finite. Flourish derives several shell text sizes from this base value, so the value should be chosen for repeated desktop use rather than marketing-scale display text.
+Flourish derives several shell text sizes from the base value, so changing it affects multiple shell regions. Verify the result at the window sizes the application supports.
 
-Application pages can still use their own WPF styles. `ConfigureFont` targets the Flourish shell frame: title bar, navigation, toolbar, footer, and shell dialogs.
+Application pages can continue to use their own WPF styles. `ConfigureFont` applies to the shell frame, including the title bar, navigation, toolbar, footer, and shell dialogs.
 
-## Related APIs
+## Related features
 
-- [`ConfigureWindow`](configure-window.md) controls the shell size that the font must fit.
-- [`ConfigureTitleBar`](configure-title-bar.md), [`ConfigureNavigation`](configure-navigation.md), and [`ConfigureFooter`](configure-footer.md) display shell text affected by the configured font.
+- [Window](configure-window.md) controls the available space for shell text.
+- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Footer status](status-bar.md) display text affected by the configured font.

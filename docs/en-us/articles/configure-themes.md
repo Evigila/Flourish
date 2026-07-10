@@ -1,28 +1,34 @@
 ---
-title: ConfigureThemes
-description: Configure the default Flourish theme and theme preference behavior.
+title: Themes
+description: Choose the default Flourish theme and persist the user's selection.
 ---
 
-# ConfigureThemes
+# Themes
 
-`ConfigureThemes` chooses the default theme used when [`ConfigureShell`](configure-shell.md) enables `UseThemes()` and no saved preference exists.
+Themes provide light, dark, and system-following shell resources. Enable theme support through [Shell configuration](shell-configuration.md), then use `ConfigureThemes` to choose the default used when no saved preference exists.
+
+## Configure the default theme
 
 ```csharp
 builder
+    .ConfigureData(data =>
+        data.SetAppCompany("Example Company").SetAppName("Foobar"))
     .ConfigureShell(shell => shell.UseThemes())
     .ConfigureThemes(FlourishTheme.System);
 ```
 
-## Details
+Theme preferences require either an explicit preference directory or a company name plus an application name or non-empty title. [Application data](configure-data.md) explains those storage options.
+
+## Theme selection and persistence
 
 `FlourishTheme.System` follows the Windows app theme. `Light` and `Dark` force a specific default until the user changes the theme.
 
-When themes are enabled, Flourish stores the selected theme in application preferences. That storage depends on application identity from [`ConfigureData`](configure-data.md).
+When themes are enabled, Flourish stores the selected theme in application preferences. [Application data](configure-data.md) supplies the storage identity.
 
-The title bar theme toggle is controlled by [`ConfigureTitleBar`](configure-title-bar.md). It appears only when both the toggle is shown and themes are enabled.
+The title bar theme toggle appears only when [Title bar](configure-title-bar.md) shows the toggle and `UseThemes()` enables theme support.
 
-## Related APIs
+## Related features
 
-- [`ConfigureData`](configure-data.md) provides the preference storage identity.
-- [`ConfigureTitleBar`](configure-title-bar.md) can show the title bar theme toggle.
-- [`ConfigureMaterialEffect`](configure-material-effect.md) works with effective light and dark resources.
+- [Application data](configure-data.md) provides the preference storage identity.
+- [Title bar](configure-title-bar.md) can show the theme toggle.
+- [Material effects](configure-material-effect.md) work with the effective light and dark resources.

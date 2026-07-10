@@ -9,7 +9,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <code><![CDATA[
 /// builder.ConfigureTitleBar(titlebar =>
 /// {
-///     titlebar.ShowTitle().SetTitle("Gallery");
+///     titlebar.ShowTitle().SetTitle("Foobar");
 /// });
 /// ]]></code>
 /// </example>
@@ -134,7 +134,7 @@ public interface IFlourishTitlebarBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// titlebar.SetTitle("Gallery");
+    /// titlebar.SetTitle("Foobar");
     /// ]]></code>
     /// </example>
     IFlourishTitlebarBuilder SetTitle(string title);
@@ -146,7 +146,7 @@ public interface IFlourishTitlebarBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// titlebar.SetSubtitle("Flourish sample");
+    /// titlebar.SetSubtitle("Workspace");
     /// ]]></code>
     /// </example>
     IFlourishTitlebarBuilder SetSubtitle(string subtitle);

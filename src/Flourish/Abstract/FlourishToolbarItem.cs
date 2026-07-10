@@ -5,7 +5,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// var item = new FlourishToolbarItem("Open", "\uE8E5", "gallery.open");
+/// var item = new FlourishToolbarItem("Export", "\uE898", "reports.export");
 /// ]]></code>
 /// </example>
 public sealed record FlourishToolbarItem

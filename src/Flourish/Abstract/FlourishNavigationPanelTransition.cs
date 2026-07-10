@@ -5,10 +5,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseMotion((_, motion) =>
-/// {
-///     motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
-/// });
+/// builder
+///     .ConfigureShell(shell => shell.UseMotion())
+///     .ConfigureMotion(motion =>
+///         motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize));
 /// ]]></code>
 /// </example>
 public enum FlourishNavigationPanelTransition

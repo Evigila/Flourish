@@ -1,11 +1,13 @@
 ---
-title: ConfigureMotion
-description: 配置 Flourish 过渡和动画效果。
+title: 动效
+description: 配置页面过渡、导航栏过渡、悬停动画和减少动态效果行为。
 ---
 
-# ConfigureMotion
+# 动效
 
-`ConfigureMotion` 配置动画细节。动效只有在 [`ConfigureShell`](configure-shell.md) 启用 `UseMotion()` 后才会运行。
+Flourish 可以为页面切换、导航栏展开和支持的悬停状态提供动画。先在 [Shell 配置](shell-configuration.md)中启用 `UseMotion()`，再使用 `ConfigureMotion` 选择具体效果。
+
+## 最小配置
 
 ```csharp
 builder
@@ -13,28 +15,43 @@ builder
     .ConfigureMotion(motion =>
     {
         motion
-            .EnablePageTransition(
-                FlourishPageTransition.EntranceFromBottom,
-                TimeSpan.FromMilliseconds(180))
-            .EnableNavigationPanelTransition(
-                FlourishNavigationPanelTransition.Resize,
-                TimeSpan.FromMilliseconds(180))
-            .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))
+            .EnablePageTransition()
+            .EnableNavigationPanelTransition()
+            .EnableHoverRevealAnimation()
             .RespectSystemReducedMotion();
     });
 ```
 
-## 细节
+## 页面与导航栏过渡
 
-每一种过渡或动画都可以单独传入可选时长。如果不传入时长，Flourish 会使用该动画自己的默认时长。
+`EnablePageTransition` 控制新页面进入内容区域的方式，`EnableNavigationPanelTransition` 控制导航栏展开和折叠时的过渡。
 
-`EnablePageTransition` 控制页面进入内容框架的方式。`EnableNavigationPanelTransition` 控制导航栏打开和关闭的方式。
+```csharp
+motion
+    .EnablePageTransition(
+        FlourishPageTransition.EntranceFromBottom,
+        TimeSpan.FromMilliseconds(180))
+    .EnableNavigationPanelTransition(
+        FlourishNavigationPanelTransition.Resize,
+        TimeSpan.FromMilliseconds(180));
+```
 
-`EnableHoverRevealAnimation` 为支持的控件启用轻量悬浮动画。`RespectSystemReducedMotion` 让 Flourish 遵循操作系统的减少动画偏好。
+省略时长时，Flourish 使用对应动画的默认时长。显式时长必须大于零。将过渡类型设为相应枚举的 `None` 可以单独关闭该类过渡。
 
-关闭动效应通过 `UseMotion(false)` 完成，而不是通过 `ConfigureMotion`。
+## 悬停动画
 
-## 相关 API
+`EnableHoverRevealAnimation` 为支持该效果的 Shell 控件启用悬停揭示动画，也可以传入自定义时长。
 
-- [`ConfigureNavigation`](configure-navigation.md) 使用导航栏过渡。
-- [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) 和 [`ConfigureCustomHandler`](configure-custom-handler.md) 可以承载受 Hover Reveal 影响的控件。
+```csharp
+motion.EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140));
+```
+
+## 减少动态效果
+
+`RespectSystemReducedMotion()` 让 Flourish 遵循 Windows 的减少动态效果偏好。该设置允许系统偏好在运行时抑制不必要的动画，而无需更改应用配置。
+
+调用 `UseMotion(false)` 会禁用所有 Flourish 动效。它与将某一种过渡设为 `None` 不同：后者只关闭对应的页面或导航栏过渡。
+
+## 相关功能
+
+- [导航](navigation.md)使用页面和导航栏过渡。

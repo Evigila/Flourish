@@ -84,8 +84,7 @@ public sealed class ProfileSignInRequest
     public string DisplayName => ProfileUser.FormatDisplayName(FirstName, LastName, NameOrder);
 
     /// <summary>
-    /// Gets the submitted user display name. This compatibility alias returns
-    /// <see cref="DisplayName" />.
+    /// Gets the same formatted sign-in name as <see cref="DisplayName" />.
     /// </summary>
     public string UserName => DisplayName;
 

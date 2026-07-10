@@ -1,11 +1,13 @@
 ---
-title: ConfigureServices
-description: Register WPF application services, pages, and command parsers.
+title: Dependency injection
+description: Register application services, navigable pages, command parsers, and profile services.
 ---
 
-# ConfigureServices
+# Dependency injection
 
-`ConfigureServices` registers application services in the underlying .NET Generic Host. It is the only `Configure...` callback that receives `HostBuilderContext`, because service registration often depends on environment or configuration.
+Flourish uses the service collection from its .NET Generic Host. Register application services, WPF pages, command parsers, and replaceable Flourish services through `ConfigureServices`.
+
+## Register services
 
 ```csharp
 builder.ConfigureServices((context, services) =>
@@ -14,23 +16,25 @@ builder.ConfigureServices((context, services) =>
     services.AddSingleton<ICommandParser, AppCommandParser>();
 
     services.AddNavigable<HomePage>("Home", "\uE80F", navigationKey: NavigationRoutes.Home);
-    services.AddNavigable<SettingsPage>("Settings", "\uE713", navigationKey: NavigationRoutes.Settings);
+    services.AddNavigable<ReportsPage>("Reports", "\uE9D2", navigationKey: NavigationRoutes.Reports);
 });
 ```
 
-## Details
+The callback receives `HostBuilderContext`, so registrations can use the active environment and host configuration. View models, repositories, and other application services use the same `IServiceCollection` patterns as any Generic Host application.
 
-Pages shown by the navigation panel are registered with `AddNavigable`. The page must derive from `System.Windows.Controls.Page`; Flourish resolves it from dependency injection during navigation. Use `navigationKey` for runtime navigation from view models so they do not reference page classes.
+## Register navigable pages
 
-Command parsers implement `ICommandParser` and are registered here. Navigation items, dynamic toolbar buttons, title bar actions, and footer commands can all send command keys into this parser chain.
+`AddNavigable` registers a `System.Windows.Controls.Page` and its navigation metadata. Registration makes the page resolvable; [Navigation](navigation.md) determines where it appears and which page is shown first.
 
-View models, repositories, and application services also belong in `ConfigureServices`. Detailed shell configuration should stay in the dedicated APIs such as [`ConfigureNavigation`](configure-navigation.md), [`ConfigureTitleBar`](configure-title-bar.md), and [`ConfigureWindow`](configure-window.md).
+Use a stable `navigationKey` when view models navigate through `INavigationService` without referencing page types.
 
-Profile authentication is replaceable here as well. Register `IProfileAuthService` to keep the built-in state and encrypted persistence, or register `IProfileService` to replace the complete profile workflow. Flourish uses its defaults only when these interfaces have not already been registered.
+## Replace Flourish services
 
-## Related APIs
+Register `IProfileAuthService` to supply application authentication while keeping Flourish profile state and persistence. Register `IProfileService` when the application owns the complete profile workflow. Flourish supplies its defaults only when the application has not registered these interfaces.
 
-- [`ConfigureNavigation`](configure-navigation.md) places registered pages in the visible navigation model.
-- [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) attaches page commands to registered page types.
-- [`ConfigureProfile`](configure-profile.md) describes profile pages, authentication, and persistence.
-- [`Command parser`](command-parser.md) describes command-key routing.
+## Related features
+
+- [Navigation](navigation.md) places registered pages in the visible navigation model.
+- [Dynamic toolbar](dynamic-toolbar.md) attaches commands to registered page types.
+- [Profile](configure-profile.md) explains authentication and profile service replacement.
+- [Command parser](command-parser.md) explains command-key routing.

@@ -5,7 +5,7 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Flourish separates page registration from the visible navigation model. Register WPF pages with `AddNavigable` during [`ConfigureServices`](configure-services.md), enable the navigation surface with [`ConfigureShell`](configure-shell.md), then configure panel display and visible items with [`ConfigureNavigation`](configure-navigation.md).
+Flourish separates page registration from the visible navigation model. Register WPF pages through [Dependency injection](configure-services.md), enable the navigation surface through [Shell configuration](shell-configuration.md), then use `ConfigureNavigation` to configure panel display and visible items.
 
 ## Register pages
 
@@ -22,22 +22,23 @@ builder.ConfigureServices((_, services) =>
     services.AddNavigable<SettingsPage>(
         displayName: "Settings",
         iconGlyph: "\uE713",
-        cacheMode: FlourishPageCacheMode.Enabled);
+        cacheMode: FlourishPageCacheMode.Enabled,
+        navigationKey: NavigationRoutes.Settings);
 });
 ```
 
 Pages must derive from `System.Windows.Controls.Page`. The display name and icon set here are reused by `AddNavigableViewItem`, so view items do not ask for those values again.
 
 ```csharp
-services.AddNavigable<GalleryPage>("Gallery", "\uE91B");
+services.AddNavigable<ReportsPage>("Reports", "\uE9D2");
 services.AddNavigable<EditorPage>("Editor", "\uE70F", cacheMode: FlourishPageCacheMode.Disabled);
 ```
 
-Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the user navigates away. Use `Disabled` for pages that should be recreated on each navigation request.
+Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the user navigates away. Use `Disabled` for pages that should be recreated when revisited after navigating away.
 
 ## Configure groups
 
-Use [`ConfigureNavigation`](configure-navigation.md) to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+Use `ConfigureNavigation` to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -53,7 +54,7 @@ builder.ConfigureShell(shell =>
         .SetGroup("Navigation", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
-            group.AddNavigableViewItem<GalleryPage>();
+            group.AddNavigableViewItem<ReportsPage>();
         });
 
     navigation.SetGroup("Tools", groupId: 1, group =>
@@ -83,7 +84,11 @@ nav.SetGroup("Admin", groupId: 10, group =>
 });
 ```
 
-If the navigation panel is enabled but no groups or fixed items are configured, Flourish falls back to a flat legacy list built from all registered pages.
+If the navigation panel is enabled but no groups or fixed items are configured, Flourish displays a flat fallback list built from all registered pages. `SetTitle` sets the heading displayed above that automatically generated list.
+
+```csharp
+nav.SetTitle("Navigation");
+```
 
 ## Resize the panel
 
@@ -93,7 +98,7 @@ Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize
 nav.SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `220` expanded and `48` collapsed. The default resize range is `160` to `420`. Users can resize the expanded panel with a hover-revealed splitter; it uses preview mode, so Flourish updates the layout only after the drag completes.
+The default widths are `220` expanded and `48` collapsed. The default resize range is `160` to `420`. A hover-revealed splitter shows a width preview during the drag and applies the new width when the drag completes.
 
 ## Add command items
 
@@ -107,28 +112,7 @@ nav.SetGroup("Commands", groupId: 2, group =>
 });
 ```
 
-Command items keep only the hover style. After a command is invoked, the current page selection is restored and focus is cleared from the command item.
-
-```csharp
-internal sealed class AppCommandParser(IMessageService messages) : ICommandParser
-{
-    public bool TryParse(string commandKey)
-    {
-        return commandKey switch
-        {
-            "demo.hello" => Show("Hello"),
-            "demo.world" => Show("World"),
-            _ => false
-        };
-    }
-
-    private bool Show(string text)
-    {
-        messages.Show(text, "Navigation", MessageBoxButton.OK, MessageBoxImage.Information);
-        return true;
-    }
-}
-```
+Command items do not remain selected. After a command is invoked, the navigation panel restores the current page selection. [Command parser](command-parser.md) explains how to register and implement the handler.
 
 ## Add fixed items
 
@@ -140,7 +124,7 @@ builder.ConfigureNavigation(navigation =>
     navigation.SetGroup("Navigation", groupId: 0, group =>
     {
         group.AddNavigableViewItem<HomePage>(isInitial: true);
-        group.AddNavigableViewItem<GalleryPage>();
+        group.AddNavigableViewItem<ReportsPage>();
     });
 
     navigation.AddFixedNavigableViewItem<SettingsPage>();
@@ -173,14 +157,14 @@ Tree rules:
 - Exactly one of `parentId` and `childId` may be non-zero.
 - `parentId` must be unique inside the same group or fixed-item scope.
 - A child follows the parent whose `parentId` matches its `childId`.
-- Flourish currently supports one visible child level.
+- Navigation trees support one visible child level.
 
 > [!CAUTION]
 > Tree IDs are scoped to the current group or fixed-item section. Reusing a `parentId` in the same scope or pointing a `childId` at a missing parent fails during build.
 
 A page item can be a parent. Clicking it navigates to the page and toggles its children. A command item can also be a parent, but parent command items toggle children only and do not execute their `commandKey`; passing `null` is recommended.
 
-When a page child is selected, Flourish automatically expands its parent and highlights the parent name. When the navigation panel is collapsed, closing first hides all child items so icons stay aligned. Clicking a collapsed parent opens the whole navigation panel; page parents are selected and navigated immediately, while command parents still only reveal or toggle children.
+When a page child is selected, Flourish expands and highlights its parent. Child items are hidden while the navigation panel is collapsed. Clicking a parent first expands the panel; a page parent then navigates to its page, while a command parent only toggles its children.
 
 ## Validation rules
 

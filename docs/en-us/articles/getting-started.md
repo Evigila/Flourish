@@ -1,11 +1,11 @@
 ---
 title: Getting started
-description: Apply Flourish to a WPF application with the shortest useful path.
+description: Build and run a basic WPF application with Flourish.
 ---
 
 # Getting started
 
-The fastest way to use Flourish is to let the shell host a WPF `Application`: add the theme resources, build an `IFlourish` runtime from `App.xaml.cs` or another application entry point, register pages with `AddNavigable`, place them in the navigation model with [`ConfigureNavigation`](configure-navigation.md), then show the shell.
+A basic Flourish application lets the shell host a WPF `Application`: add the theme resources, build an `IFlourish` runtime from `App.xaml.cs` or another application entry point, register pages with `AddNavigable`, place them in the [navigation model](navigation.md), then show the shell.
 
 ## Reference the theme
 
@@ -68,22 +68,20 @@ public partial class App : Application
                 shell
                     .UseTitleBar()
                     .UseNavigation()
-                    .UseDynamicToolbar()
                     .UseTips()
-                    .UseMotion()
-                    .UseMaterialEffect()
-                    .UseThemes();
+                    .UseMaterialEffect();
             })
             .ConfigureTitleBar(titleBar =>
             {
                 titleBar
                     .ShowLogo()
                     .ShowTitle()
+                    .ShowSubTitle()
                     .ShowSearch()
                     .ShowBreadcrumb()
                     .ShowNavToggle()
-                    .SetTitle("My App")
-                    .SetSubtitle("Flourish shell");
+                    .SetTitle("Foobar")
+                    .SetSubtitle("Desktop workspace");
             })
             .ConfigureNavigation(navigation =>
             {
@@ -98,7 +96,7 @@ public partial class App : Application
                 navigation.AddFixedNavigableViewItem<SettingsPage>();
             })
             .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
-            .ConfigureFont("Microsoft YaHei")
+            .ConfigureFont("Segoe UI")
             .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
             .Build();
 
@@ -120,7 +118,7 @@ public partial class App : Application
 }
 ```
 
-`CreateDefaultBuilder(e.Args)` creates a standard .NET Generic Host. That means [`ConfigureServices`](configure-services.md) receives a normal `IServiceCollection`, so application services, pages, and command parsers use familiar dependency injection patterns.
+`CreateDefaultBuilder(e.Args)` creates a standard .NET Generic Host. [Dependency injection](configure-services.md) uses a normal `IServiceCollection`, so application services, pages, and command parsers follow familiar registration patterns.
 
 ## Alternative startup paths
 
@@ -147,19 +145,19 @@ return FlourishBuilder
 
 An application should use either the `App.xaml.cs` lifetime path or the `Run<App>()` shortcut for a given launch flow. Using both would show the shell twice.
 
-## Configuration API pages
+## Explore features
 
-The startup example intentionally keeps each configuration responsibility separate:
+The startup example keeps each feature responsibility separate:
 
-- [`ConfigureServices`](configure-services.md) registers services, pages, and command parsers.
-- [`ConfigureShell`](configure-shell.md) enables high-level shell features.
-- [`ConfigureTitleBar`](configure-title-bar.md) configures the title bar.
-- [`ConfigureNavigation`](configure-navigation.md) configures navigation panel display and visible items.
-- [`ConfigureTips`](configure-tips.md), [`ConfigureFont`](configure-font.md), and [`ConfigureWindow`](configure-window.md) tune supporting shell behavior.
+- [Dependency injection](configure-services.md) registers services, pages, and command parsers.
+- [Shell configuration](shell-configuration.md) enables shell features and explains their prerequisites.
+- [Title bar](configure-title-bar.md) configures application identity and title bar controls.
+- [Navigation](navigation.md) configures panel display and visible items.
+- [Tooltips](configure-tips.md), [Typography](configure-font.md), and [Window](configure-window.md) tune supporting shell behavior.
 
 ## Create pages
 
-Pages registered with `AddNavigable` are regular WPF `Page` classes. Flourish resolves them from dependency injection when navigation occurs. The page display name, icon, and cache mode come from `AddNavigable`; the visible navigation position and initial page are configured in [`ConfigureNavigation`](configure-navigation.md).
+Pages registered with `AddNavigable` are regular WPF `Page` classes. Flourish resolves them from dependency injection when navigation occurs. The page display name, icon, and cache mode come from `AddNavigable`; [Navigation](navigation.md) configures the visible position and initial page.
 
 ```csharp
 using System.Windows.Controls;
@@ -180,5 +178,5 @@ public partial class HomePage : Page
 - The WPF application starts Flourish from `App.xaml.cs` or another application entry point.
 - At least one page is registered with `AddNavigable`.
 - At least one visible page item is added with `AddNavigableViewItem`, preferably with `isInitial: true`.
-- The shell surface needed by that page is enabled through [`ConfigureShell`](configure-shell.md).
+- The shell surface needed by that page is enabled through [Shell configuration](shell-configuration.md).
 - The runtime is disposed during application exit, or the builder shortcut `.Run<App>()` owns disposal.

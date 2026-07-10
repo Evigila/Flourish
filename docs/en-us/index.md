@@ -5,20 +5,20 @@ description: Documentation for the Flourish WPF shell composition library.
 
 # Flourish
 
-Flourish is an open-source desktop application composition library for WPF. It provides a simple shell layer for applications that need a host-based startup flow, configurable window chrome, navigation, dynamic toolbar commands, status-bar integration, page caching, material effects, and motion options.
+Flourish is an open-source desktop application composition library for WPF. It provides a shell layer with host-based startup, configurable window chrome, navigation, dynamic toolbar commands, footer status integration, page caching, material effects, and motion options.
 
-Flourish focuses on a small, teachable API surface. Application setup stays in `Program`, visual resources can be added from `App.xaml`, and shell behavior is configured with fluent builders.
+Application setup can stay in `Program` or `App.xaml.cs`, visual resources can be added from `App.xaml`, and shell behavior is configured with fluent builders.
 
 > [!NOTE]
 > Flourish targets WPF and therefore supports Windows desktop applications only. Projects should use a Windows target framework such as `net10.0-windows` and enable WPF.
 
-## What Flourish Provides
+## What Flourish provides
 
 - Host-based startup with `FlourishBuilder` and `IFlourish`
 - Shell window configuration for title bar, navigation panel, material effect, font, and window sizing
 - Page registration and navigation through dependency injection
 - Contextual dynamic toolbar items connected to command parsing
-- Status bar text, custom status items, and built-in LAN/power indicators
+- Status bar text, custom status items, and built-in LAN/power items
 - Motion settings for page transitions, navigation panel animation, and hover reveal
 - Theme resources that can be merged from `App.xaml`
 
@@ -30,7 +30,7 @@ Flourish focuses on a small, teachable API surface. Application setup stays in `
 - [Dynamic toolbar](articles/dynamic-toolbar.md)
 - [API reference](xref:ArkheideSystem.Flourish.Abstract)
 
-## Project Links
+## Project links
 
 - [GitHub repository](https://github.com/typoo910/Flourish)
 - [Issues](https://github.com/typoo910/Flourish/issues)

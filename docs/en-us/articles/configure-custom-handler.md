@@ -1,32 +1,51 @@
 ---
-title: ConfigureCustomHandler
-description: Insert custom WPF elements into Flourish shell regions.
+title: Custom shell content
+description: Insert application-provided WPF elements and commands into predefined shell regions.
 ---
 
-# ConfigureCustomHandler
+# Custom shell content
 
-`ConfigureCustomHandler` inserts application-provided WPF elements into predefined shell regions. It is the unified extension-slot API for title bar, navigation, toolbar, content, and footer regions.
+Flourish exposes extension regions in the title bar, navigation panel, dynamic toolbar, content frame, and footer. Use `ConfigureCustomHandler` when an application needs content that the built-in feature builders do not provide.
+
+## Add custom content and commands
+
+```csharp
+builder
+    .ConfigureShell(shell => shell.UseTitleBar().UseProfile().UseFooter())
+    .ConfigureCustomHandler(custom =>
+    {
+        custom
+            .SetProfileContent(() => new Button { Content = "User" })
+            .AddTitlebarAction("Sync", "\uE895", "sync.run")
+            .AddFooterCommand("About", "\uE946", "app.about");
+    });
+```
+
+## Surface prerequisites
+
+Custom content does not enable its owning surface. [Shell configuration](shell-configuration.md) must enable the corresponding title bar, navigation, toolbar, or footer feature. `SetProfileContent` requires both `UseTitleBar()` and `UseProfile()`.
+
+## Element factories
+
+Factory overloads receive `IServiceProvider` when custom elements need application services. Element factories must return elements without an existing WPF parent.
 
 ```csharp
 builder.ConfigureCustomHandler(custom =>
 {
-    custom
-        .SetProfileContent(() => new Button { Content = "RC" })
-        .AddTitlebarAction("Sync", "\uE895", "sync.run")
-        .AddFooterCommand("About", "\uE946", "app.about");
+    custom.Add(
+        FlourishRegion.TitlebarEnd,
+        services => new SyncStatusView(
+            services.GetRequiredService<SyncService>()));
 });
 ```
 
-## Details
+## Commands and callbacks
 
-Custom handler configuration does not enable shell features by itself. The owning surface must be enabled through [`ConfigureShell`](configure-shell.md). For example, footer content needs `UseFooter()`, toolbar content needs `UseDynamicToolbar()`, and title bar content needs `UseTitleBar()`.
+Command helpers route stable command keys through `ICommandParser`. Callback helpers execute the supplied local behavior directly. Display text can be localized while command keys remain unchanged.
 
-Factory overloads receive `IServiceProvider` when custom elements need application services. Element factories must return elements without an existing WPF parent.
+## Related features
 
-Command helpers use stable command keys and route through `ICommandParser`. Callback helpers are available for small local behavior, but command keys are easier to test and localize.
-
-## Related APIs
-
-- [`ConfigureTitleBar`](configure-title-bar.md) controls the built-in title bar features.
-- [`ConfigureFooter`](configure-footer.md) configures built-in footer status text and items.
-- [`Command parser`](command-parser.md) describes command-key handling.
+- [Title bar](configure-title-bar.md) controls built-in title bar content.
+- [Dynamic toolbar](dynamic-toolbar.md) provides page-specific commands.
+- [Footer status](status-bar.md) configures built-in footer status items.
+- [Command parser](command-parser.md) handles command keys.

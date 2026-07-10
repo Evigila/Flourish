@@ -1,11 +1,13 @@
 ---
-title: ConfigureProfile
-description: Configure the compact Flourish profile surface, name order, authentication, and encrypted persistence.
+title: Profile
+description: Configure profile identity, sign-in state, remembered credentials, and custom authentication.
 ---
 
-# ConfigureProfile
+# Profile
 
-`ConfigureProfile` configures the compact profile card opened from the title bar. It appears only when [`ConfigureShell`](configure-shell.md) enables both `UseTitleBar()` and `UseProfile()`.
+The profile surface provides compact account access from the title bar. It can show a default identity, collect sign-in information, remember a login for later sessions, or host an application-provided page.
+
+Enable both the title bar and profile features before configuring the profile.
 
 ```csharp
 builder
@@ -15,108 +17,84 @@ builder
             .SetNameOrder(NameOrder.FirstLast)
             .SetDefaultProfile(
                 imagePath: null,
-                userName: "Cristian Ronaldo"));
+                userName: "Foo Bar"));
 ```
 
-`SetDefaultProfile()` uses `User` when called without arguments. Its `userName` parameter is retained for source compatibility and is split according to the name order that is active when the method is called. When chaining both methods, call `SetNameOrder()` first.
+## Names and initials
 
-## Name order and initials
-
-The built-in sign-in form has separate **First Name** and **Last Name** fields. `SetNameOrder()` controls their visual order as well as `ProfileUser.DisplayName` and the initials shown when no image is available:
+The built-in sign-in form collects first and last names separately. `SetNameOrder` controls their visual order, the resulting `ProfileUser.DisplayName`, and the initials shown when no image is available.
 
 | Value | Display name | Initials |
 | --- | --- | --- |
-| `NameOrder.FirstLast` | `Cristian Ronaldo` | `CR` |
-| `NameOrder.LastFirst` | `Ronaldo Cristian` | `RC` |
+| `NameOrder.FirstLast` | `Foo Bar` | `FB` |
+| `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
-At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, and `DisplayName` expose the structured result. `ProfileUser.UserName` remains as a compatibility alias for `DisplayName`.
+`SetDefaultProfile()` uses `User` when no arguments are provided. A combined `userName` is split using the name order active when `SetDefaultProfile` is called, so call `SetNameOrder` first when configuring both values.
 
-The original `ProfileUser(string userName, ...)` and `ProfileSignInRequest(string userName, ...)` constructors also remain available and interpret their combined name using `FirstLast`. New code that needs explicit ordering should use the overloads with separate first and last names. Version 1 stored credentials containing only `UserName` are read with the configured name order and upgraded to the structured format after a remembered login is restored.
+At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, `DisplayName`, and `Initials` expose the formatted result. `ProfileUser.UserName` returns the same formatted value as `DisplayName`.
 
-## Compact in-window surface
+## Interaction behavior
 
-The profile card is a Shell-owned in-window overlay rather than a separate WPF `Popup`. Its normal width is 304 pixels, its height follows its content, and it can shrink to the available window width and height. Flourish centers it immediately below the profile button and clamps it inside the Shell with a 5-pixel safe margin on every edge.
+The profile surface does not depend on window focus, so a native Windows file picker does not dismiss it. Use the profile trigger again, click outside the card, or press <kbd>Esc</kbd> to close it; selecting or cancelling an image returns to the same sign-in form.
 
-The overlay stays open while the native Windows file picker owns focus, so selecting or cancelling an image returns to the same sign-in form. Clicking outside the card or pressing <kbd>Esc</kbd> closes it. The hosted `Frame` disables horizontal and vertical scrolling; custom pages should therefore fit the compact, adaptive surface.
+The surface adapts to the available shell area. A custom page should fit compact content because the host does not add a scrolling region.
 
-The built-in form uses the same Flourish text box, password box, check box, and action button styles as the rest of the Shell.
+## Profile images
 
-## Upload an image
-
-The built-in form presents one full-width **Upload image** button. Clicking it opens the native Windows file picker. After a valid image is chosen, the same button displays an image preview and **Image selected**; clicking it again can replace the selection. If no image is selected, the button continues to show **Upload image**.
-
-Flourish does not copy an uploaded image. The file remains at the absolute path returned by the Windows picker. A successful sign-in stores only that path; moving or deleting the source file later makes the UI fall back to the ordered initials.
+The built-in form lets the user select or replace an image with the native Windows file picker. Flourish stores the selected absolute path and does not copy the file. If the file is later moved or deleted, the profile falls back to the configured initials.
 
 ## Login state
 
-After authentication, the sign-in form is replaced by **Remember login** and **Sign out**. `IProfileService.LoginState` reports one of these states:
+After authentication, the sign-in form is replaced by remembered-login and sign-out actions. `IProfileService.LoginState` reports the active state.
 
 | State | Meaning |
 | --- | --- |
 | `SignedOut` | No active login. |
 | `SignedIn` | Active for this application session only. |
-| `SignedInRemembered` | Restored from encrypted storage at the next startup. |
+| `SignedInRemembered` | Active and marked for restoration at the next application startup. |
 
-An unremembered login remains active for the current session. On the next startup Flourish removes its persisted credentials and starts signed out. A remembered login is decrypted and authenticated again before it becomes active.
+An unremembered login remains active until the application exits. A remembered login is restored from protected storage and authenticated again before becoming active.
 
-## Storage and debugging
+## Credential persistence and security
 
-After a successful sign-in, the default service serializes the schema version, first name, last name, password, absolute image path, and remember flag. It encrypts the complete payload with Windows DPAPI using `DataProtectionScope.CurrentUser`, then stores the Base64 value under the User Secrets key `Flourish.Profile.Credential`.
+The default service protects remembered credentials with Windows DPAPI using `DataProtectionScope.CurrentUser` before writing them to application-scoped storage. The storage scope uses the identity described in [Application data](configure-data.md). Signing out removes the remembered credential.
 
-On Windows the file is located at:
-
-```text
-%APPDATA%\Microsoft\UserSecrets\<secretId>\secrets.json
-```
-
-The secret ID is `ArkheideSystem.Flourish.Profile.` followed by the first 24 uppercase hexadecimal characters of the SHA-256 hash of:
-
-```text
-<companyName>|<appName>|<entryAssemblyName>
-```
-
-With the current Gallery settings, the exact values are:
-
-```text
-secretId: ArkheideSystem.Flourish.Profile.7523BCEB80CE0A555E66754B
-file: %APPDATA%\Microsoft\UserSecrets\ArkheideSystem.Flourish.Profile.7523BCEB80CE0A555E66754B\secrets.json
-key: Flourish.Profile.Credential
-image: the original file selected by the user; Flourish creates no copy
-```
-
-User Secrets alone is not an encrypted vault. DPAPI protects the Flourish payload and binds it to the current Windows user, so `secrets.json` contains encrypted Base64 rather than readable profile fields. Signing out removes the Profile key and deletes the file when it is otherwise empty. An unremembered credential is likewise removed on the next startup.
+> [!WARNING]
+> The default `IProfileAuthService` validates only that the display name and password are non-empty. Applications that require identity verification must register their own authentication service.
 
 ## Replace authentication
 
-The built-in `IProfileAuthService` intentionally accepts any request whose display name and password are non-empty. Register an application implementation in `ConfigureServices` to replace authentication while retaining the default profile state and encrypted storage.
+Register `IProfileAuthService` through [Dependency injection](configure-services.md) to replace authentication while retaining the default profile state and protected persistence.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
 {
-    services.AddSingleton<IProfileAuthService, CompanyProfileAuthService>();
+    services.AddSingleton<IProfileAuthService, FoobarProfileAuthService>();
 });
 ```
 
-For complete ownership of authentication, state, and persistence, replace `IProfileService` instead. Flourish registers both defaults only when the application has not already registered those interfaces.
+Register `IProfileService` instead when the application owns authentication, state, and persistence.
 
 ```csharp
-services.AddSingleton<IProfileService, CompanyProfileService>();
+services.AddSingleton<IProfileService, FoobarProfileService>();
 ```
+
+Flourish supplies its default implementations only when the application has not registered those interfaces.
 
 ## Host a custom page
 
-The Shell continues to own the overlay. A custom page replaces only its content and can resolve constructor dependencies from DI.
+Use a custom page when the application needs different profile content. The shell continues to own placement and dismissal while the page supplies the content and resolves constructor dependencies from dependency injection.
 
 ```csharp
 builder
     .ConfigureServices((_, services) =>
-        services.AddTransient<AccountProfilePage>())
+        services.AddTransient<FoobarProfilePage>())
     .ConfigureProfile(profile =>
-        profile.SetProfilePage<AccountProfilePage>());
+        profile.SetProfilePage<FoobarProfilePage>());
 ```
 
-## Related APIs
+## Related features
 
-- [`ConfigureShell`](configure-shell.md) owns the `UseProfile` switch.
-- [`ConfigureTitleBar`](configure-title-bar.md) can explicitly hide the title bar profile trigger with `ShowProfile(false)`.
-- [`ConfigureServices`](configure-services.md) is where custom profile services and pages are registered.
+- [Shell configuration](shell-configuration.md) enables the title bar and profile surfaces.
+- [Title bar](configure-title-bar.md) controls whether the profile trigger is visible.
+- [Dependency injection](configure-services.md) registers custom profile services and pages.

@@ -5,10 +5,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// shell.UseMotion((_, motion) =>
-/// {
-///     motion.EnablePageTransition(FlourishPageTransition.EntranceFromBottom);
-/// });
+/// builder
+///     .ConfigureShell(shell => shell.UseMotion())
+///     .ConfigureMotion(motion =>
+///         motion.EnablePageTransition(FlourishPageTransition.EntranceFromBottom));
 /// ]]></code>
 /// </example>
 public enum FlourishPageTransition

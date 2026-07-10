@@ -1,199 +1,21 @@
 ---
 title: Shell configuration
-description: Configure Flourish shell feature switches and detailed shell options.
+description: Enable Flourish shell features and understand their prerequisites.
 ---
 
 # Shell configuration
 
-[`ConfigureShell`](configure-shell.md) controls only high-level shell feature switches. Each `Use...` method has a single `enabled` parameter and defaults to `true`.
-
-```csharp
-builder.ConfigureShell(shell =>
-{
-    shell
-        .UseTitleBar()
-        .UseNavigation()
-        .UseDynamicToolbar()
-        .UseTips()
-        .UseMotion()
-        .UseMaterialEffect()
-        .UseThemes()
-        .UseFooter();
-});
-```
-
-[`ConfigureShell`](configure-shell.md) has the highest priority. If a feature is not enabled there, the matching detailed configuration is still accepted during build but the shell does not display that area or behavior.
-
-## Title bar
-
-Enable the title bar with `UseTitleBar`, then configure its details with [`ConfigureTitleBar`](configure-title-bar.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseTitleBar());
-
-builder.ConfigureTitleBar(titleBar =>
-{
-    titleBar
-        .ShowLogo()
-        .ShowTitle()
-        .ShowSubTitle()
-        .ShowSearch()
-        .ShowBreadcrumb()
-        .ShowNavToggle()
-        .ShowProfile()
-        .ShowThemeToggle()
-        .SetTrayExit(false)
-        .SetTitle("Gallery")
-        .SetSubtitle("Flourish sample")
-        .SetLogo("pack://application:,,,/Assets/logo.png")
-        .SetSearchPlaceholder("Search images")
-        .SetBreadcrumbBehavior(BreadcrumbShowOption.Auto);
-});
-```
-
-`SetBreadcrumbBehavior` controls when breadcrumb navigation appears. `Always` keeps it visible, `Auto` lets Flourish decide from navigation state, and `Hidden` suppresses it.
-
-## Navigation
-
-Enable navigation with `UseNavigation`, then configure panel display and visible items with [`ConfigureNavigation`](configure-navigation.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseNavigation());
-
-builder.ConfigureNavigation(navigation =>
-{
-    navigation
-        .SetDirection(NavigationPanelDirection.Left)
-        .SetInitiallyOpen()
-        .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-        .SetGroup("Navigation", groupId: 0, group =>
-        {
-            group.AddNavigableViewItem<HomePage>(isInitial: true);
-            group.AddNavigableViewItem<GalleryPage>();
-            group.AddNavigableItem("Refresh", "navigation.refresh", iconGlyph: "\uE72C");
-        })
-        .AddFixedNavigableViewItem<SettingsPage>()
-        .AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
-});
-```
-
-Use `UseNavigation(false)` for applications that rely on custom navigation or a single-page shell. Use `SetDirection(NavigationPanelDirection.Right)` when the layout benefits from a right-side navigation rail.
-
-## Dynamic Toolbar
-
-Enable the shell surface with `UseDynamicToolbar`, then register page-specific items with [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseDynamicToolbar());
-
-builder.ConfigureDynamicToolbar(toolbar =>
-{
-    toolbar.CreateToolbarItems<HomePage>(
-        new FlourishToolbarItem("Open", "\uE8E5", "home.open"),
-        new FlourishToolbarItem("Save", "\uE74E", "home.save"));
-});
-```
-
-## Tips
-
-Enable tooltips with `UseTips`, then tune tooltip behavior with [`ConfigureTips`](configure-tips.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseTips());
-
-builder.ConfigureTips(tips =>
-{
-    tips.SetDelay(200).SetSpawnableMargin(5);
-});
-```
-
-By default, tips appear after `200` milliseconds and keep at least `5` pixels away from the shell window bounds.
-
-## Motion
-
-Enable motion with `UseMotion`, then configure animation details with [`ConfigureMotion`](configure-motion.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseMotion());
-
-builder.ConfigureMotion(motion =>
-{
-    motion
-        .EnablePageTransition(
-            FlourishPageTransition.EntranceFromBottom,
-            TimeSpan.FromMilliseconds(180))
-        .EnableNavigationPanelTransition(
-            FlourishNavigationPanelTransition.Resize,
-            TimeSpan.FromMilliseconds(180))
-        .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))
-        .RespectSystemReducedMotion();
-});
-```
-
-Use `UseMotion(false)` when predictable, static UI is more important than motion.
-
-## Material Effect
-
-Enable material effects with `UseMaterialEffect`, then choose the material with [`ConfigureMaterialEffect`](configure-material-effect.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseMaterialEffect());
-builder.ConfigureMaterialEffect(MaterialEffect.Mica);
-```
-
-> [!WARNING]
-> Material effects depend on Windows desktop composition support. Use `MaterialEffect.None` for fully opaque windows or when a deployment environment should avoid platform-specific visuals.
-
-## Themes
-
-Enable theme support with `UseThemes`, then choose the default theme with [`ConfigureThemes`](configure-themes.md).
-
-```csharp
-builder.ConfigureShell(shell => shell.UseThemes());
-builder.ConfigureThemes(FlourishTheme.System);
-```
-
-When themes are enabled, Flourish stores the selected theme in application preferences.
-
-## Font
-
-Use [`ConfigureFont`](configure-font.md) to set the shell font family and base size.
-
-```csharp
-builder.ConfigureFont("Microsoft YaHei", 14);
-```
-
-Choose a font that supports the languages displayed by the application.
-
-## Window
-
-Use [`ConfigureWindow`](configure-window.md) to configure the shell window size, min/max constraints, startup location, manual position, initial state, resize mode, topmost behavior, and taskbar visibility.
-
-```csharp
-builder.ConfigureWindow(window =>
-{
-    window
-        .SetWindowSize(1280, 720)
-        .SetWindowMinSize(960, 540)
-        .SetWindowMaxSize(1920, 1080)
-        .SetWindowPosition(WindowStartupLocation.CenterScreen)
-        .SetWindowState(WindowState.Normal)
-        .SetWindowResizeMode(ResizeMode.CanResize)
-        .UseTopmost(false)
-        .ShowInTaskbar(true);
-});
-```
-
-Use `SetManualWindowPosition(left, top)` together with `WindowStartupLocation.Manual`.
-
-## Full Example
+`ConfigureShell` controls which Flourish features participate in the shell. It enables surfaces and behaviors; each feature article explains its detailed configuration.
 
 ```csharp
 builder
+    .ConfigureData(data =>
+        data.SetAppCompany("Example Company").SetAppName("Foobar"))
     .ConfigureShell(shell =>
     {
         shell
             .UseTitleBar()
+            .UseProfile()
             .UseNavigation()
             .UseDynamicToolbar()
             .UseTips()
@@ -201,40 +23,58 @@ builder
             .UseMaterialEffect()
             .UseThemes()
             .UseFooter();
-    })
-    .ConfigureTitleBar(titleBar =>
-    {
-        titleBar
-            .ShowLogo()
-            .ShowTitle()
-            .ShowSubTitle()
-            .ShowSearch()
-            .ShowBreadcrumb()
-            .ShowNavToggle()
-            .SetTitle("Gallery")
-            .SetSubtitle("Flourish sample");
-    })
-    .ConfigureNavigation(navigation =>
-    {
-        navigation
-            .SetDirection()
-            .SetInitiallyOpen()
-            .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
-            .SetGroup("Navigation", groupId: 0, group =>
-            {
-                group.AddNavigableViewItem<HomePage>(isInitial: true);
-            });
-    })
-    .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
-    .ConfigureMotion(motion =>
-    {
-        motion
-            .EnableHoverRevealAnimation()
-            .EnableNavigationPanelTransition()
-            .EnablePageTransition();
-    })
-    .ConfigureMaterialEffect(MaterialEffect.Mica)
-    .ConfigureThemes(FlourishTheme.System)
-    .ConfigureFont("Microsoft YaHei")
-    .ConfigureWindow(window => window.SetWindowSize().SetWindowMinSize().SetWindowPosition());
+    });
 ```
+
+Each `Use...` method accepts an `enabled` value and defaults to `true`.
+
+## Feature switches
+
+| Switch | Feature | Detailed configuration |
+| --- | --- | --- |
+| `UseTitleBar` | Displays the built-in window title bar. | [Title bar](configure-title-bar.md) |
+| `UseProfile` | Enables profile access through the title bar. | [Profile](configure-profile.md) |
+| `UseNavigation` | Displays the navigation panel. | [Navigation](navigation.md) |
+| `UseDynamicToolbar` | Displays page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
+| `UseTips` | Enables Flourish tooltips. | [Tooltips](configure-tips.md) |
+| `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
+| `UseMaterialEffect` | Enables the selected window material. | [Material effects](configure-material-effect.md) |
+| `UseThemes` | Enables theme selection, system following, and preference handling. | [Themes](configure-themes.md) |
+| `UseFooter` | Displays the footer status area. | [Footer status](status-bar.md) |
+
+## Prerequisites and priority
+
+Feature switches take priority over detailed configuration. Detailed settings do not activate a feature; the corresponding surface or behavior remains inactive until its switch is enabled.
+
+For example, toolbar items registered for a page are not displayed when `UseDynamicToolbar(false)` is active, and footer status items remain hidden when `UseFooter(false)` is active.
+
+Some controls depend on more than one switch:
+
+- The profile trigger requires both `UseTitleBar()` and `UseProfile()`.
+- The title bar theme toggle requires both `UseTitleBar()` and `UseThemes()`.
+- The title bar navigation toggle can be shown only when both the title bar and navigation panel are enabled.
+- Theme preference storage requires the identity or explicit directory described in [Application data](configure-data.md).
+
+## Disable a feature
+
+Pass `false` when a feature should remain disabled while sharing a common builder setup.
+
+```csharp
+builder.ConfigureShell(shell =>
+{
+    shell
+        .UseNavigation(showNavigation)
+        .UseMotion(!useStaticInterface)
+        .UseMaterialEffect(false);
+});
+```
+
+## Related configuration areas
+
+These settings and extension points use their own configuration entry points:
+
+- [Window](configure-window.md) sets size, placement, and WPF window behavior.
+- [Typography](configure-font.md) sets the shell font family and base size.
+- [Application data](configure-data.md) identifies preference storage.
+- [Dependency injection](configure-services.md) registers application and replaceable Flourish services.
+- [Custom shell content](configure-custom-handler.md) inserts application elements into enabled shell regions.

@@ -31,7 +31,7 @@ public interface IFlourishNavigationGroupBuilder
     /// <example>
     /// <code><![CDATA[
     /// group.AddNavigableViewItem<HomePage>(isInitial: true);
-    /// group.AddNavigableViewItem<GalleryPage>();
+    /// group.AddNavigableViewItem<ReportsPage>();
     /// ]]></code>
     /// </example>
     IFlourishNavigationGroupBuilder AddNavigableViewItem<TPage>(

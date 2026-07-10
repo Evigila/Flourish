@@ -3,45 +3,35 @@ items:
   href: getting-started.md
 - name: IFlourishBuilder
   href: flourish-builder.md
-- name: Configuration APIs
-  items:
-  - name: ConfigureData
-    href: configure-data.md
-  - name: ConfigureServices
-    href: configure-services.md
-  - name: ConfigureShell
-    href: configure-shell.md
-  - name: ConfigureProfile
-    href: configure-profile.md
-  - name: ConfigureTitleBar
-    href: configure-title-bar.md
-  - name: ConfigureNavigation
-    href: configure-navigation.md
-  - name: ConfigureCustomHandler
-    href: configure-custom-handler.md
-  - name: ConfigureDynamicToolbar
-    href: configure-dynamic-toolbar.md
-  - name: ConfigureTips
-    href: configure-tips.md
-  - name: ConfigureMotion
-    href: configure-motion.md
-  - name: ConfigureWindow
-    href: configure-window.md
-  - name: ConfigureFont
-    href: configure-font.md
-  - name: ConfigureMaterialEffect
-    href: configure-material-effect.md
-  - name: ConfigureThemes
-    href: configure-themes.md
-  - name: ConfigureFooter
-    href: configure-footer.md
+- name: Application data
+  href: configure-data.md
+- name: Dependency injection
+  href: configure-services.md
 - name: Shell configuration
   href: shell-configuration.md
+- name: Window
+  href: configure-window.md
+- name: Typography
+  href: configure-font.md
+- name: Title bar
+  href: configure-title-bar.md
+- name: Profile
+  href: configure-profile.md
 - name: Navigation
   href: navigation.md
 - name: Dynamic toolbar
   href: dynamic-toolbar.md
-- name: Status bar
+- name: Custom shell content
+  href: configure-custom-handler.md
+- name: Tooltips
+  href: configure-tips.md
+- name: Motion
+  href: configure-motion.md
+- name: Material effects
+  href: configure-material-effect.md
+- name: Themes
+  href: configure-themes.md
+- name: Footer status
   href: status-bar.md
 - name: Message service
   href: message-service.md

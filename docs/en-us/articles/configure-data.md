@@ -1,31 +1,44 @@
 ---
-title: ConfigureData
-description: Configure Flourish application data and preference storage.
+title: Application data
+description: Identify the application and choose where Flourish stores preferences.
 ---
 
-# ConfigureData
+# Application data
 
-`ConfigureData` configures application identity and preference storage. A WPF application uses it when Flourish features need a stable application name, company name, or custom preference directory.
+Flourish uses application identity to scope saved preferences such as the selected theme and remembered profile state. Configure that identity when the application needs stable preference storage or a custom storage directory.
+
+## Configure application identity
 
 ```csharp
 builder.ConfigureData(data =>
 {
     data
-        .SetAppCompany("Arkheide System Team")
-        .SetAppName("Flourish Gallery");
+        .SetAppCompany("Example Company")
+        .SetAppName("Foobar");
 });
 ```
 
-## Details
+`SetAppName` supplies the name used for preference storage. If it is omitted, Flourish uses the title configured through [Title bar](configure-title-bar.md).
 
-`SetAppName` provides the name used for preference storage. When no app name is configured, Flourish falls back to the title configured through [`ConfigureTitleBar`](configure-title-bar.md).
+`SetAppCompany` supplies the company directory segment in the default preference path. Changing either identity value changes that path; Flourish does not move preferences from the previous path.
 
-`SetAppCompany` provides the company folder segment used by the default preference path. It should be stable across releases so saved preferences stay discoverable after an update.
+The default directory requires a company name and either an application name or a non-empty title. Use an explicit directory when the application should not derive storage from those values.
 
-`SetAppPreferenceDataPath` overrides the default storage directory. Native WPF applications commonly keep the default path unless they need portable settings or a workspace-specific settings folder.
+## Choose a custom directory
 
-## Related APIs
+Use `SetAppPreferenceDataPath` when preferences must be portable or stored with a particular workspace.
 
-- [`ConfigureThemes`](configure-themes.md) stores the selected theme in the preference store.
-- [`ConfigureTitleBar`](configure-title-bar.md) can provide the fallback app name through `SetTitle`.
-- [`IFlourishBuilder`](flourish-builder.md) explains when builder callbacks are applied.
+```csharp
+builder.ConfigureData(data =>
+{
+    data.SetAppPreferenceDataPath(preferenceDirectory);
+});
+```
+
+The application is responsible for choosing an accessible, persistent directory. Otherwise, keep the default location derived from the company and application names.
+
+## Related features
+
+- [Themes](configure-themes.md) persist the selected theme for this application identity.
+- [Profile](configure-profile.md) uses the same identity to scope remembered login state.
+- [IFlourishBuilder](flourish-builder.md) explains when configuration callbacks are applied.

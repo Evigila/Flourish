@@ -1,15 +1,20 @@
 ---
-title: ConfigureTitleBar
-description: Configure the Flourish title bar after enabling it through ConfigureShell.
+title: Title bar
+description: Configure the built-in title bar content, search, navigation, profile, and theme controls.
 ---
 
-# ConfigureTitleBar
+# Title bar
 
-`ConfigureTitleBar` configures the built-in title bar content and behavior. The title bar is displayed only when [`ConfigureShell`](configure-shell.md) enables `UseTitleBar()`.
+The Flourish title bar can display application identity, search, breadcrumb navigation, a navigation toggle, profile access, and theme controls. Enable the surface through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to choose its content.
+
+## Configure the title bar
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar().UseProfile())
+    .ConfigureData(data =>
+        data.SetAppCompany("Example Company").SetAppName("Foobar"))
+    .ConfigureShell(shell =>
+        shell.UseTitleBar().UseNavigation().UseProfile().UseThemes())
     .ConfigureTitleBar(titleBar =>
     {
         titleBar
@@ -21,25 +26,49 @@ builder
             .ShowNavToggle()
             .ShowProfile()
             .ShowThemeToggle()
-            .SetTitle("Gallery")
-            .SetSubtitle("Flourish sample")
-            .SetSearchPlaceholder("Search images");
+            .SetTitle("Foobar")
+            .SetSubtitle("Desktop workspace")
+            .SetSearchPlaceholder("Search");
     });
 ```
 
-## Details
+`UseTitleBar()` is the surface prerequisite. `UseProfile()` and `UseThemes()` independently control whether the corresponding title bar controls can operate.
 
-`Show...` methods control built-in title bar regions. They do not create custom content; custom WPF elements are inserted with [`ConfigureCustomHandler`](configure-custom-handler.md).
+## Built-in content
+
+`Show...` methods control built-in title bar regions. They do not create custom content; [Custom shell content](configure-custom-handler.md) inserts application-provided WPF elements.
+
+`SetLogo` accepts a pack URI or an `ImageSource`. `SetLogoFallbackText` supplies text for the logo region when an image is not used.
+
+`SetBreadcrumbBehavior` controls when breadcrumb navigation is visible. `Always` keeps it visible, `Auto` follows navigation state, and `Hidden` suppresses it.
+
+## Search
 
 `SetSearchHandler` receives search text changes. A handler can resolve services from `IServiceProvider`, which is useful for message services, view models, or application search coordinators.
 
-`ShowThemeToggle` depends on [`ConfigureShell`](configure-shell.md) enabling themes with `UseThemes()`. The default theme is chosen through [`ConfigureThemes`](configure-themes.md).
+```csharp
+builder.ConfigureTitleBar(titleBar =>
+{
+    titleBar.SetSearchHandler((services, searchText) =>
+    {
+        services.GetRequiredService<SearchCoordinator>().Update(searchText);
+    });
+});
+```
 
-`ShowProfile` controls the title bar trigger, while [`ConfigureProfile`](configure-profile.md) controls its user, login behavior, and hosted page. The trigger also requires `UseProfile()`.
+## Profile and theme controls
 
-## Related APIs
+`ShowProfile` controls the trigger while [Profile](configure-profile.md) defines its content and login behavior. The trigger requires both `UseTitleBar()` and `UseProfile()`.
 
-- [`ConfigureCustomHandler`](configure-custom-handler.md) replaces profile content or adds title bar actions.
-- [`ConfigureProfile`](configure-profile.md) configures the built-in profile flyout and services.
-- [`ConfigureNavigation`](configure-navigation.md) works with `ShowNavToggle`.
-- [`ConfigureThemes`](configure-themes.md) works with `ShowThemeToggle`.
+`ShowThemeToggle` requires themes to be enabled. [Themes](configure-themes.md) selects the default theme and explains preference behavior.
+
+## Window close behavior
+
+`SetTrayExit(true)` makes the title bar close command hide the window in the Windows notification area. The tray menu can restore the window or exit the application. With tray exit disabled, the close command closes the window normally.
+
+## Related features
+
+- [Custom shell content](configure-custom-handler.md) adds title bar actions and custom regions.
+- [Profile](configure-profile.md) configures profile content, authentication, and persistence.
+- [Navigation](navigation.md) provides the panel controlled by `ShowNavToggle`.
+- [Themes](configure-themes.md) provides the theme controlled by `ShowThemeToggle`.

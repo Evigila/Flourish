@@ -9,7 +9,7 @@ description: Understand the builder, hosting integration, services, and page reg
 
 ## Hosting model
 
-`FlourishBuilder.CreateDefaultBuilder(args)` uses `Host.CreateDefaultBuilder(args)` internally. The resulting runtime therefore follows the familiar hosting behavior of modern .NET applications:
+`FlourishBuilder.CreateDefaultBuilder(args)` follows the .NET Generic Host default configuration and lifetime model:
 
 - configuration and environment are available through `HostBuilderContext` in `ConfigureServices`
 - services are registered in `IServiceCollection`
@@ -31,33 +31,33 @@ using var flourish = FlourishBuilder
 return flourish.Run<App>();
 ```
 
-## Builder stages
+## Configuration areas
 
-The public builder separates high-level feature switches from detailed configuration.
+The public builder separates hosting, application services, feature switches, and feature-specific configuration.
 
-| Method | Purpose |
-| --- | --- |
-| [`ConfigureData`](configure-data.md) | Configures application identity and preference storage. |
-| [`ConfigureServices`](configure-services.md) | Registers application services, pages, command parsers, view models, and infrastructure in DI. |
-| [`ConfigureShell`](configure-shell.md) | Enables or disables shell features such as the title bar, navigation, dynamic toolbar, tips, motion, material effects, themes, and footer. |
-| [`ConfigureProfile`](configure-profile.md) | Configures the default profile, hosted page, login state, and replaceable authentication services. |
-| [`ConfigureTitleBar`](configure-title-bar.md) | Configures title bar content and behavior when the title bar is enabled. |
-| [`ConfigureNavigation`](configure-navigation.md) | Configures navigation panel display, registered page positions, command items, groups, and fixed items. |
-| [`ConfigureCustomHandler`](configure-custom-handler.md) | Inserts custom WPF elements into predefined shell regions. |
-| [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) | Registers page-specific toolbar items. |
-| [`ConfigureTips`](configure-tips.md) | Configures tooltip delay and shell-edge spacing. |
-| [`ConfigureMotion`](configure-motion.md) | Configures page transitions, navigation panel transitions, and hover reveal animations. |
-| [`ConfigureWindow`](configure-window.md) | Configures shell window size, position, state, resize mode, taskbar visibility, and topmost behavior. |
-| [`ConfigureFont`](configure-font.md) | Configures the shell font family and base size. |
-| [`ConfigureMaterialEffect`](configure-material-effect.md) | Configures the material effect used when material effects are enabled. |
-| [`ConfigureThemes`](configure-themes.md) | Configures the default theme used when themes are enabled. |
-| [`ConfigureFooter`](configure-footer.md) | Configures the status area in the shell footer. |
+| Feature | Builder method | Purpose |
+| --- | --- | --- |
+| [Application data](configure-data.md) | `ConfigureData` | Identifies application preference storage. |
+| [Dependency injection](configure-services.md) | `ConfigureServices` | Registers application and replaceable Flourish services. |
+| [Shell configuration](shell-configuration.md) | `ConfigureShell` | Enables or disables shell features. |
+| [Profile](configure-profile.md) | `ConfigureProfile` | Configures the default identity, name order, and hosted profile page. |
+| [Title bar](configure-title-bar.md) | `ConfigureTitleBar` | Configures title bar content and behavior. |
+| [Navigation](navigation.md) | `ConfigureNavigation` | Configures the navigation panel and visible model. |
+| [Custom shell content](configure-custom-handler.md) | `ConfigureCustomHandler` | Inserts custom WPF elements into shell regions. |
+| [Dynamic toolbar](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
+| [Tooltips](configure-tips.md) | `ConfigureTips` | Configures tooltip timing and placement. |
+| [Motion](configure-motion.md) | `ConfigureMotion` | Configures transitions and hover animation. |
+| [Window](configure-window.md) | `ConfigureWindow` | Configures shell window properties. |
+| [Typography](configure-font.md) | `ConfigureFont` | Configures shell typography. |
+| [Material effects](configure-material-effect.md) | `ConfigureMaterialEffect` | Selects the window material effect. |
+| [Themes](configure-themes.md) | `ConfigureThemes` | Selects the default theme. |
+| [Footer status](status-bar.md) | `ConfigureFooter` | Configures footer status content. |
 
-Each method can be called multiple times. Flourish stores the callbacks and applies them during `Build()`.
+Builder entry points can be called multiple times. Repeated callbacks for the same entry point are applied in registration order during `Build()`; direct value settings such as font, material, and theme use the last configured value.
 
 ## Register services
 
-Use [`ConfigureServices`](configure-services.md) for anything that belongs to dependency injection.
+Use [Dependency injection](configure-services.md) for application services and replaceable Flourish services.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -69,11 +69,11 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-Flourish also registers its own internal services during build, including navigation, toolbar, footer status, message, tooltip, material effect, motion, page cache, and shell window services. Applications do not construct those services directly.
+Flourish registers its built-in services during build. Applications can resolve the public services from `IFlourish.Services` without constructing shell infrastructure directly.
 
-## Register pages with AddNavigable
+## Register navigation pages
 
-`AddNavigable` is the recommended way to register a WPF `Page` for Flourish navigation. It registers the page in DI and records the display metadata used by page navigation items. It does not decide where the page appears in the navigation panel.
+`AddNavigable` registers a WPF `Page` in dependency injection and records its display metadata, cache mode, and optional navigation key.
 
 ```csharp
 services.AddNavigable<HomePage>(
@@ -83,64 +83,7 @@ services.AddNavigable<HomePage>(
     navigationKey: NavigationRoutes.Home);
 ```
 
-The generic overload is best when the page type is known at compile time.
-
-```csharp
-services.AddNavigable<SettingsPage>(
-    "Settings",
-    "\uE713",
-    navigationKey: NavigationRoutes.Settings);
-```
-
-The `Type` overload is useful when page registrations come from configuration or plugins.
-
-```csharp
-services.AddNavigable(
-    typeof(ReportPage),
-    displayName: "Reports",
-    iconGlyph: "\uE9D2",
-    cacheMode: FlourishPageCacheMode.Disabled,
-    navigationKey: NavigationRoutes.Reports);
-```
-
-`displayName` is shown by `AddNavigableViewItem`. `iconGlyph` is typically a Segoe Fluent Icons glyph such as `"\uE80F"`. `cacheMode` controls whether the same page instance is reused. `navigationKey` is the stable route used by view models through `INavigationService`.
-
-Place registered pages in the visible navigation model with [`ConfigureNavigation`](configure-navigation.md). Navigation panel display settings such as direction, width, and initial open state are also configured there.
-
-```csharp
-builder.ConfigureNavigation(navigation =>
-{
-    navigation
-        .SetInitiallyOpen()
-        .SetGroup("Navigation", groupId: 0, group =>
-        {
-            group.AddNavigableViewItem<HomePage>(isInitial: true);
-            group.AddNavigableViewItem<SettingsPage>();
-        });
-
-    navigation.AddFixedNavigableViewItem<ReportPage>();
-});
-```
-
-`isInitial` belongs to the visible view item. This lets a page be registered once and later placed in the scrollable group area or fixed bottom area without mixing registration metadata with layout decisions.
-
-## Page cache mode
-
-Use `FlourishPageCacheMode.Enabled` for pages that should keep local UI state, scroll position, or loaded data while the user navigates away and back. Use `Disabled` for pages that should be recreated every time, such as editors that must always load fresh state.
-
-```csharp
-services.AddNavigable<DashboardPage>(
-    "Dashboard",
-    "\uE9D2",
-    cacheMode: FlourishPageCacheMode.Enabled);
-
-services.AddNavigable<ImportWizardPage>(
-    "Import",
-    "\uE8B5",
-    cacheMode: FlourishPageCacheMode.Disabled);
-```
-
-The cache mode is attached to the registered page type, not to a specific navigation item. A page can only be displayed in one navigation position, but its cache behavior is still defined at registration time.
+Registration does not determine where a page appears. [Navigation](navigation.md) is the canonical guide to page metadata, cache behavior, visible groups, fixed items, and runtime navigation.
 
 ## Build the runtime
 

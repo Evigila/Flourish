@@ -9,7 +9,7 @@ description: 理解 builder、Hosting 集成、服务注册和页面注册。
 
 ## Hosting 模型
 
-`FlourishBuilder.CreateDefaultBuilder(args)` 内部使用 `Host.CreateDefaultBuilder(args)`。因此构建出的运行时拥有现代 .NET 应用中熟悉的 Hosting 行为：
+`FlourishBuilder.CreateDefaultBuilder(args)` 创建采用 .NET Generic Host 默认配置和生命周期模型的运行时。因此应用可以使用标准 Hosting 能力：
 
 - 可以在 `ConfigureServices` 中通过 `HostBuilderContext` 访问配置和环境信息
 - 使用 `IServiceCollection` 注册服务
@@ -35,107 +35,55 @@ return flourish.Run<App>();
 
 公开 builder 将高层功能开关和详细配置拆分开。
 
-| 方法 | 作用 |
-| --- | --- |
-| [`ConfigureData`](configure-data.md) | 配置应用标识和偏好存储。 |
-| [`ConfigureServices`](configure-services.md) | 在 DI 中注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
-| [`ConfigureShell`](configure-shell.md) | 启用或禁用标题栏、导航、动态工具栏、Tips、动效、材质特效、主题和 Footer 等 Shell 功能。 |
-| [`ConfigureProfile`](configure-profile.md) | 配置默认用户、承载页面、登录状态以及可替换的认证服务。 |
-| [`ConfigureTitleBar`](configure-title-bar.md) | 在标题栏启用时配置标题栏内容和行为。 |
-| [`ConfigureNavigation`](configure-navigation.md) | 配置导航栏展示参数、已注册页面位置、命令项、分组和固定项。 |
-| [`ConfigureCustomHandler`](configure-custom-handler.md) | 将自定义 WPF 元素插入预定义 Shell 区域。 |
-| [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) | 注册按页面变化的工具栏项。 |
-| [`ConfigureTips`](configure-tips.md) | 配置提示浮层延迟和 Shell 边缘间距。 |
-| [`ConfigureMotion`](configure-motion.md) | 配置页面过渡、导航栏过渡和 Hover Reveal 动画。 |
-| [`ConfigureWindow`](configure-window.md) | 配置 Shell 窗口尺寸、位置、状态、缩放模式、任务栏显示和置顶行为。 |
-| [`ConfigureFont`](configure-font.md) | 配置 Shell 字体和基础字号。 |
-| [`ConfigureMaterialEffect`](configure-material-effect.md) | 配置材质特效启用时使用的材质类型。 |
-| [`ConfigureThemes`](configure-themes.md) | 配置主题启用时使用的默认主题。 |
-| [`ConfigureFooter`](configure-footer.md) | 配置 Shell Footer 中的状态区域。 |
+| 功能 | Builder 方法 | 作用 |
+| --- | --- | --- |
+| [应用数据](configure-data.md) | `ConfigureData` | 配置应用标识和偏好存储。 |
+| [依赖注入](configure-services.md) | `ConfigureServices` | 注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
+| [Shell 配置](shell-configuration.md) | `ConfigureShell` | 启用或禁用 Shell 高层功能。 |
+| [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` | 配置默认资料、名称顺序和承载页面。 |
+| [标题栏](configure-title-bar.md) | `ConfigureTitleBar` | 配置标题栏内容和行为。 |
+| [导航](navigation.md) | `ConfigureNavigation` | 配置导航栏展示、页面位置、命令项、分组和固定项。 |
+| [自定义 Shell 内容](configure-custom-handler.md) | `ConfigureCustomHandler` | 将自定义 WPF 元素或命令插入预定义 Shell 区域。 |
+| [动态工具栏](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | 注册按页面变化的工具栏项。 |
+| [提示浮层](configure-tips.md) | `ConfigureTips` | 配置提示显示延迟和 Shell 边缘间距。 |
+| [动效](configure-motion.md) | `ConfigureMotion` | 配置页面过渡、导航栏过渡和悬停揭示动画。 |
+| [窗口](configure-window.md) | `ConfigureWindow` | 配置 Shell 窗口尺寸、位置、状态、调整大小模式、任务栏显示和置顶行为。 |
+| [排版](configure-font.md) | `ConfigureFont` | 配置 Shell 字体和基础字号。 |
+| [材质特效](configure-material-effect.md) | `ConfigureMaterialEffect` | 选择 Shell 窗口材质。 |
+| [主题](configure-themes.md) | `ConfigureThemes` | 选择未保存偏好时使用的主题。 |
+| [状态栏（Footer）](status-bar.md) | `ConfigureFooter` | 配置状态文本和状态项。 |
 
-这些方法都可以调用多次。Flourish 会保存回调，并在 `Build()` 时统一应用。
+Builder 入口可以调用多次。同一入口的重复回调会在 `Build()` 时按注册顺序应用；字体、材质和主题等直接值设置使用最后一次配置的值。
 
 ## 注册服务
 
-所有属于依赖注入的内容都放在 [`ConfigureServices`](configure-services.md) 中。
+所有属于依赖注入的内容都放在[依赖注入](configure-services.md)配置中。
 
 ```csharp
 builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<App>();
     services.AddSingleton<ICommandParser, AppCommandParser>();
-    services.AddSingleton<ImageLibrary>();
+    services.AddSingleton<ReportService>();
     services.AddTransient<EditorViewModel>();
 });
 ```
 
-Flourish 会在构建阶段注册自己的内部服务，包括导航、工具栏、Footer 状态、Message、Tips、材质特效、动效、页面缓存和 Shell 窗口服务。你不需要直接构造这些内部服务。
+Flourish 会在构建期间注册内置服务。应用可以从 `IFlourish.Services` 解析公开服务，无需直接创建 Shell 基础设施。
 
-## 使用 AddNavigable 注册页面
+## 注册导航页面
 
-`AddNavigable` 是让 WPF `Page` 进入 Flourish 导航系统的推荐注册方式。它会把页面注册到 DI，并记录页面导航项使用的显示元数据。它不会决定页面显示在导航栏的哪个位置。
+`AddNavigable` 会在依赖注入中注册 WPF `Page`，并记录显示元数据、缓存模式和可选导航键。
 
 ```csharp
 services.AddNavigable<HomePage>(
     displayName: "首页",
     iconGlyph: "\uE80F",
-    cacheMode: FlourishPageCacheMode.Enabled);
+    cacheMode: FlourishPageCacheMode.Enabled,
+    navigationKey: NavigationRoutes.Home);
 ```
 
-泛型重载适合页面类型在编译期已知的场景。
-
-```csharp
-services.AddNavigable<SettingsPage>("设置", "\uE713");
-```
-
-`Type` 重载适合页面注册来自配置或插件的场景。
-
-```csharp
-services.AddNavigable(
-    typeof(ReportPage),
-    displayName: "报表",
-    iconGlyph: "\uE9D2",
-    cacheMode: FlourishPageCacheMode.Disabled);
-```
-
-`displayName` 会被 `AddNavigableViewItem` 显示出来。`iconGlyph` 通常是 Segoe Fluent Icons 字形，例如 `"\uE80F"`。`cacheMode` 控制页面实例是否复用。
-
-已注册页面需要通过 [`ConfigureNavigation`](configure-navigation.md) 放入可见导航模型。导航栏方向、宽度和初始展开状态等展示设置也在这里配置。
-
-```csharp
-builder.ConfigureNavigation(navigation =>
-{
-    navigation
-        .SetInitiallyOpen()
-        .SetGroup("导航", groupId: 0, group =>
-        {
-            group.AddNavigableViewItem<HomePage>(isInitial: true);
-            group.AddNavigableViewItem<SettingsPage>();
-        });
-
-    navigation.AddFixedNavigableViewItem<ReportPage>();
-});
-```
-
-`isInitial` 属于可见的 ViewItem。这样页面只需要注册一次，之后可以放入可滚动分组区域或底部固定区域，不会把注册元数据和布局决策混在一起。
-
-## 页面缓存模式
-
-如果页面需要保留局部 UI 状态、滚动位置或已加载数据，使用 `FlourishPageCacheMode.Enabled`。如果页面每次进入都应重新创建，例如总是要加载新状态的向导页或编辑页，使用 `Disabled`。
-
-```csharp
-services.AddNavigable<DashboardPage>(
-    "仪表盘",
-    "\uE9D2",
-    cacheMode: FlourishPageCacheMode.Enabled);
-
-services.AddNavigable<ImportWizardPage>(
-    "导入",
-    "\uE8B5",
-    cacheMode: FlourishPageCacheMode.Disabled);
-```
-
-缓存模式绑定到已注册页面类型，而不是某一个导航项。一个页面只能显示在一个导航位置，但它的缓存行为仍然在注册阶段定义。
+页面注册不会决定其显示位置。[导航](navigation.md)是页面元数据、缓存行为、可见分组、固定项和运行时导航的唯一完整指南。
 
 ## 构建运行时
 

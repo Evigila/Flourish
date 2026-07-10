@@ -40,9 +40,9 @@ public interface IFlourishDynamicToolbarBuilder
     /// <example>
     /// <code><![CDATA[
     /// toolbar.CreateToolbarItems(
-    ///     typeof(GalleryPage),
+    ///     typeof(ReportsPage),
     ///     icon: true,
-    ///     new FlourishToolbarItem("Import", "\uE898", "gallery.import"));
+    ///     new FlourishToolbarItem("Export", "\uE898", "reports.export"));
     /// ]]></code>
     /// </example>
     IFlourishDynamicToolbarBuilder CreateToolbarItems(
@@ -76,9 +76,9 @@ public interface IFlourishDynamicToolbarBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// toolbar.CreateToolbarItems<GalleryPage>(
+    /// toolbar.CreateToolbarItems<ReportsPage>(
     ///     icon: true,
-    ///     new FlourishToolbarItem("Import", "\uE898", "gallery.import"));
+    ///     new FlourishToolbarItem("Export", "\uE898", "reports.export"));
     /// ]]></code>
     /// </example>
     IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(

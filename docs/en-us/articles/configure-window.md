@@ -1,11 +1,13 @@
 ---
-title: ConfigureWindow
-description: Configure Flourish shell window size, position, and window behavior.
+title: Window
+description: Set the Flourish shell window size, position, state, and WPF window behavior.
 ---
 
-# ConfigureWindow
+# Window
 
-`ConfigureWindow` configures shell window properties. It is independent from [`ConfigureShell`](configure-shell.md) feature switches because every shell needs a window.
+Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, resize behavior, taskbar visibility, and topmost behavior.
+
+## Configure the window
 
 ```csharp
 builder.ConfigureWindow(window =>
@@ -22,16 +24,24 @@ builder.ConfigureWindow(window =>
 });
 ```
 
-## Details
+Window configuration does not depend on the feature switches in [Shell configuration](shell-configuration.md).
 
-Size methods validate finite positive values and enforce min/max consistency. `SetManualWindowPosition` switches the startup location to `Manual` and stores the requested coordinates.
+## Sizing and placement
+
+Initial and minimum dimensions must be finite positive values. Maximum dimensions accept positive values or `double.PositiveInfinity`, and the minimum cannot exceed the maximum. `SetManualWindowPosition` switches the startup location to `Manual` and stores the requested coordinates.
+
+```csharp
+window.SetManualWindowPosition(left: 120, top: 80);
+```
+
+Use either a `WindowStartupLocation` or manual coordinates to make startup placement explicit.
+
+## Window behavior
 
 `SetWindowResizeMode` controls whether the custom title bar maximize command is available. `ShowInTaskbar` and `UseTopmost` map to normal WPF window behavior.
 
-Window configuration belongs near shell composition, while WPF resources and application lifetime still belong to the WPF application.
+## Related features
 
-## Related APIs
-
-- [`Getting started`](getting-started.md) shows startup from `App.xaml.cs` or another application entry point.
-- [`ConfigureTitleBar`](configure-title-bar.md) controls title bar buttons shown inside the configured window.
-- [`ConfigureMaterialEffect`](configure-material-effect.md) changes the window background material.
+- [Getting started](getting-started.md) shows window startup from `App.xaml.cs`.
+- [Title bar](configure-title-bar.md) controls the chrome displayed inside the window.
+- [Material effects](configure-material-effect.md) change the window background material.

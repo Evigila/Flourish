@@ -7,8 +7,8 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <code><![CDATA[
 /// builder.ConfigureData(data =>
 /// {
-///     data.SetAppCompany("Arkheide System Team")
-///         .SetAppName("Gallery");
+///     data.SetAppCompany("Example Company")
+///         .SetAppName("Foobar");
 /// });
 /// ]]></code>
 /// </example>

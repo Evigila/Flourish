@@ -9,7 +9,7 @@ description: Handle command keys raised by Flourish UI surfaces.
 
 ## Register a parser
 
-Register parser implementations in [`ConfigureServices`](configure-services.md).
+Register parser implementations through [Dependency injection](configure-services.md).
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -31,7 +31,7 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
         {
             "home.open" => OpenHome(),
             "home.save" => SaveHome(),
-            "gallery.import" => ImportGallery(),
+            "reports.export" => ExportReports(),
             _ => false
         };
     }
@@ -51,7 +51,7 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
         return true;
     }
 
-    private static bool ImportGallery()
+    private static bool ExportReports()
     {
         return true;
     }
@@ -61,27 +61,27 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
 `TryParse` should be fast and explicit. Avoid routing by display text; use stable command keys.
 
 > [!CAUTION]
-> `TryParse` runs on the UI path that triggered the command. Long-running work should be delegated to an application service or an asynchronous workflow instead of blocking the parser.
+> `TryParse` is called synchronously on the UI thread that triggered the command. Delegate long-running work to an application service or an asynchronous workflow instead of blocking the parser.
 
 ## Connect toolbar items
 
 ```csharp
-toolbar.CreateToolbarItems<GalleryPage>(
-    new FlourishToolbarItem("Import", "\uE898", "gallery.import"));
+toolbar.CreateToolbarItems<ReportsPage>(
+    new FlourishToolbarItem("Export", "\uE898", "reports.export"));
 ```
 
-The third constructor argument is the command key. It is optional, but toolbar actions that should do work should provide one. Toolbar items are usually registered through [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md).
+The third constructor argument is the command key. It is optional, but toolbar actions that should do work should provide one. [Dynamic toolbar](dynamic-toolbar.md) explains page-specific item registration.
 
 ## Connect navigation command items
 
-Navigation command items use the same parser path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section through [`ConfigureNavigation`](configure-navigation.md).
+Navigation command items use the same parser path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section described in [Navigation](navigation.md).
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
 {
     navigation.SetGroup("Commands", groupId: 1, group =>
     {
-        group.AddNavigableItem("Refresh", "gallery.refresh", iconGlyph: "\uE72C");
+        group.AddNavigableItem("Refresh", "reports.refresh", iconGlyph: "\uE72C");
     });
 
     navigation.AddFixedNavigableItem("About", "app.about", iconGlyph: "\uE946");
@@ -92,19 +92,19 @@ If a command item is a parent node, clicking it expands or collapses children an
 
 ## Use services inside a parser
 
-Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Custom title bar and footer commands registered through [`ConfigureCustomHandler`](configure-custom-handler.md) use the same parser path.
+Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Title bar and footer commands described in [Custom shell content](configure-custom-handler.md) use the same parser path.
 
 ```csharp
-internal sealed class GalleryCommandParser(ImageLibrary library) : ICommandParser
+internal sealed class ReportsCommandParser(ReportExporter exporter) : ICommandParser
 {
     public bool TryParse(string commandKey)
     {
-        if (commandKey != "gallery.import")
+        if (commandKey != "reports.export")
         {
             return false;
         }
 
-        library.Import();
+        exporter.Export();
         return true;
     }
 }
@@ -113,13 +113,13 @@ internal sealed class GalleryCommandParser(ImageLibrary library) : ICommandParse
 Register the dependency as usual:
 
 ```csharp
-services.AddSingleton<ImageLibrary>();
-services.AddSingleton<ICommandParser, GalleryCommandParser>();
+services.AddSingleton<ReportExporter>();
+services.AddSingleton<ICommandParser, ReportsCommandParser>();
 ```
 
 ## Command key conventions
 
-- Use lowercase dotted names such as `gallery.import`.
+- Use lowercase dotted names such as `reports.export`.
 - Prefix keys by feature or page.
 - Keep keys stable even when display text is localized.
 - Return `false` for unknown keys instead of throwing.

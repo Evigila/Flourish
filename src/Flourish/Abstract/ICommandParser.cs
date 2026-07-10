@@ -5,7 +5,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// services.AddSingleton<ICommandParser, GalleryCommandParser>();
+/// services.AddSingleton<ICommandParser, AppCommandParser>();
 /// ]]></code>
 /// </example>
 public interface ICommandParser
@@ -21,7 +21,7 @@ public interface ICommandParser
     /// {
     ///     return commandKey switch
     ///     {
-    ///         "gallery.open" => OpenGallery(),
+    ///         "reports.export" => ExportReports(),
     ///         _ => false
     ///     };
     /// }

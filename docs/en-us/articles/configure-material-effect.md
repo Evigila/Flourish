@@ -1,11 +1,13 @@
 ---
-title: ConfigureMaterialEffect
-description: Configure the system material used by the Flourish shell window.
+title: Material effects
+description: Select the Windows material used by the Flourish shell window.
 ---
 
-# ConfigureMaterialEffect
+# Material effects
 
-`ConfigureMaterialEffect` selects the material effect used when [`ConfigureShell`](configure-shell.md) enables `UseMaterialEffect()`.
+Material effects integrate the shell background with supported Windows desktop composition. Enable the feature through [Shell configuration](shell-configuration.md), then select the effect with `ConfigureMaterialEffect`.
+
+## Configure the material
 
 ```csharp
 builder
@@ -13,15 +15,15 @@ builder
     .ConfigureMaterialEffect(MaterialEffect.Mica);
 ```
 
-## Details
+## Platform behavior
 
 `MaterialEffect.Mica` applies the Windows Mica material when the platform supports it. `MaterialEffect.None` keeps the shell fully opaque and avoids platform-specific composition behavior.
 
-The feature switch and material choice are intentionally separate. `UseMaterialEffect(false)` disables material even if `ConfigureMaterialEffect(MaterialEffect.Mica)` appears later in the builder chain.
+`UseMaterialEffect(false)` disables the material even when an effect is configured.
 
 Material behavior belongs to the shell window, not to page content. Pages can still define their own WPF backgrounds inside the content frame.
 
-## Related APIs
+## Related features
 
-- [`ConfigureWindow`](configure-window.md) configures the window that receives the material.
-- [`ConfigureThemes`](configure-themes.md) controls light and dark resources used with the material.
+- [Window](configure-window.md) configures the window that receives the material.
+- [Themes](configure-themes.md) control light and dark resources used with the material.

@@ -1,11 +1,11 @@
 ---
 title: Footer status
-description: Configure the Flourish shell footer status area.
+description: Configure the Flourish shell footer text, custom items, and built-in items.
 ---
 
 # Footer status
 
-Enable the footer with [`ConfigureShell`](configure-shell.md), then configure the status area through [`ConfigureFooter`](configure-footer.md). It is intended for low-priority state such as readiness, connection state, power state, or short contextual messages.
+The footer status area presents low-priority state such as readiness, connection state, power state, or short contextual messages. Enable the footer through [Shell configuration](shell-configuration.md), then use `ConfigureFooter` to define its content.
 
 ```csharp
 builder
@@ -41,20 +41,22 @@ footer.AddStatusItem("Synced", "\uE73E");
 
 Use custom status items for application-specific state such as account state, workspace name, sync state, or current mode.
 
+Items are displayed in the order in which they are added.
+
 ## Built-in status items
 
-`ShowLANConnectionStatus` adds the built-in LAN connection indicator. `ShowPowerStatus` adds the built-in power indicator.
+`ShowLANConnectionStatus` adds an item that reflects LAN availability when configuration is applied. It does not update automatically. `ShowPowerStatus` adds a static power item; it does not read the current battery or power-source state.
 
 ```csharp
 footer.ShowLANConnectionStatus();
 footer.ShowPowerStatus();
 ```
 
-These are useful for desktop tools where network or battery state affects the user workflow.
+Use these helpers when their snapshot or label semantics fit the application. Use application-provided status content for live monitoring.
 
-## Where to configure it
+## Add custom content
 
-Footer status configuration belongs beside the rest of application composition. Custom footer controls belong in [`ConfigureCustomHandler`](configure-custom-handler.md).
+`ConfigureFooter` provides status text and status items. Use [Custom shell content](configure-custom-handler.md) for application-provided controls and command buttons.
 
 ```csharp
 var flourish = FlourishBuilder
@@ -70,5 +72,3 @@ var flourish = FlourishBuilder
     })
     .Build();
 ```
-
-The footer is part of the shell, so configure it once at startup.

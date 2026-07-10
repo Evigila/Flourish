@@ -25,7 +25,7 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigureData(data =>
     /// {
-    ///     data.SetAppCompany("Arkheide System Team").SetAppName("Gallery");
+    ///     data.SetAppCompany("Example Company").SetAppName("Foobar");
     /// });
     /// ]]></code>
     /// </example>
@@ -82,7 +82,7 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigureTitleBar(titleBar =>
     /// {
-    ///     titleBar.ShowSearch().SetTitle("Gallery");
+    ///     titleBar.ShowSearch().SetTitle("Foobar");
     /// });
     /// ]]></code>
     /// </example>
