@@ -31,7 +31,7 @@ public sealed class FlourishDataBuilderTests
         var options = new FlourishDataOptions();
         var sut = new FlourishDataBuilder(options);
 
-        sut.SetLocale().AddLocale("Locales/lang_CN.json");
+        sut.SetLocale("EN").AddLocale("Locales/lang_CN.json");
 
         Assert.Equal("EN", options.Locale);
         Assert.Equal(["Locales/lang_CN.json"], options.LocalePaths);

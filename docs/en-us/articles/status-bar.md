@@ -70,7 +70,11 @@ var flourish = FlourishBuilder
     })
     .ConfigureCustomHandler(custom =>
     {
-        custom.AddFooterCommand("Sync", "\uE895", "sync.run");
+        custom.AddFooterCommand(
+            FlourishRegion.FooterEnd,
+            "Sync",
+            "\uE895",
+            "sync.run");
     })
     .Build();
 ```

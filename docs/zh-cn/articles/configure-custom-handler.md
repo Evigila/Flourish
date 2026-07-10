@@ -14,9 +14,13 @@ builder
     .ConfigureCustomHandler(custom =>
     {
         custom
-            .SetProfileContent(() => new Button { Content = "Foobar" })
+            .SetProfileContent(_ => new Button { Content = "Foobar" })
             .AddTitlebarAction("刷新", "\uE72C", "app.refresh")
-            .AddFooterCommand("帮助", "\uE946", "app.help");
+            .AddFooterCommand(
+                FlourishRegion.FooterEnd,
+                "帮助",
+                "\uE946",
+                "app.help");
     });
 ```
 
@@ -28,7 +32,7 @@ builder
 
 ## 创建 WPF 内容
 
-元素工厂应在 Shell 请求内容时创建尚未拥有 WPF 父级的元素。需要使用应用服务时，可以选择接收 `IServiceProvider` 的工厂重载，并从依赖注入容器解析所需对象。
+元素工厂接收 `IServiceProvider`，可按需从依赖注入容器解析应用服务；即使元素不依赖服务，也使用同一种工厂形式。工厂应在 Shell 请求内容时创建尚未拥有 WPF 父级的元素。
 
 自定义元素仍由应用负责定义内容、绑定和可访问性语义；Shell 负责把元素放入指定区域。
 
@@ -37,10 +41,14 @@ builder
 命令辅助方法接收稳定的命令键，并通过 `ICommandParser` 路由。命令键可以在多个 Shell 区域中复用；回调辅助方法则直接执行当前区域提供的局部行为。
 
 ```csharp
-custom.AddFooterCommand("帮助", "\uE946", "app.help");
+custom.AddFooterCommand(
+    FlourishRegion.FooterEnd,
+    "帮助",
+    "\uE946",
+    "app.help");
 ```
 
-显示文本可以本地化，命令键则应保持稳定。命令解析器的注册和处理方式参见[命令解析器](command-parser.md)。
+Footer 命令必须显式选择 `FlourishRegion.FooterStart` 或 `FlourishRegion.FooterEnd`。显示文本可以本地化，命令键则应保持稳定。命令解析器的注册和处理方式参见[命令解析器](command-parser.md)。
 
 ## 相关功能
 

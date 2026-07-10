@@ -19,7 +19,7 @@ public interface IFlourishDataBuilder
     /// <summary>
     /// Sets the locale used by Flourish built-in interface text.
     /// </summary>
-    /// <param name="locale">The locale identifier. The default is <c>EN</c>.</param>
+    /// <param name="locale">The locale identifier.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// Flourish uses the built-in English locale when this method and
@@ -27,7 +27,7 @@ public interface IFlourishDataBuilder
     /// Built-in locale identifiers are <c>CN</c> and <c>EN</c>. Identifiers are
     /// case-insensitive and are normalized when the application is built.
     /// </remarks>
-    IFlourishDataBuilder SetLocale(string locale = "EN");
+    IFlourishDataBuilder SetLocale(string locale);
 
     /// <summary>
     /// Adds a custom locale file that can extend or override built-in translations.

@@ -21,7 +21,7 @@ builder
             .SetLogo()
             .SetTitle("Foobar")
             .SetSubTitle("Desktop workspace")
-            .SetSearch("Search", searchText => UpdateSearch(searchText))
+            .SetSearch("Search", (_, searchText) => UpdateSearch(searchText))
             .SetBreadcrumbButton(BreadcrumbShowOption.Auto)
             .SetNavToggle()
             .SetProfile(NameOrder.FirstLast)
@@ -40,7 +40,7 @@ Each configuration method also displays its corresponding element:
 | `SetLogo()` or `SetLogo(path)` | Displays the built-in logo or an application-provided logo. |
 | `SetTitle(title)` | Displays the primary title. |
 | `SetSubTitle(subTitle)` | Displays supporting title text. |
-| `SetSearch(placeholder, handler)` | Displays search and handles text changes. |
+| `SetSearch(placeholder, handler)` | Displays search and handles text changes; the handler receives the application service provider and search text. |
 | `SetBreadcrumbButton(option)` | Displays breadcrumb navigation with the selected behavior. |
 | `SetNavToggle()` | Displays the navigation panel toggle. |
 | `SetProfile(nameOrder)` | Displays the profile trigger with the built-in profile behavior. |

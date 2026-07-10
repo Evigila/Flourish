@@ -3,14 +3,28 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <summary>
 /// Represents the outcome of a profile authentication attempt.
 /// </summary>
-/// <param name="Succeeded">A value indicating whether authentication succeeded.</param>
-/// <param name="ErrorMessage">An optional user-facing failure message.</param>
-public sealed record ProfileAuthenticationResult(bool Succeeded, string? ErrorMessage = null)
+public sealed class ProfileAuthenticationResult
 {
+    private ProfileAuthenticationResult(bool succeeded, string? errorMessage)
+    {
+        Succeeded = succeeded;
+        ErrorMessage = errorMessage;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether authentication succeeded.
+    /// </summary>
+    public bool Succeeded { get; }
+
+    /// <summary>
+    /// Gets the optional user-facing failure message.
+    /// </summary>
+    public string? ErrorMessage { get; }
+
     /// <summary>
     /// Creates a successful authentication result.
     /// </summary>
-    public static ProfileAuthenticationResult Success() => new(true);
+    public static ProfileAuthenticationResult Success() => new(true, null);
 
     /// <summary>
     /// Creates a failed authentication result.

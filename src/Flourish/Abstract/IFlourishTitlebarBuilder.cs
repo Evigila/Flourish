@@ -21,14 +21,6 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface IFlourishTitlebarBuilder
 {
     /// <summary>
-    /// Configures and displays the search box.
-    /// </summary>
-    /// <param name="placeholder">The placeholder text displayed in the search box.</param>
-    /// <param name="handler">The callback invoked whenever the search text changes.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishTitlebarBuilder SetSearch(string placeholder, Action<string> handler);
-
-    /// <summary>
     /// Configures and displays the search box with access to the application service provider.
     /// </summary>
     /// <param name="placeholder">The placeholder text displayed in the search box.</param>

@@ -15,7 +15,7 @@ Flourish includes `CN` and `EN`. Locale identifiers are case-insensitive and nor
 builder.ConfigureData(data => data.SetLocale("EN"));
 ```
 
-`SetLocale()` without an argument selects `EN`. Application-provided text such as titles, search placeholders, navigation labels, status text, dialog messages, and custom option text is not translated automatically.
+Flourish uses `EN` when `ConfigureData` is omitted. Call `SetLocale(locale)` only when selecting another built-in or custom locale. Application-provided text such as titles, search placeholders, navigation labels, status text, dialog messages, and custom option text is not translated automatically.
 
 ## Add a custom locale
 

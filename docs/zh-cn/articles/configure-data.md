@@ -15,7 +15,7 @@ Flourish 内置 `CN` 和 `EN`。语言标识不区分大小写，并会在构建
 builder.ConfigureData(data => data.SetLocale("EN"));
 ```
 
-`SetLocale()` 不传参数时选择 `EN`。应用传入的标题、搜索占位文本、导航标签、状态文本、对话框消息和自定义选项文本不会自动翻译。
+省略 `ConfigureData` 时，Flourish 默认使用 `EN`。只有在选择其他内置或自定义语言时才需要调用 `SetLocale(locale)`。应用传入的标题、搜索占位文本、导航标签、状态文本、对话框消息和自定义选项文本不会自动翻译。
 
 ## 添加自定义语言
 

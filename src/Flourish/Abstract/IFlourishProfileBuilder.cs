@@ -15,11 +15,4 @@ public interface IFlourishProfileBuilder
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishProfileBuilder SetProfilePage<TPage>()
         where TPage : Page;
-
-    /// <summary>
-    /// Sets the page hosted inside the profile flyout.
-    /// </summary>
-    /// <param name="pageType">A type derived from <see cref="Page" />.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishProfileBuilder SetProfilePage(Type pageType);
 }

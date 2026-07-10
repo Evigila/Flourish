@@ -5,7 +5,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <summary>
 /// Describes application-provided WPF content displayed in a Flourish shell region.
 /// </summary>
-public sealed class FlourishRegionContent
+internal sealed class FlourishRegionContent
 {
     /// <summary>
     /// Creates a region content definition.

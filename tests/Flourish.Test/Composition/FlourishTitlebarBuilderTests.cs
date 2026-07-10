@@ -55,18 +55,28 @@ public sealed class FlourishTitlebarBuilderTests
     }
 
     [Fact]
-    public void SetSearch_WithTextCallback_ConfiguresSearchAndForwardsText()
+    public void SetSearch_ConfiguresSearchAndForwardsServicesAndText()
     {
         var options = new FlourishShellOptions();
         var sut = new FlourishTitlebarBuilder(options);
+        IServiceProvider? receivedServices = null;
         string? receivedText = null;
+        var serviceProvider = new EmptyServiceProvider();
 
-        var result = sut.SetSearch("Search pages", text => receivedText = text);
-        options.TitlebarSearchTextChanged!(new EmptyServiceProvider(), "flourish");
+        var result = sut.SetSearch(
+            "Search pages",
+            (services, text) =>
+            {
+                receivedServices = services;
+                receivedText = text;
+            }
+        );
+        options.TitlebarSearchTextChanged!(serviceProvider, "flourish");
 
         Assert.Same(sut, result);
         Assert.True(options.IsTitlebarSearchEnabled);
         Assert.Equal("Search pages", options.SearchPlaceholder);
+        Assert.Same(serviceProvider, receivedServices);
         Assert.Equal("flourish", receivedText);
     }
 
@@ -144,7 +154,7 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.Equal(
             "placeholder",
             Assert
-                .Throws<ArgumentException>(() => sut.SetSearch(value!, _ => { }))
+                .Throws<ArgumentException>(() => sut.SetSearch(value!, (_, _) => { }))
                 .ParamName
         );
     }
@@ -163,18 +173,10 @@ public sealed class FlourishTitlebarBuilderTests
     }
 
     [Fact]
-    public void SetSearch_WithNullHandlers_ThrowsArgumentNullException()
+    public void SetSearch_WithNullHandler_ThrowsArgumentNullException()
     {
         var sut = new FlourishTitlebarBuilder(new FlourishShellOptions());
 
-        Assert.Equal(
-            "handler",
-            Assert
-                .Throws<ArgumentNullException>(() =>
-                    sut.SetSearch("Search", (Action<string>)null!)
-                )
-                .ParamName
-        );
         Assert.Equal(
             "handler",
             Assert

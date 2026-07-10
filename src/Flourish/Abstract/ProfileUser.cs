@@ -8,16 +8,6 @@ namespace ArkheideSystem.Flourish.Abstract;
 public sealed record ProfileUser
 {
     /// <summary>
-    /// Initializes a profile user.
-    /// </summary>
-    /// <param name="userName">The non-empty display name.</param>
-    /// <param name="imagePath">An optional local or pack URI image path.</param>
-    public ProfileUser(string userName, string? imagePath = null)
-        : this(ParseDisplayName(userName, NameOrder.FirstLast), NameOrder.FirstLast, imagePath)
-    {
-    }
-
-    /// <summary>
     /// Initializes a profile user from separate name parts.
     /// </summary>
     /// <param name="firstName">The user's first name.</param>
@@ -75,11 +65,6 @@ public sealed record ProfileUser
     /// Gets the formatted profile display name.
     /// </summary>
     public string DisplayName => FormatDisplayName(FirstName, LastName, NameOrder);
-
-    /// <summary>
-    /// Gets the same formatted profile display name as <see cref="DisplayName" />.
-    /// </summary>
-    public string UserName => DisplayName;
 
     /// <summary>
     /// Gets the optional profile image path.

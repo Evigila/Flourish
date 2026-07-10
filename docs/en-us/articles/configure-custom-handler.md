@@ -16,9 +16,13 @@ builder
     .ConfigureCustomHandler(custom =>
     {
         custom
-            .SetProfileContent(() => new Button { Content = "User" })
+            .SetProfileContent(_ => new Button { Content = "User" })
             .AddTitlebarAction("Sync", "\uE895", "sync.run")
-            .AddFooterCommand("About", "\uE946", "app.about");
+            .AddFooterCommand(
+                FlourishRegion.FooterEnd,
+                "About",
+                "\uE946",
+                "app.about");
     });
 ```
 
@@ -28,7 +32,7 @@ Custom content does not enable its owning surface. [Shell configuration](shell-c
 
 ## Element factories
 
-Factory overloads receive `IServiceProvider` when custom elements need application services. Element factories must return elements without an existing WPF parent.
+Element factories receive `IServiceProvider`, so they can resolve application services when needed. Use the same factory form even when an element has no dependencies. Element factories must return elements without an existing WPF parent.
 
 ```csharp
 builder.ConfigureCustomHandler(custom =>
@@ -42,7 +46,7 @@ builder.ConfigureCustomHandler(custom =>
 
 ## Commands and callbacks
 
-Command helpers route stable command keys through `ICommandParser`. Callback helpers execute the supplied local behavior directly. Display text can be localized while command keys remain unchanged.
+Footer command helpers require an explicit `FlourishRegion.FooterStart` or `FlourishRegion.FooterEnd`. Command helpers route stable command keys through `ICommandParser`; callback helpers execute the supplied local behavior directly. Display text can be localized while command keys remain unchanged.
 
 ## Related features
 

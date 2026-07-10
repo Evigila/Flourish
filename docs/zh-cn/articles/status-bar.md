@@ -61,7 +61,11 @@ statusBar.ShowPowerStatus();
 ```csharp
 builder.ConfigureCustomHandler(custom =>
 {
-    custom.AddFooterCommand("同步", "\uE895", "sync.run");
+    custom.AddFooterCommand(
+        FlourishRegion.FooterEnd,
+        "同步",
+        "\uE895",
+        "sync.run");
 });
 ```
 

@@ -79,7 +79,7 @@ public partial class App : Application
                 titleBar
                     .SetTitle("Foobar")
                     .SetSubTitle("Flourish Shell")
-                    .SetSearch("搜索", searchText => { })
+                    .SetSearch("搜索", (_, searchText) => { })
                     .SetBreadcrumbButton()
                     .SetNavToggle();
             })

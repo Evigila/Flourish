@@ -7,55 +7,28 @@ namespace ArkheideSystem.Flourish.Composition;
 internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options)
     : IFlourishDynamicToolbarBuilder
 {
-    public IFlourishDynamicToolbarBuilder CreateToolbarItems(
-        Type pageType,
+    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
         params FlourishToolbarItem[] items
     )
+        where TPage : Page
     {
-        return CreateToolbarItems(pageType, true, items);
+        return CreateToolbarItems<TPage>(true, items);
     }
 
-    public IFlourishDynamicToolbarBuilder CreateToolbarItems(
-        Type pageType,
+    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
         bool icon,
         params FlourishToolbarItem[] items
     )
+        where TPage : Page
     {
-        ArgumentNullException.ThrowIfNull(pageType);
         ArgumentNullException.ThrowIfNull(items);
-
-        if (!typeof(Page).IsAssignableFrom(pageType))
-        {
-            throw new ArgumentException(
-                $"{pageType.FullName} must derive from System.Windows.Controls.Page.",
-                nameof(pageType)
-            );
-        }
-
         if (items.Any(item => item is null))
         {
             throw new ArgumentException("Toolbar items cannot contain null.", nameof(items));
         }
 
-        options.DynamicToolbarItems[pageType] = items.ToArray();
-        options.DynamicToolbarIconModes[pageType] = icon;
+        options.DynamicToolbarItems[typeof(TPage)] = items.ToArray();
+        options.DynamicToolbarIconModes[typeof(TPage)] = icon;
         return this;
-    }
-
-    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
-        params FlourishToolbarItem[] items
-    )
-        where TPage : Page
-    {
-        return CreateToolbarItems(typeof(TPage), items);
-    }
-
-    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
-        bool icon,
-        params FlourishToolbarItem[] items
-    )
-        where TPage : Page
-    {
-        return CreateToolbarItems(typeof(TPage), icon, items);
     }
 }

@@ -18,26 +18,6 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishCustomHandlerBuilder Add(
-        FlourishRegion region,
-        Func<FrameworkElement> contentFactory,
-        int order = 0
-    )
-    {
-        ArgumentNullException.ThrowIfNull(contentFactory);
-        return Add(region, _ => contentFactory(), order);
-    }
-
-    public IFlourishCustomHandlerBuilder Add(
-        FlourishRegion region,
-        FrameworkElement content,
-        int order = 0
-    )
-    {
-        ArgumentNullException.ThrowIfNull(content);
-        return Add(region, _ => content, order);
-    }
-
     public IFlourishCustomHandlerBuilder SetProfileContent(
         Func<IServiceProvider, FrameworkElement> contentFactory
     )
@@ -50,20 +30,6 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
             new FlourishRegionContent(FlourishRegion.TitlebarProfile, contentFactory)
         );
         return this;
-    }
-
-    public IFlourishCustomHandlerBuilder SetProfileContent(
-        Func<FrameworkElement> contentFactory
-    )
-    {
-        ArgumentNullException.ThrowIfNull(contentFactory);
-        return SetProfileContent(_ => contentFactory());
-    }
-
-    public IFlourishCustomHandlerBuilder SetProfileContent(FrameworkElement content)
-    {
-        ArgumentNullException.ThrowIfNull(content);
-        return SetProfileContent(_ => content);
     }
 
     public IFlourishCustomHandlerBuilder AddTitlebarAction(
@@ -109,82 +75,17 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         );
     }
 
-    public IFlourishCustomHandlerBuilder AddFooterContent(
-        Func<IServiceProvider, FrameworkElement> contentFactory,
-        int order = 0
-    )
-    {
-        return AddFooterContent(FlourishRegion.FooterEnd, contentFactory, order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterContent(
+    public IFlourishCustomHandlerBuilder AddFooterCommand(
         FlourishRegion region,
-        Func<IServiceProvider, FrameworkElement> contentFactory,
+        string displayText,
+        string iconGlyph,
+        string? commandKey,
         int order = 0
     )
     {
         ValidateFooterRegion(region, nameof(region));
-        return Add(region, contentFactory, order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterContent(
-        Func<FrameworkElement> contentFactory,
-        int order = 0
-    )
-    {
-        ArgumentNullException.ThrowIfNull(contentFactory);
-        return AddFooterContent(FlourishRegion.FooterEnd, _ => contentFactory(), order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterContent(
-        FlourishRegion region,
-        Func<FrameworkElement> contentFactory,
-        int order = 0
-    )
-    {
-        ArgumentNullException.ThrowIfNull(contentFactory);
-        return AddFooterContent(region, _ => contentFactory(), order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterContent(
-        FrameworkElement content,
-        int order = 0
-    )
-    {
-        ArgumentNullException.ThrowIfNull(content);
-        return AddFooterContent(FlourishRegion.FooterEnd, _ => content, order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterContent(
-        FlourishRegion region,
-        FrameworkElement content,
-        int order = 0
-    )
-    {
-        ArgumentNullException.ThrowIfNull(content);
-        return AddFooterContent(region, _ => content, order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterCommand(
-        string displayText,
-        string iconGlyph,
-        string? commandKey,
-        int order = 0
-    )
-    {
-        return AddFooterCommand(FlourishRegion.FooterEnd, displayText, iconGlyph, commandKey, order);
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterCommand(
-        FlourishRegion region,
-        string displayText,
-        string iconGlyph,
-        string? commandKey,
-        int order = 0
-    )
-    {
         displayText = ValidateNotBlank(displayText, nameof(displayText));
-        return AddFooterContent(
+        return Add(
             region,
             services => FlourishRegionElementFactory.CreateFooterCommandButton(
                 services,
@@ -198,22 +99,6 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
     }
 
     public IFlourishCustomHandlerBuilder AddFooterCommandHandler(
-        string displayText,
-        string iconGlyph,
-        Action<IServiceProvider> action,
-        int order = 0
-    )
-    {
-        return AddFooterCommandHandler(
-            FlourishRegion.FooterEnd,
-            displayText,
-            iconGlyph,
-            action,
-            order
-        );
-    }
-
-    public IFlourishCustomHandlerBuilder AddFooterCommandHandler(
         FlourishRegion region,
         string displayText,
         string iconGlyph,
@@ -221,9 +106,10 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         int order = 0
     )
     {
+        ValidateFooterRegion(region, nameof(region));
         displayText = ValidateNotBlank(displayText, nameof(displayText));
         ArgumentNullException.ThrowIfNull(action);
-        return AddFooterContent(
+        return Add(
             region,
             services => FlourishRegionElementFactory.CreateFooterCommandButton(
                 services,

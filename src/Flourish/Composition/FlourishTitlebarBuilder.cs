@@ -8,15 +8,6 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
 {
     public IFlourishTitlebarBuilder SetSearch(
         string placeholder,
-        Action<string> handler
-    )
-    {
-        ArgumentNullException.ThrowIfNull(handler);
-        return SetSearch(placeholder, (_, text) => handler(text));
-    }
-
-    public IFlourishTitlebarBuilder SetSearch(
-        string placeholder,
         Action<IServiceProvider, string> handler
     )
     {

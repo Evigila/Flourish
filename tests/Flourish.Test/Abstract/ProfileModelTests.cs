@@ -22,7 +22,6 @@ public sealed class ProfileUserTests
         Assert.Equal("Lovelace", sut.LastName);
         Assert.Equal(nameOrder, sut.NameOrder);
         Assert.Equal(expectedDisplayName, sut.DisplayName);
-        Assert.Equal(expectedDisplayName, sut.UserName);
         Assert.Equal(expectedInitials, sut.Initials);
     }
 
@@ -65,38 +64,10 @@ public sealed class ProfileUserTests
         );
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void CompatibilityConstructor_WithBlankDisplayName_ThrowsArgumentException(
-        string? userName
-    )
-    {
-        Assert.Throws<ArgumentException>(() => new ProfileUser(userName!));
-    }
 }
 
 public sealed class ProfileSignInRequestTests
 {
-    [Fact]
-    public void CompatibilityConstructor_ParsesDisplayNameInFirstLastOrder()
-    {
-        var sut = new ProfileSignInRequest(
-            "Ada Lovelace",
-            "legacy-password",
-            "avatar.png"
-        );
-
-        Assert.Equal("Ada", sut.FirstName);
-        Assert.Equal("Lovelace", sut.LastName);
-        Assert.Equal(NameOrder.FirstLast, sut.NameOrder);
-        Assert.Equal("Ada Lovelace", sut.DisplayName);
-        Assert.Equal("Ada Lovelace", sut.UserName);
-        Assert.Equal("legacy-password", sut.Password);
-        Assert.Equal("avatar.png", sut.ImagePath);
-    }
-
     [Fact]
     public void SeparateNameConstructor_UsesRequestedNameOrder()
     {
@@ -112,30 +83,63 @@ public sealed class ProfileSignInRequestTests
         Assert.Equal("Lovelace", sut.LastName);
         Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
         Assert.Equal("Lovelace Ada", sut.DisplayName);
-        Assert.Equal("Lovelace Ada", sut.UserName);
         Assert.Equal("new-password", sut.Password);
         Assert.Equal("avatar.png", sut.ImagePath);
     }
 
     [Fact]
-    public void ToString_MasksPasswordForBothConstructors()
+    public void ToString_MasksPassword()
     {
         const string password = "unique-secret-value";
-        ProfileSignInRequest[] requests =
-        [
-            new("Ada Lovelace", password),
-            new("Ada", "Lovelace", password, NameOrder.FirstLast),
-        ];
-
-        Assert.All(
-            requests,
-            request =>
-            {
-                var result = request.ToString();
-                Assert.Equal("ProfileSignInRequest { Password = *** }", result);
-                Assert.DoesNotContain(password, result);
-            }
+        var request = new ProfileSignInRequest(
+            "Ada",
+            "Lovelace",
+            password,
+            NameOrder.FirstLast
         );
+
+        var result = request.ToString();
+
+        Assert.Equal("ProfileSignInRequest { Password = *** }", result);
+        Assert.DoesNotContain(password, result);
+    }
+}
+
+public sealed class ProfileAuthenticationResultTests
+{
+    [Fact]
+    public void Success_CreatesSuccessfulResultWithoutError()
+    {
+        var sut = ProfileAuthenticationResult.Success();
+
+        Assert.True(sut.Succeeded);
+        Assert.Null(sut.ErrorMessage);
+    }
+
+    [Fact]
+    public void Failure_WithMessage_CreatesFailedResult()
+    {
+        var sut = ProfileAuthenticationResult.Failure("Authentication failed.");
+
+        Assert.False(sut.Succeeded);
+        Assert.Equal("Authentication failed.", sut.ErrorMessage);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Failure_WithBlankMessage_ThrowsArgumentException(string? errorMessage)
+    {
+        Assert.Throws<ArgumentException>(() =>
+            ProfileAuthenticationResult.Failure(errorMessage!)
+        );
+    }
+
+    [Fact]
+    public void Type_HasNoPublicConstructor()
+    {
+        Assert.Empty(typeof(ProfileAuthenticationResult).GetConstructors());
     }
 }
 
@@ -151,19 +155,6 @@ public sealed class FlourishProfileBuilderTests
 
         Assert.Same(sut, result);
         Assert.Equal(typeof(TestProfilePage), options.PageType);
-    }
-
-    [Fact]
-    public void SetProfilePage_WithNonPageType_ThrowsArgumentException()
-    {
-        var options = new FlourishProfileOptions();
-        var sut = new FlourishProfileBuilder(options);
-
-        var exception = Assert.Throws<ArgumentException>(() =>
-            sut.SetProfilePage(typeof(string))
-        );
-
-        Assert.Equal("pageType", exception.ParamName);
     }
 
     private sealed class TestProfilePage : Page { }

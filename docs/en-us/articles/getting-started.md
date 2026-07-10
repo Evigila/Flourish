@@ -79,7 +79,7 @@ public partial class App : Application
                 titleBar
                     .SetTitle("Foobar")
                     .SetSubTitle("Desktop workspace")
-                    .SetSearch("Search", searchText => { })
+                    .SetSearch("Search", (_, searchText) => { })
                     .SetBreadcrumbButton()
                     .SetNavToggle();
             })

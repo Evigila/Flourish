@@ -29,7 +29,7 @@ builder
 
 ```csharp
 titleBar
-    .SetSearch("搜索", searchText => Search(searchText))
+    .SetSearch("搜索", (_, searchText) => Search(searchText))
     .SetBreadcrumbButton(BreadcrumbShowOption.Auto);
 ```
 
