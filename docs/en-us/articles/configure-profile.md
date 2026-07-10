@@ -27,6 +27,8 @@ The built-in sign-in form collects first and last names separately. The `NameOrd
 
 Before sign-in, the built-in page uses its default profile identity. The user can replace it by signing in through the form.
 
+Labels, status text, file-picker filters, and validation messages on the built-in page follow the locale selected through [Application data](configure-data.md). An application-provided profile page controls its own text and is not translated automatically.
+
 At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, `DisplayName`, and `Initials` expose the formatted result. `ProfileUser.UserName` returns the same formatted value as `DisplayName`.
 
 ## Interaction behavior

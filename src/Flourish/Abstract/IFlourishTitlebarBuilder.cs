@@ -55,16 +55,19 @@ public interface IFlourishTitlebarBuilder
     IFlourishTitlebarBuilder SetNavToggle();
 
     /// <summary>
-    /// Configures and displays the logo image in the title bar and uses the same image as the
-    /// shell window icon.
+    /// Configures and displays the built-in or application-provided logo image in the title bar
+    /// and uses the same image as the shell window icon.
     /// </summary>
-    /// <param name="logoPath">A relative URI, absolute URI, or WPF pack URI for the logo image.</param>
+    /// <param name="logoPath">
+    /// A relative URI, absolute URI, or WPF pack URI for the logo image. When omitted,
+    /// Flourish uses its built-in application icon.
+    /// </param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// Transparent outer pixels are removed from the displayed image. The shell window icon is
     /// also used by Windows surfaces such as the taskbar.
     /// </remarks>
-    IFlourishTitlebarBuilder SetLogo(string logoPath);
+    IFlourishTitlebarBuilder SetLogo(string? logoPath = null);
 
     /// <summary>
     /// Configures and displays the title text.

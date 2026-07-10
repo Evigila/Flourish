@@ -7,7 +7,10 @@ using Forms = System.Windows.Forms;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class TrayIconService(FlourishShellOptions options) : IDisposable
+internal sealed class TrayIconService(
+    FlourishShellOptions options,
+    FlourishLocalizationService localizationService
+) : IDisposable
 {
     private const string DefaultIconUri = "pack://application:,,,/Flourish;component/Assets/favicon.ico";
 
@@ -133,8 +136,16 @@ internal sealed class TrayIconService(FlourishShellOptions options) : IDisposabl
     private Forms.ContextMenuStrip CreateContextMenu()
     {
         var contextMenu = new Forms.ContextMenuStrip();
-        contextMenu.Items.Add("Show", null, (_, _) => owner?.Dispatcher.Invoke(RestoreFromTray));
-        contextMenu.Items.Add("Exit", null, (_, _) => ExitFromTray());
+        contextMenu.Items.Add(
+            localizationService.Get(FlourishLocaleKeys.TrayShow),
+            null,
+            (_, _) => owner?.Dispatcher.Invoke(RestoreFromTray)
+        );
+        contextMenu.Items.Add(
+            localizationService.Get(FlourishLocaleKeys.TrayExit),
+            null,
+            (_, _) => ExitFromTray()
+        );
         return contextMenu;
     }
 

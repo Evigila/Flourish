@@ -56,7 +56,6 @@
         x:Name="LoginButton"
         HorizontalAlignment="Center"
         Click="LoginButton_Click"
-        Content="Sign in"
         Style="{StaticResource FlourishPrimaryActionButtonStyle}"
       />
 
@@ -70,10 +69,10 @@
 
           <StackPanel x:Name="FirstNameField" Grid.Column="0">
             <TextBlock
+              x:Name="FirstNameLabel"
               Margin="0,0,0,4"
               FontSize="{DynamicResource FlourishFontSizeSmall}"
               Foreground="{DynamicResource MutedTextBrush}"
-              Text="First Name"
             />
             <TextBox
               x:Name="FirstNameInput"
@@ -84,10 +83,10 @@
 
           <StackPanel x:Name="LastNameField" Grid.Column="2">
             <TextBlock
+              x:Name="LastNameLabel"
               Margin="0,0,0,4"
               FontSize="{DynamicResource FlourishFontSizeSmall}"
               Foreground="{DynamicResource MutedTextBrush}"
-              Text="Last Name"
             />
             <TextBox
               x:Name="LastNameInput"
@@ -98,10 +97,10 @@
         </Grid>
 
         <TextBlock
+          x:Name="ProfileImageLabel"
           Margin="0,9,0,4"
           FontSize="{DynamicResource FlourishFontSizeSmall}"
           Foreground="{DynamicResource MutedTextBrush}"
-          Text="Profile image"
         />
         <Button
           x:Name="UploadImageButton"
@@ -112,7 +111,6 @@
           HorizontalContentAlignment="Stretch"
           Click="UploadImageButton_Click"
           Style="{StaticResource FlourishActionButtonStyle}"
-          ToolTip="Choose profile image"
         >
           <Grid>
             <StackPanel
@@ -132,7 +130,7 @@
                   StrokeThickness="2"
                 />
               </Viewbox>
-              <TextBlock VerticalAlignment="Center" Text="Upload image" />
+              <TextBlock x:Name="UploadImageText" VerticalAlignment="Center" />
             </StackPanel>
             <Grid x:Name="SelectedImageContent" Visibility="Collapsed">
               <Border x:Name="SelectedImagePreview" CornerRadius="5" />
@@ -150,10 +148,10 @@
                   Text="&#xE73E;"
                 />
                 <TextBlock
+                  x:Name="ImageSelectedText"
                   VerticalAlignment="Center"
                   FontWeight="SemiBold"
                   Foreground="White"
-                  Text="Image selected"
                 />
               </StackPanel>
             </Grid>
@@ -161,10 +159,10 @@
         </Button>
 
         <TextBlock
+          x:Name="PasswordLabel"
           Margin="0,9,0,4"
           FontSize="{DynamicResource FlourishFontSizeSmall}"
           Foreground="{DynamicResource MutedTextBrush}"
-          Text="Password"
         />
         <PasswordBox
           x:Name="PasswordInput"
@@ -182,15 +180,14 @@
 
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
           <Button
+            x:Name="CancelLoginButton"
             Margin="0,0,7,0"
             Click="CancelLoginButton_Click"
-            Content="Cancel"
             Style="{StaticResource FlourishActionButtonStyle}"
           />
           <Button
             x:Name="SubmitLoginButton"
             Click="SubmitLoginButton_Click"
-            Content="Sign in"
             Style="{StaticResource FlourishPrimaryActionButtonStyle}"
           />
         </StackPanel>
@@ -201,7 +198,6 @@
           x:Name="RememberLoginCheckBox"
           HorizontalAlignment="Center"
           Checked="RememberLoginCheckBox_Changed"
-          Content="Remember login"
           Style="{StaticResource FlourishCheckBoxStyle}"
           Unchecked="RememberLoginCheckBox_Changed"
         />
@@ -210,7 +206,6 @@
           Margin="0,14,0,0"
           HorizontalAlignment="Center"
           Click="LogoutButton_Click"
-          Content="Sign out"
           Style="{StaticResource FlourishActionButtonStyle}"
         />
         <TextBlock

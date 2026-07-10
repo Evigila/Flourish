@@ -43,9 +43,11 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetLogo(string logoPath)
+    public IFlourishTitlebarBuilder SetLogo(string? logoPath = null)
     {
-        options.LogoPath = ValidateNotBlank(logoPath, nameof(logoPath));
+        options.LogoPath = logoPath is null
+            ? null
+            : ValidateNotBlank(logoPath, nameof(logoPath));
         options.IsTitlebarLogoEnabled = true;
         return this;
     }

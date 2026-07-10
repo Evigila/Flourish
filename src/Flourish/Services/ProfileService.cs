@@ -7,6 +7,7 @@ internal sealed class ProfileService : IProfileService
 {
     private readonly IProfileAuthService authService;
     private readonly ProfileSecretStore secretStore;
+    private readonly FlourishLocalizationService localizationService;
     private readonly ProfileUser defaultProfile;
     private readonly NameOrder nameOrder;
     private readonly SemaphoreSlim gate = new(1, 1);
@@ -16,14 +17,18 @@ internal sealed class ProfileService : IProfileService
     public ProfileService(
         IProfileAuthService authService,
         ProfileSecretStore secretStore,
-        FlourishProfileOptions options
+        FlourishProfileOptions options,
+        FlourishLocalizationService localizationService
     )
     {
         this.authService = authService;
         this.secretStore = secretStore;
+        this.localizationService = localizationService;
         nameOrder = options.NameOrder;
         defaultProfile = new ProfileUser(
-            options.DefaultFirstName,
+            string.IsNullOrWhiteSpace(options.DefaultFirstName)
+                ? localizationService.Get(FlourishLocaleKeys.ProfileDefaultName)
+                : options.DefaultFirstName,
             options.DefaultLastName,
             nameOrder,
             options.DefaultImagePath
@@ -135,7 +140,9 @@ internal sealed class ProfileService : IProfileService
         );
         if (string.IsNullOrWhiteSpace(normalizedRequest.DisplayName))
         {
-            return ProfileAuthenticationResult.Failure("Enter a first or last name.");
+            return ProfileAuthenticationResult.Failure(
+                localizationService.Get(FlourishLocaleKeys.ProfileEnterName)
+            );
         }
 
         var result = await authService
@@ -193,7 +200,9 @@ internal sealed class ProfileService : IProfileService
             if (currentCredentials is null || LoginState == ProfileLoginState.SignedOut)
             {
                 throw new InvalidOperationException(
-                    "Remember login can only be changed while a profile is signed in."
+                    localizationService.Get(
+                        FlourishLocaleKeys.ProfileRememberLoginRequiresSignIn
+                    )
                 );
             }
 

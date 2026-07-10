@@ -1,11 +1,53 @@
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Composition;
 
 public sealed class FlourishCompositionContractTests
 {
+    [Fact]
+    public void Build_WithoutDataConfiguration_UsesBuiltInChineseLocale()
+    {
+        using var flourish = FlourishBuilder.CreateDefaultBuilder([]).Build();
+
+        var localization = flourish.GetRequiredService<FlourishLocalizationService>();
+
+        Assert.Equal("CN", localization.Locale);
+        Assert.Equal("关闭", localization.Get(FlourishLocaleKeys.TitleBarClose));
+    }
+
+    [Fact]
+    public void Build_WithOnlyLocaleConfiguration_DoesNotRequireApplicationIdentity()
+    {
+        var builder = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigureData(data => data.SetLocale("EN"));
+
+        using var flourish = builder.Build();
+        var localization = flourish.GetRequiredService<FlourishLocalizationService>();
+
+        Assert.Equal("EN", localization.Locale);
+        Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
+    }
+
+    [Fact]
+    public void Build_AppliesLocaleBeforeBuiltInStatusItems()
+    {
+        var builder = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigureData(data => data.SetLocale("EN"))
+            .ConfigureStatusBar(statusBar => statusBar.ShowPowerStatus());
+
+        using var flourish = builder.Build();
+        var item = Assert.Single(
+            flourish.GetRequiredService<FlourishShellOptions>().StatusItems
+        );
+
+        Assert.Equal("Power", item.Text);
+    }
+
     [Fact]
     public void Build_WithOnlyExplicitPreferencePath_DoesNotRequireApplicationIdentity()
     {

@@ -15,13 +15,15 @@ builder
     .ConfigureTitleBar(titleBar =>
     {
         titleBar
-            .SetLogo("pack://application:,,,/Foobar;component/Assets/logo.png")
+            .SetLogo()
             .SetTitle("Foobar")
             .SetSubTitle("桌面工作区");
     });
 ```
 
-`SetLogo` 接收相对 URI、绝对 URI 或 WPF pack URI。Flourish 会去除图像外围的完全透明像素，使可见图案充分使用标题栏的 Logo 区域；同一图源也会用于 Shell 窗口图标，因此 Windows 任务栏与标题栏显示一致。
+`SetLogo()` 使用 Flourish 内置应用图标。如需替换，可传入相对 URI、绝对 URI 或 WPF pack URI。Flourish 会去除图像外围的完全透明像素，使可见图案充分使用标题栏的 Logo 区域；同一图源也会用于 Shell 窗口图标，因此 Windows 任务栏与标题栏显示一致。
+
+标题栏的内置工具提示和主题文本使用[应用数据](configure-data.md)中选择的语言。`SetTitle`、`SetSubTitle` 和 `SetSearch` 接收的文本由应用提供，不会自动翻译。
 
 ## 搜索与面包屑
 

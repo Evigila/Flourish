@@ -5,7 +5,7 @@ namespace ArkheideSystem.Flourish.Configuration;
 
 internal sealed class FlourishProfileOptions
 {
-    public string DefaultFirstName { get; set; } = "User";
+    public string DefaultFirstName { get; set; } = string.Empty;
 
     public string DefaultLastName { get; set; } = string.Empty;
 

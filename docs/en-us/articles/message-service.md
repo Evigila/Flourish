@@ -23,7 +23,7 @@ if (messages.Show(
 }
 ```
 
-`MessageBoxButton.YesNo` is displayed as `No | Yes`, so the affirmative action appears on the right. `MessageBoxButton.YesNoCancel` follows the same rule and is displayed as `Cancel | No | Yes`. When no default result is provided, `Yes` remains the default result for these standard button sets.
+`MessageBoxButton.YesNo` displays the negative action before the affirmative action, so the affirmative action appears on the right. `MessageBoxButton.YesNoCancel` places cancel first, followed by the negative and affirmative actions. Standard button labels follow the locale selected through [Application data](configure-data.md). When no default result is provided, `Yes` remains the default result for these standard button sets.
 
 ## Custom options
 
@@ -50,6 +50,8 @@ if (selected?.Id == "replace")
 ```
 
 Options are displayed in the order provided. The last option appears on the right side of the dialog footer. `IsDefault` controls the Enter key, `IsCancel` controls Escape and the title bar close button, and `IsPrimary` applies the accent button style. Each custom option must have a unique non-empty `Id` and non-empty `Text`.
+
+Message text, captions, and `FlourishMessageOption.Text` values are supplied by the application and are not translated automatically.
 
 ## Owner window
 

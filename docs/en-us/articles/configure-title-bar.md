@@ -18,7 +18,7 @@ builder
     .ConfigureTitleBar(titleBar =>
     {
         titleBar
-            .SetLogo("/MyApp;component/Assets/logo.png")
+            .SetLogo()
             .SetTitle("Foobar")
             .SetSubTitle("Desktop workspace")
             .SetSearch("Search", searchText => UpdateSearch(searchText))
@@ -37,7 +37,7 @@ Each configuration method also displays its corresponding element:
 
 | Method | Result |
 | --- | --- |
-| `SetLogo(path)` | Displays the application logo. |
+| `SetLogo()` or `SetLogo(path)` | Displays the built-in logo or an application-provided logo. |
 | `SetTitle(title)` | Displays the primary title. |
 | `SetSubTitle(subTitle)` | Displays supporting title text. |
 | `SetSearch(placeholder, handler)` | Displays search and handles text changes. |
@@ -48,12 +48,14 @@ Each configuration method also displays its corresponding element:
 
 These methods configure built-in title bar regions. [Custom shell content](configure-custom-handler.md) inserts application-provided WPF elements into the extension regions.
 
+Built-in tooltips and theme labels follow the locale selected through [Application data](configure-data.md). Values supplied to `SetTitle`, `SetSubTitle`, and `SetSearch` are application text and are not translated automatically.
+
 ## Logo and window icon
 
-`SetLogo` accepts a relative URI, absolute URI, or WPF pack URI. Flourish removes fully transparent edge pixels before fitting the image into the title bar logo region, allowing the visible artwork to use the available space. The same effective image is assigned to the shell window icon, so the taskbar icon and title bar logo remain synchronized.
+`SetLogo()` uses the built-in Flourish application icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. Flourish removes fully transparent edge pixels before fitting the image into the title bar logo region, allowing the visible artwork to use the available space. The same effective image is assigned to the shell window icon, so the taskbar icon and title bar logo remain synchronized.
 
 ```csharp
-titleBar.SetLogo("pack://application:,,,/MyApp;component/Assets/logo.ico");
+titleBar.SetLogo("/Foobar;component/Assets/logo.ico");
 ```
 
 ## Breadcrumb navigation

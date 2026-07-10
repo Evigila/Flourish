@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Services;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace ArkheideSystem.Flourish.Controls;
@@ -9,18 +10,41 @@ namespace ArkheideSystem.Flourish.Controls;
 internal partial class FlourishProfilePage : Page
 {
     private readonly IProfileService profileService;
+    private readonly FlourishLocalizationService localizationService;
     private string? selectedImagePath;
     private bool isEditingLogin;
     private bool isUpdatingState;
     private bool isSubscribed;
 
-    public FlourishProfilePage(IProfileService profileService)
+    public FlourishProfilePage(
+        IProfileService profileService,
+        FlourishLocalizationService localizationService
+    )
     {
         this.profileService = profileService;
+        this.localizationService = localizationService;
         InitializeComponent();
+        ApplyLocale();
         Loaded += ProfilePage_Loaded;
         Unloaded += ProfilePage_Unloaded;
         UpdateState();
+    }
+
+    private void ApplyLocale()
+    {
+        LoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignIn);
+        FirstNameLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileFirstName);
+        LastNameLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileLastName);
+        ProfileImageLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileImage);
+        UploadImageText.Text = localizationService.Get(FlourishLocaleKeys.ProfileUploadImage);
+        ImageSelectedText.Text = localizationService.Get(FlourishLocaleKeys.ProfileImageSelected);
+        PasswordLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfilePassword);
+        CancelLoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileCancel);
+        SubmitLoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignIn);
+        RememberLoginCheckBox.Content = localizationService.Get(
+            FlourishLocaleKeys.ProfileRememberLogin
+        );
+        LogoutButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignOut);
     }
 
     private void ProfilePage_Loaded(object sender, RoutedEventArgs e)
@@ -100,10 +124,12 @@ internal partial class FlourishProfilePage : Page
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Choose profile image",
+            Title = localizationService.Get(FlourishLocaleKeys.ProfileChooseImage),
             CheckFileExists = true,
             Multiselect = false,
-            Filter = "Image files|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp|All files|*.*",
+            Filter = $"{localizationService.Get(FlourishLocaleKeys.ProfileImageFiles)}"
+                + "|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp|"
+                + $"{localizationService.Get(FlourishLocaleKeys.ProfileAllFiles)}|*.*",
         };
 
         if (dialog.ShowDialog(Window.GetWindow(this)) != true)
@@ -113,7 +139,9 @@ internal partial class FlourishProfilePage : Page
 
         if (ProfileImageLoader.Load(dialog.FileName) is null)
         {
-            ErrorText.Text = "The selected image could not be loaded.";
+            ErrorText.Text = localizationService.Get(
+                FlourishLocaleKeys.ProfileImageLoadFailed
+            );
             return;
         }
 
@@ -150,7 +178,8 @@ internal partial class FlourishProfilePage : Page
             );
             if (!result.Succeeded)
             {
-                ErrorText.Text = result.ErrorMessage ?? "Sign in failed.";
+                ErrorText.Text = result.ErrorMessage
+                    ?? localizationService.Get(FlourishLocaleKeys.ProfileSignInFailed);
                 return;
             }
 
@@ -236,7 +265,11 @@ internal partial class FlourishProfilePage : Page
             }
 
             var isSignedIn = profileService.LoginState != ProfileLoginState.SignedOut;
-            LoginStateText.Text = isSignedIn ? "Signed in" : "Signed out";
+            LoginStateText.Text = localizationService.Get(
+                isSignedIn
+                    ? FlourishLocaleKeys.ProfileSignedIn
+                    : FlourishLocaleKeys.ProfileSignedOut
+            );
             LoginButton.Visibility = !isSignedIn && !isEditingLogin
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -267,7 +300,7 @@ internal partial class FlourishProfilePage : Page
         var lastName = LastNameInput.Text.Trim();
         if (firstName.Length == 0 && lastName.Length == 0)
         {
-            firstName = "User";
+            firstName = localizationService.Get(FlourishLocaleKeys.ProfileDefaultName);
         }
 
         SetAvatar(
@@ -293,8 +326,8 @@ internal partial class FlourishProfilePage : Page
             ? Visibility.Visible
             : Visibility.Collapsed;
         UploadImageButton.ToolTip = imageSource is null
-            ? "Choose profile image"
-            : "Change profile image";
+            ? localizationService.Get(FlourishLocaleKeys.ProfileChooseImage)
+            : localizationService.Get(FlourishLocaleKeys.ProfileChangeImage);
     }
 
     private void SetAvatar(ProfileUser profile)

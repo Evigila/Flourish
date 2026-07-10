@@ -2,7 +2,9 @@ using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class SimpleProfileAuthService : IProfileAuthService
+internal sealed class SimpleProfileAuthService(
+    FlourishLocalizationService localizationService
+) : IProfileAuthService
 {
     public Task<ProfileAuthenticationResult> AuthenticateAsync(
         ProfileSignInRequest request,
@@ -15,14 +17,18 @@ internal sealed class SimpleProfileAuthService : IProfileAuthService
         if (string.IsNullOrWhiteSpace(request.DisplayName))
         {
             return Task.FromResult(
-                ProfileAuthenticationResult.Failure("Enter a first or last name.")
+                ProfileAuthenticationResult.Failure(
+                    localizationService.Get(FlourishLocaleKeys.ProfileEnterName)
+                )
             );
         }
 
         if (string.IsNullOrWhiteSpace(request.Password))
         {
             return Task.FromResult(
-                ProfileAuthenticationResult.Failure("Enter a password.")
+                ProfileAuthenticationResult.Failure(
+                    localizationService.Get(FlourishLocaleKeys.ProfileEnterPassword)
+                )
             );
         }
 

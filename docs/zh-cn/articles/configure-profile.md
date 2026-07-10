@@ -14,18 +14,20 @@ builder
         titleBar.SetProfile(NameOrder.FirstLast));
 ```
 
-省略参数时，`SetProfile()` 使用 `NameOrder.FirstLast`。内置 Profile 的初始显示名称为 `User`。
+省略参数时，`SetProfile()` 使用 `NameOrder.FirstLast`。内置 Profile 的初始显示名称使用当前语言的 `Profile.DefaultName` 翻译。
 
 ## 名称顺序与占位首字母
 
-内置登录表单将名称拆分为 **First Name** 与 **Last Name** 两个输入框。`SetProfile` 的 `NameOrder` 参数同时控制输入框的视觉顺序、`ProfileUser.DisplayName` 以及无图片时显示的首字母顺序：
+内置登录表单将名称拆分为名和姓两个输入框。`SetProfile` 的 `NameOrder` 参数同时控制输入框的视觉顺序、`ProfileUser.DisplayName` 以及无图片时显示的首字母顺序：
 
 | 值 | 显示名称 | 占位首字母 |
 | --- | --- | --- |
 | `NameOrder.FirstLast` | `Foo Bar` | `FB` |
 | `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
-First Name 与 Last Name 至少应填写一项。`ProfileUser.FirstName`、`LastName`、`NameOrder` 和 `DisplayName` 提供结构化的用户名称结果。
+名与姓至少应填写一项。`ProfileUser.FirstName`、`LastName`、`NameOrder` 和 `DisplayName` 提供结构化的用户名称结果。
+
+内置 Profile 的标签、状态文本、文件选择器筛选文本和验证消息使用[应用数据](configure-data.md)中选择的语言。应用提供的自定义 Profile 页面自行管理文本，Flourish 不会自动翻译。
 
 ## Profile 界面
 

@@ -37,7 +37,7 @@ The public builder separates hosting, application services, feature switches, an
 
 | Feature | Builder method | Purpose |
 | --- | --- | --- |
-| [Application data](configure-data.md) | `ConfigureData` | Identifies application preference storage. |
+| [Application data](configure-data.md) | `ConfigureData` | Configures localization, application identity, and preference storage. |
 | [Dependency injection](configure-services.md) | `ConfigureServices` | Registers application and replaceable Flourish services. |
 | [Shell configuration](shell-configuration.md) | `ConfigureShell` | Configures shell surfaces, tooltips, typography, and material effects. |
 | [Profile](configure-profile.md) | `ConfigureProfile` | Selects a custom page for the profile enabled by the title bar. |

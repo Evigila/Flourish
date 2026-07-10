@@ -51,6 +51,8 @@ builder.ConfigureWindow(window => window.SetTrayExit());
 
 When tray exit is disabled, the title bar close button uses the normal close-confirmation flow. Passing `false` is useful when a shared configuration enables tray behavior conditionally.
 
+The close confirmation and tray menu use the locale selected through [Application data](configure-data.md).
+
 ## Related features
 
 - [Getting started](getting-started.md) shows window startup from `App.xaml.cs`.

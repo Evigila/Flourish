@@ -4,6 +4,10 @@ namespace ArkheideSystem.Flourish.Configuration;
 
 internal sealed class FlourishDataOptions
 {
+    public string Locale { get; set; } = "CN";
+
+    public List<string> LocalePaths { get; } = [];
+
     public string? AppPreferenceDataPath { get; set; }
 
     public string? AppName { get; set; }
