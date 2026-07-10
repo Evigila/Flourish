@@ -5,6 +5,18 @@ namespace ArkheideSystem.Flourish.Composition;
 
 internal sealed class FlourishDataBuilder(FlourishDataOptions options) : IFlourishDataBuilder
 {
+    public IFlourishDataBuilder SetLocale(string locale = "CN")
+    {
+        options.Locale = ValidateNotBlank(locale, nameof(locale)).Trim();
+        return this;
+    }
+
+    public IFlourishDataBuilder AddLocale(string path)
+    {
+        options.LocalePaths.Add(ValidateNotBlank(path, nameof(path)).Trim());
+        return this;
+    }
+
     public IFlourishDataBuilder SetAppPreferenceDataPath(string path)
     {
         options.AppPreferenceDataPath = ValidateNotBlank(path, nameof(path));

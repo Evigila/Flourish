@@ -45,6 +45,8 @@ statusBar.AddStatusItem("已同步", "\uE73E");
 
 `ShowLANConnectionStatus` 添加配置执行时的局域网可用性快照，不会自动刷新。`ShowPowerStatus` 添加静态电源项，不读取实时电池或电源来源状态。
 
+这些内置标签使用[应用数据](configure-data.md)中选择的语言。传给 `SetStatusText` 或 `AddStatusItem` 的文本属于应用内容，不会自动翻译。
+
 ```csharp
 statusBar.ShowLANConnectionStatus();
 statusBar.ShowPowerStatus();

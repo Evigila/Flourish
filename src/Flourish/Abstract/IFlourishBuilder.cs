@@ -17,7 +17,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface IFlourishBuilder
 {
     /// <summary>
-    /// Configures application-level data and preference storage.
+    /// Configures localization, application identity, and preference storage.
     /// </summary>
     /// <param name="configureData">A callback that receives the data builder.</param>
     /// <returns>The current builder for chained configuration.</returns>
@@ -25,7 +25,9 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigureData(data =>
     /// {
-    ///     data.SetAppCompany("Example Company").SetAppName("Foobar");
+    ///     data.SetLocale("EN")
+    ///         .SetAppCompany("Example Company")
+    ///         .SetAppName("Foobar");
     /// });
     /// ]]></code>
     /// </example>

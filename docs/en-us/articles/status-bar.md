@@ -47,6 +47,8 @@ Items are displayed in the order in which they are added.
 
 `ShowLANConnectionStatus` adds an item that reflects LAN availability when configuration is applied. It does not update automatically. `ShowPowerStatus` adds a static power item; it does not read the current battery or power-source state.
 
+These built-in labels follow the locale selected through [Application data](configure-data.md). Text passed to `SetStatusText` or `AddStatusItem` is application content and is not translated automatically.
+
 ```csharp
 statusBar.ShowLANConnectionStatus();
 statusBar.ShowPowerStatus();

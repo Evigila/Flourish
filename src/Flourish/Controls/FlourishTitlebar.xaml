@@ -37,7 +37,6 @@
         Click="BackButton_Click"
         IsEnabled="False"
         Style="{StaticResource FlourishIconButtonStyle}"
-        ToolTip="Back"
       >
         <TextBlock
           FontFamily="{DynamicResource FlourishIconFontFamily}"
@@ -54,7 +53,6 @@
         Click="ForwardButton_Click"
         IsEnabled="False"
         Style="{StaticResource FlourishIconButtonStyle}"
-        ToolTip="Forward"
       >
         <TextBlock
           FontFamily="{DynamicResource FlourishIconFontFamily}"
@@ -72,7 +70,6 @@
       Margin="4,4"
       Click="NavigationToggleButton_Click"
       Style="{StaticResource FlourishIconButtonStyle}"
-      ToolTip="Toggle navigation"
     >
       <TextBlock
         FontFamily="{DynamicResource FlourishIconFontFamily}"
@@ -220,7 +217,6 @@
       Margin="0,4,6,4"
       Click="ThemeToggleButton_Click"
       Style="{StaticResource FlourishIconButtonStyle}"
-      ToolTip="Theme"
     >
       <Viewbox Width="16" Height="16">
         <Path
@@ -248,7 +244,6 @@
         Height="32"
         Click="ProfileButton_Click"
         Style="{StaticResource FlourishIconButtonStyle}"
-        ToolTip="Profile"
       >
         <Grid Width="26" Height="26">
           <Border
@@ -263,7 +258,6 @@
             FontSize="{DynamicResource FlourishFontSizeCaption}"
             FontWeight="SemiBold"
             Foreground="{DynamicResource FlourishProfileForegroundBrush}"
-            Text="U"
           />
         </Grid>
       </Button>
@@ -284,10 +278,10 @@
     />
 
     <Button
+      x:Name="MinimizeButton"
       Grid.Column="9"
       Click="MinimizeButton_Click"
       Style="{StaticResource FlourishWindowCaptionButtonStyle}"
-      ToolTip="Minimize"
     >
       <TextBlock
         FontFamily="{DynamicResource FlourishIconFontFamily}"
@@ -301,7 +295,6 @@
       Grid.Column="10"
       Click="MaximizeButton_Click"
       Style="{StaticResource FlourishWindowCaptionButtonStyle}"
-      ToolTip="Maximize"
     >
       <TextBlock
         x:Name="MaximizeButtonIcon"
@@ -312,10 +305,10 @@
     </Button>
 
     <Button
+      x:Name="CloseButton"
       Grid.Column="11"
       Click="CloseButton_Click"
       Style="{StaticResource FlourishWindowCaptionCloseButtonStyle}"
-      ToolTip="Close"
     >
       <TextBlock
         FontFamily="{DynamicResource FlourishIconFontFamily}"

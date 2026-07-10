@@ -37,7 +37,7 @@ return flourish.Run<App>();
 
 | 功能 | Builder 方法 | 作用 |
 | --- | --- | --- |
-| [应用数据](configure-data.md) | `ConfigureData` | 配置应用标识和偏好存储。 |
+| [应用数据](configure-data.md) | `ConfigureData` | 配置本地化、应用标识和偏好存储。 |
 | [依赖注入](configure-services.md) | `ConfigureServices` | 注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
 | [Shell 配置](shell-configuration.md) | `ConfigureShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
 | [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |

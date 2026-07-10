@@ -26,7 +26,10 @@ internal static class Program
             .ConfigureData(
                 data =>
                 {
-                    data.SetAppCompany("Arkheide System Team").SetAppName("Flourish Gallery");
+                    data
+                        .SetAppCompany("Arkheide System Team")
+                        .SetAppName("Flourish Gallery")
+                        .SetLocale("EN");
                 }
             )
             .ConfigureServices(
@@ -92,7 +95,7 @@ internal static class Program
                     titlebar
                         .SetBreadcrumbButton()
                         .SetNavToggle()
-                        .SetLogo("pack://application:,,,/Flourish;component/Assets/favicon.ico")
+                        .SetLogo()
                         .SetTitle("Gallery")
                         .SetSubTitle("Flourish 示例")
                         .SetProfile(NameOrder.FirstLast)

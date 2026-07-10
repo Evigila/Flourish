@@ -6,7 +6,8 @@ using MessageBoxOptions = System.Windows.MessageBoxOptions;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class MessageService : IMessageService
+internal sealed class MessageService(FlourishLocalizationService localizationService)
+    : IMessageService
 {
     private const string GenericThemeSource = "/Flourish;component/Themes/Generic.xaml";
 
@@ -40,7 +41,8 @@ internal sealed class MessageService : IMessageService
             button,
             icon,
             defaultResult,
-            options
+            options,
+            localizationService
         );
         ConfigureOwner(dialog, owner);
 
@@ -75,7 +77,8 @@ internal sealed class MessageService : IMessageService
             caption,
             FlourishMessageOptionValidator.Validate(choices),
             icon,
-            options
+            options,
+            localizationService
         );
         ConfigureOwner(dialog, owner);
 

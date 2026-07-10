@@ -7,6 +7,8 @@ description: Build and run a basic WPF application with Flourish.
 
 A basic Flourish application lets the shell host a WPF `Application`: add the theme resources, build an `IFlourish` runtime from `App.xaml.cs` or another application entry point, register pages with `AddNavigable`, place them in the [navigation model](navigation.md), then show the shell.
 
+Built-in Flourish text uses the Chinese locale by default, including when `ConfigureData` is omitted. To use English, add `builder.ConfigureData(data => data.SetLocale("EN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locale files.
+
 ## Reference the theme
 
 The `Run(Application)` helper and `IFlourish.Show(Application)` automatically merge `/Flourish;component/Themes/Generic.xaml` into the application resources before the shell is opened. The dictionary can still be added explicitly in `App.xaml`; this is useful for the WPF designer and for resources used before the shell is shown.
@@ -146,6 +148,7 @@ An application should use either the `App.xaml.cs` lifetime path or the `Run<App
 The startup example keeps each feature responsibility separate:
 
 - [Dependency injection](configure-services.md) registers services, pages, and command parsers.
+- [Application data](configure-data.md) selects the built-in interface language and registers custom locale files.
 - [Shell configuration](shell-configuration.md) enables shell features and explains their prerequisites.
 - [Title bar](configure-title-bar.md) configures application identity and title bar controls.
 - [Navigation](navigation.md) configures panel display and visible items.

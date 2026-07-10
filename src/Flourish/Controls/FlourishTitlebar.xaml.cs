@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Services;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPanel = System.Windows.Controls.Panel;
@@ -28,6 +29,7 @@ internal partial class FlourishTitlebar : UserControl
     private static readonly ImageSource? DefaultLogoSource = CreateDefaultLogoSource();
     private static readonly Geometry SunIconGeometry = CreateFrozenGeometry(SunIconData);
     private static readonly Geometry MoonIconGeometry = CreateFrozenGeometry(MoonIconData);
+    private FlourishLocalizationService? localizationService;
     private bool hasProfileRegionContent;
     private bool isProfileEnabled;
 
@@ -57,6 +59,21 @@ internal partial class FlourishTitlebar : UserControl
     public event EventHandler? ProfileToggleRequested;
 
     public event EventHandler<string>? SearchTextChanged;
+
+    public void ApplyLocale(FlourishLocalizationService localization)
+    {
+        localizationService = localization ?? throw new ArgumentNullException(nameof(localization));
+        BackButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarBack);
+        ForwardButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarForward);
+        NavigationToggleButton.ToolTip = localization.Get(
+            FlourishLocaleKeys.TitleBarToggleNavigation
+        );
+        ThemeToggleButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarTheme);
+        ProfileButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarProfile);
+        MinimizeButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarMinimize);
+        MaximizeButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarMaximize);
+        CloseButton.ToolTip = localization.Get(FlourishLocaleKeys.TitleBarClose);
+    }
 
     public void SetTitle(string title)
     {
@@ -112,6 +129,14 @@ internal partial class FlourishTitlebar : UserControl
     public void SetMaximized(bool isMaximized)
     {
         MaximizeButtonIcon.Text = isMaximized ? "\uE923" : "\uE922";
+        if (localizationService is not null)
+        {
+            MaximizeButton.ToolTip = localizationService.Get(
+                isMaximized
+                    ? FlourishLocaleKeys.TitleBarRestore
+                    : FlourishLocaleKeys.TitleBarMaximize
+            );
+        }
     }
 
     public void SetThemeToggleState(FlourishTheme requestedTheme, FlourishTheme effectiveTheme)
@@ -119,10 +144,25 @@ internal partial class FlourishTitlebar : UserControl
         ThemeToggleButtonIcon.Data =
             effectiveTheme == FlourishTheme.Dark ? MoonIconGeometry : SunIconGeometry;
 
-        var effectiveThemeText = effectiveTheme == FlourishTheme.Dark ? "Dark" : "Light";
+        if (localizationService is null)
+        {
+            return;
+        }
+
+        var effectiveThemeText = localizationService.Get(
+            effectiveTheme == FlourishTheme.Dark
+                ? FlourishLocaleKeys.ThemeDark
+                : FlourishLocaleKeys.ThemeLight
+        );
         ThemeToggleButton.ToolTip = requestedTheme == FlourishTheme.System
-            ? $"Theme: System ({effectiveThemeText})"
-            : $"Theme: {effectiveThemeText}";
+            ? localizationService.Format(
+                FlourishLocaleKeys.TitleBarThemeSystem,
+                effectiveThemeText
+            )
+            : localizationService.Format(
+                FlourishLocaleKeys.TitleBarThemeCurrent,
+                effectiveThemeText
+            );
     }
 
     public void SetProfile(ProfileUser profile)

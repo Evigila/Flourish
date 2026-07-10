@@ -49,6 +49,7 @@ internal sealed class FlourishCompositionRoot(
         windowConfigurations;
     private readonly IReadOnlyList<Action<IFlourishStatusBarBuilder>> statusBarConfigurations =
         statusBarConfigurations;
+    private FlourishLocalizationService? localizationService;
 
     public void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
@@ -65,6 +66,14 @@ internal sealed class FlourishCompositionRoot(
 
     private void ApplyFlourishConfigurations()
     {
+        var dataBuilder = new FlourishDataBuilder(dataOptions);
+        foreach (var configureData in dataConfigurations)
+        {
+            configureData(dataBuilder);
+        }
+
+        localizationService = new FlourishLocalizationService(dataOptions);
+
         var shellBuilder = new FlourishShellBuilder(shellOptions);
         foreach (var configureShell in shellConfigurations)
         {
@@ -113,16 +122,10 @@ internal sealed class FlourishCompositionRoot(
             configureWindow(windowBuilder);
         }
 
-        var statusBarBuilder = new FlourishStatusBarBuilder(shellOptions);
+        var statusBarBuilder = new FlourishStatusBarBuilder(shellOptions, localizationService);
         foreach (var configureStatusBar in statusBarConfigurations)
         {
             configureStatusBar(statusBarBuilder);
-        }
-
-        var dataBuilder = new FlourishDataBuilder(dataOptions);
-        foreach (var configureData in dataConfigurations)
-        {
-            configureData(dataBuilder);
         }
     }
 
@@ -503,6 +506,10 @@ internal sealed class FlourishCompositionRoot(
 
     private void RegisterCoreServices(IServiceCollection services)
     {
+        services.AddSingleton(
+            localizationService
+                ?? throw new InvalidOperationException("Flourish localization is not initialized.")
+        );
         services.AddSingleton(shellOptions);
         services.AddSingleton(shellOptions.Profile);
         services.AddSingleton(dataOptions);

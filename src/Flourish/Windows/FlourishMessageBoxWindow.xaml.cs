@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Services;
 using Button = System.Windows.Controls.Button;
 using Key = System.Windows.Input.Key;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -14,6 +15,7 @@ namespace ArkheideSystem.Flourish.Windows;
 internal partial class FlourishMessageBoxWindow : Window
 {
     private readonly object? closeSelection;
+    private readonly FlourishLocalizationService localizationService;
     private object? selection;
 
     public FlourishMessageBoxWindow(
@@ -22,9 +24,11 @@ internal partial class FlourishMessageBoxWindow : Window
         MessageBoxButton buttons,
         MessageBoxImage icon,
         MessageBoxResult defaultResult,
-        MessageBoxOptions options
+        MessageBoxOptions options,
+        FlourishLocalizationService localizationService
     )
     {
+        this.localizationService = localizationService;
         InitializeComponent();
 
         closeSelection = GetCloseResult(buttons);
@@ -38,9 +42,11 @@ internal partial class FlourishMessageBoxWindow : Window
         string caption,
         IReadOnlyList<FlourishMessageOption> choices,
         MessageBoxImage icon,
-        MessageBoxOptions options
+        MessageBoxOptions options,
+        FlourishLocalizationService localizationService
     )
     {
+        this.localizationService = localizationService;
         InitializeComponent();
 
         closeSelection = choices.FirstOrDefault(choice => choice.IsCancel);
@@ -190,7 +196,7 @@ internal partial class FlourishMessageBoxWindow : Window
         };
     }
 
-    private static IReadOnlyList<MessageDialogButton> CreateStandardButtons(
+    private IReadOnlyList<MessageDialogButton> CreateStandardButtons(
         MessageBoxButton buttons,
         MessageBoxResult defaultResult
     )
@@ -249,14 +255,16 @@ internal partial class FlourishMessageBoxWindow : Window
         };
     }
 
-    private static string GetButtonText(MessageBoxResult result)
+    private string GetButtonText(MessageBoxResult result)
     {
         return result switch
         {
-            MessageBoxResult.OK => "OK",
-            MessageBoxResult.Cancel => "Cancel",
-            MessageBoxResult.Yes => "Yes",
-            MessageBoxResult.No => "No",
+            MessageBoxResult.OK => localizationService.Get(FlourishLocaleKeys.MessageBoxOk),
+            MessageBoxResult.Cancel => localizationService.Get(
+                FlourishLocaleKeys.MessageBoxCancel
+            ),
+            MessageBoxResult.Yes => localizationService.Get(FlourishLocaleKeys.MessageBoxYes),
+            MessageBoxResult.No => localizationService.Get(FlourishLocaleKeys.MessageBoxNo),
             _ => result.ToString(),
         };
     }

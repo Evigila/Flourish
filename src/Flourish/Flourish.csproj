@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <Resource Include="Assets\favicon.ico" />
+    <EmbeddedResource Include="Assets\lang_CN.json" />
+    <EmbeddedResource Include="Assets\lang_EN.json" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
 </Project>

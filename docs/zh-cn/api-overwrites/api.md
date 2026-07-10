@@ -271,7 +271,142 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder
-summary: 在构建 Flourish 运行时之前配置服务、Shell 选项、导航项、自定义区域、工具栏项和状态栏项目。
+summary: 在构建 Flourish 运行时之前配置本地化、应用数据、服务、Shell 选项、导航项、自定义区域、工具栏项和状态栏项目。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureData(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder})
+summary: 配置本地化、应用标识和偏好存储。
+syntax:
+  parameters:
+  - id: configureData
+    description: 接收应用数据 builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder
+summary: 配置 Flourish 使用的本地化、应用标识和偏好存储。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder.SetLocale(System.String)
+summary: 选择 Flourish 内置界面文案使用的语言。
+remarks: 即使省略 ConfigureData 和 SetLocale，Flourish 也会使用内置 CN 语言。内置语言标识为 CN 和 EN，标识不区分大小写。
+syntax:
+  parameters:
+  - id: locale
+    description: 语言标识；默认为 CN。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder.AddLocale(System.String)
+summary: 添加可扩展或覆盖内置翻译的自定义语言文件。
+remarks: |
+  文件在 `Build()` 应用配置时读取，必须是使用 UTF-8 编码的非空扁平 JSON 对象，并命名为 `lang_<locale>.json`。键和值必须是非空字符串，键不能重复。语言部分可以包含字母、数字、连字符和下划线。
+
+  同一语言的多个文件按注册顺序合并，后添加文件中的同名键优先。查找顺序为：选中语言的自定义值、选中语言的内置值、自定义 `CN`、内置 `CN`，最后返回键本身。
+
+  文件不存在时抛出 `FileNotFoundException`；文件名无效时抛出 `ArgumentException`；文件不可读或 JSON 无效时抛出 `InvalidDataException`。
+
+  ```json
+  {
+    "TitleBar.Back": "上一页",
+    "Tray.Show": "打开"
+  }
+  ```
+
+  | 键 | EN | CN |
+  | --- | --- | --- |
+  | `TitleBar.Back` | Back | 返回 |
+  | `TitleBar.Forward` | Forward | 前进 |
+  | `TitleBar.ToggleNavigation` | Toggle navigation | 切换导航 |
+  | `TitleBar.Theme` | Theme | 主题 |
+  | `TitleBar.ThemeSystem` | Theme: System ({0}) | 主题：跟随系统（{0}） |
+  | `TitleBar.ThemeCurrent` | Theme: {0} | 主题：{0} |
+  | `TitleBar.Profile` | Profile | 个人资料 |
+  | `TitleBar.Minimize` | Minimize | 最小化 |
+  | `TitleBar.Maximize` | Maximize | 最大化 |
+  | `TitleBar.Restore` | Restore | 还原 |
+  | `TitleBar.Close` | Close | 关闭 |
+  | `Theme.Dark` | Dark | 深色 |
+  | `Theme.Light` | Light | 浅色 |
+  | `Profile.DefaultName` | User | 用户 |
+  | `Profile.SignIn` | Sign in | 登录 |
+  | `Profile.SignOut` | Sign out | 退出登录 |
+  | `Profile.FirstName` | First Name | 名 |
+  | `Profile.LastName` | Last Name | 姓 |
+  | `Profile.Image` | Profile image | 个人资料图片 |
+  | `Profile.ChooseImage` | Choose profile image | 选择个人资料图片 |
+  | `Profile.ChangeImage` | Change profile image | 更换个人资料图片 |
+  | `Profile.UploadImage` | Upload image | 上传图片 |
+  | `Profile.ImageSelected` | Image selected | 已选择图片 |
+  | `Profile.Password` | Password | 密码 |
+  | `Profile.Cancel` | Cancel | 取消 |
+  | `Profile.RememberLogin` | Remember login | 记住登录状态 |
+  | `Profile.SignedIn` | Signed in | 已登录 |
+  | `Profile.SignedOut` | Signed out | 未登录 |
+  | `Profile.ImageFiles` | Image files | 图片文件 |
+  | `Profile.AllFiles` | All files | 所有文件 |
+  | `Profile.ImageLoadFailed` | The selected image could not be loaded. | 无法加载所选图片。 |
+  | `Profile.SignInFailed` | Sign in failed. | 登录失败。 |
+  | `Profile.EnterName` | Enter a first or last name. | 请输入名字或姓氏。 |
+  | `Profile.EnterPassword` | Enter a password. | 请输入密码。 |
+  | `Profile.RememberLoginRequiresSignIn` | Remember login can only be changed while a profile is signed in. | 仅可在个人资料已登录时更改记住登录状态。 |
+  | `MessageBox.OK` | OK | 确定 |
+  | `MessageBox.Cancel` | Cancel | 取消 |
+  | `MessageBox.Yes` | Yes | 是 |
+  | `MessageBox.No` | No | 否 |
+  | `Window.CloseTitle` | Close | 关闭 |
+  | `Window.ClosePrompt` | Are you sure you want to close this window? | 确定要关闭此窗口吗？ |
+  | `Tray.Show` | Show | 显示 |
+  | `Tray.Exit` | Exit | 退出 |
+  | `Status.Connected` | Connected | 已连接 |
+  | `Status.Disconnected` | Disconnected | 未连接 |
+  | `Status.Power` | Power | 电源 |
+syntax:
+  parameters:
+  - id: path
+    description: 自定义语言文件路径。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder.SetAppPreferenceDataPath(System.String)
+summary: 设置 Flourish 应用偏好数据的存储目录。
+syntax:
+  parameters:
+  - id: path
+    description: 偏好数据目录路径。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder.SetAppName(System.String)
+summary: 设置偏好数据路径使用的应用名称。
+remarks: 省略时，Flourish 使用标题栏 SetTitle 配置的标题。
+syntax:
+  parameters:
+  - id: appName
+    description: 应用名称。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishDataBuilder.SetAppCompany(System.String)
+summary: 设置偏好数据路径使用的公司名称。
+syntax:
+  parameters:
+  - id: companyName
+    description: 公司名称。
+  return:
+    description: 用于链式配置的当前 builder。
 ---
 
 ---
@@ -848,11 +983,11 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetLogo(System.String)
-summary: 设置并显示 Logo；透明外边缘会被移除，同一图像也用于 Shell 窗口及 Windows 任务栏图标。
+summary: 设置并显示 Logo；省略路径时使用 Flourish 内置应用图标。透明外边缘会被移除，同一图像也用于 Shell 窗口及 Windows 任务栏图标。
 syntax:
   parameters:
   - id: logoPath
-    description: Logo 图像的相对 URI、绝对 URI 或 WPF pack URI。
+    description: Logo 图像的相对 URI、绝对 URI 或 WPF pack URI；省略时使用内置图标。
   return:
     description: 用于链式配置的当前 builder。
 ---

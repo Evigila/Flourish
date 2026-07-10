@@ -33,6 +33,7 @@ internal partial class FlourishShellWindow : Window
     private readonly FlourishMotionService motionService;
     private readonly WindowFrameFixService windowFrameFixService;
     private readonly IProfileService profileService;
+    private readonly FlourishLocalizationService localizationService;
     private readonly IServiceProvider serviceProvider;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
@@ -75,6 +76,7 @@ internal partial class FlourishShellWindow : Window
         FlourishMotionService motionService,
         WindowFrameFixService windowFrameFixService,
         IProfileService profileService,
+        FlourishLocalizationService localizationService,
         IServiceProvider serviceProvider,
         FlourishShellOptions options
     )
@@ -95,9 +97,11 @@ internal partial class FlourishShellWindow : Window
         this.motionService = motionService;
         this.windowFrameFixService = windowFrameFixService;
         this.profileService = profileService;
+        this.localizationService = localizationService;
         this.serviceProvider = serviceProvider;
         this.options = options;
 
+        Titlebar.ApplyLocale(localizationService);
         fontService.Apply(this);
         CacheResources();
         ApplyOptions();
@@ -1336,14 +1340,27 @@ internal partial class FlourishShellWindow : Window
     {
         FlourishMessageOption[] closeOptions =
         [
-            new("no", "No") { IsDefault = true, IsCancel = true },
-            new("yes", "Yes") { IsPrimary = true },
+            new(
+                "no",
+                localizationService.Get(FlourishLocaleKeys.MessageBoxNo)
+            )
+            {
+                IsDefault = true,
+                IsCancel = true,
+            },
+            new(
+                "yes",
+                localizationService.Get(FlourishLocaleKeys.MessageBoxYes)
+            )
+            {
+                IsPrimary = true,
+            },
         ];
 
         return messageService.Show(
             this,
-            "Are you sure you want to close this window?",
-            "Close",
+            localizationService.Get(FlourishLocaleKeys.WindowClosePrompt),
+            localizationService.Get(FlourishLocaleKeys.WindowCloseTitle),
             closeOptions,
             MessageBoxImage.Question
         )?.Id == "yes";

@@ -23,7 +23,7 @@ if (messages.Show(
 }
 ```
 
-`MessageBoxButton.YesNo` 会显示为 `No | Yes`，因此肯定操作位于右侧。`MessageBoxButton.YesNoCancel` 也遵循同一规则，显示为 `Cancel | No | Yes`。如果没有显式提供默认返回值，这两类标准按钮仍会以 `Yes` 作为默认返回值。
+`MessageBoxButton.YesNo` 先显示否定操作，再显示肯定操作，因此肯定操作位于右侧。`MessageBoxButton.YesNoCancel` 依次显示取消、否定和肯定操作。标准按钮标签使用[应用数据](configure-data.md)中选择的语言。如果没有显式提供默认返回值，这两类标准按钮仍会以 `Yes` 作为默认返回值。
 
 ## 自定义选项
 
@@ -50,6 +50,8 @@ if (selected?.Id == "replace")
 ```
 
 选项会按照传入顺序从左到右显示，最后一个选项位于弹窗底部右侧。`IsDefault` 控制 Enter 键，`IsCancel` 控制 Esc 和标题栏关闭按钮，`IsPrimary` 使用强调按钮样式。每个自定义选项都必须提供唯一且非空的 `Id`，并提供非空的 `Text`。
+
+消息文本、标题和 `FlourishMessageOption.Text` 均由应用提供，不会自动翻译。
 
 ## 所属窗口
 

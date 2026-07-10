@@ -89,6 +89,19 @@ public sealed class FlourishTitlebarBuilderTests
     }
 
     [Fact]
+    public void SetLogo_WithoutPath_EnablesBuiltInLogo()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishTitlebarBuilder(options);
+
+        var result = sut.SetLogo();
+
+        Assert.Same(sut, result);
+        Assert.True(options.IsTitlebarLogoEnabled);
+        Assert.Null(options.LogoPath);
+    }
+
+    [Fact]
     public void SetSearch_WithServiceCallback_PreservesCallback()
     {
         var options = new FlourishShellOptions();
@@ -129,14 +142,23 @@ public sealed class FlourishTitlebarBuilderTests
             Assert.Throws<ArgumentException>(() => sut.SetSubTitle(value!)).ParamName
         );
         Assert.Equal(
-            "logoPath",
-            Assert.Throws<ArgumentException>(() => sut.SetLogo(value!)).ParamName
-        );
-        Assert.Equal(
             "placeholder",
             Assert
                 .Throws<ArgumentException>(() => sut.SetSearch(value!, _ => { }))
                 .ParamName
+        );
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void SetLogo_WithBlankPath_ThrowsArgumentException(string value)
+    {
+        var sut = new FlourishTitlebarBuilder(new FlourishShellOptions());
+
+        Assert.Equal(
+            "logoPath",
+            Assert.Throws<ArgumentException>(() => sut.SetLogo(value)).ParamName
         );
     }
 
