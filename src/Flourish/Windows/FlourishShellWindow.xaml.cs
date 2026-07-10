@@ -131,10 +131,14 @@ internal partial class FlourishShellWindow : Window
     {
         ApplyWindowOptions();
         Title = options.Title;
+        var effectiveLogoSource = Titlebar.SetLogo(
+            options.LogoPath,
+            options.LogoFallbackText
+        );
+        Icon = options.IsTitlebarLogoEnabled ? effectiveLogoSource : null;
         Titlebar.SetTitle(options.Title);
         Titlebar.SetSubtitle(options.Subtitle);
         Titlebar.SetSearchPlaceholder(options.SearchPlaceholder);
-        Titlebar.SetLogo(options.LogoSource, options.LogoFallbackText);
         Titlebar.ConfigureVisibility(
             options.IsTitlebarSearchEnabled,
             IsBreadcrumbFeatureEnabled(),
@@ -1289,12 +1293,17 @@ internal partial class FlourishShellWindow : Window
 
     private void Titlebar_CloseRequested(object? sender, EventArgs e)
     {
-        if (!ConfirmCloseRequest())
+        if (trayIconService.IsEnabled)
         {
+            if (!trayIconService.MinimizeToTray())
+            {
+                Close();
+            }
+
             return;
         }
 
-        if (trayIconService.MinimizeToTray())
+        if (!ConfirmCloseRequest())
         {
             return;
         }

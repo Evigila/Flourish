@@ -1,4 +1,3 @@
-using System.Windows.Media.Imaging;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
 
@@ -7,8 +6,6 @@ namespace ArkheideSystem.Flourish.Composition;
 internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
     : IFlourishTitlebarBuilder
 {
-    private const string ApplicationPackUriPrefix = "pack://application:,,,/";
-
     public IFlourishTitlebarBuilder SetSearch(
         string placeholder,
         Action<string> handler
@@ -48,14 +45,7 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
 
     public IFlourishTitlebarBuilder SetLogo(string logoPath)
     {
-        var path = ValidateNotBlank(logoPath, nameof(logoPath));
-        var logoUri = path.StartsWith(
-            ApplicationPackUriPrefix,
-            StringComparison.OrdinalIgnoreCase
-        )
-            ? new Uri($"/{path[ApplicationPackUriPrefix.Length..]}", UriKind.Relative)
-            : new Uri(path, UriKind.RelativeOrAbsolute);
-        options.LogoSource = new BitmapImage(logoUri);
+        options.LogoPath = ValidateNotBlank(logoPath, nameof(logoPath));
         options.IsTitlebarLogoEnabled = true;
         return this;
     }

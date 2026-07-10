@@ -74,20 +74,21 @@ internal partial class FlourishTitlebar : UserControl
         UpdateSearchPlaceholderVisibility();
     }
 
-    public void SetLogo(ImageSource? logoSource, string fallbackText)
+    public ImageSource? SetLogo(string? logoPath, string fallbackText)
     {
-        var effectiveLogoSource = logoSource ?? DefaultLogoSource;
+        var effectiveLogoSource = LoadLogoSource(logoPath) ?? DefaultLogoSource;
         if (effectiveLogoSource is not null)
         {
             LogoImage.Source = effectiveLogoSource;
             LogoImage.Visibility = Visibility.Visible;
             LogoFallback.Visibility = Visibility.Collapsed;
-            return;
+            return effectiveLogoSource;
         }
 
         LogoFallback.Text = string.IsNullOrWhiteSpace(fallbackText) ? "F" : fallbackText[..1];
         LogoImage.Visibility = Visibility.Collapsed;
         LogoFallback.Visibility = Visibility.Visible;
+        return null;
     }
 
     public void SetBreadcrumbNavigationState(
@@ -302,11 +303,21 @@ internal partial class FlourishTitlebar : UserControl
 
     private static ImageSource? CreateDefaultLogoSource()
     {
+        return LoadLogoSource(DefaultIconUri);
+    }
+
+    private static ImageSource? LoadLogoSource(string? logoPath)
+    {
+        if (string.IsNullOrWhiteSpace(logoPath))
+        {
+            return null;
+        }
+
         try
         {
             var image = new BitmapImage();
             image.BeginInit();
-            image.UriSource = new Uri(DefaultIconUri, UriKind.Absolute);
+            image.UriSource = new Uri(logoPath, UriKind.RelativeOrAbsolute);
             image.CacheOption = BitmapCacheOption.OnLoad;
             image.EndInit();
             return TrimTransparentPixels(image);
@@ -323,6 +334,10 @@ internal partial class FlourishTitlebar : UserControl
         {
             return null;
         }
+        catch (UriFormatException)
+        {
+            return null;
+        }
     }
 
     private static Geometry CreateFrozenGeometry(string pathData)
@@ -332,7 +347,7 @@ internal partial class FlourishTitlebar : UserControl
         return geometry;
     }
 
-    private static ImageSource TrimTransparentPixels(BitmapSource source)
+    internal static ImageSource TrimTransparentPixels(BitmapSource source)
     {
         var bitmap = new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
         var width = bitmap.PixelWidth;

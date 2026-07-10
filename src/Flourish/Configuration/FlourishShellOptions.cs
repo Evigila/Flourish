@@ -1,4 +1,3 @@
-using System.Windows.Media;
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
 
@@ -18,7 +17,7 @@ internal sealed class FlourishShellOptions
 
     public Action<IServiceProvider, string>? TitlebarSearchTextChanged { get; set; }
 
-    public ImageSource? LogoSource { get; set; }
+    public string? LogoPath { get; set; }
 
     public string LogoFallbackText { get; set; } = "F";
 

@@ -244,6 +244,7 @@ internal static class Program
                     .SetWindowSize()
                     .SetWindowMinSize()
                     .SetWindowPosition()
+                    .SetTrayExit(false)
             )
             .Build();
 

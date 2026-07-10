@@ -41,7 +41,7 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.Equal(BreadcrumbShowOption.Always, options.BreadcrumbShowOption);
         Assert.True(options.IsTitlebarNavigationToggleEnabled);
         Assert.True(options.IsTitlebarLogoEnabled);
-        Assert.NotNull(options.LogoSource);
+        Assert.Equal("Assets/logo.png", options.LogoPath);
         Assert.True(options.IsTitlebarTitleEnabled);
         Assert.Equal("Foobar", options.Title);
         Assert.True(options.IsTitlebarSubtitleEnabled);
@@ -83,8 +83,8 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.Same(sut, result);
         Assert.True(options.IsTitlebarLogoEnabled);
         Assert.Equal(
-            "/Flourish;component/Assets/favicon.ico",
-            options.LogoSource!.ToString()
+            "pack://application:,,,/Flourish;component/Assets/favicon.ico",
+            options.LogoPath
         );
     }
 
