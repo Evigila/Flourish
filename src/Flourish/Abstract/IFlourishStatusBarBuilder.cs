@@ -29,13 +29,15 @@ public interface IFlourishStatusBarBuilder
     IFlourishStatusBarBuilder AddStatusItem(string displayText, string iconGlyph);
 
     /// <summary>
-    /// Adds the built-in LAN connection status item.
+    /// Captures LAN availability during configuration and adds the built-in status item.
+    /// The displayed status does not update automatically.
     /// </summary>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishStatusBarBuilder ShowLANConnectionStatus();
 
     /// <summary>
-    /// Adds the built-in power status item.
+    /// Adds the built-in static power status item.
+    /// The item does not report live power or battery state.
     /// </summary>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishStatusBarBuilder ShowPowerStatus();

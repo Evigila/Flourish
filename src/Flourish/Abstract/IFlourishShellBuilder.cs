@@ -56,7 +56,7 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseMotion(bool enabled = true);
 
     /// <summary>
-    /// Configures and enables the shell material effect.
+    /// Configures the shell material effect. <see cref="MaterialEffect.None"/> disables the effect.
     /// </summary>
     /// <param name="effect">The material effect applied to the shell window.</param>
     /// <returns>The current builder for chained configuration.</returns>

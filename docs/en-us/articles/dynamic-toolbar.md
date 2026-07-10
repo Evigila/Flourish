@@ -77,4 +77,4 @@ Register one or more `ICommandParser` implementations through [Dependency inject
 services.AddSingleton<ICommandParser, AppCommandParser>();
 ```
 
-[Command parser](command-parser.md) explains command matching and the behavior of multiple parsers. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and footer commands.
+[Command parser](command-parser.md) explains command matching and the behavior of multiple parsers. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and status bar commands.

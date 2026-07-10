@@ -5,7 +5,7 @@ description: Set the Flourish shell window size, position, state, and WPF window
 
 # Window
 
-Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, resize behavior, taskbar visibility, and topmost behavior.
+Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, resize behavior, taskbar visibility, topmost behavior, and close-to-tray behavior.
 
 ## Configure the window
 
@@ -20,7 +20,8 @@ builder.ConfigureWindow(window =>
         .SetWindowState(WindowState.Normal)
         .SetWindowResizeMode(ResizeMode.CanResize)
         .UseTopmost(false)
-        .ShowInTaskbar(true);
+        .ShowInTaskbar(true)
+        .SetTrayExit();
 });
 ```
 
@@ -39,6 +40,16 @@ Use either a `WindowStartupLocation` or manual coordinates to make startup place
 ## Window behavior
 
 `SetWindowResizeMode` controls whether the custom title bar maximize command is available. `ShowInTaskbar` and `UseTopmost` map to normal WPF window behavior.
+
+## Close to the notification area
+
+`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation dialog. The tray menu can restore the window or exit the application.
+
+```csharp
+builder.ConfigureWindow(window => window.SetTrayExit());
+```
+
+When tray exit is disabled, the title bar close button uses the normal close-confirmation flow. Passing `false` is useful when a shared configuration enables tray behavior conditionally.
 
 ## Related features
 

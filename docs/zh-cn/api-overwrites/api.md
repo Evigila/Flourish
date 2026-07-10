@@ -271,7 +271,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder
-summary: 在构建 Flourish 运行时之前配置服务、Shell 选项、导航项、自定义区域、工具栏项和 Footer 状态项。
+summary: 在构建 Flourish 运行时之前配置服务、Shell 选项、导航项、自定义区域、工具栏项和状态栏项目。
 ---
 
 ---
@@ -287,7 +287,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureShell(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder})
-summary: 配置 Flourish Shell 的高层功能开关。
+summary: 配置 Flourish Shell 的高层功能与全局选项。
 syntax:
   parameters:
   - id: configureShell
@@ -341,17 +341,6 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureTips(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishTipsBuilder})
-summary: 配置 Flourish 提示浮层行为。
-syntax:
-  parameters:
-  - id: configureTips
-    description: 接收 Tips builder 的配置回调。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureMotion(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishMotionBuilder})
 summary: 配置 Flourish 动效行为。
 syntax:
@@ -374,47 +363,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureFont(System.String,System.Double)
-summary: 配置 Flourish Shell UI 使用的全局字体。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureStatusBar(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishStatusBarBuilder})
+summary: 配置 Shell 状态栏。
 syntax:
   parameters:
-  - id: fontFamily
-    description: 字体系列名称。
-  - id: fontSize
-    description: 基础字号。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureMaterialEffect(ArkheideSystem.Flourish.Abstract.MaterialEffect)
-summary: 配置材质特效启用时应用到 Shell 窗口的系统材质。
-syntax:
-  parameters:
-  - id: effect
-    description: 要应用的材质效果。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureThemes(ArkheideSystem.Flourish.Abstract.FlourishTheme)
-summary: 配置主题启用时使用的默认主题。
-syntax:
-  parameters:
-  - id: defaultTheme
-    description: 尚未保存用户偏好时使用的默认主题。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureFooter(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishFooterBuilder})
-summary: 配置 Shell Footer 状态区域。
-syntax:
-  parameters:
-  - id: configureFooter
-    description: 接收 Footer builder 的配置回调。
+  - id: configureStatusBar
+    description: 接收状态栏 builder 的配置回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -704,7 +658,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder
-summary: 配置高层 Flourish Shell 功能开关。
+summary: 配置 Flourish Shell 的高层功能与全局选项。
 ---
 
 ---
@@ -741,12 +695,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseTips(System.Boolean)
-summary: 启用或禁用 Flourish 提示浮层。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseTips(System.Int32)
+summary: 设置初始显示延迟并启用 Flourish 工具提示；提示间距使用内置默认值。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否启用提示浮层。
+  - id: delay
+    description: 工具提示的初始显示延迟（毫秒）。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -763,57 +717,59 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseMaterialEffect(System.Boolean)
-summary: 启用或禁用 Shell 材质特效。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseMaterialEffect(ArkheideSystem.Flourish.Abstract.MaterialEffect)
+summary: 设置 Shell 窗口的系统材质效果；`None` 禁用材质，其他值启用对应效果。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否启用材质特效。
+  - id: effect
+    description: 应用于 Shell 窗口的材质效果。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseThemes(System.Boolean)
-summary: 启用或禁用 Flourish 主题支持。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseGlobalFont(System.String,System.Double)
+summary: 设置 Flourish Shell UI 使用的全局字体和基础字号。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否启用主题支持。
+  - id: fontFamily
+    description: 字体系列名称。
+  - id: fontSize
+    description: 基础字号。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseFooter(System.Boolean)
-summary: 启用或禁用 Shell Footer。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseStatusBar(System.Boolean)
+summary: 启用或禁用 Shell 状态栏。
 syntax:
   parameters:
   - id: enabled
-    description: 指示是否启用 Footer。
+    description: 指示是否启用状态栏。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishFooterBuilder
-summary: 配置 Flourish Shell Footer 状态区域。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishStatusBarBuilder
+summary: 配置 Flourish Shell 状态栏。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishFooterBuilder.SetStatusText(System.String)
-summary: 设置主要 Footer 状态文本。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishStatusBarBuilder.SetStatusText(System.String)
+summary: 设置主要状态文本。
 syntax:
   parameters:
   - id: text
-    description: 显示在 Shell Footer 中的状态文本。
+    description: 显示在 Shell 状态栏中的文本。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishFooterBuilder.AddStatusItem(System.String,System.String)
-summary: 添加包含显示文本和图标字形的 Footer 状态项。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishStatusBarBuilder.AddStatusItem(System.String,System.String)
+summary: 添加包含显示文本和图标字形的状态栏项目。
 syntax:
   parameters:
   - id: displayText
@@ -825,16 +781,16 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishFooterBuilder.ShowLANConnectionStatus
-summary: 显示内置 LAN 连接状态项。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishStatusBarBuilder.ShowLANConnectionStatus
+summary: 在配置时检测并显示内置 LAN 连接状态项；该状态不会自动刷新。
 syntax:
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishFooterBuilder.ShowPowerStatus
-summary: 显示内置电源状态项。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishStatusBarBuilder.ShowPowerStatus
+summary: 显示内置静态电源状态项；该状态不表示实时电源或电池信息。
 syntax:
   return:
     description: 用于链式配置的当前 builder。
@@ -842,100 +798,68 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder
-summary: 配置 Flourish Shell 标题栏。
+summary: 配置 Flourish Shell 标题栏；调用成员时会同时显示对应元素，未配置的元素保持隐藏。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowSearch(System.Boolean)
-summary: 显示或隐藏搜索框。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetSearch(System.String,System.Action{System.String})
+summary: 设置占位文本和文本变化回调，并显示搜索框。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否显示搜索框。
+  - id: placeholder
+    description: 搜索框中显示的占位文本。
+  - id: handler
+    description: 搜索文本变化时调用的回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowBreadcrumb(System.Boolean)
-summary: 显示或隐藏面包屑导航。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetSearch(System.String,System.Action{System.IServiceProvider,System.String})
+summary: 设置占位文本和可访问应用服务的文本变化回调，并显示搜索框。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否显示面包屑导航。
+  - id: placeholder
+    description: 搜索框中显示的占位文本。
+  - id: handler
+    description: 搜索文本变化时接收应用服务提供程序和新文本的回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowNavToggle(System.Boolean)
-summary: 显示或隐藏导航面板切换按钮。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetBreadcrumbButton(ArkheideSystem.Flourish.Abstract.BreadcrumbShowOption)
+summary: 设置面包屑显示行为，并启用面包屑按钮。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否显示导航面板切换按钮。
+  - id: option
+    description: 面包屑的显示行为。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowLogo(System.Boolean)
-summary: 显示或隐藏 Logo 区域。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetNavToggle
+summary: 显示导航面板切换按钮。
 syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否显示 Logo。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowTitle(System.Boolean)
-summary: 显示或隐藏标题文本。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetLogo(System.String)
+summary: 设置并显示 Logo；透明外边缘会被移除，同一图像也用于 Shell 窗口及 Windows 任务栏图标。
 syntax:
   parameters:
-  - id: enabled
-    description: 指示是否显示标题。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowSubTitle(System.Boolean)
-summary: 显示或隐藏副标题文本。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否显示副标题。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.ShowProfile(System.Boolean)
-summary: 显示或隐藏用户资料区域。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否显示用户资料区域。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetTrayExit(System.Boolean)
-summary: 设置关闭标题栏时是否使用托盘退出流程。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否启用托盘退出行为。
+  - id: logoPath
+    description: Logo 图像的相对 URI、绝对 URI 或 WPF pack URI。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetTitle(System.String)
-summary: 设置标题文本。
+summary: 设置并显示标题文本。
 syntax:
   parameters:
   - id: title
@@ -945,45 +869,34 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetSubtitle(System.String)
-summary: 设置副标题文本。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetSubTitle(System.String)
+summary: 设置并显示副标题文本。
 syntax:
   parameters:
-  - id: subtitle
+  - id: subTitle
     description: 显示在标题旁边的副标题。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetLogo(System.String)
-summary: 使用 WPF pack URI 设置 Logo 图像。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetProfile(ArkheideSystem.Flourish.Abstract.NameOrder)
+summary: 使用内置默认资料设置名称顺序，并显示 Profile 入口。
 syntax:
   parameters:
-  - id: packUri
-    description: Logo 图像的 pack URI。
+  - id: nameOrder
+    description: Profile 名称和首字母的显示顺序。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetSearchPlaceholder(System.String)
-summary: 设置搜索框占位文本。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetThemeToggle(ArkheideSystem.Flourish.Abstract.FlourishTheme)
+summary: 设置尚无已保存偏好时使用的主题，并显示主题切换按钮。
 syntax:
   parameters:
-  - id: placeholder
-    description: 显示在搜索框中的占位文本。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetBreadcrumbBehavior(ArkheideSystem.Flourish.Abstract.BreadcrumbShowOption)
-summary: 设置面包屑导航何时显示。
-syntax:
-  parameters:
-  - id: behavior
-    description: 面包屑显示行为。
+  - id: mode
+    description: 尚无已保存偏好时使用的主题模式。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -1096,6 +1009,18 @@ syntax:
   parameters:
   - id: enabled
     description: 指示窗口是否显示在任务栏中。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishWindowPropertyBuilder.SetTrayExit(System.Boolean)
+summary: 设置标题栏关闭按钮是否将 Shell 窗口隐藏到 Windows 通知区域。
+remarks: 启用后，关闭按钮不会显示退出确认；可以通过通知区域菜单恢复窗口或退出应用。禁用后，关闭按钮使用常规退出确认流程。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用关闭到通知区域的行为。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -1219,7 +1144,7 @@ summary: 在 Shell 右侧显示导航面板。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureProfile(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder})
-summary: 配置 Profile 的默认用户、承载页面和登录体验。
+summary: 配置 Profile 弹层承载的页面。
 syntax:
   parameters:
   - id: configureProfile
@@ -1229,43 +1154,8 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseProfile(System.Boolean)
-summary: 启用或禁用 Shell 标题栏中的 Profile 入口与弹层。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否启用 Profile 功能。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
 uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder
-summary: 配置 Profile 的默认显示信息以及弹层中承载的页面。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetDefaultProfile(System.String,System.String)
-summary: 设置未登录时显示的默认图片和组合名称；组合名称按当前名称顺序拆分。
-syntax:
-  parameters:
-  - id: imagePath
-    description: 可为空的本地图片路径或 pack URI。
-  - id: userName
-    description: 不可为空的默认显示名称；Flourish 会按已配置的名称顺序拆分该值。
-  return:
-    description: 用于链式配置的当前 Profile builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetNameOrder(ArkheideSystem.Flourish.Abstract.NameOrder)
-summary: 设置 first name 与 last name 的显示顺序，并同步控制名称输入框和占位首字母的顺序。
-syntax:
-  parameters:
-  - id: nameOrder
-    description: 要应用的名称顺序。
-  return:
-    description: 用于链式配置的当前 Profile builder。
+summary: 配置由 SetProfile 启用的 Profile 弹层所承载的页面。
 ---
 
 ---

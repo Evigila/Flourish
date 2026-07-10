@@ -1,18 +1,18 @@
 ---
-title: Footer status
-description: Configure the Flourish shell footer text, custom items, and built-in items.
+title: Status bar
+description: Configure the Flourish shell status bar text, custom items, and built-in items.
 ---
 
-# Footer status
+# Status bar
 
-The footer status area presents low-priority state such as readiness, connection state, power state, or short contextual messages. Enable the footer through [Shell configuration](shell-configuration.md), then use `ConfigureFooter` to define its content.
+The status bar presents low-priority state such as readiness, connection state, power state, or short contextual messages. Enable it through [Shell configuration](shell-configuration.md), then use `ConfigureStatusBar` to define its content.
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseFooter())
-    .ConfigureFooter(footer =>
+    .ConfigureShell(shell => shell.UseStatusBar())
+    .ConfigureStatusBar(statusBar =>
     {
-        footer
+        statusBar
             .SetStatusText("Ready")
             .AddStatusItem("Online", "\uE774")
             .ShowLANConnectionStatus()
@@ -22,10 +22,10 @@ builder
 
 ## Primary status text
 
-`SetStatusText` sets the main text in the footer status area.
+`SetStatusText` sets the main text in the status bar.
 
 ```csharp
-footer.SetStatusText("Ready");
+statusBar.SetStatusText("Ready");
 ```
 
 Use it for stable state, not for long logs or notifications. Keep the text short so it remains readable in smaller windows.
@@ -35,8 +35,8 @@ Use it for stable state, not for long logs or notifications. Keep the text short
 `AddStatusItem` adds a compact item with display text and a glyph.
 
 ```csharp
-footer.AddStatusItem("Online", "\uE774");
-footer.AddStatusItem("Synced", "\uE73E");
+statusBar.AddStatusItem("Online", "\uE774");
+statusBar.AddStatusItem("Synced", "\uE73E");
 ```
 
 Use custom status items for application-specific state such as account state, workspace name, sync state, or current mode.
@@ -48,23 +48,23 @@ Items are displayed in the order in which they are added.
 `ShowLANConnectionStatus` adds an item that reflects LAN availability when configuration is applied. It does not update automatically. `ShowPowerStatus` adds a static power item; it does not read the current battery or power-source state.
 
 ```csharp
-footer.ShowLANConnectionStatus();
-footer.ShowPowerStatus();
+statusBar.ShowLANConnectionStatus();
+statusBar.ShowPowerStatus();
 ```
 
 Use these helpers when their snapshot or label semantics fit the application. Use application-provided status content for live monitoring.
 
 ## Add custom content
 
-`ConfigureFooter` provides status text and status items. Use [Custom shell content](configure-custom-handler.md) for application-provided controls and command buttons.
+`ConfigureStatusBar` provides status text and status items. Use [Custom shell content](configure-custom-handler.md) for application-provided controls and command buttons.
 
 ```csharp
 var flourish = FlourishBuilder
     .CreateDefaultBuilder(args)
-    .ConfigureShell(shell => shell.UseFooter())
-    .ConfigureFooter(footer =>
+    .ConfigureShell(shell => shell.UseStatusBar())
+    .ConfigureStatusBar(statusBar =>
     {
-        footer.SetStatusText("Ready").ShowLANConnectionStatus().ShowPowerStatus();
+        statusBar.SetStatusText("Ready").ShowLANConnectionStatus().ShowPowerStatus();
     })
     .ConfigureCustomHandler(custom =>
     {

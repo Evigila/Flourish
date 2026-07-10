@@ -68,20 +68,18 @@ public partial class App : Application
                 shell
                     .UseTitleBar()
                     .UseNavigation()
-                    .UseTips()
-                    .UseMaterialEffect();
+                    .UseTips(delay: 200)
+                    .UseMaterialEffect(MaterialEffect.Mica)
+                    .UseGlobalFont("Microsoft YaHei UI", 14);
             })
             .ConfigureTitleBar(titleBar =>
             {
                 titleBar
-                    .ShowLogo()
-                    .ShowTitle()
-                    .ShowSubTitle()
-                    .ShowSearch()
-                    .ShowBreadcrumb()
-                    .ShowNavToggle()
                     .SetTitle("Foobar")
-                    .SetSubtitle("Flourish Shell");
+                    .SetSubTitle("Flourish Shell")
+                    .SetSearch("搜索", searchText => { })
+                    .SetBreadcrumbButton()
+                    .SetNavToggle();
             })
             .ConfigureNavigation(navigation =>
             {
@@ -95,8 +93,6 @@ public partial class App : Application
 
                 navigation.AddFixedNavigableViewItem<SettingsPage>();
             })
-            .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
-            .ConfigureFont("Microsoft YaHei")
             .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
             .Build();
 

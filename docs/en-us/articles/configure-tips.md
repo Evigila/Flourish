@@ -5,30 +5,23 @@ description: Configure tooltip timing and keep tooltips inside the shell boundar
 
 # Tooltips
 
-Tooltips make compact or icon-only shell controls discoverable. Enable them through [Shell configuration](shell-configuration.md), then use `ConfigureTips` to tune timing and placement.
+Tooltips make compact or icon-only shell controls discoverable. `UseTips` sets the initial delay and enables Flourish tooltips in one step.
 
 ## Configure tooltips
 
 ```csharp
-builder
-    .ConfigureShell(shell => shell.UseTips())
-    .ConfigureTips(tips =>
-    {
-        tips.SetDelay(200).SetSpawnableMargin(5);
-    });
+builder.ConfigureShell(shell => shell.UseTips(delay: 200));
 ```
 
 ## Timing and placement
 
-`SetDelay` controls the initial hover delay in milliseconds. A shorter value shows help sooner; a longer value reduces unintended tooltips as the pointer moves across controls.
+The `delay` argument controls the initial hover delay in milliseconds. A shorter value shows help sooner; a longer value reduces unintended tooltips as the pointer moves across controls. It defaults to `200` and must be non-negative.
 
-`SetSpawnableMargin` keeps tooltips away from shell edges, including controls near the collapsed navigation panel, footer, or toolbar boundary.
+Flourish uses its built-in boundary margin to keep tooltips away from shell edges, including controls near the collapsed navigation panel, status bar, or toolbar boundary.
 
-The delay must be non-negative. The margin must be a finite, non-negative value.
-
-`UseTips(false)` disables tooltips even when timing and margin values have been configured.
+Omit `UseTips` when Flourish tooltips should remain disabled.
 
 ## Related features
 
-- [Shell configuration](shell-configuration.md) owns the `UseTips` switch.
-- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Footer status](status-bar.md) contain built-in controls that can show tooltips.
+- [Shell configuration](shell-configuration.md) configures and enables tooltips.
+- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md) contain built-in controls that can show tooltips.

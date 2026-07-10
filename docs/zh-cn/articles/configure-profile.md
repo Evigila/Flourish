@@ -5,31 +5,27 @@ description: 在 Flourish Shell 中提供用户资料、登录状态和可替换
 
 # 用户资料（Profile）
 
-Profile 是从标题栏打开的紧凑用户资料界面，可用于登录、显示用户名称与头像，以及恢复已记住的登录状态。通过 [Shell 配置](shell-configuration.md)同时启用 `UseTitleBar()` 与 `UseProfile()`，再使用 `ConfigureProfile` 配置默认资料和 Profile 页面。
+Profile 是从标题栏打开的紧凑用户资料界面，可用于登录、显示用户名称与头像，以及恢复已记住的登录状态。调用标题栏的 `SetProfile` 会启用默认 Profile 并显示入口；`ConfigureProfile` 仅在需要替换承载页面时使用。
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar().UseProfile())
-    .ConfigureProfile(profile =>
-        profile
-            .SetNameOrder(NameOrder.FirstLast)
-            .SetDefaultProfile(
-                imagePath: null,
-                userName: "Foo Bar"));
+    .ConfigureShell(shell => shell.UseTitleBar())
+    .ConfigureTitleBar(titleBar =>
+        titleBar.SetProfile(NameOrder.FirstLast));
 ```
 
-无参数调用 `SetDefaultProfile()` 时，默认名称为 `User`。组合名称会按照调用时生效的名称顺序进行拆分，因此同时配置名称顺序和默认资料时，应先调用 `SetNameOrder()`。
+省略参数时，`SetProfile()` 使用 `NameOrder.FirstLast`。内置 Profile 的初始显示名称为 `User`。
 
 ## 名称顺序与占位首字母
 
-内置登录表单将名称拆分为 **First Name** 与 **Last Name** 两个输入框。`SetNameOrder()` 同时控制输入框的视觉顺序、`ProfileUser.DisplayName` 以及无图片时显示的首字母顺序：
+内置登录表单将名称拆分为 **First Name** 与 **Last Name** 两个输入框。`SetProfile` 的 `NameOrder` 参数同时控制输入框的视觉顺序、`ProfileUser.DisplayName` 以及无图片时显示的首字母顺序：
 
 | 值 | 显示名称 | 占位首字母 |
 | --- | --- | --- |
 | `NameOrder.FirstLast` | `Foo Bar` | `FB` |
 | `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
-First Name 与 Last Name 至少应填写一项。`ProfileUser.FirstName`、`LastName`、`NameOrder` 和 `DisplayName` 提供结构化的用户名称结果。需要明确名称组成时，应分别传入 first name 和 last name。
+First Name 与 Last Name 至少应填写一项。`ProfileUser.FirstName`、`LastName`、`NameOrder` 和 `DisplayName` 提供结构化的用户名称结果。
 
 ## Profile 界面
 
@@ -80,18 +76,19 @@ services.AddSingleton<IProfileService, FoobarProfileService>();
 
 ## 承载自定义页面
 
-Shell 负责管理 Profile 覆盖层。`SetProfilePage<TPage>()` 可以替换其中的内容，自定义页面的构造函数依赖会通过依赖注入解析。
+`ConfigureProfile` 的 `SetProfilePage<TPage>()` 可以替换 Profile 覆盖层中的内容。自定义页面的构造函数依赖会通过依赖注入解析；标题栏中仍需调用 `SetProfile` 才会显示入口。
 
 ```csharp
 builder
     .ConfigureServices((_, services) =>
         services.AddTransient<FoobarProfilePage>())
+    .ConfigureShell(shell => shell.UseTitleBar())
+    .ConfigureTitleBar(titleBar => titleBar.SetProfile())
     .ConfigureProfile(profile =>
         profile.SetProfilePage<FoobarProfilePage>());
 ```
 
 ## 相关功能
 
-- [Shell 配置](shell-configuration.md)提供 `UseProfile` 总开关。
-- [标题栏](configure-title-bar.md)控制标题栏中的 Profile 入口。
+- [标题栏](configure-title-bar.md)通过 `SetProfile` 启用 Profile 并设置名称顺序。
 - [依赖注入](configure-services.md)用于注册自定义 Profile 服务和页面。

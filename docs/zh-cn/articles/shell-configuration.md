@@ -1,62 +1,70 @@
 ---
 title: Shell 配置
-description: 选择 Flourish Shell 提供的功能区域，并了解各项功能的启用关系。
+description: 选择 Flourish Shell 的功能区域，并直接配置常用外观与交互选项。
 ---
 
 # Shell 配置
 
-`ConfigureShell` 决定 Shell 中启用哪些高层功能。每个 `Use...` 方法都接收一个 `enabled` 参数；省略该参数时表示启用功能。
+`ConfigureShell` 负责启用 Shell 的高层功能。导航、动态工具栏和状态栏等复杂区域由对应文章中的 builder 配置内容；提示、材质和全局字体等单一选项则在 `Use...` 调用中直接完成配置。
+
+```csharp
+builder.ConfigureShell(shell =>
+{
+    shell
+        .UseTitleBar()
+        .UseNavigation()
+        .UseDynamicToolbar()
+        .UseTips(delay: 200)
+        .UseMotion()
+        .UseMaterialEffect(MaterialEffect.Mica)
+        .UseGlobalFont("Microsoft YaHei UI", 14)
+        .UseStatusBar();
+});
+```
+
+## 功能入口与详细配置
+
+| Shell 方法 | 功能文章 | 行为 |
+| --- | --- | --- |
+| `UseTitleBar` | [标题栏](configure-title-bar.md) | 启用标题栏；`ConfigureTitleBar` 配置并显示其中的元素。 |
+| `UseNavigation` | [导航](navigation.md) | 启用导航区域；`ConfigureNavigation` 配置方向、分组、固定项和导航树。 |
+| `UseDynamicToolbar` | [动态工具栏](dynamic-toolbar.md) | 启用工具栏区域；`ConfigureDynamicToolbar` 配置随页面变化的命令。 |
+| `UseTips` | [提示浮层](configure-tips.md) | 设置显示延迟并启用提示浮层。 |
+| `UseMotion` | [动效](configure-motion.md) | 启用动效；`ConfigureMotion` 配置页面、导航栏和悬停动画。 |
+| `UseMaterialEffect` | [材质特效](configure-material-effect.md) | 选择并启用窗口材质。 |
+| `UseGlobalFont` | [排版](configure-font.md) | 设置 Shell 字体系列和基础字号。 |
+| `UseStatusBar` | [状态栏](status-bar.md) | 启用状态栏；`ConfigureStatusBar` 配置状态文本和状态项。 |
+
+[窗口](configure-window.md)不需要 Shell 功能开关，可直接通过 `ConfigureWindow` 设置。
+
+## 标题栏元素
+
+标题栏采用“配置即显示”的方式。调用 `SetSearch`、`SetBreadcrumbButton`、`SetNavToggle`、`SetLogo`、`SetTitle`、`SetSubTitle`、`SetProfile` 或 `SetThemeToggle` 时，对应元素会自动显示；未配置的元素保持隐藏。
 
 ```csharp
 builder
-    .ConfigureData(data =>
-        data.SetAppCompany("示例公司").SetAppName("Foobar"))
-    .ConfigureShell(shell =>
+    .ConfigureShell(shell => shell.UseTitleBar().UseNavigation())
+    .ConfigureTitleBar(titleBar =>
     {
-        shell
-            .UseTitleBar()
-            .UseProfile()
-            .UseNavigation()
-            .UseDynamicToolbar()
-            .UseTips()
-            .UseMotion()
-            .UseMaterialEffect()
-            .UseThemes()
-            .UseFooter();
+        titleBar
+            .SetTitle("Foobar")
+            .SetNavToggle()
+            .SetProfile()
+            .SetThemeToggle(FlourishTheme.System);
     });
 ```
 
-## 功能开关与详细配置
-
-Shell 开关决定功能是否可用，其他配置方法决定功能的内容和行为。例如，`ConfigureNavigation` 可以定义分组和导航项，但只有启用 `UseNavigation()` 后，导航栏才会显示。
-
-| Shell 开关 | 功能文章 | 详细配置 |
-| --- | --- | --- |
-| `UseTitleBar` | [标题栏](configure-title-bar.md) | `ConfigureTitleBar` 配置标题、搜索、面包屑和标题栏入口。 |
-| `UseProfile` | [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` 配置默认资料、名称顺序和自定义页面。 |
-| `UseNavigation` | [导航](navigation.md) | `ConfigureNavigation` 配置方向、分组、固定项和导航树。 |
-| `UseDynamicToolbar` | [动态工具栏](dynamic-toolbar.md) | `ConfigureDynamicToolbar` 配置随页面变化的命令。 |
-| `UseTips` | [提示浮层](configure-tips.md) | `ConfigureTips` 配置显示延迟和窗口边距。 |
-| `UseMotion` | [动效](configure-motion.md) | `ConfigureMotion` 配置页面、导航栏和悬停动画。 |
-| `UseMaterialEffect` | [材质特效](configure-material-effect.md) | `ConfigureMaterialEffect` 选择窗口材质。 |
-| `UseThemes` | [主题](configure-themes.md) | `ConfigureThemes` 选择未保存偏好时使用的主题。 |
-| `UseFooter` | [状态栏（Footer）](status-bar.md) | `ConfigureFooter` 配置状态文本和状态项。 |
-
-[窗口](configure-window.md)和[排版](configure-font.md)不需要单独的 Shell 开关，因为每个 Shell 都具有窗口和基础排版设置。
+`SetProfile` 会同时启用默认 Profile，`SetThemeToggle` 会同时启用主题功能，因此不需要额外的 Shell 开关。
 
 ## 前置关系
 
-部分功能依赖另一个 Shell 区域：
+- `SetNavToggle()` 需要同时启用 `UseNavigation()`，否则导航切换按钮不会显示。
+- 自定义内容不会自动启用所属区域。向标题栏、动态工具栏或状态栏添加内容前，需要先启用相应区域；自定义 Profile 内容还需要调用 `SetProfile()`。
+- `SetThemeToggle()` 的偏好存储需要[应用数据](configure-data.md)中说明的应用标识或显式目录。
 
-- Profile 入口位于标题栏中，因此需要同时启用 `UseTitleBar()` 和 `UseProfile()`。标题栏配置中的 `ShowProfile(false)` 仍可隐藏该入口。
-- 标题栏主题按钮需要启用 `UseTitleBar()` 和 `UseThemes()`，并通过 `ShowThemeToggle()` 显示。
-- 标题栏导航按钮需要启用 `UseTitleBar()` 和 `UseNavigation()`，并通过 `ShowNavToggle()` 显示。
-- 自定义内容不会自动启用所属区域。向标题栏、动态工具栏或状态栏添加内容前，需要先启用相应功能。
-- 主题偏好存储需要[应用数据](configure-data.md)中说明的应用标识或显式目录。
+## 禁用与省略
 
-## 禁用功能
-
-向 `Use...` 方法传入 `false` 会禁用对应功能，即使已经提供了详细配置。
+`UseTitleBar`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接收可选的 `enabled` 参数。传入 `false` 会禁用对应区域，即使已经提供详细配置。
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -64,8 +72,9 @@ builder.ConfigureShell(shell =>
     shell
         .UseTitleBar()
         .UseNavigation(false)
-        .UseMotion(false);
+        .UseMotion(false)
+        .UseMaterialEffect(MaterialEffect.None);
 });
 ```
 
-这类配置适用于单页 Shell、自定义导航或不需要动画的界面。功能处于禁用状态时，对应的详细配置不会显示或运行。
+`UseMaterialEffect(MaterialEffect.None)` 会禁用系统材质。提示浮层和全局字体没有独立禁用开关：不调用对应方法时，Shell 使用默认行为。
