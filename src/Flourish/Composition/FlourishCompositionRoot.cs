@@ -19,10 +19,9 @@ internal sealed class FlourishCompositionRoot(
     IReadOnlyList<Action<IFlourishNavigationBuilder>> navigationConfigurations,
     IReadOnlyList<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations,
     IReadOnlyList<Action<IFlourishDynamicToolbarBuilder>> toolbarConfigurations,
-    IReadOnlyList<Action<IFlourishTipsBuilder>> tipsConfigurations,
     IReadOnlyList<Action<IFlourishMotionBuilder>> motionConfigurations,
     IReadOnlyList<Action<IFlourishWindowPropertyBuilder>> windowConfigurations,
-    IReadOnlyList<Action<IFlourishFooterBuilder>> footerConfigurations
+    IReadOnlyList<Action<IFlourishStatusBarBuilder>> statusBarConfigurations
 )
 {
     private readonly FlourishShellOptions shellOptions = shellOptions;
@@ -44,14 +43,12 @@ internal sealed class FlourishCompositionRoot(
         customHandlerConfigurations;
     private readonly IReadOnlyList<Action<IFlourishDynamicToolbarBuilder>> toolbarConfigurations =
         toolbarConfigurations;
-    private readonly IReadOnlyList<Action<IFlourishTipsBuilder>> tipsConfigurations =
-        tipsConfigurations;
     private readonly IReadOnlyList<Action<IFlourishMotionBuilder>> motionConfigurations =
         motionConfigurations;
     private readonly IReadOnlyList<Action<IFlourishWindowPropertyBuilder>> windowConfigurations =
         windowConfigurations;
-    private readonly IReadOnlyList<Action<IFlourishFooterBuilder>> footerConfigurations =
-        footerConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishStatusBarBuilder>> statusBarConfigurations =
+        statusBarConfigurations;
 
     public void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
@@ -104,12 +101,6 @@ internal sealed class FlourishCompositionRoot(
             configureToolbar(toolbarBuilder);
         }
 
-        var tipsBuilder = new FlourishTipsBuilder(shellOptions.Tips);
-        foreach (var configureTips in tipsConfigurations)
-        {
-            configureTips(tipsBuilder);
-        }
-
         var motionBuilder = new FlourishMotionBuilder(shellOptions.Motion);
         foreach (var configureMotion in motionConfigurations)
         {
@@ -122,10 +113,10 @@ internal sealed class FlourishCompositionRoot(
             configureWindow(windowBuilder);
         }
 
-        var footerBuilder = new FlourishFooterBuilder(shellOptions);
-        foreach (var configureFooter in footerConfigurations)
+        var statusBarBuilder = new FlourishStatusBarBuilder(shellOptions);
+        foreach (var configureStatusBar in statusBarConfigurations)
         {
-            configureFooter(footerBuilder);
+            configureStatusBar(statusBarBuilder);
         }
 
         var dataBuilder = new FlourishDataBuilder(dataOptions);

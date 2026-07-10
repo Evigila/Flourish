@@ -3,13 +3,13 @@ using ArkheideSystem.Flourish.Composition;
 
 namespace ArkheideSystem.Flourish.Test.Composition;
 
-public sealed class FlourishFooterBuilderTests
+public sealed class FlourishStatusBarBuilderTests
 {
     [Fact]
     public void SetStatusTextAndAddStatusItem_UpdateOptionsAndReturnBuilder()
     {
         var options = new FlourishShellOptions();
-        var sut = new FlourishFooterBuilder(options);
+        var sut = new FlourishStatusBarBuilder(options);
 
         Assert.Same(sut, sut.SetStatusText("Ready"));
         Assert.Same(sut, sut.AddStatusItem("Online", "N"));
@@ -24,7 +24,7 @@ public sealed class FlourishFooterBuilderTests
     public void ShowPowerStatus_AddsBuiltInItemAndReturnsBuilder()
     {
         var options = new FlourishShellOptions();
-        var sut = new FlourishFooterBuilder(options);
+        var sut = new FlourishStatusBarBuilder(options);
 
         var result = sut.ShowPowerStatus();
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Configures services, shell options, navigation items, toolbar items, custom content, and footer status items before building a Flourish runtime.
+/// Configures services, shell options, navigation items, toolbar items, custom content, and status items before building a Flourish runtime.
 /// </summary>
 /// <example>
 /// <code><![CDATA[
@@ -48,7 +48,7 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigureServices(Action<HostBuilderContext, IServiceCollection> configureServices);
 
     /// <summary>
-    /// Configures the Flourish shell feature switches.
+    /// Configures high-level Flourish shell features.
     /// </summary>
     /// <param name="configureShell">A callback that receives the shell builder.</param>
     /// <returns>The current builder for chained configuration.</returns>
@@ -63,14 +63,10 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigureShell(Action<IFlourishShellBuilder> configureShell);
 
     /// <summary>
-    /// Configures the default profile and the page hosted by the profile flyout.
+    /// Configures the page hosted by the profile flyout.
     /// </summary>
     /// <param name="configureProfile">A callback that receives the profile builder.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    /// <remarks>
-    /// Profile UI is displayed only when <see cref="IFlourishShellBuilder.UseProfile" /> and
-    /// <see cref="IFlourishShellBuilder.UseTitleBar" /> are enabled through <see cref="ConfigureShell" />.
-    /// </remarks>
     IFlourishBuilder ConfigureProfile(Action<IFlourishProfileBuilder> configureProfile);
 
     /// <summary>
@@ -82,7 +78,7 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigureTitleBar(titleBar =>
     /// {
-    ///     titleBar.ShowSearch().SetTitle("Foobar");
+    ///     titleBar.SetTitle("Foobar");
     /// });
     /// ]]></code>
     /// </example>
@@ -147,13 +143,6 @@ public interface IFlourishBuilder
     );
 
     /// <summary>
-    /// Configures tooltip behavior displayed when tips are enabled through <see cref="ConfigureShell" />.
-    /// </summary>
-    /// <param name="configureTips">A callback that receives the tips builder.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishBuilder ConfigureTips(Action<IFlourishTipsBuilder> configureTips);
-
-    /// <summary>
     /// Configures motion behavior used when motion is enabled through <see cref="ConfigureShell" />.
     /// </summary>
     /// <param name="configureMotion">A callback that receives the motion builder.</param>
@@ -168,41 +157,21 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigureWindow(Action<IFlourishWindowPropertyBuilder> configureWindow);
 
     /// <summary>
-    /// Configures the global font used by Flourish shell UI.
+    /// Configures the shell status bar.
     /// </summary>
-    /// <param name="fontFamily">The font family name.</param>
-    /// <param name="fontSize">The base font size.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishBuilder ConfigureFont(string fontFamily, double fontSize = 14);
-
-    /// <summary>
-    /// Configures the material effect used when material effects are enabled through <see cref="ConfigureShell" />.
-    /// </summary>
-    /// <param name="effect">The material effect to apply.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishBuilder ConfigureMaterialEffect(MaterialEffect effect = MaterialEffect.Mica);
-
-    /// <summary>
-    /// Configures the default theme used when themes are enabled through <see cref="ConfigureShell" />.
-    /// </summary>
-    /// <param name="defaultTheme">The theme used when no user preference has been saved.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishBuilder ConfigureThemes(FlourishTheme defaultTheme = FlourishTheme.System);
-
-    /// <summary>
-    /// Configures the shell footer status area.
-    /// </summary>
-    /// <param name="configureFooter">A callback that receives the footer builder.</param>
+    /// <param name="configureStatusBar">A callback that receives the status bar builder.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// builder.ConfigureFooter(footer =>
+    /// builder.ConfigureStatusBar(statusBar =>
     /// {
-    ///     footer.SetStatusText("Ready").ShowPowerStatus();
+    ///     statusBar.SetStatusText("Ready").ShowPowerStatus();
     /// });
     /// ]]></code>
     /// </example>
-    IFlourishBuilder ConfigureFooter(Action<IFlourishFooterBuilder> configureFooter);
+    IFlourishBuilder ConfigureStatusBar(
+        Action<IFlourishStatusBarBuilder> configureStatusBar
+    );
 
     /// <summary>
     /// Builds the Flourish runtime.

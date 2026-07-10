@@ -3,21 +3,22 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Composition;
 
-internal sealed class FlourishFooterBuilder(FlourishShellOptions options) : IFlourishFooterBuilder
+internal sealed class FlourishStatusBarBuilder(FlourishShellOptions options)
+    : IFlourishStatusBarBuilder
 {
-    public IFlourishFooterBuilder SetStatusText(string text)
+    public IFlourishStatusBarBuilder SetStatusText(string text)
     {
         options.StatusText = text;
         return this;
     }
 
-    public IFlourishFooterBuilder AddStatusItem(string displayText, string iconGlyph)
+    public IFlourishStatusBarBuilder AddStatusItem(string displayText, string iconGlyph)
     {
         options.StatusItems.Add(new FlourishStatusItem(displayText, iconGlyph));
         return this;
     }
 
-    public IFlourishFooterBuilder ShowLANConnectionStatus()
+    public IFlourishStatusBarBuilder ShowLANConnectionStatus()
     {
         var text = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()
             ? "已连接"
@@ -26,7 +27,7 @@ internal sealed class FlourishFooterBuilder(FlourishShellOptions options) : IFlo
         return AddStatusItem(text, "\uE701");
     }
 
-    public IFlourishFooterBuilder ShowPowerStatus()
+    public IFlourishStatusBarBuilder ShowPowerStatus()
     {
         return AddStatusItem("电源", "\uE850");
     }

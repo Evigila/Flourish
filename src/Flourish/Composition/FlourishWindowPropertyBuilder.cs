@@ -103,6 +103,12 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
+    public IFlourishWindowPropertyBuilder SetTrayExit(bool enabled = true)
+    {
+        options.IsTrayExitEnabled = enabled;
+        return this;
+    }
+
     private static void ValidatePositiveFinite(double value, string parameterName)
     {
         ValidateFinite(value, parameterName);

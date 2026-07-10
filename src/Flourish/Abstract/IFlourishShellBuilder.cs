@@ -1,7 +1,7 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Configures high-level Flourish shell feature switches.
+/// Configures high-level Flourish shell features.
 /// </summary>
 /// <example>
 /// <code><![CDATA[
@@ -10,11 +10,11 @@ namespace ArkheideSystem.Flourish.Abstract;
 ///     shell.UseTitleBar()
 ///          .UseNavigation()
 ///          .UseDynamicToolbar()
-///          .UseProfile()
-///          .UseTips()
+///          .UseTips(200)
 ///          .UseMotion()
-///          .UseMaterialEffect()
-///          .UseThemes();
+///          .UseMaterialEffect(MaterialEffect.Mica)
+///          .UseGlobalFont("Segoe UI", 14)
+///          .UseStatusBar();
 /// });
 /// ]]></code>
 /// </example>
@@ -42,18 +42,11 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseDynamicToolbar(bool enabled = true);
 
     /// <summary>
-    /// Enables or disables the profile trigger and flyout hosted by the shell title bar.
+    /// Configures and enables Flourish tooltips.
     /// </summary>
-    /// <param name="enabled">A value indicating whether the profile should be enabled.</param>
+    /// <param name="delay">The initial tooltip delay in milliseconds.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseProfile(bool enabled = true);
-
-    /// <summary>
-    /// Enables or disables Flourish tooltips.
-    /// </summary>
-    /// <param name="enabled">A value indicating whether tooltips should be enabled.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseTips(bool enabled = true);
+    IFlourishShellBuilder UseTips(int delay = 200);
 
     /// <summary>
     /// Enables or disables Flourish motion.
@@ -63,23 +56,26 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseMotion(bool enabled = true);
 
     /// <summary>
-    /// Enables or disables shell material effects.
+    /// Configures and enables the shell material effect.
     /// </summary>
-    /// <param name="enabled">A value indicating whether material effects should be enabled.</param>
+    /// <param name="effect">The material effect applied to the shell window.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseMaterialEffect(bool enabled = true);
+    IFlourishShellBuilder UseMaterialEffect(
+        MaterialEffect effect = MaterialEffect.Mica
+    );
 
     /// <summary>
-    /// Enables or disables Flourish theme support.
+    /// Configures the global font used by Flourish shell UI.
     /// </summary>
-    /// <param name="enabled">A value indicating whether themes should be enabled.</param>
+    /// <param name="fontFamily">The font family name.</param>
+    /// <param name="fontSize">The base font size.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseThemes(bool enabled = true);
+    IFlourishShellBuilder UseGlobalFont(string fontFamily, double fontSize = 14);
 
     /// <summary>
-    /// Enables or disables the shell footer.
+    /// Enables or disables the shell status bar.
     /// </summary>
-    /// <param name="enabled">A value indicating whether the footer should be enabled.</param>
+    /// <param name="enabled">A value indicating whether the status bar should be enabled.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseFooter(bool enabled = true);
+    IFlourishShellBuilder UseStatusBar(bool enabled = true);
 }

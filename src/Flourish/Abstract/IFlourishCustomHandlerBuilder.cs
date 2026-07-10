@@ -65,6 +65,9 @@ public interface IFlourishCustomHandlerBuilder
     /// </summary>
     /// <param name="contentFactory">A factory that creates the profile content when the shell is created.</param>
     /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// Call <see cref="IFlourishTitlebarBuilder.SetProfile(NameOrder)" /> to display the profile trigger.
+    /// </remarks>
     IFlourishCustomHandlerBuilder SetProfileContent(
         Func<IServiceProvider, FrameworkElement> contentFactory
     );
@@ -74,6 +77,9 @@ public interface IFlourishCustomHandlerBuilder
     /// </summary>
     /// <param name="contentFactory">A factory that creates the profile content when the shell is created.</param>
     /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// Call <see cref="IFlourishTitlebarBuilder.SetProfile(NameOrder)" /> to display the profile trigger.
+    /// </remarks>
     IFlourishCustomHandlerBuilder SetProfileContent(Func<FrameworkElement> contentFactory);
 
     /// <summary>
@@ -81,6 +87,9 @@ public interface IFlourishCustomHandlerBuilder
     /// </summary>
     /// <param name="content">The profile content displayed in the title bar.</param>
     /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// Call <see cref="IFlourishTitlebarBuilder.SetProfile(NameOrder)" /> to display the profile trigger.
+    /// </remarks>
     IFlourishCustomHandlerBuilder SetProfileContent(FrameworkElement content);
 
     /// <summary>

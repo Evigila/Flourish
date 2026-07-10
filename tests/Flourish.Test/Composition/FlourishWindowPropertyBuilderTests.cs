@@ -20,6 +20,7 @@ public sealed class FlourishWindowPropertyBuilderTests
         Assert.Same(sut, sut.SetWindowResizeMode(ResizeMode.NoResize));
         Assert.Same(sut, sut.UseTopmost());
         Assert.Same(sut, sut.ShowInTaskbar(false));
+        Assert.Same(sut, sut.SetTrayExit());
 
         Assert.Equal(1440, options.WindowWidth);
         Assert.Equal(900, options.WindowHeight);
@@ -34,6 +35,19 @@ public sealed class FlourishWindowPropertyBuilderTests
         Assert.Equal(ResizeMode.NoResize, options.WindowResizeMode);
         Assert.True(options.WindowTopmost);
         Assert.False(options.WindowShowInTaskbar);
+        Assert.True(options.IsTrayExitEnabled);
+    }
+
+    [Fact]
+    public void SetTrayExit_WithFalse_DisablesTrayExit()
+    {
+        var options = new FlourishShellOptions { IsTrayExitEnabled = true };
+        var sut = new FlourishWindowPropertyBuilder(options);
+
+        var result = sut.SetTrayExit(false);
+
+        Assert.Same(sut, result);
+        Assert.False(options.IsTrayExitEnabled);
     }
 
     [Fact]

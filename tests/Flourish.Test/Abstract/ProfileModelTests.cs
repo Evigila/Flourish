@@ -1,6 +1,7 @@
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Composition;
 using ArkheideSystem.Flourish.Configuration;
+using System.Windows.Controls;
 
 namespace ArkheideSystem.Flourish.Test.Abstract;
 
@@ -141,30 +142,29 @@ public sealed class ProfileSignInRequestTests
 public sealed class FlourishProfileBuilderTests
 {
     [Fact]
-    public void SetNameOrder_WithDefinedValue_UpdatesOptionsAndControlsDisplayNameParsing()
+    public void SetProfilePage_WithPageType_UpdatesOptionsAndReturnsBuilder()
     {
         var options = new FlourishProfileOptions();
         var sut = new FlourishProfileBuilder(options);
 
-        Assert.Same(sut, sut.SetNameOrder(NameOrder.LastFirst));
-        Assert.Same(sut, sut.SetDefaultProfile(userName: "Lovelace Ada"));
+        var result = sut.SetProfilePage<TestProfilePage>();
 
-        Assert.Equal(NameOrder.LastFirst, options.NameOrder);
-        Assert.Equal("Ada", options.DefaultFirstName);
-        Assert.Equal("Lovelace", options.DefaultLastName);
+        Assert.Same(sut, result);
+        Assert.Equal(typeof(TestProfilePage), options.PageType);
     }
 
     [Fact]
-    public void SetNameOrder_WithUndefinedValue_ThrowsArgumentOutOfRangeException()
+    public void SetProfilePage_WithNonPageType_ThrowsArgumentException()
     {
         var options = new FlourishProfileOptions();
         var sut = new FlourishProfileBuilder(options);
 
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetNameOrder((NameOrder)int.MaxValue)
+        var exception = Assert.Throws<ArgumentException>(() =>
+            sut.SetProfilePage(typeof(string))
         );
 
-        Assert.Equal("nameOrder", exception.ParamName);
-        Assert.Equal(NameOrder.FirstLast, options.NameOrder);
+        Assert.Equal("pageType", exception.ParamName);
     }
+
+    private sealed class TestProfilePage : Page { }
 }

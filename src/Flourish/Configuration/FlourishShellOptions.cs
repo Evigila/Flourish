@@ -93,7 +93,7 @@ internal sealed class FlourishShellOptions
 
     public bool IsTitlebarSubtitleEnabled { get; set; }
 
-    public bool IsTitlebarProfileEnabled { get; set; } = true;
+    public bool IsTitlebarProfileEnabled { get; set; }
 
     public bool IsTitlebarThemeToggleEnabled { get; set; }
 

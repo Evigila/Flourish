@@ -131,4 +131,11 @@ public interface IFlourishWindowPropertyBuilder
     /// ]]></code>
     /// </example>
     IFlourishWindowPropertyBuilder ShowInTaskbar(bool enabled = true);
+
+    /// <summary>
+    /// Sets whether closing the shell window exits through the tray flow.
+    /// </summary>
+    /// <param name="enabled">A value indicating whether tray exit behavior should be enabled.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishWindowPropertyBuilder SetTrayExit(bool enabled = true);
 }

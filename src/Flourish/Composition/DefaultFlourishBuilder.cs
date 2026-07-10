@@ -19,10 +19,9 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     private readonly List<Action<IFlourishNavigationBuilder>> navigationConfigurations = [];
     private readonly List<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations = [];
     private readonly List<Action<IFlourishDynamicToolbarBuilder>> toolbarConfigurations = [];
-    private readonly List<Action<IFlourishTipsBuilder>> tipsConfigurations = [];
     private readonly List<Action<IFlourishMotionBuilder>> motionConfigurations = [];
     private readonly List<Action<IFlourishWindowPropertyBuilder>> windowConfigurations = [];
-    private readonly List<Action<IFlourishFooterBuilder>> footerConfigurations = [];
+    private readonly List<Action<IFlourishStatusBarBuilder>> statusBarConfigurations = [];
 
     public IFlourishBuilder ConfigureData(Action<IFlourishDataBuilder> configureData)
     {
@@ -92,13 +91,6 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
         return this;
     }
 
-    public IFlourishBuilder ConfigureTips(Action<IFlourishTipsBuilder> configureTips)
-    {
-        ArgumentNullException.ThrowIfNull(configureTips);
-        tipsConfigurations.Add(configureTips);
-        return this;
-    }
-
     public IFlourishBuilder ConfigureMotion(Action<IFlourishMotionBuilder> configureMotion)
     {
         ArgumentNullException.ThrowIfNull(configureMotion);
@@ -115,36 +107,12 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
         return this;
     }
 
-    public IFlourishBuilder ConfigureFont(string fontFamily, double fontSize = 14)
-    {
-        shellOptions.FontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
-        ValidatePositiveFinite(fontSize, nameof(fontSize));
-        shellOptions.FontSize = fontSize;
-        return this;
-    }
-
-    public IFlourishBuilder ConfigureMaterialEffect(
-        MaterialEffect effect = MaterialEffect.Mica
+    public IFlourishBuilder ConfigureStatusBar(
+        Action<IFlourishStatusBarBuilder> configureStatusBar
     )
     {
-        ValidateEnum(effect, nameof(effect));
-        shellOptions.MaterialEffect = effect;
-        return this;
-    }
-
-    public IFlourishBuilder ConfigureThemes(
-        FlourishTheme defaultTheme = FlourishTheme.System
-    )
-    {
-        ValidateEnum(defaultTheme, nameof(defaultTheme));
-        shellOptions.DefaultTheme = defaultTheme;
-        return this;
-    }
-
-    public IFlourishBuilder ConfigureFooter(Action<IFlourishFooterBuilder> configureFooter)
-    {
-        ArgumentNullException.ThrowIfNull(configureFooter);
-        footerConfigurations.Add(configureFooter);
+        ArgumentNullException.ThrowIfNull(configureStatusBar);
+        statusBarConfigurations.Add(configureStatusBar);
         return this;
     }
 
@@ -161,44 +129,13 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
             navigationConfigurations,
             customHandlerConfigurations,
             toolbarConfigurations,
-            tipsConfigurations,
             motionConfigurations,
             windowConfigurations,
-            footerConfigurations
+            statusBarConfigurations
         );
 
         hostBuilder.ConfigureServices(compositionRoot.ConfigureServices);
         return new FlourishRuntime(hostBuilder.Build());
     }
 
-    private static string ValidateNotBlank(string value, string parameterName)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new ArgumentException("Value cannot be empty.", parameterName);
-        }
-
-        return value;
-    }
-
-    private static void ValidatePositiveFinite(double value, string parameterName)
-    {
-        if (double.IsNaN(value) || double.IsInfinity(value) || value <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                parameterName,
-                value,
-                "Value must be greater than 0."
-            );
-        }
-    }
-
-    private static void ValidateEnum<TEnum>(TEnum value, string parameterName)
-        where TEnum : struct, Enum
-    {
-        if (!Enum.IsDefined(value))
-        {
-            throw new ArgumentOutOfRangeException(parameterName, value, "Unknown value.");
-        }
-    }
 }

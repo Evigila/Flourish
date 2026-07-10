@@ -7,36 +7,6 @@ namespace ArkheideSystem.Flourish.Composition;
 internal sealed class FlourishProfileBuilder(FlourishProfileOptions options)
     : IFlourishProfileBuilder
 {
-    public IFlourishProfileBuilder SetDefaultProfile(
-        string? imagePath = null,
-        string userName = "User"
-    )
-    {
-        if (string.IsNullOrWhiteSpace(userName))
-        {
-            throw new ArgumentException("User name cannot be empty.", nameof(userName));
-        }
-
-        var name = ProfileUser.ParseDisplayName(userName, options.NameOrder);
-        options.DefaultFirstName = name.FirstName;
-        options.DefaultLastName = name.LastName;
-        options.DefaultImagePath = string.IsNullOrWhiteSpace(imagePath)
-            ? null
-            : imagePath.Trim();
-        return this;
-    }
-
-    public IFlourishProfileBuilder SetNameOrder(NameOrder nameOrder)
-    {
-        if (!Enum.IsDefined(nameOrder))
-        {
-            throw new ArgumentOutOfRangeException(nameof(nameOrder), nameOrder, null);
-        }
-
-        options.NameOrder = nameOrder;
-        return this;
-    }
-
     public IFlourishProfileBuilder SetProfilePage<TPage>()
         where TPage : Page
     {

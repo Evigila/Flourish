@@ -79,32 +79,26 @@ internal static class Program
                         .UseTitleBar()
                         .UseNavigation()
                         .UseDynamicToolbar()
-                        .UseProfile()
-                        .UseTips()
                         .UseMotion()
+                        .UseStatusBar()
+                        .UseTips()
                         .UseMaterialEffect()
-                        .UseThemes()
-                        .UseFooter();
+                        .UseGlobalFont("Microsoft YaHei");
                 }
             )
             .ConfigureTitleBar(
                 titlebar =>
                 {
                     titlebar
-                        .ShowSearch()
-                        .ShowBreadcrumb()
-                        .ShowNavToggle()
-                        .ShowLogo()
-                        .ShowTitle()
-                        .ShowSubTitle()
-                        .ShowProfile()
-                        .ShowThemeToggle()
-                        .SetTrayExit()
-                        .SetBreadcrumbBehavior()
+                        .SetBreadcrumbButton()
+                        .SetNavToggle()
+                        .SetLogo("pack://application:,,,/Flourish;component/Assets/favicon.ico")
                         .SetTitle("Gallery")
-                        .SetSubtitle("Flourish 示例")
-                        .SetSearchPlaceholder("输入 message 测试搜索回调")
-                        .SetSearchHandler(
+                        .SetSubTitle("Flourish 示例")
+                        .SetProfile(NameOrder.FirstLast)
+                        .SetThemeToggle(FlourishTheme.System)
+                        .SetSearch(
+                            "输入 message 测试搜索回调",
                             (services, text) =>
                             {
                                 if (
@@ -227,14 +221,14 @@ internal static class Program
                     );
                 }
             )
-            .ConfigureFooter(
-                footer =>
+            .ConfigureStatusBar(
+                statusBar =>
                 {
-                    footer.SetStatusText("就绪").ShowLANConnectionStatus().ShowPowerStatus();
+                    statusBar
+                        .SetStatusText("就绪")
+                        .ShowLANConnectionStatus()
+                        .ShowPowerStatus();
                 }
-            )
-            .ConfigureProfile(
-                profile => profile.SetNameOrder(NameOrder.FirstLast).SetDefaultProfile()
             )
             .ConfigureMotion(
                 motion =>
@@ -245,11 +239,12 @@ internal static class Program
                         .EnablePageTransition();
                 }
             )
-            .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))
-            .ConfigureMaterialEffect()
-            .ConfigureThemes()
-            .ConfigureFont("Microsoft YaHei")
-            .ConfigureWindow(window => window.SetWindowSize().SetWindowMinSize().SetWindowPosition())
+            .ConfigureWindow(window =>
+                window
+                    .SetWindowSize()
+                    .SetWindowMinSize()
+                    .SetWindowPosition()
+            )
             .Build();
 
         try

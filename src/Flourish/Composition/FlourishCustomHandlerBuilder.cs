@@ -43,7 +43,6 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
     )
     {
         ArgumentNullException.ThrowIfNull(contentFactory);
-        options.IsTitlebarProfileEnabled = true;
         options.RegionContents.RemoveAll(existing =>
             existing.Region == FlourishRegion.TitlebarProfile
         );

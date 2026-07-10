@@ -23,15 +23,20 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
-    public IFlourishShellBuilder UseProfile(bool enabled = true)
+    public IFlourishShellBuilder UseTips(int delay = 200)
     {
-        options.IsProfileEnabled = enabled;
-        return this;
-    }
+        if (delay < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(delay),
+                delay,
+                "Tooltip delay cannot be negative."
+            );
+        }
 
-    public IFlourishShellBuilder UseTips(bool enabled = true)
-    {
-        options.IsTipsEnabled = enabled;
+        options.Tips.InitialShowDelayMilliseconds = delay;
+        options.Tips.SpawnableMargin = 5;
+        options.IsTipsEnabled = true;
         return this;
     }
 
@@ -41,21 +46,58 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
-    public IFlourishShellBuilder UseMaterialEffect(bool enabled = true)
+    public IFlourishShellBuilder UseMaterialEffect(
+        MaterialEffect effect = MaterialEffect.Mica
+    )
     {
-        options.IsMaterialEffectEnabled = enabled;
+        ValidateEnum(effect, nameof(effect));
+        options.MaterialEffect = effect;
+        options.IsMaterialEffectEnabled = effect != MaterialEffect.None;
         return this;
     }
 
-    public IFlourishShellBuilder UseThemes(bool enabled = true)
+    public IFlourishShellBuilder UseGlobalFont(string fontFamily, double fontSize = 14)
     {
-        options.IsThemeEnabled = enabled;
+        options.FontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
+        ValidatePositiveFinite(fontSize, nameof(fontSize));
+        options.FontSize = fontSize;
         return this;
     }
 
-    public IFlourishShellBuilder UseFooter(bool enabled = true)
+    public IFlourishShellBuilder UseStatusBar(bool enabled = true)
     {
         options.IsStatusBarEnabled = enabled;
         return this;
+    }
+
+    private static string ValidateNotBlank(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Value cannot be empty.", parameterName);
+        }
+
+        return value;
+    }
+
+    private static void ValidatePositiveFinite(double value, string parameterName)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value) || value <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "Value must be greater than 0."
+            );
+        }
+    }
+
+    private static void ValidateEnum<TEnum>(TEnum value, string parameterName)
+        where TEnum : struct, Enum
+    {
+        if (!Enum.IsDefined(value))
+        {
+            throw new ArgumentOutOfRangeException(parameterName, value, "Unknown value.");
+        }
     }
 }

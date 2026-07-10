@@ -1,4 +1,3 @@
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
@@ -8,122 +7,92 @@ namespace ArkheideSystem.Flourish.Composition;
 internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
     : IFlourishTitlebarBuilder
 {
-    public IFlourishTitlebarBuilder ShowSearch(bool enabled = true)
+    private const string ApplicationPackUriPrefix = "pack://application:,,,/";
+
+    public IFlourishTitlebarBuilder SetSearch(
+        string placeholder,
+        Action<string> handler
+    )
     {
-        options.IsTitlebarSearchEnabled = enabled;
+        ArgumentNullException.ThrowIfNull(handler);
+        return SetSearch(placeholder, (_, text) => handler(text));
+    }
+
+    public IFlourishTitlebarBuilder SetSearch(
+        string placeholder,
+        Action<IServiceProvider, string> handler
+    )
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+        options.SearchPlaceholder = ValidateNotBlank(placeholder, nameof(placeholder));
+        options.TitlebarSearchTextChanged = handler;
+        options.IsTitlebarSearchEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder ShowBreadcrumb(bool enabled = true)
+    public IFlourishTitlebarBuilder SetBreadcrumbButton(
+        BreadcrumbShowOption option = BreadcrumbShowOption.Auto
+    )
     {
-        options.IsBreadcrumbEnabled = enabled;
+        ValidateEnum(option, nameof(option));
+        options.BreadcrumbShowOption = option;
+        options.IsBreadcrumbEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder ShowNavToggle(bool enabled = true)
+    public IFlourishTitlebarBuilder SetNavToggle()
     {
-        options.IsTitlebarNavigationToggleEnabled = enabled;
+        options.IsTitlebarNavigationToggleEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder ShowLogo(bool enabled = true)
+    public IFlourishTitlebarBuilder SetLogo(string logoPath)
     {
-        options.IsTitlebarLogoEnabled = enabled;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder ShowTitle(bool enabled = true)
-    {
-        options.IsTitlebarTitleEnabled = enabled;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder ShowSubTitle(bool enabled = true)
-    {
-        options.IsTitlebarSubtitleEnabled = enabled;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder ShowProfile(bool enabled = true)
-    {
-        options.IsTitlebarProfileEnabled = enabled;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder ShowThemeToggle(bool enabled = true)
-    {
-        options.IsTitlebarThemeToggleEnabled = enabled;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder SetTrayExit(bool enabled = false)
-    {
-        options.IsTrayExitEnabled = enabled;
+        var path = ValidateNotBlank(logoPath, nameof(logoPath));
+        var logoUri = path.StartsWith(
+            ApplicationPackUriPrefix,
+            StringComparison.OrdinalIgnoreCase
+        )
+            ? new Uri($"/{path[ApplicationPackUriPrefix.Length..]}", UriKind.Relative)
+            : new Uri(path, UriKind.RelativeOrAbsolute);
+        options.LogoSource = new BitmapImage(logoUri);
+        options.IsTitlebarLogoEnabled = true;
         return this;
     }
 
     public IFlourishTitlebarBuilder SetTitle(string title)
     {
         options.Title = ValidateNotBlank(title, nameof(title));
+        options.IsTitlebarTitleEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetSubtitle(string subtitle)
+    public IFlourishTitlebarBuilder SetSubTitle(string subTitle)
     {
-        options.Subtitle = subtitle;
+        options.Subtitle = ValidateNotBlank(subTitle, nameof(subTitle));
+        options.IsTitlebarSubtitleEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetLogo(string packUri)
-    {
-        options.IsTitlebarLogoEnabled = true;
-        options.LogoSource = new BitmapImage(new Uri(packUri, UriKind.RelativeOrAbsolute));
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder SetLogo(ImageSource logoSource)
-    {
-        ArgumentNullException.ThrowIfNull(logoSource);
-        options.IsTitlebarLogoEnabled = true;
-        options.LogoSource = logoSource;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder SetLogoFallbackText(string fallbackText)
-    {
-        options.IsTitlebarLogoEnabled = true;
-        options.LogoFallbackText = ValidateNotBlank(fallbackText, nameof(fallbackText));
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder SetSearchPlaceholder(string placeholder)
-    {
-        options.SearchPlaceholder = placeholder;
-        return this;
-    }
-
-    public IFlourishTitlebarBuilder SetSearchHandler(Action<string> searchTextChanged)
-    {
-        ArgumentNullException.ThrowIfNull(searchTextChanged);
-        return SetSearchHandler((_, text) => searchTextChanged(text));
-    }
-
-    public IFlourishTitlebarBuilder SetSearchHandler(
-        Action<IServiceProvider, string> searchTextChanged
+    public IFlourishTitlebarBuilder SetProfile(
+        NameOrder nameOrder = NameOrder.FirstLast
     )
     {
-        ArgumentNullException.ThrowIfNull(searchTextChanged);
-        options.IsTitlebarSearchEnabled = true;
-        options.TitlebarSearchTextChanged = searchTextChanged;
+        ValidateEnum(nameOrder, nameof(nameOrder));
+        options.Profile.NameOrder = nameOrder;
+        options.IsProfileEnabled = true;
+        options.IsTitlebarProfileEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetBreadcrumbBehavior(
-        BreadcrumbShowOption behavior = BreadcrumbShowOption.Auto
+    public IFlourishTitlebarBuilder SetThemeToggle(
+        FlourishTheme mode = FlourishTheme.System
     )
     {
-        ValidateEnum(behavior, nameof(behavior));
-        options.BreadcrumbShowOption = behavior;
+        ValidateEnum(mode, nameof(mode));
+        options.DefaultTheme = mode;
+        options.IsThemeEnabled = true;
+        options.IsTitlebarThemeToggleEnabled = true;
         return this;
     }
 
@@ -145,5 +114,4 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
             throw new ArgumentOutOfRangeException(parameterName, value, "Unknown value.");
         }
     }
-
 }
