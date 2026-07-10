@@ -1,26 +1,53 @@
 ---
 title: ConfigureProfile
-description: Configure the Flourish profile flyout, login state, and replaceable authentication services.
+description: Configure the compact Flourish profile surface, name order, authentication, and encrypted persistence.
 ---
 
 # ConfigureProfile
 
-`ConfigureProfile` configures the compact profile page hosted below the title bar. The profile is a fixed-size, non-scrolling container whose content is a WPF `Page`. It appears only when [`ConfigureShell`](configure-shell.md) enables both `UseTitleBar()` and `UseProfile()`.
+`ConfigureProfile` configures the compact profile card opened from the title bar. It appears only when [`ConfigureShell`](configure-shell.md) enables both `UseTitleBar()` and `UseProfile()`.
 
 ```csharp
 builder
     .ConfigureShell(shell => shell.UseTitleBar().UseProfile())
     .ConfigureProfile(profile =>
-        profile.SetDefaultProfile(
-            imagePath: null,
-            userName: "Cristian Ronaldo"));
+        profile
+            .SetNameOrder(NameOrder.FirstLast)
+            .SetDefaultProfile(
+                imagePath: null,
+                userName: "Cristian Ronaldo"));
 ```
 
-`SetDefaultProfile()` uses `User` when called without arguments. If no image can be loaded, Flourish displays initials: `User` becomes `U`, and `Cristian Ronaldo` becomes `CR`. `imagePath` may be a local file path or a pack URI; a missing or invalid image falls back to initials.
+`SetDefaultProfile()` uses `User` when called without arguments. Its `userName` parameter is retained for source compatibility and is split according to the name order that is active when the method is called. When chaining both methods, call `SetNameOrder()` first.
 
-## Default page
+## Name order and initials
 
-The built-in page displays the image and user name. While signed out, **Sign in** opens fields for a user name, image, and password. The image button uses the native Windows file picker.
+The built-in sign-in form has separate **First Name** and **Last Name** fields. `SetNameOrder()` controls their visual order as well as `ProfileUser.DisplayName` and the initials shown when no image is available:
+
+| Value | Display name | Initials |
+| --- | --- | --- |
+| `NameOrder.FirstLast` | `Cristian Ronaldo` | `CR` |
+| `NameOrder.LastFirst` | `Ronaldo Cristian` | `RC` |
+
+At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, and `DisplayName` expose the structured result. `ProfileUser.UserName` remains as a compatibility alias for `DisplayName`.
+
+The original `ProfileUser(string userName, ...)` and `ProfileSignInRequest(string userName, ...)` constructors also remain available and interpret their combined name using `FirstLast`. New code that needs explicit ordering should use the overloads with separate first and last names. Version 1 stored credentials containing only `UserName` are read with the configured name order and upgraded to the structured format after a remembered login is restored.
+
+## Compact in-window surface
+
+The profile card is a Shell-owned in-window overlay rather than a separate WPF `Popup`. Its normal width is 304 pixels, its height follows its content, and it can shrink to the available window width and height. Flourish centers it immediately below the profile button and clamps it inside the Shell with a 5-pixel safe margin on every edge.
+
+The overlay stays open while the native Windows file picker owns focus, so selecting or cancelling an image returns to the same sign-in form. Clicking outside the card or pressing <kbd>Esc</kbd> closes it. The hosted `Frame` disables horizontal and vertical scrolling; custom pages should therefore fit the compact, adaptive surface.
+
+The built-in form uses the same Flourish text box, password box, check box, and action button styles as the rest of the Shell.
+
+## Upload an image
+
+The built-in form presents one full-width **Upload image** button. Clicking it opens the native Windows file picker. After a valid image is chosen, the same button displays an image preview and **Image selected**; clicking it again can replace the selection. If no image is selected, the button continues to show **Upload image**.
+
+Flourish does not copy an uploaded image. The file remains at the absolute path returned by the Windows picker. A successful sign-in stores only that path; moving or deleting the source file later makes the UI fall back to the ordered initials.
+
+## Login state
 
 After authentication, the sign-in form is replaced by **Remember login** and **Sign out**. `IProfileService.LoginState` reports one of these states:
 
@@ -30,17 +57,38 @@ After authentication, the sign-in form is replaced by **Remember login** and **S
 | `SignedIn` | Active for this application session only. |
 | `SignedInRemembered` | Restored from encrypted storage at the next startup. |
 
-An unremembered login remains active for the current session. On the next startup Flourish checks the persisted flag first, removes those credentials, and starts signed out. A remembered login is decrypted and authenticated again before it becomes active.
+An unremembered login remains active for the current session. On the next startup Flourish removes its persisted credentials and starts signed out. A remembered login is decrypted and authenticated again before it becomes active.
 
-## Credential storage
+## Storage and debugging
 
-The default service writes one profile credential value through the .NET User Secrets storage location. Before writing, Flourish serializes the user name, image path, password, and remember flag and encrypts the complete payload with Windows DPAPI using `DataProtectionScope.CurrentUser`.
+After a successful sign-in, the default service serializes the schema version, first name, last name, password, absolute image path, and remember flag. It encrypts the complete payload with Windows DPAPI using `DataProtectionScope.CurrentUser`, then stores the Base64 value under the User Secrets key `Flourish.Profile.Credential`.
 
-User Secrets alone is not an encrypted vault. The DPAPI step is what protects the Flourish payload and binds it to the current Windows user. Signing out removes the stored profile value.
+On Windows the file is located at:
+
+```text
+%APPDATA%\Microsoft\UserSecrets\<secretId>\secrets.json
+```
+
+The secret ID is `ArkheideSystem.Flourish.Profile.` followed by the first 24 uppercase hexadecimal characters of the SHA-256 hash of:
+
+```text
+<companyName>|<appName>|<entryAssemblyName>
+```
+
+With the current Gallery settings, the exact values are:
+
+```text
+secretId: ArkheideSystem.Flourish.Profile.7523BCEB80CE0A555E66754B
+file: %APPDATA%\Microsoft\UserSecrets\ArkheideSystem.Flourish.Profile.7523BCEB80CE0A555E66754B\secrets.json
+key: Flourish.Profile.Credential
+image: the original file selected by the user; Flourish creates no copy
+```
+
+User Secrets alone is not an encrypted vault. DPAPI protects the Flourish payload and binds it to the current Windows user, so `secrets.json` contains encrypted Base64 rather than readable profile fields. Signing out removes the Profile key and deletes the file when it is otherwise empty. An unremembered credential is likewise removed on the next startup.
 
 ## Replace authentication
 
-The built-in `IProfileAuthService` is intentionally simple: it accepts any non-empty user name and password. Register an application implementation in `ConfigureServices` to replace it while keeping the default profile state and encrypted storage behavior.
+The built-in `IProfileAuthService` intentionally accepts any request whose display name and password are non-empty. Register an application implementation in `ConfigureServices` to replace authentication while retaining the default profile state and encrypted storage.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -57,7 +105,7 @@ services.AddSingleton<IProfileService, CompanyProfileService>();
 
 ## Host a custom page
 
-The flyout remains the shell-owned container. A custom page can replace only its content and can resolve constructor dependencies from DI.
+The Shell continues to own the overlay. A custom page replaces only its content and can resolve constructor dependencies from DI.
 
 ```csharp
 builder
@@ -66,8 +114,6 @@ builder
     .ConfigureProfile(profile =>
         profile.SetProfilePage<AccountProfilePage>());
 ```
-
-The profile `Frame` disables both horizontal and vertical scrolling, so custom pages should fit the compact surface.
 
 ## Related APIs
 

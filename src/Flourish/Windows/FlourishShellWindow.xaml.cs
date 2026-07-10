@@ -113,6 +113,7 @@ internal partial class FlourishShellWindow : Window
         Closing += ShellWindow_Closing;
         Closed += ShellWindow_Closed;
         Loaded += ShellWindow_Loaded;
+        PreviewKeyDown += ShellWindow_PreviewKeyDown;
         frameNavigationService.Initialize(RootFrame);
         navigationService.Navigated += RootFrame_Navigated;
 
@@ -195,7 +196,7 @@ internal partial class FlourishShellWindow : Window
         }
 
         Titlebar.SetProfile(profileService.CurrentProfile);
-        Titlebar.SetProfilePage(page);
+        ProfileFrame.Navigate(page);
         profileService.ProfileChanged += ProfileService_ProfileChanged;
     }
 
@@ -319,7 +320,111 @@ internal partial class FlourishShellWindow : Window
         Titlebar.DragRequested += Titlebar_DragRequested;
         Titlebar.ToggleWindowStateRequested += Titlebar_ToggleWindowStateRequested;
         Titlebar.ThemeToggleRequested += Titlebar_ThemeToggleRequested;
+        Titlebar.ProfileToggleRequested += Titlebar_ProfileToggleRequested;
         Titlebar.SearchTextChanged += Titlebar_SearchTextChanged;
+    }
+
+    private void Titlebar_ProfileToggleRequested(object? sender, EventArgs e)
+    {
+        if (ProfileOverlay.Visibility == Visibility.Visible)
+        {
+            CloseProfileOverlay();
+            return;
+        }
+
+        if (
+            !options.IsTitlebarEnabled
+            || !options.IsProfileEnabled
+            || !options.IsTitlebarProfileEnabled
+        )
+        {
+            return;
+        }
+
+        ProfileOverlay.Visibility = Visibility.Visible;
+        Dispatcher.BeginInvoke(new Action(UpdateProfileCardPosition));
+    }
+
+    private void CloseProfileOverlay()
+    {
+        ProfileOverlay.Visibility = Visibility.Collapsed;
+    }
+
+    private void ProfileOverlay_PreviewMouseLeftButtonDown(
+        object sender,
+        MouseButtonEventArgs e
+    )
+    {
+        var position = e.GetPosition(ProfileCard);
+        if (
+            position.X >= 0
+            && position.Y >= 0
+            && position.X <= ProfileCard.ActualWidth
+            && position.Y <= ProfileCard.ActualHeight
+        )
+        {
+            return;
+        }
+
+        CloseProfileOverlay();
+        e.Handled = true;
+    }
+
+    private void ShellWindow_PreviewKeyDown(
+        object sender,
+        System.Windows.Input.KeyEventArgs e
+    )
+    {
+        if (e.Key != Key.Escape || ProfileOverlay.Visibility != Visibility.Visible)
+        {
+            return;
+        }
+
+        CloseProfileOverlay();
+        e.Handled = true;
+    }
+
+    private void ShellRootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateProfileCardPosition();
+    }
+
+    private void ProfileCard_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateProfileCardPosition();
+    }
+
+    private void UpdateProfileCardPosition()
+    {
+        const double safeMargin = 5;
+        if (
+            ProfileOverlay.Visibility != Visibility.Visible
+            || ShellRootGrid.ActualWidth <= safeMargin * 2
+            || ShellRootGrid.ActualHeight <= safeMargin * 2
+        )
+        {
+            return;
+        }
+
+        var anchor = Titlebar.GetProfileButtonBounds(ShellRootGrid);
+        var availableWidth = Math.Max(0, ShellRootGrid.ActualWidth - safeMargin * 2);
+        ProfileCard.MaxWidth = availableWidth;
+
+        var cardWidth = ProfileCard.ActualWidth > 0
+            ? Math.Min(ProfileCard.ActualWidth, availableWidth)
+            : Math.Min(ProfileCard.Width, availableWidth);
+        var desiredLeft = anchor.Left + (anchor.Width - cardWidth) / 2;
+        var maximumLeft = Math.Max(safeMargin, ShellRootGrid.ActualWidth - cardWidth - safeMargin);
+        var left = Math.Clamp(desiredLeft, safeMargin, maximumLeft);
+
+        var top = Math.Max(safeMargin, anchor.Bottom + safeMargin);
+        ProfileCard.MaxHeight = Math.Max(
+            0,
+            ShellRootGrid.ActualHeight - top - safeMargin
+        );
+
+        Canvas.SetLeft(ProfileCard, left);
+        Canvas.SetTop(ProfileCard, top);
     }
 
     private void ApplyNavigationPanelPlacement()

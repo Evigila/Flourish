@@ -5,6 +5,7 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Flourish;component/Themes/ToolTips.xaml" />
     <ResourceDictionary Source="/Flourish;component/Themes/Buttons.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Themes/Inputs.xaml" />
     <ResourceDictionary Source="/Flourish;component/Themes/Navigation.xaml" />
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

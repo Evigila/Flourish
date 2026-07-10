@@ -17,10 +17,23 @@ internal sealed class FlourishProfileBuilder(FlourishProfileOptions options)
             throw new ArgumentException("User name cannot be empty.", nameof(userName));
         }
 
-        options.DefaultUserName = userName.Trim();
+        var name = ProfileUser.ParseDisplayName(userName, options.NameOrder);
+        options.DefaultFirstName = name.FirstName;
+        options.DefaultLastName = name.LastName;
         options.DefaultImagePath = string.IsNullOrWhiteSpace(imagePath)
             ? null
             : imagePath.Trim();
+        return this;
+    }
+
+    public IFlourishProfileBuilder SetNameOrder(NameOrder nameOrder)
+    {
+        if (!Enum.IsDefined(nameOrder))
+        {
+            throw new ArgumentOutOfRangeException(nameof(nameOrder), nameOrder, null);
+        }
+
+        options.NameOrder = nameOrder;
         return this;
     }
 

@@ -54,6 +54,8 @@ internal partial class FlourishTitlebar : UserControl
 
     public event EventHandler? ThemeToggleRequested;
 
+    public event EventHandler? ProfileToggleRequested;
+
     public event EventHandler<string>? SearchTextChanged;
 
     public void SetTitle(string title)
@@ -133,13 +135,17 @@ internal partial class FlourishTitlebar : UserControl
         ProfileAvatarImage.Visibility = ToVisibility(imageSource is not null);
         ProfileInitialsText.Text = profile.Initials;
         ProfileInitialsText.Visibility = ToVisibility(imageSource is null);
-        ProfileButton.ToolTip = profile.UserName;
+        ProfileButton.ToolTip = profile.DisplayName;
     }
 
-    public void SetProfilePage(Page page)
+    public Rect GetProfileButtonBounds(UIElement relativeTo)
     {
-        ArgumentNullException.ThrowIfNull(page);
-        ProfileFrame.Navigate(page);
+        ArgumentNullException.ThrowIfNull(relativeTo);
+        var topLeft = ProfileButton.TranslatePoint(new System.Windows.Point(), relativeTo);
+        return new Rect(
+            topLeft,
+            new System.Windows.Size(ProfileButton.ActualWidth, ProfileButton.ActualHeight)
+        );
     }
 
     public void ConfigureVisibility(
@@ -231,7 +237,7 @@ internal partial class FlourishTitlebar : UserControl
 
     private void ProfileButton_Click(object sender, RoutedEventArgs e)
     {
-        ProfilePopup.IsOpen = !ProfilePopup.IsOpen;
+        ProfileToggleRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -278,10 +284,6 @@ internal partial class FlourishTitlebar : UserControl
         TitlebarProfileRegionHost.Visibility = ToVisibility(
             isProfileEnabled && hasProfileRegionContent
         );
-        if (!isProfileEnabled || hasProfileRegionContent)
-        {
-            ProfilePopup.IsOpen = false;
-        }
     }
 
     private static void SetPanelContent(

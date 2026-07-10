@@ -31,6 +31,7 @@ internal static class ProfileImageLoader
         }
         catch (Exception error)
             when (error is IOException
+                or FormatException
                 or InvalidOperationException
                 or NotSupportedException
                 or UnauthorizedAccessException

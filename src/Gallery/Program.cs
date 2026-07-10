@@ -233,7 +233,9 @@ internal static class Program
                     footer.SetStatusText("就绪").ShowLANConnectionStatus().ShowPowerStatus();
                 }
             )
-            .ConfigureProfile(profile => profile.SetDefaultProfile())
+            .ConfigureProfile(
+                profile => profile.SetNameOrder(NameOrder.FirstLast).SetDefaultProfile()
+            )
             .ConfigureMotion(
                 motion =>
                 {

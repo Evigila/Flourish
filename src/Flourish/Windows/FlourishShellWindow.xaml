@@ -127,7 +127,7 @@
     BorderBrush="{DynamicResource CardBorderBrush}"
     BorderThickness="1"
   >
-    <Grid>
+    <Grid x:Name="ShellRootGrid" SizeChanged="ShellRootGrid_SizeChanged">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -374,6 +374,45 @@
           />
         </Grid>
       </Border>
+
+      <Canvas
+        x:Name="ProfileOverlay"
+        Grid.RowSpan="3"
+        Panel.ZIndex="100"
+        Background="Transparent"
+        ClipToBounds="True"
+        PreviewMouseLeftButtonDown="ProfileOverlay_PreviewMouseLeftButtonDown"
+        Visibility="Collapsed"
+      >
+        <Border
+          x:Name="ProfileCard"
+          Width="304"
+          Background="{DynamicResource CardBackgroundBrush}"
+          BorderBrush="{DynamicResource CardBorderBrush}"
+          BorderThickness="1"
+          ClipToBounds="True"
+          CornerRadius="8"
+          SizeChanged="ProfileCard_SizeChanged"
+        >
+          <Border.Effect>
+            <DropShadowEffect
+              BlurRadius="16"
+              Direction="270"
+              Opacity="0.2"
+              ShadowDepth="3"
+              Color="#000000"
+            />
+          </Border.Effect>
+          <Frame
+            x:Name="ProfileFrame"
+            Focusable="False"
+            JournalOwnership="OwnsJournal"
+            NavigationUIVisibility="Hidden"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+          />
+        </Border>
+      </Canvas>
     </Grid>
   </Border>
 </Window>

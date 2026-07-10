@@ -8,6 +8,7 @@ internal sealed class ProfileService : IProfileService
     private readonly IProfileAuthService authService;
     private readonly ProfileSecretStore secretStore;
     private readonly ProfileUser defaultProfile;
+    private readonly NameOrder nameOrder;
     private readonly SemaphoreSlim gate = new(1, 1);
     private StoredProfileCredentials? currentCredentials;
     private bool isInitialized;
@@ -20,8 +21,11 @@ internal sealed class ProfileService : IProfileService
     {
         this.authService = authService;
         this.secretStore = secretStore;
+        nameOrder = options.NameOrder;
         defaultProfile = new ProfileUser(
-            options.DefaultUserName,
+            options.DefaultFirstName,
+            options.DefaultLastName,
+            nameOrder,
             options.DefaultImagePath
         );
         CurrentProfile = defaultProfile;
@@ -58,15 +62,21 @@ internal sealed class ProfileService : IProfileService
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(stored.UserName))
+            if (!stored.TryGetName(nameOrder, out var storedName))
             {
-                await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+                if (!stored.UsesFutureSchema)
+                {
+                    await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+                }
+
                 return;
             }
 
             var request = new ProfileSignInRequest(
-                stored.UserName,
+                storedName.FirstName,
+                storedName.LastName,
                 stored.Password,
+                nameOrder,
                 stored.ImagePath
             );
             var result = await authService
@@ -78,8 +88,26 @@ internal sealed class ProfileService : IProfileService
                 return;
             }
 
-            currentCredentials = stored;
-            CurrentProfile = new ProfileUser(stored.UserName, stored.ImagePath);
+            currentCredentials = StoredProfileCredentials.Create(
+                storedName.FirstName,
+                storedName.LastName,
+                stored.Password,
+                stored.ImagePath,
+                rememberLogin: true
+            );
+            if (stored.SchemaVersion < StoredProfileCredentials.CurrentSchemaVersion)
+            {
+                await secretStore
+                    .SaveAsync(currentCredentials, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            CurrentProfile = new ProfileUser(
+                storedName.FirstName,
+                storedName.LastName,
+                nameOrder,
+                stored.ImagePath
+            );
             LoginState = ProfileLoginState.SignedInRemembered;
             changed = CreateChangedEventArgs();
         }
@@ -99,13 +127,15 @@ internal sealed class ProfileService : IProfileService
         ArgumentNullException.ThrowIfNull(request);
 
         var normalizedRequest = new ProfileSignInRequest(
-            request.UserName?.Trim() ?? string.Empty,
+            request.FirstName?.Trim() ?? string.Empty,
+            request.LastName?.Trim() ?? string.Empty,
             request.Password ?? string.Empty,
+            nameOrder,
             string.IsNullOrWhiteSpace(request.ImagePath) ? null : request.ImagePath.Trim()
         );
-        if (string.IsNullOrWhiteSpace(normalizedRequest.UserName))
+        if (string.IsNullOrWhiteSpace(normalizedRequest.DisplayName))
         {
-            return ProfileAuthenticationResult.Failure("Enter a user name.");
+            return ProfileAuthenticationResult.Failure("Enter a first or last name.");
         }
 
         var result = await authService
@@ -117,7 +147,9 @@ internal sealed class ProfileService : IProfileService
         }
 
         var authenticatedProfile = new ProfileUser(
-            normalizedRequest.UserName,
+            normalizedRequest.FirstName,
+            normalizedRequest.LastName,
+            nameOrder,
             normalizedRequest.ImagePath
         );
 
@@ -125,11 +157,12 @@ internal sealed class ProfileService : IProfileService
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            var stored = new StoredProfileCredentials(
-                normalizedRequest.UserName,
+            var stored = StoredProfileCredentials.Create(
+                normalizedRequest.FirstName,
+                normalizedRequest.LastName,
                 normalizedRequest.Password,
                 normalizedRequest.ImagePath,
-                RememberLogin: false
+                rememberLogin: false
             );
             await secretStore.SaveAsync(stored, cancellationToken).ConfigureAwait(false);
 

@@ -1246,13 +1246,24 @@ summary: 配置 Profile 的默认显示信息以及弹层中承载的页面。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetDefaultProfile(System.String,System.String)
-summary: 设置未登录时显示的默认图片和用户名。
+summary: 设置未登录时显示的默认图片和组合名称；组合名称按当前名称顺序拆分。
 syntax:
   parameters:
   - id: imagePath
     description: 可为空的本地图片路径或 pack URI。
   - id: userName
-    description: 不可为空的默认用户名。
+    description: 不可为空的默认显示名称；为兼容旧 API 而保留此参数名称。
+  return:
+    description: 用于链式配置的当前 Profile builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetNameOrder(ArkheideSystem.Flourish.Abstract.NameOrder)
+summary: 设置 first name 与 last name 的显示顺序，并同步控制名称输入框和占位首字母的顺序。
+syntax:
+  parameters:
+  - id: nameOrder
+    description: 要应用的名称顺序。
   return:
     description: 用于链式配置的当前 Profile builder。
 ---
@@ -1271,6 +1282,21 @@ syntax:
     description: 继承自 WPF Page 的页面类型。
   return:
     description: 用于链式配置的当前 Profile builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.NameOrder
+summary: 指定 Profile first name 与 last name 的显示顺序。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.NameOrder.FirstLast
+summary: 先显示 first name，再显示 last name；占位首字母采用相同顺序。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.NameOrder.LastFirst
+summary: 先显示 last name，再显示 first name；占位首字母采用相同顺序。
 ---
 
 ---
@@ -1300,7 +1326,7 @@ summary: 表示 Profile 中显示的用户信息。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.ProfileUser.#ctor(System.String,System.String)
-summary: 使用用户名和可选图片路径创建 Profile 用户。
+summary: 使用组合显示名称和可选图片路径创建 Profile 用户；此兼容重载按 FirstLast 拆分名称。
 syntax:
   parameters:
   - id: userName
@@ -1310,8 +1336,43 @@ syntax:
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.#ctor(System.String,System.String,ArkheideSystem.Flourish.Abstract.NameOrder,System.String)
+summary: 使用独立的 first name、last name、名称顺序和可选图片路径创建 Profile 用户。
+syntax:
+  parameters:
+  - id: firstName
+    description: 用户的 first name；可为空，但不能与 lastName 同时为空。
+  - id: lastName
+    description: 用户的 last name；可为空，但不能与 firstName 同时为空。
+  - id: nameOrder
+    description: 显示名称和占位首字母所使用的顺序。
+  - id: imagePath
+    description: 可为空的本地图片路径或 pack URI。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.FirstName
+summary: 获取用户的 first name。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.LastName
+summary: 获取用户的 last name。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.NameOrder
+summary: 获取显示名称和占位首字母所使用的名称顺序。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.DisplayName
+summary: 获取按照 NameOrder 格式化后的 Profile 显示名称。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.ProfileUser.UserName
-summary: 获取用户显示名称。
+summary: 获取 Profile 显示名称；这是 DisplayName 的兼容别名。
 ---
 
 ---
@@ -1321,17 +1382,17 @@ summary: 获取可选的 Profile 图片路径。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.ProfileUser.Initials
-summary: 获取图片不可用时显示的用户名首字母。
+summary: 获取图片不可用时按照 NameOrder 显示的名称首字母。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest
-summary: 包含登录时提交的用户名、密码和可选图片路径。
+summary: 包含登录时提交的结构化名称、名称顺序、密码和可选图片路径。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.#ctor(System.String,System.String,System.String)
-summary: 创建 Profile 登录请求。
+summary: 使用组合显示名称创建 Profile 登录请求；此兼容重载按 FirstLast 拆分名称。
 syntax:
   parameters:
   - id: userName
@@ -1340,6 +1401,58 @@ syntax:
     description: 用户提交的密码。
   - id: imagePath
     description: 可选的 Profile 图片路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.#ctor(System.String,System.String,System.String,ArkheideSystem.Flourish.Abstract.NameOrder,System.String)
+summary: 使用独立的 first name、last name、密码、名称顺序和可选图片路径创建 Profile 登录请求。
+syntax:
+  parameters:
+  - id: firstName
+    description: 用户提交的 first name。
+  - id: lastName
+    description: 用户提交的 last name。
+  - id: password
+    description: 用户提交的密码。
+  - id: nameOrder
+    description: 显示名称所使用的顺序。
+  - id: imagePath
+    description: 可选的 Profile 图片路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.FirstName
+summary: 获取提交的 first name。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.LastName
+summary: 获取提交的 last name。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.NameOrder
+summary: 获取提交的名称顺序。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.DisplayName
+summary: 获取按照 NameOrder 格式化后的提交显示名称。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.UserName
+summary: 获取提交的显示名称；这是 DisplayName 的兼容别名。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.Password
+summary: 获取提交的密码。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.ImagePath
+summary: 获取可选的提交图片路径。
 ---
 
 ---

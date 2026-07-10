@@ -1,10 +1,15 @@
 using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Configuration;
 
 internal sealed class FlourishProfileOptions
 {
-    public string DefaultUserName { get; set; } = "User";
+    public string DefaultFirstName { get; set; } = "User";
+
+    public string DefaultLastName { get; set; } = string.Empty;
+
+    public NameOrder NameOrder { get; set; } = NameOrder.FirstLast;
 
     public string? DefaultImagePath { get; set; }
 

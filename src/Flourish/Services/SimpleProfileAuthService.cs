@@ -12,10 +12,10 @@ internal sealed class SimpleProfileAuthService : IProfileAuthService
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (string.IsNullOrWhiteSpace(request.UserName))
+        if (string.IsNullOrWhiteSpace(request.DisplayName))
         {
             return Task.FromResult(
-                ProfileAuthenticationResult.Failure("Enter a user name.")
+                ProfileAuthenticationResult.Failure("Enter a first or last name.")
             );
         }
 
