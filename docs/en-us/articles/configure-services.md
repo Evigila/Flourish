@@ -26,8 +26,11 @@ Command parsers implement `ICommandParser` and are registered here. Navigation i
 
 View models, repositories, and application services also belong in `ConfigureServices`. Detailed shell configuration should stay in the dedicated APIs such as [`ConfigureNavigation`](configure-navigation.md), [`ConfigureTitleBar`](configure-title-bar.md), and [`ConfigureWindow`](configure-window.md).
 
+Profile authentication is replaceable here as well. Register `IProfileAuthService` to keep the built-in state and encrypted persistence, or register `IProfileService` to replace the complete profile workflow. Flourish uses its defaults only when these interfaces have not already been registered.
+
 ## Related APIs
 
 - [`ConfigureNavigation`](configure-navigation.md) places registered pages in the visible navigation model.
 - [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) attaches page commands to registered page types.
+- [`ConfigureProfile`](configure-profile.md) describes profile pages, authentication, and persistence.
 - [`Command parser`](command-parser.md) describes command-key routing.

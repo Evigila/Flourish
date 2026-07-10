@@ -14,6 +14,7 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     private readonly List<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations =
     [];
     private readonly List<Action<IFlourishShellBuilder>> shellConfigurations = [];
+    private readonly List<Action<IFlourishProfileBuilder>> profileConfigurations = [];
     private readonly List<Action<IFlourishTitlebarBuilder>> titleBarConfigurations = [];
     private readonly List<Action<IFlourishNavigationBuilder>> navigationConfigurations = [];
     private readonly List<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations = [];
@@ -43,6 +44,15 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     {
         ArgumentNullException.ThrowIfNull(configureShell);
         shellConfigurations.Add(configureShell);
+        return this;
+    }
+
+    public IFlourishBuilder ConfigureProfile(
+        Action<IFlourishProfileBuilder> configureProfile
+    )
+    {
+        ArgumentNullException.ThrowIfNull(configureProfile);
+        profileConfigurations.Add(configureProfile);
         return this;
     }
 
@@ -146,6 +156,7 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
             dataConfigurations,
             serviceConfigurations,
             shellConfigurations,
+            profileConfigurations,
             titleBarConfigurations,
             navigationConfigurations,
             customHandlerConfigurations,

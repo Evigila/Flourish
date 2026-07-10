@@ -26,8 +26,11 @@ builder.ConfigureServices((context, services) =>
 
 ViewModel、仓储和应用服务也属于 `ConfigureServices`。Shell 细节配置应放在 [`ConfigureNavigation`](configure-navigation.md)、[`ConfigureTitleBar`](configure-title-bar.md)、[`ConfigureWindow`](configure-window.md) 等专用 API 中。
 
+Profile 认证同样可以在这里替换。注册 `IProfileAuthService` 可保留内置状态与加密持久化；注册 `IProfileService` 则可接管完整 Profile 流程。只有这些接口尚未注册时，Flourish 才会使用默认实现。
+
 ## 相关 API
 
 - [`ConfigureNavigation`](configure-navigation.md) 将已注册页面放入可见导航模型。
 - [`ConfigureDynamicToolbar`](configure-dynamic-toolbar.md) 将页面命令绑定到已注册页面类型。
+- [`ConfigureProfile`](configure-profile.md) 说明 Profile 页面、认证和持久化。
 - [`命令解析器`](command-parser.md) 说明 command key 路由。

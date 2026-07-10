@@ -10,6 +10,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 ///     shell.UseTitleBar()
 ///          .UseNavigation()
 ///          .UseDynamicToolbar()
+///          .UseProfile()
 ///          .UseTips()
 ///          .UseMotion()
 ///          .UseMaterialEffect()
@@ -39,6 +40,13 @@ public interface IFlourishShellBuilder
     /// <param name="enabled">A value indicating whether the dynamic toolbar should be enabled.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishShellBuilder UseDynamicToolbar(bool enabled = true);
+
+    /// <summary>
+    /// Enables or disables the profile trigger and flyout hosted by the shell title bar.
+    /// </summary>
+    /// <param name="enabled">A value indicating whether the profile should be enabled.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishShellBuilder UseProfile(bool enabled = true);
 
     /// <summary>
     /// Enables or disables Flourish tooltips.

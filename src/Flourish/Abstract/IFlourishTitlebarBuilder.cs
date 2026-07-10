@@ -92,6 +92,10 @@ public interface IFlourishTitlebarBuilder
     /// </summary>
     /// <param name="enabled">A value indicating whether the profile area should be shown.</param>
     /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// The profile also requires <see cref="IFlourishShellBuilder.UseProfile" /> and
+    /// <see cref="IFlourishShellBuilder.UseTitleBar" /> to be enabled.
+    /// </remarks>
     /// <example>
     /// <code><![CDATA[
     /// titlebar.ShowProfile();

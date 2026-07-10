@@ -63,6 +63,17 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigureShell(Action<IFlourishShellBuilder> configureShell);
 
     /// <summary>
+    /// Configures the default profile and the page hosted by the profile flyout.
+    /// </summary>
+    /// <param name="configureProfile">A callback that receives the profile builder.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// Profile UI is displayed only when <see cref="IFlourishShellBuilder.UseProfile" /> and
+    /// <see cref="IFlourishShellBuilder.UseTitleBar" /> are enabled through <see cref="ConfigureShell" />.
+    /// </remarks>
+    IFlourishBuilder ConfigureProfile(Action<IFlourishProfileBuilder> configureProfile);
+
+    /// <summary>
     /// Configures the title bar displayed when it is enabled through <see cref="ConfigureShell" />.
     /// </summary>
     /// <param name="configureTitleBar">A callback that receives the title bar builder.</param>

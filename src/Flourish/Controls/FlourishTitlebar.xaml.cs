@@ -122,6 +122,26 @@ internal partial class FlourishTitlebar : UserControl
             : $"Theme: {effectiveThemeText}";
     }
 
+    public void SetProfile(ProfileUser profile)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+
+        var imageSource = ProfileImageLoader.Load(profile.ImagePath);
+        ProfileAvatarImage.Fill = imageSource is null
+            ? null
+            : new ImageBrush(imageSource) { Stretch = Stretch.UniformToFill };
+        ProfileAvatarImage.Visibility = ToVisibility(imageSource is not null);
+        ProfileInitialsText.Text = profile.Initials;
+        ProfileInitialsText.Visibility = ToVisibility(imageSource is null);
+        ProfileButton.ToolTip = profile.UserName;
+    }
+
+    public void SetProfilePage(Page page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        ProfileFrame.Navigate(page);
+    }
+
     public void ConfigureVisibility(
         bool enableSearch,
         bool enableBreadcrumb,
@@ -209,6 +229,11 @@ internal partial class FlourishTitlebar : UserControl
         ThemeToggleRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    private void ProfileButton_Click(object sender, RoutedEventArgs e)
+    {
+        ProfilePopup.IsOpen = !ProfilePopup.IsOpen;
+    }
+
     private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
         UpdateSearchPlaceholderVisibility();
@@ -248,10 +273,15 @@ internal partial class FlourishTitlebar : UserControl
 
     private void UpdateProfileRegionVisibility()
     {
-        var showProfileArea = isProfileEnabled || hasProfileRegionContent;
-        ProfileRegionContainer.Visibility = ToVisibility(showProfileArea);
-        ProfileHost.Visibility = ToVisibility(isProfileEnabled && !hasProfileRegionContent);
-        TitlebarProfileRegionHost.Visibility = ToVisibility(hasProfileRegionContent);
+        ProfileRegionContainer.Visibility = ToVisibility(isProfileEnabled);
+        ProfileButton.Visibility = ToVisibility(isProfileEnabled && !hasProfileRegionContent);
+        TitlebarProfileRegionHost.Visibility = ToVisibility(
+            isProfileEnabled && hasProfileRegionContent
+        );
+        if (!isProfileEnabled || hasProfileRegionContent)
+        {
+            ProfilePopup.IsOpen = false;
+        }
     }
 
     private static void SetPanelContent(

@@ -1216,3 +1216,223 @@ summary: 在 Shell 左侧显示导航面板。
 uid: ArkheideSystem.Flourish.Abstract.NavigationPanelDirection.Right
 summary: 在 Shell 右侧显示导航面板。
 ---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureProfile(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder})
+summary: 配置 Profile 的默认用户、承载页面和登录体验。
+syntax:
+  parameters:
+  - id: configureProfile
+    description: 接收 Profile builder 的配置回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseProfile(System.Boolean)
+summary: 启用或禁用 Shell 标题栏中的 Profile 入口与弹层。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用 Profile 功能。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder
+summary: 配置 Profile 的默认显示信息以及弹层中承载的页面。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetDefaultProfile(System.String,System.String)
+summary: 设置未登录时显示的默认图片和用户名。
+syntax:
+  parameters:
+  - id: imagePath
+    description: 可为空的本地图片路径或 pack URI。
+  - id: userName
+    description: 不可为空的默认用户名。
+  return:
+    description: 用于链式配置的当前 Profile builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetProfilePage``1
+summary: 设置由 DI 解析并承载在 Profile 弹层中的 WPF 页面。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetProfilePage(System.Type)
+summary: 使用运行时类型设置 Profile 弹层承载的 WPF 页面。
+syntax:
+  parameters:
+  - id: pageType
+    description: 继承自 WPF Page 的页面类型。
+  return:
+    description: 用于链式配置的当前 Profile builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileLoginState
+summary: 表示 Profile 当前的登录状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileLoginState.SignedOut
+summary: 当前没有用户登录。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileLoginState.SignedIn
+summary: 用户已登录，但仅在当前应用会话中保持。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileLoginState.SignedInRemembered
+summary: 用户已登录，并将在下次启动时恢复登录。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser
+summary: 表示 Profile 中显示的用户信息。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.#ctor(System.String,System.String)
+summary: 使用用户名和可选图片路径创建 Profile 用户。
+syntax:
+  parameters:
+  - id: userName
+    description: 不可为空的显示名称。
+  - id: imagePath
+    description: 可为空的本地图片路径或 pack URI。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.UserName
+summary: 获取用户显示名称。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.ImagePath
+summary: 获取可选的 Profile 图片路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileUser.Initials
+summary: 获取图片不可用时显示的用户名首字母。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest
+summary: 包含登录时提交的用户名、密码和可选图片路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileSignInRequest.#ctor(System.String,System.String,System.String)
+summary: 创建 Profile 登录请求。
+syntax:
+  parameters:
+  - id: userName
+    description: 用户显示名称。
+  - id: password
+    description: 用户提交的密码。
+  - id: imagePath
+    description: 可选的 Profile 图片路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileAuthenticationResult
+summary: 表示一次 Profile 认证的结果。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileAuthenticationResult.Succeeded
+summary: 获取认证是否成功。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileAuthenticationResult.ErrorMessage
+summary: 获取可选的认证失败消息。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileAuthenticationResult.Success
+summary: 创建成功的认证结果。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileAuthenticationResult.Failure(System.String)
+summary: 创建包含错误消息的失败认证结果。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileChangedEventArgs
+summary: 提供 Profile 用户或登录状态发生变化时的数据。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileChangedEventArgs.Profile
+summary: 获取当前 Profile 用户信息。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ProfileChangedEventArgs.LoginState
+summary: 获取当前登录状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService
+summary: 定义可由应用替换的 Profile 认证逻辑。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService.AuthenticateAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
+summary: 异步认证给定的 Profile 登录请求。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService.SignOutAsync(ArkheideSystem.Flourish.Abstract.ProfileUser,System.Threading.CancellationToken)
+summary: 执行认证提供程序所需的异步登出工作。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService
+summary: 维护当前 Profile 用户、登录状态和持久化流程。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.CurrentProfile
+summary: 获取 Shell 当前显示的 Profile 用户。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.LoginState
+summary: 获取当前 Profile 登录状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.ProfileChanged
+summary: 当 Profile 用户或登录状态变化时发生。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.InitializeAsync(System.Threading.CancellationToken)
+summary: 恢复已记住的登录，或清除上次未记住的登录信息。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.SignInAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
+summary: 异步认证并激活当前 Profile。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.SetRememberLoginAsync(System.Boolean,System.Threading.CancellationToken)
+summary: 设置是否在下次启动时恢复当前登录。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.SignOutAsync(System.Threading.CancellationToken)
+summary: 异步登出并删除持久化的 Profile 凭据。
+---

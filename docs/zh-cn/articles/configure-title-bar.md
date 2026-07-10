@@ -9,7 +9,7 @@ description: 在 ConfigureShell 启用标题栏后配置 Flourish 标题栏。
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar())
+    .ConfigureShell(shell => shell.UseTitleBar().UseProfile())
     .ConfigureTitleBar(titleBar =>
     {
         titleBar
@@ -35,8 +35,11 @@ builder
 
 `ShowThemeToggle` 依赖 [`ConfigureShell`](configure-shell.md) 通过 `UseThemes()` 启用主题。默认主题由 [`ConfigureThemes`](configure-themes.md) 选择。
 
+`ShowProfile` 控制标题栏入口，[`ConfigureProfile`](configure-profile.md) 则配置用户、登录行为和承载页面。该入口还要求 `UseProfile()` 已启用。
+
 ## 相关 API
 
 - [`ConfigureCustomHandler`](configure-custom-handler.md) 可替换用户区域或添加标题栏动作。
+- [`ConfigureProfile`](configure-profile.md) 配置内置 Profile 弹层与服务。
 - [`ConfigureNavigation`](configure-navigation.md) 与 `ShowNavToggle` 配合。
 - [`ConfigureThemes`](configure-themes.md) 与 `ShowThemeToggle` 配合。

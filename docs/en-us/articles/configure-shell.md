@@ -14,6 +14,7 @@ builder.ConfigureShell(shell =>
         .UseTitleBar()
         .UseNavigation()
         .UseDynamicToolbar()
+        .UseProfile()
         .UseTips()
         .UseMotion()
         .UseMaterialEffect()
@@ -26,10 +27,10 @@ builder.ConfigureShell(shell =>
 
 `ConfigureShell` has the highest priority. A detailed configuration callback can still record options, but the matching shell feature does not appear unless it is enabled here.
 
-For example, [`ConfigureFooter`](configure-footer.md) can set status text and footer items, but the footer remains hidden unless `UseFooter()` is enabled. [`ConfigureNavigation`](configure-navigation.md) can define groups and widths, but the panel remains hidden unless `UseNavigation()` is enabled.
+For example, [`ConfigureFooter`](configure-footer.md) can set status text and footer items, but the footer remains hidden unless `UseFooter()` is enabled. [`ConfigureNavigation`](configure-navigation.md) can define groups and widths, but the panel remains hidden unless `UseNavigation()` is enabled. [`ConfigureProfile`](configure-profile.md) can set a default user and page, but the trigger remains hidden unless both `UseTitleBar()` and `UseProfile()` are enabled.
 
 ## Related APIs
 
-- [`ConfigureTitleBar`](configure-title-bar.md), [`ConfigureNavigation`](configure-navigation.md), and [`ConfigureFooter`](configure-footer.md) configure surfaces enabled by shell switches.
+- [`ConfigureTitleBar`](configure-title-bar.md), [`ConfigureProfile`](configure-profile.md), [`ConfigureNavigation`](configure-navigation.md), and [`ConfigureFooter`](configure-footer.md) configure surfaces enabled by shell switches.
 - [`ConfigureMotion`](configure-motion.md), [`ConfigureTips`](configure-tips.md), [`ConfigureMaterialEffect`](configure-material-effect.md), and [`ConfigureThemes`](configure-themes.md) configure behaviors enabled by shell switches.
 - [`Shell configuration`](shell-configuration.md) provides an end-to-end example.

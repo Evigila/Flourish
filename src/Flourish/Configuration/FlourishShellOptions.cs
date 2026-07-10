@@ -63,6 +63,8 @@ internal sealed class FlourishShellOptions
 
     public FlourishTipOptions Tips { get; } = new();
 
+    public FlourishProfileOptions Profile { get; } = new();
+
     public bool IsTipsEnabled { get; set; }
 
     public bool WindowTopmost { get; set; }
@@ -79,6 +81,8 @@ internal sealed class FlourishShellOptions
 
     public bool IsTitlebarEnabled { get; set; }
 
+    public bool IsProfileEnabled { get; set; }
+
     public bool IsTitlebarSearchEnabled { get; set; }
 
     public bool IsTitlebarNavigationToggleEnabled { get; set; }
@@ -89,7 +93,7 @@ internal sealed class FlourishShellOptions
 
     public bool IsTitlebarSubtitleEnabled { get; set; }
 
-    public bool IsTitlebarProfileEnabled { get; set; }
+    public bool IsTitlebarProfileEnabled { get; set; } = true;
 
     public bool IsTitlebarThemeToggleEnabled { get; set; }
 

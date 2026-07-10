@@ -3,6 +3,7 @@ using ArkheideSystem.Flourish.Configuration;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Composition;
@@ -13,6 +14,7 @@ internal sealed class FlourishCompositionRoot(
     IReadOnlyList<Action<IFlourishDataBuilder>> dataConfigurations,
     IReadOnlyList<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations,
     IReadOnlyList<Action<IFlourishShellBuilder>> shellConfigurations,
+    IReadOnlyList<Action<IFlourishProfileBuilder>> profileConfigurations,
     IReadOnlyList<Action<IFlourishTitlebarBuilder>> titleBarConfigurations,
     IReadOnlyList<Action<IFlourishNavigationBuilder>> navigationConfigurations,
     IReadOnlyList<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations,
@@ -32,6 +34,8 @@ internal sealed class FlourishCompositionRoot(
     > serviceConfigurations = serviceConfigurations;
     private readonly IReadOnlyList<Action<IFlourishShellBuilder>> shellConfigurations =
         shellConfigurations;
+    private readonly IReadOnlyList<Action<IFlourishProfileBuilder>> profileConfigurations =
+        profileConfigurations;
     private readonly IReadOnlyList<Action<IFlourishTitlebarBuilder>> titleBarConfigurations =
         titleBarConfigurations;
     private readonly IReadOnlyList<Action<IFlourishNavigationBuilder>> navigationConfigurations =
@@ -68,6 +72,12 @@ internal sealed class FlourishCompositionRoot(
         foreach (var configureShell in shellConfigurations)
         {
             configureShell(shellBuilder);
+        }
+
+        var profileBuilder = new FlourishProfileBuilder(shellOptions.Profile);
+        foreach (var configureProfile in profileConfigurations)
+        {
+            configureProfile(profileBuilder);
         }
 
         var titleBarBuilder = new FlourishTitlebarBuilder(shellOptions);
@@ -503,6 +513,7 @@ internal sealed class FlourishCompositionRoot(
     private void RegisterCoreServices(IServiceCollection services)
     {
         services.AddSingleton(shellOptions);
+        services.AddSingleton(shellOptions.Profile);
         services.AddSingleton(dataOptions);
         services.AddSingleton<FlourishShellWindow>();
         services.AddSingleton<FlourishToolbarService>();
@@ -513,6 +524,9 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<CommandParser>();
         services.AddSingleton<MaterialEffectService>();
         services.AddSingleton<AppPreferenceService>();
+        services.AddSingleton<ProfileSecretStore>();
+        services.TryAddSingleton<IProfileAuthService, SimpleProfileAuthService>();
+        services.TryAddSingleton<IProfileService, ProfileService>();
         services.AddSingleton<ThemeService>();
         services.AddSingleton<FlourishMotionService>();
         services.AddSingleton<WindowFrameFixService>();

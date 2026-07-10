@@ -11,6 +11,8 @@ items:
     href: configure-services.md
   - name: ConfigureShell
     href: configure-shell.md
+  - name: ConfigureProfile
+    href: configure-profile.md
   - name: ConfigureTitleBar
     href: configure-title-bar.md
   - name: ConfigureNavigation

@@ -40,6 +40,7 @@ The public builder separates high-level feature switches from detailed configura
 | [`ConfigureData`](configure-data.md) | Configures application identity and preference storage. |
 | [`ConfigureServices`](configure-services.md) | Registers application services, pages, command parsers, view models, and infrastructure in DI. |
 | [`ConfigureShell`](configure-shell.md) | Enables or disables shell features such as the title bar, navigation, dynamic toolbar, tips, motion, material effects, themes, and footer. |
+| [`ConfigureProfile`](configure-profile.md) | Configures the default profile, hosted page, login state, and replaceable authentication services. |
 | [`ConfigureTitleBar`](configure-title-bar.md) | Configures title bar content and behavior when the title bar is enabled. |
 | [`ConfigureNavigation`](configure-navigation.md) | Configures navigation panel display, registered page positions, command items, groups, and fixed items. |
 | [`ConfigureCustomHandler`](configure-custom-handler.md) | Inserts custom WPF elements into predefined shell regions. |

@@ -40,6 +40,7 @@ return flourish.Run<App>();
 | [`ConfigureData`](configure-data.md) | 配置应用标识和偏好存储。 |
 | [`ConfigureServices`](configure-services.md) | 在 DI 中注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
 | [`ConfigureShell`](configure-shell.md) | 启用或禁用标题栏、导航、动态工具栏、Tips、动效、材质特效、主题和 Footer 等 Shell 功能。 |
+| [`ConfigureProfile`](configure-profile.md) | 配置默认用户、承载页面、登录状态以及可替换的认证服务。 |
 | [`ConfigureTitleBar`](configure-title-bar.md) | 在标题栏启用时配置标题栏内容和行为。 |
 | [`ConfigureNavigation`](configure-navigation.md) | 配置导航栏展示参数、已注册页面位置、命令项、分组和固定项。 |
 | [`ConfigureCustomHandler`](configure-custom-handler.md) | 将自定义 WPF 元素插入预定义 Shell 区域。 |

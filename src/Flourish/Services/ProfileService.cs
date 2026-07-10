@@ -1,0 +1,255 @@
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+
+namespace ArkheideSystem.Flourish.Services;
+
+internal sealed class ProfileService : IProfileService
+{
+    private readonly IProfileAuthService authService;
+    private readonly ProfileSecretStore secretStore;
+    private readonly ProfileUser defaultProfile;
+    private readonly SemaphoreSlim gate = new(1, 1);
+    private StoredProfileCredentials? currentCredentials;
+    private bool isInitialized;
+
+    public ProfileService(
+        IProfileAuthService authService,
+        ProfileSecretStore secretStore,
+        FlourishProfileOptions options
+    )
+    {
+        this.authService = authService;
+        this.secretStore = secretStore;
+        defaultProfile = new ProfileUser(
+            options.DefaultUserName,
+            options.DefaultImagePath
+        );
+        CurrentProfile = defaultProfile;
+    }
+
+    public ProfileUser CurrentProfile { get; private set; }
+
+    public ProfileLoginState LoginState { get; private set; } =
+        ProfileLoginState.SignedOut;
+
+    public event EventHandler<ProfileChangedEventArgs>? ProfileChanged;
+
+    public async Task InitializeAsync(CancellationToken cancellationToken = default)
+    {
+        ProfileChangedEventArgs? changed = null;
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            if (isInitialized)
+            {
+                return;
+            }
+
+            isInitialized = true;
+            var stored = await secretStore.ReadAsync(cancellationToken).ConfigureAwait(false);
+            if (stored is null)
+            {
+                return;
+            }
+
+            if (!stored.RememberLogin)
+            {
+                await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(stored.UserName))
+            {
+                await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
+            var request = new ProfileSignInRequest(
+                stored.UserName,
+                stored.Password,
+                stored.ImagePath
+            );
+            var result = await authService
+                .AuthenticateAsync(request, cancellationToken)
+                .ConfigureAwait(false);
+            if (!result.Succeeded)
+            {
+                await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
+            currentCredentials = stored;
+            CurrentProfile = new ProfileUser(stored.UserName, stored.ImagePath);
+            LoginState = ProfileLoginState.SignedInRemembered;
+            changed = CreateChangedEventArgs();
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        RaiseProfileChanged(changed);
+    }
+
+    public async Task<ProfileAuthenticationResult> SignInAsync(
+        ProfileSignInRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var normalizedRequest = new ProfileSignInRequest(
+            request.UserName?.Trim() ?? string.Empty,
+            request.Password ?? string.Empty,
+            string.IsNullOrWhiteSpace(request.ImagePath) ? null : request.ImagePath.Trim()
+        );
+        if (string.IsNullOrWhiteSpace(normalizedRequest.UserName))
+        {
+            return ProfileAuthenticationResult.Failure("Enter a user name.");
+        }
+
+        var result = await authService
+            .AuthenticateAsync(normalizedRequest, cancellationToken)
+            .ConfigureAwait(false);
+        if (!result.Succeeded)
+        {
+            return result;
+        }
+
+        var authenticatedProfile = new ProfileUser(
+            normalizedRequest.UserName,
+            normalizedRequest.ImagePath
+        );
+
+        ProfileChangedEventArgs changed;
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var stored = new StoredProfileCredentials(
+                normalizedRequest.UserName,
+                normalizedRequest.Password,
+                normalizedRequest.ImagePath,
+                RememberLogin: false
+            );
+            await secretStore.SaveAsync(stored, cancellationToken).ConfigureAwait(false);
+
+            isInitialized = true;
+            currentCredentials = stored;
+            CurrentProfile = authenticatedProfile;
+            LoginState = ProfileLoginState.SignedIn;
+            changed = CreateChangedEventArgs();
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        RaiseProfileChanged(changed);
+        return result;
+    }
+
+    public async Task SetRememberLoginAsync(
+        bool rememberLogin,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ProfileChangedEventArgs? changed = null;
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            if (currentCredentials is null || LoginState == ProfileLoginState.SignedOut)
+            {
+                throw new InvalidOperationException(
+                    "Remember login can only be changed while a profile is signed in."
+                );
+            }
+
+            var nextState = rememberLogin
+                ? ProfileLoginState.SignedInRemembered
+                : ProfileLoginState.SignedIn;
+            if (
+                currentCredentials.RememberLogin == rememberLogin
+                && LoginState == nextState
+            )
+            {
+                return;
+            }
+
+            currentCredentials = currentCredentials with
+            {
+                RememberLogin = rememberLogin,
+            };
+            await secretStore
+                .SaveAsync(currentCredentials, cancellationToken)
+                .ConfigureAwait(false);
+            LoginState = nextState;
+            changed = CreateChangedEventArgs();
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        RaiseProfileChanged(changed);
+    }
+
+    public async Task SignOutAsync(CancellationToken cancellationToken = default)
+    {
+        ProfileUser signedInProfile;
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            signedInProfile = CurrentProfile;
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        Exception? signOutError = null;
+        try
+        {
+            await authService
+                .SignOutAsync(signedInProfile, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            signOutError = error;
+        }
+
+        ProfileChangedEventArgs changed;
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+            currentCredentials = null;
+            CurrentProfile = defaultProfile;
+            LoginState = ProfileLoginState.SignedOut;
+            changed = CreateChangedEventArgs();
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        RaiseProfileChanged(changed);
+        if (signOutError is not null)
+        {
+            throw signOutError;
+        }
+    }
+
+    private ProfileChangedEventArgs CreateChangedEventArgs()
+    {
+        return new ProfileChangedEventArgs(CurrentProfile, LoginState);
+    }
+
+    private void RaiseProfileChanged(ProfileChangedEventArgs? changed)
+    {
+        if (changed is not null)
+        {
+            ProfileChanged?.Invoke(this, changed);
+        }
+    }
+}

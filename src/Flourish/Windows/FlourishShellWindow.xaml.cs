@@ -9,6 +9,7 @@ using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Button = System.Windows.Controls.Button;
 using FontFamily = System.Windows.Media.FontFamily;
 using ListBox = System.Windows.Controls.ListBox;
@@ -31,6 +32,7 @@ internal partial class FlourishShellWindow : Window
     private readonly ThemeService themeService;
     private readonly FlourishMotionService motionService;
     private readonly WindowFrameFixService windowFrameFixService;
+    private readonly IProfileService profileService;
     private readonly IServiceProvider serviceProvider;
     private readonly FlourishShellOptions options;
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
@@ -72,6 +74,7 @@ internal partial class FlourishShellWindow : Window
         ThemeService themeService,
         FlourishMotionService motionService,
         WindowFrameFixService windowFrameFixService,
+        IProfileService profileService,
         IServiceProvider serviceProvider,
         FlourishShellOptions options
     )
@@ -91,6 +94,7 @@ internal partial class FlourishShellWindow : Window
         this.themeService = themeService;
         this.motionService = motionService;
         this.windowFrameFixService = windowFrameFixService;
+        this.profileService = profileService;
         this.serviceProvider = serviceProvider;
         this.options = options;
 
@@ -98,6 +102,7 @@ internal partial class FlourishShellWindow : Window
         CacheResources();
         ApplyOptions();
         BuildRegionContents();
+        ConfigureProfileSurface();
         BuildToolbarItems();
         BuildNavigationItems();
         BuildStatusItems();
@@ -107,6 +112,7 @@ internal partial class FlourishShellWindow : Window
         StateChanged += MainWindow_StateChanged;
         Closing += ShellWindow_Closing;
         Closed += ShellWindow_Closed;
+        Loaded += ShellWindow_Loaded;
         frameNavigationService.Initialize(RootFrame);
         navigationService.Navigated += RootFrame_Navigated;
 
@@ -136,7 +142,7 @@ internal partial class FlourishShellWindow : Window
             options.IsTitlebarTitleEnabled,
             options.IsTitlebarSubtitleEnabled,
             options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
-            options.IsTitlebarProfileEnabled
+            options.IsProfileEnabled && options.IsTitlebarProfileEnabled
         );
         StatusBarBorder.Visibility = options.IsStatusBarEnabled
             ? Visibility.Visible
@@ -164,6 +170,65 @@ internal partial class FlourishShellWindow : Window
         themeService.Attach(this);
         ApplyThemeState();
         trayIconService.Initialize(this, options.Title);
+    }
+
+    private void ConfigureProfileSurface()
+    {
+        if (
+            !options.IsTitlebarEnabled
+            || !options.IsProfileEnabled
+            || !options.IsTitlebarProfileEnabled
+        )
+        {
+            return;
+        }
+
+        var profilePage = ActivatorUtilities.GetServiceOrCreateInstance(
+            serviceProvider,
+            options.Profile.PageType
+        );
+        if (profilePage is not Page page)
+        {
+            throw new InvalidOperationException(
+                $"Configured profile page {options.Profile.PageType.FullName} is not a WPF Page."
+            );
+        }
+
+        Titlebar.SetProfile(profileService.CurrentProfile);
+        Titlebar.SetProfilePage(page);
+        profileService.ProfileChanged += ProfileService_ProfileChanged;
+    }
+
+    private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        Loaded -= ShellWindow_Loaded;
+        if (!options.IsProfileEnabled)
+        {
+            return;
+        }
+
+        try
+        {
+            await profileService.InitializeAsync();
+            Titlebar.SetProfile(profileService.CurrentProfile);
+        }
+        catch (Exception error)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"Flourish profile initialization failed: {error}"
+            );
+        }
+    }
+
+    private void ProfileService_ProfileChanged(object? sender, ProfileChangedEventArgs e)
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => Titlebar.SetProfile(e.Profile));
+            return;
+        }
+
+        Titlebar.SetProfile(e.Profile);
     }
 
     private void ApplyMotionResources()
@@ -1182,6 +1247,7 @@ internal partial class FlourishShellWindow : Window
 
     private void ShellWindow_Closed(object? sender, EventArgs e)
     {
+        profileService.ProfileChanged -= ProfileService_ProfileChanged;
         themeService.ThemeChanged -= ThemeService_ThemeChanged;
         themeService.Detach(this);
     }

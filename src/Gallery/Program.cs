@@ -79,6 +79,7 @@ internal static class Program
                         .UseTitleBar()
                         .UseNavigation()
                         .UseDynamicToolbar()
+                        .UseProfile()
                         .UseTips()
                         .UseMotion()
                         .UseMaterialEffect()
@@ -211,15 +212,6 @@ internal static class Program
                         .AddFixedNavigableItem("关于", "app.about", iconGlyph: "\uE946");
                 }
             )
-            .ConfigureMotion(
-                motion =>
-                {
-                    motion
-                        .EnableHoverRevealAnimation()
-                        .EnableNavigationPanelTransition()
-                        .EnablePageTransition();
-                }
-            )
             .ConfigureDynamicToolbar(
                 tool =>
                 {
@@ -239,6 +231,16 @@ internal static class Program
                 footer =>
                 {
                     footer.SetStatusText("就绪").ShowLANConnectionStatus().ShowPowerStatus();
+                }
+            )
+            .ConfigureProfile(profile => profile.SetDefaultProfile())
+            .ConfigureMotion(
+                motion =>
+                {
+                    motion
+                        .EnableHoverRevealAnimation()
+                        .EnableNavigationPanelTransition()
+                        .EnablePageTransition();
                 }
             )
             .ConfigureTips(tips => tips.SetDelay(200).SetSpawnableMargin(5))

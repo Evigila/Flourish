@@ -23,6 +23,12 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder UseProfile(bool enabled = true)
+    {
+        options.IsProfileEnabled = enabled;
+        return this;
+    }
+
     public IFlourishShellBuilder UseTips(bool enabled = true)
     {
         options.IsTipsEnabled = enabled;

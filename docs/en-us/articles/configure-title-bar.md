@@ -9,7 +9,7 @@ description: Configure the Flourish title bar after enabling it through Configur
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar())
+    .ConfigureShell(shell => shell.UseTitleBar().UseProfile())
     .ConfigureTitleBar(titleBar =>
     {
         titleBar
@@ -35,8 +35,11 @@ builder
 
 `ShowThemeToggle` depends on [`ConfigureShell`](configure-shell.md) enabling themes with `UseThemes()`. The default theme is chosen through [`ConfigureThemes`](configure-themes.md).
 
+`ShowProfile` controls the title bar trigger, while [`ConfigureProfile`](configure-profile.md) controls its user, login behavior, and hosted page. The trigger also requires `UseProfile()`.
+
 ## Related APIs
 
 - [`ConfigureCustomHandler`](configure-custom-handler.md) replaces profile content or adds title bar actions.
+- [`ConfigureProfile`](configure-profile.md) configures the built-in profile flyout and services.
 - [`ConfigureNavigation`](configure-navigation.md) works with `ShowNavToggle`.
 - [`ConfigureThemes`](configure-themes.md) works with `ShowThemeToggle`.
