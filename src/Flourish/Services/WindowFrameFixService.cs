@@ -6,25 +6,76 @@ namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class WindowFrameFixService
 {
+    private const int DwmwaWindowCornerPreference = 33;
+    private const int DwmwcpRound = 2;
     private const int WmGetMinMaxInfo = 0x0024;
 
+    private Window? attachedWindow;
     private HwndSource? hwndSource;
+    private bool isSourceInitializationPending;
+
+    internal bool IsAttachedTo(Window window) => ReferenceEquals(attachedWindow, window);
 
     public void Attach(Window window)
     {
+        ArgumentNullException.ThrowIfNull(window);
+        if (
+            ReferenceEquals(attachedWindow, window)
+            && (hwndSource is not null || isSourceInitializationPending)
+        )
+        {
+            return;
+        }
+
+        Detach();
+        attachedWindow = window;
+        window.Closed += Window_Closed;
         if (new WindowInteropHelper(window).Handle != IntPtr.Zero)
         {
             AttachHook(window);
             return;
         }
 
+        isSourceInitializationPending = true;
         window.SourceInitialized += Window_SourceInitialized;
+    }
 
-        void Window_SourceInitialized(object? sender, EventArgs e)
+    private void Window_SourceInitialized(object? sender, EventArgs e)
+    {
+        if (sender is not Window window || !ReferenceEquals(attachedWindow, window))
         {
-            window.SourceInitialized -= Window_SourceInitialized;
-            AttachHook(window);
+            return;
         }
+
+        window.SourceInitialized -= Window_SourceInitialized;
+        isSourceInitializationPending = false;
+        AttachHook(window);
+    }
+
+    private void Window_Closed(object? sender, EventArgs e)
+    {
+        if (ReferenceEquals(sender, attachedWindow))
+        {
+            Detach();
+        }
+    }
+
+    private void Detach()
+    {
+        if (attachedWindow is not null)
+        {
+            if (isSourceInitializationPending)
+            {
+                attachedWindow.SourceInitialized -= Window_SourceInitialized;
+            }
+
+            attachedWindow.Closed -= Window_Closed;
+        }
+
+        hwndSource?.RemoveHook(WindowProc);
+        hwndSource = null;
+        attachedWindow = null;
+        isSourceInitializationPending = false;
     }
 
     private void AttachHook(Window window)
@@ -35,9 +86,31 @@ internal sealed class WindowFrameFixService
             return;
         }
 
-        hwndSource = HwndSource.FromHwnd(hwnd);
-        hwndSource?.AddHook(WindowProc);
-        window.Closed += (_, _) => hwndSource?.RemoveHook(WindowProc);
+        var source = HwndSource.FromHwnd(hwnd);
+        if (source is null)
+        {
+            return;
+        }
+
+        hwndSource = source;
+        source.AddHook(WindowProc);
+        ApplyRoundedCornerPreference(hwnd);
+    }
+
+    private static void ApplyRoundedCornerPreference(IntPtr hwnd)
+    {
+        if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
+        {
+            return;
+        }
+
+        var cornerPreference = DwmwcpRound;
+        DwmSetWindowAttribute(
+            hwnd,
+            DwmwaWindowCornerPreference,
+            ref cornerPreference,
+            Marshal.SizeOf<int>()
+        );
     }
 
     private IntPtr WindowProc(
@@ -90,6 +163,14 @@ internal sealed class WindowFrameFixService
     [DllImport("user32.dll", EntryPoint = "GetMonitorInfoW", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetMonitorInfo(IntPtr monitor, ref MonitorInfo monitorInfo);
+
+    [DllImport("dwmapi.dll", PreserveSig = true)]
+    private static extern int DwmSetWindowAttribute(
+        IntPtr hwnd,
+        int dwAttribute,
+        ref int pvAttribute,
+        int cbAttribute
+    );
 
     private enum MonitorOptions : uint
     {

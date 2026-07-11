@@ -57,6 +57,11 @@ public async ValueTask SaveEndpointAsync(
 | `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
 | `IMaterialEffectService` | Test support and apply a `MaterialEffect`, or change immersive dark mode. |
 
+`ShellFeature.TitleBar` controls the Flourish title-bar content independently from the
+window frame. Disabling it keeps the custom caption, resize border, rounded corners, and
+active material intact; the caption continues to provide window dragging and the standard
+minimize, maximize, and close commands.
+
 ## Title bar and search
 
 `ITitleBarService` changes identity, logo, search placeholder, breadcrumb mode, and the visibility of each `TitleBarElement`. `ITitleBarSearchService` controls search text, visibility, placeholder, clearing and focus; it also publishes `QueryChanged` and supports ordered asynchronous handlers through `Subscribe`.

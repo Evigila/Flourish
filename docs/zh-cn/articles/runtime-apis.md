@@ -57,6 +57,10 @@ public async ValueTask SaveEndpointAsync(
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
 | `IMaterialEffectService` | 检查并应用 `MaterialEffect`，或修改沉浸式深色模式。 |
 
+`ShellFeature.TitleBar` 只控制 Flourish 标题栏内容，不再修改窗口框架。禁用后会保留
+自定义 Caption、缩放边框、窗口圆角与当前材质；Caption 仍可用于拖动窗口，并保留最小化、
+最大化和关闭命令。
+
 ## 标题栏与搜索
 
 `ITitleBarService` 可修改标题/副标题、Logo、搜索占位符、面包屑模式，以及每个 `TitleBarElement` 的可见性。`ITitleBarSearchService` 可控制搜索文本、可见性、占位符、清空和焦点；它还公开 `QueryChanged`，并可通过 `Subscribe` 按注册顺序添加异步处理器。

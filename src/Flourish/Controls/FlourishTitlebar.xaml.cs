@@ -29,6 +29,7 @@ internal partial class FlourishTitlebar : UserControl
     private static readonly ImageSource? DefaultLogoSource = CreateDefaultLogoSource();
     private static readonly Geometry SunIconGeometry = CreateFrozenGeometry(SunIconData);
     private static readonly Geometry MoonIconGeometry = CreateFrozenGeometry(MoonIconData);
+    private readonly FlourishTitlebarFeaturePresenter featurePresenter;
     private FlourishLocalizationService? localizationService;
     private bool hasProfileRegionContent;
     private bool isProfileEnabled;
@@ -36,6 +37,7 @@ internal partial class FlourishTitlebar : UserControl
     public FlourishTitlebar()
     {
         InitializeComponent();
+        featurePresenter = new FlourishTitlebarFeaturePresenter(ShellContentHost);
     }
 
     public event EventHandler? BackRequested;
@@ -147,6 +149,11 @@ internal partial class FlourishTitlebar : UserControl
                     : FlourishLocaleKeys.TitleBarMaximize
             );
         }
+    }
+
+    public void SetShellContentEnabled(bool enabled)
+    {
+        featurePresenter.SetEnabled(enabled);
     }
 
     public void SetThemeToggleState(FlourishTheme requestedTheme, FlourishTheme effectiveTheme)

@@ -171,6 +171,48 @@ public sealed class RuntimeShellStateServiceTests
         );
     }
 
+    [Fact]
+    public void ShellFeatureService_TitleBarAndNavigationCanBeDisabledAndRestoredRepeatedly()
+    {
+        var options = new FlourishShellOptions
+        {
+            IsTitlebarEnabled = true,
+            IsNavigationPanelEnabled = true,
+            IsNavigationPanelInitiallyOpen = true,
+            IsMaterialEffectEnabled = true,
+            MaterialEffect = MaterialEffect.Mica,
+        };
+        IShellFeatureService sut = new ShellFeatureService(options);
+        var changes = new List<FlourishShellFeatureChangedEventArgs>();
+        sut.Changed += (_, args) => changes.Add(args);
+
+        foreach (var feature in new[] { ShellFeature.TitleBar, ShellFeature.Navigation })
+        {
+            sut.SetEnabled(feature, false);
+            sut.SetEnabled(feature, false);
+            sut.SetEnabled(feature, true);
+            sut.SetEnabled(feature, true);
+        }
+
+        Assert.True(sut.Current.IsTitleBarEnabled);
+        Assert.True(sut.Current.IsNavigationEnabled);
+        Assert.True(options.IsNavigationPanelInitiallyOpen);
+        Assert.True(options.IsMaterialEffectEnabled);
+        Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
+        Assert.Equal(
+            new[]
+            {
+                (ShellFeature.TitleBar, false, 1L),
+                (ShellFeature.TitleBar, true, 2L),
+                (ShellFeature.Navigation, false, 3L),
+                (ShellFeature.Navigation, true, 4L),
+            },
+            changes.Select(change =>
+                (change.Feature, change.State.IsEnabled(change.Feature), change.State.Version)
+            )
+        );
+    }
+
     private sealed class TestProfilePage : Page;
 
     private abstract class AbstractProfilePage : Page;
