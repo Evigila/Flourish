@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,7 @@ public partial class ConfigurationPage : Page
 {
     private static FlourishLocaleRegistration? localeFileRegistration;
 
+    private readonly ObservableCollection<string> availableLocales = [];
     private readonly IFlourishConfiguration configuration;
     private readonly IAppSettingsStore settings;
     private readonly IFlourishLocalization localization;
@@ -22,6 +24,7 @@ public partial class ConfigurationPage : Page
         this.settings = settings;
         this.localization = localization;
         InitializeComponent();
+        LocaleBox.ItemsSource = availableLocales;
         LocaleFilePathBox.Text = Path.Combine(AppContext.BaseDirectory, "lang_ES.json");
 
         Loaded += Page_Loaded;
@@ -212,7 +215,16 @@ public partial class ConfigurationPage : Page
 
     private void RefreshLocaleState()
     {
-        LocaleBox.ItemsSource = localization.AvailableLocales;
+        var locales = localization.AvailableLocales;
+        if (!availableLocales.SequenceEqual(locales, StringComparer.OrdinalIgnoreCase))
+        {
+            availableLocales.Clear();
+            foreach (var locale in locales)
+            {
+                availableLocales.Add(locale);
+            }
+        }
+
         LocaleBox.Text = localization.CurrentLocale;
         LocaleStatusText.Text = $"Current locale: {localization.CurrentLocale}";
     }

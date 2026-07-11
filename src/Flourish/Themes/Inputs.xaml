@@ -108,6 +108,11 @@
     </Setter>
   </Style>
 
+  <Style x:Key="FlourishComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
   <Style x:Key="FlourishCheckBoxStyle" TargetType="{x:Type CheckBox}">
     <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
