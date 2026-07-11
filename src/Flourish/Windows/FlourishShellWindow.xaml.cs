@@ -13,9 +13,11 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Button = System.Windows.Controls.Button;
+using ComboBox = System.Windows.Controls.ComboBox;
 using FontFamily = System.Windows.Media.FontFamily;
 using ListBox = System.Windows.Controls.ListBox;
 using Orientation = System.Windows.Controls.Orientation;
+using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 using WpfPanel = System.Windows.Controls.Panel;
 
 namespace ArkheideSystem.Flourish.Windows;
@@ -570,29 +572,102 @@ internal partial class FlourishShellWindow : Window
         }
 
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
-        if (key == Key.None || IsModifierKey(key))
+        var modifiers = e.KeyboardDevice.Modifiers;
+        if (
+            ShouldIgnoreShortcutInput(
+                key,
+                modifiers,
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt)
+            )
+        )
         {
             return;
         }
 
-        KeyGesture gesture;
-        try
-        {
-            gesture = new KeyGesture(key, Keyboard.Modifiers);
-        }
-        catch (ArgumentException)
-        {
-            return;
-        }
+        var isTextInputFocused = IsTextInputTarget(
+            e.KeyboardDevice.FocusedElement ?? e.OriginalSource
+        );
         var context = new ShortcutResolutionContext("shell", navigationService.CurrentNavigationKey);
-        if (!shortcutService.TryResolve(gesture, context, out _))
+        if (
+            !shortcutService.TryResolve(
+                key,
+                modifiers,
+                context,
+                isTextInputFocused,
+                out var registration
+            )
+            || registration is null
+        )
         {
             return;
         }
 
         e.Handled = true;
-        await shortcutService.ExecuteAsync(gesture, context);
+        await shortcutService.ExecuteAsync(registration.Gesture, context);
     }
+
+    internal static bool ShouldIgnoreShortcutInput(
+        Key key,
+        ModifierKeys modifiers,
+        bool isRightAltPressed
+    )
+    {
+        const ModifierKeys altGraphModifiers = ModifierKeys.Control | ModifierKeys.Alt;
+        return key is Key.None or Key.System
+            || IsModifierKey(key)
+            || IsTextCompositionKey(key)
+            || (
+                isRightAltPressed
+                && (modifiers & altGraphModifiers) == altGraphModifiers
+            );
+    }
+
+    internal static bool IsTextInputTarget(object? target)
+    {
+        var current = target as DependencyObject;
+        while (current is not null)
+        {
+            if (
+                current is TextBoxBase or PasswordBox
+                || current is ComboBox { IsEditable: true }
+            )
+            {
+                return true;
+            }
+
+            current = current is Visual
+                ? VisualTreeHelper.GetParent(current) ?? LogicalTreeHelper.GetParent(current)
+                : LogicalTreeHelper.GetParent(current);
+        }
+
+        return false;
+    }
+
+    private static bool IsTextCompositionKey(Key key) =>
+        key is Key.KanaMode
+            or Key.JunjaMode
+            or Key.FinalMode
+            or Key.HanjaMode
+            or Key.ImeConvert
+            or Key.ImeNonConvert
+            or Key.ImeAccept
+            or Key.ImeModeChange
+            or Key.ImeProcessed
+            or Key.DbeAlphanumeric
+            or Key.DbeKatakana
+            or Key.DbeHiragana
+            or Key.DbeSbcsChar
+            or Key.DbeDbcsChar
+            or Key.DbeRoman
+            or Key.DbeNoRoman
+            or Key.DbeEnterWordRegisterMode
+            or Key.DbeEnterImeConfigureMode
+            or Key.DbeFlushString
+            or Key.DbeCodeInput
+            or Key.DbeNoCodeInput
+            or Key.DbeDetermineString
+            or Key.DbeEnterDialogConversionMode
+            or Key.DeadCharProcessed;
 
     private static bool IsModifierKey(Key key) =>
         key is Key.LeftAlt

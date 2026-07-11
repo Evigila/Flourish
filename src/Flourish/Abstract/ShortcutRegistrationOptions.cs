@@ -25,4 +25,10 @@ public sealed class ShortcutRegistrationOptions
     /// Gets or initializes the shortcut priority. Higher-priority shortcuts win within the same scope.
     /// </summary>
     public int Priority { get; init; }
+
+    /// <summary>
+    /// Gets or initializes whether the shortcut can execute while a text input control has keyboard focus.
+    /// The default is <see langword="false"/> so typing and editing gestures remain available to the control.
+    /// </summary>
+    public bool AllowWhenTextInputFocused { get; init; }
 }

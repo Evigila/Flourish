@@ -14,7 +14,8 @@ public sealed class ShortcutRegistrationInfo
         object? parameter,
         ShortcutScope scope,
         string? scopeKey,
-        int priority
+        int priority,
+        bool allowWhenTextInputFocused
     )
     {
         Id = id;
@@ -24,6 +25,7 @@ public sealed class ShortcutRegistrationInfo
         Scope = scope;
         ScopeKey = scopeKey;
         Priority = priority;
+        AllowWhenTextInputFocused = allowWhenTextInputFocused;
     }
 
     /// <summary>
@@ -60,4 +62,9 @@ public sealed class ShortcutRegistrationInfo
     /// Gets the shortcut priority.
     /// </summary>
     public int Priority { get; }
+
+    /// <summary>
+    /// Gets whether the shortcut can execute while a text input control has keyboard focus.
+    /// </summary>
+    public bool AllowWhenTextInputFocused { get; }
 }

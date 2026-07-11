@@ -24,6 +24,7 @@ public sealed class ShortcutServiceTests
         Assert.Equal(registration.Id, snapshot.Id);
         Assert.Equal("editor.save", snapshot.CommandKey);
         Assert.Equal(42, snapshot.Parameter);
+        Assert.False(snapshot.AllowWhenTextInputFocused);
         Assert.Equal(ShortcutRegistryChangeKind.Registered, changes[0].ChangeKind);
         registration.Dispose();
         registration.Dispose();
@@ -219,6 +220,60 @@ public sealed class ShortcutServiceTests
 
         Assert.Equal(CommandExecutionStatus.NotHandled, result.Status);
         Assert.Empty(dispatcher.Invocations);
+    }
+
+    [Fact]
+    public void TryResolve_RawTextKey_DoesNotConstructOrResolveInvalidGesture()
+    {
+        var sut = new ShortcutService(new RecordingCommandDispatcher());
+
+        var resolved = sut.TryResolve(
+            Key.S,
+            ModifierKeys.Shift,
+            context: null,
+            isTextInputFocused: true,
+            out var registration
+        );
+
+        Assert.False(resolved);
+        Assert.Null(registration);
+    }
+
+    [Fact]
+    public void TryResolve_TextInputFocus_RequiresExplicitRegistrationOptIn()
+    {
+        var sut = new ShortcutService(new RecordingCommandDispatcher());
+        sut.Register(Gesture(Key.C, ModifierKeys.Control), "editor.copy");
+        sut.Register(
+            Gesture(Key.S, ModifierKeys.Control),
+            "document.save",
+            options: new ShortcutRegistrationOptions
+            {
+                AllowWhenTextInputFocused = true,
+            }
+        );
+
+        Assert.False(
+            sut.TryResolve(
+                Key.C,
+                ModifierKeys.Control,
+                context: null,
+                isTextInputFocused: true,
+                out _
+            )
+        );
+        Assert.True(
+            sut.TryResolve(
+                Key.S,
+                ModifierKeys.Control,
+                context: null,
+                isTextInputFocused: true,
+                out var registration
+            )
+        );
+        Assert.NotNull(registration);
+        Assert.Equal("document.save", registration.CommandKey);
+        Assert.True(registration.AllowWhenTextInputFocused);
     }
 
     private static KeyGesture Gesture(

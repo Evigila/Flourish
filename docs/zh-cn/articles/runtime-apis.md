@@ -147,6 +147,8 @@ public sealed class DiagnosticsModule : IDisposable
 
 `ICommandRegistry.Register` 可添加异步处理器，并指定可选的可执行谓词、重复策略和优先级。`ICommandDispatcher.CanExecute` 与 `ExecuteAsync` 用于调用运行时处理器，并返回捕获了执行结果的 `CommandResult`。`IShortcutService.Register` 可将 WPF `KeyGesture` 映射到命令，并配置应用、窗口或页面作用域及冲突策略。
 
+默认情况下，文本输入控件获得键盘焦点时不会派发快捷键，以保留正常输入、剪贴板、编辑、AltGr 与 IME 行为。只有确实需要在编辑文字时保持生效的快捷键，才应将 `ShortcutRegistrationOptions.AllowWhenTextInputFocused` 设置为 `true`。
+
 `ICommandParser` 仍是通过 `ConfigureServices` 注册的同步启动期兼容扩展；需要在运行时添加或移除逻辑时，应使用 `ICommandRegistry`。
 
 ```csharp

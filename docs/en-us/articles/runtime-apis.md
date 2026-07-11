@@ -147,6 +147,8 @@ Toolbar and navigation command items store command keys; execution flows through
 
 `ICommandRegistry.Register` adds an asynchronous handler with an optional availability predicate, duplicate policy, and priority. `ICommandDispatcher.CanExecute` and `ExecuteAsync` invoke runtime handlers and return a captured `CommandResult`. `IShortcutService.Register` maps a WPF `KeyGesture` to a command with application, window, or page scope and configurable conflict handling.
 
+Shortcuts are ignored while a text input control has keyboard focus by default, preserving typing, clipboard, editing, AltGr, and IME behavior. Set `ShortcutRegistrationOptions.AllowWhenTextInputFocused` to `true` only for shortcuts that must remain active while the user is editing text.
+
 `ICommandParser` remains the synchronous startup compatibility extension registered during `ConfigureServices`; use `ICommandRegistry` for logic that must be added or removed at runtime.
 
 ```csharp

@@ -86,6 +86,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
                 options.Scope,
                 scopeKey,
                 options.Priority,
+                options.AllowWhenTextInputFocused,
                 nextSequence++
             );
             entries.Add(entry);
@@ -103,7 +104,25 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
     )
     {
         ValidateGesture(gesture);
-        var entry = ResolveEntry(gesture, context);
+        var entry = ResolveEntry(
+            gesture.Key,
+            gesture.Modifiers,
+            context,
+            isTextInputFocused: false
+        );
+        registration = entry?.CreateSnapshot();
+        return registration is not null;
+    }
+
+    internal bool TryResolve(
+        Key key,
+        ModifierKeys modifiers,
+        ShortcutResolutionContext? context,
+        bool isTextInputFocused,
+        out ShortcutRegistrationInfo? registration
+    )
+    {
+        var entry = ResolveEntry(key, modifiers, context, isTextInputFocused);
         registration = entry?.CreateSnapshot();
         return registration is not null;
     }
@@ -120,7 +139,12 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
             return ValueTask.FromResult(CommandResult.Canceled);
         }
 
-        var entry = ResolveEntry(gesture, context);
+        var entry = ResolveEntry(
+            gesture.Key,
+            gesture.Modifiers,
+            context,
+            isTextInputFocused: false
+        );
         if (entry is null)
         {
             return ValueTask.FromResult(CommandResult.NotHandled);
@@ -135,8 +159,10 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
     }
 
     private ShortcutEntry? ResolveEntry(
-        KeyGesture gesture,
-        ShortcutResolutionContext? context
+        Key key,
+        ModifierKeys modifiers,
+        ShortcutResolutionContext? context,
+        bool isTextInputFocused
     )
     {
         lock (gate)
@@ -144,8 +170,9 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
             return entries
                 .Where(entry =>
                     entry.IsRegistered
-                    && GestureEquals(entry.Gesture, gesture)
+                    && GestureEquals(entry.Gesture, key, modifiers)
                     && IsEligible(entry, context)
+                    && (!isTextInputFocused || entry.AllowWhenTextInputFocused)
                 )
                 .OrderByDescending(entry => GetScopePrecedence(entry.Scope))
                 .ThenByDescending(entry => GetScopeKeyPrecedence(entry, context))
@@ -305,6 +332,15 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         return left.Key == right.Key && left.Modifiers == right.Modifiers;
     }
 
+    private static bool GestureEquals(
+        KeyGesture gesture,
+        Key key,
+        ModifierKeys modifiers
+    )
+    {
+        return gesture.Key == key && gesture.Modifiers == modifiers;
+    }
+
     private static string FormatGesture(KeyGesture gesture)
     {
         return string.IsNullOrWhiteSpace(gesture.DisplayString)
@@ -380,6 +416,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         ShortcutScope scope,
         string? scopeKey,
         int priority,
+        bool allowWhenTextInputFocused,
         long sequence
     )
     {
@@ -399,6 +436,8 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
 
         public int Priority { get; } = priority;
 
+        public bool AllowWhenTextInputFocused { get; } = allowWhenTextInputFocused;
+
         public long Sequence { get; } = sequence;
 
         public bool IsRegistered => Volatile.Read(ref isRegistered) != 0;
@@ -417,7 +456,8 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
                 Parameter,
                 Scope,
                 ScopeKey,
-                Priority
+                Priority,
+                AllowWhenTextInputFocused
             );
         }
     }
