@@ -41,6 +41,80 @@ public sealed class RuntimeAppearanceServiceTests
     }
 
     [Fact]
+    public void FontService_PageOverrideSnapshotsAreImmutableAndChangesAreIdempotent()
+    {
+        IFontService sut = new FontService(new FlourishShellOptions());
+        var changes = 0;
+        sut.Changed += (_, _) => changes++;
+
+        sut.SetOverrideFont<RuntimeFontPage>("Consolas");
+        var firstSnapshot = sut.PageOverrides;
+        sut.SetOverrideFont<RuntimeFontPage>("Consolas");
+
+        Assert.Equal(1, changes);
+        var pageOverride = Assert.Single(firstSnapshot);
+        Assert.Equal(typeof(RuntimeFontPage), pageOverride.Key);
+        Assert.Equal(new FlourishPageFontOverride("Consolas", null), pageOverride.Value);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IDictionary<Type, FlourishPageFontOverride>)firstSnapshot).Add(
+                typeof(SecondRuntimeFontPage),
+                new FlourishPageFontOverride("Arial", 15)
+            )
+        );
+
+        sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", 16);
+        Assert.Equal(2, changes);
+        Assert.Equal(16, sut.PageOverrides[typeof(RuntimeFontPage)].FontSize);
+        Assert.True(sut.ClearOverrideFont<RuntimeFontPage>());
+        Assert.False(sut.ClearOverrideFont(typeof(RuntimeFontPage)));
+        Assert.Equal(3, changes);
+        Assert.Empty(sut.PageOverrides);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void FontService_PageOverrideRejectsMissingFamily(string? fontFamily)
+    {
+        IFontService sut = new FontService(new FlourishShellOptions());
+
+        Assert.Throws<ArgumentException>(() =>
+            sut.SetOverrideFont<RuntimeFontPage>(fontFamily!)
+        );
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    public void FontService_PageOverrideRejectsInvalidSize(double fontSize)
+    {
+        IFontService sut = new FontService(new FlourishShellOptions());
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.SetOverrideFont<RuntimeFontPage>("Arial", fontSize)
+        );
+    }
+
+    [Fact]
+    public void FontService_PageOverrideRejectsInvalidRuntimePageType()
+    {
+        IFontService sut = new FontService(new FlourishShellOptions());
+
+        Assert.Throws<ArgumentNullException>(() =>
+            sut.SetOverrideFont(null!, "Arial")
+        );
+        Assert.Throws<ArgumentException>(() =>
+            sut.SetOverrideFont(typeof(string), "Arial")
+        );
+        Assert.Throws<ArgumentException>(() =>
+            sut.SetOverrideFont(typeof(AbstractRuntimeFontPage), "Arial")
+        );
+    }
+
+    [Fact]
     public void ToolTipService_EnablesConfiguresAndDisablesAtRuntime()
     {
         var options = new FlourishShellOptions();
@@ -182,4 +256,10 @@ public sealed class RuntimeAppearanceServiceTests
             }
         }
     }
+
+    private sealed class RuntimeFontPage : System.Windows.Controls.Page { }
+
+    private sealed class SecondRuntimeFontPage : System.Windows.Controls.Page { }
+
+    private abstract class AbstractRuntimeFontPage : System.Windows.Controls.Page { }
 }

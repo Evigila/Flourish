@@ -5,7 +5,7 @@
   Background="Transparent"
 >
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="32,28,32,40">
+    <StackPanel Margin="0,28,0,40">
       <Border Padding="28" Background="{DynamicResource AccentSoftBrush}" CornerRadius="16">
         <Grid>
           <Grid.ColumnDefinitions>

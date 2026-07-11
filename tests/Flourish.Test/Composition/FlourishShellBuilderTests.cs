@@ -19,6 +19,7 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, sut.UseMotion());
         Assert.Same(sut, sut.UseMaterialEffect(MaterialEffect.Mica));
         Assert.Same(sut, sut.UseGlobalFont("Arial", 15));
+        Assert.Same(sut, sut.SetOverrideFont<OverrideFontPage>("Consolas"));
         Assert.Same(sut, sut.UseStatusBar());
 
         Assert.True(options.IsTitlebarEnabled);
@@ -32,6 +33,10 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
         Assert.Equal("Arial", options.FontFamily);
         Assert.Equal(15, options.FontSize);
+        var pageOverride = Assert.Single(options.PageFontOverridesByPageType);
+        Assert.Equal(typeof(OverrideFontPage), pageOverride.Key);
+        Assert.Equal("Consolas", pageOverride.Value.FontFamily);
+        Assert.Null(pageOverride.Value.FontSize);
         Assert.True(options.IsStatusBarEnabled);
     }
 
@@ -135,4 +140,55 @@ public sealed class FlourishShellBuilderTests
 
         Assert.Equal("fontSize", exception.ParamName);
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void SetOverrideFont_WithMissingFamily_ThrowsArgumentException(
+        string? fontFamily
+    )
+    {
+        var sut = new FlourishShellBuilder(new FlourishShellOptions());
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            sut.SetOverrideFont<OverrideFontPage>(fontFamily!)
+        );
+
+        Assert.Equal("fontFamily", exception.ParamName);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    public void SetOverrideFont_WithInvalidSize_ThrowsArgumentOutOfRangeException(
+        double fontSize
+    )
+    {
+        var sut = new FlourishShellBuilder(new FlourishShellOptions());
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.SetOverrideFont<OverrideFontPage>("Consolas", fontSize)
+        );
+
+        Assert.Equal("fontSize", exception.ParamName);
+    }
+
+    [Fact]
+    public void SetOverrideFont_WithAbstractPage_ThrowsArgumentException()
+    {
+        var sut = new FlourishShellBuilder(new FlourishShellOptions());
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            sut.SetOverrideFont<AbstractOverrideFontPage>("Consolas")
+        );
+
+        Assert.Equal("TPage", exception.ParamName);
+    }
+
+    private sealed class OverrideFontPage : System.Windows.Controls.Page { }
+
+    private abstract class AbstractOverrideFontPage : System.Windows.Controls.Page { }
 }

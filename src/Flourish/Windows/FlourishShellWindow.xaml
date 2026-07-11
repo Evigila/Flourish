@@ -239,7 +239,11 @@
             </Grid>
           </Border>
 
-          <Grid x:Name="ContentAreaGrid" Grid.Column="1">
+          <Grid
+            x:Name="ContentAreaGrid"
+            Grid.Column="1"
+            Margin="{DynamicResource FlourishContentBodyMargin}"
+          >
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
               <RowDefinition Height="Auto" />
@@ -258,7 +262,7 @@
             <Border
               x:Name="ToolbarHostBorder"
               Grid.Row="1"
-              Margin="8,0,8,4"
+              Margin="0,0,0,4"
               Padding="2"
               Background="{DynamicResource CardBackgroundBrush}"
               BorderBrush="{DynamicResource CardBorderBrush}"
@@ -294,8 +298,7 @@
             <Border
               x:Name="BreadcrumbHost"
               Grid.Row="2"
-              Margin="12,0,12,8"
-              Padding="12,0"
+              Margin="0,0,0,8"
               Background="Transparent"
             >
               <TextBlock

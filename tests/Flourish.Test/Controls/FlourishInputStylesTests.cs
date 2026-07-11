@@ -6,17 +6,39 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 public sealed class FlourishInputStylesTests
 {
     [Fact]
+    public void ContentBodyMargin_UsesOneSharedThirtyTwoPixelGutter()
+    {
+        RunInSta(() =>
+        {
+            var resources = Assert.IsType<ResourceDictionary>(
+                Application.LoadComponent(
+                    new Uri(
+                        "/Flourish;component/Themes/Layout.xaml",
+                        UriKind.Relative
+                    )
+                )
+            );
+
+            Assert.Equal(
+                new Thickness(32, 0, 32, 0),
+                resources["FlourishContentBodyMargin"]
+            );
+        });
+    }
+
+    [Fact]
     public void ComboBoxItemStyle_UsesLocalAlignmentValues()
     {
         RunInSta(() =>
         {
-            var resources = new ResourceDictionary
-            {
-                Source = new Uri(
-                    "/Flourish;component/Themes/Inputs.xaml",
-                    UriKind.Relative
-                ),
-            };
+            var resources = Assert.IsType<ResourceDictionary>(
+                Application.LoadComponent(
+                    new Uri(
+                        "/Flourish;component/Themes/Inputs.xaml",
+                        UriKind.Relative
+                    )
+                )
+            );
             var style = Assert.IsType<Style>(resources["FlourishComboBoxItemStyle"]);
             var setters = style.Setters.OfType<Setter>().ToArray();
 

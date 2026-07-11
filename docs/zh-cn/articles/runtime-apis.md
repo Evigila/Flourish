@@ -52,7 +52,7 @@ public async ValueTask SaveEndpointAsync(
 | --- | --- |
 | `IShellFeatureService` | 通过 `SetEnabled` 启用或禁用 `TitleBar`、`Navigation`、`DynamicToolbar`、`StatusContent`、`ToolTips`、`Motion` 或 `Profile`。 |
 | `IThemeService` | 使用 `SetTheme` 选择并持久化 `System`、`Light` 或 `Dark`，或通过 `ToggleTheme` 循环切换；可读取 `EffectiveTheme` 和 `IsDark`。 |
-| `IFontService` | 分别修改文本字体、图标字体与基础字号，或通过 `SetFont` 同时设置文本字体和字号。 |
+| `IFontService` | 分别修改全局文本字体、图标字体与基础字号，或通过 `SetFont` 同时设置文本字体和字号；通过 `PageOverrides`、`SetOverrideFont` 和 `ClearOverrideFont` 查看、设置及清除页面级覆盖。 |
 | `IToolTipService` | 启用提示，并通过 `Configure` 修改首次显示延迟和生成边距。 |
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
 | `IMaterialEffectService` | 检查并应用 `MaterialEffect`，或修改沉浸式深色模式。 |

@@ -5,7 +5,7 @@
   Background="Transparent"
 >
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="32,28,32,40">
+    <StackPanel Margin="0,28,0,40">
       <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Appearance &amp; motion" />
       <TextBlock
         Style="{StaticResource GalleryPageSubtitleStyle}"
@@ -50,6 +50,29 @@
           </Grid>
           <Button Margin="0,14,0,0" HorizontalAlignment="Left" Click="ApplyFont_Click" Content="Apply typography" Style="{StaticResource GalleryActionButtonStyle}" />
           <TextBlock x:Name="FontStatusText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+
+          <Border Margin="0,18,0,0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,1,0,0" />
+          <TextBlock Margin="0,16,0,0" Style="{StaticResource GallerySectionTitleStyle}" Text="This page override" />
+          <TextBlock Margin="0,5,0,14" Foreground="{DynamicResource MutedTextBrush}" Text="Override only AppearancePage. Leave size empty to keep following the global base size, then clear the override to return to the global font." TextWrapping="Wrap" />
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="150" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,8,0">
+              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Override font family" />
+              <TextBox x:Name="PageOverrideFontFamilyBox" Style="{StaticResource GalleryTextBoxStyle}" Text="Georgia" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="8,0">
+              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Override size (optional)" />
+              <TextBox x:Name="PageOverrideFontSizeBox" Style="{StaticResource GalleryTextBoxStyle}" />
+            </StackPanel>
+            <Button Grid.Column="2" Margin="8,20,0,0" Click="ApplyPageFontOverride_Click" Content="Apply page override" Style="{StaticResource GalleryActionButtonStyle}" />
+            <Button Grid.Column="3" Margin="8,20,0,0" Click="ClearPageFontOverride_Click" Content="Clear override" Style="{StaticResource GalleryActionButtonStyle}" />
+          </Grid>
+          <TextBlock x:Name="PageFontOverrideStatusText" Margin="0,12,0,0" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" />
         </StackPanel>
       </Border>
 

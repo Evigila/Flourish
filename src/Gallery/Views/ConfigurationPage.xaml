@@ -5,7 +5,7 @@
   Background="Transparent"
 >
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="32,28,32,40">
+    <StackPanel Margin="0,28,0,40">
       <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Configuration &amp; localization" />
       <TextBlock
         Style="{StaticResource GalleryPageSubtitleStyle}"

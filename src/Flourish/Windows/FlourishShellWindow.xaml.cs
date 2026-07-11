@@ -251,6 +251,7 @@ internal partial class FlourishShellWindow : Window
         profileFlyoutService.Changed += ProfileFlyoutService_Changed;
         shellFeatureService.Changed += ShellFeatureService_Changed;
         localizationService.Changed += LocalizationService_Changed;
+        fontService.Changed += FontService_Changed;
         commandParser.Changed += CommandParser_Changed;
         commandParser.CanExecuteChanged += CommandParser_CanExecuteChanged;
         backgroundTaskService.TasksChanged += BackgroundTaskService_TasksChanged;
@@ -353,6 +354,7 @@ internal partial class FlourishShellWindow : Window
                 );
             }
 
+            fontService.ApplyToPage(page, state.ContentPageType);
             ProfileFrame.Navigate(page);
         }
 
@@ -2487,6 +2489,28 @@ internal partial class FlourishShellWindow : Window
         });
     }
 
+    private void FontService_Changed(object? sender, FlourishFontChangedEventArgs e)
+    {
+        DispatchRuntimeChange(() =>
+        {
+            if (RootFrame.Content is Page contentPage)
+            {
+                fontService.ApplyToPage(
+                    contentPage,
+                    navigationService.CurrentSourcePageType ?? contentPage.GetType()
+                );
+            }
+
+            if (ProfileFrame.Content is Page profilePage)
+            {
+                fontService.ApplyToPage(
+                    profilePage,
+                    profileFlyoutService.Current.ContentPageType
+                );
+            }
+        });
+    }
+
     private void CommandParser_Changed(object? sender, CommandRegistryChangedEventArgs e)
     {
         DispatchRuntimeChange(RefreshCommandAvailability);
@@ -2762,6 +2786,7 @@ internal partial class FlourishShellWindow : Window
 
     private void RootFrame_Navigated(object? sender, FlourishNavigatedEventArgs e)
     {
+        fontService.ApplyToPage(e.Page, e.SourcePageType);
         UpdateTitlebarBreadcrumbNavigation();
         BuildToolbarItems(e.SourcePageType);
         UpdateBreadcrumb(e.SourcePageType);
@@ -3160,6 +3185,7 @@ internal partial class FlourishShellWindow : Window
         profileFlyoutService.Changed -= ProfileFlyoutService_Changed;
         shellFeatureService.Changed -= ShellFeatureService_Changed;
         localizationService.Changed -= LocalizationService_Changed;
+        fontService.Changed -= FontService_Changed;
         commandParser.Changed -= CommandParser_Changed;
         commandParser.CanExecuteChanged -= CommandParser_CanExecuteChanged;
         navigationService.Navigated -= RootFrame_Navigated;

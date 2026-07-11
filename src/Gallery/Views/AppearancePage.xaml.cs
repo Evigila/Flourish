@@ -89,6 +89,31 @@ public partial class AppearancePage : Page
         );
     }
 
+    private void ApplyPageFontOverride_Click(object sender, RoutedEventArgs e)
+    {
+        Execute(
+            () =>
+            {
+                double? fontSize = string.IsNullOrWhiteSpace(PageOverrideFontSizeBox.Text)
+                    ? null
+                    : ParseDouble(PageOverrideFontSizeBox.Text, "page override font size");
+                font.SetOverrideFont<AppearancePage>(
+                    PageOverrideFontFamilyBox.Text,
+                    fontSize
+                );
+            },
+            PageFontOverrideStatusText
+        );
+    }
+
+    private void ClearPageFontOverride_Click(object sender, RoutedEventArgs e)
+    {
+        Execute(
+            () => font.ClearOverrideFont<AppearancePage>(),
+            PageFontOverrideStatusText
+        );
+    }
+
     private void ConfigureToolTip_Click(object sender, RoutedEventArgs e)
     {
         Execute(
@@ -177,6 +202,23 @@ public partial class AppearancePage : Page
         IconFontFamilyBox.Text = font.IconFontFamily;
         FontStatusText.Text =
             $"Text: {font.FontFamily}, {font.FontSize:0.##} pt  |  Icons: {font.IconFontFamily}";
+
+        if (font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
+        {
+            PageOverrideFontFamilyBox.Text = pageOverride.FontFamily;
+            PageOverrideFontSizeBox.Text = pageOverride.FontSize?.ToString(
+                "0.##",
+                CultureInfo.CurrentCulture
+            ) ?? string.Empty;
+            PageFontOverrideStatusText.Text = pageOverride.FontSize is { } overrideSize
+                ? $"AppearancePage override: {pageOverride.FontFamily}, {overrideSize:0.##} pt."
+                : $"AppearancePage override: {pageOverride.FontFamily}; size follows global {font.FontSize:0.##} pt.";
+        }
+        else
+        {
+            PageFontOverrideStatusText.Text =
+                $"No page override. AppearancePage follows {font.FontFamily}, {font.FontSize:0.##} pt.";
+        }
 
         var currentToolTips = toolTips.Current;
         ToolTipDelayBox.Text = currentToolTips.InitialShowDelayMilliseconds.ToString(

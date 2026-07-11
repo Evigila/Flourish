@@ -1,3 +1,5 @@
+using System.Windows.Controls;
+
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
@@ -65,12 +67,27 @@ public interface IFlourishShellBuilder
     );
 
     /// <summary>
-    /// Configures the global font used by Flourish shell UI.
+    /// Configures the global font used by Flourish shell UI and application pages.
     /// </summary>
     /// <param name="fontFamily">The font family name.</param>
     /// <param name="fontSize">The base font size.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishShellBuilder UseGlobalFont(string fontFamily, double fontSize = 14);
+
+    /// <summary>
+    /// Overrides the font used by one page type while leaving all other pages on the global font.
+    /// </summary>
+    /// <typeparam name="TPage">The WPF page type that receives the override.</typeparam>
+    /// <param name="fontFamily">The page-specific font family name.</param>
+    /// <param name="fontSize">
+    /// The page-specific base font size, or <see langword="null"/> to continue following the global size.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishShellBuilder SetOverrideFont<TPage>(
+        string fontFamily,
+        double? fontSize = null
+    )
+        where TPage : Page;
 
     /// <summary>
     /// Enables or disables the shell status bar.

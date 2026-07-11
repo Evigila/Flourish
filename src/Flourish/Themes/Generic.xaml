@@ -3,6 +3,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 >
   <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Flourish;component/Themes/Layout.xaml" />
     <ResourceDictionary Source="/Flourish;component/Themes/Typography.xaml" />
     <ResourceDictionary Source="/Flourish;component/Themes/Colors.xaml" />
     <ResourceDictionary Source="/Flourish;component/Themes/Controls.xaml" />

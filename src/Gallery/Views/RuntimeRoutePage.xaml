@@ -4,7 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <Grid Margin="32">
+  <Grid Margin="0,32">
     <Border MaxWidth="680" Padding="28" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource GalleryCardStyle}">
       <StackPanel>
         <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="A route created at runtime" />

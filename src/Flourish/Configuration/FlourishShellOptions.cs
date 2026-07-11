@@ -25,6 +25,8 @@ internal sealed class FlourishShellOptions
 
     public double FontSize { get; set; } = 13;
 
+    public Dictionary<Type, FlourishPageFontOverride> PageFontOverridesByPageType { get; } = [];
+
     public double WindowWidth { get; set; } = 1100;
 
     public double WindowHeight { get; set; } = 720;

@@ -32,7 +32,7 @@ builder.ConfigureShell(shell =>
 | `UseTips` | [提示浮层](configure-tips.md) | 设置显示延迟并启用提示浮层。 |
 | `UseMotion` | [动效](configure-motion.md) | 启用动效；`ConfigureMotion` 配置页面、导航栏和悬停动画。 |
 | `UseMaterialEffect` | [材质特效](configure-material-effect.md) | 选择并启用窗口材质。 |
-| `UseGlobalFont` | [排版](configure-font.md) | 设置 Shell 字体系列和基础字号。 |
+| `UseGlobalFont` | [排版](configure-font.md) | 设置 Shell 与导航页面使用的全局字体系列和基础字号。 |
 | `UseStatusBar` | [状态栏](status-bar.md) | 启用状态栏；`ConfigureStatusBar` 配置自定义状态项和系统状态入口。 |
 
 [窗口](configure-window.md)不需要 Shell 功能开关，可直接通过 `ConfigureWindow` 设置。
@@ -63,6 +63,16 @@ builder
 - `SetThemeToggle()` 的主题偏好使用[应用数据](configure-data.md)中说明的 Host 配置。
 
 后台任务活动是常驻状态栏开关的例外：即使没有调用 `UseStatusBar()`，存在活动任务时也会临时显示任务指示器；活动列表清空后，状态栏会恢复为配置决定的可见性。参见[后台任务](background-tasks.md)。
+
+## 内容主体对齐
+
+Breadcrumb、动态工具栏、内容页面和内容区域宿主统一使用 `FlourishContentBodyMargin` 动态资源。默认值为 `32,0,32,0`，因此所有内容表面具有相同的左右边界。
+
+需要不同留白或全宽内容的应用，可以在合并 `Themes/Generic.xaml` 后覆盖该资源：
+
+```xml
+<Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
+```
 
 ## 禁用与省略
 

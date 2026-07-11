@@ -35,7 +35,7 @@ builder
 | `UseTips(delay)` | Enables Flourish tooltips with the requested initial delay. | [Tooltips](configure-tips.md) |
 | `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
 | `UseMaterialEffect(effect)` | Applies the selected window material. | [Material effects](configure-material-effect.md) |
-| `UseGlobalFont(family, size)` | Sets the font used by Flourish shell UI. | [Typography](configure-font.md) |
+| `UseGlobalFont(family, size)` | Sets the global font used by Flourish shell UI and navigated pages. | [Typography](configure-font.md) |
 | `UseStatusBar` | Displays the status bar. | [Status bar](status-bar.md) |
 
 ## Prerequisites and priority
@@ -43,6 +43,16 @@ builder
 Boolean feature switches take priority over their detailed configuration. For example, toolbar items registered for a page are not displayed when `UseDynamicToolbar(false)` is active, and status items remain hidden when `UseStatusBar(false)` is active.
 
 Background-task activity is the exception to persistent status-bar visibility: active work temporarily reveals its task indicators even when `UseStatusBar()` is omitted. The bar hides again after the active list becomes empty. See [Background tasks](background-tasks.md).
+
+## Content body alignment
+
+The breadcrumb, dynamic toolbar, content page, and content-region hosts share the `FlourishContentBodyMargin` dynamic resource. Its default value is `32,0,32,0`, giving every content surface the same left and right edge.
+
+Applications that require a different gutter or full-bleed content can override the resource after merging `Themes/Generic.xaml`:
+
+```xml
+<Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
+```
 
 Simple shell features use configuration as their activation point:
 

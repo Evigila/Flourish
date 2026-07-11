@@ -1,5 +1,6 @@
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
+using System.Windows.Controls;
 
 namespace ArkheideSystem.Flourish.Composition;
 
@@ -64,6 +65,24 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder SetOverrideFont<TPage>(
+        string fontFamily,
+        double? fontSize = null
+    )
+        where TPage : Page
+    {
+        ValidatePageType(typeof(TPage), nameof(TPage));
+        fontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
+        if (fontSize is { } size)
+        {
+            ValidatePositiveFinite(size, nameof(fontSize));
+        }
+
+        options.PageFontOverridesByPageType[typeof(TPage)] =
+            new FlourishPageFontOverride(fontFamily, fontSize);
+        return this;
+    }
+
     public IFlourishShellBuilder UseStatusBar(bool enabled = true)
     {
         options.IsStatusBarEnabled = enabled;
@@ -98,6 +117,17 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         if (!Enum.IsDefined(value))
         {
             throw new ArgumentOutOfRangeException(parameterName, value, "Unknown value.");
+        }
+    }
+
+    private static void ValidatePageType(Type pageType, string parameterName)
+    {
+        if (pageType.IsAbstract || pageType.ContainsGenericParameters)
+        {
+            throw new ArgumentException(
+                $"{pageType.FullName} must be a closed, concrete System.Windows.Controls.Page type.",
+                parameterName
+            );
         }
     }
 }
