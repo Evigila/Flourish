@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <StartupObject>ArkheideSystem.Gallery.Program</StartupObject>
     <Platforms>x86;x64;ARM64</Platforms>
+    <UserSecretsId>ArkheideSystem.Flourish.Gallery</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Models\**" />
@@ -26,5 +27,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Flourish\Flourish.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

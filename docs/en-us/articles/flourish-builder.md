@@ -12,6 +12,7 @@ description: Understand the builder, hosting integration, services, and page reg
 `FlourishBuilder.CreateDefaultBuilder(args)` follows the .NET Generic Host default configuration and lifetime model:
 
 - configuration and environment are available through `HostBuilderContext` in `ConfigureServices`
+- Flourish settings use the standard appsettings and User Secrets sources from that Host configuration
 - services are registered in `IServiceCollection`
 - the final service provider is available from `IFlourish.Services`
 - application objects can be resolved with `flourish.GetRequiredService<T>()`
@@ -37,7 +38,7 @@ The public builder separates hosting, application services, feature switches, an
 
 | Feature | Builder method | Purpose |
 | --- | --- | --- |
-| [Application data](configure-data.md) | `ConfigureData` | Configures localization, application identity, and preference storage. |
+| [Application data](configure-data.md) | `ConfigureData` | Configures localization and explains the shared Host configuration. |
 | [Dependency injection](configure-services.md) | `ConfigureServices` | Registers application and replaceable Flourish services. |
 | [Shell configuration](shell-configuration.md) | `ConfigureShell` | Configures shell surfaces, tooltips, typography, and material effects. |
 | [Profile](configure-profile.md) | `ConfigureProfile` | Selects a custom page for the profile enabled by the title bar. |

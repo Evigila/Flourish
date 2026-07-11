@@ -48,7 +48,7 @@ titleBar
 
 - `SetNavToggle()` 显示导航切换按钮，并要求在 Shell 中启用 `UseNavigation()`。
 - `SetProfile()` 启用默认 Profile 并显示入口。参数控制名称与占位首字母的顺序；自定义页面由[用户资料（Profile）](configure-profile.md)配置。
-- `SetThemeToggle()` 启用主题功能并显示切换按钮。参数指定没有已保存偏好时使用的主题；主题存储要求参见[主题](configure-themes.md)。
+- `SetThemeToggle()` 启用主题功能并显示切换按钮。参数指定 Host 配置中没有已保存偏好时使用的主题；`appsettings.json` 持久化规则参见[主题](configure-themes.md)。
 
 ## 相关功能
 

@@ -55,7 +55,17 @@ An unremembered login remains active until the application exits. A remembered l
 
 ## Credential persistence and security
 
-The default service protects remembered credentials with Windows DPAPI using `DataProtectionScope.CurrentUser` before writing them to application-scoped storage. The storage scope uses the identity described in [Application data](configure-data.md). Signing out removes the remembered credential.
+The default service keeps an ordinary signed-in session in memory. When the user enables remembered login, Flourish protects the credential with Windows DPAPI using `DataProtectionScope.CurrentUser` and writes it to the application's standard User Secrets document under `Flourish:Profile:Credential`. Signing out or disabling remembered login removes that value.
+
+Give the application project a stable User Secrets identity:
+
+```xml
+<PropertyGroup>
+  <UserSecretsId>Foobar.Desktop</UserSecretsId>
+</PropertyGroup>
+```
+
+This lets the Generic Host and Flourish use the same User Secrets source. Without a User Secrets provider, ordinary sign-in remains in memory, but enabling remembered login throws an `InvalidOperationException` with setup guidance. User Secrets is not itself encrypted; Flourish encrypts its credential value before storage. Do not commit a remembered credential to `appsettings.json`.
 
 > [!WARNING]
 > The default `IProfileAuthService` validates only that the display name and password are non-empty. Applications that require identity verification must register their own authentication service.

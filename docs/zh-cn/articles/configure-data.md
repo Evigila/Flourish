@@ -1,11 +1,11 @@
 ---
 title: 应用数据
-description: 配置 Flourish 的本地化、应用标识和偏好存储。
+description: 配置 Flourish 的本地化，并使用 Flourish 与应用共享的 Generic Host 配置。
 ---
 
 # 应用数据
 
-`ConfigureData` 用于配置 Flourish 内置界面的语言、自定义翻译文件、应用标识和偏好存储。即使没有调用 `ConfigureData` 或 `SetLocale`，Flourish 也会使用内置英文（`EN`），因此内置界面始终具有可用文案。
+`ConfigureData` 用于配置 Flourish 内置界面的语言和自定义翻译文件。即使没有调用 `ConfigureData` 或 `SetLocale`，Flourish 也会使用内置英文（`EN`），因此内置界面始终具有可用文案。偏好与受保护的 Profile 凭据使用 .NET Generic Host 管理的配置。
 
 ## 选择内置语言
 
@@ -104,38 +104,60 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 | `Status.Disconnected` | Disconnected | 未连接 |
 | `Status.Power` | Power | 电源 |
 
-## 配置应用标识
+## Host 配置
 
-应用标识用于隔离已保存的主题偏好和已记住的 Profile 状态等数据。
+`FlourishBuilder.CreateDefaultBuilder(args)` 使用标准 Generic Host 配置管线。Flourish 从应用通过 `HostBuilderContext.Configuration` 和依赖注入获得的同一个 `IConfiguration` 中读取设置。
 
-```csharp
-builder.ConfigureData(data =>
+在基础 `appsettings.json` 中配置初始主题：
+
+```json
 {
-    data
-        .SetAppCompany("Example Company")
-        .SetAppName("Foobar");
-});
+  "Flourish": {
+    "Preferences": {
+      "Theme": "System"
+    }
+  }
+}
 ```
 
-`SetAppName` 提供偏好存储使用的应用名称。没有显式配置应用名称时，Flourish 会使用[标题栏](configure-title-bar.md)中设置的标题。
+桌面应用项目可以这样把文件复制到输出目录：
 
-`SetAppCompany` 提供默认偏好路径中的公司目录片段。更改应用名称或公司名称会改变默认存储位置，原位置中的偏好不会自动迁移。
-
-默认目录需要公司名称，以及应用名称或非空标题。无需按这些值派生存储位置时，可以改用显式目录。
-
-## 指定偏好目录
-
-`SetAppPreferenceDataPath` 覆盖默认存储目录。默认路径按应用标识隔离数据；便携式存储或工作区级存储可以通过自定义目录实现。
-
-```csharp
-builder.ConfigureData(data =>
-    data.SetAppPreferenceDataPath(preferencePath));
+```xml
+<ItemGroup>
+  <None Update="appsettings.json">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
 ```
 
-应用应确保自定义目录可写，并在整个运行期间保持可用。
+配置键为 `Flourish:Preferences:Theme`。读取遵循 Host 的完整优先级，因此环境专用 appsettings、User Secrets、环境变量和命令行参数都可以覆盖基础文件。用户在运行时更改主题时，Flourish 只写 Host 内容根目录中的基础 `appsettings.json`；更高优先级的来源仍可能在下次启动时再次覆盖该值。
+
+Flourish 写入基础文件时会保留无关设置，但会重新序列化整个 JSON 对象，因此文档会被重新格式化，注释也会被移除。内容根目录必须可写；已有文件必须是根节点为对象的有效 JSON。
+
+旧的 `preferences.json` 目录模型不再使用。`SetAppPreferenceDataPath`、`SetAppName` 和 `SetAppCompany` 已被移除；应用配置的位置与标识现在遵循标准 Hosting 约定。
+
+> [!NOTE]
+> Flourish 不会导入旧主题文件或此前生成的 Profile secret。迁移现有应用后，请在 appsettings 中配置初始主题，并重新登录。
+
+## User Secrets
+
+内置 Profile 只持久化已选择“记住登录”的凭据。请为应用项目配置稳定的 `UserSecretsId`，以便 Flourish 与 Host 使用同一份 User Secrets 文档：
+
+```xml
+<PropertyGroup>
+  <UserSecretsId>Foobar.Desktop</UserSecretsId>
+</PropertyGroup>
+```
+
+Flourish 会在所有环境中把该 User Secrets 来源加入 Host；如果 Generic Host 已在 Development 环境加载过它，则不会重复添加。在 Windows 上，物理文件位于 `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json`。
+
+受保护的凭据使用 `Flourish:Profile:Credential` 键。未选择“记住登录”的会话只保留在内存中，不会写入磁盘。没有 User Secrets provider 时，普通登录仍然可用，但启用“记住登录”会抛出包含配置指引的 `InvalidOperationException`。不要把 Profile 凭据放入 `appsettings.json`；该值应由 User Secrets 提供应用级存储。
+
+appsettings 与 User Secrets provider 都属于同一个 Host 配置；应用服务可以通过标准 `IConfiguration` API 读取其中的值。
 
 ## 相关功能
 
 - [标题栏](configure-title-bar.md)、[用户资料（Profile）](configure-profile.md)、[窗口](configure-window.md)、[状态栏](status-bar.md)和[消息服务](message-service.md)使用已本地化的内置文案。
-- [主题](configure-themes.md)会把用户选择的主题写入偏好存储。
+- [主题](configure-themes.md)通过 Host 配置持久化用户选择的主题。
+- [用户资料（Profile）](configure-profile.md)说明已记住凭据与 User Secrets。
 - [`IFlourishBuilder`](flourish-builder.md) 说明配置回调的应用时机。

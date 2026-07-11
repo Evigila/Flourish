@@ -59,7 +59,6 @@ internal sealed class FlourishCompositionRoot(
         }
 
         ApplyFlourishConfigurations();
-        ValidateDataConfiguration();
         ApplyServiceCollectionRegistrations(services);
         RegisterCoreServices(services);
     }
@@ -127,22 +126,6 @@ internal sealed class FlourishCompositionRoot(
         {
             configureStatusBar(statusBarBuilder);
         }
-    }
-
-    private void ValidateDataConfiguration()
-    {
-        if (!shellOptions.IsThemeEnabled && !dataOptions.HasConfiguration)
-        {
-            return;
-        }
-
-        if (!string.IsNullOrWhiteSpace(dataOptions.AppPreferenceDataPath))
-        {
-            return;
-        }
-
-        dataOptions.GetRequiredAppName(shellOptions);
-        dataOptions.GetRequiredCompanyName();
     }
 
     private void ApplyServiceCollectionRegistrations(IServiceCollection services)

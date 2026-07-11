@@ -60,7 +60,7 @@ builder
 
 - `SetNavToggle()` 需要同时启用 `UseNavigation()`，否则导航切换按钮不会显示。
 - 自定义内容不会自动启用所属区域。向标题栏、动态工具栏或状态栏添加内容前，需要先启用相应区域；自定义 Profile 内容还需要调用 `SetProfile()`。
-- `SetThemeToggle()` 的偏好存储需要[应用数据](configure-data.md)中说明的应用标识或显式目录。
+- `SetThemeToggle()` 的主题偏好使用[应用数据](configure-data.md)中说明的 Host 配置。
 
 ## 禁用与省略
 

@@ -1,98 +1,162 @@
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text.Json.Nodes;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class AppPreferenceService(
-    FlourishDataOptions dataOptions,
-    FlourishShellOptions shellOptions
+    IConfiguration configuration,
+    IHostEnvironment hostEnvironment
 )
 {
-    private const string PreferenceFileName = "preferences.json";
-    private static readonly JsonSerializerOptions SerializerOptions = CreateSerializerOptions();
+    private const string AppSettingsFileName = "appsettings.json";
+    private const string ThemeConfigurationKey = "Flourish:Preferences:Theme";
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        WriteIndented = true,
+    };
+    private readonly object gate = new();
 
-    public string PreferenceDirectory => dataOptions.GetRequiredAppPreferenceDataPath(shellOptions);
-
-    public string PreferenceFilePath => Path.Combine(PreferenceDirectory, PreferenceFileName);
+    public string AppSettingsFilePath =>
+        Path.Combine(hostEnvironment.ContentRootPath, AppSettingsFileName);
 
     public FlourishTheme? ReadTheme()
     {
-        if (!File.Exists(PreferenceFilePath))
+        var value = configuration[ThemeConfigurationKey];
+        if (
+            string.IsNullOrWhiteSpace(value)
+            || !Enum.TryParse(value, ignoreCase: true, out FlourishTheme theme)
+            || !Enum.IsDefined(theme)
+        )
         {
             return null;
         }
 
-        try
-        {
-            var json = File.ReadAllText(PreferenceFilePath);
-            return JsonSerializer
-                .Deserialize<FlourishPreferenceData>(json, SerializerOptions)
-                ?.Theme;
-        }
-        catch (IOException)
-        {
-            return null;
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return null;
-        }
+        return theme;
     }
 
     public void SaveTheme(FlourishTheme theme)
     {
-        Directory.CreateDirectory(PreferenceDirectory);
-        var data = ReadPreferences() ?? new FlourishPreferenceData();
-        data.Theme = theme;
-        var json = JsonSerializer.Serialize(data, SerializerOptions);
-        File.WriteAllText(PreferenceFilePath, json);
+        lock (gate)
+        {
+            var root = ReadAppSettings();
+            var flourish = GetOrCreateObject(root, "Flourish", "Flourish");
+            var preferences = GetOrCreateObject(
+                flourish,
+                "Preferences",
+                "Flourish:Preferences"
+            );
+            SetProperty(preferences, "Theme", JsonValue.Create(theme.ToString()));
+            WriteAppSettings(root);
+
+            if (configuration is IConfigurationRoot configurationRoot)
+            {
+                configurationRoot.Reload();
+            }
+        }
     }
 
-    private FlourishPreferenceData? ReadPreferences()
+    private JsonObject ReadAppSettings()
     {
-        if (!File.Exists(PreferenceFilePath))
+        if (!File.Exists(AppSettingsFilePath))
         {
-            return null;
+            return [];
         }
 
         try
         {
-            var json = File.ReadAllText(PreferenceFilePath);
-            return JsonSerializer.Deserialize<FlourishPreferenceData>(json, SerializerOptions);
+            using var stream = new FileStream(
+                AppSettingsFilePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete
+            );
+            var node = JsonNode.Parse(
+                stream,
+                documentOptions: new JsonDocumentOptions
+                {
+                    AllowTrailingCommas = true,
+                    CommentHandling = JsonCommentHandling.Skip,
+                }
+            );
+            return node as JsonObject
+                ?? throw new InvalidDataException(
+                    $"{AppSettingsFileName} must contain a JSON object."
+                );
         }
-        catch (IOException)
+        catch (JsonException error)
         {
-            return null;
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return null;
+            throw new InvalidDataException(
+                $"{AppSettingsFileName} contains invalid JSON and was not changed.",
+                error
+            );
         }
     }
 
-    private static JsonSerializerOptions CreateSerializerOptions()
+    private void WriteAppSettings(JsonObject root)
     {
-        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        var directory = Path.GetDirectoryName(AppSettingsFilePath)
+            ?? throw new InvalidOperationException(
+                $"{AppSettingsFileName} has no parent directory."
+            );
+        Directory.CreateDirectory(directory);
+        var temporaryPath = Path.Combine(
+            directory,
+            $".{AppSettingsFileName}.{Guid.NewGuid():N}.tmp"
+        );
+
+        try
         {
-            WriteIndented = true,
-        };
-        options.Converters.Add(new JsonStringEnumConverter());
-        return options;
+            File.WriteAllText(temporaryPath, root.ToJsonString(SerializerOptions));
+            File.Move(temporaryPath, AppSettingsFilePath, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(temporaryPath))
+            {
+                File.Delete(temporaryPath);
+            }
+        }
     }
 
-    private sealed class FlourishPreferenceData
+    private static JsonObject GetOrCreateObject(
+        JsonObject parent,
+        string propertyName,
+        string configurationPath
+    )
     {
-        public FlourishTheme? Theme { get; set; }
+        var existingName = FindPropertyName(parent, propertyName);
+        if (existingName is null)
+        {
+            var created = new JsonObject();
+            parent[propertyName] = created;
+            return created;
+        }
+
+        return parent[existingName] as JsonObject
+            ?? throw new InvalidDataException(
+                $"The {AppSettingsFileName} value '{configurationPath}' must be a JSON object."
+            );
+    }
+
+    private static void SetProperty(
+        JsonObject parent,
+        string propertyName,
+        JsonNode? value
+    )
+    {
+        parent[FindPropertyName(parent, propertyName) ?? propertyName] = value;
+    }
+
+    private static string? FindPropertyName(JsonObject parent, string propertyName)
+    {
+        return parent
+            .Select(property => property.Key)
+            .FirstOrDefault(existingName =>
+                string.Equals(existingName, propertyName, StringComparison.OrdinalIgnoreCase)
+            );
     }
 }

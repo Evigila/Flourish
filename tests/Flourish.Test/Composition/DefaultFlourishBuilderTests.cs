@@ -1,6 +1,13 @@
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Composition;
 using ArkheideSystem.Flourish.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Flourish.Test.Composition;
@@ -30,7 +37,7 @@ public sealed class DefaultFlourishBuilderTests
         var marker = new object();
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureData(data => data.SetAppPreferenceDataPath(@"C:\Flourish.Test"))
+            .ConfigureData(data => data.SetLocale("CN"))
             .ConfigureServices((_, services) => services.AddSingleton(marker))
             .ConfigureShell(shell =>
                 shell
@@ -65,7 +72,7 @@ public sealed class DefaultFlourishBuilderTests
         var dataOptions = flourish.GetRequiredService<FlourishDataOptions>();
 
         Assert.Same(marker, flourish.GetRequiredService<object>());
-        Assert.Equal(@"C:\Flourish.Test", dataOptions.AppPreferenceDataPath);
+        Assert.Equal("CN", dataOptions.Locale);
         Assert.True(options.IsNavigationPanelEnabled);
         Assert.False(options.IsStatusBarEnabled);
         Assert.Equal("Test Shell", options.Title);
@@ -87,6 +94,52 @@ public sealed class DefaultFlourishBuilderTests
         Assert.False(options.IsMaterialEffectEnabled);
         Assert.Equal(FlourishTheme.Dark, options.DefaultTheme);
         Assert.Equal("Ready", options.StatusText);
+    }
+
+    [Fact]
+    public void AddEntryAssemblyUserSecrets_PreservesDefaultHostPrecedenceAndAvoidsDuplicates()
+    {
+        var appSettingsSource = new JsonConfigurationSource
+        {
+            Path = "appsettings.json",
+            Optional = true,
+        };
+        var higherPrioritySource = new MemoryConfigurationSource();
+        var configuration = new ConfigurationBuilder();
+        configuration.Sources.Add(appSettingsSource);
+        configuration.Sources.Add(higherPrioritySource);
+        var entryAssembly = CreateAssemblyWithUserSecretsId();
+
+        DefaultFlourishBuilder.AddEntryAssemblyUserSecrets(
+            configuration,
+            entryAssembly
+        );
+        DefaultFlourishBuilder.AddEntryAssemblyUserSecrets(
+            configuration,
+            entryAssembly
+        );
+
+        Assert.Equal(3, configuration.Sources.Count);
+        Assert.Same(appSettingsSource, configuration.Sources[0]);
+        Assert.IsType<JsonConfigurationSource>(configuration.Sources[1]);
+        Assert.Same(higherPrioritySource, configuration.Sources[2]);
+    }
+
+    private static Assembly CreateAssemblyWithUserSecretsId()
+    {
+        var assembly = AssemblyBuilder.DefineDynamicAssembly(
+            new AssemblyName($"Flourish.UserSecrets.Test.{Guid.NewGuid():N}"),
+            AssemblyBuilderAccess.Run
+        );
+        var constructor = typeof(UserSecretsIdAttribute).GetConstructor([typeof(string)])
+            ?? throw new InvalidOperationException("UserSecretsIdAttribute constructor was not found.");
+        assembly.SetCustomAttribute(
+            new CustomAttributeBuilder(
+                constructor,
+                [$"ArkheideSystem.Flourish.Test.{Guid.NewGuid():N}"]
+            )
+        );
+        return assembly;
     }
 
     private sealed class TestPage : Page { }

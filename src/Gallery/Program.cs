@@ -25,9 +25,7 @@ internal static class Program
             .CreateDefaultBuilder(args)
             .ConfigureData(data =>
             {
-                data.SetAppCompany("Arkheide System Team")
-                    .SetAppName("Flourish Gallery")
-                    .SetLocale("CN");
+                data.SetLocale("CN");
             })
             .ConfigureServices(
                 (_, services) =>

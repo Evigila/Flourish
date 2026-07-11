@@ -20,7 +20,7 @@ builder.ConfigureServices((context, services) =>
 });
 ```
 
-The callback receives `HostBuilderContext`, so registrations can use the active environment and host configuration. View models, repositories, and other application services use the same `IServiceCollection` patterns as any Generic Host application.
+The callback receives `HostBuilderContext`, so registrations can use the active environment and the same Host configuration that supplies Flourish settings. `CreateDefaultBuilder` loads the standard appsettings providers, while an application `<UserSecretsId>` identifies the User Secrets document used for protected remembered Profile credentials. View models, repositories, and other application services use the same `IServiceCollection` patterns as any Generic Host application.
 
 ## Register navigable pages
 

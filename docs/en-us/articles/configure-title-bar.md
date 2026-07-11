@@ -11,8 +11,6 @@ The Flourish title bar can display application identity, search, breadcrumb navi
 
 ```csharp
 builder
-    .ConfigureData(data =>
-        data.SetAppCompany("Example Company").SetAppName("Foobar"))
     .ConfigureShell(shell =>
         shell.UseTitleBar().UseNavigation())
     .ConfigureTitleBar(titleBar =>
@@ -80,7 +78,7 @@ builder.ConfigureTitleBar(titleBar =>
 
 `SetProfile` displays the trigger, enables the built-in profile behavior, and selects the order used for names and initials. [Profile](configure-profile.md) explains login behavior and custom profile pages.
 
-`SetThemeToggle` displays the toggle, enables theme handling, and selects the theme used when no saved preference exists. [Themes](configure-themes.md) explains system following and preference behavior.
+`SetThemeToggle` displays the toggle, enables theme handling, and selects the theme used when Host configuration does not contain a saved preference. [Themes](configure-themes.md) explains system following and `appsettings.json` persistence.
 
 ## Related features
 

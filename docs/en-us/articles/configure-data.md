@@ -1,11 +1,11 @@
 ---
 title: Application data
-description: Configure localization, application identity, and preference storage.
+description: Configure localization and use the Generic Host configuration shared by Flourish and the application.
 ---
 
 # Application data
 
-`ConfigureData` controls Flourish built-in interface language, custom locale files, application identity, and preference storage. Localization is always available: when `ConfigureData` or `SetLocale` is omitted, Flourish uses the built-in English (`EN`) locale.
+`ConfigureData` controls Flourish built-in interface language and custom locale files. Localization is always available: when `ConfigureData` or `SetLocale` is omitted, Flourish uses the built-in English (`EN`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host.
 
 ## Select a built-in locale
 
@@ -104,40 +104,60 @@ The built-in locale files define the following keys. `{0}` is a format placehold
 | `Status.Disconnected` | Disconnected | 未连接 |
 | `Status.Power` | Power | 电源 |
 
-## Configure application identity
+## Host configuration
 
-Application identity scopes saved preferences such as the selected theme and remembered profile state.
+`FlourishBuilder.CreateDefaultBuilder(args)` uses the standard Generic Host configuration pipeline. Flourish reads its settings from the same `IConfiguration` that applications receive through `HostBuilderContext.Configuration` and dependency injection.
 
-```csharp
-builder.ConfigureData(data =>
+Place the initial theme in the base `appsettings.json` file:
+
+```json
 {
-    data
-        .SetAppCompany("Example Company")
-        .SetAppName("Foobar");
-});
+  "Flourish": {
+    "Preferences": {
+      "Theme": "System"
+    }
+  }
+}
 ```
 
-`SetAppName` supplies the name used for preference storage. If it is omitted, Flourish uses the title configured through [Title bar](configure-title-bar.md).
+Copy the file to the application output in a desktop project:
 
-`SetAppCompany` supplies the company directory segment in the default preference path. Changing either identity value changes that path; Flourish does not move preferences from the previous path.
-
-The default directory requires a company name and either an application name or a non-empty title. Use an explicit directory when the application should not derive storage from those values.
-
-## Choose a custom directory
-
-Use `SetAppPreferenceDataPath` when preferences must be portable or stored with a particular workspace.
-
-```csharp
-builder.ConfigureData(data =>
-{
-    data.SetAppPreferenceDataPath(preferenceDirectory);
-});
+```xml
+<ItemGroup>
+  <None Update="appsettings.json">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
 ```
 
-The application is responsible for choosing an accessible, persistent directory. Otherwise, keep the default location derived from the company and application names.
+The configuration key is `Flourish:Preferences:Theme`. Reads follow the complete Host precedence, so environment-specific appsettings files, User Secrets, environment variables, and command-line arguments can override the base file. A runtime theme change writes only the base `appsettings.json` in the Host content root; a higher-priority source can therefore override that value again on the next launch.
+
+Flourish preserves unrelated settings when it writes the base file, but serializes the complete JSON object again. This reformats the document and removes comments. The content root must be writable, and an existing file must contain valid JSON with an object at its root.
+
+The former `preferences.json` directory model is no longer used. `SetAppPreferenceDataPath`, `SetAppName`, and `SetAppCompany` have been removed; application configuration location and identity now follow standard Hosting conventions.
+
+> [!NOTE]
+> Flourish does not import the old theme file or generated Profile secret. Configure the initial theme in appsettings and sign in again after migrating an existing application.
+
+## User Secrets
+
+The built-in Profile stores only a remembered credential. Add a stable `UserSecretsId` to the application project so Flourish can use the same User Secrets document as the Host:
+
+```xml
+<PropertyGroup>
+  <UserSecretsId>Foobar.Desktop</UserSecretsId>
+</PropertyGroup>
+```
+
+Flourish adds that User Secrets source to the Host in every environment and avoids adding it twice when the Generic Host already loaded it for Development. On Windows, the physical document is `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json`.
+
+The protected credential uses the `Flourish:Profile:Credential` key. A login that is not marked as remembered remains only in memory and is never written to disk. Without a User Secrets provider, ordinary sign-in still works, but enabling remembered login throws an `InvalidOperationException` with setup guidance. Do not place profile credentials in `appsettings.json`; User Secrets supplies the application-scoped storage for this value.
+
+The appsettings and User Secrets providers remain part of the same Host configuration. Their values are available to application services through the usual `IConfiguration` APIs.
 
 ## Related features
 
 - [Title bar](configure-title-bar.md), [Profile](configure-profile.md), [Window](configure-window.md), [Status bar](status-bar.md), and [Message service](message-service.md) use localized built-in text.
-- [Themes](configure-themes.md) persist the selected theme for this application identity.
+- [Themes](configure-themes.md) persist the selected theme through Host configuration.
+- [Profile](configure-profile.md) explains remembered credentials and User Secrets.
 - [IFlourishBuilder](flourish-builder.md) explains when configuration callbacks are applied.

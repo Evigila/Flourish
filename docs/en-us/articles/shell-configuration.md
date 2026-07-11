@@ -9,8 +9,6 @@ description: Enable Flourish shell features and understand their prerequisites.
 
 ```csharp
 builder
-    .ConfigureData(data =>
-        data.SetAppCompany("Example Company").SetAppName("Foobar"))
     .ConfigureShell(shell =>
     {
         shell
@@ -50,7 +48,7 @@ Simple shell features use configuration as their activation point:
 - `UseMaterialEffect(effect)` applies the selected effect; `MaterialEffect.None` disables material composition.
 - `UseGlobalFont(family, size)` uses a default base size of `14` when the size is omitted.
 
-Title bar elements follow the same configuration-first model. [Title bar](configure-title-bar.md) explains how `SetProfile`, `SetThemeToggle`, and the other `Set...` methods both configure and display their controls. The title bar navigation toggle additionally requires `UseNavigation()` because it controls that panel. Theme preference storage requires the identity or explicit directory described in [Application data](configure-data.md).
+Title bar elements follow the same configuration-first model. [Title bar](configure-title-bar.md) explains how `SetProfile`, `SetThemeToggle`, and the other `Set...` methods both configure and display their controls. The title bar navigation toggle additionally requires `UseNavigation()` because it controls that panel. Theme preferences use the Host configuration described in [Application data](configure-data.md).
 
 ## Disable a feature
 
@@ -73,6 +71,6 @@ Omit `UseTips` or `UseGlobalFont` when their default shell behavior should remai
 These settings and extension points use their own configuration entry points:
 
 - [Window](configure-window.md) sets size, placement, and WPF window behavior.
-- [Application data](configure-data.md) identifies preference storage.
+- [Application data](configure-data.md) explains localization and Host configuration.
 - [Dependency injection](configure-services.md) registers application and replaceable Flourish services.
 - [Custom shell content](configure-custom-handler.md) inserts application elements into enabled shell regions.

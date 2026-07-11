@@ -11,14 +11,12 @@ description: 配置 Flourish 的主题切换、系统主题跟随和用户主题
 
 ```csharp
 builder
-    .ConfigureData(data =>
-        data.SetAppCompany("示例公司").SetAppName("Foobar"))
     .ConfigureShell(shell => shell.UseTitleBar())
     .ConfigureTitleBar(titleBar =>
         titleBar.SetThemeToggle(FlourishTheme.System));
 ```
 
-主题偏好需要显式偏好目录，或者公司名称与应用名称（也可以由非空标题提供应用名称）。具体存储选项参见[应用数据](configure-data.md)。
+参数是在 Host 配置不包含 `Flourish:Preferences:Theme` 时使用的回退值。[应用数据](configure-data.md)说明对应的 `appsettings.json` 设置。
 
 ## 选择初始模式
 
@@ -28,12 +26,13 @@ builder
 
 ## 主题偏好
 
-主题按钮会将用户选择写入应用偏好。更改应用标识会改变默认偏好位置，Flourish 不会自动迁移原位置中的主题偏好。
+Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。用户选择只写入 Host 的基础 `appsettings.json`；环境 appsettings、User Secrets、环境变量或命令行值仍可能在后续启动时优先。内容根目录必须保持可写，写入也会重新格式化 JSON 并移除注释。
 
 不调用 `SetThemeToggle` 时，主题按钮和主题切换功能都不会启用。
 
 ## 相关功能
 
 - [标题栏](configure-title-bar.md)配置主题切换入口及其他标题栏元素。
+- [应用数据](configure-data.md)说明 Host 配置与主题键。
 - [材质特效](configure-material-effect.md)配置与主题资源配合使用的窗口材质。
 - [排版](configure-font.md)配置 Shell 文本使用的基础字体。

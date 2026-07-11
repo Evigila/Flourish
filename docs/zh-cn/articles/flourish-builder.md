@@ -12,6 +12,7 @@ description: 理解 builder、Hosting 集成、服务注册和页面注册。
 `FlourishBuilder.CreateDefaultBuilder(args)` 创建采用 .NET Generic Host 默认配置和生命周期模型的运行时。因此应用可以使用标准 Hosting 能力：
 
 - 可以在 `ConfigureServices` 中通过 `HostBuilderContext` 访问配置和环境信息
+- Flourish 设置使用同一 Host 配置中的标准 appsettings 与 User Secrets 来源
 - 使用 `IServiceCollection` 注册服务
 - 最终服务提供器可通过 `IFlourish.Services` 获取
 - 应用对象可以用 `flourish.GetRequiredService<T>()` 解析
@@ -37,7 +38,7 @@ return flourish.Run<App>();
 
 | 功能 | Builder 方法 | 作用 |
 | --- | --- | --- |
-| [应用数据](configure-data.md) | `ConfigureData` | 配置本地化、应用标识和偏好存储。 |
+| [应用数据](configure-data.md) | `ConfigureData` | 配置本地化，并说明共享的 Host 配置。 |
 | [依赖注入](configure-services.md) | `ConfigureServices` | 注册应用服务、页面、命令解析器、ViewModel 和基础设施。 |
 | [Shell 配置](shell-configuration.md) | `ConfigureShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
 | [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |

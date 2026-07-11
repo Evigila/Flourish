@@ -11,25 +11,23 @@ Themes provide light, dark, and system-following shell resources. `SetThemeToggl
 
 ```csharp
 builder
-    .ConfigureData(data =>
-        data.SetAppCompany("Example Company").SetAppName("Foobar"))
     .ConfigureShell(shell => shell.UseTitleBar())
     .ConfigureTitleBar(titleBar =>
         titleBar.SetThemeToggle(FlourishTheme.System));
 ```
 
-Theme preferences require either an explicit preference directory or a company name plus an application name or non-empty title. [Application data](configure-data.md) explains those storage options.
+The argument supplies the fallback used when `Flourish:Preferences:Theme` is absent from Host configuration. [Application data](configure-data.md) explains the `appsettings.json` setting.
 
 ## Theme selection and persistence
 
 `FlourishTheme.System` follows the Windows app theme. `Light` and `Dark` force a specific default until the user changes the theme.
 
-When `SetThemeToggle` is configured, Flourish stores the selected theme in application preferences. [Application data](configure-data.md) supplies the storage identity.
+When `SetThemeToggle` is configured, Flourish reads `Flourish:Preferences:Theme` with the full Host configuration precedence. A user selection writes only the Host's base `appsettings.json`; environment appsettings, User Secrets, environment variables, or command-line values can still take priority on a later launch. The content root must remain writable, and writing reformats the JSON and removes comments.
 
 The toggle requires the title bar surface to be enabled with `UseTitleBar()`. If `SetThemeToggle` is not called, the control remains hidden and theme selection is not enabled.
 
 ## Related features
 
-- [Application data](configure-data.md) provides the preference storage identity.
+- [Application data](configure-data.md) explains Host configuration and the theme key.
 - [Title bar](configure-title-bar.md) configures and displays the theme toggle.
 - [Material effects](configure-material-effect.md) work with the effective light and dark resources.

@@ -171,7 +171,6 @@ internal sealed class ProfileService : IProfileService
                 normalizedRequest.ImagePath,
                 rememberLogin: false
             );
-            await secretStore.SaveAsync(stored, cancellationToken).ConfigureAwait(false);
 
             isInitialized = true;
             currentCredentials = stored;
@@ -217,13 +216,21 @@ internal sealed class ProfileService : IProfileService
                 return;
             }
 
-            currentCredentials = currentCredentials with
+            var updatedCredentials = currentCredentials with
             {
                 RememberLogin = rememberLogin,
             };
-            await secretStore
-                .SaveAsync(currentCredentials, cancellationToken)
-                .ConfigureAwait(false);
+            if (rememberLogin)
+            {
+                await secretStore
+                    .SaveAsync(updatedCredentials, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
+            }
+            currentCredentials = updatedCredentials;
             LoginState = nextState;
             changed = CreateChangedEventArgs();
         }

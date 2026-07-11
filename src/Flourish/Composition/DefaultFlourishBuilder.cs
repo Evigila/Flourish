@@ -1,13 +1,19 @@
+using System.IO;
+using System.Reflection;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Composition;
 
 internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
 {
-    private readonly IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args);
+    private readonly IHostBuilder hostBuilder = CreateHostBuilder(args);
     private readonly FlourishShellOptions shellOptions = new();
     private readonly FlourishDataOptions dataOptions = new();
     private readonly List<Action<IFlourishDataBuilder>> dataConfigurations = [];
@@ -138,4 +144,104 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
         return new FlourishRuntime(hostBuilder.Build());
     }
 
+    private static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        var builder = Host.CreateDefaultBuilder(args);
+        builder.ConfigureAppConfiguration((_, configuration) =>
+            AddEntryAssemblyUserSecrets(configuration)
+        );
+        return builder;
+    }
+
+    internal static void AddEntryAssemblyUserSecrets(
+        IConfigurationBuilder configuration,
+        Assembly? entryAssembly = null
+    )
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        entryAssembly ??= Assembly.GetEntryAssembly();
+        var userSecretsId = entryAssembly
+            ?.GetCustomAttribute<UserSecretsIdAttribute>()
+            ?.UserSecretsId;
+        if (string.IsNullOrWhiteSpace(userSecretsId) || entryAssembly is null)
+        {
+            return;
+        }
+
+        var secretPath = Path.GetFullPath(
+            PathHelper.GetSecretsPathFromSecretsId(userSecretsId)
+        );
+        var isAlreadyRegistered = configuration.Sources
+            .OfType<JsonConfigurationSource>()
+            .Any(source => IsSourceForPath(source, secretPath));
+        if (!isAlreadyRegistered)
+        {
+            var insertionIndex = configuration.Sources
+                .Select((source, index) => (source, index))
+                .Where(item => item.source is JsonConfigurationSource)
+                .Select(item => item.index + 1)
+                .DefaultIfEmpty(0)
+                .Last();
+            configuration.AddUserSecrets(
+                entryAssembly,
+                optional: true,
+                reloadOnChange: true
+            );
+
+            var userSecretsSource = configuration.Sources[^1];
+            configuration.Sources.RemoveAt(configuration.Sources.Count - 1);
+            configuration.Sources.Insert(insertionIndex, userSecretsSource);
+        }
+    }
+
+    private static bool IsSourceForPath(
+        JsonConfigurationSource source,
+        string expectedPath
+    )
+    {
+        if (string.IsNullOrWhiteSpace(source.Path))
+        {
+            return false;
+        }
+
+        if (Path.IsPathRooted(source.Path))
+        {
+            return string.Equals(
+                Path.GetFullPath(source.Path),
+                expectedPath,
+                StringComparison.OrdinalIgnoreCase
+            );
+        }
+
+        if (source.FileProvider is null)
+        {
+            return string.Equals(
+                Path.GetFileName(source.Path),
+                "secrets.json",
+                StringComparison.OrdinalIgnoreCase
+            );
+        }
+
+        var physicalPath = source.FileProvider.GetFileInfo(source.Path).PhysicalPath;
+        if (
+            string.IsNullOrWhiteSpace(physicalPath)
+            && source.FileProvider is PhysicalFileProvider physicalFileProvider
+        )
+        {
+            physicalPath = Path.Combine(physicalFileProvider.Root, source.Path);
+        }
+
+        return string.IsNullOrWhiteSpace(physicalPath)
+            ? string.Equals(
+                Path.GetFileName(source.Path),
+                "secrets.json",
+                StringComparison.OrdinalIgnoreCase
+            )
+            : string.Equals(
+                Path.GetFullPath(physicalPath),
+                expectedPath,
+                StringComparison.OrdinalIgnoreCase
+            );
+    }
 }

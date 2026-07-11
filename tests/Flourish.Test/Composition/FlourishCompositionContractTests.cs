@@ -49,21 +49,6 @@ public sealed class FlourishCompositionContractTests
     }
 
     [Fact]
-    public void Build_WithOnlyExplicitPreferencePath_DoesNotRequireApplicationIdentity()
-    {
-        var builder = FlourishBuilder
-            .CreateDefaultBuilder([])
-            .ConfigureData(data => data.SetAppPreferenceDataPath(@"C:\Portable\Flourish"));
-
-        using var flourish = builder.Build();
-
-        Assert.Equal(
-            @"C:\Portable\Flourish",
-            flourish.GetRequiredService<FlourishDataOptions>().AppPreferenceDataPath
-        );
-    }
-
-    [Fact]
     public void Build_WithDuplicatePageTypeRegistrations_ThrowsInvalidOperationException()
     {
         var builder = FlourishBuilder

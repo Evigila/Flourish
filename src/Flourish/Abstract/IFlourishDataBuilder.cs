@@ -1,16 +1,14 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Configures localization, application identity, and preference storage used by Flourish.
+/// Configures localization used by Flourish.
 /// </summary>
 /// <example>
 /// <code><![CDATA[
 /// builder.ConfigureData(data =>
 /// {
 ///     data.SetLocale("EN")
-///         .AddLocale("Locales/lang_EN.json")
-///         .SetAppCompany("Example Company")
-///         .SetAppName("Foobar");
+///         .AddLocale("Locales/lang_EN.json");
 /// });
 /// ]]></code>
 /// </example>
@@ -109,28 +107,4 @@ public interface IFlourishDataBuilder
     /// </remarks>
     IFlourishDataBuilder AddLocale(string path);
 
-    /// <summary>
-    /// Sets the directory used to store Flourish application preference data.
-    /// </summary>
-    /// <param name="path">The preference data directory path.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishDataBuilder SetAppPreferenceDataPath(string path);
-
-    /// <summary>
-    /// Sets the application name used for preference data paths.
-    /// </summary>
-    /// <param name="appName">The application name.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    /// <remarks>
-    /// When this value is not set, Flourish uses the title configured by
-    /// <see cref="IFlourishTitlebarBuilder.SetTitle(string)" />.
-    /// </remarks>
-    IFlourishDataBuilder SetAppName(string appName);
-
-    /// <summary>
-    /// Sets the company name used for preference data paths.
-    /// </summary>
-    /// <param name="companyName">The company name.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishDataBuilder SetAppCompany(string companyName);
 }
