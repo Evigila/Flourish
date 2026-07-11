@@ -76,6 +76,7 @@
             />
             <TextBox
               x:Name="FirstNameInput"
+              Padding="6,4"
               Style="{StaticResource FlourishFormTextBoxStyle}"
               TextChanged="NameInput_TextChanged"
             />
@@ -90,6 +91,7 @@
             />
             <TextBox
               x:Name="LastNameInput"
+              Padding="6,4"
               Style="{StaticResource FlourishFormTextBoxStyle}"
               TextChanged="NameInput_TextChanged"
             />

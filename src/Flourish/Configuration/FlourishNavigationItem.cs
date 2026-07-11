@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Configuration;
 
@@ -101,7 +100,10 @@ internal sealed class FlourishNavigationItem : INotifyPropertyChanged
 
     public Thickness IndentMargin => IsChild ? new Thickness(16, 0, 0, 0) : new Thickness();
 
-    public string ExpandGlyph => !HasChildren ? string.Empty : IsExpanded ? "\uE70D" : "\uE76C";
+    public string ExpandGlyph =>
+        !HasChildren ? string.Empty
+        : IsExpanded ? "\uE70D"
+        : "\uE76C";
 
     public bool IsExpanded
     {

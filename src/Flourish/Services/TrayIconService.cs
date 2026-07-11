@@ -1,6 +1,4 @@
-using System.Drawing;
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
 using Application = System.Windows.Application;
 using Forms = System.Windows.Forms;
@@ -12,7 +10,8 @@ internal sealed class TrayIconService(
     FlourishLocalizationService localizationService
 ) : IDisposable
 {
-    private const string DefaultIconUri = "pack://application:,,,/Flourish;component/Assets/favicon.ico";
+    private const string DefaultIconUri =
+        "pack://application:,,,/Flourish;component/Assets/favicon.ico";
 
     private Forms.NotifyIcon? notifyIcon;
     private Icon? icon;
@@ -162,10 +161,8 @@ internal sealed class TrayIconService(
 
     private static string CreateTooltipText(string tooltipText)
     {
-        return string.IsNullOrWhiteSpace(tooltipText)
-            ? "Flourish"
-            : tooltipText.Length > 63
-                ? tooltipText[..63]
-                : tooltipText;
+        return string.IsNullOrWhiteSpace(tooltipText) ? "Flourish"
+            : tooltipText.Length > 63 ? tooltipText[..63]
+            : tooltipText;
     }
 }

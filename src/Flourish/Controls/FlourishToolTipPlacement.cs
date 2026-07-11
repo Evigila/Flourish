@@ -1,5 +1,4 @@
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Point = System.Windows.Point;
@@ -149,9 +148,7 @@ public static class FlourishToolTipPlacement
 
         if (nearestVerticalEdge <= nearestHorizontalEdge)
         {
-            return distanceToTop <= distanceToBottom
-                ? PlacementMode.Bottom
-                : PlacementMode.Top;
+            return distanceToTop <= distanceToBottom ? PlacementMode.Bottom : PlacementMode.Top;
         }
 
         return distanceToLeft <= distanceToRight ? PlacementMode.Right : PlacementMode.Left;
@@ -240,8 +237,10 @@ public static class FlourishToolTipPlacement
         var current = source;
         while (current is not null)
         {
-            if (current is FrameworkElement { Name: var currentName } element
-                && string.Equals(currentName, name, StringComparison.Ordinal))
+            if (
+                current is FrameworkElement { Name: var currentName } element
+                && string.Equals(currentName, name, StringComparison.Ordinal)
+            )
             {
                 return element;
             }
@@ -260,12 +259,10 @@ public static class FlourishToolTipPlacement
         var current = source;
         while (current is not null)
         {
-            if (current is FrameworkElement element
-                && string.Equals(
-                    element.GetType().Name,
-                    typeName,
-                    StringComparison.Ordinal
-                ))
+            if (
+                current is FrameworkElement element
+                && string.Equals(element.GetType().Name, typeName, StringComparison.Ordinal)
+            )
             {
                 return element;
             }

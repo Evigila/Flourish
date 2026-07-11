@@ -1,4 +1,3 @@
-using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Gallery.Views;
 using Microsoft.Extensions.DependencyInjection;

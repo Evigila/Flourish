@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Shell;
 using ArkheideSystem.Flourish.Abstract;
 using Brushes = System.Windows.Media.Brushes;
@@ -117,12 +116,7 @@ internal sealed class MaterialEffectService
         }
 
         var darkMode = isDarkMode ? 1 : 0;
-        DwmSetWindowAttribute(
-            hwnd,
-            DwmwaUseImmersiveDarkMode,
-            ref darkMode,
-            Marshal.SizeOf<int>()
-        );
+        DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, ref darkMode, Marshal.SizeOf<int>());
     }
 
     private static bool IsSystemBackdropSupported()

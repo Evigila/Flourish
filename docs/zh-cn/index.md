@@ -7,7 +7,7 @@ description: Flourish WPF Shell 组合库文档。
 
 Flourish 是面向 WPF 的开源桌面应用组合库。它提供基于 Host 的启动流程、窗口外观配置、导航、动态工具栏命令、状态栏集成、页面缓存、材质特效和动效选项。
 
-应用启动可以放在 `Program` 或 `App.xaml.cs` 中，视觉资源可以从 `App.xaml` 引入，Shell 行为则通过 fluent builder 配置。
+应用启动通常放在 `App.xaml.cs` 中，也可以放在应用配置的其他自定义入口中；视觉资源可以从 `App.xaml` 引入，Shell 行为则通过 fluent builder 配置。
 
 > [!NOTE]
 > Flourish 面向 WPF，因此仅支持 Windows 桌面应用。项目应使用 `net10.0-windows` 这类 Windows 目标框架，并启用 WPF。

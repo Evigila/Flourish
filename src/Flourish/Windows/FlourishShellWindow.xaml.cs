@@ -402,6 +402,22 @@ internal partial class FlourishShellWindow : Window
         UpdateProfileCardPosition();
     }
 
+    private void ProfileFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        const double innerCornerRadius = 7;
+        if (e.NewSize.Width <= 0 || e.NewSize.Height <= 0)
+        {
+            ProfileFrame.Clip = null;
+            return;
+        }
+
+        ProfileFrame.Clip = new RectangleGeometry(
+            new Rect(new System.Windows.Point(), e.NewSize),
+            innerCornerRadius,
+            innerCornerRadius
+        );
+    }
+
     private void UpdateProfileCardPosition()
     {
         const double safeMargin = 5;

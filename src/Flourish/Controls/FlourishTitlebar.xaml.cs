@@ -1,6 +1,5 @@
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -14,7 +13,8 @@ namespace ArkheideSystem.Flourish.Controls;
 
 internal partial class FlourishTitlebar : UserControl
 {
-    private const string DefaultIconUri = "pack://application:,,,/Flourish;component/Assets/favicon.ico";
+    private const string DefaultIconUri =
+        "pack://application:,,,/Flourish;component/Assets/favicon.ico";
     private const string SunIconData =
         "M12,2 L12,4 M12,20 L12,22 M4.93,4.93 L6.34,6.34 "
         + "M17.66,17.66 L19.07,19.07 M2,12 L4,12 M20,12 L22,12 "
@@ -108,11 +108,7 @@ internal partial class FlourishTitlebar : UserControl
         return null;
     }
 
-    public void SetBreadcrumbNavigationState(
-        bool isVisible,
-        bool canGoBack,
-        bool canGoForward
-    )
+    public void SetBreadcrumbNavigationState(bool isVisible, bool canGoBack, bool canGoForward)
     {
         BreadcrumbNavigationHost.Visibility = ToVisibility(isVisible);
         BackButton.Visibility = ToVisibility(isVisible && (canGoBack || !canGoForward));
@@ -154,15 +150,16 @@ internal partial class FlourishTitlebar : UserControl
                 ? FlourishLocaleKeys.ThemeDark
                 : FlourishLocaleKeys.ThemeLight
         );
-        ThemeToggleButton.ToolTip = requestedTheme == FlourishTheme.System
-            ? localizationService.Format(
-                FlourishLocaleKeys.TitleBarThemeSystem,
-                effectiveThemeText
-            )
-            : localizationService.Format(
-                FlourishLocaleKeys.TitleBarThemeCurrent,
-                effectiveThemeText
-            );
+        ThemeToggleButton.ToolTip =
+            requestedTheme == FlourishTheme.System
+                ? localizationService.Format(
+                    FlourishLocaleKeys.TitleBarThemeSystem,
+                    effectiveThemeText
+                )
+                : localizationService.Format(
+                    FlourishLocaleKeys.TitleBarThemeCurrent,
+                    effectiveThemeText
+                );
     }
 
     public void SetProfile(ProfileUser profile)
@@ -215,10 +212,7 @@ internal partial class FlourishTitlebar : UserControl
         UpdateProfileRegionVisibility();
     }
 
-    public void SetRegionContent(
-        FlourishRegion region,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    public void SetRegionContent(FlourishRegion region, IReadOnlyList<FrameworkElement> elements)
     {
         switch (region)
         {
@@ -237,7 +231,11 @@ internal partial class FlourishTitlebar : UserControl
                 UpdateProfileRegionVisibility();
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(region), region, "Unsupported title bar region.");
+                throw new ArgumentOutOfRangeException(
+                    nameof(region),
+                    region,
+                    "Unsupported title bar region."
+                );
         }
     }
 
@@ -327,10 +325,7 @@ internal partial class FlourishTitlebar : UserControl
         );
     }
 
-    private static void SetPanelContent(
-        WpfPanel host,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    private static void SetPanelContent(WpfPanel host, IReadOnlyList<FrameworkElement> elements)
     {
         host.Children.Clear();
         foreach (var element in elements)
