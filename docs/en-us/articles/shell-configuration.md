@@ -29,7 +29,7 @@ builder
 
 | Switch | Feature | Detailed configuration |
 | --- | --- | --- |
-| `UseTitleBar` | Displays the built-in title-bar content; the custom caption and window commands remain available when disabled. | [Title bar](configure-title-bar.md) |
+| `UseTitleBar` | Uses the Flourish custom title bar; when disabled, the shell uses the native Windows title bar and preserves the requested material effect. | [Title bar](configure-title-bar.md) |
 | `UseNavigation` | Displays the navigation panel. | [Navigation](navigation.md) |
 | `UseDynamicToolbar` | Displays page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
 | `UseTips(delay)` | Enables Flourish tooltips with the requested initial delay. | [Tooltips](configure-tips.md) |

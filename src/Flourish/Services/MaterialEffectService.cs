@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Shell;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Configuration;
 using Brushes = System.Windows.Media.Brushes;
@@ -19,14 +18,14 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     private const int DwmwaSystemBackdropType = 38;
     private const int DwmsbtNone = 1;
     private const int DwmsbtMainWindow = 2;
+    private const int WmDwmCompositionChanged = 0x031E;
 
     private readonly object stateGate = new();
     private Window? owner;
+    private HwndSource? hwndSource;
     private MediaBrush? originalBackground;
     private MediaColor originalCompositionBackground;
-    private Thickness originalGlassFrameThickness;
     private bool hasOriginalCompositionBackground;
-    private bool hasOriginalGlassFrameThickness;
     private bool isSourceInitializationPending;
 
     public MaterialEffect CurrentEffect { get; private set; } =
@@ -121,12 +120,17 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         }
 
         var ownerChanged = owner != window;
+        if (ownerChanged && hwndSource is not null)
+        {
+            hwndSource.RemoveHook(WindowProc);
+            hwndSource = null;
+        }
+
         owner = window;
         if (ownerChanged)
         {
             originalBackground = window.Background;
             hasOriginalCompositionBackground = false;
-            hasOriginalGlassFrameThickness = false;
         }
         lock (stateGate)
         {
@@ -135,6 +139,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
 
         if (new WindowInteropHelper(window).Handle != IntPtr.Zero)
         {
+            AttachWindowSource(window);
             ApplyCurrentEffectCore(window);
             return;
         }
@@ -159,6 +164,8 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             isSourceInitializationPending = false;
         }
 
+        hwndSource?.RemoveHook(WindowProc);
+        hwndSource = null;
         RunOnWindowDispatcher(window, () => RemoveEffectCore(window));
         owner = null;
     }
@@ -174,6 +181,17 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         SetDarkMode(isDarkMode);
     }
 
+    internal void Reapply(Window window)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        if (!ReferenceEquals(owner, window))
+        {
+            return;
+        }
+
+        RunOnWindowDispatcher(window, () => ApplyCurrentEffectCore(window));
+    }
+
     private void Owner_SourceInitialized(object? sender, EventArgs e)
     {
         if (sender is not Window window || owner != window)
@@ -183,7 +201,42 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
 
         window.SourceInitialized -= Owner_SourceInitialized;
         isSourceInitializationPending = false;
+        AttachWindowSource(window);
         ApplyCurrentEffectCore(window);
+    }
+
+    private void AttachWindowSource(Window window)
+    {
+        var hwnd = new WindowInteropHelper(window).Handle;
+        var source = hwnd == IntPtr.Zero ? null : HwndSource.FromHwnd(hwnd);
+        if (ReferenceEquals(hwndSource, source))
+        {
+            return;
+        }
+
+        hwndSource?.RemoveHook(WindowProc);
+        hwndSource = source;
+        hwndSource?.AddHook(WindowProc);
+    }
+
+    private IntPtr WindowProc(
+        IntPtr hwnd,
+        int message,
+        IntPtr wParam,
+        IntPtr lParam,
+        ref bool handled
+    )
+    {
+        if (
+            message == WmDwmCompositionChanged
+            && owner is { } attachedOwner
+            && new WindowInteropHelper(attachedOwner).Handle == hwnd
+        )
+        {
+            ApplyCurrentEffectCore(attachedOwner);
+        }
+
+        return IntPtr.Zero;
     }
 
     private void ApplyCurrentEffectCore(Window window)
@@ -241,19 +294,12 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             compositionTarget.BackgroundColor = Colors.Transparent;
         }
 
-        if (WindowChrome.GetWindowChrome(window) is { } chrome)
-        {
-            if (!hasOriginalGlassFrameThickness)
-            {
-                originalGlassFrameThickness = chrome.GlassFrameThickness;
-                hasOriginalGlassFrameThickness = true;
-            }
-
-            chrome.GlassFrameThickness = new Thickness(-1);
-        }
+        var frameMargins = DwmFrameMargins.ExtendAcrossClientArea;
+        var frameExtended =
+            DwmExtendFrameIntoClientArea(hwnd, ref frameMargins) == Succeeded;
 
         var backdropType = DwmsbtMainWindow;
-        var isApplied =
+        var backdropApplied =
             DwmSetWindowAttribute(
                 hwnd,
                 DwmwaSystemBackdropType,
@@ -262,7 +308,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             ) == Succeeded;
         lock (stateGate)
         {
-            IsApplied = isApplied;
+            IsApplied = frameExtended && backdropApplied;
         }
         ApplyDarkMode(hwnd, IsDarkMode);
     }
@@ -270,6 +316,12 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     private void RemoveEffectCore(Window window)
     {
         var hwnd = new WindowInteropHelper(window).Handle;
+        if (hwnd != IntPtr.Zero)
+        {
+            var frameMargins = DwmFrameMargins.None;
+            DwmExtendFrameIntoClientArea(hwnd, ref frameMargins);
+        }
+
         if (hwnd != IntPtr.Zero && IsSystemBackdropSupported())
         {
             var backdropType = DwmsbtNone;
@@ -289,14 +341,6 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         )
         {
             compositionTarget.BackgroundColor = originalCompositionBackground;
-        }
-
-        if (
-            hasOriginalGlassFrameThickness
-            && WindowChrome.GetWindowChrome(window) is { } chrome
-        )
-        {
-            chrome.GlassFrameThickness = originalGlassFrameThickness;
         }
 
         lock (stateGate)
@@ -391,10 +435,45 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     }
 
     [DllImport("dwmapi.dll", PreserveSig = true)]
+    private static extern int DwmExtendFrameIntoClientArea(
+        IntPtr hwnd,
+        ref DwmFrameMargins margins
+    );
+
+    [DllImport("dwmapi.dll", PreserveSig = true)]
     private static extern int DwmSetWindowAttribute(
         IntPtr hwnd,
         int dwAttribute,
         ref int pvAttribute,
         int cbAttribute
     );
+
+    [StructLayout(LayoutKind.Sequential)]
+    private readonly struct DwmFrameMargins
+    {
+        public static DwmFrameMargins ExtendAcrossClientArea => new(-1, -1, -1, -1);
+
+        public static DwmFrameMargins None => new(0, 0, 0, 0);
+
+        private readonly int leftWidth;
+
+        private readonly int rightWidth;
+
+        private readonly int topHeight;
+
+        private readonly int bottomHeight;
+
+        private DwmFrameMargins(
+            int leftWidth,
+            int rightWidth,
+            int topHeight,
+            int bottomHeight
+        )
+        {
+            this.leftWidth = leftWidth;
+            this.rightWidth = rightWidth;
+            this.topHeight = topHeight;
+            this.bottomHeight = bottomHeight;
+        }
+    }
 }

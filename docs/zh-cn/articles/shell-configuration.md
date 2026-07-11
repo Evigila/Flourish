@@ -26,7 +26,7 @@ builder.ConfigureShell(shell =>
 
 | Shell 方法 | 功能文章 | 行为 |
 | --- | --- | --- |
-| `UseTitleBar` | [标题栏](configure-title-bar.md) | 启用内置标题栏内容；禁用后仍保留自定义 Caption 与窗口命令。`ConfigureTitleBar` 配置并显示其中的元素。 |
+| `UseTitleBar` | [标题栏](configure-title-bar.md) | 启用 Flourish 自定义标题栏；禁用后使用 Windows 原生标题栏，并保留请求的材质效果。`ConfigureTitleBar` 配置并显示自定义标题栏中的元素。 |
 | `UseNavigation` | [导航](navigation.md) | 启用导航区域；`ConfigureNavigation` 配置方向、分组、固定项和导航树。 |
 | `UseDynamicToolbar` | [动态工具栏](dynamic-toolbar.md) | 启用工具栏区域；`ConfigureDynamicToolbar` 配置随页面变化的命令。 |
 | `UseTips` | [提示浮层](configure-tips.md) | 设置显示延迟并启用提示浮层。 |

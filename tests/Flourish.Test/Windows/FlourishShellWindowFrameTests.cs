@@ -1,10 +1,11 @@
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Shell;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Windows;
 
@@ -13,31 +14,39 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 public sealed class FlourishShellWindowFrameTests
 {
     [Fact]
-    public void Apply_KeepsOneCustomFrameForTheWindowLifetime()
+    public void Apply_TogglesCustomAndNativeFramesWithoutRecreatingTheWindow()
     {
         RunInSta(() =>
         {
-            var window = new Window { ShowInTaskbar = false };
+            var window = CreateTestWindow();
             var shellBorder = new Border();
+            window.Content = shellBorder;
             var sut = new FlourishShellWindowFrame(window, shellBorder);
-            sut.Apply();
-            var chrome = WindowChrome.GetWindowChrome(window);
-            var handle = new WindowInteropHelper(window).EnsureHandle();
+            sut.Apply(FlourishShellWindowFrameMode.Custom);
+            window.Show();
+            var chrome = sut.Chrome;
+            var handle = new WindowInteropHelper(window).Handle;
 
             try
             {
+                AssertCustomFrame(window, shellBorder, handle, chrome);
                 for (var index = 0; index < 20; index++)
                 {
-                    sut.Apply();
+                    sut.Apply(FlourishShellWindowFrameMode.Native);
+                    AssertNativeFrame(window, shellBorder, handle, chrome);
 
-                    Assert.Equal(handle, new WindowInteropHelper(window).Handle);
-                    Assert.Equal(WindowStyle.None, window.WindowStyle);
-                    Assert.Same(chrome, WindowChrome.GetWindowChrome(window));
-                    Assert.Same(sut.Chrome, chrome);
-                    Assert.Equal(new Thickness(1), shellBorder.BorderThickness);
+                    // Reapplying a mode must be idempotent.
+                    sut.Apply(FlourishShellWindowFrameMode.Native);
+                    AssertNativeFrame(window, shellBorder, handle, chrome);
+
+                    sut.Apply(FlourishShellWindowFrameMode.Custom);
+                    AssertCustomFrame(window, shellBorder, handle, chrome);
+
+                    sut.Apply(FlourishShellWindowFrameMode.Custom);
+                    AssertCustomFrame(window, shellBorder, handle, chrome);
                 }
 
-                Assert.Equal(new Thickness(6), chrome!.ResizeBorderThickness);
+                Assert.Equal(new Thickness(6), chrome.ResizeBorderThickness);
                 Assert.False(chrome.UseAeroCaptionButtons);
             }
             finally
@@ -48,44 +57,132 @@ public sealed class FlourishShellWindowFrameTests
     }
 
     [Fact]
-    public void SurfaceVisibilityDoesNotAffectAttachedFrameOrMaterial()
+    public void Apply_NativeFrameCanBeTheInitialMode()
     {
         RunInSta(() =>
         {
-            var window = new Window { ShowInTaskbar = false };
-            var shellBorder = new Border();
-            var titleBarContent = new Border();
-            var titleBarPresenter = new FlourishTitlebarFeaturePresenter(titleBarContent);
+            var window = CreateTestWindow();
+            var shellBorder = new Border { BorderThickness = new Thickness(7) };
+            window.Content = shellBorder;
             var frame = new FlourishShellWindowFrame(window, shellBorder);
-            var material = new MaterialEffectService();
-            frame.Apply();
-            new WindowInteropHelper(window).EnsureHandle();
-            var effect = material.IsSupported(MaterialEffect.Mica)
-                ? MaterialEffect.Mica
-                : MaterialEffect.None;
-            material.Attach(window, effect);
-            var chrome = WindowChrome.GetWindowChrome(window);
-            var glassFrame = chrome!.GlassFrameThickness;
-            var isApplied = material.IsApplied;
+            frame.Apply(FlourishShellWindowFrameMode.Native);
+            window.Show();
+            var handle = new WindowInteropHelper(window).Handle;
 
             try
             {
-                for (var index = 0; index < 20; index++)
-                {
-                    var isTitleBarEnabled = index % 2 != 0;
-                    titleBarPresenter.SetEnabled(isTitleBarEnabled);
+                AssertNativeFrame(window, shellBorder, handle, frame.Chrome);
 
-                    Assert.Equal(isTitleBarEnabled, titleBarPresenter.IsEnabled);
-                    Assert.Equal(
-                        isTitleBarEnabled ? Visibility.Visible : Visibility.Collapsed,
-                        titleBarContent.Visibility
-                    );
-                    Assert.Same(chrome, WindowChrome.GetWindowChrome(window));
-                    Assert.Equal(WindowStyle.None, window.WindowStyle);
-                    Assert.Equal(effect, material.CurrentEffect);
-                    Assert.Equal(isApplied, material.IsApplied);
-                    Assert.Equal(glassFrame, chrome.GlassFrameThickness);
-                }
+                frame.Apply(FlourishShellWindowFrameMode.Custom);
+
+                AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void MaterialEffect_RemainsIndependentAcrossFrameAndEffectChanges()
+    {
+        RunInSta(() =>
+        {
+            var window = CreateTestWindow();
+            var shellBorder = new Border();
+            window.Content = shellBorder;
+            var frame = new FlourishShellWindowFrame(window, shellBorder);
+            var material = new MaterialEffectService();
+            var originalGlassFrame = frame.Chrome.GlassFrameThickness;
+            frame.Apply(FlourishShellWindowFrameMode.Custom);
+            window.Show();
+            var handle = new WindowInteropHelper(window).Handle;
+            material.Attach(window, MaterialEffect.Mica);
+
+            try
+            {
+                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+
+                // Custom + Mica -> Native + Mica.
+                frame.Apply(FlourishShellWindowFrameMode.Native);
+                material.Reapply(window);
+                AssertNativeFrame(window, shellBorder, handle, frame.Chrome);
+                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+
+                // Changing the effect while the custom chrome is detached must not leave
+                // stale glass settings when that chrome is attached again.
+                material.SetEffect(MaterialEffect.None);
+                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+
+                frame.Apply(FlourishShellWindowFrameMode.Custom);
+                material.Reapply(window);
+                AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
+                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+
+                // Exercise the inverse sequence: Native + None -> Native + Mica -> Custom + Mica.
+                frame.Apply(FlourishShellWindowFrameMode.Native);
+                material.Reapply(window);
+                material.SetEffect(MaterialEffect.Mica);
+                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+
+                frame.Apply(FlourishShellWindowFrameMode.Custom);
+                material.Reapply(window);
+                AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
+                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+
+                material.SetEffect(MaterialEffect.None);
+                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
+            }
+            finally
+            {
+                material.Detach(window);
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void MaterialEffect_DwmCompositionChangeReappliesWithoutChangingRuntimeState()
+    {
+        const int wmDwmCompositionChanged = 0x031E;
+        RunInSta(() =>
+        {
+            var originalBackground = new SolidColorBrush(Color.FromRgb(20, 40, 60));
+            var replacementBackground = new SolidColorBrush(Color.FromRgb(180, 120, 40));
+            var window = CreateTestWindow();
+            window.Background = originalBackground;
+            window.Content = new Border();
+            window.Show();
+            var handle = new WindowInteropHelper(window).Handle;
+            var material = new MaterialEffectService();
+            var changedCount = 0;
+            material.Changed += (_, _) => changedCount++;
+            material.Attach(window, MaterialEffect.None);
+
+            try
+            {
+                window.Background = replacementBackground;
+                Assert.Same(replacementBackground, window.Background);
+
+                SendMessage(
+                    handle,
+                    wmDwmCompositionChanged,
+                    IntPtr.Zero,
+                    IntPtr.Zero
+                );
+
+                Assert.Same(originalBackground, window.Background);
+                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.False(material.IsApplied);
+                Assert.Equal(0, changedCount);
             }
             finally
             {
@@ -108,6 +205,8 @@ public sealed class FlourishShellWindowFrameTests
 
             sut.Attach(first);
             sut.Attach(first);
+            sut.RefreshFrame(first, useCustomFrame: true);
+            sut.RefreshFrame(first, useCustomFrame: false);
             Assert.True(sut.IsAttachedTo(first));
 
             sut.Attach(second);
@@ -121,6 +220,95 @@ public sealed class FlourishShellWindowFrameTests
             Assert.False(sut.IsAttachedTo(second));
         });
     }
+
+    [Fact]
+    public void ApplyFrameTransition_DoesNotShowAHiddenWindow()
+    {
+        RunInSta(() =>
+        {
+            var window = CreateTestWindow();
+            var shellBorder = new Border();
+            window.Content = shellBorder;
+            var frame = new FlourishShellWindowFrame(window, shellBorder);
+            var frameFix = new WindowFrameFixService();
+            frame.Apply(FlourishShellWindowFrameMode.Custom);
+            window.Show();
+            var handle = new WindowInteropHelper(window).Handle;
+            frameFix.Attach(window, useCustomFrame: true);
+            window.Hide();
+
+            try
+            {
+                AssertWindowIsHidden(window, handle);
+
+                frameFix.ApplyFrameTransition(
+                    window,
+                    useCustomFrame: false,
+                    () => frame.Apply(FlourishShellWindowFrameMode.Native)
+                );
+                AssertWindowIsHidden(window, handle);
+
+                frameFix.ApplyFrameTransition(
+                    window,
+                    useCustomFrame: true,
+                    () => frame.Apply(FlourishShellWindowFrameMode.Custom)
+                );
+                AssertWindowIsHidden(window, handle);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    private static void AssertCustomFrame(
+        Window window,
+        Border shellBorder,
+        IntPtr expectedHandle,
+        WindowChrome expectedChrome
+    )
+    {
+        Assert.Equal(expectedHandle, new WindowInteropHelper(window).Handle);
+        Assert.Equal(WindowStyle.None, window.WindowStyle);
+        Assert.False(window.AllowsTransparency);
+        Assert.Same(expectedChrome, WindowChrome.GetWindowChrome(window));
+        Assert.Equal(new Thickness(1), shellBorder.BorderThickness);
+        Assert.Equal(new Thickness(), expectedChrome.GlassFrameThickness);
+    }
+
+    private static void AssertNativeFrame(
+        Window window,
+        Border shellBorder,
+        IntPtr expectedHandle,
+        WindowChrome persistentChrome
+    )
+    {
+        Assert.Equal(expectedHandle, new WindowInteropHelper(window).Handle);
+        Assert.Equal(WindowStyle.SingleBorderWindow, window.WindowStyle);
+        Assert.False(window.AllowsTransparency);
+        Assert.Null(WindowChrome.GetWindowChrome(window));
+        Assert.Equal(new Thickness(), shellBorder.BorderThickness);
+        Assert.Equal(new Thickness(), persistentChrome.GlassFrameThickness);
+    }
+
+    private static void AssertWindowIsHidden(Window window, IntPtr handle)
+    {
+        Assert.False(window.IsVisible);
+        Assert.False(IsWindowVisible(handle));
+    }
+
+    private static Window CreateTestWindow() =>
+        new()
+        {
+            Width = 320,
+            Height = 200,
+            Left = -10_000,
+            Top = -10_000,
+            ShowActivated = false,
+            ShowInTaskbar = false,
+            WindowStartupLocation = WindowStartupLocation.Manual,
+        };
 
     private static void RunInSta(Action action)
     {
@@ -145,4 +333,16 @@ public sealed class FlourishShellWindowFrameTests
             ExceptionDispatchInfo.Capture(error).Throw();
         }
     }
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool IsWindowVisible(IntPtr windowHandle);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr SendMessage(
+        IntPtr windowHandle,
+        int message,
+        IntPtr wParam,
+        IntPtr lParam
+    );
 }

@@ -9,30 +9,19 @@
 >
   <Grid Background="Transparent">
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-
-    <Border
-      Grid.Column="0"
-      Background="Transparent"
-      MouseLeftButtonDown="Titlebar_MouseLeftButtonDown"
-    />
-
-    <Grid x:Name="ShellContentHost" Grid.Column="0">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
 
     <StackPanel
       x:Name="BreadcrumbNavigationHost"
@@ -287,11 +276,10 @@
       Orientation="Horizontal"
       Visibility="Collapsed"
     />
-    </Grid>
 
     <Button
       x:Name="MinimizeButton"
-      Grid.Column="1"
+      Grid.Column="9"
       Click="MinimizeButton_Click"
       Style="{StaticResource FlourishWindowCaptionButtonStyle}"
     >
@@ -304,7 +292,7 @@
 
     <Button
       x:Name="MaximizeButton"
-      Grid.Column="2"
+      Grid.Column="10"
       Click="MaximizeButton_Click"
       Style="{StaticResource FlourishWindowCaptionButtonStyle}"
     >
@@ -318,7 +306,7 @@
 
     <Button
       x:Name="CloseButton"
-      Grid.Column="3"
+      Grid.Column="11"
       Click="CloseButton_Click"
       Style="{StaticResource FlourishWindowCaptionCloseButtonStyle}"
     >

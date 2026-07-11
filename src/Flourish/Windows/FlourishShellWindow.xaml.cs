@@ -319,7 +319,7 @@ internal partial class FlourishShellWindow : Window
         ApplyNavigationPanelPlacement();
         isPaneOpen = navigationPanelService.Current.IsOpen;
         ApplyNavigationPaneState();
-        windowFrameFixService.Attach(this);
+        windowFrameFixService.Attach(this, options.IsTitlebarEnabled);
         materialEffectService.Attach(
             this,
             options.IsMaterialEffectEnabled ? options.MaterialEffect : MaterialEffect.None
@@ -466,14 +466,50 @@ internal partial class FlourishShellWindow : Window
         }
 
         WindowState = options.WindowState;
-        shellWindowFrame.Apply();
         ApplyTitleBarFeatureState();
         Titlebar.SetMaximizeEnabled(ResizeMode is ResizeMode.CanResize or ResizeMode.CanResizeWithGrip);
     }
 
-    private void ApplyTitleBarFeatureState()
+    private void ApplyTitleBarFeatureState(bool refreshFrame = false)
     {
-        Titlebar.SetShellContentEnabled(options.IsTitlebarEnabled);
+        var useCustomFrame = options.IsTitlebarEnabled;
+        var frameMode = useCustomFrame
+            ? FlourishShellWindowFrameMode.Custom
+            : FlourishShellWindowFrameMode.Native;
+
+        void ApplyFrameAndSurface()
+        {
+            if (useCustomFrame)
+            {
+                shellWindowFrame.Apply(frameMode);
+                Titlebar.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Titlebar.Visibility = Visibility.Collapsed;
+                shellWindowFrame.Apply(frameMode);
+            }
+
+            ShellRootGrid.UpdateLayout();
+            if (refreshFrame)
+            {
+                materialEffectService.Reapply(this);
+            }
+        }
+
+        if (refreshFrame)
+        {
+            windowFrameFixService.ApplyFrameTransition(
+                this,
+                useCustomFrame,
+                ApplyFrameAndSurface
+            );
+        }
+        else
+        {
+            ApplyFrameAndSurface();
+        }
+
         Titlebar.SetMaximized(WindowState == WindowState.Maximized);
         if (!options.IsTitlebarEnabled || !titleBarSearchService.Current.FocusRequested)
         {
@@ -2443,9 +2479,9 @@ internal partial class FlourishShellWindow : Window
             {
                 case ShellFeature.TitleBar:
                     ApplyTitleBarState(titleBarService.Current);
-                    ApplyTitleBarFeatureState();
                     ConfigureProfileSurface();
                     ApplyProfileFlyoutState(profileFlyoutService.Current);
+                    ApplyTitleBarFeatureState(refreshFrame: true);
                     break;
                 case ShellFeature.Navigation:
                     ApplyNavigationPanelRuntimeState(animate: false);
