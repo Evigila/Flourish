@@ -15,10 +15,11 @@
   <SolidColorBrush x:Key="FlourishControlBackgroundBrush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishControlHoverBrush" Color="#F5F5F5" />
   <SolidColorBrush x:Key="FlourishControlPressedBrush" Color="#E0E0E0" />
-  <SolidColorBrush x:Key="FlourishControlSelectedBrush" Color="#EBF3FC" />
-  <SolidColorBrush x:Key="FlourishHoverRevealBrush" Color="#1F0F6CBD" />
+  <SolidColorBrush x:Key="FlourishControlSelectedBrush" Color="#CFE4FA" />
+  <SolidColorBrush x:Key="FlourishControlSelectedForegroundBrush" Color="#0C3B5E" />
+  <SolidColorBrush x:Key="FlourishHoverRevealBrush" Color="#33479EF5" />
   <SolidColorBrush x:Key="FlourishPressedRevealBrush" Color="#330F6CBD" />
-  <SolidColorBrush x:Key="FlourishControlSelectedHoverBrush" Color="#1F0F6CBD" />
+  <SolidColorBrush x:Key="FlourishControlSelectedHoverBrush" Color="#33479EF5" />
   <SolidColorBrush x:Key="FlourishControlDisabledBrush" Color="#F0F0F0" />
   <SolidColorBrush x:Key="FlourishControlStrokeBrush" Color="#D1D1D1" />
   <SolidColorBrush x:Key="FlourishControlStrokeHoverBrush" Color="#929292" />
@@ -58,7 +59,7 @@
   <SolidColorBrush x:Key="AccentBrush" Color="#0F6CBD" />
   <SolidColorBrush x:Key="AccentSoftBrush" Color="#EBF3FC" />
   <SolidColorBrush x:Key="FlourishWindowCaptionCloseHoverBrush" Color="#C50F1F" />
-  <SolidColorBrush x:Key="FlourishNavigationSelectedBrush" Color="#EBF3FC" />
+  <SolidColorBrush x:Key="FlourishNavigationSelectedBrush" Color="#CFE4FA" />
   <SolidColorBrush x:Key="FlourishSearchBackgroundBrush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishProfileBackgroundBrush" Color="#EBF3FC" />
   <SolidColorBrush x:Key="FlourishProfileForegroundBrush" Color="#0F6CBD" />

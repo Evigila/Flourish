@@ -96,30 +96,12 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
-    public void PointerRelease_RestoresStaticHoverWithoutReplayingTheReveal()
+    public void PointerPressAndRelease_DoNotResetOrReplayTheReveal()
     {
         RunInSta(() =>
         {
-            const string templateXaml =
-                """
-                <ControlTemplate
-                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  TargetType="{x:Type Button}"
-                >
-                  <Border x:Name="HoverChrome" Opacity="0">
-                    <Border.RenderTransform>
-                      <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
-                    </Border.RenderTransform>
-                  </Border>
-                </ControlTemplate>
-                """;
-            var button = new Button
-            {
-                Template = Assert.IsType<ControlTemplate>(XamlReader.Parse(templateXaml)),
-            };
-            HoverReveal.SetAnimationDuration(button, TimeSpan.FromMinutes(1));
-            var window = CreateWindow(new ResourceDictionary(), button);
+            var button = new FlourishButton { Content = "Press" };
+            var window = CreateWindow(LoadResourceDictionary(), button);
 
             try
             {
@@ -132,28 +114,404 @@ public sealed class HoverRevealVisualTests
                     "HoverRevealScale"
                 );
 
-                HoverRevealAnimator.Reset(button);
-                HoverReveal.RestoreAfterPointerRelease(button, isMouseOver: false);
+                HoverRevealAnimator.Show(button);
                 FlushDispatcher();
 
-                Assert.Equal(0, hoverChrome.Opacity);
-                Assert.Equal(0, revealScale.ScaleX);
-                Assert.Equal(0, revealScale.ScaleY);
-
-                HoverReveal.RestoreAfterPointerRelease(button, isMouseOver: true);
-                FlushDispatcher();
-
-                // A replay would still be near zero because the configured duration is one minute.
                 Assert.Equal(1, hoverChrome.Opacity);
                 Assert.Equal(1, revealScale.ScaleX);
                 Assert.Equal(1, revealScale.ScaleY);
 
-                HoverRevealAnimator.Reset(button);
+                RaiseMouseButtonEvent(button, Mouse.PreviewMouseDownEvent);
+                RaiseMouseButtonEvent(button, Mouse.PreviewMouseUpEvent);
+                FlushDispatcher();
+
+                Assert.Equal(1, hoverChrome.Opacity);
+                Assert.Equal(1, revealScale.ScaleX);
+                Assert.Equal(1, revealScale.ScaleY);
+
+                RaiseMouseEvent(button, Mouse.MouseLeaveEvent);
                 FlushDispatcher();
 
                 Assert.Equal(0, hoverChrome.Opacity);
                 Assert.Equal(0, revealScale.ScaleX);
                 Assert.Equal(0, revealScale.ScaleY);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DisabledBehavior_ClearsClocksAndDoesNotAnimatePointerEvents()
+    {
+        RunInSta(() =>
+        {
+            var button = new FlourishButton { Content = "Disabled motion" };
+            HoverReveal.SetAnimationDuration(button, TimeSpan.FromMinutes(1));
+            var window = CreateWindow(LoadResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                var parts = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                Assert.True(parts.HoverChrome!.HasAnimatedProperties);
+                Assert.True(parts.HoverRevealScale!.HasAnimatedProperties);
+
+                HoverReveal.SetIsEnabled(button, false);
+
+                Assert.False(parts.HoverChrome.HasAnimatedProperties);
+                Assert.False(parts.HoverRevealScale.HasAnimatedProperties);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                RaiseMouseButtonEvent(button, Mouse.PreviewMouseDownEvent);
+                RaiseMouseButtonEvent(button, Mouse.PreviewMouseUpEvent);
+                RaiseMouseEvent(button, Mouse.MouseLeaveEvent);
+
+                Assert.False(parts.HoverChrome.HasAnimatedProperties);
+                Assert.False(parts.HoverRevealScale.HasAnimatedProperties);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DisabledControl_DoesNotResolvePartsOrStartAnimationClocks()
+    {
+        RunInSta(() =>
+        {
+            var button = new FlourishButton { Content = "Disabled control" };
+            HoverReveal.SetAnimationDuration(button, TimeSpan.FromMinutes(1));
+            var window = CreateWindow(LoadResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                var active = HoverRevealAnimator.ResolveTemplateParts(button);
+                Assert.True(active.HasAnimationClocks);
+
+                button.IsEnabled = false;
+
+                Assert.False(active.HoverChrome!.HasAnimatedProperties);
+                Assert.False(active.HoverRevealScale!.HasAnimatedProperties);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+                button.IsEnabled = true;
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                Assert.True(
+                    HoverRevealAnimator.ResolveTemplateParts(button).HasAnimationClocks
+                );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ResourceOnlyMotionDisable_PreservesTheCompatibilityFallback()
+    {
+        RunInSta(() =>
+        {
+            var resources = new ResourceDictionary
+            {
+                ["FlourishHoverRevealEnabled"] = false,
+            };
+            var button = new Button { Template = CreateHoverTemplate() };
+            HoverReveal.SetIsParticipant(button, true);
+            var window = CreateWindow(resources, button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                var parts = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                FlushDispatcher();
+
+                Assert.True(parts.HoverChrome!.HasAnimatedProperties);
+                Assert.True(parts.HoverRevealScale!.HasAnimatedProperties);
+                Assert.Equal(1, parts.HoverChrome.Opacity);
+                Assert.Equal(1, parts.HoverRevealScale.ScaleX);
+                Assert.Equal(1, parts.HoverRevealScale.ScaleY);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void CustomTemplate_DisabledMotionPreservesTheBehaviorFallback()
+    {
+        RunInSta(() =>
+        {
+            var button = new Button { Template = CreateHoverTemplate() };
+            HoverReveal.SetIsParticipant(button, true);
+            HoverReveal.SetIsEnabled(button, false);
+            var window = CreateWindow(new ResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                FlushDispatcher();
+
+                var parts = HoverRevealAnimator.ResolveTemplateParts(button);
+                Assert.True(parts.HoverChrome!.HasAnimatedProperties);
+                Assert.True(parts.HoverRevealScale!.HasAnimatedProperties);
+                Assert.Equal(1, parts.HoverChrome.Opacity);
+                Assert.Equal(1, parts.HoverRevealScale.ScaleX);
+                Assert.Equal(1, parts.HoverRevealScale.ScaleY);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void FlourishControl_LocalTemplateOverrideUsesTheCompatibilityContract()
+    {
+        RunInSta(() =>
+        {
+            var button = new FlourishButton
+            {
+                Content = "Custom Flourish template",
+                Template = CreateFlourishButtonHoverTemplate(),
+            };
+            HoverReveal.SetIsEnabled(button, false);
+            var window = CreateWindow(LoadResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                Assert.True(HoverReveal.GetTemplateHandlesInteraction(button));
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                var compatibilityParts = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                Assert.True(compatibilityParts.HasAnimationClocks);
+
+                HoverReveal.SetTemplateHandlesInteraction(button, true);
+
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Animator_ReusesCachedPartsUntilTheTemplateChanges()
+    {
+        RunInSta(() =>
+        {
+            var button = new Button { Template = CreateHoverTemplate() };
+            var window = CreateWindow(new ResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var first = HoverRevealAnimator.ResolveTemplateParts(button);
+                var second = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                Assert.Same(first, second);
+                Assert.True(first.HasParts);
+
+                button.Template = CreateHoverTemplate();
+                button.ApplyTemplate();
+                window.UpdateLayout();
+                var replacement = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                Assert.NotSame(first, replacement);
+                Assert.NotSame(first.HoverChrome, replacement.HoverChrome);
+                Assert.NotSame(first.HoverRevealScale, replacement.HoverRevealScale);
+
+                HoverRevealAnimator.Show(button);
+                FlushDispatcher();
+
+                Assert.False(first.HoverChrome!.HasAnimatedProperties);
+                Assert.False(first.HoverRevealScale!.HasAnimatedProperties);
+                Assert.True(replacement.HoverChrome!.HasAnimatedProperties);
+                Assert.True(replacement.HoverRevealScale!.HasAnimatedProperties);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Participant_DoesNotResolveTemplatePartsUntilTheFirstHover()
+    {
+        RunInSta(() =>
+        {
+            var button = new FlourishButton { Content = "Lazy hover" };
+            var window = CreateWindow(LoadResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+
+                var parts = HoverRevealAnimator.TryGetTemplateParts(button);
+                Assert.NotNull(parts);
+                Assert.True(parts.HasAnimationClocks);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Animator_InvalidatesTheCacheWhenTheSameTemplateIsReapplied()
+    {
+        RunInSta(() =>
+        {
+            var template = CreateHoverTemplate();
+            var button = new Button { Template = template };
+            var window = CreateWindow(new ResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                var first = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                button.Template = null;
+                window.UpdateLayout();
+                button.Template = template;
+                button.ApplyTemplate();
+                window.UpdateLayout();
+                var reapplied = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                Assert.NotSame(first, reapplied);
+                Assert.NotSame(first.HoverChrome, reapplied.HoverChrome);
+                Assert.NotSame(first.HoverRevealScale, reapplied.HoverRevealScale);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Animator_NegativeCacheIsReplacedWhenAValidTemplateIsApplied()
+    {
+        RunInSta(() =>
+        {
+            var button = new Button { Template = CreateHoverTemplate(includeParts: false) };
+            var window = CreateWindow(new ResourceDictionary(), button);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                var missing = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                Assert.False(missing.HasParts);
+                Assert.Same(missing, HoverRevealAnimator.ResolveTemplateParts(button));
+
+                button.Template = CreateHoverTemplate();
+                button.ApplyTemplate();
+                window.UpdateLayout();
+                var resolved = HoverRevealAnimator.ResolveTemplateParts(button);
+
+                Assert.NotSame(missing, resolved);
+                Assert.True(resolved.HasParts);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ParticipantLifecycle_DetachesPointerWorkWhileUnloadedOrDisabled()
+    {
+        RunInSta(() =>
+        {
+            var button = new Button { Template = CreateHoverTemplate() };
+            HoverReveal.SetIsParticipant(button, true);
+            var panel = new StackPanel();
+            var window = CreateWindow(new ResourceDictionary(), panel);
+
+            RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+            Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                for (var cycle = 0; cycle < 3; cycle++)
+                {
+                    panel.Children.Add(button);
+                    window.UpdateLayout();
+                    FlushDispatcher();
+                    RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                    var loaded = HoverRevealAnimator.ResolveTemplateParts(button);
+                    Assert.True(loaded.HasAnimationClocks);
+
+                    panel.Children.Remove(button);
+                    FlushDispatcher();
+                    Assert.False(button.IsLoaded);
+                    Assert.False(loaded.HoverChrome!.HasAnimatedProperties);
+                    Assert.False(loaded.HoverRevealScale!.HasAnimatedProperties);
+                    Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+
+                    RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                    Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+                }
+
+                panel.Children.Add(button);
+                window.UpdateLayout();
+                FlushDispatcher();
+
+                HoverReveal.SetIsParticipant(button, false);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
+                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
+                Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
             }
             finally
             {
@@ -296,10 +654,73 @@ public sealed class HoverRevealVisualTests
         return Assert.IsType<T>(part);
     }
 
+    private static ControlTemplate CreateHoverTemplate(bool includeParts = true)
+    {
+        var templateXaml = includeParts
+            ? """
+              <ControlTemplate
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                TargetType="{x:Type Button}"
+              >
+                <Border x:Name="HoverChrome" Opacity="0">
+                  <Border.RenderTransform>
+                    <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+                  </Border.RenderTransform>
+                </Border>
+              </ControlTemplate>
+              """
+            : """
+              <ControlTemplate
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                TargetType="{x:Type Button}"
+              >
+                <Border />
+              </ControlTemplate>
+              """;
+        return Assert.IsType<ControlTemplate>(XamlReader.Parse(templateXaml));
+    }
+
+    private static ControlTemplate CreateFlourishButtonHoverTemplate()
+    {
+        const string templateXaml =
+            """
+            <ControlTemplate
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Flourish"
+              TargetType="{x:Type controls:FlourishButton}"
+            >
+              <Border x:Name="HoverChrome" Opacity="0">
+                <Border.RenderTransform>
+                  <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+                </Border.RenderTransform>
+                <ContentPresenter />
+              </Border>
+            </ControlTemplate>
+            """;
+        return Assert.IsType<ControlTemplate>(XamlReader.Parse(templateXaml));
+    }
+
     private static void RaiseMouseEvent(UIElement element, RoutedEvent routedEvent)
     {
         element.RaiseEvent(
             new MouseEventArgs(Mouse.PrimaryDevice, Environment.TickCount)
+            {
+                RoutedEvent = routedEvent,
+            }
+        );
+    }
+
+    private static void RaiseMouseButtonEvent(UIElement element, RoutedEvent routedEvent)
+    {
+        element.RaiseEvent(
+            new MouseButtonEventArgs(
+                Mouse.PrimaryDevice,
+                Environment.TickCount,
+                MouseButton.Left
+            )
             {
                 RoutedEvent = routedEvent,
             }

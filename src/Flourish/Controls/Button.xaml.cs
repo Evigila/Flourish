@@ -101,6 +101,13 @@ public class FlourishButton : WpfButton
         set => SetValue(VariantProperty, value);
     }
 
+    /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        HoverReveal.NotifyTemplateApplied(this);
+    }
+
     private static bool IsAppearanceValid(object value)
     {
         return value is FlourishButtonAppearance appearance && Enum.IsDefined(appearance);

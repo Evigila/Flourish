@@ -9,6 +9,8 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <remarks>
 /// A participating control template supplies elements named <c>HoverChrome</c> and
 /// <c>HoverRevealScale</c>. Templates without those elements safely ignore the behavior.
+/// Templates that also own their static hover and pressed visuals can set
+/// <see cref="TemplateHandlesInteractionProperty" /> to avoid redundant pointer work.
 /// </remarks>
 public static class HoverReveal
 {
@@ -35,6 +37,17 @@ public static class HoverReveal
             typeof(bool),
             typeof(HoverReveal),
             new FrameworkPropertyMetadata(false, OnIsParticipantChanged)
+        );
+
+    /// <summary>
+    /// Identifies whether a participating template owns its static hover and pressed states.
+    /// </summary>
+    public static readonly DependencyProperty TemplateHandlesInteractionProperty =
+        DependencyProperty.RegisterAttached(
+            "TemplateHandlesInteraction",
+            typeof(bool),
+            typeof(HoverReveal),
+            new FrameworkPropertyMetadata(false, OnTemplateHandlesInteractionChanged)
         );
 
     /// <summary>
@@ -107,19 +120,57 @@ public static class HoverReveal
         element.SetValue(IsParticipantProperty, value);
     }
 
+    /// <summary>
+    /// Gets whether a participating template renders its own static hover and pressed states.
+    /// </summary>
+    public static bool GetTemplateHandlesInteraction(DependencyObject element)
+    {
+        return (bool)element.GetValue(TemplateHandlesInteractionProperty);
+    }
+
+    /// <summary>
+    /// Sets whether a participating template renders its own static hover and pressed states.
+    /// </summary>
+    /// <remarks>
+    /// A template that enables this option must provide a non-animated mouse-over fallback
+    /// for <see cref="IsEnabledProperty" /> set to <see langword="false" />.
+    /// A locally assigned <see cref="System.Windows.Controls.Control.Template" /> falls
+    /// back to behavior-managed interaction unless this property is also assigned locally.
+    /// </remarks>
+    public static void SetTemplateHandlesInteraction(
+        DependencyObject element,
+        bool value
+    )
+    {
+        var previousValue = GetTemplateHandlesInteraction(element);
+        var previousSource = DependencyPropertyHelper.GetValueSource(
+            element,
+            TemplateHandlesInteractionProperty
+        );
+        element.SetValue(TemplateHandlesInteractionProperty, value);
+        if (
+            previousValue == value
+            && previousSource.BaseValueSource != BaseValueSource.Local
+            && element is FrameworkElement frameworkElement
+        )
+        {
+            HoverRevealInteraction.Refresh(frameworkElement);
+        }
+    }
+
+    internal static void NotifyTemplateApplied(FrameworkElement element)
+    {
+        HoverRevealInteraction.NotifyTemplateApplied(element);
+    }
+
     private static void OnIsEnabledChanged(
         DependencyObject element,
         DependencyPropertyChangedEventArgs e
     )
     {
-        if (element is not FrameworkElement frameworkElement)
+        if (element is FrameworkElement frameworkElement)
         {
-            return;
-        }
-
-        if (GetIsParticipant(frameworkElement))
-        {
-            HoverRevealAnimator.Reset(frameworkElement);
+            HoverRevealInteraction.Refresh(frameworkElement);
         }
     }
 
@@ -128,149 +179,23 @@ public static class HoverReveal
         DependencyPropertyChangedEventArgs e
     )
     {
-        if (element is not FrameworkElement frameworkElement)
+        if (element is FrameworkElement frameworkElement)
         {
-            return;
-        }
-
-        if ((bool)e.NewValue)
-        {
-            Attach(frameworkElement);
-            return;
-        }
-
-        Detach(frameworkElement);
-    }
-
-    private static void Attach(FrameworkElement element)
-    {
-        element.Loaded -= Element_Loaded;
-        element.MouseEnter -= Element_MouseEnter;
-        element.MouseLeave -= Element_MouseLeave;
-        element.PreviewMouseDown -= Element_PreviewMouseDown;
-        element.PreviewMouseUp -= Element_PreviewMouseUp;
-
-        element.Loaded += Element_Loaded;
-        element.MouseEnter += Element_MouseEnter;
-        element.MouseLeave += Element_MouseLeave;
-        element.PreviewMouseDown += Element_PreviewMouseDown;
-        element.PreviewMouseUp += Element_PreviewMouseUp;
-
-        if (element.IsLoaded)
-        {
-            HoverRevealAnimator.Reset(element);
+            HoverRevealInteraction.SetParticipant(
+                frameworkElement,
+                (bool)e.NewValue
+            );
         }
     }
 
-    private static void Detach(FrameworkElement element)
-    {
-        element.Loaded -= Element_Loaded;
-        element.MouseEnter -= Element_MouseEnter;
-        element.MouseLeave -= Element_MouseLeave;
-        element.PreviewMouseDown -= Element_PreviewMouseDown;
-        element.PreviewMouseUp -= Element_PreviewMouseUp;
-        HoverRevealAnimator.Reset(element);
-    }
-
-    private static void Element_Loaded(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement element)
-        {
-            HoverRevealAnimator.Reset(element);
-        }
-    }
-
-    private static void Element_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-        if (sender is FrameworkElement element)
-        {
-            Reveal(element);
-        }
-    }
-
-    private static void Element_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-        if (sender is FrameworkElement element)
-        {
-            HoverRevealAnimator.Reset(element);
-        }
-    }
-
-    private static void Element_PreviewMouseDown(
-        object sender,
-        System.Windows.Input.MouseButtonEventArgs e
+    private static void OnTemplateHandlesInteractionChanged(
+        DependencyObject element,
+        DependencyPropertyChangedEventArgs e
     )
     {
-        if (sender is FrameworkElement element)
+        if (element is FrameworkElement frameworkElement)
         {
-            // Animations have the highest dependency-property precedence. Clear the
-            // reveal while pressed so the template's pressed-state triggers remain visible.
-            HoverRevealAnimator.Reset(element);
+            HoverRevealInteraction.Refresh(frameworkElement);
         }
-    }
-
-    private static void Element_PreviewMouseUp(
-        object sender,
-        System.Windows.Input.MouseButtonEventArgs e
-    )
-    {
-        if (sender is FrameworkElement element)
-        {
-            RestoreAfterPointerRelease(element, element.IsMouseOver);
-        }
-    }
-
-    internal static void RestoreAfterPointerRelease(
-        FrameworkElement element,
-        bool isMouseOver
-    )
-    {
-        if (!isMouseOver)
-        {
-            return;
-        }
-
-        // MouseEnter owns the animated transition. Releasing a press while the pointer
-        // remains inside should restore the already-hovered state without replaying it.
-        HoverRevealAnimator.Show(element);
-    }
-
-    private static void Reveal(FrameworkElement element)
-    {
-        if (IsRevealAnimationEnabled(element))
-        {
-            HoverRevealAnimator.Begin(element, GetEffectiveAnimationDuration(element));
-            return;
-        }
-
-        HoverRevealAnimator.Show(element);
-    }
-
-    private static bool IsRevealAnimationEnabled(FrameworkElement element)
-    {
-        var source = DependencyPropertyHelper.GetValueSource(element, IsEnabledProperty);
-        if (source.BaseValueSource != BaseValueSource.Default)
-        {
-            return GetIsEnabled(element);
-        }
-
-        return element.TryFindResource("FlourishHoverRevealEnabled") is not bool enabled
-            || enabled;
-    }
-
-    private static TimeSpan GetEffectiveAnimationDuration(FrameworkElement element)
-    {
-        var source = DependencyPropertyHelper.GetValueSource(
-            element,
-            AnimationDurationProperty
-        );
-        if (source.BaseValueSource != BaseValueSource.Default)
-        {
-            return GetAnimationDuration(element);
-        }
-
-        return element.TryFindResource("FlourishHoverRevealDuration") is TimeSpan duration
-            ? duration
-            : GetAnimationDuration(element);
     }
 }

@@ -13,4 +13,11 @@ public class FlourishComboBoxItem : WpfComboBoxItem
             new FrameworkPropertyMetadata(typeof(FlourishComboBoxItem))
         );
     }
+
+    /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        HoverReveal.NotifyTemplateApplied(this);
+    }
 }

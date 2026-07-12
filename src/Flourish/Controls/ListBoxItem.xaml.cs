@@ -58,4 +58,11 @@ public class FlourishListBoxItem : WpfListBoxItem
         get => (bool)GetValue(IsCommandItemProperty);
         set => SetValue(IsCommandItemProperty, value);
     }
+
+    /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        HoverReveal.NotifyTemplateApplied(this);
+    }
 }

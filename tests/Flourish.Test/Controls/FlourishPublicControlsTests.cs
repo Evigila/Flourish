@@ -39,6 +39,8 @@ public sealed class FlourishPublicControlsTests
                 nameof(HoverReveal.SetIsEnabled),
                 nameof(HoverReveal.GetIsParticipant),
                 nameof(HoverReveal.SetIsParticipant),
+                nameof(HoverReveal.GetTemplateHandlesInteraction),
+                nameof(HoverReveal.SetTemplateHandlesInteraction),
                 nameof(HoverReveal.GetAnimationDuration),
                 nameof(HoverReveal.SetAnimationDuration),
             },
@@ -218,6 +220,7 @@ public sealed class FlourishPublicControlsTests
 
             Assert.True(HoverReveal.GetIsEnabled(element));
             Assert.False(HoverReveal.GetIsParticipant(element));
+            Assert.False(HoverReveal.GetTemplateHandlesInteraction(element));
             Assert.Equal(
                 TimeSpan.FromMilliseconds(140),
                 HoverReveal.GetAnimationDuration(element)
@@ -225,10 +228,12 @@ public sealed class FlourishPublicControlsTests
 
             HoverReveal.SetIsEnabled(element, false);
             HoverReveal.SetIsParticipant(element, true);
+            HoverReveal.SetTemplateHandlesInteraction(element, true);
             HoverReveal.SetAnimationDuration(element, duration);
 
             Assert.False(HoverReveal.GetIsEnabled(element));
             Assert.True(HoverReveal.GetIsParticipant(element));
+            Assert.True(HoverReveal.GetTemplateHandlesInteraction(element));
             Assert.Equal(duration, HoverReveal.GetAnimationDuration(element));
         });
     }

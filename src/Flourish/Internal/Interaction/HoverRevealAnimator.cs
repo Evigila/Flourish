@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WpfControl = System.Windows.Controls.Control;
@@ -10,119 +11,245 @@ namespace ArkheideSystem.Flourish.Internal.Interaction;
 /// </summary>
 internal static class HoverRevealAnimator
 {
+    private static readonly DependencyProperty TemplatePartsProperty =
+        DependencyProperty.RegisterAttached(
+            "TemplateParts",
+            typeof(TemplateParts),
+            typeof(HoverRevealAnimator),
+            new PropertyMetadata(null)
+        );
+    private static readonly CubicEase RevealEasing = CreateRevealEasing();
+    private static readonly DoubleAnimation StaticRevealAnimation =
+        CreateStaticRevealAnimation();
+
     internal static void Begin(FrameworkElement element, TimeSpan duration)
     {
-        var hoverChrome = FindTemplatePart<UIElement>(element, "HoverChrome");
-        var hoverRevealScale = FindTemplatePart<ScaleTransform>(element, "HoverRevealScale");
-        if (hoverChrome is null || hoverRevealScale is null)
+        var parts = ResolveTemplateParts(element);
+        if (!parts.HasParts)
         {
             return;
         }
 
         if (duration <= TimeSpan.Zero)
         {
-            Show(hoverChrome, hoverRevealScale);
+            Show(parts);
             return;
         }
 
-        hoverChrome.BeginAnimation(
+        parts.HoverChrome!.BeginAnimation(
             UIElement.OpacityProperty,
-            CreateOpacityAnimation(),
+            StaticRevealAnimation,
             HandoffBehavior.SnapshotAndReplace
         );
-        hoverRevealScale.BeginAnimation(
+        var revealAnimation = parts.GetRevealAnimation(duration, RevealEasing);
+        parts.HoverRevealScale!.BeginAnimation(
             ScaleTransform.ScaleXProperty,
-            CreateRevealAnimation(duration),
+            revealAnimation,
             HandoffBehavior.SnapshotAndReplace
         );
-        hoverRevealScale.BeginAnimation(
+        parts.HoverRevealScale.BeginAnimation(
             ScaleTransform.ScaleYProperty,
-            CreateRevealAnimation(duration),
+            revealAnimation,
             HandoffBehavior.SnapshotAndReplace
         );
+        parts.HasAnimationClocks = true;
     }
 
     internal static void Show(FrameworkElement element)
     {
-        var hoverChrome = FindTemplatePart<UIElement>(element, "HoverChrome");
-        var hoverRevealScale = FindTemplatePart<ScaleTransform>(element, "HoverRevealScale");
-        if (hoverChrome is null || hoverRevealScale is null)
-        {
-            return;
-        }
-
-        Show(hoverChrome, hoverRevealScale);
+        Show(ResolveTemplateParts(element));
     }
 
     internal static void Reset(FrameworkElement element)
     {
-        var hoverChrome = FindTemplatePart<UIElement>(element, "HoverChrome");
-        var hoverRevealScale = FindTemplatePart<ScaleTransform>(element, "HoverRevealScale");
-
-        if (hoverChrome is not null)
-        {
-            hoverChrome.BeginAnimation(UIElement.OpacityProperty, null);
-        }
-
-        if (hoverRevealScale is not null)
-        {
-            hoverRevealScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
-            hoverRevealScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
-        }
+        TryGetTemplateParts(element)?.ClearAnimationClocks();
     }
 
-    private static void Show(UIElement hoverChrome, ScaleTransform hoverRevealScale)
+    internal static void Invalidate(FrameworkElement element)
     {
+        var parts = TryGetTemplateParts(element);
+        if (parts is null)
+        {
+            return;
+        }
+
+        parts.ClearAnimationClocks();
+        element.ClearValue(TemplatePartsProperty);
+    }
+
+    internal static TemplateParts ResolveTemplateParts(FrameworkElement element)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+        var cached = TryGetTemplateParts(element);
+        if (cached?.Matches(element) == true)
+        {
+            return cached;
+        }
+
+        if (cached is not null)
+        {
+            cached.ClearAnimationClocks();
+            element.ClearValue(TemplatePartsProperty);
+        }
+
+        if (element is not WpfControl control)
+        {
+            var missing = TemplateParts.CreateMissingForNonControl();
+            element.SetValue(TemplatePartsProperty, missing);
+            return missing;
+        }
+
+        control.ApplyTemplate();
+
+        // An OnApplyTemplate override may restore an already-hovered control while
+        // ApplyTemplate is running. Reuse the cache created by that path.
+        cached = TryGetTemplateParts(element);
+        if (cached?.Matches(element) == true)
+        {
+            return cached;
+        }
+
+        var template = control.Template;
+        var templateRoot = GetTemplateRoot(control);
+        var parts = new TemplateParts(
+            template,
+            templateRoot,
+            template?.FindName("HoverChrome", control) as UIElement,
+            template?.FindName("HoverRevealScale", control) as ScaleTransform
+        );
+        element.SetValue(TemplatePartsProperty, parts);
+        return parts;
+    }
+
+    internal static TemplateParts? TryGetTemplateParts(FrameworkElement element)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+        return element.ReadLocalValue(TemplatePartsProperty) as TemplateParts;
+    }
+
+    private static void Show(TemplateParts parts)
+    {
+        if (!parts.HasParts)
+        {
+            return;
+        }
+
         // Keep the static reveal in the animation layer. Reset can then remove it
-        // without overwriting the template's hidden base values or pressed-state triggers.
-        hoverChrome.BeginAnimation(
+        // without overwriting the template's hidden base values or visual triggers.
+        parts.HoverChrome!.BeginAnimation(
             UIElement.OpacityProperty,
-            CreateOpacityAnimation(),
+            StaticRevealAnimation,
             HandoffBehavior.SnapshotAndReplace
         );
-        hoverRevealScale.BeginAnimation(
+        parts.HoverRevealScale!.BeginAnimation(
             ScaleTransform.ScaleXProperty,
-            CreateOpacityAnimation(),
+            StaticRevealAnimation,
             HandoffBehavior.SnapshotAndReplace
         );
-        hoverRevealScale.BeginAnimation(
+        parts.HoverRevealScale.BeginAnimation(
             ScaleTransform.ScaleYProperty,
-            CreateOpacityAnimation(),
+            StaticRevealAnimation,
             HandoffBehavior.SnapshotAndReplace
         );
+        parts.HasAnimationClocks = true;
     }
 
-    private static DoubleAnimation CreateOpacityAnimation()
+    private static DependencyObject? GetTemplateRoot(WpfControl control)
     {
-        return new DoubleAnimation
+        return VisualTreeHelper.GetChildrenCount(control) == 0
+            ? null
+            : VisualTreeHelper.GetChild(control, 0);
+    }
+
+    private static CubicEase CreateRevealEasing()
+    {
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+        easing.Freeze();
+        return easing;
+    }
+
+    private static DoubleAnimation CreateStaticRevealAnimation()
+    {
+        var animation = new DoubleAnimation
         {
             To = 1,
             Duration = new Duration(TimeSpan.Zero),
             FillBehavior = FillBehavior.HoldEnd,
         };
+        animation.Freeze();
+        return animation;
     }
 
-    private static DoubleAnimation CreateRevealAnimation(TimeSpan duration)
+    internal sealed class TemplateParts(
+        ControlTemplate? template,
+        DependencyObject? templateRoot,
+        UIElement? hoverChrome,
+        ScaleTransform? hoverRevealScale,
+        bool representsControl = true
+    )
     {
-        return new DoubleAnimation
-        {
-            From = 0,
-            To = 1,
-            Duration = new Duration(duration),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-            FillBehavior = FillBehavior.HoldEnd,
-        };
-    }
+        private DoubleAnimation? revealAnimation;
+        private TimeSpan revealDuration;
 
-    private static T? FindTemplatePart<T>(FrameworkElement element, string name)
-        where T : class
-    {
-        if (element is WpfControl control)
+        internal UIElement? HoverChrome { get; } = hoverChrome;
+
+        internal ScaleTransform? HoverRevealScale { get; } = hoverRevealScale;
+
+        internal bool HasParts => HoverChrome is not null && HoverRevealScale is not null;
+
+        internal bool HasAnimationClocks { get; set; }
+
+        internal static TemplateParts CreateMissingForNonControl()
         {
-            control.ApplyTemplate();
-            return control.Template?.FindName(name, control) as T;
+            return new TemplateParts(null, null, null, null, representsControl: false);
         }
 
-        return null;
+        internal bool Matches(FrameworkElement element)
+        {
+            if (element is not WpfControl control)
+            {
+                return !representsControl;
+            }
+
+            return representsControl
+                && ReferenceEquals(template, control.Template)
+                && ReferenceEquals(templateRoot, GetTemplateRoot(control));
+        }
+
+        internal DoubleAnimation GetRevealAnimation(
+            TimeSpan duration,
+            CubicEase easing
+        )
+        {
+            if (revealAnimation is not null && revealDuration == duration)
+            {
+                return revealAnimation;
+            }
+
+            revealDuration = duration;
+            revealAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(duration),
+                EasingFunction = easing,
+                FillBehavior = FillBehavior.HoldEnd,
+            };
+            revealAnimation.Freeze();
+            return revealAnimation;
+        }
+
+        internal void ClearAnimationClocks()
+        {
+            if (!HasAnimationClocks)
+            {
+                return;
+            }
+
+            HoverChrome?.BeginAnimation(UIElement.OpacityProperty, null);
+            HoverRevealScale?.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+            HoverRevealScale?.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+            HasAnimationClocks = false;
+        }
     }
 }

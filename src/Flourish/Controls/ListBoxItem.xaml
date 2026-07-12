@@ -16,6 +16,7 @@
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeBase}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
+    <Setter Property="controls:HoverReveal.TemplateHandlesInteraction" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type controls:FlourishListBoxItem}">
@@ -64,7 +65,7 @@
               </Setter>
             </MultiTrigger>
             <Trigger Property="IsSelected" Value="True">
-              <Setter Property="Foreground" Value="{DynamicResource FlourishBrandForegroundBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource FlourishControlSelectedForegroundBrush}" />
               <Setter Property="Background" Value="{DynamicResource FlourishControlSelectedBrush}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">

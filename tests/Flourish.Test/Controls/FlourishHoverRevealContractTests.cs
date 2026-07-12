@@ -16,6 +16,27 @@ public sealed class FlourishHoverRevealContractTests
         "src",
         "Flourish"
     );
+    private static readonly HashSet<string> FluentWebBrandRamp = new(
+        StringComparer.OrdinalIgnoreCase
+    )
+    {
+        "#061724",
+        "#082338",
+        "#0A2E4A",
+        "#0C3B5E",
+        "#0E4775",
+        "#0F548C",
+        "#115EA3",
+        "#0F6CBD",
+        "#2886DE",
+        "#479EF5",
+        "#62ABF5",
+        "#77B7F7",
+        "#96C6FA",
+        "#B4D6FA",
+        "#CFE4FA",
+        "#EBF3FC",
+    };
 
     [Fact]
     public void ParticipatingControlTemplates_UseOneBorderlessUnifiedRevealLayer()
@@ -107,6 +128,30 @@ public sealed class FlourishHoverRevealContractTests
     }
 
     [Fact]
+    public void ParticipatingTemplates_DeclareThatTheyOwnStaticInteractionStates()
+    {
+        var violations = new List<string>();
+        foreach (var template in FindParticipatingTemplates())
+        {
+            var setter = template.Style
+                .Elements()
+                .SingleOrDefault(element =>
+                    element.Name.LocalName == "Setter"
+                    && (string?)element.Attribute("Property")
+                        == "controls:HoverReveal.TemplateHandlesInteraction"
+                );
+            if ((string?)setter?.Attribute("Value") != "True")
+            {
+                violations.Add(
+                    $"{template.Identifier}: template interaction ownership is not enabled"
+                );
+            }
+        }
+
+        AssertNoViolations(violations);
+    }
+
+    [Fact]
     public void ButtonPressedState_UsesASeparateDarkerFillWithoutAnOutline()
     {
         var file = Path.Combine(FlourishRoot, "Controls", "Button.xaml");
@@ -138,12 +183,64 @@ public sealed class FlourishHoverRevealContractTests
         AssertSetter(disabledTrigger, "PressedChrome", "Visibility", "Collapsed");
     }
 
+    [Fact]
+    public void SelectedItemTemplates_UseTheDedicatedReadableForegroundToken()
+    {
+        var selectedTriggers = FindParticipatingTemplates()
+            .Select(template =>
+                template.Template
+                    .Descendants()
+                    .SingleOrDefault(element =>
+                        element.Name.LocalName == "Trigger"
+                        && (string?)element.Attribute("Property") == "IsSelected"
+                        && (string?)element.Attribute("Value") == "True"
+                    )
+            )
+            .OfType<XElement>()
+            .ToArray();
+
+        Assert.Equal(2, selectedTriggers.Length);
+        foreach (var trigger in selectedTriggers)
+        {
+            Assert.Contains(
+                trigger.Elements(),
+                element =>
+                    element.Name.LocalName == "Setter"
+                    && (string?)element.Attribute("Property") == "Foreground"
+                    && (string?)element.Attribute("Value")
+                        == "{DynamicResource FlourishControlSelectedForegroundBrush}"
+            );
+            Assert.Contains(
+                trigger.Elements(),
+                element =>
+                    element.Name.LocalName == "Setter"
+                    && (string?)element.Attribute("Property") == "Background"
+                    && (string?)element.Attribute("Value")
+                        == "{DynamicResource FlourishControlSelectedBrush}"
+            );
+        }
+    }
+
     [Theory]
-    [InlineData("Colors.Light.xaml", "#1F0F6CBD", "#330F6CBD")]
-    [InlineData("Colors.Dark.xaml", "#33A7D8F9", "#4D479EF5")]
-    public void Palettes_KeepHoverBrighterAndPressedVisuallyDeeper(
+    [InlineData(
+        "Colors.Light.xaml",
+        "#33479EF5",
+        "#CFE4FA",
+        "#0C3B5E",
+        "#330F6CBD"
+    )]
+    [InlineData(
+        "Colors.Dark.xaml",
+        "#4D96C6FA",
+        "#0F548C",
+        "#FFFFFF",
+        "#4D479EF5"
+    )]
+    public void Palettes_UseBrighterFluentColorsWithADeeperPressedState(
         string fileName,
         string expectedHover,
+        string expectedSelected,
+        string expectedSelectedForeground,
         string expectedPressed
     )
     {
@@ -153,10 +250,80 @@ public sealed class FlourishHoverRevealContractTests
 
         Assert.Equal(expectedHover, GetBrushColor(document, "FlourishHoverRevealBrush"));
         Assert.Equal(
+            expectedSelected,
+            GetBrushColor(document, "FlourishControlSelectedBrush")
+        );
+        Assert.Equal(
+            expectedSelectedForeground,
+            GetBrushColor(document, "FlourishControlSelectedForegroundBrush")
+        );
+        Assert.Equal(
             expectedPressed,
             GetBrushColor(document, "FlourishPressedRevealBrush")
         );
         Assert.NotEqual(expectedHover, expectedPressed);
+        var controlBackground = ParseColor(
+            GetBrushColor(document, "FlourishControlBackgroundBrush")
+        ).Rgb;
+        Assert.True(
+            GetRelativeLuminance(
+                Composite(ParseColor(expectedHover), controlBackground)
+            )
+                > GetRelativeLuminance(
+                    Composite(ParseColor(expectedPressed), controlBackground)
+                )
+        );
+    }
+
+    [Theory]
+    [InlineData("Colors.Light.xaml")]
+    [InlineData("Colors.Dark.xaml")]
+    public void InteractiveAccentColors_ComeFromTheFluentWebBrandRamp(
+        string fileName
+    )
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
+        );
+
+        foreach (
+            var key in new[]
+            {
+                "FlourishHoverRevealBrush",
+                "FlourishPressedRevealBrush",
+                "FlourishControlSelectedBrush",
+            }
+        )
+        {
+            var rgb = ParseColor(GetBrushColor(document, key)).Rgb;
+            Assert.Contains(ToHex(rgb), FluentWebBrandRamp);
+        }
+    }
+
+    [Theory]
+    [InlineData("Colors.Light.xaml")]
+    [InlineData("Colors.Dark.xaml")]
+    public void SelectedStates_MaintainReadableTextContrast(string fileName)
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
+        );
+        var selected = ParseColor(
+            GetBrushColor(document, "FlourishControlSelectedBrush")
+        ).Rgb;
+        var foreground = ParseColor(
+            GetBrushColor(document, "FlourishControlSelectedForegroundBrush")
+        ).Rgb;
+        var hover = ParseColor(GetBrushColor(document, "FlourishHoverRevealBrush"));
+        var selectedHover = Composite(hover, selected);
+
+        AssertReadableContrast(foreground, selected, fileName, "selected");
+        AssertReadableContrast(
+            foreground,
+            selectedHover,
+            fileName,
+            "selected + hover"
+        );
     }
 
     private static ParticipatingTemplate[] FindParticipatingTemplates()
@@ -232,6 +399,7 @@ public sealed class FlourishHoverRevealContractTests
                         new ParticipatingTemplate(
                             file,
                             $"{RelativePath(file)}::{(string?)style.Attribute("TargetType")}",
+                            style,
                             template
                         )
                     );
@@ -347,6 +515,80 @@ public sealed class FlourishHoverRevealContractTests
         return (string)brush.Attribute("Color")!;
     }
 
+    private static ParsedColor ParseColor(string value)
+    {
+        var hex = value.TrimStart('#');
+        var offset = hex.Length == 8 ? 2 : 0;
+        var alpha = offset == 2 ? Convert.ToByte(hex[..2], 16) : byte.MaxValue;
+        return new ParsedColor(
+            alpha,
+            new RgbColor(
+                Convert.ToByte(hex.Substring(offset, 2), 16),
+                Convert.ToByte(hex.Substring(offset + 2, 2), 16),
+                Convert.ToByte(hex.Substring(offset + 4, 2), 16)
+            )
+        );
+    }
+
+    private static RgbColor Composite(ParsedColor foreground, RgbColor background)
+    {
+        var alpha = foreground.Alpha / 255d;
+        return new RgbColor(
+            Blend(foreground.Rgb.Red, background.Red, alpha),
+            Blend(foreground.Rgb.Green, background.Green, alpha),
+            Blend(foreground.Rgb.Blue, background.Blue, alpha)
+        );
+    }
+
+    private static byte Blend(byte foreground, byte background, double alpha)
+    {
+        return (byte)Math.Round(
+            (foreground * alpha) + (background * (1d - alpha))
+        );
+    }
+
+    private static void AssertReadableContrast(
+        RgbColor foreground,
+        RgbColor background,
+        string fileName,
+        string state
+    )
+    {
+        var contrast = GetContrastRatio(foreground, background);
+        Assert.True(
+            contrast >= 4.5,
+            $"{fileName} {state} contrast was {contrast:F2}:1, expected at least 4.5:1."
+        );
+    }
+
+    private static double GetContrastRatio(RgbColor first, RgbColor second)
+    {
+        var firstLuminance = GetRelativeLuminance(first);
+        var secondLuminance = GetRelativeLuminance(second);
+        return (Math.Max(firstLuminance, secondLuminance) + 0.05)
+            / (Math.Min(firstLuminance, secondLuminance) + 0.05);
+    }
+
+    private static double GetRelativeLuminance(RgbColor color)
+    {
+        return (0.2126 * Linearize(color.Red))
+            + (0.7152 * Linearize(color.Green))
+            + (0.0722 * Linearize(color.Blue));
+    }
+
+    private static double Linearize(byte channel)
+    {
+        var value = channel / 255d;
+        return value <= 0.04045
+            ? value / 12.92
+            : Math.Pow((value + 0.055) / 1.055, 2.4);
+    }
+
+    private static string ToHex(RgbColor color)
+    {
+        return $"#{color.Red:X2}{color.Green:X2}{color.Blue:X2}";
+    }
+
     private static string GetNodeName(XElement element)
     {
         return (string?)element.Attribute(XName.Get("Name", XamlNamespace))
@@ -398,6 +640,11 @@ public sealed class FlourishHoverRevealContractTests
     private sealed record ParticipatingTemplate(
         string File,
         string Identifier,
+        XElement Style,
         XElement Template
     );
+
+    private readonly record struct ParsedColor(byte Alpha, RgbColor Rgb);
+
+    private readonly record struct RgbColor(byte Red, byte Green, byte Blue);
 }

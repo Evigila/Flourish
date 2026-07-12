@@ -137,6 +137,7 @@
     <Setter Property="ToolTipService.ShowDuration" Value="10000" />
     <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
     <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
+    <Setter Property="controls:HoverReveal.TemplateHandlesInteraction" Value="True" />
     <Setter Property="Template" Value="{StaticResource FlourishButtonTemplate}" />
     <Style.Triggers>
       <Trigger Property="Variant" Value="Icon">
