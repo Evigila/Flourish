@@ -5,6 +5,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Internal.Interaction;
 using Application = System.Windows.Application;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -152,47 +153,45 @@ internal sealed class FlourishMotionService : IMotionService
         }
     }
 
-    public void AnimateNavigationPane(
-        ColumnDefinition column,
-        double fromWidth,
-        double toWidth,
+    internal void AnimateNavigationPane(
+        NavigationPaneTransitionController controller,
+        NavigationPaneTransitionTarget target,
+        double committedWidth,
+        double targetWidth,
+        double maximumPaneWidth,
+        double referenceDistance,
         Action? completed = null
     )
     {
+        ArgumentNullException.ThrowIfNull(controller);
         var settings = Current;
-        column.BeginAnimation(ColumnDefinition.WidthProperty, null);
 
         if (
             !CanAnimateSettings(settings)
             || settings.NavigationPanelTransition == FlourishNavigationPanelTransition.None
-            || AreClose(fromWidth, toWidth)
+            || (!controller.IsActive && AreClose(committedWidth, targetWidth))
         )
         {
-            column.Width = new GridLength(toWidth);
+            controller.Cancel();
             completed?.Invoke();
             return;
         }
 
-        var animation = new GridLengthAnimation
+        if (
+            !controller.Start(
+                target,
+                committedWidth,
+                targetWidth,
+                maximumPaneWidth,
+                referenceDistance,
+                settings.NavigationPanelTransitionDuration,
+                CreateEase(),
+                completed ?? (static () => { })
+            )
+        )
         {
-            From = new GridLength(fromWidth),
-            To = new GridLength(toWidth),
-            Duration = new Duration(settings.NavigationPanelTransitionDuration),
-            EasingFunction = CreateEase(),
-            FillBehavior = FillBehavior.Stop,
-        };
-
-        animation.Completed += (_, _) =>
-        {
-            column.Width = new GridLength(toWidth);
             completed?.Invoke();
-        };
-
-        column.BeginAnimation(
-            ColumnDefinition.WidthProperty,
-            animation,
-            HandoffBehavior.SnapshotAndReplace
-        );
+        }
     }
 
     public void AnimatePageEntrance(FrameworkElement frame)
@@ -407,64 +406,5 @@ internal sealed class FlourishMotionService : IMotionService
         {
             throw new ArgumentOutOfRangeException(parameterName, value, "Unknown value.");
         }
-    }
-}
-
-internal sealed class GridLengthAnimation : AnimationTimeline
-{
-    public static readonly DependencyProperty FromProperty = DependencyProperty.Register(
-        nameof(From),
-        typeof(GridLength),
-        typeof(GridLengthAnimation)
-    );
-
-    public static readonly DependencyProperty ToProperty = DependencyProperty.Register(
-        nameof(To),
-        typeof(GridLength),
-        typeof(GridLengthAnimation)
-    );
-
-    public static readonly DependencyProperty EasingFunctionProperty = DependencyProperty.Register(
-        nameof(EasingFunction),
-        typeof(IEasingFunction),
-        typeof(GridLengthAnimation)
-    );
-
-    public GridLength From
-    {
-        get => (GridLength)GetValue(FromProperty);
-        set => SetValue(FromProperty, value);
-    }
-
-    public GridLength To
-    {
-        get => (GridLength)GetValue(ToProperty);
-        set => SetValue(ToProperty, value);
-    }
-
-    public IEasingFunction? EasingFunction
-    {
-        get => (IEasingFunction?)GetValue(EasingFunctionProperty);
-        set => SetValue(EasingFunctionProperty, value);
-    }
-
-    public override Type TargetPropertyType => typeof(GridLength);
-
-    protected override Freezable CreateInstanceCore()
-    {
-        return new GridLengthAnimation();
-    }
-
-    public override object GetCurrentValue(
-        object defaultOriginValue,
-        object defaultDestinationValue,
-        AnimationClock animationClock
-    )
-    {
-        var progress = animationClock.CurrentProgress ?? 1;
-        var easedProgress = EasingFunction?.Ease(progress) ?? progress;
-        var value = From.Value + ((To.Value - From.Value) * easedProgress);
-
-        return new GridLength(Math.Max(0, value));
     }
 }

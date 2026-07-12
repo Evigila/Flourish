@@ -24,7 +24,7 @@ public enum FlourishNavigationPanelTransition
     None,
 
     /// <summary>
-    /// Animates the navigation panel by resizing its layout column.
+    /// Animates a visual resize and commits the final layout width when the transition ends.
     /// </summary>
     /// <example>
     /// <code><![CDATA[

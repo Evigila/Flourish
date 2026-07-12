@@ -119,80 +119,92 @@
             <ColumnDefinition x:Name="ContentColumn" Width="*" />
           </Grid.ColumnDefinitions>
 
-          <Border
-            x:Name="NavigationPaneBorder"
+          <Grid
+            x:Name="NavigationPaneTransitionHost"
             Grid.Column="0"
-            Background="Transparent"
-            BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-            BorderThickness="0,0,1,0"
+            Panel.ZIndex="10"
           >
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-              <StackPanel
-                x:Name="NavigationHeaderRegionHost"
-                Grid.Row="0"
-                Orientation="Vertical"
-                Visibility="Collapsed"
-              />
-              <control:FlourishListBox
-                x:Name="NavigationItemsHost"
-                Grid.Row="1"
-                Appearance="Navigation"
-                ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
-                ItemsSource="{Binding}"
-                ScrollViewer.CanContentScroll="True"
-                PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
-                PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
-                SelectionChanged="NavigationItemsHost_SelectionChanged"
-                VirtualizingStackPanel.IsVirtualizing="True"
-                VirtualizingStackPanel.VirtualizationMode="Recycling"
-              >
-                <control:FlourishListBox.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                  </ItemsPanelTemplate>
-                </control:FlourishListBox.ItemsPanel>
-              </control:FlourishListBox>
-
-              <Border
-                x:Name="FixedNavigationItemsBorder"
-                Grid.Row="2"
-                Padding="0,6,0,6"
-                BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-                BorderThickness="0,1,0,0"
-                Visibility="Collapsed"
-              >
+            <Border
+              x:Name="NavigationPaneBorder"
+              Background="Transparent"
+              BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
+              BorderThickness="0,0,1,0"
+            >
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel
+                  x:Name="NavigationHeaderRegionHost"
+                  Grid.Row="0"
+                  Orientation="Vertical"
+                  Visibility="Collapsed"
+                />
                 <control:FlourishListBox
-                  x:Name="FixedNavigationItemsHost"
+                  x:Name="NavigationItemsHost"
+                  Grid.Row="1"
                   Appearance="Navigation"
                   ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
                   ItemsSource="{Binding}"
+                  ScrollViewer.CanContentScroll="True"
                   PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
                   PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
                   SelectionChanged="NavigationItemsHost_SelectionChanged"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                >
+                  <control:FlourishListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </control:FlourishListBox.ItemsPanel>
+                </control:FlourishListBox>
+
+                <Border
+                  x:Name="FixedNavigationItemsBorder"
+                  Grid.Row="2"
+                  Padding="0,6,0,6"
+                  BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
+                  BorderThickness="0,1,0,0"
+                  Visibility="Collapsed"
+                >
+                  <control:FlourishListBox
+                    x:Name="FixedNavigationItemsHost"
+                    Appearance="Navigation"
+                    ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
+                    ItemsSource="{Binding}"
+                    PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
+                    PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
+                    SelectionChanged="NavigationItemsHost_SelectionChanged"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                  />
+                </Border>
+                <StackPanel
+                  x:Name="NavigationFooterRegionHost"
+                  Grid.Row="3"
+                  Orientation="Vertical"
+                  Visibility="Collapsed"
                 />
-              </Border>
-              <StackPanel
-                x:Name="NavigationFooterRegionHost"
-                Grid.Row="3"
-                Orientation="Vertical"
-                Visibility="Collapsed"
-              />
-            </Grid>
-          </Border>
+              </Grid>
+            </Border>
+          </Grid>
 
           <Grid
             x:Name="ContentAreaGrid"
             Grid.Column="1"
             Margin="{DynamicResource FlourishContentBodyMargin}"
+            RenderTransformOrigin="0,0"
           >
+            <Grid.RenderTransform>
+              <TransformGroup>
+                <ScaleTransform x:Name="ContentAreaScaleTransform" ScaleX="1" ScaleY="1" />
+                <TranslateTransform x:Name="ContentAreaTranslateTransform" X="0" Y="0" />
+              </TransformGroup>
+            </Grid.RenderTransform>
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
               <RowDefinition Height="Auto" />
@@ -270,6 +282,7 @@
           <control:FlourishGridSplitter
             x:Name="NavigationPaneSplitter"
             Grid.Column="0"
+            Panel.ZIndex="20"
             DragCompleted="NavigationPaneSplitter_DragCompleted"
             DragStarted="NavigationPaneSplitter_DragStarted"
             Variant="NavigationPane"

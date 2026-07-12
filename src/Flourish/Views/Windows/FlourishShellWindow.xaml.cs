@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Internal.Interaction;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,6 +73,7 @@ internal partial class FlourishShellWindow : Window
     private readonly Dictionary<Guid, BackgroundTaskIconView> backgroundTaskIconsById = [];
     private readonly Dictionary<Guid, BackgroundTaskRowView> backgroundTaskRowsById = [];
     private readonly object backgroundTaskRefreshGate = new();
+    private readonly NavigationPaneTransitionController navigationPaneTransition = new();
     private readonly DispatcherTimer backgroundTaskRefreshTimer;
     private IReadOnlyList<Button>? defaultToolbarButtons;
     private FlourishNavigationItem? firstNavigationItem;
@@ -252,6 +254,7 @@ internal partial class FlourishShellWindow : Window
         shellFeatureService.Changed += ShellFeatureService_Changed;
         localizationService.Changed += LocalizationService_Changed;
         fontService.Changed += FontService_Changed;
+        motionService.Changed += MotionService_Changed;
         commandParser.Changed += CommandParser_Changed;
         commandParser.CanExecuteChanged += CommandParser_CanExecuteChanged;
         backgroundTaskService.TasksChanged += BackgroundTaskService_TasksChanged;
@@ -703,6 +706,11 @@ internal partial class FlourishShellWindow : Window
 
     private void ShellRootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
     {
+        if (navigationPaneTransition.IsActive)
+        {
+            ApplyNavigationPaneState();
+        }
+
         UpdateProfileCardPosition();
         UpdateStatusFlyoutPosition();
     }
@@ -1626,7 +1634,7 @@ internal partial class FlourishShellWindow : Window
         if (options.NavigationPanelDirection == NavigationPanelDirection.Right)
         {
             Grid.SetColumn(ContentAreaGrid, 0);
-            Grid.SetColumn(NavigationPaneBorder, 1);
+            Grid.SetColumn(NavigationPaneTransitionHost, 1);
             Grid.SetColumn(NavigationPaneSplitter, 1);
             NavigationPaneSplitter.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             NavigationPaneSplitter.ResizeBehavior = GridResizeBehavior.PreviousAndCurrent;
@@ -1634,7 +1642,7 @@ internal partial class FlourishShellWindow : Window
             return;
         }
 
-        Grid.SetColumn(NavigationPaneBorder, 0);
+        Grid.SetColumn(NavigationPaneTransitionHost, 0);
         Grid.SetColumn(ContentAreaGrid, 1);
         Grid.SetColumn(NavigationPaneSplitter, 0);
         NavigationPaneSplitter.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
@@ -1654,11 +1662,6 @@ internal partial class FlourishShellWindow : Window
         return options.NavigationPanelDirection == NavigationPanelDirection.Right
             ? PaneColumn
             : ContentColumn;
-    }
-
-    private void PreparePaneColumnsForAnimation()
-    {
-        GetContentColumn().Width = new GridLength(1, GridUnitType.Star);
     }
 
     private void SetNavigationPaneWidth(double width)
@@ -1709,7 +1712,7 @@ internal partial class FlourishShellWindow : Window
                 ? CoerceOpenPaneWidth(options.OpenPaneWidth)
                 : options.ClosedPaneWidth;
 
-        if (isOpen || animate)
+        if (isOpen)
         {
             ApplyNavigationPaneChrome(isOpen);
         }
@@ -1724,17 +1727,27 @@ internal partial class FlourishShellWindow : Window
             return;
         }
 
-        ApplyNavigationPaneColumnConstraints(false);
         NavigationPaneSplitter.IsEnabled = false;
         NavigationPaneSplitter.Visibility = Visibility.Collapsed;
-        PreparePaneColumnsForAnimation();
         var paneColumn = GetNavigationPaneColumn();
-        var fromWidth = paneColumn.ActualWidth > 0 ? paneColumn.ActualWidth : paneColumn.Width.Value;
+        var committedWidth = paneColumn.ActualWidth > 0
+            ? paneColumn.ActualWidth
+            : paneColumn.Width.Value;
 
         motionService.AnimateNavigationPane(
-            paneColumn,
-            fromWidth,
+            navigationPaneTransition,
+            new NavigationPaneTransitionTarget(
+                WorkAreaGrid,
+                NavigationPaneTransitionHost,
+                ContentAreaGrid,
+                ContentAreaScaleTransform,
+                ContentAreaTranslateTransform,
+                options.NavigationPanelDirection
+            ),
+            committedWidth,
             paneWidth,
+            CoerceOpenPaneWidth(options.OpenPaneWidth),
+            Math.Abs(options.OpenPaneWidth - options.ClosedPaneWidth),
             () =>
             {
                 ApplyNavigationPaneColumnConstraints(isOpen);
@@ -2271,8 +2284,7 @@ internal partial class FlourishShellWindow : Window
 
     private void StopNavigationPaneAnimations()
     {
-        PaneColumn.BeginAnimation(ColumnDefinition.WidthProperty, null);
-        ContentColumn.BeginAnimation(ColumnDefinition.WidthProperty, null);
+        navigationPaneTransition.Cancel();
     }
 
     private void NotificationDismiss_Click(object sender, RoutedEventArgs e)
@@ -2318,6 +2330,11 @@ internal partial class FlourishShellWindow : Window
 
     private void ApplyNavigationPanelRuntimeState(bool animate)
     {
+        if (!animate)
+        {
+            StopNavigationPaneAnimations();
+        }
+
         var current = navigationPanelService.Current;
         isPaneOpen = current.IsOpen;
         NavigationPaneBorder.Visibility = current.IsEnabled
@@ -2539,6 +2556,23 @@ internal partial class FlourishShellWindow : Window
                 );
             }
         });
+    }
+
+    private void MotionService_Changed(object? sender, FlourishMotionChangedEventArgs e)
+    {
+        if (
+            !navigationPaneTransition.IsActive
+            || (
+                e.CanAnimate
+                && e.Current.NavigationPanelTransition
+                    != FlourishNavigationPanelTransition.None
+            )
+        )
+        {
+            return;
+        }
+
+        DispatchRuntimeChange(() => ApplyNavigationPaneState());
     }
 
     private void CommandParser_Changed(object? sender, CommandRegistryChangedEventArgs e)
@@ -3216,6 +3250,7 @@ internal partial class FlourishShellWindow : Window
         shellFeatureService.Changed -= ShellFeatureService_Changed;
         localizationService.Changed -= LocalizationService_Changed;
         fontService.Changed -= FontService_Changed;
+        motionService.Changed -= MotionService_Changed;
         commandParser.Changed -= CommandParser_Changed;
         commandParser.CanExecuteChanged -= CommandParser_CanExecuteChanged;
         navigationService.Navigated -= RootFrame_Navigated;
@@ -3230,6 +3265,7 @@ internal partial class FlourishShellWindow : Window
         themeService.ThemeChanged -= ThemeService_ThemeChanged;
         themeService.Detach(this);
         materialEffectService.Detach(this);
+        StopNavigationPaneAnimations();
         windowCloseService.Detach();
         ClearToolbarButtonCache();
         foreach (var regionElement in regionElementsById.Values)
