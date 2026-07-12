@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Composition;
 using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
@@ -114,6 +115,42 @@ public sealed class DefaultFlourishBuilderTests
     }
 
     [Fact]
+    public void Build_UsesTheTargetedProviderAndHostsTheSamePreferenceService()
+    {
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigureServices((_, services) =>
+            {
+                services.AddSingleton<TestHostedService>();
+                services.AddSingleton<IHostedService>(provider =>
+                    provider.GetRequiredService<TestHostedService>()
+                );
+            })
+            .Build();
+        var configuration = Assert.IsAssignableFrom<IConfigurationRoot>(
+            flourish.GetRequiredService<IConfiguration>()
+        );
+        var preferences = flourish.GetRequiredService<AppPreferenceService>();
+        var hostedServices = flourish
+            .GetRequiredService<IEnumerable<IHostedService>>()
+            .ToArray();
+
+        Assert.Single(
+            configuration.Providers.OfType<FlourishAppSettingsConfigurationProvider>()
+        );
+        Assert.Same(preferences, hostedServices[0]);
+        Assert.True(
+            Array.FindIndex(hostedServices, service => service is TestHostedService) > 0
+        );
+        Assert.True(
+            Array.FindIndex(
+                hostedServices,
+                service => service is FlourishBackgroundTaskService
+            ) > 0
+        );
+    }
+
+    [Fact]
     public void AddEntryAssemblyUserSecrets_PreservesDefaultHostPrecedenceAndAvoidsDuplicates()
     {
         var appSettingsSource = new JsonConfigurationSource
@@ -142,6 +179,44 @@ public sealed class DefaultFlourishBuilderTests
         Assert.Same(higherPrioritySource, configuration.Sources[2]);
     }
 
+    [Fact]
+    public void UseTargetedAppSettingsProvider_ReplacesTheBaseSourceInPlace()
+    {
+        var baseAppSettings = new JsonConfigurationSource
+        {
+            Path = "appsettings.json",
+            Optional = true,
+            ReloadOnChange = true,
+            ReloadDelay = 125,
+        };
+        var environmentAppSettings = new JsonConfigurationSource
+        {
+            Path = "appsettings.Development.json",
+            Optional = true,
+            ReloadOnChange = true,
+        };
+        var higherPrioritySource = new MemoryConfigurationSource();
+        var configuration = new ConfigurationBuilder();
+        configuration.Sources.Add(baseAppSettings);
+        configuration.Sources.Add(environmentAppSettings);
+        configuration.Sources.Add(higherPrioritySource);
+
+        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(configuration);
+        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(configuration);
+
+        Assert.Equal(3, configuration.Sources.Count);
+        var replacement = Assert.IsType<FlourishAppSettingsConfigurationSource>(
+            configuration.Sources[0]
+        );
+        Assert.Equal(baseAppSettings.Path, replacement.Path);
+        Assert.Equal(baseAppSettings.Optional, replacement.Optional);
+        Assert.Equal(baseAppSettings.ReloadDelay, replacement.ReloadDelay);
+        Assert.False(replacement.ReloadOnChange);
+        Assert.True(replacement.WatchForChanges);
+        Assert.Same(environmentAppSettings, configuration.Sources[1]);
+        Assert.Same(higherPrioritySource, configuration.Sources[2]);
+    }
+
     private static Assembly CreateAssemblyWithUserSecretsId()
     {
         var assembly = AssemblyBuilder.DefineDynamicAssembly(
@@ -160,4 +235,17 @@ public sealed class DefaultFlourishBuilderTests
     }
 
     private sealed class TestPage : Page { }
+
+    private sealed class TestHostedService : IHostedService
+    {
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+    }
 }

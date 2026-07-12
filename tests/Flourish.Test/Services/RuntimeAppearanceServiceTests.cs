@@ -213,30 +213,98 @@ public sealed class RuntimeAppearanceServiceTests
     }
 
     [Fact]
-    public void ThemeService_SetThemeActivatesRuntimeThemeAndPersistsIt()
+    public async Task ThemeService_SetThemeActivatesRuntimeThemeBeforePersistenceCompletes()
     {
         using var directory = new TemporaryDirectory();
         var configuration = new ConfigurationBuilder()
             .SetBasePath(directory.Path)
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+            .Add(
+                new FlourishAppSettingsConfigurationSource
+                {
+                    Path = "appsettings.json",
+                    Optional = true,
+                    ReloadOnChange = false,
+                    WatchForChanges = false,
+                }
+            )
             .Build();
         var environment = new Mock<IHostEnvironment>();
         environment.SetupGet(value => value.ContentRootPath).Returns(directory.Path);
-        var preferences = new AppPreferenceService(configuration, environment.Object);
+        using var preferences = new AppPreferenceService(configuration, environment.Object);
         var options = new FlourishShellOptions();
         IThemeService sut = new ThemeService(options, preferences);
         FlourishThemeChangedEventArgs? change = null;
         sut.ThemeChanged += (_, args) => change = args;
+        using var updateEntered = new ManualResetEventSlim();
+        using var releaseUpdate = new ManualResetEventSlim();
+        var blockingUpdate = preferences
+            .UpdateAsync(editor =>
+            {
+                updateEntered.Set();
+                releaseUpdate.Wait();
+                editor.Set("Test:Blocker", "completed");
+            })
+            .AsTask();
+        try
+        {
+            Assert.True(updateEntered.Wait(TimeSpan.FromSeconds(5)));
+            sut.SetTheme(FlourishTheme.Dark);
 
-        sut.SetTheme(FlourishTheme.Dark);
+            Assert.Equal(FlourishTheme.Dark, sut.CurrentTheme);
+            Assert.Equal(FlourishTheme.Dark, sut.EffectiveTheme);
+            Assert.True(sut.IsDark);
+            Assert.True(options.IsThemeEnabled);
+            Assert.NotNull(change);
+            Assert.Equal(FlourishTheme.Dark, change.RequestedTheme);
+            Assert.False(blockingUpdate.IsCompleted);
+        }
+        finally
+        {
+            releaseUpdate.Set();
+        }
 
-        Assert.Equal(FlourishTheme.Dark, sut.CurrentTheme);
-        Assert.Equal(FlourishTheme.Dark, sut.EffectiveTheme);
-        Assert.True(sut.IsDark);
-        Assert.True(options.IsThemeEnabled);
+        await blockingUpdate;
+        await preferences.FlushThemeSavesAsync();
         Assert.Equal(FlourishTheme.Dark, preferences.ReadTheme());
-        Assert.NotNull(change);
-        Assert.Equal(FlourishTheme.Dark, change.RequestedTheme);
+    }
+
+    [Fact]
+    public async Task ThemeService_ThemeChangedCanSynchronouslyPersistAnotherSetting()
+    {
+        using var directory = new TemporaryDirectory();
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(directory.Path)
+            .Add(
+                new FlourishAppSettingsConfigurationSource
+                {
+                    Path = "appsettings.json",
+                    Optional = true,
+                    ReloadOnChange = false,
+                    WatchForChanges = false,
+                }
+            )
+            .Build();
+        var environment = new Mock<IHostEnvironment>();
+        environment.SetupGet(value => value.ContentRootPath).Returns(directory.Path);
+        using var preferences = new AppPreferenceService(configuration, environment.Object);
+        IThemeService sut = new ThemeService(new FlourishShellOptions(), preferences);
+        sut.ThemeChanged += (_, _) =>
+            preferences
+                .SetAsync("Feature:FromThemeChanged", true)
+                .AsTask()
+                .WaitAsync(TimeSpan.FromSeconds(1))
+                .GetAwaiter()
+                .GetResult();
+
+        await Task.Run(() => sut.SetTheme(FlourishTheme.Dark))
+            .WaitAsync(TimeSpan.FromSeconds(5));
+        await preferences
+            .FlushThemeSavesAsync()
+            .AsTask()
+            .WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.Equal("True", configuration["Feature:FromThemeChanged"]);
+        Assert.Equal(FlourishTheme.Dark, preferences.ReadTheme());
     }
 
     [Fact]

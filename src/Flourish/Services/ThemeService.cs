@@ -138,21 +138,36 @@ internal sealed class ThemeService(
         ValidateTheme(theme, nameof(theme));
         bool requestedThemeChanged;
         Window[] windows;
+        var runtimeApplied = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
         lock (gate)
         {
             requestedThemeChanged = currentTheme != theme;
-            preferenceService.SaveTheme(theme);
+            preferenceService.QueueThemeSave(theme, runtimeApplied.Task);
             shellOptions.IsThemeEnabled = true;
             currentTheme = theme;
             windows = attachedWindows.ToArray();
         }
 
-        foreach (var window in windows)
+        try
         {
-            RunOnWindowDispatcher(window, () => EnsureHook(window));
-        }
+            foreach (var window in windows)
+            {
+                RunOnWindowDispatcher(window, () => EnsureHook(window));
+            }
 
-        ApplyTheme(notify: true, forceNotify: requestedThemeChanged);
+            ApplyTheme(
+                notify: true,
+                forceNotify: requestedThemeChanged,
+                onApplied: () => runtimeApplied.TrySetResult(true)
+            );
+        }
+        catch
+        {
+            runtimeApplied.TrySetResult(false);
+            throw;
+        }
     }
 
     private void EnsureHook(Window window)
@@ -218,7 +233,11 @@ internal sealed class ThemeService(
         return IntPtr.Zero;
     }
 
-    private void ApplyTheme(bool notify, bool forceNotify = false)
+    private void ApplyTheme(
+        bool notify,
+        bool forceNotify = false,
+        Action? onApplied = null
+    )
     {
         var application = Application.Current;
         void ApplyCore()
@@ -238,6 +257,11 @@ internal sealed class ThemeService(
             {
                 ApplyApplicationResources(application, effective);
             }
+
+            // Persistence may proceed once the runtime resources have been applied.
+            // Release it before user callbacks: a ThemeChanged handler is allowed to
+            // synchronously persist another setting without waiting behind this theme.
+            onApplied?.Invoke();
 
             if (notify && (changed || forceNotify))
             {

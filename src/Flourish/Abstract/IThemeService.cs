@@ -34,7 +34,7 @@ public interface IThemeService
     void ToggleTheme();
 
     /// <summary>
-    /// Selects and persists a theme mode.
+    /// Selects a theme mode immediately and schedules its persistence.
     /// </summary>
     void SetTheme(FlourishTheme theme);
 }

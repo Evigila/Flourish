@@ -53,6 +53,12 @@ internal sealed class FlourishCompositionRoot(
 
     public void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
+        // Hosted services stop in reverse registration order. Register the settings
+        // writer first so every producer can finish queuing its final update before
+        // the writer itself is stopped and flushed.
+        services.AddSingleton<IHostedService>(provider =>
+            provider.GetRequiredService<AppPreferenceService>()
+        );
         foreach (var configureServices in serviceConfigurations)
         {
             configureServices(context, services);

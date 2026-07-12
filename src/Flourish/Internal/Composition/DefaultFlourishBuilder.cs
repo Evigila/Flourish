@@ -148,9 +148,49 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     {
         var builder = Host.CreateDefaultBuilder(args).UseContentRoot(AppContext.BaseDirectory);
         builder.ConfigureAppConfiguration((_, configuration) =>
-            AddEntryAssemblyUserSecrets(configuration)
-        );
+        {
+            UseTargetedAppSettingsProvider(configuration);
+            AddEntryAssemblyUserSecrets(configuration);
+        });
         return builder;
+    }
+
+    internal static void UseTargetedAppSettingsProvider(
+        IConfigurationBuilder configuration
+    )
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+        for (var index = 0; index < configuration.Sources.Count; index++)
+        {
+            if (configuration.Sources[index] is FlourishAppSettingsConfigurationSource)
+            {
+                return;
+            }
+
+            if (
+                configuration.Sources[index] is not JsonConfigurationSource source
+                || !string.Equals(
+                    source.Path?.Replace('\\', '/'),
+                    "appsettings.json",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            {
+                continue;
+            }
+
+            configuration.Sources[index] = new FlourishAppSettingsConfigurationSource
+            {
+                FileProvider = source.FileProvider,
+                Path = source.Path!,
+                Optional = source.Optional,
+                ReloadDelay = source.ReloadDelay,
+                ReloadOnChange = false,
+                WatchForChanges = source.ReloadOnChange,
+                OnLoadException = source.OnLoadException,
+            };
+            return;
+        }
     }
 
     internal static void AddEntryAssemblyUserSecrets(
