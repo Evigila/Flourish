@@ -81,6 +81,7 @@ internal sealed class FlourishRuntime(IHost host) : IFlourish
     private FlourishShellWindow PrepareShell(Application application)
     {
         EnsureApplicationResources(application);
+        host.Services.GetRequiredService<FontService>().Attach(application);
         host.Services.GetRequiredService<FlourishMotionService>().Attach(application);
 
         var mainWindow = host.Services.GetRequiredService<FlourishShellWindow>();

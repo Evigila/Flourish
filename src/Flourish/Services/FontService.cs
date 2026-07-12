@@ -2,20 +2,24 @@ using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 using FontFamily = System.Windows.Media.FontFamily;
-using Window = System.Windows.Window;
 using WpfControl = System.Windows.Controls.Control;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class FontService(FlourishShellOptions options) : IFontService
+internal sealed class FontService : IFontService
 {
     private readonly object gate = new();
+    private readonly FlourishShellOptions options;
     private readonly ConditionalWeakTable<Page, PageFontResourceState> pageFontStates = new();
-    private Window? owner;
+    private Dispatcher? applicationDispatcher;
+    private ResourceDictionary? applicationResources;
+    private ResourceDictionary? appliedResources;
+    private FontSnapshot? appliedSnapshot;
 
     private static readonly string[] PageFontResourceKeys =
     [
@@ -31,6 +35,11 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         "FlourishFontSizeNavigationIcon",
         "FlourishFontSizeWindowButtonIcon",
     ];
+
+    public FontService(FlourishShellOptions options)
+    {
+        this.options = options ?? throw new ArgumentNullException(nameof(options));
+    }
 
     public string FontFamily
     {
@@ -82,76 +91,143 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
 
     public event EventHandler<FlourishFontChangedEventArgs>? Changed;
 
-    public void Apply(Window window)
+    internal void Attach(Application application)
     {
-        owner = window;
-        ApplyCore(window);
+        ArgumentNullException.ThrowIfNull(application);
+        Attach(application.Dispatcher, application.Resources);
+    }
+
+    internal void Attach(Dispatcher dispatcher, ResourceDictionary resources)
+    {
+        ArgumentNullException.ThrowIfNull(dispatcher);
+        ArgumentNullException.ThrowIfNull(resources);
+
+        void AttachCore()
+        {
+            FontSnapshot snapshot;
+            lock (gate)
+            {
+                applicationDispatcher = dispatcher;
+                applicationResources = resources;
+                snapshot = CaptureSnapshot();
+            }
+
+            if (ReferenceEquals(appliedResources, resources) && appliedSnapshot == snapshot)
+            {
+                return;
+            }
+
+            ApplyResources(resources, snapshot, FontResourceChange.All);
+            appliedResources = resources;
+            appliedSnapshot = snapshot;
+        }
+
+        if (dispatcher.CheckAccess())
+        {
+            AttachCore();
+        }
+        else
+        {
+            dispatcher.Invoke(AttachCore);
+        }
     }
 
     public void SetFont(string fontFamily, double fontSize)
     {
         fontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
         ValidatePositiveFinite(fontSize, nameof(fontSize));
-        lock (gate)
-        {
-            if (options.FontFamily == fontFamily && options.FontSize == fontSize)
-            {
-                return;
-            }
+        ExecuteMutation(() => SetFontCore(fontFamily, fontSize));
+    }
 
+    private FontMutation? SetFontCore(string fontFamily, double fontSize)
+    {
+        var change = FontResourceChange.None;
+        if (options.FontFamily != fontFamily)
+        {
             options.FontFamily = fontFamily;
-            options.FontSize = fontSize;
+            change |= FontResourceChange.TextFamily;
         }
 
-        ApplyAndNotify();
+        if (options.FontSize != fontSize)
+        {
+            options.FontSize = fontSize;
+            change |= FontResourceChange.Sizes;
+        }
+
+        return change == FontResourceChange.None
+            ? null
+            : new FontMutation(
+                CaptureSnapshot(),
+                change,
+                FlourishFontChangeKind.GlobalText,
+                null
+            );
     }
 
     public void SetFontFamily(string fontFamily)
     {
         fontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
-        lock (gate)
-        {
-            if (options.FontFamily == fontFamily)
-            {
-                return;
-            }
+        ExecuteMutation(() => SetFontFamilyCore(fontFamily));
+    }
 
-            options.FontFamily = fontFamily;
+    private FontMutation? SetFontFamilyCore(string fontFamily)
+    {
+        if (options.FontFamily == fontFamily)
+        {
+            return null;
         }
 
-        ApplyAndNotify();
+        options.FontFamily = fontFamily;
+        return new FontMutation(
+            CaptureSnapshot(),
+            FontResourceChange.TextFamily,
+            FlourishFontChangeKind.GlobalText,
+            null
+        );
     }
 
     public void SetFontSize(double fontSize)
     {
         ValidatePositiveFinite(fontSize, nameof(fontSize));
-        lock (gate)
-        {
-            if (options.FontSize == fontSize)
-            {
-                return;
-            }
+        ExecuteMutation(() => SetFontSizeCore(fontSize));
+    }
 
-            options.FontSize = fontSize;
+    private FontMutation? SetFontSizeCore(double fontSize)
+    {
+        if (options.FontSize == fontSize)
+        {
+            return null;
         }
 
-        ApplyAndNotify();
+        options.FontSize = fontSize;
+        return new FontMutation(
+            CaptureSnapshot(),
+            FontResourceChange.Sizes,
+            FlourishFontChangeKind.GlobalText,
+            null
+        );
     }
 
     public void SetIconFontFamily(string fontFamily)
     {
         fontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
-        lock (gate)
-        {
-            if (options.IconFontFamily == fontFamily)
-            {
-                return;
-            }
+        ExecuteMutation(() => SetIconFontFamilyCore(fontFamily));
+    }
 
-            options.IconFontFamily = fontFamily;
+    private FontMutation? SetIconFontFamilyCore(string fontFamily)
+    {
+        if (options.IconFontFamily == fontFamily)
+        {
+            return null;
         }
 
-        ApplyAndNotify();
+        options.IconFontFamily = fontFamily;
+        return new FontMutation(
+            CaptureSnapshot(),
+            FontResourceChange.IconFamily,
+            FlourishFontChangeKind.Icon,
+            null
+        );
     }
 
     public void SetOverrideFont<TPage>(string fontFamily, double? fontSize = null)
@@ -174,21 +250,29 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         }
 
         var pageOverride = new FlourishPageFontOverride(fontFamily, fontSize);
-        lock (gate)
-        {
-            if (
-                options.PageFontOverridesByPageType.TryGetValue(pageType, out var current)
-                && current.FontFamily == pageOverride.FontFamily
-                && current.FontSize == pageOverride.FontSize
-            )
-            {
-                return;
-            }
+        ExecuteMutation(() => SetOverrideFontCore(pageType, pageOverride));
+    }
 
-            options.PageFontOverridesByPageType[pageType] = pageOverride;
+    private FontMutation? SetOverrideFontCore(
+        Type pageType,
+        FlourishPageFontOverride pageOverride
+    )
+    {
+        if (
+            options.PageFontOverridesByPageType.TryGetValue(pageType, out var current)
+            && current == pageOverride
+        )
+        {
+            return null;
         }
 
-        RaiseChangedOnOwnerDispatcher();
+        options.PageFontOverridesByPageType[pageType] = pageOverride;
+        return new FontMutation(
+            CaptureSnapshot(),
+            FontResourceChange.None,
+            FlourishFontChangeKind.PageOverride,
+            pageType
+        );
     }
 
     public bool ClearOverrideFont<TPage>() where TPage : Page
@@ -199,19 +283,27 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
     public bool ClearOverrideFont(Type pageType)
     {
         ValidatePageType(pageType, nameof(pageType));
-        lock (gate)
+        var removed = false;
+        ExecuteMutation(() =>
         {
             if (!options.PageFontOverridesByPageType.Remove(pageType))
             {
-                return false;
+                return null;
             }
-        }
 
-        RaiseChangedOnOwnerDispatcher();
-        return true;
+            removed = true;
+            return new FontMutation(
+                CaptureSnapshot(),
+                FontResourceChange.None,
+                FlourishFontChangeKind.PageOverride,
+                pageType
+            );
+        });
+
+        return removed;
     }
 
-    internal void ApplyToPage(Page page, Type? configuredPageType = null)
+    internal bool ApplyToPage(Page page, Type? configuredPageType = null)
     {
         ArgumentNullException.ThrowIfNull(page);
         var pageType = configuredPageType ?? page.GetType();
@@ -221,15 +313,27 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
             options.PageFontOverridesByPageType.TryGetValue(pageType, out pageOverride);
         }
 
-        if (pageOverride is null)
+        var signature = new PageFontSignature(
+            pageType,
+            pageOverride?.FontFamily,
+            pageOverride?.FontSize
+        );
+        var state = pageFontStates.GetValue(page, static _ => new PageFontResourceState());
+        if (state.AppliedSignature == signature)
         {
-            RestorePageResources(page);
-            page.SetResourceReference(WpfControl.FontFamilyProperty, "FlourishFontFamily");
-            page.SetResourceReference(WpfControl.FontSizeProperty, "FlourishFontSizeBase");
-            return;
+            return false;
         }
 
-        var state = pageFontStates.GetValue(page, CapturePageResources);
+        if (pageOverride is null)
+        {
+            RestorePageResources(page, state);
+            page.SetResourceReference(WpfControl.FontFamilyProperty, "FlourishFontFamily");
+            page.SetResourceReference(WpfControl.FontSizeProperty, "FlourishFontSizeBase");
+            state.AppliedSignature = signature;
+            return true;
+        }
+
+        CapturePageResources(page, state);
         var fontFamily = new FontFamily(pageOverride.FontFamily);
         page.FontFamily = fontFamily;
         page.Resources["FlourishFontFamily"] = fontFamily;
@@ -243,89 +347,142 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
             RestorePageFontSizeResources(page, state);
             page.SetResourceReference(WpfControl.FontSizeProperty, "FlourishFontSizeBase");
         }
+
+        state.AppliedSignature = signature;
+        return true;
     }
 
-    private void ApplyAndNotify()
+    private void ExecuteMutation(Func<FontMutation?> mutationFactory)
     {
-        var attachedOwner = owner;
-        if (attachedOwner is not null)
+        Dispatcher? dispatcher;
+        FontMutation? detachedMutation;
+        lock (gate)
         {
-            if (attachedOwner.CheckAccess())
-            {
-                ApplyCore(attachedOwner);
-                RaiseChanged();
-            }
-            else
-            {
-                attachedOwner.Dispatcher.Invoke(() =>
-                {
-                    ApplyCore(attachedOwner);
-                    RaiseChanged();
-                });
-            }
+            dispatcher = applicationDispatcher;
+            detachedMutation = dispatcher is null ? mutationFactory() : null;
+        }
 
+        if (dispatcher is null)
+        {
+            PublishMutation(detachedMutation, null);
             return;
         }
 
-        RaiseChanged();
+        void ExecuteOnDispatcher()
+        {
+            FontMutation? mutation;
+            ResourceDictionary? resources;
+            lock (gate)
+            {
+                mutation = mutationFactory();
+                resources = applicationResources;
+            }
+
+            PublishMutation(mutation, resources);
+        }
+
+        if (dispatcher.CheckAccess())
+        {
+            ExecuteOnDispatcher();
+        }
+        else
+        {
+            dispatcher.Invoke(ExecuteOnDispatcher);
+        }
     }
 
-    private void RaiseChanged()
+    private void PublishMutation(
+        FontMutation? mutation,
+        ResourceDictionary? resources
+    )
+    {
+        if (mutation is not { } value)
+        {
+            return;
+        }
+
+        if (resources is not null && value.ResourceChange != FontResourceChange.None)
+        {
+            ApplyResources(resources, value.Snapshot, value.ResourceChange);
+            appliedResources = resources;
+            appliedSnapshot = value.Snapshot;
+        }
+
+        RaiseChanged(value.Snapshot, value.ChangeKind, value.AffectedPageType);
+    }
+
+    private void RaiseChanged(
+        FontSnapshot snapshot,
+        FlourishFontChangeKind changeKind,
+        Type? affectedPageType
+    )
     {
         Changed?.Invoke(
             this,
-            new FlourishFontChangedEventArgs(FontFamily, IconFontFamily, FontSize)
+            new FlourishFontChangedEventArgs(
+                snapshot.FontFamily,
+                snapshot.IconFontFamily,
+                snapshot.FontSize,
+                changeKind,
+                affectedPageType
+            )
         );
     }
 
-    private void RaiseChangedOnOwnerDispatcher()
+    private FontSnapshot CaptureSnapshot()
     {
-        var attachedOwner = owner;
-        if (attachedOwner is null || attachedOwner.CheckAccess())
+        return new FontSnapshot(
+            options.FontFamily,
+            options.IconFontFamily,
+            options.FontSize
+        );
+    }
+
+    private static void ApplyResources(
+        ResourceDictionary resources,
+        FontSnapshot snapshot,
+        FontResourceChange change
+    )
+    {
+        if ((change & FontResourceChange.TextFamily) != 0)
         {
-            RaiseChanged();
+            SetResourceIfChanged(
+                resources,
+                "FlourishFontFamily",
+                new FontFamily(snapshot.FontFamily)
+            );
+        }
+
+        if ((change & FontResourceChange.IconFamily) != 0)
+        {
+            SetResourceIfChanged(
+                resources,
+                "FlourishIconFontFamily",
+                new FontFamily(snapshot.IconFontFamily)
+            );
+        }
+
+        if ((change & FontResourceChange.Sizes) != 0)
+        {
+            SetPageFontSizeResources(resources, snapshot.FontSize);
+        }
+    }
+
+    private static void SetResourceIfChanged(
+        ResourceDictionary resources,
+        string key,
+        object value
+    )
+    {
+        if (
+            TryGetDirectResource(resources, key, out var current)
+            && Equals(current, value)
+        )
+        {
             return;
         }
 
-        attachedOwner.Dispatcher.Invoke(RaiseChanged);
-    }
-
-    private void ApplyCore(Window window)
-    {
-        string textFontFamily;
-        string iconFontFamilyName;
-        double baseSize;
-        lock (gate)
-        {
-            textFontFamily = options.FontFamily;
-            iconFontFamilyName = options.IconFontFamily;
-            baseSize = options.FontSize;
-        }
-
-        var fontFamily = new FontFamily(textFontFamily);
-        var iconFontFamily = new FontFamily(iconFontFamilyName);
-
-        window.FontFamily = fontFamily;
-        window.FontSize = baseSize;
-
-        SetResource(window, "FlourishFontFamily", fontFamily);
-        SetResource(window, "FlourishIconFontFamily", iconFontFamily);
-        SetResource(window, "FlourishFontSizeSmall", ClampFontSize(baseSize - 3));
-        SetResource(window, "FlourishFontSizeCaption", ClampFontSize(baseSize - 1));
-        SetResource(window, "FlourishFontSizeBase", baseSize);
-        SetResource(window, "FlourishFontSizeSubtitle", ClampFontSize(baseSize + 1));
-        SetResource(window, "FlourishFontSizeSectionTitle", ClampFontSize(baseSize + 4));
-        SetResource(window, "FlourishFontSizePageTitle", ClampFontSize(baseSize + 17));
-        SetResource(window, "FlourishFontSizeTitle", baseSize);
-        SetResource(window, "FlourishFontSizeTitlebarIcon", ClampFontSize(baseSize + 1));
-        SetResource(window, "FlourishFontSizeNavigationIcon", ClampFontSize(baseSize + 1));
-        SetResource(window, "FlourishFontSizeWindowButtonIcon", ClampFontSize(baseSize - 2));
-    }
-
-    private static void SetResource(Window window, string key, object value)
-    {
-        window.Resources[key] = value;
-        Application.Current?.Resources[key] = value;
+        resources[key] = value;
     }
 
     private static double ClampFontSize(double size)
@@ -333,14 +490,18 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         return Math.Max(1, size);
     }
 
-    private static PageFontResourceState CapturePageResources(Page page)
+    private static void CapturePageResources(Page page, PageFontResourceState state)
     {
-        var state = new PageFontResourceState();
+        if (state.HasCapturedResources)
+        {
+            return;
+        }
+
         foreach (var key in PageFontResourceKeys)
         {
-            if (page.Resources.Contains(key))
+            if (TryGetDirectResource(page.Resources, key, out var value))
             {
-                state.OriginalResources[key] = page.Resources[key];
+                state.OriginalResources[key] = value;
             }
             else
             {
@@ -348,12 +509,28 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
             }
         }
 
-        return state;
+        state.HasCapturedResources = true;
     }
 
-    private void RestorePageResources(Page page)
+    private static bool TryGetDirectResource(
+        ResourceDictionary resources,
+        string key,
+        out object? value
+    )
     {
-        if (!pageFontStates.TryGetValue(page, out var state))
+        if (!resources.Keys.Cast<object>().Contains(key))
+        {
+            value = null;
+            return false;
+        }
+
+        value = resources[key];
+        return true;
+    }
+
+    private static void RestorePageResources(Page page, PageFontResourceState state)
+    {
+        if (!state.HasCapturedResources)
         {
             return;
         }
@@ -363,7 +540,9 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
             RestorePageResource(page, state, key);
         }
 
-        pageFontStates.Remove(page);
+        state.OriginalResources.Clear();
+        state.MissingResourceKeys.Clear();
+        state.HasCapturedResources = false;
     }
 
     private static void RestorePageFontSizeResources(
@@ -371,6 +550,11 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         PageFontResourceState state
     )
     {
+        if (!state.HasCapturedResources)
+        {
+            return;
+        }
+
         foreach (var key in PageFontResourceKeys.Skip(1))
         {
             RestorePageResource(page, state, key);
@@ -397,16 +581,36 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         double baseSize
     )
     {
-        resources["FlourishFontSizeSmall"] = ClampFontSize(baseSize - 3);
-        resources["FlourishFontSizeCaption"] = ClampFontSize(baseSize - 1);
-        resources["FlourishFontSizeBase"] = baseSize;
-        resources["FlourishFontSizeSubtitle"] = ClampFontSize(baseSize + 1);
-        resources["FlourishFontSizeSectionTitle"] = ClampFontSize(baseSize + 4);
-        resources["FlourishFontSizePageTitle"] = ClampFontSize(baseSize + 17);
-        resources["FlourishFontSizeTitle"] = baseSize;
-        resources["FlourishFontSizeTitlebarIcon"] = ClampFontSize(baseSize + 1);
-        resources["FlourishFontSizeNavigationIcon"] = ClampFontSize(baseSize + 1);
-        resources["FlourishFontSizeWindowButtonIcon"] = ClampFontSize(baseSize - 2);
+        SetResourceIfChanged(resources, "FlourishFontSizeSmall", ClampFontSize(baseSize - 3));
+        SetResourceIfChanged(resources, "FlourishFontSizeCaption", ClampFontSize(baseSize - 1));
+        SetResourceIfChanged(resources, "FlourishFontSizeBase", baseSize);
+        SetResourceIfChanged(resources, "FlourishFontSizeSubtitle", ClampFontSize(baseSize + 1));
+        SetResourceIfChanged(
+            resources,
+            "FlourishFontSizeSectionTitle",
+            ClampFontSize(baseSize + 4)
+        );
+        SetResourceIfChanged(
+            resources,
+            "FlourishFontSizePageTitle",
+            ClampFontSize(baseSize + 17)
+        );
+        SetResourceIfChanged(resources, "FlourishFontSizeTitle", baseSize);
+        SetResourceIfChanged(
+            resources,
+            "FlourishFontSizeTitlebarIcon",
+            ClampFontSize(baseSize + 1)
+        );
+        SetResourceIfChanged(
+            resources,
+            "FlourishFontSizeNavigationIcon",
+            ClampFontSize(baseSize + 1)
+        );
+        SetResourceIfChanged(
+            resources,
+            "FlourishFontSizeWindowButtonIcon",
+            ClampFontSize(baseSize - 2)
+        );
     }
 
     private static string ValidateNotBlank(string value, string parameterName)
@@ -421,7 +625,7 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
 
     private static void ValidatePositiveFinite(double value, string parameterName)
     {
-        if (double.IsNaN(value) || double.IsInfinity(value) || value <= 0)
+        if (!double.IsFinite(value) || value <= 0)
         {
             throw new ArgumentOutOfRangeException(
                 parameterName,
@@ -447,10 +651,43 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         }
     }
 
+    [Flags]
+    private enum FontResourceChange
+    {
+        None = 0,
+        TextFamily = 1,
+        IconFamily = 2,
+        Sizes = 4,
+        All = TextFamily | IconFamily | Sizes,
+    }
+
+    private readonly record struct FontSnapshot(
+        string FontFamily,
+        string IconFontFamily,
+        double FontSize
+    );
+
+    private readonly record struct FontMutation(
+        FontSnapshot Snapshot,
+        FontResourceChange ResourceChange,
+        FlourishFontChangeKind ChangeKind,
+        Type? AffectedPageType
+    );
+
+    private sealed record PageFontSignature(
+        Type ConfiguredPageType,
+        string? FontFamily,
+        double? FontSize
+    );
+
     private sealed class PageFontResourceState
     {
-        public Dictionary<string, object?> OriginalResources { get; } = [];
+        internal Dictionary<string, object?> OriginalResources { get; } = [];
 
-        public HashSet<string> MissingResourceKeys { get; } = [];
+        internal HashSet<string> MissingResourceKeys { get; } = [];
+
+        internal bool HasCapturedResources { get; set; }
+
+        internal PageFontSignature? AppliedSignature { get; set; }
     }
 }

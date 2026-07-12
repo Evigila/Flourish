@@ -12,6 +12,8 @@
   MinHeight="560"
   x:ClassModifier="internal"
   Background="{DynamicResource AppBackgroundBrush}"
+  FontFamily="{DynamicResource FlourishFontFamily}"
+  FontSize="{DynamicResource FlourishFontSizeBase}"
   Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d"

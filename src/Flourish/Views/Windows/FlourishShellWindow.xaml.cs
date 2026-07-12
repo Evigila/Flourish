@@ -13,7 +13,6 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Button = ArkheideSystem.Flourish.Controls.FlourishButton;
-using FontFamily = System.Windows.Media.FontFamily;
 using ListBox = ArkheideSystem.Flourish.Controls.FlourishListBox;
 using Orientation = System.Windows.Controls.Orientation;
 using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
@@ -77,7 +76,6 @@ internal partial class FlourishShellWindow : Window
     private readonly DispatcherTimer backgroundTaskRefreshTimer;
     private IReadOnlyList<Button>? defaultToolbarButtons;
     private FlourishNavigationItem? firstNavigationItem;
-    private FontFamily iconFontFamily = null!;
     private Type? activeToolbarPageType;
     private FlourishNavigationItem? selectedNavigationItem;
     private FlourishNavigationItem? activeChildParentItem;
@@ -230,9 +228,7 @@ internal partial class FlourishShellWindow : Window
         this.options = options;
 
         Titlebar.ApplyLocale(localizationService);
-        fontService.Apply(this);
         toolTipService.Attach(this);
-        CacheResources();
         ApplyOptions();
         windowService.Attach(this);
         windowCloseService.Attach(RequestCloseCoreAsync);
@@ -271,11 +267,6 @@ internal partial class FlourishShellWindow : Window
         navigationService.Navigated += RootFrame_Navigated;
 
         NavigateToInitialPage();
-    }
-
-    private void CacheResources()
-    {
-        iconFontFamily = (FontFamily)FindResource("FlourishIconFontFamily");
     }
 
     private void ApplyOptions()
@@ -1031,9 +1022,8 @@ internal partial class FlourishShellWindow : Window
         {
             HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            FontFamily = iconFontFamily,
-            FontSize = (double)FindResource("FlourishFontSizeCaption"),
         };
+        BindIconTypography(icon, "FlourishFontSizeCaption");
         var toolTipName = new TextBlock { FontWeight = FontWeights.SemiBold };
         var toolTipDescription = new TextBlock
         {
@@ -1192,9 +1182,8 @@ internal partial class FlourishShellWindow : Window
         var icon = new TextBlock
         {
             VerticalAlignment = VerticalAlignment.Top,
-            FontFamily = iconFontFamily,
-            FontSize = (double)FindResource("FlourishFontSizeTitlebarIcon"),
         };
+        BindIconTypography(icon, "FlourishFontSizeTitlebarIcon");
         icon.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
         layout.Children.Add(icon);
 
@@ -1202,10 +1191,10 @@ internal partial class FlourishShellWindow : Window
         Grid.SetColumn(details, 1);
         var name = new TextBlock
         {
-            FontSize = (double)FindResource("FlourishFontSizeCaption"),
             FontWeight = FontWeights.SemiBold,
             TextTrimming = TextTrimming.CharacterEllipsis,
         };
+        BindTextSize(name, "FlourishFontSizeCaption");
         details.Children.Add(name);
         var description = new TextBlock
         {
@@ -1219,8 +1208,8 @@ internal partial class FlourishShellWindow : Window
         var state = new TextBlock
         {
             Margin = new Thickness(0, 3, 8, 0),
-            FontSize = (double)FindResource("FlourishFontSizeSmall"),
         };
+        BindTextSize(state, "FlourishFontSizeSmall");
         state.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
         details.Children.Add(state);
         layout.Children.Add(details);
@@ -1427,10 +1416,9 @@ internal partial class FlourishShellWindow : Window
         var icon = new TextBlock
         {
             VerticalAlignment = VerticalAlignment.Center,
-            FontFamily = iconFontFamily,
-            FontSize = (double)FindResource("FlourishFontSizeTitlebarIcon"),
             Text = iconGlyph,
         };
+        BindIconTypography(icon, "FlourishFontSizeTitlebarIcon");
         icon.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
         row.Children.Add(icon);
 
@@ -1438,17 +1426,17 @@ internal partial class FlourishShellWindow : Window
         Grid.SetColumn(text, 1);
         var labelText = new TextBlock
         {
-            FontSize = (double)FindResource("FlourishFontSizeSmall"),
             Text = label,
         };
+        BindTextSize(labelText, "FlourishFontSizeSmall");
         labelText.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
         text.Children.Add(labelText);
         var valueText = new TextBlock
         {
             Margin = new Thickness(0, 2, 0, 0),
-            FontSize = (double)FindResource("FlourishFontSizeCaption"),
             Text = value,
         };
+        BindTextSize(valueText, "FlourishFontSizeCaption");
         valueText.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground1Brush");
         text.Children.Add(valueText);
         row.Children.Add(text);
@@ -2119,7 +2107,6 @@ internal partial class FlourishShellWindow : Window
     private void BuildStatusItems()
     {
         StatusItemsHost.Children.Clear();
-        var statusFontSize = (double)FindResource("FlourishFontSizeCaption");
 
         foreach (var item in statusService.StatusItems)
         {
@@ -2139,10 +2126,9 @@ internal partial class FlourishShellWindow : Window
             var iconText = new TextBlock
             {
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = iconFontFamily,
-                FontSize = statusFontSize,
                 Text = item.IconGlyph,
             };
+            BindIconTypography(iconText, "FlourishFontSizeCaption");
             iconText.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
             status.Children.Add(iconText);
 
@@ -2150,9 +2136,9 @@ internal partial class FlourishShellWindow : Window
             {
                 Margin = new Thickness(5, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                FontSize = statusFontSize,
                 Text = item.Text,
             };
+            BindTextSize(labelText, "FlourishFontSizeCaption");
             labelText.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
             status.Children.Add(labelText);
 
@@ -2180,10 +2166,10 @@ internal partial class FlourishShellWindow : Window
                 Width = 24,
                 Margin = new Thickness(0, 2, 10, 0),
                 VerticalAlignment = VerticalAlignment.Top,
-                FontFamily = iconFontFamily,
                 FontSize = 18,
                 Text = definition.IconGlyph ?? GetNotificationGlyph(definition.Severity),
             };
+            BindIconTypography(icon);
             icon.SetResourceReference(TextBlock.ForegroundProperty, "FlourishBrandForegroundBrush");
             layout.Children.Add(icon);
 
@@ -2538,22 +2524,35 @@ internal partial class FlourishShellWindow : Window
 
     private void FontService_Changed(object? sender, FlourishFontChangedEventArgs e)
     {
+        if (
+            e.ChangeKind != FlourishFontChangeKind.PageOverride
+            || e.AffectedPageType is not { } affectedPageType
+        )
+        {
+            return;
+        }
+
         DispatchRuntimeChange(() =>
         {
-            if (RootFrame.Content is WpfPage contentPage)
+            var contentPageType = navigationService.CurrentSourcePageType;
+            if (
+                RootFrame.Content is WpfPage contentPage
+                && (contentPageType ?? contentPage.GetType()) == affectedPageType
+            )
             {
                 fontService.ApplyToPage(
                     contentPage,
-                    navigationService.CurrentSourcePageType ?? contentPage.GetType()
+                    contentPageType ?? contentPage.GetType()
                 );
             }
 
-            if (ProfileFrame.Content is WpfPage profilePage)
+            var profilePageType = profileFlyoutService.Current.ContentPageType;
+            if (
+                ProfileFrame.Content is WpfPage profilePage
+                && profilePageType == affectedPageType
+            )
             {
-                fontService.ApplyToPage(
-                    profilePage,
-                    profileFlyoutService.Current.ContentPageType
-                );
+                fontService.ApplyToPage(profilePage, profilePageType);
             }
         });
     }
@@ -2653,15 +2652,13 @@ internal partial class FlourishShellWindow : Window
     private StackPanel CreateIconTextContent(string iconGlyph, string label)
     {
         var content = new StackPanel { Orientation = Orientation.Horizontal };
-        content.Children.Add(
-            new TextBlock
-            {
-                VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = iconFontFamily,
-                FontSize = (double)FindResource("FlourishFontSizeTitlebarIcon"),
-                Text = iconGlyph,
-            }
-        );
+        var icon = new TextBlock
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = iconGlyph,
+        };
+        BindIconTypography(icon, "FlourishFontSizeTitlebarIcon");
+        content.Children.Add(icon);
         content.Children.Add(
             new TextBlock
             {
@@ -2675,15 +2672,30 @@ internal partial class FlourishShellWindow : Window
 
     private TextBlock CreateIconContent(string iconGlyph)
     {
-        return new TextBlock
+        var icon = new TextBlock
         {
             HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
             VerticalAlignment = System.Windows.VerticalAlignment.Center,
-            FontFamily = iconFontFamily,
-            FontSize = (double)FindResource("FlourishFontSizeTitlebarIcon"),
             Text = iconGlyph,
             TextAlignment = System.Windows.TextAlignment.Center,
         };
+        BindIconTypography(icon, "FlourishFontSizeTitlebarIcon");
+        return icon;
+    }
+
+    private static void BindIconTypography(TextBlock textBlock, string? sizeResourceKey = null)
+    {
+        textBlock.SetResourceReference(TextBlock.FontFamilyProperty, "FlourishIconFontFamily");
+
+        if (sizeResourceKey is not null)
+        {
+            BindTextSize(textBlock, sizeResourceKey);
+        }
+    }
+
+    private static void BindTextSize(TextBlock textBlock, string sizeResourceKey)
+    {
+        textBlock.SetResourceReference(TextBlock.FontSizeProperty, sizeResourceKey);
     }
 
     private void NavigateToInitialPage()

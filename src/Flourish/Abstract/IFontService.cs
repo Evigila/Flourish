@@ -31,7 +31,8 @@ public interface IFontService
     /// Raised after the runtime font settings change.
     /// </summary>
     /// <remarks>
-    /// When a shell window is attached, the event is raised on its dispatcher.
+    /// When the Flourish application resource scope is attached, the event is raised on
+    /// that application's dispatcher after the corresponding resources are updated.
     /// </remarks>
     event EventHandler<FlourishFontChangedEventArgs>? Changed;
 
