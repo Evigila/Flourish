@@ -42,13 +42,23 @@ public interface IFlourishNavigationBuilder
     /// Sets the navigation panel width and the resize range used by the splitter.
     /// </summary>
     /// <param name="openWidth">The width used by the open navigation panel.</param>
-    /// <param name="closedWidth">The width used by the collapsed navigation panel.</param>
+    /// <param name="closedWidth">
+    /// The width used by the collapsed navigation panel. Use 0 to hide the collapsed
+    /// panel completely; any visible collapsed panel must be at least 48 device-independent pixels wide.
+    /// </param>
     /// <param name="maxWidth">The maximum open navigation panel width.</param>
     /// <param name="minWidth">The minimum open navigation panel width.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// The open width is also updated when users resize the panel with the splitter.
+    /// A non-zero collapsed width reserves enough room for the standard 38-pixel command
+    /// surface, its leading margin, and the compact overlay scrollbar.
     /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A dimension is non-finite or outside its supported range; <paramref name="closedWidth" />
+    /// is non-zero and less than 48; the closed width exceeds the open width; or the open
+    /// width is outside the supplied minimum and maximum range.
+    /// </exception>
     IFlourishNavigationBuilder SetPanelWidth(
         double openWidth = 220,
         double closedWidth = 48,

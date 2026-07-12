@@ -1,74 +1,74 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.NavigationRuntimePage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="0,28,0,40">
-      <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Navigation at runtime" />
-      <TextBlock
-        Style="{StaticResource GalleryPageSubtitleStyle}"
+      <flourish:FlourishTextBlock Role="PageTitle" Text="Navigation at runtime" />
+      <flourish:FlourishTextBlock Role="Subtitle"
         Text="Move and resize the panel, edit the live menu transactionally, register a route, navigate to it, and control its page cache without restarting the app."
       />
 
-      <Border Margin="0,24,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,24,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Navigation panel" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Navigation panel" />
           <WrapPanel Margin="0,14,0,0">
-            <Button Click="TogglePanel_Click" Content="Open / close" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" Style="{StaticResource GalleryActionButtonStyle}" />
-            <ComboBox x:Name="DirectionBox" Width="120" Height="34" Margin="8,0,0,0" SelectionChanged="DirectionBox_SelectionChanged" />
+            <flourish:FlourishButton Click="TogglePanel_Click" Content="Open / close" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" />
+            <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" Margin="8,0,0,0" SelectionChanged="DirectionBox_SelectionChanged" />
           </WrapPanel>
           <WrapPanel Margin="0,12,0,0">
             <StackPanel Margin="0,0,12,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Open width" />
-              <TextBox x:Name="OpenWidthBox" Width="110" Style="{StaticResource GalleryTextBoxStyle}" Text="240" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Open width" />
+              <flourish:FlourishTextBox x:Name="OpenWidthBox" Width="110" Text="240" />
             </StackPanel>
             <StackPanel Margin="0,0,12,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Closed width" />
-              <TextBox x:Name="ClosedWidthBox" Width="110" Style="{StaticResource GalleryTextBoxStyle}" Text="48" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Closed width" />
+              <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" Text="48" />
             </StackPanel>
             <StackPanel Margin="0,0,12,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Minimum width" />
-              <TextBox x:Name="MinWidthBox" Width="110" Style="{StaticResource GalleryTextBoxStyle}" Text="150" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Minimum width" />
+              <flourish:FlourishTextBox x:Name="MinWidthBox" Width="110" Text="150" />
             </StackPanel>
             <StackPanel Margin="0,0,12,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Maximum width" />
-              <TextBox x:Name="MaxWidthBox" Width="110" Style="{StaticResource GalleryTextBoxStyle}" Text="480" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Maximum width" />
+              <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" Text="480" />
             </StackPanel>
-            <Button Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" />
           </WrapPanel>
-          <TextBlock x:Name="PanelStateText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Live route and menu transaction" />
-          <TextBlock Margin="0,7,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="The demo adds a new route and a real navigation item. Remove it again to see both tables update immediately." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Live route and menu transaction" />
+          <flourish:FlourishTextBlock Margin="0,7,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The demo adds a new route and a real navigation item. Remove it again to see both tables update immediately." TextWrapping="Wrap" />
           <WrapPanel Margin="0,14,0,0">
-            <Button Click="InstallRoute_Click" Content="Install demo route" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Click="InstallRoute_Click" Content="Install demo route" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" />
           </WrapPanel>
-          <TextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Page cache" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Page cache" />
           <WrapPanel Margin="0,14,0,0">
-            <Button Click="EnableCache_Click" Content="Enable cache" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Click="EnableCache_Click" Content="Enable cache" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" />
           </WrapPanel>
-          <TextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
     </StackPanel>
-  </ScrollViewer>
+  </flourish:FlourishScrollViewer>
 </Page>

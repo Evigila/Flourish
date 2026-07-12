@@ -1,6 +1,6 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Logging;
 using Application = System.Windows.Application;
 using Forms = System.Windows.Forms;

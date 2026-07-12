@@ -1,90 +1,87 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.ConfigurationPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="0,28,0,40">
-      <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Configuration &amp; localization" />
-      <TextBlock
-        Style="{StaticResource GalleryPageSubtitleStyle}"
+      <flourish:FlourishTextBlock Role="PageTitle" Text="Configuration &amp; localization" />
+      <flourish:FlourishTextBlock Role="Subtitle"
         Text="Read the effective host configuration, update appsettings.json atomically, trigger reloads, and change the active Flourish locale while the app stays open."
       />
 
-      <Border Margin="0,24,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,24,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Effective configuration" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="The configuration service exposes the merged value from every registered provider." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Effective configuration" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The configuration service exposes the merged value from every registered provider." TextWrapping="Wrap" />
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="ReadKeyBox" Style="{StaticResource GalleryTextBoxStyle}" Text="Flourish:Preferences:Theme" />
-            <Button Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishTextBox x:Name="ReadKeyBox" Text="Flourish:Preferences:Theme" />
+            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" />
+            <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" />
           </Grid>
-          <TextBlock x:Name="ReadValueText" Margin="0,12,0,0" Foreground="{DynamicResource AccentBrush}" Text="No value read yet." TextWrapping="Wrap" />
-          <TextBlock x:Name="SnapshotText" Margin="0,6,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" Text="No value read yet." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Transactional appsettings update" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Set, append, and remove use an atomic file replacement. A successful write immediately reloads the effective configuration." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Transactional appsettings update" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Set, append, and remove use an atomic file replacement. A successful write immediately reloads the effective configuration." TextWrapping="Wrap" />
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="1.2*" />
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Margin="0,0,8,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Configuration path" />
-              <TextBox x:Name="WriteKeyBox" Style="{StaticResource GalleryTextBoxStyle}" Text="Gallery:Runtime:Message" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Configuration path" />
+              <flourish:FlourishTextBox x:Name="WriteKeyBox" Text="Gallery:Runtime:Message" />
             </StackPanel>
             <StackPanel Grid.Column="1" Margin="8,0,0,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="String value" />
-              <TextBox x:Name="WriteValueBox" Style="{StaticResource GalleryTextBoxStyle}" Text="Hello from runtime" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="String value" />
+              <flourish:FlourishTextBox x:Name="WriteValueBox" Text="Hello from runtime" />
             </StackPanel>
           </Grid>
           <WrapPanel Margin="0,14,0,0">
-            <Button Margin="0,0,8,0" Click="SetValue_Click" Content="Set &amp; save" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="MergeValue_Click" Content="Merge into parent" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Click="RemoveValue_Click" Content="Remove" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="SetValue_Click" Content="Set &amp; save" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="MergeValue_Click" Content="Merge into parent" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" />
+            <flourish:FlourishButton Click="RemoveValue_Click" Content="Remove" />
           </WrapPanel>
-          <TextBlock x:Name="WriteResultText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="No runtime update yet." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No runtime update yet." TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Runtime locale" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Choose a built-in locale or enter the identifier of a locale registered by the host." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime locale" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Choose a built-in locale or enter the identifier of a locale registered by the host." TextWrapping="Wrap" />
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ComboBox
+            <flourish:FlourishComboBox
               x:Name="LocaleBox"
-              Height="32"
               IsEditable="True"
-              ItemContainerStyle="{StaticResource FlourishComboBoxItemStyle}"
-              VerticalContentAlignment="Center"
             />
-            <Button Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" />
           </Grid>
-          <TextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Foreground="{DynamicResource AccentBrush}" />
+          <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Runtime locale files" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Register a lang_&lt;locale&gt;.json file, reload it after external edits, and remove that source through its registration handle." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime locale files" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Register a lang_&lt;locale&gt;.json file, reload it after external edits, and remove that source through its registration handle." TextWrapping="Wrap" />
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -92,14 +89,14 @@
               <ColumnDefinition Width="Auto" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="LocaleFilePathBox" Style="{StaticResource GalleryTextBoxStyle}" Text="lang_ES.json" />
-            <Button Grid.Column="1" Margin="10,0,0,0" Click="RegisterLocaleFile_Click" Content="Register file" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishTextBox x:Name="LocaleFilePathBox" Text="lang_ES.json" />
+            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="RegisterLocaleFile_Click" Content="Register file" />
+            <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" />
+            <flourish:FlourishButton Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" />
           </Grid>
-          <TextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="No locale file registered by this page." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No locale file registered by this page." TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
     </StackPanel>
-  </ScrollViewer>
+  </flourish:FlourishScrollViewer>
 </Page>

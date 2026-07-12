@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using Brushes = System.Windows.Media.Brushes;
 using Colors = System.Windows.Media.Colors;
 using MediaBrush = System.Windows.Media.Brush;
@@ -24,6 +24,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     private Window? owner;
     private HwndSource? hwndSource;
     private MediaBrush? originalBackground;
+    private object? originalBackgroundResourceKey;
     private MediaColor originalCompositionBackground;
     private bool hasOriginalCompositionBackground;
     private bool isSourceInitializationPending;
@@ -108,7 +109,11 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         RaiseChanged();
     }
 
-    internal void Attach(Window window, MaterialEffect effect)
+    internal void Attach(
+        Window window,
+        MaterialEffect effect,
+        object? backgroundResourceKey = null
+    )
     {
         ArgumentNullException.ThrowIfNull(window);
         ValidateEffect(effect, nameof(effect));
@@ -130,6 +135,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         if (ownerChanged)
         {
             originalBackground = window.Background;
+            originalBackgroundResourceKey = backgroundResourceKey;
             hasOriginalCompositionBackground = false;
         }
         lock (stateGate)
@@ -168,6 +174,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         hwndSource = null;
         RunOnWindowDispatcher(window, () => RemoveEffectCore(window));
         owner = null;
+        originalBackgroundResourceKey = null;
     }
 
     internal void SetDarkMode(Window window, bool isDarkMode)
@@ -333,7 +340,17 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             );
         }
 
-        window.Background = originalBackground;
+        if (originalBackgroundResourceKey is { } resourceKey)
+        {
+            // The shell background is a DynamicResource. Restoring the brush instance
+            // captured before Mica would pin the window to the theme that was active at
+            // attach time, so restore the resource expression and resolve today's value.
+            window.SetResourceReference(Window.BackgroundProperty, resourceKey);
+        }
+        else
+        {
+            window.Background = originalBackground;
+        }
         if (
             hwnd != IntPtr.Zero
             && hasOriginalCompositionBackground

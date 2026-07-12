@@ -117,7 +117,7 @@ public interface IFlourishBuilder
     /// {
     ///     custom.Add(
     ///         FlourishRegion.TitlebarEnd,
-    ///         services => new Button { Content = "Account" });
+    ///         services => new FlourishButton { Content = "Account" });
     /// });
     /// ]]></code>
     /// </example>

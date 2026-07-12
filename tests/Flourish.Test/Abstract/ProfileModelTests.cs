@@ -1,6 +1,6 @@
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Composition;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Composition;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using System.Windows.Controls;
 
 namespace ArkheideSystem.Flourish.Test.Abstract;

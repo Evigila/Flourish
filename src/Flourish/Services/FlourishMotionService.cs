@@ -3,7 +3,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
+using Application = System.Windows.Application;
 
 namespace ArkheideSystem.Flourish.Services;
 
@@ -309,12 +310,29 @@ internal sealed class FlourishMotionService(FlourishShellOptions options) : IMot
 
     private static void ApplyResources(Window window, FlourishMotionSettings settings)
     {
-        window.Resources["FlourishHoverRevealEnabled"] =
+        var isHoverRevealEnabled =
             CanAnimateSettings(settings) && settings.IsHoverRevealEnabled;
+        window.Resources["FlourishHoverRevealEnabled"] = isHoverRevealEnabled;
+        window.Resources["FlourishHoverRevealDuration"] =
+            settings.HoverRevealAnimationDuration;
+        ArkheideSystem.Flourish.Controls.HoverReveal.SetIsEnabled(
+            window,
+            isHoverRevealEnabled
+        );
         ArkheideSystem.Flourish.Controls.HoverReveal.SetAnimationDuration(
             window,
             settings.HoverRevealAnimationDuration
         );
+
+        var application = Application.Current;
+        if (application is null)
+        {
+            return;
+        }
+
+        application.Resources["FlourishHoverRevealEnabled"] = isHoverRevealEnabled;
+        application.Resources["FlourishHoverRevealDuration"] =
+            settings.HoverRevealAnimationDuration;
     }
 
     private static void ValidateDuration(TimeSpan duration, string parameterName)

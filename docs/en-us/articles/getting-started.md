@@ -9,12 +9,12 @@ A basic Flourish application lets the shell host a WPF `Application`: add the th
 
 Built-in Flourish text uses the English locale by default, including when `ConfigureData` is omitted. To use Chinese, add `builder.ConfigureData(data => data.SetLocale("CN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locale files.
 
-## Reference the theme
+## Reference the controls and theme
 
-The `Run(Application)` helper and `IFlourish.Show(Application)` automatically merge `/Flourish;component/Themes/Generic.xaml` into the application resources before the shell is opened. The dictionary can still be added explicitly in `App.xaml`; this is useful for the WPF designer and for resources used before the shell is shown.
+The `Run(Application)` helper and `IFlourish.Show(Application)` automatically load the complete Flourish control and theme resource graph before the shell is opened. `FlourishThemeResources` can also be added explicitly in `App.xaml`; this is useful for the WPF designer, resources used before the shell is shown, and applications that use the [control library](control-library.md) independently from the shell.
 
 > [!NOTE]
-> Add the theme dictionary in `App.xaml` when design-time resources or early application resources need Flourish styles before the shell is shown.
+> Add `FlourishThemeResources` in `App.xaml` when design-time or early application resources need Flourish controls before the shell is shown. The former `FlourishStyles` and `FlourishControlResources` types are obsolete compatibility shims and should not be used by new applications.
 
 When the Flourish shell owns the main window, `App.xaml` should not set `StartupUri`. The shell becomes `Application.MainWindow` when `IFlourish.Show(Application)` runs.
 
@@ -22,11 +22,12 @@ When the Flourish shell owns the main window, `App.xaml` should not set `Startup
 <Application
   x:Class="MyApp.App"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Flourish;component/Themes/Generic.xaml" />
+        <flourish:FlourishThemeResources />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

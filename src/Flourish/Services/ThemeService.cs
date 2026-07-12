@@ -1,7 +1,8 @@
 using System.Windows;
 using System.Windows.Interop;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Themes;
 using Microsoft.Win32;
 using Application = System.Windows.Application;
 
@@ -14,8 +15,9 @@ internal sealed class ThemeService(
 {
     private const int WmSettingChange = 0x001A;
     private const int WmThemeChanged = 0x031A;
-    private const string LightThemeSource = "/Flourish;component/Themes/Colors.Light.xaml";
-    private const string DarkThemeSource = "/Flourish;component/Themes/Colors.Dark.xaml";
+    private const string LightThemeSource = "/Flourish;component/Themes/Colors/Colors.Light.xaml";
+    private const string DarkThemeSource = "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
+    private const string PaletteHostSource = "/Flourish;component/Themes/Colors/Colors.xaml";
     private const string PersonalizeRegistryPath =
         @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
     private const string AppsUseLightThemeValue = "AppsUseLightTheme";
@@ -270,29 +272,84 @@ internal sealed class ThemeService(
 
     private static void ApplyApplicationResources(Application application, FlourishTheme theme)
     {
-        RemoveThemeResources(application.Resources.MergedDictionaries);
-
-        application.Resources.MergedDictionaries.Add(
-            new ResourceDictionary
-            {
-                Source = new Uri(
-                    theme == FlourishTheme.Dark ? DarkThemeSource : LightThemeSource,
-                    UriKind.Relative
-                ),
-            }
-        );
+        FlourishThemeResources.EnsureMerged(application.Resources);
+        ApplyThemePalette(application.Resources, theme);
     }
 
-    private static void RemoveThemeResources(IList<ResourceDictionary> dictionaries)
+    internal static void ApplyThemePalette(ResourceDictionary resources, FlourishTheme theme)
     {
-        for (var index = dictionaries.Count - 1; index >= 0; index--)
+        ArgumentNullException.ThrowIfNull(resources);
+        var themeRoot = FindThemeRoot(resources)
+            ?? throw new InvalidOperationException(
+                $"The resource graph does not contain {FlourishThemeResources.GenericThemeSource}."
+            );
+        var paletteHost = FindPaletteHost(themeRoot)
+            ?? throw new InvalidOperationException(
+                $"The Flourish theme graph does not contain a canonical Flourish palette."
+            );
+        var source = theme == FlourishTheme.Dark ? DarkThemeSource : LightThemeSource;
+        if (IsSource(paletteHost, source))
         {
-            var source = dictionaries[index].Source?.OriginalString;
-            if (source is LightThemeSource or DarkThemeSource)
+            return;
+        }
+
+        // Colors.xaml is itself loaded through ResourceDictionary.Source. Replacing its
+        // nested MergedDictionaries entry can update future lookups without invalidating
+        // DynamicResource expressions that already resolved through the source-loaded
+        // dictionary. Reusing the host object and changing its Source asks WPF to perform
+        // one atomic resource invalidation for every existing consumer.
+        paletteHost.Source = new Uri(source, UriKind.Relative);
+    }
+
+    private static ResourceDictionary? FindThemeRoot(ResourceDictionary dictionary)
+    {
+        if (IsSource(dictionary, FlourishThemeResources.GenericThemeSource))
+        {
+            return dictionary;
+        }
+
+        foreach (var mergedDictionary in dictionary.MergedDictionaries)
+        {
+            var result = FindThemeRoot(mergedDictionary);
+            if (result is not null)
             {
-                dictionaries.RemoveAt(index);
+                return result;
             }
         }
+
+        return null;
+    }
+
+    private static ResourceDictionary? FindPaletteHost(ResourceDictionary dictionary)
+    {
+        if (
+            IsSource(dictionary, PaletteHostSource)
+            || IsSource(dictionary, LightThemeSource)
+            || IsSource(dictionary, DarkThemeSource)
+        )
+        {
+            return dictionary;
+        }
+
+        foreach (var mergedDictionary in dictionary.MergedDictionaries)
+        {
+            var result = FindPaletteHost(mergedDictionary);
+            if (result is not null)
+            {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool IsSource(ResourceDictionary dictionary, string source)
+    {
+        return string.Equals(
+            dictionary.Source?.OriginalString.Replace('\\', '/'),
+            source,
+            StringComparison.OrdinalIgnoreCase
+        );
     }
 
     private static bool IsSystemDarkTheme()

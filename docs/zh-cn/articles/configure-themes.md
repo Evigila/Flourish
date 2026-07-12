@@ -32,6 +32,7 @@ Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。
 
 ## 相关功能
 
+- [控件库](control-library.md)说明显式 `Flourish*` 控件如何使用当前主题资源，而原生 WPF 控件保持不变。
 - [标题栏](configure-title-bar.md)配置主题切换入口及其他标题栏元素。
 - [应用数据](configure-data.md)说明 Host 配置与主题键。
 - [材质特效](configure-material-effect.md)配置与主题资源配合使用的窗口材质。

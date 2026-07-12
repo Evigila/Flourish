@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 using FontFamily = System.Windows.Media.FontFamily;
 using Window = System.Windows.Window;
@@ -23,6 +23,9 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         "FlourishFontSizeSmall",
         "FlourishFontSizeCaption",
         "FlourishFontSizeBase",
+        "FlourishFontSizeSubtitle",
+        "FlourishFontSizeSectionTitle",
+        "FlourishFontSizePageTitle",
         "FlourishFontSizeTitle",
         "FlourishFontSizeTitlebarIcon",
         "FlourishFontSizeNavigationIcon",
@@ -310,6 +313,9 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         SetResource(window, "FlourishFontSizeSmall", ClampFontSize(baseSize - 3));
         SetResource(window, "FlourishFontSizeCaption", ClampFontSize(baseSize - 1));
         SetResource(window, "FlourishFontSizeBase", baseSize);
+        SetResource(window, "FlourishFontSizeSubtitle", ClampFontSize(baseSize + 1));
+        SetResource(window, "FlourishFontSizeSectionTitle", ClampFontSize(baseSize + 4));
+        SetResource(window, "FlourishFontSizePageTitle", ClampFontSize(baseSize + 17));
         SetResource(window, "FlourishFontSizeTitle", baseSize);
         SetResource(window, "FlourishFontSizeTitlebarIcon", ClampFontSize(baseSize + 1));
         SetResource(window, "FlourishFontSizeNavigationIcon", ClampFontSize(baseSize + 1));
@@ -394,6 +400,9 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         resources["FlourishFontSizeSmall"] = ClampFontSize(baseSize - 3);
         resources["FlourishFontSizeCaption"] = ClampFontSize(baseSize - 1);
         resources["FlourishFontSizeBase"] = baseSize;
+        resources["FlourishFontSizeSubtitle"] = ClampFontSize(baseSize + 1);
+        resources["FlourishFontSizeSectionTitle"] = ClampFontSize(baseSize + 4);
+        resources["FlourishFontSizePageTitle"] = ClampFontSize(baseSize + 17);
         resources["FlourishFontSizeTitle"] = baseSize;
         resources["FlourishFontSizeTitlebarIcon"] = ClampFontSize(baseSize + 1);
         resources["FlourishFontSizeNavigationIcon"] = ClampFontSize(baseSize + 1);

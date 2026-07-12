@@ -100,7 +100,7 @@ Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize
 nav.SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `220` expanded and `48` collapsed. The default resize range is `160` to `420`. A hover-revealed splitter shows a width preview during the drag and applies the new width when the drag completes.
+The default widths are `220` expanded and `48` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `48`. The default resize range is `160` to `420`. A hover-revealed splitter shows a width preview during the drag and applies the new width when the drag completes.
 
 ## Add command items
 

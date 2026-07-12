@@ -16,4 +16,70 @@
     <EmbeddedResource Include="Assets\lang_EN.json" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\Button.xaml.cs">
+      <DependentUpon>Button.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\Card.xaml.cs">
+      <DependentUpon>Card.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\CheckBox.xaml.cs">
+      <DependentUpon>CheckBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ComboBox.xaml.cs">
+      <DependentUpon>ComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ComboBoxItem.xaml.cs">
+      <DependentUpon>ComboBoxItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\GridSplitter.xaml.cs">
+      <DependentUpon>GridSplitter.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\Label.xaml.cs">
+      <DependentUpon>Label.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ListBox.xaml.cs">
+      <DependentUpon>ListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ListBoxItem.xaml.cs">
+      <DependentUpon>ListBoxItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\PasswordBox.xaml.cs">
+      <DependentUpon>PasswordBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\RadioButton.xaml.cs">
+      <DependentUpon>RadioButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ScrollBar.xaml.cs">
+      <DependentUpon>ScrollBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ScrollViewer.xaml.cs">
+      <DependentUpon>ScrollViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\SearchBox.xaml.cs">
+      <DependentUpon>SearchBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\TextBox.xaml.cs">
+      <DependentUpon>TextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\TextBlock.xaml.cs">
+      <DependentUpon>TextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolTip.xaml.cs">
+      <DependentUpon>ToolTip.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\TitleBar.xaml.cs">
+      <DependentUpon>TitleBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\FlourishShellWindow.xaml.cs">
+      <DependentUpon>FlourishShellWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\FlourishMessageBoxWindow.xaml.cs">
+      <DependentUpon>FlourishMessageBoxWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Page\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

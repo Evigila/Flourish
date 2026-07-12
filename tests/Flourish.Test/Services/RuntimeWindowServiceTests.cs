@@ -1,6 +1,6 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Moq;
 

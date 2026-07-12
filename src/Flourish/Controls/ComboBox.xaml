@@ -1,0 +1,213 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <!-- ComboBox template mechanics are deliberately named native primitives. -->
+  <Style x:Key="FlourishComboBoxToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="ClickMode" Value="Press" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ToggleButton}">
+          <Grid Background="{TemplateBinding Background}">
+            <Path
+              x:Name="Arrow"
+              Width="8"
+              Height="5"
+              Margin="0,0,10,0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Data="M 0,0 L 4,4 L 8,0"
+              IsHitTestVisible="False"
+              Stroke="{DynamicResource FlourishNeutralForeground2Brush}"
+              StrokeEndLineCap="Round"
+              StrokeLineJoin="Round"
+              StrokeStartLineCap="Round"
+              StrokeThickness="1.4"
+            />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishBrandForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="Arrow" Property="RenderTransformOrigin" Value="0.5,0.5" />
+              <Setter TargetName="Arrow" Property="RenderTransform">
+                <Setter.Value><RotateTransform Angle="180" /></Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="FlourishComboBoxEditableTextBoxStyle" TargetType="{x:Type TextBox}">
+    <Setter Property="MinWidth" Value="0" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="CaretBrush" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource FlourishSelectionBackgroundBrush}" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type TextBox}">
+          <ScrollViewer
+            x:Name="PART_ContentHost"
+            HorizontalScrollBarVisibility="Hidden"
+            Style="{DynamicResource FlourishTextContentHostScrollViewerStyle}"
+            VerticalScrollBarVisibility="Hidden"
+          />
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter Property="CaretBrush" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type controls:FlourishComboBox}">
+    <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
+    <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
+    <Setter Property="Background" Value="{DynamicResource FlourishControlBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeBase}" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="MaxDropDownHeight" Value="320" />
+    <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type controls:FlourishComboBox}">
+          <Grid x:Name="Root" SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="30" />
+            </Grid.ColumnDefinitions>
+            <Border
+              x:Name="Chrome"
+              Grid.ColumnSpan="2"
+              Background="{TemplateBinding Background}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+            />
+            <ContentPresenter
+              x:Name="SelectionContentSite"
+              Grid.Column="0"
+              Margin="{TemplateBinding Padding}"
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+              Content="{TemplateBinding SelectionBoxItem}"
+              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+              IsHitTestVisible="False"
+            />
+            <TextBox
+              x:Name="PART_EditableTextBox"
+              Grid.Column="0"
+              Margin="{TemplateBinding Padding}"
+              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+              IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+              Style="{StaticResource FlourishComboBoxEditableTextBoxStyle}"
+              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+              Visibility="Hidden"
+            />
+            <ToggleButton
+              x:Name="DropDownToggle"
+              Grid.ColumnSpan="2"
+              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+              Style="{StaticResource FlourishComboBoxToggleButtonStyle}"
+            />
+            <ToggleButton
+              x:Name="EditableDropDownToggle"
+              Grid.Column="1"
+              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+              Style="{StaticResource FlourishComboBoxToggleButtonStyle}"
+              Visibility="Collapsed"
+            />
+            <Popup
+              x:Name="PART_Popup"
+              AllowsTransparency="True"
+              Focusable="False"
+              IsOpen="{TemplateBinding IsDropDownOpen}"
+              Placement="Bottom"
+              PopupAnimation="Fade"
+            >
+              <Border
+                x:Name="DropDownBorder"
+                MinWidth="{Binding ActualWidth, ElementName=Root}"
+                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                Margin="0,4,0,0"
+                Padding="2"
+                Background="{DynamicResource FlourishNeutralBackground1Brush}"
+                BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+                BorderThickness="{DynamicResource FlourishControlBorderThickness}"
+                CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+              >
+                <controls:FlourishScrollViewer
+                  CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                >
+                  <ItemsPresenter
+                    x:Name="ItemsPresenter"
+                    KeyboardNavigation.DirectionalNavigation="Contained"
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                  />
+                </controls:FlourishScrollViewer>
+              </Border>
+            </Popup>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlHoverBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+            </Trigger>
+            <Trigger Property="IsDropDownOpen" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+            </Trigger>
+            <Trigger Property="IsEditable" Value="True">
+              <Setter Property="IsTabStop" Value="False" />
+              <Setter TargetName="SelectionContentSite" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+              <Setter TargetName="DropDownToggle" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="EditableDropDownToggle" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

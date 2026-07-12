@@ -1,6 +1,8 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Windows;
+using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Flourish.Themes;
+using ArkheideSystem.Flourish.Views.Windows;
 using Application = System.Windows.Application;
 using MessageBoxOptions = System.Windows.MessageBoxOptions;
 
@@ -9,8 +11,6 @@ namespace ArkheideSystem.Flourish.Services;
 internal sealed class MessageService(FlourishLocalizationService localizationService)
     : IMessageService
 {
-    private const string GenericThemeSource = "/Flourish;component/Themes/Generic.xaml";
-
     public Task<MessageBoxResult> ShowAsync(
         string messageBoxText,
         string caption = "",
@@ -197,18 +197,7 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
             return;
         }
 
-        if (
-            application.Resources.MergedDictionaries.Any(dictionary =>
-                dictionary.Source?.OriginalString == GenericThemeSource
-            )
-        )
-        {
-            return;
-        }
-
-        application.Resources.MergedDictionaries.Add(
-            new ResourceDictionary { Source = new Uri(GenericThemeSource, UriKind.Relative) }
-        );
+        FlourishThemeResources.EnsureMerged(application.Resources);
     }
 
     private static async Task<TResult> InvokeOnDispatcherAsync<TResult>(

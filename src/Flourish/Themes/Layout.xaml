@@ -1,6 +1,15 @@
 <ResourceDictionary
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib"
 >
+  <!-- Shared shell geometry keeps the title-bar toggle and collapsed navigation aligned. -->
+  <sys:Double x:Key="FlourishShellCommandButtonWidth">38</sys:Double>
+  <sys:Double x:Key="FlourishShellCommandButtonHeight">32</sys:Double>
+  <sys:Double x:Key="FlourishScrollBarWidth">10</sys:Double>
+  <sys:Double x:Key="FlourishCompactScrollBarWidth">5</sys:Double>
+  <Thickness x:Key="FlourishTitlebarNavigationToggleMargin">4</Thickness>
+  <Thickness x:Key="FlourishCollapsedNavigationItemMargin">4,1,0,1</Thickness>
+
   <Thickness x:Key="FlourishContentBodyMargin">32,0,32,0</Thickness>
 </ResourceDictionary>

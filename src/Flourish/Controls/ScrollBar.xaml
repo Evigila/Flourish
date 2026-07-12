@@ -1,0 +1,110 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <!-- ScrollBar mechanics remain native, named implementation primitives. -->
+  <Style x:Key="FlourishScrollBarPageButtonStyle" TargetType="{x:Type RepeatButton}">
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type RepeatButton}">
+          <Border Background="{TemplateBinding Background}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="FlourishScrollBarThumbStyle" TargetType="{x:Type Thumb}">
+    <Setter Property="Background" Value="{DynamicResource FlourishScrollbarThumbBrush}" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Thumb}">
+          <Border
+            x:Name="ThumbChrome"
+            Margin="2"
+            Background="{TemplateBinding Background}"
+            CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+          />
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" Value="{DynamicResource FlourishScrollbarThumbHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsDragging" Value="True">
+              <Setter Property="Background" Value="{DynamicResource FlourishScrollbarThumbPressedBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Background" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type controls:FlourishScrollBar}">
+    <Setter Property="Width" Value="{DynamicResource FlourishScrollBarWidth}" />
+    <Setter Property="MinWidth" Value="0" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type controls:FlourishScrollBar}">
+          <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <Track
+              x:Name="PART_Track"
+              IsDirectionReversed="True"
+              IsEnabled="{TemplateBinding IsEnabled}"
+              Maximum="{TemplateBinding Maximum}"
+              Minimum="{TemplateBinding Minimum}"
+              Orientation="{TemplateBinding Orientation}"
+              Value="{TemplateBinding Value}"
+              ViewportSize="{TemplateBinding ViewportSize}"
+            >
+              <Track.DecreaseRepeatButton>
+                <RepeatButton
+                  x:Name="DecreaseButton"
+                  Command="{x:Static ScrollBar.PageUpCommand}"
+                  CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{StaticResource FlourishScrollBarPageButtonStyle}"
+                />
+              </Track.DecreaseRepeatButton>
+              <Track.Thumb>
+                <Thumb
+                  x:Name="Thumb"
+                  MinHeight="18"
+                  Style="{StaticResource FlourishScrollBarThumbStyle}"
+                />
+              </Track.Thumb>
+              <Track.IncreaseRepeatButton>
+                <RepeatButton
+                  x:Name="IncreaseButton"
+                  Command="{x:Static ScrollBar.PageDownCommand}"
+                  CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{StaticResource FlourishScrollBarPageButtonStyle}"
+                />
+              </Track.IncreaseRepeatButton>
+            </Track>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+              <Setter Property="Width" Value="Auto" />
+              <Setter Property="Height" Value="{DynamicResource FlourishScrollBarWidth}" />
+              <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False" />
+              <Setter TargetName="Thumb" Property="MinWidth" Value="18" />
+              <Setter TargetName="Thumb" Property="MinHeight" Value="0" />
+              <Setter TargetName="DecreaseButton" Property="Command" Value="{x:Static ScrollBar.PageLeftCommand}" />
+              <Setter TargetName="IncreaseButton" Property="Command" Value="{x:Static ScrollBar.PageRightCommand}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

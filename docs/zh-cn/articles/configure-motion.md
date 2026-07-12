@@ -54,4 +54,5 @@ motion.EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140));
 
 ## 相关功能
 
+- [控件库](control-library.md)说明标准控件模板与公共 HoverReveal 附加行为。
 - [导航](navigation.md)使用页面和导航栏过渡。

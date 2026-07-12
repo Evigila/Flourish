@@ -28,6 +28,7 @@ The toggle requires the title bar surface to be enabled with `UseTitleBar()`. If
 
 ## Related features
 
+- [Control library](control-library.md) explains how explicit `Flourish*` controls consume the active theme resources while native WPF controls remain unchanged.
 - [Application data](configure-data.md) explains Host configuration and the theme key.
 - [Title bar](configure-title-bar.md) configures and displays the theme toggle.
 - [Material effects](configure-material-effect.md) work with the effective light and dark resources.

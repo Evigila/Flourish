@@ -1,7 +1,12 @@
 using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Moq;
@@ -232,6 +237,172 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.Equal(FlourishTheme.Dark, preferences.ReadTheme());
         Assert.NotNull(change);
         Assert.Equal(FlourishTheme.Dark, change.RequestedTheme);
+    }
+
+    [Fact]
+    public void ThemeService_PaletteSwitchRemainsInsideTheGenericThemeRoot()
+    {
+        RunInSta(() =>
+        {
+            const string paletteHostSource =
+                "/Flourish;component/Themes/Colors/Colors.xaml";
+            const string lightSource =
+                "/Flourish;component/Themes/Colors/Colors.Light.xaml";
+            const string darkSource =
+                "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
+            _ = Application.LoadComponent(
+                new Uri("/Flourish;component/Themes/Generic.xaml", UriKind.Relative)
+            );
+            var resources = new ResourceDictionary();
+            resources.MergedDictionaries.Add(new FlourishThemeResources());
+
+            ThemeService.ApplyThemePalette(resources, FlourishTheme.Light);
+            var paletteHost = Assert.IsType<ResourceDictionary>(
+                FindDictionary(resources, lightSource)
+            );
+            var lightPalette = LoadDictionary(lightSource);
+            var darkPalette = LoadDictionary(darkSource);
+            var visualRoot = new Grid
+            {
+                Resources = resources,
+            };
+            var card = new FlourishCard
+            {
+                Style = Assert.IsType<Style>(resources[typeof(FlourishCard)]),
+            };
+            visualRoot.Children.Add(card);
+            card.ApplyTemplate();
+
+            AssertPaletteColor(paletteHost, lightPalette, "AppBackgroundBrush");
+            AssertPaletteColor(
+                paletteHost,
+                lightPalette,
+                "FlourishNeutralForeground1Brush"
+            );
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishCardBackgroundBrush");
+            AssertBrushColor(card.Background, lightPalette, "FlourishCardBackgroundBrush");
+            AssertBrushColor(card.Foreground, lightPalette, "FlourishNeutralForeground1Brush");
+            AssertNoTopLevelPalette(resources, lightSource, darkSource);
+
+            ThemeService.ApplyThemePalette(resources, FlourishTheme.Dark);
+            Assert.Same(paletteHost, FindDictionary(resources, darkSource));
+            Assert.Empty(paletteHost.MergedDictionaries);
+            AssertPaletteColor(paletteHost, darkPalette, "AppBackgroundBrush");
+            AssertPaletteColor(
+                paletteHost,
+                darkPalette,
+                "FlourishNeutralForeground1Brush"
+            );
+            AssertPaletteColor(paletteHost, darkPalette, "FlourishCardBackgroundBrush");
+            AssertBrushColor(card.Background, darkPalette, "FlourishCardBackgroundBrush");
+            AssertBrushColor(card.Foreground, darkPalette, "FlourishNeutralForeground1Brush");
+            AssertNoTopLevelPalette(resources, lightSource, darkSource);
+
+            ThemeService.ApplyThemePalette(resources, FlourishTheme.Light);
+            Assert.Same(paletteHost, FindDictionary(resources, lightSource));
+            Assert.Empty(paletteHost.MergedDictionaries);
+            AssertPaletteColor(paletteHost, lightPalette, "AppBackgroundBrush");
+            AssertPaletteColor(
+                paletteHost,
+                lightPalette,
+                "FlourishNeutralForeground1Brush"
+            );
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishCardBackgroundBrush");
+            AssertBrushColor(card.Background, lightPalette, "FlourishCardBackgroundBrush");
+            AssertBrushColor(card.Foreground, lightPalette, "FlourishNeutralForeground1Brush");
+            AssertNoTopLevelPalette(resources, lightSource, darkSource);
+
+            Assert.Single(resources.MergedDictionaries);
+            Assert.IsType<FlourishThemeResources>(resources.MergedDictionaries[0]);
+            Assert.Null(FindDictionary(resources, paletteHostSource));
+        });
+    }
+
+    private static ResourceDictionary LoadDictionary(string source)
+    {
+        return new ResourceDictionary
+        {
+            Source = new Uri(source, UriKind.Relative),
+        };
+    }
+
+    private static void AssertPaletteColor(
+        ResourceDictionary actual,
+        ResourceDictionary expected,
+        string key
+    )
+    {
+        var actualBrush = Assert.IsType<SolidColorBrush>(actual[key]);
+        var expectedBrush = Assert.IsType<SolidColorBrush>(expected[key]);
+        Assert.Equal(expectedBrush.Color, actualBrush.Color);
+    }
+
+    private static void AssertBrushColor(
+        Brush actual,
+        ResourceDictionary expected,
+        string key
+    )
+    {
+        var actualBrush = Assert.IsType<SolidColorBrush>(actual);
+        var expectedBrush = Assert.IsType<SolidColorBrush>(expected[key]);
+        Assert.Equal(expectedBrush.Color, actualBrush.Color);
+    }
+
+    private static ResourceDictionary? FindDictionary(
+        ResourceDictionary dictionary,
+        string source
+    )
+    {
+        if (dictionary.Source?.OriginalString == source)
+        {
+            return dictionary;
+        }
+
+        foreach (var mergedDictionary in dictionary.MergedDictionaries)
+        {
+            var result = FindDictionary(mergedDictionary, source);
+            if (result is not null)
+            {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    private static void AssertNoTopLevelPalette(
+        ResourceDictionary resources,
+        params string[] paletteSources
+    )
+    {
+        Assert.DoesNotContain(
+            resources.MergedDictionaries,
+            dictionary => paletteSources.Contains(dictionary.Source?.OriginalString)
+        );
+    }
+
+    private static void RunInSta(Action action)
+    {
+        Exception? error = null;
+        var thread = new Thread(() =>
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception exception)
+            {
+                error = exception;
+            }
+        });
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
+        thread.Join();
+
+        if (error is not null)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
+        }
     }
 
     private sealed class TemporaryDirectory : IDisposable

@@ -1,4 +1,4 @@
-using ArkheideSystem.Flourish.Composition;
+using ArkheideSystem.Flourish.Internal.Composition;
 
 namespace ArkheideSystem.Flourish.Abstract;
 

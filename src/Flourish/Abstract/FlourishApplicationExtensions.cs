@@ -1,4 +1,4 @@
-using ArkheideSystem.Flourish.Composition;
+using ArkheideSystem.Flourish.Internal.Composition;
 using Application = System.Windows.Application;
 using StartupEventArgs = System.Windows.StartupEventArgs;
 

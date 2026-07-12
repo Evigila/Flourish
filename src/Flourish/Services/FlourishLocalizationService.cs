@@ -2,7 +2,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
 

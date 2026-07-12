@@ -5,7 +5,7 @@ description: Flourish WPF Shell 组合库文档。
 
 # Flourish
 
-Flourish 是面向 WPF 的开源桌面应用组合库。它提供基于 Host 的启动流程、窗口外观配置、导航、动态工具栏命令、状态栏集成、页面缓存、材质特效和动效选项。
+Flourish 是面向 WPF 的开源桌面应用组合与控件库。它提供基于 Host 的启动流程、窗口外观配置、导航、动态工具栏命令、状态栏集成、页面缓存、材质特效、动效选项，以及一套统一的紧凑型 WPF 控件。
 
 应用启动通常放在 `App.xaml.cs` 中，也可以放在应用配置的其他自定义入口中；视觉资源可以从 `App.xaml` 引入，Shell 行为则通过 fluent builder 配置。
 
@@ -15,6 +15,7 @@ Flourish 是面向 WPF 的开源桌面应用组合库。它提供基于 Host 的
 ## Flourish 提供什么
 
 - 基于 `FlourishBuilder` 和 `IFlourish` 的 Host 启动流程
+- 由显式 `Flourish*` 自定义控件组成、不会改写原生 WPF 控件的可复用控件库
 - 标题栏、导航栏、材质特效、字体和窗口尺寸等 Shell 配置
 - 通过依赖注入注册页面并执行导航
 - 连接到命令解析器的上下文动态工具栏项
@@ -25,6 +26,7 @@ Flourish 是面向 WPF 的开源桌面应用组合库。它提供基于 Host 的
 ## 从这里开始
 
 - [快速开始](articles/getting-started.md)
+- [控件库](articles/control-library.md)
 - [Shell 配置](articles/shell-configuration.md)
 - [导航](articles/navigation.md)
 - [动态工具栏](articles/dynamic-toolbar.md)

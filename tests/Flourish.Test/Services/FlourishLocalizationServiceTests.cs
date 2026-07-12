@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;

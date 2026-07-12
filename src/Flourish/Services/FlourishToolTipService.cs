@@ -1,5 +1,5 @@
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 using Window = System.Windows.Window;
 

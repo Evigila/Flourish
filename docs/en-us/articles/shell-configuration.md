@@ -48,7 +48,7 @@ Background-task activity is the exception to persistent status-bar visibility: a
 
 The breadcrumb, dynamic toolbar, content page, and content-region hosts share the `FlourishContentBodyMargin` dynamic resource. Its default value is `32,0,32,0`, giving every content surface the same left and right edge.
 
-Applications that require a different gutter or full-bleed content can override the resource after merging `Themes/Generic.xaml`:
+Applications that require a different gutter or full-bleed content can override the resource after adding `FlourishThemeResources`:
 
 ```xml
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>

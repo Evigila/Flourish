@@ -1,0 +1,126 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <Style TargetType="{x:Type controls:FlourishCheckBox}">
+    <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeBase}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type controls:FlourishCheckBox}">
+          <Grid Background="Transparent" SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+              x:Name="CheckChrome"
+              Width="16"
+              Height="16"
+              VerticalAlignment="Center"
+              Background="{DynamicResource FlourishControlBackgroundBrush}"
+              BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+              BorderThickness="{DynamicResource FlourishControlBorderThickness}"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+            >
+              <Grid>
+                <Path
+                  x:Name="CheckMark"
+                  Width="9"
+                  Height="7"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M 0,3.5 L 3,6.5 L 9,0"
+                  Stretch="Fill"
+                  Stroke="{DynamicResource FlourishForegroundOnBrandBrush}"
+                  StrokeEndLineCap="Round"
+                  StrokeLineJoin="Round"
+                  StrokeStartLineCap="Round"
+                  StrokeThickness="1.8"
+                  Visibility="Collapsed"
+                />
+                <Border
+                  x:Name="IndeterminateMark"
+                  Width="8"
+                  Height="2"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Background="{DynamicResource FlourishForegroundOnBrandBrush}"
+                  CornerRadius="1"
+                  Visibility="Collapsed"
+                />
+              </Grid>
+            </Border>
+            <ContentPresenter
+              x:Name="ContentHost"
+              Grid.Column="1"
+              Margin="8,0,0,0"
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+              Content="{TemplateBinding Content}"
+              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+              ContentTemplate="{TemplateBinding ContentTemplate}"
+              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+              RecognizesAccessKey="True"
+            />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishControlHoverBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishControlPressedBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokePressedBrush}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="{x:Null}">
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="IndeterminateMark" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="True" />
+                <Condition Property="IsMouseOver" Value="True" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundHoverBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundHoverBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="True" />
+                <Condition Property="IsPressed" Value="True" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundPressedBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundPressedBrush}" />
+            </MultiTrigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter Property="Cursor" Value="Arrow" />
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter TargetName="IndeterminateMark" Property="Background" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

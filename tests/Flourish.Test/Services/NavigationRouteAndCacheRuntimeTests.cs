@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

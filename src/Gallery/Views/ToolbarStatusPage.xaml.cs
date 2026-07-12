@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Controls;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -244,12 +245,12 @@ public partial class ToolbarStatusPage : Page
 
     private static FrameworkElement CreateRegionContent()
     {
-        var text = new TextBlock
+        var text = new FlourishTextBlock
         {
             Text = $"ContentHeader registered at {DateTimeOffset.Now:HH:mm:ss}",
             VerticalAlignment = VerticalAlignment.Center,
         };
-        text.SetResourceReference(TextBlock.ForegroundProperty, "AccentBrush");
+        text.SetResourceReference(FlourishTextBlock.ForegroundProperty, "FlourishBrandForegroundBrush");
 
         var border = new Border
         {
@@ -258,8 +259,8 @@ public partial class ToolbarStatusPage : Page
             CornerRadius = new CornerRadius(7),
             Child = text,
         };
-        border.SetResourceReference(Border.BackgroundProperty, "AccentSoftBrush");
-        border.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
+        border.SetResourceReference(Border.BackgroundProperty, "FlourishAccentSurfaceBrush");
+        border.SetResourceReference(Border.BorderBrushProperty, "FlourishCardStrokeBrush");
         border.BorderThickness = new Thickness(1);
         return border;
     }
@@ -271,7 +272,7 @@ public partial class ToolbarStatusPage : Page
     private void RuntimeState_Changed(object? sender, EventArgs e) =>
         Dispatcher.BeginInvoke(RefreshState);
 
-    private void Execute(Action action, TextBlock statusText)
+    private void Execute(Action action, FlourishTextBlock statusText)
     {
         try
         {

@@ -1,0 +1,49 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+
+  <Style TargetType="{x:Type controls:FlourishTextBlock}">
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeBase}" />
+    <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+    <Style.Triggers>
+      <Trigger Property="Role" Value="Caption">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
+      </Trigger>
+      <Trigger Property="Role" Value="Muted">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground2Brush}" />
+      </Trigger>
+      <Trigger Property="Role" Value="FieldLabel">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground2Brush}" />
+      </Trigger>
+      <Trigger Property="Role" Value="Subtitle">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeSubtitle}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground2Brush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+      </Trigger>
+      <Trigger Property="Role" Value="SectionTitle">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeSectionTitle}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+      </Trigger>
+      <Trigger Property="Role" Value="PageTitle">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizePageTitle}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+      </Trigger>
+      <Trigger Property="Role" Value="Status">
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishBrandForegroundBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+      </Trigger>
+      <Trigger Property="Role" Value="Icon">
+        <Setter Property="FontFamily" Value="{DynamicResource FlourishIconFontFamily}" />
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeTitlebarIcon}" />
+        <Setter Property="TextAlignment" Value="Center" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+</ResourceDictionary>

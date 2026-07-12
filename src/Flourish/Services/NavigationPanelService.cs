@@ -1,5 +1,5 @@
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
 
@@ -145,7 +145,10 @@ internal sealed class NavigationPanelService : INavigationPanelService
     )
     {
         ValidatePositiveFinite(openWidth, nameof(openWidth));
-        ValidateNonNegativeFinite(closedWidth, nameof(closedWidth));
+        NavigationPanelDimensions.ValidateCollapsedWidth(
+            closedWidth,
+            nameof(closedWidth)
+        );
         ValidatePositiveFinite(maxWidth, nameof(maxWidth));
         ValidatePositiveFinite(minWidth, nameof(minWidth));
 
@@ -185,11 +188,4 @@ internal sealed class NavigationPanelService : INavigationPanelService
         }
     }
 
-    private static void ValidateNonNegativeFinite(double value, string parameterName)
-    {
-        if (!double.IsFinite(value) || value < 0)
-        {
-            throw new ArgumentOutOfRangeException(parameterName, value, "Value must be non-negative and finite.");
-        }
-    }
 }

@@ -1,5 +1,5 @@
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;

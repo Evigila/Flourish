@@ -1,0 +1,221 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <ControlTemplate
+    x:Key="FlourishButtonTemplate"
+    TargetType="{x:Type controls:FlourishButton}"
+  >
+    <Grid
+      x:Name="InteractionRoot"
+      ClipToBounds="True"
+      RenderTransformOrigin="0.5,0.5"
+      SnapsToDevicePixels="True"
+    >
+      <Grid.RenderTransform>
+        <ScaleTransform ScaleX="1" ScaleY="1" />
+      </Grid.RenderTransform>
+      <Border
+        x:Name="Chrome"
+        Background="{TemplateBinding Background}"
+        BorderBrush="{TemplateBinding BorderBrush}"
+        BorderThickness="{TemplateBinding BorderThickness}"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+      />
+      <Border
+        x:Name="HoverChrome"
+        Background="{DynamicResource FlourishHoverRevealBrush}"
+        BorderThickness="0"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        IsHitTestVisible="False"
+        Opacity="0"
+        RenderTransformOrigin="0.5,0.5"
+      >
+        <Border.RenderTransform>
+          <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+        </Border.RenderTransform>
+      </Border>
+      <Border
+        x:Name="PressedChrome"
+        Background="{DynamicResource FlourishPressedRevealBrush}"
+        BorderThickness="0"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        IsHitTestVisible="False"
+        Opacity="0"
+      />
+      <ContentPresenter
+        x:Name="ContentHost"
+        Margin="{TemplateBinding Padding}"
+        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+        Content="{TemplateBinding Content}"
+        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+        ContentTemplate="{TemplateBinding ContentTemplate}"
+        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+        RecognizesAccessKey="True"
+        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+      />
+    </Grid>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsMouseOver" Value="True" />
+          <Condition Property="controls:HoverReveal.IsEnabled" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="HoverChrome" Property="Opacity" Value="1" />
+        <Setter TargetName="HoverChrome" Property="RenderTransform">
+          <Setter.Value>
+            <ScaleTransform ScaleX="1" ScaleY="1" />
+          </Setter.Value>
+        </Setter>
+      </MultiTrigger>
+      <Trigger Property="Appearance" Value="Primary">
+        <Setter
+          TargetName="PressedChrome"
+          Property="Background"
+          Value="{DynamicResource FlourishBrandBackgroundPressedBrush}"
+        />
+      </Trigger>
+      <Trigger Property="Variant" Value="WindowCaption">
+        <Setter TargetName="Chrome" Property="CornerRadius" Value="0" />
+        <Setter TargetName="HoverChrome" Property="CornerRadius" Value="0" />
+        <Setter TargetName="PressedChrome" Property="CornerRadius" Value="0" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="PressedChrome" Property="Opacity" Value="1" />
+        <Setter TargetName="InteractionRoot" Property="RenderTransform">
+          <Setter.Value>
+            <ScaleTransform ScaleX="0.98" ScaleY="0.98" />
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter
+          Property="Foreground"
+          Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}"
+        />
+        <Setter
+          Property="Background"
+          Value="{DynamicResource FlourishControlDisabledBrush}"
+        />
+        <Setter
+          Property="BorderBrush"
+          Value="{DynamicResource FlourishControlStrokeDisabledBrush}"
+        />
+        <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type controls:FlourishButton}">
+    <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
+    <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
+    <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Background" Value="{DynamicResource FlourishControlBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter
+      Property="BorderThickness"
+      Value="{DynamicResource FlourishControlBorderThickness}"
+    />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter
+      Property="ToolTipService.InitialShowDelay"
+      Value="{DynamicResource FlourishToolTipInitialShowDelay}"
+    />
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="0" />
+    <Setter Property="ToolTipService.ShowDuration" Value="10000" />
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+    <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
+    <Setter Property="Template" Value="{StaticResource FlourishButtonTemplate}" />
+    <Style.Triggers>
+      <Trigger Property="Variant" Value="Icon">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Toolbar">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinWidth" Value="28" />
+        <Setter Property="Padding" Value="7,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Action">
+        <Setter Property="MinWidth" Value="72" />
+        <Setter Property="Height" Value="30" />
+      </Trigger>
+      <Trigger Property="Variant" Value="WindowCaption">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+      </Trigger>
+      <Trigger Property="Variant" Value="StatusIcon">
+        <Setter Property="Width" Value="26" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+      </Trigger>
+      <Trigger Property="Variant" Value="MessageBox">
+        <Setter Property="MinWidth" Value="72" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="14,0" />
+        <Setter
+          Property="Background"
+          Value="{DynamicResource FlourishMessageBoxSecondarySurfaceBrush}"
+        />
+      </Trigger>
+      <Trigger Property="Appearance" Value="Primary">
+        <Setter Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnBrandBrush}" />
+      </Trigger>
+      <Trigger Property="Appearance" Value="Subtle">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+      </Trigger>
+      <Trigger Property="Appearance" Value="Card">
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishCardStrokeBrush}" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Variant" Value="MessageBox" />
+          <Condition Property="Appearance" Value="Primary" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+      </MultiTrigger>
+    </Style.Triggers>
+  </Style>
+</ResourceDictionary>

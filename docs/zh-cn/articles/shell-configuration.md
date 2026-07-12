@@ -68,7 +68,7 @@ builder
 
 Breadcrumb、动态工具栏、内容页面和内容区域宿主统一使用 `FlourishContentBodyMargin` 动态资源。默认值为 `32,0,32,0`，因此所有内容表面具有相同的左右边界。
 
-需要不同留白或全宽内容的应用，可以在合并 `Themes/Generic.xaml` 后覆盖该资源：
+需要不同留白或全宽内容的应用，可以在加入 `FlourishThemeResources` 后覆盖该资源：
 
 ```xml
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>

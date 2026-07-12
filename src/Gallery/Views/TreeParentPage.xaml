@@ -1,6 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.TreeParentPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,18 +10,18 @@
 >
   <Grid>
     <StackPanel Width="520" HorizontalAlignment="Center" VerticalAlignment="Center">
-      <TextBlock
+      <flourish:FlourishTextBlock
         HorizontalAlignment="Center"
         FontSize="28"
         FontWeight="SemiBold"
-        Foreground="{DynamicResource PrimaryTextBrush}"
+        Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
         Text="页面父节点"
       />
 
-      <TextBlock
+      <flourish:FlourishTextBlock
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
-        Foreground="{DynamicResource MutedTextBrush}"
+        Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
         Text="点击该导航项会进入这个页面，同时展开 Button1 和 Button2。"
         TextAlignment="Center"
         TextWrapping="Wrap"

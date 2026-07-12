@@ -1,0 +1,90 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <Style TargetType="{x:Type controls:FlourishComboBoxItem}">
+    <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource FlourishCompactControlPadding}" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeBase}" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type controls:FlourishComboBoxItem}">
+          <Grid ClipToBounds="True" SnapsToDevicePixels="True">
+            <Border
+              x:Name="Chrome"
+              Background="{TemplateBinding Background}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+            />
+            <Border
+              x:Name="HoverChrome"
+              Background="{DynamicResource FlourishHoverRevealBrush}"
+              BorderThickness="0"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+              IsHitTestVisible="False"
+              Opacity="0"
+              RenderTransformOrigin="0.5,0.5"
+            >
+              <Border.RenderTransform>
+                <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+              </Border.RenderTransform>
+            </Border>
+            <ContentPresenter
+              x:Name="ContentHost"
+              Margin="{TemplateBinding Padding}"
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+              Content="{TemplateBinding Content}"
+              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+              ContentTemplate="{TemplateBinding ContentTemplate}"
+              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+              RecognizesAccessKey="True"
+            />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsMouseOver" Value="True" />
+                <Condition Property="controls:HoverReveal.IsEnabled" Value="False" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HoverChrome" Property="Opacity" Value="1" />
+              <Setter TargetName="HoverChrome" Property="RenderTransform">
+                <Setter.Value><ScaleTransform ScaleX="1" ScaleY="1" /></Setter.Value>
+              </Setter>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsHighlighted" Value="True" />
+                <Condition Property="IsMouseOver" Value="False" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishHoverRevealBrush}" />
+            </MultiTrigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Foreground" Value="{DynamicResource FlourishBrandForegroundBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishControlSelectedBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

@@ -31,6 +31,7 @@ internal static class Program
                     services.AddNavigable<CommandsPage>("Commands & shortcuts", "\uE756");
                     services.AddNavigable<WindowRuntimePage>("Window & notifications", "\uE737");
                     services.AddNavigable<BackgroundTasksPage>("Background tasks", "\uE895");
+                    services.AddNavigable<ControlLibraryPage>("Control library", "\uE8D2");
                 }
             )
             .ConfigureShell(shell =>
@@ -90,8 +91,13 @@ internal static class Program
                         }
                     )
                     .SetGroup(
-                        "Commands",
+                        "Controls",
                         3,
+                        group => group.AddNavigableViewItem<ControlLibraryPage>()
+                    )
+                    .SetGroup(
+                        "Commands",
+                        4,
                         group =>
                         {
                             group.AddNavigableItem("Show a modal message", "\uE8F2", "demo.hello");

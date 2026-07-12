@@ -9,12 +9,12 @@ description: 使用 Flourish 构建并运行一个基本 WPF 应用。
 
 Flourish 内置文案默认使用英文，即使省略 `ConfigureData` 也会生效。如需中文，可在 `Build()` 前添加 `builder.ConfigureData(data => data.SetLocale("CN"))`。[应用数据](configure-data.md)说明内置语言和自定义翻译文件。
 
-## 引用主题资源
+## 引用控件与主题资源
 
-`Run(Application)` 快捷方法和 `IFlourish.Show(Application)` 会在打开 Shell 前自动把 `/Flourish;component/Themes/Generic.xaml` 合并进应用资源。你仍然可以在 `App.xaml` 中显式引用它；这样 WPF 设计器和 Shell 显示前就需要使用的资源也能正常工作。
+`Run(Application)` 快捷方法和 `IFlourish.Show(Application)` 会在打开 Shell 前自动加载完整的 Flourish 控件与主题资源图。你也可以在 `App.xaml` 中显式加入 `FlourishThemeResources`；这样 WPF 设计器、Shell 显示前就需要使用的资源，以及脱离 Shell 独立使用的[控件库](control-library.md)都能正常工作。
 
 > [!NOTE]
-> 当设计器资源或早期应用资源需要在 Shell 显示前使用 Flourish 样式时，建议在 `App.xaml` 中显式加入主题字典。
+> 当设计器资源或早期应用资源需要在 Shell 显示前使用 Flourish 控件时，建议在 `App.xaml` 中显式加入 `FlourishThemeResources`。原有的 `FlourishStyles` 与 `FlourishControlResources` 已标记为过时，仅用于兼容旧应用，新应用不应再使用。
 
 当 Flourish Shell 承担主窗口职责时，`App.xaml` 不应设置 `StartupUri`。`IFlourish.Show(Application)` 运行后，Shell 会成为 `Application.MainWindow`。
 
@@ -22,11 +22,12 @@ Flourish 内置文案默认使用英文，即使省略 `ConfigureData` 也会生
 <Application
   x:Class="Foobar.App"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Flourish;component/Themes/Generic.xaml" />
+        <flourish:FlourishThemeResources />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

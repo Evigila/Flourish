@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shell;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
-using ArkheideSystem.Flourish.Windows;
+using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -183,6 +183,46 @@ public sealed class FlourishShellWindowFrameTests
                 Assert.Equal(MaterialEffect.None, material.CurrentEffect);
                 Assert.False(material.IsApplied);
                 Assert.Equal(0, changedCount);
+            }
+            finally
+            {
+                material.Detach(window);
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void MaterialEffect_ResourceBackedBackgroundRestoresTheCurrentThemeValue()
+    {
+        const string backgroundResourceKey = "AppBackgroundBrush";
+        RunInSta(() =>
+        {
+            var initialBackground = new SolidColorBrush(Color.FromRgb(20, 40, 60));
+            var currentThemeBackground = new SolidColorBrush(Color.FromRgb(180, 120, 40));
+            var replacementBackground = new SolidColorBrush(Color.FromRgb(5, 10, 15));
+            var window = CreateTestWindow();
+            window.Resources[backgroundResourceKey] = initialBackground;
+            window.SetResourceReference(Window.BackgroundProperty, backgroundResourceKey);
+            window.Content = new Border();
+            window.Show();
+            var material = new MaterialEffectService();
+            material.Attach(window, MaterialEffect.None, backgroundResourceKey);
+
+            try
+            {
+                // Model the local transparent value used while Mica is active, then
+                // switch the palette before the effect is disabled.
+                window.Background = replacementBackground;
+                window.Resources[backgroundResourceKey] = currentThemeBackground;
+
+                material.Reapply(window);
+
+                Assert.Same(currentThemeBackground, window.Background);
+
+                var nextThemeBackground = new SolidColorBrush(Color.FromRgb(70, 80, 90));
+                window.Resources[backgroundResourceKey] = nextThemeBackground;
+                Assert.Same(nextThemeBackground, window.Background);
             }
             finally
             {

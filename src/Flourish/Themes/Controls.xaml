@@ -1,11 +1,40 @@
 <ResourceDictionary
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/Flourish;component/Themes/ToolTips.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Themes/Buttons.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Themes/Inputs.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Themes/Navigation.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ScrollBar.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ScrollViewer.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/TextBlock.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Label.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Button.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/TextBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/PasswordBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/SearchBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/CheckBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/RadioButton.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ComboBoxItem.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ComboBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ListBoxItem.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ListBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Card.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ToolTip.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/GridSplitter.xaml" />
   </ResourceDictionary.MergedDictionaries>
+
+  <!-- Runtime services may override these public interaction defaults. -->
+  <sys:Boolean x:Key="FlourishHoverRevealEnabled">True</sys:Boolean>
+  <sys:TimeSpan x:Key="FlourishHoverRevealDuration">0:0:0.140</sys:TimeSpan>
+  <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">200</sys:Int32>
+  <sys:Double x:Key="FlourishToolTipSpawnableMargin">5</sys:Double>
+
+  <!-- Compact Fluent-derived control geometry. Controls never impose external margins. -->
+  <sys:Double x:Key="FlourishControlHeight">30</sys:Double>
+  <sys:Double x:Key="FlourishControlMinWidth">64</sys:Double>
+  <CornerRadius x:Key="FlourishControlCornerRadius">4</CornerRadius>
+  <CornerRadius x:Key="FlourishSurfaceCornerRadius">6</CornerRadius>
+  <Thickness x:Key="FlourishControlPadding">10,4</Thickness>
+  <Thickness x:Key="FlourishCompactControlPadding">8,2</Thickness>
+  <Thickness x:Key="FlourishControlBorderThickness">1</Thickness>
 </ResourceDictionary>

@@ -44,4 +44,5 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 ## Related features
 
+- [Control library](control-library.md) describes the standard templates and the public HoverReveal attached behavior.
 - [Navigation](navigation.md) uses navigation panel transitions.

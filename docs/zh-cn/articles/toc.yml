@@ -3,6 +3,8 @@ items:
   href: runtime-apis.md
 - name: 快速开始
   href: getting-started.md
+- name: 控件库
+  href: control-library.md
 - name: IFlourishBuilder
   href: flourish-builder.md
 - name: 应用数据

@@ -1,96 +1,96 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.WindowRuntimePage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="0,28,0,40">
-      <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Window, profile &amp; notifications" />
-      <TextBlock
-        Style="{StaticResource GalleryPageSubtitleStyle}"
+      <flourish:FlourishTextBlock Role="PageTitle" Text="Window, profile &amp; notifications" />
+      <flourish:FlourishTextBlock Role="Subtitle"
         Text="Control the live shell window and tray icon, install close guards, manage the profile flyout, and publish modal or non-modal messages."
       />
 
-      <Border Margin="0,24,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,24,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Shell window" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Resize, position, activate, and change window flags through IWindowService." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Shell window" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Resize, position, activate, and change window flags through IWindowService." TextWrapping="Wrap" />
           <WrapPanel>
-            <Button Margin="0,0,8,8" Click="SetDemoSize_Click" Content="Set 1100 × 760" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="CenterWindow_Click" Content="Center" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="ToggleTopmost_Click" Content="Toggle topmost" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="ToggleTaskbar_Click" Content="Toggle taskbar" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="MinimizeWindow_Click" Content="Minimize" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="MaximizeWindow_Click" Content="Maximize" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="RestoreWindow_Click" Content="Restore" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="HideBriefly_Click" Content="Hide for 1 second" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="SetDemoSize_Click" Content="Set 1100 × 760" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="CenterWindow_Click" Content="Center" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="ToggleTopmost_Click" Content="Toggle topmost" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="ToggleTaskbar_Click" Content="Toggle taskbar" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="MinimizeWindow_Click" Content="Minimize" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="MaximizeWindow_Click" Content="Maximize" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="RestoreWindow_Click" Content="Restore" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="HideBriefly_Click" Content="Hide for 1 second" />
           </WrapPanel>
-          <TextBlock x:Name="WindowStatusText" Margin="0,6,0,0" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="WindowStatusText" Margin="0,6,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Notification-area tray" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="The tray service can be enabled after startup and can restore a hidden shell window." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Notification-area tray" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The tray service can be enabled after startup and can restore a hidden shell window." TextWrapping="Wrap" />
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="TrayToolTipBox" Style="{StaticResource GalleryTextBoxStyle}" Text="Flourish Runtime Gallery" />
-            <Button Grid.Column="1" Margin="10,0,0,0" Click="ApplyTrayToolTip_Click" Content="Set tray tooltip" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishTextBox x:Name="TrayToolTipBox" Text="Flourish Runtime Gallery" />
+            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ApplyTrayToolTip_Click" Content="Set tray tooltip" />
           </Grid>
           <WrapPanel Margin="0,14,0,0">
-            <Button x:Name="ToggleTrayButton" Margin="0,0,8,0" Click="ToggleTray_Click" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="MinimizeToTray_Click" Content="Minimize to tray" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Click="RestoreFromTray_Click" Content="Restore from tray" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton x:Name="ToggleTrayButton" Margin="0,0,8,0" Click="ToggleTray_Click" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="MinimizeToTray_Click" Content="Minimize to tray" />
+            <flourish:FlourishButton Click="RestoreFromTray_Click" Content="Restore from tray" />
           </WrapPanel>
-          <TextBlock x:Name="TrayStatusText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="TrayStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Close behavior &amp; guards" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Choose the default close policy and install a disposable guard whose decision can change at runtime." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Close behavior &amp; guards" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Choose the default close policy and install a disposable guard whose decision can change at runtime." TextWrapping="Wrap" />
           <WrapPanel>
-            <ComboBox x:Name="CloseBehaviorBox" Width="220" Height="32" VerticalContentAlignment="Center" />
-            <Button Margin="10,0,0,0" Click="ApplyCloseBehavior_Click" Content="Apply behavior" Style="{StaticResource GalleryActionButtonStyle}" />
-            <CheckBox x:Name="CloseGuardAllowsBox" Margin="18,0,0,0" VerticalAlignment="Center" Content="Guard allows close" IsChecked="True" />
+            <flourish:FlourishComboBox x:Name="CloseBehaviorBox" Width="220" />
+            <flourish:FlourishButton Margin="10,0,0,0" Click="ApplyCloseBehavior_Click" Content="Apply behavior" />
+            <flourish:FlourishCheckBox x:Name="CloseGuardAllowsBox" Margin="18,0,0,0" VerticalAlignment="Center" Content="Guard allows close" IsChecked="True" />
           </WrapPanel>
           <WrapPanel Margin="0,14,0,0">
-            <Button Margin="0,0,8,0" Click="RegisterCloseGuard_Click" Content="Register guard" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="RemoveCloseGuard_Click" Content="Remove guard" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="EvaluateClose_Click" Content="Evaluate guards" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Click="RequestClose_Click" Content="Request app close" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="RegisterCloseGuard_Click" Content="Register guard" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="RemoveCloseGuard_Click" Content="Remove guard" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="EvaluateClose_Click" Content="Evaluate guards" />
+            <flourish:FlourishButton Click="RequestClose_Click" Content="Request app close" />
           </WrapPanel>
-          <TextBlock x:Name="CloseStatusText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="No close guard registered by this page." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="CloseStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No close guard registered by this page." TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Profile flyout" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Enable and open the profile surface or replace its content page at runtime. Restore returns to the startup profile page type." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Profile flyout" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Enable and open the profile surface or replace its content page at runtime. Restore returns to the startup profile page type." TextWrapping="Wrap" />
           <WrapPanel>
-            <Button x:Name="ToggleProfileEnabledButton" Margin="0,0,8,0" Click="ToggleProfileEnabled_Click" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="ToggleProfileFlyout_Click" Content="Toggle flyout" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="UseConfigurationProfilePage_Click" Content="Use configuration page" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Click="RestoreProfilePage_Click" Content="Restore profile page" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton x:Name="ToggleProfileEnabledButton" Margin="0,0,8,0" Click="ToggleProfileEnabled_Click" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="ToggleProfileFlyout_Click" Content="Toggle flyout" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="UseConfigurationProfilePage_Click" Content="Use configuration page" />
+            <flourish:FlourishButton Click="RestoreProfilePage_Click" Content="Restore profile page" />
           </WrapPanel>
-          <TextBlock x:Name="ProfileStatusText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="ProfileStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Messages &amp; notifications" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Await modal choices without blocking application logic, or publish non-modal notifications to the shell host." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Messages &amp; notifications" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Await modal choices without blocking application logic, or publish non-modal notifications to the shell host." TextWrapping="Wrap" />
           <WrapPanel>
-            <Button Margin="0,0,8,8" Click="ShowMessage_Click" Content="Show async message" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,8" Click="ShowCustomMessage_Click" Content="Show custom choices" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="ShowMessage_Click" Content="Show async message" />
+            <flourish:FlourishButton Margin="0,0,8,8" Click="ShowCustomMessage_Click" Content="Show custom choices" />
           </WrapPanel>
           <Grid Margin="0,6,0,0">
             <Grid.ColumnDefinitions>
@@ -98,24 +98,24 @@
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Margin="0,0,8,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Notification ID" />
-              <TextBox x:Name="NotificationIdBox" Style="{StaticResource GalleryTextBoxStyle}" Text="gallery.runtime.notice" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Notification ID" />
+              <flourish:FlourishTextBox x:Name="NotificationIdBox" Text="gallery.runtime.notice" />
             </StackPanel>
             <StackPanel Grid.Column="1" Margin="8,0,0,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Message" />
-              <TextBox x:Name="NotificationMessageBox" Style="{StaticResource GalleryTextBoxStyle}" Text="A runtime notification from the Gallery." />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Message" />
+              <flourish:FlourishTextBox x:Name="NotificationMessageBox" Text="A runtime notification from the Gallery." />
             </StackPanel>
           </Grid>
           <WrapPanel Margin="0,14,0,0">
-            <Button Margin="0,0,8,0" Click="ShowNotification_Click" Content="Show" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="UpsertNotification_Click" Content="Upsert" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="DismissNotification_Click" Content="Dismiss ID" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Click="DismissAllNotifications_Click" Content="Dismiss all" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="ShowNotification_Click" Content="Show" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="UpsertNotification_Click" Content="Upsert" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="DismissNotification_Click" Content="Dismiss ID" />
+            <flourish:FlourishButton Click="DismissAllNotifications_Click" Content="Dismiss all" />
           </WrapPanel>
-          <TextBlock x:Name="MessageStatusText" Margin="0,12,0,0" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" />
-          <TextBlock x:Name="NotificationStatusText" Margin="0,6,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="MessageStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="NotificationStatusText" Margin="0,6,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
     </StackPanel>
-  </ScrollViewer>
+  </flourish:FlourishScrollViewer>
 </Page>

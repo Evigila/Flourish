@@ -1,70 +1,70 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.ToolbarStatusPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="0,28,0,40">
-      <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Toolbar, status and shell regions" />
-      <TextBlock
-        Style="{StaticResource GalleryPageSubtitleStyle}"
+      <flourish:FlourishTextBlock Role="PageTitle" Text="Toolbar, status and shell regions" />
+      <flourish:FlourishTextBlock Role="Subtitle"
         Text="Every control below edits a live shell surface. Stable IDs make add, update, move, enable, hide and remove operations deterministic."
       />
 
-      <Border Margin="0,24,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,24,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Dynamic toolbar" />
-          <TextBlock Margin="0,7,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="Add an action for this page, then use the actual shell toolbar button above the page to execute the runtime command." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Dynamic toolbar" />
+          <flourish:FlourishTextBlock Margin="0,7,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Add an action for this page, then use the actual shell toolbar button above the page to execute the runtime command." TextWrapping="Wrap" />
           <WrapPanel Margin="0,14,0,0">
-            <Button Click="AddToolbarItem_Click" Content="Add / update action" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ToggleToolbarItemEnabled_Click" Content="Enable / disable" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ToggleToolbarItemVisible_Click" Content="Show / hide" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ToggleIconOnly_Click" Content="Icon / icon + text" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="MoveToolbarItem_Click" Content="Move action" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="RemoveToolbarItem_Click" Content="Remove" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Click="AddToolbarItem_Click" Content="Add / update action" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleToolbarItemEnabled_Click" Content="Enable / disable" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleToolbarItemVisible_Click" Content="Show / hide" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleIconOnly_Click" Content="Icon / icon + text" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="MoveToolbarItem_Click" Content="Move action" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveToolbarItem_Click" Content="Remove" />
           </WrapPanel>
-          <TextBlock x:Name="ToolbarStateText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
-          <TextBlock x:Name="CommandLogText" Margin="0,8,0,0" FontFamily="Consolas" Foreground="{DynamicResource AccentBrush}" Text="The toolbar command has not run yet." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="ToolbarStateText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="CommandLogText" Margin="0,8,0,0" FontFamily="Consolas" Foreground="{DynamicResource FlourishBrandForegroundBrush}" Text="The toolbar command has not run yet." TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Status bar" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Status bar" />
           <WrapPanel Margin="0,14,0,0">
             <StackPanel Margin="0,0,10,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Status text" />
-              <TextBox x:Name="StatusTextBox" Width="230" Style="{StaticResource GalleryTextBoxStyle}" Text="Gallery runtime API is ready" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Status text" />
+              <flourish:FlourishTextBox x:Name="StatusTextBox" Width="230" Text="Gallery runtime API is ready" />
             </StackPanel>
-            <Button Margin="0,20,0,0" Click="UpsertStatus_Click" Content="Add / update" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,20,0,0" Click="ShowTimedStatus_Click" Content="Show for 4 seconds" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,20,0,0" Click="ToggleStatusVisible_Click" Content="Show / hide" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,20,0,0" Click="MoveStatus_Click" Content="Move item" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,20,0,0" Click="RemoveStatus_Click" Content="Remove" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,20,0,0" Click="UpsertStatus_Click" Content="Add / update" />
+            <flourish:FlourishButton Margin="8,20,0,0" Click="ShowTimedStatus_Click" Content="Show for 4 seconds" />
+            <flourish:FlourishButton Margin="8,20,0,0" Click="ToggleStatusVisible_Click" Content="Show / hide" />
+            <flourish:FlourishButton Margin="8,20,0,0" Click="MoveStatus_Click" Content="Move item" />
+            <flourish:FlourishButton Margin="8,20,0,0" Click="RemoveStatus_Click" Content="Remove" />
           </WrapPanel>
           <WrapPanel Margin="0,12,0,0">
-            <Button Click="ToggleLan_Click" Content="Toggle LAN indicator" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="TogglePower_Click" Content="Toggle power indicator" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ToggleStatusBar_Click" Content="Enable / disable bar" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Click="ToggleLan_Click" Content="Toggle LAN indicator" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="TogglePower_Click" Content="Toggle power indicator" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleStatusBar_Click" Content="Enable / disable bar" />
           </WrapPanel>
-          <TextBlock x:Name="StatusStateText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="StatusStateText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Custom shell region" />
-          <TextBlock Margin="0,7,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="Register a WPF element in ContentHeader. The registration can be disabled, reordered, replaced or removed while the shell is visible." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Custom shell region" />
+          <flourish:FlourishTextBlock Margin="0,7,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Register a WPF element in ContentHeader. The registration can be disabled, reordered, replaced or removed while the shell is visible." TextWrapping="Wrap" />
           <WrapPanel Margin="0,14,0,0">
-            <Button Click="AddRegion_Click" Content="Add header content" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ToggleRegion_Click" Content="Enable / disable" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="ReorderRegion_Click" Content="Change order" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="8,0,0,0" Click="RemoveRegion_Click" Content="Remove" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Click="AddRegion_Click" Content="Add header content" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleRegion_Click" Content="Enable / disable" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="ReorderRegion_Click" Content="Change order" />
+            <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveRegion_Click" Content="Remove" />
           </WrapPanel>
-          <TextBlock x:Name="RegionStateText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="RegionStateText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
     </StackPanel>
-  </ScrollViewer>
+  </flourish:FlourishScrollViewer>
 </Page>

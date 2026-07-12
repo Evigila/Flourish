@@ -1,5 +1,5 @@
 using System.IO;
-using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Flourish.Internal.Imaging;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 

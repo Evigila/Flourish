@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Controls;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -166,7 +167,7 @@ public partial class TitleBarRuntimePage : Page
         }
     }
 
-    private void Execute(Action action, TextBlock status)
+    private void Execute(Action action, FlourishTextBlock status)
     {
         try
         {

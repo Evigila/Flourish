@@ -1,66 +1,66 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.CommandsPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="0,28,0,40">
-      <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Commands &amp; shortcuts" />
-      <TextBlock
-        Style="{StaticResource GalleryPageSubtitleStyle}"
+      <flourish:FlourishTextBlock Role="PageTitle" Text="Commands &amp; shortcuts" />
+      <flourish:FlourishTextBlock Role="Subtitle"
         Text="Register application logic after startup, change its availability, dispatch it asynchronously, and bind the same command to a runtime keyboard shortcut."
       />
 
-      <Border Margin="0,24,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,24,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Runtime command registration" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="The demo handler waits briefly, increments an execution counter, and returns a value through CommandResult." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime command registration" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The demo handler waits briefly, increments an execution counter, and returns a value through CommandResult." TextWrapping="Wrap" />
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Margin="0,0,8,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Command key" />
-              <TextBox x:Name="CommandKeyBox" Style="{StaticResource GalleryTextBoxStyle}" Text="gallery.runtime.greet" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Command key" />
+              <flourish:FlourishTextBox x:Name="CommandKeyBox" Text="gallery.runtime.greet" />
             </StackPanel>
             <StackPanel Grid.Column="1" Margin="8,0,0,0">
-              <TextBlock Style="{StaticResource GalleryFieldLabelStyle}" Text="Dispatch parameter" />
-              <TextBox x:Name="CommandParameterBox" Style="{StaticResource GalleryTextBoxStyle}" Text="Flourish user" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Text="Dispatch parameter" />
+              <flourish:FlourishTextBox x:Name="CommandParameterBox" Text="Flourish user" />
             </StackPanel>
           </Grid>
           <WrapPanel Margin="0,14,0,0">
-            <Button Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" Style="{StaticResource GalleryActionButtonStyle}" />
-            <CheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
+            <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
           </WrapPanel>
-          <TextBlock x:Name="CommandResultText" Margin="0,12,0,0" Foreground="{DynamicResource AccentBrush}" Text="Register the demo command to begin." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" Text="Register the demo command to begin." TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Keyboard shortcut" />
-          <TextBlock Margin="0,5,0,16" Foreground="{DynamicResource MutedTextBrush}" Text="Bind Ctrl+Shift+G to the command key above. The shell can resolve and dispatch it globally; the button invokes the same shortcut API directly for a deterministic demo." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Keyboard shortcut" />
+          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Bind Ctrl+Shift+G to the command key above. The shell can resolve and dispatch it globally; the button invokes the same shortcut API directly for a deterministic demo." TextWrapping="Wrap" />
           <WrapPanel>
-            <Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" Style="{StaticResource GalleryActionButtonStyle}" />
-            <Button Click="RemoveShortcut_Click" Content="Remove shortcut" Style="{StaticResource GalleryActionButtonStyle}" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
+            <flourish:FlourishButton Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
+            <flourish:FlourishButton Click="RemoveShortcut_Click" Content="Remove shortcut" />
           </WrapPanel>
-          <TextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Foreground="{DynamicResource MutedTextBrush}" Text="No shortcut registered by this page." TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No shortcut registered by this page." TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
 
-      <Border Margin="0,16,0,0" Style="{StaticResource GalleryCardStyle}">
+      <flourish:FlourishCard Margin="0,16,0,0">
         <StackPanel>
-          <TextBlock Style="{StaticResource GallerySectionTitleStyle}" Text="Registry snapshots" />
-          <TextBlock Margin="0,5,0,12" Foreground="{DynamicResource MutedTextBrush}" Text="Both registries expose immutable snapshots and change events for diagnostic or management UIs." />
-          <TextBlock x:Name="RegistrySummaryText" Foreground="{DynamicResource AccentBrush}" />
-          <ListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" Background="Transparent" BorderThickness="0" />
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Registry snapshots" />
+          <flourish:FlourishTextBlock Margin="0,5,0,12" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Both registries expose immutable snapshots and change events for diagnostic or management UIs." />
+          <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Foreground="{DynamicResource FlourishBrandForegroundBrush}" />
+          <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
         </StackPanel>
-      </Border>
+      </flourish:FlourishCard>
     </StackPanel>
-  </ScrollViewer>
+  </flourish:FlourishScrollViewer>
 </Page>

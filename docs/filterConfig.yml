@@ -1,5 +1,11 @@
 apiRules:
 - include:
     uidRegex: ^ArkheideSystem\.Flourish\.Abstract
+- include:
+    uidRegex: ^ArkheideSystem\.Flourish\.Controls
+- include:
+    uidRegex: ^ArkheideSystem\.Flourish\.Styles
+- include:
+    uidRegex: ^ArkheideSystem\.Flourish\.Themes
 - exclude:
     uidRegex: ^ArkheideSystem\.Flourish\.

@@ -1,6 +1,8 @@
 items:
 - name: Getting started
   href: getting-started.md
+- name: Control library
+  href: control-library.md
 - name: Runtime APIs
   href: runtime-apis.md
 - name: IFlourishBuilder

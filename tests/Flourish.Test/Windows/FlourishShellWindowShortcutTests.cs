@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Windows;
+using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 

@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -29,6 +29,43 @@ public sealed class NavigationRuntimeSurfaceTests
         Assert.Equal(3, sut.Current.Version);
         Assert.Equal(3, changes.Count);
         Assert.True(changes[0].Animate);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(48)]
+    public void NavigationPanel_SetPanelWidthAcceptsHiddenOrMinimumVisibleCollapsedWidth(
+        double closedWidth
+    )
+    {
+        var options = new FlourishShellOptions();
+        var sut = new NavigationPanelService(options);
+
+        sut.SetPanelWidth(280, closedWidth, 500, 180);
+
+        Assert.Equal(closedWidth, options.ClosedPaneWidth);
+        Assert.Equal(closedWidth, sut.Current.ClosedWidth);
+        Assert.Equal(1, sut.Current.Version);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(47)]
+    public void NavigationPanel_SetPanelWidthRejectsUndersizedVisibleCollapsedWidth(
+        double closedWidth
+    )
+    {
+        var options = new FlourishShellOptions();
+        var sut = new NavigationPanelService(options);
+        var before = sut.Current;
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.SetPanelWidth(280, closedWidth, 500, 180)
+        );
+
+        Assert.Equal("closedWidth", exception.ParamName);
+        Assert.Equal(before, sut.Current);
+        Assert.Contains("0 (fully hidden) or at least 48", exception.Message);
     }
 
     [Fact]

@@ -1,280 +1,239 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.HomePage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="0,28,0,40">
-      <Border Padding="28" Background="{DynamicResource AccentSoftBrush}" CornerRadius="16">
+      <flourish:FlourishCard Appearance="Accent" Padding="28">
         <Grid>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
           <StackPanel>
-            <TextBlock Style="{StaticResource GalleryPageTitleStyle}" Text="Flourish Gallery" />
-            <TextBlock
+            <flourish:FlourishTextBlock Role="PageTitle" Text="Flourish Gallery" />
+            <flourish:FlourishTextBlock Role="Subtitle"
               MaxWidth="720"
-              Style="{StaticResource GalleryPageSubtitleStyle}"
               Text="Every page calls Flourish APIs directly. Change configuration, appearance, navigation, shell surfaces, commands, window behavior, and background work without restarting the application."
             />
           </StackPanel>
-          <TextBlock
+          <flourish:FlourishTextBlock
             Grid.Column="1"
             Margin="24,0,0,0"
             VerticalAlignment="Center"
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="48"
-            Foreground="{DynamicResource AccentBrush}"
+            Foreground="{DynamicResource FlourishBrandForegroundBrush}"
             Text="&#xE950;"
           />
         </Grid>
-      </Border>
+      </flourish:FlourishCard>
 
-      <TextBlock
+      <flourish:FlourishTextBlock Role="SectionTitle"
         Margin="0,28,0,14"
-        Style="{StaticResource GallerySectionTitleStyle}"
         Text="Demos"
       />
 
       <WrapPanel ItemHeight="154" ItemWidth="250">
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="Configuration"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE713;"
               />
-              <TextBlock
+              <flourish:FlourishTextBlock
                 Margin="0,10,0,0"
                 FontWeight="SemiBold"
                 Text="Configuration &amp; locale"
               />
-              <TextBlock
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Read, edit, append, save, reload, and switch locale."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="Appearance"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE790;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Appearance &amp; motion" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Appearance &amp; motion" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Theme, fonts, tooltips, animation, and material effects."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="TitleBarRuntime"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE8A4;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Title bar &amp; search" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Title bar &amp; search" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Identity, element visibility, shell features, and search handlers."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="NavigationRuntime"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE700;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Navigation" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Navigation" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Panel placement, sizing, routes, cache, and menu items."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="ToolbarStatus"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE945;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Toolbar &amp; status" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Toolbar &amp; status" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Dynamic actions, status messages, and custom shell regions."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="Commands"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE756;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Commands &amp; shortcuts" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Commands &amp; shortcuts" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Register, dispatch, disable, remove, and bind keyboard input."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="WindowRuntime"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE737;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Window &amp; profile" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Window &amp; profile" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Window, tray, close guards, profile, dialogs, and notifications."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
 
-        <Button
+        <flourish:FlourishButton Appearance="Card"
+          Width="232"
+          Height="136"
+          Margin="0,0,14,14"
           Click="DemoCard_Click"
-          Style="{StaticResource FlourishInteractiveButtonBaseStyle}"
           Tag="BackgroundTasks"
         >
-          <Border
-            Width="232"
-            Height="136"
-            Margin="0,0,14,14"
-            Style="{StaticResource GalleryCardStyle}"
-          >
-            <StackPanel>
-              <TextBlock
+          <StackPanel>
+              <flourish:FlourishTextBlock
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="24"
-                Foreground="{DynamicResource AccentBrush}"
+                Foreground="{DynamicResource FlourishBrandForegroundBrush}"
                 Text="&#xE895;"
               />
-              <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Background tasks" />
-              <TextBlock
+              <flourish:FlourishTextBlock Margin="0,10,0,0" FontWeight="SemiBold" Text="Background tasks" />
+              <flourish:FlourishTextBlock
                 Margin="0,5,0,0"
-                Foreground="{DynamicResource MutedTextBrush}"
+                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 Text="Queue work, observe progress, cancel, and capture results."
                 TextWrapping="Wrap"
               />
-            </StackPanel>
-          </Border>
-        </Button>
+          </StackPanel>
+        </flourish:FlourishButton>
       </WrapPanel>
     </StackPanel>
-  </ScrollViewer>
+  </flourish:FlourishScrollViewer>
 </Page>
