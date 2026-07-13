@@ -1,6 +1,7 @@
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
+using System.Windows.Media;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
@@ -11,6 +12,11 @@ public sealed class FlourishShellBuilderTests
     {
         var options = new FlourishShellOptions();
         var sut = new FlourishShellBuilder(options);
+        var themeColors = new FlourishThemeColors(
+            Color.FromRgb(0x12, 0x34, 0x56),
+            Color.FromRgb(0x65, 0x43, 0x21),
+            Color.FromRgb(0x7D, 0x4C, 0xDB)
+        );
 
         Assert.Same(sut, sut.UseTitleBar());
         Assert.Same(sut, sut.UseNavigation());
@@ -18,6 +24,8 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, sut.UseTips(350));
         Assert.Same(sut, sut.UseMotion());
         Assert.Same(sut, sut.UseMaterialEffect(MaterialEffect.Mica));
+        Assert.Same(sut, sut.UseThemeColors(themeColors));
+        Assert.Same(sut, sut.UseCornerRadius(5));
         Assert.Same(sut, sut.UseGlobalFont("Arial", 15));
         Assert.Same(sut, sut.SetOverrideFont<OverrideFontPage>("Consolas"));
         Assert.Same(sut, sut.UseStatusBar());
@@ -31,6 +39,8 @@ public sealed class FlourishShellBuilderTests
         Assert.True(options.Motion.IsEnabled);
         Assert.True(options.IsMaterialEffectEnabled);
         Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
+        Assert.Equal(themeColors, options.ThemeColors);
+        Assert.Equal(5, options.CornerRadius);
         Assert.Equal("Arial", options.FontFamily);
         Assert.Equal(15, options.FontSize);
         var pageOverride = Assert.Single(options.PageFontOverridesByPageType);
@@ -103,6 +113,60 @@ public sealed class FlourishShellBuilderTests
         );
 
         Assert.Equal("effect", exception.ParamName);
+    }
+
+    [Fact]
+    public void UseThemeColors_WithNull_ThrowsArgumentNullException()
+    {
+        var sut = new FlourishShellBuilder(new FlourishShellOptions());
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            sut.UseThemeColors(null!)
+        );
+
+        Assert.Equal("colors", exception.ParamName);
+    }
+
+    [Fact]
+    public void ThemeColors_WithTranslucentColor_ThrowsArgumentException()
+    {
+        var exception = Assert.Throws<ArgumentException>(() =>
+            new FlourishThemeColors(
+                Color.FromArgb(0x80, 0x12, 0x34, 0x56),
+                Colors.Black,
+                Colors.White
+            )
+        );
+
+        Assert.Equal("primary", exception.ParamName);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    [InlineData(double.NegativeInfinity)]
+    public void UseCornerRadius_WithInvalidValue_ThrowsArgumentOutOfRangeException(
+        double radius
+    )
+    {
+        var sut = new FlourishShellBuilder(new FlourishShellOptions());
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.UseCornerRadius(radius)
+        );
+
+        Assert.Equal("radius", exception.ParamName);
+    }
+
+    [Fact]
+    public void UseCornerRadius_WithZero_AllowsSquareGeometry()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishShellBuilder(options);
+
+        Assert.Same(sut, sut.UseCornerRadius(0));
+        Assert.Equal(0, options.CornerRadius);
     }
 
     [Theory]

@@ -26,6 +26,7 @@ internal sealed class FontService : IFontService
         "FlourishFontFamily",
         "FlourishFontSizeSmall",
         "FlourishFontSizeCaption",
+        "FlourishFontSizeDescription",
         "FlourishFontSizeBase",
         "FlourishFontSizeSubtitle",
         "FlourishFontSizeSectionTitle",
@@ -34,6 +35,9 @@ internal sealed class FontService : IFontService
         "FlourishFontSizeTitlebarIcon",
         "FlourishFontSizeNavigationIcon",
         "FlourishFontSizeWindowButtonIcon",
+        "FlourishLineHeightBody",
+        "FlourishLineHeightDescription",
+        "FlourishLineHeightSubtitle",
     ];
 
     public FontService(FlourishShellOptions options)
@@ -581,19 +585,24 @@ internal sealed class FontService : IFontService
         double baseSize
     )
     {
-        SetResourceIfChanged(resources, "FlourishFontSizeSmall", ClampFontSize(baseSize - 3));
-        SetResourceIfChanged(resources, "FlourishFontSizeCaption", ClampFontSize(baseSize - 1));
+        SetResourceIfChanged(resources, "FlourishFontSizeSmall", ClampFontSize(baseSize - 4));
+        SetResourceIfChanged(resources, "FlourishFontSizeCaption", ClampFontSize(baseSize - 2));
+        SetResourceIfChanged(
+            resources,
+            "FlourishFontSizeDescription",
+            ClampFontSize(baseSize - 1)
+        );
         SetResourceIfChanged(resources, "FlourishFontSizeBase", baseSize);
-        SetResourceIfChanged(resources, "FlourishFontSizeSubtitle", ClampFontSize(baseSize + 1));
+        SetResourceIfChanged(resources, "FlourishFontSizeSubtitle", ClampFontSize(baseSize + 2));
         SetResourceIfChanged(
             resources,
             "FlourishFontSizeSectionTitle",
-            ClampFontSize(baseSize + 4)
+            ClampFontSize(baseSize + 6)
         );
         SetResourceIfChanged(
             resources,
             "FlourishFontSizePageTitle",
-            ClampFontSize(baseSize + 17)
+            ClampFontSize(baseSize + 18)
         );
         SetResourceIfChanged(resources, "FlourishFontSizeTitle", baseSize);
         SetResourceIfChanged(
@@ -610,6 +619,17 @@ internal sealed class FontService : IFontService
             resources,
             "FlourishFontSizeWindowButtonIcon",
             ClampFontSize(baseSize - 2)
+        );
+        SetResourceIfChanged(resources, "FlourishLineHeightBody", ClampFontSize(baseSize + 7));
+        SetResourceIfChanged(
+            resources,
+            "FlourishLineHeightDescription",
+            ClampFontSize(baseSize + 4)
+        );
+        SetResourceIfChanged(
+            resources,
+            "FlourishLineHeightSubtitle",
+            ClampFontSize(baseSize + 10)
         );
     }
 

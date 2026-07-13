@@ -378,6 +378,32 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void HomeDemoCards_ExposeAccessibleAutomationNames()
+    {
+        var document = LoadXaml(
+            Path.Combine(RepositoryRoot, "src", "Gallery", "Views", "HomePage.xaml")
+        );
+        var demoCards = document
+            .Descendants()
+            .Where(element =>
+                element.Name.LocalName == "FlourishButton"
+                && (string?)element.Attribute("Appearance") == "Card"
+                && element.Attribute("Tag") is not null
+            )
+            .ToArray();
+
+        Assert.Equal(8, demoCards.Length);
+        Assert.All(
+            demoCards,
+            card => Assert.False(
+                string.IsNullOrWhiteSpace(
+                    (string?)card.Attribute("AutomationProperties.Name")
+                )
+            )
+        );
+    }
+
+    [Fact]
     public void SourceCode_UsesSemanticTokensInsteadOfLegacyCompatibilityBrushes()
     {
         string[] legacyKeys =

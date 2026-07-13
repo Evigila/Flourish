@@ -6,7 +6,8 @@
   <Style TargetType="{x:Type controls:FlourishToolTip}">
     <Setter Property="controls:FlourishToolTipPlacement.IsEnabled" Value="True" />
     <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground1Brush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
@@ -16,35 +17,34 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type controls:FlourishToolTip}">
-          <Border
-            MaxWidth="320"
-            Padding="{TemplateBinding Padding}"
-            Background="{TemplateBinding Background}"
-            BorderBrush="{TemplateBinding BorderBrush}"
-            BorderThickness="1"
-            CornerRadius="{DynamicResource FlourishControlCornerRadius}"
-            SnapsToDevicePixels="True"
-          >
-            <Border.Effect>
-              <DropShadowEffect
-                BlurRadius="12"
-                Direction="270"
-                Opacity="0.16"
-                ShadowDepth="2"
-                Color="#000000"
-              />
-            </Border.Effect>
-            <ContentPresenter
-              x:Name="ContentHost"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              Content="{TemplateBinding Content}"
-              ContentStringFormat="{TemplateBinding ContentStringFormat}"
-              ContentTemplate="{TemplateBinding ContentTemplate}"
-              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-              RecognizesAccessKey="True"
+          <Grid MaxWidth="344" Margin="12,10,12,14">
+            <Border
+              Background="{DynamicResource FlourishNeutralForeground1Brush}"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+              Effect="{DynamicResource FlourishElevation1Effect}"
+              IsHitTestVisible="False"
             />
-          </Border>
+            <Border
+              MaxWidth="320"
+              Padding="{TemplateBinding Padding}"
+              Background="{TemplateBinding Background}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+              SnapsToDevicePixels="True"
+            >
+              <ContentPresenter
+                x:Name="ContentHost"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="{TemplateBinding Content}"
+                ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                ContentTemplate="{TemplateBinding ContentTemplate}"
+                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                RecognizesAccessKey="True"
+              />
+            </Border>
+          </Grid>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

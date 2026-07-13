@@ -132,8 +132,8 @@
               <flourish:FlourishTextBlock x:Name="UploadImageText" VerticalAlignment="Center" />
             </StackPanel>
             <Grid x:Name="SelectedImageContent" Visibility="Collapsed">
-              <Border x:Name="SelectedImagePreview" CornerRadius="5" />
-              <Border Background="{DynamicResource FlourishShadowBrush}" CornerRadius="5" />
+              <Border x:Name="SelectedImagePreview" CornerRadius="{DynamicResource FlourishControlCornerRadius}" />
+              <Border Background="{DynamicResource FlourishShadowBrush}" CornerRadius="{DynamicResource FlourishControlCornerRadius}" />
               <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"

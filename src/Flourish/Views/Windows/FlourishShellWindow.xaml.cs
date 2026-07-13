@@ -745,13 +745,16 @@ internal partial class FlourishShellWindow : Window
 
     private void ProfileFrame_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        const double innerCornerRadius = 7;
         if (e.NewSize.Width <= 0 || e.NewSize.Height <= 0)
         {
             ProfileFrame.Clip = null;
             return;
         }
 
+        var innerCornerRadius = TryFindResource("FlourishOverlayCornerRadius")
+            is CornerRadius cornerRadius
+            ? Math.Max(0, cornerRadius.TopLeft)
+            : 0;
         ProfileFrame.Clip = new RectangleGeometry(
             new Rect(new System.Windows.Point(), e.NewSize),
             innerCornerRadius,
@@ -761,31 +764,38 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateProfileCardPosition()
     {
-        const double safeMargin = 5;
+        const double shadowSafeMargin = 14;
+        const double anchorGap = 6;
         if (
             ProfileOverlay.Visibility != Visibility.Visible
-            || ShellRootGrid.ActualWidth <= safeMargin * 2
-            || ShellRootGrid.ActualHeight <= safeMargin * 2
+            || ShellRootGrid.ActualWidth <= shadowSafeMargin * 2
+            || ShellRootGrid.ActualHeight <= shadowSafeMargin * 2
         )
         {
             return;
         }
 
         var anchor = Titlebar.GetProfileButtonBounds(ShellRootGrid);
-        var availableWidth = Math.Max(0, ShellRootGrid.ActualWidth - safeMargin * 2);
+        var availableWidth = Math.Max(
+            0,
+            ShellRootGrid.ActualWidth - shadowSafeMargin * 2
+        );
         ProfileCard.MaxWidth = availableWidth;
 
         var cardWidth = ProfileCard.ActualWidth > 0
             ? Math.Min(ProfileCard.ActualWidth, availableWidth)
             : Math.Min(ProfileCard.Width, availableWidth);
         var desiredLeft = anchor.Left + (anchor.Width - cardWidth) / 2;
-        var maximumLeft = Math.Max(safeMargin, ShellRootGrid.ActualWidth - cardWidth - safeMargin);
-        var left = Math.Clamp(desiredLeft, safeMargin, maximumLeft);
+        var maximumLeft = Math.Max(
+            shadowSafeMargin,
+            ShellRootGrid.ActualWidth - cardWidth - shadowSafeMargin
+        );
+        var left = Math.Clamp(desiredLeft, shadowSafeMargin, maximumLeft);
 
-        var top = Math.Max(safeMargin, anchor.Bottom + safeMargin);
+        var top = Math.Max(shadowSafeMargin, anchor.Bottom + anchorGap);
         ProfileCard.MaxHeight = Math.Max(
             0,
-            ShellRootGrid.ActualHeight - top - safeMargin
+            ShellRootGrid.ActualHeight - top - shadowSafeMargin
         );
 
         Canvas.SetLeft(ProfileCard, left);
@@ -1194,11 +1204,14 @@ internal partial class FlourishShellWindow : Window
         {
             Margin = new Thickness(0, 0, 0, 8),
             Padding = new Thickness(10, 8, 10, 8),
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(6),
         };
         row.SetResourceReference(Border.BackgroundProperty, "FlourishNeutralBackground2Brush");
-        row.SetResourceReference(Border.BorderBrushProperty, "FlourishCardStrokeBrush");
+        row.SetResourceReference(Border.BorderBrushProperty, "FlourishSurfaceStrokeBrush");
+        row.SetResourceReference(
+            Border.BorderThicknessProperty,
+            "FlourishSurfaceBorderThickness"
+        );
+        row.SetResourceReference(Border.CornerRadiusProperty, "FlourishSurfaceCornerRadius");
 
         var layout = new Grid();
         layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
@@ -1600,12 +1613,13 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateStatusFlyoutPosition()
     {
-        const double safeMargin = 5;
+        const double shadowSafeMargin = 14;
+        const double anchorGap = 6;
         if (
             StatusFlyoutOverlay.Visibility != Visibility.Visible
             || statusFlyoutAnchor is null
-            || ShellRootGrid.ActualWidth <= safeMargin * 2
-            || ShellRootGrid.ActualHeight <= safeMargin * 2
+            || ShellRootGrid.ActualWidth <= shadowSafeMargin * 2
+            || ShellRootGrid.ActualHeight <= shadowSafeMargin * 2
         )
         {
             return;
@@ -1622,9 +1636,15 @@ internal partial class FlourishShellWindow : Window
                 statusFlyoutAnchor.ActualHeight
             )
         );
-        var availableWidth = Math.Max(0, ShellRootGrid.ActualWidth - safeMargin * 2);
+        var availableWidth = Math.Max(
+            0,
+            ShellRootGrid.ActualWidth - shadowSafeMargin * 2
+        );
         StatusFlyoutCard.MaxWidth = availableWidth;
-        StatusFlyoutCard.MaxHeight = Math.Max(0, anchor.Top - safeMargin * 2);
+        StatusFlyoutCard.MaxHeight = Math.Max(
+            0,
+            anchor.Top - shadowSafeMargin - anchorGap
+        );
 
         var cardWidth = StatusFlyoutCard.ActualWidth > 0
             ? Math.Min(StatusFlyoutCard.ActualWidth, availableWidth)
@@ -1635,11 +1655,14 @@ internal partial class FlourishShellWindow : Window
         );
         var desiredLeft = anchor.Left + (anchor.Width - cardWidth) / 2;
         var maximumLeft = Math.Max(
-            safeMargin,
-            ShellRootGrid.ActualWidth - cardWidth - safeMargin
+            shadowSafeMargin,
+            ShellRootGrid.ActualWidth - cardWidth - shadowSafeMargin
         );
-        var left = Math.Clamp(desiredLeft, safeMargin, maximumLeft);
-        var top = Math.Max(safeMargin, anchor.Top - cardHeight - safeMargin);
+        var left = Math.Clamp(desiredLeft, shadowSafeMargin, maximumLeft);
+        var top = Math.Max(
+            shadowSafeMargin,
+            anchor.Top - cardHeight - anchorGap
+        );
 
         Canvas.SetLeft(StatusFlyoutCard, left);
         Canvas.SetTop(StatusFlyoutCard, top);
@@ -2198,25 +2221,26 @@ internal partial class FlourishShellWindow : Window
                 Text = definition.IconGlyph ?? GetNotificationGlyph(definition.Severity),
             };
             BindIconTypography(icon);
-            icon.SetResourceReference(TextBlock.ForegroundProperty, "FlourishBrandForegroundBrush");
+            icon.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "FlourishPrimaryForegroundBrush"
+            );
             layout.Children.Add(icon);
 
             var content = new StackPanel();
             content.Children.Add(
-                new TextBlock
+                new FlourishTextBlock
                 {
-                    FontWeight = FontWeights.SemiBold,
+                    Role = FlourishTextRole.CardTitle,
                     Text = definition.Title,
-                    TextWrapping = TextWrapping.Wrap,
                 }
             );
-            var message = new TextBlock
+            var message = new FlourishTextBlock
             {
                 Margin = new Thickness(0, 4, 0, 0),
+                Role = FlourishTextRole.Description,
                 Text = definition.Message,
-                TextWrapping = TextWrapping.Wrap,
             };
-            message.SetResourceReference(TextBlock.ForegroundProperty, "FlourishNeutralForeground2Brush");
             content.Children.Add(message);
 
             if (!string.IsNullOrWhiteSpace(definition.CommandKey))
@@ -2252,24 +2276,45 @@ internal partial class FlourishShellWindow : Window
             Grid.SetColumn(dismiss, 2);
             layout.Children.Add(dismiss);
 
-            var card = new Border
+            var surface = new Border
             {
-                Margin = new Thickness(0, 0, 0, 10),
                 Padding = new Thickness(14, 12, 10, 12),
-                CornerRadius = new CornerRadius(9),
                 Child = layout,
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    BlurRadius = 14,
-                    Direction = 270,
-                    Opacity = 0.18,
-                    ShadowDepth = 3,
-                    Color = Colors.Black,
-                },
             };
-            card.SetResourceReference(Border.BackgroundProperty, "FlourishCardBackgroundBrush");
-            card.SetResourceReference(Border.BorderBrushProperty, "FlourishCardStrokeBrush");
-            card.BorderThickness = new Thickness(1);
+            surface.SetResourceReference(
+                Border.BackgroundProperty,
+                "FlourishCardBackgroundBrush"
+            );
+            surface.SetResourceReference(
+                Border.BorderBrushProperty,
+                "FlourishSurfaceStrokeBrush"
+            );
+            surface.SetResourceReference(
+                Border.BorderThicknessProperty,
+                "FlourishSurfaceBorderThickness"
+            );
+            surface.SetResourceReference(
+                Border.CornerRadiusProperty,
+                "FlourishOverlayCornerRadius"
+            );
+
+            var shadow = new Border { IsHitTestVisible = false };
+            shadow.SetResourceReference(
+                Border.BackgroundProperty,
+                "FlourishNeutralForeground1Brush"
+            );
+            shadow.SetResourceReference(
+                Border.CornerRadiusProperty,
+                "FlourishOverlayCornerRadius"
+            );
+            shadow.SetResourceReference(
+                UIElement.EffectProperty,
+                "FlourishElevation2Effect"
+            );
+
+            var card = new Grid { Margin = new Thickness(0, 0, 0, 14) };
+            card.Children.Add(shadow);
+            card.Children.Add(surface);
             AutomationProperties.SetName(card, $"{definition.Title}: {definition.Message}");
             NotificationItemsHost.Children.Add(card);
         }

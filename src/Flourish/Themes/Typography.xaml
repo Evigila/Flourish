@@ -11,23 +11,35 @@
   <sys:Double x:Key="FlourishFontSizeCaption" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     12
   </sys:Double>
-  <sys:Double x:Key="FlourishFontSizeBase" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:Double x:Key="FlourishFontSizeDescription" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     13
   </sys:Double>
-  <sys:Double x:Key="FlourishFontSizeSubtitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:Double x:Key="FlourishFontSizeBase" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     14
+  </sys:Double>
+  <sys:Double x:Key="FlourishFontSizeSubtitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    16
   </sys:Double>
   <sys:Double
     x:Key="FlourishFontSizeSectionTitle"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
   >
-    17
+    20
   </sys:Double>
   <sys:Double x:Key="FlourishFontSizePageTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    30
+    32
   </sys:Double>
   <sys:Double x:Key="FlourishFontSizeTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    13
+    14
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightBody" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    21
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightDescription" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    18
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightSubtitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    24
   </sys:Double>
   <sys:Double
     x:Key="FlourishFontSizeTitlebarIcon"

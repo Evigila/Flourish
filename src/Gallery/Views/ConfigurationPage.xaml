@@ -6,16 +6,23 @@
   Background="Transparent"
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="0,28,0,40">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:FlourishTextBlock Role="PageTitle" Text="Configuration &amp; localization" />
       <flourish:FlourishTextBlock Role="Subtitle"
+        Margin="{DynamicResource FlourishPageSubtitleMargin}"
         Text="Read the effective host configuration, update appsettings.json atomically, trigger reloads, and change the active Flourish locale while the app stays open."
       />
 
-      <flourish:FlourishCard Margin="0,24,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Effective configuration" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The configuration service exposes the merged value from every registered provider." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Effective configuration" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="The configuration service exposes the merged value from every registered provider."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -26,15 +33,22 @@
             <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" />
             <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" />
           </Grid>
-          <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" Text="No value read yet." TextWrapping="Wrap" />
-          <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Role="Status" Text="No value read yet." />
+          <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Transactional appsettings update" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Set, append, and remove use an atomic file replacement. A successful write immediately reloads the effective configuration." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Transactional appsettings update" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Set, append, and remove use an atomic file replacement. A successful write immediately reloads the effective configuration."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="1.2*" />
@@ -55,14 +69,21 @@
             <flourish:FlourishButton Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" />
             <flourish:FlourishButton Click="RemoveValue_Click" Content="Remove" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No runtime update yet." TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Role="Description" Text="No runtime update yet." />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime locale" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Choose a built-in locale or enter the identifier of a locale registered by the host." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime locale" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Choose a built-in locale or enter the identifier of a locale registered by the host."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -74,14 +95,21 @@
             />
             <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" />
           </Grid>
-          <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Role="Status" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime locale files" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Register a lang_&lt;locale&gt;.json file, reload it after external edits, and remove that source through its registration handle." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime locale files" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Register a lang_&lt;locale&gt;.json file, reload it after external edits, and remove that source through its registration handle."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -94,9 +122,10 @@
             <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" />
             <flourish:FlourishButton Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" />
           </Grid>
-          <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No locale file registered by this page." TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Role="Description" Text="No locale file registered by this page." />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
     </StackPanel>
   </flourish:FlourishScrollViewer>
 </Page>

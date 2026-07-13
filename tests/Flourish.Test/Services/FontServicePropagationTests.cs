@@ -20,6 +20,7 @@ public sealed class FontServicePropagationTests
     [
         "FlourishFontSizeSmall",
         "FlourishFontSizeCaption",
+        "FlourishFontSizeDescription",
         "FlourishFontSizeBase",
         "FlourishFontSizeSubtitle",
         "FlourishFontSizeSectionTitle",
@@ -28,6 +29,9 @@ public sealed class FontServicePropagationTests
         "FlourishFontSizeTitlebarIcon",
         "FlourishFontSizeNavigationIcon",
         "FlourishFontSizeWindowButtonIcon",
+        "FlourishLineHeightBody",
+        "FlourishLineHeightDescription",
+        "FlourishLineHeightSubtitle",
     ];
 
     private static readonly string[] AllKeys =
@@ -38,7 +42,7 @@ public sealed class FontServicePropagationTests
     ];
 
     [Fact]
-    public void Attach_PopulatesOnlyTheTwelveTypographyKeysAndSameScopeReattachIsStable()
+    public void Attach_PopulatesOnlyTheSixteenTypographyKeysAndSameScopeReattachIsStable()
     {
         RunInSta(() =>
         {
@@ -51,7 +55,7 @@ public sealed class FontServicePropagationTests
             sut.Attach(Dispatcher.CurrentDispatcher, resources);
             var after = CaptureResources(resources);
 
-            Assert.Equal(12, resources.Count);
+            Assert.Equal(16, resources.Count);
             Assert.Equal(AllKeys.Order(), resources.Keys.Cast<string>().Order());
             Assert.All(AllKeys, key => Assert.Same(before[key], after[key]));
         });
@@ -76,7 +80,7 @@ public sealed class FontServicePropagationTests
     }
 
     [Fact]
-    public void SetFontSize_ReplacesOnlyTheTenSizeResources()
+    public void SetFontSize_ReplacesOnlyTheFourteenSizeAndLineHeightResources()
     {
         RunInSta(() =>
         {
@@ -87,7 +91,7 @@ public sealed class FontServicePropagationTests
 
             AssertOnlyResourcesChanged(before, resources, SizeKeys);
             Assert.Equal(18d, resources["FlourishFontSizeBase"]);
-            Assert.Equal(35d, resources["FlourishFontSizePageTitle"]);
+            Assert.Equal(36d, resources["FlourishFontSizePageTitle"]);
         });
     }
 

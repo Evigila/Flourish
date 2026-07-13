@@ -20,4 +20,18 @@ public partial class HomePage : Page
             navigation.Navigate(route);
         }
     }
+
+    private void DemoGrid_SizeChanged(
+        object sender,
+        System.Windows.SizeChangedEventArgs e
+    )
+    {
+        DemoGrid.Columns = e.NewSize.Width switch
+        {
+            >= 1240 => 4,
+            >= 760 => 3,
+            >= 500 => 2,
+            _ => 1,
+        };
+    }
 }

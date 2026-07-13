@@ -250,18 +250,24 @@ public partial class ToolbarStatusPage : Page
             Text = $"ContentHeader registered at {DateTimeOffset.Now:HH:mm:ss}",
             VerticalAlignment = VerticalAlignment.Center,
         };
-        text.SetResourceReference(FlourishTextBlock.ForegroundProperty, "FlourishBrandForegroundBrush");
+        text.SetResourceReference(
+            FlourishTextBlock.ForegroundProperty,
+            "FlourishAccentForegroundBrush"
+        );
 
         var border = new Border
         {
             Margin = new Thickness(8, 4, 8, 4),
             Padding = new Thickness(12, 7, 12, 7),
-            CornerRadius = new CornerRadius(7),
             Child = text,
         };
         border.SetResourceReference(Border.BackgroundProperty, "FlourishAccentSurfaceBrush");
-        border.SetResourceReference(Border.BorderBrushProperty, "FlourishCardStrokeBrush");
-        border.BorderThickness = new Thickness(1);
+        border.SetResourceReference(Border.BorderBrushProperty, "FlourishSurfaceStrokeBrush");
+        border.SetResourceReference(
+            Border.BorderThicknessProperty,
+            "FlourishSurfaceBorderThickness"
+        );
+        border.SetResourceReference(Border.CornerRadiusProperty, "FlourishSurfaceCornerRadius");
         return border;
     }
 

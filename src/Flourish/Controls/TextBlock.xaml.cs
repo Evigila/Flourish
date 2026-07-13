@@ -11,6 +11,9 @@ public enum FlourishTextRole
     /// <summary>Regular body copy.</summary>
     Body,
 
+    /// <summary>A wrapped body paragraph with comfortable line spacing.</summary>
+    Paragraph,
+
     /// <summary>Compact supporting copy.</summary>
     Caption,
 
@@ -22,6 +25,12 @@ public enum FlourishTextRole
 
     /// <summary>A subtitle below a larger heading.</summary>
     Subtitle,
+
+    /// <summary>Compact supporting copy below a heading.</summary>
+    Description,
+
+    /// <summary>A heading used inside a card or compact content surface.</summary>
+    CardTitle,
 
     /// <summary>A heading for a content section.</summary>
     SectionTitle,

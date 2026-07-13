@@ -6,29 +6,42 @@
   Background="Transparent"
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="0,28,0,40">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:FlourishTextBlock Role="PageTitle" Text="Appearance &amp; motion" />
       <flourish:FlourishTextBlock Role="Subtitle"
+        Margin="{DynamicResource FlourishPageSubtitleMargin}"
         Text="Change visual resources and shell effects at runtime. Every control below calls a public service and reports the effective state returned by Flourish."
       />
 
-      <flourish:FlourishCard Margin="0,24,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Theme" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Select a requested mode or cycle through System, Light, and Dark." />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Theme" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Select a requested mode or cycle through System, Light, and Dark."
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <WrapPanel>
             <flourish:FlourishComboBox x:Name="ThemeBox" Width="220" />
             <flourish:FlourishButton Margin="10,0,0,0" Click="ApplyTheme_Click" Content="Apply theme" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleTheme_Click" Content="Cycle theme" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="ThemeStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="ThemeStatusText" Margin="0,12,0,0" Role="Status" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Typography" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Update text family, base size, and icon family resources without rebuilding the visual tree." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Typography" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Update text family, base size, and icon family resources without rebuilding the visual tree."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -49,11 +62,21 @@
             </StackPanel>
           </Grid>
           <flourish:FlourishButton Margin="0,14,0,0" HorizontalAlignment="Left" Click="ApplyFont_Click" Content="Apply typography" />
-          <flourish:FlourishTextBlock x:Name="FontStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
+          <flourish:FlourishTextBlock x:Name="FontStatusText" Margin="0,12,0,0" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-          <Border Margin="0,18,0,0" BorderBrush="{DynamicResource FlourishCardStrokeBrush}" BorderThickness="0,1,0,0" />
-          <flourish:FlourishTextBlock Role="SectionTitle" Margin="0,16,0,0" Text="This page override" />
-          <flourish:FlourishTextBlock Margin="0,5,0,14" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Override only AppearancePage. Leave size empty to keep following the global base size, then clear the override to return to the global font." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="This page override" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Override only AppearancePage. Leave size empty to keep following the global base size, then clear the override to return to the global font."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -72,14 +95,21 @@
             <flourish:FlourishButton Grid.Column="2" Margin="8,20,0,0" Click="ApplyPageFontOverride_Click" Content="Apply page override" />
             <flourish:FlourishButton Grid.Column="3" Margin="8,20,0,0" Click="ClearPageFontOverride_Click" Content="Clear override" />
           </Grid>
-          <flourish:FlourishTextBlock x:Name="PageFontOverrideStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="PageFontOverrideStatusText" Margin="0,12,0,0" Role="Status" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Tooltips" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Enable or disable Flourish tooltips and change their initial delay and spawn margin." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Tooltips" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Enable or disable Flourish tooltips and change their initial delay and spawn margin."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -98,14 +128,21 @@
             <flourish:FlourishButton Grid.Column="2" Margin="8,20,0,0" Click="ConfigureToolTip_Click" Content="Apply settings" />
             <flourish:FlourishButton x:Name="ToggleToolTipButton" Grid.Column="3" Margin="8,20,0,0" Click="ToggleToolTip_Click" />
           </Grid>
-          <flourish:FlourishTextBlock x:Name="ToolTipStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="ToolTipStatusText" Margin="0,12,0,0" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Motion" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Change transitions and timing, including whether system reduced-motion preferences suppress animation." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Motion" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Change transitions and timing, including whether system reduced-motion preferences suppress animation."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -136,22 +173,30 @@
             <flourish:FlourishCheckBox x:Name="ReducedMotionBox" Margin="0,0,22,0" VerticalAlignment="Center" Content="Respect system reduced motion" />
             <flourish:FlourishButton Click="ApplyMotion_Click" Content="Apply motion" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="MotionStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="MotionStatusText" Margin="0,12,0,0" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Window material" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Request the native backdrop and immersive dark mode. Flourish reports platform support and whether the effect was actually applied." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Window material" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Request the native backdrop and immersive dark mode. Flourish reports platform support and whether the effect was actually applied."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <WrapPanel>
             <flourish:FlourishComboBox x:Name="MaterialBox" Width="220" />
             <flourish:FlourishCheckBox x:Name="MaterialDarkModeBox" Margin="18,0,0,0" VerticalAlignment="Center" Content="Immersive dark mode" />
             <flourish:FlourishButton Margin="18,0,0,0" Click="ApplyMaterial_Click" Content="Apply material" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="MaterialStatusText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="MaterialStatusText" Margin="0,12,0,0" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
     </StackPanel>
   </flourish:FlourishScrollViewer>
 </Page>

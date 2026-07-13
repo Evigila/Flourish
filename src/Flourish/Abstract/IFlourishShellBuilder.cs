@@ -67,6 +67,26 @@ public interface IFlourishShellBuilder
     );
 
     /// <summary>
+    /// Configures the primary, secondary, and accent colors used by Flourish theme resources.
+    /// </summary>
+    /// <param name="colors">The application theme colors.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishShellBuilder UseThemeColors(FlourishThemeColors colors) =>
+        throw new NotSupportedException(
+            "This IFlourishShellBuilder implementation does not support theme color overrides."
+        );
+
+    /// <summary>
+    /// Configures the shared corner radius used by Flourish controls and surfaces.
+    /// </summary>
+    /// <param name="radius">A finite, non-negative radius in device-independent pixels.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishShellBuilder UseCornerRadius(double radius) =>
+        throw new NotSupportedException(
+            "This IFlourishShellBuilder implementation does not support corner radius overrides."
+        );
+
+    /// <summary>
     /// Configures the global font used by Flourish shell UI and application pages.
     /// </summary>
     /// <param name="fontFamily">The font family name.</param>

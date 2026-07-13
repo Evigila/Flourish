@@ -6,16 +6,23 @@
   Background="Transparent"
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="0,28,0,40">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:FlourishTextBlock Role="PageTitle" Text="Navigation at runtime" />
       <flourish:FlourishTextBlock Role="Subtitle"
+        Margin="{DynamicResource FlourishPageSubtitleMargin}"
         Text="Move and resize the panel, edit the live menu transactionally, register a route, navigate to it, and control its page cache without restarting the app."
       />
 
-      <flourish:FlourishCard Margin="0,24,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Navigation panel" />
-          <WrapPanel Margin="0,14,0,0">
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Navigation panel" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Move the live panel, tune its width limits, or disable it without recreating the shell."
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
+          <WrapPanel>
             <flourish:FlourishButton Click="TogglePanel_Click" Content="Open / close" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" />
             <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" Margin="8,0,0,0" SelectionChanged="DirectionBox_SelectionChanged" />
@@ -39,36 +46,51 @@
             </StackPanel>
             <flourish:FlourishButton Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Live route and menu transaction" />
-          <flourish:FlourishTextBlock Margin="0,7,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The demo adds a new route and a real navigation item. Remove it again to see both tables update immediately." TextWrapping="Wrap" />
-          <WrapPanel Margin="0,14,0,0">
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Live route and menu transaction" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="The demo adds a new route and a real navigation item. Remove it again to see both tables update immediately."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
+          <WrapPanel>
             <flourish:FlourishButton Click="InstallRoute_Click" Content="Install demo route" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Page cache" />
-          <WrapPanel Margin="0,14,0,0">
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Page cache" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Change cache policy and evict page instances while preserving the registered route."
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
+          <WrapPanel>
             <flourish:FlourishButton Click="EnableCache_Click" Content="Enable cache" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" />
             <flourish:FlourishButton Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
     </StackPanel>
   </flourish:FlourishScrollViewer>
 </Page>

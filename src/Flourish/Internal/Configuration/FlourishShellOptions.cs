@@ -23,7 +23,11 @@ internal sealed class FlourishShellOptions
 
     public string IconFontFamily { get; set; } = "Segoe MDL2 Assets";
 
-    public double FontSize { get; set; } = 13;
+    public double FontSize { get; set; } = 14;
+
+    public FlourishThemeColors? ThemeColors { get; set; }
+
+    public double? CornerRadius { get; set; }
 
     public Dictionary<Type, FlourishPageFontOverride> PageFontOverridesByPageType { get; } = [];
 

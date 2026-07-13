@@ -77,6 +77,13 @@
           Value="{DynamicResource FlourishBrandBackgroundPressedBrush}"
         />
       </Trigger>
+      <Trigger Property="Appearance" Value="Card">
+        <Setter TargetName="Chrome" Property="CornerRadius" Value="{DynamicResource FlourishSurfaceCornerRadius}" />
+        <Setter TargetName="HoverChrome" Property="Background" Value="{DynamicResource FlourishCardHoverBrush}" />
+        <Setter TargetName="HoverChrome" Property="CornerRadius" Value="{DynamicResource FlourishSurfaceCornerRadius}" />
+        <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishCardPressedBrush}" />
+        <Setter TargetName="PressedChrome" Property="CornerRadius" Value="{DynamicResource FlourishSurfaceCornerRadius}" />
+      </Trigger>
       <Trigger Property="Variant" Value="WindowCaption">
         <Setter TargetName="Chrome" Property="CornerRadius" Value="0" />
         <Setter TargetName="HoverChrome" Property="CornerRadius" Value="0" />
@@ -90,6 +97,10 @@
             <ScaleTransform ScaleX="0.98" ScaleY="0.98" />
           </Setter.Value>
         </Setter>
+      </Trigger>
+      <Trigger Property="IsKeyboardFocused" Value="True">
+        <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+        <Setter TargetName="Chrome" Property="BorderThickness" Value="{DynamicResource FlourishFocusBorderThickness}" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
@@ -208,11 +219,12 @@
         <Setter Property="BorderThickness" Value="0" />
       </Trigger>
       <Trigger Property="Appearance" Value="Card">
-        <Setter Property="Padding" Value="16" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishInteractiveCardPadding}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishCardStrokeBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
       </Trigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>

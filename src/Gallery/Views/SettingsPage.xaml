@@ -14,21 +14,19 @@
         HorizontalAlignment="Center"
         FontFamily="Segoe MDL2 Assets"
         FontSize="42"
-        Foreground="{DynamicResource FlourishBrandForegroundBrush}"
+        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
         Text="&#xE713;"
       />
       <flourish:FlourishTextBlock
         Margin="0,12,0,0"
         HorizontalAlignment="Center"
-        FontSize="28"
-        FontWeight="SemiBold"
-        Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+        Role="PageTitle"
         Text="设置"
       />
       <flourish:FlourishTextBlock
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
-        Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
+        Role="Subtitle"
         Text="这里是设置页面占位内容，后续可在这里管理主题、偏好和应用配置。"
         TextAlignment="Center"
         TextWrapping="Wrap"

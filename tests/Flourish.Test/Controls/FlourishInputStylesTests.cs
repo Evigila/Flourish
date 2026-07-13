@@ -64,6 +64,42 @@ public sealed class FlourishInputStylesTests
         });
     }
 
+    [Fact]
+    public void ScrollViewer_DefaultStyleStretchesPageContentAcrossTheViewport()
+    {
+        RunInSta(() =>
+        {
+            var content = new Border();
+            var scrollViewer = new FlourishScrollViewer
+            {
+                Width = 320,
+                Height = 120,
+                Content = content,
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                Assert.Equal(
+                    HorizontalAlignment.Stretch,
+                    scrollViewer.HorizontalContentAlignment
+                );
+                Assert.Equal(
+                    VerticalAlignment.Stretch,
+                    scrollViewer.VerticalContentAlignment
+                );
+                Assert.InRange(content.ActualWidth, 319, 320);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
     private static Window CreateWindow(UIElement content)
     {
         var window = new Window

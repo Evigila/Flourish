@@ -14,21 +14,19 @@
         HorizontalAlignment="Center"
         FontFamily="Segoe MDL2 Assets"
         FontSize="42"
-        Foreground="{DynamicResource FlourishBrandForegroundBrush}"
+        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
         Text="&#xE91B;"
       />
       <flourish:FlourishTextBlock
         Margin="0,12,0,0"
         HorizontalAlignment="Center"
-        FontSize="28"
-        FontWeight="SemiBold"
-        Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+        Role="PageTitle"
         Text="图库"
       />
       <flourish:FlourishTextBlock
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
-        Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
+        Role="Subtitle"
         Text="这里是图库页面占位内容，用于展示图片集合、分组和筛选结果。"
         TextAlignment="Center"
         TextWrapping="Wrap"

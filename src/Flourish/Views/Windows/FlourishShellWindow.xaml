@@ -96,7 +96,7 @@
 
   <Border
     x:Name="ShellBorder"
-    BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
+    BorderBrush="{DynamicResource FlourishDividerBrush}"
     BorderThickness="1"
   >
     <Grid x:Name="ShellRootGrid" SizeChanged="ShellRootGrid_SizeChanged">
@@ -129,7 +129,7 @@
             <Border
               x:Name="NavigationPaneBorder"
               Background="Transparent"
-              BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
+              BorderBrush="{DynamicResource FlourishDividerBrush}"
               BorderThickness="0,0,1,0"
             >
               <Grid>
@@ -169,8 +169,8 @@
                   x:Name="FixedNavigationItemsBorder"
                   Grid.Row="2"
                   Padding="0,6,0,6"
-                  BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-                  BorderThickness="0,1,0,0"
+                  BorderBrush="{DynamicResource FlourishDividerBrush}"
+                  BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
                   Visibility="Collapsed"
                 >
                   <control:FlourishListBox
@@ -228,9 +228,9 @@
               Margin="0,0,0,4"
               Padding="2"
               Background="{DynamicResource FlourishCardBackgroundBrush}"
-              BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-              BorderThickness="1"
-              CornerRadius="6"
+              BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
+              BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
+              CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
             >
               <Grid>
                 <Grid.ColumnDefinitions>
@@ -299,8 +299,8 @@
         Panel.ZIndex="120"
         Padding="8,3"
         Background="{DynamicResource FlourishNeutralBackground2Brush}"
-        BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-        BorderThickness="0,1,0,0"
+        BorderBrush="{DynamicResource FlourishDividerBrush}"
+        BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
         PreviewMouseLeftButtonDown="StatusBarBorder_PreviewMouseLeftButtonDown"
       >
         <Grid>
@@ -427,22 +427,16 @@
         Visibility="Collapsed"
       >
         <Grid x:Name="ProfileCard" Width="304" SizeChanged="ProfileCard_SizeChanged">
-          <Border Background="{DynamicResource FlourishCardBackgroundBrush}" CornerRadius="8">
-            <Border.Effect>
-              <DropShadowEffect
-                BlurRadius="16"
-                Direction="270"
-                Opacity="0.2"
-                ShadowDepth="3"
-                Color="#000000"
-              />
-            </Border.Effect>
-          </Border>
           <Border
             Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-            BorderThickness="1"
-            CornerRadius="8"
+            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
+            Effect="{DynamicResource FlourishElevation2Effect}"
+          />
+          <Border
+            Background="{DynamicResource FlourishCardBackgroundBrush}"
+            BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
+            BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
+            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
           >
             <Frame
               x:Name="ProfileFrame"
@@ -479,23 +473,17 @@
           KeyboardNavigation.TabNavigation="Cycle"
           SizeChanged="StatusFlyoutCard_SizeChanged"
         >
-          <Border Background="{DynamicResource FlourishCardBackgroundBrush}" CornerRadius="8">
-            <Border.Effect>
-              <DropShadowEffect
-                BlurRadius="16"
-                Direction="90"
-                Opacity="0.2"
-                ShadowDepth="3"
-                Color="#000000"
-              />
-            </Border.Effect>
-          </Border>
+          <Border
+            Background="{DynamicResource FlourishCardBackgroundBrush}"
+            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
+            Effect="{DynamicResource FlourishElevation2Effect}"
+          />
           <Border
             Padding="14,12"
             Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-            BorderThickness="1"
-            CornerRadius="8"
+            BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
+            BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
+            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
           >
             <Grid>
               <Grid.RowDefinitions>
@@ -506,9 +494,8 @@
                 x:Name="StatusFlyoutTitle"
                 Margin="0,0,0,10"
                 Focusable="True"
-                FontSize="{DynamicResource FlourishFontSizeBase}"
-                FontWeight="SemiBold"
                 Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+                Role="CardTitle"
               />
               <control:FlourishScrollViewer
                 Grid.Row="1"

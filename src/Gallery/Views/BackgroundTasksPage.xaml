@@ -6,16 +6,23 @@
   Background="Transparent"
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="0,28,0,40">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:FlourishTextBlock Role="PageTitle" Text="Background tasks" />
       <flourish:FlourishTextBlock Role="Subtitle"
+        Margin="{DynamicResource FlourishPageSubtitleMargin}"
         Text="Submit work after startup, observe immutable progress snapshots, request cooperative cancellation, and await captured outcomes without crashing the host."
       />
 
-      <flourish:FlourishCard Margin="0,24,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Queue runtime work" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Progress tasks report twenty updates. Result tasks return a value. A burst demonstrates the service's bounded concurrency." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Queue runtime work" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Progress tasks report twenty updates. Result tasks return a value. A burst demonstrates the service's bounded concurrency."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <WrapPanel>
             <flourish:FlourishButton Margin="0,0,8,8" Click="AddProgressTask_Click" Content="Add progress task" />
             <flourish:FlourishButton Margin="0,0,8,8" Click="AddResultTask_Click" Content="Add result task" />
@@ -23,31 +30,43 @@
             <flourish:FlourishButton Margin="0,0,8,8" Click="CancelLast_Click" Content="Cancel last" />
             <flourish:FlourishButton Margin="0,0,8,8" Click="CancelSelected_Click" Content="Cancel selected" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="ServiceStatusText" Margin="0,6,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="ServiceStatusText" Margin="0,6,0,0" Role="Status" />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <Grid Margin="0,16,0,0">
+      <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="1.2*" />
+          <ColumnDefinition Width="16" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <flourish:FlourishCard Margin="0,0,8,0">
-          <StackPanel>
-            <flourish:FlourishTextBlock Role="SectionTitle" Text="Active queue" />
-            <flourish:FlourishTextBlock Margin="0,5,0,12" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Queued, running, and cancelling items update through TasksChanged." TextWrapping="Wrap" />
+        <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Active queue" />
+          <flourish:FlourishTextBlock
+            Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+            Role="Description"
+            Text="Queued, running, and cancelling items update through TasksChanged."
+            TextWrapping="Wrap"
+          />
+          <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
             <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
-          </StackPanel>
-        </flourish:FlourishCard>
+          </flourish:FlourishCard>
+        </StackPanel>
 
-        <flourish:FlourishCard Grid.Column="1" Margin="8,0,0,0">
-          <StackPanel>
-            <flourish:FlourishTextBlock Role="SectionTitle" Text="Captured outcomes" />
-            <flourish:FlourishTextBlock Margin="0,5,0,12" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Completion never faults; failures and cancellation are represented in the result object." TextWrapping="Wrap" />
+        <StackPanel Grid.Column="2" Margin="{DynamicResource FlourishSectionMargin}">
+          <flourish:FlourishTextBlock Role="SectionTitle" Text="Captured outcomes" />
+          <flourish:FlourishTextBlock
+            Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+            Role="Description"
+            Text="Completion never faults; failures and cancellation are represented in the result object."
+            TextWrapping="Wrap"
+          />
+          <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
             <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
-          </StackPanel>
-        </flourish:FlourishCard>
+          </flourish:FlourishCard>
+        </StackPanel>
       </Grid>
     </StackPanel>
   </flourish:FlourishScrollViewer>

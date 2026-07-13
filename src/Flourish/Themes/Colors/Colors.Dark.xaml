@@ -3,13 +3,13 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 >
   <!-- Fluent 2 semantic tokens. Values are selected independently for dark contrast. -->
-  <SolidColorBrush x:Key="FlourishNeutralForeground1Brush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishNeutralForeground2Brush" Color="#D6D6D6" />
+  <SolidColorBrush x:Key="FlourishNeutralForeground1Brush" Color="#F8F8FA" />
+  <SolidColorBrush x:Key="FlourishNeutralForeground2Brush" Color="#C8C8D0" />
   <SolidColorBrush x:Key="FlourishNeutralForegroundDisabledBrush" Color="#8A8A8A" />
   <SolidColorBrush x:Key="FlourishNeutralBackground1Brush" Color="#292929" />
   <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#1F1F1F" />
   <SolidColorBrush x:Key="FlourishNeutralBackground3Brush" Color="#141414" />
-  <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#666666" />
+  <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#4A4D52" />
   <SolidColorBrush x:Key="FlourishNeutralStrokeAccessibleBrush" Color="#ADADAD" />
 
   <SolidColorBrush x:Key="FlourishControlBackgroundBrush" Color="#292929" />
@@ -21,16 +21,51 @@
   <SolidColorBrush x:Key="FlourishPressedRevealBrush" Color="#4D479EF5" />
   <SolidColorBrush x:Key="FlourishControlSelectedHoverBrush" Color="#4D96C6FA" />
   <SolidColorBrush x:Key="FlourishControlDisabledBrush" Color="#1F1F1F" />
-  <SolidColorBrush x:Key="FlourishControlStrokeBrush" Color="#666666" />
-  <SolidColorBrush x:Key="FlourishControlStrokeHoverBrush" Color="#8A8A8A" />
+  <SolidColorBrush x:Key="FlourishControlStrokeBrush" Color="#51555B" />
+  <SolidColorBrush x:Key="FlourishControlStrokeHoverBrush" Color="#7B8189" />
   <SolidColorBrush x:Key="FlourishControlStrokePressedBrush" Color="#ADADAD" />
   <SolidColorBrush x:Key="FlourishControlStrokeFocusBrush" Color="#479EF5" />
   <SolidColorBrush x:Key="FlourishControlStrokeDisabledBrush" Color="#3D3D3D" />
 
-  <SolidColorBrush x:Key="FlourishBrandForegroundBrush" Color="#479EF5" />
+  <SolidColorBrush x:Key="FlourishSurfaceStrokeBrush" Color="#18FFFFFF" />
+  <SolidColorBrush x:Key="FlourishDividerBrush" Color="#2EFFFFFF" />
+
+  <!-- Primary, secondary and accent are independently overridable public theme roles. -->
+  <Color x:Key="FlourishPrimaryColor">#0F6CBD</Color>
+  <Color x:Key="FlourishSecondaryColor">#9C6DC7</Color>
+  <Color x:Key="FlourishAccentColor">#F28C45</Color>
+  <SolidColorBrush x:Key="FlourishPrimaryBrush" Color="#62ABF5" />
+  <SolidColorBrush x:Key="FlourishPrimaryHoverBrush" Color="#86BEF5" />
+  <SolidColorBrush x:Key="FlourishPrimaryPressedBrush" Color="#4797E6" />
+  <SolidColorBrush x:Key="FlourishPrimarySurfaceBrush" Color="#300F6CBD" />
+  <SolidColorBrush x:Key="FlourishPrimaryForegroundBrush" Color="#62ABF5" />
+  <SolidColorBrush x:Key="FlourishPrimaryBackgroundBrush" Color="#0F6CBD" />
+  <SolidColorBrush x:Key="FlourishPrimaryBackgroundHoverBrush" Color="#2886D4" />
+  <SolidColorBrush x:Key="FlourishPrimaryBackgroundPressedBrush" Color="#0C568F" />
+  <SolidColorBrush x:Key="FlourishForegroundOnPrimaryBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FlourishSecondaryBrush" Color="#C9A7EB" />
+  <SolidColorBrush x:Key="FlourishSecondaryHoverBrush" Color="#D8BFF0" />
+  <SolidColorBrush x:Key="FlourishSecondaryPressedBrush" Color="#B88DDF" />
+  <SolidColorBrush x:Key="FlourishSecondaryForegroundBrush" Color="#C9A7EB" />
+  <SolidColorBrush x:Key="FlourishSecondarySurfaceBrush" Color="#305C2E91" />
+  <SolidColorBrush x:Key="FlourishForegroundOnSecondaryBrush" Color="#16131A" />
+  <SolidColorBrush x:Key="FlourishAccentBrush" Color="#F2A365" />
+  <SolidColorBrush x:Key="FlourishAccentHoverBrush" Color="#F6B989" />
+  <SolidColorBrush x:Key="FlourishAccentPressedBrush" Color="#E98B48" />
+  <SolidColorBrush x:Key="FlourishAccentForegroundBrush" Color="#F2A365" />
+  <SolidColorBrush x:Key="FlourishAccentSurfaceBrush" Color="#30D83B01" />
+  <SolidColorBrush x:Key="FlourishForegroundOnAccentBrush" Color="#1A120B" />
+  <LinearGradientBrush x:Key="FlourishHeroBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Offset="0" Color="#420F6CBD" />
+    <GradientStop Offset="0.68" Color="#385C2E91" />
+    <GradientStop Offset="1" Color="#30D83B01" />
+  </LinearGradientBrush>
+
+  <!-- Fluent Brand keys remain stable aliases for existing applications. -->
+  <SolidColorBrush x:Key="FlourishBrandForegroundBrush" Color="#62ABF5" />
   <SolidColorBrush x:Key="FlourishBrandBackgroundBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishBrandBackgroundHoverBrush" Color="#115EA3" />
-  <SolidColorBrush x:Key="FlourishBrandBackgroundPressedBrush" Color="#0C3B5E" />
+  <SolidColorBrush x:Key="FlourishBrandBackgroundHoverBrush" Color="#2886D4" />
+  <SolidColorBrush x:Key="FlourishBrandBackgroundPressedBrush" Color="#0C568F" />
   <SolidColorBrush x:Key="FlourishForegroundOnBrandBrush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishDangerForegroundBrush" Color="#F1707B" />
   <SolidColorBrush x:Key="FlourishDangerBackgroundBrush" Color="#3B0509" />
@@ -43,19 +78,21 @@
   <SolidColorBrush x:Key="FlourishScrollBarThumbBrush" Color="#8A8A8A" />
   <SolidColorBrush x:Key="FlourishScrollBarThumbHoverBrush" Color="#ADADAD" />
   <SolidColorBrush x:Key="FlourishScrollBarThumbPressedBrush" Color="#D6D6D6" />
-  <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#E6292929" />
-  <SolidColorBrush x:Key="FlourishCardHoverBrush" Color="#3D3D3D" />
-  <SolidColorBrush x:Key="FlourishCardStrokeBrush" Color="#666666" />
-  <SolidColorBrush x:Key="FlourishAccentSurfaceBrush" Color="#0C3B5E" />
+  <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#F02B2D31" />
+  <SolidColorBrush x:Key="FlourishCardHoverBrush" Color="#FF363A40" />
+  <SolidColorBrush x:Key="FlourishCardPressedBrush" Color="#FF42474E" />
+  <SolidColorBrush x:Key="FlourishCardStrokeBrush" Color="#18FFFFFF" />
   <SolidColorBrush x:Key="FlourishShadowBrush" Color="#66000000" />
+  <DropShadowEffect x:Key="FlourishElevation1Effect" BlurRadius="12" Direction="270" Opacity="0.38" ShadowDepth="2" Color="#000000" />
+  <DropShadowEffect x:Key="FlourishElevation2Effect" BlurRadius="20" Direction="270" Opacity="0.5" ShadowDepth="4" Color="#000000" />
 
   <!-- Historical public keys retained for source and pack-resource compatibility. -->
   <SolidColorBrush x:Key="AppBackgroundBrush" Color="#E6141414" />
   <SolidColorBrush x:Key="CardBackgroundBrush" Color="#E6292929" />
   <SolidColorBrush x:Key="CardSecondaryBackgroundBrush" Color="#E61F1F1F" />
   <SolidColorBrush x:Key="CardBorderBrush" Color="#666666" />
-  <SolidColorBrush x:Key="MutedTextBrush" Color="#D6D6D6" />
-  <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="MutedTextBrush" Color="#C8C8D0" />
+  <SolidColorBrush x:Key="PrimaryTextBrush" Color="#F8F8FA" />
   <SolidColorBrush x:Key="AccentBrush" Color="#479EF5" />
   <SolidColorBrush x:Key="AccentSoftBrush" Color="#0C3B5E" />
   <SolidColorBrush x:Key="FlourishWindowCaptionCloseHoverBrush" Color="#C50F1F" />

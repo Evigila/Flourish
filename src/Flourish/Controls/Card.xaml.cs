@@ -8,7 +8,7 @@ namespace ArkheideSystem.Flourish.Controls;
 /// </summary>
 public enum FlourishCardAppearance
 {
-    /// <summary>A standard elevated content surface.</summary>
+    /// <summary>A standard filled content surface.</summary>
     Standard,
 
     /// <summary>A quiet secondary content surface.</summary>
@@ -16,6 +16,12 @@ public enum FlourishCardAppearance
 
     /// <summary>A surface emphasized with the application accent.</summary>
     Accent,
+
+    /// <summary>A raised showcase surface used sparingly for highlighted content.</summary>
+    Elevated,
+
+    /// <summary>A prominent introductory surface with stronger color and elevation.</summary>
+    Hero,
 }
 
 /// <summary>

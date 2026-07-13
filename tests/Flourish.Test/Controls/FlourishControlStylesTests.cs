@@ -267,6 +267,44 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void CardAppearances_KeepContentSurfacesBorderlessAndElevateShowcasesOnly()
+    {
+        RunInSta(() =>
+        {
+            var standard = new FlourishCard { Content = "Standard" };
+            var hero = new FlourishCard
+            {
+                Appearance = FlourishCardAppearance.Hero,
+                Content = "Hero",
+            };
+            var window = CreateWindow(new StackPanel { Children = { standard, hero } });
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                standard.ApplyTemplate();
+                hero.ApplyTemplate();
+
+                Assert.Equal(new Thickness(), standard.BorderThickness);
+                Assert.Equal(new Thickness(), hero.BorderThickness);
+                var standardShadow = AssertTemplatePart<Border>(
+                    standard,
+                    "ShadowChrome"
+                );
+                var heroShadow = AssertTemplatePart<Border>(hero, "ShadowChrome");
+                Assert.Equal(Visibility.Collapsed, standardShadow.Visibility);
+                Assert.Equal(Visibility.Visible, heroShadow.Visibility);
+                Assert.NotNull(heroShadow.Effect);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void NavigationListBox_PreservesAnExplicitItemContainerContract()
     {
         RunInSta(() =>

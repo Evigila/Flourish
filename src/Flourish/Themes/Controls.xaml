@@ -29,12 +29,19 @@
   <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">200</sys:Int32>
   <sys:Double x:Key="FlourishToolTipSpawnableMargin">5</sys:Double>
 
-  <!-- Compact Fluent-derived control geometry. Controls never impose external margins. -->
+  <!-- Compact Fluent geometry with light borders and Material-style surface hierarchy. -->
   <sys:Double x:Key="FlourishControlHeight">30</sys:Double>
   <sys:Double x:Key="FlourishControlMinWidth">64</sys:Double>
   <CornerRadius x:Key="FlourishControlCornerRadius">4</CornerRadius>
   <CornerRadius x:Key="FlourishSurfaceCornerRadius">6</CornerRadius>
+  <CornerRadius x:Key="FlourishOverlayCornerRadius">8</CornerRadius>
+  <CornerRadius x:Key="FlourishDialogCornerRadius">10</CornerRadius>
+  <CornerRadius x:Key="FlourishDialogFooterCornerRadius">0,0,10,10</CornerRadius>
   <Thickness x:Key="FlourishControlPadding">10,4</Thickness>
   <Thickness x:Key="FlourishCompactControlPadding">8,2</Thickness>
   <Thickness x:Key="FlourishControlBorderThickness">1</Thickness>
+  <Thickness x:Key="FlourishSurfaceBorderThickness">0</Thickness>
+  <Thickness x:Key="FlourishFocusBorderThickness">1.5</Thickness>
+  <Thickness x:Key="FlourishVerticalDividerThickness">0,0,1,0</Thickness>
+  <Thickness x:Key="FlourishHorizontalDividerThickness">0,1,0,0</Thickness>
 </ResourceDictionary>

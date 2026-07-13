@@ -24,24 +24,15 @@
   <Grid Margin="30,28,30,46">
     <Border
       Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
-      CornerRadius="10"
+      CornerRadius="{DynamicResource FlourishDialogCornerRadius}"
+      Effect="{DynamicResource FlourishElevation2Effect}"
       IsHitTestVisible="False"
       SnapsToDevicePixels="True"
-    >
-      <Border.Effect>
-        <DropShadowEffect
-          BlurRadius="32"
-          Direction="270"
-          Opacity="0.26"
-          ShadowDepth="6"
-          Color="#000000"
-        />
-      </Border.Effect>
-    </Border>
+    />
 
     <Border
       Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
-      CornerRadius="10"
+      CornerRadius="{DynamicResource FlourishDialogCornerRadius}"
       SnapsToDevicePixels="True"
     >
     <Grid>
@@ -127,11 +118,8 @@
           <controls:FlourishTextBlock
             x:Name="MessageText"
             VerticalAlignment="Center"
-            FontFamily="{DynamicResource FlourishFontFamily}"
-            FontSize="{DynamicResource FlourishFontSizeBase}"
             Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
-            LineHeight="20"
-            TextWrapping="Wrap"
+            Role="Paragraph"
           />
         </controls:FlourishScrollViewer>
       </Grid>
@@ -140,9 +128,9 @@
         Grid.Row="2"
         Padding="20,12"
         Background="{DynamicResource FlourishMessageBoxSecondarySurfaceBrush}"
-        BorderBrush="{DynamicResource FlourishCardStrokeBrush}"
-        BorderThickness="0,1,0,0"
-        CornerRadius="0,0,10,10"
+        BorderBrush="{DynamicResource FlourishDividerBrush}"
+        BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
+        CornerRadius="{DynamicResource FlourishDialogFooterCornerRadius}"
       >
         <StackPanel
           x:Name="ButtonsHost"

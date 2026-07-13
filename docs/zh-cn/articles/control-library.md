@@ -92,7 +92,16 @@ Flourish 不仅提供 Shell 组合 API，也包含一套控件库。应用页面
     Role="Subtitle"
     Text="管理当前用户资料与登录状态。" />
 
-  <flourish:FlourishCard Margin="0,16,0,0">
+  <flourish:FlourishTextBlock
+    Margin="0,24,0,0"
+    Role="SectionTitle"
+    Text="账户信息" />
+  <flourish:FlourishTextBlock
+    Margin="0,6,0,0"
+    Role="Description"
+    Text="编辑当前用户可见的资料。" />
+
+  <flourish:FlourishCard Margin="0,12,0,0">
     <StackPanel>
       <flourish:FlourishTextBlock
         Role="FieldLabel"
@@ -131,13 +140,15 @@ Flourish 不仅提供 Shell 组合 API，也包含一套控件库。应用页面
 
 ### FlourishTextBlock
 
-`FlourishTextBlock.Role` 选择语义排版。可用角色包括 `Body`、`Caption`、`Muted`、`FieldLabel`、`Subtitle`、`SectionTitle`、`PageTitle`、`Status` 和 `Icon`。
+`FlourishTextBlock.Role` 选择语义排版。可用角色包括 `Body`、`Paragraph`、`Caption`、`Muted`、`FieldLabel`、`Subtitle`、`Description`、`CardTitle`、`SectionTitle`、`PageTitle`、`Status` 和 `Icon`。`Description` 用于紧凑的辅助说明，`Paragraph` 用于带舒适行距的正文段落；标题角色会逐级增大字号和字重。
 
 Role 会使用当前字体和主题资源，因此应优先用它替代页面中反复出现的 `FontSize`、`FontWeight` 与 `Foreground`。内容确实存在一次性需求时，显式属性仍然拥有更高优先级。
 
 ### FlourishCard 与 FlourishSearchBox
 
-`FlourishCard` 在主题表面上组合一个内容树，外观包括 `Standard`、`Subtle` 和 `Accent`。卡片包含多个子元素时，应先放入一个 Panel。
+`FlourishCard` 在主题表面上组合一个内容树，外观包括无描边的 `Standard`、`Subtle`、`Accent`，以及带阴影的展示型 `Elevated` 和 `Hero`。`Hero` 适合页面顶部的少量引导内容，`Elevated` 适合需要纵深的展示内容；大量重复内容应优先使用无阴影表面。可点击内容使用 `FlourishButton Appearance="Card"`，不要用点击事件伪装普通展示卡。
+
+遵循页面布局层级时，区域的 `SectionTitle` 与 `Description` 应放在卡片之外，卡片内部只承载操作、字段和具体细节。正文段落之间使用较大的 Section 间距，同一组字段或按钮则使用较小的 peer 间距。
 
 `FlourishSearchBox` 是带搜索外观和 `Placeholder` 的 TextBox。它保留普通 TextBox 的 `Text`、绑定、命令、选择和 `TextChanged` 等能力，同时避免每个页面重复拼接搜索图标、边框和占位文本层。
 
@@ -173,9 +184,9 @@ builder.ConfigureMotion(motion =>
 
 - 主要文字和弱化文字；
 - 强调色和强调色上的内容；
-- 控件背景与边框；
+- 输入控件边界、低对比分隔线与无描边表面；
 - 悬停、按下、选中、焦点和禁用状态；
-- 卡片与弹出层表面；
+- 标准、强调、Hero、Elevated 与交互式卡片表面；
 - 全局正文字体、图标字体与排版字号。
 
 应用级修改应使用[主题](configure-themes.md)和[排版](configure-font.md)。如果需要覆盖单个画刷或排版资源，应覆盖语义资源，而不是复制 ControlTemplate；这样所有控件与状态仍能保持协调。应用品牌色后应同时检查亮色、暗色主题和文字对比度。

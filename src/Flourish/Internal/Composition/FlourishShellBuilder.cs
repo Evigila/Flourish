@@ -57,6 +57,19 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder UseThemeColors(FlourishThemeColors colors)
+    {
+        options.ThemeColors = colors ?? throw new ArgumentNullException(nameof(colors));
+        return this;
+    }
+
+    public IFlourishShellBuilder UseCornerRadius(double radius)
+    {
+        ValidateNonNegativeFinite(radius, nameof(radius));
+        options.CornerRadius = radius;
+        return this;
+    }
+
     public IFlourishShellBuilder UseGlobalFont(string fontFamily, double fontSize = 14)
     {
         options.FontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
@@ -107,6 +120,18 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
                 parameterName,
                 value,
                 "Value must be greater than 0."
+            );
+        }
+    }
+
+    private static void ValidateNonNegativeFinite(double value, string parameterName)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value) || value < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "Value must be finite and non-negative."
             );
         }
     }

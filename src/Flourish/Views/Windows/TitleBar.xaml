@@ -108,7 +108,7 @@
         Height="26"
         Background="{DynamicResource FlourishAccentSurfaceBrush}"
         ClipToBounds="True"
-        CornerRadius="6"
+        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
       >
         <Grid>
           <Image x:Name="LogoImage" Stretch="UniformToFill" />

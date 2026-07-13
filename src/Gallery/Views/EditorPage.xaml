@@ -14,21 +14,19 @@
         HorizontalAlignment="Center"
         FontFamily="Segoe MDL2 Assets"
         FontSize="42"
-        Foreground="{DynamicResource FlourishBrandForegroundBrush}"
+        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
         Text="&#xE70F;"
       />
       <flourish:FlourishTextBlock
         Margin="0,12,0,0"
         HorizontalAlignment="Center"
-        FontSize="28"
-        FontWeight="SemiBold"
-        Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+        Role="PageTitle"
         Text="编辑"
       />
       <flourish:FlourishTextBlock
         Margin="0,10,0,0"
         HorizontalAlignment="Center"
-        Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
+        Role="Subtitle"
         Text="这里是编辑页面占位内容，后续可用于承载图片裁剪、滤镜和标注工具。"
         TextAlignment="Center"
         TextWrapping="Wrap"

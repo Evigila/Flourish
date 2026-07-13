@@ -12,9 +12,7 @@
     <flourish:FlourishTextBlock
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      FontSize="28"
-      FontWeight="SemiBold"
-      Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+      Role="PageTitle"
       Text="Page1"
     />
   </Grid>

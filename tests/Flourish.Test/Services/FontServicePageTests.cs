@@ -56,9 +56,9 @@ public sealed class FontServicePageTests
             Assert.Equal("Consolas", explicitText.FontFamily.Source);
             Assert.Equal(18d, page.FontSize);
             Assert.Equal(18d, page.Resources["FlourishFontSizeBase"]);
-            Assert.Equal(19d, page.Resources["FlourishFontSizeSubtitle"]);
-            Assert.Equal(22d, page.Resources["FlourishFontSizeSectionTitle"]);
-            Assert.Equal(35d, page.Resources["FlourishFontSizePageTitle"]);
+            Assert.Equal(20d, page.Resources["FlourishFontSizeSubtitle"]);
+            Assert.Equal(24d, page.Resources["FlourishFontSizeSectionTitle"]);
+            Assert.Equal(36d, page.Resources["FlourishFontSizePageTitle"]);
         });
     }
 

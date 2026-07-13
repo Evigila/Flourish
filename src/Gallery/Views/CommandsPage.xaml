@@ -6,16 +6,23 @@
   Background="Transparent"
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="0,28,0,40">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:FlourishTextBlock Role="PageTitle" Text="Commands &amp; shortcuts" />
       <flourish:FlourishTextBlock Role="Subtitle"
+        Margin="{DynamicResource FlourishPageSubtitleMargin}"
         Text="Register application logic after startup, change its availability, dispatch it asynchronously, and bind the same command to a runtime keyboard shortcut."
       />
 
-      <flourish:FlourishCard Margin="0,24,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime command registration" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="The demo handler waits briefly, increments an execution counter, and returns a value through CommandResult." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Runtime command registration" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="The demo handler waits briefly, increments an execution counter, and returns a value through CommandResult."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -36,31 +43,45 @@
             <flourish:FlourishButton Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
             <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishBrandForegroundBrush}" Text="Register the demo command to begin." TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Role="Status" Text="Register the demo command to begin." />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Keyboard shortcut" />
-          <flourish:FlourishTextBlock Margin="0,5,0,16" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Bind Ctrl+Shift+G to the command key above. The shell can resolve and dispatch it globally; the button invokes the same shortcut API directly for a deterministic demo." TextWrapping="Wrap" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Keyboard shortcut" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Bind Ctrl+Shift+G to the command key above. The shell can resolve and dispatch it globally; the button invokes the same shortcut API directly for a deterministic demo."
+          TextWrapping="Wrap"
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
           <WrapPanel>
             <flourish:FlourishButton Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
             <flourish:FlourishButton Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
             <flourish:FlourishButton Click="RemoveShortcut_Click" Content="Remove shortcut" />
           </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="No shortcut registered by this page." TextWrapping="Wrap" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Role="Description" Text="No shortcut registered by this page." />
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
 
-      <flourish:FlourishCard Margin="0,16,0,0">
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="SectionTitle" Text="Registry snapshots" />
-          <flourish:FlourishTextBlock Margin="0,5,0,12" Foreground="{DynamicResource FlourishNeutralForeground2Brush}" Text="Both registries expose immutable snapshots and change events for diagnostic or management UIs." />
-          <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Foreground="{DynamicResource FlourishBrandForegroundBrush}" />
+      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
+        <flourish:FlourishTextBlock Role="SectionTitle" Text="Registry snapshots" />
+        <flourish:FlourishTextBlock
+          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
+          Role="Description"
+          Text="Both registries expose immutable snapshots and change events for diagnostic or management UIs."
+        />
+        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
+          <StackPanel>
+          <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
           <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
-        </StackPanel>
-      </flourish:FlourishCard>
+          </StackPanel>
+        </flourish:FlourishCard>
+      </StackPanel>
     </StackPanel>
   </flourish:FlourishScrollViewer>
 </Page>

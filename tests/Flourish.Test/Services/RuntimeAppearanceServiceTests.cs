@@ -308,6 +308,149 @@ public sealed class RuntimeAppearanceServiceTests
     }
 
     [Fact]
+    public void ThemeService_StyleOverridesPopulateApplicationScopeSemanticResources()
+    {
+        RunInSta(() =>
+        {
+            var colors = new FlourishThemeColors(
+                Color.FromRgb(0x12, 0x34, 0x56),
+                Color.FromRgb(0xE8, 0xC5, 0x47),
+                Color.FromRgb(0x7D, 0x4C, 0xDB)
+            );
+            var options = new FlourishShellOptions
+            {
+                ThemeColors = colors,
+                CornerRadius = 5,
+            };
+            var resources = new ResourceDictionary();
+
+            ThemeService.ApplyStyleOverrides(resources, options);
+
+            Assert.Equal(colors.Primary, Assert.IsType<Color>(resources["FlourishPrimaryColor"]));
+            Assert.Equal(
+                colors.Secondary,
+                Assert.IsType<Color>(resources["FlourishSecondaryColor"])
+            );
+            Assert.Equal(colors.Accent, Assert.IsType<Color>(resources["FlourishAccentColor"]));
+            AssertDirectBrushColor(resources, "FlourishPrimaryBrush", colors.Primary);
+            AssertDirectBrushColor(resources, "FlourishPrimaryForegroundBrush", colors.Primary);
+            AssertDirectBrushColor(resources, "FlourishPrimaryBackgroundBrush", colors.Primary);
+            AssertDirectBrushColor(resources, "FlourishSecondaryBrush", colors.Secondary);
+            Assert.NotEqual(
+                colors.Secondary,
+                Assert.IsType<SolidColorBrush>(
+                    resources["FlourishSecondaryForegroundBrush"]
+                ).Color
+            );
+            AssertDirectBrushColor(resources, "FlourishAccentBrush", colors.Accent);
+            AssertDirectBrushColor(resources, "FlourishAccentForegroundBrush", colors.Accent);
+            AssertDirectBrushColor(resources, "FlourishBrandForegroundBrush", colors.Primary);
+            AssertDirectBrushColor(resources, "FlourishBrandBackgroundBrush", colors.Primary);
+            AssertDirectBrushColor(resources, "FlourishControlStrokeFocusBrush", colors.Accent);
+            AssertDirectBrushColor(resources, "FlourishForegroundOnPrimaryBrush", Colors.White);
+            AssertDirectBrushColor(resources, "FlourishForegroundOnSecondaryBrush", Colors.Black);
+
+            var primaryHover = Assert.IsType<SolidColorBrush>(
+                resources["FlourishPrimaryHoverBrush"]
+            );
+            var primaryPressed = Assert.IsType<SolidColorBrush>(
+                resources["FlourishPrimaryPressedBrush"]
+            );
+            var primarySurface = Assert.IsType<SolidColorBrush>(
+                resources["FlourishPrimarySurfaceBrush"]
+            );
+            Assert.NotEqual(colors.Primary, primaryHover.Color);
+            Assert.NotEqual(primaryHover.Color, primaryPressed.Color);
+            Assert.Equal(0x24, primarySurface.Color.A);
+            AssertDirectBrushColor(
+                resources,
+                "FlourishBrandBackgroundHoverBrush",
+                primaryHover.Color
+            );
+            AssertDirectBrushColor(
+                resources,
+                "FlourishBrandBackgroundPressedBrush",
+                primaryPressed.Color
+            );
+
+            foreach (
+                var key in new[]
+                {
+                    "FlourishControlCornerRadius",
+                    "FlourishSurfaceCornerRadius",
+                    "FlourishOverlayCornerRadius",
+                    "FlourishDialogCornerRadius",
+                }
+            )
+            {
+                Assert.Equal(new CornerRadius(5), Assert.IsType<CornerRadius>(resources[key]));
+            }
+            Assert.Equal(
+                new CornerRadius(0, 0, 5, 5),
+                Assert.IsType<CornerRadius>(
+                    resources["FlourishDialogFooterCornerRadius"]
+                )
+            );
+        });
+    }
+
+    [Fact]
+    public void ThemeService_StyleOverridesDeriveReadableForegroundsForEachTheme()
+    {
+        RunInSta(() =>
+        {
+            var colors = new FlourishThemeColors(
+                Color.FromRgb(0x0F, 0x6C, 0xBD),
+                Color.FromRgb(0x5C, 0x2E, 0x91),
+                Color.FromRgb(0xD8, 0x3B, 0x01)
+            );
+            var options = new FlourishShellOptions { ThemeColors = colors };
+            var light = new ResourceDictionary();
+            var dark = new ResourceDictionary();
+
+            ThemeService.ApplyStyleOverrides(light, options, FlourishTheme.Light);
+            ThemeService.ApplyStyleOverrides(dark, options, FlourishTheme.Dark);
+
+            AssertDirectBrushColor(light, "FlourishPrimaryForegroundBrush", colors.Primary);
+            Assert.NotEqual(
+                colors.Primary,
+                Assert.IsType<SolidColorBrush>(
+                    dark["FlourishPrimaryForegroundBrush"]
+                ).Color
+            );
+            AssertDirectBrushColor(dark, "FlourishPrimaryBackgroundBrush", colors.Primary);
+            Assert.NotEqual(
+                Assert.IsType<SolidColorBrush>(light["FlourishPrimaryHoverBrush"]).Color,
+                Assert.IsType<SolidColorBrush>(dark["FlourishPrimaryHoverBrush"]).Color
+            );
+            AssertDirectBrushColor(
+                dark,
+                "FlourishControlStrokeFocusBrush",
+                Assert.IsType<SolidColorBrush>(dark["FlourishAccentForegroundBrush"]).Color
+            );
+        });
+    }
+
+    [Fact]
+    public void ThemeService_StyleOverridesWithoutExplicitConfigurationPreserveHostResources()
+    {
+        RunInSta(() =>
+        {
+            var resources = new ResourceDictionary();
+            var hostBrush = new SolidColorBrush(Color.FromRgb(0x12, 0x34, 0x56));
+            resources["FlourishPrimaryBrush"] = hostBrush;
+
+            ThemeService.ApplyStyleOverrides(resources, new FlourishShellOptions());
+
+            Assert.Same(hostBrush, resources["FlourishPrimaryBrush"]);
+            Assert.DoesNotContain(
+                resources.Keys.Cast<object>(),
+                key => Equals(key, "FlourishControlCornerRadius")
+            );
+        });
+    }
+
+    [Fact]
     public void ThemeService_PaletteSwitchRemainsInsideTheGenericThemeRoot()
     {
         RunInSta(() =>
@@ -476,6 +619,16 @@ public sealed class RuntimeAppearanceServiceTests
         var actualBrush = Assert.IsType<SolidColorBrush>(actual);
         var expectedBrush = Assert.IsType<SolidColorBrush>(expected[key]);
         Assert.Equal(expectedBrush.Color, actualBrush.Color);
+    }
+
+    private static void AssertDirectBrushColor(
+        ResourceDictionary resources,
+        string key,
+        Color expected
+    )
+    {
+        var brush = Assert.IsType<SolidColorBrush>(resources[key]);
+        Assert.Equal(expected, brush.Color);
     }
 
     private static ResourceDictionary? FindDictionary(
