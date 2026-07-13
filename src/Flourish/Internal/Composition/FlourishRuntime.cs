@@ -83,6 +83,7 @@ internal sealed class FlourishRuntime(IHost host) : IFlourish
         EnsureApplicationResources(application);
         host.Services.GetRequiredService<FontService>().Attach(application);
         host.Services.GetRequiredService<FlourishMotionService>().Attach(application);
+        host.Services.GetRequiredService<FlourishToolTipService>().Attach(application);
 
         var mainWindow = host.Services.GetRequiredService<FlourishShellWindow>();
         application.MainWindow = mainWindow;

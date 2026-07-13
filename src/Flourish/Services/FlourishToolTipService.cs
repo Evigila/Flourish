@@ -1,14 +1,23 @@
+using System.Windows;
+using System.Windows.Threading;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
-using Window = System.Windows.Window;
 
 namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class FlourishToolTipService(FlourishShellOptions options) : IToolTipService
 {
+    private const string InitialShowDelayResourceKey =
+        "FlourishToolTipInitialShowDelay";
+    private const string SpawnableMarginResourceKey =
+        "FlourishToolTipSpawnableMargin";
     private readonly object gate = new();
-    private Window? owner;
+    private Dispatcher? applicationDispatcher;
+    private ResourceDictionary? applicationResources;
+    private ResourceDictionary? appliedResources;
+    private FlourishToolTipSettings? appliedSettings;
+    private long mutationGeneration;
 
     public FlourishToolTipSettings Current
     {
@@ -23,23 +32,60 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
 
     public event EventHandler<FlourishToolTipChangedEventArgs>? Changed;
 
-    public void SetEnabled(bool enabled)
+    internal void Attach(Application application)
     {
-        FlourishToolTipSettings previous;
-        FlourishToolTipSettings current;
-        lock (gate)
+        ArgumentNullException.ThrowIfNull(application);
+        Attach(application.Dispatcher, application.Resources);
+    }
+
+    internal void Attach(Dispatcher dispatcher, ResourceDictionary resources)
+    {
+        ArgumentNullException.ThrowIfNull(dispatcher);
+        ArgumentNullException.ThrowIfNull(resources);
+
+        void AttachCore()
         {
-            previous = CaptureSettings();
-            if (previous.IsEnabled == enabled)
+            FlourishToolTipSettings settings;
+            lock (gate)
+            {
+                applicationDispatcher = dispatcher;
+                applicationResources = resources;
+                settings = CaptureSettings();
+            }
+
+            if (ReferenceEquals(appliedResources, resources) && appliedSettings == settings)
             {
                 return;
             }
 
-            options.IsTipsEnabled = enabled;
-            current = CaptureSettings();
+            ApplyResources(resources, settings);
+            appliedResources = resources;
+            appliedSettings = settings;
         }
 
-        ApplyAndNotify(previous, current);
+        if (dispatcher.CheckAccess())
+        {
+            AttachCore();
+        }
+        else
+        {
+            dispatcher.Invoke(AttachCore);
+        }
+    }
+
+    public void SetEnabled(bool enabled)
+    {
+        ExecuteMutation(() =>
+        {
+            var previous = CaptureSettings();
+            if (previous.IsEnabled == enabled)
+            {
+                return null;
+            }
+
+            options.IsTipsEnabled = enabled;
+            return CreateMutation(previous, CaptureSettings());
+        });
     }
 
     public void Configure(int initialShowDelayMilliseconds, double spawnableMargin = 5)
@@ -53,11 +99,7 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
             );
         }
 
-        if (
-            double.IsNaN(spawnableMargin)
-            || double.IsInfinity(spawnableMargin)
-            || spawnableMargin < 0
-        )
+        if (!double.IsFinite(spawnableMargin) || spawnableMargin < 0)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(spawnableMargin),
@@ -66,65 +108,142 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
             );
         }
 
-        FlourishToolTipSettings previous;
-        FlourishToolTipSettings current;
-        lock (gate)
+        ExecuteMutation(() =>
         {
-            previous = CaptureSettings();
+            var previous = CaptureSettings();
             options.IsTipsEnabled = true;
             options.Tips.InitialShowDelayMilliseconds = initialShowDelayMilliseconds;
             options.Tips.SpawnableMargin = spawnableMargin;
-            current = CaptureSettings();
-            if (previous == current)
+            var current = CaptureSettings();
+            return previous == current ? null : CreateMutation(previous, current);
+        });
+    }
+
+    private void ExecuteMutation(Func<ToolTipMutation?> mutationFactory)
+    {
+        Dispatcher? dispatcher;
+        ToolTipMutation? detachedMutation;
+        lock (gate)
+        {
+            dispatcher = applicationDispatcher;
+            detachedMutation = dispatcher is null ? mutationFactory() : null;
+        }
+
+        if (dispatcher is null)
+        {
+            PublishMutation(detachedMutation, null);
+            return;
+        }
+
+        void ExecuteOnDispatcher()
+        {
+            ToolTipMutation? mutation;
+            ResourceDictionary? resources;
+            lock (gate)
+            {
+                mutation = mutationFactory();
+                resources = applicationResources;
+            }
+
+            PublishMutation(mutation, resources);
+        }
+
+        if (dispatcher.CheckAccess())
+        {
+            ExecuteOnDispatcher();
+        }
+        else
+        {
+            dispatcher.Invoke(ExecuteOnDispatcher);
+        }
+    }
+
+    private void PublishMutation(
+        ToolTipMutation? mutation,
+        ResourceDictionary? resources
+    )
+    {
+        if (mutation is not { } value)
+        {
+            return;
+        }
+
+        if (resources is null)
+        {
+            PublishDetachedMutation(value);
+            return;
+        }
+
+        lock (gate)
+        {
+            if (value.Generation != mutationGeneration)
             {
                 return;
             }
         }
 
-        ApplyAndNotify(previous, current);
+        ApplyResources(resources, value.Current);
+        appliedResources = resources;
+        appliedSettings = value.Current;
+        RaiseChanged(value);
     }
 
-    internal void Attach(Window window)
+    private void PublishDetachedMutation(ToolTipMutation mutation)
     {
-        ArgumentNullException.ThrowIfNull(window);
-        owner = window;
-        ApplyToWindow(window, Current);
+        Dispatcher? dispatcher;
+        lock (gate)
+        {
+            if (mutation.Generation != mutationGeneration)
+            {
+                return;
+            }
+
+            dispatcher = applicationDispatcher;
+            if (dispatcher is null)
+            {
+                RaiseChanged(mutation);
+                return;
+            }
+        }
+
+        void RaiseIfCurrent()
+        {
+            lock (gate)
+            {
+                if (mutation.Generation != mutationGeneration)
+                {
+                    return;
+                }
+            }
+
+            RaiseChanged(mutation);
+        }
+
+        if (dispatcher.CheckAccess())
+        {
+            RaiseIfCurrent();
+        }
+        else
+        {
+            dispatcher.Invoke(RaiseIfCurrent);
+        }
     }
 
-    private void ApplyAndNotify(
+    private void RaiseChanged(ToolTipMutation mutation)
+    {
+        Changed?.Invoke(
+            this,
+            new FlourishToolTipChangedEventArgs(mutation.Previous, mutation.Current)
+        );
+    }
+
+    private ToolTipMutation CreateMutation(
         FlourishToolTipSettings previous,
         FlourishToolTipSettings current
     )
     {
-        var attachedOwner = owner;
-        if (attachedOwner is not null)
-        {
-            if (attachedOwner.Dispatcher.CheckAccess())
-            {
-                var effective = Current;
-                ApplyToWindow(attachedOwner, effective);
-                Changed?.Invoke(
-                    this,
-                    new FlourishToolTipChangedEventArgs(previous, effective)
-                );
-            }
-            else
-            {
-                attachedOwner.Dispatcher.Invoke(() =>
-                {
-                    var effective = Current;
-                    ApplyToWindow(attachedOwner, effective);
-                    Changed?.Invoke(
-                        this,
-                        new FlourishToolTipChangedEventArgs(previous, effective)
-                    );
-                });
-            }
-
-            return;
-        }
-
-        Changed?.Invoke(this, new FlourishToolTipChangedEventArgs(previous, current));
+        mutationGeneration++;
+        return new ToolTipMutation(previous, current, mutationGeneration);
     }
 
     private FlourishToolTipSettings CaptureSettings()
@@ -136,22 +255,41 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
         );
     }
 
-    private static void ApplyToWindow(Window window, FlourishToolTipSettings settings)
+    private static void ApplyResources(
+        ResourceDictionary resources,
+        FlourishToolTipSettings settings
+    )
     {
-        var delay = settings.IsEnabled
-            ? settings.InitialShowDelayMilliseconds
-            : int.MaxValue;
-        var margin = settings.IsEnabled ? settings.SpawnableMargin : 0d;
-        window.Resources["FlourishToolTipInitialShowDelay"] = delay;
-        window.Resources["FlourishToolTipSpawnableMargin"] = margin;
+        SetResourceIfChanged(
+            resources,
+            InitialShowDelayResourceKey,
+            settings.IsEnabled ? settings.InitialShowDelayMilliseconds : int.MaxValue
+        );
+        SetResourceIfChanged(
+            resources,
+            SpawnableMarginResourceKey,
+            settings.IsEnabled ? settings.SpawnableMargin : 0d
+        );
+    }
 
-        var application = Application.Current;
-        if (application is null)
+    private static void SetResourceIfChanged(
+        ResourceDictionary resources,
+        string key,
+        object value
+    )
+    {
+        var hasDirectKey = resources.Keys.Cast<object>().Contains(key);
+        if (hasDirectKey && Equals(resources[key], value))
         {
             return;
         }
 
-        application.Resources["FlourishToolTipInitialShowDelay"] = delay;
-        application.Resources["FlourishToolTipSpawnableMargin"] = margin;
+        resources[key] = value;
     }
+
+    private sealed record ToolTipMutation(
+        FlourishToolTipSettings Previous,
+        FlourishToolTipSettings Current,
+        long Generation
+    );
 }

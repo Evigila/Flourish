@@ -7,6 +7,12 @@ namespace ArkheideSystem.Flourish.Internal.Imaging;
 
 internal static class TitleBarVisualAssets
 {
+    internal const int LogoDecodePixelWidth = 256;
+    internal const int MaximumLogoPixelDimension = 4096;
+    internal const long MaximumLogoPixelCount = 1_048_576;
+    internal const int MaximumLogoScanBufferBytes = 4 * 1_048_576;
+
+    private const int BytesPerPixel = 4;
     private const string DefaultIconUri =
         "pack://application:,,,/Flourish;component/Assets/favicon.ico";
     private const string SunIconData =
@@ -40,28 +46,60 @@ internal static class TitleBarVisualAssets
             image.BeginInit();
             image.UriSource = new Uri(logoPath, UriKind.RelativeOrAbsolute);
             image.CacheOption = BitmapCacheOption.OnLoad;
+            image.DecodePixelWidth = LogoDecodePixelWidth;
             image.EndInit();
+            ValidatePixelBudget(image);
             return TrimTransparentPixels(image);
         }
         catch (Exception error)
             when (error is IOException
+                or ArgumentException
+                or FormatException
                 or InvalidOperationException
                 or NotSupportedException
-                or UriFormatException)
+                or OverflowException
+                or UnauthorizedAccessException)
         {
             return null;
         }
+    }
+
+    internal static Task<ImageSource?> LoadLogoAsync(
+        string logoPath,
+        CancellationToken cancellationToken
+    )
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(logoPath);
+        return Task.Run<ImageSource?>(
+            () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var source = LoadLogo(logoPath);
+                cancellationToken.ThrowIfCancellationRequested();
+                return source;
+            },
+            cancellationToken
+        );
     }
 
     internal static ImageSource TrimTransparentPixels(BitmapSource source)
     {
         ArgumentNullException.ThrowIfNull(source);
 
+        ValidatePixelBudget(source);
         var bitmap = new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
         var width = bitmap.PixelWidth;
         var height = bitmap.PixelHeight;
-        var stride = width * 4;
-        var pixels = new byte[stride * height];
+        var stride = checked(width * BytesPerPixel);
+        var bufferLength = checked(stride * height);
+        if (bufferLength > MaximumLogoScanBufferBytes)
+        {
+            throw new InvalidDataException(
+                $"The title-bar logo needs a {bufferLength}-byte scan buffer, which exceeds the {MaximumLogoScanBufferBytes}-byte limit."
+            );
+        }
+
+        var pixels = new byte[bufferLength];
         bitmap.CopyPixels(pixels, stride, 0);
 
         var left = width;
@@ -74,7 +112,7 @@ internal static class TitleBarVisualAssets
             var rowOffset = y * stride;
             for (var x = 0; x < width; x++)
             {
-                var alpha = pixels[rowOffset + x * 4 + 3];
+                var alpha = pixels[rowOffset + x * BytesPerPixel + 3];
                 if (alpha == 0)
                 {
                     continue;
@@ -103,6 +141,25 @@ internal static class TitleBarVisualAssets
     private static Geometry CreateFrozenGeometry(string pathData)
     {
         return Freeze(Geometry.Parse(pathData));
+    }
+
+    private static void ValidatePixelBudget(BitmapSource source)
+    {
+        var width = source.PixelWidth;
+        var height = source.PixelHeight;
+        var pixelCount = (long)width * height;
+        if (
+            width <= 0
+            || height <= 0
+            || width > MaximumLogoPixelDimension
+            || height > MaximumLogoPixelDimension
+            || pixelCount > MaximumLogoPixelCount
+        )
+        {
+            throw new InvalidDataException(
+                $"The decoded title-bar logo size {width}x{height} exceeds the supported pixel budget."
+            );
+        }
     }
 
     private static T Freeze<T>(T value)

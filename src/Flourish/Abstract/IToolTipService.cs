@@ -14,7 +14,7 @@ public interface IToolTipService
     /// Raised after the tooltip settings change.
     /// </summary>
     /// <remarks>
-    /// When a shell window is attached, the event is raised on its dispatcher.
+    /// When application resources are attached, the event is raised on their dispatcher.
     /// </remarks>
     event EventHandler<FlourishToolTipChangedEventArgs>? Changed;
 

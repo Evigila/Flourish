@@ -15,6 +15,9 @@ internal partial class FlourishTitlebar : UserControl
 {
     private readonly TitleBarBreadcrumbVisibilityState breadcrumbVisibility = new();
     private FlourishLocalizationService? localizationService;
+    private string? cachedProfileImagePath;
+    private ImageSource? cachedProfileImageSource;
+    private bool hasCachedProfileImage;
     private bool hasProfileRegionContent;
     private bool isProfileEnabled;
 
@@ -97,19 +100,17 @@ internal partial class FlourishTitlebar : UserControl
         SearchBox.SelectAll();
     }
 
-    public ImageSource? SetLogo(string? logoPath, string fallbackText)
+    public ImageSource? SetLogo(ImageSource? logoSource, string fallbackText)
     {
-        var effectiveLogoSource =
-            TitleBarVisualAssets.LoadLogo(logoPath)
-            ?? TitleBarVisualAssets.DefaultLogoSource;
-        if (effectiveLogoSource is not null)
+        if (logoSource is not null)
         {
-            LogoImage.Source = effectiveLogoSource;
+            LogoImage.Source = logoSource;
             LogoImage.Visibility = Visibility.Visible;
             LogoFallback.Visibility = Visibility.Collapsed;
-            return effectiveLogoSource;
+            return logoSource;
         }
 
+        LogoImage.Source = null;
         LogoFallback.Text = string.IsNullOrWhiteSpace(fallbackText) ? "F" : fallbackText[..1];
         LogoImage.Visibility = Visibility.Collapsed;
         LogoFallback.Visibility = Visibility.Visible;
@@ -176,7 +177,21 @@ internal partial class FlourishTitlebar : UserControl
     {
         ArgumentNullException.ThrowIfNull(profile);
 
-        var imageSource = ProfileImageLoader.Load(profile.ImagePath);
+        if (
+            !hasCachedProfileImage
+            || !string.Equals(
+                cachedProfileImagePath,
+                profile.ImagePath,
+                StringComparison.Ordinal
+            )
+        )
+        {
+            cachedProfileImagePath = profile.ImagePath;
+            cachedProfileImageSource = ProfileImageLoader.Load(profile.ImagePath);
+            hasCachedProfileImage = true;
+        }
+
+        var imageSource = cachedProfileImageSource;
         ProfileAvatarImage.Fill = imageSource is null
             ? null
             : new ImageBrush(imageSource) { Stretch = Stretch.UniformToFill };

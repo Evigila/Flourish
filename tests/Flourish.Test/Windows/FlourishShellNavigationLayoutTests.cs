@@ -116,6 +116,56 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
+    public void RuntimeNavigationChanges_ClearAndRebuildTheToolbarControlCache()
+    {
+        var shellCode = File.ReadAllText(ShellCodePath);
+        var navigationChangedStart = shellCode.IndexOf(
+            "private void NavigationMenuService_Changed(",
+            StringComparison.Ordinal
+        );
+        var toolbarChangedStart = shellCode.IndexOf(
+            "private void ToolbarService_Changed(",
+            navigationChangedStart,
+            StringComparison.Ordinal
+        );
+        var clearCacheStart = shellCode.IndexOf(
+            "private void ClearToolbarButtonCache()",
+            StringComparison.Ordinal
+        );
+        var nextMethodStart = shellCode.IndexOf(
+            "private void UpdateRuntimeSurfaceVisibility(",
+            clearCacheStart,
+            StringComparison.Ordinal
+        );
+
+        Assert.True(navigationChangedStart >= 0);
+        Assert.True(toolbarChangedStart > navigationChangedStart);
+        Assert.True(clearCacheStart >= 0);
+        Assert.True(nextMethodStart > clearCacheStart);
+
+        var navigationChangedMethod = shellCode[
+            navigationChangedStart..toolbarChangedStart
+        ];
+        var clearCacheMethod = shellCode[clearCacheStart..nextMethodStart];
+
+        Assert.Contains(
+            "ClearToolbarButtonCache();",
+            navigationChangedMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);",
+            navigationChangedMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "button.Click -= ToolbarButton_Click;",
+            clearCacheMethod,
+            StringComparison.Ordinal
+        );
+    }
+
+    [Fact]
     public void NavigationContainer_UsesAppearanceAndCompactTriggersFromItsControlDictionary()
     {
         var document = XDocument.Load(ListBoxItemXamlPath);

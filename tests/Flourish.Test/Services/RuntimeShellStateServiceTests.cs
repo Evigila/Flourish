@@ -154,7 +154,8 @@ public sealed class RuntimeShellStateServiceTests
     {
         var options = new FlourishShellOptions();
         var motion = new FlourishMotionService(options);
-        IShellFeatureService sut = new ShellFeatureService(options, motion);
+        var toolTips = new FlourishToolTipService(options);
+        IShellFeatureService sut = new ShellFeatureService(options, motion, toolTips);
         var changes = new List<FlourishShellFeatureChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -184,7 +185,8 @@ public sealed class RuntimeShellStateServiceTests
             MaterialEffect = MaterialEffect.Mica,
         };
         var motion = new FlourishMotionService(options);
-        IShellFeatureService sut = new ShellFeatureService(options, motion);
+        var toolTips = new FlourishToolTipService(options);
+        IShellFeatureService sut = new ShellFeatureService(options, motion, toolTips);
         var changes = new List<FlourishShellFeatureChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -220,7 +222,8 @@ public sealed class RuntimeShellStateServiceTests
     {
         var options = new FlourishShellOptions();
         var motion = new FlourishMotionService(options);
-        IShellFeatureService sut = new ShellFeatureService(options, motion);
+        var toolTips = new FlourishToolTipService(options);
+        IShellFeatureService sut = new ShellFeatureService(options, motion, toolTips);
         var motionChanges = new List<FlourishMotionChangedEventArgs>();
         var featureChanges = new List<FlourishShellFeatureChangedEventArgs>();
         motion.Changed += (_, args) => motionChanges.Add(args);
@@ -242,6 +245,40 @@ public sealed class RuntimeShellStateServiceTests
             },
             featureChanges.Select(change =>
                 (change.Feature, change.State.IsMotionEnabled, change.State.Version)
+            )
+        );
+    }
+
+    [Fact]
+    public void ShellFeatureService_AndToolTipServicePublishOneSynchronizedEventPerEnablementChange()
+    {
+        var options = new FlourishShellOptions();
+        var motion = new FlourishMotionService(options);
+        var toolTips = new FlourishToolTipService(options);
+        IShellFeatureService sut = new ShellFeatureService(options, motion, toolTips);
+        var toolTipChanges = new List<FlourishToolTipChangedEventArgs>();
+        var featureChanges = new List<FlourishShellFeatureChangedEventArgs>();
+        toolTips.Changed += (_, args) => toolTipChanges.Add(args);
+        sut.Changed += (_, args) => featureChanges.Add(args);
+
+        sut.SetEnabled(ShellFeature.ToolTips, true);
+        sut.SetEnabled(ShellFeature.ToolTips, true);
+        toolTips.SetEnabled(false);
+        toolTips.SetEnabled(false);
+        toolTips.Configure(420, 7);
+
+        Assert.True(toolTips.Current.IsEnabled);
+        Assert.True(sut.Current.AreToolTipsEnabled);
+        Assert.Equal(3, toolTipChanges.Count);
+        Assert.Equal(
+            new[]
+            {
+                (ShellFeature.ToolTips, true, 1L),
+                (ShellFeature.ToolTips, false, 2L),
+                (ShellFeature.ToolTips, true, 3L),
+            },
+            featureChanges.Select(change =>
+                (change.Feature, change.State.AreToolTipsEnabled, change.State.Version)
             )
         );
     }

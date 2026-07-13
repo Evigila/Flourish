@@ -10,6 +10,101 @@ public sealed class FlourishBackgroundTaskServiceTests
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
 
     [Fact]
+    public async Task StartAsync_WithoutPendingTasksDoesNotStartWorkers()
+    {
+        var service = new FlourishBackgroundTaskService(maxConcurrency: 3);
+
+        await service.StartAsync(CancellationToken.None);
+
+        Assert.Equal(0, service.ActiveWorkerCount);
+        Assert.Equal(0, service.WorkerStartCount);
+        await service.WaitForWorkersIdleAsync().WaitAsync(Timeout);
+
+        await service.StopAsync(CancellationToken.None).WaitAsync(Timeout);
+        Assert.Equal(0, service.ActiveWorkerCount);
+        Assert.Equal(0, service.WorkerStartCount);
+    }
+
+    [Fact]
+    public async Task IdleWorker_ExitsAndRestartsForLaterWork()
+    {
+        var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
+        await service.StartAsync(CancellationToken.None);
+        var firstStarted = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        var releaseFirst = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        var first = service.AddTask(
+            new FlourishBackgroundTaskMetadata("First burst"),
+            async _ =>
+            {
+                firstStarted.TrySetResult();
+                await releaseFirst.Task;
+            }
+        );
+
+        await firstStarted.Task.WaitAsync(Timeout);
+        Assert.Equal(1, service.ActiveWorkerCount);
+        Assert.Equal(1, service.WorkerStartCount);
+        releaseFirst.TrySetResult();
+        Assert.True((await first.Completion.WaitAsync(Timeout)).Succeeded);
+        await service.WaitForWorkersIdleAsync().WaitAsync(Timeout);
+        Assert.Equal(0, service.ActiveWorkerCount);
+
+        var secondStarted = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        var second = service.AddTask(
+            new FlourishBackgroundTaskMetadata("Second burst"),
+            _ =>
+            {
+                secondStarted.TrySetResult();
+                return ValueTask.CompletedTask;
+            }
+        );
+
+        await secondStarted.Task.WaitAsync(Timeout);
+        Assert.True((await second.Completion.WaitAsync(Timeout)).Succeeded);
+        await service.WaitForWorkersIdleAsync().WaitAsync(Timeout);
+        Assert.Equal(0, service.ActiveWorkerCount);
+        Assert.Equal(2, service.WorkerStartCount);
+        await service.StopAsync(CancellationToken.None).WaitAsync(Timeout);
+    }
+
+    [Fact]
+    public async Task StopAsync_DrainsWorkersAndPreservesNonRestartableLifecycle()
+    {
+        var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
+        await service.StartAsync(CancellationToken.None);
+        var started = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        var handle = service.AddTask(
+            new FlourishBackgroundTaskMetadata("Stop worker"),
+            async context =>
+            {
+                started.TrySetResult();
+                await Task.Delay(
+                    System.Threading.Timeout.InfiniteTimeSpan,
+                    context.CancellationToken
+                );
+            }
+        );
+        await started.Task.WaitAsync(Timeout);
+
+        await service.StopAsync(CancellationToken.None).WaitAsync(Timeout);
+
+        Assert.True((await handle.Completion.WaitAsync(Timeout)).Canceled);
+        await service.WaitForWorkersIdleAsync().WaitAsync(Timeout);
+        Assert.Equal(0, service.ActiveWorkerCount);
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.StartAsync(CancellationToken.None)
+        );
+    }
+
+    [Fact]
     public async Task AddTask_RunsAtMostThreeTasksAndLeavesFourthQueued()
     {
         var service = new FlourishBackgroundTaskService();

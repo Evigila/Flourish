@@ -386,6 +386,68 @@ public sealed class RuntimeAppearanceServiceTests
         });
     }
 
+    [Fact]
+    public void ThemeService_PaletteSwitchPreservesNestedThemeAndWrapperOverrides()
+    {
+        RunInSta(() =>
+        {
+            const string lightSource =
+                "/Flourish;component/Themes/Colors/Colors.Light.xaml";
+            const string darkSource =
+                "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
+            const string customToken = "FlourishBrandForegroundBrush";
+            var resources = new ResourceDictionary();
+            var wrapper = new ResourceDictionary();
+            var theme = new FlourishThemeResources();
+            var customBrush = new SolidColorBrush(Color.FromRgb(0x12, 0x34, 0x56));
+            wrapper.MergedDictionaries.Add(theme);
+            wrapper[customToken] = customBrush;
+            resources.MergedDictionaries.Add(wrapper);
+            var lightPalette = LoadDictionary(lightSource);
+            var darkPalette = LoadDictionary(darkSource);
+
+            FlourishThemeResources.EnsureMerged(resources);
+            ThemeService.ApplyThemePalette(resources, FlourishTheme.Light);
+            var paletteHost = Assert.IsType<ResourceDictionary>(
+                FindDictionary(resources, lightSource)
+            );
+
+            Assert.Same(wrapper, Assert.Single(resources.MergedDictionaries));
+            Assert.Same(theme, Assert.Single(wrapper.MergedDictionaries));
+            Assert.Same(theme, FlourishThemeResources.FindThemeRoot(resources));
+            Assert.Same(customBrush, resources[customToken]);
+            AssertBrushColor(
+                Assert.IsAssignableFrom<Brush>(resources["AppBackgroundBrush"]),
+                lightPalette,
+                "AppBackgroundBrush"
+            );
+
+            ThemeService.ApplyThemePalette(resources, FlourishTheme.Dark);
+
+            Assert.Same(paletteHost, FindDictionary(resources, darkSource));
+            Assert.Same(theme, FlourishThemeResources.FindThemeRoot(resources));
+            Assert.Same(customBrush, resources[customToken]);
+            AssertBrushColor(
+                Assert.IsAssignableFrom<Brush>(resources["AppBackgroundBrush"]),
+                darkPalette,
+                "AppBackgroundBrush"
+            );
+
+            ThemeService.ApplyThemePalette(resources, FlourishTheme.Light);
+
+            Assert.Same(paletteHost, FindDictionary(resources, lightSource));
+            Assert.Same(theme, FlourishThemeResources.FindThemeRoot(resources));
+            Assert.Same(customBrush, resources[customToken]);
+            AssertBrushColor(
+                Assert.IsAssignableFrom<Brush>(resources["AppBackgroundBrush"]),
+                lightPalette,
+                "AppBackgroundBrush"
+            );
+            Assert.Same(wrapper, Assert.Single(resources.MergedDictionaries));
+            Assert.Same(theme, Assert.Single(wrapper.MergedDictionaries));
+        });
+    }
+
     private static ResourceDictionary LoadDictionary(string source)
     {
         return new ResourceDictionary

@@ -8,17 +8,22 @@ internal sealed class ShellFeatureService : IShellFeatureService
     private readonly object gate = new();
     private readonly FlourishShellOptions options;
     private readonly FlourishMotionService motionService;
+    private readonly FlourishToolTipService toolTipService;
     private long version;
 
     public ShellFeatureService(
         FlourishShellOptions options,
-        FlourishMotionService motionService
+        FlourishMotionService motionService,
+        FlourishToolTipService toolTipService
     )
     {
         this.options = options ?? throw new ArgumentNullException(nameof(options));
         this.motionService =
             motionService ?? throw new ArgumentNullException(nameof(motionService));
+        this.toolTipService =
+            toolTipService ?? throw new ArgumentNullException(nameof(toolTipService));
         motionService.Changed += MotionService_Changed;
+        toolTipService.Changed += ToolTipService_Changed;
     }
 
     public event EventHandler<FlourishShellFeatureChangedEventArgs>? Changed;
@@ -47,6 +52,12 @@ internal sealed class ShellFeatureService : IShellFeatureService
             return;
         }
 
+        if (feature == ShellFeature.ToolTips)
+        {
+            toolTipService.SetEnabled(enabled);
+            return;
+        }
+
         FlourishShellFeatureState state;
         lock (gate)
         {
@@ -68,9 +79,6 @@ internal sealed class ShellFeatureService : IShellFeatureService
                     break;
                 case ShellFeature.StatusContent:
                     options.IsStatusBarEnabled = enabled;
-                    break;
-                case ShellFeature.ToolTips:
-                    options.IsTipsEnabled = enabled;
                     break;
                 case ShellFeature.Profile:
                     options.IsProfileEnabled = enabled;
@@ -107,14 +115,40 @@ internal sealed class ShellFeatureService : IShellFeatureService
         );
     }
 
-    private FlourishShellFeatureState CreateSnapshot(bool? motionEnabled = null)
+    private void ToolTipService_Changed(
+        object? sender,
+        FlourishToolTipChangedEventArgs e
+    )
+    {
+        if (e.Previous.IsEnabled == e.Current.IsEnabled)
+        {
+            return;
+        }
+
+        FlourishShellFeatureState state;
+        lock (gate)
+        {
+            version++;
+            state = CreateSnapshot(toolTipsEnabled: e.Current.IsEnabled);
+        }
+
+        Changed?.Invoke(
+            this,
+            new FlourishShellFeatureChangedEventArgs(ShellFeature.ToolTips, state)
+        );
+    }
+
+    private FlourishShellFeatureState CreateSnapshot(
+        bool? motionEnabled = null,
+        bool? toolTipsEnabled = null
+    )
     {
         return new FlourishShellFeatureState(
             options.IsTitlebarEnabled,
             options.IsNavigationPanelEnabled,
             options.IsDynamicToolbarEnabled,
             options.IsStatusBarEnabled,
-            options.IsTipsEnabled,
+            toolTipsEnabled ?? toolTipService.Current.IsEnabled,
             motionEnabled ?? motionService.Current.IsEnabled,
             options.IsProfileEnabled,
             version

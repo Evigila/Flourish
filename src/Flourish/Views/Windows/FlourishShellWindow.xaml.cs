@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
@@ -42,7 +43,6 @@ internal partial class FlourishShellWindow : Window
     private readonly MaterialEffectService materialEffectService;
     private readonly ThemeService themeService;
     private readonly FlourishMotionService motionService;
-    private readonly FlourishToolTipService toolTipService;
     private readonly TitleBarService titleBarService;
     private readonly TitleBarSearchService titleBarSearchService;
     private readonly WindowService windowService;
@@ -73,6 +73,9 @@ internal partial class FlourishShellWindow : Window
     private readonly Dictionary<Guid, BackgroundTaskRowView> backgroundTaskRowsById = [];
     private readonly object backgroundTaskRefreshGate = new();
     private readonly NavigationPaneTransitionController navigationPaneTransition = new();
+    private readonly TitleBarLogoLoadCoordinator titleBarLogoLoadCoordinator = new(
+        TitleBarVisualAssets.LoadLogoAsync
+    );
     private readonly DispatcherTimer backgroundTaskRefreshTimer;
     private IReadOnlyList<Button>? defaultToolbarButtons;
     private FlourishNavigationItem? firstNavigationItem;
@@ -92,11 +95,15 @@ internal partial class FlourishShellWindow : Window
     private IInputElement? statusFlyoutRestoreFocusTarget;
     private bool backgroundTaskRefreshPending;
     private bool backgroundTaskRefreshLoopActive;
-    private bool isShellClosed;
+    private volatile bool isShellClosed;
     private bool statusFlyoutOpenedWithFocus;
     private bool allowClose;
     private bool closeRequestPending;
     private bool isProfileServiceSubscribed;
+    private Type? materializedProfileConfiguredPageType;
+    private ImageSource? currentTitleBarLogoSource;
+    private string currentTitleBarLogoFallbackText = "F";
+    private bool isTitleBarLogoVisible;
 
     private readonly record struct NavigationTreeKey(bool IsFixed, int GroupId, int RelationshipId);
 
@@ -171,7 +178,6 @@ internal partial class FlourishShellWindow : Window
         MaterialEffectService materialEffectService,
         ThemeService themeService,
         FlourishMotionService motionService,
-        FlourishToolTipService toolTipService,
         TitleBarService titleBarService,
         TitleBarSearchService titleBarSearchService,
         WindowService windowService,
@@ -214,7 +220,6 @@ internal partial class FlourishShellWindow : Window
         this.materialEffectService = materialEffectService;
         this.themeService = themeService;
         this.motionService = motionService;
-        this.toolTipService = toolTipService;
         this.titleBarService = titleBarService;
         this.titleBarSearchService = titleBarSearchService;
         this.windowService = windowService;
@@ -228,7 +233,6 @@ internal partial class FlourishShellWindow : Window
         this.options = options;
 
         Titlebar.ApplyLocale(localizationService);
-        toolTipService.Attach(this);
         ApplyOptions();
         windowService.Attach(this);
         windowCloseService.Attach(RequestCloseCoreAsync);
@@ -273,11 +277,11 @@ internal partial class FlourishShellWindow : Window
     {
         ApplyWindowOptions();
         Title = options.Title;
-        var effectiveLogoSource = Titlebar.SetLogo(
+        RequestTitleBarLogo(
             options.LogoPath,
-            options.LogoFallbackText
+            options.LogoFallbackText,
+            options.IsTitlebarLogoEnabled
         );
-        Icon = options.IsTitlebarLogoEnabled ? effectiveLogoSource : null;
         Titlebar.SetTitle(options.Title);
         Titlebar.SetSubtitle(options.Subtitle);
         Titlebar.SetSearchPlaceholder(options.SearchPlaceholder);
@@ -303,7 +307,6 @@ internal partial class FlourishShellWindow : Window
             ? Visibility.Visible
             : Visibility.Collapsed;
         UpdateTitlebarBreadcrumbNavigation();
-        ApplyToolTipResources();
 
         NormalizeNavigationPaneWidths();
         ApplyNavigationPanelPlacement();
@@ -324,40 +327,57 @@ internal partial class FlourishShellWindow : Window
     {
         var state = profileFlyoutService.Current;
         if (
-            !options.IsTitlebarEnabled
-            || !state.IsEnabled
-            || !options.IsTitlebarProfileEnabled
+            options.IsTitlebarEnabled
+            && state.IsEnabled
+            && options.IsTitlebarProfileEnabled
         )
         {
-            ProfileOverlay.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        if (ProfileFrame.Content?.GetType() != state.ContentPageType)
-        {
-            var profilePage = ActivatorUtilities.GetServiceOrCreateInstance(
-                serviceProvider,
-                state.ContentPageType
-            );
-            if (profilePage is not WpfPage page)
+            Titlebar.SetProfile(profileService.CurrentProfile);
+            if (!isProfileServiceSubscribed)
             {
-                throw new InvalidOperationException(
-                    $"Configured profile page {state.ContentPageType.FullName} is not a WPF Page."
-                );
+                profileService.ProfileChanged += ProfileService_ProfileChanged;
+                isProfileServiceSubscribed = true;
             }
-
-            fontService.ApplyToPage(page, state.ContentPageType);
-            ProfileFrame.Navigate(page);
         }
-
-        Titlebar.SetProfile(profileService.CurrentProfile);
-        if (!isProfileServiceSubscribed)
+        else if (isProfileServiceSubscribed)
         {
-            profileService.ProfileChanged += ProfileService_ProfileChanged;
-            isProfileServiceSubscribed = true;
+            profileService.ProfileChanged -= ProfileService_ProfileChanged;
+            isProfileServiceSubscribed = false;
         }
 
         ApplyProfileFlyoutState(state);
+    }
+
+    private void EnsureProfileContent(FlourishProfileFlyoutState state)
+    {
+        if (
+            materializedProfileConfiguredPageType == state.ContentPageType
+            && ProfileFrame.Content is WpfPage
+        )
+        {
+            return;
+        }
+
+        var profilePage = ActivatorUtilities.GetServiceOrCreateInstance(
+            serviceProvider,
+            state.ContentPageType
+        );
+        if (profilePage is not WpfPage page)
+        {
+            throw new InvalidOperationException(
+                $"Configured profile page {state.ContentPageType.FullName} is not a WPF Page."
+            );
+        }
+
+        fontService.ApplyToPage(page, state.ContentPageType);
+        if (!ProfileFrame.Navigate(page))
+        {
+            throw new InvalidOperationException(
+                $"Navigation to profile page {state.ContentPageType.FullName} was rejected."
+            );
+        }
+
+        materializedProfileConfiguredPageType = state.ContentPageType;
     }
 
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
@@ -394,31 +414,43 @@ internal partial class FlourishShellWindow : Window
 
     private void ApplyProfileFlyoutState(FlourishProfileFlyoutState state)
     {
+        ProfileOverlay.Visibility = Visibility.Collapsed;
         if (!state.IsEnabled || !options.IsTitlebarEnabled || !options.IsTitlebarProfileEnabled)
         {
-            ProfileOverlay.Visibility = Visibility.Collapsed;
             profileFlyoutService.SynchronizeVisibility(false);
             return;
         }
 
-        ProfileOverlay.Visibility = state.IsVisible
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-        if (state.IsVisible)
+        if (!state.IsVisible)
         {
-            CloseStatusFlyout(restoreFocus: false);
-            Dispatcher.BeginInvoke(new Action(UpdateProfileCardPosition));
+            return;
         }
-    }
 
-    private void ApplyToolTipResources()
-    {
-        Resources["FlourishToolTipInitialShowDelay"] = options.IsTipsEnabled
-            ? options.Tips.InitialShowDelayMilliseconds
-            : int.MaxValue;
-        Resources["FlourishToolTipSpawnableMargin"] = options.IsTipsEnabled
-            ? options.Tips.SpawnableMargin
-            : 0d;
+        try
+        {
+            EnsureProfileContent(state);
+        }
+        catch (Exception error)
+        {
+            profileFlyoutService.SynchronizeVisibility(false);
+            System.Diagnostics.Debug.WriteLine(
+                $"Flourish profile content initialization failed: {error}"
+            );
+            notificationService.Upsert(
+                new FlourishNotification(
+                    "flourish.profile.content.error",
+                    "Profile unavailable",
+                    error.Message,
+                    FlourishNotificationSeverity.Error,
+                    Duration: TimeSpan.FromSeconds(8)
+                )
+            );
+            return;
+        }
+
+        ProfileOverlay.Visibility = Visibility.Visible;
+        CloseStatusFlyout(restoreFocus: false);
+        Dispatcher.BeginInvoke(new Action(UpdateProfileCardPosition));
     }
 
     private void ApplyWindowOptions()
@@ -1050,10 +1082,6 @@ internal partial class FlourishShellWindow : Window
             Tag = task.Id,
             ToolTip = new FlourishToolTip { Content = toolTip },
         };
-        ToolTipService.SetInitialShowDelay(
-            button,
-            options.Tips.InitialShowDelayMilliseconds
-        );
         button.Click += BackgroundTaskIconButton_Click;
         return new BackgroundTaskIconView(
             button,
@@ -2340,6 +2368,8 @@ internal partial class FlourishShellWindow : Window
             () =>
             {
                 BuildNavigationItems();
+                ClearToolbarButtonCache();
+                BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);
                 if (navigationService.CurrentSourcePageType is { } pageType)
                 {
                     UpdateBreadcrumb(pageType);
@@ -2374,7 +2404,19 @@ internal partial class FlourishShellWindow : Window
 
     private void TitleBarService_Changed(object? sender, FlourishTitleBarChangedEventArgs e)
     {
-        DispatchRuntimeChange(() => ApplyTitleBarState(titleBarService.Current));
+        DispatchRuntimeChange(() =>
+        {
+            var current = titleBarService.Current;
+            ApplyTitleBarState(current);
+            var shouldSubscribeToProfile =
+                options.IsTitlebarEnabled
+                && profileFlyoutService.Current.IsEnabled
+                && current.IsProfileVisible;
+            if (shouldSubscribeToProfile != isProfileServiceSubscribed)
+            {
+                ConfigureProfileSurface();
+            }
+        });
     }
 
     private void ApplyTitleBarState(FlourishTitleBarState state)
@@ -2383,8 +2425,7 @@ internal partial class FlourishShellWindow : Window
         Titlebar.SetTitle(state.Title);
         Titlebar.SetSubtitle(state.Subtitle);
         Titlebar.SetSearchPlaceholder(state.SearchPlaceholder);
-        var logo = Titlebar.SetLogo(state.LogoPath, state.LogoFallbackText);
-        Icon = state.IsLogoVisible ? logo : null;
+        RequestTitleBarLogo(state.LogoPath, state.LogoFallbackText, state.IsLogoVisible);
         Titlebar.ConfigureVisibility(
             state.IsSearchVisible,
             state.IsBreadcrumbVisible && state.BreadcrumbMode != BreadcrumbShowOption.Hidden,
@@ -2400,6 +2441,81 @@ internal partial class FlourishShellWindow : Window
         {
             UpdateBreadcrumb(pageType);
         }
+    }
+
+    private void RequestTitleBarLogo(
+        string? logoPath,
+        string fallbackText,
+        bool isVisible
+    )
+    {
+        if (isShellClosed)
+        {
+            return;
+        }
+
+        currentTitleBarLogoFallbackText = fallbackText;
+        isTitleBarLogoVisible = isVisible;
+
+        var request = titleBarLogoLoadCoordinator.Request(logoPath);
+        if (request.Completion.IsCompletedSuccessfully)
+        {
+            var result = request.Completion.Result;
+            if (titleBarLogoLoadCoordinator.IsCurrent(result))
+            {
+                ApplyTitleBarLogoSource(result.Source);
+            }
+
+            return;
+        }
+
+        ApplyTitleBarLogoSource(
+            request.IsNewRequest
+                ? TitleBarVisualAssets.DefaultLogoSource
+                : currentTitleBarLogoSource
+        );
+        if (request.IsNewRequest)
+        {
+            _ = CompleteTitleBarLogoRequestAsync(request);
+        }
+    }
+
+    private async Task CompleteTitleBarLogoRequestAsync(TitleBarLogoLoadRequest request)
+    {
+        TitleBarLogoLoadResult result;
+        try
+        {
+            result = await request.Completion.ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            // The production loader converts recoverable file/decoder failures into a null
+            // result. An unexpected loader failure must not escape a fire-and-forget UI update.
+            return;
+        }
+
+        if (!result.IsCurrent)
+        {
+            return;
+        }
+
+        DispatchRuntimeChange(
+            () =>
+            {
+                if (titleBarLogoLoadCoordinator.IsCurrent(result))
+                {
+                    ApplyTitleBarLogoSource(result.Source);
+                }
+            }
+        );
+    }
+
+    private void ApplyTitleBarLogoSource(ImageSource? source)
+    {
+        var effectiveSource = source ?? TitleBarVisualAssets.DefaultLogoSource;
+        currentTitleBarLogoSource = effectiveSource;
+        Titlebar.SetLogo(effectiveSource, currentTitleBarLogoFallbackText);
+        Icon = isTitleBarLogoVisible ? effectiveSource : null;
     }
 
     private void TitleBarSearchService_StateChanged(
@@ -2450,12 +2566,7 @@ internal partial class FlourishShellWindow : Window
         FlourishProfileFlyoutChangedEventArgs e
     )
     {
-        DispatchRuntimeChange(() =>
-        {
-            var current = profileFlyoutService.Current;
-            ConfigureProfileSurface();
-            ApplyProfileFlyoutState(current);
-        });
+        DispatchRuntimeChange(ConfigureProfileSurface);
     }
 
     private void ShellFeatureService_Changed(
@@ -2470,7 +2581,6 @@ internal partial class FlourishShellWindow : Window
                 case ShellFeature.TitleBar:
                     ApplyTitleBarState(titleBarService.Current);
                     ConfigureProfileSurface();
-                    ApplyProfileFlyoutState(profileFlyoutService.Current);
                     ApplyTitleBarFeatureState(refreshFrame: true);
                     break;
                 case ShellFeature.Navigation:
@@ -2482,9 +2592,6 @@ internal partial class FlourishShellWindow : Window
                     break;
                 case ShellFeature.StatusContent:
                     UpdateStatusBarVisibility();
-                    break;
-                case ShellFeature.ToolTips:
-                    ApplyToolTipResources();
                     break;
                 case ShellFeature.Profile:
                     ConfigureProfileSurface();
@@ -2597,18 +2704,35 @@ internal partial class FlourishShellWindow : Window
 
     private void DispatchRuntimeChange(Action action)
     {
-        if (isShellClosed || Dispatcher.HasShutdownStarted)
+        void ExecuteIfActive()
         {
-            return;
+            if (
+                isShellClosed
+                || Dispatcher.HasShutdownStarted
+                || Dispatcher.HasShutdownFinished
+            )
+            {
+                return;
+            }
+
+            action();
         }
 
         if (Dispatcher.CheckAccess())
         {
-            action();
+            ExecuteIfActive();
             return;
         }
 
-        _ = Dispatcher.BeginInvoke(DispatcherPriority.DataBind, action);
+        if (isShellClosed || Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
+        {
+            return;
+        }
+
+        _ = Dispatcher.BeginInvoke(
+            DispatcherPriority.DataBind,
+            new Action(ExecuteIfActive)
+        );
     }
 
     private void ClearToolbarButtonCache()
@@ -3256,6 +3380,7 @@ internal partial class FlourishShellWindow : Window
         statusService.Changed -= StatusService_Changed;
         shellRegionService.Changed -= ShellRegionService_Changed;
         titleBarService.Changed -= TitleBarService_Changed;
+        titleBarLogoLoadCoordinator.Dispose();
         titleBarSearchService.StateChanged -= TitleBarSearchService_StateChanged;
         notificationService.NotificationsChanged -= NotificationService_NotificationsChanged;
         profileFlyoutService.Changed -= ProfileFlyoutService_Changed;

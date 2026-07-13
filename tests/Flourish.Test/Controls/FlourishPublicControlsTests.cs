@@ -145,6 +145,187 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
+    public void CanonicalThemeResources_EnsureMergedAddsCanonicalAfterUnrelatedGraph()
+    {
+        RunInSta(() =>
+        {
+            var resources = new ResourceDictionary();
+            var wrapper = new ResourceDictionary();
+            wrapper.MergedDictionaries.Add(new ResourceDictionary());
+            resources.MergedDictionaries.Add(wrapper);
+
+            FlourishThemeResources.EnsureMerged(resources);
+
+            Assert.Equal(2, resources.MergedDictionaries.Count);
+            Assert.Same(wrapper, resources.MergedDictionaries[0]);
+            Assert.IsType<FlourishThemeResources>(resources.MergedDictionaries[1]);
+        });
+    }
+
+    [Fact]
+    public void CanonicalThemeResources_EnsureMergedDoesNotAddToExistingDuplicates()
+    {
+        RunInSta(() =>
+        {
+            var resources = new ResourceDictionary();
+            var first = new FlourishThemeResources();
+            var second = new FlourishThemeResources();
+            resources.MergedDictionaries.Add(first);
+            resources.MergedDictionaries.Add(second);
+
+            FlourishThemeResources.EnsureMerged(resources);
+
+            Assert.Equal(2, resources.MergedDictionaries.Count);
+            Assert.Same(first, resources.MergedDictionaries[0]);
+            Assert.Same(second, resources.MergedDictionaries[1]);
+            Assert.Same(second, FlourishThemeResources.FindThemeRoot(resources));
+        });
+    }
+
+    [Fact]
+    public void CanonicalThemeResources_EnsureMergedRecognizesTheRootByType()
+    {
+        RunInSta(() =>
+        {
+            var resources = new FlourishThemeResources();
+            var originalMergedDictionaries = resources.MergedDictionaries.ToArray();
+
+            FlourishThemeResources.EnsureMerged(resources);
+
+            Assert.Equal(
+                originalMergedDictionaries,
+                resources.MergedDictionaries.Cast<ResourceDictionary>()
+            );
+            Assert.Same(resources, FlourishThemeResources.FindThemeRoot(resources));
+        });
+    }
+
+    [Fact]
+    public void CanonicalThemeResources_EnsureMergedRecognizesTheRootByRawSource()
+    {
+        RunInSta(() =>
+        {
+            var resources = new ResourceDictionary
+            {
+                Source = new Uri(GenericThemeSource, UriKind.Relative),
+            };
+            var originalMergedDictionaries = resources.MergedDictionaries.ToArray();
+
+            FlourishThemeResources.EnsureMerged(resources);
+
+            Assert.Equal(
+                originalMergedDictionaries,
+                resources.MergedDictionaries.Cast<ResourceDictionary>()
+            );
+            Assert.Same(resources, FlourishThemeResources.FindThemeRoot(resources));
+        });
+    }
+
+    [Fact]
+    public void CanonicalThemeResources_EnsureMergedRecognizesNestedCanonicalType()
+    {
+        RunInSta(() =>
+        {
+            var root = new ResourceDictionary();
+            var outerWrapper = new ResourceDictionary();
+            var innerWrapper = new ResourceDictionary();
+            var theme = new FlourishThemeResources();
+            innerWrapper.MergedDictionaries.Add(theme);
+            outerWrapper.MergedDictionaries.Add(innerWrapper);
+            root.MergedDictionaries.Add(outerWrapper);
+
+            FlourishThemeResources.EnsureMerged(root);
+            FlourishThemeResources.EnsureMerged(root);
+
+            Assert.Same(outerWrapper, Assert.Single(root.MergedDictionaries));
+            Assert.Same(innerWrapper, Assert.Single(outerWrapper.MergedDictionaries));
+            Assert.Same(theme, Assert.Single(innerWrapper.MergedDictionaries));
+            Assert.Same(theme, FlourishThemeResources.FindThemeRoot(root));
+        });
+    }
+
+    [Fact]
+    public void CanonicalThemeResources_EnsureMergedRecognizesNestedRawSource()
+    {
+        RunInSta(() =>
+        {
+            var root = new ResourceDictionary();
+            var wrapper = new ResourceDictionary();
+            var rawTheme = new ResourceDictionary
+            {
+                Source = new Uri(GenericThemeSource, UriKind.Relative),
+            };
+            wrapper.MergedDictionaries.Add(rawTheme);
+            root.MergedDictionaries.Add(wrapper);
+
+            FlourishThemeResources.EnsureMerged(root);
+
+            Assert.Same(wrapper, Assert.Single(root.MergedDictionaries));
+            Assert.Same(rawTheme, Assert.Single(wrapper.MergedDictionaries));
+            Assert.Same(rawTheme, FlourishThemeResources.FindThemeRoot(root));
+        });
+    }
+
+    [Fact]
+    public void CanonicalThemeResources_FindInGraphVisitsSharedDictionariesOnce()
+    {
+        RunInSta(() =>
+        {
+            var root = new ResourceDictionary();
+            var left = new ResourceDictionary();
+            var right = new ResourceDictionary();
+            var shared = new ResourceDictionary();
+            left.MergedDictionaries.Add(shared);
+            right.MergedDictionaries.Add(shared);
+            root.MergedDictionaries.Add(left);
+            root.MergedDictionaries.Add(right);
+            var visits = new Dictionary<ResourceDictionary, int>(
+                ReferenceEqualityComparer.Instance
+            );
+
+            var result = FlourishThemeResources.FindInGraph(
+                root,
+                dictionary =>
+                {
+                    visits[dictionary] = visits.GetValueOrDefault(dictionary) + 1;
+                    return false;
+                }
+            );
+
+            Assert.Null(result);
+            Assert.Equal(4, visits.Count);
+            Assert.All(visits.Values, count => Assert.Equal(1, count));
+            Assert.Equal(1, visits[shared]);
+        });
+    }
+
+    [Theory]
+    [InlineData(GenericThemeSource, true)]
+    [InlineData("pack://application:,,,/Flourish;component/Themes/Generic.xaml", true)]
+    [InlineData(@"\Flourish;component\Themes\Generic.xaml", true)]
+    [InlineData("/Other;component/Themes/Generic.xaml", false)]
+    [InlineData("/Custom/Flourish;component/Themes/Generic.xaml", false)]
+    [InlineData("/Flourish;component/Themes/Generic.xaml.extra", false)]
+    public void CanonicalThemeResources_RecognizesOnlyCanonicalSourceForms(
+        string source,
+        bool expected
+    )
+    {
+        RunInSta(() =>
+        {
+            _ = System.IO.Packaging.PackUriHelper.UriSchemePack;
+            var kind = source.StartsWith("pack:", StringComparison.OrdinalIgnoreCase)
+                ? UriKind.Absolute
+                : UriKind.Relative;
+
+            Assert.Equal(
+                expected,
+                FlourishThemeResources.IsCanonicalThemeSource(new Uri(source, kind))
+            );
+        });
+    }
+
+    [Fact]
     public void PublicVisualControls_UseTheirOwnDefaultStyleKeys()
     {
         RunInSta(() =>

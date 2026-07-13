@@ -303,7 +303,7 @@ internal sealed class ThemeService(
     internal static void ApplyThemePalette(ResourceDictionary resources, FlourishTheme theme)
     {
         ArgumentNullException.ThrowIfNull(resources);
-        var themeRoot = FindThemeRoot(resources)
+        var themeRoot = FlourishThemeResources.FindThemeRoot(resources)
             ?? throw new InvalidOperationException(
                 $"The resource graph does not contain {FlourishThemeResources.GenericThemeSource}."
             );
@@ -325,46 +325,15 @@ internal sealed class ThemeService(
         paletteHost.Source = new Uri(source, UriKind.Relative);
     }
 
-    private static ResourceDictionary? FindThemeRoot(ResourceDictionary dictionary)
-    {
-        if (IsSource(dictionary, FlourishThemeResources.GenericThemeSource))
-        {
-            return dictionary;
-        }
-
-        foreach (var mergedDictionary in dictionary.MergedDictionaries)
-        {
-            var result = FindThemeRoot(mergedDictionary);
-            if (result is not null)
-            {
-                return result;
-            }
-        }
-
-        return null;
-    }
-
     private static ResourceDictionary? FindPaletteHost(ResourceDictionary dictionary)
     {
-        if (
-            IsSource(dictionary, PaletteHostSource)
-            || IsSource(dictionary, LightThemeSource)
-            || IsSource(dictionary, DarkThemeSource)
-        )
-        {
-            return dictionary;
-        }
-
-        foreach (var mergedDictionary in dictionary.MergedDictionaries)
-        {
-            var result = FindPaletteHost(mergedDictionary);
-            if (result is not null)
-            {
-                return result;
-            }
-        }
-
-        return null;
+        return FlourishThemeResources.FindInGraph(
+            dictionary,
+            static candidate =>
+                IsSource(candidate, PaletteHostSource)
+                || IsSource(candidate, LightThemeSource)
+                || IsSource(candidate, DarkThemeSource)
+        );
     }
 
     private static bool IsSource(ResourceDictionary dictionary, string source)

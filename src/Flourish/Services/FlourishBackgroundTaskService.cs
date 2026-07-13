@@ -18,12 +18,16 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
     private readonly Channel<BackgroundOperation> queue;
     private readonly Dictionary<Guid, BackgroundOperation> activeOperationsById = [];
     private readonly List<BackgroundOperation> activeOperations = [];
-    private Task[] workers = [];
+    private TaskCompletionSource workersDrained = CreateCompletedSignal();
     private Task? stopTask;
     private bool hasStarted;
     private bool isAcceptingTasks = true;
     private bool isRaisingTasksChanged;
+    private int activeWorkerCount;
     private int pendingTaskNotifications;
+    private int pendingQueueItems;
+    private int workerStartCount;
+    private int workersAwaitingFirstRead;
 
     public FlourishBackgroundTaskService()
         : this(NullLogger<FlourishBackgroundTaskService>.Instance, DefaultMaxConcurrency) { }
@@ -64,6 +68,28 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
     }
 
     public int MaxConcurrency { get; }
+
+    internal int ActiveWorkerCount
+    {
+        get
+        {
+            lock (lifecycleGate)
+            {
+                return activeWorkerCount;
+            }
+        }
+    }
+
+    internal int WorkerStartCount
+    {
+        get
+        {
+            lock (lifecycleGate)
+            {
+                return workerStartCount;
+            }
+        }
+    }
 
     public IReadOnlyList<FlourishBackgroundTaskInfo> ActiveTasks
     {
@@ -197,10 +223,7 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
             }
 
             hasStarted = true;
-            workers = Enumerable
-                .Range(0, MaxConcurrency)
-                .Select(_ => Task.Run(ProcessQueueAsync))
-                .ToArray();
+            StartWorkersForPendingItemsLocked();
         }
 
         return Task.CompletedTask;
@@ -221,10 +244,18 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
                     operations = activeOperations.ToArray();
                 }
 
+                while (queue.Reader.TryRead(out _))
+                {
+                    pendingQueueItems--;
+                }
+
+                Debug.Assert(pendingQueueItems == 0);
+                var workerDrainTask = workersDrained.Task;
+
                 // Run the synchronous cancellation phase outside the caller and the lifecycle
                 // lock. Cancellation callbacks and task events are application code and may
                 // re-enter StopAsync.
-                stopTask = Task.Run(() => StopCoreAsync(operations, workers));
+                stopTask = Task.Run(() => StopCoreAsync(operations, workerDrainTask));
             }
 
             currentStopTask = stopTask;
@@ -243,52 +274,153 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
         ArgumentNullException.ThrowIfNull(metadata);
 
         var operation = new BackgroundOperation(metadata, task);
-        lock (gate)
+        lock (lifecycleGate)
         {
-            if (!isAcceptingTasks)
+            lock (gate)
             {
-                throw new InvalidOperationException(
-                    "The Flourish background task service is stopping and no longer accepts tasks."
-                );
-            }
+                if (!isAcceptingTasks)
+                {
+                    throw new InvalidOperationException(
+                        "The Flourish background task service is stopping and no longer accepts tasks."
+                    );
+                }
 
-            activeOperations.Add(operation);
-            activeOperationsById.Add(operation.Id, operation);
-            if (!queue.Writer.TryWrite(operation))
-            {
-                RemoveActiveOperationLocked(operation);
-                throw new InvalidOperationException(
-                    "The Flourish background task queue is no longer available."
-                );
+                activeOperations.Add(operation);
+                activeOperationsById.Add(operation.Id, operation);
+                pendingQueueItems++;
+                if (!queue.Writer.TryWrite(operation))
+                {
+                    pendingQueueItems--;
+                    RemoveActiveOperationLocked(operation);
+                    throw new InvalidOperationException(
+                        "The Flourish background task queue is no longer available."
+                    );
+                }
             }
         }
 
         NotifyTasksChanged();
+        EnsureWorkersStarted();
         return operation;
     }
 
     private async Task ProcessQueueAsync()
     {
-        await foreach (var operation in queue.Reader.ReadAllAsync().ConfigureAwait(false))
+        var hasInitialReservation = true;
+        try
         {
-            var shouldExecute = false;
-            lock (gate)
+            while (TryReadNextOperation(ref hasInitialReservation, out var operation))
             {
-                if (operation.State == FlourishBackgroundTaskState.Queued)
+                var shouldExecute = false;
+                lock (gate)
                 {
-                    operation.State = FlourishBackgroundTaskState.Running;
-                    operation.StartedAt = DateTimeOffset.UtcNow;
-                    shouldExecute = true;
+                    if (operation.State == FlourishBackgroundTaskState.Queued)
+                    {
+                        operation.State = FlourishBackgroundTaskState.Running;
+                        operation.StartedAt = DateTimeOffset.UtcNow;
+                        shouldExecute = true;
+                    }
                 }
-            }
 
-            if (!shouldExecute)
+                if (!shouldExecute)
+                {
+                    continue;
+                }
+
+                NotifyTasksChanged();
+                await ExecuteOperationAsync(operation).ConfigureAwait(false);
+            }
+        }
+        finally
+        {
+            WorkerExited(hasInitialReservation);
+        }
+    }
+
+    private bool TryReadNextOperation(
+        ref bool hasInitialReservation,
+        out BackgroundOperation operation
+    )
+    {
+        lock (lifecycleGate)
+        {
+            if (hasInitialReservation)
             {
-                continue;
+                workersAwaitingFirstRead--;
+                hasInitialReservation = false;
+            }
+            else if (pendingQueueItems <= workersAwaitingFirstRead)
+            {
+                operation = null!;
+                return false;
             }
 
-            NotifyTasksChanged();
-            await ExecuteOperationAsync(operation).ConfigureAwait(false);
+            if (!queue.Reader.TryRead(out operation!))
+            {
+                return false;
+            }
+
+            pendingQueueItems--;
+            return true;
+        }
+    }
+
+    private void EnsureWorkersStarted()
+    {
+        lock (lifecycleGate)
+        {
+            StartWorkersForPendingItemsLocked();
+        }
+    }
+
+    private void StartWorkersForPendingItemsLocked()
+    {
+        if (!hasStarted || stopTask is not null)
+        {
+            return;
+        }
+
+        var unreservedItems = pendingQueueItems - workersAwaitingFirstRead;
+        var workersToStart = Math.Min(MaxConcurrency - activeWorkerCount, unreservedItems);
+        for (var index = 0; index < workersToStart; index++)
+        {
+            if (activeWorkerCount == 0 && workersDrained.Task.IsCompleted)
+            {
+                workersDrained = new TaskCompletionSource(
+                    TaskCreationOptions.RunContinuationsAsynchronously
+                );
+            }
+
+            activeWorkerCount++;
+            workersAwaitingFirstRead++;
+            workerStartCount++;
+            _ = Task.Run(ProcessQueueAsync);
+        }
+    }
+
+    private void WorkerExited(bool hasInitialReservation)
+    {
+        lock (lifecycleGate)
+        {
+            if (hasInitialReservation)
+            {
+                workersAwaitingFirstRead--;
+            }
+
+            activeWorkerCount--;
+            StartWorkersForPendingItemsLocked();
+            if (activeWorkerCount == 0)
+            {
+                workersDrained.TrySetResult();
+            }
+        }
+    }
+
+    internal Task WaitForWorkersIdleAsync()
+    {
+        lock (lifecycleGate)
+        {
+            return workersDrained.Task;
         }
     }
 
@@ -429,7 +561,7 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
 
     private async Task StopCoreAsync(
         BackgroundOperation[] operations,
-        Task[] workerTasks
+        Task workerDrainTask
     )
     {
         foreach (var operation in operations)
@@ -437,7 +569,7 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
             CancelTask(operation.Id);
         }
 
-        await Task.WhenAll(workerTasks).ConfigureAwait(false);
+        await workerDrainTask.ConfigureAwait(false);
         Task[] cancellationDispatchTasks;
         lock (gate)
         {
@@ -449,6 +581,15 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
         }
 
         await Task.WhenAll(cancellationDispatchTasks).ConfigureAwait(false);
+    }
+
+    private static TaskCompletionSource CreateCompletedSignal()
+    {
+        var signal = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        signal.TrySetResult();
+        return signal;
     }
 
     private void NotifyTasksChanged()

@@ -26,7 +26,7 @@ public sealed class FlourishThemeResources : ResourceDictionary
     internal static void EnsureMerged(ResourceDictionary resources)
     {
         ArgumentNullException.ThrowIfNull(resources);
-        if (resources.MergedDictionaries.Any(IsFlourishDictionary))
+        if (FindThemeRoot(resources) is not null)
         {
             return;
         }
@@ -34,19 +34,69 @@ public sealed class FlourishThemeResources : ResourceDictionary
         resources.MergedDictionaries.Add(new FlourishThemeResources());
     }
 
+    internal static ResourceDictionary? FindThemeRoot(ResourceDictionary resources)
+    {
+        return FindInGraph(resources, IsFlourishDictionary);
+    }
+
+    internal static ResourceDictionary? FindInGraph(
+        ResourceDictionary resources,
+        Func<ResourceDictionary, bool> predicate
+    )
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var pending = new Stack<ResourceDictionary>();
+        var visited = new HashSet<ResourceDictionary>(ReferenceEqualityComparer.Instance);
+        pending.Push(resources);
+
+        while (pending.TryPop(out var current))
+        {
+            if (!visited.Add(current))
+            {
+                continue;
+            }
+
+            if (predicate(current))
+            {
+                return current;
+            }
+
+            // WPF resolves later merged dictionaries first, so traverse the graph in the
+            // same effective precedence order when more than one theme root is present.
+            for (var index = 0; index < current.MergedDictionaries.Count; index++)
+            {
+                pending.Push(current.MergedDictionaries[index]);
+            }
+        }
+
+        return null;
+    }
+
     private static bool IsFlourishDictionary(ResourceDictionary dictionary)
     {
-        if (
-            dictionary is FlourishThemeResources
-            || dictionary.GetType().FullName
-                is "ArkheideSystem.Flourish.Styles.FlourishStyles"
-                    or "ArkheideSystem.Flourish.Controls.FlourishControlResources"
-        )
+        if (dictionary is FlourishThemeResources)
         {
             return true;
         }
 
-        var source = dictionary.Source?.OriginalString.Replace('\\', '/');
-        return source?.EndsWith(GenericThemeSource, StringComparison.OrdinalIgnoreCase) == true;
+        return IsCanonicalThemeSource(dictionary.Source);
+    }
+
+    internal static bool IsCanonicalThemeSource(Uri? source)
+    {
+        const string applicationPackPrefix = "pack://application:,,,";
+        var normalized = source?.OriginalString.Replace('\\', '/');
+        return string.Equals(
+                normalized,
+                GenericThemeSource,
+                StringComparison.OrdinalIgnoreCase
+            )
+            || string.Equals(
+                normalized,
+                applicationPackPrefix + GenericThemeSource,
+                StringComparison.OrdinalIgnoreCase
+            );
     }
 }
