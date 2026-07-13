@@ -49,7 +49,7 @@ The public builder separates hosting, application services, feature switches, an
 | [Background tasks](background-tasks.md) | `IBackgroundTaskService` | Runs cancellable asynchronous work through the Host-managed worker pool. |
 | [Tooltips](configure-tips.md) | `ConfigureShell` | Configures and enables tooltips with `UseTips`. |
 | [Motion](configure-motion.md) | `ConfigureMotion` | Configures transitions and hover animation. |
-| [Window](configure-window.md) | `ConfigureWindow` | Configures shell window properties. |
+| [Window](configure-window.md) | `ConfigureWindow` | Configures shell window behavior and rendering. |
 | [Typography](configure-font.md) | `ConfigureShell` | Configures shell typography with `UseGlobalFont`. |
 | [Material effects](configure-material-effect.md) | `ConfigureShell` | Applies the window material with `UseMaterialEffect`. |
 | [Themes](configure-themes.md) | `ConfigureTitleBar` | Enables theme handling with `SetThemeToggle`. |

@@ -1,11 +1,11 @@
 ---
 title: Window
-description: Set the Flourish shell window size, position, state, and WPF window behavior.
+description: Set the Flourish shell window size, position, rendering, and WPF window behavior.
 ---
 
 # Window
 
-Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, resize behavior, taskbar visibility, topmost behavior, and close-to-tray behavior.
+Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, rendering behavior, taskbar visibility, topmost behavior, and close-to-tray behavior.
 
 ## Configure the window
 
@@ -19,6 +19,9 @@ builder.ConfigureWindow(window =>
         .SetWindowPosition(WindowStartupLocation.CenterScreen)
         .SetWindowState(WindowState.Normal)
         .SetWindowResizeMode(ResizeMode.CanResize)
+        .UseTextStrategy()
+        .SnapsToDevicePixels()
+        .UseLayoutRounding()
         .UseTopmost(false)
         .ShowInTaskbar(true)
         .SetTrayExit();
@@ -40,6 +43,21 @@ Use either a `WindowStartupLocation` or manual coordinates to make startup place
 ## Window behavior
 
 `SetWindowResizeMode` controls whether the custom title bar maximize command is available. `ShowInTaskbar` and `UseTopmost` map to normal WPF window behavior.
+
+## Text rendering and pixel alignment
+
+The rendering methods set the corresponding inherited WPF properties on the shell window:
+
+```csharp
+window
+    .UseTextStrategy(TextFormattingMode.Display, TextRenderingMode.ClearType)
+    .SnapsToDevicePixels()
+    .UseLayoutRounding();
+```
+
+Calling `UseTextStrategy()` without arguments selects `Display` text formatting and `ClearType` text rendering. `SnapsToDevicePixels()` and `UseLayoutRounding()` enable their WPF behaviors by default; pass `false` to either method to disable that behavior.
+
+Descendants inherit these settings unless they provide their own local value or style. If a method is not called, Flourish does not set the corresponding value on the window. The visible result can still vary with the font, display scale, rendering surface, and descendant overrides.
 
 ## Close to the notification area
 

@@ -23,15 +23,15 @@ internal static class Program
                     services.AddSingleton<ICommandParser, GalleryCommandParser>();
 
                     services.AddNavigable<HomePage>("Overview", "\uE80F");
-                    services.AddNavigable<ConfigurationPage>("Configuration & locale", "\uE713");
-                    services.AddNavigable<AppearancePage>("Appearance & motion", "\uE790");
-                    services.AddNavigable<TitleBarRuntimePage>("Title bar & search", "\uE8A4");
-                    services.AddNavigable<NavigationRuntimePage>("Navigation & cache", "\uE700");
-                    services.AddNavigable<ToolbarStatusPage>("Toolbar, status & regions", "\uE945");
-                    services.AddNavigable<CommandsPage>("Commands & shortcuts", "\uE756");
-                    services.AddNavigable<WindowRuntimePage>("Window & notifications", "\uE737");
-                    services.AddNavigable<BackgroundTasksPage>("Background tasks", "\uE895");
-                    services.AddNavigable<ControlLibraryPage>("Control library", "\uE8D2");
+                    services.AddNavigable<ConfigurationPage>("Configuration", "\uE713");
+                    services.AddNavigable<AppearancePage>("Appearance", "\uE790");
+                    services.AddNavigable<TitleBarRuntimePage>("Title bar", "\uE8A4");
+                    services.AddNavigable<NavigationRuntimePage>("Navigation", "\uE700");
+                    services.AddNavigable<ToolbarStatusPage>("Regions", "\uE945");
+                    services.AddNavigable<CommandsPage>("Commands", "\uE756");
+                    services.AddNavigable<WindowRuntimePage>("Window", "\uE737");
+                    services.AddNavigable<BackgroundTasksPage>("Background", "\uE895");
+                    services.AddNavigable<ControlLibraryPage>("Controls", "\uE8D2");
                 }
             )
             .ConfigureShell(shell =>
@@ -131,7 +131,13 @@ internal static class Program
                     .EnablePageTransition();
             })
             .ConfigureWindow(window =>
-                window.SetWindowSize().SetWindowMinSize().SetWindowPosition().SetTrayExit(false)
+                window
+                    .SetWindowSize()
+                    .SetWindowMinSize()
+                    .SetWindowPosition()
+                    .SnapsToDevicePixels()
+                    .UseLayoutRounding()
+                    .UseTextStrategy(System.Windows.Media.TextFormattingMode.Display, System.Windows.Media.TextRenderingMode.ClearType)
             )
             .Build();
 

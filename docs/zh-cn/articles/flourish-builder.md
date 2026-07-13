@@ -49,7 +49,7 @@ return flourish.Run<App>();
 | [后台任务](background-tasks.md) | `IBackgroundTaskService` | 通过 Host 管理的工作池运行可取消异步任务。 |
 | [提示浮层](configure-tips.md) | `ConfigureShell` | 使用 `UseTips` 配置并启用提示浮层。 |
 | [动效](configure-motion.md) | `ConfigureMotion` | 配置页面过渡、导航栏过渡和悬停揭示动画。 |
-| [窗口](configure-window.md) | `ConfigureWindow` | 配置 Shell 窗口尺寸、位置、状态、任务栏、置顶和托盘行为。 |
+| [窗口](configure-window.md) | `ConfigureWindow` | 配置 Shell 窗口行为与渲染。 |
 | [排版](configure-font.md) | `ConfigureShell` | 使用 `UseGlobalFont` 配置 Shell 排版。 |
 | [材质特效](configure-material-effect.md) | `ConfigureShell` | 使用 `UseMaterialEffect` 应用窗口材质。 |
 | [主题](configure-themes.md) | `ConfigureTitleBar` | 使用 `SetThemeToggle` 启用主题功能并显示切换入口。 |

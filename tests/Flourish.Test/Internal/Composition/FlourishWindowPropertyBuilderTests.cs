@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Media;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
 
@@ -18,6 +19,9 @@ public sealed class FlourishWindowPropertyBuilderTests
         Assert.Same(sut, sut.SetManualWindowPosition(-120, 45));
         Assert.Same(sut, sut.SetWindowState(WindowState.Maximized));
         Assert.Same(sut, sut.SetWindowResizeMode(ResizeMode.NoResize));
+        Assert.Same(sut, sut.UseTextStrategy());
+        Assert.Same(sut, sut.SnapsToDevicePixels());
+        Assert.Same(sut, sut.UseLayoutRounding());
         Assert.Same(sut, sut.UseTopmost());
         Assert.Same(sut, sut.ShowInTaskbar(false));
         Assert.Same(sut, sut.SetTrayExit());
@@ -33,9 +37,49 @@ public sealed class FlourishWindowPropertyBuilderTests
         Assert.Equal(WindowStartupLocation.Manual, options.WindowStartupLocation);
         Assert.Equal(WindowState.Maximized, options.WindowState);
         Assert.Equal(ResizeMode.NoResize, options.WindowResizeMode);
+        Assert.Equal(TextFormattingMode.Display, options.WindowTextFormattingMode);
+        Assert.Equal(TextRenderingMode.ClearType, options.WindowTextRenderingMode);
+        Assert.True(options.WindowSnapsToDevicePixels);
+        Assert.True(options.WindowUseLayoutRounding);
         Assert.True(options.WindowTopmost);
         Assert.False(options.WindowShowInTaskbar);
         Assert.True(options.IsTrayExitEnabled);
+    }
+
+    [Fact]
+    public void RenderingMethods_WithExplicitValues_UpdateOptionsAndReturnBuilder()
+    {
+        var options = new FlourishShellOptions
+        {
+            WindowTextFormattingMode = TextFormattingMode.Display,
+            WindowTextRenderingMode = TextRenderingMode.ClearType,
+            WindowSnapsToDevicePixels = true,
+            WindowUseLayoutRounding = true,
+        };
+        var sut = new FlourishWindowPropertyBuilder(options);
+
+        Assert.Same(
+            sut,
+            sut.UseTextStrategy(TextFormattingMode.Ideal, TextRenderingMode.Grayscale)
+        );
+        Assert.Same(sut, sut.SnapsToDevicePixels(false));
+        Assert.Same(sut, sut.UseLayoutRounding(false));
+
+        Assert.Equal(TextFormattingMode.Ideal, options.WindowTextFormattingMode);
+        Assert.Equal(TextRenderingMode.Grayscale, options.WindowTextRenderingMode);
+        Assert.False(options.WindowSnapsToDevicePixels);
+        Assert.False(options.WindowUseLayoutRounding);
+    }
+
+    [Fact]
+    public void RenderingOptions_WithoutConfiguration_RemainUnset()
+    {
+        var options = new FlourishShellOptions();
+
+        Assert.Null(options.WindowTextFormattingMode);
+        Assert.Null(options.WindowTextRenderingMode);
+        Assert.Null(options.WindowSnapsToDevicePixels);
+        Assert.Null(options.WindowUseLayoutRounding);
     }
 
     [Fact]
@@ -283,5 +327,38 @@ public sealed class FlourishWindowPropertyBuilderTests
         );
 
         Assert.Equal("resizeMode", exception.ParamName);
+    }
+
+    [Fact]
+    public void UseTextStrategy_WithUndefinedFormattingMode_ThrowsArgumentOutOfRangeException()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishWindowPropertyBuilder(options);
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.UseTextStrategy((TextFormattingMode)int.MaxValue)
+        );
+
+        Assert.Equal("textFormattingMode", exception.ParamName);
+        Assert.Null(options.WindowTextFormattingMode);
+        Assert.Null(options.WindowTextRenderingMode);
+    }
+
+    [Fact]
+    public void UseTextStrategy_WithUndefinedRenderingMode_DoesNotPartiallyUpdateOptions()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishWindowPropertyBuilder(options);
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.UseTextStrategy(
+                TextFormattingMode.Display,
+                (TextRenderingMode)int.MaxValue
+            )
+        );
+
+        Assert.Equal("textRenderingMode", exception.ParamName);
+        Assert.Null(options.WindowTextFormattingMode);
+        Assert.Null(options.WindowTextRenderingMode);
     }
 }

@@ -1125,6 +1125,42 @@ syntax:
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishWindowPropertyBuilder.UseTextStrategy(System.Windows.Media.TextFormattingMode,System.Windows.Media.TextRenderingMode)
+summary: 设置 Shell 内容继承的 WPF 文本格式化和呈现模式。
+remarks: 后代元素可以通过自身的 WPF 文本选项覆盖任一继承值。
+syntax:
+  parameters:
+  - id: textFormattingMode
+    description: 应用于 Shell 窗口的 WPF 文本格式化模式。
+  - id: textRenderingMode
+    description: 应用于 Shell 窗口的 WPF 文本呈现模式。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishWindowPropertyBuilder.SnapsToDevicePixels(System.Boolean)
+summary: 设置 Shell 窗口是否将渲染内容对齐到设备像素。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用设备像素对齐。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishWindowPropertyBuilder.UseLayoutRounding(System.Boolean)
+summary: 设置是否在 Shell 窗口布局期间应用布局取整。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用布局取整。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishWindowPropertyBuilder.UseTopmost(System.Boolean)
 summary: 设置 Shell 窗口是否保持在其他窗口上方。
 syntax:

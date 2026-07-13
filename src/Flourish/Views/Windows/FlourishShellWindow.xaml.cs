@@ -466,6 +466,26 @@ internal partial class FlourishShellWindow : Window
         Topmost = options.WindowTopmost;
         ShowInTaskbar = options.WindowShowInTaskbar;
 
+        if (options.WindowTextFormattingMode is { } textFormattingMode)
+        {
+            TextOptions.SetTextFormattingMode(this, textFormattingMode);
+        }
+
+        if (options.WindowTextRenderingMode is { } textRenderingMode)
+        {
+            TextOptions.SetTextRenderingMode(this, textRenderingMode);
+        }
+
+        if (options.WindowSnapsToDevicePixels is { } snapsToDevicePixels)
+        {
+            SnapsToDevicePixels = snapsToDevicePixels;
+        }
+
+        if (options.WindowUseLayoutRounding is { } useLayoutRounding)
+        {
+            UseLayoutRounding = useLayoutRounding;
+        }
+
         if (options.WindowLeft is { } left)
         {
             Left = left;

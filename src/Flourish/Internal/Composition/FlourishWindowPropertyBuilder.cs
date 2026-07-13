@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
@@ -88,6 +89,31 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
     {
         ValidateEnum(resizeMode, nameof(resizeMode));
         options.WindowResizeMode = resizeMode;
+        return this;
+    }
+
+    public IFlourishWindowPropertyBuilder UseTextStrategy(
+        TextFormattingMode textFormattingMode = TextFormattingMode.Display,
+        TextRenderingMode textRenderingMode = TextRenderingMode.ClearType
+    )
+    {
+        ValidateEnum(textFormattingMode, nameof(textFormattingMode));
+        ValidateEnum(textRenderingMode, nameof(textRenderingMode));
+
+        options.WindowTextFormattingMode = textFormattingMode;
+        options.WindowTextRenderingMode = textRenderingMode;
+        return this;
+    }
+
+    public IFlourishWindowPropertyBuilder SnapsToDevicePixels(bool enabled = true)
+    {
+        options.WindowSnapsToDevicePixels = enabled;
+        return this;
+    }
+
+    public IFlourishWindowPropertyBuilder UseLayoutRounding(bool enabled = true)
+    {
+        options.WindowUseLayoutRounding = enabled;
         return this;
     }
 
