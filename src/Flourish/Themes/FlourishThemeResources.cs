@@ -3,7 +3,7 @@ using System.Windows;
 namespace ArkheideSystem.Flourish.Themes;
 
 /// <summary>
-/// Loads the complete Flourish control and theme resource graph.
+/// Loads Flourish control and theme resources.
 /// </summary>
 /// <remarks>
 /// Add one instance to <see cref="ResourceDictionary.MergedDictionaries" /> when Flourish
@@ -16,7 +16,7 @@ public sealed class FlourishThemeResources : ResourceDictionary
         "/Flourish;component/Themes/Generic.xaml";
 
     /// <summary>
-    /// Initializes a resource dictionary backed by the Flourish generic theme.
+    /// Initializes a Flourish control and theme resource dictionary.
     /// </summary>
     public FlourishThemeResources()
     {

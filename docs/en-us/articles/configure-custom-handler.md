@@ -5,7 +5,7 @@ description: Insert application-provided WPF elements and commands into predefin
 
 # Custom shell content
 
-Flourish exposes extension regions in the title bar, navigation panel, dynamic toolbar, content frame, and status bar. Use `ConfigureCustomHandler` when an application needs content that the built-in feature builders do not provide.
+Flourish exposes extension regions in the title bar, navigation panel, dynamic toolbar, content frame, and status bar. Use `ConfigureCustomHandler` to place application-provided WPF elements or commands in these regions.
 
 ## Add custom content and commands
 
@@ -16,19 +16,19 @@ builder
     .ConfigureCustomHandler(custom =>
     {
         custom
-            .SetProfileContent(_ => new Button { Content = "User" })
+            .SetProfileContent(_ => new Button { Content = "Foo Bar" })
             .AddTitlebarAction("Sync", "\uE895", "sync.run")
             .AddFooterCommand(
                 FlourishRegion.FooterEnd,
-                "About",
+                "Help",
                 "\uE946",
-                "app.about");
+                "help.open");
     });
 ```
 
 ## Surface prerequisites
 
-Custom content does not enable its owning surface. [Shell configuration](shell-configuration.md) must enable the corresponding title bar, navigation, toolbar, or status bar feature. `SetProfileContent` requires `UseTitleBar()` and [Title bar](configure-title-bar.md) must display the profile trigger with `SetProfile()`.
+Custom content does not enable its owning surface. Enable title bar regions with `UseTitleBar()`, navigation regions with `UseNavigation()`, toolbar regions with `UseDynamicToolbar()`, and footer regions with `UseStatusBar()` in [Shell configuration](shell-configuration.md). `SetProfileContent` also requires `SetProfile()` in [Title bar](configure-title-bar.md).
 
 ## Element factories
 
@@ -44,9 +44,11 @@ builder.ConfigureCustomHandler(custom =>
 });
 ```
 
+The application defines the content, bindings, and accessibility semantics of custom elements.
+
 ## Commands and callbacks
 
-Footer command helpers require an explicit `FlourishRegion.FooterStart` or `FlourishRegion.FooterEnd`. Command helpers route stable command keys through `ICommandParser`; callback helpers execute the supplied local behavior directly. Display text can be localized while command keys remain unchanged.
+Footer command helpers require an explicit `FlourishRegion.FooterStart` or `FlourishRegion.FooterEnd`. Command helpers dispatch stable command keys through `ICommandDispatcher`; callback helpers execute the supplied local behavior directly. Display text can be localized while command keys remain unchanged.
 
 ## Related features
 
@@ -54,3 +56,4 @@ Footer command helpers require an explicit `FlourishRegion.FooterStart` or `Flou
 - [Dynamic toolbar](dynamic-toolbar.md) provides page-specific commands.
 - [Status bar](status-bar.md) describes background-task indicators, custom items, and system status.
 - [Command parser](command-parser.md) handles command keys.
+- [Dependency injection](configure-services.md) provides application services to factories and command parsers.

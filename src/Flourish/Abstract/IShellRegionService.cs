@@ -50,7 +50,7 @@ public interface IShellRegionRegistration : IDisposable
     FlourishRegion Region { get; }
 }
 
-/// <summary>Describes one region registration without exposing its content factory.</summary>
+/// <summary>Describes the state of one region registration.</summary>
 public sealed record FlourishShellRegionEntry(
     string Id,
     FlourishRegion Region,

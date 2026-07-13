@@ -5,11 +5,11 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-Flourish 将页面注册和可见导航模型拆分开。在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，通过 [Shell 配置](shell-configuration.md)启用导航区域，再使用 `ConfigureNavigation` 配置导航栏展示参数和可见导航项。
+在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，并通过 [Shell 配置](shell-configuration.md)启用导航区域。没有配置分组或固定项时，导航栏会自动列出全部已注册页面；需要指定页面位置或添加命令项时，使用 `ConfigureNavigation`。
 
 ## 注册页面
 
-`AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录页面导航项使用的元数据：显示名称、图标字形和缓存模式。它不会单独把页面显示到导航栏中。
+`AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录导航使用的显示名称、图标字形和缓存模式。只要应用没有配置任何显式分组或固定项，该页面就会出现在自动列表中。
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -40,7 +40,7 @@ services.AddNavigable<EditorPage>(
 
 ## 配置分组
 
-使用 `ConfigureNavigation` 构建可见的导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 `ConfigureNavigation` 可以用显式导航模型替换自动列表。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -70,12 +70,11 @@ builder.ConfigureShell(shell =>
 
 - `groupId` 决定显示顺序，数值越小越靠前。
 - `groupId` 不允许重复，重复会在构建阶段报错。
-- 0 号组可以省略 `displayName`。当 0 号组没有名称时，Flourish 不会在导航栏顶部为标题预留空间。
+- 0 号组可以省略 `displayName`。
 - 非 0 号组必须提供 `displayName`。
-- 分组之间会比普通导航项拥有更大的间距。
 
 ```csharp
-nav.SetGroup(groupId: 0, group =>
+nav.SetGroup(groupId: 0, configureGroup: group =>
 {
     group.AddNavigableViewItem<HomePage>(isInitial: true);
 });
@@ -100,19 +99,17 @@ nav.SetTitle("导航");
 nav.SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180);
 ```
 
-默认展开宽度为 `220`，折叠宽度为 `56`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `56`。可见的折叠宽度同时容纳标准命令按钮区域及其间距、紧凑滚动条、分隔线和共用的外侧留白。可调整范围默认为 `160` 到 `420`。用户可以通过悬停时显示的分隔条调整展开状态下的导航栏宽度。拖拽时会显示宽度预览，释放后应用新宽度。
-
-导航内容会在靠近窗口边缘的一侧使用 Shell 水平留白。导航栏从左侧移到右侧时，Flourish 会镜像这段留白，使导航项与内置标题栏和状态栏内容保持对齐。
+默认展开宽度为 `220`，折叠宽度为 `56`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `56`。可调整范围默认为 `160` 到 `420`。用户调整大小时，会在该范围内更新展开宽度。
 
 ## 添加命令项
 
-`AddNavigableItem` 添加的是按钮类型导航项。它不会跳转页面，而是把 `commandKey` 发送给已注册的 `ICommandParser`。
+`AddNavigableItem` 添加的是按钮类型导航项。它不会跳转页面，而是通过 `ICommandDispatcher` 调度 `commandKey`。
 
 ```csharp
-nav.SetGroup("按钮", groupId: 2, group =>
+nav.SetGroup("命令", groupId: 2, group =>
 {
-    group.AddNavigableItem("Hello", "\uE8F2", "demo.hello");
-    group.AddNavigableItem("World", "\uE774", "demo.world");
+    group.AddNavigableItem("刷新", "\uE72C", "reports.refresh");
+    group.AddNavigableItem("导出", "\uE898", "reports.export");
 });
 ```
 
@@ -132,11 +129,11 @@ builder.ConfigureNavigation(navigation =>
     });
 
     navigation.AddFixedNavigableViewItem<SettingsPage>();
-    navigation.AddFixedNavigableItem("关于", "\uE946", "app.about");
+    navigation.AddFixedNavigableItem("帮助", "\uE946", "help.open");
 });
 ```
 
-固定页面项同样要求页面已经通过 `AddNavigable` 注册。固定命令项与分组内命令项一样，通过 `ICommandParser` 执行行为。
+固定页面项同样要求页面已经通过 `AddNavigable` 注册。固定命令项与分组内命令项使用相同的命令调度路径。
 
 ## 构建一层树
 
@@ -166,7 +163,7 @@ nav.SetGroup("树", groupId: 3, group =>
 > [!CAUTION]
 > 树 ID 只在当前分组或固定项区域内生效。同一范围内复用 `parentId`，或让 `childId` 指向不存在的父节点，都会在构建阶段失败。
 
-页面项可以作为父节点。点击页面父节点时，会跳转到该页面并展开或折叠子项。命令项也可以作为父节点，但命令父节点只负责展开或折叠子项，不会执行 `commandKey`；因此推荐为命令父节点传入 `null`。
+页面项可以作为父节点。点击页面父节点时，会跳转到该页面并展开或折叠子项。命令项也可以作为父节点，但命令父节点只负责展开或折叠子项，不会执行 `commandKey`；不需要命令键时传入 `null`。
 
 选中页面子项时，Flourish 会展开对应父节点，并标记父节点名称。导航栏折叠时不显示子项；在折叠状态下点击父节点会先展开导航栏。页面父节点随后导航到对应页面，命令父节点只展开或折叠子项。
 

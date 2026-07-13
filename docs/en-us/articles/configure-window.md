@@ -61,7 +61,7 @@ Descendants inherit these settings unless they provide their own local value or 
 
 ## Close to the notification area
 
-`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation dialog. The tray menu can restore the window or exit the application.
+`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation dialog. Double-clicking the tray icon or selecting Show restores the window; selecting Exit closes the application.
 
 ```csharp
 builder.ConfigureWindow(window => window.SetTrayExit());

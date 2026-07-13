@@ -29,23 +29,23 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 }
 ```
 
-`AddTask` returns immediately. Flourish runs the delegate through its worker pool rather than on the WPF UI thread. Do not access WPF controls from the delegate; marshal UI work to the appropriate `Dispatcher` when necessary.
+`AddTask` returns immediately, and its delegate runs outside the WPF UI thread. Do not access WPF controls from the delegate; marshal UI work to the appropriate `Dispatcher` when necessary.
 
 ## Metadata and status-bar integration
 
 Every submission requires `FlourishBackgroundTaskMetadata`. `Name` must contain text; `Description` and `IconGlyph` are optional. Supply user-facing metadata before submitting the task because the Shell uses it for tooltips, task rows, automation names, and status icons.
 
-While work is active, the left side of the status bar shows one icon for each running or cancelling task. Hovering an icon shows its metadata, state, and reported progress; clicking it opens the background-task flyout. If all three execution slots are occupied, later submissions remain queued and a queue icon displays their count. Hovering or clicking that icon opens the queue, where queued or running work can be cancelled.
+While work is active, the left side of the status bar shows one icon for each running or cancelling task. Hovering an icon shows its metadata, state, and reported progress; clicking it opens the background-task flyout. If all execution slots are occupied, later submissions remain queued and a queue icon displays their count. The queue provides cancellation actions for queued or running work.
 
-Task metadata tooltips are an inherent part of the background-task surface. They use a task-specific initial delay and remain available when the application omits `UseTips()`. The queue hover surface is not a tooltip: it is the interactive background-task flyout, which remains open for cancellation controls. Task and queue buttons can also be opened by click or keyboard.
+Task status and queue details remain available when the application omits `UseTips()`. The task and queue buttons support pointer and keyboard interaction.
 
-Active work temporarily reveals the status bar even when `UseStatusBar()` was not configured. Completed, failed, and cancelled tasks leave the active list and their icons are removed; use the returned handle when an application needs the final outcome or its own history.
+Active work temporarily reveals the status bar even when `UseStatusBar()` was not configured. Completed, failed, and cancelled tasks leave the active list and their icons are removed; use the returned handle when an application needs the final outcome or its own completed-task record.
 
 ## Concurrency and the waiting queue
 
-The built-in service runs at most three delegates concurrently. `MaxConcurrency` exposes that limit. Additional tasks remain in the waiting queue in submission order until a worker is available.
+`MaxConcurrency` reports how many delegates can run concurrently. Additional tasks remain in the waiting queue in submission order until an execution slot is available.
 
-`ActiveTasks` returns immutable snapshots of queued, running, and cancelling tasks. `TasksChanged` publishes a new immutable list when collection membership, state, or progress changes. The event can be raised from a worker thread, so event handlers that update application UI must dispatch back to the UI thread.
+`ActiveTasks` returns immutable snapshots of queued, running, and cancelling tasks. `TasksChanged` publishes a new immutable list when collection membership, state, or progress changes. The event can be raised from a non-UI thread, so event handlers that update application UI must dispatch back to the UI thread.
 
 `FlourishBackgroundTaskState` reports the lifecycle:
 
@@ -76,7 +76,7 @@ Async lambdas bind naturally to these overloads. Do not wrap asynchronous I/O in
 - Cancelling queued work removes it without invoking its delegate.
 - Cancelling running work changes its state to `Cancelling`. Cancellation is cooperative, so the delegate should observe the token and finish promptly.
 - A repeated or terminal cancellation request returns `false`.
-- Host shutdown stops accepting new submissions, cancels active work, and waits for the worker pool. A delegate that ignores cancellation can therefore delay shutdown.
+- Host shutdown stops accepting new submissions, cancels active work, and waits for active delegates to finish. A delegate that ignores cancellation can therefore delay shutdown.
 
 `OperationCanceledException` associated with the context token becomes a cancelled result. Other exceptions are captured as failed results.
 

@@ -1,7 +1,7 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Queries and executes command keys through runtime handlers and legacy parsers.
+/// Queries and dispatches command keys to runtime handlers and synchronous parsers.
 /// </summary>
 public interface ICommandDispatcher
 {

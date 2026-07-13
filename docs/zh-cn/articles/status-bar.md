@@ -19,7 +19,7 @@ builder
     });
 ```
 
-状态栏不再提供主要文本区域。简短的应用状态应使用 `AddStatusItem`；需要更丰富内容时，可使用[自定义 Footer 区域](configure-custom-handler.md)。
+非交互式文本和图标状态使用 `AddStatusItem`；交互控件或应用定义的 WPF 内容使用[自定义 Footer 区域](configure-custom-handler.md)。
 
 ## 后台任务指示器
 

@@ -5,22 +5,25 @@ description: Select the Windows material used by the Flourish shell window.
 
 # Material effects
 
-Material effects integrate the shell background with supported Windows desktop composition. `UseMaterialEffect` selects and applies the shell material in one step.
-
-## Configure the material
+`UseMaterialEffect` selects the background material for the shell window.
 
 ```csharp
 builder.ConfigureShell(shell =>
     shell.UseMaterialEffect(MaterialEffect.Mica));
 ```
 
-## Platform behavior
+## Select a material
 
-`MaterialEffect.Mica` applies the Windows Mica material when the platform supports it. `MaterialEffect.None` keeps the shell fully opaque and avoids platform-specific composition behavior.
+| Value | Behavior |
+| --- | --- |
+| `MaterialEffect.Mica` | Uses Windows Mica when the platform supports it. |
+| `MaterialEffect.None` | Uses an opaque shell background without a system material. |
 
-`MaterialEffect.Mica` is the default argument. Pass `MaterialEffect.None` to disable material composition explicitly, or omit `UseMaterialEffect` when no material should be configured.
+`MaterialEffect.Mica` is the default argument. Pass `MaterialEffect.None`, or omit `UseMaterialEffect`, when the shell should not use a system material.
 
-Material behavior belongs to the shell window, not to page content. Pages can still define their own WPF backgrounds inside the content frame.
+On a platform that does not support the selected material, the shell remains usable without that effect. Application state and content distinctions should not depend on material availability.
+
+Material is applied to the shell window. Pages can define their own WPF backgrounds inside the content area.
 
 ## Related features
 

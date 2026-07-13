@@ -55,10 +55,7 @@ public interface IFlourishTitlebarBuilder
     /// Flourish uses its built-in application icon.
     /// </param>
     /// <returns>The current builder for chained configuration.</returns>
-    /// <remarks>
-    /// Transparent outer pixels are removed from the displayed image. The shell window icon is
-    /// also used by Windows surfaces such as the taskbar.
-    /// </remarks>
+    /// <remarks>The same image is used for the shell window icon.</remarks>
     IFlourishTitlebarBuilder SetLogo(string? logoPath = null);
 
     /// <summary>

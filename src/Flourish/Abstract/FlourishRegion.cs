@@ -15,7 +15,7 @@ public enum FlourishRegion
     TitlebarStart,
 
     /// <summary>
-    /// The flexible center area of the title bar.
+    /// The center area of the title bar.
     /// </summary>
     TitlebarCenter,
 
@@ -25,7 +25,7 @@ public enum FlourishRegion
     TitlebarEnd,
 
     /// <summary>
-    /// The title bar profile area. Custom content replaces the built-in profile placeholder.
+    /// The title bar profile area. Custom content replaces the built-in profile content.
     /// </summary>
     TitlebarProfile,
 

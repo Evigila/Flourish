@@ -8,9 +8,9 @@ namespace ArkheideSystem.Flourish.Controls;
 /// </summary>
 /// <remarks>
 /// A participating control template supplies elements named <c>HoverChrome</c> and
-/// <c>HoverRevealScale</c>. Templates without those elements safely ignore the behavior.
-/// Templates that also own their static hover and pressed visuals can set
-/// <see cref="TemplateHandlesInteractionProperty" /> to avoid redundant pointer work.
+/// <c>HoverRevealScale</c>. The behavior has no effect when either element is absent.
+/// Templates that define their own static hover and pressed visuals set
+/// <see cref="TemplateHandlesInteractionProperty" />.
 /// </remarks>
 public static class HoverReveal
 {
@@ -32,11 +32,6 @@ public static class HoverReveal
     /// <summary>
     /// Identifies the non-inherited motion-policy value consumed by participating templates.
     /// </summary>
-    /// <remarks>
-    /// Flourish control styles bind this property to the application-level motion resource.
-    /// Keeping the value on participants avoids invalidating unrelated visual descendants
-    /// when the global runtime policy changes.
-    /// </remarks>
     public static readonly DependencyProperty IsMotionEnabledProperty =
         DependencyProperty.RegisterAttached(
             "IsMotionEnabled",

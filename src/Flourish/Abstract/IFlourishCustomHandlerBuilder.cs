@@ -31,23 +31,23 @@ public interface IFlourishCustomHandlerBuilder
     );
 
     /// <summary>
-    /// Replaces the built-in title bar profile placeholder with custom WPF content.
+    /// Sets custom WPF content for the title bar profile region.
     /// </summary>
     /// <param name="contentFactory">A factory that creates the profile content when the shell is created.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// Call <see cref="IFlourishTitlebarBuilder.SetProfile(NameOrder)" /> to display the profile trigger.
+    /// Call <see cref="IFlourishTitlebarBuilder.SetProfile(NameOrder)" /> to enable the title bar profile region.
     /// </remarks>
     IFlourishCustomHandlerBuilder SetProfileContent(
         Func<IServiceProvider, FrameworkElement> contentFactory
     );
 
     /// <summary>
-    /// Adds a compact command button to the end of the title bar.
+    /// Adds a command button to the end of the title bar.
     /// </summary>
     /// <param name="displayName">The action text used for the tooltip and fallback label.</param>
     /// <param name="iconGlyph">The icon glyph displayed for the action.</param>
-    /// <param name="commandKey">The optional command key sent to <see cref="ICommandParser" /> when the action is clicked.</param>
+    /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" /> when the action is clicked.</param>
     /// <param name="order">The display order among title bar end-region content. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishCustomHandlerBuilder AddTitlebarAction(
@@ -58,7 +58,7 @@ public interface IFlourishCustomHandlerBuilder
     );
 
     /// <summary>
-    /// Adds a compact callback button to the end of the title bar.
+    /// Adds a callback button to the end of the title bar.
     /// </summary>
     /// <param name="displayName">The action text used for the tooltip and fallback label.</param>
     /// <param name="iconGlyph">The icon glyph displayed for the action.</param>
@@ -78,7 +78,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="region">The footer region. Must be <see cref="FlourishRegion.FooterStart" /> or <see cref="FlourishRegion.FooterEnd" />.</param>
     /// <param name="displayText">The command display text.</param>
     /// <param name="iconGlyph">The icon glyph displayed before the text.</param>
-    /// <param name="commandKey">The optional command key sent to <see cref="ICommandParser" /> when clicked.</param>
+    /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" /> when clicked.</param>
     /// <param name="order">The display order in the footer region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishCustomHandlerBuilder AddFooterCommand(

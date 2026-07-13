@@ -3,7 +3,7 @@ using WpfToolTip = System.Windows.Controls.ToolTip;
 
 namespace ArkheideSystem.Flourish.Controls;
 
-/// <summary>A Flourish-styled tooltip with adaptive custom placement.</summary>
+/// <summary>A Flourish-styled tooltip with shell-region-aware placement.</summary>
 public class FlourishToolTip : WpfToolTip
 {
     static FlourishToolTip()

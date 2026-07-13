@@ -1,35 +1,31 @@
 ---
 title: 材质特效
-description: 为 Flourish Shell 窗口选择 Windows 系统背景材质。
+description: 选择 Flourish Shell 窗口使用的 Windows 材质。
 ---
 
 # 材质特效
 
-材质特效改变 Shell 窗口的系统背景。`UseMaterialEffect` 会在选择材质的同时启用该效果，不需要单独的配置步骤。
-
-## 最小配置
+`UseMaterialEffect` 为 Shell 窗口选择背景材质。
 
 ```csharp
 builder.ConfigureShell(shell =>
     shell.UseMaterialEffect(MaterialEffect.Mica));
 ```
 
-## 材质选择
+## 选择材质
 
-`MaterialEffect.Mica` 会在平台支持时为 Shell 窗口应用 Windows Mica 材质。页面仍可在内容区域中定义自己的 WPF 背景。
+| 值 | 行为 |
+| --- | --- |
+| `MaterialEffect.Mica` | 在平台支持时使用 Windows Mica。 |
+| `MaterialEffect.None` | 使用不带系统材质的不透明 Shell 背景。 |
 
-使用 `MaterialEffect.None` 可以保持不透明窗口背景，并避免依赖系统材质合成：
+`MaterialEffect.Mica` 是默认参数。Shell 不应使用系统材质时，请传入 `MaterialEffect.None` 或省略 `UseMaterialEffect`。
 
-```csharp
-builder.ConfigureShell(shell =>
-    shell.UseMaterialEffect(MaterialEffect.None));
-```
+如果平台不支持所选材质，Shell 仍可在没有该效果的情况下使用。应用状态和内容区分不应依赖材质是否可用。
 
-`MaterialEffect.None` 会禁用系统材质；省略 `UseMaterialEffect` 时，材质同样不会启用。
-
-材质效果依赖 Windows 桌面合成能力。在不支持相应效果的平台上，应用不应依赖材质来传达状态或区分内容。
+材质应用于 Shell 窗口。页面可以在内容区域中定义自己的 WPF 背景。
 
 ## 相关功能
 
-- [窗口](configure-window.md)配置承载材质的 Shell 窗口。
+- [窗口](configure-window.md)配置承载材质的窗口。
 - [主题](configure-themes.md)控制与材质配合使用的亮色和暗色资源。

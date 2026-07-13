@@ -21,13 +21,18 @@ public interface IProfileService
     event EventHandler<ProfileChangedEventArgs>? ProfileChanged;
 
     /// <summary>
-    /// Restores a remembered login, or removes credentials from a previous unremembered login.
+    /// Initializes profile state and restores a remembered login when stored credentials are available.
     /// </summary>
+    /// <param name="cancellationToken">A token that requests cancellation.</param>
+    /// <returns>A task that completes when initialization finishes.</returns>
     Task InitializeAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Authenticates and activates a profile for the current session.
     /// </summary>
+    /// <param name="request">The profile sign-in request.</param>
+    /// <param name="cancellationToken">A token that requests cancellation.</param>
+    /// <returns>The authentication outcome.</returns>
     Task<ProfileAuthenticationResult> SignInAsync(
         ProfileSignInRequest request,
         CancellationToken cancellationToken = default
@@ -36,6 +41,9 @@ public interface IProfileService
     /// <summary>
     /// Changes whether the active login should be restored on the next startup.
     /// </summary>
+    /// <param name="rememberLogin">Whether to restore the active login on the next startup.</param>
+    /// <param name="cancellationToken">A token that requests cancellation.</param>
+    /// <returns>A task that completes when the setting is applied.</returns>
     Task SetRememberLoginAsync(
         bool rememberLogin,
         CancellationToken cancellationToken = default
@@ -44,5 +52,7 @@ public interface IProfileService
     /// <summary>
     /// Signs out and removes the persisted profile credentials.
     /// </summary>
+    /// <param name="cancellationToken">A token that requests cancellation.</param>
+    /// <returns>A task that completes when sign-out finishes.</returns>
     Task SignOutAsync(CancellationToken cancellationToken = default);
 }

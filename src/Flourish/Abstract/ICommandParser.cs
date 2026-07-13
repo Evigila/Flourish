@@ -1,12 +1,13 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Provides a synchronous startup-time compatibility handler for command keys raised by Flourish UI surfaces.
+/// Handles command keys synchronously for Flourish UI surfaces.
 /// </summary>
 /// <remarks>
-/// Use <see cref="ICommandRegistry" /> to add and remove handlers at runtime and
-/// <see cref="ICommandDispatcher" /> to execute commands asynchronously. Implementations of this
-/// interface registered during service configuration continue to run as ordered fallbacks.
+/// Register implementations during service configuration. <see cref="ICommandDispatcher" />
+/// evaluates handlers from <see cref="ICommandRegistry" /> first. It invokes registered parsers
+/// in registration order when no runtime registration exists or when executable runtime handlers
+/// return <see cref="CommandResult.NotHandled" />.
 /// </remarks>
 /// <example>
 /// <code><![CDATA[

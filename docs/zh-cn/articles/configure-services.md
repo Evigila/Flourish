@@ -1,11 +1,13 @@
 ---
 title: 依赖注入
-description: 在 Flourish 使用的 .NET Generic Host 中注册应用服务、页面和扩展点。
+description: 注册应用服务、可导航页面、命令解析器和可替换的 Flourish 服务。
 ---
 
 # 依赖注入
 
-Flourish 基于 .NET Generic Host 组织应用服务。通过 `ConfigureServices` 可以使用标准 `IServiceCollection` 注册应用对象、ViewModel、仓储、页面和 Flourish 扩展点，并通过 `HostBuilderContext` 读取当前环境，以及同时供应 Flourish 设置的 Host 配置。`CreateDefaultBuilder` 加载标准 appsettings provider；应用项目中的 `<UserSecretsId>` 标识受保护的已记住 Profile 凭据所使用的 User Secrets 文档。
+Flourish 使用其 .NET Generic Host 中的 `IServiceCollection`。通过 `ConfigureServices` 注册应用服务、WPF 页面、命令解析器和可替换的 Flourish 服务。
+
+## 注册服务
 
 ```csharp
 builder.ConfigureServices((context, services) =>
@@ -14,38 +16,34 @@ builder.ConfigureServices((context, services) =>
     services.AddSingleton<ICommandParser, AppCommandParser>();
 
     services.AddNavigable<HomePage>("首页", "\uE80F");
-    services.AddNavigable<SettingsPage>("设置", "\uE713");
+    services.AddNavigable<ReportsPage>("报表", "\uE9D2");
 });
 ```
 
-## 注册应用服务
+回调会收到 `HostBuilderContext`，因此注册可以使用当前环境以及供应 Flourish 设置的同一份 Host 配置。ViewModel、仓储和其他应用服务使用标准 .NET 依赖注入方式。
 
-ViewModel、仓储和应用服务按照普通 .NET 依赖注入规则注册。Shell 和导航页面从 Host 根服务提供器解析；只有应用显式创建并管理 `IServiceScope` 时，才应让相关对象依赖 scoped 服务。
-
-Flourish 还会随 Host 注册 `IBackgroundTaskService`。应用服务和 ViewModel 可直接通过构造函数注入该服务，不应再注册第二个工作池实例；参见[后台任务](background-tasks.md)。
-
-Flourish 通过同一容器解析页面、命令解析器和 Profile 服务，因此这些类型可以在构造函数中声明应用服务依赖。自定义 Shell 内容则由应用提供工厂创建；工厂可以通过收到的 `IServiceProvider` 显式解析依赖。
+`IBackgroundTaskService` 已完成注册，可以直接通过构造函数注入。参见[后台任务](background-tasks.md)。
 
 ## 注册可导航页面
 
-`AddNavigable<TPage>` 会注册派生自 `System.Windows.Controls.Page` 的页面及其显示元数据。Flourish 从类名自动生成区分大小写的导航键，并移除一个末尾 `Page` 后缀：`SettingsPage` 生成 `Settings`，`Page1` 仍生成 `Page1`。页面在导航发生时由依赖注入容器解析。
+`AddNavigable<TPage>` 注册 `System.Windows.Controls.Page` 及其导航元数据。Flourish 从类名生成区分大小写的导航键，并移除一个末尾 `Page` 后缀：`SettingsPage` 生成 `Settings`，`Page1` 仍生成 `Page1`。
 
-ViewModel 使用生成的字符串导航，例如 `navigation.Navigate("Settings")`，因此无需引用 WPF 页面。Flourish 会在 `Build()` 应用注册时拒绝重复的生成键。
+没有配置显式导航分组或固定项时，导航栏会自动列出已注册页面。配置分组或固定项会替代该自动列表。[导航](navigation.md)说明可见位置和初始页面选择。
 
-页面注册只声明页面及其元数据，不决定它在导航栏中的位置。分组、固定项、初始页面和运行时导航参见[导航](navigation.md)。
+ViewModel 可以使用生成的键导航，例如 `navigation.Navigate("Settings")`，无需引用 WPF 页面类型。`Build()` 会拒绝重复的生成键。
 
-## 注册 Flourish 扩展点
+## 注册命令解析器
 
-导航项、动态工具栏按钮、标题栏动作和状态栏命令可以把稳定的命令键交给 `ICommandParser`。解析器实现也在 `ConfigureServices` 中注册；完整路由方式参见[命令解析器](command-parser.md)。
+分配给 Flourish UI 区域的命令通过 `ICommandDispatcher` 调度。在此注册 `ICommandParser` 实现，以提供一组固定的同步处理程序。[命令解析器](command-parser.md)说明调度顺序和运行时处理程序。
 
-Profile 认证可以通过注册 `IProfileAuthService` 进行替换；注册 `IProfileService` 则可以接管完整的 Profile 状态与持久化流程。只有应用没有预先注册这些接口时，Flourish 才会使用默认实现。
+## 替换 Profile 服务
 
-Shell 的展示和行为配置由对应功能负责，例如[导航](navigation.md)、[标题栏](configure-title-bar.md)和[窗口](configure-window.md)。
+注册 `IProfileAuthService` 可以提供应用认证，同时保留内置 Profile 状态和记住登录行为。应用自行管理完整 Profile 流程时，请注册 `IProfileService`。只有应用没有注册这些接口时，Flourish 才会提供默认实现。
 
 ## 相关功能
 
-- [导航](navigation.md) 将已注册页面放入可见导航模型。
-- [动态工具栏](dynamic-toolbar.md) 将页面命令绑定到已注册页面类型。
-- [用户资料（Profile）](configure-profile.md)说明 Profile 页面、认证和持久化。
+- [导航](navigation.md)说明自动和显式导航项。
+- [动态工具栏](dynamic-toolbar.md)将命令附加到已注册页面类型。
+- [用户资料（Profile）](configure-profile.md)说明认证和 Profile 服务替换。
 - [后台任务](background-tasks.md)说明异步工作、取消、进度和结果。
 - [命令解析器](command-parser.md)说明命令键路由。

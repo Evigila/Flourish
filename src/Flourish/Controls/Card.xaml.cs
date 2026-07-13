@@ -11,16 +11,16 @@ public enum FlourishCardAppearance
     /// <summary>A standard filled content surface.</summary>
     Standard,
 
-    /// <summary>A quiet secondary content surface.</summary>
+    /// <summary>A secondary content surface with reduced visual emphasis.</summary>
     Subtle,
 
     /// <summary>A surface emphasized with the application accent.</summary>
     Accent,
 
-    /// <summary>A raised showcase surface used sparingly for highlighted content.</summary>
+    /// <summary>A content surface with elevation.</summary>
     Elevated,
 
-    /// <summary>A prominent introductory surface with stronger color and elevation.</summary>
+    /// <summary>An introductory content surface with a gradient background and elevation.</summary>
     Hero,
 }
 

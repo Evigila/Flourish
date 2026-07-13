@@ -15,7 +15,7 @@ public sealed record FlourishToolbarItem
     /// </summary>
     /// <param name="displayName">The text displayed for the toolbar item.</param>
     /// <param name="iconGlyph">The icon glyph displayed for the toolbar item.</param>
-    /// <param name="commandKey">The optional command key passed to an <see cref="ICommandParser" />.</param>
+    /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" />.</param>
     public FlourishToolbarItem(string displayName, string iconGlyph, string? commandKey = null)
     {
         DisplayName = displayName;
@@ -40,7 +40,7 @@ public sealed record FlourishToolbarItem
     public string IconGlyph { get; init; }
 
     /// <summary>
-    /// Gets the optional command key passed to an <see cref="ICommandParser" />.
+    /// Gets the optional command key dispatched through <see cref="ICommandDispatcher" />.
     /// </summary>
     public string? CommandKey { get; init; }
 
@@ -55,7 +55,7 @@ public sealed record FlourishToolbarItem
     /// </summary>
     /// <param name="displayName">The text displayed for the toolbar item.</param>
     /// <param name="iconGlyph">The icon glyph displayed for the toolbar item.</param>
-    /// <param name="commandKey">The optional command key passed to an <see cref="ICommandParser" />.</param>
+    /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" />.</param>
     public void Deconstruct(out string displayName, out string iconGlyph, out string? commandKey)
     {
         displayName = DisplayName;

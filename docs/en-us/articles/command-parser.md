@@ -5,7 +5,7 @@ description: Handle command keys raised by Flourish UI surfaces.
 
 # Command parser
 
-`ICommandParser` is the public extension point for command keys raised by Flourish UI surfaces, especially dynamic toolbar items and command navigation items. A UI item stores a command key; when the user invokes that item, Flourish asks registered parsers whether they can handle the key.
+Commands assigned to Flourish UI surfaces are dispatched through `ICommandDispatcher`. Implement `ICommandParser` for a fixed set of synchronous handlers registered during service configuration. Runtime handlers registered through `ICommandRegistry` are evaluated first; when dispatch reaches the parsers, they run in registration order.
 
 ## Register a parser
 
@@ -18,7 +18,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-Multiple parsers can be registered. Each parser returns `true` when it handled the command and `false` when the key is unknown to that parser.
+Multiple parsers can be registered. Each parser returns `true` when it handles the command and `false` when the key is unknown to that parser.
 
 ## Implement TryParse
 
@@ -29,24 +29,24 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
     {
         return commandKey switch
         {
-            "home.open" => OpenHome(),
-            "home.save" => SaveHome(),
+            "reports.refresh" => RefreshReports(),
             "reports.export" => ExportReports(),
+            "help.open" => ShowHelp(),
             _ => false
         };
     }
 
-    private bool OpenHome()
+    private bool ShowHelp()
     {
         messages.Show(
-            "Open from Home",
-            "Home",
+            "Help is available from the support site.",
+            "Foobar",
             MessageBoxButton.OK,
             MessageBoxImage.Information);
         return true;
     }
 
-    private static bool SaveHome()
+    private static bool RefreshReports()
     {
         return true;
     }
@@ -58,10 +58,10 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
 }
 ```
 
-`TryParse` should be fast and explicit. Avoid routing by display text; use stable command keys.
+Return `false` for unknown command keys. Route by stable keys rather than localized display text.
 
 > [!CAUTION]
-> `TryParse` is called synchronously on the UI thread that triggered the command. Delegate long-running work to an application service or an asynchronous workflow instead of blocking the parser.
+> `TryParse` runs synchronously and must not block the calling thread. Delegate long-running work to an application service or an asynchronous workflow.
 
 ## Connect toolbar items
 
@@ -74,7 +74,7 @@ The third constructor argument is the command key. It is optional, but toolbar a
 
 ## Connect navigation command items
 
-Navigation command items use the same parser path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section described in [Navigation](navigation.md).
+Navigation command items use the same dispatch path. Add them with `AddNavigableItem` inside a group, or with `AddFixedNavigableItem` in the fixed bottom section described in [Navigation](navigation.md).
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
@@ -84,7 +84,7 @@ builder.ConfigureNavigation(navigation =>
         group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
     });
 
-    navigation.AddFixedNavigableItem("About", "\uE946", "app.about");
+    navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
 });
 ```
 
@@ -92,7 +92,7 @@ If a command item is a parent node, clicking it expands or collapses children an
 
 ## Use services inside a parser
 
-Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Title bar and status bar commands described in [Custom shell content](configure-custom-handler.md) use the same parser path.
+Because parsers are resolved from DI, they can depend on application services. Flourish also registers `IMessageService`, which shows Flourish-styled modal messages with the same button, icon, and result enums used by WPF `MessageBox`. It also supports custom options; see [Message service](message-service.md). Title bar and status bar commands described in [Custom shell content](configure-custom-handler.md) use the same dispatch path.
 
 ```csharp
 internal sealed class ReportsCommandParser(ReportExporter exporter) : ICommandParser

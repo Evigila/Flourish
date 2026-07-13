@@ -11,7 +11,7 @@ public enum FlourishButtonAppearance
     /// <summary>A neutral action button.</summary>
     Standard,
 
-    /// <summary>A visually prominent primary action.</summary>
+    /// <summary>A primary action button.</summary>
     Primary,
 
     /// <summary>A low-emphasis action that blends into its surrounding surface.</summary>

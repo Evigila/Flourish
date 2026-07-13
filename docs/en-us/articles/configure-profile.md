@@ -5,9 +5,7 @@ description: Configure profile identity, sign-in state, remembered credentials, 
 
 # Profile
 
-The profile surface provides compact account access from the title bar. It starts with the built-in profile page, can collect sign-in information, remember a login for later sessions, or host an application-provided page.
-
-Enable the title bar and call `SetProfile` to display the profile trigger. The `NameOrder` argument controls how the built-in page formats names and initials.
+The profile surface provides account access from the title bar. Call `SetProfile` to display the profile trigger and use the built-in profile page.
 
 ```csharp
 builder
@@ -16,34 +14,34 @@ builder
         titleBar.SetProfile(NameOrder.FirstLast));
 ```
 
+Calling `SetProfile()` without an argument uses `NameOrder.FirstLast`. Before sign-in, the built-in page displays the localized `Profile.DefaultName` value.
+
 ## Names and initials
 
-The built-in sign-in form collects first and last names separately. The `NameOrder` passed to `SetProfile` controls their visual order, the resulting `ProfileUser.DisplayName`, and the initials shown when no image is available.
+The built-in sign-in form collects first and last names separately. `NameOrder` controls the input order, `ProfileUser.DisplayName`, and the initials shown when no image is available.
 
 | Value | Display name | Initials |
 | --- | --- | --- |
 | `NameOrder.FirstLast` | `Foo Bar` | `FB` |
 | `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
-Before sign-in, the built-in page uses its default profile identity. The user can replace it by signing in through the form.
-
-Labels, status text, file-picker filters, and validation messages on the built-in page follow the locale selected through [Application data](configure-data.md). An application-provided profile page controls its own text and is not translated automatically.
-
 At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, `DisplayName`, and `Initials` expose the formatted result.
+
+Labels, status text, file-picker filters, and validation messages on the built-in page follow the locale selected through [Application data](configure-data.md). An application-provided profile page manages its own text.
 
 ## Interaction behavior
 
-The profile surface does not depend on window focus, so a native Windows file picker does not dismiss it. Use the profile trigger again, click outside the card, or press <kbd>Esc</kbd> to close it; selecting or cancelling an image returns to the same sign-in form.
+Use the profile trigger, click outside the profile card, or press <kbd>Esc</kbd> to close it. Opening the native Windows file picker does not close the profile surface; selecting or cancelling an image returns to the same sign-in form.
 
-The surface adapts to the available shell area. A custom page should fit compact content because the host does not add a scrolling region.
+The host does not provide a scrolling region. If custom content can exceed the available height, include a `ScrollViewer` or another scrolling region in the custom page.
 
 ## Profile images
 
-The built-in form lets the user select or replace an image with the native Windows file picker. Flourish stores the selected absolute path and does not copy the file. If the file is later moved or deleted, the profile falls back to the configured initials.
+The built-in form lets the user select or replace an image with the native Windows file picker. Flourish stores the selected absolute path and does not copy the file. If the file cannot be loaded later, the profile displays the configured initials.
 
 ## Login state
 
-After authentication, the sign-in form is replaced by remembered-login and sign-out actions. `IProfileService.LoginState` reports the active state.
+After authentication, the sign-in form is replaced by remembered-login and sign-out actions. `IProfileService.LoginState` reports the current state.
 
 | State | Meaning |
 | --- | --- |
@@ -51,11 +49,11 @@ After authentication, the sign-in form is replaced by remembered-login and sign-
 | `SignedIn` | Active for this application session only. |
 | `SignedInRemembered` | Active and marked for restoration at the next application startup. |
 
-An unremembered login remains active until the application exits. A remembered login is restored from protected storage and authenticated again before becoming active.
+An unremembered login remains active until the application exits. A remembered login is authenticated again before it becomes active at the next startup.
 
-## Credential persistence and security
+## Remembered credentials
 
-The default service keeps an ordinary signed-in session in memory. When the user enables remembered login, Flourish protects the credential with Windows DPAPI using `DataProtectionScope.CurrentUser` and writes it to the application's standard User Secrets document under `Flourish:Profile:Credential`. Signing out or disabling remembered login removes that value.
+The default profile service keeps an ordinary login in memory. When remembered login is enabled, Flourish protects the credential for the current Windows user and stores it through the application's User Secrets configuration. Signing out or disabling remembered login removes the stored credential.
 
 Give the application project a stable User Secrets identity:
 
@@ -65,14 +63,14 @@ Give the application project a stable User Secrets identity:
 </PropertyGroup>
 ```
 
-This lets the Generic Host and Flourish use the same User Secrets source. Without a User Secrets provider, ordinary sign-in remains in memory, but enabling remembered login throws an `InvalidOperationException` with setup guidance. User Secrets is not itself encrypted; Flourish encrypts its credential value before storage. Do not commit a remembered credential to `appsettings.json`.
+Without a User Secrets provider, ordinary sign-in remains available, but enabling remembered login throws `InvalidOperationException`. Do not place profile credentials in `appsettings.json`.
 
 > [!WARNING]
-> The default `IProfileAuthService` validates only that the display name and password are non-empty. Applications that require identity verification must register their own authentication service.
+> The default `IProfileAuthService` only requires a non-empty display name and password. Register an application authentication service when credentials must be verified.
 
 ## Replace authentication
 
-Register `IProfileAuthService` through [Dependency injection](configure-services.md) to replace authentication while retaining the default profile state and protected persistence.
+Register `IProfileAuthService` through [Dependency injection](configure-services.md) to replace authentication while retaining the built-in profile state and remembered-login behavior.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -81,7 +79,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-Register `IProfileService` instead when the application owns authentication, state, and persistence.
+Register `IProfileService` when the application owns authentication, state, and persistence.
 
 ```csharp
 services.AddSingleton<IProfileService, FoobarProfileService>();
@@ -91,7 +89,7 @@ Flourish supplies its default implementations only when the application has not 
 
 ## Host a custom page
 
-Use a custom page when the application needs different profile content. The shell continues to own placement and dismissal while the page supplies the content and resolves constructor dependencies from dependency injection.
+Use `ConfigureProfile` to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; the title bar still requires `SetProfile` to display the trigger.
 
 ```csharp
 builder
@@ -104,10 +102,10 @@ builder
         profile.SetProfilePage<FoobarProfilePage>());
 ```
 
-`ConfigureProfile` selects the hosted page; it does not display the title bar trigger by itself. When `ConfigureProfile` is omitted, `SetProfile` uses the built-in page.
+When `ConfigureProfile` is omitted, `SetProfile` uses the built-in page.
 
 ## Related features
 
-- [Shell configuration](shell-configuration.md) enables the title bar surface.
+- [Shell configuration](shell-configuration.md) enables the title bar.
 - [Title bar](configure-title-bar.md) displays the profile trigger and selects name order.
 - [Dependency injection](configure-services.md) registers custom profile services and pages.

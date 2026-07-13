@@ -11,7 +11,7 @@ public enum FlourishTextRole
     /// <summary>Regular body copy.</summary>
     Body,
 
-    /// <summary>A wrapped body paragraph with comfortable line spacing.</summary>
+    /// <summary>A wrapped body paragraph with increased line spacing.</summary>
     Paragraph,
 
     /// <summary>Compact supporting copy.</summary>

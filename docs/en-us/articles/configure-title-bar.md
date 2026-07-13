@@ -1,11 +1,11 @@
 ---
 title: Title bar
-description: Configure the built-in title bar content, search, navigation, profile, and theme controls.
+description: Configure title bar identity, search, navigation, profile, and theme controls.
 ---
 
 # Title bar
 
-The Flourish title bar can display application identity, search, breadcrumb navigation, a navigation toggle, profile access, and theme controls. Enable the surface through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to configure the elements that should be visible. An element remains hidden when its `Set...` method is not called.
+Enable the title bar through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to select its content. An element remains hidden until its `Set...` method is called.
 
 ## Configure the title bar
 
@@ -27,48 +27,32 @@ builder
     });
 ```
 
-`UseTitleBar()` is the surface prerequisite. `SetProfile` and `SetThemeToggle` activate the services needed by their controls. `SetNavToggle` is displayed only when [Navigation](navigation.md) is also enabled.
-
-## Built-in content
-
-Each configuration method also displays its corresponding element:
+`UseTitleBar()` is required. `SetNavToggle` is displayed only when [Navigation](navigation.md) is also enabled.
 
 | Method | Result |
 | --- | --- |
 | `SetLogo()` or `SetLogo(path)` | Displays the built-in logo or an application-provided logo. |
 | `SetTitle(title)` | Displays the primary title. |
 | `SetSubTitle(subTitle)` | Displays supporting title text. |
-| `SetSearch(placeholder, handler)` | Displays search and handles text changes; the handler receives the application service provider and search text. |
-| `SetBreadcrumbButton(option)` | Displays breadcrumb navigation with the selected behavior. |
+| `SetSearch(placeholder, handler)` | Displays search and invokes the handler when the text changes. |
+| `SetBreadcrumbButton(option)` | Displays back and forward navigation according to the selected behavior. |
 | `SetNavToggle()` | Displays the navigation panel toggle. |
-| `SetProfile(nameOrder)` | Displays the profile trigger with the built-in profile behavior. |
-| `SetThemeToggle(mode)` | Displays the theme toggle and selects its initial mode. |
-
-These methods configure built-in title bar regions. [Custom shell content](configure-custom-handler.md) inserts application-provided WPF elements into the extension regions.
+| `SetProfile(nameOrder)` | Displays the profile trigger and selects the name order. |
+| `SetThemeToggle(mode)` | Displays the theme control, enables theme selection, and sets the fallback mode used when no saved preference exists. |
 
 Built-in tooltips and theme labels follow the locale selected through [Application data](configure-data.md). Values supplied to `SetTitle`, `SetSubTitle`, and `SetSearch` are application text and are not translated automatically.
 
-## Window commands
-
-When the built-in title bar is enabled, its caption area provides minimize, maximize or restore, and close commands. Minimize and maximize retain the standard, non-destructive blue hover reveal and pressed feedback. Close is a destructive action, so it uses red hover and pressed feedback in both light and dark themes.
-
-Pointer activation does not leave a focus outline on these buttons, while keyboard navigation still provides a visible focus indicator. The maximize command follows the configured resize mode, and close behavior follows the [Window](configure-window.md) configuration.
-
 ## Logo and window icon
 
-`SetLogo()` uses the built-in Flourish application icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. Flourish removes fully transparent edge pixels before fitting the image into the title bar logo region, allowing the visible artwork to use the available space. The same effective image is assigned to the shell window icon, so the taskbar icon and title bar logo remain synchronized.
+`SetLogo()` uses the built-in Flourish icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. The effective image is also assigned to the shell window icon.
 
 ```csharp
 titleBar.SetLogo("/Foobar;component/Assets/logo.ico");
 ```
 
-## Breadcrumb navigation
-
-`SetBreadcrumbButton` accepts a `BreadcrumbShowOption`. `Always` keeps breadcrumb navigation visible, `Auto` follows navigation state, and `Hidden` suppresses it. Omitting the argument uses `Auto`.
-
 ## Search
 
-`SetSearch` receives a placeholder and a handler for search text changes. Use the service-provider overload when the handler needs application services.
+`SetSearch` receives a placeholder and a handler for text changes. The handler receives the application `IServiceProvider` and current search text.
 
 ```csharp
 builder.ConfigureTitleBar(titleBar =>
@@ -80,15 +64,31 @@ builder.ConfigureTitleBar(titleBar =>
 });
 ```
 
+## Back and forward navigation
+
+`SetBreadcrumbButton` accepts a `BreadcrumbShowOption`:
+
+| Value | Behavior |
+| --- | --- |
+| `Always` | Displays the controls while the title bar is visible. |
+| `Auto` | Displays the controls when the navigation service can go back or forward. |
+| `Hidden` | Hides the controls. |
+
+Omitting the argument uses `Auto`.
+
 ## Profile and theme controls
 
-`SetProfile` displays the trigger, enables the built-in profile behavior, and selects the order used for names and initials. [Profile](configure-profile.md) explains login behavior and custom profile pages.
+`SetProfile` displays the profile trigger and selects the order used for names and initials. [Profile](configure-profile.md) explains login behavior and custom profile pages.
 
-`SetThemeToggle` displays the toggle, enables theme handling, and selects the theme used when Host configuration does not contain a saved preference. [Themes](configure-themes.md) explains system following and `appsettings.json` persistence.
+`SetThemeToggle` displays the theme toggle and selects the theme used when Host configuration does not contain a saved preference. [Themes](configure-themes.md) explains system following and preference persistence.
+
+## Window commands
+
+The built-in title bar provides minimize, maximize or restore, and close commands. Maximize follows the configured resize mode, and close follows the [Window](configure-window.md) configuration. Keyboard navigation provides a visible focus indicator for these commands.
 
 ## Related features
 
-- [Custom shell content](configure-custom-handler.md) adds title bar actions and custom regions.
+- [Custom shell content](configure-custom-handler.md) adds application content to title bar regions.
 - [Profile](configure-profile.md) configures profile content, authentication, and persistence.
 - [Navigation](navigation.md) provides the panel controlled by `SetNavToggle`.
 - [Themes](configure-themes.md) explains the theme controlled by `SetThemeToggle`.

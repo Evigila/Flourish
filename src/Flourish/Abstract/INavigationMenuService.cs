@@ -18,7 +18,7 @@ public interface INavigationMenuService
     void Update(Action<INavigationMenuEditor> update);
 }
 
-/// <summary>Edits a private working copy of the navigation menu.</summary>
+/// <summary>Edits the navigation menu within a transaction.</summary>
 public interface INavigationMenuEditor
 {
     /// <summary>Adds a navigation group.</summary>

@@ -5,11 +5,11 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Flourish separates page registration from the visible navigation model. Register WPF pages through [Dependency injection](configure-services.md), enable the navigation surface through [Shell configuration](shell-configuration.md), then use `ConfigureNavigation` to configure panel display and visible items.
+Register WPF pages through [Dependency injection](configure-services.md) and enable the navigation surface through [Shell configuration](shell-configuration.md). When no groups or fixed items are configured, the panel lists every registered page automatically. Use `ConfigureNavigation` to organize pages into explicit positions or add command items.
 
 ## Register pages
 
-`AddNavigable` registers a `Page` type in dependency injection and records the page metadata used by page navigation items: display name, icon glyph, and cache mode. It does not make the page visible in the navigation panel by itself.
+`AddNavigable` registers a `Page` type in dependency injection and records the display name, icon glyph, and cache mode used by navigation. The page appears in the automatic list unless the application configures any explicit group or fixed item.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -40,7 +40,7 @@ Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the u
 
 ## Configure groups
 
-Use `ConfigureNavigation` to build the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+Use `ConfigureNavigation` to replace the automatic list with an explicit navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -70,12 +70,11 @@ Group rules:
 
 - `groupId` controls display order. Lower IDs are displayed first.
 - `groupId` must be unique. Reusing a group ID throws during build.
-- Group 0 may omit `displayName`. When group 0 has no name, Flourish does not reserve heading space at the top of the panel.
+- Group 0 may omit `displayName`.
 - Non-zero groups must provide `displayName`.
-- Groups have larger spacing between them than ordinary items.
 
 ```csharp
-nav.SetGroup(groupId: 0, group =>
+nav.SetGroup(groupId: 0, configureGroup: group =>
 {
     group.AddNavigableViewItem<HomePage>(isInitial: true);
 });
@@ -100,19 +99,17 @@ Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize
 nav.SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `220` expanded and `56` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `56`. The visible collapsed width includes the standard command surface and its margin, compact scrollbar, divider, and the shared outer gutter. The default resize range is `160` to `420`. A hover-revealed splitter shows a width preview during the drag and applies the new width when the drag completes.
-
-Navigation content uses the Shell's horizontal gutter on the side that faces the window edge. Flourish mirrors that gutter when the panel is moved from the left to the right, keeping navigation rows aligned with built-in title bar and status bar content.
+The default widths are `220` expanded and `56` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `56`. The default resize range is `160` to `420`. User resizing updates the expanded width within that range.
 
 ## Add command items
 
-`AddNavigableItem` adds a button-like navigation item. It does not navigate to a page. Instead, it sends `commandKey` to the registered `ICommandParser` implementations.
+`AddNavigableItem` adds a button-like navigation item. It does not navigate to a page. Instead, it dispatches `commandKey` through `ICommandDispatcher`.
 
 ```csharp
 nav.SetGroup("Commands", groupId: 2, group =>
 {
-    group.AddNavigableItem("Hello", "\uE8F2", "demo.hello");
-    group.AddNavigableItem("World", "\uE774", "demo.world");
+    group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    group.AddNavigableItem("Export", "\uE898", "reports.export");
 });
 ```
 
@@ -132,11 +129,11 @@ builder.ConfigureNavigation(navigation =>
     });
 
     navigation.AddFixedNavigableViewItem<SettingsPage>();
-    navigation.AddFixedNavigableItem("About", "\uE946", "app.about");
+    navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
 });
 ```
 
-Fixed view items still require the page to be registered with `AddNavigable`. Fixed command items use the same `ICommandParser` path as grouped command items.
+Fixed view items still require the page to be registered with `AddNavigable`. Fixed command items use the same command dispatch path as grouped command items.
 
 ## Build one-level trees
 
@@ -166,7 +163,7 @@ Tree rules:
 > [!CAUTION]
 > Tree IDs are scoped to the current group or fixed-item section. Reusing a `parentId` in the same scope or pointing a `childId` at a missing parent fails during build.
 
-A page item can be a parent. Clicking it navigates to the page and toggles its children. A command item can also be a parent, but parent command items toggle children only and do not execute their `commandKey`; passing `null` is recommended.
+A page item can be a parent. Clicking it navigates to the page and toggles its children. A command item can also be a parent, but parent command items toggle children only and do not execute their `commandKey`; pass `null` when no command key is needed.
 
 When a page child is selected, Flourish expands and highlights its parent. Child items are hidden while the navigation panel is collapsed. Clicking a parent first expands the panel; a page parent then navigates to its page, while a command parent only toggles its children.
 

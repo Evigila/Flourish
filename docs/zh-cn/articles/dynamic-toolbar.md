@@ -1,11 +1,11 @@
 ---
 title: 动态工具栏
-description: 配置按页面变化的工具栏项，并连接到命令解析器。
+description: 配置按页面变化的工具栏项，并连接到命令调度。
 ---
 
 # 动态工具栏
 
-动态工具栏是 Shell 中会随当前页面变化的命令区域，适合放置打开、保存、导入、刷新或页面专属操作。
+动态工具栏是 Shell 中会随当前页面变化的命令区域。它用于打开、保存、导入或刷新等页面范围的命令。
 
 配置分两步：
 
@@ -28,23 +28,15 @@ builder.ConfigureShell(shell =>
 
 ## 为页面注册工具栏项
 
-页面类型在编译期已知时，使用 `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>`。
+使用 `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` 将工具栏项与 WPF 页面类型关联。
 
 ```csharp
 builder.ConfigureDynamicToolbar(toolbar =>
 {
-    toolbar.CreateToolbarItems<HomePage>(
-        new FlourishToolbarItem("打开", "\uE8E5", "home.open"),
-        new FlourishToolbarItem("保存", "\uE74E", "home.save"));
+    toolbar.CreateToolbarItems<ReportsPage>(
+        new FlourishToolbarItem("刷新", "\uE72C", "reports.refresh"),
+        new FlourishToolbarItem("导出", "\uE898", "reports.export"));
 });
-```
-
-如果页面类型来自动态发现，可以使用 `Type` 重载。
-
-```csharp
-toolbar.CreateToolbarItems(
-    typeof(ReportsPage),
-    new FlourishToolbarItem("导出", "\uE898", "reports.export"));
 ```
 
 ## 控制图标显示
@@ -65,16 +57,16 @@ toolbar.CreateToolbarItems<EditorPage>(
 | --- | --- |
 | `DisplayName` | 显示在工具栏上的文字。 |
 | `IconGlyph` | 启用图标显示时使用的图标字形。 |
-| `CommandKey` | 可选的命令键，会传递给 `ICommandParser`。 |
+| `CommandKey` | 可选的命令键，通过 `ICommandDispatcher` 调度。 |
 
 命令键应使用稳定、带命名空间的名称，例如 `reports.export` 或 `editor.preview`。显示文本本地化时，命令键仍保持不变。
 
 ## 处理命令
 
-`CommandKey` 会发送给已注册的 `ICommandParser`。在[依赖注入](configure-services.md)配置中注册解析器：
+在[依赖注入](configure-services.md)配置中注册一个或多个同步 `ICommandParser`：
 
 ```csharp
 services.AddSingleton<ICommandParser, AppCommandParser>();
 ```
 
-解析器如何识别命令以及多个解析器之间的处理顺序，请参阅[命令解析器](command-parser.md)。[自定义 Shell 内容](configure-custom-handler.md)也可以让标题栏和状态栏命令复用同一组命令键。
+命令匹配与调度顺序参见[命令解析器](command-parser.md)。需要在应用运行期间添加或移除处理程序时，使用[运行时 API](runtime-apis.md)中的 `ICommandRegistry`。[自定义 Shell 内容](configure-custom-handler.md)也可以让标题栏和状态栏命令复用同一组命令键。

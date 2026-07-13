@@ -146,30 +146,13 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 
 Flourish 写入基础文件时会保留无关设置，但会重新序列化整个 JSON 对象，因此文档会被重新格式化，注释也会被移除。内容根目录必须可写；已有文件必须是根节点为对象的有效 JSON。
 
-旧的 `preferences.json` 目录模型不再使用。`SetAppPreferenceDataPath`、`SetAppName` 和 `SetAppCompany` 已被移除；应用配置的位置与标识现在遵循标准 Hosting 约定。
-
-> [!NOTE]
-> Flourish 不会导入旧主题文件或此前生成的 Profile secret。迁移现有应用后，请在 appsettings 中配置初始主题，并重新登录。
-
 ## User Secrets
 
-内置 Profile 只持久化已选择“记住登录”的凭据。请为应用项目配置稳定的 `UserSecretsId`，以便 Flourish 与 Host 使用同一份 User Secrets 文档：
-
-```xml
-<PropertyGroup>
-  <UserSecretsId>Foobar.Desktop</UserSecretsId>
-</PropertyGroup>
-```
-
-Flourish 会在所有环境中把该 User Secrets 来源加入 Host；如果 Generic Host 已在 Development 环境加载过它，则不会重复添加。在 Windows 上，物理文件位于 `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json`。
-
-受保护的凭据使用 `Flourish:Profile:Credential` 键。未选择“记住登录”的会话只保留在内存中，不会写入磁盘。没有 User Secrets provider 时，普通登录仍然可用，但启用“记住登录”会抛出包含配置指引的 `InvalidOperationException`。不要把 Profile 凭据放入 `appsettings.json`；该值应由 User Secrets 提供应用级存储。
-
-appsettings 与 User Secrets provider 都属于同一个 Host 配置；应用服务可以通过标准 `IConfiguration` API 读取其中的值。
+已记住的 Profile 凭据使用应用的 User Secrets 配置。[用户资料（Profile）](configure-profile.md)说明所需的 `UserSecretsId`、凭据保护以及 provider 不可用时的行为。
 
 ## 相关功能
 
-- [标题栏](configure-title-bar.md)、[用户资料（Profile）](configure-profile.md)、[窗口](configure-window.md)、[后台任务](background-tasks.md)、[状态栏](status-bar.md)和[消息服务](message-service.md)使用已本地化的内置文案。
+- [标题栏](configure-title-bar.md)、[窗口](configure-window.md)、[后台任务](background-tasks.md)、[状态栏](status-bar.md)和[消息服务](message-service.md)使用已本地化的内置文案。
 - [主题](configure-themes.md)通过 Host 配置持久化用户选择的主题。
-- [用户资料（Profile）](configure-profile.md)说明已记住凭据与 User Secrets。
-- [`IFlourishBuilder`](flourish-builder.md) 说明配置回调的应用时机。
+- [用户资料（Profile）](configure-profile.md)说明已记住凭据与 User Secrets 配置。
+- [`IFlourishBuilder`](flourish-builder.md)说明配置回调的应用时机。

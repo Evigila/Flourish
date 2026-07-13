@@ -36,11 +36,9 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 `EnableHoverRevealAnimation` enables hover animation on supported controls.
 
-## Page rendering during transitions
+## Page behavior during transitions
 
-Page transitions animate a Shell-owned, non-interactive mask above the content frame. The navigated page itself remains stationary and fully opaque, which keeps its text pixel-aligned and avoids measuring or arranging page content on every animation frame.
-
-`Fade` fades the mask away to reveal the page. `EntranceFromBottom` reveals the stationary page from the bottom edge. Both effects return the mask to its hidden state when the transition completes without changing the page's final layout.
+The navigated page remains stationary and fully opaque during a page transition. `Fade` reveals it with a fade, while `EntranceFromBottom` reveals it from the bottom edge. Neither transition changes the page's final layout.
 
 ## Reduced motion
 

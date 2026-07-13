@@ -1,6 +1,6 @@
 ---
 uid: ArkheideSystem.Flourish.Abstract
-summary: Flourish 对外公开的应用组合、Shell 配置、导航和工具栏契约。
+summary: Flourish 的公共应用组合与运行时契约。
 ---
 
 ---
@@ -15,7 +15,7 @@ summary: 只要标题栏可见，就始终显示面包屑导航。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.BreadcrumbShowOption.Auto
-summary: 由 Flourish 根据当前导航状态自动决定是否显示面包屑导航。
+summary: 可以后退或前进时显示面包屑导航，否则隐藏。
 ---
 
 ---
@@ -49,6 +49,8 @@ uid: ArkheideSystem.Flourish.Abstract.FlourishNavigatedEventArgs.#ctor(System.St
 summary: 初始化导航事件数据。
 syntax:
   parameters:
+  - id: navigationKey
+    description: 已经导航到的注册键。
   - id: sourcePageType
     description: 已经导航到的已注册页面类型。
   - id: page
@@ -134,7 +136,7 @@ summary: 提供 Flourish 应用使用的服务集合扩展方法。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishServiceCollectionExtensions.AddNavigable``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String,ArkheideSystem.Flourish.Abstract.FlourishPageCacheMode)
-summary: 注册 WPF 页面并根据页面类名自动生成唯一导航键。
+summary: 注册 WPF 页面，根据页面类名生成默认导航键，并在构建时验证键的唯一性。
 syntax:
   typeParameters:
   - id: TPage
@@ -167,7 +169,7 @@ syntax:
   - id: iconGlyph
     description: 工具栏项显示的图标字形。
   - id: commandKey
-    description: 传递给 ICommandParser 的可选命令键。
+    description: 通过 ICommandDispatcher 调度的可选命令键。
 ---
 
 ---
@@ -182,12 +184,12 @@ summary: 获取工具栏项显示的图标字形。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishToolbarItem.CommandKey
-summary: 获取传递给 ICommandParser 的可选命令键。
+summary: 获取通过 ICommandDispatcher 调度的可选命令键。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.ICommandParser
-summary: 解析由 Flourish UI 表面触发的命令键，例如工具栏项命令和按钮类型导航项命令。
+summary: 同步处理由 Flourish UI 区域调度的命令键。
 ---
 
 ---
@@ -249,7 +251,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder
-summary: 在构建 Flourish 运行时之前配置本地化、应用数据、服务、Shell 选项、导航项、自定义区域、工具栏项和状态栏项目。
+summary: 在构建运行时之前配置 Flourish 应用。
 ---
 
 ---
@@ -378,7 +380,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureShell(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder})
-summary: 配置 Flourish Shell 的高层功能与全局选项。
+summary: 配置 Flourish Shell 功能与共享选项。
 syntax:
   parameters:
   - id: configureShell
@@ -494,8 +496,8 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishCustomHandlerBuilder.SetProfileContent(System.Func{System.IServiceProvider,System.Windows.FrameworkElement})
-summary: 使用自定义 WPF 内容替换内置标题栏个人资料占位内容。
-remarks: 在标题栏配置中调用 `SetProfile()` 才会显示个人资料入口。
+summary: 设置标题栏 Profile 区域的自定义 WPF 内容。
+remarks: 在标题栏配置中调用 `SetProfile()` 启用 Profile 区域后，该内容才会显示。
 syntax:
   parameters:
   - id: contentFactory
@@ -506,7 +508,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishCustomHandlerBuilder.AddTitlebarAction(System.String,System.String,System.String,System.Int32)
-summary: 向标题栏末尾添加紧凑命令按钮。
+summary: 向标题栏末尾添加命令按钮。
 syntax:
   parameters:
   - id: displayName
@@ -514,7 +516,7 @@ syntax:
   - id: iconGlyph
     description: 操作按钮显示的图标字形。
   - id: commandKey
-    description: 点击操作时发送给 `ICommandParser` 的可选命令键。
+    description: 点击操作时通过 `ICommandDispatcher` 调度的可选命令键。
   - id: order
     description: 内容在标题栏末尾区域内的显示顺序；值越小越靠前。
   return:
@@ -523,7 +525,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishCustomHandlerBuilder.AddTitlebarActionHandler(System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
-summary: 向标题栏末尾添加紧凑回调按钮。
+summary: 向标题栏末尾添加回调按钮。
 syntax:
   parameters:
   - id: displayName
@@ -550,7 +552,7 @@ syntax:
   - id: iconGlyph
     description: 显示在文本前的图标字形。
   - id: commandKey
-    description: 点击按钮时发送给 `ICommandParser` 的可选命令键。
+    description: 点击按钮时通过 `ICommandDispatcher` 调度的可选命令键。
   - id: order
     description: 内容在 Footer 区域内的显示顺序；值越小越靠前。
   return:
@@ -762,7 +764,7 @@ syntax:
   - id: iconGlyph
     description: 命令项显示的图标字形；传入 null 可省略图标。
   - id: commandKey
-    description: 触发时传递给 ICommandParser 的命令键；仅作为父节点时传入 null。
+    description: 触发时通过 ICommandDispatcher 调度的命令键；仅作为父节点时传入 null。
   - id: parentId
     description: 可选父节点 ID。childId 不为 0 时必须为 0。
   - id: childId
@@ -804,7 +806,7 @@ syntax:
   - id: iconGlyph
     description: 命令项显示的图标字形；传入 null 可省略图标。
   - id: commandKey
-    description: 触发时传递给 ICommandParser 的命令键；仅作为父节点时传入 null。
+    description: 触发时通过 ICommandDispatcher 调度的命令键；仅作为父节点时传入 null。
   - id: parentId
     description: 可选父节点 ID。childId 不为 0 时必须为 0。
   - id: childId
@@ -815,7 +817,40 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder
-summary: 配置 Flourish Shell 的高层功能与全局选项。
+summary: 配置 Flourish Shell 功能与共享选项。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishThemeColors
+summary: 定义用于生成 Flourish 主题资源的应用颜色。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishThemeColors.#ctor(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)
+summary: 使用三种不透明颜色创建主题颜色配置。
+syntax:
+  parameters:
+  - id: primary
+    description: 主要操作颜色。
+  - id: secondary
+    description: 辅助颜色。
+  - id: accent
+    description: 强调内容使用的颜色。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishThemeColors.Primary
+summary: 获取主要操作颜色。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishThemeColors.Secondary
+summary: 获取辅助颜色。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishThemeColors.Accent
+summary: 获取强调内容使用的颜色。
 ---
 
 ---
@@ -880,6 +915,28 @@ syntax:
   parameters:
   - id: effect
     description: 应用于 Shell 窗口的材质效果。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseThemeColors(ArkheideSystem.Flourish.Abstract.FlourishThemeColors)
+summary: 设置 Flourish 主题资源使用的主要、辅助和强调颜色。
+syntax:
+  parameters:
+  - id: colors
+    description: 应用的主题颜色配置；三种颜色必须完全不透明。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseCornerRadius(System.Double)
+summary: 设置 Flourish 控件与 Shell 区域共用的圆角半径。
+syntax:
+  parameters:
+  - id: radius
+    description: 以设备无关像素为单位的有限非负半径；`0` 表示直角。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -981,7 +1038,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetLogo(System.String)
-summary: 设置并显示 Logo；省略路径时使用 Flourish 内置应用图标。透明外边缘会被移除，同一图像也用于 Shell 窗口及 Windows 任务栏图标。
+summary: 设置并显示 Logo；省略路径时使用 Flourish 内置应用图标。同一图像也用于 Shell 窗口图标。
 syntax:
   parameters:
   - id: logoPath
@@ -1226,7 +1283,17 @@ summary: 获取当前导航键。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.INavigationService.Navigate(System.String,System.Object,System.Boolean)
-summary: 使用从 Page 类名自动生成、区分大小写的字符串键导航到已注册页面。
+summary: 使用区分大小写的已注册导航键执行导航。
+syntax:
+  parameters:
+  - id: navigationKey
+    description: 区分大小写的已注册导航键。
+  - id: parameter
+    description: 传递给目标页面的可选参数。
+  - id: addToBackStack
+    description: 指示是否将当前页面加入后退栈。
+  return:
+    description: 如果导航成功，则为 true；否则为 false。
 ---
 
 ---
@@ -1299,6 +1366,12 @@ summary: 配置由 SetProfile 启用的 Profile 弹层所承载的页面。
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishProfileBuilder.SetProfilePage``1
 summary: 设置由 DI 解析并承载在 Profile 弹层中的 WPF 页面。
+syntax:
+  typeParameters:
+  - id: TPage
+    description: 由依赖注入解析的 WPF 页面类型。
+  return:
+    description: 用于链式配置的当前 builder。
 ---
 
 ---
@@ -1461,6 +1534,12 @@ summary: 创建成功的认证结果。
 ---
 uid: ArkheideSystem.Flourish.Abstract.ProfileAuthenticationResult.Failure(System.String)
 summary: 创建包含错误消息的失败认证结果。
+syntax:
+  parameters:
+  - id: errorMessage
+    description: 面向用户的认证失败消息。
+  return:
+    description: 失败的认证结果。
 ---
 
 ---
@@ -1486,11 +1565,27 @@ summary: 定义可由应用替换的 Profile 认证逻辑。
 ---
 uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService.AuthenticateAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
 summary: 异步认证给定的 Profile 登录请求。
+syntax:
+  parameters:
+  - id: request
+    description: Profile 登录请求。
+  - id: cancellationToken
+    description: 请求取消操作的令牌。
+  return:
+    description: 包含认证结果的任务。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService.SignOutAsync(ArkheideSystem.Flourish.Abstract.ProfileUser,System.Threading.CancellationToken)
 summary: 执行认证提供程序所需的异步登出工作。
+syntax:
+  parameters:
+  - id: profile
+    description: 正在登出的 Profile 用户。
+  - id: cancellationToken
+    description: 请求取消操作的令牌。
+  return:
+    description: 登出工作完成时结束的任务。
 ---
 
 ---
@@ -1515,32 +1610,60 @@ summary: 当 Profile 用户或登录状态变化时发生。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IProfileService.InitializeAsync(System.Threading.CancellationToken)
-summary: 恢复已记住的登录，或清除上次未记住的登录信息。
+summary: 初始化 Profile 状态，并在存在已存储凭据时恢复已记住的登录。
+syntax:
+  parameters:
+  - id: cancellationToken
+    description: 请求取消操作的令牌。
+  return:
+    description: 初始化完成时结束的任务。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IProfileService.SignInAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
 summary: 异步认证并激活当前 Profile。
+syntax:
+  parameters:
+  - id: request
+    description: Profile 登录请求。
+  - id: cancellationToken
+    description: 请求取消操作的令牌。
+  return:
+    description: 包含认证结果的任务。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IProfileService.SetRememberLoginAsync(System.Boolean,System.Threading.CancellationToken)
 summary: 设置是否在下次启动时恢复当前登录。
+syntax:
+  parameters:
+  - id: rememberLogin
+    description: 指示是否在下次启动时恢复当前登录。
+  - id: cancellationToken
+    description: 请求取消操作的令牌。
+  return:
+    description: 设置应用完成时结束的任务。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IProfileService.SignOutAsync(System.Threading.CancellationToken)
 summary: 异步登出并删除持久化的 Profile 凭据。
+syntax:
+  parameters:
+  - id: cancellationToken
+    description: 请求取消操作的令牌。
+  return:
+    description: 登出完成时结束的任务。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService
-summary: 通过有并发上限的工作池排队并执行异步后台任务。
+summary: 提交并执行具有并发上限的异步后台任务。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService.MaxConcurrency
-summary: 获取可同时运行的最大任务数量；内置服务默认为 3。
+summary: 获取可同时运行的最大任务数量。
 ---
 
 ---
@@ -1835,4 +1958,25 @@ summary: 提供后台任务变化后的当前活动任务列表。
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishBackgroundTasksChangedEventArgs.Tasks
 summary: 获取按提交顺序排列的等待中、运行中和正在取消任务。
+---
+
+---
+uid: ArkheideSystem.Flourish.Themes.FlourishThemeResources
+summary: 加载 Flourish 控件与主题资源。
+---
+
+---
+uid: ArkheideSystem.Flourish.Styles.FlourishStyles
+summary: 已过时的 Flourish 资源入口。
+remarks: |
+  > [!WARNING]
+  > `FlourishStyles` 已过时。请使用 `FlourishThemeResources`。
+---
+
+---
+uid: ArkheideSystem.Flourish.Controls.FlourishControlResources
+summary: 已过时的 Flourish 资源入口。
+remarks: |
+  > [!WARNING]
+  > `FlourishControlResources` 已过时。请使用 `FlourishThemeResources`。
 ---

@@ -5,7 +5,7 @@ description: 处理 Flourish UI 区域触发的命令键。
 
 # 命令解析器
 
-`ICommandParser` 是 Flourish UI 区域触发命令键时的公开扩展点，最常见来源是动态工具栏项和按钮类型导航项。UI 项会保存一个命令键；用户触发该项时，Flourish 会询问已注册的解析器是否能处理该命令。
+分配给 Flourish UI 区域的命令通过 `ICommandDispatcher` 调度。需要在服务配置期间注册一组固定的同步处理程序时，实现 `ICommandParser`。通过 `ICommandRegistry` 注册的运行时处理程序会先执行；调度到解析器后，解析器按照注册顺序运行。
 
 ## 注册解析器
 
@@ -29,24 +29,24 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
     {
         return commandKey switch
         {
-            "home.open" => OpenHome(),
-            "home.save" => SaveHome(),
+            "reports.refresh" => RefreshReports(),
             "reports.export" => ExportReports(),
+            "help.open" => ShowHelp(),
             _ => false
         };
     }
 
-    private bool OpenHome()
+    private bool ShowHelp()
     {
         messages.Show(
-            "从首页打开",
-            "首页",
+            "可从支持站点获取帮助。",
+            "Foobar",
             MessageBoxButton.OK,
             MessageBoxImage.Information);
         return true;
     }
 
-    private static bool SaveHome()
+    private static bool RefreshReports()
     {
         return true;
     }
@@ -58,10 +58,10 @@ internal sealed class AppCommandParser(IMessageService messages) : ICommandParse
 }
 ```
 
-`TryParse` 应保持快速、明确。不要用显示文本路由命令，应使用稳定的命令键。
+遇到未知命令键时返回 `false`。使用稳定的命令键路由，不要使用已本地化的显示文本。
 
 > [!CAUTION]
-> `TryParse` 在触发命令的 UI 线程上同步调用。耗时工作应交给应用服务或异步流程处理，不应阻塞解析器。
+> `TryParse` 会同步执行，不应阻塞调用线程。耗时工作应交给应用服务或异步流程处理。
 
 ## 连接工具栏项
 
@@ -74,7 +74,7 @@ toolbar.CreateToolbarItems<ReportsPage>(
 
 ## 连接导航命令项
 
-按钮类型导航项使用同一条解析路径。可以在[导航](navigation.md)配置的分组内使用 `AddNavigableItem` 添加，也可以在底部固定区域通过 `AddFixedNavigableItem` 添加。
+按钮类型导航项使用同一条调度路径。可以在[导航](navigation.md)配置的分组内使用 `AddNavigableItem` 添加，也可以在底部固定区域通过 `AddFixedNavigableItem` 添加。
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
@@ -84,7 +84,7 @@ builder.ConfigureNavigation(navigation =>
         group.AddNavigableItem("刷新", "\uE72C", "reports.refresh");
     });
 
-    navigation.AddFixedNavigableItem("关于", "\uE946", "app.about");
+    navigation.AddFixedNavigableItem("帮助", "\uE946", "help.open");
 });
 ```
 
@@ -92,7 +92,7 @@ builder.ConfigureNavigation(navigation =>
 
 ## 在解析器中使用服务
 
-解析器由 DI 解析，因此可以依赖应用服务。Flourish 也会注册 `IMessageService`，用于显示符合 Flourish 样式的模态消息，并复用 WPF `MessageBox` 的按钮、图标和返回值枚举。它也支持自定义选项；参见 [消息服务](message-service.md)。通过[自定义 Shell 内容](configure-custom-handler.md)注册的标题栏和状态栏命令也使用同一条解析路径。
+解析器由 DI 解析，因此可以依赖应用服务。Flourish 也会注册 `IMessageService`，用于显示符合 Flourish 样式的模态消息，并复用 WPF `MessageBox` 的按钮、图标和返回值枚举。它也支持自定义选项；参见[消息服务](message-service.md)。通过[自定义 Shell 内容](configure-custom-handler.md)注册的标题栏和状态栏命令也使用同一条调度路径。
 
 ```csharp
 internal sealed class ReportsCommandParser(ReportService reports) : ICommandParser

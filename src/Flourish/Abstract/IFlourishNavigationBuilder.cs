@@ -51,8 +51,6 @@ public interface IFlourishNavigationBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// The open width is also updated when users resize the panel with the splitter.
-    /// A non-zero collapsed width reserves enough room for the standard 38-DIP command
-    /// surface, its aligned outer inset and margin, the compact scrollbar, and the pane divider.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// A dimension is non-finite or outside its supported range; <paramref name="closedWidth" />
@@ -86,8 +84,7 @@ public interface IFlourishNavigationBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// Group IDs cannot be repeated. Group 0 may omit its display name; non-zero groups must provide
-    /// one. Groups are displayed in ascending <paramref name="groupId" /> order and have extra
-    /// spacing between them.
+    /// one. Groups are displayed in ascending <paramref name="groupId" /> order.
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
@@ -138,18 +135,18 @@ public interface IFlourishNavigationBuilder
     /// </summary>
     /// <param name="displayName">The text displayed by the fixed command item.</param>
     /// <param name="iconGlyph">The icon glyph displayed with the item, or <see langword="null" /> to omit it.</param>
-    /// <param name="commandKey">The command key sent to <see cref="ICommandParser" />, or <see langword="null" /> for an item that only groups children.</param>
+    /// <param name="commandKey">The command key dispatched through <see cref="ICommandDispatcher" />, or <see langword="null" /> for an item that only groups children.</param>
     /// <param name="parentId">The optional parent node ID. Must be 0 when <paramref name="childId" /> is non-zero.</param>
     /// <param name="childId">The optional parent ID that this child follows. Must be 0 when <paramref name="parentId" /> is non-zero.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// Command items trigger <see cref="ICommandParser" /> instead of navigating to a page. If a
+    /// Command items dispatch through <see cref="ICommandDispatcher" /> instead of navigating to a page. If a
     /// command item is also a parent node, clicking it toggles its children and does not execute the
     /// command key, so parent command items commonly pass <c>null</c> for <paramref name="commandKey" />.
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// navigation.AddFixedNavigableItem("About", "\uE946", "app.about");
+    /// navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
     /// ]]></code>
     /// </example>
     IFlourishNavigationBuilder AddFixedNavigableItem(

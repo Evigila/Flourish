@@ -1,11 +1,11 @@
 ---
 title: Dependency injection
-description: Register application services, navigable pages, command parsers, and profile services.
+description: Register application services, navigable pages, command parsers, and replaceable Flourish services.
 ---
 
 # Dependency injection
 
-Flourish uses the service collection from its .NET Generic Host. Register application services, WPF pages, command parsers, and replaceable Flourish services through `ConfigureServices`.
+Flourish uses the `IServiceCollection` from its .NET Generic Host. Register application services, WPF pages, command parsers, and replaceable Flourish services through `ConfigureServices`.
 
 ## Register services
 
@@ -20,23 +20,29 @@ builder.ConfigureServices((context, services) =>
 });
 ```
 
-The callback receives `HostBuilderContext`, so registrations can use the active environment and the same Host configuration that supplies Flourish settings. `CreateDefaultBuilder` loads the standard appsettings providers, while an application `<UserSecretsId>` identifies the User Secrets document used for protected remembered Profile credentials. View models, repositories, and other application services use the same `IServiceCollection` patterns as any Generic Host application.
+The callback receives `HostBuilderContext`, so registrations can use the active environment and the same Host configuration that supplies Flourish settings. View models, repositories, and other application services use the standard .NET dependency injection patterns.
 
-Flourish also registers the Host-managed `IBackgroundTaskService`. Application services and view models can receive it directly through constructor injection; do not register a second worker-pool instance. See [Background tasks](background-tasks.md).
+`IBackgroundTaskService` is already registered and can be received through constructor injection. See [Background tasks](background-tasks.md).
 
 ## Register navigable pages
 
-`AddNavigable<TPage>` registers a `System.Windows.Controls.Page` and its navigation metadata. Flourish generates the case-sensitive navigation key from the class name by removing one trailing `Page` suffix: `SettingsPage` becomes `Settings`, while `Page1` remains `Page1`. Registration makes the page resolvable; [Navigation](navigation.md) determines where it appears and which page is shown first.
+`AddNavigable<TPage>` registers a `System.Windows.Controls.Page` and its navigation metadata. Flourish generates the case-sensitive navigation key from the class name by removing one trailing `Page` suffix: `SettingsPage` becomes `Settings`, while `Page1` remains `Page1`.
 
-View models navigate with that generated string, for example `navigation.Navigate("Settings")`, without referencing the WPF page. Flourish rejects duplicate generated keys when `Build()` applies the registrations.
+When no explicit navigation groups or fixed items are configured, the navigation panel lists registered pages automatically. Configuring groups or fixed items replaces that automatic list. [Navigation](navigation.md) explains visible positions and initial-page selection.
 
-## Replace Flourish services
+View models can navigate with the generated key, for example `navigation.Navigate("Settings")`, without referencing the WPF page type. `Build()` rejects duplicate generated keys.
 
-Register `IProfileAuthService` to supply application authentication while keeping Flourish profile state and persistence. Register `IProfileService` when the application owns the complete profile workflow. Flourish supplies its defaults only when the application has not registered these interfaces.
+## Register command parsers
+
+Commands assigned to Flourish UI surfaces are dispatched through `ICommandDispatcher`. Register `ICommandParser` implementations here for a fixed set of synchronous handlers. [Command parser](command-parser.md) explains dispatch order and runtime handlers.
+
+## Replace profile services
+
+Register `IProfileAuthService` to provide application authentication while retaining the built-in profile state and remembered-login behavior. Register `IProfileService` when the application owns the complete profile workflow. Flourish provides default implementations only when the application has not registered these interfaces.
 
 ## Related features
 
-- [Navigation](navigation.md) places registered pages in the visible navigation model.
+- [Navigation](navigation.md) explains automatic and explicit navigation items.
 - [Dynamic toolbar](dynamic-toolbar.md) attaches commands to registered page types.
 - [Profile](configure-profile.md) explains authentication and profile service replacement.
 - [Background tasks](background-tasks.md) explains asynchronous work, cancellation, progress, and results.

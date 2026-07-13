@@ -1,7 +1,7 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Identifies a high-level Flourish shell feature.
+/// Identifies a Flourish shell feature.
 /// </summary>
 public enum ShellFeature
 {

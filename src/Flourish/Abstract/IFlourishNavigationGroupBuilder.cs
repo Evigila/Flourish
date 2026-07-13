@@ -46,19 +46,19 @@ public interface IFlourishNavigationGroupBuilder
     /// </summary>
     /// <param name="displayName">The text displayed by the command item.</param>
     /// <param name="iconGlyph">The icon glyph displayed with the item, or <see langword="null" /> to omit it.</param>
-    /// <param name="commandKey">The command key sent to <see cref="ICommandParser" />, or <see langword="null" /> for an item that only groups children.</param>
+    /// <param name="commandKey">The command key dispatched through <see cref="ICommandDispatcher" />, or <see langword="null" /> for an item that only groups children.</param>
     /// <param name="parentId">The optional parent node ID. Must be 0 when <paramref name="childId" /> is non-zero.</param>
     /// <param name="childId">The optional parent ID that this child follows. Must be 0 when <paramref name="parentId" /> is non-zero.</param>
     /// <returns>The current group builder for chained configuration.</returns>
     /// <remarks>
-    /// Command items execute <see cref="ICommandParser" /> and do not remain selected after they are
+    /// Command items dispatch through <see cref="ICommandDispatcher" /> and do not remain selected after they are
     /// invoked. If a command item is also a parent node, clicking it toggles its children and does
     /// not execute <paramref name="commandKey" />.
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// group.AddNavigableItem("Hello", "\uE8F2", "demo.hello");
-    /// group.AddNavigableItem("World", "\uE774", "demo.world");
+    /// group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    /// group.AddNavigableItem("Export", "\uE898", "reports.export");
     /// ]]></code>
     /// </example>
     IFlourishNavigationGroupBuilder AddNavigableItem(

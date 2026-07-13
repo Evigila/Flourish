@@ -1,11 +1,11 @@
 ---
 title: Tooltips
-description: Configure tooltip timing and keep tooltips inside the shell boundary.
+description: Configure tooltip timing and placement inside the shell boundary.
 ---
 
 # Tooltips
 
-Tooltips make compact or icon-only shell controls discoverable. `UseTips` sets the initial delay and enables Flourish tooltips in one step.
+Flourish tooltips provide labels for compact or icon-only shell controls. `UseTips` sets the initial delay and enables them.
 
 ## Configure tooltips
 
@@ -13,18 +13,14 @@ Tooltips make compact or icon-only shell controls discoverable. `UseTips` sets t
 builder.ConfigureShell(shell => shell.UseTips(delay: 200));
 ```
 
-## Timing and placement
+The `delay` argument is the time in milliseconds between pointer hover and display. It defaults to `200` and must be non-negative.
 
-The `delay` argument controls the initial hover delay in milliseconds. A shorter value shows help sooner; a longer value reduces unintended tooltips as the pointer moves across controls. It defaults to `200` and must be non-negative.
+Flourish keeps these tooltips within the shell boundary. Omit `UseTips` when they should remain disabled.
 
-Flourish uses its built-in boundary margin to keep tooltips away from shell edges, including controls near the collapsed navigation panel, status bar, or toolbar boundary.
-
-Omit `UseTips` when Flourish tooltips should remain disabled.
-
-Background-task metadata tooltips are not controlled by `UseTips`. They are part of the [background-task](background-tasks.md) status surface and use their own initial delay. Hovering the waiting-queue icon opens an interactive flyout rather than a tooltip.
+Background-task status details are not controlled by `UseTips`. They remain available through [Background tasks](background-tasks.md).
 
 ## Related features
 
 - [Shell configuration](shell-configuration.md) configures and enables tooltips.
-- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md) contain built-in controls governed by this tooltip setting.
-- [Background tasks](background-tasks.md) provides task-owned metadata tooltips and an interactive queue flyout.
+- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md) contain controls governed by this setting.
+- [Background tasks](background-tasks.md) provides task status and queue details.
