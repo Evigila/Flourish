@@ -631,7 +631,7 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
-    public void ButtonTemplates_DoNotRetainASeparateBlueFocusChrome()
+    public void ButtonTemplates_UseKeyboardFocusVisualWithoutTemplateFocusChrome()
     {
         RunInSta(() =>
         {
@@ -666,7 +666,7 @@ public sealed class HoverRevealVisualTests
                 foreach (var button in buttons)
                 {
                     button.ApplyTemplate();
-                    Assert.Null(button.FocusVisualStyle);
+                    Assert.NotNull(button.FocusVisualStyle);
                     Assert.Null(button.Template.FindName("FocusChrome", button));
                 }
             }

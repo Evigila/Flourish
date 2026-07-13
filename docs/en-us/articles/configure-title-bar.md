@@ -48,6 +48,12 @@ These methods configure built-in title bar regions. [Custom shell content](confi
 
 Built-in tooltips and theme labels follow the locale selected through [Application data](configure-data.md). Values supplied to `SetTitle`, `SetSubTitle`, and `SetSearch` are application text and are not translated automatically.
 
+## Window commands
+
+When the built-in title bar is enabled, its caption area provides minimize, maximize or restore, and close commands. Minimize and maximize retain the standard, non-destructive blue hover reveal and pressed feedback. Close is a destructive action, so it uses red hover and pressed feedback in both light and dark themes.
+
+Pointer activation does not leave a focus outline on these buttons, while keyboard navigation still provides a visible focus indicator. The maximize command follows the configured resize mode, and close behavior follows the [Window](configure-window.md) configuration.
+
 ## Logo and window icon
 
 `SetLogo()` uses the built-in Flourish application icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. Flourish removes fully transparent edge pixels before fitting the image into the title bar logo region, allowing the visible artwork to use the available space. The same effective image is assigned to the shell window icon, so the taskbar icon and title bar logo remain synchronized.
@@ -86,4 +92,4 @@ builder.ConfigureTitleBar(titleBar =>
 - [Profile](configure-profile.md) configures profile content, authentication, and persistence.
 - [Navigation](navigation.md) provides the panel controlled by `SetNavToggle`.
 - [Themes](configure-themes.md) explains the theme controlled by `SetThemeToggle`.
-- [Window](configure-window.md) configures close-to-tray behavior.
+- [Window](configure-window.md) configures resize behavior and close-to-tray handling.

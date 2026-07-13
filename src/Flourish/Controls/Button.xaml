@@ -3,6 +3,21 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
+  <Style x:Key="FlourishButtonFocusVisualStyle" TargetType="{x:Type Control}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Control}">
+          <Border
+            BorderBrush="{DynamicResource FlourishControlStrokeFocusBrush}"
+            BorderThickness="{DynamicResource FlourishFocusBorderThickness}"
+            CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+            SnapsToDevicePixels="True"
+          />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <ControlTemplate
     x:Key="FlourishButtonTemplate"
     TargetType="{x:Type controls:FlourishButton}"
@@ -77,11 +92,21 @@
           Value="{DynamicResource FlourishBrandBackgroundPressedBrush}"
         />
       </Trigger>
+      <Trigger Property="Appearance" Value="Danger">
+        <Setter
+          TargetName="HoverChrome"
+          Property="Background"
+          Value="{DynamicResource FlourishWindowCaptionCloseHoverBrush}"
+        />
+        <Setter
+          TargetName="PressedChrome"
+          Property="Background"
+          Value="{DynamicResource FlourishWindowCaptionCloseHoverBrush}"
+        />
+      </Trigger>
       <Trigger Property="Appearance" Value="Card">
         <Setter TargetName="Chrome" Property="CornerRadius" Value="{DynamicResource FlourishSurfaceCornerRadius}" />
-        <Setter TargetName="HoverChrome" Property="Background" Value="{DynamicResource FlourishCardHoverBrush}" />
         <Setter TargetName="HoverChrome" Property="CornerRadius" Value="{DynamicResource FlourishSurfaceCornerRadius}" />
-        <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishCardPressedBrush}" />
         <Setter TargetName="PressedChrome" Property="CornerRadius" Value="{DynamicResource FlourishSurfaceCornerRadius}" />
       </Trigger>
       <Trigger Property="Variant" Value="WindowCaption">
@@ -98,10 +123,26 @@
           </Setter.Value>
         </Setter>
       </Trigger>
-      <Trigger Property="IsKeyboardFocused" Value="True">
-        <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
-        <Setter TargetName="Chrome" Property="BorderThickness" Value="{DynamicResource FlourishFocusBorderThickness}" />
-      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Appearance" Value="Danger" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter
+          Property="Foreground"
+          Value="{DynamicResource FlourishWindowCaptionCloseForegroundBrush}"
+        />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Appearance" Value="Danger" />
+          <Condition Property="IsPressed" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter
+          Property="Foreground"
+          Value="{DynamicResource FlourishWindowCaptionCloseForegroundBrush}"
+        />
+      </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter
@@ -138,7 +179,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeCaption}" />
     <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="FocusVisualStyle" Value="{StaticResource FlourishButtonFocusVisualStyle}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter
       Property="ToolTipService.InitialShowDelay"
@@ -217,6 +258,12 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
+      </Trigger>
+      <Trigger Property="Appearance" Value="Danger">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="controls:HoverReveal.IsMotionEnabled" Value="False" />
       </Trigger>
       <Trigger Property="Appearance" Value="Card">
         <Setter Property="Padding" Value="{DynamicResource FlourishInteractiveCardPadding}" />

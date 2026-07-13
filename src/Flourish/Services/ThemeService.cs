@@ -366,6 +366,17 @@ internal sealed class ThemeService(
         var neutralBackground = isDark
             ? Color.FromRgb(0x14, 0x14, 0x14)
             : Colors.White;
+        var controlBackground = isDark
+            ? Color.FromRgb(0x29, 0x29, 0x29)
+            : Colors.White;
+        var neutralForeground = isDark
+            ? Color.FromRgb(0xF8, 0xF8, 0xFA)
+            : Color.FromRgb(0x1B, 0x1B, 0x1F);
+        var cardLayer = isDark
+            ? Color.FromArgb(0xF0, 0x2B, 0x2D, 0x31)
+            : Color.FromArgb(0xFA, 0xFF, 0xFF, 0xFF);
+        var cardBackgroundOnNeutral = Composite(cardLayer, neutralBackground);
+        var cardBackgroundOnControl = Composite(cardLayer, controlBackground);
         var foregroundTarget = isDark ? Colors.White : Colors.Black;
         var primaryForeground = EnsureContrast(
             colors.Primary,
@@ -410,22 +421,36 @@ internal sealed class ThemeService(
             Color.FromArgb(0x2E, colors.Primary.R, colors.Primary.G, colors.Primary.B),
             neutralBackground
         );
-        var selectedForeground = EnsureContrast(
+        var hoverReveal = CreateContrastSafeReveal(
+            colors.Primary,
+            isDark ? (byte)0x66 : (byte)0x59,
+            (neutralForeground, neutralBackground),
+            (neutralForeground, controlBackground),
+            (neutralForeground, cardBackgroundOnNeutral),
+            (neutralForeground, cardBackgroundOnControl)
+        );
+        var selectedForeground = EnsureContrastAcrossBackgrounds(
             primaryForeground,
+            foregroundTarget,
             selectedBackground,
-            foregroundTarget
+            Composite(hoverReveal, selectedBackground)
         );
-        var hoverReveal = Color.FromArgb(
-            isDark ? (byte)0x4D : (byte)0x33,
-            colors.Primary.R,
-            colors.Primary.G,
-            colors.Primary.B
+        hoverReveal = CreateContrastSafeReveal(
+            colors.Primary,
+            hoverReveal.A,
+            (neutralForeground, neutralBackground),
+            (neutralForeground, controlBackground),
+            (neutralForeground, cardBackgroundOnNeutral),
+            (neutralForeground, cardBackgroundOnControl),
+            (selectedForeground, selectedBackground)
         );
-        var pressedReveal = Color.FromArgb(
-            isDark ? (byte)0x4D : (byte)0x33,
-            primaryPressed.R,
-            primaryPressed.G,
-            primaryPressed.B
+        var pressedReveal = CreateContrastSafeReveal(
+            primaryPressed,
+            isDark ? (byte)0x73 : (byte)0x66,
+            (neutralForeground, neutralBackground),
+            (neutralForeground, controlBackground),
+            (neutralForeground, cardBackgroundOnNeutral),
+            (neutralForeground, cardBackgroundOnControl)
         );
 
         resources["FlourishPrimaryColor"] = colors.Primary;
@@ -533,6 +558,38 @@ internal sealed class ThemeService(
         return Color.FromArgb(Math.Min(color.A, (byte)0x24), color.R, color.G, color.B);
     }
 
+    private static Color CreateContrastSafeReveal(
+        Color color,
+        byte maximumAlpha,
+        params (Color Foreground, Color Background)[] surfaces
+    )
+    {
+        const double minimumContrast = 4.5;
+        for (var alpha = (int)maximumAlpha; alpha >= 0; alpha--)
+        {
+            var candidate = Color.FromArgb((byte)alpha, color.R, color.G, color.B);
+            var isReadable = true;
+            foreach (var (foreground, background) in surfaces)
+            {
+                if (
+                    GetContrastRatio(foreground, Composite(candidate, background))
+                    < minimumContrast
+                )
+                {
+                    isReadable = false;
+                    break;
+                }
+            }
+
+            if (isReadable)
+            {
+                return candidate;
+            }
+        }
+
+        return Color.FromArgb(0, color.R, color.G, color.B);
+    }
+
     private static Color EnsureContrast(
         Color foreground,
         Color background,
@@ -549,6 +606,38 @@ internal sealed class ThemeService(
         {
             var candidate = Blend(foreground, target, step / 20d);
             if (GetContrastRatio(candidate, background) >= minimumContrast)
+            {
+                return candidate;
+            }
+        }
+
+        return target;
+    }
+
+    private static Color EnsureContrastAcrossBackgrounds(
+        Color foreground,
+        Color target,
+        params Color[] backgrounds
+    )
+    {
+        const double minimumContrast = 4.5;
+        if (
+            backgrounds.All(
+                background => GetContrastRatio(foreground, background) >= minimumContrast
+            )
+        )
+        {
+            return foreground;
+        }
+
+        for (var step = 1; step <= 20; step++)
+        {
+            var candidate = Blend(foreground, target, step / 20d);
+            if (
+                backgrounds.All(
+                    background => GetContrastRatio(candidate, background) >= minimumContrast
+                )
+            )
             {
                 return candidate;
             }

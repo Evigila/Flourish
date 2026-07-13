@@ -135,8 +135,11 @@ Flourish 不仅提供 Shell 组合 API，也包含一套控件库。应用页面
 - `Primary` 是一组操作中的主要操作。
 - `Subtle` 用于安静表面上的低强调操作。
 - `Card` 让整个按钮成为可交互卡片。
+- `Danger` 表示破坏性操作，并使用红色交互反馈。
 
 一个局部决策区域通常只应有一个 Primary 操作。外部 Margin 仍由布局容器负责；Appearance 只控制按钮自身，不负责其摆放。
+
+鼠标点击不会在按钮上残留焦点边框。通过键盘导航获得焦点时，按钮仍会显示随主题变化的焦点指示，使焦点状态不会与悬停或按下反馈混淆。
 
 ### FlourishTextBlock
 
@@ -174,9 +177,9 @@ builder.ConfigureMotion(motion =>
 
 参与该行为的自定义模板应同时提供名为 `HoverChrome` 和 `HoverRevealScale` 的元素，并在控件上设置 `flourish:HoverReveal.IsParticipant="True"`。`IsParticipant` 不继承，而 `IsEnabled` 和 `AnimationDuration` 是可继承的策略值，因此容器可以统一禁用或调整动效时长，而不会给每个视觉后代都挂载行为。缺少任一模板部件时，HoverReveal 会安全地不执行任何操作。
 
-默认情况下，HoverReveal 仍会为旧版自定义模板保留静态悬停以及按下状态的交接逻辑。如果模板已经自行实现无动画的 `IsMouseOver + HoverReveal.IsEnabled=False` fallback 和按下视觉，可以设置 `flourish:HoverReveal.TemplateHandlesInteraction="True"`；此时 Flourish 会在动效关闭时断开冗余的指针处理器。内置模板均使用这一优化契约。为 Flourish 控件局部指定 `Template` 时，系统会自动回退到兼容行为，除非同时在本地设置 `TemplateHandlesInteraction`。如果通过自定义 `Style` 替换模板，则应显式将该属性设为 `False`；只有完整实现上述两类状态后才应设为 `True`。文字输入控件使用悬停和焦点描边，而不会机械地为所有控件强加揭示动画。
+HoverReveal 可以自行管理指针交互，也允许参与该行为的模板提供自己的静态悬停和按下状态。只有模板为禁用揭示动效的情况提供无动画悬停 fallback，并自行处理按下状态，才应设置 `flourish:HoverReveal.TemplateHandlesInteraction="True"`。为控件局部指定 `Template` 时，除非同时在本地设置 `TemplateHandlesInteraction`，否则使用行为管理的交互。通过自定义 `Style` 替换模板时，应根据替换模板的能力显式设置该属性。文字输入控件使用悬停和焦点描边，不使用 HoverReveal。
 
-按钮、交互式卡片按钮、列表项与导航项共用同一套 HoverReveal 契约。所有参与该效果的 `HoverChrome` 都通过 `FlourishHoverRevealBrush` 获得更明亮、可感知主题的淡蓝色填充，并且不绘制悬停描边。选中项与未选中项会保持相同的揭示画刷，不再根据选中状态切换不同的悬停填充；选中状态仍由控件底层状态表达。选中表面在亮色模式使用 Fluent Web brand150，在暗色模式使用 brand60，并搭配 `FlourishControlSelectedForegroundBrush`，使选中及“选中并悬停”状态下的文字均保持清晰对比。按钮的按下反馈使用独立的无描边图层，避免被 HoverReveal 动画覆盖：普通按钮与标题栏按钮使用较深的 `FlourishPressedRevealBrush`，Primary 按钮则使用 `FlourishBrandBackgroundPressedBrush`，以便在品牌色表面上保持清晰的按下对比。因此，导航项会与 Gallery 卡片遵循相同的全局启停、时长、主题和减少动态效果策略，不再维护独立的悬停实现。
+普通按钮、交互式卡片按钮、列表项与导航项在亮色和暗色主题下使用同一套鲜明、随主题变化的蓝色揭示反馈。选中状态会在该反馈下保持可见，按下反馈则使用独立状态。`Danger` 是语义例外：破坏性按钮使用红色悬停和按下反馈，而不是蓝色揭示。
 
 ## 主题与语义 token
 

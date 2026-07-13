@@ -19,6 +19,9 @@ public enum FlourishButtonAppearance
 
     /// <summary>An interactive card surface.</summary>
     Card,
+
+    /// <summary>A destructive action with warning feedback.</summary>
+    Danger,
 }
 
 /// <summary>

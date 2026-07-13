@@ -66,13 +66,14 @@
         <controls:FlourishButton
           x:Name="CloseButton"
           Grid.Column="1"
-          Appearance="Subtle"
+          Appearance="Danger"
           Click="CloseButton_Click"
           Variant="WindowCaption"
         >
           <controls:FlourishTextBlock
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="{DynamicResource FlourishFontSizeWindowButtonIcon}"
+            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishButton}}}"
             Role="Icon"
             Text="&#xE8BB;"
           />

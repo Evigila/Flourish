@@ -411,6 +411,34 @@ public sealed class RuntimeAppearanceServiceTests
             ThemeService.ApplyStyleOverrides(light, options, FlourishTheme.Light);
             ThemeService.ApplyStyleOverrides(dark, options, FlourishTheme.Dark);
 
+            var lightHoverReveal = Assert.IsType<SolidColorBrush>(
+                light["FlourishHoverRevealBrush"]
+            );
+            var lightPressedReveal = Assert.IsType<SolidColorBrush>(
+                light["FlourishPressedRevealBrush"]
+            );
+            var darkHoverReveal = Assert.IsType<SolidColorBrush>(
+                dark["FlourishHoverRevealBrush"]
+            );
+            var darkPressedReveal = Assert.IsType<SolidColorBrush>(
+                dark["FlourishPressedRevealBrush"]
+            );
+
+            Assert.Equal(0x59, lightHoverReveal.Color.A);
+            Assert.Equal(0x66, lightPressedReveal.Color.A);
+            Assert.Equal(0x66, darkHoverReveal.Color.A);
+            Assert.Equal(0x73, darkPressedReveal.Color.A);
+            AssertDirectBrushColor(
+                light,
+                "FlourishControlSelectedHoverBrush",
+                lightHoverReveal.Color
+            );
+            AssertDirectBrushColor(
+                dark,
+                "FlourishControlSelectedHoverBrush",
+                darkHoverReveal.Color
+            );
+
             AssertDirectBrushColor(light, "FlourishPrimaryForegroundBrush", colors.Primary);
             Assert.NotEqual(
                 colors.Primary,
@@ -428,6 +456,96 @@ public sealed class RuntimeAppearanceServiceTests
                 "FlourishControlStrokeFocusBrush",
                 Assert.IsType<SolidColorBrush>(dark["FlourishAccentForegroundBrush"]).Color
             );
+        });
+    }
+
+    [Fact]
+    public void ThemeService_CustomRevealIntensityPreservesInteractionContrast()
+    {
+        RunInSta(() =>
+        {
+            var primaryColors = new[]
+            {
+                Colors.White,
+                Colors.Black,
+                Color.FromRgb(0x80, 0x80, 0x80),
+                Color.FromRgb(0xFF, 0xD8, 0x00),
+                Color.FromRgb(0xD1, 0x34, 0x38),
+                Color.FromRgb(0xE4, 0xF3, 0xB6),
+            };
+
+            foreach (var theme in new[] { FlourishTheme.Light, FlourishTheme.Dark })
+            {
+                var isDark = theme == FlourishTheme.Dark;
+                var neutralForeground = isDark
+                    ? Color.FromRgb(0xF8, 0xF8, 0xFA)
+                    : Color.FromRgb(0x1B, 0x1B, 0x1F);
+                var neutralBackground = isDark
+                    ? Color.FromRgb(0x14, 0x14, 0x14)
+                    : Colors.White;
+                var controlBackground = isDark
+                    ? Color.FromRgb(0x29, 0x29, 0x29)
+                    : Colors.White;
+                var cardLayer = isDark
+                    ? Color.FromArgb(0xF0, 0x2B, 0x2D, 0x31)
+                    : Color.FromArgb(0xFA, 0xFF, 0xFF, 0xFF);
+                var interactionBackgrounds = isDark
+                    ? new[]
+                    {
+                        neutralBackground,
+                        controlBackground,
+                        Composite(cardLayer, neutralBackground),
+                        Composite(cardLayer, controlBackground),
+                    }
+                    : new[] { Colors.White };
+
+                foreach (var primary in primaryColors)
+                {
+                    var resources = new ResourceDictionary();
+                    var options = new FlourishShellOptions
+                    {
+                        ThemeColors = new FlourishThemeColors(
+                            primary,
+                            Color.FromRgb(0x5C, 0x2E, 0x91),
+                            Color.FromRgb(0xD8, 0x3B, 0x01)
+                        ),
+                    };
+
+                    ThemeService.ApplyStyleOverrides(resources, options, theme);
+
+                    var hoverReveal = Assert.IsType<SolidColorBrush>(
+                        resources["FlourishHoverRevealBrush"]
+                    ).Color;
+                    var pressedReveal = Assert.IsType<SolidColorBrush>(
+                        resources["FlourishPressedRevealBrush"]
+                    ).Color;
+                    foreach (var background in interactionBackgrounds)
+                    {
+                        AssertOverlayContrast(neutralForeground, hoverReveal, background);
+                        AssertOverlayContrast(neutralForeground, pressedReveal, background);
+                    }
+
+                    var selectedBackground = Assert.IsType<SolidColorBrush>(
+                        resources["FlourishControlSelectedBrush"]
+                    ).Color;
+                    var selectedForeground = Assert.IsType<SolidColorBrush>(
+                        resources["FlourishControlSelectedForegroundBrush"]
+                    ).Color;
+                    var selectedHover = Assert.IsType<SolidColorBrush>(
+                        resources["FlourishControlSelectedHoverBrush"]
+                    ).Color;
+                    AssertOverlayContrast(
+                        selectedForeground,
+                        selectedHover,
+                        selectedBackground
+                    );
+
+                    if (isDark && primary == Colors.White)
+                    {
+                        Assert.True(hoverReveal.A < 0x66);
+                    }
+                }
+            }
         });
     }
 
@@ -629,6 +747,53 @@ public sealed class RuntimeAppearanceServiceTests
     {
         var brush = Assert.IsType<SolidColorBrush>(resources[key]);
         Assert.Equal(expected, brush.Color);
+    }
+
+    private static void AssertOverlayContrast(
+        Color foreground,
+        Color overlay,
+        Color background
+    )
+    {
+        var composited = Composite(overlay, background);
+        var contrast = GetContrastRatio(foreground, composited);
+        Assert.True(
+            contrast >= 4.5,
+            $"Expected at least 4.5:1 contrast, but found {contrast:F2}:1 for "
+                + $"foreground {foreground}, overlay {overlay}, and background {background}."
+        );
+    }
+
+    private static Color Composite(Color foreground, Color background)
+    {
+        var alpha = foreground.A / 255d;
+        return Color.FromRgb(
+            (byte)Math.Round((foreground.R * alpha) + (background.R * (1 - alpha))),
+            (byte)Math.Round((foreground.G * alpha) + (background.G * (1 - alpha))),
+            (byte)Math.Round((foreground.B * alpha) + (background.B * (1 - alpha)))
+        );
+    }
+
+    private static double GetContrastRatio(Color first, Color second)
+    {
+        var lighter = Math.Max(GetRelativeLuminance(first), GetRelativeLuminance(second));
+        var darker = Math.Min(GetRelativeLuminance(first), GetRelativeLuminance(second));
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    private static double GetRelativeLuminance(Color color)
+    {
+        return (0.2126 * Linearize(color.R))
+            + (0.7152 * Linearize(color.G))
+            + (0.0722 * Linearize(color.B));
+    }
+
+    private static double Linearize(byte channel)
+    {
+        var value = channel / 255d;
+        return value <= 0.04045
+            ? value / 12.92
+            : Math.Pow((value + 0.055) / 1.055, 2.4);
     }
 
     private static ResourceDictionary? FindDictionary(

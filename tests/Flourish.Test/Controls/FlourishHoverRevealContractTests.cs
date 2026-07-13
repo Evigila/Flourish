@@ -211,6 +211,142 @@ public sealed class FlourishHoverRevealContractTests
     }
 
     [Fact]
+    public void ButtonAppearances_ShareTheDefaultRevealExceptForDanger()
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "Button.xaml")
+        );
+        var template = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "ControlTemplate"
+                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
+                    == "FlourishButtonTemplate"
+            );
+
+        var cardTrigger = FindTrigger(template, "Appearance", "Card");
+        Assert.DoesNotContain(
+            cardTrigger.Elements(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("Property") == "Background"
+                && (string?)element.Attribute("TargetName")
+                    is "HoverChrome" or "PressedChrome"
+        );
+
+        var dangerTrigger = FindTrigger(template, "Appearance", "Danger");
+        AssertSetter(
+            dangerTrigger,
+            "HoverChrome",
+            "Background",
+            "{DynamicResource FlourishWindowCaptionCloseHoverBrush}"
+        );
+        AssertSetter(
+            dangerTrigger,
+            "PressedChrome",
+            "Background",
+            "{DynamicResource FlourishWindowCaptionCloseHoverBrush}"
+        );
+
+        foreach (var stateProperty in new[] { "IsMouseOver", "IsPressed" })
+        {
+            var stateTrigger = template
+                .Descendants()
+                .Single(element =>
+                    element.Name.LocalName == "MultiTrigger"
+                    && HasCondition(element, "Appearance", "Danger")
+                    && HasCondition(element, stateProperty, "True")
+                );
+
+            AssertSetter(
+                stateTrigger,
+                null,
+                "Foreground",
+                "{DynamicResource FlourishWindowCaptionCloseForegroundBrush}"
+            );
+        }
+
+        var implicitStyle = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Style"
+                && element.Attribute(XName.Get("Key", XamlNamespace)) is null
+                && (string?)element.Attribute("TargetType")
+                    == "{x:Type controls:FlourishButton}"
+            );
+        var dangerStyleTrigger = FindTrigger(implicitStyle, "Appearance", "Danger");
+        AssertSetter(
+            dangerStyleTrigger,
+            null,
+            "controls:HoverReveal.IsMotionEnabled",
+            "False"
+        );
+    }
+
+    [Fact]
+    public void ButtonFocusVisual_IsKeyboardOnlyAndDoesNotUseTemplateFocusState()
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "Button.xaml")
+        );
+        var implicitStyle = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Style"
+                && element.Attribute(XName.Get("Key", XamlNamespace)) is null
+                && (string?)element.Attribute("TargetType")
+                    == "{x:Type controls:FlourishButton}"
+            );
+        var focusVisualSetter = implicitStyle
+            .Elements()
+            .Single(element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("Property") == "FocusVisualStyle"
+            );
+
+        Assert.Equal(
+            "{StaticResource FlourishButtonFocusVisualStyle}",
+            (string?)focusVisualSetter.Attribute("Value")
+        );
+        Assert.Contains(
+            document.Descendants(),
+            element =>
+                element.Name.LocalName == "Style"
+                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
+                    == "FlourishButtonFocusVisualStyle"
+        );
+        Assert.DoesNotContain(
+            document.Descendants(),
+            element =>
+                (element.Name.LocalName is "Trigger" or "Condition")
+                && (string?)element.Attribute("Property") == "IsKeyboardFocused"
+        );
+    }
+
+    [Fact]
+    public void WindowCaptionButtons_ReserveDangerAppearanceForCloseCommands()
+    {
+        var titleBar = LoadXaml(
+            Path.Combine(FlourishRoot, "Views", "Windows", "TitleBar.xaml")
+        );
+        var messageBox = LoadXaml(
+            Path.Combine(
+                FlourishRoot,
+                "Views",
+                "Windows",
+                "FlourishMessageBoxWindow.xaml"
+            )
+        );
+
+        AssertButtonAppearance(titleBar, "MinimizeButton", "Subtle");
+        AssertButtonAppearance(titleBar, "MaximizeButton", "Subtle");
+        AssertButtonAppearance(titleBar, "CloseButton", "Danger");
+        AssertButtonAppearance(messageBox, "CloseButton", "Danger");
+        AssertCloseIconTracksButtonForeground(titleBar);
+        AssertCloseIconTracksButtonForeground(messageBox);
+    }
+
+    [Fact]
     public void SelectedItemTemplates_UseTheDedicatedReadableForegroundToken()
     {
         var selectedTriggers = FindParticipatingTemplates()
@@ -251,17 +387,17 @@ public sealed class FlourishHoverRevealContractTests
     [Theory]
     [InlineData(
         "Colors.Light.xaml",
-        "#33479EF5",
+        "#592886DE",
         "#CFE4FA",
         "#0C3B5E",
-        "#330F6CBD"
+        "#660F6CBD"
     )]
     [InlineData(
         "Colors.Dark.xaml",
-        "#4D96C6FA",
+        "#662886DE",
         "#0F548C",
         "#FFFFFF",
-        "#4D479EF5"
+        "#730F6CBD"
     )]
     public void Palettes_UseBrighterFluentColorsWithADeeperPressedState(
         string fileName,
@@ -496,9 +632,24 @@ public sealed class FlourishHoverRevealContractTests
             );
     }
 
+    private static bool HasCondition(
+        XElement trigger,
+        string property,
+        string value
+    )
+    {
+        return trigger
+            .Descendants()
+            .Any(element =>
+                element.Name.LocalName == "Condition"
+                && (string?)element.Attribute("Property") == property
+                && (string?)element.Attribute("Value") == value
+            );
+    }
+
     private static void AssertSetter(
         XElement trigger,
-        string targetName,
+        string? targetName,
         string property,
         string value
     )
@@ -511,6 +662,42 @@ public sealed class FlourishHoverRevealContractTests
                 && (string?)element.Attribute("Property") == property
                 && (string?)element.Attribute("Value") == value
         );
+    }
+
+    private static void AssertCloseIconTracksButtonForeground(XDocument document)
+    {
+        var closeButton = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "FlourishButton"
+                && (string?)element.Attribute(XName.Get("Name", XamlNamespace))
+                    == "CloseButton"
+            );
+        var icon = closeButton
+            .Descendants()
+            .Single(element => element.Name.LocalName == "FlourishTextBlock");
+
+        Assert.Equal(
+            "{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishButton}}}",
+            (string?)icon.Attribute("Foreground")
+        );
+    }
+
+    private static void AssertButtonAppearance(
+        XDocument document,
+        string name,
+        string appearance
+    )
+    {
+        var button = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "FlourishButton"
+                && (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == name
+            );
+
+        Assert.Equal(appearance, (string?)button.Attribute("Appearance"));
+        Assert.Equal("WindowCaption", (string?)button.Attribute("Variant"));
     }
 
     private static void AssertAttribute(

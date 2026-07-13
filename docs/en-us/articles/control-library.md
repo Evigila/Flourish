@@ -126,8 +126,11 @@ Reference Flourish controls explicitly in page XAML:
 - `Primary` is the prominent action in a group.
 - `Subtle` is a low-emphasis action for quiet surfaces.
 - `Card` turns the whole button into an interactive card surface.
+- `Danger` identifies a destructive action and uses red interaction feedback.
 
 Prefer one Primary action per local decision area. Layout containers still own external Margin; an Appearance controls the button itself, not its placement.
+
+Pointer activation does not leave a focus outline on the button. Keyboard navigation still displays a theme-aware focus indicator, so focus remains visible without being confused with hover or pressed feedback.
 
 ### FlourishTextBlock
 
@@ -163,9 +166,9 @@ The attached properties can provide a local override or support a custom templat
 
 A custom participating template supplies elements named `HoverChrome` and `HoverRevealScale`, and opts its control in with `flourish:HoverReveal.IsParticipant="True"`. `IsParticipant` is intentionally not inherited, while `IsEnabled` and `AnimationDuration` are inherited policy values. This lets a container disable or retime reveal without attaching behavior to every visual descendant. If either template part is absent, HoverReveal safely does nothing.
 
-By default, HoverReveal also preserves the static hover and pressed hand-off expected by older custom templates. A template that implements its own non-animated `IsMouseOver + HoverReveal.IsEnabled=False` fallback and pressed visuals can set `flourish:HoverReveal.TemplateHandlesInteraction="True"`; Flourish then disconnects redundant pointer handlers while motion is disabled. The built-in templates use this optimized contract. A locally assigned `Template` on a Flourish control automatically returns to compatibility behavior unless `TemplateHandlesInteraction` is also assigned locally. When a custom `Style` replaces `Template`, explicitly set this property to `False`, or to `True` only after implementing both fallback states. Text-entry controls use pointer and focus strokes instead of forcing reveal motion onto every control.
+HoverReveal can manage the pointer interaction itself, or a participating template can provide its own static hover and pressed states. Set `flourish:HoverReveal.TemplateHandlesInteraction="True"` only when the template supplies a non-animated hover fallback for disabled reveal motion and its own pressed state. A locally assigned `Template` uses behavior-managed interaction unless `TemplateHandlesInteraction` is also assigned locally. When a custom `Style` replaces the template, set this property explicitly to match the replacement template. Text-entry controls use pointer and focus strokes instead of HoverReveal.
 
-Buttons, interactive card buttons, list items, and navigation items use the same HoverReveal contract. Every participating `HoverChrome` takes its brighter theme-aware pale-blue fill from `FlourishHoverRevealBrush` and renders without a hover outline. Selected and unselected items keep that same reveal brush instead of switching to different hover fills; selection remains expressed by the underlying control state. Selected surfaces use the Fluent Web brand150 tint in light mode and brand60 in dark mode, paired with `FlourishControlSelectedForegroundBrush` so both the selected and selected-plus-hover states retain readable text contrast. Button pressed feedback is a separate, outline-free layer so HoverReveal animation cannot override it: standard and caption buttons use the deeper `FlourishPressedRevealBrush`, while primary buttons use `FlourishBrandBackgroundPressedBrush` for visible contrast on the brand surface. Navigation therefore follows the same application-wide enablement, duration, theme, and reduced-motion policy as the Gallery cards instead of maintaining a separate hover implementation.
+Standard buttons, interactive card buttons, list items, and navigation items use the same vivid, theme-aware blue reveal in both light and dark themes. Selection remains visible beneath that feedback, while pressed feedback uses its own state. `Danger` is the semantic exception: destructive buttons use red hover and pressed feedback instead of the blue reveal.
 
 ## Themes and semantic tokens
 

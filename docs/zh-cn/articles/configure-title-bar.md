@@ -25,6 +25,12 @@ builder
 
 标题栏的内置工具提示和主题文本使用[应用数据](configure-data.md)中选择的语言。`SetTitle`、`SetSubTitle` 和 `SetSearch` 接收的文本由应用提供，不会自动翻译。
 
+## 窗口命令
+
+启用内置标题栏后，其窗口命令区域会提供最小化、最大化或还原以及关闭操作。最小化和最大化按钮保留标准的非破坏性蓝色悬停揭示与按下反馈。关闭属于破坏性操作，因此在亮色和暗色主题下都使用红色悬停与按下反馈。
+
+鼠标点击不会在这些按钮上残留焦点边框，通过键盘导航获得焦点时仍会显示清晰的焦点指示。最大化命令遵循配置的窗口调整大小模式，关闭流程遵循[窗口](configure-window.md)配置。
+
 ## 搜索与面包屑
 
 ```csharp
@@ -52,6 +58,8 @@ titleBar
 
 ## 相关功能
 
-- [窗口](configure-window.md)配置尺寸、任务栏显示和托盘关闭行为。
 - [自定义 Shell 内容](configure-custom-handler.md)可向标题栏预定义区域插入 WPF 内容。
+- [用户资料（Profile）](configure-profile.md)配置 Profile 内容、身份验证与持久化。
 - [导航](navigation.md)配置导航切换按钮所控制的导航区域。
+- [主题](configure-themes.md)说明主题切换按钮控制的主题。
+- [窗口](configure-window.md)配置窗口调整大小与托盘关闭行为。

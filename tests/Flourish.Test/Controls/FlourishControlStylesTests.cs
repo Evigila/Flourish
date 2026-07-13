@@ -226,7 +226,7 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void ButtonVariants_ApplyTheirSemanticGeometryWithoutFocusChrome()
+    public void ButtonVariants_ApplyTheirGeometryAndKeyboardFocusVisual()
     {
         RunInSta(() =>
         {
@@ -254,8 +254,8 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(32, icon.Height);
                 Assert.Equal(46, caption.Width);
                 Assert.Equal(40, caption.Height);
-                Assert.Null(icon.FocusVisualStyle);
-                Assert.Null(caption.FocusVisualStyle);
+                Assert.NotNull(icon.FocusVisualStyle);
+                Assert.NotNull(caption.FocusVisualStyle);
                 Assert.Null(icon.Template.FindName("FocusChrome", icon));
                 Assert.Null(caption.Template.FindName("FocusChrome", caption));
             }
