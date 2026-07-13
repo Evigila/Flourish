@@ -176,14 +176,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 HasTriggerCondition(element, "Appearance", "Navigation")
                 && HasTriggerCondition(element, "IsCompact", "True")
             );
-        var setters = trigger
-            .Elements()
-            .Where(element => element.Name.LocalName == "Setter")
-            .ToDictionary(
-                element => (string)element.Attribute("Property")!,
-                element => (string)element.Attribute("Value")!,
-                StringComparer.Ordinal
-            );
+        var setters = GetSetterValues(trigger);
 
         Assert.Equal(
             "{DynamicResource FlourishShellCommandButtonWidth}",
@@ -201,10 +194,159 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.Equal("Center", setters["HorizontalContentAlignment"]);
     }
 
+    [Fact]
+    public void ShellChromeInsets_ComposeOneAlignedWindowEdgeBaseline()
+    {
+        var keyName = XName.Get("Key", XamlNamespace);
+        var layout = XDocument.Load(LayoutXamlPath);
+        var outerInset = GetDoubleResource(
+            layout,
+            keyName,
+            "FlourishShellOuterInset"
+        );
+        var titlebarSpacer = GetDoubleResource(
+            layout,
+            keyName,
+            "FlourishTitlebarLeadingSpacerWidth"
+        );
+        var titlebarMargin = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishTitlebarNavigationToggleMargin"
+        );
+        var collapsedItemMargin = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishCollapsedNavigationItemMargin"
+        );
+        var leftPadding = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishNavigationPaneLeftPadding"
+        );
+        var rightPadding = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishNavigationPaneRightPadding"
+        );
+        var customRegionMargin = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishNavigationCustomRegionMargin"
+        );
+        var statusBarPadding = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishStatusBarPadding"
+        );
+
+        Assert.Equal(8, outerInset);
+        Assert.Equal(outerInset, titlebarSpacer);
+        Assert.Equal(new Thickness(outerInset, 0, 0, 0), leftPadding);
+        Assert.Equal(new Thickness(0, 0, outerInset, 0), rightPadding);
+        Assert.Equal(new Thickness(4, 0, 4, 0), customRegionMargin);
+        Assert.Equal(new Thickness(12, 3, 12, 3), statusBarPadding);
+        Assert.Equal(
+            statusBarPadding.Left,
+            titlebarSpacer + titlebarMargin.Left
+        );
+        Assert.Equal(
+            statusBarPadding.Left,
+            leftPadding.Left + collapsedItemMargin.Left
+        );
+        Assert.Equal(
+            statusBarPadding.Right,
+            rightPadding.Right + collapsedItemMargin.Left
+        );
+    }
+
+    [Fact]
+    public void ShellChromeInsets_AreAppliedWithoutMovingContentOrCaptionEdges()
+    {
+        var shell = XDocument.Load(ShellXamlPath);
+        var navigationPane = FindNamedElement(shell, "NavigationPaneBorder");
+        var navigationHeader = FindNamedElement(shell, "NavigationHeaderRegionHost");
+        var navigationFooter = FindNamedElement(shell, "NavigationFooterRegionHost");
+        var transitionHost = FindNamedElement(shell, "NavigationPaneTransitionHost");
+        var contentArea = FindNamedElement(shell, "ContentAreaGrid");
+        var statusBar = FindNamedElement(shell, "StatusBarBorder");
+
+        Assert.Equal(
+            "{DynamicResource FlourishNavigationPaneLeftPadding}",
+            (string?)navigationPane.Attribute("Padding")
+        );
+        Assert.Equal(
+            "{DynamicResource FlourishNavigationCustomRegionMargin}",
+            (string?)navigationHeader.Attribute("Margin")
+        );
+        Assert.Equal(
+            "{DynamicResource FlourishNavigationCustomRegionMargin}",
+            (string?)navigationFooter.Attribute("Margin")
+        );
+        Assert.Equal(
+            "{DynamicResource FlourishStatusBarPadding}",
+            (string?)statusBar.Attribute("Padding")
+        );
+        Assert.Equal(
+            "{DynamicResource FlourishContentBodyMargin}",
+            (string?)contentArea.Attribute("Margin")
+        );
+        Assert.Null(transitionHost.Attribute("Margin"));
+
+        var shellCode = File.ReadAllText(ShellCodePath);
+        var placementStart = shellCode.IndexOf(
+            "private void ApplyNavigationPanelPlacement()",
+            StringComparison.Ordinal
+        );
+        var nextMethodStart = shellCode.IndexOf(
+            "private ColumnDefinition GetNavigationPaneColumn()",
+            placementStart,
+            StringComparison.Ordinal
+        );
+
+        Assert.True(placementStart >= 0);
+        Assert.True(nextMethodStart > placementStart);
+        var placementMethod = shellCode[placementStart..nextMethodStart];
+        Assert.Contains("Border.PaddingProperty", placementMethod, StringComparison.Ordinal);
+        Assert.Contains(
+            "\"FlourishNavigationPaneLeftPadding\"",
+            placementMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "\"FlourishNavigationPaneRightPadding\"",
+            placementMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "NavigationItemsHost.FlowDirection = System.Windows.FlowDirection.RightToLeft;",
+            placementMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "FixedNavigationItemsHost.FlowDirection = System.Windows.FlowDirection.RightToLeft;",
+            placementMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "NavigationItemsHost.FlowDirection = System.Windows.FlowDirection.LeftToRight;",
+            placementMethod,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "FixedNavigationItemsHost.FlowDirection = System.Windows.FlowDirection.LeftToRight;",
+            placementMethod,
+            StringComparison.Ordinal
+        );
+    }
+
     [Theory]
-    [InlineData(48)]
-    [InlineData(72)]
-    public void CollapsedNavigation_MatchesTitlebarLeadingButtonAtAnyPaneWidth(
+    [InlineData(FlowDirection.LeftToRight, 56)]
+    [InlineData(FlowDirection.LeftToRight, 72)]
+    [InlineData(FlowDirection.RightToLeft, 56)]
+    [InlineData(FlowDirection.RightToLeft, 72)]
+    public void CollapsedNavigation_MirrorsTheSharedOuterBaselineAtAnyPaneWidth(
+        FlowDirection flowDirection,
         double paneWidth
     )
     {
@@ -213,14 +355,19 @@ public sealed class FlourishShellNavigationLayoutTests
             var titlebarGeometry = GetTitlebarLeadingButtonGeometry();
             var resources = LoadResourceDictionary(GenericThemeSource);
             var itemTemplate = LoadNavigationItemTemplate();
+            var isRightPlaced = flowDirection == FlowDirection.RightToLeft;
+            var panePadding = (Thickness)resources[
+                isRightPlaced
+                    ? "FlourishNavigationPaneRightPadding"
+                    : "FlourishNavigationPaneLeftPadding"
+            ];
             var parent = new NavigationLayoutItem(new Thickness());
             var child = new NavigationLayoutItem(new Thickness(16, 0, 0, 0));
             var listBox = new FlourishListBox
             {
-                // NavigationPaneBorder reserves a one-pixel trailing stroke in production.
-                Width = paneWidth - 1,
                 Height = 64,
                 Appearance = FlourishListBoxAppearance.Navigation,
+                FlowDirection = flowDirection,
                 IsCompact = true,
                 ItemTemplate = itemTemplate,
                 ItemsSource = new[]
@@ -230,6 +377,16 @@ public sealed class FlourishShellNavigationLayoutTests
                     new NavigationLayoutItem(new Thickness()),
                 },
             };
+            var navigationHost = new Border
+            {
+                Width = paneWidth,
+                Height = 64,
+                BorderThickness = isRightPlaced
+                    ? new Thickness(1, 0, 0, 0)
+                    : new Thickness(0, 0, 1, 0),
+                Padding = panePadding,
+                Child = listBox,
+            };
             var window = new Window
             {
                 Width = 120,
@@ -238,7 +395,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 Top = -10000,
                 ShowActivated = false,
                 ShowInTaskbar = false,
-                Content = listBox,
+                Content = navigationHost,
             };
             window.Resources.MergedDictionaries.Add(resources);
 
@@ -247,8 +404,8 @@ public sealed class FlourishShellNavigationLayoutTests
                 window.Show();
                 window.UpdateLayout();
 
-                var parentLayout = GetLayoutSnapshot(listBox, parent);
-                var childLayout = GetLayoutSnapshot(listBox, child);
+                var parentLayout = GetLayoutSnapshot(listBox, parent, navigationHost);
+                var childLayout = GetLayoutSnapshot(listBox, child, navigationHost);
                 var scrollViewer = Assert.IsType<FlourishScrollViewer>(
                     FindVisualDescendant<FlourishScrollViewer>(listBox)
                 );
@@ -260,35 +417,66 @@ public sealed class FlourishShellNavigationLayoutTests
                 );
                 var parentBounds = parentLayout.IconBounds;
                 var childBounds = childLayout.IconBounds;
-                var scrollBarBounds = GetBounds(verticalScrollBar, listBox);
+                var scrollBarBounds = GetBounds(verticalScrollBar, navigationHost);
                 var expectedIconCenter =
-                    titlebarGeometry.Left + titlebarGeometry.Width / 2;
+                    isRightPlaced
+                        ? navigationHost.ActualWidth
+                            - titlebarGeometry.Left
+                            - titlebarGeometry.Width / 2
+                        : titlebarGeometry.Left + titlebarGeometry.Width / 2;
+                var parentContainer = Assert.IsType<FlourishListBoxItem>(
+                    listBox.ItemContainerGenerator.ContainerFromItem(parent)
+                );
+                var childContainer = Assert.IsType<FlourishListBoxItem>(
+                    listBox.ItemContainerGenerator.ContainerFromItem(child)
+                );
 
                 Assert.True(scrollViewer.ScrollableHeight > 0);
                 Assert.Equal(Visibility.Visible, verticalScrollBar.Visibility);
                 Assert.InRange(
                     Math.Abs(
-                        GetBounds(scrollPresenter, listBox).Width
+                        GetBounds(scrollPresenter, navigationHost).Width
                             + scrollBarBounds.Width
                             - listBox.ActualWidth
                     ),
                     0,
                     0.5
                 );
-                Assert.Equal(titlebarGeometry.Left, parentLayout.ContainerBounds.Left, 3);
+                var outerGap = isRightPlaced
+                    ? navigationHost.ActualWidth - parentLayout.ContainerBounds.Right
+                    : parentLayout.ContainerBounds.Left;
+                Assert.Equal(titlebarGeometry.Left, outerGap, 3);
                 Assert.Equal(titlebarGeometry.Width, parentLayout.ContainerBounds.Width, 3);
                 Assert.Equal(titlebarGeometry.Height, parentLayout.ContainerBounds.Height, 3);
                 Assert.Equal(parentLayout.ContainerBounds.Size, parentLayout.HoverSize);
                 Assert.Equal(childLayout.ContainerBounds.Size, childLayout.HoverSize);
                 Assert.Equal(5, scrollBarBounds.Width, 3);
-                Assert.True(
-                    parentLayout.ContainerBounds.Right <= scrollBarBounds.Left + 0.5,
-                    $"Collapsed parent item {parentLayout.ContainerBounds} overlaps compact scrollbar {scrollBarBounds}."
-                );
-                Assert.True(
-                    childLayout.ContainerBounds.Right <= scrollBarBounds.Left + 0.5,
-                    $"Collapsed child item {childLayout.ContainerBounds} overlaps compact scrollbar {scrollBarBounds}."
-                );
+                if (isRightPlaced)
+                {
+                    Assert.True(
+                        scrollBarBounds.Right <= parentLayout.ContainerBounds.Left + 0.5,
+                        $"Compact scrollbar {scrollBarBounds} overlaps right-placed parent item {parentLayout.ContainerBounds}."
+                    );
+                    Assert.True(
+                        scrollBarBounds.Right <= childLayout.ContainerBounds.Left + 0.5,
+                        $"Compact scrollbar {scrollBarBounds} overlaps right-placed child item {childLayout.ContainerBounds}."
+                    );
+                }
+                else
+                {
+                    Assert.True(
+                        parentLayout.ContainerBounds.Right <= scrollBarBounds.Left + 0.5,
+                        $"Collapsed parent item {parentLayout.ContainerBounds} overlaps compact scrollbar {scrollBarBounds}."
+                    );
+                    Assert.True(
+                        childLayout.ContainerBounds.Right <= scrollBarBounds.Left + 0.5,
+                        $"Collapsed child item {childLayout.ContainerBounds} overlaps compact scrollbar {scrollBarBounds}."
+                    );
+                }
+
+                Assert.Equal(flowDirection, scrollViewer.FlowDirection);
+                Assert.Equal(FlowDirection.LeftToRight, parentContainer.FlowDirection);
+                Assert.Equal(FlowDirection.LeftToRight, childContainer.FlowDirection);
                 Assert.True(
                     Math.Abs(GetHorizontalCenter(parentBounds) - expectedIconCenter) <= 0.5,
                     $"Parent layout {parentLayout} does not align with the title-bar button center at {expectedIconCenter}."
@@ -304,8 +492,8 @@ public sealed class FlourishShellNavigationLayoutTests
                     ) <= 0.5,
                     $"Parent and child icon bounds diverge: {parentBounds} versus {childBounds}."
                 );
-                AssertIconIsInsideViewport(parentBounds, listBox.ActualWidth);
-                AssertIconIsInsideViewport(childBounds, listBox.ActualWidth);
+                AssertIconIsInsideViewport(parentBounds, navigationHost.ActualWidth);
+                AssertIconIsInsideViewport(childBounds, navigationHost.ActualWidth);
 
                 scrollViewer.ScrollToEnd();
                 window.UpdateLayout();
@@ -323,7 +511,7 @@ public sealed class FlourishShellNavigationLayoutTests
     {
         var geometry = GetTitlebarLeadingButtonGeometry();
 
-        Assert.Equal(4, geometry.Left);
+        Assert.Equal(12, geometry.Left);
         Assert.Equal(38, geometry.Width);
         Assert.Equal(32, geometry.Height);
         Assert.Equal("{DynamicResource FlourishFontSizeNavigationIcon}", geometry.IconFontSize);
@@ -374,7 +562,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 window.UpdateLayout();
 
                 Assert.Equal(Visibility.Collapsed, breadcrumbHost.Visibility);
-                Assert.Equal(4, initialLeft, 3);
+                Assert.Equal(12, initialLeft, 3);
                 Assert.Equal(initialLeft, GetBounds(navigationToggle, titlebar).Left, 3);
             }
             finally
@@ -408,7 +596,28 @@ public sealed class FlourishShellNavigationLayoutTests
             "NavigationPaneBorder.BorderThickness"
         ).Right;
 
-        Assert.Equal(48, NavigationPanelDimensions.MinimumCollapsedWidth);
+        var leftPadding = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishNavigationPaneLeftPadding"
+        );
+        var itemMargin = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishCollapsedNavigationItemMargin"
+        );
+        var rightPadding = GetThicknessResource(
+            layout,
+            keyName,
+            "FlourishNavigationPaneRightPadding"
+        );
+
+        Assert.Equal(56, NavigationPanelDimensions.MinimumCollapsedWidth);
+        Assert.Equal(titlebarGeometry.Left, leftPadding.Left + itemMargin.Left);
+        Assert.Equal(
+            titlebarGeometry.Left,
+            rightPadding.Right + itemMargin.Left
+        );
         Assert.Equal(
             NavigationPanelDimensions.MinimumCollapsedWidth,
             titlebarGeometry.Left
@@ -419,19 +628,67 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
-    public void ExpandedNavigation_ScrollBarKeepsItsOwnLayoutColumnAndChildIndent()
+    public void TitlebarLeadingSpacer_PreservesFlushCaptionButtonColumns()
+    {
+        var nameName = XName.Get("Name", XamlNamespace);
+        var titlebar = XDocument.Load(TitlebarXamlPath);
+        var rootGrid = titlebar
+            .Root!
+            .Elements()
+            .Single(element => element.Name.LocalName == "Grid");
+        var columns = rootGrid
+            .Elements()
+            .Single(element => element.Name.LocalName == "Grid.ColumnDefinitions")
+            .Elements()
+            .Where(element => element.Name.LocalName == "ColumnDefinition")
+            .ToArray();
+
+        Assert.Equal(13, columns.Length);
+        Assert.Equal(
+            "{DynamicResource FlourishTitlebarLeadingSpacerWidth}",
+            (string?)columns[0].Attribute("Width")
+        );
+
+        var captionColumns = new Dictionary<string, string>
+        {
+            ["MinimizeButton"] = "10",
+            ["MaximizeButton"] = "11",
+            ["CloseButton"] = "12",
+        };
+        foreach (var (buttonName, expectedColumn) in captionColumns)
+        {
+            var button = rootGrid
+                .Elements()
+                .Single(element => (string?)element.Attribute(nameName) == buttonName);
+            Assert.Equal(expectedColumn, (string?)button.Attribute("Grid.Column"));
+            Assert.Null(button.Attribute("Margin"));
+        }
+    }
+
+    [Theory]
+    [InlineData(FlowDirection.LeftToRight)]
+    [InlineData(FlowDirection.RightToLeft)]
+    public void ExpandedNavigation_MirrorsScrollbarAndOuterRowBaselineWithoutReversingContent(
+        FlowDirection flowDirection
+    )
     {
         RunInSta(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
             var itemTemplate = LoadNavigationItemTemplate();
+            var isRightPlaced = flowDirection == FlowDirection.RightToLeft;
+            var panePadding = (Thickness)resources[
+                isRightPlaced
+                    ? "FlourishNavigationPaneRightPadding"
+                    : "FlourishNavigationPaneLeftPadding"
+            ];
             var parent = new NavigationLayoutItem(new Thickness());
             var child = new NavigationLayoutItem(new Thickness(16, 0, 0, 0));
             var listBox = new FlourishListBox
             {
-                Width = 220,
                 Height = 64,
                 Appearance = FlourishListBoxAppearance.Navigation,
+                FlowDirection = flowDirection,
                 IsCompact = false,
                 ItemTemplate = itemTemplate,
                 ItemsSource = new[]
@@ -441,6 +698,16 @@ public sealed class FlourishShellNavigationLayoutTests
                     new NavigationLayoutItem(new Thickness()),
                 },
             };
+            var navigationHost = new Border
+            {
+                Width = 220,
+                Height = 64,
+                BorderThickness = isRightPlaced
+                    ? new Thickness(1, 0, 0, 0)
+                    : new Thickness(0, 0, 1, 0),
+                Padding = panePadding,
+                Child = listBox,
+            };
             var window = new Window
             {
                 Width = 280,
@@ -449,7 +716,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 Top = -10000,
                 ShowActivated = false,
                 ShowInTaskbar = false,
-                Content = listBox,
+                Content = navigationHost,
             };
             window.Resources.MergedDictionaries.Add(resources);
 
@@ -458,28 +725,128 @@ public sealed class FlourishShellNavigationLayoutTests
                 window.Show();
                 window.UpdateLayout();
 
-                var parentLayout = GetLayoutSnapshot(listBox, parent);
-                var childLayout = GetLayoutSnapshot(listBox, child);
+                var parentLayout = GetLayoutSnapshot(listBox, parent, navigationHost);
+                var childLayout = GetLayoutSnapshot(listBox, child, navigationHost);
                 var scrollPresenter = Assert.IsType<ScrollContentPresenter>(
                     FindVisualDescendant(listBox, "PART_ScrollContentPresenter")
                 );
                 var verticalScrollBar = Assert.IsType<FlourishScrollBar>(
                     FindVisualDescendant(listBox, "PART_VerticalScrollBar")
                 );
-                var presenterBounds = GetBounds(scrollPresenter, listBox);
-                var scrollBarBounds = GetBounds(verticalScrollBar, listBox);
+                var presenterBounds = GetBounds(scrollPresenter, navigationHost);
+                var scrollBarBounds = GetBounds(verticalScrollBar, navigationHost);
+                var parentContainer = Assert.IsType<FlourishListBoxItem>(
+                    listBox.ItemContainerGenerator.ContainerFromItem(parent)
+                );
+                var childContainer = Assert.IsType<FlourishListBoxItem>(
+                    listBox.ItemContainerGenerator.ContainerFromItem(child)
+                );
+                var outerGap = isRightPlaced
+                    ? navigationHost.ActualWidth - parentLayout.ContainerBounds.Right
+                    : parentLayout.ContainerBounds.Left;
 
                 Assert.Equal(Visibility.Visible, verticalScrollBar.Visibility);
                 Assert.Equal(10, scrollBarBounds.Width, 3);
-                Assert.True(presenterBounds.Right <= scrollBarBounds.Left + 0.5);
+                if (isRightPlaced)
+                {
+                    Assert.True(scrollBarBounds.Right <= presenterBounds.Left + 0.5);
+                }
+                else
+                {
+                    Assert.True(presenterBounds.Right <= scrollBarBounds.Left + 0.5);
+                }
+
+                Assert.Equal(12, outerGap, 3);
+                Assert.Equal(flowDirection, scrollPresenter.FlowDirection);
+                Assert.Equal(FlowDirection.LeftToRight, parentContainer.FlowDirection);
+                Assert.Equal(FlowDirection.LeftToRight, childContainer.FlowDirection);
                 Assert.Equal(new Thickness(), parentLayout.ItemLayoutMargin);
                 Assert.Equal(new Thickness(16, 0, 0, 0), childLayout.ItemLayoutMargin);
+                Assert.True(
+                    childLayout.ItemLayoutBounds.Left
+                        > parentLayout.ItemLayoutBounds.Left,
+                    $"Child indent was mirrored: parent {parentLayout.ItemLayoutBounds}, child {childLayout.ItemLayoutBounds}."
+                );
             }
             finally
             {
                 window.Close();
             }
         });
+    }
+
+    [Theory]
+    [InlineData(FlowDirection.LeftToRight)]
+    [InlineData(FlowDirection.RightToLeft)]
+    public void NavigationCustomRegion_MirrorsTheTwelveDipOuterBaseline(
+        FlowDirection flowDirection
+    )
+    {
+        RunInSta(() =>
+        {
+            var resources = LoadResourceDictionary(GenericThemeSource);
+            var isRightPlaced = flowDirection == FlowDirection.RightToLeft;
+            var region = new StackPanel
+            {
+                Margin = (Thickness)resources["FlourishNavigationCustomRegionMargin"],
+            };
+            region.Children.Add(new Border { Height = 24 });
+            var navigationHost = new Border
+            {
+                Width = 220,
+                Height = 64,
+                BorderThickness = isRightPlaced
+                    ? new Thickness(1, 0, 0, 0)
+                    : new Thickness(0, 0, 1, 0),
+                Padding = (Thickness)resources[
+                    isRightPlaced
+                        ? "FlourishNavigationPaneRightPadding"
+                        : "FlourishNavigationPaneLeftPadding"
+                ],
+                Child = region,
+            };
+            var window = new Window
+            {
+                Width = 280,
+                Height = 160,
+                Left = -10000,
+                Top = -10000,
+                ShowActivated = false,
+                ShowInTaskbar = false,
+                Content = navigationHost,
+            };
+            window.Resources.MergedDictionaries.Add(resources);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var regionBounds = GetBounds(region, navigationHost);
+                var outerGap = isRightPlaced
+                    ? navigationHost.ActualWidth - regionBounds.Right
+                    : regionBounds.Left;
+
+                Assert.Equal(12, outerGap, 3);
+                Assert.Equal(FlowDirection.LeftToRight, region.FlowDirection);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    private static Dictionary<string, string> GetSetterValues(XElement trigger)
+    {
+        return trigger
+            .Elements()
+            .Where(element => element.Name.LocalName == "Setter")
+            .ToDictionary(
+                element => (string)element.Attribute("Property")!,
+                element => (string)element.Attribute("Value")!,
+                StringComparer.Ordinal
+            );
     }
 
     private static bool HasTriggerCondition(
@@ -498,6 +865,14 @@ public sealed class FlourishShellNavigationLayoutTests
                 ) == true
                 && (string?)condition.Attribute("Value") == expectedValue
             );
+    }
+
+    private static XElement FindNamedElement(XDocument document, string name)
+    {
+        var nameName = XName.Get("Name", XamlNamespace);
+        return document
+            .Descendants()
+            .Single(element => (string?)element.Attribute(nameName) == name);
     }
 
     private static void ConfigureTitlebarForNavigationOnly(FlourishTitlebar titlebar)
@@ -566,6 +941,11 @@ public sealed class FlourishShellNavigationLayoutTests
 
         var width = GetDoubleResource(layout, keyName, "FlourishShellCommandButtonWidth");
         var height = GetDoubleResource(layout, keyName, "FlourishShellCommandButtonHeight");
+        var leadingSpacer = GetDoubleResource(
+            layout,
+            keyName,
+            "FlourishTitlebarLeadingSpacerWidth"
+        );
         var margin = GetThicknessResource(
             layout,
             keyName,
@@ -573,7 +953,7 @@ public sealed class FlourishShellNavigationLayoutTests
         );
 
         return new TitlebarLeadingGeometry(
-            margin.Left,
+            leadingSpacer + margin.Left,
             width,
             height,
             (string)navigationIcon.Attribute("FontSize")!
@@ -662,7 +1042,8 @@ public sealed class FlourishShellNavigationLayoutTests
 
     private static LayoutSnapshot GetLayoutSnapshot(
         FlourishListBox listBox,
-        NavigationLayoutItem item
+        NavigationLayoutItem item,
+        Visual? ancestor = null
     )
     {
         var container = Assert.IsType<FlourishListBoxItem>(
@@ -683,11 +1064,11 @@ public sealed class FlourishShellNavigationLayoutTests
         );
 
         return new LayoutSnapshot(
-            GetBounds(container, listBox),
+            GetBounds(container, ancestor ?? listBox),
             hoverChrome.RenderSize,
-            GetBounds(root, listBox),
-            GetBounds(layout, listBox),
-            GetBounds(icon, listBox),
+            GetBounds(root, ancestor ?? listBox),
+            GetBounds(layout, ancestor ?? listBox),
+            GetBounds(icon, ancestor ?? listBox),
             container.HorizontalAlignment,
             container.HorizontalContentAlignment,
             container.Margin,

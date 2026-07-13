@@ -3,13 +3,19 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
 >
-  <!-- Shared shell geometry keeps the title-bar toggle and collapsed navigation aligned. -->
+  <!-- Shared shell geometry keeps window-edge content and collapsed navigation aligned. -->
+  <sys:Double x:Key="FlourishShellOuterInset">8</sys:Double>
   <sys:Double x:Key="FlourishShellCommandButtonWidth">38</sys:Double>
   <sys:Double x:Key="FlourishShellCommandButtonHeight">32</sys:Double>
   <sys:Double x:Key="FlourishScrollBarWidth">10</sys:Double>
   <sys:Double x:Key="FlourishCompactScrollBarWidth">5</sys:Double>
+  <GridLength x:Key="FlourishTitlebarLeadingSpacerWidth">8</GridLength>
   <Thickness x:Key="FlourishTitlebarNavigationToggleMargin">4</Thickness>
   <Thickness x:Key="FlourishCollapsedNavigationItemMargin">4,1,0,1</Thickness>
+  <Thickness x:Key="FlourishNavigationPaneLeftPadding">8,0,0,0</Thickness>
+  <Thickness x:Key="FlourishNavigationPaneRightPadding">0,0,8,0</Thickness>
+  <Thickness x:Key="FlourishNavigationCustomRegionMargin">4,0</Thickness>
+  <Thickness x:Key="FlourishStatusBarPadding">12,3</Thickness>
 
   <!-- A 4-DIP spacing grid keeps peer content compact and separates hierarchy levels. -->
   <sys:Double x:Key="FlourishSpaceXXSmall">4</sys:Double>

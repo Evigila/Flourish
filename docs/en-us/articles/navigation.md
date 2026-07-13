@@ -52,7 +52,7 @@ builder.ConfigureShell(shell =>
     navigation
         .SetDirection(NavigationPanelDirection.Left)
         .SetInitiallyOpen()
-        .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+        .SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180)
         .SetGroup("Navigation", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -97,10 +97,12 @@ nav.SetTitle("Navigation");
 Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize constraints for the navigation panel.
 
 ```csharp
-nav.SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180);
+nav.SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `220` expanded and `48` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `48`. The default resize range is `160` to `420`. A hover-revealed splitter shows a width preview during the drag and applies the new width when the drag completes.
+The default widths are `220` expanded and `56` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `56`. The visible collapsed width includes the standard command surface and its margin, compact scrollbar, divider, and the shared outer gutter. The default resize range is `160` to `420`. A hover-revealed splitter shows a width preview during the drag and applies the new width when the drag completes.
+
+Navigation content uses the Shell's horizontal gutter on the side that faces the window edge. Flourish mirrors that gutter when the panel is moved from the left to the right, keeping navigation rows aligned with built-in title bar and status bar content.
 
 ## Add command items
 

@@ -54,6 +54,10 @@ Applications that require a different gutter or full-bleed content can override 
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
 ```
 
+## Shell chrome alignment
+
+The built-in title bar content, navigation rows, and status bar use the same horizontal gutter at the left and right window edges. When the navigation panel is placed on the right, Flourish mirrors its outer gutter so navigation content remains aligned with the title bar and status bar. The collapsed navigation width includes this gutter together with its command surface and compact scrollbar. The minimize, maximize or restore, and close caption buttons remain flush with the upper-right window edge to preserve the window command hit area.
+
 Simple shell features use configuration as their activation point:
 
 - `UseTips(delay)` uses the built-in tooltip boundary margin.

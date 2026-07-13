@@ -73,6 +73,7 @@ internal partial class FlourishShellWindow : Window
     private readonly Dictionary<Guid, BackgroundTaskRowView> backgroundTaskRowsById = [];
     private readonly object backgroundTaskRefreshGate = new();
     private readonly NavigationPaneTransitionController navigationPaneTransition = new();
+    private readonly PageTransitionController pageTransition = new();
     private readonly TitleBarLogoLoadCoordinator titleBarLogoLoadCoordinator = new(
         TitleBarVisualAssets.LoadLogoAsync
     );
@@ -1692,21 +1693,33 @@ internal partial class FlourishShellWindow : Window
     {
         if (options.NavigationPanelDirection == NavigationPanelDirection.Right)
         {
+            NavigationItemsHost.FlowDirection = System.Windows.FlowDirection.RightToLeft;
+            FixedNavigationItemsHost.FlowDirection = System.Windows.FlowDirection.RightToLeft;
             Grid.SetColumn(ContentAreaGrid, 0);
             Grid.SetColumn(NavigationPaneTransitionHost, 1);
             Grid.SetColumn(NavigationPaneSplitter, 1);
             NavigationPaneSplitter.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             NavigationPaneSplitter.ResizeBehavior = GridResizeBehavior.PreviousAndCurrent;
             NavigationPaneBorder.BorderThickness = new Thickness(1, 0, 0, 0);
+            NavigationPaneBorder.SetResourceReference(
+                Border.PaddingProperty,
+                "FlourishNavigationPaneRightPadding"
+            );
             return;
         }
 
+        NavigationItemsHost.FlowDirection = System.Windows.FlowDirection.LeftToRight;
+        FixedNavigationItemsHost.FlowDirection = System.Windows.FlowDirection.LeftToRight;
         Grid.SetColumn(NavigationPaneTransitionHost, 0);
         Grid.SetColumn(ContentAreaGrid, 1);
         Grid.SetColumn(NavigationPaneSplitter, 0);
         NavigationPaneSplitter.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
         NavigationPaneSplitter.ResizeBehavior = GridResizeBehavior.CurrentAndNext;
         NavigationPaneBorder.BorderThickness = new Thickness(0, 0, 1, 0);
+        NavigationPaneBorder.SetResourceReference(
+            Border.PaddingProperty,
+            "FlourishNavigationPaneLeftPadding"
+        );
     }
 
     private ColumnDefinition GetNavigationPaneColumn()
@@ -2731,19 +2744,33 @@ internal partial class FlourishShellWindow : Window
 
     private void MotionService_Changed(object? sender, FlourishMotionChangedEventArgs e)
     {
-        if (
-            !navigationPaneTransition.IsActive
-            || (
-                e.CanAnimate
-                && e.Current.NavigationPanelTransition
-                    != FlourishNavigationPanelTransition.None
-            )
-        )
+        var cancelPageTransition =
+            pageTransition.IsActive
+            && (!e.CanAnimate || e.Current.PageTransition == FlourishPageTransition.None);
+        var resetNavigationPane =
+            navigationPaneTransition.IsActive
+            && (
+                !e.CanAnimate
+                || e.Current.NavigationPanelTransition
+                    == FlourishNavigationPanelTransition.None
+            );
+        if (!cancelPageTransition && !resetNavigationPane)
         {
             return;
         }
 
-        DispatchRuntimeChange(() => ApplyNavigationPaneState());
+        DispatchRuntimeChange(() =>
+        {
+            if (cancelPageTransition)
+            {
+                pageTransition.Cancel();
+            }
+
+            if (resetNavigationPane)
+            {
+                ApplyNavigationPaneState();
+            }
+        });
     }
 
     private void CommandParser_Changed(object? sender, CommandRegistryChangedEventArgs e)
@@ -3057,7 +3084,14 @@ internal partial class FlourishShellWindow : Window
         UpdateBreadcrumb(e.SourcePageType);
 
         SelectNavigationItem(e.SourcePageType);
-        motionService.AnimatePageEntrance(RootFrame);
+        motionService.AnimatePageEntrance(
+            pageTransition,
+            new PageTransitionTarget(
+                RootFrame,
+                PageTransitionChrome,
+                PageTransitionScaleTransform
+            )
+        );
     }
 
     private void UpdateBreadcrumb(Type sourcePageType)
@@ -3467,6 +3501,7 @@ internal partial class FlourishShellWindow : Window
         themeService.ThemeChanged -= ThemeService_ThemeChanged;
         themeService.Detach(this);
         materialEffectService.Detach(this);
+        pageTransition.Cancel();
         StopNavigationPaneAnimations();
         windowCloseService.Detach();
         ClearToolbarButtonCache();

@@ -36,6 +36,12 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 `EnableHoverRevealAnimation` enables hover animation on supported controls.
 
+## Page rendering during transitions
+
+Page transitions animate a Shell-owned, non-interactive mask above the content frame. The navigated page itself remains stationary and fully opaque, which keeps its text pixel-aligned and avoids measuring or arranging page content on every animation frame.
+
+`Fade` fades the mask away to reveal the page. `EntranceFromBottom` reveals the stationary page from the bottom edge. Both effects return the mask to its hidden state when the transition completes without changing the page's final layout.
+
 ## Reduced motion
 
 `RespectSystemReducedMotion` lets Flourish follow the operating system reduced-motion preference. Use it when animations are enabled so the shell can adapt to the user's accessibility setting.

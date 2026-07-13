@@ -119,12 +119,12 @@ summary: 禁用页面过渡动画。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishPageTransition.Fade
-summary: 将页面淡入显示。
+summary: 通过淡出过渡遮罩揭示保持静止的页面。
 ---
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishPageTransition.EntranceFromBottom
-summary: 让页面从底部进入视图。
+summary: 从底部揭示保持静止的页面。
 ---
 
 ---
@@ -699,7 +699,7 @@ syntax:
   - id: openWidth
     description: 导航栏展开宽度。
   - id: closedWidth
-    description: 导航栏折叠宽度。
+    description: 导航栏折叠宽度。设为 0 会完全隐藏折叠导航栏；其他值不得小于 56 DIP。
   - id: maxWidth
     description: 导航栏最大展开宽度。
   - id: minWidth

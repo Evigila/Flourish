@@ -131,6 +131,7 @@
               Background="Transparent"
               BorderBrush="{DynamicResource FlourishDividerBrush}"
               BorderThickness="0,0,1,0"
+              Padding="{DynamicResource FlourishNavigationPaneLeftPadding}"
             >
               <Grid>
                 <Grid.RowDefinitions>
@@ -142,6 +143,7 @@
                 <StackPanel
                   x:Name="NavigationHeaderRegionHost"
                   Grid.Row="0"
+                  Margin="{DynamicResource FlourishNavigationCustomRegionMargin}"
                   Orientation="Vertical"
                   Visibility="Collapsed"
                 />
@@ -188,6 +190,7 @@
                 <StackPanel
                   x:Name="NavigationFooterRegionHost"
                   Grid.Row="3"
+                  Margin="{DynamicResource FlourishNavigationCustomRegionMargin}"
                   Orientation="Vertical"
                   Visibility="Collapsed"
                 />
@@ -263,13 +266,29 @@
               />
             </Border>
 
-            <Grid x:Name="ContentFrameHost" Grid.Row="3">
+            <Grid x:Name="ContentFrameHost" Grid.Row="3" ClipToBounds="True">
               <Frame
                 x:Name="RootFrame"
                 Focusable="False"
                 JournalOwnership="UsesParentJournal"
                 NavigationUIVisibility="Hidden"
               />
+              <Border
+                x:Name="PageTransitionChrome"
+                Panel.ZIndex="5"
+                IsHitTestVisible="False"
+                Opacity="0"
+                Background="{DynamicResource FlourishPageTransitionBackgroundBrush}"
+                RenderTransformOrigin="0.5,0"
+              >
+                <Border.RenderTransform>
+                  <ScaleTransform
+                    x:Name="PageTransitionScaleTransform"
+                    ScaleX="1"
+                    ScaleY="0"
+                  />
+                </Border.RenderTransform>
+              </Border>
               <Grid x:Name="ContentOverlayRegionHost" Panel.ZIndex="10" Visibility="Collapsed" />
             </Grid>
 
@@ -297,7 +316,7 @@
         x:Name="StatusBarBorder"
         Grid.Row="2"
         Panel.ZIndex="120"
-        Padding="8,3"
+        Padding="{DynamicResource FlourishStatusBarPadding}"
         Background="{DynamicResource FlourishNeutralBackground2Brush}"
         BorderBrush="{DynamicResource FlourishDividerBrush}"
         BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"

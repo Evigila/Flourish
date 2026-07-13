@@ -1,6 +1,4 @@
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Abstract;
@@ -12,7 +10,6 @@ namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class FlourishMotionService : IMotionService
 {
-    private const double PageEntranceOffset = 14;
     private const string HoverRevealEnabledResourceKey = "FlourishHoverRevealEnabled";
     private const string HoverRevealDurationResourceKey = "FlourishHoverRevealDuration";
     private readonly object gate = new();
@@ -194,84 +191,35 @@ internal sealed class FlourishMotionService : IMotionService
         }
     }
 
-    public void AnimatePageEntrance(FrameworkElement frame)
+    internal void AnimatePageEntrance(
+        PageTransitionController controller,
+        PageTransitionTarget target
+    )
     {
+        ArgumentNullException.ThrowIfNull(controller);
         var settings = Current;
-        frame.BeginAnimation(UIElement.OpacityProperty, null);
-        var translate = EnsureTranslateTransform(frame);
-        translate.BeginAnimation(TranslateTransform.YProperty, null);
 
         if (
             !CanAnimateSettings(settings)
             || settings.PageTransition == FlourishPageTransition.None
         )
         {
-            frame.Opacity = 1;
-            translate.Y = 0;
+            controller.Cancel();
             return;
         }
 
-        var duration = new Duration(settings.PageTransitionDuration);
-        var opacityAnimation = new DoubleAnimation
-        {
-            From = 0,
-            To = 1,
-            Duration = duration,
-            EasingFunction = CreateEase(),
-            FillBehavior = FillBehavior.Stop,
-        };
-
-        var yAnimation = new DoubleAnimation
-        {
-            From =
-                settings.PageTransition == FlourishPageTransition.EntranceFromBottom
-                    ? PageEntranceOffset
-                    : 0,
-            To = 0,
-            Duration = duration,
-            EasingFunction = CreateEase(),
-            FillBehavior = FillBehavior.Stop,
-        };
-
-        opacityAnimation.Completed += (_, _) =>
-        {
-            frame.Opacity = 1;
-            translate.Y = 0;
-        };
-
-        frame.Opacity = 0;
-        translate.Y =
-            settings.PageTransition == FlourishPageTransition.EntranceFromBottom
-                ? PageEntranceOffset
-                : 0;
-
-        frame.BeginAnimation(
-            UIElement.OpacityProperty,
-            opacityAnimation,
-            HandoffBehavior.SnapshotAndReplace
-        );
-        translate.BeginAnimation(
-            TranslateTransform.YProperty,
-            yAnimation,
-            HandoffBehavior.SnapshotAndReplace
+        controller.Start(
+            target,
+            settings.PageTransition,
+            settings.PageTransitionDuration,
+            CreateEase(),
+            static () => { }
         );
     }
 
     private static CubicEase CreateEase()
     {
         return new CubicEase { EasingMode = EasingMode.EaseOut };
-    }
-
-    private static TranslateTransform EnsureTranslateTransform(FrameworkElement element)
-    {
-        if (element.RenderTransform is TranslateTransform translate)
-        {
-            return translate;
-        }
-
-        translate = new TranslateTransform();
-        element.RenderTransform = translate;
-        return translate;
     }
 
     private static bool AreClose(double first, double second)

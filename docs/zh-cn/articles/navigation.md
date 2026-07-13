@@ -52,7 +52,7 @@ builder.ConfigureShell(shell =>
     navigation
         .SetDirection(NavigationPanelDirection.Left)
         .SetInitiallyOpen()
-        .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+        .SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180)
         .SetGroup("导航", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -97,10 +97,12 @@ nav.SetTitle("导航");
 使用 `SetPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
 
 ```csharp
-nav.SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180);
+nav.SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180);
 ```
 
-默认展开宽度为 `220`，折叠宽度为 `48`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `48`。可调整范围默认为 `160` 到 `420`。用户可以通过悬停时显示的分隔条调整展开状态下的导航栏宽度。拖拽时会显示宽度预览，释放后应用新宽度。
+默认展开宽度为 `220`，折叠宽度为 `56`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `56`。可见的折叠宽度同时容纳标准命令按钮区域及其间距、紧凑滚动条、分隔线和共用的外侧留白。可调整范围默认为 `160` 到 `420`。用户可以通过悬停时显示的分隔条调整展开状态下的导航栏宽度。拖拽时会显示宽度预览，释放后应用新宽度。
+
+导航内容会在靠近窗口边缘的一侧使用 Shell 水平留白。导航栏从左侧移到右侧时，Flourish 会镜像这段留白，使导航项与内置标题栏和状态栏内容保持对齐。
 
 ## 添加命令项
 

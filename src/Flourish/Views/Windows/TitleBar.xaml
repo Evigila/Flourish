@@ -10,6 +10,7 @@
 >
   <Grid Background="Transparent">
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="{DynamicResource FlourishTitlebarLeadingSpacerWidth}" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
@@ -26,7 +27,7 @@
 
     <StackPanel
       x:Name="BreadcrumbNavigationHost"
-      Grid.Column="0"
+      Grid.Column="1"
       Margin="4,0,0,0"
       Orientation="Horizontal"
     >
@@ -69,7 +70,7 @@
 
     <controls:FlourishButton
       x:Name="NavigationToggleButton"
-      Grid.Column="1"
+      Grid.Column="2"
       Appearance="Subtle"
       Width="{DynamicResource FlourishShellCommandButtonWidth}"
       Height="{DynamicResource FlourishShellCommandButtonHeight}"
@@ -87,7 +88,7 @@
 
     <StackPanel
       x:Name="TitlebarStartRegionHost"
-      Grid.Column="2"
+      Grid.Column="3"
       Margin="4,0"
       VerticalAlignment="Center"
       Orientation="Horizontal"
@@ -96,8 +97,8 @@
 
     <StackPanel
       x:Name="BrandHost"
-      Grid.Column="3"
-      Margin="8,0,14,0"
+      Grid.Column="4"
+      Margin="4,0,14,0"
       VerticalAlignment="Center"
       MouseLeftButtonDown="Titlebar_MouseLeftButtonDown"
       Orientation="Horizontal"
@@ -145,7 +146,7 @@
       </StackPanel>
     </StackPanel>
 
-    <Grid Grid.Column="4">
+    <Grid Grid.Column="5">
       <Border
         Background="Transparent"
         MouseLeftButtonDown="Titlebar_MouseLeftButtonDown"
@@ -161,7 +162,7 @@
 
     <controls:FlourishSearchBox
       x:Name="SearchBox"
-      Grid.Column="5"
+      Grid.Column="6"
       Width="320"
       Height="28"
       Margin="8,0,10,0"
@@ -171,7 +172,7 @@
 
     <controls:FlourishButton
       x:Name="ThemeToggleButton"
-      Grid.Column="6"
+      Grid.Column="7"
       Appearance="Subtle"
       Width="{DynamicResource FlourishShellCommandButtonWidth}"
       Height="{DynamicResource FlourishShellCommandButtonHeight}"
@@ -195,7 +196,7 @@
 
     <Grid
       x:Name="ProfileRegionContainer"
-      Grid.Column="7"
+      Grid.Column="8"
       Margin="0,0,10,0"
       VerticalAlignment="Center"
     >
@@ -232,7 +233,7 @@
 
     <StackPanel
       x:Name="TitlebarEndRegionHost"
-      Grid.Column="8"
+      Grid.Column="9"
       Margin="0,0,6,0"
       VerticalAlignment="Center"
       Orientation="Horizontal"
@@ -241,7 +242,7 @@
 
     <controls:FlourishButton
       x:Name="MinimizeButton"
-      Grid.Column="9"
+      Grid.Column="10"
       Appearance="Subtle"
       Click="MinimizeButton_Click"
       Variant="WindowCaption"
@@ -256,7 +257,7 @@
 
     <controls:FlourishButton
       x:Name="MaximizeButton"
-      Grid.Column="10"
+      Grid.Column="11"
       Appearance="Subtle"
       Click="MaximizeButton_Click"
       Variant="WindowCaption"
@@ -272,7 +273,7 @@
 
     <controls:FlourishButton
       x:Name="CloseButton"
-      Grid.Column="11"
+      Grid.Column="12"
       Appearance="Danger"
       Click="CloseButton_Click"
       Variant="WindowCaption"

@@ -88,7 +88,7 @@ public partial class App : Application
             {
                 navigation
                     .SetInitiallyOpen()
-                    .SetPanelWidth(openWidth: 260, closedWidth: 48, maxWidth: 480, minWidth: 180)
+                    .SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180)
                     .SetGroup("导航", groupId: 0, group =>
                     {
                         group.AddNavigableViewItem<HomePage>(isInitial: true);

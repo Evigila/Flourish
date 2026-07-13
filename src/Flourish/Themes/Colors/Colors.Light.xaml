@@ -9,6 +9,7 @@
   <SolidColorBrush x:Key="FlourishNeutralBackground1Brush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#F7F9FC" />
   <SolidColorBrush x:Key="FlourishNeutralBackground3Brush" Color="#EEF2F6" />
+  <SolidColorBrush x:Key="FlourishPageTransitionBackgroundBrush" Color="#FFF5F7FA" />
   <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#E1E5EA" />
   <SolidColorBrush x:Key="FlourishNeutralStrokeAccessibleBrush" Color="#616161" />
 

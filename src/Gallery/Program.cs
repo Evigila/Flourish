@@ -62,7 +62,7 @@ internal static class Program
             {
                 nav.SetDirection()
                     .SetInitiallyOpen()
-                    .SetPanelWidth(openWidth: 250, closedWidth: 48, maxWidth: 520, minWidth: 180)
+                    .SetPanelWidth(openWidth: 250, closedWidth: 56, maxWidth: 520, minWidth: 180)
                     .SetGroup(
                         null,
                         0,

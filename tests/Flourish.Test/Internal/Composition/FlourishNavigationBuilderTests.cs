@@ -1,4 +1,5 @@
 using System.Windows.Controls;
+using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
 
@@ -38,9 +39,27 @@ public sealed class FlourishNavigationBuilderTests
         Assert.Equal(180, options.NavigationPaneMinWidth);
     }
 
+    [Fact]
+    public void SetPanelWidth_DefaultsReserveTheAlignedCollapsedShellGeometry()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishNavigationBuilder(options);
+
+        sut.SetPanelWidth();
+
+        var closedWidthParameter = typeof(IFlourishNavigationBuilder)
+            .GetMethod(nameof(IFlourishNavigationBuilder.SetPanelWidth))!
+            .GetParameters()
+            .Single(parameter => parameter.Name == "closedWidth");
+
+        Assert.Equal(56d, closedWidthParameter.DefaultValue);
+        Assert.Equal(NavigationPanelDimensions.MinimumCollapsedWidth, options.ClosedPaneWidth);
+        Assert.Equal(56, options.ClosedPaneWidth);
+    }
+
     [Theory]
     [InlineData(0)]
-    [InlineData(48)]
+    [InlineData(56)]
     public void SetPanelWidth_WithSupportedCollapsedBoundary_UpdatesOptions(
         double closedWidth
     )
@@ -55,7 +74,7 @@ public sealed class FlourishNavigationBuilderTests
 
     [Theory]
     [InlineData(1)]
-    [InlineData(47)]
+    [InlineData(55)]
     public void SetPanelWidth_WithUndersizedVisibleCollapsedWidth_ThrowsArgumentOutOfRangeException(
         double closedWidth
     )
@@ -70,7 +89,7 @@ public sealed class FlourishNavigationBuilderTests
 
         Assert.Equal("closedWidth", exception.ParamName);
         Assert.Equal(before, options.ClosedPaneWidth);
-        Assert.Contains("0 (fully hidden) or at least 48", exception.Message);
+        Assert.Contains("0 (fully hidden) or at least 56", exception.Message);
     }
 
     [Fact]
@@ -91,7 +110,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth: 200, closedWidth: 48, maxWidth: 180, minWidth: 220)
+            sut.SetPanelWidth(openWidth: 200, closedWidth: 56, maxWidth: 180, minWidth: 220)
         );
 
         Assert.Equal("minWidth", exception.ParamName);
@@ -107,7 +126,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth, closedWidth: 48, maxWidth: 400, minWidth: 100)
+            sut.SetPanelWidth(openWidth, closedWidth: 56, maxWidth: 400, minWidth: 100)
         );
 
         Assert.Equal("openWidth", exception.ParamName);

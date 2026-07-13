@@ -31,6 +31,7 @@
             <controls:FlourishScrollViewer
               CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
               Focusable="False"
+              FlowDirection="{TemplateBinding FlowDirection}"
               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
               HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
               Padding="{TemplateBinding Padding}"

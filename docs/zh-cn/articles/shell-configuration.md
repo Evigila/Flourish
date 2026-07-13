@@ -74,6 +74,10 @@ Breadcrumb、动态工具栏、内容页面和内容区域宿主统一使用 `Fl
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
 ```
 
+## Shell 边缘对齐
+
+内置标题栏内容、导航项和状态栏在窗口左右边缘使用相同的水平留白。导航栏位于右侧时，Flourish 会镜像其外侧留白，使导航内容与标题栏和状态栏保持对齐。折叠导航栏的宽度同时容纳这段留白、命令按钮区域和紧凑滚动条。最小化、最大化或还原以及关闭按钮仍贴紧窗口右上边缘，以保留窗口命令的命中区域。
+
 ## 禁用与省略
 
 `UseTitleBar`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接收可选的 `enabled` 参数。传入 `false` 会禁用对应区域，即使已经提供详细配置。
