@@ -24,7 +24,7 @@ public enum BreadcrumbShowOption
     Always,
 
     /// <summary>
-    /// Lets Flourish decide whether breadcrumb navigation should be displayed for the current navigation state.
+    /// Displays breadcrumb navigation when back or forward navigation is available; otherwise, hides it.
     /// </summary>
     /// <example>
     /// <code><![CDATA[

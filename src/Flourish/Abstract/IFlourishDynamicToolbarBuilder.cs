@@ -9,7 +9,8 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <code><![CDATA[
 /// builder.ConfigureDynamicToolbar(toolbar =>
 /// {
-///     toolbar.CreateToolbarItems<HomePage>(new FlourishToolbarItem("Open", "\uE8E5", "home.open"));
+///     toolbar.CreateToolbarItems<ReportsPage>(
+///         new FlourishToolbarItem("Export", "\uE898", "reports.export"));
 /// });
 /// ]]></code>
 /// </example>
@@ -23,9 +24,9 @@ public interface IFlourishDynamicToolbarBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// toolbar.CreateToolbarItems<HomePage>(
-    ///     new FlourishToolbarItem("Open", "\uE8E5", "home.open"),
-    ///     new FlourishToolbarItem("Save", "\uE74E", "home.save"));
+    /// toolbar.CreateToolbarItems<ReportsPage>(
+    ///     new FlourishToolbarItem("Refresh", "\uE72C", "reports.refresh"),
+    ///     new FlourishToolbarItem("Export", "\uE898", "reports.export"));
     /// ]]></code>
     /// </example>
     IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(params FlourishToolbarItem[] items)

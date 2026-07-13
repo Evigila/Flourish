@@ -1,12 +1,12 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Enables or disables high-level Flourish shell features at runtime.
+/// Enables or disables Flourish shell features at runtime.
 /// </summary>
 public interface IShellFeatureService
 {
     /// <summary>
-    /// Gets an immutable snapshot of all high-level shell feature switches.
+    /// Gets an immutable snapshot of all shell feature switches.
     /// </summary>
     FlourishShellFeatureState Current { get; }
 
@@ -16,7 +16,7 @@ public interface IShellFeatureService
     event EventHandler<FlourishShellFeatureChangedEventArgs>? Changed;
 
     /// <summary>
-    /// Enables or disables a high-level shell feature.
+    /// Enables or disables a shell feature.
     /// </summary>
     /// <param name="feature">The feature to change.</param>
     /// <param name="enabled"><see langword="true"/> to enable the feature; otherwise, <see langword="false"/>.</param>

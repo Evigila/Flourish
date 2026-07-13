@@ -146,30 +146,13 @@ The configuration key is `Flourish:Preferences:Theme`. Reads follow the complete
 
 Flourish preserves unrelated settings when it writes the base file, but serializes the complete JSON object again. This reformats the document and removes comments. The content root must be writable, and an existing file must contain valid JSON with an object at its root.
 
-The former `preferences.json` directory model is no longer used. `SetAppPreferenceDataPath`, `SetAppName`, and `SetAppCompany` have been removed; application configuration location and identity now follow standard Hosting conventions.
-
-> [!NOTE]
-> Flourish does not import the old theme file or generated Profile secret. Configure the initial theme in appsettings and sign in again after migrating an existing application.
-
 ## User Secrets
 
-The built-in Profile stores only a remembered credential. Add a stable `UserSecretsId` to the application project so Flourish can use the same User Secrets document as the Host:
-
-```xml
-<PropertyGroup>
-  <UserSecretsId>Foobar.Desktop</UserSecretsId>
-</PropertyGroup>
-```
-
-Flourish adds that User Secrets source to the Host in every environment and avoids adding it twice when the Generic Host already loaded it for Development. On Windows, the physical document is `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json`.
-
-The protected credential uses the `Flourish:Profile:Credential` key. A login that is not marked as remembered remains only in memory and is never written to disk. Without a User Secrets provider, ordinary sign-in still works, but enabling remembered login throws an `InvalidOperationException` with setup guidance. Do not place profile credentials in `appsettings.json`; User Secrets supplies the application-scoped storage for this value.
-
-The appsettings and User Secrets providers remain part of the same Host configuration. Their values are available to application services through the usual `IConfiguration` APIs.
+Remembered Profile credentials use the application's User Secrets configuration. [Profile](configure-profile.md) explains the required `UserSecretsId`, credential protection, and behavior when the provider is unavailable.
 
 ## Related features
 
-- [Title bar](configure-title-bar.md), [Profile](configure-profile.md), [Window](configure-window.md), [Background tasks](background-tasks.md), [Status bar](status-bar.md), and [Message service](message-service.md) use localized built-in text.
+- [Title bar](configure-title-bar.md), [Window](configure-window.md), [Background tasks](background-tasks.md), [Status bar](status-bar.md), and [Message service](message-service.md) use localized built-in text.
 - [Themes](configure-themes.md) persist the selected theme through Host configuration.
-- [Profile](configure-profile.md) explains remembered credentials and User Secrets.
+- [Profile](configure-profile.md) explains remembered credentials and User Secrets setup.
 - [IFlourishBuilder](flourish-builder.md) explains when configuration callbacks are applied.

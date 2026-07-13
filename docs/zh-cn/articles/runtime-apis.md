@@ -38,7 +38,7 @@ public async ValueTask SaveEndpointAsync(
     await settings.UpdateAsync(editor =>
     {
         editor.Set("Api:BaseUrl", endpoint);
-        editor.Merge("FeatureFlags", new { RuntimeGallery = true });
+        editor.Merge("FeatureFlags", new { ReportsEnabled = true });
         editor.Append("Api:RecentEndpoints", endpoint);
     }, cancellationToken);
 
@@ -78,7 +78,7 @@ public sealed class SearchModule(
     public void Open()
     {
         search.SetVisible(true);
-        search.SetPlaceholder("搜索示例");
+        search.SetPlaceholder("搜索报表");
         search.Focus();
     }
 
@@ -145,15 +145,15 @@ public sealed class DiagnosticsModule : IDisposable
 | `IStatusBarService` | 启用自定义内容和内置 LAN/电源指示；添加、更新、移动、显示、隐藏、移除或清空 `FlourishStatusItem`。`Show` 可创建定时项目并返回可释放句柄。 |
 | `IShellRegionService` | 向 `FlourishRegion` 添加或覆盖 WPF 内容工厂，并启用、重排、移除或清空注册项。 |
 
-工具栏和导航中的命令项只保存命令键，实际执行统一流经 `ICommandDispatcher`。
+工具栏和导航中的命令项通过 `ICommandDispatcher` 调度。
 
 ## 命令与快捷键
 
-`ICommandRegistry.Register` 可添加异步处理器，并指定可选的可执行谓词、重复策略和优先级。`ICommandDispatcher.CanExecute` 与 `ExecuteAsync` 用于调用运行时处理器，并返回捕获了执行结果的 `CommandResult`。`IShortcutService.Register` 可将 WPF `KeyGesture` 映射到命令，并配置应用、窗口或页面作用域及冲突策略。
+`ICommandRegistry.Register` 可添加异步处理器，并指定可选的可执行谓词、重复策略和优先级。`ICommandDispatcher.CanExecute` 用于查询命令当前是否可用；`ExecuteAsync` 用于调度命令，并返回捕获了执行结果的 `CommandResult`。`IShortcutService.Register` 可将 WPF `KeyGesture` 映射到命令，并配置应用、窗口或页面作用域及冲突策略。
 
 默认情况下，文本输入控件获得键盘焦点时不会派发快捷键，以保留正常输入、剪贴板、编辑、AltGr 与 IME 行为。只有确实需要在编辑文字时保持生效的快捷键，才应将 `ShortcutRegistrationOptions.AllowWhenTextInputFocused` 设置为 `true`。
 
-`ICommandParser` 仍是通过 `ConfigureServices` 注册的同步启动期兼容扩展；需要在运行时添加或移除逻辑时，应使用 `ICommandRegistry`。
+通过 `ConfigureServices` 注册的同步命令处理程序使用 `ICommandParser`；需要在应用运行期间添加或移除处理程序时，使用 `ICommandRegistry`。
 
 ```csharp
 public sealed class RefreshBindings : IDisposable
@@ -228,7 +228,7 @@ public FlourishBackgroundTaskHandle StartExport(
 
 ## 相关指南
 
-- [IFlourishBuilder](flourish-builder.md) 与[依赖注入](configure-services.md)
+- [IFlourishBuilder](flourish-builder.md)与[依赖注入](configure-services.md)
 - [应用数据](configure-data.md)、[导航](navigation.md)与[命令解析器](command-parser.md)
 - [动态工具栏](dynamic-toolbar.md)、[状态栏](status-bar.md)与[后台任务](background-tasks.md)
 - [窗口](configure-window.md)、[Profile](configure-profile.md)与[消息服务](message-service.md)

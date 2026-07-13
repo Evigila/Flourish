@@ -1,15 +1,15 @@
 ---
 title: Dynamic toolbar
-description: Configure page-specific toolbar items and connect them to command parsing.
+description: Configure page-specific toolbar items and connect them to command dispatch.
 ---
 
 # Dynamic toolbar
 
-The dynamic toolbar is a shell surface whose items change with the active page. It is useful for commands such as open, save, import, refresh, or page-specific actions.
+The dynamic toolbar is a shell surface whose items change with the active page. Use it for page-scoped commands such as open, save, import, or refresh.
 
 There are two steps:
 
-1. Enable the toolbar surface in shell configuration.
+1. Enable the toolbar surface in [Shell configuration](shell-configuration.md).
 2. Register page-specific toolbar items with `ConfigureDynamicToolbar`.
 
 ## Enable the surface
@@ -28,23 +28,15 @@ builder.ConfigureShell(shell =>
 
 ## Register items for a page
 
-Use `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` when the page type is known at compile time.
+Use `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` to associate toolbar items with a WPF page type.
 
 ```csharp
 builder.ConfigureDynamicToolbar(toolbar =>
 {
-    toolbar.CreateToolbarItems<HomePage>(
-        new FlourishToolbarItem("Open", "\uE8E5", "home.open"),
-        new FlourishToolbarItem("Save", "\uE74E", "home.save"));
+    toolbar.CreateToolbarItems<ReportsPage>(
+        new FlourishToolbarItem("Refresh", "\uE72C", "reports.refresh"),
+        new FlourishToolbarItem("Export", "\uE898", "reports.export"));
 });
-```
-
-Use the `Type` overload when page types are discovered dynamically.
-
-```csharp
-toolbar.CreateToolbarItems(
-    typeof(ReportsPage),
-    new FlourishToolbarItem("Export", "\uE898", "reports.export"));
 ```
 
 ## Control icon visibility
@@ -65,16 +57,16 @@ toolbar.CreateToolbarItems<EditorPage>(
 | --- | --- |
 | `DisplayName` | Text shown in the toolbar. |
 | `IconGlyph` | Glyph shown when icon display is enabled. |
-| `CommandKey` | Optional command key sent to `ICommandParser`. |
+| `CommandKey` | Optional command key dispatched through `ICommandDispatcher`. |
 
-Prefer stable, namespaced command keys such as `reports.export` or `editor.preview`. They are easier to route than display text and do not change when UI language changes.
+Use stable, namespaced command keys such as `reports.export` or `editor.preview`. Localizing display text does not change the command key.
 
 ## Handle commands
 
-Register one or more `ICommandParser` implementations through [Dependency injection](configure-services.md).
+Register one or more synchronous `ICommandParser` implementations through [Dependency injection](configure-services.md).
 
 ```csharp
 services.AddSingleton<ICommandParser, AppCommandParser>();
 ```
 
-[Command parser](command-parser.md) explains command matching and the behavior of multiple parsers. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and status bar commands.
+[Command parser](command-parser.md) explains command matching and dispatch order. [Runtime APIs](runtime-apis.md) explains `ICommandRegistry` handlers that can be added or removed while the application runs. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and status bar commands.

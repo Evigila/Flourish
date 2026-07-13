@@ -5,18 +5,18 @@ description: 使用 Flourish 构建并运行一个基本 WPF 应用。
 
 # 快速开始
 
-基本的 Flourish 应用由 Shell 托管 WPF `Application`：引用主题资源，在 `App.xaml.cs` 或其他应用起始点构建 `IFlourish` 运行时，用 `AddNavigable` 注册页面，在[导航](navigation.md)配置中放置导航项，然后显示 Shell。
+基本的 Flourish 应用需要注册一个 WPF 页面、启用导航、构建 `IFlourish` 运行时并显示 Shell。
 
-Flourish 内置文案默认使用英文，即使省略 `ConfigureData` 也会生效。如需中文，可在 `Build()` 前添加 `builder.ConfigureData(data => data.SetLocale("CN"))`。[应用数据](configure-data.md)说明内置语言和自定义翻译文件。
+Flourish 内置文案默认使用英文。如需中文，请在 `Build()` 前调用 `builder.ConfigureData(data => data.SetLocale("CN"))`。[应用数据](configure-data.md)说明内置语言和自定义语言。
 
 ## 引用控件与主题资源
 
-`Run(Application)` 快捷方法和 `IFlourish.Show(Application)` 会在打开 Shell 前自动加载完整的 Flourish 控件与主题资源图。你也可以在 `App.xaml` 中显式加入 `FlourishThemeResources`；这样 WPF 设计器、Shell 显示前就需要使用的资源，以及脱离 Shell 独立使用的[控件库](control-library.md)都能正常工作。
+`Run(Application)` 和 `IFlourish.Show(Application)` 会在 Shell 打开前加载 Flourish 控件与主题资源。当 WPF 设计器、Shell 显示前的内容或独立使用[控件库](control-library.md)需要这些资源时，请在 `App.xaml` 中显式添加 `FlourishThemeResources`。
 
-> [!NOTE]
-> 当设计器资源或早期应用资源需要在 Shell 显示前使用 Flourish 控件时，建议在 `App.xaml` 中显式加入 `FlourishThemeResources`。原有的 `FlourishStyles` 与 `FlourishControlResources` 已标记为过时，仅用于兼容旧应用，新应用不应再使用。
+> [!WARNING]
+> `FlourishStyles` 与 `FlourishControlResources` 已过时。请使用 `FlourishThemeResources`。
 
-当 Flourish Shell 承担主窗口职责时，`App.xaml` 不应设置 `StartupUri`。`IFlourish.Show(Application)` 运行后，Shell 会成为 `Application.MainWindow`。
+Flourish Shell 作为主窗口时，不要在 `App.xaml` 中设置 `StartupUri`。
 
 ```xml
 <Application
@@ -36,7 +36,7 @@ Flourish 内置文案默认使用英文，即使省略 `ConfigureData` 也会生
 
 ## 配置应用起始点
 
-大多数 WPF 应用可以在 `App.xaml.cs` 中构建并持有 Flourish 运行时。应用启动 Host、显示 Shell，并在 WPF 退出时释放运行时。
+应用可以在 `App.xaml.cs` 中持有 Flourish 运行时。启动 Host、显示 Shell，并在 WPF 退出时释放运行时。
 
 ```csharp
 using System.Windows;
@@ -61,42 +61,12 @@ public partial class App : Application
             .ConfigureServices((_, services) =>
             {
                 services.AddSingleton(this);
-                services.AddSingleton<ICommandParser, AppCommandParser>();
-
                 services.AddNavigable<HomePage>("首页", "\uE80F");
-                services.AddNavigable<SettingsPage>("设置", "\uE713");
             })
             .ConfigureShell(shell =>
-            {
-                shell
-                    .UseTitleBar()
-                    .UseNavigation()
-                    .UseTips(delay: 200)
-                    .UseMaterialEffect(MaterialEffect.Mica)
-                    .UseGlobalFont("Microsoft YaHei UI", 14);
-            })
+                shell.UseTitleBar().UseNavigation())
             .ConfigureTitleBar(titleBar =>
-            {
-                titleBar
-                    .SetTitle("Foobar")
-                    .SetSubTitle("Flourish Shell")
-                    .SetSearch("搜索", (_, searchText) => { })
-                    .SetBreadcrumbButton()
-                    .SetNavToggle();
-            })
-            .ConfigureNavigation(navigation =>
-            {
-                navigation
-                    .SetInitiallyOpen()
-                    .SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180)
-                    .SetGroup("导航", groupId: 0, group =>
-                    {
-                        group.AddNavigableViewItem<HomePage>(isInitial: true);
-                    });
-
-                navigation.AddFixedNavigableViewItem<SettingsPage>();
-            })
-            .ConfigureWindow(window => window.SetWindowSize(1280, 720).SetWindowMinSize(960, 540))
+                titleBar.SetTitle("Foobar").SetNavToggle())
             .Build();
 
         flourish.Start();
@@ -117,11 +87,11 @@ public partial class App : Application
 }
 ```
 
-`CreateDefaultBuilder(e.Args)` 会创建标准的 .NET Generic Host。因此[依赖注入](configure-services.md)配置拿到的是普通 `IServiceCollection`，应用服务、页面和命令解析器都可以按标准依赖注入方式注册。
+由于没有配置导航分组或固定项，导航栏会自动列出已注册页面。如果应用需要显式分组、固定项或初始页面，请参阅[导航](navigation.md)。
 
-## 其他起始点
+## 其他起始方式
 
-部分应用会使用自定义生成入口或专门的 bootstrapper。这类起始点可以构建同一个 builder，并调用 `Run<App>()` 快捷入口。
+自定义入口或 bootstrapper 可以构建相同配置，并使用 `Run<App>()` 快捷入口。
 
 ```csharp
 return FlourishBuilder
@@ -131,34 +101,18 @@ return FlourishBuilder
         services.AddSingleton<App>();
         services.AddNavigable<HomePage>("首页", "\uE80F");
     })
-    .ConfigureShell(shell => shell.UseTitleBar().UseNavigation())
-    .ConfigureNavigation(navigation =>
-    {
-        navigation.SetGroup("导航", groupId: 0, group =>
-        {
-            group.AddNavigableViewItem<HomePage>(isInitial: true);
-        });
-    })
+    .ConfigureShell(shell =>
+        shell.UseTitleBar().UseNavigation())
+    .ConfigureTitleBar(titleBar =>
+        titleBar.SetTitle("Foobar").SetNavToggle())
     .Run<App>();
 ```
 
-同一次启动流程应选择 `App.xaml.cs` 生命周期路径或 `Run<App>()` 快捷入口之一。两者同时使用会导致 Shell 显示两次。
-
-## 按功能继续配置
-
-启动示例将不同配置职责分开：
-
-- [依赖注入](configure-services.md)注册服务、页面和命令解析器。
-- [应用数据](configure-data.md)选择内置界面语言并注册自定义翻译文件。
-- [Shell 配置](shell-configuration.md)启用高层 Shell 功能。
-- [标题栏](configure-title-bar.md)配置标题栏内容和入口。
-- [导航](navigation.md)配置导航栏展示和可见导航项。
-- [后台任务](background-tasks.md)运行可取消异步工作，并把状态集成到状态栏。
-- [提示浮层](configure-tips.md)、[排版](configure-font.md)和[窗口](configure-window.md)调整 Shell 的交互和外观。
+同一启动流程应选择 `App.xaml.cs` 生命周期方式或 `Run<App>()`。
 
 ## 创建页面
 
-通过 `AddNavigable` 注册的页面就是普通 WPF `Page`。导航发生时，Flourish 会从依赖注入容器解析页面实例。页面显示名称、图标和缓存模式来自 `AddNavigable`；可见导航位置和初始页则在[导航](navigation.md)配置中设置。
+通过 `AddNavigable` 注册的页面是 WPF `Page` 类。导航发生时，Flourish 会从依赖注入容器解析页面。
 
 ```csharp
 using System.Windows.Controls;
@@ -174,10 +128,19 @@ public partial class HomePage : Page
 }
 ```
 
+## 继续配置
+
+- [依赖注入](configure-services.md)注册应用服务和页面。
+- [应用数据](configure-data.md)选择内置界面语言并注册自定义语言。
+- [Shell 配置](shell-configuration.md)启用 Shell 功能并说明其前置条件。
+- [标题栏](configure-title-bar.md)配置标题栏内容。
+- [导航](navigation.md)配置自动或显式导航项。
+- [后台任务](background-tasks.md)运行可取消异步工作。
+- [提示浮层](configure-tips.md)、[排版](configure-font.md)和[窗口](configure-window.md)配置其他 Shell 行为。
+
 ## 首次运行检查清单
 
 - WPF 应用从 `App.xaml.cs` 或其他应用起始点启动 Flourish。
 - 至少一个页面已通过 `AddNavigable` 注册。
-- 至少一个可见页面项已通过 `AddNavigableViewItem` 添加，最好指定 `isInitial: true`。
-- 页面所需的 Shell 区域已通过 [Shell 配置](shell-configuration.md)启用。
-- 运行时会在应用退出时释放，或由 builder 快捷入口 `.Run<App>()` 负责释放。
+- 已启用导航，且注册页面由自动列表显示或放入显式位置。
+- 应用退出时释放运行时，或由 `Run<App>()` 管理其生命周期。

@@ -3,7 +3,7 @@ using System.Windows.Controls;
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Configures high-level Flourish shell features.
+/// Configures Flourish shell features and shared options.
 /// </summary>
 /// <example>
 /// <code><![CDATA[

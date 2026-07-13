@@ -13,7 +13,7 @@ public interface INotificationService
     /// <summary>
     /// Occurs synchronously after the active notification collection changes.
     /// </summary>
-    /// <remarks>Automatic expiration raises this event from a thread-pool thread.</remarks>
+    /// <remarks>The event may be raised on a non-UI thread.</remarks>
     event EventHandler<FlourishNotificationsChangedEventArgs>? NotificationsChanged;
 
     /// <summary>

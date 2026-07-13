@@ -13,11 +13,11 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </remarks>
 /// <example>
 /// <code><![CDATA[
-/// public sealed class DemoViewModel(IMessageService messages)
+/// public sealed class SettingsViewModel(IMessageService messages)
 /// {
 ///     public void Save()
 ///     {
-///         messages.Show("Saved.", "Demo", MessageBoxButton.OK, MessageBoxImage.Information);
+///         messages.Show("Saved.", "Foobar", MessageBoxButton.OK, MessageBoxImage.Information);
 ///     }
 /// }
 /// ]]></code>

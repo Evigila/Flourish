@@ -1,13 +1,15 @@
 ---
 title: 主题
-description: 配置 Flourish 的主题切换、系统主题跟随和用户主题偏好。
+description: 配置主题选择、应用配色、共用圆角和偏好持久化。
 ---
 
 # 主题
 
-标题栏的主题按钮让用户在系统、亮色和暗色主题之间切换。`SetThemeToggle` 会启用主题功能、显示按钮，并指定没有已保存偏好时使用的模式。
+Flourish 提供跟随系统、亮色和暗色主题。`SetThemeToggle` 会启用主题选择、显示标题栏入口，并指定 Host 配置中没有已保存偏好时使用的回退模式。
 
-## 最小配置
+## 配置主题选择
+
+显示主题入口前需要启用标题栏：
 
 ```csharp
 builder
@@ -16,11 +18,13 @@ builder
         titleBar.SetThemeToggle(FlourishTheme.System));
 ```
 
-参数是在 Host 配置不包含 `Flourish:Preferences:Theme` 时使用的回退值。[应用数据](configure-data.md)说明对应的 `appsettings.json` 设置。
+省略参数时使用 `FlourishTheme.System`。只有 Host 配置中不存在 `Flourish:Preferences:Theme` 时，回退值才会生效。[应用数据](configure-data.md)说明对应的 `appsettings.json` 设置。
 
-## 自定义品牌颜色与圆角
+不调用 `SetThemeToggle` 时，标题栏主题入口保持隐藏，Shell 以亮色主题初始化。应用仍可通过 `IThemeService` 在运行时更改主题。
 
-Shell Builder 可以在启动时覆盖三种独立的品牌色和全局圆角：
+## 配置应用配色与圆角
+
+通过 `ConfigureShell` 设置主要色、辅助色、强调色与共用圆角：
 
 ```csharp
 using System.Windows.Media;
@@ -34,26 +38,25 @@ builder.ConfigureShell(shell =>
         .UseCornerRadius(5));
 ```
 
-`Primary` 用于品牌与主要操作，`Secondary` 用于辅助层级，`Accent` 用于焦点和强调细节。三者必须是不透明颜色。Flourish 会针对当前亮色或暗色主题派生 hover、pressed、surface 与可读前景，并在主题切换后重新计算。颜色覆盖位于可切换调色板之外，因此不会在切换时丢失；仍应在两种主题下验证最终的品牌效果。
+三种颜色必须完全不透明。Flourish 会根据有效的亮色或暗色主题派生语义交互、表面和前景资源，并在主题变化后重新计算。
 
-`UseCornerRadius` 接受有限的非负 DIP 值。调用后会统一覆盖控件、卡片、浮层与对话框圆角；不调用时保留轻型的 4/6/8/10 层级。头像、单选按钮和徽标等圆形元素不受这个值影响。
+`UseCornerRadius` 接受以设备无关像素表示的有限非负值。`0` 会生成直角的共用几何形状；省略该方法时，控件和表面使用主题定义的圆角。
 
-## 选择初始模式
+应用配色后，应在亮色和暗色主题下验证结果，并保持文字对比度。
 
-`FlourishTheme.System` 跟随 Windows 应用主题。`FlourishTheme.Light` 和 `FlourishTheme.Dark` 分别将亮色或暗色设为初始主题。省略参数时使用 `System`。
+## 主题模式与偏好
 
-`SetThemeToggle` 的参数只在没有已保存偏好时生效。用户已经选择并保存主题时，保存的偏好优先。
+`FlourishTheme.System` 跟随 Windows 应用主题，`Light` 与 `Dark` 使用固定主题，直到用户选择其他模式。
 
-## 主题偏好
+Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。用户通过标题栏选择主题时，只写入 Host 内容根目录中的基础 `appsettings.json`；环境专用 appsettings、User Secrets、环境变量或命令行值仍可能在后续启动时优先。
 
-Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。用户选择只写入 Host 的基础 `appsettings.json`；环境 appsettings、User Secrets、环境变量或命令行值仍可能在后续启动时优先。内容根目录必须保持可写，写入也会重新格式化 JSON 并移除注释。
-
-不调用 `SetThemeToggle` 时，主题按钮和主题切换功能都不会启用。
+内容根目录必须可写。写入偏好时会重新序列化完整 JSON 对象，因此文件会被重新格式化，注释也会被移除。
 
 ## 相关功能
 
-- [控件库](control-library.md)说明显式 `Flourish*` 控件如何使用当前主题资源，而原生 WPF 控件保持不变。
-- [标题栏](configure-title-bar.md)配置主题切换入口及其他标题栏元素。
-- [应用数据](configure-data.md)说明 Host 配置与主题键。
-- [材质特效](configure-material-effect.md)配置与主题资源配合使用的窗口材质。
-- [排版](configure-font.md)配置 Shell 文本使用的基础字体。
+- [控件库](control-library.md)说明显式 Flourish 控件与主题资源加载。
+- [标题栏](configure-title-bar.md)配置主题入口。
+- [应用数据](configure-data.md)说明 Host 配置与主题偏好键。
+- [运行时 API](runtime-apis.md)说明应用运行期间通过 `IThemeService` 更改主题。
+- [材质特效](configure-material-effect.md)配置与当前主题配合使用的窗口材质。
+- [排版](configure-font.md)配置主题资源使用的字体。

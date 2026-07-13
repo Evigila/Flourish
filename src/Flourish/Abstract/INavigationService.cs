@@ -89,7 +89,7 @@ public interface INavigationService
     /// <summary>
     /// Navigates to a registered page by navigation key.
     /// </summary>
-    /// <param name="navigationKey">The case-sensitive key generated from the registered Page class name.</param>
+    /// <param name="navigationKey">The case-sensitive registered navigation key.</param>
     /// <param name="parameter">An optional parameter passed to the destination page.</param>
     /// <param name="addToBackStack">A value indicating whether the current page should be added to the back stack.</param>
     /// <returns><see langword="true" /> if navigation succeeded; otherwise, <see langword="false" />.</returns>

@@ -38,7 +38,7 @@ public async ValueTask SaveEndpointAsync(
     await settings.UpdateAsync(editor =>
     {
         editor.Set("Api:BaseUrl", endpoint);
-        editor.Merge("FeatureFlags", new { RuntimeGallery = true });
+        editor.Merge("FeatureFlags", new { ReportsEnabled = true });
         editor.Append("Api:RecentEndpoints", endpoint);
     }, cancellationToken);
 
@@ -79,7 +79,7 @@ public sealed class SearchModule(
     public void Open()
     {
         search.SetVisible(true);
-        search.SetPlaceholder("Search samples");
+        search.SetPlaceholder("Search reports");
         search.Focus();
     }
 
@@ -146,15 +146,15 @@ public sealed class DiagnosticsModule : IDisposable
 | `IStatusBarService` | Enable custom content and built-in LAN/power indicators; add, update, move, show, hide, remove, or clear `FlourishStatusItem` values. `Show` can create a timed item and returns a disposable handle. |
 | `IShellRegionService` | Add or upsert WPF content factories in a `FlourishRegion`, then enable, reorder, remove, or clear registrations. |
 
-Toolbar and navigation command items store command keys; execution flows through `ICommandDispatcher`.
+Toolbar and navigation command items are dispatched through `ICommandDispatcher`.
 
 ## Commands and keyboard shortcuts
 
-`ICommandRegistry.Register` adds an asynchronous handler with an optional availability predicate, duplicate policy, and priority. `ICommandDispatcher.CanExecute` and `ExecuteAsync` invoke runtime handlers and return a captured `CommandResult`. `IShortcutService.Register` maps a WPF `KeyGesture` to a command with application, window, or page scope and configurable conflict handling.
+`ICommandRegistry.Register` adds an asynchronous handler with an optional availability predicate, duplicate policy, and priority. `ICommandDispatcher.CanExecute` queries whether a command is available. `ExecuteAsync` dispatches the command and returns a captured `CommandResult`. `IShortcutService.Register` maps a WPF `KeyGesture` to a command with application, window, or page scope and configurable conflict handling.
 
 Shortcuts are ignored while a text input control has keyboard focus by default, preserving typing, clipboard, editing, AltGr, and IME behavior. Set `ShortcutRegistrationOptions.AllowWhenTextInputFocused` to `true` only for shortcuts that must remain active while the user is editing text.
 
-`ICommandParser` remains the synchronous startup compatibility extension registered during `ConfigureServices`; use `ICommandRegistry` for logic that must be added or removed at runtime.
+Use `ICommandParser` for synchronous command handlers registered during `ConfigureServices`. Use `ICommandRegistry` for handlers that must be added or removed while the application is running.
 
 ```csharp
 public sealed class RefreshBindings : IDisposable

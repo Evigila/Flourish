@@ -19,7 +19,7 @@ public interface IFlourishConfiguration
     /// Raised after the effective configuration has been reloaded.
     /// </summary>
     /// <remarks>
-    /// The event is raised on the configuration provider's reload-callback thread.
+    /// The event may be raised on a non-UI thread.
     /// </remarks>
     event EventHandler<FlourishConfigurationChangedEventArgs>? Changed;
 

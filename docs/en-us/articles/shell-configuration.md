@@ -1,74 +1,63 @@
 ---
 title: Shell configuration
-description: Enable Flourish shell features and understand their prerequisites.
+description: Enable Flourish Shell features and configure shared appearance options.
 ---
 
 # Shell configuration
 
-`ConfigureShell` controls the main Flourish surfaces and the simple settings that belong to the shell as a whole. A method that accepts a setting configures and enables that feature in one step.
+`ConfigureShell` enables the main Shell surfaces and applies options shared across those surfaces. Feature-specific builders configure the content and behavior of title bar, navigation, toolbar, motion, and status features.
 
 ```csharp
-builder
-    .ConfigureShell(shell =>
-    {
-        shell
-            .UseTitleBar()
-            .UseNavigation()
-            .UseDynamicToolbar()
-            .UseTips(200)
-            .UseMotion()
-            .UseMaterialEffect(MaterialEffect.Mica)
-            .UseGlobalFont("Segoe UI", 14)
-            .UseStatusBar();
-    });
+builder.ConfigureShell(shell =>
+{
+    shell
+        .UseTitleBar()
+        .UseNavigation()
+        .UseDynamicToolbar()
+        .UseTips(delay: 200)
+        .UseMotion()
+        .UseMaterialEffect(MaterialEffect.Mica)
+        .UseGlobalFont("Segoe UI", 14)
+        .UseStatusBar();
+});
 ```
 
-`UseTitleBar`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an `enabled` value that defaults to `true`. The remaining methods take the setting they apply.
+## Feature switches and shared options
 
-## Feature switches
-
-| Switch | Feature | Detailed configuration |
+| Shell method | Behavior | Feature guide |
 | --- | --- | --- |
-| `UseTitleBar` | Uses the Flourish custom title bar; when disabled, the shell uses the native Windows title bar and preserves the requested material effect. | [Title bar](configure-title-bar.md) |
-| `UseNavigation` | Displays the navigation panel. | [Navigation](navigation.md) |
-| `UseDynamicToolbar` | Displays page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
-| `UseTips(delay)` | Enables Flourish tooltips with the requested initial delay. | [Tooltips](configure-tips.md) |
+| `UseTitleBar` | Enables the Flourish title bar. When disabled, the Shell uses the native Windows title bar. | [Title bar](configure-title-bar.md) |
+| `UseNavigation` | Enables the navigation panel. | [Navigation](navigation.md) |
+| `UseDynamicToolbar` | Enables page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
+| `UseTips` | Sets the initial delay and enables Flourish tooltips. | [Tooltips](configure-tips.md) |
 | `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
-| `UseMaterialEffect(effect)` | Applies the selected window material. | [Material effects](configure-material-effect.md) |
-| `UseGlobalFont(family, size)` | Sets the global font used by Flourish shell UI and navigated pages. | [Typography](configure-font.md) |
-| `UseStatusBar` | Displays the status bar. | [Status bar](status-bar.md) |
+| `UseMaterialEffect` | Selects and enables the window material; `None` disables it. | [Material effects](configure-material-effect.md) |
+| `UseThemeColors` | Sets the primary, secondary, and accent colors. | [Themes](configure-themes.md) |
+| `UseCornerRadius` | Sets the shared control and surface corner radius. | [Themes](configure-themes.md) |
+| `UseGlobalFont` | Sets the global text family and base size. | [Typography](configure-font.md) |
+| `UseStatusBar` | Enables the persistent status bar. | [Status bar](status-bar.md) |
+
+[Window](configure-window.md) does not require a Shell feature switch and is configured through `ConfigureWindow`.
 
 ## Prerequisites and priority
 
-Boolean feature switches take priority over their detailed configuration. For example, toolbar items registered for a page are not displayed when `UseDynamicToolbar(false)` is active, and status items remain hidden when `UseStatusBar(false)` is active.
+Boolean feature switches take priority over detailed configuration. For example, registered toolbar items remain hidden when `UseDynamicToolbar(false)` is active, and configured status items remain hidden when `UseStatusBar(false)` is active.
 
-Background-task activity is the exception to persistent status-bar visibility: active work temporarily reveals its task indicators even when `UseStatusBar()` is omitted. The bar hides again after the active list becomes empty. See [Background tasks](background-tasks.md).
+Title bar elements require `UseTitleBar()`. The navigation toggle also requires `UseNavigation()` because it controls that panel. Application content added to a predefined Shell region requires the corresponding title bar, navigation, toolbar, or status surface to be enabled.
 
-## Content body alignment
+Background tasks are the exception to persistent status-bar visibility. Active work temporarily shows its task indicators even when `UseStatusBar()` is omitted; the bar returns to its configured visibility after no active tasks remain. See [Background tasks](background-tasks.md).
 
-The breadcrumb, dynamic toolbar, content page, and content-region hosts share the `FlourishContentBodyMargin` dynamic resource. Its default value is `32,0,32,0`, giving every content surface the same left and right edge.
+## Customize content alignment
 
-Applications that require a different gutter or full-bleed content can override the resource after adding `FlourishThemeResources`:
+The breadcrumb, dynamic toolbar, content page, and content-region hosts use the `FlourishContentBodyMargin` dynamic resource. Applications can override it after adding `FlourishThemeResources`:
 
 ```xml
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
 ```
 
-## Shell chrome alignment
-
-The built-in title bar content, navigation rows, and status bar use the same horizontal gutter at the left and right window edges. When the navigation panel is placed on the right, Flourish mirrors its outer gutter so navigation content remains aligned with the title bar and status bar. The collapsed navigation width includes this gutter together with its command surface and compact scrollbar. The minimize, maximize or restore, and close caption buttons remain flush with the upper-right window edge to preserve the window command hit area.
-
-Simple shell features use configuration as their activation point:
-
-- `UseTips(delay)` uses the built-in tooltip boundary margin.
-- `UseMaterialEffect(effect)` applies the selected effect; `MaterialEffect.None` disables material composition.
-- `UseGlobalFont(family, size)` uses a default base size of `14` when the size is omitted.
-
-Title bar elements follow the same configuration-first model. [Title bar](configure-title-bar.md) explains how `SetProfile`, `SetThemeToggle`, and the other `Set...` methods both configure and display their controls. The title bar navigation toggle additionally requires `UseNavigation()` because it controls that panel. Theme preferences use the Host configuration described in [Application data](configure-data.md).
-
 ## Disable a feature
 
-Pass `false` when a feature should remain disabled while sharing a common builder setup.
+`UseTitleBar`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an optional `enabled` value. Pass `false` when a shared builder setup must keep a feature disabled.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -80,14 +69,12 @@ builder.ConfigureShell(shell =>
 });
 ```
 
-Omit `UseTips` or `UseGlobalFont` when their default shell behavior should remain unchanged. Use `MaterialEffect.None` when shared configuration must explicitly disable a material effect.
+Omit `UseTips` or `UseGlobalFont` to retain their default behavior. Use `MaterialEffect.None` when shared configuration must explicitly disable the material.
 
-## Related configuration areas
+## Related features
 
-These settings and extension points use their own configuration entry points:
-
-- [Window](configure-window.md) sets size, placement, and WPF window behavior.
-- [Application data](configure-data.md) explains localization and Host configuration.
-- [Dependency injection](configure-services.md) registers application and replaceable Flourish services.
-- [Custom shell content](configure-custom-handler.md) inserts application elements into enabled shell regions.
-- [Background tasks](background-tasks.md) describes the Host-managed worker pool and its automatic status indicators.
+- [Window](configure-window.md) configures size, placement, rendering, and close behavior.
+- [Application data](configure-data.md) configures localization and Host settings.
+- [Dependency injection](configure-services.md) registers application services and replaceable Flourish services.
+- [Custom shell content](configure-custom-handler.md) inserts application elements into enabled Shell regions.
+- [Background tasks](background-tasks.md) runs cancellable work and displays its active status.

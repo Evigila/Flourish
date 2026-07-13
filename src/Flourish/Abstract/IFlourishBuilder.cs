@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Configures services, shell options, navigation items, toolbar items, custom content, and status items before building a Flourish runtime.
+/// Configures a Flourish application before building its runtime.
 /// </summary>
 /// <example>
 /// <code><![CDATA[
@@ -48,7 +48,7 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigureServices(Action<HostBuilderContext, IServiceCollection> configureServices);
 
     /// <summary>
-    /// Configures high-level Flourish shell features.
+    /// Configures Flourish shell features and shared options.
     /// </summary>
     /// <param name="configureShell">A callback that receives the shell builder.</param>
     /// <returns>The current builder for chained configuration.</returns>
@@ -134,7 +134,8 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigureDynamicToolbar(toolbar =>
     /// {
-    ///     toolbar.CreateToolbarItems<HomePage>(new FlourishToolbarItem("Open", "\uE8E5", "home.open"));
+    ///     toolbar.CreateToolbarItems<ReportsPage>(
+    ///         new FlourishToolbarItem("Export", "\uE898", "reports.export"));
     /// });
     /// ]]></code>
     /// </example>

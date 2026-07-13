@@ -1,7 +1,7 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Provides a high-level shell feature snapshot after it changes.
+/// Provides a shell feature snapshot after it changes.
 /// </summary>
 /// <param name="feature">The feature that was requested to change.</param>
 /// <param name="state">The complete state after the change.</param>

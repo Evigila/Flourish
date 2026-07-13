@@ -5,7 +5,7 @@ description: Documentation for the Flourish WPF shell composition library.
 
 # Flourish
 
-Flourish is an open-source desktop application composition and control library for WPF. It provides a shell layer with host-based startup, configurable window chrome, navigation, dynamic toolbar commands, status bar integration, page caching, material effects, motion options, and a unified set of compact WPF controls.
+Flourish is an open-source desktop application composition and control library for WPF. It provides a shell layer with host-based startup, configurable window chrome, navigation, dynamic toolbar commands, status bar integration, page caching, material effects, motion options, and public `Flourish*` WPF controls.
 
 Application setup normally lives in `App.xaml.cs` or another entry point configured by the application. Visual resources can be added from `App.xaml`, and shell behavior is configured with fluent builders.
 
@@ -18,7 +18,7 @@ Application setup normally lives in `App.xaml.cs` or another entry point configu
 - A reusable control library of explicit `Flourish*` custom controls that leaves native WPF controls unchanged
 - Shell window configuration for title bar, navigation panel, material effect, font, and window sizing
 - Page registration and navigation through dependency injection
-- Contextual dynamic toolbar items connected to command parsing
+- Page-specific dynamic toolbar items connected to command dispatch
 - Host-managed background tasks, status indicators, custom status items, and consolidated LAN/power details
 - Motion settings for page transitions, navigation panel animation, and hover reveal
 - Theme resources that can be merged from `App.xaml`

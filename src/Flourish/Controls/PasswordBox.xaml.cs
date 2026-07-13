@@ -6,7 +6,7 @@ using WpfPasswordBox = System.Windows.Controls.PasswordBox;
 
 namespace ArkheideSystem.Flourish.Controls;
 
-/// <summary>A Flourish-styled password field that wraps WPF's sealed password editor.</summary>
+/// <summary>A Flourish-styled password input control.</summary>
 [TemplatePart(Name = PartPasswordBox, Type = typeof(WpfPasswordBox))]
 public class FlourishPasswordBox : WpfControl
 {
@@ -44,7 +44,7 @@ public class FlourishPasswordBox : WpfControl
     }
 
     /// <summary>Gets or sets the current password.</summary>
-    /// <remarks>Like WPF's PasswordBox.Password, this is intentionally not a dependency property.</remarks>
+    /// <remarks>As with WPF's PasswordBox.Password, this is not a dependency property.</remarks>
     public string Password
     {
         get => editor?.Password ?? password;
@@ -97,13 +97,13 @@ public class FlourishPasswordBox : WpfControl
         Password = string.Empty;
     }
 
-    /// <summary>Selects the complete password in the inner editor.</summary>
+    /// <summary>Selects the complete password.</summary>
     public void SelectAll()
     {
         editor?.SelectAll();
     }
 
-    /// <summary>Moves keyboard focus to the inner password editor.</summary>
+    /// <summary>Moves keyboard focus to the password input.</summary>
     public bool FocusEditor()
     {
         ApplyTemplate();

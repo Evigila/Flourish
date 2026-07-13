@@ -34,11 +34,12 @@ public static class FlourishServiceCollectionExtensions
     /// Registers a WPF page as a navigable Flourish page.
     /// </summary>
     /// <remarks>
-    /// This method records the page display name, icon glyph, and cache mode. It does not add
-    /// the page to a visible navigation position by itself. Use
+    /// This method records the page display name, icon glyph, and cache mode. When no groups or
+    /// fixed items are configured, the navigation panel lists all registered pages automatically.
+    /// After configuring any explicit navigation position, use
     /// <see cref="IFlourishNavigationGroupBuilder.AddNavigableViewItem{TPage}" /> or
     /// <see cref="IFlourishNavigationBuilder.AddFixedNavigableViewItem{TPage}" /> inside
-    /// <c>ConfigureNavigation</c> to decide where the registered page is displayed. The navigation
+    /// <c>ConfigureNavigation</c> to decide where each registered page is displayed. The navigation
     /// key is the page class name with one trailing, case-sensitive <c>Page</c> suffix removed;
     /// for example, <c>SettingsPage</c> becomes <c>Settings</c>. Flourish validates key uniqueness
     /// when the application builder builds.

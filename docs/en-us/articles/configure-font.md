@@ -5,7 +5,7 @@ description: Set the global font used by Flourish shell surfaces and application
 
 # Typography
 
-Use `UseGlobalFont` inside `ConfigureShell` to set the font family and base size for the complete Flourish visual tree, including navigated application pages and the Profile page.
+Use `UseGlobalFont` inside `ConfigureShell` to set the font family and base size for shell surfaces, navigated application pages, and the Profile page.
 
 ## Configure shell typography
 
@@ -20,7 +20,7 @@ Choose a font family that supports every language displayed by the application. 
 
 Flourish derives several text sizes from the base value, so changing it affects multiple shell regions and page controls. Verify the result at the window sizes the application supports.
 
-WPF `Frame` navigation normally breaks inherited font properties. Flourish explicitly bridges that boundary whenever a main content page or Profile page is displayed. Plain page text inherits the global values, while Flourish controls resolve the same values through page-aware dynamic resources. A child control with an explicit local font, such as a code sample using `Consolas` or an icon using the icon font, keeps that local value.
+Pages displayed in the main content frame or Profile inherit the configured global font. A child control with an explicit local font, such as a code sample using `Consolas` or an icon using the icon font, keeps that local value.
 
 ## Override one page
 
@@ -59,3 +59,4 @@ Clearing an override immediately returns the active page to the latest global fo
 
 - [Window](configure-window.md) controls the available space for shell text.
 - [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md) display text affected by the configured font.
+- [Themes](configure-themes.md) provide resources for text and background colors.

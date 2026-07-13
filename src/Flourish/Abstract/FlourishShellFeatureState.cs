@@ -1,7 +1,7 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Represents an immutable high-level shell feature snapshot.
+/// Represents an immutable shell feature snapshot.
 /// </summary>
 /// <param name="IsTitleBarEnabled">Whether the title bar surface is enabled.</param>
 /// <param name="IsNavigationEnabled">Whether the navigation surface is enabled.</param>
@@ -23,7 +23,7 @@ public sealed record FlourishShellFeatureState(
 )
 {
     /// <summary>
-    /// Gets whether a particular high-level feature is enabled in this snapshot.
+    /// Gets whether a particular feature is enabled in this snapshot.
     /// </summary>
     /// <param name="feature">The feature to inspect.</param>
     /// <returns><see langword="true"/> when the feature is enabled; otherwise, <see langword="false"/>.</returns>

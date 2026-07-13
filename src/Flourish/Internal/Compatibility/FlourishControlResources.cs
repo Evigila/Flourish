@@ -5,15 +5,14 @@ using ArkheideSystem.Flourish.Themes;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// Compatibility resource entry point for applications written before
-/// <see cref="FlourishThemeResources" /> became the canonical theme API.
+/// Obsolete resource entry point. Use <see cref="FlourishThemeResources" />.
 /// </summary>
-[Obsolete("Use FlourishThemeResources. FlourishControlResources will be removed in a future major version.")]
+[Obsolete("Use FlourishThemeResources.")]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class FlourishControlResources : ResourceDictionary
 {
     /// <summary>
-    /// Initializes a resource dictionary backed by the Flourish generic theme.
+    /// Initializes a resource dictionary containing Flourish control and theme resources.
     /// </summary>
     public FlourishControlResources()
     {

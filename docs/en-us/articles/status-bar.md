@@ -19,7 +19,7 @@ builder
     });
 ```
 
-The status bar no longer has a primary text area. Use `AddStatusItem` for compact application state or a [custom footer region](configure-custom-handler.md) when the application needs richer content.
+Use `AddStatusItem` for non-interactive text-and-icon state. Use a [custom footer region](configure-custom-handler.md) for interactive controls or application-defined WPF content.
 
 ## Background-task indicators
 

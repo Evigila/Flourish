@@ -14,8 +14,8 @@ public interface IAppSettingsStore
     /// Applies multiple edits in one atomic write and reloads host configuration.
     /// </summary>
     /// <remarks>
-    /// The editor runs on Flourish's serialized settings worker. It must not access
-    /// dispatcher-affine UI objects.
+    /// The update callback may run on a non-UI thread and must not access dispatcher-affine
+    /// UI objects.
     /// </remarks>
     ValueTask<AppSettingsUpdateResult> UpdateAsync(
         Action<IAppSettingsEditor> update,
