@@ -768,12 +768,12 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateProfileCardPosition()
     {
-        const double shadowSafeMargin = 14;
+        const double edgeSafeMargin = 14;
         const double anchorGap = 6;
         if (
             ProfileOverlay.Visibility != Visibility.Visible
-            || ShellRootGrid.ActualWidth <= shadowSafeMargin * 2
-            || ShellRootGrid.ActualHeight <= shadowSafeMargin * 2
+            || ShellRootGrid.ActualWidth <= edgeSafeMargin * 2
+            || ShellRootGrid.ActualHeight <= edgeSafeMargin * 2
         )
         {
             return;
@@ -782,7 +782,7 @@ internal partial class FlourishShellWindow : Window
         var anchor = Titlebar.GetProfileButtonBounds(ShellRootGrid);
         var availableWidth = Math.Max(
             0,
-            ShellRootGrid.ActualWidth - shadowSafeMargin * 2
+            ShellRootGrid.ActualWidth - edgeSafeMargin * 2
         );
         ProfileCard.MaxWidth = availableWidth;
 
@@ -791,15 +791,15 @@ internal partial class FlourishShellWindow : Window
             : Math.Min(ProfileCard.Width, availableWidth);
         var desiredLeft = anchor.Left + (anchor.Width - cardWidth) / 2;
         var maximumLeft = Math.Max(
-            shadowSafeMargin,
-            ShellRootGrid.ActualWidth - cardWidth - shadowSafeMargin
+            edgeSafeMargin,
+            ShellRootGrid.ActualWidth - cardWidth - edgeSafeMargin
         );
-        var left = Math.Clamp(desiredLeft, shadowSafeMargin, maximumLeft);
+        var left = Math.Clamp(desiredLeft, edgeSafeMargin, maximumLeft);
 
-        var top = Math.Max(shadowSafeMargin, anchor.Bottom + anchorGap);
+        var top = Math.Max(edgeSafeMargin, anchor.Bottom + anchorGap);
         ProfileCard.MaxHeight = Math.Max(
             0,
-            ShellRootGrid.ActualHeight - top - shadowSafeMargin
+            ShellRootGrid.ActualHeight - top - edgeSafeMargin
         );
 
         Canvas.SetLeft(ProfileCard, left);
@@ -968,6 +968,37 @@ internal partial class FlourishShellWindow : Window
         while (panel.Children.Count > desiredChildren.Count)
         {
             panel.Children.RemoveAt(panel.Children.Count - 1);
+        }
+    }
+
+    private static void SynchronizeItems(
+        ItemsControl itemsControl,
+        IReadOnlyList<UIElement> desiredItems
+    )
+    {
+        for (var index = 0; index < desiredItems.Count; index++)
+        {
+            var desired = desiredItems[index];
+            if (
+                index < itemsControl.Items.Count
+                && ReferenceEquals(itemsControl.Items[index], desired)
+            )
+            {
+                continue;
+            }
+
+            var existingIndex = itemsControl.Items.IndexOf(desired);
+            if (existingIndex >= 0)
+            {
+                itemsControl.Items.RemoveAt(existingIndex);
+            }
+
+            itemsControl.Items.Insert(index, desired);
+        }
+
+        while (itemsControl.Items.Count > desiredItems.Count)
+        {
+            itemsControl.Items.RemoveAt(itemsControl.Items.Count - 1);
         }
     }
 
@@ -1197,7 +1228,7 @@ internal partial class FlourishShellWindow : Window
             }
         }
 
-        SynchronizePanelChildren(StatusFlyoutContentHost, desiredRows);
+        SynchronizeItems(StatusFlyoutContentHost, desiredRows);
         foreach (var taskId in backgroundTaskRowsById.Keys.Except(activeTaskIds).ToArray())
         {
             backgroundTaskRowsById.Remove(taskId);
@@ -1355,7 +1386,7 @@ internal partial class FlourishShellWindow : Window
         StatusFlyoutTitle.Text = title;
         AutomationProperties.SetName(StatusFlyoutTitle, title);
         AutomationProperties.SetName(StatusFlyoutCard, title);
-        StatusFlyoutContentHost.Children.Clear();
+        StatusFlyoutContentHost.Items.Clear();
 
         if (statusService.IsLANConnectionStatusEnabled)
         {
@@ -1377,7 +1408,7 @@ internal partial class FlourishShellWindow : Window
                 );
             }
 
-            StatusFlyoutContentHost.Children.Add(
+            StatusFlyoutContentHost.Items.Add(
                 CreateStatusDetailRow(
                     "\uE701",
                     localizationService.Get(FlourishLocaleKeys.SystemStatusNetwork),
@@ -1439,7 +1470,7 @@ internal partial class FlourishShellWindow : Window
                 );
             }
 
-            StatusFlyoutContentHost.Children.Add(
+            StatusFlyoutContentHost.Items.Add(
                 CreateStatusDetailRow(
                     "\uE850",
                     localizationService.Get(FlourishLocaleKeys.SystemStatusPower),
@@ -1620,13 +1651,13 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateStatusFlyoutPosition()
     {
-        const double shadowSafeMargin = 14;
+        const double edgeSafeMargin = 14;
         const double anchorGap = 6;
         if (
             StatusFlyoutOverlay.Visibility != Visibility.Visible
             || statusFlyoutAnchor is null
-            || ShellRootGrid.ActualWidth <= shadowSafeMargin * 2
-            || ShellRootGrid.ActualHeight <= shadowSafeMargin * 2
+            || ShellRootGrid.ActualWidth <= edgeSafeMargin * 2
+            || ShellRootGrid.ActualHeight <= edgeSafeMargin * 2
         )
         {
             return;
@@ -1645,12 +1676,12 @@ internal partial class FlourishShellWindow : Window
         );
         var availableWidth = Math.Max(
             0,
-            ShellRootGrid.ActualWidth - shadowSafeMargin * 2
+            ShellRootGrid.ActualWidth - edgeSafeMargin * 2
         );
         StatusFlyoutCard.MaxWidth = availableWidth;
         StatusFlyoutCard.MaxHeight = Math.Max(
             0,
-            anchor.Top - shadowSafeMargin - anchorGap
+            anchor.Top - edgeSafeMargin - anchorGap
         );
 
         var cardWidth = StatusFlyoutCard.ActualWidth > 0
@@ -1662,12 +1693,12 @@ internal partial class FlourishShellWindow : Window
         );
         var desiredLeft = anchor.Left + (anchor.Width - cardWidth) / 2;
         var maximumLeft = Math.Max(
-            shadowSafeMargin,
-            ShellRootGrid.ActualWidth - cardWidth - shadowSafeMargin
+            edgeSafeMargin,
+            ShellRootGrid.ActualWidth - cardWidth - edgeSafeMargin
         );
-        var left = Math.Clamp(desiredLeft, shadowSafeMargin, maximumLeft);
+        var left = Math.Clamp(desiredLeft, edgeSafeMargin, maximumLeft);
         var top = Math.Max(
-            shadowSafeMargin,
+            edgeSafeMargin,
             anchor.Top - cardHeight - anchorGap
         );
 
@@ -2311,36 +2342,23 @@ internal partial class FlourishShellWindow : Window
             );
             surface.SetResourceReference(
                 Border.BorderBrushProperty,
-                "FlourishSurfaceStrokeBrush"
+                "FlourishControlStrokeBrush"
             );
             surface.SetResourceReference(
                 Border.BorderThicknessProperty,
-                "FlourishSurfaceBorderThickness"
+                "FlourishControlBorderThickness"
             );
             surface.SetResourceReference(
                 Border.CornerRadiusProperty,
                 "FlourishOverlayCornerRadius"
             );
 
-            var shadow = new Border { IsHitTestVisible = false };
-            shadow.SetResourceReference(
-                Border.BackgroundProperty,
-                "FlourishNeutralForeground1Brush"
+            surface.Margin = new Thickness(0, 0, 0, 14);
+            AutomationProperties.SetName(
+                surface,
+                $"{definition.Title}: {definition.Message}"
             );
-            shadow.SetResourceReference(
-                Border.CornerRadiusProperty,
-                "FlourishOverlayCornerRadius"
-            );
-            shadow.SetResourceReference(
-                UIElement.EffectProperty,
-                "FlourishElevation2Effect"
-            );
-
-            var card = new Grid { Margin = new Thickness(0, 0, 0, 14) };
-            card.Children.Add(shadow);
-            card.Children.Add(surface);
-            AutomationProperties.SetName(card, $"{definition.Title}: {definition.Message}");
-            NotificationItemsHost.Children.Add(card);
+            NotificationItemsHost.Children.Add(surface);
         }
 
         NotificationItemsHost.Visibility = NotificationItemsHost.Children.Count > 0

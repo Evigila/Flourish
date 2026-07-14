@@ -20,7 +20,7 @@
       />
       <Border
         x:Name="HoverChrome"
-        Background="{Binding Path=(controls:HoverReveal.OverrideColor), RelativeSource={RelativeSource TemplatedParent}}"
+        Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
         IsHitTestVisible="False"
         Opacity="0"
         RenderTransformOrigin="0.5,0.5"
@@ -65,7 +65,7 @@
         <Setter Property="Foreground" Value="{DynamicResource FlourishWindowCaptionCloseForegroundBrush}" />
       </MultiTrigger>
       <Trigger Property="IsPressed" Value="True">
-        <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="HoverChrome" Property="Opacity" Value="0" />
         <Setter TargetName="PressedChrome" Property="Opacity" Value="1" />
       </Trigger>
       <MultiTrigger>
@@ -105,6 +105,7 @@
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="Template" Value="{StaticResource WindowCaptionButtonTemplate}" />
       </Trigger>
       <Trigger Property="Appearance" Value="Danger">
         <Setter Property="Background" Value="Transparent" />

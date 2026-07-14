@@ -127,13 +127,20 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void ControlsTheme_DirectlyMergesEveryControlDictionaryExactlyOnce()
+    public void ControlsTheme_ComposesEveryControlDictionaryExactlyOnce()
     {
         var controlsRoot = Path.Combine(FlourishRoot, "Controls");
         var theme = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Controls.xaml"));
         var actualSources = GetMergedDictionarySources(theme);
+        var familyDependencyFiles = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "Button.xaml",
+            "IconButton.xaml",
+            "WindowCaptionButton.xaml",
+        };
         var expectedSources = Directory
             .EnumerateFiles(controlsRoot, "*.xaml", SearchOption.TopDirectoryOnly)
+            .Where(path => !familyDependencyFiles.Contains(Path.GetFileName(path)))
             .Select(path =>
                 $"/Flourish;component/Controls/{Path.GetFileName(path)}"
             )
@@ -145,6 +152,30 @@ public sealed class FlourishXamlArchitectureTests
         Assert.All(
             actualSources,
             source => Assert.StartsWith("/Flourish;component/Controls/", source)
+        );
+
+        Assert.Equal(
+            ["WindowCaptionButton.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "CardButton.xaml"))
+            )
+        );
+        Assert.Equal(
+            ["IconButton.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "WindowCaptionButton.xaml"))
+            )
+        );
+        Assert.Equal(
+            ["Button.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "IconButton.xaml"))
+            )
+        );
+        Assert.Empty(
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "Button.xaml"))
+            )
         );
     }
 

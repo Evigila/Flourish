@@ -445,13 +445,8 @@
         <Grid x:Name="ProfileCard" Width="304" SizeChanged="ProfileCard_SizeChanged">
           <Border
             Background="{DynamicResource FlourishCardBackgroundBrush}"
-            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
-            Effect="{DynamicResource FlourishElevation2Effect}"
-          />
-          <Border
-            Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
-            BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
+            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+            BorderThickness="{DynamicResource FlourishControlBorderThickness}"
             CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
           >
             <Frame
@@ -484,21 +479,17 @@
         <Grid
           x:Name="StatusFlyoutCard"
           Width="360"
+          MaxHeight="480"
           AutomationProperties.LiveSetting="Polite"
           Focusable="True"
           KeyboardNavigation.TabNavigation="Cycle"
           SizeChanged="StatusFlyoutCard_SizeChanged"
         >
           <Border
-            Background="{DynamicResource FlourishCardBackgroundBrush}"
-            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
-            Effect="{DynamicResource FlourishElevation2Effect}"
-          />
-          <Border
             Padding="14,12"
             Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
-            BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
+            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+            BorderThickness="{DynamicResource FlourishControlBorderThickness}"
             CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
           >
             <Grid>
@@ -513,13 +504,21 @@
                 Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
                 Role="CardTitle"
               />
-              <control:FlourishScrollViewer
+              <ItemsControl
+                x:Name="StatusFlyoutContentHost"
                 Grid.Row="1"
-                HorizontalScrollBarVisibility="Disabled"
-                VerticalScrollBarVisibility="Auto"
+                Focusable="False"
+                ScrollViewer.CanContentScroll="True"
+                Template="{StaticResource FlourishVirtualizingItemsControlTemplate}"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
               >
-                <StackPanel x:Name="StatusFlyoutContentHost" />
-              </control:FlourishScrollViewer>
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
             </Grid>
           </Border>
         </Grid>

@@ -98,7 +98,7 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
-    public void PointerPressAndRelease_DoNotResetOrReplayTheReveal()
+    public void PointerPressAndCaptureLoss_ClearRevealClocksWithoutLeavingStaleState()
     {
         RunInSta(() =>
         {
@@ -124,19 +124,29 @@ public sealed class HoverRevealVisualTests
                 Assert.Equal(1, revealScale.ScaleY);
 
                 RaiseMouseButtonEvent(button, Mouse.PreviewMouseDownEvent);
-                RaiseMouseButtonEvent(button, Mouse.PreviewMouseUpEvent);
                 FlushDispatcher();
 
-                Assert.Equal(1, hoverChrome.Opacity);
-                Assert.Equal(1, revealScale.ScaleX);
-                Assert.Equal(1, revealScale.ScaleY);
+                Assert.Equal(0, hoverChrome.Opacity);
+                Assert.Equal(0, revealScale.ScaleX);
+                Assert.Equal(0, revealScale.ScaleY);
+                Assert.False(hoverChrome.HasAnimatedProperties);
+                Assert.False(revealScale.HasAnimatedProperties);
 
+                HoverRevealAnimator.Show(button);
+                FlushDispatcher();
+                Assert.True(hoverChrome.HasAnimatedProperties);
+                Assert.True(revealScale.HasAnimatedProperties);
+
+                RaiseMouseEvent(button, Mouse.LostMouseCaptureEvent);
+                RaiseMouseButtonEvent(button, Mouse.PreviewMouseUpEvent);
                 RaiseMouseEvent(button, Mouse.MouseLeaveEvent);
                 FlushDispatcher();
 
                 Assert.Equal(0, hoverChrome.Opacity);
                 Assert.Equal(0, revealScale.ScaleX);
                 Assert.Equal(0, revealScale.ScaleY);
+                Assert.False(hoverChrome.HasAnimatedProperties);
+                Assert.False(revealScale.HasAnimatedProperties);
             }
             finally
             {

@@ -3,6 +3,20 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
+  <ControlTemplate
+    x:Key="FlourishVirtualizingItemsControlTemplate"
+    TargetType="{x:Type ItemsControl}"
+  >
+    <controls:FlourishScrollViewer
+      CanContentScroll="True"
+      Focusable="False"
+      HorizontalScrollBarVisibility="Disabled"
+      VerticalScrollBarVisibility="Auto"
+    >
+      <ItemsPresenter />
+    </controls:FlourishScrollViewer>
+  </ControlTemplate>
+
   <!-- Text editors require a native content host with a deliberately named style. -->
   <Style x:Key="FlourishTextContentHostScrollViewerStyle" TargetType="{x:Type ScrollViewer}">
     <Setter Property="Focusable" Value="False" />

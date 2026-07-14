@@ -40,6 +40,102 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
+  <ControlTemplate
+    x:Key="IconOnlyButtonTemplate"
+    TargetType="{x:Type controls:IconButton}"
+  >
+    <Grid
+      x:Name="InteractionRoot"
+      ClipToBounds="True"
+      RenderTransformOrigin="0.5,0.5"
+      SnapsToDevicePixels="True"
+    >
+      <Border
+        x:Name="Chrome"
+        Background="{TemplateBinding Background}"
+        BorderBrush="{TemplateBinding BorderBrush}"
+        BorderThickness="{TemplateBinding BorderThickness}"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+      />
+      <Border
+        x:Name="HoverChrome"
+        Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
+        BorderThickness="0"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        IsHitTestVisible="False"
+        Opacity="0"
+        RenderTransformOrigin="0.5,0.5"
+      >
+        <Border.RenderTransform>
+          <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+        </Border.RenderTransform>
+      </Border>
+      <Border
+        x:Name="PressedChrome"
+        Background="{DynamicResource FlourishPressedRevealBrush}"
+        BorderThickness="0"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        IsHitTestVisible="False"
+        Opacity="0"
+      />
+      <ContentPresenter
+        x:Name="IconHost"
+        Margin="{TemplateBinding Padding}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Content="{TemplateBinding Icon}"
+        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+        TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
+        TextElement.FontSize="{DynamicResource FlourishFontSizeCaption}"
+      />
+    </Grid>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsMouseOver" Value="True" />
+          <Condition Property="controls:HoverReveal.IsEnabled" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="HoverChrome" Property="Opacity" Value="1" />
+        <Setter TargetName="HoverChrome" Property="RenderTransform">
+          <Setter.Value>
+            <ScaleTransform ScaleX="1" ScaleY="1" />
+          </Setter.Value>
+        </Setter>
+      </MultiTrigger>
+      <Trigger Property="Appearance" Value="Primary">
+        <Setter
+          TargetName="PressedChrome"
+          Property="Background"
+          Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}"
+        />
+      </Trigger>
+      <Trigger Property="Appearance" Value="Danger">
+        <Setter
+          TargetName="PressedChrome"
+          Property="Background"
+          Value="{DynamicResource FlourishDangerStrokeBrush}"
+        />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter TargetName="HoverChrome" Property="Opacity" Value="0" />
+        <Setter TargetName="PressedChrome" Property="Opacity" Value="1" />
+        <Setter TargetName="InteractionRoot" Property="RenderTransform">
+          <Setter.Value>
+            <ScaleTransform ScaleX="0.98" ScaleY="0.98" />
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
   <Style
     TargetType="{x:Type controls:IconButton}"
     BasedOn="{StaticResource {x:Type controls:Button}}"
@@ -52,6 +148,8 @@
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="ContentTemplate" Value="{x:Null}" />
+        <Setter Property="Template" Value="{StaticResource IconOnlyButtonTemplate}" />
       </Trigger>
     </Style.Triggers>
   </Style>

@@ -26,6 +26,9 @@ public sealed class FlourishControlStylesTests
             "/Flourish;component/Themes/Colors/Colors.Dark.xaml",
             "/Flourish;component/Themes/Controls.xaml",
             "/Flourish;component/Controls/Button.xaml",
+            "/Flourish;component/Controls/IconButton.xaml",
+            "/Flourish;component/Controls/WindowCaptionButton.xaml",
+            "/Flourish;component/Controls/CardButton.xaml",
             "/Flourish;component/Controls/Card.xaml",
             "/Flourish;component/Controls/CheckBox.xaml",
             "/Flourish;component/Controls/ComboBox.xaml",
@@ -306,6 +309,10 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(button.Padding, labeledIcon.Padding);
                 Assert.Equal(46, caption.Width);
                 Assert.Equal(40, caption.Height);
+                AssertTemplatePart<ContentPresenter>(icon, "IconHost");
+                Assert.Null(icon.Template.FindName("ContentHost", icon));
+                AssertTemplatePart<ContentPresenter>(labeledIcon, "ContentHost");
+                Assert.Null(caption.Template.FindName("IconHost", caption));
                 Assert.NotNull(button.FocusVisualStyle);
                 Assert.NotNull(icon.FocusVisualStyle);
                 Assert.NotNull(caption.FocusVisualStyle);

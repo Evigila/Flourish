@@ -147,6 +147,20 @@ internal static class HoverRevealInteraction
         }
     }
 
+    private static void Element_LostMouseCapture(
+        object sender,
+        System.Windows.Input.MouseEventArgs e
+    )
+    {
+        if (sender is FrameworkElement element)
+        {
+            // A capture can be canceled without a matching mouse-up. Clear the
+            // pressed reveal clock before restoring a legitimate hover state.
+            HoverRevealAnimator.Reset(element);
+            RestoreIfHovered(element);
+        }
+    }
+
     private static void Reveal(FrameworkElement element)
     {
         switch (GetRevealPolicy(element))
@@ -227,11 +241,11 @@ internal static class HoverRevealInteraction
 
         element.MouseEnter += Element_MouseEnter;
         element.MouseLeave += Element_MouseLeave;
-        if (!DoesTemplateHandleInteraction(element))
-        {
-            element.PreviewMouseDown += Element_PreviewMouseDown;
-            element.PreviewMouseUp += Element_PreviewMouseUp;
-        }
+        // Template-owned pressed visuals still need the animation layer cleared:
+        // an active hover clock otherwise has precedence over an Opacity trigger.
+        element.PreviewMouseDown += Element_PreviewMouseDown;
+        element.PreviewMouseUp += Element_PreviewMouseUp;
+        element.LostMouseCapture += Element_LostMouseCapture;
     }
 
     private static void DisconnectInteractionHandlers(FrameworkElement element)
@@ -241,6 +255,7 @@ internal static class HoverRevealInteraction
         element.IsEnabledChanged -= Element_IsEnabledChanged;
         element.PreviewMouseDown -= Element_PreviewMouseDown;
         element.PreviewMouseUp -= Element_PreviewMouseUp;
+        element.LostMouseCapture -= Element_LostMouseCapture;
     }
 
     private static bool DoesTemplateHandleInteraction(FrameworkElement element)

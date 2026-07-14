@@ -12,6 +12,8 @@ public sealed class FlourishHoverRevealContractTests
         "{DynamicResource FlourishHoverRevealBrush}";
     private const string HoverRevealBrushBinding =
         "{Binding Path=(controls:HoverReveal.OverrideColor), RelativeSource={RelativeSource TemplatedParent}}";
+    private const string HoverRevealBrushTemplateBinding =
+        "{TemplateBinding controls:HoverReveal.OverrideColor}";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string FlourishRoot = Path.Combine(
         RepositoryRoot,
@@ -76,7 +78,9 @@ public sealed class FlourishHoverRevealContractTests
                 template,
                 hoverChrome[0],
                 "Background",
-                HoverRevealBrushBinding,
+                Path.GetFileName(template.File) == "Button.xaml"
+                    ? HoverRevealBrushTemplateBinding
+                    : HoverRevealBrushBinding,
                 violations
             );
             var overrideColorSetter = template.Style
@@ -223,7 +227,7 @@ public sealed class FlourishHoverRevealContractTests
         Assert.Equal("0", (string?)pressedChrome.Attribute("Opacity"));
 
         var pressedTrigger = FindTrigger(template, "IsPressed", "True");
-        AssertSetter(pressedTrigger, "HoverChrome", "Visibility", "Collapsed");
+        AssertSetter(pressedTrigger, "HoverChrome", "Opacity", "0");
         AssertSetter(pressedTrigger, "PressedChrome", "Opacity", "1");
 
         var disabledTrigger = FindTrigger(template, "IsEnabled", "False");
@@ -359,7 +363,7 @@ public sealed class FlourishHoverRevealContractTests
                 )
             );
             Assert.Equal(
-                HoverRevealBrushBinding,
+                HoverRevealBrushTemplateBinding,
                 (string?)hoverChrome.Attribute("Background")
             );
         }

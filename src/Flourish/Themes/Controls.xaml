@@ -8,9 +8,7 @@
     <ResourceDictionary Source="/Flourish;component/Controls/ScrollViewer.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/TextBlock.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Label.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Controls/Button.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Controls/IconButton.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Controls/WindowCaptionButton.xaml" />
+    <!-- CardButton is the terminal dictionary in the Button-family dependency chain. -->
     <ResourceDictionary Source="/Flourish;component/Controls/CardButton.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/TextBox.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/PasswordBox.xaml" />

@@ -5,35 +5,37 @@
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Width="480"
-  MinWidth="420"
-  MaxWidth="620"
+  xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+  Width="420"
+  MinWidth="360"
+  MaxWidth="560"
   SizeToContent="Height"
   ResizeMode="NoResize"
   ShowInTaskbar="False"
   WindowStartupLocation="CenterOwner"
   WindowStyle="None"
   x:ClassModifier="internal"
-  AllowsTransparency="True"
-  Background="Transparent"
+  AllowsTransparency="False"
+  Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
   SnapsToDevicePixels="True"
   UseLayoutRounding="True"
   mc:Ignorable="d"
 >
-  <Grid Margin="30,28,30,46">
-    <Border
-      Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
+  <shell:WindowChrome.WindowChrome>
+    <shell:WindowChrome
+      CaptionHeight="0"
       CornerRadius="{DynamicResource FlourishDialogCornerRadius}"
-      Effect="{DynamicResource FlourishElevation2Effect}"
-      IsHitTestVisible="False"
-      SnapsToDevicePixels="True"
+      GlassFrameThickness="0"
+      ResizeBorderThickness="0"
+      UseAeroCaptionButtons="False"
     />
+  </shell:WindowChrome.WindowChrome>
 
-    <Border
-      Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
-      CornerRadius="{DynamicResource FlourishDialogCornerRadius}"
-      SnapsToDevicePixels="True"
-    >
+  <Border
+    Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
+    CornerRadius="{DynamicResource FlourishDialogCornerRadius}"
+    SnapsToDevicePixels="True"
+  >
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
@@ -132,6 +134,5 @@
         />
       </Border>
     </Grid>
-    </Border>
-  </Grid>
+  </Border>
 </Window>

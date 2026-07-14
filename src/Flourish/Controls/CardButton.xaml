@@ -4,7 +4,8 @@
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="Button.xaml" />
+    <!-- Terminal Button-family dictionary: this dependency chain loads each family resource once. -->
+    <ResourceDictionary Source="WindowCaptionButton.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <DataTemplate x:Key="CardButtonContentTemplate">
@@ -93,9 +94,6 @@
       RenderTransformOrigin="0.5,0.5"
       SnapsToDevicePixels="True"
     >
-      <Grid.RenderTransform>
-        <ScaleTransform ScaleX="1" ScaleY="1" />
-      </Grid.RenderTransform>
       <Border
         x:Name="Chrome"
         Background="{TemplateBinding Background}"
@@ -105,7 +103,7 @@
       />
       <Border
         x:Name="HoverChrome"
-        Background="{Binding Path=(controls:HoverReveal.OverrideColor), RelativeSource={RelativeSource TemplatedParent}}"
+        Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
         CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
         IsHitTestVisible="False"
         Opacity="0"
@@ -151,7 +149,7 @@
         <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishDangerStrokeBrush}" />
       </Trigger>
       <Trigger Property="IsPressed" Value="True">
-        <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="HoverChrome" Property="Opacity" Value="0" />
         <Setter TargetName="PressedChrome" Property="Opacity" Value="1" />
         <Setter TargetName="InteractionRoot" Property="RenderTransform">
           <Setter.Value>

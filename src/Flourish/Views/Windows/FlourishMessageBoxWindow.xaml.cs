@@ -17,6 +17,7 @@ internal partial class FlourishMessageBoxWindow : Window
 {
     private readonly object? closeSelection;
     private readonly FlourishLocalizationService localizationService;
+    private readonly WindowFrameFixService windowFrameFixService = new();
     private object? selection;
 
     public FlourishMessageBoxWindow(
@@ -31,6 +32,7 @@ internal partial class FlourishMessageBoxWindow : Window
     {
         this.localizationService = localizationService;
         InitializeComponent();
+        windowFrameFixService.Attach(this);
 
         closeSelection = GetCloseResult(buttons);
         ConfigureDialog(messageBoxText, caption, options);
@@ -49,6 +51,7 @@ internal partial class FlourishMessageBoxWindow : Window
     {
         this.localizationService = localizationService;
         InitializeComponent();
+        windowFrameFixService.Attach(this);
 
         closeSelection = choices.FirstOrDefault(choice => choice.IsCancel);
         ConfigureDialog(messageBoxText, caption, options);
