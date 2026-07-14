@@ -1,6 +1,7 @@
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ArkheideSystem.Flourish.Abstract;
 
@@ -28,6 +29,33 @@ public static class FlourishServiceCollectionExtensions
             && typeName.EndsWith(PageSuffix, StringComparison.Ordinal)
             ? typeName[..^PageSuffix.Length]
             : typeName;
+    }
+
+    /// <summary>
+    /// Registers a parser whose command mappings are managed by the Flourish host.
+    /// </summary>
+    /// <typeparam name="TParser">The command parser type.</typeparam>
+    /// <param name="services">The service collection that receives the parser.</param>
+    /// <returns>The same service collection for chained registration.</returns>
+    /// <remarks>
+    /// Each parser type is added at most once. Flourish invokes parsers in service registration
+    /// order when the host starts and removes their mapped handlers when it stops.
+    /// </remarks>
+    /// <example>
+    /// <code><![CDATA[
+    /// services.AddCommandParser<ReportCommands>();
+    /// ]]></code>
+    /// </example>
+    public static IServiceCollection AddCommandParser<TParser>(
+        this IServiceCollection services
+    )
+        where TParser : class, ICommandParser
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<ICommandParser, TParser>()
+        );
+        return services;
     }
 
     /// <summary>

@@ -25,19 +25,17 @@ ICommandRegistration exportCommand = commands.Register(
 
 Handlers receive a `CommandContext` containing the command key, optional parameter, and originating `CommandSource`. Return `CommandResult.Handled`, `HandledWith(value)`, `NotHandled`, `Canceled`, or `Failed(exception)` to describe the outcome.
 
-## Own startup registrations
+## Define startup mappings
 
-A DI-owned service can keep related registrations together. Resolve it once after `Build()` so its constructor registers the commands; the Flourish service provider disposes it with the runtime.
+A command parser defines host-lifetime mappings between command keys and handlers without exposing their registration leases. Flourish invokes each parser when the host starts and removes its mappings in reverse order when the host stops.
 
 ```csharp
-internal sealed class ReportCommands : IDisposable
+internal sealed class ReportCommands(ReportService reports)
+    : ICommandParser
 {
-    private readonly ICommandRegistration refresh;
-    private readonly ICommandRegistration export;
-
-    public ReportCommands(ICommandRegistry commands, ReportService reports)
+    public void RegisterCommands(ICommandRegistrar commands)
     {
-        refresh = commands.Register(
+        commands.Register(
             "reports.refresh",
             async (_, token) =>
             {
@@ -45,7 +43,7 @@ internal sealed class ReportCommands : IDisposable
                 return CommandResult.Handled;
             });
 
-        export = commands.Register(
+        commands.Register(
             "reports.export",
             async (context, token) =>
             {
@@ -53,27 +51,20 @@ internal sealed class ReportCommands : IDisposable
                 return CommandResult.Handled;
             });
     }
-
-    public void Dispose()
-    {
-        export.Dispose();
-        refresh.Dispose();
-    }
 }
 ```
 
-Register the owner and its dependencies during service configuration, then activate it from the built runtime:
+Register the parser and its dependencies during service configuration. The application does not need to resolve the parser or implement `IDisposable`:
 
 ```csharp
 builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<ReportService>();
-    services.AddSingleton<ReportCommands>();
+    services.AddCommandParser<ReportCommands>();
 });
-
-using var flourish = builder.Build();
-_ = flourish.GetRequiredService<ReportCommands>();
 ```
+
+`ICommandRegistrar.Register` returns no lease because the host owns it. Parsers must define their mappings synchronously inside `RegisterCommands` and must not retain the registrar. Use `ICommandRegistry` directly when a handler must be added or removed while the host remains running.
 
 ## Control availability
 
@@ -95,6 +86,8 @@ Call `commands.NotifyCanExecuteChanged("editor.save")` when the state used by th
 ## Duplicate command keys
 
 The default duplicate policy is `Reject`. Set `CommandRegistrationOptions.DuplicatePolicy` to `Replace` when a new handler should supersede the current registration, or to `Append` when several handlers should be evaluated. Appended handlers run by descending priority and then registration order; dispatch stops when a handler returns a result other than `NotHandled`.
+
+Startup parsers should normally keep `Reject`. `Replace` deactivates existing handlers immediately, so a later startup failure can remove the replacement but cannot reconstruct handlers that it replaced.
 
 ## Dispatch directly
 

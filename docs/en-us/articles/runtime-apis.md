@@ -154,7 +154,7 @@ Toolbar and navigation command items are dispatched through `ICommandDispatcher`
 
 Shortcuts are ignored while a text input control has keyboard focus by default, preserving typing, clipboard, editing, AltGr, and IME behavior. Set `ShortcutRegistrationOptions.AllowWhenTextInputFocused` to `true` only for shortcuts that must remain active while the user is editing text.
 
-Command handlers are registered through `ICommandRegistry` and invoked through `ICommandDispatcher`. Keep each `ICommandRegistration` for the lifetime of its owning feature and dispose it to remove the handler.
+Command handlers are registered through `ICommandRegistry` and invoked through `ICommandDispatcher`. Keep each `ICommandRegistration` for the lifetime of its owning feature and dispose it to remove the handler. For mappings that share the complete Host lifetime, implement `ICommandParser` so Flourish owns their leases automatically.
 
 ```csharp
 public sealed class RefreshBindings : IDisposable
