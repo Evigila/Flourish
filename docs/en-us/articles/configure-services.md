@@ -14,6 +14,7 @@ builder.ConfigureServices((context, services) =>
 {
     services.AddSingleton<App>();
     services.AddSingleton<ReportExporter>();
+    services.AddCommandParser<ReportCommands>();
 
     services.AddNavigable<HomePage>("Home", "\uE80F");
     services.AddNavigable<ReportsPage>("Reports", "\uE9D2");
@@ -34,7 +35,7 @@ View models can navigate with the generated key, for example `navigation.Navigat
 
 ## Supply command dependencies
 
-Register the application services used by command handlers through `ConfigureServices`. After the runtime is built, resolve `ICommandRegistry` and call `Register` for each command key. [Command dispatch](commands.md) explains handler registration, availability, results, and disposal.
+Register the application services used by command handlers through `ConfigureServices`. Implement `ICommandParser` to define command-key mappings that should remain active for the complete Host lifetime, then add it with `AddCommandParser<TParser>`. Flourish registers and removes those mappings with the Host. Use `ICommandRegistry` directly for handlers with a shorter or dynamic lifetime. [Command dispatch](commands.md) explains both registration models, availability, and results.
 
 ## Replace profile services
 

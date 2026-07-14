@@ -137,15 +137,41 @@ public sealed class DefaultFlourishBuilderTests
             configuration.Providers.OfType<FlourishAppSettingsConfigurationProvider>()
         );
         Assert.Same(preferences, hostedServices[0]);
-        Assert.True(
-            Array.FindIndex(hostedServices, service => service is TestHostedService) > 0
+        var commandParserIndex = Array.FindIndex(
+            hostedServices,
+            service => service is CommandParserHostedService
         );
+        var applicationServiceIndex = Array.FindIndex(
+            hostedServices,
+            service => service is TestHostedService
+        );
+        Assert.Equal(1, commandParserIndex);
+        Assert.True(applicationServiceIndex > commandParserIndex);
         Assert.True(
             Array.FindIndex(
                 hostedServices,
                 service => service is FlourishBackgroundTaskService
             ) > 0
         );
+    }
+
+    [Fact]
+    public async Task StartAndStop_ActivateRegisteredCommandParsers()
+    {
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigureServices((_, services) =>
+                services.AddCommandParser<TestCommandParser>()
+            )
+            .Build();
+        var commands = flourish.GetRequiredService<ICommandRegistry>();
+
+        Assert.False(commands.Contains("test.hosted"));
+        flourish.Start();
+
+        Assert.True(commands.Contains("test.hosted"));
+        await flourish.StopAsync();
+        Assert.False(commands.Contains("test.hosted"));
     }
 
     [Fact]
@@ -244,6 +270,14 @@ public sealed class DefaultFlourishBuilderTests
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    private sealed class TestCommandParser : ICommandParser
+    {
+        public void RegisterCommands(ICommandRegistrar commands)
+        {
+            commands.Register("test.hosted", static () => { });
         }
     }
 }

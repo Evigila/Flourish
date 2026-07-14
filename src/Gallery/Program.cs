@@ -20,7 +20,7 @@ internal static class Program
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
-                    services.AddSingleton<GalleryCommandRegistrationService>();
+                    services.AddCommandParser<GalleryCommandParser>();
 
                     services.AddNavigable<HomePage>("Overview", "\uE80F");
                     services.AddNavigable<ConfigurationPage>("Configuration", "\uE713");
@@ -56,7 +56,7 @@ internal static class Program
                     .SetSubTitle("Playground")
                     .SetProfile(NameOrder.FirstLast)
                     .SetThemeToggle(FlourishTheme.System)
-                    .SetSearch("Type here to exercise runtime search", (_, _) => { });
+                    .SetSearch("Type here to search", (_, _) => { });
             })
             .ConfigureNavigation(nav =>
             {
@@ -100,9 +100,9 @@ internal static class Program
                         4,
                         group =>
                         {
-                            group.AddNavigableItem("Show a modal message", "\uE8F2", "demo.hello");
+                            group.AddNavigableItem("Message", "\uE8F2", "demo.hello");
                             group.AddNavigableItem(
-                                "Queue a background task",
+                                "Task",
                                 "\uE895",
                                 "demo.background"
                             );
@@ -137,7 +137,6 @@ internal static class Program
 
         try
         {
-            _ = flourish.GetRequiredService<GalleryCommandRegistrationService>();
             return flourish.Run<App>();
         }
         finally

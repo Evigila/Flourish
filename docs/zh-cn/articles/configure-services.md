@@ -14,6 +14,7 @@ builder.ConfigureServices((context, services) =>
 {
     services.AddSingleton<App>();
     services.AddSingleton<ReportExporter>();
+    services.AddCommandParser<ReportCommands>();
 
     services.AddNavigable<HomePage>("首页", "\uE80F");
     services.AddNavigable<ReportsPage>("报表", "\uE9D2");
@@ -34,7 +35,7 @@ ViewModel 可以使用生成的键导航，例如 `navigation.Navigate("Settings
 
 ## 提供命令依赖项
 
-通过 `ConfigureServices` 注册命令处理程序依赖的应用服务。构建运行时后，解析 `ICommandRegistry`，并为每个命令键调用 `Register`。[命令调度](commands.md)说明处理程序注册、可用性、结果与释放方式。
+通过 `ConfigureServices` 注册命令处理程序依赖的应用服务。需要在整个 Host 生命周期内保持有效的命令映射应实现 `ICommandParser`，并通过 `AddCommandParser<TParser>` 添加；Flourish 会随 Host 注册和移除这些映射。生命周期较短或需要动态变化的处理程序仍直接使用 `ICommandRegistry`。[命令调度](commands.md)说明两种注册方式、可用性与结果。
 
 ## 替换 Profile 服务
 

@@ -8,6 +8,28 @@ namespace ArkheideSystem.Flourish.Test.Abstract;
 public sealed class FlourishServiceCollectionExtensionsTests
 {
     [Fact]
+    public void AddCommandParser_RegistersEachParserTypeOnce()
+    {
+        var services = new ServiceCollection();
+
+        var result = services
+            .AddCommandParser<FirstCommandParser>()
+            .AddCommandParser<FirstCommandParser>()
+            .AddCommandParser<SecondCommandParser>();
+
+        Assert.Same(services, result);
+        using var serviceProvider = services.BuildServiceProvider();
+        var parsers = serviceProvider
+            .GetServices<ICommandParser>()
+            .ToArray();
+        Assert.Collection(
+            parsers,
+            parser => Assert.IsType<FirstCommandParser>(parser),
+            parser => Assert.IsType<SecondCommandParser>(parser)
+        );
+    }
+
+    [Fact]
     public void AddNavigable_RegistersTransientPageAndMetadata()
     {
         var services = new ServiceCollection();
@@ -137,6 +159,16 @@ public sealed class FlourishServiceCollectionExtensionsTests
     private sealed class Homepage : Page { }
 
     private sealed class ReportPagePage : Page { }
+
+    private sealed class FirstCommandParser : ICommandParser
+    {
+        public void RegisterCommands(ICommandRegistrar commands) { }
+    }
+
+    private sealed class SecondCommandParser : ICommandParser
+    {
+        public void RegisterCommands(ICommandRegistrar commands) { }
+    }
 
     private static class Pages
     {

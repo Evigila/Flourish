@@ -59,6 +59,9 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<IHostedService>(provider =>
             provider.GetRequiredService<AppPreferenceService>()
         );
+        // Startup command parsers run before application-hosted services and stop after them,
+        // keeping their mappings available for the complete application-service lifetime.
+        services.AddSingleton<IHostedService, CommandParserHostedService>();
         foreach (var configureServices in serviceConfigurations)
         {
             configureServices(context, services);

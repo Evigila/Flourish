@@ -25,19 +25,17 @@ ICommandRegistration exportCommand = commands.Register(
 
 处理程序会收到 `CommandContext`，其中包含命令键、可选参数和来源 `CommandSource`。返回 `CommandResult.Handled`、`HandledWith(value)`、`NotHandled`、`Canceled` 或 `Failed(exception)` 来描述结果。
 
-## 管理启动时注册
+## 定义启动命令映射
 
-由 DI 管理的服务可以集中持有相关注册。`Build()` 后解析一次该服务，其构造函数就会注册命令；Flourish 服务提供程序会在运行时释放时释放该服务。
+命令解析器用于定义与 Host 生命周期一致的命令键和处理程序映射，而无需公开其注册租约。Flourish 在 Host 启动时调用每个解析器，并在 Host 停止时按相反顺序移除映射。
 
 ```csharp
-internal sealed class ReportCommands : IDisposable
+internal sealed class ReportCommands(ReportService reports)
+    : ICommandParser
 {
-    private readonly ICommandRegistration refresh;
-    private readonly ICommandRegistration export;
-
-    public ReportCommands(ICommandRegistry commands, ReportService reports)
+    public void RegisterCommands(ICommandRegistrar commands)
     {
-        refresh = commands.Register(
+        commands.Register(
             "reports.refresh",
             async (_, token) =>
             {
@@ -45,7 +43,7 @@ internal sealed class ReportCommands : IDisposable
                 return CommandResult.Handled;
             });
 
-        export = commands.Register(
+        commands.Register(
             "reports.export",
             async (context, token) =>
             {
@@ -53,27 +51,20 @@ internal sealed class ReportCommands : IDisposable
                 return CommandResult.Handled;
             });
     }
-
-    public void Dispose()
-    {
-        export.Dispose();
-        refresh.Dispose();
-    }
 }
 ```
 
-在服务配置中注册持有者及其依赖项，然后从构建完成的运行时激活它：
+在服务配置中注册解析器及其依赖项。应用无需主动解析该解析器，也无需实现 `IDisposable`：
 
 ```csharp
 builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<ReportService>();
-    services.AddSingleton<ReportCommands>();
+    services.AddCommandParser<ReportCommands>();
 });
-
-using var flourish = builder.Build();
-_ = flourish.GetRequiredService<ReportCommands>();
 ```
+
+`ICommandRegistrar.Register` 不返回租约，因为其生命周期由 Host 管理。解析器必须在 `RegisterCommands` 内同步定义映射，且不得保留 registrar。处理程序需要在 Host 持续运行期间动态添加或移除时，直接使用 `ICommandRegistry`。
 
 ## 控制可用性
 
@@ -95,6 +86,8 @@ var saveCommand = commands.Register(
 ## 重复命令键
 
 默认重复策略为 `Reject`。新处理程序需要取代当前注册时，将 `CommandRegistrationOptions.DuplicatePolicy` 设为 `Replace`；多个处理程序需要依次参与调度时设为 `Append`。追加的处理程序先按优先级降序执行，再按注册顺序执行；处理程序返回 `NotHandled` 之外的结果后，调度立即停止。
+
+启动解析器通常应保留 `Reject`。`Replace` 会立即停用已有处理程序，因此后续启动失败时可以移除替代项，但无法重建被替代的处理程序。
 
 ## 直接调度
 
