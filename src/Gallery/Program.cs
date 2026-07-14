@@ -32,6 +32,7 @@ internal static class Program
                     services.AddNavigable<WindowRuntimePage>("Window", "\uE737");
                     services.AddNavigable<BackgroundTasksPage>("Background", "\uE895");
                     services.AddNavigable<ControlLibraryPage>("Controls", "\uE8D2");
+                    services.AddNavigable<ButtonPage>("Button", "\uE8FB");
                 }
             )
             .ConfigureShell(shell =>
@@ -93,7 +94,11 @@ internal static class Program
                     .SetGroup(
                         "Controls",
                         3,
-                        group => group.AddNavigableViewItem<ControlLibraryPage>()
+                        group =>
+                        {
+                            group.AddNavigableViewItem<ControlLibraryPage>(parentId: 1);
+                            group.AddNavigableViewItem<ButtonPage>(childId: 1);
+                        }
                     )
                     .SetGroup(
                         "Commands",

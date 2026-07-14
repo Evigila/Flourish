@@ -48,193 +48,86 @@
           Columns="3"
           SizeChanged="DemoGrid_SizeChanged"
         >
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Configuration and locale"
-          Click="DemoCard_Click"
-          Tag="Configuration"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-                Text="&#xE713;"
-              />
-              <flourish:FlourishTextBlock
-                Margin="0,12,0,0"
-                Role="CardTitle"
-                Text="Configuration &amp; locale"
-              />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Read, edit, append, save, reload, and switch locale."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Appearance and motion"
-          Click="DemoCard_Click"
-          Tag="Appearance"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishSecondaryForegroundBrush}"
-                Text="&#xE790;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Appearance &amp; motion" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Theme, fonts, tooltips, animation, and material effects."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Title bar and search"
-          Click="DemoCard_Click"
-          Tag="TitleBarRuntime"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishAccentForegroundBrush}"
-                Text="&#xE8A4;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Title bar &amp; search" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Identity, element visibility, shell features, and search handlers."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Navigation"
-          Click="DemoCard_Click"
-          Tag="NavigationRuntime"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-                Text="&#xE700;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Navigation" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Panel placement, sizing, routes, cache, and menu items."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Toolbar and status"
-          Click="DemoCard_Click"
-          Tag="ToolbarStatus"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishSecondaryForegroundBrush}"
-                Text="&#xE945;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Toolbar &amp; status" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Dynamic actions, status messages, and custom shell regions."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Commands and shortcuts"
-          Click="DemoCard_Click"
-          Tag="Commands"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishAccentForegroundBrush}"
-                Text="&#xE756;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Commands &amp; shortcuts" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Register, dispatch, disable, remove, and bind keyboard input."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Window and profile"
-          Click="DemoCard_Click"
-          Tag="WindowRuntime"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-                Text="&#xE737;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Window &amp; profile" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Window, tray, close guards, profile, dialogs, and notifications."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
-
-        <flourish:FlourishButton Appearance="Card"
-          MinHeight="150"
-          Margin="6"
-          AutomationProperties.Name="Background tasks"
-          Click="DemoCard_Click"
-          Tag="BackgroundTasks"
-        >
-          <StackPanel>
-              <flourish:FlourishTextBlock
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="24"
-                Foreground="{DynamicResource FlourishSecondaryForegroundBrush}"
-                Text="&#xE895;"
-              />
-              <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Background tasks" />
-              <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Queue work, observe progress, cancel, and capture results."
-              />
-          </StackPanel>
-        </flourish:FlourishButton>
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Configuration and locale"
+            Click="DemoCard_Click"
+            Content="Read, edit, append, save, reload, and switch locale."
+            Icon="&#xE713;"
+            Tag="Configuration"
+            Title="Configuration &amp; locale"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Appearance and motion"
+            Click="DemoCard_Click"
+            Content="Theme, fonts, tooltips, animation, and material effects."
+            Icon="&#xE790;"
+            Tag="Appearance"
+            Title="Appearance &amp; motion"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Title bar and search"
+            Click="DemoCard_Click"
+            Content="Identity, element visibility, shell features, and search handlers."
+            Icon="&#xE8A4;"
+            Tag="TitleBarRuntime"
+            Title="Title bar &amp; search"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Navigation"
+            Click="DemoCard_Click"
+            Content="Panel placement, sizing, routes, cache, and menu items."
+            Icon="&#xE700;"
+            Tag="NavigationRuntime"
+            Title="Navigation"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Toolbar and status"
+            Click="DemoCard_Click"
+            Content="Dynamic actions, status messages, and custom shell regions."
+            Icon="&#xE945;"
+            Tag="ToolbarStatus"
+            Title="Toolbar &amp; status"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Commands and shortcuts"
+            Click="DemoCard_Click"
+            Content="Register, dispatch, disable, remove, and bind keyboard input."
+            Icon="&#xE756;"
+            Tag="Commands"
+            Title="Commands &amp; shortcuts"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Window and profile"
+            Click="DemoCard_Click"
+            Content="Window, tray, close guards, profile, dialogs, and notifications."
+            Icon="&#xE737;"
+            Tag="WindowRuntime"
+            Title="Window &amp; profile"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
+            AutomationProperties.Name="Background tasks"
+            Click="DemoCard_Click"
+            Content="Queue work, observe progress, cancel, and capture results."
+            Icon="&#xE895;"
+            Tag="BackgroundTasks"
+            Title="Background tasks"
+          />
         </UniformGrid>
       </StackPanel>
     </StackPanel>

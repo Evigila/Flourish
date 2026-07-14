@@ -30,8 +30,8 @@
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <flourish:FlourishTextBox x:Name="ReadKeyBox" Text="Flourish:Preferences:Theme" />
-            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" />
-            <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" />
+            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" />
+            <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" />
           </Grid>
           <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Role="Status" Text="No value read yet." />
           <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Role="Description" />
@@ -64,10 +64,10 @@
             </StackPanel>
           </Grid>
           <WrapPanel Margin="0,14,0,0">
-            <flourish:FlourishButton Margin="0,0,8,0" Click="SetValue_Click" Content="Set &amp; save" />
-            <flourish:FlourishButton Margin="0,0,8,0" Click="MergeValue_Click" Content="Merge into parent" />
-            <flourish:FlourishButton Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" />
-            <flourish:FlourishButton Click="RemoveValue_Click" Content="Remove" />
+            <flourish:Button Margin="0,0,8,0" Click="SetValue_Click" Content="Set &amp; save" />
+            <flourish:Button Margin="0,0,8,0" Click="MergeValue_Click" Content="Merge into parent" />
+            <flourish:Button Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" />
+            <flourish:Button Click="RemoveValue_Click" Content="Remove" />
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Role="Description" Text="No runtime update yet." />
           </StackPanel>
@@ -93,7 +93,7 @@
               x:Name="LocaleBox"
               IsEditable="True"
             />
-            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" />
+            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" />
           </Grid>
           <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Role="Status" />
           </StackPanel>
@@ -118,9 +118,9 @@
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <flourish:FlourishTextBox x:Name="LocaleFilePathBox" Text="lang_ES.json" />
-            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="RegisterLocaleFile_Click" Content="Register file" />
-            <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" />
-            <flourish:FlourishButton Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" />
+            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="RegisterLocaleFile_Click" Content="Register file" />
+            <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" />
+            <flourish:Button Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" />
           </Grid>
           <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Role="Description" Text="No locale file registered by this page." />
           </StackPanel>

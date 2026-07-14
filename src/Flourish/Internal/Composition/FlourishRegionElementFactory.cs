@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
-using Orientation = System.Windows.Controls.Orientation;
+using ButtonBase = ArkheideSystem.Flourish.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
@@ -16,14 +16,16 @@ internal static class FlourishRegionElementFactory
         Action<IServiceProvider>? action
     )
     {
-        var button = new FlourishButton
+        var button = new IconButton
         {
             Width = 38,
             Height = 32,
+            MinWidth = 0,
+            MinHeight = 0,
+            Padding = new Thickness(),
             Margin = new Thickness(2, 4, 2, 4),
-            Content = CreateIconOrText(iconGlyph, displayName, "FlourishFontSizeTitlebarIcon"),
-            Appearance = FlourishButtonAppearance.Subtle,
-            Variant = FlourishButtonVariant.Icon,
+            Icon = CreateIconOrText(iconGlyph, displayName, "FlourishFontSizeTitlebarIcon"),
+            Appearance = ButtonAppearance.Subtle,
             ToolTip = new FlourishToolTip { Content = displayName },
         };
         AttachClick(button, services, commandKey, action, CommandSource.TitleBar);
@@ -38,12 +40,16 @@ internal static class FlourishRegionElementFactory
         Action<IServiceProvider>? action
     )
     {
-        var button = new FlourishButton
+        var button = new IconButton
         {
             Margin = new Thickness(8, -2, 0, -2),
-            Content = CreateIconTextContent(iconGlyph, displayText),
-            Appearance = FlourishButtonAppearance.Subtle,
-            Variant = FlourishButtonVariant.Toolbar,
+            Height = 28,
+            MinWidth = 28,
+            MinHeight = 0,
+            Padding = new Thickness(7, 0, 7, 0),
+            Icon = string.IsNullOrWhiteSpace(iconGlyph) ? null : iconGlyph,
+            Content = displayText,
+            Appearance = ButtonAppearance.Subtle,
             ToolTip = new FlourishToolTip { Content = displayText },
         };
         AttachClick(button, services, commandKey, action, CommandSource.StatusBar);
@@ -51,7 +57,7 @@ internal static class FlourishRegionElementFactory
     }
 
     private static void AttachClick(
-        FlourishButton button,
+        ButtonBase button,
         IServiceProvider services,
         string? commandKey,
         Action<IServiceProvider>? action,
@@ -102,29 +108,4 @@ internal static class FlourishRegionElementFactory
         return text;
     }
 
-    private static StackPanel CreateIconTextContent(string iconGlyph, string label)
-    {
-        var content = new StackPanel { Orientation = Orientation.Horizontal };
-        if (!string.IsNullOrWhiteSpace(iconGlyph))
-        {
-            var icon = new FlourishTextBlock
-            {
-                Margin = new Thickness(0, 0, 5, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Text = iconGlyph,
-            };
-            icon.SetResourceReference(FlourishTextBlock.FontFamilyProperty, "FlourishIconFontFamily");
-            icon.SetResourceReference(FlourishTextBlock.FontSizeProperty, "FlourishFontSizeCaption");
-            content.Children.Add(icon);
-        }
-
-        var text = new FlourishTextBlock
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            Text = label,
-        };
-        text.SetResourceReference(FlourishTextBlock.FontSizeProperty, "FlourishFontSizeCaption");
-        content.Children.Add(text);
-        return content;
-    }
 }

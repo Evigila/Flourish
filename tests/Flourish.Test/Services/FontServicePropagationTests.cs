@@ -594,7 +594,7 @@ public sealed class FontServicePropagationTests
             shellSource,
             StringComparison.Ordinal
         );
-        Assert.Equal(7, CountOccurrences(shellSource, "BindIconTypography(icon"));
+        Assert.Equal(6, CountOccurrences(shellSource, "BindIconTypography(icon"));
 
         var root = Assert.IsType<XElement>(shellXaml.Root);
         Assert.Equal(

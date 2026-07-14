@@ -3,6 +3,7 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 using ArkheideSystem.Flourish.Controls;
+using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -292,7 +293,7 @@ public sealed class FlourishXamlArchitectureTests
             )
             {
                 var targetType = (string?)style.Attribute("TargetType") ?? string.Empty;
-                if (!targetType.Contains("controls:Flourish", StringComparison.Ordinal))
+                if (!targetType.Contains("controls:", StringComparison.Ordinal))
                 {
                     violations.Add(
                         $"{FormatViolation(file, style)} implicitly styles {targetType}"
@@ -506,8 +507,7 @@ public sealed class FlourishXamlArchitectureTests
         var demoCards = document
             .Descendants()
             .Where(element =>
-                element.Name.LocalName == "FlourishButton"
-                && (string?)element.Attribute("Appearance") == "Card"
+                element.Name.LocalName == "CardButton"
                 && element.Attribute("Tag") is not null
             )
             .ToArray();
@@ -550,7 +550,6 @@ public sealed class FlourishXamlArchitectureTests
             .Assembly.GetExportedTypes()
             .Where(type =>
                 type.Namespace == "ArkheideSystem.Flourish.Controls"
-                && type.Name.StartsWith("Flourish", StringComparison.Ordinal)
                 && typeof(FrameworkElement).IsAssignableFrom(type)
                 && !type.IsAbstract
             )
@@ -560,7 +559,9 @@ public sealed class FlourishXamlArchitectureTests
 
     private static string GetControlFileName(Type type)
     {
-        return type.Name["Flourish".Length..];
+        return type.Name.StartsWith("Flourish", StringComparison.Ordinal)
+            ? type.Name["Flourish".Length..]
+            : type.Name;
     }
 
     private static string[] GetMergedDictionarySources(XDocument document)

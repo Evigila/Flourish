@@ -15,23 +15,6 @@
       />
 
       <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
-        <flourish:FlourishTextBlock Role="SectionTitle" Text="Button appearances" />
-        <flourish:FlourishTextBlock
-          Margin="{DynamicResource FlourishSectionDescriptionMargin}"
-          Role="Description"
-          Text="The appearance property selects emphasis without a page-local Style."
-        />
-        <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
-          <WrapPanel>
-            <flourish:FlourishButton Margin="0,0,8,8" Appearance="Standard" Content="Standard" />
-            <flourish:FlourishButton Margin="0,0,8,8" Appearance="Primary" Content="Primary" />
-            <flourish:FlourishButton Margin="0,0,8,8" Appearance="Subtle" Content="Subtle" />
-            <flourish:FlourishButton Margin="0,0,8,8" Appearance="Card" Content="Card action" />
-          </WrapPanel>
-        </flourish:FlourishCard>
-      </StackPanel>
-
-      <StackPanel Margin="{DynamicResource FlourishSectionMargin}">
         <flourish:FlourishTextBlock Role="SectionTitle" Text="Typography roles" />
         <flourish:FlourishTextBlock
           Margin="{DynamicResource FlourishSectionDescriptionMargin}"
@@ -115,7 +98,7 @@
             <StackPanel>
               <flourish:FlourishTextBlock Role="FieldLabel" Text="LIST BOX" />
               <flourish:FlourishListBox Height="104" SelectedIndex="0">
-                <flourish:FlourishListBoxItem Content="Button and typography" />
+                <flourish:FlourishListBoxItem Content="Typography and labels" />
                 <flourish:FlourishListBoxItem Content="Inputs and selection" />
                 <flourish:FlourishListBoxItem Content="Scrolling and surfaces" />
               </flourish:FlourishListBox>

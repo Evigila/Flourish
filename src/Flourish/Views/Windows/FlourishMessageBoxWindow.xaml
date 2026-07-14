@@ -62,21 +62,14 @@
           Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
           TextTrimming="CharacterEllipsis"
         />
-        <controls:FlourishButton
+        <controls:WindowCaptionButton
           x:Name="CloseButton"
           Grid.Column="1"
           Appearance="Danger"
           Click="CloseButton_Click"
-          Variant="WindowCaption"
+          Icon="&#xE8BB;"
         >
-          <controls:FlourishTextBlock
-            FontFamily="{DynamicResource FlourishIconFontFamily}"
-            FontSize="{DynamicResource FlourishFontSizeWindowButtonIcon}"
-            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishButton}}}"
-            Role="Icon"
-            Text="&#xE8BB;"
-          />
-        </controls:FlourishButton>
+        </controls:WindowCaptionButton>
       </Grid>
 
       <Grid

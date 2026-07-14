@@ -4,6 +4,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
+using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using WpfButton = System.Windows.Controls.Button;
 using WpfControl = System.Windows.Controls.Control;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -110,7 +112,7 @@ public sealed class FlourishControlStylesTests
             var resources = LoadResourceDictionary(GenericThemeSource);
             Type[] nativeTypes =
             [
-                typeof(Button),
+                typeof(WpfButton),
                 typeof(RepeatButton),
                 typeof(ToggleButton),
                 typeof(CheckBox),
@@ -264,38 +266,127 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void ButtonVariants_ApplyTheirGeometryAndKeyboardFocusVisual()
+    public void ButtonFamily_UsesCompactIconOnlyGeometryAndKeepsCaptionGeometrySpecialized()
     {
         RunInSta(() =>
         {
-            var icon = new FlourishButton
+            var button = new FlourishButton { Content = "Action" };
+            var icon = new IconButton { Icon = "Icon" };
+            var labeledIcon = new IconButton { Icon = "Icon", Content = "Action" };
+            var caption = new WindowCaptionButton { Icon = "Caption" };
+            var card = new CardButton
             {
-                Content = "Icon",
-                Variant = FlourishButtonVariant.Icon,
+                Icon = "Card",
+                Title = "Title",
+                Content = "Description",
             };
-            var caption = new FlourishButton
+            var panel = new StackPanel
             {
-                Content = "Caption",
-                Variant = FlourishButtonVariant.WindowCaption,
+                Children = { button, icon, labeledIcon, caption, card },
             };
-            var panel = new StackPanel { Children = { icon, caption } };
             var window = CreateWindow(panel);
 
             try
             {
                 window.Show();
                 window.UpdateLayout();
+                button.ApplyTemplate();
                 icon.ApplyTemplate();
+                labeledIcon.ApplyTemplate();
                 caption.ApplyTemplate();
+                card.ApplyTemplate();
 
-                Assert.Equal(40, icon.Width);
-                Assert.Equal(32, icon.Height);
+                Assert.Equal(30, icon.Width);
+                Assert.Equal(30, icon.Height);
+                Assert.Equal(0, icon.MinWidth);
+                Assert.Equal(0, icon.MinHeight);
+                Assert.Equal(new Thickness(), icon.Padding);
+                Assert.Equal(button.MinWidth, labeledIcon.MinWidth);
+                Assert.Equal(button.MinHeight, labeledIcon.MinHeight);
+                Assert.Equal(button.Padding, labeledIcon.Padding);
                 Assert.Equal(46, caption.Width);
                 Assert.Equal(40, caption.Height);
+                Assert.NotNull(button.FocusVisualStyle);
                 Assert.NotNull(icon.FocusVisualStyle);
                 Assert.NotNull(caption.FocusVisualStyle);
+                Assert.NotNull(card.FocusVisualStyle);
+                Assert.True(HoverReveal.GetIsParticipant(button));
+                Assert.True(HoverReveal.GetIsParticipant(icon));
+                Assert.True(HoverReveal.GetIsParticipant(labeledIcon));
+                Assert.True(HoverReveal.GetIsParticipant(caption));
+                Assert.True(HoverReveal.GetIsParticipant(card));
+                Assert.Null(button.Template.FindName("FocusChrome", button));
                 Assert.Null(icon.Template.FindName("FocusChrome", icon));
+                Assert.Null(labeledIcon.Template.FindName("FocusChrome", labeledIcon));
                 Assert.Null(caption.Template.FindName("FocusChrome", caption));
+                Assert.Null(card.Template.FindName("FocusChrome", card));
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ButtonDangerAppearance_UsesRedHoverRevealAndAllowsLocalOverride()
+    {
+        RunInSta(() =>
+        {
+            var standard = new FlourishButton { Content = "Standard" };
+            var danger = new FlourishButton
+            {
+                Appearance = ButtonAppearance.Danger,
+                Content = "Danger",
+            };
+            var local = new FlourishButton
+            {
+                Appearance = ButtonAppearance.Danger,
+                Content = "Local",
+            };
+            var localBrush = new SolidColorBrush(Colors.MediumVioletRed);
+            HoverReveal.SetOverrideColor(local, localBrush);
+            var window = CreateWindow(
+                new StackPanel { Children = { standard, danger, local } }
+            );
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                standard.ApplyTemplate();
+                danger.ApplyTemplate();
+                local.ApplyTemplate();
+
+                var standardBrush = Assert.IsType<SolidColorBrush>(
+                    standard.TryFindResource("FlourishHoverRevealBrush")
+                );
+                var dangerBrush = Assert.IsType<SolidColorBrush>(
+                    danger.TryFindResource("FlourishDangerHoverRevealBrush")
+                );
+
+                Assert.Equal(
+                    standardBrush.Color,
+                    Assert.IsType<SolidColorBrush>(HoverReveal.GetOverrideColor(standard))
+                        .Color
+                );
+                Assert.Equal(
+                    dangerBrush.Color,
+                    Assert.IsType<SolidColorBrush>(HoverReveal.GetOverrideColor(danger))
+                        .Color
+                );
+                Assert.Same(localBrush, HoverReveal.GetOverrideColor(local));
+                Assert.Equal(
+                    dangerBrush.Color,
+                    AssertTemplatePart<Border>(danger, "HoverChrome").Background
+                        is SolidColorBrush dangerHoverBrush
+                        ? dangerHoverBrush.Color
+                        : throw new InvalidOperationException("Danger hover chrome must use a brush.")
+                );
+                Assert.Same(
+                    localBrush,
+                    AssertTemplatePart<Border>(local, "HoverChrome").Background
+                );
             }
             finally
             {
@@ -447,7 +538,6 @@ public sealed class FlourishControlStylesTests
             .Assembly.GetExportedTypes()
             .Where(type =>
                 type.Namespace == "ArkheideSystem.Flourish.Controls"
-                && type.Name.StartsWith("Flourish", StringComparison.Ordinal)
                 && typeof(FrameworkElement).IsAssignableFrom(type)
                 && !type.IsAbstract
             )

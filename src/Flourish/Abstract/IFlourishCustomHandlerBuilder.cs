@@ -11,7 +11,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// {
 ///     custom.Add(
 ///         FlourishRegion.TitlebarEnd,
-///         services => new FlourishButton { Content = "Account" });
+///         services => new Button { Content = "Account" });
 /// });
 /// ]]></code>
 /// </example>

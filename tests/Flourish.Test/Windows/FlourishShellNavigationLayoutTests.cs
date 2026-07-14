@@ -518,6 +518,35 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
+    public void TitlebarAndStatusIconHosts_ClearTheCommonButtonMinimumGeometry()
+    {
+        var titlebar = XDocument.Load(TitlebarXamlPath);
+        var shell = XDocument.Load(ShellXamlPath);
+
+        foreach (
+            var name in new[]
+            {
+                "BackButton",
+                "ForwardButton",
+                "NavigationToggleButton",
+                "ThemeToggleButton",
+            }
+        )
+        {
+            AssertCompactIconButton(
+                titlebar,
+                name,
+                "{DynamicResource FlourishShellCommandButtonWidth}",
+                "{DynamicResource FlourishShellCommandButtonHeight}"
+            );
+        }
+
+        AssertCompactIconButton(titlebar, "ProfileButton", "34", "32");
+        AssertCompactIconButton(shell, "BackgroundTaskQueueButton", "26", "22");
+        AssertCompactIconButton(shell, "SystemStatusButton", "26", "22");
+    }
+
+    [Fact]
     public void BreadcrumbFeatureRefresh_DoesNotMakeAnEmptyHostConsumeLeadingSpace()
     {
         RunInSta(() =>
@@ -551,7 +580,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 var breadcrumbHost = Assert.IsType<StackPanel>(
                     titlebar.FindName("BreadcrumbNavigationHost")
                 );
-                var navigationToggle = Assert.IsType<FlourishButton>(
+                var navigationToggle = Assert.IsType<IconButton>(
                     titlebar.FindName("NavigationToggleButton")
                 );
                 var initialLeft = GetBounds(navigationToggle, titlebar).Left;
@@ -919,7 +948,7 @@ public sealed class FlourishShellNavigationLayoutTests
         var navigationToggle = titlebar
             .Descendants()
             .Single(element =>
-                element.Name.LocalName == "FlourishButton"
+                element.Name.LocalName == "IconButton"
                 && (string?)element.Attribute(nameName) == "NavigationToggleButton"
             );
         var navigationIcon = navigationToggle
@@ -958,6 +987,22 @@ public sealed class FlourishShellNavigationLayoutTests
             height,
             (string)navigationIcon.Attribute("FontSize")!
         );
+    }
+
+    private static void AssertCompactIconButton(
+        XDocument document,
+        string name,
+        string width,
+        string height
+    )
+    {
+        var button = FindNamedElement(document, name);
+
+        Assert.Equal(width, (string?)button.Attribute("Width"));
+        Assert.Equal(height, (string?)button.Attribute("Height"));
+        Assert.Equal("0", (string?)button.Attribute("MinWidth"));
+        Assert.Equal("0", (string?)button.Attribute("MinHeight"));
+        Assert.Equal("0", (string?)button.Attribute("Padding"));
     }
 
     private static double GetDoubleResource(

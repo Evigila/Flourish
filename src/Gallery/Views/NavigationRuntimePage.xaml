@@ -23,8 +23,8 @@
         <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
           <StackPanel>
           <WrapPanel>
-            <flourish:FlourishButton Click="TogglePanel_Click" Content="Open / close" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" />
+            <flourish:Button Click="TogglePanel_Click" Content="Open / close" />
+            <flourish:Button Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" />
             <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" Margin="8,0,0,0" SelectionChanged="DirectionBox_SelectionChanged" />
           </WrapPanel>
           <WrapPanel Margin="0,12,0,0">
@@ -44,7 +44,7 @@
               <flourish:FlourishTextBlock Role="FieldLabel" Text="Maximum width" />
               <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" Text="480" />
             </StackPanel>
-            <flourish:FlourishButton Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" />
+            <flourish:Button Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" />
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
@@ -62,10 +62,10 @@
         <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
           <StackPanel>
           <WrapPanel>
-            <flourish:FlourishButton Click="InstallRoute_Click" Content="Install demo route" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" />
+            <flourish:Button Click="InstallRoute_Click" Content="Install demo route" />
+            <flourish:Button Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" />
+            <flourish:Button Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" />
+            <flourish:Button Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" />
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
           </StackPanel>
@@ -82,10 +82,10 @@
         <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
           <StackPanel>
           <WrapPanel>
-            <flourish:FlourishButton Click="EnableCache_Click" Content="Enable cache" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" />
-            <flourish:FlourishButton Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" />
+            <flourish:Button Click="EnableCache_Click" Content="Enable cache" />
+            <flourish:Button Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" />
+            <flourish:Button Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" />
+            <flourish:Button Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" />
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
           </StackPanel>

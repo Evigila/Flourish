@@ -31,60 +31,72 @@
       Margin="4,0,0,0"
       Orientation="Horizontal"
     >
-      <controls:FlourishButton
+      <controls:IconButton
         x:Name="BackButton"
         Appearance="Subtle"
         Width="{DynamicResource FlourishShellCommandButtonWidth}"
         Height="{DynamicResource FlourishShellCommandButtonHeight}"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="0"
         Margin="0,4,2,4"
         Click="BackButton_Click"
         IsEnabled="False"
-        Variant="Icon"
       >
-        <controls:FlourishTextBlock
-          FontFamily="{DynamicResource FlourishIconFontFamily}"
-          FontSize="{DynamicResource FlourishFontSizeTitlebarIcon}"
-          Role="Icon"
-          Text="&#xE72B;"
-        />
-      </controls:FlourishButton>
+        <controls:IconButton.Icon>
+          <controls:FlourishTextBlock
+            FontFamily="{DynamicResource FlourishIconFontFamily}"
+            FontSize="{DynamicResource FlourishFontSizeTitlebarIcon}"
+            Role="Icon"
+            Text="&#xE72B;"
+          />
+        </controls:IconButton.Icon>
+      </controls:IconButton>
 
-      <controls:FlourishButton
+      <controls:IconButton
         x:Name="ForwardButton"
         Appearance="Subtle"
         Width="{DynamicResource FlourishShellCommandButtonWidth}"
         Height="{DynamicResource FlourishShellCommandButtonHeight}"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="0"
         Margin="2,4"
         Click="ForwardButton_Click"
         IsEnabled="False"
-        Variant="Icon"
       >
-        <controls:FlourishTextBlock
-          FontFamily="{DynamicResource FlourishIconFontFamily}"
-          FontSize="{DynamicResource FlourishFontSizeTitlebarIcon}"
-          Role="Icon"
-          Text="&#xE72A;"
-        />
-      </controls:FlourishButton>
+        <controls:IconButton.Icon>
+          <controls:FlourishTextBlock
+            FontFamily="{DynamicResource FlourishIconFontFamily}"
+            FontSize="{DynamicResource FlourishFontSizeTitlebarIcon}"
+            Role="Icon"
+            Text="&#xE72A;"
+          />
+        </controls:IconButton.Icon>
+      </controls:IconButton>
     </StackPanel>
 
-    <controls:FlourishButton
+    <controls:IconButton
       x:Name="NavigationToggleButton"
       Grid.Column="2"
       Appearance="Subtle"
       Width="{DynamicResource FlourishShellCommandButtonWidth}"
       Height="{DynamicResource FlourishShellCommandButtonHeight}"
+      MinWidth="0"
+      MinHeight="0"
+      Padding="0"
       Margin="{DynamicResource FlourishTitlebarNavigationToggleMargin}"
       Click="NavigationToggleButton_Click"
-      Variant="Icon"
     >
-      <controls:FlourishTextBlock
-        FontFamily="{DynamicResource FlourishIconFontFamily}"
-        FontSize="{DynamicResource FlourishFontSizeNavigationIcon}"
-        Role="Icon"
-        Text="&#xE700;"
-      />
-    </controls:FlourishButton>
+      <controls:IconButton.Icon>
+        <controls:FlourishTextBlock
+          FontFamily="{DynamicResource FlourishIconFontFamily}"
+          FontSize="{DynamicResource FlourishFontSizeNavigationIcon}"
+          Role="Icon"
+          Text="&#xE700;"
+        />
+      </controls:IconButton.Icon>
+    </controls:IconButton>
 
     <StackPanel
       x:Name="TitlebarStartRegionHost"
@@ -170,29 +182,33 @@
       TextChanged="SearchBox_TextChanged"
     />
 
-    <controls:FlourishButton
+    <controls:IconButton
       x:Name="ThemeToggleButton"
       Grid.Column="7"
       Appearance="Subtle"
       Width="{DynamicResource FlourishShellCommandButtonWidth}"
       Height="{DynamicResource FlourishShellCommandButtonHeight}"
+      MinWidth="0"
+      MinHeight="0"
+      Padding="0"
       Margin="0,4,6,4"
       Click="ThemeToggleButton_Click"
-      Variant="Icon"
     >
-      <Viewbox Width="16" Height="16">
-        <Path
-          x:Name="ThemeToggleButtonIcon"
-          Data="M12,2 L12,4 M12,20 L12,22 M4.93,4.93 L6.34,6.34 M17.66,17.66 L19.07,19.07 M2,12 L4,12 M20,12 L22,12 M4.93,19.07 L6.34,17.66 M17.66,6.34 L19.07,4.93 M8,12 C8,9.79 9.79,8 12,8 C14.21,8 16,9.79 16,12 C16,14.21 14.21,16 12,16 C9.79,16 8,14.21 8,12 Z"
-          Fill="Transparent"
-          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishButton}}}"
-          StrokeEndLineCap="Round"
-          StrokeLineJoin="Round"
-          StrokeStartLineCap="Round"
-          StrokeThickness="2"
-        />
-      </Viewbox>
-    </controls:FlourishButton>
+      <controls:IconButton.Icon>
+        <Viewbox Width="16" Height="16">
+          <Path
+            x:Name="ThemeToggleButtonIcon"
+            Data="M12,2 L12,4 M12,20 L12,22 M4.93,4.93 L6.34,6.34 M17.66,17.66 L19.07,19.07 M2,12 L4,12 M20,12 L22,12 M4.93,19.07 L6.34,17.66 M17.66,6.34 L19.07,4.93 M8,12 C8,9.79 9.79,8 12,8 C14.21,8 16,9.79 16,12 C16,14.21 14.21,16 12,16 C9.79,16 8,14.21 8,12 Z"
+            Fill="Transparent"
+            Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:Button}}}"
+            StrokeEndLineCap="Round"
+            StrokeLineJoin="Round"
+            StrokeStartLineCap="Round"
+            StrokeThickness="2"
+          />
+        </Viewbox>
+      </controls:IconButton.Icon>
+    </controls:IconButton>
 
     <Grid
       x:Name="ProfileRegionContainer"
@@ -200,30 +216,34 @@
       Margin="0,0,10,0"
       VerticalAlignment="Center"
     >
-      <controls:FlourishButton
+      <controls:IconButton
         x:Name="ProfileButton"
         Appearance="Subtle"
         Width="34"
         Height="32"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="0"
         Click="ProfileButton_Click"
-        Variant="Icon"
       >
-        <Grid Width="26" Height="26">
-          <Border
-            Background="{DynamicResource FlourishProfileBackgroundBrush}"
-            CornerRadius="13"
-          />
-          <Ellipse x:Name="ProfileAvatarImage" Visibility="Collapsed" />
-          <controls:FlourishTextBlock
-            x:Name="ProfileInitialsText"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="{DynamicResource FlourishFontSizeCaption}"
-            FontWeight="Regular"
-            Foreground="{DynamicResource FlourishProfileForegroundBrush}"
-          />
-        </Grid>
-      </controls:FlourishButton>
+        <controls:IconButton.Icon>
+          <Grid Width="26" Height="26">
+            <Border
+              Background="{DynamicResource FlourishProfileBackgroundBrush}"
+              CornerRadius="13"
+            />
+            <Ellipse x:Name="ProfileAvatarImage" Visibility="Collapsed" />
+            <controls:FlourishTextBlock
+              x:Name="ProfileInitialsText"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              FontSize="{DynamicResource FlourishFontSizeCaption}"
+              FontWeight="Regular"
+              Foreground="{DynamicResource FlourishProfileForegroundBrush}"
+            />
+          </Grid>
+        </controls:IconButton.Icon>
+      </controls:IconButton>
       <StackPanel
         x:Name="TitlebarProfileRegionHost"
         Orientation="Horizontal"
@@ -240,51 +260,39 @@
       Visibility="Collapsed"
     />
 
-    <controls:FlourishButton
+    <controls:WindowCaptionButton
       x:Name="MinimizeButton"
       Grid.Column="10"
       Appearance="Subtle"
       Click="MinimizeButton_Click"
-      Variant="WindowCaption"
+      Icon="&#xE921;"
     >
-      <controls:FlourishTextBlock
-        FontFamily="{DynamicResource FlourishIconFontFamily}"
-        FontSize="{DynamicResource FlourishFontSizeWindowButtonIcon}"
-        Role="Icon"
-        Text="&#xE921;"
-      />
-    </controls:FlourishButton>
+    </controls:WindowCaptionButton>
 
-    <controls:FlourishButton
+    <controls:WindowCaptionButton
       x:Name="MaximizeButton"
       Grid.Column="11"
       Appearance="Subtle"
       Click="MaximizeButton_Click"
-      Variant="WindowCaption"
     >
-      <controls:FlourishTextBlock
-        x:Name="MaximizeButtonIcon"
-        FontFamily="{DynamicResource FlourishIconFontFamily}"
-        FontSize="{DynamicResource FlourishFontSizeWindowButtonIcon}"
-        Role="Icon"
-        Text="&#xE922;"
-      />
-    </controls:FlourishButton>
+      <controls:WindowCaptionButton.Icon>
+        <controls:FlourishTextBlock
+          x:Name="MaximizeButtonIcon"
+          FontFamily="{DynamicResource FlourishIconFontFamily}"
+          FontSize="{DynamicResource FlourishFontSizeWindowButtonIcon}"
+          Role="Icon"
+          Text="&#xE922;"
+        />
+      </controls:WindowCaptionButton.Icon>
+    </controls:WindowCaptionButton>
 
-    <controls:FlourishButton
+    <controls:WindowCaptionButton
       x:Name="CloseButton"
       Grid.Column="12"
       Appearance="Danger"
       Click="CloseButton_Click"
-      Variant="WindowCaption"
+      Icon="&#xE8BB;"
     >
-      <controls:FlourishTextBlock
-        FontFamily="{DynamicResource FlourishIconFontFamily}"
-        FontSize="{DynamicResource FlourishFontSizeWindowButtonIcon}"
-        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishButton}}}"
-        Role="Icon"
-        Text="&#xE8BB;"
-      />
-    </controls:FlourishButton>
+    </controls:WindowCaptionButton>
   </Grid>
 </UserControl>

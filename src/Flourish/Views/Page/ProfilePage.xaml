@@ -53,7 +53,7 @@
     </StackPanel>
 
     <Grid Grid.Row="2" Margin="0,14,0,0">
-      <flourish:FlourishButton
+      <flourish:Button
         x:Name="LoginButton"
         Appearance="Primary"
         HorizontalAlignment="Center"
@@ -101,9 +101,8 @@
           FontSize="{DynamicResource FlourishFontSizeSmall}"
           Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
         />
-        <flourish:FlourishButton
+        <Button
           x:Name="UploadImageButton"
-          Appearance="Standard"
           Height="38"
           MinWidth="0"
           Padding="0"
@@ -122,7 +121,7 @@
                 <Path
                   Data="M 3,16 L 3,20 L 21,20 L 21,16 M 12,3 L 12,16 M 7,8 L 12,3 L 17,8"
                   Fill="Transparent"
-                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type flourish:FlourishButton}}}"
+                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                   StrokeEndLineCap="Round"
                   StrokeLineJoin="Round"
                   StrokeStartLineCap="Round"
@@ -156,7 +155,7 @@
               </StackPanel>
             </Grid>
           </Grid>
-        </flourish:FlourishButton>
+        </Button>
 
         <flourish:FlourishTextBlock
           x:Name="PasswordLabel"
@@ -176,13 +175,13 @@
         />
 
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-          <flourish:FlourishButton
+          <flourish:Button
             x:Name="CancelLoginButton"
             Appearance="Standard"
             Margin="0,0,7,0"
             Click="CancelLoginButton_Click"
           />
-          <flourish:FlourishButton
+          <flourish:Button
             x:Name="SubmitLoginButton"
             Appearance="Primary"
             Click="SubmitLoginButton_Click"
@@ -197,7 +196,7 @@
           Checked="RememberLoginCheckBox_Changed"
           Unchecked="RememberLoginCheckBox_Changed"
         />
-        <flourish:FlourishButton
+        <flourish:Button
           x:Name="LogoutButton"
           Appearance="Standard"
           Margin="0,14,0,0"

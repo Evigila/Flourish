@@ -1,4 +1,5 @@
 using System.Windows;
+using WpfBrush = System.Windows.Media.Brush;
 using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Controls;
@@ -77,6 +78,22 @@ public static class HoverReveal
         );
 
     /// <summary>
+    /// Identifies the non-inherited brush that a participating template uses for its hover reveal.
+    /// </summary>
+    /// <remarks>
+    /// The property does not affect a template unless its hover layer binds to it. Flourish
+    /// participating templates do so by default, allowing a local value to override the
+    /// semantic reveal color supplied by the control style.
+    /// </remarks>
+    public static readonly DependencyProperty OverrideColorProperty =
+        DependencyProperty.RegisterAttached(
+            "OverrideColor",
+            typeof(WpfBrush),
+            typeof(HoverReveal),
+            new FrameworkPropertyMetadata(null)
+        );
+
+    /// <summary>
     /// Gets the hover-reveal animation duration inherited by an element.
     /// </summary>
     /// <param name="element">The element from which to read the value.</param>
@@ -94,6 +111,26 @@ public static class HoverReveal
     public static void SetAnimationDuration(DependencyObject element, TimeSpan value)
     {
         element.SetValue(AnimationDurationProperty, value);
+    }
+
+    /// <summary>
+    /// Gets the optional brush that overrides the hover-reveal color for an element.
+    /// </summary>
+    /// <param name="element">The element from which to read the value.</param>
+    /// <returns>The override brush, or <see langword="null" /> when the style supplies it.</returns>
+    public static WpfBrush? GetOverrideColor(DependencyObject element)
+    {
+        return (WpfBrush?)element.GetValue(OverrideColorProperty);
+    }
+
+    /// <summary>
+    /// Sets the optional brush that overrides the hover-reveal color for an element.
+    /// </summary>
+    /// <param name="element">The element on which to set the value.</param>
+    /// <param name="value">The brush to use, or <see langword="null" /> to use the style value.</param>
+    public static void SetOverrideColor(DependencyObject element, WpfBrush? value)
+    {
+        element.SetValue(OverrideColorProperty, value);
     }
 
     /// <summary>
