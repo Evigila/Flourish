@@ -21,6 +21,15 @@
     <Compile Update="Controls\Button.xaml.cs">
       <DependentUpon>Button.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\IconButton.xaml.cs">
+      <DependentUpon>IconButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\WindowCaptionButton.xaml.cs">
+      <DependentUpon>WindowCaptionButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\CardButton.xaml.cs">
+      <DependentUpon>CardButton.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
     </Compile>

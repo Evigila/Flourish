@@ -38,9 +38,9 @@
             </StackPanel>
           </Grid>
           <WrapPanel Margin="0,14,0,0">
-            <flourish:FlourishButton Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
-            <flourish:FlourishButton Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
-            <flourish:FlourishButton Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
+            <flourish:Button Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
+            <flourish:Button Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
+            <flourish:Button Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
             <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Role="Status" Text="Register the demo command to begin." />
@@ -59,9 +59,9 @@
         <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
           <StackPanel>
           <WrapPanel>
-            <flourish:FlourishButton Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
-            <flourish:FlourishButton Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
-            <flourish:FlourishButton Click="RemoveShortcut_Click" Content="Remove shortcut" />
+            <flourish:Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
+            <flourish:Button Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
+            <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Role="Description" Text="No shortcut registered by this page." />
           </StackPanel>

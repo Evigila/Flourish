@@ -1,13 +1,13 @@
 ---
 title: Control library
-description: Load Flourish theme resources and use explicit custom controls, semantic variants, and hover behavior.
+description: Load Flourish theme resources and use explicit custom controls, semantic appearances, and hover behavior.
 ---
 
 # Control library
 
-Flourish provides themed WPF custom controls for application pages, Shell extension regions, dialogs, and independently hosted windows. Use a `Flourish*` control when an element should use the Flourish theme and interaction states.
+Flourish provides themed WPF custom controls for application pages, Shell extension regions, dialogs, and independently hosted windows. Use a control from the Flourish XAML namespace when an element should use the Flourish theme and interaction states.
 
-Loading Flourish resources does not install implicit styles for WPF base types. A WPF `<Button>`, `<TextBox>`, or `<ListBox>` keeps its native appearance; `<flourish:FlourishButton>`, `<flourish:FlourishTextBox>`, and `<flourish:FlourishListBox>` opt in to the Flourish templates.
+Loading Flourish resources does not install implicit styles for WPF base types. A WPF `<Button>`, `<TextBox>`, or `<ListBox>` keeps its native appearance; `<flourish:Button>`, `<flourish:FlourishTextBox>`, and `<flourish:FlourishListBox>` opt in to the Flourish templates.
 
 ## Load the control resources
 
@@ -35,11 +35,14 @@ Add `FlourishThemeResources` explicitly when controls must work in the WPF desig
 
 ## Available controls
 
-The public library contains 17 controls. Each one derives from the corresponding WPF control unless the base type shown below says otherwise. It keeps that base type's properties, events, commands, data binding, validation, and automation behavior.
+The public library contains 20 controls. Each one derives from the corresponding WPF control unless the base type shown below says otherwise. It keeps that base type's properties, events, commands, data binding, validation, and automation behavior.
 
 | Flourish control | Base type | Flourish-specific contract |
 | --- | --- | --- |
-| `FlourishButton` | `Button` | `Appearance` and `Variant` select semantic color and layout roles. |
+| `Button` | WPF `Button` | `Appearance` selects one of four semantic emphasis levels. |
+| `IconButton` | `Button` | Adds `Icon` for icon-only and icon-with-label actions. |
+| `WindowCaptionButton` | `IconButton` | Supplies dedicated window-caption geometry and close-button feedback. |
+| `CardButton` | `Button` | Adds `Icon`, `IconPosition`, and `Title`; inherited `Content` is the description. |
 | `FlourishCard` | `ContentControl` | `Appearance` selects the surface treatment. It hosts one content tree. |
 | `FlourishTextBlock` | `TextBlock` | `Role` selects semantic typography. |
 | `FlourishLabel` | `Label` | No additional property; keeps `Target` and native access-key support. |
@@ -90,10 +93,10 @@ Reference Flourish controls explicitly in page XAML:
       <flourish:FlourishTextBox Text="Foo Bar" />
       <flourish:FlourishSearchBox Placeholder="Search accounts" />
       <StackPanel>
-        <flourish:FlourishButton
+        <flourish:Button
           Appearance="Subtle"
           Content="Cancel" />
-        <flourish:FlourishButton
+        <flourish:Button
           Appearance="Primary"
           Content="Save" />
       </StackPanel>
@@ -104,36 +107,54 @@ Reference Flourish controls explicitly in page XAML:
 
 ### Buttons and content surfaces
 
-`FlourishButton.Appearance` describes the action and defaults to `Standard`:
+`Button.Appearance` describes the action and defaults to `Standard`:
 
 - `Standard` is the default action.
 - `Primary` identifies the main action in a group.
 - `Subtle` reduces visual emphasis.
-- `Card` presents the complete button as an interactive card.
 - `Danger` identifies a destructive action and uses warning feedback.
 
-`FlourishButton.Variant` describes where the action is hosted and defaults to `Standard`:
+All ordinary `Button` instances use the same template and geometry. Change inherited sizing properties such as `Width`, `Height`, `MinWidth`, or `Padding` only when a host needs different dimensions. `Appearance` changes semantic emphasis; it does not select a structural layout.
 
-- `Icon` is a compact square icon action.
-- `Toolbar` is a compact toolbar command.
-- `Action` is a dialog or form action.
-- `WindowCaption` uses native caption-button geometry.
-- `StatusIcon` is a small status-bar icon action.
-- `MessageBox` is an action hosted by a Flourish message box.
-
-`Appearance` and `Variant` are independent. For example, a primary dialog action uses both:
+Use `IconButton` whenever an action has an icon, including toolbar and status-region actions. `Icon` is an `object`, so it accepts a glyph string or a visual element. Inherited `Content` is optional and becomes the label. An icon-only `IconButton` defaults to compact `30 × 30` geometry with no padding; an icon-plus-label button keeps the ordinary `Button` geometry. Hosts with their own compact metrics, such as a title bar or status bar, set local sizing values explicitly.
 
 ```xml
-<flourish:FlourishButton
+<flourish:IconButton
+  Appearance="Subtle"
+  Command="{Binding RefreshCommand}"
+  Icon="&#xE72C;"
+  ToolTip="Refresh" />
+
+<flourish:IconButton
   Appearance="Primary"
-  Command="{Binding SaveCommand}"
-  Content="Save"
-  Variant="Action" />
+  Command="{Binding AddCommand}"
+  Content="Add item"
+  Icon="&#xE710;" />
+```
+
+`WindowCaptionButton` is reserved for minimize, maximize, restore, and close commands in a window caption. It uses dedicated caption metrics instead of the common button geometry. Use `Appearance="Danger"` for a close command and `Subtle` for the other caption commands.
+
+`CardButton` represents an interactive card rather than an appearance of an ordinary button:
+
+| Property | Type and default | Purpose |
+| --- | --- | --- |
+| `Icon` | `object`, `null` | Glyph string or visual shown beside the text. |
+| `IconPosition` | `Dock`, `Top` | Places the icon at `Left`, `Top`, `Right`, or `Bottom`. |
+| `Title` | `string`, empty | Card heading. |
+| `Content` | inherited `object`, `null` | Supporting description or richer description content. |
+
+```xml
+<flourish:CardButton
+  Command="{Binding OpenReportsCommand}"
+  Content="Review generated reports and recent exports."
+  Icon="&#xE8A5;"
+  IconPosition="Left"
+  Title="Reports" />
 ```
 
 Layout containers control external placement such as `Margin`. Pointer and keyboard focus use distinct states, and keyboard focus remains visible.
 
-`FlourishCard.Appearance` defaults to `Standard`. Other values are `Subtle`, `Accent`, `Elevated`, and `Hero`. `Elevated` adds elevation, while `Hero` uses a gradient background and elevation for introductory content. A card is not an input control; use `FlourishButton Appearance="Card"` when the complete surface must be interactive.
+`FlourishCard.Appearance` defaults to `Standard`. Other values are `Subtle`, `Accent`, `Elevated`, and `Hero`. `Elevated` adds elevation, while `Hero` uses a gradient background and elevation for introductory content. A `FlourishCard` is a non-interactive content surface; use `CardButton` when the complete surface invokes an action.
 
 ### Text and input
 
@@ -224,19 +245,21 @@ For an ordinary selectable list, only `ItemsSource`, `SelectedItem`, and an opti
 
 `FlourishToolTip` keeps WPF tooltip content, timing, and placement properties. Its default style enables `FlourishToolTipPlacement.IsEnabled`, which chooses a placement that remains inside the Shell and accounts for title bar, toolbar, breadcrumb, navigation, status-bar, and content regions. Set the attached property to `False` on the tooltip to use normal WPF placement.
 
+For `IconButton` and `WindowCaptionButton`, simple `ToolTip` content such as a string is automatically wrapped in a `FlourishToolTip`. This lets icon-only controls use the existing Flourish Tips policy and Shell-aware placement while retaining the usual WPF `ToolTip` syntax. An explicitly assigned `FlourishToolTip` is preserved.
+
 ```xml
-<flourish:FlourishButton Content="Refresh">
-  <flourish:FlourishButton.ToolTip>
+<flourish:Button Content="Refresh">
+  <flourish:Button.ToolTip>
     <flourish:FlourishToolTip Content="Reload the current report" />
-  </flourish:FlourishButton.ToolTip>
-</flourish:FlourishButton>
+  </flourish:Button.ToolTip>
+</flourish:Button>
 ```
 
 `FlourishGridSplitter.Variant` defaults to `Standard`. Use `NavigationPane` only for the resize edge of a navigation pane. Standard `ResizeDirection`, `ResizeBehavior`, keyboard movement, and alignment rules still apply.
 
 ## Hover reveal and reduced motion
 
-`FlourishButton`, `FlourishComboBoxItem`, and `FlourishListBoxItem` participate in the public `HoverReveal` attached behavior. Configure it application-wide through [Motion](configure-motion.md), including the operating system reduced-motion preference:
+`Button`, its derived button controls, `FlourishComboBoxItem`, and `FlourishListBoxItem` participate in the public `HoverReveal` attached behavior. Configure it application-wide through [Motion](configure-motion.md), including the operating system reduced-motion preference:
 
 ```csharp
 builder
@@ -250,9 +273,10 @@ builder
 Attached properties provide a local override:
 
 ```xml
-<flourish:FlourishButton
+<flourish:Button
   flourish:HoverReveal.IsEnabled="True"
   flourish:HoverReveal.AnimationDuration="0:0:0.14"
+  flourish:HoverReveal.OverrideColor="{DynamicResource FlourishPrimarySurfaceBrush}"
   Content="Preview" />
 ```
 
@@ -260,11 +284,14 @@ Attached properties provide a local override:
 | --- | --- | --- | --- |
 | `HoverReveal.IsEnabled` | `true` | Yes | Enables reveal behavior; the effective value is also disabled when `IsMotionEnabled` is `false`. |
 | `HoverReveal.AnimationDuration` | 140 ms | Yes | Sets the reveal animation duration. |
+| `HoverReveal.OverrideColor` | `null` | No | Optional `Brush` used by a participating template instead of its normal reveal brush. |
 | `HoverReveal.IsMotionEnabled` | `true` | No | Supplies the runtime motion policy for one participant. |
 | `HoverReveal.IsParticipant` | `false` | No | Opts a custom control template into the behavior. |
 | `HoverReveal.TemplateHandlesInteraction` | `false` | No | Declares that a custom template supplies its own static hover and pressed states. |
 
-A custom template that participates in the behavior provides elements named `HoverChrome` and `HoverRevealScale`, sets `flourish:HoverReveal.IsParticipant="True"`, and binds `flourish:HoverReveal.IsMotionEnabled` to `{DynamicResource FlourishHoverRevealEnabled}`. `IsEnabled` and `AnimationDuration` inherit through the visual tree; `IsMotionEnabled` and `IsParticipant` do not. The behavior has no effect when either named element is absent.
+A custom template that participates in the behavior provides elements named `HoverChrome` and `HoverRevealScale`, binds the `HoverChrome` background to `flourish:HoverReveal.OverrideColor`, sets `flourish:HoverReveal.IsParticipant="True"`, and binds `flourish:HoverReveal.IsMotionEnabled` to `{DynamicResource FlourishHoverRevealEnabled}`. `IsEnabled` and `AnimationDuration` inherit through the visual tree; `OverrideColor`, `IsMotionEnabled`, and `IsParticipant` do not. The behavior has no effect when either named element is absent.
+
+`Button.Appearance="Danger"` supplies the semantic red `FlourishDangerHoverRevealBrush` by default instead of the standard blue reveal. A local `HoverReveal.OverrideColor` value has precedence when a particular destructive action needs a different feedback color.
 
 Set `flourish:HoverReveal.TemplateHandlesInteraction="True"` when a replacement template defines its own static hover and pressed states. Otherwise, HoverReveal supplies those pointer states.
 

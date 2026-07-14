@@ -36,7 +36,7 @@
               <flourish:FlourishTextBlock Role="FieldLabel" Text="Subtitle" />
               <flourish:FlourishTextBox x:Name="SubtitleBox" />
             </StackPanel>
-            <flourish:FlourishButton Grid.Column="2" Margin="8,20,0,0" Click="ApplyIdentity_Click" Content="Apply identity" />
+            <flourish:Button Grid.Column="2" Margin="8,20,0,0" Click="ApplyIdentity_Click" Content="Apply identity" />
             </Grid>
             <Grid Margin="0,14,0,0">
             <Grid.ColumnDefinitions>
@@ -52,7 +52,7 @@
               <flourish:FlourishTextBlock Role="FieldLabel" Text="Logo fallback text" />
               <flourish:FlourishTextBox x:Name="LogoFallbackBox" />
             </StackPanel>
-            <flourish:FlourishButton Grid.Column="2" Margin="8,20,0,0" Click="ApplyLogo_Click" Content="Apply logo" />
+            <flourish:Button Grid.Column="2" Margin="8,20,0,0" Click="ApplyLogo_Click" Content="Apply logo" />
             </Grid>
             <flourish:FlourishTextBlock x:Name="IdentityStatusText" Margin="0,12,0,0" Role="Status" />
           </StackPanel>
@@ -71,11 +71,11 @@
             <WrapPanel>
               <flourish:FlourishComboBox x:Name="TitleBarElementBox" Width="220" SelectionChanged="TitleBarElementBox_SelectionChanged" />
               <flourish:FlourishCheckBox x:Name="TitleBarElementVisibleBox" Margin="18,0,0,0" VerticalAlignment="Center" Content="Visible" />
-              <flourish:FlourishButton Margin="18,0,0,0" Click="ApplyElementVisibility_Click" Content="Apply visibility" />
+              <flourish:Button Margin="18,0,0,0" Click="ApplyElementVisibility_Click" Content="Apply visibility" />
             </WrapPanel>
             <WrapPanel Margin="0,14,0,0">
               <flourish:FlourishComboBox x:Name="BreadcrumbModeBox" Width="220" />
-              <flourish:FlourishButton Margin="18,0,0,0" Click="ApplyBreadcrumbMode_Click" Content="Apply breadcrumb mode" />
+              <flourish:Button Margin="18,0,0,0" Click="ApplyBreadcrumbMode_Click" Content="Apply breadcrumb mode" />
             </WrapPanel>
           </StackPanel>
         </flourish:FlourishCard>
@@ -98,9 +98,9 @@
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <flourish:FlourishTextBox x:Name="SearchTextBox" Text="runtime API" />
-            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="SetSearchText_Click" Content="Set query" />
-            <flourish:FlourishButton Grid.Column="2" Margin="8,0,0,0" Click="FocusSearch_Click" Content="Focus search" />
-            <flourish:FlourishButton Grid.Column="3" Margin="8,0,0,0" Click="ClearSearch_Click" Content="Clear" />
+            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="SetSearchText_Click" Content="Set query" />
+            <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="FocusSearch_Click" Content="Focus search" />
+            <flourish:Button Grid.Column="3" Margin="8,0,0,0" Click="ClearSearch_Click" Content="Clear" />
             </Grid>
             <Grid Margin="0,14,0,0">
             <Grid.ColumnDefinitions>
@@ -109,8 +109,8 @@
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <flourish:FlourishTextBox x:Name="SearchPlaceholderBox" />
-            <flourish:FlourishButton Grid.Column="1" Margin="10,0,0,0" Click="ApplySearchPlaceholder_Click" Content="Set placeholder" />
-            <flourish:FlourishButton x:Name="ToggleSearchVisibilityButton" Grid.Column="2" Margin="8,0,0,0" Click="ToggleSearchVisibility_Click" />
+            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ApplySearchPlaceholder_Click" Content="Set placeholder" />
+            <flourish:Button x:Name="ToggleSearchVisibilityButton" Grid.Column="2" Margin="8,0,0,0" Click="ToggleSearchVisibility_Click" />
             </Grid>
             <flourish:FlourishTextBlock x:Name="SearchStatusText" Margin="0,12,0,0" Role="Status" Text="Waiting for a query." />
           </StackPanel>
@@ -129,7 +129,7 @@
             <WrapPanel>
               <flourish:FlourishComboBox x:Name="ShellFeatureBox" Width="220" SelectionChanged="ShellFeatureBox_SelectionChanged" />
               <flourish:FlourishCheckBox x:Name="ShellFeatureEnabledBox" Margin="18,0,0,0" VerticalAlignment="Center" Content="Enabled" />
-              <flourish:FlourishButton Margin="18,0,0,0" Click="ApplyShellFeature_Click" Content="Apply feature" />
+              <flourish:Button Margin="18,0,0,0" Click="ApplyShellFeature_Click" Content="Apply feature" />
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="ShellFeatureStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>

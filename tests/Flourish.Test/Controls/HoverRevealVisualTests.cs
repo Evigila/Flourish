@@ -6,6 +6,8 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Interaction;
+using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -38,7 +40,7 @@ public sealed class HoverRevealVisualTests
                   </ControlTemplate.Triggers>
                 </ControlTemplate>
                 """;
-            var button = new Button
+            var button = new WpfButton
             {
                 Template = Assert.IsType<ControlTemplate>(XamlReader.Parse(templateXaml)),
             };
@@ -281,7 +283,7 @@ public sealed class HoverRevealVisualTests
     {
         RunInSta(() =>
         {
-            var button = new Button { Template = CreateHoverTemplate() };
+            var button = new WpfButton { Template = CreateHoverTemplate() };
             HoverReveal.SetIsParticipant(button, true);
             HoverReveal.SetIsEnabled(button, false);
             var window = CreateWindow(new ResourceDictionary(), button);
@@ -317,7 +319,7 @@ public sealed class HoverRevealVisualTests
             var button = new FlourishButton
             {
                 Content = "Custom Flourish template",
-                Template = CreateFlourishButtonHoverTemplate(),
+                Template = CreateButtonHoverTemplate(),
             };
             HoverReveal.SetIsEnabled(button, false);
             var window = CreateWindow(LoadResourceDictionary(), button);
@@ -353,7 +355,7 @@ public sealed class HoverRevealVisualTests
     {
         RunInSta(() =>
         {
-            var button = new Button { Template = CreateHoverTemplate() };
+            var button = new WpfButton { Template = CreateHoverTemplate() };
             var window = CreateWindow(new ResourceDictionary(), button);
 
             try
@@ -425,7 +427,7 @@ public sealed class HoverRevealVisualTests
         RunInSta(() =>
         {
             var template = CreateHoverTemplate();
-            var button = new Button { Template = template };
+            var button = new WpfButton { Template = template };
             var window = CreateWindow(new ResourceDictionary(), button);
 
             try
@@ -457,7 +459,7 @@ public sealed class HoverRevealVisualTests
     {
         RunInSta(() =>
         {
-            var button = new Button { Template = CreateHoverTemplate(includeParts: false) };
+            var button = new WpfButton { Template = CreateHoverTemplate(includeParts: false) };
             var window = CreateWindow(new ResourceDictionary(), button);
 
             try
@@ -489,7 +491,7 @@ public sealed class HoverRevealVisualTests
     {
         RunInSta(() =>
         {
-            var button = new Button { Template = CreateHoverTemplate() };
+            var button = new WpfButton { Template = CreateHoverTemplate() };
             HoverReveal.SetIsParticipant(button, true);
             var panel = new StackPanel();
             var window = CreateWindow(new ResourceDictionary(), panel);
@@ -607,13 +609,12 @@ public sealed class HoverRevealVisualTests
                 new()
                 {
                     Content = "Primary",
-                    Appearance = FlourishButtonAppearance.Primary,
+                    Appearance = ButtonAppearance.Primary,
                 },
-                new()
+                new WindowCaptionButton
                 {
-                    Content = "Caption",
-                    Appearance = FlourishButtonAppearance.Subtle,
-                    Variant = FlourishButtonVariant.WindowCaption,
+                    Icon = "Caption",
+                    Appearance = ButtonAppearance.Subtle,
                 },
             ];
             var panel = new StackPanel();
@@ -700,7 +701,7 @@ public sealed class HoverRevealVisualTests
         return Assert.IsType<ControlTemplate>(XamlReader.Parse(templateXaml));
     }
 
-    private static ControlTemplate CreateFlourishButtonHoverTemplate()
+    private static ControlTemplate CreateButtonHoverTemplate()
     {
         const string templateXaml =
             """
@@ -708,7 +709,7 @@ public sealed class HoverRevealVisualTests
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Flourish"
-              TargetType="{x:Type controls:FlourishButton}"
+              TargetType="{x:Type controls:Button}"
             >
               <Border x:Name="HoverChrome" Opacity="0">
                 <Border.RenderTransform>

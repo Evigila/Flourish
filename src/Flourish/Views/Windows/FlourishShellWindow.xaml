@@ -326,45 +326,51 @@
             Orientation="Horizontal"
           />
 
-          <control:FlourishButton
+          <control:IconButton
             x:Name="BackgroundTaskQueueButton"
             Grid.Column="1"
             Appearance="Subtle"
+            Width="26"
+            Height="22"
+            MinWidth="0"
+            MinHeight="0"
+            Padding="0"
             Click="BackgroundTaskQueueButton_Click"
             MouseEnter="BackgroundTaskQueueButton_MouseEnter"
-            Variant="StatusIcon"
             Visibility="Collapsed"
           >
-            <Grid>
-              <control:FlourishTextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="{DynamicResource FlourishFontSizeCaption}"
-                Role="Icon"
-                Text="&#xE8FD;"
-              />
-              <Border
-                MinWidth="12"
-                Height="12"
-                Margin="10,-7,-7,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Background="{DynamicResource FlourishPrimaryForegroundBrush}"
-                CornerRadius="6"
-              >
+            <control:IconButton.Icon>
+              <Grid>
                 <control:FlourishTextBlock
-                  x:Name="BackgroundTaskQueueCountText"
-                  Margin="2,0"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
-                  FontSize="8"
-                  Foreground="White"
-                  TextAlignment="Center"
+                  FontFamily="{DynamicResource FlourishIconFontFamily}"
+                  FontSize="{DynamicResource FlourishFontSizeCaption}"
+                  Role="Icon"
+                  Text="&#xE8FD;"
                 />
-              </Border>
-            </Grid>
-          </control:FlourishButton>
+                <Border
+                  MinWidth="12"
+                  Height="12"
+                  Margin="10,-7,-7,0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top"
+                  Background="{DynamicResource FlourishPrimaryForegroundBrush}"
+                  CornerRadius="6"
+                >
+                  <control:FlourishTextBlock
+                    x:Name="BackgroundTaskQueueCountText"
+                    Margin="2,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="8"
+                    Foreground="White"
+                    TextAlignment="Center"
+                  />
+                </Border>
+              </Grid>
+            </control:IconButton.Icon>
+          </control:IconButton>
 
           <StackPanel
             x:Name="FooterStartRegionHost"
@@ -381,24 +387,30 @@
             Orientation="Horizontal"
           />
 
-          <control:FlourishButton
+          <control:IconButton
             x:Name="SystemStatusButton"
             Grid.Column="5"
             Appearance="Subtle"
+            Width="26"
+            Height="22"
+            MinWidth="0"
+            MinHeight="0"
+            Padding="0"
             Click="SystemStatusButton_Click"
             MouseEnter="SystemStatusButton_MouseEnter"
-            Variant="StatusIcon"
             Visibility="Collapsed"
           >
-            <control:FlourishTextBlock
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              FontFamily="{DynamicResource FlourishIconFontFamily}"
-              FontSize="{DynamicResource FlourishFontSizeCaption}"
-              Role="Icon"
-              Text="&#xE950;"
-            />
-          </control:FlourishButton>
+            <control:IconButton.Icon>
+              <control:FlourishTextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{DynamicResource FlourishIconFontFamily}"
+                FontSize="{DynamicResource FlourishFontSizeCaption}"
+                Role="Icon"
+                Text="&#xE950;"
+              />
+            </control:IconButton.Icon>
+          </control:IconButton>
 
           <StackPanel
             x:Name="FooterEndRegionHost"

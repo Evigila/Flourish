@@ -9,6 +9,9 @@
     <ResourceDictionary Source="/Flourish;component/Controls/TextBlock.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Label.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Button.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/IconButton.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/WindowCaptionButton.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/CardButton.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/TextBox.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/PasswordBox.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/SearchBox.xaml" />

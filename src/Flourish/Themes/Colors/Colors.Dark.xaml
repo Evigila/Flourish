@@ -66,6 +66,7 @@
   <SolidColorBrush x:Key="FlourishDangerForegroundBrush" Color="#F1707B" />
   <SolidColorBrush x:Key="FlourishDangerBackgroundBrush" Color="#3B0509" />
   <SolidColorBrush x:Key="FlourishDangerStrokeBrush" Color="#E37D83" />
+  <SolidColorBrush x:Key="FlourishDangerHoverRevealBrush" Color="#33E37D83" />
   <SolidColorBrush x:Key="FlourishSelectionBackgroundBrush" Color="#0C3B5E" />
 
   <SolidColorBrush x:Key="FlourishScrollbarThumbBrush" Color="#8A8A8A" />

@@ -2,8 +2,11 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Themes;
+using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -19,8 +22,7 @@ public sealed class FlourishPublicControlsTests
         Type[] publicContractTypes =
         [
             typeof(FlourishThemeResources),
-            typeof(FlourishButtonAppearance),
-            typeof(FlourishButtonVariant),
+            typeof(ButtonAppearance),
             typeof(FlourishCardAppearance),
             typeof(FlourishGridSplitterVariant),
             typeof(FlourishListBoxAppearance),
@@ -44,6 +46,8 @@ public sealed class FlourishPublicControlsTests
                 nameof(HoverReveal.SetTemplateHandlesInteraction),
                 nameof(HoverReveal.GetAnimationDuration),
                 nameof(HoverReveal.SetAnimationDuration),
+                nameof(HoverReveal.GetOverrideColor),
+                nameof(HoverReveal.SetOverrideColor),
             },
             methodName => AssertPublicStaticMethod(typeof(HoverReveal), methodName)
         );
@@ -238,6 +242,9 @@ public sealed class FlourishPublicControlsTests
         RunInSta(() =>
         {
             var button = new FlourishButton();
+            var iconButton = new IconButton();
+            var windowCaptionButton = new WindowCaptionButton();
+            var cardButton = new CardButton();
             var card = new FlourishCard();
             var gridSplitter = new FlourishGridSplitter();
             var listBox = new FlourishListBox();
@@ -245,8 +252,14 @@ public sealed class FlourishPublicControlsTests
             var search = new FlourishSearchBox();
             var text = new FlourishTextBlock();
 
-            Assert.Equal(FlourishButtonAppearance.Standard, button.Appearance);
-            Assert.Equal(FlourishButtonVariant.Standard, button.Variant);
+            Assert.Equal(ButtonAppearance.Standard, button.Appearance);
+            Assert.Null(iconButton.Icon);
+            Assert.IsAssignableFrom<FlourishButton>(iconButton);
+            Assert.IsAssignableFrom<IconButton>(windowCaptionButton);
+            Assert.Null(cardButton.Icon);
+            Assert.Equal(Dock.Top, cardButton.IconPosition);
+            Assert.Equal(string.Empty, cardButton.Title);
+            Assert.IsAssignableFrom<FlourishButton>(cardButton);
             Assert.Equal(FlourishCardAppearance.Standard, card.Appearance);
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
@@ -258,6 +271,74 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
+    public void ButtonFamily_ExposesFourAppearancesWithoutVariantOrPrefixedTypes()
+    {
+        Assert.Equal(
+            new[] { "Standard", "Primary", "Subtle", "Danger" },
+            Enum.GetNames<ButtonAppearance>()
+        );
+        Assert.Null(typeof(FlourishButton).GetProperty("Variant"));
+
+        var assembly = typeof(FlourishButton).Assembly;
+        Assert.Null(assembly.GetType("ArkheideSystem.Flourish.Controls.ButtonVariant"));
+        Assert.Null(assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishButton"));
+        Assert.Null(assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishIconButton"));
+        Assert.Null(assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCardButton"));
+        Assert.Null(
+            assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishWindowCaptionButton")
+        );
+    }
+
+    [Fact]
+    public void ButtonFamily_AddedDependencyPropertiesRoundTrip()
+    {
+        RunInSta(() =>
+        {
+            var icon = new Border();
+            var iconButton = new IconButton { Icon = icon, Content = "Label" };
+            var captionButton = new WindowCaptionButton { Icon = "Caption" };
+            var cardButton = new CardButton
+            {
+                Icon = icon,
+                IconPosition = Dock.Right,
+                Title = "Title",
+                Content = "Description",
+            };
+
+            Assert.Same(icon, iconButton.Icon);
+            Assert.Equal("Label", iconButton.Content);
+            Assert.Equal("Caption", captionButton.Icon);
+            Assert.Same(icon, cardButton.Icon);
+            Assert.Equal(Dock.Right, cardButton.IconPosition);
+            Assert.Equal("Title", cardButton.Title);
+            Assert.Equal("Description", cardButton.Content);
+        });
+    }
+
+    [Fact]
+    public void IconButton_SimpleToolTipContentUsesFlourishToolTip()
+    {
+        RunInSta(() =>
+        {
+            var explicitToolTip = new FlourishToolTip { Content = "Explicit" };
+            var nativeToolTip = new ToolTip { Content = "Native" };
+            var iconButton = new IconButton { ToolTip = "Refresh" };
+            var captionButton = new WindowCaptionButton { ToolTip = "Close" };
+            var explicitButton = new IconButton { ToolTip = explicitToolTip };
+            var nativeButton = new IconButton { ToolTip = nativeToolTip };
+
+            var iconToolTip = Assert.IsType<FlourishToolTip>(iconButton.ToolTip);
+            Assert.Equal("Refresh", iconToolTip.Content);
+            Assert.Equal(
+                "Close",
+                Assert.IsType<FlourishToolTip>(captionButton.ToolTip).Content
+            );
+            Assert.Same(explicitToolTip, explicitButton.ToolTip);
+            Assert.Same(nativeToolTip, nativeButton.ToolTip);
+        });
+    }
+
+    [Fact]
     public void SemanticEnumProperties_RejectUndefinedValues()
     {
         RunInSta(() =>
@@ -265,10 +346,10 @@ public sealed class FlourishPublicControlsTests
             var button = new FlourishButton();
 
             Assert.Throws<ArgumentException>(() =>
-                button.Appearance = (FlourishButtonAppearance)(-1)
+                button.Appearance = (ButtonAppearance)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
-                button.Variant = (FlourishButtonVariant)(-1)
+                new CardButton().IconPosition = (Dock)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
                 new FlourishCard().Appearance = (FlourishCardAppearance)(-1)
@@ -292,6 +373,7 @@ public sealed class FlourishPublicControlsTests
         {
             var element = new Border();
             var duration = TimeSpan.FromMilliseconds(215);
+            var overrideColor = new SolidColorBrush(Colors.Red);
 
             Assert.True(HoverReveal.GetIsEnabled(element));
             Assert.True(HoverReveal.GetIsMotionEnabled(element));
@@ -301,18 +383,21 @@ public sealed class FlourishPublicControlsTests
                 TimeSpan.FromMilliseconds(140),
                 HoverReveal.GetAnimationDuration(element)
             );
+            Assert.Null(HoverReveal.GetOverrideColor(element));
 
             HoverReveal.SetIsEnabled(element, false);
             HoverReveal.SetIsMotionEnabled(element, false);
             HoverReveal.SetIsParticipant(element, true);
             HoverReveal.SetTemplateHandlesInteraction(element, true);
             HoverReveal.SetAnimationDuration(element, duration);
+            HoverReveal.SetOverrideColor(element, overrideColor);
 
             Assert.False(HoverReveal.GetIsEnabled(element));
             Assert.False(HoverReveal.GetIsMotionEnabled(element));
             Assert.True(HoverReveal.GetIsParticipant(element));
             Assert.True(HoverReveal.GetTemplateHandlesInteraction(element));
             Assert.Equal(duration, HoverReveal.GetAnimationDuration(element));
+            Assert.Same(overrideColor, HoverReveal.GetOverrideColor(element));
         });
     }
 
@@ -346,7 +431,7 @@ public sealed class FlourishPublicControlsTests
         RunInSta(() =>
         {
             var parent = new Grid();
-            var child = new Button();
+            var child = new WpfButton();
             parent.Children.Add(child);
 
             HoverReveal.SetIsEnabled(parent, false);
@@ -368,7 +453,6 @@ public sealed class FlourishPublicControlsTests
             .Assembly.GetExportedTypes()
             .Where(type =>
                 type.Namespace == "ArkheideSystem.Flourish.Controls"
-                && type.Name.StartsWith("Flourish", StringComparison.Ordinal)
                 && typeof(FrameworkElement).IsAssignableFrom(type)
                 && !type.IsAbstract
             )

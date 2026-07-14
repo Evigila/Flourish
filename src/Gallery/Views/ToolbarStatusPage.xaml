@@ -23,12 +23,12 @@
         <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
           <StackPanel>
             <WrapPanel>
-              <flourish:FlourishButton Click="AddToolbarItem_Click" Content="Add / update action" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleToolbarItemEnabled_Click" Content="Enable / disable" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleToolbarItemVisible_Click" Content="Show / hide" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleIconOnly_Click" Content="Icon / icon + text" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="MoveToolbarItem_Click" Content="Move action" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveToolbarItem_Click" Content="Remove" />
+              <flourish:Button Click="AddToolbarItem_Click" Content="Add / update action" />
+              <flourish:Button Margin="8,0,0,0" Click="ToggleToolbarItemEnabled_Click" Content="Enable / disable" />
+              <flourish:Button Margin="8,0,0,0" Click="ToggleToolbarItemVisible_Click" Content="Show / hide" />
+              <flourish:Button Margin="8,0,0,0" Click="ToggleIconOnly_Click" Content="Icon / icon + text" />
+              <flourish:Button Margin="8,0,0,0" Click="MoveToolbarItem_Click" Content="Move action" />
+              <flourish:Button Margin="8,0,0,0" Click="RemoveToolbarItem_Click" Content="Remove" />
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="ToolbarStateText" Margin="0,12,0,0" Role="Description" />
             <flourish:FlourishTextBlock x:Name="CommandLogText" Margin="0,8,0,0" FontFamily="Consolas" Role="Status" Text="The toolbar command has not run yet." />
@@ -50,16 +50,16 @@
                 <flourish:FlourishTextBlock Role="FieldLabel" Text="Status text" />
                 <flourish:FlourishTextBox x:Name="StatusTextBox" Width="230" Text="Gallery runtime API is ready" />
               </StackPanel>
-              <flourish:FlourishButton Margin="0,20,0,0" Click="UpsertStatus_Click" Content="Add / update" />
-              <flourish:FlourishButton Margin="8,20,0,0" Click="ShowTimedStatus_Click" Content="Show for 4 seconds" />
-              <flourish:FlourishButton Margin="8,20,0,0" Click="ToggleStatusVisible_Click" Content="Show / hide" />
-              <flourish:FlourishButton Margin="8,20,0,0" Click="MoveStatus_Click" Content="Move item" />
-              <flourish:FlourishButton Margin="8,20,0,0" Click="RemoveStatus_Click" Content="Remove" />
+              <flourish:Button Margin="0,20,0,0" Click="UpsertStatus_Click" Content="Add / update" />
+              <flourish:Button Margin="8,20,0,0" Click="ShowTimedStatus_Click" Content="Show for 4 seconds" />
+              <flourish:Button Margin="8,20,0,0" Click="ToggleStatusVisible_Click" Content="Show / hide" />
+              <flourish:Button Margin="8,20,0,0" Click="MoveStatus_Click" Content="Move item" />
+              <flourish:Button Margin="8,20,0,0" Click="RemoveStatus_Click" Content="Remove" />
             </WrapPanel>
             <WrapPanel Margin="0,12,0,0">
-              <flourish:FlourishButton Click="ToggleLan_Click" Content="Toggle LAN indicator" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="TogglePower_Click" Content="Toggle power indicator" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleStatusBar_Click" Content="Enable / disable bar" />
+              <flourish:Button Click="ToggleLan_Click" Content="Toggle LAN indicator" />
+              <flourish:Button Margin="8,0,0,0" Click="TogglePower_Click" Content="Toggle power indicator" />
+              <flourish:Button Margin="8,0,0,0" Click="ToggleStatusBar_Click" Content="Enable / disable bar" />
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="StatusStateText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
@@ -76,10 +76,10 @@
         <flourish:FlourishCard Margin="{DynamicResource FlourishSectionCardMargin}">
           <StackPanel>
             <WrapPanel>
-              <flourish:FlourishButton Click="AddRegion_Click" Content="Add header content" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="ToggleRegion_Click" Content="Enable / disable" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="ReorderRegion_Click" Content="Change order" />
-              <flourish:FlourishButton Margin="8,0,0,0" Click="RemoveRegion_Click" Content="Remove" />
+              <flourish:Button Click="AddRegion_Click" Content="Add header content" />
+              <flourish:Button Margin="8,0,0,0" Click="ToggleRegion_Click" Content="Enable / disable" />
+              <flourish:Button Margin="8,0,0,0" Click="ReorderRegion_Click" Content="Change order" />
+              <flourish:Button Margin="8,0,0,0" Click="RemoveRegion_Click" Content="Remove" />
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="RegionStateText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>

@@ -5,7 +5,7 @@ using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
-using Button = ArkheideSystem.Flourish.Controls.FlourishButton;
+using Button = ArkheideSystem.Flourish.Controls.Button;
 using Key = System.Windows.Input.Key;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBoxOptions = System.Windows.MessageBoxOptions;
@@ -120,12 +120,14 @@ internal partial class FlourishMessageBoxWindow : Window
     {
         foreach (var buttonDefinition in buttonDefinitions)
         {
-            var button = new FlourishButton
+            var button = new Button
             {
                 Appearance = buttonDefinition.IsPrimary
-                    ? FlourishButtonAppearance.Primary
-                    : FlourishButtonAppearance.Standard,
-                Variant = FlourishButtonVariant.MessageBox,
+                    ? ButtonAppearance.Primary
+                    : ButtonAppearance.Standard,
+                MinWidth = 72,
+                Height = 30,
+                Padding = new Thickness(14, 0, 14, 0),
                 Content = buttonDefinition.Text,
                 IsDefault = buttonDefinition.IsDefault,
                 IsCancel = buttonDefinition.IsCancel,

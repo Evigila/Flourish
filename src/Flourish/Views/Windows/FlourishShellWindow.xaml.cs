@@ -13,7 +13,7 @@ using ArkheideSystem.Flourish.Internal.Interaction;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Button = ArkheideSystem.Flourish.Controls.FlourishButton;
+using Button = ArkheideSystem.Flourish.Controls.Button;
 using ListBox = ArkheideSystem.Flourish.Controls.FlourishListBox;
 using Orientation = System.Windows.Controls.Orientation;
 using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
@@ -1088,11 +1088,15 @@ internal partial class FlourishShellWindow : Window
         toolTip.Children.Add(toolTipDescription);
         toolTip.Children.Add(toolTipState);
 
-        var button = new Button
+        var button = new IconButton
         {
-            Content = icon,
-            Appearance = FlourishButtonAppearance.Subtle,
-            Variant = FlourishButtonVariant.StatusIcon,
+            Width = 26,
+            Height = 22,
+            MinWidth = 0,
+            MinHeight = 0,
+            Padding = new Thickness(),
+            Icon = icon,
+            Appearance = ButtonAppearance.Subtle,
             Tag = task.Id,
             ToolTip = new FlourishToolTip { Content = toolTip },
         };
@@ -1265,7 +1269,6 @@ internal partial class FlourishShellWindow : Window
             Padding = new Thickness(10, 0, 10, 0),
             Tag = task.Id,
             Content = localizationService.Get(FlourishLocaleKeys.BackgroundTaskCancel),
-            Variant = FlourishButtonVariant.Action,
         };
         Grid.SetColumn(cancelButton, 2);
         cancelButton.Click += CancelBackgroundTaskButton_Click;
@@ -2054,17 +2057,19 @@ internal partial class FlourishShellWindow : Window
             }
 
             var useIconOnly = showIconOnly && !string.IsNullOrWhiteSpace(item.IconGlyph);
-            var button = new Button
+            var button = new IconButton
             {
-                Content = useIconOnly
-                    ? CreateIconContent(item.IconGlyph)
-                    : CreateIconTextContent(item.IconGlyph, item.DisplayName),
+                Icon = string.IsNullOrWhiteSpace(item.IconGlyph) ? null : item.IconGlyph,
+                Content = useIconOnly ? null : item.DisplayName,
                 Margin = buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness(),
                 ToolTip = new FlourishToolTip { Content = item.DisplayName },
-                Appearance = FlourishButtonAppearance.Subtle,
-                Variant = FlourishButtonVariant.Toolbar,
+                Appearance = ButtonAppearance.Subtle,
                 Tag = item.CommandKey,
                 Width = useIconOnly ? 30 : double.NaN,
+                Height = 28,
+                MinWidth = useIconOnly ? 0 : 28,
+                MinHeight = 0,
+                Padding = new Thickness(7, 0, 7, 0),
                 IsEnabled = item.IsEnabled
                     && (
                         string.IsNullOrWhiteSpace(item.CommandKey)
@@ -2263,10 +2268,13 @@ internal partial class FlourishShellWindow : Window
                 {
                     Margin = new Thickness(0, 8, 0, 0),
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                    Height = 28,
+                    MinWidth = 28,
+                    MinHeight = 0,
+                    Padding = new Thickness(7, 0, 7, 0),
                     Content = "Run action",
                     Tag = info,
-                    Appearance = FlourishButtonAppearance.Subtle,
-                    Variant = FlourishButtonVariant.Toolbar,
+                    Appearance = ButtonAppearance.Subtle,
                 };
                 action.Click += NotificationAction_Click;
                 content.Children.Add(action);
@@ -2275,15 +2283,17 @@ internal partial class FlourishShellWindow : Window
             Grid.SetColumn(content, 1);
             layout.Children.Add(content);
 
-            var dismiss = new Button
+            var dismiss = new IconButton
             {
                 Width = 28,
                 Height = 28,
+                MinWidth = 0,
+                MinHeight = 0,
+                Padding = new Thickness(),
                 Margin = new Thickness(8, 0, 0, 0),
-                Content = CreateIconContent("\uE711"),
+                Icon = CreateIconContent("\uE711"),
                 Tag = definition.Id,
-                Appearance = FlourishButtonAppearance.Subtle,
-                Variant = FlourishButtonVariant.Toolbar,
+                Appearance = ButtonAppearance.Subtle,
                 ToolTip = new FlourishToolTip { Content = "Dismiss" },
             };
             dismiss.Click += NotificationDismiss_Click;
@@ -2844,27 +2854,6 @@ internal partial class FlourishShellWindow : Window
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         UpdateStatusBarVisibility();
-    }
-
-    private StackPanel CreateIconTextContent(string iconGlyph, string label)
-    {
-        var content = new StackPanel { Orientation = Orientation.Horizontal };
-        var icon = new TextBlock
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            Text = iconGlyph,
-        };
-        BindIconTypography(icon, "FlourishFontSizeTitlebarIcon");
-        content.Children.Add(icon);
-        content.Children.Add(
-            new TextBlock
-            {
-                Margin = new Thickness(5, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Text = label,
-            }
-        );
-        return content;
     }
 
     private TextBlock CreateIconContent(string iconGlyph)
