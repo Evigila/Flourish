@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Xml.Linq;
@@ -13,9 +14,8 @@ namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
 
 public sealed class PageTransitionControllerTests
 {
+    private const double ConfiguredOpacity = 0.8;
     private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(200);
-    private static readonly XNamespace Presentation =
-        "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
     private static readonly XNamespace Xaml =
         "http://schemas.microsoft.com/winfx/2006/xaml";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
@@ -23,14 +23,13 @@ public sealed class PageTransitionControllerTests
     [Theory]
     [InlineData(FlourishPageTransition.Fade)]
     [InlineData(FlourishPageTransition.EntranceFromBottom)]
-    public void Transition_AnimatesOnlyTheTextFreeChrome(
+    public void Transition_AnimatesCachedPresenterWithoutRelayout(
         FlourishPageTransition transition
     )
     {
         RunInSta(() =>
         {
             var fixture = TransitionFixture.Create();
-            var contentTransform = fixture.Content.RenderTransform;
             var sut = new PageTransitionController();
             var completionCount = 0;
 
@@ -46,68 +45,86 @@ public sealed class PageTransitionControllerTests
                 )
             );
 
+            var transitionCache = AssertTransitionCache(fixture);
+            Assert.NotSame(fixture.OriginalCacheMode, transitionCache);
+            var translation = transition == FlourishPageTransition.EntranceFromBottom
+                ? Assert.IsType<TranslateTransform>(fixture.Presenter.RenderTransform)
+                : null;
+            if (translation is null)
+            {
+                Assert.Same(
+                    fixture.OriginalRenderTransformLocalValue,
+                    fixture.Presenter.ReadLocalValue(UIElement.RenderTransformProperty)
+                );
+            }
+
             var clock = sut.ActiveClockController;
             Assert.NotNull(clock);
             clock!.SeekAlignedToLastTick(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
             fixture.Layout();
 
-            AssertContentPresentationUnchanged(fixture, contentTransform);
-            AssertClose(1, fixture.Chrome.Opacity);
-            AssertClose(1, fixture.ChromeScale.ScaleY);
-            Assert.Equal(
-                transition == FlourishPageTransition.Fade,
-                IsAnimated(fixture.Chrome, UIElement.OpacityProperty)
-            );
-            Assert.Equal(
-                transition == FlourishPageTransition.EntranceFromBottom,
-                IsAnimated(fixture.ChromeScale, ScaleTransform.ScaleYProperty)
-            );
+            AssertClose(0, fixture.Presenter.Opacity);
+            Assert.True(IsAnimated(fixture.Presenter, UIElement.OpacityProperty));
+            if (translation is not null)
+            {
+                AssertClose(14, translation.Y);
+                Assert.True(IsAnimated(translation, TranslateTransform.YProperty));
+            }
+
+            AssertContentPresentationUnchanged(fixture);
 
             clock.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
             fixture.Layout();
 
-            AssertContentPresentationUnchanged(fixture, contentTransform);
-            if (transition == FlourishPageTransition.Fade)
+            AssertClose(fixture.OriginalOpacity / 2, fixture.Presenter.Opacity);
+            if (translation is not null)
             {
-                AssertClose(0.5, fixture.Chrome.Opacity);
-                AssertClose(1, fixture.ChromeScale.ScaleY);
-            }
-            else
-            {
-                AssertClose(1, fixture.Chrome.Opacity);
-                AssertClose(0.5, fixture.ChromeScale.ScaleY);
+                AssertClose(7, translation.Y);
             }
 
             Assert.Equal(0, fixture.Content.MeasureCount);
             Assert.Equal(0, fixture.Content.ArrangeCount);
+            AssertContentPresentationUnchanged(fixture);
 
             clock.SeekAlignedToLastTick(Duration, TimeSeekOrigin.BeginTime);
 
             Assert.Equal(1, completionCount);
             Assert.False(sut.IsActive);
-            AssertChromeIdle(fixture);
-            AssertContentPresentationUnchanged(fixture, contentTransform);
+            Assert.Null(sut.ActiveClockController);
+            AssertPresenterRestored(fixture);
+            AssertContentPresentationUnchanged(fixture);
+            if (translation is not null)
+            {
+                AssertClose(0, translation.Y);
+                Assert.False(IsAnimated(translation, TranslateTransform.YProperty));
+            }
         });
     }
 
     [Fact]
-    public void Cancel_DropsTheCallbackAndRestoresIdleChrome()
+    public void Cancel_DropsTheCallbackAndRestoresOriginalPresentation()
     {
         RunInSta(() =>
         {
-            var fixture = TransitionFixture.Create();
-            var contentTransform = fixture.Content.RenderTransform;
+            var fixture = TransitionFixture.Create(
+                withOriginalOpacity: true,
+                withOriginalCache: true,
+                withOriginalRenderTransform: true
+            );
             var sut = new PageTransitionController();
             var completionCount = 0;
 
             Assert.True(
                 sut.Start(
                     fixture.Target,
-                    FlourishPageTransition.Fade,
+                    FlourishPageTransition.EntranceFromBottom,
                     Duration,
                     new LinearEase(),
                     () => completionCount++
                 )
+            );
+            var translation = Assert.IsType<TranslateTransform>(
+                fixture.Presenter.RenderTransform
             );
             sut.ActiveClockController!.SeekAlignedToLastTick(
                 Duration / 2,
@@ -118,8 +135,10 @@ public sealed class PageTransitionControllerTests
 
             Assert.Equal(0, completionCount);
             Assert.False(sut.IsActive);
-            AssertChromeIdle(fixture);
-            AssertContentPresentationUnchanged(fixture, contentTransform);
+            Assert.Null(sut.ActiveClockController);
+            AssertPresenterRestored(fixture);
+            AssertClose(0, translation.Y);
+            Assert.False(IsAnimated(translation, TranslateTransform.YProperty));
         });
     }
 
@@ -143,6 +162,7 @@ public sealed class PageTransitionControllerTests
                 )
             );
             var firstClock = sut.ActiveClockController;
+            var firstCache = AssertTransitionCache(fixture);
             firstClock!.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
 
             Assert.True(
@@ -155,9 +175,11 @@ public sealed class PageTransitionControllerTests
                 )
             );
             var secondClock = sut.ActiveClockController;
+            var secondCache = AssertTransitionCache(fixture);
 
             Assert.NotNull(secondClock);
             Assert.NotSame(firstClock, secondClock);
+            Assert.NotSame(firstCache, secondCache);
             Assert.Equal(0, firstCompletionCount);
             Assert.Equal(0, secondCompletionCount);
             Assert.True(sut.IsActive);
@@ -166,8 +188,171 @@ public sealed class PageTransitionControllerTests
             Assert.Equal(0, firstCompletionCount);
             Assert.Equal(1, secondCompletionCount);
             Assert.False(sut.IsActive);
-            AssertChromeIdle(fixture);
+            AssertPresenterRestored(fixture);
         });
+    }
+
+    [Fact]
+    public void InvalidTransition_CancelsTheActiveRunAndRestoresPresentation()
+    {
+        RunInSta(() =>
+        {
+            var fixture = TransitionFixture.Create(withOriginalCache: true);
+            var sut = new PageTransitionController();
+            var completionCount = 0;
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    FlourishPageTransition.EntranceFromBottom,
+                    Duration,
+                    new LinearEase(),
+                    () => completionCount++
+                )
+            );
+
+            Assert.False(
+                sut.Start(
+                    fixture.Target,
+                    FlourishPageTransition.None,
+                    Duration,
+                    new LinearEase(),
+                    () => completionCount++
+                )
+            );
+
+            Assert.Equal(0, completionCount);
+            Assert.False(sut.IsActive);
+            AssertPresenterRestored(fixture);
+        });
+    }
+
+    [Fact]
+    public void Start_WhenInstallingTheTemporaryTransformThrows_RestoresPresentation()
+    {
+        RunInSta(() =>
+        {
+            var presenter = new ThrowOncePresenter();
+            var fixture = TransitionFixture.Create(
+                withOriginalCache: true,
+                presenter: presenter
+            );
+            var sut = new PageTransitionController();
+            var completionCount = 0;
+            presenter.ThrowOnNextOpacityCoercion = true;
+
+            Assert.Throws<InvalidOperationException>(() =>
+                sut.Start(
+                    fixture.Target,
+                    FlourishPageTransition.EntranceFromBottom,
+                    Duration,
+                    new LinearEase(),
+                    () => completionCount++
+                )
+            );
+
+            Assert.Equal(0, completionCount);
+            Assert.False(sut.IsActive);
+            Assert.Null(sut.ActiveClockController);
+            AssertPresenterRestored(fixture);
+        });
+    }
+
+    [Fact]
+    public void Completion_PreservesExistingBindings()
+    {
+        RunInSta(() =>
+        {
+            var source = new TransitionBindingSource
+            {
+                Opacity = 0.65,
+                CacheMode = new BitmapCache(1.5),
+                RenderTransform = new ScaleTransform(1.05, 0.95),
+            };
+            var presenter = new Grid();
+            BindingOperations.SetBinding(
+                presenter,
+                UIElement.OpacityProperty,
+                new Binding(nameof(TransitionBindingSource.Opacity)) { Source = source }
+            );
+            BindingOperations.SetBinding(
+                presenter,
+                UIElement.CacheModeProperty,
+                new Binding(nameof(TransitionBindingSource.CacheMode)) { Source = source }
+            );
+            BindingOperations.SetBinding(
+                presenter,
+                UIElement.RenderTransformProperty,
+                new Binding(nameof(TransitionBindingSource.RenderTransform)) { Source = source }
+            );
+            var fixture = TransitionFixture.Create(presenter: presenter);
+            var sut = new PageTransitionController();
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    FlourishPageTransition.EntranceFromBottom,
+                    Duration,
+                    new LinearEase(),
+                    static () => { }
+                )
+            );
+            sut.ActiveClockController!.SeekAlignedToLastTick(
+                Duration,
+                TimeSeekOrigin.BeginTime
+            );
+
+            AssertPresenterRestored(fixture);
+            Assert.True(BindingOperations.IsDataBound(presenter, UIElement.OpacityProperty));
+            Assert.True(BindingOperations.IsDataBound(presenter, UIElement.CacheModeProperty));
+            Assert.True(
+                BindingOperations.IsDataBound(
+                    presenter,
+                    UIElement.RenderTransformProperty
+                )
+            );
+            AssertClose(source.Opacity, presenter.Opacity);
+            Assert.Same(source.CacheMode, presenter.CacheMode);
+            Assert.Same(source.RenderTransform, presenter.RenderTransform);
+        });
+    }
+
+    [Fact]
+    public void ShellXaml_DefinesTheCachedPagePresenterContract()
+    {
+        var document = XDocument.Load(
+            Path.Combine(
+                RepositoryRoot,
+                "src",
+                "Flourish",
+                "Views",
+                "Windows",
+                "FlourishShellWindow.xaml"
+            )
+        );
+        var host = FindNamedElement(document, "ContentFrameHost");
+        var presenter = FindNamedElement(document, "PageTransitionContentHost");
+        var rootFrame = FindNamedElement(document, "RootFrame");
+        var overlay = FindNamedElement(document, "ContentOverlayRegionHost");
+        var hostChildren = host.Elements().ToArray();
+        var presenterIndex = Array.IndexOf(hostChildren, presenter);
+        var overlayIndex = Array.IndexOf(hostChildren, overlay);
+
+        Assert.Equal("True", (string?)host.Attribute("ClipToBounds"));
+        Assert.Null(host.Attribute("Background"));
+        Assert.InRange(presenterIndex, 0, overlayIndex - 1);
+        Assert.Contains(rootFrame, presenter.Descendants());
+        Assert.Null(presenter.Attribute("Background"));
+        Assert.Null(presenter.Attribute("RenderOptions.ClearTypeHint"));
+        Assert.Null(presenter.Attribute("RenderTransform"));
+        Assert.DoesNotContain(
+            presenter.Elements(),
+            element => element.Name.LocalName.EndsWith(".RenderTransform", StringComparison.Ordinal)
+        );
+        Assert.DoesNotContain(
+            document.Descendants(),
+            element => (string?)element.Attribute(Xaml + "Name") == "PageTransitionChrome"
+        );
     }
 
     [Theory]
@@ -183,7 +368,7 @@ public sealed class PageTransitionControllerTests
     {
         RunInSta(() =>
         {
-            var fixture = TransitionFixture.Create();
+            var fixture = TransitionFixture.Create(withOriginalCache: true);
             var controller = new PageTransitionController();
             Assert.True(
                 controller.Start(
@@ -205,14 +390,14 @@ public sealed class PageTransitionControllerTests
 
             Assert.False(controller.IsActive);
             Assert.Null(controller.ActiveClockController);
-            AssertChromeIdle(fixture);
+            AssertPresenterRestored(fixture);
         });
     }
 
     [Theory]
     [InlineData(FlourishPageTransition.Fade)]
     [InlineData(FlourishPageTransition.EntranceFromBottom)]
-    public void MotionService_StartsTheConfiguredChromeTransition(
+    public void MotionService_StartsTheConfiguredPresenterTransition(
         FlourishPageTransition transition
     )
     {
@@ -231,109 +416,41 @@ public sealed class PageTransitionControllerTests
 
             Assert.True(controller.IsActive);
             Assert.NotNull(controller.ActiveClockController);
-            AssertClose(1, fixture.Content.Opacity);
-            Assert.False(fixture.Content.HasAnimatedProperties);
+            AssertTransitionCache(fixture);
             controller.Cancel();
-            AssertChromeIdle(fixture);
+            AssertPresenterRestored(fixture);
         });
     }
 
-    [Fact]
-    public void ShellXaml_KeepsTheChromeBetweenThePageAndContentOverlay()
+    private static BitmapCache AssertTransitionCache(TransitionFixture fixture)
     {
-        var document = XDocument.Load(
-            Path.Combine(
-                RepositoryRoot,
-                "src",
-                "Flourish",
-                "Views",
-                "Windows",
-                "FlourishShellWindow.xaml"
-            )
-        );
-        var host = FindNamedElement(document, "ContentFrameHost");
-        var children = host.Elements().ToArray();
-        var rootFrameIndex = Array.FindIndex(
-            children,
-            element => (string?)element.Attribute(Xaml + "Name") == "RootFrame"
-        );
-        var chromeIndex = Array.FindIndex(
-            children,
-            element => (string?)element.Attribute(Xaml + "Name") == "PageTransitionChrome"
-        );
-        var overlayIndex = Array.FindIndex(
-            children,
-            element =>
-                (string?)element.Attribute(Xaml + "Name")
-                == "ContentOverlayRegionHost"
-        );
-        var chrome = children[chromeIndex];
-        var scale = Assert.Single(chrome.Descendants(Presentation + "ScaleTransform"));
+        var cache = Assert.IsType<BitmapCache>(fixture.Presenter.CacheMode);
+        Assert.False(cache.EnableClearType);
+        Assert.False(cache.SnapsToDevicePixels);
+        return cache;
+    }
 
-        Assert.Equal("True", (string?)host.Attribute("ClipToBounds"));
-        Assert.InRange(chromeIndex, rootFrameIndex + 1, overlayIndex - 1);
-        Assert.Equal("False", (string?)chrome.Attribute("IsHitTestVisible"));
-        Assert.Equal("0", (string?)chrome.Attribute("Opacity"));
-        Assert.Equal("5", (string?)chrome.Attribute("Panel.ZIndex"));
-        Assert.Equal("0.5,0", (string?)chrome.Attribute("RenderTransformOrigin"));
+    private static void AssertPresenterRestored(TransitionFixture fixture)
+    {
+        AssertClose(fixture.OriginalOpacity, fixture.Presenter.Opacity);
+        Assert.Same(fixture.OriginalCacheMode, fixture.Presenter.CacheMode);
+        Assert.Same(
+            fixture.OriginalOpacityLocalValue,
+            fixture.Presenter.ReadLocalValue(UIElement.OpacityProperty)
+        );
+        Assert.Same(
+            fixture.OriginalCacheModeLocalValue,
+            fixture.Presenter.ReadLocalValue(UIElement.CacheModeProperty)
+        );
+        Assert.Same(
+            fixture.OriginalRenderTransformLocalValue,
+            fixture.Presenter.ReadLocalValue(UIElement.RenderTransformProperty)
+        );
         Assert.Equal(
-            "{DynamicResource FlourishPageTransitionBackgroundBrush}",
-            (string?)chrome.Attribute("Background")
+            fixture.OriginalRenderTransformOrigin,
+            fixture.Presenter.RenderTransformOrigin
         );
-        Assert.Equal("PageTransitionScaleTransform", (string?)scale.Attribute(Xaml + "Name"));
-        Assert.Equal("1", (string?)scale.Attribute("ScaleX"));
-        Assert.Equal("0", (string?)scale.Attribute("ScaleY"));
-    }
-
-    [Theory]
-    [InlineData("Colors.Light.xaml", "#FFF5F7FA")]
-    [InlineData("Colors.Dark.xaml", "#FF141414")]
-    public void ThemePalette_ProvidesAnOpaqueTransitionBackground(
-        string fileName,
-        string expectedColor
-    )
-    {
-        var document = XDocument.Load(
-            Path.Combine(
-                RepositoryRoot,
-                "src",
-                "Flourish",
-                "Themes",
-                "Colors",
-                fileName
-            )
-        );
-        var brush = Assert.Single(
-            document.Descendants(Presentation + "SolidColorBrush"),
-            element =>
-                (string?)element.Attribute(Xaml + "Key")
-                == "FlourishPageTransitionBackgroundBrush"
-        );
-
-        Assert.Equal(expectedColor, (string?)brush.Attribute("Color"));
-        Assert.Equal("FF", expectedColor.Substring(1, 2));
-    }
-
-    [Fact]
-    public void MotionService_DoesNotAnimateThePageVisual()
-    {
-        var source = File.ReadAllText(
-            Path.Combine(
-                RepositoryRoot,
-                "src",
-                "Flourish",
-                "Services",
-                "FlourishMotionService.cs"
-            )
-        );
-
-        Assert.DoesNotContain("PageEntranceOffset", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("EnsureTranslateTransform", source, StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "AnimatePageEntrance(FrameworkElement",
-            source,
-            StringComparison.Ordinal
-        );
+        Assert.False(IsAnimated(fixture.Presenter, UIElement.OpacityProperty));
     }
 
     private static XElement FindNamedElement(XDocument document, string name)
@@ -344,26 +461,13 @@ public sealed class PageTransitionControllerTests
         );
     }
 
-    private static void AssertContentPresentationUnchanged(
-        TransitionFixture fixture,
-        Transform originalTransform
-    )
+    private static void AssertContentPresentationUnchanged(TransitionFixture fixture)
     {
         AssertClose(1, fixture.Content.Opacity);
-        Assert.Same(originalTransform, fixture.Content.RenderTransform);
+        Assert.Same(fixture.ContentTransform, fixture.Content.RenderTransform);
         Assert.False(fixture.Content.HasAnimatedProperties);
         Assert.False(IsAnimated(fixture.Content, UIElement.OpacityProperty));
-        Assert.False(
-            IsAnimated(fixture.Content, UIElement.RenderTransformProperty)
-        );
-    }
-
-    private static void AssertChromeIdle(TransitionFixture fixture)
-    {
-        AssertClose(0, fixture.Chrome.Opacity);
-        AssertClose(0, fixture.ChromeScale.ScaleY);
-        Assert.False(IsAnimated(fixture.Chrome, UIElement.OpacityProperty));
-        Assert.False(IsAnimated(fixture.ChromeScale, ScaleTransform.ScaleYProperty));
+        Assert.False(IsAnimated(fixture.Content, UIElement.RenderTransformProperty));
     }
 
     private static bool IsAnimated(DependencyObject owner, DependencyProperty property)
@@ -439,44 +543,96 @@ public sealed class PageTransitionControllerTests
     {
         private TransitionFixture(
             Grid host,
+            Grid presenter,
             CountingElement content,
-            Border chrome,
-            ScaleTransform chromeScale
+            Transform contentTransform,
+            double originalOpacity,
+            object originalOpacityLocalValue,
+            CacheMode? originalCacheMode,
+            object originalCacheModeLocalValue,
+            object originalRenderTransformLocalValue,
+            Point originalRenderTransformOrigin
         )
         {
             Host = host;
+            Presenter = presenter;
             Content = content;
-            Chrome = chrome;
-            ChromeScale = chromeScale;
+            ContentTransform = contentTransform;
+            OriginalOpacity = originalOpacity;
+            OriginalOpacityLocalValue = originalOpacityLocalValue;
+            OriginalCacheMode = originalCacheMode;
+            OriginalCacheModeLocalValue = originalCacheModeLocalValue;
+            OriginalRenderTransformLocalValue = originalRenderTransformLocalValue;
+            OriginalRenderTransformOrigin = originalRenderTransformOrigin;
         }
 
         internal Grid Host { get; }
 
+        internal Grid Presenter { get; }
+
         internal CountingElement Content { get; }
 
-        internal Border Chrome { get; }
+        internal Transform ContentTransform { get; }
 
-        internal ScaleTransform ChromeScale { get; }
+        internal double OriginalOpacity { get; }
 
-        internal PageTransitionTarget Target => new(Content, Chrome, ChromeScale);
+        internal object OriginalOpacityLocalValue { get; }
 
-        internal static TransitionFixture Create()
+        internal CacheMode? OriginalCacheMode { get; }
+
+        internal object OriginalCacheModeLocalValue { get; }
+
+        internal object OriginalRenderTransformLocalValue { get; }
+
+        internal Point OriginalRenderTransformOrigin { get; }
+
+        internal PageTransitionTarget Target => new(Presenter);
+
+        internal static TransitionFixture Create(
+            bool withOriginalOpacity = false,
+            bool withOriginalCache = false,
+            bool withOriginalRenderTransform = false,
+            Grid? presenter = null
+        )
         {
             var host = new Grid { Width = 480, Height = 320 };
+            var originalCache = withOriginalCache
+                ? new BitmapCache(1.25)
+                : null;
+            presenter ??= new Grid();
+            if (withOriginalOpacity)
+            {
+                presenter.Opacity = ConfiguredOpacity;
+            }
+
+            if (originalCache is not null)
+            {
+                presenter.CacheMode = originalCache;
+            }
+
+            if (withOriginalRenderTransform)
+            {
+                presenter.RenderTransform = new ScaleTransform(1.1, 0.9);
+                presenter.RenderTransformOrigin = new Point(0.25, 0.75);
+            }
+
             var contentTransform = new TransformGroup();
             contentTransform.Children.Add(new TranslateTransform(3, 4));
             var content = new CountingElement { RenderTransform = contentTransform };
-            var chromeScale = new ScaleTransform(1, 0);
-            var chrome = new Border
-            {
-                IsHitTestVisible = false,
-                Opacity = 0,
-                RenderTransform = chromeScale,
-                RenderTransformOrigin = new Point(0.5, 0),
-            };
-            host.Children.Add(content);
-            host.Children.Add(chrome);
-            return new TransitionFixture(host, content, chrome, chromeScale);
+            presenter.Children.Add(content);
+            host.Children.Add(presenter);
+            return new TransitionFixture(
+                host,
+                presenter,
+                content,
+                contentTransform,
+                presenter.Opacity,
+                presenter.ReadLocalValue(UIElement.OpacityProperty),
+                presenter.CacheMode,
+                presenter.ReadLocalValue(UIElement.CacheModeProperty),
+                presenter.ReadLocalValue(UIElement.RenderTransformProperty),
+                presenter.RenderTransformOrigin
+            );
         }
 
         internal void Layout()
@@ -485,6 +641,40 @@ public sealed class PageTransitionControllerTests
             Host.Arrange(new Rect(0, 0, 480, 320));
             Host.UpdateLayout();
         }
+    }
+
+    private sealed class ThrowOncePresenter : Grid
+    {
+        static ThrowOncePresenter()
+        {
+            UIElement.OpacityProperty.OverrideMetadata(
+                typeof(ThrowOncePresenter),
+                new UIPropertyMetadata(1d, null, CoerceOpacity)
+            );
+        }
+
+        internal bool ThrowOnNextOpacityCoercion { get; set; }
+
+        private static object CoerceOpacity(DependencyObject dependencyObject, object baseValue)
+        {
+            var presenter = (ThrowOncePresenter)dependencyObject;
+            if (presenter.ThrowOnNextOpacityCoercion)
+            {
+                presenter.ThrowOnNextOpacityCoercion = false;
+                throw new InvalidOperationException("Test opacity-animation failure.");
+            }
+
+            return baseValue;
+        }
+    }
+
+    private sealed class TransitionBindingSource
+    {
+        public double Opacity { get; init; }
+
+        public CacheMode? CacheMode { get; init; }
+
+        public Transform? RenderTransform { get; init; }
     }
 
     private sealed class CountingElement : FrameworkElement

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using FlourishNavigationService = ArkheideSystem.Flourish.Services.NavigationService;
@@ -68,7 +69,7 @@ public sealed class FrameNavigationContentHostTests
             var sut = new FlourishNavigationService(
                 new TestPageProvider(),
                 new PageHistoryService(maximumEntries: 2),
-                options
+                new NavigationRouteRegistry(options)
             );
             sut.Initialize(frame);
             window.Show();
@@ -141,8 +142,9 @@ public sealed class FrameNavigationContentHostTests
         Type pageType
     )
     {
-        options.PageTypesByNavigationKey.Add(navigationKey, pageType);
-        options.NavigationKeysByPageType.Add(pageType, navigationKey);
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute(navigationKey, pageType)
+        );
     }
 
     private static void PumpDispatcher()

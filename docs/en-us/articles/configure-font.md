@@ -16,7 +16,7 @@ builder.ConfigureShell(shell =>
 
 When only the font family is supplied, `UseGlobalFont` uses a base size of `14`.
 
-Choose a font family that supports every language displayed by the application. The base size must be positive and finite.
+Choose a font family that supports every language displayed by the application and provides `Regular` and `Bold` faces. The base size must be positive and finite.
 
 Flourish derives several text sizes from the base value, so changing it affects multiple shell regions and page controls. Verify the result at the window sizes the application supports.
 

@@ -41,5 +41,5 @@ items:
   href: status-bar.md
 - name: 消息服务
   href: message-service.md
-- name: 命令解析器
-  href: command-parser.md
+- name: 命令调度
+  href: commands.md

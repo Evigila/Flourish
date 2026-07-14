@@ -63,10 +63,16 @@ Use stable, namespaced command keys such as `reports.export` or `editor.preview`
 
 ## Handle commands
 
-Register one or more synchronous `ICommandParser` implementations through [Dependency injection](configure-services.md).
+Resolve `ICommandRegistry` from the built runtime and register the command key used by the toolbar item.
 
 ```csharp
-services.AddSingleton<ICommandParser, AppCommandParser>();
+ICommandRegistration exportCommand = commands.Register(
+    "reports.export",
+    async (_, token) =>
+    {
+        await exporter.ExportAsync(token);
+        return CommandResult.Handled;
+    });
 ```
 
-[Command parser](command-parser.md) explains command matching and dispatch order. [Runtime APIs](runtime-apis.md) explains `ICommandRegistry` handlers that can be added or removed while the application runs. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and status bar commands.
+[Command dispatch](commands.md) explains registration ownership, availability, duplicate policies, and results. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and status bar commands.

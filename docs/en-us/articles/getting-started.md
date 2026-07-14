@@ -13,9 +13,6 @@ Built-in Flourish text uses the English locale by default. To use Chinese, call 
 
 `Run(Application)` and `IFlourish.Show(Application)` load the Flourish control and theme resources before the shell opens. Add `FlourishThemeResources` explicitly in `App.xaml` when the WPF designer, content shown before the shell, or standalone [control library](control-library.md) usage needs those resources.
 
-> [!WARNING]
-> `FlourishStyles` and `FlourishControlResources` are obsolete. Use `FlourishThemeResources`.
-
 When the Flourish shell is the main window, do not set `StartupUri` in `App.xaml`.
 
 ```xml
@@ -67,6 +64,9 @@ public partial class App : Application
                 shell.UseTitleBar().UseNavigation())
             .ConfigureTitleBar(titleBar =>
                 titleBar.SetTitle("Foobar").SetNavToggle())
+            .ConfigureNavigation(navigation =>
+                navigation.SetGroup(null, groupId: 0, group =>
+                    group.AddNavigableViewItem<HomePage>(isInitial: true)))
             .Build();
 
         flourish.Start();
@@ -87,7 +87,7 @@ public partial class App : Application
 }
 ```
 
-Because no navigation groups or fixed items are configured, the navigation panel lists the registered page automatically. Use [Navigation](navigation.md) when the application needs explicit groups, fixed items, or an initial page.
+The navigation group explicitly places `HomePage` in the panel and selects it as the initial page. Use [Navigation](navigation.md) to add more groups, fixed items, command items, or parent-child relationships.
 
 ## Alternative startup path
 
@@ -105,6 +105,9 @@ return FlourishBuilder
         shell.UseTitleBar().UseNavigation())
     .ConfigureTitleBar(titleBar =>
         titleBar.SetTitle("Foobar").SetNavToggle())
+    .ConfigureNavigation(navigation =>
+        navigation.SetGroup(null, groupId: 0, group =>
+            group.AddNavigableViewItem<HomePage>(isInitial: true)))
     .Run<App>();
 ```
 
@@ -134,7 +137,7 @@ public partial class HomePage : Page
 - [Application data](configure-data.md) selects the built-in interface language and registers custom locales.
 - [Shell configuration](shell-configuration.md) enables shell features and explains their prerequisites.
 - [Title bar](configure-title-bar.md) configures title bar content.
-- [Navigation](navigation.md) configures automatic or explicit navigation items.
+- [Navigation](navigation.md) places registered pages and command items in explicit navigation groups.
 - [Background tasks](background-tasks.md) runs cancellable asynchronous work.
 - [Tooltips](configure-tips.md), [Typography](configure-font.md), and [Window](configure-window.md) configure supporting shell behavior.
 
@@ -142,5 +145,5 @@ public partial class HomePage : Page
 
 - The WPF application starts Flourish from `App.xaml.cs` or another application entry point.
 - At least one page is registered with `AddNavigable`.
-- Navigation is enabled, and registered pages are listed automatically or placed explicitly.
+- Navigation is enabled, and each visible page is placed in a group or the fixed area.
 - The runtime is disposed during application exit, or `Run<App>()` owns its lifetime.

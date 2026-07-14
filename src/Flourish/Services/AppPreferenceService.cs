@@ -55,8 +55,6 @@ internal sealed class AppPreferenceService : IAppSettingsStore, IHostedService, 
         IHostEnvironment hostEnvironment
     ) : this(configuration, hostEnvironment, NullLogger<AppPreferenceService>.Instance) { }
 
-    public string AppSettingsFilePath => FilePath;
-
     public string FilePath =>
         Path.Combine(hostEnvironment.ContentRootPath, AppSettingsFileName);
 

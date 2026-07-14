@@ -14,7 +14,7 @@
             <Border
               x:Name="SplitterIndicator"
               Margin="1"
-              Background="{DynamicResource FlourishBrandForegroundBrush}"
+              Background="{DynamicResource FlourishPrimaryForegroundBrush}"
               CornerRadius="1"
               IsHitTestVisible="False"
               Opacity="0"

@@ -36,7 +36,7 @@
                 Height="8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Fill="{DynamicResource FlourishForegroundOnBrandBrush}"
+                Fill="{DynamicResource FlourishForegroundOnPrimaryBrush}"
                 Visibility="Collapsed"
               />
             </Border>
@@ -63,8 +63,8 @@
               <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokePressedBrush}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
               <Setter TargetName="SelectionDot" Property="Visibility" Value="Visible" />
             </Trigger>
             <MultiTrigger>
@@ -72,16 +72,16 @@
                 <Condition Property="IsChecked" Value="True" />
                 <Condition Property="IsMouseOver" Value="True" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundHoverBrush}" />
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundHoverBrush}" />
+              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundHoverBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundHoverBrush}" />
             </MultiTrigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="IsChecked" Value="True" />
                 <Condition Property="IsPressed" Value="True" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundPressedBrush}" />
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundPressedBrush}" />
+              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
             </MultiTrigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
               <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />

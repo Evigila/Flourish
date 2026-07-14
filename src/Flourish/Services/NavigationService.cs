@@ -1,7 +1,6 @@
 using System.Windows.Controls;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
 
@@ -10,9 +9,11 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
     private readonly INavigationPageProvider pageProvider;
     private readonly PageHistoryService pageHistoryService;
     private readonly NavigationRouteRegistry routeRegistry;
+    private readonly object routeChangeGate = new();
     private INavigationContentHost? contentHost;
     private Dispatcher? dispatcher;
     private object? currentParameter;
+    private long lastAppliedRouteVersion = -1;
 
     public NavigationService(
         PageCacheService pageCacheService,
@@ -20,16 +21,6 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
         NavigationRouteRegistry routeRegistry
     )
         : this((INavigationPageProvider)pageCacheService, pageHistoryService, routeRegistry) { }
-
-    internal NavigationService(
-        INavigationPageProvider pageProvider,
-        PageHistoryService pageHistoryService,
-        FlourishShellOptions options
-    ) : this(
-        pageProvider,
-        pageHistoryService,
-        new NavigationRouteRegistry(options)
-    ) { }
 
     internal NavigationService(
         INavigationPageProvider pageProvider,
@@ -43,6 +34,13 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
         this.routeRegistry =
             routeRegistry ?? throw new ArgumentNullException(nameof(routeRegistry));
         routeRegistry.Changed += RouteRegistry_Changed;
+        lock (routeChangeGate)
+        {
+            lastAppliedRouteVersion = Math.Max(
+                lastAppliedRouteVersion,
+                routeRegistry.Current.Version
+            );
+        }
     }
 
     public event EventHandler<FlourishNavigatedEventArgs>? Navigated;
@@ -265,12 +263,34 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
         FlourishNavigationRoutesChangedEventArgs e
     )
     {
-        if (
-            e.ChangeKind == FlourishRuntimeChangeKind.Removed
-            && e.PreviousRoute is { } removed
-        )
+        var historyChanged = false;
+        lock (routeChangeGate)
         {
-            pageHistoryService.Remove(removed.NavigationKey);
+            if (e.Current.Version <= lastAppliedRouteVersion)
+            {
+                return;
+            }
+
+            lastAppliedRouteVersion = e.Current.Version;
+            var registeredKeys = e.Current.Routes.Keys.ToHashSet(StringComparer.Ordinal);
+            var staleHistoryKeys = pageHistoryService
+                .BackStack.Concat(pageHistoryService.ForwardStack)
+                .Select(entry => entry.NavigationKey)
+                .Where(key => !registeredKeys.Contains(key))
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            foreach (var staleHistoryKey in staleHistoryKeys)
+            {
+                pageHistoryService.Remove(staleHistoryKey);
+            }
+
+            historyChanged =
+                staleHistoryKeys.Length > 0
+                || e.ChangeKind == FlourishRuntimeChangeKind.Removed;
+        }
+
+        if (historyChanged)
+        {
             RaiseStateChanged();
         }
     }

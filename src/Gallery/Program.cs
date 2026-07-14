@@ -20,7 +20,7 @@ internal static class Program
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
-                    services.AddSingleton<ICommandParser, GalleryCommandParser>();
+                    services.AddSingleton<GalleryCommandRegistrationService>();
 
                     services.AddNavigable<HomePage>("Overview", "\uE80F");
                     services.AddNavigable<ConfigurationPage>("Configuration", "\uE713");
@@ -44,7 +44,7 @@ internal static class Program
                     .UseStatusBar()
                     .UseTips()
                     .UseMaterialEffect()
-                    .UseGlobalFont("Microsoft Yahei");
+                    .UseGlobalFont("Microsoft YaHei", 14);
             })
             .ConfigureTitleBar(titlebar =>
             {
@@ -131,18 +131,13 @@ internal static class Program
                     .EnablePageTransition();
             })
             .ConfigureWindow(window =>
-                window
-                    .SetWindowSize()
-                    .SetWindowMinSize()
-                    .SetWindowPosition()
-                    .SnapsToDevicePixels()
-                    .UseLayoutRounding()
-                    .UseTextStrategy(System.Windows.Media.TextFormattingMode.Display, System.Windows.Media.TextRenderingMode.ClearType)
+                window.SetWindowSize().SetWindowMinSize().SetWindowPosition()
             )
             .Build();
 
         try
         {
+            _ = flourish.GetRequiredService<GalleryCommandRegistrationService>();
             return flourish.Run<App>();
         }
         finally

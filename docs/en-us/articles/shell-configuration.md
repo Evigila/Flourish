@@ -20,6 +20,10 @@ builder.ConfigureShell(shell =>
         .UseGlobalFont("Segoe UI", 14)
         .UseStatusBar();
 });
+
+builder.ConfigureNavigation(navigation =>
+    navigation.SetGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 ## Feature switches and shared options
@@ -67,13 +71,17 @@ builder.ConfigureShell(shell =>
         .UseMotion(!useStaticInterface)
         .UseStatusBar(showStatusBar);
 });
+
+builder.ConfigureNavigation(navigation =>
+    navigation.SetGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 Omit `UseTips` or `UseGlobalFont` to retain their default behavior. Use `MaterialEffect.None` when shared configuration must explicitly disable the material.
 
 ## Related features
 
-- [Window](configure-window.md) configures size, placement, rendering, and close behavior.
+- [Window](configure-window.md) configures size, placement, and close behavior.
 - [Application data](configure-data.md) configures localization and Host settings.
 - [Dependency injection](configure-services.md) registers application services and replaceable Flourish services.
 - [Custom shell content](configure-custom-handler.md) inserts application elements into enabled Shell regions.

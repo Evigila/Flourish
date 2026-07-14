@@ -67,13 +67,9 @@ internal sealed class ProfileService : IProfileService
                 return;
             }
 
-            if (!stored.TryGetName(nameOrder, out var storedName))
+            if (!stored.TryGetName(out var storedName))
             {
-                if (!stored.UsesFutureSchema)
-                {
-                    await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
-                }
-
+                await secretStore.ClearAsync(cancellationToken).ConfigureAwait(false);
                 return;
             }
 
@@ -100,12 +96,6 @@ internal sealed class ProfileService : IProfileService
                 stored.ImagePath,
                 rememberLogin: true
             );
-            if (stored.SchemaVersion < StoredProfileCredentials.CurrentSchemaVersion)
-            {
-                await secretStore
-                    .SaveAsync(currentCredentials, cancellationToken)
-                    .ConfigureAwait(false);
-            }
 
             CurrentProfile = new ProfileUser(
                 storedName.FirstName,

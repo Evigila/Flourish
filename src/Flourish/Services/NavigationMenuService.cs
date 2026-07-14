@@ -11,6 +11,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
     private readonly NavigationRouteRegistry routeRegistry;
     private List<GroupState> groups;
     private List<FlourishNavigationMenuItem> fixedItems;
+    private long lastAppliedRouteVersion = -1;
     private long version;
 
     public NavigationMenuService(
@@ -22,17 +23,16 @@ internal sealed class NavigationMenuService : INavigationMenuService
         this.routeRegistry =
             routeRegistry ?? throw new ArgumentNullException(nameof(routeRegistry));
         (groups, fixedItems) = CreateSeedState(options);
-        ValidateState(groups, fixedItems);
-        if (
-            options.NavigationItems.Count == 0
-            && options.FixedNavigationItems.Count == 0
-            && (groups.Count > 0 || fixedItems.Count > 0)
-        )
-        {
-            RebuildOptions(groups, fixedItems);
-        }
-
         routeRegistry.Changed += RouteRegistry_Changed;
+        try
+        {
+            SynchronizeRoutes(routeRegistry.Current, publishChange: false);
+        }
+        catch
+        {
+            routeRegistry.Changed -= RouteRegistry_Changed;
+            throw;
+        }
     }
 
     public event EventHandler<FlourishNavigationMenuChangedEventArgs>? Changed;
@@ -61,8 +61,9 @@ internal sealed class NavigationMenuService : INavigationMenuService
             var editor = new NavigationMenuEditor(workingGroups, workingFixedItems);
 
             update(editor);
-            ValidateState(workingGroups, workingFixedItems);
-            RebuildOptions(workingGroups, workingFixedItems);
+            var routes = routeRegistry.Current.Routes;
+            ValidateState(workingGroups, workingFixedItems, routes);
+            RebuildOptions(workingGroups, workingFixedItems, routes);
 
             groups = workingGroups;
             fixedItems = workingFixedItems;
@@ -95,68 +96,167 @@ internal sealed class NavigationMenuService : INavigationMenuService
         FlourishNavigationRoutesChangedEventArgs e
     )
     {
-        if (
-            e.ChangeKind == FlourishRuntimeChangeKind.Added
-            || (
-                e.ChangeKind == FlourishRuntimeChangeKind.Updated
-                && e.PreviousRoute?.PageType == e.Route?.PageType
-            )
-        )
-        {
-            return;
-        }
+        SynchronizeRoutes(e.Current, publishChange: true);
+    }
 
-        var navigationKey = e.PreviousRoute?.NavigationKey ?? e.Route?.NavigationKey;
-        if (navigationKey is null)
-        {
-            return;
-        }
-
+    private void SynchronizeRoutes(
+        FlourishNavigationRouteSnapshot routeSnapshot,
+        bool publishChange
+    )
+    {
         FlourishNavigationMenuSnapshot? previous = null;
         FlourishNavigationMenuSnapshot? current = null;
         lock (gate)
         {
-            var hasReferencedItem = groups
-                .SelectMany(group => group.Items)
-                .Concat(fixedItems)
-                .Any(item =>
-                    item.Kind == FlourishNavigationMenuItemKind.Page
-                    && StringComparer.Ordinal.Equals(item.NavigationKey, navigationKey)
-                );
-            if (!hasReferencedItem)
+            if (routeSnapshot.Version <= lastAppliedRouteVersion)
             {
                 return;
             }
 
-            previous = CreateSnapshot(groups, fixedItems, version);
-            if (e.ChangeKind == FlourishRuntimeChangeKind.Removed)
+            var workingGroups = CloneGroups(groups);
+            var workingFixedItems = new List<FlourishNavigationMenuItem>(fixedItems);
+            var menuChanged = false;
+            foreach (var group in workingGroups)
             {
-                foreach (var group in groups)
-                {
-                    group.Items.RemoveAll(item =>
-                        StringComparer.Ordinal.Equals(item.NavigationKey, navigationKey)
-                    );
-                }
-
-                fixedItems.RemoveAll(item =>
-                    StringComparer.Ordinal.Equals(item.NavigationKey, navigationKey)
+                menuChanged |= RemoveMissingRouteItemsAndDescendants(
+                    group.Items,
+                    routeSnapshot.Routes
                 );
             }
 
-            RebuildOptions(groups, fixedItems);
-            version++;
-            current = CreateSnapshot(groups, fixedItems, version);
+            menuChanged |= RemoveMissingRouteItemsAndDescendants(
+                workingFixedItems,
+                routeSnapshot.Routes
+            );
+            ValidateState(workingGroups, workingFixedItems, routeSnapshot.Routes);
+
+            var optionsChanged = !InternalPageItemsMatchRoutes(
+                workingGroups,
+                workingFixedItems,
+                routeSnapshot.Routes
+            );
+            if (menuChanged || optionsChanged)
+            {
+                if (publishChange)
+                {
+                    previous = CreateSnapshot(groups, fixedItems, version);
+                }
+
+                RebuildOptions(workingGroups, workingFixedItems, routeSnapshot.Routes);
+                groups = workingGroups;
+                fixedItems = workingFixedItems;
+                if (publishChange)
+                {
+                    version++;
+                    current = CreateSnapshot(groups, fixedItems, version);
+                }
+            }
+
+            lastAppliedRouteVersion = routeSnapshot.Version;
         }
 
-        Changed?.Invoke(
-            this,
-            new FlourishNavigationMenuChangedEventArgs(previous, current)
+        if (previous is not null && current is not null)
+        {
+            Changed?.Invoke(
+                this,
+                new FlourishNavigationMenuChangedEventArgs(previous, current)
+            );
+        }
+    }
+
+    private static bool RemoveMissingRouteItemsAndDescendants(
+        List<FlourishNavigationMenuItem> items,
+        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+    )
+    {
+        var removedIds = items
+            .Where(item =>
+                item.Kind == FlourishNavigationMenuItemKind.Page
+                && (
+                    string.IsNullOrWhiteSpace(item.NavigationKey)
+                    || !routes.ContainsKey(item.NavigationKey)
+                )
+            )
+            .Select(item => item.Id)
+            .ToHashSet(StringComparer.Ordinal);
+        if (removedIds.Count == 0)
+        {
+            return false;
+        }
+
+        var descendantAdded = true;
+        while (descendantAdded)
+        {
+            descendantAdded = false;
+            foreach (var item in items)
+            {
+                if (item.ParentId is not null && removedIds.Contains(item.ParentId))
+                {
+                    descendantAdded |= removedIds.Add(item.Id);
+                }
+            }
+        }
+
+        items.RemoveAll(item => removedIds.Contains(item.Id));
+        return true;
+    }
+
+    private bool InternalPageItemsMatchRoutes(
+        IReadOnlyList<GroupState> sourceGroups,
+        IReadOnlyList<FlourishNavigationMenuItem> sourceFixedItems,
+        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+    )
+    {
+        var expected = new Dictionary<
+            string,
+            (string NavigationKey, Type PageType, bool IsFixed)
+        >(StringComparer.Ordinal);
+
+        foreach (var item in sourceGroups.SelectMany(group => group.Items))
+        {
+            AddExpectedPageItem(item, isFixed: false);
+        }
+
+        foreach (var item in sourceFixedItems)
+        {
+            AddExpectedPageItem(item, isFixed: true);
+        }
+
+        var actual = options
+            .NavigationItems.Concat(options.FixedNavigationItems)
+            .Where(item => item.IsPageItem)
+            .ToArray();
+        if (actual.Length != expected.Count)
+        {
+            return false;
+        }
+
+        return actual.All(item =>
+            expected.TryGetValue(item.Id, out var route)
+            && StringComparer.Ordinal.Equals(item.Key, route.NavigationKey)
+            && item.PageType == route.PageType
+            && item.IsFixed == route.IsFixed
         );
+
+        void AddExpectedPageItem(FlourishNavigationMenuItem item, bool isFixed)
+        {
+            if (item.Kind != FlourishNavigationMenuItemKind.Page)
+            {
+                return;
+            }
+
+            var navigationKey = item.NavigationKey!;
+            expected.Add(
+                item.Id,
+                (navigationKey, routes[navigationKey].PageType, isFixed)
+            );
+        }
     }
 
     private void RebuildOptions(
         IReadOnlyList<GroupState> newGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> newFixedItems
+        IReadOnlyList<FlourishNavigationMenuItem> newFixedItems,
+        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
     )
     {
         var navigationItems = new List<FlourishNavigationItem>();
@@ -177,13 +277,16 @@ internal sealed class NavigationMenuService : INavigationMenuService
                 );
             }
 
-            navigationItems.AddRange(CreateInternalItems(group.Items, groupIndex, isFixed: false));
+            navigationItems.AddRange(
+                CreateInternalItems(group.Items, groupIndex, isFixed: false, routes)
+            );
         }
 
         var fixedNavigationItems = CreateInternalItems(
             newFixedItems,
             FixedGroupId,
-            isFixed: true
+            isFixed: true,
+            routes
         );
 
         options.NavigationItems.Clear();
@@ -195,7 +298,8 @@ internal sealed class NavigationMenuService : INavigationMenuService
     private IReadOnlyList<FlourishNavigationItem> CreateInternalItems(
         IReadOnlyList<FlourishNavigationMenuItem> source,
         int groupId,
-        bool isFixed
+        bool isFixed,
+        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
     )
     {
         var parentRelationshipIds = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -218,9 +322,18 @@ internal sealed class NavigationMenuService : INavigationMenuService
         {
             var isPage = item.Kind == FlourishNavigationMenuItemKind.Page;
             var navigationKey = isPage ? item.NavigationKey! : item.Id;
-            var pageType = isPage
-                ? options.PageTypesByNavigationKey[item.NavigationKey!]
-                : null;
+            Type? pageType = null;
+            if (isPage)
+            {
+                if (!routes.TryGetValue(item.NavigationKey!, out var route))
+                {
+                    throw new InvalidOperationException(
+                        $"Navigation key '{item.NavigationKey}' is not registered."
+                    );
+                }
+
+                pageType = route.PageType;
+            }
             var parentId = parentRelationshipIds.GetValueOrDefault(item.Id);
             var childId = item.ParentId is null
                 ? 0
@@ -261,41 +374,6 @@ internal sealed class NavigationMenuService : INavigationMenuService
         FlourishShellOptions options
     )
     {
-        if (
-            options.NavigationItems.Count == 0
-            && (
-                options.NavigationGroups.Count > 0
-                || options.FixedNavigationItemDefinitions.Count > 0
-            )
-        )
-        {
-            return CreateSeedStateFromBuilderDefinitions(options);
-        }
-
-        if (
-            options.NavigationItems.Count == 0
-            && options.PageTypesByNavigationKey.Count > 0
-        )
-        {
-            var items = options.PageTypesByNavigationKey
-                .Select(pair => FlourishNavigationMenuItem.Page(
-                    pair.Key,
-                    pair.Key,
-                    pair.Value.Name
-                ))
-                .ToList();
-            return (
-                [
-                    new GroupState(
-                        "group:0",
-                        string.IsNullOrWhiteSpace(options.PaneTitle) ? null : options.PaneTitle,
-                        items
-                    ),
-                ],
-                []
-            );
-        }
-
         var groups = new List<GroupState>();
         var groupsById = new Dictionary<int, GroupState>();
         var usedItemIds = new HashSet<string>(StringComparer.Ordinal);
@@ -321,38 +399,16 @@ internal sealed class NavigationMenuService : INavigationMenuService
             var source = options.NavigationItems
                 .Where(item => item.GroupId == numericId && item.IsNavigationItem)
                 .ToArray();
-            group.Items.AddRange(ConvertSeedItems(source, usedItemIds, options));
+            group.Items.AddRange(ConvertSeedItems(source, usedItemIds));
         }
 
-        var fixedItems = ConvertSeedItems(options.FixedNavigationItems, usedItemIds, options);
-        return (groups, fixedItems);
-    }
-
-    private static (List<GroupState>, List<FlourishNavigationMenuItem>) CreateSeedStateFromBuilderDefinitions(
-        FlourishShellOptions options
-    )
-    {
-        var usedItemIds = new HashSet<string>(StringComparer.Ordinal);
-        var groups = options.NavigationGroups
-            .OrderBy(group => group.GroupId)
-            .Select(group => new GroupState(
-                $"group:{group.GroupId}",
-                group.Title,
-                ConvertSeedItems(group.Items, usedItemIds, options)
-            ))
-            .ToList();
-        var fixedItems = ConvertSeedItems(
-            options.FixedNavigationItemDefinitions,
-            usedItemIds,
-            options
-        );
+        var fixedItems = ConvertSeedItems(options.FixedNavigationItems, usedItemIds);
         return (groups, fixedItems);
     }
 
     private static List<FlourishNavigationMenuItem> ConvertSeedItems(
         IReadOnlyList<FlourishNavigationItem> source,
-        HashSet<string> usedItemIds,
-        FlourishShellOptions options
+        HashSet<string> usedItemIds
     )
     {
         var publicIdsByInternalItem = new Dictionary<FlourishNavigationItem, string>();
@@ -393,7 +449,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
                         : FlourishNavigationMenuItemKind.Command,
                     item.IconGlyph,
                     navigationKey: item.IsPageItem
-                        ? options.NavigationKeysByPageType.GetValueOrDefault(item.PageType!, item.Key)
+                        ? item.Key
                         : null,
                     commandKey: item.CommandKey,
                     parentId: parentId
@@ -411,7 +467,8 @@ internal sealed class NavigationMenuService : INavigationMenuService
 
     private void ValidateState(
         IReadOnlyList<GroupState> newGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> newFixedItems
+        IReadOnlyList<FlourishNavigationMenuItem> newFixedItems,
+        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
     )
     {
         var groupIds = new HashSet<string>(StringComparer.Ordinal);
@@ -428,17 +485,24 @@ internal sealed class NavigationMenuService : INavigationMenuService
                 );
             }
 
-            ValidateItems(group.Items, group.Id, itemIds, navigationKeys);
+            ValidateItems(group.Items, group.Id, itemIds, navigationKeys, routes);
         }
 
-        ValidateItems(newFixedItems, "fixed navigation items", itemIds, navigationKeys);
+        ValidateItems(
+            newFixedItems,
+            "fixed navigation items",
+            itemIds,
+            navigationKeys,
+            routes
+        );
     }
 
     private void ValidateItems(
         IReadOnlyList<FlourishNavigationMenuItem> items,
         string scope,
         HashSet<string> globalItemIds,
-        HashSet<string> navigationKeys
+        HashSet<string> navigationKeys,
+        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
     )
     {
         var itemsById = new Dictionary<string, FlourishNavigationMenuItem>(StringComparer.Ordinal);
@@ -475,7 +539,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
                     );
                 }
 
-                if (!routeRegistry.Contains(item.NavigationKey))
+                if (!routes.ContainsKey(item.NavigationKey))
                 {
                     throw new InvalidOperationException(
                         $"Navigation key '{item.NavigationKey}' is not registered."

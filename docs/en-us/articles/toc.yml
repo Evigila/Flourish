@@ -41,5 +41,5 @@ items:
   href: status-bar.md
 - name: Message service
   href: message-service.md
-- name: Command parser
-  href: command-parser.md
+- name: Command dispatch
+  href: commands.md

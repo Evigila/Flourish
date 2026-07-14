@@ -31,11 +31,19 @@ public sealed class NavigationCompositionTests
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
 
-        Assert.Equal(typeof(HomePage), options.PageTypesByNavigationKey["Home"]);
-        Assert.Equal("Settings", options.NavigationKeysByPageType[typeof(SettingsPage)]);
-        Assert.Equal(
-            FlourishPageCacheMode.Disabled,
-            options.PageCacheModesByPageType[typeof(SettingsPage)]
+        Assert.Collection(
+            options.InitialNavigationRoutes,
+            home =>
+            {
+                Assert.Equal("Home", home.NavigationKey);
+                Assert.Equal(typeof(HomePage), home.PageType);
+            },
+            settings =>
+            {
+                Assert.Equal("Settings", settings.NavigationKey);
+                Assert.Equal(typeof(SettingsPage), settings.PageType);
+                Assert.Equal(FlourishPageCacheMode.Disabled, settings.CacheMode);
+            }
         );
         Assert.Equal("Home", options.InitialNavigationKey);
         Assert.Equal(typeof(HomePage), options.InitialNavigationPageType);
@@ -134,7 +142,7 @@ public sealed class NavigationCompositionTests
     }
 
     [Fact]
-    public void Build_WithNavigationEnabledAndNoVisibleConfiguration_CreatesLegacyList()
+    public void Build_WithNavigationEnabledAndNoVisibleConfiguration_KeepsMenuEmpty()
     {
         var builder = CreateNavigationBuilder().ConfigureServices((_, services) =>
         {
@@ -145,11 +153,8 @@ public sealed class NavigationCompositionTests
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
 
-        Assert.Collection(
-            options.NavigationItems,
-            home => Assert.Equal("Home", home.Key),
-            settings => Assert.Equal("Settings", settings.Key)
-        );
+        Assert.Empty(options.NavigationItems);
+        Assert.Equal(2, options.InitialNavigationRoutes.Count);
     }
 
     [Fact]

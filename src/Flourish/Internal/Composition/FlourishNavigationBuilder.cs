@@ -73,12 +73,6 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder SetTitle(string title)
-    {
-        options.PaneTitle = title;
-        return this;
-    }
-
     public IFlourishNavigationBuilder SetGroup(
         string? displayName = null,
         int groupId = 0,

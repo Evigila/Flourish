@@ -118,8 +118,8 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="{DynamicResource FlourishFontSizeTitle}"
-            FontWeight="SemiBold"
-            Foreground="{DynamicResource FlourishBrandForegroundBrush}"
+            FontWeight="Regular"
+            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
           />
         </Grid>
       </Border>
@@ -133,7 +133,7 @@
           x:Name="TitleText"
           VerticalAlignment="Center"
           FontSize="{DynamicResource FlourishFontSizeTitle}"
-          FontWeight="SemiBold"
+          FontWeight="Bold"
           Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
         />
         <controls:FlourishTextBlock
@@ -219,7 +219,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="{DynamicResource FlourishFontSizeCaption}"
-            FontWeight="SemiBold"
+            FontWeight="Regular"
             Foreground="{DynamicResource FlourishProfileForegroundBrush}"
           />
         </Grid>

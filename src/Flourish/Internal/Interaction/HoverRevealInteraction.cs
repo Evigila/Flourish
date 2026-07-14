@@ -187,18 +187,7 @@ internal static class HoverRevealInteraction
                 : RevealPolicy.BehaviorStaticFallback;
         }
 
-        var source = DependencyPropertyHelper.GetValueSource(
-            element,
-            HoverReveal.IsEnabledProperty
-        );
-        if (source.BaseValueSource != BaseValueSource.Default)
-        {
-            return RevealPolicy.Animated;
-        }
-
-        return element.TryFindResource("FlourishHoverRevealEnabled") is false
-            ? RevealPolicy.BehaviorStaticFallback
-            : RevealPolicy.Animated;
+        return RevealPolicy.Animated;
     }
 
     private static TimeSpan GetEffectiveAnimationDuration(FrameworkElement element)

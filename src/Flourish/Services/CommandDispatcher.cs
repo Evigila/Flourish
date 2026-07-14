@@ -4,27 +4,13 @@ using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class CommandParser : ICommandRegistry, ICommandDispatcher
+internal sealed class CommandDispatcher : ICommandRegistry, ICommandDispatcher
 {
     private readonly object gate = new();
-    private readonly IReadOnlyList<ICommandParser> parsers;
     private readonly Dictionary<string, List<RegistrationEntry>> registrationsByKey =
         new(StringComparer.Ordinal);
     private long nextSequence;
     private long version;
-
-    public CommandParser(IEnumerable<ICommandParser> parsers)
-    {
-        ArgumentNullException.ThrowIfNull(parsers);
-        this.parsers = parsers.ToArray();
-        if (this.parsers.Any(parser => parser is null))
-        {
-            throw new ArgumentException(
-                "The legacy command parser collection cannot contain null entries.",
-                nameof(parsers)
-            );
-        }
-    }
 
     public IReadOnlyList<CommandRegistrationInfo> Registrations
     {
@@ -144,12 +130,6 @@ internal sealed class CommandParser : ICommandRegistry, ICommandDispatcher
 
         var context = new CommandContext(commandKey, parameter, source);
         var entries = GetDispatchEntries(commandKey);
-        if (entries.Length == 0)
-        {
-            // ICommandParser has no non-mutating availability contract. Preserve its historical
-            // behavior by leaving legacy-backed UI enabled and deciding at dispatch time.
-            return parsers.Count > 0;
-        }
 
         foreach (var entry in entries)
         {
@@ -254,46 +234,7 @@ internal sealed class CommandParser : ICommandRegistry, ICommandDispatcher
             return CommandResult.Disabled;
         }
 
-        foreach (var parser in parsers)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return CommandResult.Canceled;
-            }
-
-            try
-            {
-                if (parser.TryParse(commandKey))
-                {
-                    return CommandResult.Handled;
-                }
-            }
-            catch (Exception error)
-            {
-                return CommandResult.Failed(error);
-            }
-        }
-
         return CommandResult.NotHandled;
-    }
-
-    public bool Parse(string? commandKey)
-    {
-        if (string.IsNullOrWhiteSpace(commandKey))
-        {
-            return false;
-        }
-
-        var dispatch = ExecuteAsync(commandKey, source: CommandSource.Unknown);
-        if (dispatch.IsCompletedSuccessfully)
-        {
-            return dispatch.Result.IsHandled;
-        }
-
-        // The historical Shell entry point is synchronous. An asynchronous runtime handler has
-        // already accepted the invocation at this point, so observe it without blocking the UI.
-        _ = ObserveDispatchAsync(dispatch);
-        return true;
     }
 
     private RegistrationEntry[] GetDispatchEntries(string commandKey)
@@ -426,20 +367,6 @@ internal sealed class CommandParser : ICommandRegistry, ICommandDispatcher
         }
     }
 
-    private static async Task ObserveDispatchAsync(ValueTask<CommandResult> dispatch)
-    {
-        try
-        {
-            await dispatch.ConfigureAwait(false);
-        }
-        catch (Exception error)
-        {
-            // ExecuteAsync captures handler failures. This guard protects the legacy synchronous
-            // caller if a future dispatcher implementation introduces an unexpected failure.
-            Debug.WriteLine($"Flourish asynchronous command dispatch failed: {error}");
-        }
-    }
-
     private sealed class RegistrationEntry(
         string commandKey,
         CommandExecutionHandler executeAsync,
@@ -476,7 +403,7 @@ internal sealed class CommandParser : ICommandRegistry, ICommandDispatcher
     }
 
     private sealed class CommandRegistration(
-        CommandParser owner,
+        CommandDispatcher owner,
         RegistrationEntry entry
     ) : ICommandRegistration
     {

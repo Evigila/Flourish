@@ -277,41 +277,6 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
-    public void ResourceOnlyMotionDisable_PreservesTheCompatibilityFallback()
-    {
-        RunInSta(() =>
-        {
-            var resources = new ResourceDictionary
-            {
-                ["FlourishHoverRevealEnabled"] = false,
-            };
-            var button = new Button { Template = CreateHoverTemplate() };
-            HoverReveal.SetIsParticipant(button, true);
-            var window = CreateWindow(resources, button);
-
-            try
-            {
-                window.Show();
-                window.UpdateLayout();
-                var parts = HoverRevealAnimator.ResolveTemplateParts(button);
-
-                RaiseMouseEvent(button, Mouse.MouseEnterEvent);
-                FlushDispatcher();
-
-                Assert.True(parts.HoverChrome!.HasAnimatedProperties);
-                Assert.True(parts.HoverRevealScale!.HasAnimatedProperties);
-                Assert.Equal(1, parts.HoverChrome.Opacity);
-                Assert.Equal(1, parts.HoverRevealScale.ScaleX);
-                Assert.Equal(1, parts.HoverRevealScale.ScaleY);
-            }
-            finally
-            {
-                window.Close();
-            }
-        });
-    }
-
-    [Fact]
     public void CustomTemplate_DisabledMotionPreservesTheBehaviorFallback()
     {
         RunInSta(() =>
@@ -345,7 +310,7 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
-    public void FlourishControl_LocalTemplateOverrideUsesTheCompatibilityContract()
+    public void FlourishControl_LocalTemplateOverrideUsesBehaviorManagedInteractionByDefault()
     {
         RunInSta(() =>
         {
@@ -366,9 +331,9 @@ public sealed class HoverRevealVisualTests
                 Assert.Null(HoverRevealAnimator.TryGetTemplateParts(button));
 
                 RaiseMouseEvent(button, Mouse.MouseEnterEvent);
-                var compatibilityParts = HoverRevealAnimator.ResolveTemplateParts(button);
+                var behaviorParts = HoverRevealAnimator.ResolveTemplateParts(button);
 
-                Assert.True(compatibilityParts.HasAnimationClocks);
+                Assert.True(behaviorParts.HasAnimationClocks);
 
                 HoverReveal.SetTemplateHandlesInteraction(button, true);
 

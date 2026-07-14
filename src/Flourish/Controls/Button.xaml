@@ -89,7 +89,7 @@
         <Setter
           TargetName="PressedChrome"
           Property="Background"
-          Value="{DynamicResource FlourishBrandBackgroundPressedBrush}"
+          Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}"
         />
       </Trigger>
       <Trigger Property="Appearance" Value="Danger">
@@ -250,9 +250,9 @@
         />
       </Trigger>
       <Trigger Property="Appearance" Value="Primary">
-        <Setter Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnBrandBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
       </Trigger>
       <Trigger Property="Appearance" Value="Subtle">
         <Setter Property="Background" Value="Transparent" />
@@ -278,7 +278,7 @@
           <Condition Property="Variant" Value="MessageBox" />
           <Condition Property="Appearance" Value="Primary" />
         </MultiTrigger.Conditions>
-        <Setter Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
       </MultiTrigger>
     </Style.Triggers>
   </Style>

@@ -38,7 +38,7 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 ## Page behavior during transitions
 
-The navigated page remains stationary and fully opaque during a page transition. `Fade` reveals it with a fade, while `EntranceFromBottom` reveals it from the bottom edge. Neither transition changes the page's final layout.
+`Fade` fades the navigated page into view. `EntranceFromBottom` combines the fade with a short upward translation. Flourish temporarily caches the transparent page surface while either transition is active, so the animation is composed from a bitmap instead of redrawing a complex page on every frame. Fractional movement remains available for a smooth translation. The live page, cache, and render transform are restored as soon as the transition completes or is cancelled, and neither transition changes the page's final layout.
 
 ## Reduced motion
 

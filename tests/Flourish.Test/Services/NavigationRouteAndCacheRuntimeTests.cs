@@ -11,7 +11,7 @@ namespace ArkheideSystem.Flourish.Test.Services;
 public sealed class NavigationRouteAndCacheRuntimeTests
 {
     [Fact]
-    public void RouteRegistry_RegisterAndDisposeSynchronizesLegacyOptionMaps()
+    public void RouteRegistry_RegisterAndDisposeOwnsRuntimeRouteState()
     {
         var options = new FlourishShellOptions();
         var sut = new NavigationRouteRegistry(options);
@@ -24,16 +24,16 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         );
 
         Assert.True(sut.Contains("Reports"));
-        Assert.Equal(typeof(ReportsPage), options.PageTypesByNavigationKey["Reports"]);
         Assert.Equal(
             FlourishPageCacheMode.Enabled,
-            options.PageCacheModesByPageType[typeof(ReportsPage)]
+            sut.Current.Routes["Reports"].CacheMode
         );
+        Assert.Empty(options.InitialNavigationRoutes);
 
         registration.Dispose();
 
         Assert.False(sut.Contains("Reports"));
-        Assert.Empty(options.PageTypesByNavigationKey);
+        Assert.Empty(sut.Current.Routes);
     }
 
     [Fact]
@@ -65,8 +65,17 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
         factory.Setup(value => value.Create(typeof(ReportsPage))).Returns(page);
         var options = new FlourishShellOptions();
-        options.PageCacheModesByPageType[typeof(ReportsPage)] = FlourishPageCacheMode.Enabled;
-        var sut = new PageCacheService(factory.Object, options);
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute(
+                "Reports",
+                typeof(ReportsPage),
+                FlourishPageCacheMode.Enabled
+            )
+        );
+        var sut = new PageCacheService(
+            factory.Object,
+            new NavigationRouteRegistry(options)
+        );
 
         Assert.Same(page, sut.GetPage(typeof(ReportsPage)));
         Assert.True(sut.Contains(typeof(ReportsPage)));
@@ -95,11 +104,87 @@ public sealed class NavigationRouteAndCacheRuntimeTests
                 _ => page
             )
         );
-        var cache = new PageCacheService(provider, options, routes);
+        var cache = new PageCacheService(provider, routes);
 
         Assert.Same(page, cache.GetPage(typeof(ReportsPage)));
         Assert.Same(page, cache.GetPage(typeof(ReportsPage)));
         Assert.True(cache.Contains(typeof(ReportsPage)));
+    }
+
+    [Fact]
+    public async Task PageCache_OutOfOrderRouteEventsKeepNewestSnapshot()
+    {
+        var options = new FlourishShellOptions();
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute("Reports", typeof(ReportsPage))
+        );
+        var routes = new NavigationRouteRegistry(options);
+        using var firstEventEntered = new ManualResetEventSlim();
+        using var releaseFirstEvent = new ManualResetEventSlim();
+        routes.Changed += (_, change) =>
+        {
+            if (change.Current.Version == 1)
+            {
+                firstEventEntered.Set();
+                Assert.True(releaseFirstEvent.Wait(TimeSpan.FromSeconds(5)));
+            }
+        };
+        var cache = new PageCacheService(
+            new Mock<IPageFactory>(MockBehavior.Strict).Object,
+            routes
+        );
+
+        var firstMutation = Task.Run(() =>
+            routes.SetCacheMode("Reports", FlourishPageCacheMode.Enabled)
+        );
+        Assert.True(firstEventEntered.Wait(TimeSpan.FromSeconds(5)));
+        try
+        {
+            routes.SetCacheMode("Reports", FlourishPageCacheMode.Disabled);
+        }
+        finally
+        {
+            releaseFirstEvent.Set();
+        }
+
+        await firstMutation.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.Equal(
+            FlourishPageCacheMode.Disabled,
+            cache.Current.CacheModes[typeof(ReportsPage)]
+        );
+    }
+
+    [Fact]
+    public void PageCache_ReentrantFactoryDisableDoesNotCacheCreatedPage()
+    {
+        using var provider = new ServiceCollection().BuildServiceProvider();
+        var page = CreatePage();
+        PageCacheService? cache = null;
+        var options = new FlourishShellOptions();
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute(
+                "Reports",
+                typeof(ReportsPage),
+                FlourishPageCacheMode.Enabled,
+                _ =>
+                {
+                    cache!.SetCacheMode(
+                        typeof(ReportsPage),
+                        FlourishPageCacheMode.Disabled
+                    );
+                    return page;
+                }
+            )
+        );
+        var routes = new NavigationRouteRegistry(provider, options);
+        cache = new PageCacheService(provider, routes);
+
+        Assert.Same(page, cache.GetPage(typeof(ReportsPage)));
+        Assert.Equal(
+            FlourishPageCacheMode.Disabled,
+            cache.Current.CacheModes[typeof(ReportsPage)]
+        );
+        Assert.False(cache.Contains(typeof(ReportsPage)));
     }
 
     private static Page CreatePage()

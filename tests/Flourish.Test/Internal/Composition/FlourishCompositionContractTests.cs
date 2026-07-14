@@ -14,7 +14,7 @@ public sealed class FlourishCompositionContractTests
 
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
 
-        Assert.Equal("EN", localization.Locale);
+        Assert.Equal("EN", localization.CurrentLocale);
         Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
@@ -28,7 +28,7 @@ public sealed class FlourishCompositionContractTests
         using var flourish = builder.Build();
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
 
-        Assert.Equal("EN", localization.Locale);
+        Assert.Equal("EN", localization.CurrentLocale);
         Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
@@ -84,8 +84,8 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<FlourishBackgroundTaskService, IBackgroundTaskService>(flourish);
         AssertSingletonAdapter<NotificationService, INotificationService>(flourish);
         AssertSingletonAdapter<TrayIconService, ITrayService>(flourish);
-        AssertSingletonAdapter<CommandParser, ICommandRegistry>(flourish);
-        AssertSingletonAdapter<CommandParser, ICommandDispatcher>(flourish);
+        AssertSingletonAdapter<CommandDispatcher, ICommandRegistry>(flourish);
+        AssertSingletonAdapter<CommandDispatcher, ICommandDispatcher>(flourish);
         AssertSingletonAdapter<ShortcutService, IShortcutService>(flourish);
         AssertSingletonAdapter<TitleBarService, ITitleBarService>(flourish);
         AssertSingletonAdapter<TitleBarSearchService, ITitleBarSearchService>(flourish);

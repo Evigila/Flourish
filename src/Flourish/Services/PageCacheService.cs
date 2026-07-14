@@ -1,6 +1,5 @@
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
 
@@ -8,36 +7,30 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
 {
     private readonly object gate = new();
     private readonly IPageFactory pageFactory;
-    private readonly NavigationRouteRegistry? routeRegistry;
-    private readonly FlourishShellOptions options;
+    private readonly NavigationRouteRegistry routeRegistry;
     private readonly Dictionary<Type, Page> cachedPages = [];
-    private readonly Dictionary<Type, FlourishPageCacheMode> cacheModesByPageType;
+    private readonly Dictionary<Type, FlourishPageCacheMode> cacheModesByPageType = [];
+    private readonly Dictionary<Type, FlourishNavigationRoute> routesByPageType = [];
+    private long lastAppliedRouteVersion = -1;
     private long version;
 
     public PageCacheService(
         IServiceProvider serviceProvider,
-        FlourishShellOptions options,
         NavigationRouteRegistry routeRegistry
-    ) : this(new ServiceProviderPageFactory(serviceProvider), options, routeRegistry) { }
+    ) : this(new ServiceProviderPageFactory(serviceProvider), routeRegistry) { }
 
-    internal PageCacheService(IPageFactory pageFactory, FlourishShellOptions options)
-        : this(pageFactory, options, routeRegistry: null) { }
-
-    private PageCacheService(
+    internal PageCacheService(
         IPageFactory pageFactory,
-        FlourishShellOptions options,
-        NavigationRouteRegistry? routeRegistry
+        NavigationRouteRegistry routeRegistry
     )
     {
         this.pageFactory = pageFactory ?? throw new ArgumentNullException(nameof(pageFactory));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.routeRegistry = routeRegistry;
-        cacheModesByPageType = new Dictionary<Type, FlourishPageCacheMode>(
-            options.PageCacheModesByPageType
-        );
-        if (routeRegistry is not null)
+        this.routeRegistry =
+            routeRegistry ?? throw new ArgumentNullException(nameof(routeRegistry));
+        routeRegistry.Changed += RouteRegistry_Changed;
+        lock (gate)
         {
-            routeRegistry.Changed += RouteRegistry_Changed;
+            ApplyRouteSnapshotLocked(routeRegistry.Current, incrementVersion: false);
         }
     }
 
@@ -58,25 +51,38 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
     {
         ArgumentNullException.ThrowIfNull(sourcePageType);
         FlourishPageCacheSnapshot? snapshot = null;
-        Page page;
+        Page? page;
         lock (gate)
         {
             if (
                 cacheModesByPageType.TryGetValue(sourcePageType, out var cacheMode)
                 && cacheMode == FlourishPageCacheMode.Enabled
+                && cachedPages.TryGetValue(sourcePageType, out page)
             )
             {
-                if (!cachedPages.TryGetValue(sourcePageType, out page!))
+                return page;
+            }
+        }
+
+        page = CreatePage(sourcePageType, out var creationRouteVersion);
+        lock (gate)
+        {
+            if (
+                cacheModesByPageType.TryGetValue(sourcePageType, out var currentCacheMode)
+                && currentCacheMode == FlourishPageCacheMode.Enabled
+                && creationRouteVersion == lastAppliedRouteVersion
+            )
+            {
+                if (cachedPages.TryGetValue(sourcePageType, out var existingPage))
                 {
-                    page = CreatePage(sourcePageType);
+                    page = existingPage;
+                }
+                else
+                {
                     cachedPages[sourcePageType] = page;
                     version++;
                     snapshot = CreateSnapshot();
                 }
-            }
-            else
-            {
-                page = CreatePage(sourcePageType);
             }
         }
 
@@ -99,7 +105,7 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
     {
         ValidatePageType(pageType);
         ValidateCacheMode(cacheMode);
-        if (routeRegistry is not null && routeRegistry.TryGet(pageType, out var route))
+        if (routeRegistry.TryGet(pageType, out var route))
         {
             routeRegistry.SetCacheMode(route.NavigationKey, cacheMode);
             return;
@@ -119,7 +125,6 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
             }
 
             cacheModesByPageType[pageType] = cacheMode;
-            options.PageCacheModesByPageType[pageType] = cacheMode;
             if (cacheMode == FlourishPageCacheMode.Disabled)
             {
                 cachedPages.Remove(pageType);
@@ -199,17 +204,9 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
         }
     }
 
-    private Page CreatePage(Type sourcePageType)
+    private Page CreatePage(Type sourcePageType, out long routeVersion)
     {
-        if (routeRegistry is not null)
-        {
-            return routeRegistry.CreatePage(sourcePageType, pageFactory);
-        }
-
-        return pageFactory.Create(sourcePageType) as Page
-            ?? throw new InvalidOperationException(
-                $"{sourcePageType.FullName} must derive from System.Windows.Controls.Page."
-            );
+        return routeRegistry.CreatePage(sourcePageType, pageFactory, out routeVersion);
     }
 
     private void RouteRegistry_Changed(
@@ -217,32 +214,14 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
         FlourishNavigationRoutesChangedEventArgs e
     )
     {
-        Type? affectedPageType = e.Route?.PageType ?? e.PreviousRoute?.PageType;
-        FlourishPageCacheSnapshot snapshot;
+        FlourishPageCacheSnapshot? snapshot;
         lock (gate)
         {
-            if (
-                e.PreviousRoute is { } previous
-                && (e.Route is null || e.Route.PageType != previous.PageType)
-            )
+            if (!ApplyRouteSnapshotLocked(e.Current, incrementVersion: true))
             {
-                cacheModesByPageType.Remove(previous.PageType);
-                cachedPages.Remove(previous.PageType);
+                return;
             }
 
-            if (e.Route is { } current)
-            {
-                cacheModesByPageType[current.PageType] = current.CacheMode;
-                if (
-                    current.CacheMode == FlourishPageCacheMode.Disabled
-                    || e.ChangeKind == FlourishRuntimeChangeKind.Updated
-                )
-                {
-                    cachedPages.Remove(current.PageType);
-                }
-            }
-
-            version++;
             snapshot = CreateSnapshot();
         }
 
@@ -251,9 +230,56 @@ internal sealed class PageCacheService : INavigationPageProvider, IPageCacheServ
             new FlourishPageCacheChangedEventArgs(
                 snapshot,
                 e.ChangeKind,
-                affectedPageType
+                e.Route?.PageType ?? e.PreviousRoute?.PageType
             )
         );
+    }
+
+    private bool ApplyRouteSnapshotLocked(
+        FlourishNavigationRouteSnapshot routeSnapshot,
+        bool incrementVersion
+    )
+    {
+        if (routeSnapshot.Version <= lastAppliedRouteVersion)
+        {
+            return false;
+        }
+
+        var currentRoutesByPageType = routeSnapshot
+            .Routes.Values.ToDictionary(route => route.PageType);
+        foreach (var previousPageType in routesByPageType.Keys.Except(currentRoutesByPageType.Keys))
+        {
+            cacheModesByPageType.Remove(previousPageType);
+            cachedPages.Remove(previousPageType);
+        }
+
+        foreach (var pair in currentRoutesByPageType)
+        {
+            var pageType = pair.Key;
+            var route = pair.Value;
+            var routeChanged =
+                !routesByPageType.TryGetValue(pageType, out var previousRoute)
+                || previousRoute != route;
+            cacheModesByPageType[pageType] = route.CacheMode;
+            if (routeChanged || route.CacheMode == FlourishPageCacheMode.Disabled)
+            {
+                cachedPages.Remove(pageType);
+            }
+        }
+
+        routesByPageType.Clear();
+        foreach (var pair in currentRoutesByPageType)
+        {
+            routesByPageType.Add(pair.Key, pair.Value);
+        }
+
+        lastAppliedRouteVersion = routeSnapshot.Version;
+        if (incrementVersion)
+        {
+            version++;
+        }
+
+        return true;
     }
 
     private FlourishPageCacheSnapshot CreateSnapshot()

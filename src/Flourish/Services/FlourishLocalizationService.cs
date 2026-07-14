@@ -39,8 +39,6 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
         }
     }
 
-    public string Locale => CurrentLocale;
-
     public string CurrentLocale
     {
         get

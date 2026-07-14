@@ -50,19 +50,6 @@ public sealed record FlourishToolbarItem
     /// <summary>Gets whether the item accepts interaction.</summary>
     public bool IsEnabled { get; init; } = true;
 
-    /// <summary>
-    /// Deconstructs the toolbar item into display name, icon glyph, and command key.
-    /// </summary>
-    /// <param name="displayName">The text displayed for the toolbar item.</param>
-    /// <param name="iconGlyph">The icon glyph displayed for the toolbar item.</param>
-    /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" />.</param>
-    public void Deconstruct(out string displayName, out string iconGlyph, out string? commandKey)
-    {
-        displayName = DisplayName;
-        iconGlyph = IconGlyph;
-        commandKey = CommandKey;
-    }
-
     private static string CreateDefaultId(string displayName, string? commandKey)
     {
         var candidate = string.IsNullOrWhiteSpace(commandKey) ? displayName : commandKey;

@@ -25,7 +25,6 @@ using var flourish = FlourishBuilder
     .ConfigureServices((context, services) =>
     {
         services.AddSingleton<App>();
-        services.AddSingleton<ICommandParser, AppCommandParser>();
     })
     .Build();
 
@@ -49,7 +48,7 @@ The public builder separates hosting, application services, feature switches, an
 | [Background tasks](background-tasks.md) | `IBackgroundTaskService` | Submits bounded, cancellable asynchronous work. |
 | [Tooltips](configure-tips.md) | `ConfigureShell` | Configures and enables tooltips with `UseTips`. |
 | [Motion](configure-motion.md) | `ConfigureMotion` | Configures transitions and hover animation. |
-| [Window](configure-window.md) | `ConfigureWindow` | Configures shell window behavior and rendering. |
+| [Window](configure-window.md) | `ConfigureWindow` | Configures shell window properties and behavior. |
 | [Typography](configure-font.md) | `ConfigureShell` | Configures shell typography with `UseGlobalFont`. |
 | [Material effects](configure-material-effect.md) | `ConfigureShell` | Applies the window material with `UseMaterialEffect`. |
 | [Themes](configure-themes.md) | `ConfigureShell`, `ConfigureTitleBar` | Configures application colors and corner radius, and enables theme selection with `SetThemeToggle`. |
@@ -65,7 +64,6 @@ Use [Dependency injection](configure-services.md) for application services and r
 builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<App>();
-    services.AddSingleton<ICommandParser, AppCommandParser>();
     services.AddSingleton<ImageLibrary>();
     services.AddTransient<EditorViewModel>();
 });
@@ -86,7 +84,15 @@ services.AddNavigable<HomePage>(
     cacheMode: FlourishPageCacheMode.Enabled);
 ```
 
-When no groups or fixed items are configured, navigation lists registered pages automatically. [Navigation](navigation.md) explains generated keys, page metadata, cache behavior, explicit groups, fixed items, validation, and runtime string navigation.
+Registering a page makes it available to navigation but does not add a visible item. Place it explicitly with `ConfigureNavigation`:
+
+```csharp
+builder.ConfigureNavigation(navigation =>
+    navigation.SetGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
+```
+
+[Navigation](navigation.md) explains generated keys, page metadata, cache behavior, groups, fixed items, validation, and runtime string navigation.
 
 ## Build the runtime
 

@@ -65,17 +65,6 @@ public interface IFlourishNavigationBuilder
     );
 
     /// <summary>
-    /// Sets the navigation panel title used when registered pages are displayed without explicit groups or fixed items.
-    /// </summary>
-    /// <param name="title">The title displayed above automatically listed navigation items.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    /// <remarks>
-    /// When groups or fixed items are configured, the automatic registered-page list is not created.
-    /// Each configured group heading comes from its display name; group 0 can omit that heading.
-    /// </remarks>
-    IFlourishNavigationBuilder SetTitle(string title);
-
-    /// <summary>
     /// Adds and configures a scrollable navigation group.
     /// </summary>
     /// <param name="displayName">The group heading. Required when <paramref name="groupId" /> is not 0.</param>

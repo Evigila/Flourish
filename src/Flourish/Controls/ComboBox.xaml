@@ -32,7 +32,7 @@
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishBrandForegroundBrush}" />
+              <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
               <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishNeutralForeground1Brush}" />

@@ -33,9 +33,6 @@ Add `FlourishThemeResources` explicitly when controls must work in the WPF desig
 
 `http://schemas.arkheide.system/flourish` is the public XAML namespace for Flourish controls and theme resources. Add one `FlourishThemeResources` instance at application scope. Do not also merge Flourish theme dictionaries by URI.
 
-> [!WARNING]
-> `FlourishStyles` and `FlourishControlResources` are obsolete. Use `FlourishThemeResources`.
-
 ## Available controls
 
 The public control library provides the following control families:
@@ -113,7 +110,7 @@ Layout containers control external placement such as `Margin`. Pointer and keybo
 
 `FlourishTextBlock.Role` selects semantic typography. Available roles are `Body`, `Paragraph`, `Caption`, `Muted`, `FieldLabel`, `Subtitle`, `Description`, `CardTitle`, `SectionTitle`, `PageTitle`, `Status`, and `Icon`.
 
-`Paragraph` provides wrapped body text with increased line spacing. `Description` provides supporting text below a heading, and `CardTitle` identifies a heading inside a card or compact content surface. Roles use the active font and theme resources; an explicitly assigned text property takes precedence.
+`Paragraph` provides wrapped body text with increased line spacing. `Description` provides supporting text below a heading, and `CardTitle` identifies a heading inside a card or compact content surface. Body, supporting, label, status, and icon roles use `Regular`; `CardTitle`, `SectionTitle`, and `PageTitle` use `Bold`. Roles use the active font and theme resources; an explicitly assigned text property takes precedence.
 
 ### FlourishCard and FlourishSearchBox
 
@@ -143,7 +140,7 @@ Attached properties provide a local override:
   Content="Preview" />
 ```
 
-A custom template that participates in the behavior provides elements named `HoverChrome` and `HoverRevealScale` and sets `flourish:HoverReveal.IsParticipant="True"`. `IsEnabled` and `AnimationDuration` inherit through the visual tree; `IsParticipant` does not. The behavior has no effect when either named element is absent.
+A custom template that participates in the behavior provides elements named `HoverChrome` and `HoverRevealScale`, sets `flourish:HoverReveal.IsParticipant="True"`, and binds `flourish:HoverReveal.IsMotionEnabled` to `{DynamicResource FlourishHoverRevealEnabled}`. `IsEnabled` and `AnimationDuration` inherit through the visual tree; `IsMotionEnabled` and `IsParticipant` do not. The behavior has no effect when either named element is absent.
 
 Set `flourish:HoverReveal.TemplateHandlesInteraction="True"` when a replacement template defines its own static hover and pressed states. Otherwise, HoverReveal supplies those pointer states.
 

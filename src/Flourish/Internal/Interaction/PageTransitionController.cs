@@ -5,17 +5,15 @@ using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Internal.Interaction;
 
-internal readonly record struct PageTransitionTarget(
-    FrameworkElement ContentHost,
-    FrameworkElement Chrome,
-    ScaleTransform ChromeScale
-);
+internal readonly record struct PageTransitionTarget(FrameworkElement Presenter);
 
 /// <summary>
-/// Reveals page content by animating a text-free chrome while leaving the content visual unchanged.
+/// Animates a short-lived bitmap cache of the page presenter so its visual tree does not need to
+/// be rasterized again for every transition frame.
 /// </summary>
 internal sealed class PageTransitionController
 {
+    private const double PageEntranceOffset = 14;
     private TransitionState? active;
     private long generation;
 
@@ -49,17 +47,30 @@ internal sealed class PageTransitionController
 
         Cancel();
         var state = new TransitionState(target, transition);
-        target.Chrome.BeginAnimation(UIElement.OpacityProperty, null);
-        target.ChromeScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
-        target.Chrome.Opacity = 1;
-        target.ChromeScale.ScaleY = 1;
-
-        var timeline = new DoubleAnimation(1, 0, new Duration(duration))
+        var timeline = new ParallelTimeline
         {
-            EasingFunction = easing,
+            Duration = new Duration(duration),
             FillBehavior = FillBehavior.Stop,
         };
-        var clock = (AnimationClock)timeline.CreateClock(true);
+        timeline.Children.Add(
+            new DoubleAnimation(0, state.OriginalOpacity, new Duration(duration))
+            {
+                EasingFunction = easing,
+                FillBehavior = FillBehavior.Stop,
+            }
+        );
+        if (transition == FlourishPageTransition.EntranceFromBottom)
+        {
+            timeline.Children.Add(
+                new DoubleAnimation(PageEntranceOffset, 0, new Duration(duration))
+                {
+                    EasingFunction = easing,
+                    FillBehavior = FillBehavior.Stop,
+                }
+            );
+        }
+
+        var clock = (ClockGroup)timeline.CreateClock(true);
         var runGeneration = ++generation;
         EventHandler completionHandler = (_, _) => Complete(state, runGeneration);
         state.Begin(clock, completionHandler, completed, runGeneration);
@@ -67,19 +78,28 @@ internal sealed class PageTransitionController
 
         try
         {
-            if (transition == FlourishPageTransition.Fade)
+            target.Presenter.SetCurrentValue(
+                UIElement.CacheModeProperty,
+                state.TransitionCache
+            );
+            if (transition == FlourishPageTransition.EntranceFromBottom)
             {
-                target.Chrome.ApplyAnimationClock(
-                    UIElement.OpacityProperty,
-                    clock,
-                    HandoffBehavior.SnapshotAndReplace
+                target.Presenter.SetCurrentValue(
+                    UIElement.RenderTransformProperty,
+                    state.Translation
                 );
             }
-            else
+
+            target.Presenter.ApplyAnimationClock(
+                UIElement.OpacityProperty,
+                (AnimationClock)clock.Children[0],
+                HandoffBehavior.SnapshotAndReplace
+            );
+            if (transition == FlourishPageTransition.EntranceFromBottom)
             {
-                target.ChromeScale.ApplyAnimationClock(
-                    ScaleTransform.ScaleYProperty,
-                    clock,
+                state.Translation.ApplyAnimationClock(
+                    TranslateTransform.YProperty,
+                    (AnimationClock)clock.Children[1],
                     HandoffBehavior.SnapshotAndReplace
                 );
             }
@@ -87,7 +107,8 @@ internal sealed class PageTransitionController
         catch
         {
             active = null;
-            StopClock(state);
+            generation++;
+            StopClocks(state);
             RestorePresentation(state);
             throw;
         }
@@ -104,7 +125,7 @@ internal sealed class PageTransitionController
 
         active = null;
         generation++;
-        StopClock(state);
+        StopClocks(state);
         RestorePresentation(state);
     }
 
@@ -122,12 +143,12 @@ internal sealed class PageTransitionController
         var completed = state.Completed;
         active = null;
         generation++;
-        StopClock(state);
+        StopClocks(state);
         RestorePresentation(state);
         completed?.Invoke();
     }
 
-    private static void StopClock(TransitionState state)
+    private static void StopClocks(TransitionState state)
     {
         if (state.CompletionHandler is { } completionHandler)
         {
@@ -135,39 +156,81 @@ internal sealed class PageTransitionController
         }
 
         state.Clock.Controller?.Remove();
-        if (state.Transition == FlourishPageTransition.Fade)
+        try
         {
-            state.Target.Chrome.ApplyAnimationClock(UIElement.OpacityProperty, null);
+            state.Target.Presenter.ApplyAnimationClock(UIElement.OpacityProperty, null);
+            if (
+                state.Transition == FlourishPageTransition.EntranceFromBottom
+            )
+            {
+                state.Translation.ApplyAnimationClock(
+                    TranslateTransform.YProperty,
+                    null
+                );
+            }
         }
-        else
+        finally
         {
-            state.Target.ChromeScale.ApplyAnimationClock(
-                ScaleTransform.ScaleYProperty,
-                null
-            );
+            state.ClearRun();
         }
-
-        state.ClearRun();
     }
 
     private static void RestorePresentation(TransitionState state)
     {
-        state.Target.Chrome.Opacity = state.OriginalOpacity;
-        state.Target.ChromeScale.ScaleY = state.OriginalScaleY;
+        var target = state.Target;
+        target.Presenter.SetCurrentValue(UIElement.OpacityProperty, state.OriginalOpacity);
+        RestoreLocalValue(
+            target.Presenter,
+            UIElement.OpacityProperty,
+            state.OriginalOpacityLocalValue
+        );
+        if (state.Transition == FlourishPageTransition.EntranceFromBottom)
+        {
+            target.Presenter.SetCurrentValue(
+                UIElement.RenderTransformProperty,
+                state.OriginalRenderTransform
+            );
+            RestoreLocalValue(
+                target.Presenter,
+                UIElement.RenderTransformProperty,
+                state.OriginalRenderTransformLocalValue
+            );
+        }
+
+        target.Presenter.SetCurrentValue(
+            UIElement.CacheModeProperty,
+            state.OriginalCacheMode
+        );
+        RestoreLocalValue(
+            target.Presenter,
+            UIElement.CacheModeProperty,
+            state.OriginalCacheModeLocalValue
+        );
     }
 
     private static void ValidateTarget(PageTransitionTarget target)
     {
-        ArgumentNullException.ThrowIfNull(target.ContentHost);
-        ArgumentNullException.ThrowIfNull(target.Chrome);
-        ArgumentNullException.ThrowIfNull(target.ChromeScale);
-        if (ReferenceEquals(target.ContentHost, target.Chrome))
+        ArgumentNullException.ThrowIfNull(target.Presenter);
+    }
+
+    private static void RestoreLocalValue(
+        DependencyObject target,
+        DependencyProperty property,
+        object originalLocalValue
+    )
+    {
+        if (ReferenceEquals(target.ReadLocalValue(property), originalLocalValue))
         {
-            throw new ArgumentException(
-                "The page content and transition chrome must be different elements.",
-                nameof(target)
-            );
+            return;
         }
+
+        if (originalLocalValue == DependencyProperty.UnsetValue)
+        {
+            target.ClearValue(property);
+            return;
+        }
+
+        target.SetValue(property, originalLocalValue);
     }
 
     private sealed class TransitionState(
@@ -179,11 +242,30 @@ internal sealed class PageTransitionController
 
         internal FlourishPageTransition Transition { get; } = transition;
 
-        internal double OriginalOpacity { get; } = target.Chrome.Opacity;
+        internal double OriginalOpacity { get; } = target.Presenter.Opacity;
 
-        internal double OriginalScaleY { get; } = target.ChromeScale.ScaleY;
+        internal object OriginalOpacityLocalValue { get; } =
+            target.Presenter.ReadLocalValue(UIElement.OpacityProperty);
 
-        internal AnimationClock Clock { get; private set; } = null!;
+        internal CacheMode? OriginalCacheMode { get; } = target.Presenter.CacheMode;
+
+        internal object OriginalCacheModeLocalValue { get; } =
+            target.Presenter.ReadLocalValue(UIElement.CacheModeProperty);
+
+        internal Transform OriginalRenderTransform { get; } =
+            target.Presenter.RenderTransform;
+
+        internal object OriginalRenderTransformLocalValue { get; } =
+            target.Presenter.ReadLocalValue(UIElement.RenderTransformProperty);
+
+        internal TranslateTransform Translation { get; } = new();
+
+        internal BitmapCache TransitionCache { get; } = new()
+        {
+            SnapsToDevicePixels = false,
+        };
+
+        internal ClockGroup Clock { get; private set; } = null!;
 
         internal EventHandler? CompletionHandler { get; private set; }
 
@@ -192,7 +274,7 @@ internal sealed class PageTransitionController
         internal long Generation { get; private set; }
 
         internal void Begin(
-            AnimationClock clock,
+            ClockGroup clock,
             EventHandler completionHandler,
             Action completed,
             long generation

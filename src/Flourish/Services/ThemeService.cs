@@ -482,12 +482,7 @@ internal sealed class ThemeService(
         SetBrush(resources, "FlourishAccentForegroundBrush", accentForeground);
         SetHeroBackground(resources, colors);
 
-        // Keep existing Flourish controls aligned with the new semantic palette.
-        SetBrush(resources, "FlourishBrandForegroundBrush", primaryForeground);
-        SetBrush(resources, "FlourishBrandBackgroundBrush", colors.Primary);
-        SetBrush(resources, "FlourishBrandBackgroundHoverBrush", primaryHover);
-        SetBrush(resources, "FlourishBrandBackgroundPressedBrush", primaryPressed);
-        SetBrush(resources, "FlourishForegroundOnBrandBrush", foregroundOnPrimary);
+        // Update component roles derived from the configured palette.
         SetBrush(resources, "FlourishControlStrokeFocusBrush", accentForeground);
         SetBrush(resources, "FlourishControlSelectedBrush", selectedBackground);
         SetBrush(resources, "FlourishControlSelectedForegroundBrush", selectedForeground);
@@ -499,8 +494,6 @@ internal sealed class ThemeService(
         SetBrush(resources, "FlourishProfileForegroundBrush", secondaryForeground);
         SetBrush(resources, "FlourishMessageBoxInfoIconBackgroundBrush", primarySurface);
         SetBrush(resources, "FlourishMessageBoxInfoIconForegroundBrush", primaryForeground);
-        SetBrush(resources, "FlourishPrimaryButtonHoverBrush", primaryHover);
-        SetBrush(resources, "FlourishPrimaryButtonPressedBrush", primaryPressed);
     }
 
     private static void SetBrush(ResourceDictionary resources, string key, Color color)

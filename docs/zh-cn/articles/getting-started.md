@@ -13,9 +13,6 @@ Flourish 内置文案默认使用英文。如需中文，请在 `Build()` 前调
 
 `Run(Application)` 和 `IFlourish.Show(Application)` 会在 Shell 打开前加载 Flourish 控件与主题资源。当 WPF 设计器、Shell 显示前的内容或独立使用[控件库](control-library.md)需要这些资源时，请在 `App.xaml` 中显式添加 `FlourishThemeResources`。
 
-> [!WARNING]
-> `FlourishStyles` 与 `FlourishControlResources` 已过时。请使用 `FlourishThemeResources`。
-
 Flourish Shell 作为主窗口时，不要在 `App.xaml` 中设置 `StartupUri`。
 
 ```xml
@@ -67,6 +64,9 @@ public partial class App : Application
                 shell.UseTitleBar().UseNavigation())
             .ConfigureTitleBar(titleBar =>
                 titleBar.SetTitle("Foobar").SetNavToggle())
+            .ConfigureNavigation(navigation =>
+                navigation.SetGroup(null, groupId: 0, group =>
+                    group.AddNavigableViewItem<HomePage>(isInitial: true)))
             .Build();
 
         flourish.Start();
@@ -87,7 +87,7 @@ public partial class App : Application
 }
 ```
 
-由于没有配置导航分组或固定项，导航栏会自动列出已注册页面。如果应用需要显式分组、固定项或初始页面，请参阅[导航](navigation.md)。
+导航分组会显式地把 `HomePage` 放入面板，并将它设为初始页面。需要更多分组、固定项、命令项或父子结构时，请参阅[导航](navigation.md)。
 
 ## 其他起始方式
 
@@ -105,6 +105,9 @@ return FlourishBuilder
         shell.UseTitleBar().UseNavigation())
     .ConfigureTitleBar(titleBar =>
         titleBar.SetTitle("Foobar").SetNavToggle())
+    .ConfigureNavigation(navigation =>
+        navigation.SetGroup(null, groupId: 0, group =>
+            group.AddNavigableViewItem<HomePage>(isInitial: true)))
     .Run<App>();
 ```
 
@@ -134,7 +137,7 @@ public partial class HomePage : Page
 - [应用数据](configure-data.md)选择内置界面语言并注册自定义语言。
 - [Shell 配置](shell-configuration.md)启用 Shell 功能并说明其前置条件。
 - [标题栏](configure-title-bar.md)配置标题栏内容。
-- [导航](navigation.md)配置自动或显式导航项。
+- [导航](navigation.md)把已注册页面和命令项放入显式导航分组。
 - [后台任务](background-tasks.md)运行可取消异步工作。
 - [提示浮层](configure-tips.md)、[排版](configure-font.md)和[窗口](configure-window.md)配置其他 Shell 行为。
 
@@ -142,5 +145,5 @@ public partial class HomePage : Page
 
 - WPF 应用从 `App.xaml.cs` 或其他应用起始点启动 Flourish。
 - 至少一个页面已通过 `AddNavigable` 注册。
-- 已启用导航，且注册页面由自动列表显示或放入显式位置。
+- 已启用导航，且每个可见页面都放入分组或固定区域。
 - 应用退出时释放运行时，或由 `Run<App>()` 管理其生命周期。

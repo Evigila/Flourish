@@ -23,7 +23,7 @@ builder.ConfigureShell(shell =>
 
 On a platform that does not support the selected material, the shell remains usable without that effect. Application state and content distinctions should not depend on material availability.
 
-Material is applied to the shell window. Pages can define their own WPF backgrounds inside the content area.
+Material is applied to the shell window. The built-in page host remains transparent so Mica continues through the content area. Pages can still add local backgrounds when their design requires one.
 
 ## Related features
 

@@ -1,5 +1,4 @@
 using System.Windows;
-using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Internal.Configuration;
@@ -9,8 +8,6 @@ internal sealed class FlourishShellOptions
     public string Title { get; set; } = string.Empty;
 
     public string Subtitle { get; set; } = "WPF Application";
-
-    public string PaneTitle { get; set; } = string.Empty;
 
     public string SearchPlaceholder { get; set; } = "Search";
 
@@ -54,14 +51,6 @@ internal sealed class FlourishShellOptions
     public WindowState WindowState { get; set; } = WindowState.Normal;
 
     public ResizeMode WindowResizeMode { get; set; } = ResizeMode.CanResize;
-
-    public TextFormattingMode? WindowTextFormattingMode { get; set; }
-
-    public TextRenderingMode? WindowTextRenderingMode { get; set; }
-
-    public bool? WindowSnapsToDevicePixels { get; set; }
-
-    public bool? WindowUseLayoutRounding { get; set; }
 
     public MaterialEffect MaterialEffect { get; set; } = MaterialEffect.Mica;
 
@@ -133,11 +122,7 @@ internal sealed class FlourishShellOptions
 
     public Type? InitialNavigationPageType { get; set; }
 
-    public Dictionary<Type, FlourishPageCacheMode> PageCacheModesByPageType { get; } = [];
-
-    public Dictionary<string, Type> PageTypesByNavigationKey { get; } = new(StringComparer.Ordinal);
-
-    public Dictionary<Type, string> NavigationKeysByPageType { get; } = [];
+    public List<FlourishNavigationRoute> InitialNavigationRoutes { get; } = [];
 
     public List<FlourishNavigationGroup> NavigationGroups { get; } = [];
 

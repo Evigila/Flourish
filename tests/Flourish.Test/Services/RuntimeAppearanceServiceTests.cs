@@ -344,8 +344,6 @@ public sealed class RuntimeAppearanceServiceTests
             );
             AssertDirectBrushColor(resources, "FlourishAccentBrush", colors.Accent);
             AssertDirectBrushColor(resources, "FlourishAccentForegroundBrush", colors.Accent);
-            AssertDirectBrushColor(resources, "FlourishBrandForegroundBrush", colors.Primary);
-            AssertDirectBrushColor(resources, "FlourishBrandBackgroundBrush", colors.Primary);
             AssertDirectBrushColor(resources, "FlourishControlStrokeFocusBrush", colors.Accent);
             AssertDirectBrushColor(resources, "FlourishForegroundOnPrimaryBrush", Colors.White);
             AssertDirectBrushColor(resources, "FlourishForegroundOnSecondaryBrush", Colors.Black);
@@ -362,16 +360,6 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.NotEqual(colors.Primary, primaryHover.Color);
             Assert.NotEqual(primaryHover.Color, primaryPressed.Color);
             Assert.Equal(0x24, primarySurface.Color.A);
-            AssertDirectBrushColor(
-                resources,
-                "FlourishBrandBackgroundHoverBrush",
-                primaryHover.Color
-            );
-            AssertDirectBrushColor(
-                resources,
-                "FlourishBrandBackgroundPressedBrush",
-                primaryPressed.Color
-            );
 
             foreach (
                 var key in new[]
@@ -602,7 +590,7 @@ public sealed class RuntimeAppearanceServiceTests
             visualRoot.Children.Add(card);
             card.ApplyTemplate();
 
-            AssertPaletteColor(paletteHost, lightPalette, "AppBackgroundBrush");
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishShellBackgroundBrush");
             AssertPaletteColor(
                 paletteHost,
                 lightPalette,
@@ -616,7 +604,7 @@ public sealed class RuntimeAppearanceServiceTests
             ThemeService.ApplyThemePalette(resources, FlourishTheme.Dark);
             Assert.Same(paletteHost, FindDictionary(resources, darkSource));
             Assert.Empty(paletteHost.MergedDictionaries);
-            AssertPaletteColor(paletteHost, darkPalette, "AppBackgroundBrush");
+            AssertPaletteColor(paletteHost, darkPalette, "FlourishShellBackgroundBrush");
             AssertPaletteColor(
                 paletteHost,
                 darkPalette,
@@ -630,7 +618,7 @@ public sealed class RuntimeAppearanceServiceTests
             ThemeService.ApplyThemePalette(resources, FlourishTheme.Light);
             Assert.Same(paletteHost, FindDictionary(resources, lightSource));
             Assert.Empty(paletteHost.MergedDictionaries);
-            AssertPaletteColor(paletteHost, lightPalette, "AppBackgroundBrush");
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishShellBackgroundBrush");
             AssertPaletteColor(
                 paletteHost,
                 lightPalette,
@@ -656,7 +644,7 @@ public sealed class RuntimeAppearanceServiceTests
                 "/Flourish;component/Themes/Colors/Colors.Light.xaml";
             const string darkSource =
                 "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
-            const string customToken = "FlourishBrandForegroundBrush";
+            const string customToken = "FlourishPrimaryForegroundBrush";
             var resources = new ResourceDictionary();
             var wrapper = new ResourceDictionary();
             var theme = new FlourishThemeResources();
@@ -678,9 +666,9 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Same(theme, FlourishThemeResources.FindThemeRoot(resources));
             Assert.Same(customBrush, resources[customToken]);
             AssertBrushColor(
-                Assert.IsAssignableFrom<Brush>(resources["AppBackgroundBrush"]),
+                Assert.IsAssignableFrom<Brush>(resources["FlourishShellBackgroundBrush"]),
                 lightPalette,
-                "AppBackgroundBrush"
+                "FlourishShellBackgroundBrush"
             );
 
             ThemeService.ApplyThemePalette(resources, FlourishTheme.Dark);
@@ -689,9 +677,9 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Same(theme, FlourishThemeResources.FindThemeRoot(resources));
             Assert.Same(customBrush, resources[customToken]);
             AssertBrushColor(
-                Assert.IsAssignableFrom<Brush>(resources["AppBackgroundBrush"]),
+                Assert.IsAssignableFrom<Brush>(resources["FlourishShellBackgroundBrush"]),
                 darkPalette,
-                "AppBackgroundBrush"
+                "FlourishShellBackgroundBrush"
             );
 
             ThemeService.ApplyThemePalette(resources, FlourishTheme.Light);
@@ -700,9 +688,9 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Same(theme, FlourishThemeResources.FindThemeRoot(resources));
             Assert.Same(customBrush, resources[customToken]);
             AssertBrushColor(
-                Assert.IsAssignableFrom<Brush>(resources["AppBackgroundBrush"]),
+                Assert.IsAssignableFrom<Brush>(resources["FlourishShellBackgroundBrush"]),
                 lightPalette,
-                "AppBackgroundBrush"
+                "FlourishShellBackgroundBrush"
             );
             Assert.Same(wrapper, Assert.Single(resources.MergedDictionaries));
             Assert.Same(theme, Assert.Single(wrapper.MergedDictionaries));

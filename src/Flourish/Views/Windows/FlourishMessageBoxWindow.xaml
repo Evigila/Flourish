@@ -17,7 +17,6 @@
   AllowsTransparency="True"
   Background="Transparent"
   SnapsToDevicePixels="True"
-  TextOptions.TextFormattingMode="Display"
   UseLayoutRounding="True"
   mc:Ignorable="d"
 >
@@ -59,7 +58,7 @@
           VerticalAlignment="Center"
           FontFamily="{DynamicResource FlourishFontFamily}"
           FontSize="{DynamicResource FlourishFontSizeCaption}"
-          FontWeight="SemiBold"
+          FontWeight="Bold"
           Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
           TextTrimming="CharacterEllipsis"
         />
@@ -104,7 +103,7 @@
             VerticalAlignment="Center"
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="16"
-            Foreground="{DynamicResource FlourishBrandForegroundBrush}"
+            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
             Role="Icon"
             TextAlignment="Center"
           />

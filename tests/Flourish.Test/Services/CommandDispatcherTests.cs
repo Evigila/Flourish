@@ -3,82 +3,34 @@ using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
-public sealed class CommandParserTests
+public sealed class CommandDispatcherTests
 {
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Parse_WithMissingCommandKey_ReturnsFalseWithoutCallingParsers(string? commandKey)
+    public void CanExecute_WithMissingCommandKey_ReturnsFalse(string? commandKey)
     {
-        var parser = new StubCommandParser(_ => true);
-        var sut = new CommandParser([parser]);
+        var sut = new CommandDispatcher();
 
-        var handled = sut.Parse(commandKey);
-
-        Assert.False(handled);
-        Assert.Empty(parser.ReceivedKeys);
+        Assert.False(sut.CanExecute(commandKey!));
     }
 
     [Fact]
-    public void Parse_WhenFirstParserHandlesCommand_StopsAtFirstHandler()
+    public async Task ExecuteAsync_WithNoRegistration_ReturnsNotHandled()
     {
-        var firstParser = new StubCommandParser(_ => true);
-        var secondParser = new StubCommandParser(_ => throw new InvalidOperationException());
-        var sut = new CommandParser([firstParser, secondParser]);
+        var sut = new CommandDispatcher();
 
-        var handled = sut.Parse("gallery.open");
+        var result = await sut.ExecuteAsync("gallery.open");
 
-        Assert.True(handled);
-        Assert.Equal(["gallery.open"], firstParser.ReceivedKeys);
-        Assert.Empty(secondParser.ReceivedKeys);
-    }
-
-    [Fact]
-    public void Parse_WhenNoParserHandlesCommand_CallsEveryParserInOrder()
-    {
-        var calls = new List<string>();
-        var firstParser = new StubCommandParser(key =>
-        {
-            calls.Add($"first:{key}");
-            return false;
-        });
-        var secondParser = new StubCommandParser(key =>
-        {
-            calls.Add($"second:{key}");
-            return false;
-        });
-        var sut = new CommandParser([firstParser, secondParser]);
-
-        var handled = sut.Parse("gallery.unknown");
-
-        Assert.False(handled);
-        Assert.Equal(
-            ["first:gallery.unknown", "second:gallery.unknown"],
-            calls
-        );
-    }
-
-    [Fact]
-    public void Constructor_MaterializesParserCollection()
-    {
-        var initialParser = new StubCommandParser(_ => false);
-        var laterParser = new StubCommandParser(_ => true);
-        var parsers = new List<ICommandParser> { initialParser };
-        var sut = new CommandParser(parsers);
-        parsers.Add(laterParser);
-
-        var handled = sut.Parse("gallery.open");
-
-        Assert.False(handled);
-        Assert.Equal(["gallery.open"], initialParser.ReceivedKeys);
-        Assert.Empty(laterParser.ReceivedKeys);
+        Assert.Equal(CommandExecutionStatus.NotHandled, result.Status);
+        Assert.False(sut.CanExecute("gallery.open"));
     }
 
     [Fact]
     public async Task ExecuteAsync_RuntimeHandlerReceivesInvocationContextAndValue()
     {
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         CommandContext? receivedContext = null;
         CancellationToken receivedToken = default;
         var parameter = new object();
@@ -113,7 +65,7 @@ public sealed class CommandParserTests
     public async Task ExecuteAsync_WhenPredicateIsFalse_ReturnsDisabledWithoutInvokingHandler()
     {
         var invoked = false;
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         sut.Register(
             "editor.save",
             (_, _) =>
@@ -133,10 +85,9 @@ public sealed class CommandParserTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_RuntimeNotHandled_FallsBackToLegacyParsers()
+    public async Task ExecuteAsync_RuntimeNotHandled_ReturnsNotHandled()
     {
-        var legacy = new StubCommandParser(key => key == "reports.export");
-        var sut = new CommandParser([legacy]);
+        var sut = new CommandDispatcher();
         sut.Register(
             "reports.export",
             (_, _) => ValueTask.FromResult(CommandResult.NotHandled)
@@ -144,35 +95,17 @@ public sealed class CommandParserTests
 
         var result = await sut.ExecuteAsync("reports.export");
 
-        Assert.True(result.IsHandled);
-        Assert.Equal(["reports.export"], legacy.ReceivedKeys);
+        Assert.Equal(CommandExecutionStatus.NotHandled, result.Status);
     }
 
     [Fact]
-    public async Task ExecuteAsync_HandlerException_IsCapturedWithoutInvokingFallback()
+    public async Task ExecuteAsync_HandlerException_IsCaptured()
     {
-        var legacy = new StubCommandParser(_ => true);
-        var sut = new CommandParser([legacy]);
+        var sut = new CommandDispatcher();
         var failure = new InvalidOperationException("save failed");
-        sut.Register(
-            "editor.save",
-            (_, _) => throw failure
-        );
+        sut.Register("editor.save", (_, _) => throw failure);
 
         var result = await sut.ExecuteAsync("editor.save");
-
-        Assert.Equal(CommandExecutionStatus.Failed, result.Status);
-        Assert.Same(failure, result.Exception);
-        Assert.Empty(legacy.ReceivedKeys);
-    }
-
-    [Fact]
-    public async Task ExecuteAsync_LegacyParserException_IsCaptured()
-    {
-        var failure = new InvalidOperationException("legacy failed");
-        var sut = new CommandParser([new StubCommandParser(_ => throw failure)]);
-
-        var result = await sut.ExecuteAsync("legacy.command");
 
         Assert.Equal(CommandExecutionStatus.Failed, result.Status);
         Assert.Same(failure, result.Exception);
@@ -182,7 +115,7 @@ public sealed class CommandParserTests
     public async Task ExecuteAsync_WithCanceledToken_ReturnsCanceledWithoutCallingHandlers()
     {
         var invoked = false;
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         sut.Register(
             "editor.save",
             (_, _) =>
@@ -206,7 +139,7 @@ public sealed class CommandParserTests
     [Fact]
     public void Register_WithDuplicateKeyAndRejectPolicy_Throws()
     {
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         sut.Register(
             "editor.save",
             (_, _) => ValueTask.FromResult(CommandResult.Handled)
@@ -227,7 +160,7 @@ public sealed class CommandParserTests
     public async Task Register_WithReplacePolicy_InvalidatesOldLeaseAndUsesReplacement()
     {
         var calls = new List<string>();
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         var original = sut.Register(
             "editor.save",
             (_, _) =>
@@ -236,7 +169,6 @@ public sealed class CommandParserTests
                 return ValueTask.FromResult(CommandResult.Handled);
             }
         );
-
         var replacement = sut.Register(
             "editor.save",
             (_, _) =>
@@ -254,6 +186,7 @@ public sealed class CommandParserTests
         Assert.True(replacement.IsRegistered);
         original.Dispose();
         var result = await sut.ExecuteAsync("editor.save");
+
         Assert.True(result.IsHandled);
         Assert.Equal(["replacement"], calls);
     }
@@ -262,7 +195,7 @@ public sealed class CommandParserTests
     public async Task Register_WithAppendPolicy_UsesPriorityThenRegistrationOrder()
     {
         var calls = new List<string>();
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         sut.Register(
             "editor.save",
             (_, _) =>
@@ -295,7 +228,7 @@ public sealed class CommandParserTests
     [Fact]
     public async Task Dispose_UnregistersOnlyOwnedHandlerAndRaisesChangedSnapshot()
     {
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         var changes = new List<CommandRegistryChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
         var first = sut.Register(
@@ -326,7 +259,7 @@ public sealed class CommandParserTests
     [Fact]
     public void NotifyCanExecuteChanged_FromLeaseAndRegistry_IdentifiesAffectedCommands()
     {
-        var sut = new CommandParser([]);
+        var sut = new CommandDispatcher();
         var affectedKeys = new List<string?>();
         sut.CanExecuteChanged += (_, args) => affectedKeys.Add(args.CommandKey);
         var registration = sut.Register(
@@ -340,43 +273,5 @@ public sealed class CommandParserTests
         registration.NotifyCanExecuteChanged();
 
         Assert.Equal(["editor.save", null], affectedKeys);
-    }
-
-    [Fact]
-    public async Task Parse_WithAsynchronousRuntimeHandler_DoesNotBlockLegacyShellEntryPoint()
-    {
-        var entered = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
-        var release = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
-        var sut = new CommandParser([]);
-        sut.Register(
-            "editor.save",
-            async (_, _) =>
-            {
-                entered.TrySetResult();
-                await release.Task;
-                return CommandResult.Handled;
-            }
-        );
-
-        var accepted = sut.Parse("editor.save");
-
-        Assert.True(accepted);
-        await entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
-        release.TrySetResult();
-    }
-
-    private sealed class StubCommandParser(Func<string, bool> parse) : ICommandParser
-    {
-        public List<string> ReceivedKeys { get; } = [];
-
-        public bool TryParse(string commandKey)
-        {
-            ReceivedKeys.Add(commandKey);
-            return parse(commandKey);
-        }
     }
 }

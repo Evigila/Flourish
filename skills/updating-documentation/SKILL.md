@@ -27,7 +27,7 @@ Organize conceptual documentation by user-visible feature or task, not by builde
 
 - Give each capability one canonical conceptual article. Document its `Configure...` method, enabling switch, workflow, observable behavior, and constraints together in that article.
 - Use feature names such as **Navigation**, **Profile**, **Motion**, or **Application data** for article titles and TOC entries. Do not create a **Configuration APIs** category or use `Configure...` as the conceptual page title.
-- A canonical feature article may retain a `configure-*.md` filename to preserve a stable URL. Visible titles and TOC labels must remain feature-oriented; rename the file only when the task includes a redirect or link-migration plan.
+- Keep canonical article filenames aligned with their feature titles. Update every TOC and cross-link in the same change when a page is renamed.
 - Keep a type-named overview such as **IFlourishBuilder** only when the type itself is the concept being taught. It may summarize and link to feature articles, but must not duplicate their tutorials.
 - When a feature overview and a `Configure...` page both exist, merge the useful details into the feature overview, remove the duplicate page, and update every TOC entry and cross-link.
 - Keep overview pages concise. For example, **Shell configuration** explains `ConfigureShell` and links to feature articles; it does not repeat the complete title bar, navigation, toolbar, or motion tutorials.
@@ -46,7 +46,7 @@ Write from the perspective of a library user learning stable public behavior.
 - Avoid implementation diaries and sample-project state. Do not document exact values derived from Gallery configuration, internal schema revisions, source-file decisions, or one build's generated identifiers.
 - Include internal details only when they form a useful, stable user-facing contract. Prefer “credentials are protected for the current Windows user” over a list of internal fields, hash inputs, and sample-specific secret IDs.
 - Avoid pixel measurements, control-style inventory, and exact UI microcopy unless consumers must design against them.
-- Use neutral example identifiers such as `Foobar`, `Foo Bar`, `Example Company`, `HomePage`, `ReportsPage`, and `AppCommandParser`. Do not use real people, real organizations, or configuration copied from the Gallery project.
+- Use neutral example identifiers such as `Foobar`, `Foo Bar`, `Example Company`, `HomePage`, `ReportsPage`, and `ReportCommands`. Do not use real people, real organizations, or configuration copied from the Gallery project.
 - Keep recommendations evidence-based. Explain the relevant constraint instead of using subjective comparisons such as “marketing-style” or project-specific judgments.
 - Use direct, instructional language and present tense. Do not address repository maintainers or narrate the editing process inside an article.
 

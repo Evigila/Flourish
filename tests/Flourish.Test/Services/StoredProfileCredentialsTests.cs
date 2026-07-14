@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -6,16 +5,17 @@ namespace ArkheideSystem.Flourish.Test.Services;
 public sealed class StoredProfileCredentialsTests
 {
     [Fact]
-    public void TryGetName_WithLegacyFirstLastPayload_MigratesCombinedName()
+    public void TryGetName_WithCurrentSchema_NormalizesSeparateNameParts()
     {
         var sut = new StoredProfileCredentials
         {
-            UserName = "Mary Jane Watson",
+            FirstName = "  Mary Jane ",
+            LastName = " Watson  ",
             Password = "password",
             RememberLogin = true,
         };
 
-        var succeeded = sut.TryGetName(NameOrder.FirstLast, out var name);
+        var succeeded = sut.TryGetName(out var name);
 
         Assert.True(succeeded);
         Assert.Equal("Mary Jane", name.FirstName);
@@ -23,20 +23,20 @@ public sealed class StoredProfileCredentialsTests
     }
 
     [Fact]
-    public void TryGetName_WithLegacyLastFirstPayload_PreservesDisplayOrder()
+    public void TryGetName_WithOnlyOneNamePart_Succeeds()
     {
         var sut = new StoredProfileCredentials
         {
-            UserName = "Watson Mary Jane",
+            LastName = "Prince",
             Password = "password",
             RememberLogin = true,
         };
 
-        var succeeded = sut.TryGetName(NameOrder.LastFirst, out var name);
+        var succeeded = sut.TryGetName(out var name);
 
         Assert.True(succeeded);
-        Assert.Equal("Mary Jane", name.FirstName);
-        Assert.Equal("Watson", name.LastName);
+        Assert.Equal(string.Empty, name.FirstName);
+        Assert.Equal("Prince", name.LastName);
     }
 
     [Fact]
@@ -53,12 +53,12 @@ public sealed class StoredProfileCredentialsTests
         Assert.Equal(StoredProfileCredentials.CurrentSchemaVersion, sut.SchemaVersion);
         Assert.Equal("Ada", sut.FirstName);
         Assert.Equal("Lovelace", sut.LastName);
-        Assert.Null(sut.UserName);
+        Assert.True(sut.IsSupportedSchema);
         Assert.True(sut.RememberLogin);
     }
 
     [Fact]
-    public void TryGetName_WithFutureSchema_DoesNotInterpretPayload()
+    public void TryGetName_WithUnsupportedSchema_DoesNotInterpretPayload()
     {
         var sut = new StoredProfileCredentials
         {
@@ -68,12 +68,12 @@ public sealed class StoredProfileCredentialsTests
             RememberLogin = true,
         };
 
-        Assert.True(sut.UsesFutureSchema);
-        Assert.False(sut.TryGetName(NameOrder.FirstLast, out _));
+        Assert.False(sut.IsSupportedSchema);
+        Assert.False(sut.TryGetName(out _));
     }
 
     [Fact]
-    public void TryGetName_WithInvalidLegacyPayload_IsNotFutureSchema()
+    public void TryGetName_WithEmptyNameParts_Fails()
     {
         var sut = new StoredProfileCredentials
         {
@@ -81,7 +81,7 @@ public sealed class StoredProfileCredentialsTests
             RememberLogin = true,
         };
 
-        Assert.False(sut.UsesFutureSchema);
-        Assert.False(sut.TryGetName(NameOrder.FirstLast, out _));
+        Assert.True(sut.IsSupportedSchema);
+        Assert.False(sut.TryGetName(out _));
     }
 }

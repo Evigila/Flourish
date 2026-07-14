@@ -11,8 +11,6 @@ internal readonly record struct NavigationPaneTransitionTarget(
     Grid WorkArea,
     FrameworkElement PaneHost,
     FrameworkElement ContentHost,
-    ScaleTransform ContentScale,
-    TranslateTransform ContentTranslation,
     NavigationPanelDirection Direction
 );
 
@@ -82,8 +80,8 @@ internal sealed class NavigationPaneTransitionController
         {
             state = existing;
             currentVisibleWidth = existing.Clip.Rect.Width;
-            currentScale = target.ContentScale.ScaleX;
-            currentTranslation = target.ContentTranslation.X;
+            currentScale = existing.ContentScale.ScaleX;
+            currentTranslation = existing.ContentTranslation.X;
             StopClocks(existing);
         }
         else
@@ -91,8 +89,8 @@ internal sealed class NavigationPaneTransitionController
             Cancel();
             state = new TransitionState(target);
             currentVisibleWidth = committedWidth;
-            currentScale = target.ContentScale.ScaleX;
-            currentTranslation = target.ContentTranslation.X;
+            currentScale = state.ContentScale.ScaleX;
+            currentTranslation = state.ContentTranslation.X;
         }
 
         currentVisibleWidth = Math.Clamp(currentVisibleWidth, 0, workWidth);
@@ -144,17 +142,6 @@ internal sealed class NavigationPaneTransitionController
             referenceDistance
         );
 
-        Grid.SetColumn(target.PaneHost, 0);
-        Grid.SetColumnSpan(target.PaneHost, 2);
-        target.PaneHost.Width = presentationWidth;
-        target.PaneHost.HorizontalAlignment = target.Direction == NavigationPanelDirection.Left
-            ? HorizontalAlignment.Left
-            : HorizontalAlignment.Right;
-        state.Clip.Rect = toClip;
-        target.PaneHost.Clip = state.Clip;
-        target.ContentScale.ScaleX = targetScale;
-        target.ContentTranslation.X = targetTranslation;
-
         var timeline = new ParallelTimeline
         {
             Duration = new Duration(effectiveDuration),
@@ -194,17 +181,31 @@ internal sealed class NavigationPaneTransitionController
 
         try
         {
+            Grid.SetColumn(target.PaneHost, 0);
+            Grid.SetColumnSpan(target.PaneHost, 2);
+            target.PaneHost.Width = presentationWidth;
+            target.PaneHost.HorizontalAlignment =
+                target.Direction == NavigationPanelDirection.Left
+                    ? HorizontalAlignment.Left
+                    : HorizontalAlignment.Right;
+            state.Clip.Rect = toClip;
+            target.PaneHost.Clip = state.Clip;
+            state.ContentScale.ScaleX = targetScale;
+            state.ContentTranslation.X = targetTranslation;
+            target.ContentHost.RenderTransformOrigin = new System.Windows.Point();
+            target.ContentHost.RenderTransform = state.ContentTransform;
+
             state.Clip.ApplyAnimationClock(
                 RectangleGeometry.RectProperty,
                 (AnimationClock)clock.Children[0],
                 HandoffBehavior.SnapshotAndReplace
             );
-            target.ContentScale.ApplyAnimationClock(
+            state.ContentScale.ApplyAnimationClock(
                 ScaleTransform.ScaleXProperty,
                 (AnimationClock)clock.Children[1],
                 HandoffBehavior.SnapshotAndReplace
             );
-            target.ContentTranslation.ApplyAnimationClock(
+            state.ContentTranslation.ApplyAnimationClock(
                 TranslateTransform.XProperty,
                 (AnimationClock)clock.Children[2],
                 HandoffBehavior.SnapshotAndReplace
@@ -266,8 +267,8 @@ internal sealed class NavigationPaneTransitionController
         }
 
         state.Clip.ApplyAnimationClock(RectangleGeometry.RectProperty, null);
-        state.Target.ContentScale.ApplyAnimationClock(ScaleTransform.ScaleXProperty, null);
-        state.Target.ContentTranslation.ApplyAnimationClock(
+        state.ContentScale.ApplyAnimationClock(ScaleTransform.ScaleXProperty, null);
+        state.ContentTranslation.ApplyAnimationClock(
             TranslateTransform.XProperty,
             null
         );
@@ -277,13 +278,36 @@ internal sealed class NavigationPaneTransitionController
     private static void RestorePresentation(TransitionState state)
     {
         var target = state.Target;
-        target.ContentScale.ScaleX = state.OriginalScale;
-        target.ContentTranslation.X = state.OriginalTranslation;
+        RestoreLocalValue(
+            target.ContentHost,
+            UIElement.RenderTransformProperty,
+            state.OriginalContentTransformLocalValue
+        );
+        RestoreLocalValue(
+            target.ContentHost,
+            UIElement.RenderTransformOriginProperty,
+            state.OriginalContentTransformOriginLocalValue
+        );
         target.PaneHost.Clip = state.OriginalClip;
         target.PaneHost.Width = state.OriginalWidth;
         target.PaneHost.HorizontalAlignment = state.OriginalHorizontalAlignment;
         Grid.SetColumn(target.PaneHost, state.OriginalColumn);
         Grid.SetColumnSpan(target.PaneHost, state.OriginalColumnSpan);
+    }
+
+    private static void RestoreLocalValue(
+        DependencyObject target,
+        DependencyProperty property,
+        object localValue
+    )
+    {
+        if (localValue == DependencyProperty.UnsetValue)
+        {
+            target.ClearValue(property);
+            return;
+        }
+
+        target.SetValue(property, localValue);
     }
 
     private static Rect CreateClipRect(
@@ -323,8 +347,6 @@ internal sealed class NavigationPaneTransitionController
         ArgumentNullException.ThrowIfNull(target.WorkArea);
         ArgumentNullException.ThrowIfNull(target.PaneHost);
         ArgumentNullException.ThrowIfNull(target.ContentHost);
-        ArgumentNullException.ThrowIfNull(target.ContentScale);
-        ArgumentNullException.ThrowIfNull(target.ContentTranslation);
     }
 
     private sealed class TransitionState
@@ -337,13 +359,25 @@ internal sealed class NavigationPaneTransitionController
             OriginalHorizontalAlignment = target.PaneHost.HorizontalAlignment;
             OriginalColumn = Grid.GetColumn(target.PaneHost);
             OriginalColumnSpan = Grid.GetColumnSpan(target.PaneHost);
-            OriginalScale = target.ContentScale.ScaleX;
-            OriginalTranslation = target.ContentTranslation.X;
+            OriginalContentTransformLocalValue = target.ContentHost.ReadLocalValue(
+                UIElement.RenderTransformProperty
+            );
+            OriginalContentTransformOriginLocalValue = target.ContentHost.ReadLocalValue(
+                UIElement.RenderTransformOriginProperty
+            );
+            ContentTransform.Children.Add(ContentScale);
+            ContentTransform.Children.Add(ContentTranslation);
         }
 
         internal NavigationPaneTransitionTarget Target { get; }
 
         internal RectangleGeometry Clip { get; } = new();
+
+        internal TransformGroup ContentTransform { get; } = new();
+
+        internal ScaleTransform ContentScale { get; } = new(1, 1);
+
+        internal TranslateTransform ContentTranslation { get; } = new();
 
         internal Geometry? OriginalClip { get; }
 
@@ -355,9 +389,9 @@ internal sealed class NavigationPaneTransitionController
 
         internal int OriginalColumnSpan { get; }
 
-        internal double OriginalScale { get; }
+        internal object OriginalContentTransformLocalValue { get; }
 
-        internal double OriginalTranslation { get; }
+        internal object OriginalContentTransformOriginLocalValue { get; }
 
         internal ClockGroup? Clock { get; private set; }
 
@@ -372,11 +406,6 @@ internal sealed class NavigationPaneTransitionController
             return ReferenceEquals(Target.WorkArea, target.WorkArea)
                 && ReferenceEquals(Target.PaneHost, target.PaneHost)
                 && ReferenceEquals(Target.ContentHost, target.ContentHost)
-                && ReferenceEquals(Target.ContentScale, target.ContentScale)
-                && ReferenceEquals(
-                    Target.ContentTranslation,
-                    target.ContentTranslation
-                )
                 && Target.Direction == target.Direction;
         }
 

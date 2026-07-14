@@ -24,7 +24,10 @@ builder
             .SetNavToggle()
             .SetProfile(NameOrder.FirstLast)
             .SetThemeToggle(FlourishTheme.System);
-    });
+    })
+    .ConfigureNavigation(navigation =>
+        navigation.SetGroup(null, groupId: 0, group =>
+            group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 `UseTitleBar()` is required. `SetNavToggle` is displayed only when [Navigation](navigation.md) is also enabled.

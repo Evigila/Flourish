@@ -67,9 +67,20 @@ public sealed class NavigationPaneTransitionControllerTests
             );
 
             var clip = Assert.IsType<RectangleGeometry>(fixture.Pane.Clip);
+            var transitionTransform = Assert.IsType<TransformGroup>(
+                fixture.Content.RenderTransform
+            );
+            var contentScale = Assert.IsType<ScaleTransform>(
+                transitionTransform.Children[0]
+            );
+            var contentTranslation = Assert.IsType<TranslateTransform>(
+                transitionTransform.Children[1]
+            );
             AssertClip(direction, 420, committedWidth, clip.Rect);
-            AssertClose(1, fixture.ContentScale.ScaleX);
-            AssertClose(0, fixture.ContentTranslation.X);
+            Assert.NotSame(fixture.OriginalContentTransform, transitionTransform);
+            Assert.Equal(new Point(), fixture.Content.RenderTransformOrigin);
+            AssertClose(1, contentScale.ScaleX);
+            AssertClose(0, contentTranslation.X);
 
             clock.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
 
@@ -82,8 +93,8 @@ public sealed class NavigationPaneTransitionControllerTests
                 : 0;
 
             AssertClip(direction, 420, midpointWidth, clip.Rect);
-            AssertClose((1 + targetScale) / 2, fixture.ContentScale.ScaleX);
-            AssertClose(targetTranslation / 2, fixture.ContentTranslation.X);
+            AssertClose((1 + targetScale) / 2, contentScale.ScaleX);
+            AssertClose(targetTranslation / 2, contentTranslation.X);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
             Assert.Equal(0, completionCount);
         });
@@ -111,6 +122,15 @@ public sealed class NavigationPaneTransitionControllerTests
                 )
             );
             var animatedClip = Assert.IsType<RectangleGeometry>(fixture.Pane.Clip);
+            var animatedTransform = Assert.IsType<TransformGroup>(
+                fixture.Content.RenderTransform
+            );
+            var animatedScale = Assert.IsType<ScaleTransform>(
+                animatedTransform.Children[0]
+            );
+            var animatedTranslation = Assert.IsType<TranslateTransform>(
+                animatedTransform.Children[1]
+            );
             var clock = sut.ActiveClockController;
             Assert.NotNull(clock);
 
@@ -124,11 +144,18 @@ public sealed class NavigationPaneTransitionControllerTests
             Assert.Equal(HorizontalAlignment.Stretch, fixture.Pane.HorizontalAlignment);
             Assert.Equal(fixture.OriginalPaneColumn, Grid.GetColumn(fixture.Pane));
             Assert.Equal(1, Grid.GetColumnSpan(fixture.Pane));
-            AssertClose(1, fixture.ContentScale.ScaleX);
-            AssertClose(0, fixture.ContentTranslation.X);
+            AssertContentPresentationRestored(fixture);
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.Content.ReadLocalValue(UIElement.RenderTransformProperty)
+            );
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.Content.ReadLocalValue(UIElement.RenderTransformOriginProperty)
+            );
             Assert.False(animatedClip.HasAnimatedProperties);
-            Assert.False(fixture.ContentScale.HasAnimatedProperties);
-            Assert.False(fixture.ContentTranslation.HasAnimatedProperties);
+            Assert.False(animatedScale.HasAnimatedProperties);
+            Assert.False(animatedTranslation.HasAnimatedProperties);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
 
             sut.Cancel();
@@ -162,8 +189,17 @@ public sealed class NavigationPaneTransitionControllerTests
             Assert.NotNull(firstClock);
             firstClock!.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
             var widthBeforeReverse = Assert.IsType<double>(sut.CurrentVisualWidth);
-            var scaleBeforeReverse = fixture.ContentScale.ScaleX;
-            var translationBeforeReverse = fixture.ContentTranslation.X;
+            var transitionTransform = Assert.IsType<TransformGroup>(
+                fixture.Content.RenderTransform
+            );
+            var contentScale = Assert.IsType<ScaleTransform>(
+                transitionTransform.Children[0]
+            );
+            var contentTranslation = Assert.IsType<TranslateTransform>(
+                transitionTransform.Children[1]
+            );
+            var scaleBeforeReverse = contentScale.ScaleX;
+            var translationBeforeReverse = contentTranslation.X;
 
             Assert.True(
                 sut.Start(
@@ -182,8 +218,9 @@ public sealed class NavigationPaneTransitionControllerTests
             reverseClock!.SeekAlignedToLastTick(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
 
             AssertClose(widthBeforeReverse, sut.CurrentVisualWidth!.Value);
-            AssertClose(scaleBeforeReverse, fixture.ContentScale.ScaleX);
-            AssertClose(translationBeforeReverse, fixture.ContentTranslation.X);
+            Assert.Same(transitionTransform, fixture.Content.RenderTransform);
+            AssertClose(scaleBeforeReverse, contentScale.ScaleX);
+            AssertClose(translationBeforeReverse, contentTranslation.X);
             Assert.Equal(0, firstCompletionCount);
             Assert.Equal(0, reverseCompletionCount);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
@@ -194,8 +231,7 @@ public sealed class NavigationPaneTransitionControllerTests
             Assert.Equal(1, reverseCompletionCount);
             Assert.False(sut.IsActive);
             Assert.Null(fixture.Pane.Clip);
-            AssertClose(1, fixture.ContentScale.ScaleX);
-            AssertClose(0, fixture.ContentTranslation.X);
+            AssertContentPresentationRestored(fixture);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
         });
     }
@@ -256,6 +292,7 @@ public sealed class NavigationPaneTransitionControllerTests
             Assert.Equal(0, openingCompletionCount);
             Assert.Equal(1, reverseCompletionCount);
             Assert.Null(fixture.Pane.Clip);
+            AssertContentPresentationRestored(fixture);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
         });
     }
@@ -282,6 +319,15 @@ public sealed class NavigationPaneTransitionControllerTests
                 )
             );
             var animatedClip = Assert.IsType<RectangleGeometry>(fixture.Pane.Clip);
+            var animatedTransform = Assert.IsType<TransformGroup>(
+                fixture.Content.RenderTransform
+            );
+            var animatedScale = Assert.IsType<ScaleTransform>(
+                animatedTransform.Children[0]
+            );
+            var animatedTranslation = Assert.IsType<TranslateTransform>(
+                animatedTransform.Children[1]
+            );
             var clock = sut.ActiveClockController;
             Assert.NotNull(clock);
             clock!.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
@@ -295,11 +341,124 @@ public sealed class NavigationPaneTransitionControllerTests
             Assert.Equal(HorizontalAlignment.Stretch, fixture.Pane.HorizontalAlignment);
             Assert.Equal(fixture.OriginalPaneColumn, Grid.GetColumn(fixture.Pane));
             Assert.Equal(1, Grid.GetColumnSpan(fixture.Pane));
-            AssertClose(1, fixture.ContentScale.ScaleX);
-            AssertClose(0, fixture.ContentTranslation.X);
+            AssertContentPresentationRestored(fixture);
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.Content.ReadLocalValue(UIElement.RenderTransformProperty)
+            );
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.Content.ReadLocalValue(UIElement.RenderTransformOriginProperty)
+            );
             Assert.False(animatedClip.HasAnimatedProperties);
-            Assert.False(fixture.ContentScale.HasAnimatedProperties);
-            Assert.False(fixture.ContentTranslation.HasAnimatedProperties);
+            Assert.False(animatedScale.HasAnimatedProperties);
+            Assert.False(animatedTranslation.HasAnimatedProperties);
+            Assert.False(IsWidthAnimated(fixture.PaneColumn));
+        });
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void End_RestoresNonDefaultContentTransformAndOrigin(bool complete)
+    {
+        RunInSta(() =>
+        {
+            var originalTransform = new RotateTransform(7);
+            var originalOrigin = new Point(0.25, 0.75);
+            var fixture = TransitionFixture.Create(
+                NavigationPanelDirection.Left,
+                48,
+                originalTransform,
+                originalOrigin
+            );
+            var sut = new NavigationPaneTransitionController();
+            var completionCount = 0;
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    committedWidth: 48,
+                    targetWidth: 220,
+                    maximumPaneWidth: 420,
+                    referenceDistance: 172,
+                    Duration,
+                    new LinearEase(),
+                    () => completionCount++
+                )
+            );
+            var temporaryTransform = Assert.IsType<TransformGroup>(
+                fixture.Content.RenderTransform
+            );
+            Assert.NotSame(originalTransform, temporaryTransform);
+            Assert.Equal(new Point(), fixture.Content.RenderTransformOrigin);
+
+            if (complete)
+            {
+                var clock = sut.ActiveClockController;
+                Assert.NotNull(clock);
+                clock!.SeekAlignedToLastTick(Duration, TimeSeekOrigin.BeginTime);
+            }
+            else
+            {
+                sut.Cancel();
+            }
+
+            Assert.Equal(complete ? 1 : 0, completionCount);
+            Assert.False(sut.IsActive);
+            AssertContentPresentationRestored(fixture);
+            Assert.Same(
+                originalTransform,
+                fixture.Content.ReadLocalValue(UIElement.RenderTransformProperty)
+            );
+            Assert.Equal(
+                originalOrigin,
+                fixture.Content.ReadLocalValue(UIElement.RenderTransformOriginProperty)
+            );
+            Assert.Null(fixture.Pane.Clip);
+            Assert.False(IsWidthAnimated(fixture.PaneColumn));
+        });
+    }
+
+    [Fact]
+    public void Start_WhenTemporaryPresentationInstallationFails_RestoresPresentationState()
+    {
+        RunInSta(() =>
+        {
+            var originalTransform = new SkewTransform(4, 2);
+            var originalOrigin = new Point(0.4, 0.6);
+            var fixture = TransitionFixture.Create(
+                NavigationPanelDirection.Right,
+                220,
+                originalTransform,
+                originalOrigin
+            );
+            var sut = new NavigationPaneTransitionController();
+            var completionCount = 0;
+            fixture.Content.ThrowOnNextRenderTransformOriginChange = true;
+
+            Assert.Throws<InvalidOperationException>(() =>
+                sut.Start(
+                    fixture.Target,
+                    committedWidth: 220,
+                    targetWidth: 48,
+                    maximumPaneWidth: 420,
+                    referenceDistance: 172,
+                    Duration,
+                    new LinearEase(),
+                    () => completionCount++
+                )
+            );
+
+            Assert.Equal(0, completionCount);
+            Assert.False(sut.IsActive);
+            Assert.Null(sut.ActiveClockController);
+            AssertContentPresentationRestored(fixture);
+            Assert.Null(fixture.Pane.Clip);
+            Assert.True(double.IsNaN(fixture.Pane.Width));
+            Assert.Equal(HorizontalAlignment.Stretch, fixture.Pane.HorizontalAlignment);
+            Assert.Equal(fixture.OriginalPaneColumn, Grid.GetColumn(fixture.Pane));
+            Assert.Equal(1, Grid.GetColumnSpan(fixture.Pane));
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
         });
     }
@@ -340,8 +499,7 @@ public sealed class NavigationPaneTransitionControllerTests
             Assert.False(controller.IsActive);
             Assert.Null(controller.ActiveClockController);
             Assert.Null(fixture.Pane.Clip);
-            AssertClose(1, fixture.ContentScale.ScaleX);
-            AssertClose(0, fixture.ContentTranslation.X);
+            AssertContentPresentationRestored(fixture);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
         });
     }
@@ -431,6 +589,23 @@ public sealed class NavigationPaneTransitionControllerTests
         Assert.InRange(actual, expected - 0.001, expected + 0.001);
     }
 
+    private static void AssertContentPresentationRestored(TransitionFixture fixture)
+    {
+        Assert.Same(fixture.OriginalContentTransform, fixture.Content.RenderTransform);
+        Assert.Equal(
+            fixture.OriginalContentTransformOrigin,
+            fixture.Content.RenderTransformOrigin
+        );
+        Assert.Equal(
+            fixture.OriginalContentTransformLocalValue,
+            fixture.Content.ReadLocalValue(UIElement.RenderTransformProperty)
+        );
+        Assert.Equal(
+            fixture.OriginalContentTransformOriginLocalValue,
+            fixture.Content.ReadLocalValue(UIElement.RenderTransformOriginProperty)
+        );
+    }
+
     private static void RunInSta(Action action)
     {
         Exception? error = null;
@@ -494,6 +669,8 @@ public sealed class NavigationPaneTransitionControllerTests
 
         internal int ArrangeCount { get; private set; }
 
+        internal bool ThrowOnNextRenderTransformOriginChange { get; set; }
+
         internal void ResetLayoutCounts()
         {
             MeasureCount = 0;
@@ -514,6 +691,23 @@ public sealed class NavigationPaneTransitionControllerTests
             ArrangeCount++;
             return finalSize;
         }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if (
+                e.Property != RenderTransformOriginProperty
+                || !ThrowOnNextRenderTransformOriginChange
+            )
+            {
+                return;
+            }
+
+            ThrowOnNextRenderTransformOriginChange = false;
+            throw new InvalidOperationException(
+                "Injected render-transform-origin assignment failure."
+            );
+        }
     }
 
     private sealed class TransitionFixture
@@ -525,8 +719,6 @@ public sealed class NavigationPaneTransitionControllerTests
             Border pane,
             CountingElement content,
             ColumnDefinition paneColumn,
-            ScaleTransform contentScale,
-            TranslateTransform contentTranslation,
             NavigationPanelDirection direction,
             int originalPaneColumn
         )
@@ -535,10 +727,16 @@ public sealed class NavigationPaneTransitionControllerTests
             Pane = pane;
             Content = content;
             PaneColumn = paneColumn;
-            ContentScale = contentScale;
-            ContentTranslation = contentTranslation;
             Direction = direction;
             OriginalPaneColumn = originalPaneColumn;
+            OriginalContentTransform = content.RenderTransform;
+            OriginalContentTransformOrigin = content.RenderTransformOrigin;
+            OriginalContentTransformLocalValue = content.ReadLocalValue(
+                UIElement.RenderTransformProperty
+            );
+            OriginalContentTransformOriginLocalValue = content.ReadLocalValue(
+                UIElement.RenderTransformOriginProperty
+            );
         }
 
         internal Grid WorkArea { get; }
@@ -549,27 +747,31 @@ public sealed class NavigationPaneTransitionControllerTests
 
         internal ColumnDefinition PaneColumn { get; }
 
-        internal ScaleTransform ContentScale { get; }
-
-        internal TranslateTransform ContentTranslation { get; }
-
         internal NavigationPanelDirection Direction { get; }
 
         internal int OriginalPaneColumn { get; }
+
+        internal Transform OriginalContentTransform { get; }
+
+        internal Point OriginalContentTransformOrigin { get; }
+
+        internal object OriginalContentTransformLocalValue { get; }
+
+        internal object OriginalContentTransformOriginLocalValue { get; }
 
         internal NavigationPaneTransitionTarget Target =>
             new(
                 WorkArea,
                 Pane,
                 Content,
-                ContentScale,
-                ContentTranslation,
                 Direction
             );
 
         internal static TransitionFixture Create(
             NavigationPanelDirection direction,
-            double paneWidth
+            double paneWidth,
+            Transform? originalContentTransform = null,
+            Point? originalContentTransformOrigin = null
         )
         {
             var workArea = new Grid { Width = LayoutSize.Width, Height = LayoutSize.Height };
@@ -593,12 +795,15 @@ public sealed class NavigationPaneTransitionControllerTests
             var pane = new Border();
             Grid.SetColumn(pane, paneColumnIndex);
 
-            var contentScale = new ScaleTransform(1, 1);
-            var contentTranslation = new TranslateTransform();
-            var transforms = new TransformGroup();
-            transforms.Children.Add(contentScale);
-            transforms.Children.Add(contentTranslation);
-            var content = new CountingElement { RenderTransform = transforms };
+            var content = new CountingElement();
+            if (originalContentTransform is not null)
+            {
+                content.RenderTransform = originalContentTransform;
+            }
+            if (originalContentTransformOrigin is { } transformOrigin)
+            {
+                content.RenderTransformOrigin = transformOrigin;
+            }
             Grid.SetColumn(content, paneColumnIndex == 0 ? 1 : 0);
 
             workArea.Children.Add(pane);
@@ -609,8 +814,6 @@ public sealed class NavigationPaneTransitionControllerTests
                 pane,
                 content,
                 paneColumn,
-                contentScale,
-                contentTranslation,
                 direction,
                 paneColumnIndex
             );

@@ -5,11 +5,11 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，并通过 [Shell 配置](shell-configuration.md)启用导航区域。没有配置分组或固定项时，导航栏会自动列出全部已注册页面；需要指定页面位置或添加命令项时，使用 `ConfigureNavigation`。
+在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，通过 [Shell 配置](shell-configuration.md)启用导航区域，再使用 `ConfigureNavigation` 把页面和命令项放入明确的位置。
 
 ## 注册页面
 
-`AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录导航使用的显示名称、图标字形和缓存模式。只要应用没有配置任何显式分组或固定项，该页面就会出现在自动列表中。
+`AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录导航使用的显示名称、图标字形和缓存模式。注册后页面可供导航使用；若要在面板中显示它，还需添加对应的 ViewItem。
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -40,7 +40,7 @@ services.AddNavigable<EditorPage>(
 
 ## 配置分组
 
-使用 `ConfigureNavigation` 可以用显式导航模型替换自动列表。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 `ConfigureNavigation` 定义可见导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -85,12 +85,6 @@ nav.SetGroup("管理", groupId: 10, group =>
 });
 ```
 
-如果启用了导航栏，但没有配置任何分组或固定项，Flourish 会将所有已注册页面显示为一个扁平列表。`SetTitle` 可以设置该自动列表上方的标题。
-
-```csharp
-nav.SetTitle("导航");
-```
-
 ## 调整导航栏宽度
 
 使用 `SetPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
@@ -113,7 +107,7 @@ nav.SetGroup("命令", groupId: 2, group =>
 });
 ```
 
-命令项不会保持选中。命令触发后，导航栏会恢复当前页面的选中状态。解析器的注册与实现方式参见[命令解析器](command-parser.md)。
+命令项不会保持选中。命令触发后，导航栏会恢复当前页面的选中状态。处理程序的注册与实现方式参见[命令调度](commands.md)。
 
 ## 添加固定项
 

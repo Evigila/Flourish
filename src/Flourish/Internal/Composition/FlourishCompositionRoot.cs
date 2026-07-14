@@ -159,35 +159,28 @@ internal sealed class FlourishCompositionRoot(
             state?.NavigablePages ?? [];
         var registeredPagesByPageType = CreateRegisteredPagesByPageType(registeredPages);
         var registeredPagesByKey = CreateRegisteredPagesByKey(registeredPages);
-        var hasConfiguredNavigation =
-            shellOptions.NavigationGroups.Count > 0
-            || shellOptions.FixedNavigationItemDefinitions.Count > 0;
-
         shellOptions.NavigationItems.Clear();
         shellOptions.FixedNavigationItems.Clear();
-        shellOptions.PageCacheModesByPageType.Clear();
-        shellOptions.PageTypesByNavigationKey.Clear();
-        shellOptions.NavigationKeysByPageType.Clear();
+        shellOptions.InitialNavigationRoutes.Clear();
         shellOptions.InitialNavigationKey = null;
         shellOptions.InitialNavigationPageType = null;
-        foreach (var page in registeredPagesByPageType.Values)
-        {
-            shellOptions.PageCacheModesByPageType[page.PageType] = page.CacheMode;
-        }
 
         foreach (var page in registeredPagesByKey.Values)
         {
-            shellOptions.PageTypesByNavigationKey[page.NavigationKey] = page.PageType;
-            shellOptions.NavigationKeysByPageType[page.PageType] = page.NavigationKey;
+            shellOptions.InitialNavigationRoutes.Add(
+                new FlourishNavigationRoute(
+                    page.NavigationKey,
+                    page.PageType,
+                    page.CacheMode
+                )
+            );
         }
 
         var navigationGroups = shellOptions.IsNavigationPanelEnabled
-            ? hasConfiguredNavigation
-                ? shellOptions
-                    .NavigationGroups.OrderBy(group => group.GroupId)
-                    .Select(CloneNavigationGroup)
-                    .ToList()
-                : CreateLegacyNavigationGroups(registeredPagesByPageType)
+            ? shellOptions
+                .NavigationGroups.OrderBy(group => group.GroupId)
+                .Select(CloneNavigationGroup)
+                .ToList()
             : [];
         var fixedNavigationItems = shellOptions.IsNavigationPanelEnabled
             ? CloneNavigationItems(shellOptions.FixedNavigationItemDefinitions)
@@ -281,32 +274,6 @@ internal sealed class FlourishCompositionRoot(
         }
 
         return registeredPages.ToDictionary(page => page.NavigationKey, StringComparer.Ordinal);
-    }
-
-    private IReadOnlyList<FlourishNavigationGroup> CreateLegacyNavigationGroups(
-        IReadOnlyDictionary<Type, NavigablePageRegistration> registeredPages
-    )
-    {
-        var legacyGroup = new FlourishNavigationGroup(
-            0,
-            string.IsNullOrWhiteSpace(shellOptions.PaneTitle) ? null : shellOptions.PaneTitle
-        );
-
-        foreach (var page in registeredPages.Values)
-        {
-            legacyGroup.Items.Add(
-                new FlourishNavigationItem(
-                    page.NavigationKey,
-                    page.DisplayName ?? page.PageType.Name,
-                    page.IconGlyph,
-                    0,
-                    FlourishNavigationItemKind.Page,
-                    page.PageType
-                )
-            );
-        }
-
-        return [legacyGroup];
     }
 
     private static FlourishNavigationGroup CloneNavigationGroup(FlourishNavigationGroup source)
@@ -552,12 +519,12 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<IFontService>(provider =>
             provider.GetRequiredService<FontService>()
         );
-        services.AddSingleton<CommandParser>();
+        services.AddSingleton<CommandDispatcher>();
         services.AddSingleton<ICommandRegistry>(provider =>
-            provider.GetRequiredService<CommandParser>()
+            provider.GetRequiredService<CommandDispatcher>()
         );
         services.AddSingleton<ICommandDispatcher>(provider =>
-            provider.GetRequiredService<CommandParser>()
+            provider.GetRequiredService<CommandDispatcher>()
         );
         services.AddSingleton<ShortcutService>();
         services.AddSingleton<IShortcutService>(provider =>

@@ -87,35 +87,6 @@ public sealed record ProfileUser
         }
     }
 
-    internal static (string FirstName, string LastName) ParseDisplayName(
-        string? displayName,
-        NameOrder nameOrder
-    )
-    {
-        if (!Enum.IsDefined(nameOrder))
-        {
-            throw new ArgumentOutOfRangeException(nameof(nameOrder), nameOrder, null);
-        }
-
-        var words = (displayName ?? string.Empty).Split(
-            (char[]?)null,
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-        );
-        if (words.Length == 0)
-        {
-            return (string.Empty, string.Empty);
-        }
-
-        if (words.Length == 1)
-        {
-            return (words[0], string.Empty);
-        }
-
-        return nameOrder == NameOrder.FirstLast
-            ? (string.Join(' ', words[..^1]), words[^1])
-            : (string.Join(' ', words[1..]), words[0]);
-    }
-
     internal static string FormatDisplayName(
         string? firstName,
         string? lastName,

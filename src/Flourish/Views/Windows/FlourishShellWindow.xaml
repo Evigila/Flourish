@@ -11,10 +11,12 @@
   MinWidth="820"
   MinHeight="560"
   x:ClassModifier="internal"
-  Background="{DynamicResource AppBackgroundBrush}"
+  Background="{DynamicResource FlourishShellBackgroundBrush}"
   FontFamily="{DynamicResource FlourishFontFamily}"
   FontSize="{DynamicResource FlourishFontSizeBase}"
   Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d"
 >
@@ -24,7 +26,7 @@
         <control:FlourishTextBlock
           x:Name="NavigationGroupHeader"
           FontSize="{DynamicResource FlourishFontSizeSmall}"
-          FontWeight="Normal"
+          FontWeight="Bold"
           Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
           Opacity="0.72"
           Text="{Binding Label}"
@@ -76,7 +78,7 @@
           <Setter
             TargetName="NavigationItemLabel"
             Property="Foreground"
-            Value="{DynamicResource FlourishBrandForegroundBrush}"
+            Value="{DynamicResource FlourishPrimaryForegroundBrush}"
           />
         </DataTrigger>
         <DataTrigger
@@ -202,14 +204,7 @@
             x:Name="ContentAreaGrid"
             Grid.Column="1"
             Margin="{DynamicResource FlourishContentBodyMargin}"
-            RenderTransformOrigin="0,0"
           >
-            <Grid.RenderTransform>
-              <TransformGroup>
-                <ScaleTransform x:Name="ContentAreaScaleTransform" ScaleX="1" ScaleY="1" />
-                <TranslateTransform x:Name="ContentAreaTranslateTransform" X="0" Y="0" />
-              </TransformGroup>
-            </Grid.RenderTransform>
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
               <RowDefinition Height="Auto" />
@@ -266,29 +261,19 @@
               />
             </Border>
 
-            <Grid x:Name="ContentFrameHost" Grid.Row="3" ClipToBounds="True">
-              <Frame
-                x:Name="RootFrame"
-                Focusable="False"
-                JournalOwnership="UsesParentJournal"
-                NavigationUIVisibility="Hidden"
-              />
-              <Border
-                x:Name="PageTransitionChrome"
-                Panel.ZIndex="5"
-                IsHitTestVisible="False"
-                Opacity="0"
-                Background="{DynamicResource FlourishPageTransitionBackgroundBrush}"
-                RenderTransformOrigin="0.5,0"
-              >
-                <Border.RenderTransform>
-                  <ScaleTransform
-                    x:Name="PageTransitionScaleTransform"
-                    ScaleX="1"
-                    ScaleY="0"
-                  />
-                </Border.RenderTransform>
-              </Border>
+            <Grid
+              x:Name="ContentFrameHost"
+              Grid.Row="3"
+              ClipToBounds="True"
+            >
+              <Grid x:Name="PageTransitionContentHost">
+                <Frame
+                  x:Name="RootFrame"
+                  Focusable="False"
+                  JournalOwnership="UsesParentJournal"
+                  NavigationUIVisibility="Hidden"
+                />
+              </Grid>
               <Grid x:Name="ContentOverlayRegionHost" Panel.ZIndex="10" Visibility="Collapsed" />
             </Grid>
 
@@ -365,7 +350,7 @@
                 Margin="10,-7,-7,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Background="{DynamicResource FlourishBrandForegroundBrush}"
+                Background="{DynamicResource FlourishPrimaryForegroundBrush}"
                 CornerRadius="6"
               >
                 <control:FlourishTextBlock

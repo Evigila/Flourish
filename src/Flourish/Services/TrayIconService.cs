@@ -30,28 +30,6 @@ internal sealed class TrayIconService(
 
     public event EventHandler<FlourishTrayStateChangedEventArgs>? StateChanged;
 
-    public bool IsEnabled
-    {
-        get
-        {
-            lock (gate)
-            {
-                return options.IsTrayExitEnabled;
-            }
-        }
-    }
-
-    public bool IsExitRequested
-    {
-        get
-        {
-            lock (gate)
-            {
-                return isExitRequested;
-            }
-        }
-    }
-
     public FlourishTrayState Current
     {
         get
@@ -207,7 +185,7 @@ internal sealed class TrayIconService(
         return true;
     }
 
-    public void RestoreFromTray()
+    public void Restore()
     {
         InvokeOnOwner(() =>
         {
@@ -242,7 +220,7 @@ internal sealed class TrayIconService(
         return true;
     }
 
-    public void ExitFromTray()
+    public void Exit()
     {
         InvokeOnOwner(() =>
         {
@@ -344,10 +322,6 @@ internal sealed class TrayIconService(
         });
     }
 
-    void ITrayService.Restore() => RestoreFromTray();
-
-    void ITrayService.Exit() => ExitFromTray();
-
     private void EnsureNotifyIcon(string tooltipText)
     {
         if (notifyIcon is not null)
@@ -368,7 +342,7 @@ internal sealed class TrayIconService(
             ContextMenuStrip = CreateContextMenu(),
         };
         isIconVisible = false;
-        notifyIcon.DoubleClick += (_, _) => RestoreFromTray();
+        notifyIcon.DoubleClick += (_, _) => Restore();
     }
 
     private Forms.ContextMenuStrip CreateContextMenu()
@@ -377,12 +351,12 @@ internal sealed class TrayIconService(
         contextMenu.Items.Add(
             localizationService.Get(FlourishLocaleKeys.TrayShow),
             null,
-            (_, _) => RestoreFromTray()
+            (_, _) => Restore()
         );
         contextMenu.Items.Add(
             localizationService.Get(FlourishLocaleKeys.TrayExit),
             null,
-            (_, _) => ExitFromTray()
+            (_, _) => Exit()
         );
         return contextMenu;
     }

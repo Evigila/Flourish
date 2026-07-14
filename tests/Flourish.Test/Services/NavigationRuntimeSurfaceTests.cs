@@ -141,20 +141,20 @@ public sealed class NavigationRuntimeSurfaceTests
             sut.Current.Groups.SelectMany(group => group.Items).Select(item => item.Id)
         );
         Assert.Equal(0, sut.Current.Version);
-        Assert.Single(options.NavigationItems);
+        Assert.Empty(options.NavigationItems);
     }
 
     [Fact]
-    public void NavigationMenu_SeedsRegisteredRoutesEvenWhenPanelStartedDisabled()
+    public void NavigationMenu_DoesNotCreateVisibleItemsFromRoutes()
     {
         var options = CreateRouteOptions();
         options.IsNavigationPanelEnabled = false;
 
         var sut = new NavigationMenuService(options, new NavigationRouteRegistry(options));
 
-        var item = Assert.Single(Assert.Single(sut.Current.Groups).Items);
-        Assert.Equal("Home", item.NavigationKey);
-        Assert.Contains(options.NavigationItems, candidate => candidate.Key == "Home");
+        Assert.Empty(sut.Current.Groups);
+        Assert.Empty(sut.Current.FixedItems);
+        Assert.Empty(options.NavigationItems);
     }
 
     [Fact]
@@ -181,14 +181,146 @@ public sealed class NavigationRuntimeSurfaceTests
         Assert.Empty(options.NavigationItems);
     }
 
+    [Fact]
+    public void RemovingParentPageRoute_CascadesItsChildrenAndKeepsMenuConsistent()
+    {
+        var options = new FlourishShellOptions();
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute("Parent", typeof(ParentPage))
+        );
+        options.NavigationItems.Add(
+            new FlourishNavigationItem(
+                "Parent",
+                "Parent",
+                "P",
+                0,
+                FlourishNavigationItemKind.Page,
+                typeof(ParentPage),
+                parentId: 7,
+                id: "parent-page"
+            )
+        );
+        options.NavigationItems.Add(
+            new FlourishNavigationItem(
+                "child-command",
+                "Child",
+                "C",
+                0,
+                FlourishNavigationItemKind.Command,
+                commandKey: "child.run",
+                childId: 7,
+                id: "child-command"
+            )
+        );
+        options.NavigationItems.Add(
+            new FlourishNavigationItem(
+                "sibling-command",
+                "Sibling",
+                "S",
+                0,
+                FlourishNavigationItemKind.Command,
+                commandKey: "sibling.run",
+                id: "sibling-command"
+            )
+        );
+        var routes = new NavigationRouteRegistry(options);
+        var menu = new NavigationMenuService(options, routes);
+        var eventCount = 0;
+        menu.Changed += (_, _) => eventCount++;
+
+        Assert.True(routes.Remove("Parent"));
+
+        var remaining = Assert.Single(menu.Current.Groups).Items;
+        Assert.Equal("sibling-command", Assert.Single(remaining).Id);
+        Assert.Equal("sibling-command", Assert.Single(options.NavigationItems).Id);
+        Assert.Equal(1, eventCount);
+    }
+
+    [Fact]
+    public void NavigationMenu_ReconcilesRouteRemovalCompletedBeforeConstruction()
+    {
+        var options = CreateRouteOptions();
+        options.NavigationItems.Add(
+            new FlourishNavigationItem(
+                "Home",
+                "Home",
+                "H",
+                0,
+                FlourishNavigationItemKind.Page,
+                typeof(HomePage),
+                id: "home-menu"
+            )
+        );
+        var routes = new NavigationRouteRegistry(options);
+        Assert.True(routes.Remove("Home"));
+
+        var menu = new NavigationMenuService(options, routes);
+
+        Assert.Empty(menu.Current.Groups.SelectMany(group => group.Items));
+        Assert.Empty(options.NavigationItems);
+        Assert.Equal(0, menu.Current.Version);
+    }
+
+    [Fact]
+    public void NavigationMenu_IgnoresOlderRouteEventDeliveredAfterNewerSnapshot()
+    {
+        var options = CreateRouteOptions();
+        options.NavigationItems.Add(
+            new FlourishNavigationItem(
+                "Home",
+                "Home",
+                "H",
+                0,
+                FlourishNavigationItemKind.Page,
+                typeof(HomePage),
+                id: "home-menu"
+            )
+        );
+        var routes = new NavigationRouteRegistry(options);
+        INavigationRouteRegistration? replacement = null;
+        var reentered = false;
+        routes.Changed += (_, change) =>
+        {
+            if (
+                !reentered
+                && change.ChangeKind == FlourishRuntimeChangeKind.Removed
+                && change.PreviousRoute?.NavigationKey == "Home"
+            )
+            {
+                reentered = true;
+                replacement = routes.Register(
+                    new FlourishNavigationRoute("Home", typeof(ReplacementHomePage))
+                );
+            }
+        };
+        var menu = new NavigationMenuService(options, routes);
+
+        Assert.True(routes.Remove("Home"));
+
+        Assert.True(routes.Contains("Home"));
+        var item = Assert.Single(Assert.Single(menu.Current.Groups).Items);
+        Assert.Equal("home-menu", item.Id);
+        Assert.Equal(
+            typeof(ReplacementHomePage),
+            Assert.Single(options.NavigationItems).PageType
+        );
+        Assert.Equal(1, menu.Current.Version);
+
+        replacement!.Dispose();
+    }
+
     private static FlourishShellOptions CreateRouteOptions()
     {
         var options = new FlourishShellOptions();
-        options.PageTypesByNavigationKey["Home"] = typeof(HomePage);
-        options.NavigationKeysByPageType[typeof(HomePage)] = "Home";
-        options.PageCacheModesByPageType[typeof(HomePage)] = FlourishPageCacheMode.Disabled;
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute("Home", typeof(HomePage))
+        );
         return options;
     }
 
     private sealed class HomePage : Page { }
+
+    private sealed class ParentPage : Page { }
+
+    private sealed class ReplacementHomePage : Page { }
 }

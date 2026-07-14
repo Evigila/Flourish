@@ -153,7 +153,7 @@ public sealed class DiagnosticsModule : IDisposable
 
 默认情况下，文本输入控件获得键盘焦点时不会派发快捷键，以保留正常输入、剪贴板、编辑、AltGr 与 IME 行为。只有确实需要在编辑文字时保持生效的快捷键，才应将 `ShortcutRegistrationOptions.AllowWhenTextInputFocused` 设置为 `true`。
 
-通过 `ConfigureServices` 注册的同步命令处理程序使用 `ICommandParser`；需要在应用运行期间添加或移除处理程序时，使用 `ICommandRegistry`。
+命令处理程序通过 `ICommandRegistry` 注册，并通过 `ICommandDispatcher` 调用。应在所属功能的生命周期内持有 `ICommandRegistration`，并通过释放注册来移除处理程序。
 
 ```csharp
 public sealed class RefreshBindings : IDisposable
@@ -229,6 +229,6 @@ public FlourishBackgroundTaskHandle StartExport(
 ## 相关指南
 
 - [IFlourishBuilder](flourish-builder.md)与[依赖注入](configure-services.md)
-- [应用数据](configure-data.md)、[导航](navigation.md)与[命令解析器](command-parser.md)
+- [应用数据](configure-data.md)、[导航](navigation.md)与[命令调度](commands.md)
 - [动态工具栏](dynamic-toolbar.md)、[状态栏](status-bar.md)与[后台任务](background-tasks.md)
 - [窗口](configure-window.md)、[Profile](configure-profile.md)与[消息服务](message-service.md)

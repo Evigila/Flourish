@@ -65,6 +65,44 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void TextRoles_UseRegularBodyWeightsAndBoldHeadingWeights()
+    {
+        RunInSta(() =>
+        {
+            var textBlocks = Enum.GetValues<FlourishTextRole>()
+                .Select(role => new FlourishTextBlock { Role = role, Text = role.ToString() })
+                .ToArray();
+            var panel = new StackPanel();
+            foreach (var textBlock in textBlocks)
+            {
+                panel.Children.Add(textBlock);
+            }
+
+            var window = CreateWindow(panel);
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var textBlock in textBlocks)
+                {
+                    var expected = textBlock.Role is
+                        FlourishTextRole.CardTitle
+                        or FlourishTextRole.SectionTitle
+                        or FlourishTextRole.PageTitle
+                        ? FontWeights.Bold
+                        : FontWeights.Regular;
+                    Assert.Equal(expected, textBlock.FontWeight);
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void GenericTheme_DoesNotOverrideNativeWpfControlStyles()
     {
         RunInSta(() =>

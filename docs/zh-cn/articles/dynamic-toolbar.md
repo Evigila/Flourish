@@ -63,10 +63,16 @@ toolbar.CreateToolbarItems<EditorPage>(
 
 ## 处理命令
 
-在[依赖注入](configure-services.md)配置中注册一个或多个同步 `ICommandParser`：
+从构建完成的运行时解析 `ICommandRegistry`，并注册工具栏项使用的命令键：
 
 ```csharp
-services.AddSingleton<ICommandParser, AppCommandParser>();
+ICommandRegistration exportCommand = commands.Register(
+    "reports.export",
+    async (_, token) =>
+    {
+        await exporter.ExportAsync(token);
+        return CommandResult.Handled;
+    });
 ```
 
-命令匹配与调度顺序参见[命令解析器](command-parser.md)。需要在应用运行期间添加或移除处理程序时，使用[运行时 API](runtime-apis.md)中的 `ICommandRegistry`。[自定义 Shell 内容](configure-custom-handler.md)也可以让标题栏和状态栏命令复用同一组命令键。
+[命令调度](commands.md)说明注册所有权、可用性、重复策略和结果。[自定义 Shell 内容](configure-custom-handler.md)也可以让标题栏和状态栏命令复用同一组命令键。

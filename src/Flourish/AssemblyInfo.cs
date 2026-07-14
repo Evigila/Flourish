@@ -10,10 +10,6 @@ using System.Windows.Markup;
 )]
 [assembly: XmlnsDefinition(
     "http://schemas.arkheide.system/flourish",
-    "ArkheideSystem.Flourish.Styles"
-)]
-[assembly: XmlnsDefinition(
-    "http://schemas.arkheide.system/flourish",
     "ArkheideSystem.Flourish.Themes"
 )]
 [assembly: XmlnsDefinition(

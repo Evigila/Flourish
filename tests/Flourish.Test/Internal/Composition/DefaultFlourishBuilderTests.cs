@@ -57,7 +57,6 @@ public sealed class DefaultFlourishBuilderTests
                     .SetProfile(NameOrder.LastFirst)
                     .SetThemeToggle(FlourishTheme.Dark)
             )
-            .ConfigureNavigation(navigation => navigation.SetTitle("Navigation"))
             .ConfigureCustomHandler(custom =>
                 custom.Add(FlourishRegion.TitlebarStart, _ => null!)
             )
@@ -85,7 +84,6 @@ public sealed class DefaultFlourishBuilderTests
         Assert.Equal(NameOrder.LastFirst, options.Profile.NameOrder);
         Assert.True(options.IsThemeEnabled);
         Assert.True(options.IsTitlebarThemeToggleEnabled);
-        Assert.Equal("Navigation", options.PaneTitle);
         Assert.Single(options.RegionContents);
         Assert.Single(options.DynamicToolbarItems[typeof(TestPage)]);
         Assert.Equal(350, options.Tips.InitialShowDelayMilliseconds);

@@ -36,7 +36,10 @@ public sealed class FlourishThemeResources : ResourceDictionary
 
     internal static ResourceDictionary? FindThemeRoot(ResourceDictionary resources)
     {
-        return FindInGraph(resources, IsFlourishDictionary);
+        return FindInGraph(
+            resources,
+            static dictionary => dictionary is FlourishThemeResources
+        );
     }
 
     internal static ResourceDictionary? FindInGraph(
@@ -72,31 +75,5 @@ public sealed class FlourishThemeResources : ResourceDictionary
         }
 
         return null;
-    }
-
-    private static bool IsFlourishDictionary(ResourceDictionary dictionary)
-    {
-        if (dictionary is FlourishThemeResources)
-        {
-            return true;
-        }
-
-        return IsCanonicalThemeSource(dictionary.Source);
-    }
-
-    internal static bool IsCanonicalThemeSource(Uri? source)
-    {
-        const string applicationPackPrefix = "pack://application:,,,";
-        var normalized = source?.OriginalString.Replace('\\', '/');
-        return string.Equals(
-                normalized,
-                GenericThemeSource,
-                StringComparison.OrdinalIgnoreCase
-            )
-            || string.Equals(
-                normalized,
-                applicationPackPrefix + GenericThemeSource,
-                StringComparison.OrdinalIgnoreCase
-            );
     }
 }

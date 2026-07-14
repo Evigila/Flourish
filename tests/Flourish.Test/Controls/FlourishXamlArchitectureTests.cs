@@ -378,6 +378,126 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void ShellTypography_UsesRootPixelAlignmentAndWpfTextRenderingDefaults()
+    {
+        var shell = LoadXaml(
+            Path.Combine(FlourishRoot, "Views", "Windows", "FlourishShellWindow.xaml")
+        );
+        Assert.Equal("True", (string?)shell.Root?.Attribute("SnapsToDevicePixels"));
+        Assert.Equal("True", (string?)shell.Root?.Attribute("UseLayoutRounding"));
+
+        string[] textOptionNames =
+        [
+            "TextOptions.TextFormattingMode",
+            "TextOptions.TextRenderingMode",
+            "TextOptions.TextHintingMode",
+        ];
+        var textOptionOverrides = EnumerateXamlFiles(FlourishRoot)
+            .SelectMany(file =>
+            {
+                var document = LoadXaml(file);
+                return document
+                    .Root!
+                    .DescendantsAndSelf()
+                    .SelectMany(element => element.Attributes())
+                    .Where(attribute => textOptionNames.Contains(attribute.Name.LocalName))
+                    .Select(attribute => FormatViolation(file, attribute));
+            })
+            .ToArray();
+
+        AssertNoArchitectureViolations(
+            textOptionOverrides,
+            "Flourish XAML must preserve WPF's default text rendering options."
+        );
+    }
+
+    [Fact]
+    public void ProductTypography_UsesOnlyRegularAndBoldFontWeights()
+    {
+        var violations = new List<string>();
+
+        foreach (var file in EnumerateXamlFiles(FlourishRoot))
+        {
+            var document = LoadXaml(file);
+            var fontWeights = document
+                .Root!
+                .DescendantsAndSelf()
+                .SelectMany(element => element.Attributes())
+                .Where(attribute =>
+                    attribute.Name.LocalName == "FontWeight"
+                    || (
+                        attribute.Name.LocalName == "Value"
+                        && (string?)attribute.Parent?.Attribute("Property") == "FontWeight"
+                    )
+                );
+            foreach (var fontWeight in fontWeights)
+            {
+                if (fontWeight.Value is not ("Regular" or "Bold"))
+                {
+                    violations.Add(
+                        $"{FormatViolation(file, fontWeight)} ({fontWeight.Value})"
+                    );
+                }
+            }
+        }
+
+        string[] forbiddenCodeWeights =
+        [
+            "FontWeights.Thin",
+            "FontWeights.ExtraLight",
+            "FontWeights.UltraLight",
+            "FontWeights.Light",
+            "FontWeights.SemiLight",
+            "FontWeights.DemiLight",
+            "FontWeights.Medium",
+            "FontWeights.SemiBold",
+            "FontWeights.DemiBold",
+        ];
+        foreach (
+            var file in Directory.EnumerateFiles(FlourishRoot, "*.cs", SearchOption.AllDirectories)
+        )
+        {
+            var lineNumber = 0;
+            foreach (var line in File.ReadLines(file))
+            {
+                lineNumber++;
+                foreach (var forbiddenWeight in forbiddenCodeWeights)
+                {
+                    if (line.Contains(forbiddenWeight, StringComparison.Ordinal))
+                    {
+                        violations.Add(
+                            $"{RelativePath(file)}:{lineNumber} ({forbiddenWeight})"
+                        );
+                    }
+                }
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Product typography must use Regular body text and Bold headings."
+        );
+
+        (string File, string ElementName)[] namedHeadings =
+        [
+            ("Views/Windows/FlourishShellWindow.xaml", "NavigationGroupHeader"),
+            ("Views/Windows/TitleBar.xaml", "TitleText"),
+            ("Views/Windows/FlourishMessageBoxWindow.xaml", "CaptionText"),
+            ("Views/Page/ProfilePage.xaml", "DisplayNameText"),
+        ];
+        foreach (var (file, elementName) in namedHeadings)
+        {
+            var document = LoadXaml(Path.Combine(FlourishRoot, NormalizePlatformPath(file)));
+            var heading = document
+                .Descendants()
+                .Single(element =>
+                    (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == elementName
+                );
+            Assert.Equal("Bold", (string?)heading.Attribute("FontWeight"));
+        }
+    }
+
+    [Fact]
     public void HomeDemoCards_ExposeAccessibleAutomationNames()
     {
         var document = LoadXaml(
@@ -403,53 +523,25 @@ public sealed class FlourishXamlArchitectureTests
         );
     }
 
-    [Fact]
-    public void SourceCode_UsesSemanticTokensInsteadOfLegacyCompatibilityBrushes()
+    [Theory]
+    [InlineData("Colors.Light.xaml")]
+    [InlineData("Colors.Dark.xaml")]
+    public void ColorPalettes_UseCanonicalResourceNames(string fileName)
     {
-        string[] legacyKeys =
-        [
-            "PrimaryTextBrush",
-            "MutedTextBrush",
-            "AccentBrush",
-            "AccentSoftBrush",
-            "CardBackgroundBrush",
-            "CardSecondaryBackgroundBrush",
-            "CardBorderBrush",
-            "FlourishSearchBackgroundBrush",
-            "FlourishNavigationSelectedBrush",
-        ];
-        var sourceRoot = Path.Combine(RepositoryRoot, "src");
-        var violations = new List<string>();
-
-        foreach (
-            var file in Directory
-                .EnumerateFiles(sourceRoot, "*.*", SearchOption.AllDirectories)
-                .Where(file => file.EndsWith(".xaml") || file.EndsWith(".cs"))
-                .Where(file => !file.EndsWith("Colors.Light.xaml"))
-                .Where(file => !file.EndsWith("Colors.Dark.xaml"))
-        )
-        {
-            var lineNumber = 0;
-            foreach (var line in File.ReadLines(file))
-            {
-                lineNumber++;
-                foreach (var key in legacyKeys)
-                {
-                    if (
-                        line.Contains($"{{DynamicResource {key}}}")
-                        || line.Contains($"\"{key}\"")
-                    )
-                    {
-                        violations.Add($"{RelativePath(file)}:{lineNumber} ({key})");
-                    }
-                }
-            }
-        }
-
-        AssertNoArchitectureViolations(
-            violations,
-            "Source must use canonical semantic color resources."
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
         );
+        var keys = document
+            .Descendants()
+            .Select(element =>
+                (string?)element.Attribute(XName.Get("Key", XamlNamespace))
+            )
+            .OfType<string>()
+            .ToArray();
+
+        Assert.NotEmpty(keys);
+        Assert.All(keys, key => Assert.StartsWith("Flourish", key));
+        Assert.Equal(keys.Length, keys.Distinct(StringComparer.Ordinal).Count());
     }
 
     private static Type[] GetPublicFlourishControlTypes()

@@ -11,8 +11,6 @@ public sealed class CommandKeyApiContractTests
         MethodBase[] members =
         [
             Assert.Single(typeof(FlourishToolbarItem).GetConstructors()),
-            typeof(FlourishToolbarItem).GetMethod(nameof(FlourishToolbarItem.Deconstruct))
-                ?? throw new InvalidOperationException("FlourishToolbarItem.Deconstruct is missing."),
             GetMethod<IFlourishCustomHandlerBuilder>(
                 nameof(IFlourishCustomHandlerBuilder.AddTitlebarAction)
             ),

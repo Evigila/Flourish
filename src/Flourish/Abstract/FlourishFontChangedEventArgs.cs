@@ -6,23 +6,6 @@ namespace ArkheideSystem.Flourish.Abstract;
 public sealed class FlourishFontChangedEventArgs : EventArgs
 {
     /// <summary>
-    /// Initializes a global text-font change notification.
-    /// </summary>
-    public FlourishFontChangedEventArgs(
-        string fontFamily,
-        string iconFontFamily,
-        double fontSize
-    )
-        : this(
-            fontFamily,
-            iconFontFamily,
-            fontSize,
-            FlourishFontChangeKind.GlobalText,
-            null
-        )
-    { }
-
-    /// <summary>
     /// Initializes a font change notification with its affected scope.
     /// </summary>
     public FlourishFontChangedEventArgs(

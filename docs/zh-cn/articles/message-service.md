@@ -5,7 +5,7 @@ description: 使用 Flourish 样式显示标准或自定义选项的模态消息
 
 # 消息服务
 
-Flourish 会在应用服务提供程序中注册 `IMessageService`。当视图模型、命令解析器或应用服务需要显示符合 Flourish 窗口风格的模态消息时，可以直接注入并使用它。
+Flourish 会在应用服务提供程序中注册 `IMessageService`。当视图模型、命令处理程序或应用服务需要显示符合 Flourish 窗口风格的模态消息时，可以直接注入并使用它。
 
 ## 标准消息
 

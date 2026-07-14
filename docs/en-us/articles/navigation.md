@@ -5,11 +5,11 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Register WPF pages through [Dependency injection](configure-services.md) and enable the navigation surface through [Shell configuration](shell-configuration.md). When no groups or fixed items are configured, the panel lists every registered page automatically. Use `ConfigureNavigation` to organize pages into explicit positions or add command items.
+Register WPF pages through [Dependency injection](configure-services.md), enable the navigation surface through [Shell configuration](shell-configuration.md), and use `ConfigureNavigation` to place pages and command items in explicit positions.
 
 ## Register pages
 
-`AddNavigable` registers a `Page` type in dependency injection and records the display name, icon glyph, and cache mode used by navigation. The page appears in the automatic list unless the application configures any explicit group or fixed item.
+`AddNavigable` registers a `Page` type in dependency injection and records the display name, icon glyph, and cache mode used by navigation. Registration makes the page available to navigation; add a corresponding view item to make it visible in the panel.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -40,7 +40,7 @@ Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the u
 
 ## Configure groups
 
-Use `ConfigureNavigation` to replace the automatic list with an explicit navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+Use `ConfigureNavigation` to define the visible navigation model. `SetGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -85,12 +85,6 @@ nav.SetGroup("Admin", groupId: 10, group =>
 });
 ```
 
-If the navigation panel is enabled but no groups or fixed items are configured, Flourish displays a flat fallback list built from all registered pages. `SetTitle` sets the heading displayed above that automatically generated list.
-
-```csharp
-nav.SetTitle("Navigation");
-```
-
 ## Resize the panel
 
 Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize constraints for the navigation panel.
@@ -113,7 +107,7 @@ nav.SetGroup("Commands", groupId: 2, group =>
 });
 ```
 
-Command items do not remain selected. After a command is invoked, the navigation panel restores the current page selection. [Command parser](command-parser.md) explains how to register and implement the handler.
+Command items do not remain selected. After a command is invoked, the navigation panel restores the current page selection. [Command dispatch](commands.md) explains how to register and implement the handler.
 
 ## Add fixed items
 

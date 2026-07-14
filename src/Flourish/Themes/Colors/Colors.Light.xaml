@@ -9,7 +9,7 @@
   <SolidColorBrush x:Key="FlourishNeutralBackground1Brush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#F7F9FC" />
   <SolidColorBrush x:Key="FlourishNeutralBackground3Brush" Color="#EEF2F6" />
-  <SolidColorBrush x:Key="FlourishPageTransitionBackgroundBrush" Color="#FFF5F7FA" />
+  <SolidColorBrush x:Key="FlourishShellBackgroundBrush" Color="#E6F5F7FA" />
   <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#E1E5EA" />
   <SolidColorBrush x:Key="FlourishNeutralStrokeAccessibleBrush" Color="#616161" />
 
@@ -62,12 +62,7 @@
     <GradientStop Offset="1" Color="#20D83B01" />
   </LinearGradientBrush>
 
-  <!-- Fluent Brand keys remain stable aliases for existing applications. -->
-  <SolidColorBrush x:Key="FlourishBrandForegroundBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishBrandBackgroundBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishBrandBackgroundHoverBrush" Color="#115EA3" />
-  <SolidColorBrush x:Key="FlourishBrandBackgroundPressedBrush" Color="#0C3B5E" />
-  <SolidColorBrush x:Key="FlourishForegroundOnBrandBrush" Color="#FFFFFF" />
+  <!-- Semantic feedback roles. -->
   <SolidColorBrush x:Key="FlourishDangerForegroundBrush" Color="#B10E1C" />
   <SolidColorBrush x:Key="FlourishDangerBackgroundBrush" Color="#FDF3F4" />
   <SolidColorBrush x:Key="FlourishDangerStrokeBrush" Color="#D13438" />
@@ -76,9 +71,6 @@
   <SolidColorBrush x:Key="FlourishScrollbarThumbBrush" Color="#929292" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbHoverBrush" Color="#616161" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbPressedBrush" Color="#424242" />
-  <SolidColorBrush x:Key="FlourishScrollBarThumbBrush" Color="#929292" />
-  <SolidColorBrush x:Key="FlourishScrollBarThumbHoverBrush" Color="#616161" />
-  <SolidColorBrush x:Key="FlourishScrollBarThumbPressedBrush" Color="#424242" />
   <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#FAFFFFFF" />
   <SolidColorBrush x:Key="FlourishCardHoverBrush" Color="#FFF8FBFE" />
   <SolidColorBrush x:Key="FlourishCardPressedBrush" Color="#FFEAF1F7" />
@@ -87,19 +79,9 @@
   <DropShadowEffect x:Key="FlourishElevation1Effect" BlurRadius="10" Direction="270" Opacity="0.12" ShadowDepth="2" Color="#000000" />
   <DropShadowEffect x:Key="FlourishElevation2Effect" BlurRadius="18" Direction="270" Opacity="0.18" ShadowDepth="4" Color="#000000" />
 
-  <!-- Historical public keys retained for source and pack-resource compatibility. -->
-  <SolidColorBrush x:Key="AppBackgroundBrush" Color="#E6F5F7FA" />
-  <SolidColorBrush x:Key="CardBackgroundBrush" Color="#F2FFFFFF" />
-  <SolidColorBrush x:Key="CardSecondaryBackgroundBrush" Color="#F2FAFAFA" />
-  <SolidColorBrush x:Key="CardBorderBrush" Color="#D1D1D1" />
-  <SolidColorBrush x:Key="MutedTextBrush" Color="#52525A" />
-  <SolidColorBrush x:Key="PrimaryTextBrush" Color="#1B1B1F" />
-  <SolidColorBrush x:Key="AccentBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="AccentSoftBrush" Color="#EBF3FC" />
+  <!-- Component-specific surface and feedback roles. -->
   <SolidColorBrush x:Key="FlourishWindowCaptionCloseHoverBrush" Color="#C50F1F" />
   <SolidColorBrush x:Key="FlourishWindowCaptionCloseForegroundBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishNavigationSelectedBrush" Color="#CFE4FA" />
-  <SolidColorBrush x:Key="FlourishSearchBackgroundBrush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishProfileBackgroundBrush" Color="#EBF3FC" />
   <SolidColorBrush x:Key="FlourishProfileForegroundBrush" Color="#0F6CBD" />
   <SolidColorBrush x:Key="FlourishMessageBoxSurfaceBrush" Color="#FFFFFF" />
@@ -112,6 +94,4 @@
   <SolidColorBrush x:Key="FlourishMessageBoxWarningIconForegroundBrush" Color="#8A3707" />
   <SolidColorBrush x:Key="FlourishMessageBoxInfoIconBackgroundBrush" Color="#EBF3FC" />
   <SolidColorBrush x:Key="FlourishMessageBoxInfoIconForegroundBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishPrimaryButtonHoverBrush" Color="#115EA3" />
-  <SolidColorBrush x:Key="FlourishPrimaryButtonPressedBrush" Color="#0C3B5E" />
 </ResourceDictionary>

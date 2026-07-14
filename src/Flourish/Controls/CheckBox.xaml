@@ -39,7 +39,7 @@
                   VerticalAlignment="Center"
                   Data="M 0,3.5 L 3,6.5 L 9,0"
                   Stretch="Fill"
-                  Stroke="{DynamicResource FlourishForegroundOnBrandBrush}"
+                  Stroke="{DynamicResource FlourishForegroundOnPrimaryBrush}"
                   StrokeEndLineCap="Round"
                   StrokeLineJoin="Round"
                   StrokeStartLineCap="Round"
@@ -52,7 +52,7 @@
                   Height="2"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
-                  Background="{DynamicResource FlourishForegroundOnBrandBrush}"
+                  Background="{DynamicResource FlourishForegroundOnPrimaryBrush}"
                   CornerRadius="1"
                   Visibility="Collapsed"
                 />
@@ -81,13 +81,13 @@
               <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokePressedBrush}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
-              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
               <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsChecked" Value="{x:Null}">
-              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
-              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundBrush}" />
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
               <Setter TargetName="IndeterminateMark" Property="Visibility" Value="Visible" />
             </Trigger>
             <MultiTrigger>
@@ -95,16 +95,16 @@
                 <Condition Property="IsChecked" Value="True" />
                 <Condition Property="IsMouseOver" Value="True" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundHoverBrush}" />
-              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundHoverBrush}" />
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundHoverBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundHoverBrush}" />
             </MultiTrigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="IsChecked" Value="True" />
                 <Condition Property="IsPressed" Value="True" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishBrandBackgroundPressedBrush}" />
-              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishBrandBackgroundPressedBrush}" />
+              <Setter TargetName="CheckChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
+              <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
             </MultiTrigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
               <Setter TargetName="CheckChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />

@@ -82,13 +82,13 @@ public sealed class AppPreferenceServiceTests
         sut.SaveTheme(FlourishTheme.Dark);
         await sut.FlushThemeSavesAsync();
 
-        Assert.True(File.Exists(sut.AppSettingsFilePath));
+        Assert.True(File.Exists(sut.FilePath));
         Assert.Equal(FlourishTheme.Dark, sut.ReadTheme());
         Assert.Empty(
             Directory.EnumerateFiles(directory.Path, ".appsettings.json.*.tmp")
         );
 
-        using var document = JsonDocument.Parse(File.ReadAllText(sut.AppSettingsFilePath));
+        using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "Dark",
             document.RootElement
@@ -126,7 +126,7 @@ public sealed class AppPreferenceServiceTests
         sut.SaveTheme(FlourishTheme.System);
         await sut.FlushThemeSavesAsync();
 
-        using var document = JsonDocument.Parse(File.ReadAllText(sut.AppSettingsFilePath));
+        using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "Information",
             document.RootElement
@@ -156,7 +156,7 @@ public sealed class AppPreferenceServiceTests
         );
 
         Assert.Contains("invalid JSON", exception.Message);
-        Assert.Equal(invalidJson, File.ReadAllText(sut.AppSettingsFilePath));
+        Assert.Equal(invalidJson, File.ReadAllText(sut.FilePath));
     }
 
     [Fact]
@@ -177,7 +177,7 @@ public sealed class AppPreferenceServiceTests
         );
 
         Assert.Contains("Flourish", exception.Message);
-        Assert.Equal(originalJson, File.ReadAllText(sut.AppSettingsFilePath));
+        Assert.Equal(originalJson, File.ReadAllText(sut.FilePath));
     }
 
     [Fact]
@@ -195,7 +195,7 @@ public sealed class AppPreferenceServiceTests
         Parallel.For(0, 24, index => sut.SaveTheme(themes[index % themes.Length]));
         await sut.FlushThemeSavesAsync();
 
-        using var document = JsonDocument.Parse(File.ReadAllText(sut.AppSettingsFilePath));
+        using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         var persistedTheme = document.RootElement
             .GetProperty("Flourish")
             .GetProperty("Preferences")
@@ -237,7 +237,7 @@ public sealed class AppPreferenceServiceTests
 
         Assert.True(result.Changed);
         Assert.True(result.ConfigurationReloaded);
-        Assert.Equal(sut.AppSettingsFilePath, result.FilePath);
+        Assert.Equal(sut.FilePath, result.FilePath);
         Assert.Empty(
             Directory.EnumerateFiles(directory.Path, ".appsettings.json.*.tmp")
         );
@@ -283,7 +283,7 @@ public sealed class AppPreferenceServiceTests
             await sut.MergeAsync("Feature", new { Enabled = true })
         );
 
-        Assert.Equal(originalJson, File.ReadAllText(sut.AppSettingsFilePath));
+        Assert.Equal(originalJson, File.ReadAllText(sut.FilePath));
     }
 
     [Fact]

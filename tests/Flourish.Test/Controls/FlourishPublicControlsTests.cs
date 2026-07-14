@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -92,44 +91,6 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
-    public void LegacyResourceTypes_RemainLoadableButAreMarkedObsolete()
-    {
-        RunInSta(() =>
-        {
-            _ = Application.LoadComponent(new Uri(GenericThemeSource, UriKind.Relative));
-
-#pragma warning disable CS0618
-            Type[] compatibilityTypes =
-            [
-                typeof(ArkheideSystem.Flourish.Styles.FlourishStyles),
-                typeof(FlourishControlResources),
-            ];
-            ResourceDictionary[] compatibilityResources =
-            [
-                new ArkheideSystem.Flourish.Styles.FlourishStyles(),
-                new FlourishControlResources(),
-            ];
-#pragma warning restore CS0618
-
-            Assert.All(
-                compatibilityTypes,
-                type =>
-                {
-                    Assert.NotNull(type.GetCustomAttribute<ObsoleteAttribute>());
-                    Assert.Equal(
-                        EditorBrowsableState.Never,
-                        type.GetCustomAttribute<EditorBrowsableAttribute>()?.State
-                    );
-                }
-            );
-            Assert.All(
-                compatibilityResources,
-                resources => Assert.Equal(GenericThemeSource, resources.Source.OriginalString)
-            );
-        });
-    }
-
-    [Fact]
     public void CanonicalThemeResources_EnsureMergedIsIdempotent()
     {
         RunInSta(() =>
@@ -201,27 +162,6 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
-    public void CanonicalThemeResources_EnsureMergedRecognizesTheRootByRawSource()
-    {
-        RunInSta(() =>
-        {
-            var resources = new ResourceDictionary
-            {
-                Source = new Uri(GenericThemeSource, UriKind.Relative),
-            };
-            var originalMergedDictionaries = resources.MergedDictionaries.ToArray();
-
-            FlourishThemeResources.EnsureMerged(resources);
-
-            Assert.Equal(
-                originalMergedDictionaries,
-                resources.MergedDictionaries.Cast<ResourceDictionary>()
-            );
-            Assert.Same(resources, FlourishThemeResources.FindThemeRoot(resources));
-        });
-    }
-
-    [Fact]
     public void CanonicalThemeResources_EnsureMergedRecognizesNestedCanonicalType()
     {
         RunInSta(() =>
@@ -241,28 +181,6 @@ public sealed class FlourishPublicControlsTests
             Assert.Same(innerWrapper, Assert.Single(outerWrapper.MergedDictionaries));
             Assert.Same(theme, Assert.Single(innerWrapper.MergedDictionaries));
             Assert.Same(theme, FlourishThemeResources.FindThemeRoot(root));
-        });
-    }
-
-    [Fact]
-    public void CanonicalThemeResources_EnsureMergedRecognizesNestedRawSource()
-    {
-        RunInSta(() =>
-        {
-            var root = new ResourceDictionary();
-            var wrapper = new ResourceDictionary();
-            var rawTheme = new ResourceDictionary
-            {
-                Source = new Uri(GenericThemeSource, UriKind.Relative),
-            };
-            wrapper.MergedDictionaries.Add(rawTheme);
-            root.MergedDictionaries.Add(wrapper);
-
-            FlourishThemeResources.EnsureMerged(root);
-
-            Assert.Same(wrapper, Assert.Single(root.MergedDictionaries));
-            Assert.Same(rawTheme, Assert.Single(wrapper.MergedDictionaries));
-            Assert.Same(rawTheme, FlourishThemeResources.FindThemeRoot(root));
         });
     }
 
@@ -296,32 +214,6 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(4, visits.Count);
             Assert.All(visits.Values, count => Assert.Equal(1, count));
             Assert.Equal(1, visits[shared]);
-        });
-    }
-
-    [Theory]
-    [InlineData(GenericThemeSource, true)]
-    [InlineData("pack://application:,,,/Flourish;component/Themes/Generic.xaml", true)]
-    [InlineData(@"\Flourish;component\Themes\Generic.xaml", true)]
-    [InlineData("/Other;component/Themes/Generic.xaml", false)]
-    [InlineData("/Custom/Flourish;component/Themes/Generic.xaml", false)]
-    [InlineData("/Flourish;component/Themes/Generic.xaml.extra", false)]
-    public void CanonicalThemeResources_RecognizesOnlyCanonicalSourceForms(
-        string source,
-        bool expected
-    )
-    {
-        RunInSta(() =>
-        {
-            _ = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var kind = source.StartsWith("pack:", StringComparison.OrdinalIgnoreCase)
-                ? UriKind.Absolute
-                : UriKind.Relative;
-
-            Assert.Equal(
-                expected,
-                FlourishThemeResources.IsCanonicalThemeSource(new Uri(source, kind))
-            );
         });
     }
 

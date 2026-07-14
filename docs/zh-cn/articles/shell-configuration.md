@@ -20,6 +20,10 @@ builder.ConfigureShell(shell =>
         .UseGlobalFont("Microsoft YaHei UI", 14)
         .UseStatusBar();
 });
+
+builder.ConfigureNavigation(navigation =>
+    navigation.SetGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 ## 功能开关与共享选项
@@ -67,13 +71,17 @@ builder.ConfigureShell(shell =>
         .UseMotion(!useStaticInterface)
         .UseStatusBar(showStatusBar);
 });
+
+builder.ConfigureNavigation(navigation =>
+    navigation.SetGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 省略 `UseTips` 或 `UseGlobalFont` 时保留其默认行为。共用配置需要显式禁用材质时，使用 `MaterialEffect.None`。
 
 ## 相关功能
 
-- [窗口](configure-window.md)配置尺寸、位置、渲染和关闭行为。
+- [窗口](configure-window.md)配置尺寸、位置和关闭行为。
 - [应用数据](configure-data.md)配置本地化与 Host 设置。
 - [依赖注入](configure-services.md)注册应用服务与可替换的 Flourish 服务。
 - [自定义 Shell 内容](configure-custom-handler.md)向已启用的 Shell 区域插入应用元素。

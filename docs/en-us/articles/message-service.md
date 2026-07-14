@@ -5,7 +5,7 @@ description: Show Flourish-styled modal messages with standard or custom options
 
 # Message service
 
-Flourish registers `IMessageService` in the application service provider. Inject it into view models, command parsers, or application services when you need a modal message that follows the Flourish window style.
+Flourish registers `IMessageService` in the application service provider. Inject it into view models, command handlers, or application services when you need a modal message that follows the Flourish window style.
 
 ## Standard messages
 

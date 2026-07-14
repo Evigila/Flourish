@@ -1,11 +1,11 @@
 ---
 title: 窗口
-description: 配置 Flourish Shell 窗口的尺寸、位置、渲染和 WPF 窗口行为。
+description: 配置 Flourish Shell 窗口的尺寸、位置和 WPF 窗口行为。
 ---
 
 # 窗口
 
-每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、渲染行为、置顶行为、任务栏可见性和托盘关闭流程。
+每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、置顶行为、任务栏可见性和托盘关闭流程。
 
 ## 配置窗口
 
@@ -19,9 +19,6 @@ builder.ConfigureWindow(window =>
         .SetWindowPosition(WindowStartupLocation.CenterScreen)
         .SetWindowState(WindowState.Normal)
         .SetWindowResizeMode(ResizeMode.CanResize)
-        .UseTextStrategy()
-        .SnapsToDevicePixels()
-        .UseLayoutRounding()
         .UseTopmost(false)
         .ShowInTaskbar(true)
         .SetTrayExit();
@@ -44,20 +41,9 @@ window.SetManualWindowPosition(left: 120, top: 80);
 
 `SetWindowResizeMode` 控制自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `ShowInTaskbar` 对应标准 WPF 窗口行为。
 
-## 文本呈现与像素对齐
+## 文本与像素默认值
 
-以下方法会在 Shell 窗口上设置对应的可继承 WPF 属性：
-
-```csharp
-window
-    .UseTextStrategy(TextFormattingMode.Display, TextRenderingMode.ClearType)
-    .SnapsToDevicePixels()
-    .UseLayoutRounding();
-```
-
-无参调用 `UseTextStrategy()` 会选择 `Display` 文本格式化模式和 `ClearType` 文本呈现模式。`SnapsToDevicePixels()` 和 `UseLayoutRounding()` 默认启用各自对应的 WPF 行为；向任一方法传入 `false` 可以将其禁用。
-
-后代元素会继承这些设置，但自身的本地值或样式可以覆盖继承值。未调用某个方法时，Flourish 不会在窗口上设置对应值。最终显示效果仍可能受到字体、显示缩放、渲染表面和后代元素覆盖值的影响。
+Shell 根窗口默认启用设备像素对齐和布局取整，并保持 WPF 默认的文本格式化、呈现与 hinting 模式。辅助文本使用 `Regular` 字形，卡片、分区、页面、标题栏和对话框标题使用 `Bold` 字形。
 
 ## 托盘关闭行为
 

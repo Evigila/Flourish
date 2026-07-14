@@ -305,6 +305,49 @@ public sealed class NavigationServiceTests
         fixture.ContentHost.VerifyNoOtherCalls();
     }
 
+    [Fact]
+    public async Task RouteEventsArrivingOutOfOrderDoNotRemoveHistoryForReRegisteredRoute()
+    {
+        var options = new FlourishShellOptions();
+        Register(options, HomeKey, typeof(HomePage));
+        var routes = new NavigationRouteRegistry(options);
+        using var firstEventEntered = new ManualResetEventSlim();
+        using var releaseFirstEvent = new ManualResetEventSlim();
+        routes.Changed += (_, change) =>
+        {
+            if (change.Current.Version == 1)
+            {
+                firstEventEntered.Set();
+                Assert.True(releaseFirstEvent.Wait(TimeSpan.FromSeconds(5)));
+            }
+        };
+        var history = new PageHistoryService();
+        history.Push(new FlourishPageStackEntry(HomeKey, Parameter: null));
+        _ = new NavigationService(
+            new Mock<INavigationPageProvider>(MockBehavior.Strict).Object,
+            history,
+            routes
+        );
+
+        var remove = Task.Run(() => routes.Remove(HomeKey));
+        Assert.True(firstEventEntered.Wait(TimeSpan.FromSeconds(5)));
+        INavigationRouteRegistration replacement;
+        try
+        {
+            replacement = routes.Register(
+                new FlourishNavigationRoute(HomeKey, typeof(HomePage))
+            );
+        }
+        finally
+        {
+            releaseFirstEvent.Set();
+        }
+
+        Assert.True(await remove.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Contains(history.BackStack, entry => entry.NavigationKey == HomeKey);
+        replacement.Dispose();
+    }
+
     private static NavigationFixture CreateFixture(bool initialize = true)
     {
         var options = new FlourishShellOptions();
@@ -315,7 +358,11 @@ public sealed class NavigationServiceTests
         var pageProvider = new Mock<INavigationPageProvider>(MockBehavior.Strict);
         var contentHost = new Mock<INavigationContentHost>(MockBehavior.Strict);
         var history = new PageHistoryService();
-        var sut = new NavigationService(pageProvider.Object, history, options);
+        var sut = new NavigationService(
+            pageProvider.Object,
+            history,
+            new NavigationRouteRegistry(options)
+        );
         if (initialize)
         {
             sut.Initialize(contentHost.Object);
@@ -326,8 +373,9 @@ public sealed class NavigationServiceTests
 
     private static void Register(FlourishShellOptions options, string key, Type pageType)
     {
-        options.PageTypesByNavigationKey.Add(key, pageType);
-        options.NavigationKeysByPageType.Add(pageType, key);
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute(key, pageType)
+        );
     }
 
     private static void SetupSuccessfulPages(

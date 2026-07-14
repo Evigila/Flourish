@@ -37,7 +37,8 @@ internal partial class FlourishShellWindow : Window
     private readonly IMessageService messageService;
     private readonly NotificationService notificationService;
     private readonly TrayIconService trayIconService;
-    private readonly CommandParser commandParser;
+    private readonly ICommandRegistry commandRegistry;
+    private readonly ICommandDispatcher commandDispatcher;
     private readonly ShortcutService shortcutService;
     private readonly FontService fontService;
     private readonly MaterialEffectService materialEffectService;
@@ -173,7 +174,8 @@ internal partial class FlourishShellWindow : Window
         IMessageService messageService,
         NotificationService notificationService,
         TrayIconService trayIconService,
-        CommandParser commandParser,
+        ICommandRegistry commandRegistry,
+        ICommandDispatcher commandDispatcher,
         ShortcutService shortcutService,
         FontService fontService,
         MaterialEffectService materialEffectService,
@@ -215,7 +217,8 @@ internal partial class FlourishShellWindow : Window
         this.messageService = messageService;
         this.notificationService = notificationService;
         this.trayIconService = trayIconService;
-        this.commandParser = commandParser;
+        this.commandRegistry = commandRegistry;
+        this.commandDispatcher = commandDispatcher;
         this.shortcutService = shortcutService;
         this.fontService = fontService;
         this.materialEffectService = materialEffectService;
@@ -256,8 +259,8 @@ internal partial class FlourishShellWindow : Window
         localizationService.Changed += LocalizationService_Changed;
         fontService.Changed += FontService_Changed;
         motionService.Changed += MotionService_Changed;
-        commandParser.Changed += CommandParser_Changed;
-        commandParser.CanExecuteChanged += CommandParser_CanExecuteChanged;
+        commandRegistry.Changed += CommandRegistry_Changed;
+        commandRegistry.CanExecuteChanged += CommandRegistry_CanExecuteChanged;
         backgroundTaskService.TasksChanged += BackgroundTaskService_TasksChanged;
         RefreshBackgroundTaskStatus(backgroundTaskService.ActiveTasks);
         AttachTitlebarEvents();
@@ -317,7 +320,7 @@ internal partial class FlourishShellWindow : Window
         materialEffectService.Attach(
             this,
             options.IsMaterialEffectEnabled ? options.MaterialEffect : MaterialEffect.None,
-            "AppBackgroundBrush"
+            "FlourishShellBackgroundBrush"
         );
         themeService.Attach(this);
         ApplyThemeState();
@@ -466,26 +469,6 @@ internal partial class FlourishShellWindow : Window
         ResizeMode = options.WindowResizeMode;
         Topmost = options.WindowTopmost;
         ShowInTaskbar = options.WindowShowInTaskbar;
-
-        if (options.WindowTextFormattingMode is { } textFormattingMode)
-        {
-            TextOptions.SetTextFormattingMode(this, textFormattingMode);
-        }
-
-        if (options.WindowTextRenderingMode is { } textRenderingMode)
-        {
-            TextOptions.SetTextRenderingMode(this, textRenderingMode);
-        }
-
-        if (options.WindowSnapsToDevicePixels is { } snapsToDevicePixels)
-        {
-            SnapsToDevicePixels = snapsToDevicePixels;
-        }
-
-        if (options.WindowUseLayoutRounding is { } useLayoutRounding)
-        {
-            UseLayoutRounding = useLayoutRounding;
-        }
 
         if (options.WindowLeft is { } left)
         {
@@ -1087,7 +1070,7 @@ internal partial class FlourishShellWindow : Window
             VerticalAlignment = VerticalAlignment.Center,
         };
         BindIconTypography(icon, "FlourishFontSizeCaption");
-        var toolTipName = new TextBlock { FontWeight = FontWeights.SemiBold };
+        var toolTipName = new TextBlock { FontWeight = FontWeights.Bold };
         var toolTipDescription = new TextBlock
         {
             Margin = new Thickness(0, 3, 0, 0),
@@ -1253,7 +1236,7 @@ internal partial class FlourishShellWindow : Window
         Grid.SetColumn(details, 1);
         var name = new TextBlock
         {
-            FontWeight = FontWeights.SemiBold,
+            FontWeight = FontWeights.Bold,
             TextTrimming = TextTrimming.CharacterEllipsis,
         };
         BindTextSize(name, "FlourishFontSizeCaption");
@@ -1812,8 +1795,6 @@ internal partial class FlourishShellWindow : Window
                 WorkAreaGrid,
                 NavigationPaneTransitionHost,
                 ContentAreaGrid,
-                ContentAreaScaleTransform,
-                ContentAreaTranslateTransform,
                 options.NavigationPanelDirection
             ),
             committedWidth,
@@ -2087,7 +2068,7 @@ internal partial class FlourishShellWindow : Window
                 IsEnabled = item.IsEnabled
                     && (
                         string.IsNullOrWhiteSpace(item.CommandKey)
-                        || commandParser.CanExecute(
+                        || commandDispatcher.CanExecute(
                             item.CommandKey,
                             source: CommandSource.Toolbar
                         )
@@ -2109,7 +2090,7 @@ internal partial class FlourishShellWindow : Window
     {
         if (sender is Button { Tag: string commandKey })
         {
-            await commandParser.ExecuteAsync(
+            await commandDispatcher.ExecuteAsync(
                 commandKey,
                 source: CommandSource.Toolbar
             );
@@ -2367,7 +2348,7 @@ internal partial class FlourishShellWindow : Window
             return;
         }
 
-        await commandParser.ExecuteAsync(
+        await commandDispatcher.ExecuteAsync(
             info.Notification.CommandKey,
             info.Notification,
             CommandSource.Notification
@@ -2773,12 +2754,12 @@ internal partial class FlourishShellWindow : Window
         });
     }
 
-    private void CommandParser_Changed(object? sender, CommandRegistryChangedEventArgs e)
+    private void CommandRegistry_Changed(object? sender, CommandRegistryChangedEventArgs e)
     {
         DispatchRuntimeChange(RefreshCommandAvailability);
     }
 
-    private void CommandParser_CanExecuteChanged(
+    private void CommandRegistry_CanExecuteChanged(
         object? sender,
         CommandCanExecuteChangedEventArgs e
     )
@@ -3086,11 +3067,7 @@ internal partial class FlourishShellWindow : Window
         SelectNavigationItem(e.SourcePageType);
         motionService.AnimatePageEntrance(
             pageTransition,
-            new PageTransitionTarget(
-                RootFrame,
-                PageTransitionChrome,
-                PageTransitionScaleTransform
-            )
+            new PageTransitionTarget(PageTransitionContentHost)
         );
     }
 
@@ -3146,7 +3123,7 @@ internal partial class FlourishShellWindow : Window
         {
             if (!item.HasChildren && !string.IsNullOrWhiteSpace(item.CommandKey))
             {
-                _ = commandParser.ExecuteAsync(
+                _ = commandDispatcher.ExecuteAsync(
                     item.CommandKey,
                     source: CommandSource.Navigation
                 ).AsTask();
@@ -3487,8 +3464,8 @@ internal partial class FlourishShellWindow : Window
         localizationService.Changed -= LocalizationService_Changed;
         fontService.Changed -= FontService_Changed;
         motionService.Changed -= MotionService_Changed;
-        commandParser.Changed -= CommandParser_Changed;
-        commandParser.CanExecuteChanged -= CommandParser_CanExecuteChanged;
+        commandRegistry.Changed -= CommandRegistry_Changed;
+        commandRegistry.CanExecuteChanged -= CommandRegistry_CanExecuteChanged;
         navigationService.Navigated -= RootFrame_Navigated;
         backgroundTaskRefreshTimer.Stop();
         backgroundTaskRefreshTimer.Tick -= BackgroundTaskRefreshTimer_Tick;

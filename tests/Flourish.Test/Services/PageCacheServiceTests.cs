@@ -15,8 +15,8 @@ public sealed class PageCacheServiceTests
         var page = CreatePage();
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
         factory.Setup(value => value.Create(typeof(CacheablePage))).Returns(page);
-        var options = CreateOptions(typeof(CacheablePage), FlourishPageCacheMode.Enabled);
-        var sut = new PageCacheService(factory.Object, options);
+        var routes = CreateRoutes(typeof(CacheablePage), FlourishPageCacheMode.Enabled);
+        var sut = new PageCacheService(factory.Object, routes);
 
         var first = sut.GetPage(typeof(CacheablePage));
         var second = sut.GetPage(typeof(CacheablePage));
@@ -36,8 +36,8 @@ public sealed class PageCacheServiceTests
             .SetupSequence(value => value.Create(typeof(TransientPage)))
             .Returns(firstPage)
             .Returns(secondPage);
-        var options = CreateOptions(typeof(TransientPage), FlourishPageCacheMode.Disabled);
-        var sut = new PageCacheService(factory.Object, options);
+        var routes = CreateRoutes(typeof(TransientPage), FlourishPageCacheMode.Disabled);
+        var sut = new PageCacheService(factory.Object, routes);
 
         var first = sut.GetPage(typeof(TransientPage));
         var second = sut.GetPage(typeof(TransientPage));
@@ -56,7 +56,10 @@ public sealed class PageCacheServiceTests
             .SetupSequence(value => value.Create(typeof(TransientPage)))
             .Returns(CreatePage())
             .Returns(CreatePage());
-        var sut = new PageCacheService(factory.Object, new FlourishShellOptions());
+        var sut = new PageCacheService(
+            factory.Object,
+            new NavigationRouteRegistry(new FlourishShellOptions())
+        );
 
         var first = sut.GetPage(typeof(TransientPage));
         var second = sut.GetPage(typeof(TransientPage));
@@ -72,8 +75,11 @@ public sealed class PageCacheServiceTests
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
         factory.Setup(value => value.Create(typeof(CacheablePage))).Returns(page);
         var options = CreateOptions(typeof(CacheablePage), FlourishPageCacheMode.Enabled);
-        var sut = new PageCacheService(factory.Object, options);
-        options.PageCacheModesByPageType[typeof(CacheablePage)] = FlourishPageCacheMode.Disabled;
+        var sut = new PageCacheService(
+            factory.Object,
+            new NavigationRouteRegistry(options)
+        );
+        options.InitialNavigationRoutes.Clear();
 
         var first = sut.GetPage(typeof(CacheablePage));
         var second = sut.GetPage(typeof(CacheablePage));
@@ -91,8 +97,8 @@ public sealed class PageCacheServiceTests
             .SetupSequence(value => value.Create(typeof(CacheablePage)))
             .Throws(new PageCreationException())
             .Returns(page);
-        var options = CreateOptions(typeof(CacheablePage), FlourishPageCacheMode.Enabled);
-        var sut = new PageCacheService(factory.Object, options);
+        var routes = CreateRoutes(typeof(CacheablePage), FlourishPageCacheMode.Enabled);
+        var sut = new PageCacheService(factory.Object, routes);
 
         Assert.Throws<PageCreationException>(() => sut.GetPage(typeof(CacheablePage)));
         Assert.Same(page, sut.GetPage(typeof(CacheablePage)));
@@ -108,7 +114,10 @@ public sealed class PageCacheServiceTests
         factory
             .Setup(value => value.Create(typeof(NotAPage)))
             .Returns(returnsNull ? null : new NotAPage());
-        var sut = new PageCacheService(factory.Object, new FlourishShellOptions());
+        var sut = new PageCacheService(
+            factory.Object,
+            new NavigationRouteRegistry(new FlourishShellOptions())
+        );
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
             sut.GetPage(typeof(NotAPage))
@@ -122,7 +131,10 @@ public sealed class PageCacheServiceTests
     public void GetPage_WithNullType_ThrowsBeforeCallingFactory()
     {
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
-        var sut = new PageCacheService(factory.Object, new FlourishShellOptions());
+        var sut = new PageCacheService(
+            factory.Object,
+            new NavigationRouteRegistry(new FlourishShellOptions())
+        );
 
         Assert.Throws<ArgumentNullException>(() => sut.GetPage(null!));
         factory.VerifyNoOtherCalls();
@@ -134,8 +146,18 @@ public sealed class PageCacheServiceTests
     )
     {
         var options = new FlourishShellOptions();
-        options.PageCacheModesByPageType.Add(pageType, cacheMode);
+        options.InitialNavigationRoutes.Add(
+            new FlourishNavigationRoute(pageType.Name, pageType, cacheMode)
+        );
         return options;
+    }
+
+    private static NavigationRouteRegistry CreateRoutes(
+        Type pageType,
+        FlourishPageCacheMode cacheMode
+    )
+    {
+        return new NavigationRouteRegistry(CreateOptions(pageType, cacheMode));
     }
 
     private static Page CreatePage()

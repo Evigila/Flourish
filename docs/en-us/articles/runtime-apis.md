@@ -154,7 +154,7 @@ Toolbar and navigation command items are dispatched through `ICommandDispatcher`
 
 Shortcuts are ignored while a text input control has keyboard focus by default, preserving typing, clipboard, editing, AltGr, and IME behavior. Set `ShortcutRegistrationOptions.AllowWhenTextInputFocused` to `true` only for shortcuts that must remain active while the user is editing text.
 
-Use `ICommandParser` for synchronous command handlers registered during `ConfigureServices`. Use `ICommandRegistry` for handlers that must be added or removed while the application is running.
+Command handlers are registered through `ICommandRegistry` and invoked through `ICommandDispatcher`. Keep each `ICommandRegistration` for the lifetime of its owning feature and dispose it to remove the handler.
 
 ```csharp
 public sealed class RefreshBindings : IDisposable
@@ -230,6 +230,6 @@ Task delegates do not run on the WPF UI thread. Observe `TasksChanged` for live 
 ## Related guides
 
 - [IFlourishBuilder](flourish-builder.md) and [Dependency injection](configure-services.md)
-- [Application data](configure-data.md), [Navigation](navigation.md), and [Command parser](command-parser.md)
+- [Application data](configure-data.md), [Navigation](navigation.md), and [Command dispatch](commands.md)
 - [Dynamic toolbar](dynamic-toolbar.md), [Status bar](status-bar.md), and [Background tasks](background-tasks.md)
 - [Window](configure-window.md), [Profile](configure-profile.md), and [Message service](message-service.md)

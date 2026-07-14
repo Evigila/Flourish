@@ -195,7 +195,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void MaterialEffect_ResourceBackedBackgroundRestoresTheCurrentThemeValue()
     {
-        const string backgroundResourceKey = "AppBackgroundBrush";
+        const string backgroundResourceKey = "FlourishShellBackgroundBrush";
         RunInSta(() =>
         {
             var initialBackground = new SolidColorBrush(Color.FromRgb(20, 40, 60));

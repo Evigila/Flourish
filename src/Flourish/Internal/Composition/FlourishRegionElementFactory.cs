@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Services;
 using Orientation = System.Windows.Controls.Orientation;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
@@ -76,13 +75,6 @@ internal static class FlourishRegionElementFactory
                 )
                 {
                     await dispatcher.ExecuteAsync(commandKey, source: commandSource);
-                }
-                else
-                {
-                    // Preserve custom service-provider scenarios that only register the historical
-                    // concrete parser while applications transition to ICommandDispatcher.
-                    var parser = services.GetService(typeof(CommandParser)) as CommandParser;
-                    parser?.Parse(commandKey);
                 }
             }
         };

@@ -7,7 +7,6 @@ namespace ArkheideSystem.Flourish.Services;
 internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
 {
     private readonly object gate = new();
-    private readonly FlourishShellOptions options;
     private readonly IServiceProvider? serviceProvider;
     private readonly Dictionary<string, FlourishNavigationRoute> routes = new(
         StringComparer.Ordinal
@@ -23,17 +22,12 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
 
     internal NavigationRouteRegistry(FlourishShellOptions options)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        foreach (var pair in options.PageTypesByNavigationKey)
+        ArgumentNullException.ThrowIfNull(options);
+        foreach (var route in options.InitialNavigationRoutes)
         {
-            routes[pair.Key] = new FlourishNavigationRoute(
-                pair.Key,
-                pair.Value,
-                options.PageCacheModesByPageType.GetValueOrDefault(
-                    pair.Value,
-                    FlourishPageCacheMode.Disabled
-                )
-            );
+            ValidateRoute(route);
+            EnsurePageTypeAvailable(route.PageType, exceptNavigationKey: null);
+            routes.Add(route.NavigationKey, route);
         }
     }
 
@@ -67,7 +61,6 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
             EnsurePageTypeAvailable(route.PageType, exceptNavigationKey: null);
             routes.Add(route.NavigationKey, route);
             leases[route.NavigationKey] = lease;
-            SynchronizeOptions();
             version++;
             snapshot = CreateSnapshot();
         }
@@ -96,7 +89,6 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
             EnsurePageTypeAvailable(route.PageType, route.NavigationKey);
             routes[route.NavigationKey] = route;
             leases[route.NavigationKey] = lease;
-            SynchronizeOptions();
             version++;
             snapshot = CreateSnapshot();
         }
@@ -144,7 +136,6 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
 
             current = previous with { CacheMode = cacheMode };
             routes[navigationKey] = current;
-            SynchronizeOptions();
             version++;
             snapshot = CreateSnapshot();
         }
@@ -186,12 +177,17 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
         }
     }
 
-    internal Page CreatePage(Type pageType, IPageFactory fallbackFactory)
+    internal Page CreatePage(
+        Type pageType,
+        IPageFactory fallbackFactory,
+        out long routeVersion
+    )
     {
         FlourishNavigationRoute? route;
         lock (gate)
         {
             route = routes.Values.FirstOrDefault(value => value.PageType == pageType);
+            routeVersion = version;
         }
 
         if (route?.PageFactory is not null)
@@ -228,7 +224,6 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
             }
 
             leases.Remove(navigationKey);
-            SynchronizeOptions();
             version++;
             snapshot = CreateSnapshot();
         }
@@ -256,19 +251,6 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
             throw new InvalidOperationException(
                 $"Page type '{pageType.FullName}' is already registered as route '{existing.NavigationKey}'."
             );
-        }
-    }
-
-    private void SynchronizeOptions()
-    {
-        options.PageTypesByNavigationKey.Clear();
-        options.NavigationKeysByPageType.Clear();
-        options.PageCacheModesByPageType.Clear();
-        foreach (var route in routes.Values)
-        {
-            options.PageTypesByNavigationKey[route.NavigationKey] = route.PageType;
-            options.NavigationKeysByPageType[route.PageType] = route.NavigationKey;
-            options.PageCacheModesByPageType[route.PageType] = route.CacheMode;
         }
     }
 

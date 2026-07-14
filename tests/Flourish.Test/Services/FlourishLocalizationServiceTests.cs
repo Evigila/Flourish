@@ -13,7 +13,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         var sut = new FlourishLocalizationService(new FlourishDataOptions());
 
-        Assert.Equal("EN", sut.Locale);
+        Assert.Equal("EN", sut.CurrentLocale);
         Assert.Equal("Back", sut.Get(FlourishLocaleKeys.TitleBarBack));
         Assert.Equal("User", sut.Get(FlourishLocaleKeys.ProfileDefaultName));
     }
@@ -25,7 +25,7 @@ public sealed class FlourishLocalizationServiceTests
             new FlourishDataOptions { Locale = " en " }
         );
 
-        Assert.Equal("EN", sut.Locale);
+        Assert.Equal("EN", sut.CurrentLocale);
         Assert.Equal("Back", sut.Get(FlourishLocaleKeys.TitleBarBack));
         Assert.Equal(
             "Theme: System (Dark)",
@@ -257,7 +257,7 @@ public sealed class FlourishLocalizationServiceTests
         sut.SetLocale(" cn ");
 
         Assert.Equal("CN", sut.CurrentLocale);
-        Assert.Equal("CN", sut.Locale);
+        Assert.Equal("CN", sut.CurrentLocale);
         Assert.NotNull(change);
         Assert.Equal(FlourishLocalizationChangeKind.LocaleChanged, change.Kind);
         Assert.Equal("EN", change.PreviousLocale);

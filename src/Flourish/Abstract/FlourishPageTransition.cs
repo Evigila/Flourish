@@ -24,7 +24,7 @@ public enum FlourishPageTransition
     None,
 
     /// <summary>
-    /// Reveals the stationary page by fading the transition mask.
+    /// Fades the page into view.
     /// </summary>
     /// <example>
     /// <code><![CDATA[
@@ -34,7 +34,7 @@ public enum FlourishPageTransition
     Fade,
 
     /// <summary>
-    /// Reveals the stationary page from the bottom edge.
+    /// Moves and fades the page into view from the bottom edge.
     /// </summary>
     /// <example>
     /// <code><![CDATA[
