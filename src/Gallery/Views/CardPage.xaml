@@ -13,13 +13,13 @@
   >
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Card groups related information on a themed surface. IconCard adds a presenter without changing the title, text, content, or alignment contract."
+        ChunkHeroDescription="Explore Card content, alignment, variants, and IconCard presenter layouts."
         ChunkHeroTitle="Card"
       />
 
       <flourish:Chunk
-        ChunkDescription="Variant selects the surface treatment. Standard is the default, Tonal is a quieter gray surface, Filled uses the primary color, and Elevated separates the card from its background."
-        ChunkTitle="Card variants"
+        ChunkDescription="Compare the four semantic surface treatments."
+        ChunkTitle="Variants"
       >
         <UniformGrid Columns="2">
           <flourish:Card
@@ -54,107 +54,257 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="A local Background value replaces the themed fill of a Filled card. Use a theme resource when the replacement must respond to light and dark themes."
+        ChunkDescription="Override a Filled surface with theme-aware colors."
         ChunkTitle="Filled background"
       >
         <flourish:Card
           Background="{DynamicResource FlourishSecondaryBrush}"
           Foreground="{DynamicResource FlourishForegroundOnSecondaryBrush}"
-          Text="This fill comes from a theme resource instead of the default primary blue."
+          Text="Background replaces the default primary fill, while Foreground preserves contrast in both themes."
           Title="Custom filled surface"
           Variant="Filled"
         />
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="ContentHorizontalAlignment and ContentVerticalAlignment position the built-in Title and Text as one copy region. Inherited HorizontalContentAlignment and VerticalContentAlignment continue to position arbitrary Content."
-        ChunkTitle="Copy alignment"
+        ChunkDescription="Compare cards with and without supporting body content."
+        ChunkTitle="Body"
       >
-        <UniformGrid Columns="3">
+        <UniformGrid Columns="2">
           <flourish:Card
             MinHeight="160"
             Margin="0,0,8,0"
-            ContentHorizontalAlignment="Left"
-            ContentVerticalAlignment="Top"
-            Text="Top and left aligned copy."
-            Title="Top left"
-          />
-          <flourish:Card
-            MinHeight="160"
-            Margin="4,0"
-            ContentHorizontalAlignment="Center"
-            ContentVerticalAlignment="Center"
-            Text="Centered copy."
-            Title="Center"
+            Text="Title and Text render normally when Body is null."
+            Title="Empty body"
           />
           <flourish:Card
             MinHeight="160"
             Margin="8,0,0,0"
-            ContentHorizontalAlignment="Right"
-            ContentVerticalAlignment="Bottom"
-            Text="Bottom and right aligned copy."
-            Title="Bottom right"
-          />
+            Text="Body accepts one object or a layout container with several children."
+            Title="Arbitrary body"
+          >
+            <flourish:Card.Body>
+              <StackPanel>
+                <ProgressBar Height="6" Maximum="100" Value="64" />
+                <flourish:FlourishTextBlock
+                  Margin="0,12,0,0"
+                  Role="Status"
+                  Text="64% used"
+                />
+              </StackPanel>
+            </flourish:Card.Body>
+          </flourish:Card>
         </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="In Split mode, PresenterPosition locates the icon or image while the copy region occupies the opposing area. All eight positions use the same Presenter property."
-        ChunkTitle="IconCard split positions"
+        ChunkDescription="Align the complete copy-and-body group horizontally."
+        ChunkTitle="Horizontal alignment"
       >
-        <UniformGrid Columns="2">
-          <flourish:IconCard MinHeight="150" Margin="0,0,8,8" PresenterPosition="Left" Text="Copy stays opposite the presenter." Title="Left">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="8,0,0,8" PresenterPosition="LeftTop" Text="Copy stays opposite the presenter." Title="Left top">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="0,8,8,8" PresenterPosition="LeftBottom" Text="Copy stays opposite the presenter." Title="Left bottom">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="8,8,0,8" PresenterPosition="Top" Text="Copy stays below the presenter." Title="Top">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="0,8,8,8" PresenterPosition="Bottom" Text="Copy stays above the presenter." Title="Bottom">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="8,8,0,8" PresenterPosition="Right" Text="Copy stays opposite the presenter." Title="Right">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="0,8,8,0" PresenterPosition="RightTop" Text="Copy stays opposite the presenter." Title="Right top">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
-          <flourish:IconCard MinHeight="150" Margin="8,8,0,0" PresenterPosition="RightBottom" Text="Copy stays opposite the presenter." Title="Right bottom">
-            <flourish:IconCard.Presenter>
-              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
-            </flourish:IconCard.Presenter>
-          </flourish:IconCard>
+        <UniformGrid Columns="3">
+          <flourish:Card
+            MinHeight="176"
+            Margin="0,0,8,0"
+            ContentHorizontalAlignment="Left"
+            Text="Copy and Body share the left edge."
+            Title="Left"
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock HorizontalAlignment="Left" Role="Status" Text="Body content" />
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card
+            MinHeight="176"
+            Margin="4,0"
+            ContentHorizontalAlignment="Center"
+            Text="Copy and Body share the center axis."
+            Title="Center"
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock HorizontalAlignment="Center" Role="Status" Text="Body content" />
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card
+            MinHeight="176"
+            Margin="8,0,0,0"
+            ContentHorizontalAlignment="Right"
+            Text="Copy and Body share the right edge."
+            Title="Right"
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock HorizontalAlignment="Right" Role="Status" Text="Body content" />
+            </flourish:Card.Body>
+          </flourish:Card>
         </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="In Overlay mode, Presenter fills the card and stays centered. PresenterPosition is ignored, and the title, text, and content are rendered over the presenter."
+        ChunkDescription="Align the complete copy-and-body group vertically."
+        ChunkTitle="Vertical alignment"
+      >
+        <UniformGrid Columns="3">
+          <flourish:Card
+            MinHeight="240"
+            Margin="0,0,8,0"
+            ContentVerticalAlignment="Top"
+            Text="Body follows the copy at the top."
+            Title="Top"
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card
+            MinHeight="240"
+            Margin="4,0"
+            ContentHorizontalAlignment="Center"
+            ContentVerticalAlignment="Center"
+            Text="Both axes use Center, so Copy and Body remain centered as one group."
+            Title="Center"
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card
+            MinHeight="240"
+            Margin="8,0,0,0"
+            ContentVerticalAlignment="Bottom"
+            Text="The copy settles below Body at the bottom."
+            Title="Bottom"
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="Place Presenter opposite the copy-and-body region in Split mode."
+        ChunkTitle="IconCard split"
+      >
+        <StackPanel>
+          <UniformGrid Columns="2">
+            <flourish:IconCard
+              MinHeight="176"
+              Margin="0,0,8,8"
+              Presenter="&#xE8A5;"
+              PresenterPosition="Top"
+              Text="Top and Bottom arrange Copy and Body horizontally."
+              Title="Top"
+            >
+              <flourish:IconCard.Body>
+                <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+              </flourish:IconCard.Body>
+            </flourish:IconCard>
+            <flourish:IconCard
+              MinHeight="176"
+              Margin="8,0,0,8"
+              Presenter="&#xE8A5;"
+              PresenterPosition="Bottom"
+              Text="Body remains beside Copy on the opposing side."
+              Title="Bottom"
+            >
+              <flourish:IconCard.Body>
+                <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+              </flourish:IconCard.Body>
+            </flourish:IconCard>
+          </UniformGrid>
+
+          <Grid Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="16" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <flourish:IconCard
+                MinHeight="152"
+                Presenter="&#xE8A5;"
+                PresenterPosition="Left"
+                Text="Other positions arrange Copy above Body."
+                Title="Left"
+              >
+                <flourish:IconCard.Body>
+                  <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+                </flourish:IconCard.Body>
+              </flourish:IconCard>
+              <flourish:IconCard
+                MinHeight="152"
+                Margin="0,16,0,0"
+                Presenter="&#xE8A5;"
+                PresenterPosition="LeftTop"
+                Text="The presenter occupies the upper-left."
+                Title="Left top"
+              >
+                <flourish:IconCard.Body>
+                  <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+                </flourish:IconCard.Body>
+              </flourish:IconCard>
+              <flourish:IconCard
+                MinHeight="152"
+                Margin="0,16,0,0"
+                Presenter="&#xE8A5;"
+                PresenterPosition="LeftBottom"
+                Text="The presenter occupies the lower-left."
+                Title="Left bottom"
+              >
+                <flourish:IconCard.Body>
+                  <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+                </flourish:IconCard.Body>
+              </flourish:IconCard>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <flourish:IconCard
+                MinHeight="152"
+                Presenter="&#xE8A5;"
+                PresenterPosition="Right"
+                Text="Other positions arrange Copy above Body."
+                Title="Right"
+              >
+                <flourish:IconCard.Body>
+                  <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+                </flourish:IconCard.Body>
+              </flourish:IconCard>
+              <flourish:IconCard
+                MinHeight="152"
+                Margin="0,16,0,0"
+                Presenter="&#xE8A5;"
+                PresenterPosition="RightTop"
+                Text="The presenter occupies the upper-right."
+                Title="Right top"
+              >
+                <flourish:IconCard.Body>
+                  <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+                </flourish:IconCard.Body>
+              </flourish:IconCard>
+              <flourish:IconCard
+                MinHeight="152"
+                Margin="0,16,0,0"
+                Presenter="&#xE8A5;"
+                PresenterPosition="RightBottom"
+                Text="The presenter occupies the lower-right."
+                Title="Right bottom"
+              >
+                <flourish:IconCard.Body>
+                  <flourish:FlourishTextBlock Role="Status" Text="Body content" />
+                </flourish:IconCard.Body>
+              </flourish:IconCard>
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="Fill the card with Presenter and layer Copy and Body above it."
         ChunkTitle="IconCard overlay"
       >
         <flourish:IconCard
           MinHeight="240"
           PresenterMode="Overlay"
           PresenterPosition="RightBottom"
-          Text="The copy is overlaid on a full-card visual."
+          Text="Overlay ignores PresenterPosition and keeps the copy-and-body region readable above the presenter."
           Title="Overlay presenter"
         >
           <flourish:IconCard.Presenter>
@@ -175,6 +325,9 @@
               />
             </Border>
           </flourish:IconCard.Presenter>
+          <flourish:IconCard.Body>
+            <flourish:FlourishTextBlock Role="Status" Text="Overlay body content" />
+          </flourish:IconCard.Body>
         </flourish:IconCard>
       </flourish:Chunk>
     </StackPanel>

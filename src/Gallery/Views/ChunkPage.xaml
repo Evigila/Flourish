@@ -62,35 +62,38 @@
       </flourish:ChunkHero>
 
       <flourish:Chunk
-        ChunkDescription="A Chunk owns its heading, optional supporting copy, and one body region. The default margin separates adjacent chunks; the default spacing keeps the heading and body on the same rhythm."
+        ChunkDescription="Inspect the structure of a page section."
         ChunkTitle="Chunk anatomy"
       >
-        <flourish:Card>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <flourish:FlourishTextBlock
-              Width="44"
-              Height="44"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              FontFamily="{DynamicResource FlourishIconFontFamily}"
-              FontSize="28"
-              Foreground="{DynamicResource FlourishAccentForegroundBrush}"
-              Text="&#xE8A5;"
-              TextAlignment="Center"
-            />
-            <StackPanel Grid.Column="1" Margin="16,0,0,0">
-              <flourish:FlourishTextBlock Role="CardTitle" Text="ChunkBody accepts any UIElement" />
+        <flourish:Card
+          Title="ChunkBody content"
+          Text="A Chunk owns a heading, optional supporting copy, and one body region while shared spacing preserves the page rhythm."
+        >
+          <flourish:Card.Body>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
               <flourish:FlourishTextBlock
-                Margin="0,4,0,0"
-                Role="Description"
-                Text="Cards, forms, lists, charts, and custom layouts all belong here without changing the surrounding section rhythm."
+                Width="44"
+                Height="44"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{DynamicResource FlourishIconFontFamily}"
+                FontSize="28"
+                Foreground="{DynamicResource FlourishAccentForegroundBrush}"
+                Text="&#xE8A5;"
+                TextAlignment="Center"
               />
-            </StackPanel>
-          </Grid>
+              <flourish:FlourishTextBlock
+                Grid.Column="1"
+                Margin="16,0,0,0"
+                Role="Paragraph"
+                Text="Cards, forms, lists, charts, and custom layouts all belong in ChunkBody."
+              />
+            </Grid>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
@@ -112,30 +115,27 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="A page should have at most one hero."
-        ChunkTitle="ChunkHero presenter layouts"
+        ChunkDescription="Compare the presenter layouts available to a page hero."
+        ChunkTitle="Hero layouts"
       >
         <StackPanel>
           <UniformGrid Columns="2" Rows="1">
-            <flourish:Card Margin="0,0,8,0">
-              <flourish:FlourishTextBlock
-                Role="Paragraph"
-                Text="Split with PresenterPosition=Right keeps the presenter on the right."
-              />
-            </flourish:Card>
-            <flourish:Card Margin="8,0,0,0">
-              <flourish:FlourishTextBlock
-                Role="Paragraph"
-                Text="Split with PresenterPosition=Left places the presenter first."
-              />
-            </flourish:Card>
-          </UniformGrid>
-          <flourish:Card Margin="0,8,0,0">
-            <flourish:FlourishTextBlock
-              Role="Paragraph"
-              Text="Overlay layers the copy over a full presenter."
+            <flourish:Card
+              Margin="0,0,8,0"
+              Title="Presenter right"
+              Text="Split with PresenterPosition=Right keeps the presenter on the right."
             />
-          </flourish:Card>
+            <flourish:Card
+              Margin="8,0,0,0"
+              Title="Presenter left"
+              Text="Split with PresenterPosition=Left places the presenter first."
+            />
+          </UniformGrid>
+          <flourish:Card
+            Margin="0,8,0,0"
+            Title="Overlay"
+            Text="Overlay layers the copy over a full presenter; a page should contain at most one hero."
+          />
         </StackPanel>
       </flourish:Chunk>
     </StackPanel>

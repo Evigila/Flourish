@@ -13,17 +13,25 @@
       Width="520"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      ChunkDescription="这里是编辑页面占位内容，后续可用于承载图片裁剪、滤镜和标注工具。"
+      ChunkDescription="预览编辑页面的占位状态。"
       ChunkMargin="0"
       ChunkTitle="编辑"
     >
-      <flourish:FlourishTextBlock
-        HorizontalAlignment="Center"
-        FontFamily="Segoe MDL2 Assets"
-        FontSize="42"
-        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-        Text="&#xE70F;"
-      />
+      <flourish:Card
+        ContentHorizontalAlignment="Center"
+        Title="编辑工具"
+        Text="此区域可用于承载图片裁剪、滤镜和标注工具。"
+      >
+        <flourish:Card.Body>
+          <flourish:FlourishTextBlock
+            HorizontalAlignment="Center"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="42"
+            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+            Text="&#xE70F;"
+          />
+        </flourish:Card.Body>
+      </flourish:Card>
     </flourish:Chunk>
   </Grid>
 </Page>

@@ -7,67 +7,82 @@
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:Chunk
-        ChunkDescription="Register application logic after startup, change its availability, dispatch it asynchronously, and bind the same command to a runtime keyboard shortcut."
-        ChunkTitle="Commands &amp; shortcuts"
+      <flourish:ChunkHero
+        ChunkHeroDescription="Register, dispatch, and inspect commands at runtime."
+        ChunkHeroTitle="Commands &amp; shortcuts"
       />
 
       <flourish:Chunk
-        ChunkDescription="The demo handler waits briefly, increments an execution counter, and returns a value through CommandResult."
+        ChunkDescription="Register and invoke a command handler."
         ChunkTitle="Runtime command registration"
       >
-        <flourish:Card>
-          <StackPanel>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Margin="0,0,8,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Command key" />
-              <flourish:FlourishTextBox x:Name="CommandKeyBox" Text="gallery.runtime.greet" />
+        <flourish:Card
+          Title="Command handler"
+          Text="The demo waits briefly, increments an execution counter, and returns a value through CommandResult."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <StackPanel Margin="0,0,8,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Command key" />
+                <flourish:FlourishTextBox x:Name="CommandKeyBox" Text="gallery.runtime.greet" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Dispatch parameter" />
+                <flourish:FlourishTextBox x:Name="CommandParameterBox" Text="Flourish user" />
+              </StackPanel>
+            </Grid>
+            <WrapPanel Margin="0,14,0,0">
+              <flourish:Button Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
+              <flourish:Button Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
+              <flourish:Button Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
+              <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Role="Status" Text="Register the demo command to begin." />
             </StackPanel>
-            <StackPanel Grid.Column="1" Margin="8,0,0,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Dispatch parameter" />
-              <flourish:FlourishTextBox x:Name="CommandParameterBox" Text="Flourish user" />
-            </StackPanel>
-          </Grid>
-          <WrapPanel Margin="0,14,0,0">
-            <flourish:Button Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
-            <flourish:Button Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
-            <flourish:Button Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
-            <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Role="Status" Text="Register the demo command to begin." />
-          </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Bind Ctrl+Shift+G to the command key above. The shell can resolve and dispatch it globally; the button invokes the same shortcut API directly for a deterministic demo."
+        ChunkDescription="Bind and invoke a runtime shortcut."
         ChunkTitle="Keyboard shortcut"
       >
-        <flourish:Card>
-          <StackPanel>
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
-            <flourish:Button Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
-            <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Role="Description" Text="No shortcut registered by this page." />
-          </StackPanel>
+        <flourish:Card
+          Title="Ctrl+Shift+G"
+          Text="The shell resolves and dispatches the shortcut globally, while the local button invokes the same API directly."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <WrapPanel>
+              <flourish:Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
+              <flourish:Button Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
+              <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Role="Description" Text="No shortcut registered by this page." />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Both registries expose immutable snapshots and change events for diagnostic or management UIs."
+        ChunkDescription="Inspect immutable registry state."
         ChunkTitle="Registry snapshots"
       >
-        <flourish:Card>
-          <StackPanel>
-          <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
-          <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
-          </StackPanel>
+        <flourish:Card
+          Title="Registry state"
+          Text="Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
+            <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
     </StackPanel>

@@ -35,7 +35,9 @@
   <Thickness x:Key="FlourishPeerCardMargin">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishCardPadding">20</Thickness>
   <Thickness x:Key="FlourishCardTextSpacing">0,4,0,0</Thickness>
-  <Thickness x:Key="FlourishCardContentSpacing">0,12,0,0</Thickness>
+  <Thickness x:Key="FlourishCardBodySpacing">0,12,0,0</Thickness>
+  <Thickness x:Key="FlourishCardReversedBodySpacing">0,0,0,12</Thickness>
+  <Thickness x:Key="FlourishCardHorizontalBodySpacing">16,0,0,0</Thickness>
   <Thickness x:Key="FlourishInteractiveCardPadding">18</Thickness>
   <Thickness x:Key="FlourishChunkMargin">0,32,0,0</Thickness>
   <Thickness x:Key="FlourishChunkSpacing">0,12,0,0</Thickness>

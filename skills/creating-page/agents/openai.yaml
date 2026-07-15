@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creating Flourish Pages"
+  short_description: "Create consistent Flourish pages with concise Chunk copy"
+  default_prompt: "Use $creating-page to create a clear Flourish page with concise chunks and focused cards."
