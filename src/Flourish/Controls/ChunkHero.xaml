@@ -5,7 +5,7 @@
 >
   <ControlTemplate x:Key="ChunkHeroTemplate" TargetType="{x:Type controls:ChunkHero}">
     <Border
-      x:Name="HeroSurface"
+      x:Name="PART_HeroSurface"
       MinHeight="{DynamicResource FlourishChunkHeroMinHeight}"
       Background="{TemplateBinding Background}"
       BorderBrush="{TemplateBinding BorderBrush}"
@@ -14,7 +14,7 @@
       CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
-      <Grid>
+      <Grid x:Name="PART_ClipHost">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />

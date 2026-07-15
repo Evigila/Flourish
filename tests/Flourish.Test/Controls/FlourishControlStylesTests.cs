@@ -340,6 +340,8 @@ public sealed class FlourishControlStylesTests
                     var text = AssertTemplatePart<Border>(hero, "TextSurface");
                     var scrim = AssertTemplatePart<Border>(hero, "OverlayScrim");
                     var body = AssertTemplatePart<ContentPresenter>(hero, "BodyHost");
+                    var clipHost = AssertTemplatePart<Grid>(hero, "PART_ClipHost");
+                    var roundedClip = Assert.IsType<StreamGeometry>(clipHost.Clip);
 
                     Assert.Equal(expectation.PresenterColumn, Grid.GetColumn(presenter));
                     Assert.Equal(expectation.TextColumn, Grid.GetColumn(text));
@@ -348,6 +350,68 @@ public sealed class FlourishControlStylesTests
                     Assert.Equal(expectation.ScrimOpacity, scrim.Opacity);
                     Assert.Equal(HorizontalAlignment.Stretch, body.HorizontalAlignment);
                     Assert.Equal(new Thickness(0, 32, 0, 0), hero.Margin);
+                    Assert.True(roundedClip.IsFrozen);
+                    Assert.Equal(0, roundedClip.Bounds.X, precision: 3);
+                    Assert.Equal(0, roundedClip.Bounds.Y, precision: 3);
+                    Assert.Equal(
+                        clipHost.RenderSize.Width,
+                        roundedClip.Bounds.Width,
+                        precision: 3
+                    );
+                    Assert.Equal(
+                        clipHost.RenderSize.Height,
+                        roundedClip.Bounds.Height,
+                        precision: 3
+                    );
+                    Assert.True(
+                        roundedClip.FillContains(
+                            new System.Windows.Point(
+                                clipHost.RenderSize.Width / 2,
+                                clipHost.RenderSize.Height / 2
+                            )
+                        )
+                    );
+                    Assert.False(
+                        roundedClip.FillContains(new System.Windows.Point(1, 1))
+                    );
+                    Assert.False(
+                        roundedClip.FillContains(
+                            new System.Windows.Point(clipHost.RenderSize.Width - 1, 1)
+                        )
+                    );
+                    Assert.False(
+                        roundedClip.FillContains(
+                            new System.Windows.Point(
+                                1,
+                                clipHost.RenderSize.Height - 1
+                            )
+                        )
+                    );
+                    Assert.False(
+                        roundedClip.FillContains(
+                            new System.Windows.Point(
+                                clipHost.RenderSize.Width - 1,
+                                clipHost.RenderSize.Height - 1
+                            )
+                        )
+                    );
+
+                    hero.Width = 420;
+                    window.UpdateLayout();
+
+                    var resizedClip = Assert.IsType<StreamGeometry>(clipHost.Clip);
+                    Assert.NotSame(roundedClip, resizedClip);
+                    Assert.True(resizedClip.IsFrozen);
+                    Assert.Equal(
+                        clipHost.RenderSize.Width,
+                        resizedClip.Bounds.Width,
+                        precision: 3
+                    );
+                    Assert.Equal(
+                        clipHost.RenderSize.Height,
+                        resizedClip.Bounds.Height,
+                        precision: 3
+                    );
                 }
                 finally
                 {

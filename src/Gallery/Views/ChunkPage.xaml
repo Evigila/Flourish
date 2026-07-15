@@ -5,7 +5,10 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:FlourishScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto"
+  >
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         x:Name="HeroPreview"
@@ -96,15 +99,31 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="SplitLeft keeps copy on the left, SplitRight places the presenter first, and Overlay layers the copy over a full presenter. Use the buttons in the hero to compare all three modes."
+        ChunkDescription="A page should have at most one hero."
         ChunkTitle="ChunkHero modes"
       >
-        <flourish:FlourishCard Appearance="Subtle">
-          <flourish:FlourishTextBlock
-            Role="Paragraph"
-            Text="A page should have at most one hero, positioned before its regular chunks. A presenter is deliberately general-purpose: the preview above uses only a themed background block."
-          />
-        </flourish:FlourishCard>
+        <StackPanel>
+          <UniformGrid Columns="2" Rows="1">
+            <flourish:FlourishCard Appearance="Standard" Margin="0,0,8,0">
+              <flourish:FlourishTextBlock
+                Role="Paragraph"
+                Text="SplitLeft keeps copy on the left."
+              />
+            </flourish:FlourishCard>
+            <flourish:FlourishCard Appearance="Standard" Margin="8,0,0,0">
+              <flourish:FlourishTextBlock
+                Role="Paragraph"
+                Text="SplitRight places the presenter first."
+              />
+            </flourish:FlourishCard>
+          </UniformGrid>
+          <flourish:FlourishCard Appearance="Standard" Margin="0,8,0,0">
+            <flourish:FlourishTextBlock
+              Role="Paragraph"
+              Text="Overlay layers the copy over a full presenter."
+            />
+          </flourish:FlourishCard>
+        </StackPanel>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>
