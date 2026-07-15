@@ -18,6 +18,17 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder UseCenterContent(
+        bool enabled,
+        double contentWidth
+    )
+    {
+        ValidatePositiveFinite(contentWidth, nameof(contentWidth));
+        options.IsCenterContentEnabled = enabled;
+        options.CenterContentWidth = contentWidth;
+        return this;
+    }
+
     public IFlourishShellBuilder UseDynamicToolbar(bool enabled = true)
     {
         options.IsDynamicToolbarEnabled = enabled;

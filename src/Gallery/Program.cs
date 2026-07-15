@@ -42,6 +42,7 @@ internal static class Program
                 shell
                     .UseTitleBar()
                     .UseNavigation()
+                    .UseCenterContent()
                     .UseDynamicToolbar()
                     .UseMotion()
                     .UseStatusBar()

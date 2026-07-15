@@ -8,6 +8,15 @@ namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 public sealed class FlourishShellBuilderTests
 {
     [Fact]
+    public void CenterContent_WhenNotConfigured_RemainsDisabled()
+    {
+        var options = new FlourishShellOptions();
+
+        Assert.False(options.IsCenterContentEnabled);
+        Assert.Equal(0, options.CenterContentWidth);
+    }
+
+    [Fact]
     public void FeatureMethods_ConfigureAndEnableFeatures()
     {
         var options = new FlourishShellOptions();
@@ -20,6 +29,7 @@ public sealed class FlourishShellBuilderTests
 
         Assert.Same(sut, sut.UseTitleBar());
         Assert.Same(sut, sut.UseNavigation());
+        Assert.Same(sut, sut.UseCenterContent(enabled: true, contentWidth: 1080));
         Assert.Same(sut, sut.UseDynamicToolbar());
         Assert.Same(sut, sut.UseTips(350));
         Assert.Same(sut, sut.UseMotion());
@@ -32,6 +42,8 @@ public sealed class FlourishShellBuilderTests
 
         Assert.True(options.IsTitlebarEnabled);
         Assert.True(options.IsNavigationPanelEnabled);
+        Assert.True(options.IsCenterContentEnabled);
+        Assert.Equal(1080, options.CenterContentWidth);
         Assert.True(options.IsDynamicToolbarEnabled);
         Assert.True(options.IsTipsEnabled);
         Assert.Equal(350, options.Tips.InitialShowDelayMilliseconds);
@@ -57,6 +69,7 @@ public sealed class FlourishShellBuilderTests
         {
             IsTitlebarEnabled = true,
             IsNavigationPanelEnabled = true,
+            IsCenterContentEnabled = true,
             IsDynamicToolbarEnabled = true,
             IsStatusBarEnabled = true,
         };
@@ -65,12 +78,14 @@ public sealed class FlourishShellBuilderTests
 
         Assert.Same(sut, sut.UseTitleBar(false));
         Assert.Same(sut, sut.UseNavigation(false));
+        Assert.Same(sut, sut.UseCenterContent(enabled: false, contentWidth: 1200));
         Assert.Same(sut, sut.UseDynamicToolbar(false));
         Assert.Same(sut, sut.UseMotion(false));
         Assert.Same(sut, sut.UseStatusBar(false));
 
         Assert.False(options.IsTitlebarEnabled);
         Assert.False(options.IsNavigationPanelEnabled);
+        Assert.False(options.IsCenterContentEnabled);
         Assert.False(options.IsDynamicToolbarEnabled);
         Assert.False(options.Motion.IsEnabled);
         Assert.False(options.IsStatusBarEnabled);
@@ -167,6 +182,25 @@ public sealed class FlourishShellBuilderTests
 
         Assert.Same(sut, sut.UseCornerRadius(0));
         Assert.Equal(0, options.CornerRadius);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    [InlineData(double.NegativeInfinity)]
+    public void UseCenterContent_WithInvalidWidth_ThrowsArgumentOutOfRangeException(
+        double contentWidth
+    )
+    {
+        var sut = new FlourishShellBuilder(new FlourishShellOptions());
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.UseCenterContent(enabled: true, contentWidth: contentWidth)
+        );
+
+        Assert.Equal("contentWidth", exception.ParamName);
     }
 
     [Theory]

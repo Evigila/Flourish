@@ -13,6 +13,7 @@ builder.ConfigureShell(shell =>
     shell
         .UseTitleBar()
         .UseNavigation()
+        .UseCenterContent(true, 1200)
         .UseDynamicToolbar()
         .UseTips(delay: 200)
         .UseMotion()
@@ -32,6 +33,7 @@ builder.ConfigureNavigation(navigation =>
 | --- | --- | --- |
 | `UseTitleBar` | Enables the Flourish title bar. When disabled, the Shell uses the native Windows title bar. | [Title bar](configure-title-bar.md) |
 | `UseNavigation` | Enables the navigation panel. | [Navigation](navigation.md) |
+| `UseCenterContent` | Limits and centers navigated page content on wide viewports. | [Content alignment](#customize-content-alignment) |
 | `UseDynamicToolbar` | Enables page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
 | `UseTips` | Sets the initial delay and enables Flourish tooltips. | [Tooltips](configure-tips.md) |
 | `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
@@ -59,15 +61,22 @@ The breadcrumb, dynamic toolbar, content page, and content-region hosts use the 
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
 ```
 
+Use `UseCenterContent(true, contentWidth)` to give navigated page content a maximum width in device-independent pixels. When the available content area is wider than `contentWidth`, Flourish keeps the page content at that width and centers it. A narrower content area still uses all available width, and maximizing the window does not remove the configured limit.
+
+The page's root scroll viewer remains full width. Its vertical scroll bar stays at the right edge of the content area and is not moved next to the centered content.
+
+If `UseCenterContent` is omitted, or is called with `enabled: false`, navigated page content stretches across the available width without a maximum-width constraint.
+
 ## Disable a feature
 
-`UseTitleBar`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an optional `enabled` value. Pass `false` when a shared builder setup must keep a feature disabled.
+`UseTitleBar`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an optional `enabled` value. `UseCenterContent` requires both `enabled` and `contentWidth`; pass `false` with the configured width when a shared builder setup must keep centered page content disabled.
 
 ```csharp
 builder.ConfigureShell(shell =>
 {
     shell
         .UseNavigation(showNavigation)
+        .UseCenterContent(useCenteredPages, 1200)
         .UseMotion(!useStaticInterface)
         .UseStatusBar(showStatusBar);
 });

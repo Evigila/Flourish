@@ -203,7 +203,6 @@
           <Grid
             x:Name="ContentAreaGrid"
             Grid.Column="1"
-            Margin="{DynamicResource FlourishContentBodyMargin}"
           >
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
@@ -216,50 +215,62 @@
             <StackPanel
               x:Name="ContentHeaderRegionHost"
               Grid.Row="0"
+              Margin="{DynamicResource FlourishContentBodyMargin}"
               Orientation="Vertical"
               Visibility="Collapsed"
             />
 
-            <Border
-              x:Name="ToolbarHostBorder"
+            <Grid
+              x:Name="ToolbarLayoutHost"
               Grid.Row="1"
-              Margin="0,0,0,4"
-              Padding="2"
-              Background="{DynamicResource FlourishCardBackgroundBrush}"
-              BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
-              BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
-              CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+              Margin="{DynamicResource FlourishContentBodyMargin}"
             >
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel
-                  x:Name="ToolbarStartRegionHost"
-                  Grid.Column="0"
-                  Orientation="Horizontal"
-                  Visibility="Collapsed"
-                />
-                <StackPanel x:Name="ToolbarItemsHost" Grid.Column="1" Orientation="Horizontal" />
-                <StackPanel
-                  x:Name="ToolbarEndRegionHost"
-                  Grid.Column="2"
-                  Orientation="Horizontal"
-                  Visibility="Collapsed"
-                />
-              </Grid>
-            </Border>
+              <Border
+                x:Name="ToolbarHostBorder"
+                Margin="0,0,0,4"
+                Padding="2"
+                Background="{DynamicResource FlourishCardBackgroundBrush}"
+                BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
+                BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
+                CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+              >
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel
+                    x:Name="ToolbarStartRegionHost"
+                    Grid.Column="0"
+                    Orientation="Horizontal"
+                    Visibility="Collapsed"
+                  />
+                  <StackPanel x:Name="ToolbarItemsHost" Grid.Column="1" Orientation="Horizontal" />
+                  <StackPanel
+                    x:Name="ToolbarEndRegionHost"
+                    Grid.Column="2"
+                    Orientation="Horizontal"
+                    Visibility="Collapsed"
+                  />
+                </Grid>
+              </Border>
+            </Grid>
 
-            <Border x:Name="BreadcrumbHost" Grid.Row="2" Margin="0,0,0,8" Background="Transparent">
-              <control:FlourishTextBlock
-                x:Name="BreadcrumbText"
-                VerticalAlignment="Center"
-                FontSize="{DynamicResource FlourishFontSizeCaption}"
-                Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
-              />
-            </Border>
+            <Grid
+              x:Name="BreadcrumbLayoutHost"
+              Grid.Row="2"
+              Margin="{DynamicResource FlourishContentBodyMargin}"
+            >
+              <Border x:Name="BreadcrumbHost" Margin="0,0,0,8" Background="Transparent">
+                <control:FlourishTextBlock
+                  x:Name="BreadcrumbText"
+                  VerticalAlignment="Center"
+                  FontSize="{DynamicResource FlourishFontSizeCaption}"
+                  Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
+                />
+              </Border>
+            </Grid>
 
             <Grid
               x:Name="ContentFrameHost"
@@ -280,6 +291,7 @@
             <StackPanel
               x:Name="ContentFooterRegionHost"
               Grid.Row="4"
+              Margin="{DynamicResource FlourishContentBodyMargin}"
               Orientation="Vertical"
               Visibility="Collapsed"
             />

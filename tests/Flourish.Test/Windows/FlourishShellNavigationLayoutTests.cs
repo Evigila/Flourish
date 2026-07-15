@@ -269,6 +269,10 @@ public sealed class FlourishShellNavigationLayoutTests
         var navigationFooter = FindNamedElement(shell, "NavigationFooterRegionHost");
         var transitionHost = FindNamedElement(shell, "NavigationPaneTransitionHost");
         var contentArea = FindNamedElement(shell, "ContentAreaGrid");
+        var contentHeader = FindNamedElement(shell, "ContentHeaderRegionHost");
+        var toolbarLayout = FindNamedElement(shell, "ToolbarLayoutHost");
+        var breadcrumbLayout = FindNamedElement(shell, "BreadcrumbLayoutHost");
+        var contentFooter = FindNamedElement(shell, "ContentFooterRegionHost");
         var statusBar = FindNamedElement(shell, "StatusBarBorder");
 
         Assert.Equal(
@@ -287,9 +291,14 @@ public sealed class FlourishShellNavigationLayoutTests
             "{DynamicResource FlourishStatusBarPadding}",
             (string?)statusBar.Attribute("Padding")
         );
-        Assert.Equal(
-            "{DynamicResource FlourishContentBodyMargin}",
-            (string?)contentArea.Attribute("Margin")
+        Assert.Null(contentArea.Attribute("Margin"));
+        Assert.All(
+            new[] { contentHeader, toolbarLayout, breadcrumbLayout, contentFooter },
+            host =>
+                Assert.Equal(
+                    "{DynamicResource FlourishContentBodyMargin}",
+                    (string?)host.Attribute("Margin")
+                )
         );
         Assert.Null(transitionHost.Attribute("Margin"));
 

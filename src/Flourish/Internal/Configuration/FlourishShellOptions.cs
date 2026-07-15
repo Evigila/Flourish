@@ -76,6 +76,10 @@ internal sealed class FlourishShellOptions
 
     public bool IsNavigationPanelEnabled { get; set; }
 
+    public bool IsCenterContentEnabled { get; set; }
+
+    public double CenterContentWidth { get; set; }
+
     public bool IsNavigationPanelInitiallyOpen { get; set; }
 
     public NavigationPanelDirection NavigationPanelDirection { get; set; } = NavigationPanelDirection.Left;

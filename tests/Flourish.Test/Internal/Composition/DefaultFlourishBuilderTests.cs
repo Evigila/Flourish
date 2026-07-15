@@ -45,6 +45,7 @@ public sealed class DefaultFlourishBuilderTests
             .ConfigureShell(shell =>
                 shell
                     .UseNavigation()
+                    .UseCenterContent(enabled: true, contentWidth: 900)
                     .UseTips(350)
                     .UseGlobalFont("Arial", 15)
                     .UseMaterialEffect(MaterialEffect.None)
@@ -76,6 +77,8 @@ public sealed class DefaultFlourishBuilderTests
         Assert.Same(marker, flourish.GetRequiredService<object>());
         Assert.Equal("CN", dataOptions.Locale);
         Assert.True(options.IsNavigationPanelEnabled);
+        Assert.True(options.IsCenterContentEnabled);
+        Assert.Equal(900, options.CenterContentWidth);
         Assert.False(options.IsStatusBarEnabled);
         Assert.Equal("Test Shell", options.Title);
         Assert.True(options.IsTitlebarTitleEnabled);

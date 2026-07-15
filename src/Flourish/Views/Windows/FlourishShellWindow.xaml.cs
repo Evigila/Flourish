@@ -297,6 +297,7 @@ internal partial class FlourishShellWindow : Window
             options.IsProfileEnabled && options.IsTitlebarProfileEnabled
         );
         UpdateStatusBarVisibility();
+        ApplyContentLayoutOptions();
         AutomationProperties.SetName(
             SystemStatusButton,
             localizationService.Get(FlourishLocaleKeys.SystemStatusTitle)
@@ -2914,6 +2915,11 @@ internal partial class FlourishShellWindow : Window
 
     private void RootFrame_Navigated(object? sender, FlourishNavigatedEventArgs e)
     {
+        CenteredPageContentLayout.Apply(
+            e.Page,
+            options.IsCenterContentEnabled ? options.CenterContentWidth : null
+        );
+
         fontService.ApplyToPage(e.Page, e.SourcePageType);
         UpdateTitlebarBreadcrumbNavigation();
         BuildToolbarItems(e.SourcePageType);
@@ -2924,6 +2930,27 @@ internal partial class FlourishShellWindow : Window
             pageTransition,
             new PageTransitionTarget(PageTransitionContentHost)
         );
+    }
+
+    private void ApplyContentLayoutOptions()
+    {
+        var maximumWidth = options.IsCenterContentEnabled
+            ? options.CenterContentWidth
+            : double.PositiveInfinity;
+
+        foreach (
+            var host in new FrameworkElement[]
+            {
+                ContentHeaderRegionHost,
+                ToolbarLayoutHost,
+                BreadcrumbLayoutHost,
+                ContentFooterRegionHost,
+            }
+        )
+        {
+            host.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            host.MaxWidth = maximumWidth;
+        }
     }
 
     private void UpdateBreadcrumb(Type sourcePageType)

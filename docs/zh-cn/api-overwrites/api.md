@@ -849,6 +849,19 @@ syntax:
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseCenterContent(System.Boolean,System.Double)
+summary: 配置导航页面内容是否在宽视口中按最大宽度居中显示。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示是否启用导航页面内容的最大宽度限制与居中布局。
+  - id: contentWidth
+    description: 导航页面内容的最大宽度，以设备无关像素为单位。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseDynamicToolbar(System.Boolean)
 summary: 启用或禁用动态工具栏区域。
 syntax:

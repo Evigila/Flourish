@@ -13,6 +13,7 @@ builder.ConfigureShell(shell =>
     shell
         .UseTitleBar()
         .UseNavigation()
+        .UseCenterContent(true, 1200)
         .UseDynamicToolbar()
         .UseTips(delay: 200)
         .UseMotion()
@@ -32,6 +33,7 @@ builder.ConfigureNavigation(navigation =>
 | --- | --- | --- |
 | `UseTitleBar` | 启用 Flourish 标题栏；禁用后使用 Windows 原生标题栏。 | [标题栏](configure-title-bar.md) |
 | `UseNavigation` | 启用导航栏。 | [导航](navigation.md) |
+| `UseCenterContent` | 在宽视口中限制导航页面内容宽度并将其居中。 | [内容对齐](#自定义内容对齐) |
 | `UseDynamicToolbar` | 启用页面专属工具栏内容。 | [动态工具栏](dynamic-toolbar.md) |
 | `UseTips` | 设置首次显示延迟并启用 Flourish 提示浮层。 | [提示浮层](configure-tips.md) |
 | `UseMotion` | 启用已配置的过渡和动画。 | [动效](configure-motion.md) |
@@ -59,15 +61,22 @@ builder.ConfigureNavigation(navigation =>
 <Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
 ```
 
+使用 `UseCenterContent(true, contentWidth)` 可以为导航页面内容设置以设备无关像素为单位的最大宽度。当可用内容区宽于 `contentWidth` 时，Flourish 会将页面内容保持在该宽度并居中显示。较窄的内容区仍会使用全部可用宽度，最大化窗口也不会解除已配置的限制。
+
+页面的根滚动视图始终保持全宽。垂直滚动条会停留在内容区最右侧，不会移动到居中内容的旁边。
+
+未调用 `UseCenterContent`，或将其 `enabled` 参数设为 `false` 时，导航页面内容不受最大宽度限制，会铺满全部可用宽度。
+
 ## 禁用功能
 
-`UseTitleBar`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接受可选的 `enabled` 值。共用 builder 设置需要禁用某项功能时，传入 `false`。
+`UseTitleBar`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接受可选的 `enabled` 值。`UseCenterContent` 要求同时传入 `enabled` 与 `contentWidth`；共用 builder 设置需要禁用页面内容居中时，传入 `false` 和已配置的宽度。
 
 ```csharp
 builder.ConfigureShell(shell =>
 {
     shell
         .UseNavigation(showNavigation)
+        .UseCenterContent(useCenteredPages, 1200)
         .UseMotion(!useStaticInterface)
         .UseStatusBar(showStatusBar);
 });
