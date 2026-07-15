@@ -7,26 +7,31 @@
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:Chunk
-        ChunkDescription="Submit work after startup, observe immutable progress snapshots, request cooperative cancellation, and await captured outcomes without crashing the host."
-        ChunkTitle="Background tasks"
+      <flourish:ChunkHero
+        ChunkHeroDescription="Queue, observe, cancel, and inspect background work."
+        ChunkHeroTitle="Background tasks"
       />
 
       <flourish:Chunk
-        ChunkDescription="Progress tasks report twenty updates. Result tasks return a value. A burst demonstrates the service's bounded concurrency."
+        ChunkDescription="Submit several forms of runtime work."
         ChunkTitle="Queue runtime work"
       >
-        <flourish:Card>
-          <StackPanel>
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,8" Click="AddProgressTask_Click" Content="Add progress task" />
-            <flourish:Button Margin="0,0,8,8" Click="AddResultTask_Click" Content="Add result task" />
-            <flourish:Button Margin="0,0,8,8" Click="AddBurst_Click" Content="Queue 4 tasks" />
-            <flourish:Button Margin="0,0,8,8" Click="CancelLast_Click" Content="Cancel last" />
-            <flourish:Button Margin="0,0,8,8" Click="CancelSelected_Click" Content="Cancel selected" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="ServiceStatusText" Margin="0,6,0,0" Role="Status" />
-          </StackPanel>
+        <flourish:Card
+          Title="Task controls"
+          Text="Progress tasks report updates, result tasks return a value, and a burst demonstrates bounded concurrency."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <WrapPanel>
+              <flourish:Button Margin="0,0,8,8" Click="AddProgressTask_Click" Content="Add progress task" />
+              <flourish:Button Margin="0,0,8,8" Click="AddResultTask_Click" Content="Add result task" />
+              <flourish:Button Margin="0,0,8,8" Click="AddBurst_Click" Content="Queue 4 tasks" />
+              <flourish:Button Margin="0,0,8,8" Click="CancelLast_Click" Content="Cancel last" />
+              <flourish:Button Margin="0,0,8,8" Click="CancelSelected_Click" Content="Cancel selected" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="ServiceStatusText" Margin="0,6,0,0" Role="Status" />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
@@ -38,21 +43,31 @@
         </Grid.ColumnDefinitions>
 
         <flourish:Chunk
-          ChunkDescription="Queued, running, and cancelling items update through TasksChanged."
+          ChunkDescription="Observe the current task queue."
           ChunkTitle="Active queue"
         >
-          <flourish:Card>
-            <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+          <flourish:Card
+            Title="Live tasks"
+            Text="Queued, running, and cancelling items update through TasksChanged."
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+            </flourish:Card.Body>
           </flourish:Card>
         </flourish:Chunk>
 
         <flourish:Chunk
           Grid.Column="2"
-          ChunkDescription="Completion never faults; failures and cancellation are represented in the result object."
+          ChunkDescription="Inspect completed task results."
           ChunkTitle="Captured outcomes"
         >
-          <flourish:Card>
-            <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+          <flourish:Card
+            Title="Recent outcomes"
+            Text="Completion never faults; failures and cancellation are represented in the result object."
+          >
+            <flourish:Card.Body>
+              <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+            </flourish:Card.Body>
           </flourish:Card>
         </flourish:Chunk>
       </Grid>

@@ -1,14 +1,14 @@
 ---
 title: Card
-description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组织信息，并按需加入视觉展示内容。
+description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组织信息，并按需加入 Body 与视觉展示内容。
 ---
 
 # Card
 
-`Card` 是用于组织相关信息的非交互式表面。它内置标题和辅助文本区域，也可以承载任意 WPF 内容，并会随当前 Flourish 主题调整颜色。
+`Card` 是用于组织单一主题相关信息的非交互式表面。它内置标题、辅助文本和 Body 区域，并会随当前 Flourish 主题调整颜色。
 
 > [!IMPORTANT]
-> 如果点击表面任意位置都会执行同一个操作，请改用 `CardButton`。不要给 `Card` 添加鼠标事件来模拟按钮行为。
+> 如果点击表面任意位置都会执行同一个操作，请改用 `CardButton`。不要给 `Card` 或 `IconCard` 添加鼠标事件来模拟按钮行为。
 
 ## 基本用法
 
@@ -20,19 +20,22 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
   Text="工作区已完成同步。" />
 ```
 
-`Card` 派生自 `ContentControl`，因此还可以承载一个任意内容树。需要多个子元素时，使用 `Grid`、`StackPanel` 或其他布局容器作为根。
+使用 `Body` 放置细节、状态、控件或其他组合 WPF 内容树。需要多个子元素时，使用 `Grid`、`StackPanel` 或其他布局容器作为根。
 
 ```xml
 <flourish:Card
   Title="存储空间"
   Text="管理与当前工作区关联的文件。">
-  <StackPanel Margin="0,12,0,0">
-    <ProgressBar Maximum="100" Value="64" />
-    <flourish:Button
-      Margin="0,12,0,0"
-      HorizontalAlignment="Left"
-      Content="查看文件" />
-  </StackPanel>
+  <flourish:Card.Body>
+    <StackPanel Margin="0,12,0,0">
+      <ProgressBar Maximum="100" Value="64" />
+      <flourish:Button
+        Margin="0,12,0,0"
+        HorizontalAlignment="Left"
+        Command="{Binding ReviewFilesCommand}"
+        Content="查看文件" />
+    </StackPanel>
+  </flourish:Card.Body>
 </flourish:Card>
 ```
 
@@ -40,18 +43,16 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
 
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
-| `Variant` | `CardVariant` | `Standard` | 选择具有语义的表面样式。 |
+| `Variant` | `Variant` | `Standard` | 选择具有语义的表面样式。 |
 | `Title` | `string` | `""` | 卡片标题。 |
 | `Text` | `string` | `""` | 与标题一同显示的可选辅助文本。 |
-| `ContentHorizontalAlignment` | `HorizontalAlignment` | `Stretch` | 控制内置 `Title` 与 `Text` 区域的水平位置。 |
-| `ContentVerticalAlignment` | `VerticalAlignment` | `Stretch` | 控制内置 `Title` 与 `Text` 区域的垂直位置。 |
-| `Content` | 继承的 `object?` | `null` | 可选的任意 WPF 内容树。 |
-| `HorizontalContentAlignment` | 继承的 `HorizontalAlignment` | `Stretch` | 控制任意 `Content` 的水平位置，不影响 `Title` 或 `Text`。 |
-| `VerticalContentAlignment` | 继承的 `VerticalAlignment` | `Stretch` | 控制任意 `Content` 的垂直位置，不影响 `Title` 或 `Text`。 |
+| `Body` | `object?` | `null` | 可选的细节、控件、状态或其他 WPF 内容树。 |
+| `ContentHorizontalAlignment` | `HorizontalAlignment` | `Stretch` | 控制文字与 Body 组合的水平对齐；与垂直居中一起使用时，会将整个组合居中。 |
+| `ContentVerticalAlignment` | `VerticalAlignment` | `Stretch` | 控制文字与 Body 的排列：`Top` 或 `Stretch` 保持文字在 Body 上方，`Bottom` 则将 Body 放到文字上方。 |
 
 ## 变种
 
-`CardVariant` 有四种取值：
+`Variant` 有四种取值：
 
 | 变种 | 用途 |
 | --- | --- |
@@ -69,7 +70,7 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
 </UniformGrid>
 ```
 
-`Filled` 与 `Button` 使用同一套主要填充颜色。需要其他填充色时设置本地 `Background`；本地值的优先级高于变种默认值。如果替换色也需要适配亮色与暗色主题，请使用动态主题资源。
+`Filled` 与 `Button` 使用同一套主要填充颜色。需要其他填充色时设置本地 `Background`；本地值的优先级高于变种默认值。替换时应成对使用动态背景与前景主题资源，保证两种主题下都清晰可读。
 
 ```xml
 <flourish:Card
@@ -80,22 +81,32 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
   Text="此替换颜色会跟随当前主题。" />
 ```
 
-## 对齐文字区域
+## 排列文字与 Body
 
-`ContentHorizontalAlignment` 与 `ContentVerticalAlignment` 将内置标题和文本作为一个整体定位，不会改变展示内容或任意 `Content` 的位置。
+内置文字区由 `Title` 和 `Text` 组成。`ContentHorizontalAlignment` 与 `ContentVerticalAlignment` 负责组织文字区和 `Body`；Card 本身在页面中的位置仍由父级布局控制。
+
+| 设置 | 排列 |
+| --- | --- |
+| 默认、`Top` 或 `Stretch` 垂直对齐 | 文字区在 `Body` 上方。 |
+| `ContentVerticalAlignment="Bottom"` | `Body` 在文字区上方。 |
+| 两个内容对齐属性都为 `Center` | 文字区和 `Body` 作为一个组合居中。 |
 
 ```xml
 <flourish:Card
-  MinHeight="160"
+  MinHeight="180"
   ContentHorizontalAlignment="Center"
   ContentVerticalAlignment="Center"
-  Title="居中文字"
-  Text="标题和文本始终属于同一个对齐区域。" />
+  Title="居中状态"
+  Text="文字区与 Body 会作为整体居中。">
+  <flourish:Card.Body>
+    <ProgressBar Width="160" Maximum="100" Value="64" />
+  </flourish:Card.Body>
+</flourish:Card>
 ```
 
 ## IconCard
 
-`IconCard` 与 `Card` 具有相同的标题、文本、内容、对齐和变种约定，并通过 `Presenter` 承载图标、图片、插图或其他任意 WPF 内容。
+`IconCard` 与 Card 具有相同的标题、文本、Body、对齐和变种约定。它的 `Presenter` 可以承载图标、图片、插图、预览或其他任意 WPF 视觉内容；控件仍然是非交互式表面。
 
 ```xml
 <flourish:IconCard
@@ -105,10 +116,14 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
   Text="查看生成的报告与最近导出。">
   <flourish:IconCard.Presenter>
     <TextBlock
+      AutomationProperties.Name="报告"
       FontFamily="Segoe Fluent Icons"
       FontSize="32"
       Text="&#xE8A5;" />
   </flourish:IconCard.Presenter>
+  <flourish:IconCard.Body>
+    <TextBlock Text="已有 12 份报告就绪。" />
+  </flourish:IconCard.Body>
 </flourish:IconCard>
 ```
 
@@ -116,26 +131,26 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
 
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
-| `Presenter` | `object?` | `null` | 图标、图片、插图或其他视觉内容。 |
+| `Presenter` | `object?` | `null` | 图标、图片、插图、预览或其他视觉内容。 |
 | `PresenterMode` | `PresenterMode` | `Split` | 选择独立展示区域或铺满卡片的叠加模式。 |
-| `PresenterPosition` | `PresenterPosition` | `Left` | 在 `Split` 模式下设置 `Presenter` 的位置；在 `Overlay` 模式下无效。 |
+| `PresenterPosition` | `PresenterPosition` | `Left` | 在 `Split` 模式下设置 Presenter 位置；在 `Overlay` 模式下无效。 |
 
-在 `Split` 模式下，`PresenterPosition` 始终描述展示内容的位置；标题、文本和内容位于相对方向。
+在 `Split` 模式下，`PresenterPosition` 始终描述 Presenter 的位置；文字区与 `Body` 一起位于对立侧。
 
-| 位置 | 展示内容位置 |
-| --- | --- |
-| `Left` | 位于左侧并垂直居中。 |
-| `LeftTop` | 位于左上侧。 |
-| `LeftBottom` | 位于左下侧。 |
-| `Top` | 位于顶部并水平居中。 |
-| `Bottom` | 位于底部并水平居中。 |
-| `Right` | 位于右侧并垂直居中。 |
-| `RightTop` | 位于右上侧。 |
-| `RightBottom` | 位于右下侧。 |
+| 位置 | Presenter 位置 | 文字区与 Body |
+| --- | --- | --- |
+| `Left` | 位于左侧并垂直居中。 | 位于对立侧，纵向排列。 |
+| `LeftTop` | 位于左上侧。 | 位于右下侧，纵向排列。 |
+| `LeftBottom` | 位于左下侧。 | 位于右上侧，纵向排列。 |
+| `Top` | 位于顶部并水平居中。 | 位于下方，水平排列。 |
+| `Bottom` | 位于底部并水平居中。 | 位于上方，水平排列。 |
+| `Right` | 位于右侧并垂直居中。 | 位于对立侧，纵向排列。 |
+| `RightTop` | 位于右上侧。 | 位于左下侧，纵向排列。 |
+| `RightBottom` | 位于右下侧。 | 位于左上侧，纵向排列。 |
 
 ## 叠加展示内容
 
-在 `Overlay` 模式下，`Presenter` 铺满卡片并保持居中，标题、文本和内容显示在其上方；`PresenterPosition` 不产生作用。请选用或组合能在两种主题下保持叠加文字可读的展示内容。
+`Overlay` 模式下，`Presenter` 铺满卡片，文字区与 `Body` 显示在其上方。此时 `PresenterPosition` 不产生作用，文字与 Body 使用普通 Card 的纵向排列。请选择或组合能在两种主题下保持所有叠加内容可读的 Presenter。
 
 ```xml
 <flourish:IconCard
@@ -146,11 +161,15 @@ description: 使用 Card 与 IconCard 在适配主题的非交互式表面上组
   <flourish:IconCard.Presenter>
     <Image Source="Assets/project-preview.png" Stretch="UniformToFill" />
   </flourish:IconCard.Presenter>
+  <flourish:IconCard.Body>
+    <TextBlock Text="更新于今天" />
+  </flourish:IconCard.Body>
 </flourish:IconCard>
 ```
 
 ## 相关内容
 
-- [Chunk](chunk.md)说明如何将卡片放入页面章节。
-- [Button](button.md)说明何时应当将信息表面改为可交互的 `CardButton`。
-- [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant)、[Card API](xref:ArkheideSystem.Flourish.Controls.Card)、[IconCard API](xref:ArkheideSystem.Flourish.Controls.IconCard)、[PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode) 与 [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition)列出完整成员。
+- [理念](../conception/index.md) 定义卡片如何参与一致的页面层级。
+- [Chunk](chunk.md) 说明如何将卡片放入页面章节。
+- [Button](button.md) 说明何时应当将信息表面改为可交互的 `CardButton`。
+- [Variant API](xref:ArkheideSystem.Flourish.Controls.Variant)、[Card API](xref:ArkheideSystem.Flourish.Controls.Card)、[IconCard API](xref:ArkheideSystem.Flourish.Controls.IconCard)、[PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode) 与 [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) 列出完整成员。

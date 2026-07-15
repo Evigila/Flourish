@@ -1,18 +1,18 @@
 ---
 title: Card
-description: Use Card and IconCard to group information on themed, non-interactive surfaces with optional visual presenters.
+description: Use Card and IconCard to group information on themed, non-interactive surfaces with optional body and presenter content.
 ---
 
 # Card
 
-`Card` is a non-interactive surface for grouping related information. It provides built-in title and supporting-text regions, can host arbitrary WPF content, and adapts its colors to the active Flourish theme.
+`Card` is a non-interactive surface for grouping one subject's related information. It provides built-in title, supporting text, and body regions and adapts its colors to the active Flourish theme.
 
 > [!IMPORTANT]
-> Use `CardButton` instead when clicking anywhere on the surface performs one action. Do not add mouse handlers to `Card` to reproduce button behavior.
+> Use `CardButton` when clicking anywhere on the surface performs one action. Do not add mouse handlers to `Card` or `IconCard` to reproduce button behavior.
 
 ## Basic usage
 
-Set `Title` and `Text` for ordinary informational cards. There is no need to construct text blocks for these two roles.
+Set `Title` and `Text` for an ordinary informational card. There is no need to construct text blocks for these roles.
 
 ```xml
 <flourish:Card
@@ -20,19 +20,22 @@ Set `Title` and `Text` for ordinary informational cards. There is no need to con
   Text="Your workspace is synchronized." />
 ```
 
-`Card` derives from `ContentControl`, so it can also host one arbitrary content tree. Wrap multiple children in a `Grid`, `StackPanel`, or another layout container.
+Use `Body` for details, status, controls, or another composed WPF content tree. Wrap multiple children in a `Grid`, `StackPanel`, or another layout container.
 
 ```xml
 <flourish:Card
   Title="Storage"
   Text="Manage files associated with this workspace.">
-  <StackPanel Margin="0,12,0,0">
-    <ProgressBar Maximum="100" Value="64" />
-    <flourish:Button
-      Margin="0,12,0,0"
-      HorizontalAlignment="Left"
-      Content="Review files" />
-  </StackPanel>
+  <flourish:Card.Body>
+    <StackPanel Margin="0,12,0,0">
+      <ProgressBar Maximum="100" Value="64" />
+      <flourish:Button
+        Margin="0,12,0,0"
+        HorizontalAlignment="Left"
+        Command="{Binding ReviewFilesCommand}"
+        Content="Review files" />
+    </StackPanel>
+  </flourish:Card.Body>
 </flourish:Card>
 ```
 
@@ -40,18 +43,16 @@ Set `Title` and `Text` for ordinary informational cards. There is no need to con
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `Variant` | `CardVariant` | `Standard` | Selects the semantic surface treatment. |
+| `Variant` | `Variant` | `Standard` | Selects the semantic surface treatment. |
 | `Title` | `string` | `""` | The card heading. |
 | `Text` | `string` | `""` | Optional supporting text displayed with the title. |
-| `ContentHorizontalAlignment` | `HorizontalAlignment` | `Stretch` | Horizontally positions the built-in `Title` and `Text` region. |
-| `ContentVerticalAlignment` | `VerticalAlignment` | `Stretch` | Vertically positions the built-in `Title` and `Text` region. |
-| `Content` | inherited `object?` | `null` | An optional arbitrary WPF content tree. |
-| `HorizontalContentAlignment` | inherited `HorizontalAlignment` | `Stretch` | Horizontally positions arbitrary `Content`; it does not position `Title` or `Text`. |
-| `VerticalContentAlignment` | inherited `VerticalAlignment` | `Stretch` | Vertically positions arbitrary `Content`; it does not position `Title` or `Text`. |
+| `Body` | `object?` | `null` | Optional details, controls, status, or another WPF content tree. |
+| `ContentHorizontalAlignment` | `HorizontalAlignment` | `Stretch` | Controls horizontal alignment within the copy-and-body composition. Together with `Center` vertical alignment, it centers that composition as one unit. |
+| `ContentVerticalAlignment` | `VerticalAlignment` | `Stretch` | Controls the copy/body arrangement: `Top` or `Stretch` keeps copy above Body, while `Bottom` places Body above copy. |
 
 ## Variants
 
-`CardVariant` has four values:
+`Variant` has four values:
 
 | Variant | Use |
 | --- | --- |
@@ -69,7 +70,7 @@ Set `Title` and `Text` for ordinary informational cards. There is no need to con
 </UniformGrid>
 ```
 
-`Filled` uses the same primary filled color family as `Button`. Set a local `Background` when another fill is required. A local value takes precedence over the variant default; use a dynamic theme resource if the replacement must adapt to light and dark themes.
+`Filled` uses the same primary filled color family as `Button`. Set a local `Background` when another fill is required. A local value takes precedence over the variant default; use paired dynamic theme resources for background and foreground so the replacement remains readable in both themes.
 
 ```xml
 <flourish:Card
@@ -80,22 +81,32 @@ Set `Title` and `Text` for ordinary informational cards. There is no need to con
   Text="This replacement follows the active theme." />
 ```
 
-## Align the copy region
+## Arrange copy and Body
 
-`ContentHorizontalAlignment` and `ContentVerticalAlignment` position the built-in title and text together. They do not change the presenter or arbitrary `Content`.
+The built-in copy consists of `Title` and `Text`. `ContentHorizontalAlignment` and `ContentVerticalAlignment` organize that copy with `Body`; the parent layout still controls where the card itself is placed.
+
+| Settings | Arrangement |
+| --- | --- |
+| Default, `Top`, or `Stretch` vertical alignment | Copy is above `Body`. |
+| `ContentVerticalAlignment="Bottom"` | `Body` is above the copy. |
+| Both content alignments set to `Center` | Copy and `Body` are centered as one composition. |
 
 ```xml
 <flourish:Card
-  MinHeight="160"
+  MinHeight="180"
   ContentHorizontalAlignment="Center"
   ContentVerticalAlignment="Center"
-  Title="Centered copy"
-  Text="The title and text remain one aligned region." />
+  Title="Centered status"
+  Text="Copy and body are centered together.">
+  <flourish:Card.Body>
+    <ProgressBar Width="160" Maximum="100" Value="64" />
+  </flourish:Card.Body>
+</flourish:Card>
 ```
 
 ## IconCard
 
-`IconCard` has the same title, text, content, alignment, and variant contract as `Card`. Its `Presenter` can hold an icon, an image, an illustration, or any other WPF content.
+`IconCard` shares Card's title, text, body, alignment, and variant contract. Its `Presenter` can hold an icon, image, illustration, preview, or any other WPF visual content. It remains non-interactive.
 
 ```xml
 <flourish:IconCard
@@ -105,10 +116,14 @@ Set `Title` and `Text` for ordinary informational cards. There is no need to con
   Text="Review generated reports and recent exports.">
   <flourish:IconCard.Presenter>
     <TextBlock
+      AutomationProperties.Name="Reports"
       FontFamily="Segoe Fluent Icons"
       FontSize="32"
       Text="&#xE8A5;" />
   </flourish:IconCard.Presenter>
+  <flourish:IconCard.Body>
+    <TextBlock Text="12 reports are ready." />
+  </flourish:IconCard.Body>
 </flourish:IconCard>
 ```
 
@@ -116,26 +131,26 @@ Set `Title` and `Text` for ordinary informational cards. There is no need to con
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `Presenter` | `object?` | `null` | The icon, image, illustration, or other visual content. |
+| `Presenter` | `object?` | `null` | The icon, image, illustration, preview, or other visual content. |
 | `PresenterMode` | `PresenterMode` | `Split` | Selects a separate presenter region or a full-card overlay. |
 | `PresenterPosition` | `PresenterPosition` | `Left` | Locates `Presenter` in `Split` mode. It is ignored in `Overlay` mode. |
 
-In `Split` mode, `PresenterPosition` always describes the presenter location. The title, text, and content are arranged on the opposing side.
+In `Split` mode, `PresenterPosition` always describes the presenter's location. Copy and `Body` remain together on the opposing side.
 
-| Position | Presenter placement |
-| --- | --- |
-| `Left` | Centered along the left side. |
-| `LeftTop` | At the upper-left side. |
-| `LeftBottom` | At the lower-left side. |
-| `Top` | Centered along the top. |
-| `Bottom` | Centered along the bottom. |
-| `Right` | Centered along the right side. |
-| `RightTop` | At the upper-right side. |
-| `RightBottom` | At the lower-right side. |
+| Position | Presenter placement | Copy and Body |
+| --- | --- | --- |
+| `Left` | Centered along the left side. | Opposing side, arranged vertically. |
+| `LeftTop` | At the upper-left side. | Opposing lower-right side, arranged vertically. |
+| `LeftBottom` | At the lower-left side. | Opposing upper-right side, arranged vertically. |
+| `Top` | Centered along the top. | Opposing bottom side, arranged horizontally. |
+| `Bottom` | Centered along the bottom. | Opposing top side, arranged horizontally. |
+| `Right` | Centered along the right side. | Opposing side, arranged vertically. |
+| `RightTop` | At the upper-right side. | Opposing lower-left side, arranged vertically. |
+| `RightBottom` | At the lower-right side. | Opposing upper-left side, arranged vertically. |
 
 ## Overlay presenters
 
-In `Overlay` mode, `Presenter` fills the card and remains centered while the title, text, and content are rendered above it. `PresenterPosition` has no effect. Choose or compose a presenter that keeps the overlaid copy readable in both themes.
+In `Overlay` mode, `Presenter` fills the card while copy and `Body` are rendered above it. `PresenterPosition` has no effect, and copy/Body use the same vertical arrangement as an ordinary Card. Choose or compose a presenter that keeps all overlaid content readable in both themes.
 
 ```xml
 <flourish:IconCard
@@ -146,11 +161,15 @@ In `Overlay` mode, `Presenter` fills the card and remains centered while the tit
   <flourish:IconCard.Presenter>
     <Image Source="Assets/project-preview.png" Stretch="UniformToFill" />
   </flourish:IconCard.Presenter>
+  <flourish:IconCard.Body>
+    <TextBlock Text="Updated today" />
+  </flourish:IconCard.Body>
 </flourish:IconCard>
 ```
 
 ## Related content
 
-- [Chunk](chunk.md) explains how cards participate in page sections.
+- [Conception](../conception/index.md) defines how cards participate in a consistent page hierarchy.
+- [Chunk](chunk.md) explains how to place cards in page sections.
 - [Button](button.md) explains when an information surface should instead be an interactive `CardButton`.
-- The [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [IconCard API](xref:ArkheideSystem.Flourish.Controls.IconCard), [PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode), and [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) list all members.
+- The [Variant API](xref:ArkheideSystem.Flourish.Controls.Variant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [IconCard API](xref:ArkheideSystem.Flourish.Controls.IconCard), [PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode), and [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) list all members.

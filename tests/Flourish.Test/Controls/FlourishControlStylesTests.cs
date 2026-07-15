@@ -711,11 +711,9 @@ public sealed class FlourishControlStylesTests
                 Height = 180,
                 Title = "Aligned",
                 Text = "Copy",
-                Content = alignedContent,
+                Body = alignedContent,
                 ContentHorizontalAlignment = HorizontalAlignment.Right,
                 ContentVerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalContentAlignment = HorizontalAlignment.Left,
-                VerticalContentAlignment = VerticalAlignment.Top,
             };
             var window = CreateWindow(
                 new StackPanel
@@ -767,7 +765,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Same(customBrush, customFilled.Background);
                 Assert.Equal(
                     HorizontalAlignment.Stretch,
-                    AssertTemplatePart<StackPanel>(standard, "CopyHost")
+                    AssertTemplatePart<Grid>(standard, "BuiltInContentHost")
                         .HorizontalAlignment
                 );
                 Assert.Equal(
@@ -780,15 +778,109 @@ public sealed class FlourishControlStylesTests
                 );
                 aligned.ApplyTemplate();
                 var copyHost = AssertTemplatePart<StackPanel>(aligned, "CopyHost");
-                var contentHost = AssertTemplatePart<ContentPresenter>(
+                var bodyHost = AssertTemplatePart<ContentPresenter>(
                     aligned,
-                    "ContentHost"
+                    "BodyHost"
                 );
-                Assert.Equal(HorizontalAlignment.Right, copyHost.HorizontalAlignment);
-                Assert.Equal(VerticalAlignment.Bottom, copyHost.VerticalAlignment);
-                Assert.Equal(HorizontalAlignment.Left, contentHost.HorizontalAlignment);
-                Assert.Equal(VerticalAlignment.Top, contentHost.VerticalAlignment);
-                Assert.Same(alignedContent, contentHost.Content);
+                var contentGroup = AssertTemplatePart<Grid>(aligned, "BuiltInContentHost");
+                Assert.Equal(HorizontalAlignment.Right, contentGroup.HorizontalAlignment);
+                Assert.Equal(VerticalAlignment.Bottom, contentGroup.VerticalAlignment);
+                Assert.Equal(1, Grid.GetRow(copyHost));
+                Assert.Equal(0, Grid.GetRow(bodyHost));
+                Assert.Same(alignedContent, bodyHost.Content);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Card_ArrangesBodyAroundCopyAndCentersTheCombinedGroup()
+    {
+        RunInSta(() =>
+        {
+            var top = new Card
+            {
+                Width = 320,
+                Height = 180,
+                Title = "Top copy",
+                Text = "Description",
+                Body = new Border { Width = 80, Height = 24 },
+                ContentHorizontalAlignment = HorizontalAlignment.Left,
+                ContentVerticalAlignment = VerticalAlignment.Top,
+            };
+            var bottom = new Card
+            {
+                Width = 320,
+                Height = 180,
+                Title = "Bottom copy",
+                Body = new Border { Width = 80, Height = 24 },
+                ContentHorizontalAlignment = HorizontalAlignment.Right,
+                ContentVerticalAlignment = VerticalAlignment.Bottom,
+            };
+            var centered = new Card
+            {
+                Width = 320,
+                Height = 180,
+                Title = "Centered copy",
+                Body = new Border { Width = 80, Height = 24 },
+                ContentHorizontalAlignment = HorizontalAlignment.Center,
+                ContentVerticalAlignment = VerticalAlignment.Center,
+            };
+            var emptyBody = new Card { Title = "No body" };
+            var window = CreateWindow(
+                new StackPanel { Children = { top, bottom, centered, emptyBody } }
+            );
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var card in new[] { top, bottom, centered, emptyBody })
+                {
+                    card.ApplyTemplate();
+                }
+
+                var topCopy = AssertTemplatePart<StackPanel>(top, "CopyHost");
+                var topBody = AssertTemplatePart<ContentPresenter>(top, "BodyHost");
+                Assert.Equal(0, Grid.GetRow(topCopy));
+                Assert.Equal(1, Grid.GetRow(topBody));
+
+                var bottomCopy = AssertTemplatePart<StackPanel>(bottom, "CopyHost");
+                var bottomBody = AssertTemplatePart<ContentPresenter>(bottom, "BodyHost");
+                Assert.Equal(1, Grid.GetRow(bottomCopy));
+                Assert.Equal(0, Grid.GetRow(bottomBody));
+
+                var centeredGroup = AssertTemplatePart<Grid>(
+                    centered,
+                    "BuiltInContentHost"
+                );
+                Assert.Equal(HorizontalAlignment.Center, centeredGroup.HorizontalAlignment);
+                Assert.Equal(VerticalAlignment.Center, centeredGroup.VerticalAlignment);
+                Assert.Equal(
+                    centered.ActualWidth / 2,
+                    centeredGroup.TranslatePoint(
+                        new Point(centeredGroup.ActualWidth / 2, 0),
+                        centered
+                    ).X,
+                    3
+                );
+                Assert.Equal(
+                    centered.ActualHeight / 2,
+                    centeredGroup.TranslatePoint(
+                        new Point(0, centeredGroup.ActualHeight / 2),
+                        centered
+                    ).Y,
+                    3
+                );
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<ContentPresenter>(emptyBody, "BodyHost")
+                        .Visibility
+                );
             }
             finally
             {
@@ -826,6 +918,7 @@ public sealed class FlourishControlStylesTests
                         PresenterPosition = position,
                         Title = "Title",
                         Text = "Description",
+                        Body = new Border(),
                     }
                 )
                 .ToArray();
@@ -837,6 +930,7 @@ public sealed class FlourishControlStylesTests
                 PresenterMode = PresenterMode.Overlay,
                 PresenterPosition = PresenterPosition.Left,
                 Title = "Overlay",
+                Body = new Border(),
             };
             var overlayRightBottom = new IconCard
             {
@@ -846,6 +940,7 @@ public sealed class FlourishControlStylesTests
                 PresenterMode = PresenterMode.Overlay,
                 PresenterPosition = PresenterPosition.RightBottom,
                 Title = "Overlay",
+                Body = new Border(),
             };
             var presenterlessSplit = new IconCard
             {
@@ -896,6 +991,26 @@ public sealed class FlourishControlStylesTests
                     Assert.Equal(expectation.PresenterColumn, Grid.GetColumn(presenter));
                     Assert.Equal(expectation.TextRow, Grid.GetRow(text));
                     Assert.Equal(expectation.TextColumn, Grid.GetColumn(text));
+
+                    var copy = AssertTemplatePart<StackPanel>(card, "CopyHost");
+                    var body = AssertTemplatePart<ContentPresenter>(card, "BodyHost");
+                    if (
+                        card.PresenterPosition
+                        is PresenterPosition.Top or PresenterPosition.Bottom
+                    )
+                    {
+                        Assert.Equal(0, Grid.GetRow(copy));
+                        Assert.Equal(0, Grid.GetRow(body));
+                        Assert.Equal(0, Grid.GetColumn(copy));
+                        Assert.Equal(1, Grid.GetColumn(body));
+                    }
+                    else
+                    {
+                        Assert.Equal(0, Grid.GetRow(copy));
+                        Assert.Equal(1, Grid.GetRow(body));
+                        Assert.Equal(0, Grid.GetColumn(copy));
+                        Assert.Equal(0, Grid.GetColumn(body));
+                    }
                 }
 
                 foreach (var overlay in new[] { overlayLeft, overlayRightBottom })
@@ -920,6 +1035,35 @@ public sealed class FlourishControlStylesTests
                     Assert.Equal(0, Grid.GetColumn(text));
                     Assert.Equal(3, Grid.GetColumnSpan(text));
                     Assert.Equal(Visibility.Visible, scrim.Visibility);
+                    Assert.Equal(
+                        0,
+                        Grid.GetRow(AssertTemplatePart<StackPanel>(overlay, "CopyHost"))
+                    );
+                    Assert.Equal(
+                        1,
+                        Grid.GetRow(
+                            AssertTemplatePart<ContentPresenter>(overlay, "BodyHost")
+                        )
+                    );
+
+                    var clipHost = AssertTemplatePart<Grid>(overlay, "PART_ClipHost");
+                    var surface = AssertTemplatePart<Border>(
+                        overlay,
+                        "PART_SurfaceChrome"
+                    );
+                    var clip = Assert.IsType<StreamGeometry>(clipHost.Clip);
+                    Assert.True(surface.CornerRadius.TopLeft > 0);
+                    Assert.Equal(clipHost.RenderSize.Width, clip.Bounds.Width, 3);
+                    Assert.Equal(clipHost.RenderSize.Height, clip.Bounds.Height, 3);
+                    Assert.False(clip.FillContains(new Point(0, 0)));
+                    Assert.True(
+                        clip.FillContains(
+                            new Point(
+                                surface.CornerRadius.TopLeft,
+                                surface.CornerRadius.TopLeft
+                            )
+                        )
+                    );
                 }
 
                 foreach (
@@ -953,7 +1097,7 @@ public sealed class FlourishControlStylesTests
                     Assert.Same(presenterless.Foreground, title.Foreground);
                     Assert.Equal(
                         presenterless.Padding,
-                        AssertTemplatePart<Grid>(presenterless, "LayoutRoot").Margin
+                        AssertTemplatePart<Grid>(presenterless, "PART_ClipHost").Margin
                     );
                 }
             }

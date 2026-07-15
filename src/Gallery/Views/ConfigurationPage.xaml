@@ -7,106 +7,126 @@
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:Chunk
-        ChunkDescription="Read the effective host configuration, update appsettings.json atomically, trigger reloads, and change the active Flourish locale while the app stays open."
-        ChunkTitle="Configuration &amp; localization"
+      <flourish:ChunkHero
+        ChunkHeroDescription="Edit configuration and localization while the app runs."
+        ChunkHeroTitle="Configuration &amp; localization"
       />
 
       <flourish:Chunk
-        ChunkDescription="The configuration service exposes the merged value from every registered provider."
+        ChunkDescription="Read values from the active provider chain."
         ChunkTitle="Effective configuration"
       >
-        <flourish:Card>
-          <StackPanel>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <flourish:FlourishTextBox x:Name="ReadKeyBox" Text="Flourish:Preferences:Theme" />
-            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" />
-            <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" />
-          </Grid>
-          <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Role="Status" Text="No value read yet." />
-          <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Role="Description" />
-          </StackPanel>
+        <flourish:Card
+          Title="Merged value"
+          Text="The configuration service exposes the effective value from every registered provider."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <flourish:FlourishTextBox x:Name="ReadKeyBox" Text="Flourish:Preferences:Theme" />
+              <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ReadValue_Click" Content="Read value" />
+              <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="Reload_Click" Content="Reload providers" />
+            </Grid>
+            <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Role="Status" Text="No value read yet." />
+            <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Role="Description" />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Set, append, and remove use an atomic file replacement. A successful write immediately reloads the effective configuration."
+        ChunkDescription="Edit appsettings.json atomically."
         ChunkTitle="Transactional appsettings update"
       >
-        <flourish:Card>
-          <StackPanel>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="1.2*" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Margin="0,0,8,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Configuration path" />
-              <flourish:FlourishTextBox x:Name="WriteKeyBox" Text="Gallery:Runtime:Message" />
+        <flourish:Card
+          Title="File transaction"
+          Text="Set, append, and remove use atomic replacement; successful writes immediately reload effective configuration."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <StackPanel Margin="0,0,8,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Configuration path" />
+                <flourish:FlourishTextBox x:Name="WriteKeyBox" Text="Gallery:Runtime:Message" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="String value" />
+                <flourish:FlourishTextBox x:Name="WriteValueBox" Text="Hello from runtime" />
+              </StackPanel>
+            </Grid>
+            <WrapPanel Margin="0,14,0,0">
+              <flourish:Button Margin="0,0,8,0" Click="SetValue_Click" Content="Set &amp; save" />
+              <flourish:Button Margin="0,0,8,0" Click="MergeValue_Click" Content="Merge into parent" />
+              <flourish:Button Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" />
+              <flourish:Button Click="RemoveValue_Click" Content="Remove" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Role="Description" Text="No runtime update yet." />
             </StackPanel>
-            <StackPanel Grid.Column="1" Margin="8,0,0,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="String value" />
-              <flourish:FlourishTextBox x:Name="WriteValueBox" Text="Hello from runtime" />
-            </StackPanel>
-          </Grid>
-          <WrapPanel Margin="0,14,0,0">
-            <flourish:Button Margin="0,0,8,0" Click="SetValue_Click" Content="Set &amp; save" />
-            <flourish:Button Margin="0,0,8,0" Click="MergeValue_Click" Content="Merge into parent" />
-            <flourish:Button Margin="0,0,8,0" Click="AppendValue_Click" Content="Append to array" />
-            <flourish:Button Click="RemoveValue_Click" Content="Remove" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Role="Description" Text="No runtime update yet." />
-          </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Choose a built-in locale or enter the identifier of a locale registered by the host."
+        ChunkDescription="Switch the active localization source."
         ChunkTitle="Runtime locale"
       >
-        <flourish:Card>
-          <StackPanel>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <flourish:FlourishComboBox
-              x:Name="LocaleBox"
-              IsEditable="True"
-            />
-            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" />
-          </Grid>
-          <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Role="Status" />
-          </StackPanel>
+        <flourish:Card
+          Title="Locale selection"
+          Text="Choose a built-in locale or enter the identifier of a locale registered by the host."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <flourish:FlourishComboBox
+                x:Name="LocaleBox"
+                IsEditable="True"
+              />
+              <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ApplyLocale_Click" Content="Apply locale" />
+            </Grid>
+            <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Role="Status" />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Register a lang_&lt;locale&gt;.json file, reload it after external edits, and remove that source through its registration handle."
+        ChunkDescription="Manage an external locale file."
         ChunkTitle="Runtime locale files"
       >
-        <flourish:Card>
-          <StackPanel>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <flourish:FlourishTextBox x:Name="LocaleFilePathBox" Text="lang_ES.json" />
-            <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="RegisterLocaleFile_Click" Content="Register file" />
-            <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" />
-            <flourish:Button Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" />
-          </Grid>
-          <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Role="Description" Text="No locale file registered by this page." />
-          </StackPanel>
+        <flourish:Card
+          Title="Locale registration"
+          Text="Register a lang_&lt;locale&gt;.json file, reload external edits, or remove the source through its registration handle."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <flourish:FlourishTextBox x:Name="LocaleFilePathBox" Text="lang_ES.json" />
+              <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="RegisterLocaleFile_Click" Content="Register file" />
+              <flourish:Button Grid.Column="2" Margin="8,0,0,0" Click="ReloadLocaleFile_Click" Content="Reload file" />
+              <flourish:Button Grid.Column="3" Margin="8,0,0,0" Click="UnregisterLocaleFile_Click" Content="Unregister" />
+            </Grid>
+            <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Role="Description" Text="No locale file registered by this page." />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
     </StackPanel>

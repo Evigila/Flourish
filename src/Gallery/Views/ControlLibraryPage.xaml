@@ -7,30 +7,35 @@
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:Chunk
-        ChunkDescription="Reusable Flourish controls share compact metrics, semantic colors, keyboard focus, and runtime theme and font resources."
-        ChunkTitle="Control library"
+      <flourish:ChunkHero
+        ChunkHeroDescription="Preview controls that have not yet moved to dedicated pages."
+        ChunkHeroTitle="Control library"
       />
 
       <flourish:Chunk
-        ChunkDescription="Semantic roles provide a reusable hierarchy for headings, supporting copy, paragraphs, labels, and status text."
+        ChunkDescription="Compare the available typography roles."
         ChunkTitle="Typography roles"
       >
-        <flourish:Card>
-          <UniformGrid Columns="3">
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Body" Text="Body - regular content" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Paragraph" Text="Paragraph - readable long-form copy" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Caption" Text="Caption - compact detail" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Muted" Text="Muted - secondary detail" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Description" Text="Description - supporting context" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="FieldLabel" Text="FIELD LABEL" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Subtitle" Text="Subtitle - supporting heading" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="CardTitle" Text="Card title" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="SectionTitle" Text="Section title" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="PageTitle" Text="Page title" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Status" Text="Status - ready" />
-            <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Icon" Text="&#xE8D2;" />
-          </UniformGrid>
+        <flourish:Card
+          Title="Text roles"
+          Text="Semantic roles establish a reusable hierarchy for headings, supporting copy, paragraphs, labels, and status text."
+        >
+          <flourish:Card.Body>
+            <UniformGrid Columns="3">
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Body" Text="Body - regular content" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Paragraph" Text="Paragraph - readable long-form copy" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Caption" Text="Caption - compact detail" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Muted" Text="Muted - secondary detail" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Description" Text="Description - supporting context" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="FieldLabel" Text="FIELD LABEL" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Subtitle" Text="Subtitle - supporting heading" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="CardTitle" Text="Card title" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="SectionTitle" Text="Section title" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="PageTitle" Text="Page title" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Status" Text="Status - ready" />
+              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Icon" Text="&#xE8D2;" />
+            </UniformGrid>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
@@ -42,67 +47,77 @@
         </Grid.ColumnDefinitions>
 
         <flourish:Chunk
-          ChunkDescription="Form controls share the same compact geometry and semantic interaction states."
+          ChunkDescription="Preview common form controls."
           ChunkTitle="Inputs and selection"
         >
-          <flourish:Card>
-            <StackPanel>
-              <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
-              <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
+          <flourish:Card
+            Title="Inputs and selection"
+            Text="Form controls share compact geometry and semantic interaction states."
+          >
+            <flourish:Card.Body>
+              <StackPanel>
+                <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
+                <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
 
-              <flourish:FlourishTextBlock Margin="0,12,0,5" Role="FieldLabel" Text="PASSWORD BOX" />
-              <flourish:FlourishPasswordBox Password="Flourish" />
+                <flourish:FlourishTextBlock Margin="0,12,0,5" Role="FieldLabel" Text="PASSWORD BOX" />
+                <flourish:FlourishPasswordBox Password="Flourish" />
 
-              <flourish:FlourishTextBlock Margin="0,12,0,5" Role="FieldLabel" Text="SEARCH BOX" />
-              <flourish:FlourishSearchBox Placeholder="Search controls" />
+                <flourish:FlourishTextBlock Margin="0,12,0,5" Role="FieldLabel" Text="SEARCH BOX" />
+                <flourish:FlourishSearchBox Placeholder="Search controls" />
 
-              <flourish:FlourishCheckBox Margin="0,14,0,0" Content="Use compact Flourish controls" IsChecked="True" />
+                <flourish:FlourishCheckBox Margin="0,14,0,0" Content="Use compact Flourish controls" IsChecked="True" />
 
-              <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="RADIO BUTTON" />
-              <StackPanel Orientation="Horizontal">
-                <flourish:FlourishRadioButton
-                  Margin="0,0,14,0"
-                  Content="Automatic"
-                  GroupName="ControlDensity"
-                  IsChecked="True"
-                />
-                <flourish:FlourishRadioButton Content="Manual" GroupName="ControlDensity" />
+                <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="RADIO BUTTON" />
+                <StackPanel Orientation="Horizontal">
+                  <flourish:FlourishRadioButton
+                    Margin="0,0,14,0"
+                    Content="Automatic"
+                    GroupName="ControlDensity"
+                    IsChecked="True"
+                  />
+                  <flourish:FlourishRadioButton Content="Manual" GroupName="ControlDensity" />
+                </StackPanel>
+
+                <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="COMBO BOX" />
+                <flourish:FlourishComboBox SelectedIndex="0">
+                  <flourish:FlourishComboBoxItem Content="Standard density" />
+                  <flourish:FlourishComboBoxItem Content="Compact density" />
+                  <flourish:FlourishComboBoxItem Content="Comfortable density" />
+                </flourish:FlourishComboBox>
               </StackPanel>
-
-              <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="COMBO BOX" />
-              <flourish:FlourishComboBox SelectedIndex="0">
-                <flourish:FlourishComboBoxItem Content="Standard density" />
-                <flourish:FlourishComboBoxItem Content="Compact density" />
-                <flourish:FlourishComboBoxItem Content="Comfortable density" />
-              </flourish:FlourishComboBox>
-            </StackPanel>
+            </flourish:Card.Body>
           </flourish:Card>
         </flourish:Chunk>
 
         <flourish:Chunk
           Grid.Column="2"
-          ChunkDescription="List and scrolling surfaces retain native keyboard, wheel, and virtualization behavior."
+          ChunkDescription="Preview list and scrolling behavior."
           ChunkTitle="Lists and scrolling"
         >
-          <flourish:Card>
-            <StackPanel>
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="LIST BOX" />
-              <flourish:FlourishListBox Height="104" SelectedIndex="0">
-                <flourish:FlourishListBoxItem Content="Typography and labels" />
-                <flourish:FlourishListBoxItem Content="Inputs and selection" />
-                <flourish:FlourishListBoxItem Content="Scrolling and surfaces" />
-              </flourish:FlourishListBox>
+          <flourish:Card
+            Title="Lists and scrolling"
+            Text="These surfaces retain native keyboard, wheel, and virtualization behavior."
+          >
+            <flourish:Card.Body>
+              <StackPanel>
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="LIST BOX" />
+                <flourish:FlourishListBox Height="104" SelectedIndex="0">
+                  <flourish:FlourishListBoxItem Content="Typography and labels" />
+                  <flourish:FlourishListBoxItem Content="Inputs and selection" />
+                  <flourish:FlourishListBoxItem Content="Scrolling and surfaces" />
+                </flourish:FlourishListBox>
 
-              <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="SCROLL VIEWER" />
-              <flourish:FlourishScrollViewer Height="104" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                  <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
-                  <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Scrollbars use the same state tokens." />
-                  <flourish:FlourishTextBlock Margin="8,6" Text="Keyboard and wheel input remain native." />
-                  <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="End of sample" />
-                </StackPanel>
-              </flourish:FlourishScrollViewer>
-            </StackPanel>
+                <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="SCROLL VIEWER" />
+                <flourish:FlourishScrollViewer Height="104" VerticalScrollBarVisibility="Auto">
+                  <StackPanel>
+                    <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
+                    <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Scrollbars use the same state tokens." />
+                    <flourish:FlourishTextBlock Margin="8,6" Text="Keyboard and wheel input remain native." />
+                    <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="End of sample" />
+                  </StackPanel>
+                </flourish:FlourishScrollViewer>
+              </StackPanel>
+            </flourish:Card.Body>
           </flourish:Card>
         </flourish:Chunk>
       </Grid>

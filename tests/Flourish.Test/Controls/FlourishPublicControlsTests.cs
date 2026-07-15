@@ -279,6 +279,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(Variant.Standard, card.Variant);
             Assert.Equal(string.Empty, card.Title);
             Assert.Equal(string.Empty, card.Text);
+            Assert.Null(card.Body);
             Assert.Equal(HorizontalAlignment.Stretch, card.ContentHorizontalAlignment);
             Assert.Equal(VerticalAlignment.Stretch, card.ContentVerticalAlignment);
             Assert.Null(iconCard.Presenter);
@@ -365,7 +366,7 @@ public sealed class FlourishPublicControlsTests
                 Variant = Variant.Filled,
                 Title = "Title",
                 Text = "Supporting text",
-                Content = content,
+                Body = content,
                 ContentHorizontalAlignment = HorizontalAlignment.Right,
                 ContentVerticalAlignment = VerticalAlignment.Bottom,
             };
@@ -383,18 +384,54 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(Variant.Filled, card.Variant);
             Assert.Equal("Title", card.Title);
             Assert.Equal("Supporting text", card.Text);
-            Assert.Same(content, card.Content);
+            Assert.Same(content, card.Body);
             Assert.Equal(HorizontalAlignment.Right, card.ContentHorizontalAlignment);
             Assert.Equal(VerticalAlignment.Bottom, card.ContentVerticalAlignment);
             Assert.Same(presenter, iconCard.Presenter);
             Assert.Equal(PresenterMode.Overlay, iconCard.PresenterMode);
             Assert.Equal(PresenterPosition.RightBottom, iconCard.PresenterPosition);
+            Assert.Equal(
+                nameof(Card.Body),
+                typeof(Card).GetCustomAttribute<ContentPropertyAttribute>()?.Name
+            );
+            Assert.Null(typeof(Card).GetProperty("Content"));
 
             var assembly = typeof(Card).Assembly;
             Assert.Null(assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCard"));
             Assert.Null(
                 assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCardAppearance")
             );
+        });
+    }
+
+    [Fact]
+    public void Card_OwnsBodyLogicalContentBeforeAndAfterReplacement()
+    {
+        RunInSta(() =>
+        {
+            var dataContext = new object();
+            var firstBody = new Border();
+            var replacementBody = new Border();
+            var card = new Card { DataContext = dataContext, Body = firstBody };
+            card.Resources["CardResource"] = "Available";
+
+            Assert.Same(card, LogicalTreeHelper.GetParent(firstBody));
+            Assert.Same(dataContext, firstBody.DataContext);
+            Assert.Equal("Available", firstBody.FindResource("CardResource"));
+            Assert.Equal(
+                new object[] { firstBody },
+                LogicalTreeHelper.GetChildren(card).Cast<object>()
+            );
+
+            card.Body = replacementBody;
+
+            Assert.Null(LogicalTreeHelper.GetParent(firstBody));
+            Assert.Same(card, LogicalTreeHelper.GetParent(replacementBody));
+
+            card.ClearValue(Card.BodyProperty);
+
+            Assert.Null(LogicalTreeHelper.GetParent(replacementBody));
+            Assert.Empty(LogicalTreeHelper.GetChildren(card).Cast<object>());
         });
     }
 
@@ -410,7 +447,7 @@ public sealed class FlourishPublicControlsTests
             var card = new IconCard
             {
                 DataContext = dataContext,
-                Content = body,
+                Body = body,
                 Presenter = firstPresenter,
             };
             card.Resources["CardResource"] = "Available";

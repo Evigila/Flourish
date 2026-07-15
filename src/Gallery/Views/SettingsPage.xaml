@@ -13,17 +13,25 @@
       Width="520"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      ChunkDescription="这里是设置页面占位内容，后续可在这里管理主题、偏好和应用配置。"
+      ChunkDescription="预览设置页面的占位状态。"
       ChunkMargin="0"
       ChunkTitle="设置"
     >
-      <flourish:FlourishTextBlock
-        HorizontalAlignment="Center"
-        FontFamily="Segoe MDL2 Assets"
-        FontSize="42"
-        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-        Text="&#xE713;"
-      />
+      <flourish:Card
+        ContentHorizontalAlignment="Center"
+        Title="应用设置"
+        Text="此区域可用于管理主题、偏好和应用配置。"
+      >
+        <flourish:Card.Body>
+          <flourish:FlourishTextBlock
+            HorizontalAlignment="Center"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="42"
+            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+            Text="&#xE713;"
+          />
+        </flourish:Card.Body>
+      </flourish:Card>
     </flourish:Chunk>
   </Grid>
 </Page>

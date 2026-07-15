@@ -31,6 +31,8 @@
           "articles/**/*.yml",
           "controls/**/*.md",
           "controls/**/*.yml",
+          "conception/**/*.md",
+          "conception/**/*.yml",
           "api/**/*.yml"
         ],
         "dest": "."

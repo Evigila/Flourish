@@ -7,77 +7,92 @@
 >
   <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:Chunk
-        ChunkDescription="Move and resize the panel, edit the live menu transactionally, register a route, navigate to it, and control its page cache without restarting the app."
-        ChunkTitle="Navigation at runtime"
+      <flourish:ChunkHero
+        ChunkHeroDescription="Change navigation structure and behavior at runtime."
+        ChunkHeroTitle="Navigation at runtime"
       />
 
       <flourish:Chunk
-        ChunkDescription="Move the live panel, tune its width limits, or disable it without recreating the shell."
+        ChunkDescription="Configure the live navigation panel."
         ChunkTitle="Navigation panel"
       >
-        <flourish:Card>
-          <StackPanel>
-          <WrapPanel>
-            <flourish:Button Click="TogglePanel_Click" Content="Open / close" />
-            <flourish:Button Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" />
-            <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" Margin="8,0,0,0" SelectionChanged="DirectionBox_SelectionChanged" />
-          </WrapPanel>
-          <WrapPanel Margin="0,12,0,0">
-            <StackPanel Margin="0,0,12,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Open width" />
-              <flourish:FlourishTextBox x:Name="OpenWidthBox" Width="110" Text="240" />
+        <flourish:Card
+          Title="Panel controls"
+          Text="Move the panel, tune its width limits, or disable it without recreating the shell."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <WrapPanel>
+              <flourish:Button Click="TogglePanel_Click" Content="Open / close" />
+              <flourish:Button Margin="8,0,0,0" Click="TogglePanelEnabled_Click" Content="Enable / disable" />
+              <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" Margin="8,0,0,0" SelectionChanged="DirectionBox_SelectionChanged" />
+            </WrapPanel>
+            <WrapPanel Margin="0,12,0,0">
+              <StackPanel Margin="0,0,12,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Open width" />
+                <flourish:FlourishTextBox x:Name="OpenWidthBox" Width="110" Text="240" />
+              </StackPanel>
+              <StackPanel Margin="0,0,12,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Closed width" />
+                <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" Text="56" />
+              </StackPanel>
+              <StackPanel Margin="0,0,12,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Minimum width" />
+                <flourish:FlourishTextBox x:Name="MinWidthBox" Width="110" Text="150" />
+              </StackPanel>
+              <StackPanel Margin="0,0,12,0">
+                <flourish:FlourishTextBlock Role="FieldLabel" Text="Maximum width" />
+                <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" Text="480" />
+              </StackPanel>
+              <flourish:Button Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Role="Description" />
             </StackPanel>
-            <StackPanel Margin="0,0,12,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Closed width" />
-              <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" Text="56" />
-            </StackPanel>
-            <StackPanel Margin="0,0,12,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Minimum width" />
-              <flourish:FlourishTextBox x:Name="MinWidthBox" Width="110" Text="150" />
-            </StackPanel>
-            <StackPanel Margin="0,0,12,0">
-              <flourish:FlourishTextBlock Role="FieldLabel" Text="Maximum width" />
-              <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" Text="480" />
-            </StackPanel>
-            <flourish:Button Margin="0,20,0,0" Click="ApplyWidths_Click" Content="Apply widths" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Role="Description" />
-          </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="The demo adds a new route and a real navigation item. Remove it again to see both tables update immediately."
-        ChunkTitle="Live route and menu transaction"
+        ChunkDescription="Add and remove a route with its menu item."
+        ChunkTitle="Route transaction"
       >
-        <flourish:Card>
-          <StackPanel>
-          <WrapPanel>
-            <flourish:Button Click="InstallRoute_Click" Content="Install demo route" />
-            <flourish:Button Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" />
-            <flourish:Button Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" />
-            <flourish:Button Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
-          </StackPanel>
+        <flourish:Card
+          Title="Runtime route"
+          Text="Add a route and navigation item, then remove them to see both registries update immediately."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <WrapPanel>
+              <flourish:Button Click="InstallRoute_Click" Content="Install demo route" />
+              <flourish:Button Margin="8,0,0,0" Click="NavigateRoute_Click" Content="Navigate to route" />
+              <flourish:Button Margin="8,0,0,0" Click="ToggleMenuItem_Click" Content="Enable / disable item" />
+              <flourish:Button Margin="8,0,0,0" Click="RemoveRoute_Click" Content="Remove route" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Change cache policy and evict page instances while preserving the registered route."
+        ChunkDescription="Manage cached page instances."
         ChunkTitle="Page cache"
       >
-        <flourish:Card>
-          <StackPanel>
-          <WrapPanel>
-            <flourish:Button Click="EnableCache_Click" Content="Enable cache" />
-            <flourish:Button Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" />
-            <flourish:Button Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" />
-            <flourish:Button Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" />
-          </WrapPanel>
-          <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
-          </StackPanel>
+        <flourish:Card
+          Title="Cache controls"
+          Text="Change cache policy and evict page instances while preserving the registered route."
+        >
+          <flourish:Card.Body>
+            <StackPanel>
+            <WrapPanel>
+              <flourish:Button Click="EnableCache_Click" Content="Enable cache" />
+              <flourish:Button Margin="8,0,0,0" Click="DisableCache_Click" Content="Disable cache" />
+              <flourish:Button Margin="8,0,0,0" Click="EvictCache_Click" Content="Evict demo page" />
+              <flourish:Button Margin="8,0,0,0" Click="ClearCache_Click" Content="Clear all" />
+            </WrapPanel>
+            <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
+            </StackPanel>
+          </flourish:Card.Body>
         </flourish:Card>
       </flourish:Chunk>
     </StackPanel>

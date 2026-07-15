@@ -28,7 +28,7 @@
       </flourish:ChunkHero>
 
       <flourish:Chunk
-        ChunkDescription="Explore the public APIs by capability. Interactive cards resize with the available page width."
+        ChunkDescription="Open an interactive runtime capability demo."
         ChunkTitle="Demos"
       >
         <UniformGrid

@@ -18,18 +18,17 @@
         Visibility="Collapsed"
       />
       <Border
-        x:Name="SurfaceChrome"
+        x:Name="PART_SurfaceChrome"
         Background="{TemplateBinding Background}"
         BorderBrush="{TemplateBinding BorderBrush}"
         BorderThickness="{TemplateBinding BorderThickness}"
-        ClipToBounds="True"
         CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
       >
         <Grid
-          x:Name="LayoutRoot"
+          x:Name="PART_ClipHost"
           Margin="{TemplateBinding Padding}"
-          ClipToBounds="True"
+          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
         >
           <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -70,43 +69,46 @@
             Grid.Row="1"
             Grid.Column="2"
           >
-            <Grid.RowDefinitions>
-              <RowDefinition Height="*" />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <StackPanel
-              x:Name="CopyHost"
-              Grid.Row="0"
+            <Grid
+              x:Name="ContentGroup"
               HorizontalAlignment="{TemplateBinding ContentHorizontalAlignment}"
               VerticalAlignment="{TemplateBinding ContentVerticalAlignment}"
             >
-              <controls:FlourishTextBlock
-                x:Name="TitleHost"
-                Foreground="{TemplateBinding Foreground}"
-                Role="CardTitle"
-                Text="{TemplateBinding Title}"
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="CopyColumn" Width="*" />
+                <ColumnDefinition x:Name="BodyColumn" Width="0" />
+              </Grid.ColumnDefinitions>
+              <StackPanel x:Name="CopyHost" Grid.Row="0" Grid.Column="0">
+                <controls:FlourishTextBlock
+                  x:Name="TitleHost"
+                  Foreground="{TemplateBinding Foreground}"
+                  Role="CardTitle"
+                  Text="{TemplateBinding Title}"
+                />
+                <controls:FlourishTextBlock
+                  x:Name="TextHost"
+                  Margin="{DynamicResource FlourishCardTextSpacing}"
+                  Foreground="{TemplateBinding Foreground}"
+                  Role="Description"
+                  Text="{TemplateBinding Text}"
+                />
+              </StackPanel>
+              <ContentPresenter
+                x:Name="BodyHost"
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="{DynamicResource FlourishCardBodySpacing}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Content="{TemplateBinding Body}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                TextElement.Foreground="{TemplateBinding Foreground}"
               />
-              <controls:FlourishTextBlock
-                x:Name="TextHost"
-                Margin="{DynamicResource FlourishCardTextSpacing}"
-                Foreground="{TemplateBinding Foreground}"
-                Role="Description"
-                Text="{TemplateBinding Text}"
-              />
-            </StackPanel>
-            <ContentPresenter
-              x:Name="ContentHost"
-              Grid.Row="1"
-              Margin="{DynamicResource FlourishCardContentSpacing}"
-              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-              Content="{TemplateBinding Content}"
-              ContentStringFormat="{TemplateBinding ContentStringFormat}"
-              ContentTemplate="{TemplateBinding ContentTemplate}"
-              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-              TextElement.Foreground="{TemplateBinding Foreground}"
-            />
+            </Grid>
           </Grid>
         </Grid>
       </Border>
@@ -127,6 +129,12 @@
         <Setter TargetName="TitleHost" Property="TextAlignment" Value="Right" />
         <Setter TargetName="TextHost" Property="TextAlignment" Value="Right" />
       </Trigger>
+      <Trigger Property="ContentVerticalAlignment" Value="Bottom">
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="1" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardReversedBodySpacing}" />
+      </Trigger>
+
       <Trigger Property="PresenterPosition" Value="LeftTop">
         <Setter TargetName="PresenterHost" Property="Grid.Row" Value="0" />
         <Setter TargetName="PresenterHost" Property="Grid.Column" Value="0" />
@@ -153,6 +161,13 @@
         <Setter TargetName="PresenterHost" Property="VerticalAlignment" Value="Top" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.Row" Value="2" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.Column" Value="1" />
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopyHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="BodyHost" Property="Grid.Column" Value="1" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardHorizontalBodySpacing}" />
+        <Setter TargetName="CopyColumn" Property="Width" Value="Auto" />
+        <Setter TargetName="BodyColumn" Property="Width" Value="Auto" />
       </Trigger>
       <Trigger Property="PresenterPosition" Value="Bottom">
         <Setter TargetName="PresenterHost" Property="Grid.Row" Value="2" />
@@ -162,6 +177,13 @@
         <Setter TargetName="PresenterHost" Property="VerticalAlignment" Value="Bottom" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.Row" Value="0" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.Column" Value="1" />
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopyHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="BodyHost" Property="Grid.Column" Value="1" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardHorizontalBodySpacing}" />
+        <Setter TargetName="CopyColumn" Property="Width" Value="Auto" />
+        <Setter TargetName="BodyColumn" Property="Width" Value="Auto" />
       </Trigger>
       <Trigger Property="PresenterPosition" Value="Right">
         <Setter TargetName="PresenterHost" Property="Grid.Row" Value="1" />
@@ -190,8 +212,9 @@
         <Setter TargetName="BuiltInContentHost" Property="Grid.Row" Value="0" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.Column" Value="0" />
       </Trigger>
+
       <Trigger Property="PresenterMode" Value="Overlay">
-        <Setter TargetName="LayoutRoot" Property="Margin" Value="0" />
+        <Setter TargetName="PART_ClipHost" Property="Margin" Value="0" />
         <Setter TargetName="PresenterHost" Property="Grid.Row" Value="0" />
         <Setter TargetName="PresenterHost" Property="Grid.RowSpan" Value="3" />
         <Setter TargetName="PresenterHost" Property="Grid.Column" Value="0" />
@@ -205,12 +228,29 @@
         <Setter TargetName="BuiltInContentHost" Property="Grid.Column" Value="0" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.ColumnSpan" Value="3" />
         <Setter TargetName="BuiltInContentHost" Property="Margin" Value="{DynamicResource FlourishCardPadding}" />
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopyHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="1" />
+        <Setter TargetName="BodyHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardBodySpacing}" />
+        <Setter TargetName="CopyColumn" Property="Width" Value="*" />
+        <Setter TargetName="BodyColumn" Property="Width" Value="0" />
         <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
         <Setter TargetName="TextHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
-        <Setter TargetName="ContentHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
+        <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
       </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="PresenterMode" Value="Overlay" />
+          <Condition Property="ContentVerticalAlignment" Value="Bottom" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="1" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardReversedBodySpacing}" />
+      </MultiTrigger>
+
       <Trigger Property="Presenter" Value="{x:Null}">
-        <Setter TargetName="LayoutRoot" Property="Margin" Value="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Setter TargetName="PART_ClipHost" Property="Margin" Value="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}}" />
         <Setter TargetName="PresenterHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.Row" Value="0" />
@@ -218,10 +258,27 @@
         <Setter TargetName="BuiltInContentHost" Property="Grid.Column" Value="0" />
         <Setter TargetName="BuiltInContentHost" Property="Grid.ColumnSpan" Value="3" />
         <Setter TargetName="BuiltInContentHost" Property="Margin" Value="0" />
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopyHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="1" />
+        <Setter TargetName="BodyHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardBodySpacing}" />
+        <Setter TargetName="CopyColumn" Property="Width" Value="*" />
+        <Setter TargetName="BodyColumn" Property="Width" Value="0" />
         <Setter TargetName="TitleHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
         <Setter TargetName="TextHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-        <Setter TargetName="ContentHost" Property="TextElement.Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
       </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Presenter" Value="{x:Null}" />
+          <Condition Property="ContentVerticalAlignment" Value="Bottom" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Grid.Row" Value="1" />
+        <Setter TargetName="BodyHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="{DynamicResource FlourishCardReversedBodySpacing}" />
+      </MultiTrigger>
+
       <Trigger Property="Title" Value="">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="TextHost" Property="Margin" Value="0" />
@@ -236,8 +293,8 @@
       <Trigger Property="Text" Value="{x:Null}">
         <Setter TargetName="TextHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="Content" Value="{x:Null}">
-        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Body" Value="{x:Null}">
+        <Setter TargetName="BodyHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -245,9 +302,7 @@
           <Condition Property="Text" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
-        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
-        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -255,9 +310,7 @@
           <Condition Property="Text" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
-        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
-        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -265,9 +318,7 @@
           <Condition Property="Text" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
-        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
-        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -275,9 +326,7 @@
           <Condition Property="Text" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
-        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
-        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Opacity" Value="0.62" />

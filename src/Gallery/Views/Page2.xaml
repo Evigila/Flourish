@@ -10,10 +10,17 @@
 >
   <Grid>
     <flourish:Chunk
+      Width="360"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
+      ChunkDescription="Preview a nested navigation destination."
       ChunkMargin="0"
       ChunkTitle="Page2"
-    />
+    >
+      <flourish:Card
+        Title="Second child route"
+        Text="This placeholder verifies navigation to the second child page."
+      />
+    </flourish:Chunk>
   </Grid>
 </Page>

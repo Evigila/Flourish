@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Markup;
+using WpfControl = System.Windows.Controls.Control;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
 
@@ -24,9 +26,10 @@ public enum Variant
 }
 
 /// <summary>
-/// A themed content surface with built-in title and supporting text.
+/// A themed content surface with built-in title, supporting text, and a flexible body.
 /// </summary>
-public class Card : ContentControl
+[ContentProperty(nameof(Body))]
+public class Card : WpfControl
 {
     /// <summary>Identifies the <see cref="Variant" /> dependency property.</summary>
     public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(
@@ -51,6 +54,14 @@ public class Card : ContentControl
         typeof(string),
         typeof(Card),
         new FrameworkPropertyMetadata(string.Empty)
+    );
+
+    /// <summary>Identifies the <see cref="Body" /> dependency property.</summary>
+    public static readonly DependencyProperty BodyProperty = DependencyProperty.Register(
+        nameof(Body),
+        typeof(object),
+        typeof(Card),
+        new FrameworkPropertyMetadata(null, OnBodyChanged)
     );
 
     /// <summary>
@@ -106,18 +117,51 @@ public class Card : ContentControl
         set => SetValue(TextProperty, value);
     }
 
-    /// <summary>Gets or sets the horizontal alignment of the built-in textual content.</summary>
+    /// <summary>
+    /// Gets or sets arbitrary content displayed with the built-in title and text. This is the
+    /// card's implicit XAML content and can be <see langword="null" />.
+    /// </summary>
+    public object? Body
+    {
+        get => GetValue(BodyProperty);
+        set => SetValue(BodyProperty, value);
+    }
+
+    /// <summary>Gets or sets the horizontal alignment of the copy-and-body group.</summary>
     public WpfHorizontalAlignment ContentHorizontalAlignment
     {
         get => (WpfHorizontalAlignment)GetValue(ContentHorizontalAlignmentProperty);
         set => SetValue(ContentHorizontalAlignmentProperty, value);
     }
 
-    /// <summary>Gets or sets the vertical alignment of the built-in textual content.</summary>
+    /// <summary>
+    /// Gets or sets the vertical alignment of the copy-and-body group. When set to
+    /// <see cref="WpfVerticalAlignment.Bottom" />, the body is placed above the copy.
+    /// </summary>
     public WpfVerticalAlignment ContentVerticalAlignment
     {
         get => (WpfVerticalAlignment)GetValue(ContentVerticalAlignmentProperty);
         set => SetValue(ContentVerticalAlignmentProperty, value);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerator LogicalChildren => EnumerateLogicalChildren();
+
+    private static void OnBodyChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs eventArgs
+    )
+    {
+        var card = (Card)dependencyObject;
+        if (eventArgs.OldValue is not null)
+        {
+            card.RemoveLogicalChild(eventArgs.OldValue);
+        }
+
+        if (eventArgs.NewValue is not null)
+        {
+            card.AddLogicalChild(eventArgs.NewValue);
+        }
     }
 
     private static bool IsVariantValid(object value)
@@ -133,5 +177,13 @@ public class Card : ContentControl
     private static bool IsVerticalAlignmentValid(object value)
     {
         return value is WpfVerticalAlignment alignment && Enum.IsDefined(alignment);
+    }
+
+    private IEnumerator EnumerateLogicalChildren()
+    {
+        if (Body is not null)
+        {
+            yield return Body;
+        }
     }
 }

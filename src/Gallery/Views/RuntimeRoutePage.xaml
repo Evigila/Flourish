@@ -7,21 +7,24 @@
 >
   <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
     <flourish:Chunk
-      ChunkDescription="This page was registered while Gallery was already running."
-      ChunkTitle="A route created at runtime"
+      ChunkDescription="Inspect a route registered after startup."
+      ChunkTitle="Runtime route"
     >
       <flourish:Card
         MaxWidth="680"
         HorizontalAlignment="Left"
+        Title="Route instance"
+        Text="This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running."
         Variant="Elevated"
       >
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="Paragraph" Text="This page was not present in ConfigureNavigation. Its route and menu entry were registered while Gallery was already running." />
-          <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
-          <flourish:FlourishTextBlock x:Name="InstanceText" FontFamily="Consolas" FontSize="16" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
-          <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
-          <flourish:FlourishTextBlock x:Name="ParameterText" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
-        </StackPanel>
+        <flourish:Card.Body>
+          <StackPanel>
+            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
+            <flourish:FlourishTextBlock x:Name="InstanceText" FontFamily="Consolas" FontSize="16" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
+            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
+            <flourish:FlourishTextBlock x:Name="ParameterText" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
+          </StackPanel>
+        </flourish:Card.Body>
       </flourish:Card>
     </flourish:Chunk>
   </StackPanel>
