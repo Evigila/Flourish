@@ -10,14 +10,14 @@
 >
   <Grid>
     <flourish:Chunk
-      Width="520"
-      HorizontalAlignment="Center"
       VerticalAlignment="Center"
       ChunkDescription="预览树形导航父节点。"
       ChunkMargin="0"
       ChunkTitle="页面父节点"
     >
       <flourish:Card
+        MaxWidth="520"
+        HorizontalAlignment="Center"
         Title="父节点行为"
         Text="点击该导航项会进入这个页面，同时展开 Button1 和 Button2。"
       />

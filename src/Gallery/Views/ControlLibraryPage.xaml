@@ -26,10 +26,8 @@
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Paragraph" Text="Paragraph - readable long-form copy" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Caption" Text="Caption - compact detail" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Muted" Text="Muted - secondary detail" />
-              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Description" Text="Description - supporting context" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="FieldLabel" Text="FIELD LABEL" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Subtitle" Text="Subtitle - supporting heading" />
-              <flourish:FlourishTextBlock Margin="0,0,16,10" Role="CardTitle" Text="Card title" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="SectionTitle" Text="Section title" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="PageTitle" Text="Page title" />
               <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Status" Text="Status - ready" />
@@ -39,18 +37,13 @@
         </flourish:Card>
       </flourish:Chunk>
 
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="16" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <flourish:Chunk
-          ChunkDescription="Preview common form controls."
-          ChunkTitle="Inputs and selection"
-        >
+      <flourish:Chunk
+        ChunkDescription="Compare form inputs with list and scrolling surfaces."
+        ChunkTitle="Input and collections"
+      >
+        <UniformGrid Columns="2">
           <flourish:Card
+            Margin="0,0,8,0"
             Title="Inputs and selection"
             Text="Form controls share compact geometry and semantic interaction states."
           >
@@ -87,14 +80,8 @@
               </StackPanel>
             </flourish:Card.Body>
           </flourish:Card>
-        </flourish:Chunk>
-
-        <flourish:Chunk
-          Grid.Column="2"
-          ChunkDescription="Preview list and scrolling behavior."
-          ChunkTitle="Lists and scrolling"
-        >
           <flourish:Card
+            Margin="8,0,0,0"
             Title="Lists and scrolling"
             Text="These surfaces retain native keyboard, wheel, and virtualization behavior."
           >
@@ -119,8 +106,8 @@
               </StackPanel>
             </flourish:Card.Body>
           </flourish:Card>
-        </flourish:Chunk>
-      </Grid>
+        </UniformGrid>
+      </flourish:Chunk>
 
     </StackPanel>
   </flourish:FlourishScrollViewer>

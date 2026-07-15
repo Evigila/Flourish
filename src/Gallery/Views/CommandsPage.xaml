@@ -16,57 +16,69 @@
         ChunkDescription="Register and invoke a command handler."
         ChunkTitle="Runtime command registration"
       >
-        <flourish:Card
-          Title="Command handler"
-          Text="The demo waits briefly, increments an execution counter, and returns a value through CommandResult."
-        >
-          <flourish:Card.Body>
-            <StackPanel>
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <StackPanel Margin="0,0,8,0">
-                <flourish:FlourishTextBlock Role="FieldLabel" Text="Command key" />
-                <flourish:FlourishTextBox x:Name="CommandKeyBox" Text="gallery.runtime.greet" />
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            Title="Command handler"
+            Text="The demo waits briefly, increments an execution counter, and returns a value through CommandResult."
+          >
+            <flourish:Card.Body>
+              <StackPanel>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Margin="0,0,8,0">
+                    <flourish:FlourishTextBlock Role="FieldLabel" Text="Command key" />
+                    <flourish:FlourishTextBox x:Name="CommandKeyBox" Text="gallery.runtime.greet" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                    <flourish:FlourishTextBlock Role="FieldLabel" Text="Dispatch parameter" />
+                    <flourish:FlourishTextBox x:Name="CommandParameterBox" Text="Flourish user" />
+                  </StackPanel>
+                </Grid>
+                <WrapPanel Margin="0,14,0,0">
+                  <flourish:Button Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
+                  <flourish:Button Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
+                  <flourish:Button Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
+                  <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
+                </WrapPanel>
               </StackPanel>
-              <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                <flourish:FlourishTextBlock Role="FieldLabel" Text="Dispatch parameter" />
-                <flourish:FlourishTextBox x:Name="CommandParameterBox" Text="Flourish user" />
-              </StackPanel>
-            </Grid>
-            <WrapPanel Margin="0,14,0,0">
-              <flourish:Button Margin="0,0,8,0" Click="RegisterCommand_Click" Content="Register / replace" />
-              <flourish:Button Margin="0,0,8,0" Click="ExecuteCommand_Click" Content="Execute async" />
-              <flourish:Button Margin="0,0,8,0" Click="RemoveCommand_Click" Content="Remove command" />
-              <flourish:FlourishCheckBox x:Name="CommandEnabledBox" Margin="12,0,8,0" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
-            </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Role="Status" Text="Register the demo command to begin." />
-            </StackPanel>
-          </flourish:Card.Body>
-        </flourish:Card>
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Result" Text="Shows registration and dispatch results.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="CommandResultText" Role="Status" Text="Register the demo command to begin." />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Bind and invoke a runtime shortcut."
         ChunkTitle="Keyboard shortcut"
       >
-        <flourish:Card
-          Title="Ctrl+Shift+G"
-          Text="The shell resolves and dispatches the shortcut globally, while the local button invokes the same API directly."
-        >
-          <flourish:Card.Body>
-            <StackPanel>
-            <WrapPanel>
-              <flourish:Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
-              <flourish:Button Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
-              <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
-            </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Role="Description" Text="No shortcut registered by this page." />
-            </StackPanel>
-          </flourish:Card.Body>
-        </flourish:Card>
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            Title="Ctrl+Shift+G"
+            Text="The shell resolves the shortcut globally, while the local button invokes the same API directly."
+          >
+            <flourish:Card.Body>
+              <WrapPanel>
+                <flourish:Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
+                <flourish:Button Margin="0,0,8,0" Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
+                <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
+              </WrapPanel>
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Result" Text="Shows the active shortcut state.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="ShortcutResultText" Role="Status" Text="No shortcut registered by this page." />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk

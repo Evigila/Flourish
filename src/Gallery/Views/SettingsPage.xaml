@@ -10,14 +10,14 @@
 >
   <Grid>
     <flourish:Chunk
-      Width="520"
-      HorizontalAlignment="Center"
       VerticalAlignment="Center"
       ChunkDescription="预览设置页面的占位状态。"
       ChunkMargin="0"
       ChunkTitle="设置"
     >
       <flourish:Card
+        MaxWidth="520"
+        HorizontalAlignment="Center"
         ContentHorizontalAlignment="Center"
         Title="应用设置"
         Text="此区域可用于管理主题、偏好和应用配置。"

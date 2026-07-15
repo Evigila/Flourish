@@ -16,7 +16,9 @@
         ChunkDescription="Manage this page's toolbar actions."
         ChunkTitle="Dynamic toolbar"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Toolbar item"
           Text="Add an action for this page, then use the shell toolbar above the page to execute its runtime command."
         >
@@ -30,18 +32,27 @@
                 <flourish:Button Margin="8,0,0,0" Click="MoveToolbarItem_Click" Content="Move action" />
                 <flourish:Button Margin="8,0,0,0" Click="RemoveToolbarItem_Click" Content="Remove" />
               </WrapPanel>
-              <flourish:FlourishTextBlock x:Name="ToolbarStateText" Margin="0,12,0,0" Role="Description" />
-              <flourish:FlourishTextBlock x:Name="CommandLogText" Margin="0,8,0,0" FontFamily="Consolas" Role="Status" Text="The toolbar command has not run yet." />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows toolbar state and command execution.">
+            <flourish:Card.Body>
+              <StackPanel>
+                <flourish:FlourishTextBlock x:Name="ToolbarStateText" Role="Status" />
+                <flourish:FlourishTextBlock x:Name="CommandLogText" Margin="0,8,0,0" FontFamily="Consolas" Role="Status" Text="The toolbar command has not run yet." />
+              </StackPanel>
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Manage status items and indicators."
         ChunkTitle="Status bar"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Status controls"
           Text="Update persistent or timed items, shell indicators, and the visibility of the status bar."
         >
@@ -63,17 +74,24 @@
                 <flourish:Button Margin="8,0,0,0" Click="TogglePower_Click" Content="Toggle power indicator" />
                 <flourish:Button Margin="8,0,0,0" Click="ToggleStatusBar_Click" Content="Enable / disable bar" />
               </WrapPanel>
-              <flourish:FlourishTextBlock x:Name="StatusStateText" Margin="0,12,0,0" Role="Description" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows status items, indicators, and bar state.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="StatusStateText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Manage content in a custom shell region."
         ChunkTitle="Custom shell region"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="ContentHeader registration"
           Text="Register a WPF element, then disable, reorder, replace, or remove it while the shell remains visible."
         >
@@ -85,10 +103,15 @@
                 <flourish:Button Margin="8,0,0,0" Click="ReorderRegion_Click" Content="Change order" />
                 <flourish:Button Margin="8,0,0,0" Click="RemoveRegion_Click" Content="Remove" />
               </WrapPanel>
-              <flourish:FlourishTextBlock x:Name="RegionStateText" Margin="0,12,0,0" Role="Description" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows the current ContentHeader registration.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="RegionStateText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

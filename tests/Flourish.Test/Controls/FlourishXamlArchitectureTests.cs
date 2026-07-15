@@ -488,6 +488,154 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void GalleryChunks_DoNotShareAHorizontalRow()
+    {
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+
+        foreach (
+            var path in Directory.EnumerateFiles(
+                viewsRoot,
+                "*.xaml",
+                SearchOption.AllDirectories
+            )
+        )
+        {
+            var document = LoadXaml(path);
+            if (document.Root?.Name.LocalName != "Page")
+            {
+                continue;
+            }
+
+            foreach (var parent in document.Descendants())
+            {
+                var chunks = parent
+                    .Elements()
+                    .Where(element => element.Name.LocalName == nameof(Chunk))
+                    .ToArray();
+                if (chunks.Length < 2)
+                {
+                    continue;
+                }
+
+                var isVerticalStack =
+                    parent.Name.LocalName == "StackPanel"
+                    && (string?)parent.Attribute("Orientation") is null or "Vertical";
+                if (!isVerticalStack)
+                {
+                    violations.Add(
+                        $"{RelativePath(path)} places {chunks.Length} Chunk elements in a {parent.Name.LocalName}"
+                    );
+                }
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Gallery chunks must span the available row; arrange related cards inside one chunk instead."
+        );
+    }
+
+    [Fact]
+    public void GalleryCardBodies_DoNotCreateASecondCopyHierarchy()
+    {
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+
+        foreach (
+            var path in Directory.EnumerateFiles(
+                viewsRoot,
+                "*.xaml",
+                SearchOption.AllDirectories
+            )
+        )
+        {
+            var document = LoadXaml(path);
+            if (document.Root?.Name.LocalName != "Page")
+            {
+                continue;
+            }
+
+            var secondaryCopy = document
+                .Descendants()
+                .Where(element =>
+                    element.Name.LocalName is "Card.Body" or "IconCard.Body"
+                )
+                .SelectMany(body => body.Descendants())
+                .Where(element => element.Name.LocalName == "FlourishTextBlock")
+                .Where(element =>
+                    (string?)element.Attribute("Role") is "CardTitle" or "Description"
+                );
+            violations.AddRange(
+                secondaryCopy.Select(element => FormatViolation(path, element))
+            );
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Card.Text is the single Description region; Card.Body must not add another title or explanatory copy hierarchy."
+        );
+    }
+
+    [Fact]
+    public void GalleryActionCards_KeepDynamicOutputInAPeerCard()
+    {
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+
+        foreach (
+            var path in Directory.EnumerateFiles(
+                viewsRoot,
+                "*.xaml",
+                SearchOption.AllDirectories
+            )
+        )
+        {
+            var document = LoadXaml(path);
+            if (document.Root?.Name.LocalName != "Page")
+            {
+                continue;
+            }
+
+            foreach (
+                var body in document
+                    .Descendants()
+                    .Where(element =>
+                        element.Name.LocalName is "Card.Body" or "IconCard.Body"
+                    )
+            )
+            {
+                var hasLocalAction = body.Descendants().Any(element =>
+                    element.Name.LocalName
+                        is "Button"
+                            or nameof(IconButton)
+                            or nameof(WindowCaptionButton)
+                );
+                if (!hasLocalAction)
+                {
+                    continue;
+                }
+
+                var namedStatus = body
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == "FlourishTextBlock")
+                    .Where(element => (string?)element.Attribute("Role") == "Status")
+                    .Where(element =>
+                        element.Attribute(XName.Get("Name", XamlNamespace)) is not null
+                    );
+                violations.AddRange(
+                    namedStatus.Select(element => FormatViolation(path, element))
+                );
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Dynamic response text must live in an adjacent Output or Result card, not in the action card."
+        );
+    }
+
+    [Fact]
     public void ShellTypography_UsesRootPixelAlignmentAndWpfTextRenderingDefaults()
     {
         var shell = LoadXaml(

@@ -10,14 +10,14 @@
 >
   <Grid>
     <flourish:Chunk
-      Width="360"
-      HorizontalAlignment="Center"
       VerticalAlignment="Center"
       ChunkDescription="Preview a nested navigation destination."
       ChunkMargin="0"
       ChunkTitle="Page1"
     >
       <flourish:Card
+        MaxWidth="360"
+        HorizontalAlignment="Center"
         Title="First child route"
         Text="This placeholder verifies navigation to the first child page."
       />

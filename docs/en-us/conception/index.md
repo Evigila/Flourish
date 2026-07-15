@@ -11,6 +11,8 @@ Flourish treats layout and control selection as parts of the application's meani
 
 Every ordinary section belongs in a `Chunk`. A page may begin with one `ChunkHero` when it needs a leading focal message; otherwise, begin with the first `Chunk`. Do not create a second hierarchy by placing free-standing headings and manually spaced panels beside chunks.
 
+A `Chunk` always spans the available content width. Never place two chunks beside each other in the same row. When related information should appear side by side, use one full-width chunk and arrange several cards inside its body. Use separate full-width chunks only when the topics are independent enough to need separate section headings.
+
 Use the three `Chunk` regions deliberately:
 
 | Region | Rule |
@@ -43,7 +45,9 @@ Choose the surface by semantics:
 | `CardButton` | One action represented by the entire card. Use it for navigation, selection, or another single invocation. Do not place independent interactive controls inside it. |
 | `IconCard` | A non-interactive card whose icon, image, illustration, or preview is part of the information. `Presenter` provides visual context; it does not make the card clickable. |
 
-Use `Title` to name the card's subject, `Text` for a short summary, and `Body` for details, status, controls, or a composed content tree. If a card needs multiple unrelated titles or several competing primary actions, it is probably several cards.
+Give each card exactly one `Title` and one subject. Treat `Text` as the card's Description region and place all supporting explanatory copy there. Do not add another heading or explanatory paragraph inside `Body`. Necessary field labels, option labels, list data, and result values may remain in `Body` because they label or constitute the content rather than create a second copy hierarchy.
+
+If one card would require several subjects or headings, split it into peer cards. When an action produces changing response text, keep the action in its own card and place an adjacent `Output` card for ongoing or raw output, or a `Result` card for a completed outcome. Both cards belong in the same full-width chunk.
 
 ## Use Variant as semantic hierarchy
 
@@ -68,6 +72,8 @@ Color must reinforce meaning rather than carry it alone. Pair status color with 
 
 The parent `Grid`, `StackPanel`, or other layout container controls where a control sits on the page. A control's content-alignment properties organize its internal copy and body. Do not use `Variant`, presenter position, or repeated local margins to perform the parent's layout work.
 
+Cards in the same row must have the same height. When cards wrap onto several rows, use the same spacing between rows as between columns. Prefer a shared spacing resource or a layout container that enforces one consistent gap instead of unrelated per-card margins.
+
 For `Card`, the normal arrangement places the copy above `Body`. `ContentVerticalAlignment="Bottom"` reverses that order, and setting both content alignments to `Center` centers the copy-and-body composition as one unit.
 
 For `IconCard` in `Split` mode, `PresenterPosition` always names the presenter's location; the copy and `Body` stay together on the opposing side. `Top` and `Bottom` positions arrange the copy and body horizontally in that opposing region. The other split positions arrange them vertically. In `Overlay` mode, the presenter fills the surface, `PresenterPosition` is ignored, and the copy/body composition returns to the card-style vertical arrangement.
@@ -87,14 +93,15 @@ The same presenter-centered language applies to `ChunkHero`: `PresenterPosition=
 
 Before considering a page complete, verify that:
 
-1. Every ordinary page section is a `Chunk`, with at most one leading `ChunkHero`.
+1. Every ordinary page section is a full-width `Chunk`, with at most one leading `ChunkHero` and no side-by-side chunks.
 2. Every `ChunkTitle` is concise and every `ChunkDescription` is no more than one short purpose sentence.
-3. Detailed content is in `Card.Title`, `Card.Text`, `Card.Body`, or a necessary plain text region inside `ChunkBody`.
-4. Independent subjects or behaviors are split into independent cards.
-5. Non-interactive, whole-card action, and visual-presenter cases use `Card`, `CardButton`, and `IconCard` respectively.
-6. Variants retain the same semantic meaning across pages.
-7. Theme overrides work in light and dark modes and do not make color the only carrier of meaning.
-8. Internal alignment, presenter position, reading order, and keyboard order agree.
+3. Every card has one title and keeps all explanatory copy in its `Text` Description region.
+4. Independent subjects or behaviors are split into independent cards, and changing output uses an adjacent Output or Result card.
+5. Cards in the same row have the same height, and row and column gaps use the same spacing.
+6. Non-interactive, whole-card action, and visual-presenter cases use `Card`, `CardButton`, and `IconCard` respectively.
+7. Variants retain the same semantic meaning across pages.
+8. Theme overrides work in light and dark modes and do not make color the only carrier of meaning.
+9. Internal alignment, presenter position, reading order, and keyboard order agree.
 
 ## Related content
 

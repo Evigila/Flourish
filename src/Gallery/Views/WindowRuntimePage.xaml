@@ -16,7 +16,9 @@
         ChunkDescription="Control the live shell window."
         ChunkTitle="Shell window"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Window service"
           Text="Resize, position, activate, and change window flags through IWindowService."
         >
@@ -32,17 +34,24 @@
               <flourish:Button Margin="0,0,8,8" Click="RestoreWindow_Click" Content="Restore" />
               <flourish:Button Margin="0,0,8,8" Click="HideBriefly_Click" Content="Hide for 1 second" />
             </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="WindowStatusText" Margin="0,6,0,0" Role="Status" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows the current shell window state.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="WindowStatusText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Manage the notification-area tray icon."
         ChunkTitle="Notification-area tray"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Tray service"
           Text="Enable the tray icon after startup and use it to restore a hidden shell window."
         >
@@ -61,17 +70,24 @@
               <flourish:Button Margin="0,0,8,0" Click="MinimizeToTray_Click" Content="Minimize to tray" />
               <flourish:Button Click="RestoreFromTray_Click" Content="Restore from tray" />
             </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="TrayStatusText" Margin="0,12,0,0" Role="Description" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows tray availability and visibility.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="TrayStatusText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Configure close policy and guards."
         ChunkTitle="Close behavior"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Close controls"
           Text="Choose the default policy and install a disposable guard whose decision can change at runtime."
         >
@@ -88,17 +104,24 @@
               <flourish:Button Margin="0,0,8,0" Click="EvaluateClose_Click" Content="Evaluate guards" />
               <flourish:Button Click="RequestClose_Click" Content="Request app close" />
             </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="CloseStatusText" Margin="0,12,0,0" Role="Description" Text="No close guard registered by this page." />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Result" Text="Shows close policy and guard evaluation.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="CloseStatusText" Role="Status" Text="No close guard registered by this page." />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Manage the profile surface."
         ChunkTitle="Profile flyout"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Profile controls"
           Text="Enable and open the profile surface or replace its content page; restore returns to the startup page type."
         >
@@ -110,51 +133,79 @@
               <flourish:Button Margin="0,0,8,0" Click="UseConfigurationProfilePage_Click" Content="Use configuration page" />
               <flourish:Button Click="RestoreProfilePage_Click" Content="Restore profile page" />
             </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="ProfileStatusText" Margin="0,12,0,0" Role="Description" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows profile availability, visibility, and content.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="ProfileStatusText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Publish modal and non-modal messages."
         ChunkTitle="Messages"
       >
-        <flourish:Card
-          Title="Message service"
-          Text="Await modal choices without blocking application logic or publish non-modal notifications to the shell host."
-        >
-          <flourish:Card.Body>
-            <StackPanel>
-            <WrapPanel>
-              <flourish:Button Margin="0,0,8,8" Click="ShowMessage_Click" Content="Show async message" />
-              <flourish:Button Margin="0,0,8,8" Click="ShowCustomMessage_Click" Content="Show custom choices" />
-            </WrapPanel>
-            <Grid Margin="0,6,0,0">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <StackPanel Margin="0,0,8,0">
-                <flourish:FlourishTextBlock Role="FieldLabel" Text="Notification ID" />
-                <flourish:FlourishTextBox x:Name="NotificationIdBox" Text="gallery.runtime.notice" />
-              </StackPanel>
-              <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                <flourish:FlourishTextBlock Role="FieldLabel" Text="Message" />
-                <flourish:FlourishTextBox x:Name="NotificationMessageBox" Text="A runtime notification from the Gallery." />
-              </StackPanel>
-            </Grid>
-            <WrapPanel Margin="0,14,0,0">
-              <flourish:Button Margin="0,0,8,0" Click="ShowNotification_Click" Content="Show" />
-              <flourish:Button Margin="0,0,8,0" Click="UpsertNotification_Click" Content="Upsert" />
-              <flourish:Button Margin="0,0,8,0" Click="DismissNotification_Click" Content="Dismiss ID" />
-              <flourish:Button Click="DismissAllNotifications_Click" Content="Dismiss all" />
-            </WrapPanel>
-            <flourish:FlourishTextBlock x:Name="MessageStatusText" Margin="0,12,0,0" Role="Status" />
-            <flourish:FlourishTextBlock x:Name="NotificationStatusText" Margin="0,6,0,0" Role="Description" />
-            </StackPanel>
-          </flourish:Card.Body>
-        </flourish:Card>
+        <StackPanel>
+          <UniformGrid Columns="2">
+            <flourish:Card
+              Margin="0,0,8,0"
+              Title="Modal messages"
+              Text="Await a standard or custom choice without blocking application logic."
+            >
+              <flourish:Card.Body>
+                <WrapPanel>
+                  <flourish:Button Margin="0,0,8,8" Click="ShowMessage_Click" Content="Show async message" />
+                  <flourish:Button Margin="0,0,8,8" Click="ShowCustomMessage_Click" Content="Show custom choices" />
+                </WrapPanel>
+              </flourish:Card.Body>
+            </flourish:Card>
+            <flourish:Card Margin="8,0,0,0" Title="Message result" Text="Shows the selected modal choice.">
+              <flourish:Card.Body>
+                <flourish:FlourishTextBlock x:Name="MessageStatusText" Role="Status" />
+              </flourish:Card.Body>
+            </flourish:Card>
+          </UniformGrid>
+          <UniformGrid Margin="0,16,0,0" Columns="2">
+            <flourish:Card
+              Margin="0,0,8,0"
+              Title="Notifications"
+              Text="Publish, update, or dismiss non-modal notifications in the shell host."
+            >
+              <flourish:Card.Body>
+                <StackPanel>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,8,0">
+                      <flourish:FlourishTextBlock Role="FieldLabel" Text="Notification ID" />
+                      <flourish:FlourishTextBox x:Name="NotificationIdBox" Text="gallery.runtime.notice" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                      <flourish:FlourishTextBlock Role="FieldLabel" Text="Message" />
+                      <flourish:FlourishTextBox x:Name="NotificationMessageBox" Text="A runtime notification from the Gallery." />
+                    </StackPanel>
+                  </Grid>
+                  <WrapPanel Margin="0,14,0,0">
+                    <flourish:Button Margin="0,0,8,0" Click="ShowNotification_Click" Content="Show" />
+                    <flourish:Button Margin="0,0,8,0" Click="UpsertNotification_Click" Content="Upsert" />
+                    <flourish:Button Margin="0,0,8,0" Click="DismissNotification_Click" Content="Dismiss ID" />
+                    <flourish:Button Click="DismissAllNotifications_Click" Content="Dismiss all" />
+                  </WrapPanel>
+                </StackPanel>
+              </flourish:Card.Body>
+            </flourish:Card>
+            <flourish:Card Margin="8,0,0,0" Title="Notification result" Text="Shows the current notification operation.">
+              <flourish:Card.Body>
+                <flourish:FlourishTextBlock x:Name="NotificationStatusText" Role="Status" />
+              </flourish:Card.Body>
+            </flourish:Card>
+          </UniformGrid>
+        </StackPanel>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

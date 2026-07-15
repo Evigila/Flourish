@@ -132,7 +132,7 @@
             />
           </UniformGrid>
           <flourish:Card
-            Margin="0,8,0,0"
+            Margin="0,16,0,0"
             Title="Overlay"
             Text="Overlay layers the copy over a full presenter; a page should contain at most one hero."
           />

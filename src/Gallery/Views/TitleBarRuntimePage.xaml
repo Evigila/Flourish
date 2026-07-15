@@ -16,7 +16,9 @@
         ChunkDescription="Update shell identity values."
         ChunkTitle="Identity"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Window identity"
           Text="Title, subtitle, and logo changes are reflected by the existing shell instance."
         >
@@ -54,10 +56,15 @@
               </StackPanel>
               <flourish:Button Grid.Column="2" Margin="8,20,0,0" Click="ApplyLogo_Click" Content="Apply logo" />
               </Grid>
-              <flourish:FlourishTextBlock x:Name="IdentityStatusText" Margin="0,12,0,0" Role="Status" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows the effective title-bar identity.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="IdentityStatusText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
@@ -88,7 +95,9 @@
         ChunkDescription="Bind and exercise asynchronous search."
         ChunkTitle="Runtime search binding"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Search subscription"
           Text="This page owns a disposable asynchronous query subscription shared with the real title-bar search box."
         >
@@ -116,17 +125,24 @@
               <flourish:Button Grid.Column="1" Margin="10,0,0,0" Click="ApplySearchPlaceholder_Click" Content="Set placeholder" />
               <flourish:Button x:Name="ToggleSearchVisibilityButton" Grid.Column="2" Margin="8,0,0,0" Click="ToggleSearchVisibility_Click" />
               </Grid>
-              <flourish:FlourishTextBlock x:Name="SearchStatusText" Margin="0,12,0,0" Role="Status" Text="Waiting for a query." />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows the latest asynchronous query response.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="SearchStatusText" Role="Status" Text="Waiting for a query." />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Toggle complete shell capabilities."
         ChunkTitle="High-level shell features"
       >
-        <flourish:Card
+        <UniformGrid Columns="2">
+          <flourish:Card
+          Margin="0,0,8,0"
           Title="Feature switches"
           Text="Feature switches coordinate complete shell surfaces, while the controls above manage their detailed state."
         >
@@ -137,10 +153,15 @@
                 <flourish:FlourishCheckBox x:Name="ShellFeatureEnabledBox" Margin="18,0,0,0" VerticalAlignment="Center" Content="Enabled" />
                 <flourish:Button Margin="18,0,0,0" Click="ApplyShellFeature_Click" Content="Apply feature" />
               </WrapPanel>
-              <flourish:FlourishTextBlock x:Name="ShellFeatureStatusText" Margin="0,12,0,0" Role="Description" />
             </StackPanel>
           </flourish:Card.Body>
         </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Output" Text="Shows the effective shell feature state.">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock x:Name="ShellFeatureStatusText" Role="Status" />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>
