@@ -39,6 +39,9 @@
     <Compile Update="Controls\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\IconCard.xaml.cs">
+      <DependentUpon>IconCard.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\CheckBox.xaml.cs">
       <DependentUpon>CheckBox.xaml</DependentUpon>
     </Compile>

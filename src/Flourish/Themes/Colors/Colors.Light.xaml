@@ -80,6 +80,9 @@
   <SolidColorBrush x:Key="FlourishScrollbarThumbHoverBrush" Color="#616161" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbPressedBrush" Color="#424242" />
   <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#FAFFFFFF" />
+  <SolidColorBrush x:Key="FlourishCardTonalBackgroundBrush" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="FlourishCardOverlayScrimBrush" Color="#70000000" />
+  <SolidColorBrush x:Key="FlourishCardOverlayForegroundBrush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishCardHoverBrush" Color="#FFF8FBFE" />
   <SolidColorBrush x:Key="FlourishCardPressedBrush" Color="#FFEAF1F7" />
   <SolidColorBrush x:Key="FlourishCardStrokeBrush" Color="#12000000" />

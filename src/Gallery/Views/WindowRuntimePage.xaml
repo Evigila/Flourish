@@ -16,7 +16,7 @@
         ChunkDescription="Resize, position, activate, and change window flags through IWindowService."
         ChunkTitle="Shell window"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Margin="0,0,8,8" Click="SetDemoSize_Click" Content="Set 1100 × 760" />
@@ -30,14 +30,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="WindowStatusText" Margin="0,6,0,0" Role="Status" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="The tray service can be enabled after startup and can restore a hidden shell window."
         ChunkTitle="Notification-area tray"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -54,14 +54,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="TrayStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Choose the default close policy and install a disposable guard whose decision can change at runtime."
         ChunkTitle="Close behavior &amp; guards"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:FlourishComboBox x:Name="CloseBehaviorBox" Width="220" />
@@ -76,14 +76,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="CloseStatusText" Margin="0,12,0,0" Role="Description" Text="No close guard registered by this page." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Enable and open the profile surface or replace its content page at runtime. Restore returns to the startup profile page type."
         ChunkTitle="Profile flyout"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button x:Name="ToggleProfileEnabledButton" Margin="0,0,8,0" Click="ToggleProfileEnabled_Click" />
@@ -93,14 +93,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="ProfileStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Await modal choices without blocking application logic, or publish non-modal notifications to the shell host."
         ChunkTitle="Messages &amp; notifications"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Margin="0,0,8,8" Click="ShowMessage_Click" Content="Show async message" />
@@ -129,7 +129,7 @@
           <flourish:FlourishTextBlock x:Name="MessageStatusText" Margin="0,12,0,0" Role="Status" />
           <flourish:FlourishTextBlock x:Name="NotificationStatusText" Margin="0,6,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

@@ -16,7 +16,7 @@
         ChunkDescription="Progress tasks report twenty updates. Result tasks return a value. A burst demonstrates the service's bounded concurrency."
         ChunkTitle="Queue runtime work"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Margin="0,0,8,8" Click="AddProgressTask_Click" Content="Add progress task" />
@@ -27,7 +27,7 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="ServiceStatusText" Margin="0,6,0,0" Role="Status" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <Grid>
@@ -41,9 +41,9 @@
           ChunkDescription="Queued, running, and cancelling items update through TasksChanged."
           ChunkTitle="Active queue"
         >
-          <flourish:FlourishCard>
+          <flourish:Card>
             <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
-          </flourish:FlourishCard>
+          </flourish:Card>
         </flourish:Chunk>
 
         <flourish:Chunk
@@ -51,9 +51,9 @@
           ChunkDescription="Completion never faults; failures and cancellation are represented in the result object."
           ChunkTitle="Captured outcomes"
         >
-          <flourish:FlourishCard>
+          <flourish:Card>
             <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
-          </flourish:FlourishCard>
+          </flourish:Card>
         </flourish:Chunk>
       </Grid>
     </StackPanel>

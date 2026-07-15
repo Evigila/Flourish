@@ -15,17 +15,18 @@
       <flourish:ChunkHero
         x:Name="HeroPreview"
         ChunkHeroDescription="ChunkHero introduces the page with one focused story. Its body carries actions, while its presenter can host an image, a visual, or a simple color surface."
-        ChunkHeroMode="SplitLeft"
+        PresenterMode="Split"
+        PresenterPosition="Right"
         ChunkHeroTitle="Build every page from meaningful chunks"
       >
         <flourish:ChunkHero.ChunkHeroBody>
           <WrapPanel>
-            <flourish:Button Variant="Filled" Click="SplitLeft_Click" Content="Split left" />
+            <flourish:Button Variant="Filled" Click="PresenterRight_Click" Content="Presenter right" />
             <flourish:Button
               Variant="Tonal"
               Margin="8,0,0,0"
-              Click="SplitRight_Click"
-              Content="Split right"
+              Click="PresenterLeft_Click"
+              Content="Presenter left"
             />
             <flourish:Button
               Variant="Tonal"
@@ -35,7 +36,7 @@
             />
           </WrapPanel>
         </flourish:ChunkHero.ChunkHeroBody>
-        <flourish:ChunkHero.ChunkHeroPresenter>
+        <flourish:ChunkHero.Presenter>
           <Border
             MinHeight="220"
             Background="{DynamicResource FlourishPrimarySurfaceBrush}"
@@ -57,14 +58,14 @@
               />
             </StackPanel>
           </Border>
-        </flourish:ChunkHero.ChunkHeroPresenter>
+        </flourish:ChunkHero.Presenter>
       </flourish:ChunkHero>
 
       <flourish:Chunk
         ChunkDescription="A Chunk owns its heading, optional supporting copy, and one body region. The default margin separates adjacent chunks; the default spacing keeps the heading and body on the same rhythm."
         ChunkTitle="Chunk anatomy"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
@@ -90,7 +91,7 @@
               />
             </StackPanel>
           </Grid>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk ChunkTitle="Optional description">
@@ -112,29 +113,29 @@
 
       <flourish:Chunk
         ChunkDescription="A page should have at most one hero."
-        ChunkTitle="ChunkHero modes"
+        ChunkTitle="ChunkHero presenter layouts"
       >
         <StackPanel>
           <UniformGrid Columns="2" Rows="1">
-            <flourish:FlourishCard Appearance="Standard" Margin="0,0,8,0">
+            <flourish:Card Margin="0,0,8,0">
               <flourish:FlourishTextBlock
                 Role="Paragraph"
-                Text="SplitLeft keeps copy on the left."
+                Text="Split with PresenterPosition=Right keeps the presenter on the right."
               />
-            </flourish:FlourishCard>
-            <flourish:FlourishCard Appearance="Standard" Margin="8,0,0,0">
+            </flourish:Card>
+            <flourish:Card Margin="8,0,0,0">
               <flourish:FlourishTextBlock
                 Role="Paragraph"
-                Text="SplitRight places the presenter first."
+                Text="Split with PresenterPosition=Left places the presenter first."
               />
-            </flourish:FlourishCard>
+            </flourish:Card>
           </UniformGrid>
-          <flourish:FlourishCard Appearance="Standard" Margin="0,8,0,0">
+          <flourish:Card Margin="0,8,0,0">
             <flourish:FlourishTextBlock
               Role="Paragraph"
               Text="Overlay layers the copy over a full presenter."
             />
-          </flourish:FlourishCard>
+          </flourish:Card>
         </StackPanel>
       </flourish:Chunk>
     </StackPanel>

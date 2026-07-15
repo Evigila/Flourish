@@ -16,7 +16,7 @@
         ChunkDescription="The demo handler waits briefly, increments an execution counter, and returns a value through CommandResult."
         ChunkTitle="Runtime command registration"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -40,14 +40,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="CommandResultText" Margin="0,12,0,0" Role="Status" Text="Register the demo command to begin." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Bind Ctrl+Shift+G to the command key above. The shell can resolve and dispatch it globally; the button invokes the same shortcut API directly for a deterministic demo."
         ChunkTitle="Keyboard shortcut"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Margin="0,0,8,0" Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
@@ -56,19 +56,19 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="ShortcutResultText" Margin="0,12,0,0" Role="Description" Text="No shortcut registered by this page." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Both registries expose immutable snapshots and change events for diagnostic or management UIs."
         ChunkTitle="Registry snapshots"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
           <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

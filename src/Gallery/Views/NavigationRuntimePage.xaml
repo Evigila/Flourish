@@ -16,7 +16,7 @@
         ChunkDescription="Move the live panel, tune its width limits, or disable it without recreating the shell."
         ChunkTitle="Navigation panel"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Click="TogglePanel_Click" Content="Open / close" />
@@ -44,14 +44,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="PanelStateText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="The demo adds a new route and a real navigation item. Remove it again to see both tables update immediately."
         ChunkTitle="Live route and menu transaction"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Click="InstallRoute_Click" Content="Install demo route" />
@@ -61,14 +61,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="RouteStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Change cache policy and evict page instances while preserving the registered route."
         ChunkTitle="Page cache"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:Button Click="EnableCache_Click" Content="Enable cache" />
@@ -78,7 +78,7 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="CacheStateText" Margin="0,12,0,0" FontFamily="Consolas" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

@@ -47,14 +47,15 @@ Keep the default `ChunkMargin` and `ChunkSpacing` in most pages so neighboring s
 
 ## ChunkHero
 
-`ChunkHero` is the leading focal section of a page. It combines a title, an optional description, and an action region with a presenter. The presenter is not limited to images: it can host an `Image`, a solid-color `Border`, an illustration, a live preview, or any other content. When `ChunkHeroPresenter` is not set, the text region automatically spans both columns and the default themed hero background remains visible.
+`ChunkHero` is the leading focal section of a page. It combines a title, an optional description, and an action region with a presenter. The presenter is not limited to images: it can host an `Image`, a solid-color `Border`, an illustration, a live preview, or any other content. When `Presenter` is not set, the text region automatically spans both columns and the default themed hero background remains visible.
 
-`ChunkHeroBody` is also a default XAML content property. A hero with only body content can place its child directly inside `ChunkHero`. When a hero has both body and presenter content, the explicit `ChunkHero.ChunkHeroBody` and `ChunkHero.ChunkHeroPresenter` property elements make the two roles clearer.
+`ChunkHeroBody` is also a default XAML content property. A hero with only body content can place its child directly inside `ChunkHero`. When a hero has both body and presenter content, the explicit `ChunkHero.ChunkHeroBody` and `ChunkHero.Presenter` property elements make the two roles clearer.
 
 ```xml
 <flourish:ChunkHero
   ChunkHeroDescription="Build WPF applications with one consistent layout system."
-  ChunkHeroMode="SplitLeft"
+  PresenterMode="Split"
+  PresenterPosition="Right"
   ChunkHeroTitle="Welcome to Flourish">
   <flourish:ChunkHero.ChunkHeroBody>
     <StackPanel Orientation="Horizontal">
@@ -67,9 +68,9 @@ Keep the default `ChunkMargin` and `ChunkSpacing` in most pages so neighboring s
         Content="Read the documentation" />
     </StackPanel>
   </flourish:ChunkHero.ChunkHeroBody>
-  <flourish:ChunkHero.ChunkHeroPresenter>
+  <flourish:ChunkHero.Presenter>
     <Border Background="{DynamicResource FlourishPrimarySurfaceBrush}" />
-  </flourish:ChunkHero.ChunkHeroPresenter>
+  </flourish:ChunkHero.Presenter>
 </flourish:ChunkHero>
 ```
 
@@ -80,19 +81,20 @@ Keep the default `ChunkMargin` and `ChunkSpacing` in most pages so neighboring s
 | `ChunkHeroTitle` | `string` | `""` | The hero heading. |
 | `ChunkHeroDescription` | `string?` | `null` | Optional supporting text below the heading. |
 | `ChunkHeroBody` | `object?` | `null` | Actions or other supporting content associated with the hero message. |
-| `ChunkHeroMode` | `ChunkHeroMode` | `SplitLeft` | Selects how the text region and presenter are arranged. |
-| `ChunkHeroPresenter` | `object?` | `null` | An image, color surface, or any other presentation content for the hero. |
+| `PresenterMode` | `PresenterMode` | `Split` | Selects whether the presenter has a separate region or fills the hero behind its copy. |
+| `PresenterPosition` | `PresenterPosition` | `Right` | Locates `Presenter` in `Split` mode. `ChunkHero` accepts only `Left` and `Right`. |
+| `Presenter` | `object?` | `null` | An image, color surface, or any other presentation content for the hero. |
 | `Margin` | inherited `Thickness` | `0,32,0,0` | Preserves the standard page-top inset; the first ordinary `Chunk` supplies the following separation. |
 
-`ChunkHeroMode` has three values:
+`PresenterMode` and `PresenterPosition` describe the presenter rather than the text region:
 
-| Mode | Arrangement |
+| Settings | Arrangement |
 | --- | --- |
-| `SplitLeft` | The text and `ChunkHeroBody` are on the left; `ChunkHeroPresenter` is on the right. |
-| `SplitRight` | `ChunkHeroPresenter` is on the left; the text and `ChunkHeroBody` are on the right. |
-| `Overlay` | `ChunkHeroPresenter` fills the background; the text and `ChunkHeroBody` are overlaid on it. |
+| `PresenterMode="Split"`, `PresenterPosition="Right"` | `Presenter` is on the right; the text and `ChunkHeroBody` are on the left. This is the default. |
+| `PresenterMode="Split"`, `PresenterPosition="Left"` | `Presenter` is on the left; the text and `ChunkHeroBody` are on the right. |
+| `PresenterMode="Overlay"` | `Presenter` fills the background; the text and `ChunkHeroBody` are overlaid on it. `PresenterPosition` is ignored. |
 
-In `Overlay` mode, choose presenter content that keeps the text readable in both light and dark themes. If an image needs extra contrast treatment, compose it with a translucent color layer inside a `Grid` assigned to `ChunkHeroPresenter`.
+In `Overlay` mode, choose presenter content that keeps the text readable in both light and dark themes. If an image needs extra contrast treatment, compose it with a translucent color layer inside a `Grid` assigned to `Presenter`.
 
 ## Page structure
 
@@ -103,7 +105,8 @@ A typical page consists of one optional `ChunkHero` followed by any number of `C
   <StackPanel>
     <flourish:ChunkHero
       ChunkHeroTitle="Design system"
-      ChunkHeroMode="SplitLeft" />
+      PresenterMode="Split"
+      PresenterPosition="Right" />
 
     <flourish:Chunk ChunkTitle="Foundations" />
     <flourish:Chunk ChunkTitle="Components" />
@@ -117,5 +120,6 @@ Do not place several `ChunkHero` controls on one page, and do not replace sectio
 ## Related content
 
 - [Button](button.md) explains how to represent actions in `ChunkBody` and `ChunkHeroBody`.
+- [Card](card.md) explains how to group information inside a `ChunkBody`.
 - [Typography](../articles/configure-font.md) covers global and page-specific font configuration.
-- The [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) and [ChunkHero API](xref:ArkheideSystem.Flourish.Controls.ChunkHero) list all members.
+- The [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk), [ChunkHero API](xref:ArkheideSystem.Flourish.Controls.ChunkHero), [PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode), and [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) list all members.

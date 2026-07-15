@@ -23,8 +23,9 @@ public sealed class FlourishPublicControlsTests
         [
             typeof(FlourishThemeResources),
             typeof(ButtonVariant),
-            typeof(ChunkHeroMode),
-            typeof(FlourishCardAppearance),
+            typeof(Variant),
+            typeof(PresenterMode),
+            typeof(PresenterPosition),
             typeof(FlourishGridSplitterVariant),
             typeof(FlourishListBoxAppearance),
             typeof(FlourishTextRole),
@@ -248,7 +249,8 @@ public sealed class FlourishPublicControlsTests
             var cardButton = new CardButton();
             var chunk = new Chunk();
             var chunkHero = new ChunkHero();
-            var card = new FlourishCard();
+            var card = new Card();
+            var iconCard = new IconCard();
             var gridSplitter = new FlourishGridSplitter();
             var listBox = new FlourishListBox();
             var scrollViewer = new FlourishScrollViewer();
@@ -271,9 +273,18 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(string.Empty, chunkHero.ChunkHeroTitle);
             Assert.Null(chunkHero.ChunkHeroDescription);
             Assert.Null(chunkHero.ChunkHeroBody);
-            Assert.Equal(ChunkHeroMode.SplitLeft, chunkHero.ChunkHeroMode);
-            Assert.Null(chunkHero.ChunkHeroPresenter);
-            Assert.Equal(FlourishCardAppearance.Standard, card.Appearance);
+            Assert.Equal(PresenterMode.Split, chunkHero.PresenterMode);
+            Assert.Equal(PresenterPosition.Right, chunkHero.PresenterPosition);
+            Assert.Null(chunkHero.Presenter);
+            Assert.Equal(Variant.Standard, card.Variant);
+            Assert.Equal(string.Empty, card.Title);
+            Assert.Equal(string.Empty, card.Text);
+            Assert.Equal(HorizontalAlignment.Stretch, card.ContentHorizontalAlignment);
+            Assert.Equal(VerticalAlignment.Stretch, card.ContentVerticalAlignment);
+            Assert.Null(iconCard.Presenter);
+            Assert.Equal(PresenterMode.Split, iconCard.PresenterMode);
+            Assert.Equal(PresenterPosition.Left, iconCard.PresenterPosition);
+            Assert.IsAssignableFrom<Card>(iconCard);
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
@@ -343,6 +354,92 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
+    public void CardFamily_ExposesVariantsAndDependencyPropertiesRoundTrip()
+    {
+        RunInSta(() =>
+        {
+            var content = new Border();
+            var presenter = new Border();
+            var card = new Card
+            {
+                Variant = Variant.Filled,
+                Title = "Title",
+                Text = "Supporting text",
+                Content = content,
+                ContentHorizontalAlignment = HorizontalAlignment.Right,
+                ContentVerticalAlignment = VerticalAlignment.Bottom,
+            };
+            var iconCard = new IconCard
+            {
+                Presenter = presenter,
+                PresenterMode = PresenterMode.Overlay,
+                PresenterPosition = PresenterPosition.RightBottom,
+            };
+
+            Assert.Equal(
+                new[] { "Elevated", "Standard", "Tonal", "Filled" },
+                Enum.GetNames<Variant>()
+            );
+            Assert.Equal(Variant.Filled, card.Variant);
+            Assert.Equal("Title", card.Title);
+            Assert.Equal("Supporting text", card.Text);
+            Assert.Same(content, card.Content);
+            Assert.Equal(HorizontalAlignment.Right, card.ContentHorizontalAlignment);
+            Assert.Equal(VerticalAlignment.Bottom, card.ContentVerticalAlignment);
+            Assert.Same(presenter, iconCard.Presenter);
+            Assert.Equal(PresenterMode.Overlay, iconCard.PresenterMode);
+            Assert.Equal(PresenterPosition.RightBottom, iconCard.PresenterPosition);
+
+            var assembly = typeof(Card).Assembly;
+            Assert.Null(assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCard"));
+            Assert.Null(
+                assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCardAppearance")
+            );
+        });
+    }
+
+    [Fact]
+    public void IconCard_OwnsPresenterLogicalContentBeforeAndAfterReplacement()
+    {
+        RunInSta(() =>
+        {
+            var dataContext = new object();
+            var body = new Border();
+            var firstPresenter = new Border();
+            var replacementPresenter = new Border();
+            var card = new IconCard
+            {
+                DataContext = dataContext,
+                Content = body,
+                Presenter = firstPresenter,
+            };
+            card.Resources["CardResource"] = "Available";
+
+            Assert.Same(card, LogicalTreeHelper.GetParent(body));
+            Assert.Same(card, LogicalTreeHelper.GetParent(firstPresenter));
+            Assert.Same(dataContext, firstPresenter.DataContext);
+            Assert.Equal("Available", firstPresenter.FindResource("CardResource"));
+            Assert.Equal(
+                new object[] { body, firstPresenter },
+                LogicalTreeHelper.GetChildren(card).Cast<object>()
+            );
+
+            card.Presenter = replacementPresenter;
+
+            Assert.Null(LogicalTreeHelper.GetParent(firstPresenter));
+            Assert.Same(card, LogicalTreeHelper.GetParent(replacementPresenter));
+
+            card.ClearValue(IconCard.PresenterProperty);
+
+            Assert.Null(LogicalTreeHelper.GetParent(replacementPresenter));
+            Assert.Equal(
+                new object[] { body },
+                LogicalTreeHelper.GetChildren(card).Cast<object>()
+            );
+        });
+    }
+
+    [Fact]
     public void ChunkFamily_DependencyPropertiesRoundTripAndChunkOwnsImplicitContent()
     {
         RunInSta(() =>
@@ -363,8 +460,9 @@ public sealed class FlourishPublicControlsTests
                 ChunkHeroTitle = "Hero",
                 ChunkHeroDescription = "Leading copy",
                 ChunkHeroBody = heroBody,
-                ChunkHeroMode = ChunkHeroMode.Overlay,
-                ChunkHeroPresenter = presenter,
+                PresenterMode = PresenterMode.Overlay,
+                PresenterPosition = PresenterPosition.Left,
+                Presenter = presenter,
             };
 
             Assert.Equal("Section", chunk.ChunkTitle);
@@ -379,8 +477,9 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal("Hero", hero.ChunkHeroTitle);
             Assert.Equal("Leading copy", hero.ChunkHeroDescription);
             Assert.Same(heroBody, hero.ChunkHeroBody);
-            Assert.Equal(ChunkHeroMode.Overlay, hero.ChunkHeroMode);
-            Assert.Same(presenter, hero.ChunkHeroPresenter);
+            Assert.Equal(PresenterMode.Overlay, hero.PresenterMode);
+            Assert.Equal(PresenterPosition.Left, hero.PresenterPosition);
+            Assert.Same(presenter, hero.Presenter);
             Assert.Equal(
                 nameof(ChunkHero.ChunkHeroBody),
                 typeof(ChunkHero).GetCustomAttribute<ContentPropertyAttribute>()?.Name
@@ -420,7 +519,7 @@ public sealed class FlourishPublicControlsTests
             {
                 DataContext = dataContext,
                 ChunkHeroBody = heroBody,
-                ChunkHeroPresenter = heroPresenter,
+                Presenter = heroPresenter,
             };
 
             Assert.Same(hero, LogicalTreeHelper.GetParent(heroBody));
@@ -433,7 +532,7 @@ public sealed class FlourishPublicControlsTests
             );
 
             hero.ChunkHeroBody = null;
-            hero.ChunkHeroPresenter = null;
+            hero.Presenter = null;
 
             Assert.Null(LogicalTreeHelper.GetParent(heroBody));
             Assert.Null(LogicalTreeHelper.GetParent(heroPresenter));
@@ -473,13 +572,28 @@ public sealed class FlourishPublicControlsTests
 
             Assert.Throws<ArgumentException>(() => button.Variant = (ButtonVariant)(-1));
             Assert.Throws<ArgumentException>(() =>
-                new ChunkHero().ChunkHeroMode = (ChunkHeroMode)(-1)
+                new ChunkHero().PresenterMode = (PresenterMode)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new ChunkHero().PresenterPosition = PresenterPosition.Top
             );
             Assert.Throws<ArgumentException>(() =>
                 new CardButton().IconPosition = (Dock)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
-                new FlourishCard().Appearance = (FlourishCardAppearance)(-1)
+                new Card().Variant = (Variant)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new Card().ContentHorizontalAlignment = (HorizontalAlignment)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new Card().ContentVerticalAlignment = (VerticalAlignment)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new IconCard().PresenterMode = (PresenterMode)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new IconCard().PresenterPosition = (PresenterPosition)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
                 new FlourishGridSplitter().Variant = (FlourishGridSplitterVariant)(-1)

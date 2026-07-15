@@ -16,7 +16,7 @@
         ChunkDescription="Title and subtitle changes are reflected by the existing shell instance."
         ChunkTitle="Identity"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <Grid>
             <Grid.ColumnDefinitions>
@@ -52,14 +52,14 @@
             </Grid>
             <flourish:FlourishTextBlock x:Name="IdentityStatusText" Margin="0,12,0,0" Role="Status" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Each title-bar element can be shown or hidden independently; breadcrumb behavior has an additional display policy."
         ChunkTitle="Element visibility"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <WrapPanel>
               <flourish:FlourishComboBox x:Name="TitleBarElementBox" Width="220" SelectionChanged="TitleBarElementBox_SelectionChanged" />
@@ -71,14 +71,14 @@
               <flourish:Button Margin="18,0,0,0" Click="ApplyBreadcrumbMode_Click" Content="Apply breadcrumb mode" />
             </WrapPanel>
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="This page owns a disposable asynchronous query subscription. Type here or in the real title-bar search box to exercise it."
         ChunkTitle="Runtime search binding"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <Grid>
             <Grid.ColumnDefinitions>
@@ -104,14 +104,14 @@
             </Grid>
             <flourish:FlourishTextBlock x:Name="SearchStatusText" Margin="0,12,0,0" Role="Status" Text="Waiting for a query." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Feature switches coordinate whole shell surfaces, while the controls above manage their detailed state."
         ChunkTitle="High-level shell features"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <WrapPanel>
               <flourish:FlourishComboBox x:Name="ShellFeatureBox" Width="220" SelectionChanged="ShellFeatureBox_SelectionChanged" />
@@ -120,7 +120,7 @@
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="ShellFeatureStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

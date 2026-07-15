@@ -16,7 +16,7 @@
         ChunkDescription="Add an action for this page, then use the actual shell toolbar button above the page to execute the runtime command."
         ChunkTitle="Dynamic toolbar"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <WrapPanel>
               <flourish:Button Click="AddToolbarItem_Click" Content="Add / update action" />
@@ -29,14 +29,14 @@
             <flourish:FlourishTextBlock x:Name="ToolbarStateText" Margin="0,12,0,0" Role="Description" />
             <flourish:FlourishTextBlock x:Name="CommandLogText" Margin="0,8,0,0" FontFamily="Consolas" Role="Status" Text="The toolbar command has not run yet." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Update persistent and timed status items, shell indicators, and the visibility of the status bar itself."
         ChunkTitle="Status bar"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <WrapPanel>
               <StackPanel Margin="0,0,10,0">
@@ -56,14 +56,14 @@
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="StatusStateText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Register a WPF element in ContentHeader. The registration can be disabled, reordered, replaced or removed while the shell is visible."
         ChunkTitle="Custom shell region"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <WrapPanel>
               <flourish:Button Click="AddRegion_Click" Content="Add header content" />
@@ -73,7 +73,7 @@
             </WrapPanel>
             <flourish:FlourishTextBlock x:Name="RegionStateText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

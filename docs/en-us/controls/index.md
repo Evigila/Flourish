@@ -7,7 +7,7 @@ description: Learn the layout rules, interaction semantics, and usage of Flouris
 
 Flourish controls are explicit custom controls for WPF applications. They use Flourish theme, typography, and interaction resources without installing implicit styles for WPF base types.
 
-Every page should place its content in [Chunk](chunk.md) controls to establish predictable sections and spacing. Actions within those sections use [Button](button.md) and its specialized derivatives to communicate their intent.
+Every page should place its content in [Chunk](chunk.md) controls to establish predictable sections and spacing. Actions within those sections use [Button](button.md) and its specialized derivatives to communicate their intent, while [Card](card.md) and `IconCard` group non-interactive information on themed surfaces.
 
 ## Get started
 
@@ -35,5 +35,6 @@ Reference controls in XAML through the `http://schemas.arkheide.system/flourish`
 
 - [Chunk](chunk.md): page sections, page-leading hero regions, and content spacing.
 - [Button](button.md): ordinary, icon, card, and window-caption buttons.
+- [Card](card.md): non-interactive information surfaces and optional icon or image presenters.
 
 The remaining controls will move into this section as their refactoring is completed. For now, the [control library overview](../articles/control-library.md) describes the migration status.

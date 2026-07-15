@@ -16,7 +16,7 @@
         ChunkDescription="The configuration service exposes the merged value from every registered provider."
         ChunkTitle="Effective configuration"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -31,14 +31,14 @@
           <flourish:FlourishTextBlock x:Name="ReadValueText" Margin="0,12,0,0" Role="Status" Text="No value read yet." />
           <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,6,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Set, append, and remove use an atomic file replacement. A successful write immediately reloads the effective configuration."
         ChunkTitle="Transactional appsettings update"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -62,14 +62,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="WriteResultText" Margin="0,12,0,0" Role="Description" Text="No runtime update yet." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Choose a built-in locale or enter the identifier of a locale registered by the host."
         ChunkTitle="Runtime locale"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -84,14 +84,14 @@
           </Grid>
           <flourish:FlourishTextBlock x:Name="LocaleStatusText" Margin="0,12,0,0" Role="Status" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Register a lang_&lt;locale&gt;.json file, reload it after external edits, and remove that source through its registration handle."
         ChunkTitle="Runtime locale files"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -107,7 +107,7 @@
           </Grid>
           <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Margin="0,12,0,0" Role="Description" Text="No locale file registered by this page." />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

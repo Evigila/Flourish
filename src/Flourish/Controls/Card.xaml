@@ -3,8 +3,146 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
+  <ControlTemplate x:Key="CardTemplate" TargetType="{x:Type controls:Card}">
+    <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+      <Border
+        x:Name="ShadowChrome"
+        Background="{TemplateBinding Background}"
+        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+        Effect="{DynamicResource FlourishElevation1Effect}"
+        IsHitTestVisible="False"
+        Visibility="Collapsed"
+      />
+      <Border
+        x:Name="SurfaceChrome"
+        Padding="{TemplateBinding Padding}"
+        Background="{TemplateBinding Background}"
+        BorderBrush="{TemplateBinding BorderBrush}"
+        BorderThickness="{TemplateBinding BorderThickness}"
+        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+      >
+        <Grid x:Name="BuiltInContentHost">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <StackPanel
+            x:Name="CopyHost"
+            Grid.Row="0"
+            HorizontalAlignment="{TemplateBinding ContentHorizontalAlignment}"
+            VerticalAlignment="{TemplateBinding ContentVerticalAlignment}"
+          >
+            <controls:FlourishTextBlock
+              x:Name="TitleHost"
+              Foreground="{TemplateBinding Foreground}"
+              Role="CardTitle"
+              Text="{TemplateBinding Title}"
+            />
+            <controls:FlourishTextBlock
+              x:Name="TextHost"
+              Margin="{DynamicResource FlourishCardTextSpacing}"
+              Foreground="{TemplateBinding Foreground}"
+              Role="Description"
+              Text="{TemplateBinding Text}"
+            />
+          </StackPanel>
+          <ContentPresenter
+            x:Name="ContentHost"
+            Grid.Row="1"
+            Margin="{DynamicResource FlourishCardContentSpacing}"
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+            Content="{TemplateBinding Content}"
+            ContentStringFormat="{TemplateBinding ContentStringFormat}"
+            ContentTemplate="{TemplateBinding ContentTemplate}"
+            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+            TextElement.Foreground="{TemplateBinding Foreground}"
+          />
+        </Grid>
+      </Border>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger Property="Variant" Value="Elevated">
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
+      </Trigger>
+      <Trigger Property="ContentHorizontalAlignment" Value="Left">
+        <Setter TargetName="TitleHost" Property="TextAlignment" Value="Left" />
+        <Setter TargetName="TextHost" Property="TextAlignment" Value="Left" />
+      </Trigger>
+      <Trigger Property="ContentHorizontalAlignment" Value="Center">
+        <Setter TargetName="TitleHost" Property="TextAlignment" Value="Center" />
+        <Setter TargetName="TextHost" Property="TextAlignment" Value="Center" />
+      </Trigger>
+      <Trigger Property="ContentHorizontalAlignment" Value="Right">
+        <Setter TargetName="TitleHost" Property="TextAlignment" Value="Right" />
+        <Setter TargetName="TextHost" Property="TextAlignment" Value="Right" />
+      </Trigger>
+      <Trigger Property="Title" Value="">
+        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="TextHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Title" Value="{x:Null}">
+        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="TextHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Text" Value="">
+        <Setter TargetName="TextHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <Trigger Property="Text" Value="{x:Null}">
+        <Setter TargetName="TextHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="" />
+          <Condition Property="Text" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="{x:Null}" />
+          <Condition Property="Text" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="" />
+          <Condition Property="Text" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="{x:Null}" />
+          <Condition Property="Text" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Grid.Row" Value="0" />
+        <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Opacity" Value="0.62" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-  <Style TargetType="{x:Type controls:FlourishCard}">
+  <Style TargetType="{x:Type controls:Card}">
     <Setter Property="Padding" Value="{DynamicResource FlourishCardPadding}" />
     <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
@@ -12,61 +150,18 @@
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:FlourishCard}">
-          <Grid>
-            <Border
-              x:Name="ShadowChrome"
-              Background="{DynamicResource FlourishNeutralForeground1Brush}"
-              CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-              IsHitTestVisible="False"
-              Visibility="Collapsed"
-            />
-            <Border
-              x:Name="SurfaceChrome"
-              Padding="{TemplateBinding Padding}"
-              Background="{TemplateBinding Background}"
-              BorderBrush="{TemplateBinding BorderBrush}"
-              BorderThickness="{TemplateBinding BorderThickness}"
-              CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-              SnapsToDevicePixels="True"
-            >
-              <ContentPresenter
-                x:Name="ContentHost"
-                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                Content="{TemplateBinding Content}"
-                ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                ContentTemplate="{TemplateBinding ContentTemplate}"
-                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-              />
-            </Border>
-          </Grid>
-          <ControlTemplate.Triggers>
-            <Trigger Property="Appearance" Value="Subtle">
-              <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground2Brush}" />
-            </Trigger>
-            <Trigger Property="Appearance" Value="Accent">
-              <Setter Property="Background" Value="{DynamicResource FlourishAccentSurfaceBrush}" />
-            </Trigger>
-            <Trigger Property="Appearance" Value="Elevated">
-              <Setter TargetName="ShadowChrome" Property="Effect" Value="{DynamicResource FlourishElevation1Effect}" />
-              <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
-            </Trigger>
-            <Trigger Property="Appearance" Value="Hero">
-              <Setter Property="Padding" Value="{DynamicResource FlourishHeroCardPadding}" />
-              <Setter Property="Background" Value="{DynamicResource FlourishHeroBackgroundBrush}" />
-              <Setter TargetName="ShadowChrome" Property="Effect" Value="{DynamicResource FlourishElevation2Effect}" />
-              <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-              <Setter Property="Opacity" Value="0.62" />
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
+    <Setter Property="ContentHorizontalAlignment" Value="Stretch" />
+    <Setter Property="ContentVerticalAlignment" Value="Stretch" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Template" Value="{StaticResource CardTemplate}" />
+    <Style.Triggers>
+      <Trigger Property="Variant" Value="Tonal">
+        <Setter Property="Background" Value="{DynamicResource FlourishCardTonalBackgroundBrush}" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Filled">
+        <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
+      </Trigger>
+    </Style.Triggers>
   </Style>
-
 </ResourceDictionary>

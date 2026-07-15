@@ -47,14 +47,15 @@ description: 使用 Chunk 与 ChunkHero 建立 Flourish 页面的章节、页首
 
 ## ChunkHero
 
-`ChunkHero` 是页面的首焦章节。它将标题、可选简介和操作区与一个展示区组合。展示区不限于图片：它可以承载 `Image`、纯色 `Border`、插图、动态预览或其他任意内容。未设置 `ChunkHeroPresenter` 时，文字区会自动跨越全部两列，并且仍使用默认主题 Hero 背景。
+`ChunkHero` 是页面的首焦章节。它将标题、可选简介和操作区与一个展示区组合。展示区不限于图片：它可以承载 `Image`、纯色 `Border`、插图、动态预览或其他任意内容。未设置 `Presenter` 时，文字区会自动跨越全部两列，并且仍使用默认主题 Hero 背景。
 
-`ChunkHeroBody` 也是默认 XAML 内容属性。只有主体时可以将子元素直接写在 `ChunkHero` 中；同时设置主体与展示区时，显式使用 `ChunkHero.ChunkHeroBody` 和 `ChunkHero.ChunkHeroPresenter` 属性元素会更清晰。
+`ChunkHeroBody` 也是默认 XAML 内容属性。只有主体时可以将子元素直接写在 `ChunkHero` 中；同时设置主体与展示区时，显式使用 `ChunkHero.ChunkHeroBody` 和 `ChunkHero.Presenter` 属性元素会更清晰。
 
 ```xml
 <flourish:ChunkHero
   ChunkHeroDescription="在一个稳定的布局系统中构建 WPF 应用。"
-  ChunkHeroMode="SplitLeft"
+  PresenterMode="Split"
+  PresenterPosition="Right"
   ChunkHeroTitle="欢迎使用 Flourish">
   <flourish:ChunkHero.ChunkHeroBody>
     <StackPanel Orientation="Horizontal">
@@ -67,9 +68,9 @@ description: 使用 Chunk 与 ChunkHero 建立 Flourish 页面的章节、页首
         Content="阅读文档" />
     </StackPanel>
   </flourish:ChunkHero.ChunkHeroBody>
-  <flourish:ChunkHero.ChunkHeroPresenter>
+  <flourish:ChunkHero.Presenter>
     <Border Background="{DynamicResource FlourishPrimarySurfaceBrush}" />
-  </flourish:ChunkHero.ChunkHeroPresenter>
+  </flourish:ChunkHero.Presenter>
 </flourish:ChunkHero>
 ```
 
@@ -80,19 +81,20 @@ description: 使用 Chunk 与 ChunkHero 建立 Flourish 页面的章节、页首
 | `ChunkHeroTitle` | `string` | `""` | 首焦区标题。 |
 | `ChunkHeroDescription` | `string?` | `null` | 标题下的可选简介。 |
 | `ChunkHeroBody` | `object?` | `null` | 与首焦信息相关的操作或其他辅助内容。 |
-| `ChunkHeroMode` | `ChunkHeroMode` | `SplitLeft` | 选择文字区和展示区的排列方式。 |
-| `ChunkHeroPresenter` | `object?` | `null` | 首焦区的图片、色块或其他展示内容。 |
+| `PresenterMode` | `PresenterMode` | `Split` | 选择独立展示区域，或让展示内容在文字后方铺满首焦区。 |
+| `PresenterPosition` | `PresenterPosition` | `Right` | 在 `Split` 模式下设置 `Presenter` 的位置；`ChunkHero` 仅接受 `Left` 与 `Right`。 |
+| `Presenter` | `object?` | `null` | 首焦区的图片、色块或其他展示内容。 |
 | `Margin` | 继承的 `Thickness` | `0,32,0,0` | 保持标准页面顶部留白；第一个普通 `Chunk` 提供后续分隔。 |
 
-`ChunkHeroMode` 有三种取值：
+`PresenterMode` 与 `PresenterPosition` 始终描述展示内容，而不是文字区域：
 
-| 模式 | 排列 |
+| 设置 | 排列 |
 | --- | --- |
-| `SplitLeft` | 文字和 `ChunkHeroBody` 在左侧，`ChunkHeroPresenter` 在右侧。 |
-| `SplitRight` | `ChunkHeroPresenter` 在左侧，文字和 `ChunkHeroBody` 在右侧。 |
-| `Overlay` | `ChunkHeroPresenter` 铺满背景，文字和 `ChunkHeroBody` 叠加在其上。 |
+| `PresenterMode="Split"`、`PresenterPosition="Right"` | `Presenter` 在右侧，文字和 `ChunkHeroBody` 在左侧；这是默认设置。 |
+| `PresenterMode="Split"`、`PresenterPosition="Left"` | `Presenter` 在左侧，文字和 `ChunkHeroBody` 在右侧。 |
+| `PresenterMode="Overlay"` | `Presenter` 铺满背景，文字和 `ChunkHeroBody` 叠加在其上；`PresenterPosition` 被忽略。 |
 
-使用 `Overlay` 时，应选择能在亮色与暗色主题下都保持文字可读的展示内容。如果一张图片需要额外的对比度处理，可以先在 `ChunkHeroPresenter` 内用 `Grid` 组合图片与半透明色层。
+使用 `Overlay` 时，应选择能在亮色与暗色主题下都保持文字可读的展示内容。如果一张图片需要额外的对比度处理，可以先在 `Presenter` 内用 `Grid` 组合图片与半透明色层。
 
 ## 页面结构
 
@@ -103,7 +105,8 @@ description: 使用 Chunk 与 ChunkHero 建立 Flourish 页面的章节、页首
   <StackPanel>
     <flourish:ChunkHero
       ChunkHeroTitle="设计系统"
-      ChunkHeroMode="SplitLeft" />
+      PresenterMode="Split"
+      PresenterPosition="Right" />
 
     <flourish:Chunk ChunkTitle="基础" />
     <flourish:Chunk ChunkTitle="组件" />
@@ -117,5 +120,6 @@ description: 使用 Chunk 与 ChunkHero 建立 Flourish 页面的章节、页首
 ## 相关内容
 
 - [Button](button.md)说明如何在 `ChunkBody` 和 `ChunkHeroBody` 中表达操作。
+- [Card](card.md)说明如何在 `ChunkBody` 内组织信息。
 - [排版](../articles/configure-font.md)说明全局和页面字体配置。
-- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) 与 [ChunkHero API](xref:ArkheideSystem.Flourish.Controls.ChunkHero) 列出完整成员。
+- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk)、[ChunkHero API](xref:ArkheideSystem.Flourish.Controls.ChunkHero)、[PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode) 与 [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition)列出完整成员。

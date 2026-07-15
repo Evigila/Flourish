@@ -16,7 +16,7 @@
         ChunkDescription="Semantic roles provide a reusable hierarchy for headings, supporting copy, paragraphs, labels, and status text."
         ChunkTitle="Typography roles"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <UniformGrid Columns="3">
             <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Body" Text="Body - regular content" />
             <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Paragraph" Text="Paragraph - readable long-form copy" />
@@ -31,7 +31,7 @@
             <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Status" Text="Status - ready" />
             <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Icon" Text="&#xE8D2;" />
           </UniformGrid>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <Grid>
@@ -45,7 +45,7 @@
           ChunkDescription="Form controls share the same compact geometry and semantic interaction states."
           ChunkTitle="Inputs and selection"
         >
-          <flourish:FlourishCard>
+          <flourish:Card>
             <StackPanel>
               <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
               <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
@@ -76,7 +76,7 @@
                 <flourish:FlourishComboBoxItem Content="Comfortable density" />
               </flourish:FlourishComboBox>
             </StackPanel>
-          </flourish:FlourishCard>
+          </flourish:Card>
         </flourish:Chunk>
 
         <flourish:Chunk
@@ -84,7 +84,7 @@
           ChunkDescription="List and scrolling surfaces retain native keyboard, wheel, and virtualization behavior."
           ChunkTitle="Lists and scrolling"
         >
-          <flourish:FlourishCard>
+          <flourish:Card>
             <StackPanel>
               <flourish:FlourishTextBlock Role="FieldLabel" Text="LIST BOX" />
               <flourish:FlourishListBox Height="104" SelectedIndex="0">
@@ -103,57 +103,10 @@
                 </StackPanel>
               </flourish:FlourishScrollViewer>
             </StackPanel>
-          </flourish:FlourishCard>
+          </flourish:Card>
         </flourish:Chunk>
       </Grid>
 
-      <flourish:Chunk
-        ChunkDescription="Choose tonal, hero, or elevated surfaces according to content hierarchy rather than wrapping every section in the same card."
-        ChunkTitle="Card appearances"
-      >
-        <UniformGrid Columns="3">
-          <Border Padding="0,0,8,0">
-            <flourish:FlourishCard Appearance="Standard">
-              <StackPanel>
-                <flourish:FlourishTextBlock Role="CardTitle" Text="Standard card" />
-                <flourish:FlourishTextBlock Role="Description" Text="A quiet surface for grouped content." />
-              </StackPanel>
-            </flourish:FlourishCard>
-          </Border>
-          <Border Padding="4,0">
-            <flourish:FlourishCard Appearance="Subtle">
-              <StackPanel>
-                <flourish:FlourishTextBlock Role="CardTitle" Text="Subtle card" />
-                <flourish:FlourishTextBlock Role="Paragraph" Text="Compact supporting content stays visually calm." />
-              </StackPanel>
-            </flourish:FlourishCard>
-          </Border>
-          <Border Padding="8,0,0,0">
-            <flourish:FlourishCard Appearance="Accent">
-              <StackPanel>
-                <flourish:FlourishTextBlock Role="CardTitle" Text="Accent card" />
-                <flourish:FlourishTextBlock Role="Description" Text="A tonal surface carries stronger emphasis." />
-              </StackPanel>
-            </flourish:FlourishCard>
-          </Border>
-          <Border Padding="0,0,8,0">
-            <flourish:FlourishCard Appearance="Hero">
-              <StackPanel>
-                <flourish:FlourishTextBlock Role="CardTitle" Text="Hero card" />
-                <flourish:FlourishTextBlock Role="Paragraph" Text="Use for a single prominent introduction or showcase." />
-              </StackPanel>
-            </flourish:FlourishCard>
-          </Border>
-          <Border Padding="4,0">
-            <flourish:FlourishCard Appearance="Elevated">
-              <StackPanel>
-                <flourish:FlourishTextBlock Role="CardTitle" Text="Elevated card" />
-                <flourish:FlourishTextBlock Role="Description" Text="Reserved elevation separates display content from its background." />
-              </StackPanel>
-            </flourish:FlourishCard>
-          </Border>
-        </UniformGrid>
-      </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>
 </Page>

@@ -9,19 +9,6 @@ using WpfControl = System.Windows.Controls.Control;
 
 namespace ArkheideSystem.Flourish.Controls;
 
-/// <summary>Describes how a <see cref="ChunkHero" /> arranges its copy and presenter.</summary>
-public enum ChunkHeroMode
-{
-    /// <summary>Places the text on the left and the presenter on the right.</summary>
-    SplitLeft,
-
-    /// <summary>Places the presenter on the left and the text on the right.</summary>
-    SplitRight,
-
-    /// <summary>Places the presenter behind the overlaid text.</summary>
-    Overlay,
-}
-
 /// <summary>
 /// Defines the leading page section with copy, action content, and a flexible visual presenter.
 /// </summary>
@@ -63,22 +50,34 @@ public class ChunkHero : WpfControl
             new FrameworkPropertyMetadata(null, OnLogicalContentChanged)
         );
 
-    /// <summary>Identifies the <see cref="ChunkHeroMode" /> dependency property.</summary>
-    public static readonly DependencyProperty ChunkHeroModeProperty =
+    /// <summary>Identifies the <see cref="PresenterMode" /> dependency property.</summary>
+    public static readonly DependencyProperty PresenterModeProperty =
         DependencyProperty.Register(
-            nameof(ChunkHeroMode),
-            typeof(ChunkHeroMode),
+            nameof(PresenterMode),
+            typeof(PresenterMode),
             typeof(ChunkHero),
             new FrameworkPropertyMetadata(
-                global::ArkheideSystem.Flourish.Controls.ChunkHeroMode.SplitLeft
+                global::ArkheideSystem.Flourish.Controls.PresenterMode.Split
             ),
-            IsChunkHeroModeValid
+            IsPresenterModeValid
         );
 
-    /// <summary>Identifies the <see cref="ChunkHeroPresenter" /> dependency property.</summary>
-    public static readonly DependencyProperty ChunkHeroPresenterProperty =
+    /// <summary>Identifies the <see cref="PresenterPosition" /> dependency property.</summary>
+    public static readonly DependencyProperty PresenterPositionProperty =
         DependencyProperty.Register(
-            nameof(ChunkHeroPresenter),
+            nameof(PresenterPosition),
+            typeof(PresenterPosition),
+            typeof(ChunkHero),
+            new FrameworkPropertyMetadata(
+                global::ArkheideSystem.Flourish.Controls.PresenterPosition.Right
+            ),
+            IsPresenterPositionValid
+        );
+
+    /// <summary>Identifies the <see cref="Presenter" /> dependency property.</summary>
+    public static readonly DependencyProperty PresenterProperty =
+        DependencyProperty.Register(
+            nameof(Presenter),
             typeof(object),
             typeof(ChunkHero),
             new FrameworkPropertyMetadata(null, OnLogicalContentChanged)
@@ -113,21 +112,32 @@ public class ChunkHero : WpfControl
         set => SetValue(ChunkHeroBodyProperty, value);
     }
 
-    /// <summary>Gets or sets how the hero copy and presenter are arranged.</summary>
-    public ChunkHeroMode ChunkHeroMode
+    /// <summary>Gets or sets whether the presenter is split from or overlaid by the hero copy.</summary>
+    public PresenterMode PresenterMode
     {
-        get => (ChunkHeroMode)GetValue(ChunkHeroModeProperty);
-        set => SetValue(ChunkHeroModeProperty, value);
+        get => (PresenterMode)GetValue(PresenterModeProperty);
+        set => SetValue(PresenterModeProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the presenter position in <see cref="Controls.PresenterMode.Split" /> mode.
+    /// Only <see cref="Controls.PresenterPosition.Left" /> and
+    /// <see cref="Controls.PresenterPosition.Right" /> are supported.
+    /// </summary>
+    public PresenterPosition PresenterPosition
+    {
+        get => (PresenterPosition)GetValue(PresenterPositionProperty);
+        set => SetValue(PresenterPositionProperty, value);
     }
 
     /// <summary>
     /// Gets or sets the visual content displayed beside or behind the hero copy. This can be an
     /// image, a color surface, or any other presentable object.
     /// </summary>
-    public object? ChunkHeroPresenter
+    public object? Presenter
     {
-        get => GetValue(ChunkHeroPresenterProperty);
-        set => SetValue(ChunkHeroPresenterProperty, value);
+        get => GetValue(PresenterProperty);
+        set => SetValue(PresenterProperty, value);
     }
 
     /// <inheritdoc />
@@ -153,9 +163,14 @@ public class ChunkHero : WpfControl
     /// <inheritdoc />
     protected override IEnumerator LogicalChildren => EnumerateLogicalChildren();
 
-    private static bool IsChunkHeroModeValid(object value)
+    private static bool IsPresenterModeValid(object value)
     {
-        return value is ChunkHeroMode mode && Enum.IsDefined(mode);
+        return value is PresenterMode mode && Enum.IsDefined(mode);
+    }
+
+    private static bool IsPresenterPositionValid(object value)
+    {
+        return value is PresenterPosition.Left or PresenterPosition.Right;
     }
 
     private static Geometry CreateRoundedRectangleClip(
@@ -269,9 +284,9 @@ public class ChunkHero : WpfControl
             yield return ChunkHeroBody;
         }
 
-        if (ChunkHeroPresenter is not null)
+        if (Presenter is not null)
         {
-            yield return ChunkHeroPresenter;
+            yield return Presenter;
         }
     }
 

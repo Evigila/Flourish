@@ -9,10 +9,11 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         ChunkHeroDescription="Every page calls Flourish APIs directly. Change configuration, appearance, navigation, shell surfaces, commands, window behavior, and background work without restarting the application."
-        ChunkHeroMode="SplitLeft"
+        PresenterMode="Split"
+        PresenterPosition="Right"
         ChunkHeroTitle="Flourish Gallery"
       >
-        <flourish:ChunkHero.ChunkHeroPresenter>
+        <flourish:ChunkHero.Presenter>
           <Border MinHeight="180" Background="{DynamicResource FlourishHeroBackgroundBrush}" CornerRadius="12">
             <flourish:FlourishTextBlock
               HorizontalAlignment="Center"
@@ -23,7 +24,7 @@
               Text="&#xE950;"
             />
           </Border>
-        </flourish:ChunkHero.ChunkHeroPresenter>
+        </flourish:ChunkHero.Presenter>
       </flourish:ChunkHero>
 
       <flourish:Chunk

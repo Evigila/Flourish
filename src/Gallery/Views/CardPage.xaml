@@ -1,0 +1,182 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.CardPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:FlourishScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto"
+  >
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        ChunkHeroDescription="Card groups related information on a themed surface. IconCard adds a presenter without changing the title, text, content, or alignment contract."
+        ChunkHeroTitle="Card"
+      />
+
+      <flourish:Chunk
+        ChunkDescription="Variant selects the surface treatment. Standard is the default, Tonal is a quieter gray surface, Filled uses the primary color, and Elevated separates the card from its background."
+        ChunkTitle="Card variants"
+      >
+        <UniformGrid Columns="2">
+          <flourish:Card
+            MinHeight="112"
+            Margin="0,0,8,8"
+            Text="The default surface for ordinary grouped information."
+            Title="Standard"
+            Variant="Standard"
+          />
+          <flourish:Card
+            MinHeight="112"
+            Margin="8,0,0,8"
+            Text="A pale neutral surface for supporting information."
+            Title="Tonal"
+            Variant="Tonal"
+          />
+          <flourish:Card
+            MinHeight="112"
+            Margin="0,8,8,0"
+            Text="A primary-color surface for stronger visual emphasis."
+            Title="Filled"
+            Variant="Filled"
+          />
+          <flourish:Card
+            MinHeight="112"
+            Margin="8,8,0,0"
+            Text="An elevated surface for content that must stand apart."
+            Title="Elevated"
+            Variant="Elevated"
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="A local Background value replaces the themed fill of a Filled card. Use a theme resource when the replacement must respond to light and dark themes."
+        ChunkTitle="Filled background"
+      >
+        <flourish:Card
+          Background="{DynamicResource FlourishSecondaryBrush}"
+          Foreground="{DynamicResource FlourishForegroundOnSecondaryBrush}"
+          Text="This fill comes from a theme resource instead of the default primary blue."
+          Title="Custom filled surface"
+          Variant="Filled"
+        />
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="ContentHorizontalAlignment and ContentVerticalAlignment position the built-in Title and Text as one copy region. Inherited HorizontalContentAlignment and VerticalContentAlignment continue to position arbitrary Content."
+        ChunkTitle="Copy alignment"
+      >
+        <UniformGrid Columns="3">
+          <flourish:Card
+            MinHeight="160"
+            Margin="0,0,8,0"
+            ContentHorizontalAlignment="Left"
+            ContentVerticalAlignment="Top"
+            Text="Top and left aligned copy."
+            Title="Top left"
+          />
+          <flourish:Card
+            MinHeight="160"
+            Margin="4,0"
+            ContentHorizontalAlignment="Center"
+            ContentVerticalAlignment="Center"
+            Text="Centered copy."
+            Title="Center"
+          />
+          <flourish:Card
+            MinHeight="160"
+            Margin="8,0,0,0"
+            ContentHorizontalAlignment="Right"
+            ContentVerticalAlignment="Bottom"
+            Text="Bottom and right aligned copy."
+            Title="Bottom right"
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="In Split mode, PresenterPosition locates the icon or image while the copy region occupies the opposing area. All eight positions use the same Presenter property."
+        ChunkTitle="IconCard split positions"
+      >
+        <UniformGrid Columns="2">
+          <flourish:IconCard MinHeight="150" Margin="0,0,8,8" PresenterPosition="Left" Text="Copy stays opposite the presenter." Title="Left">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="8,0,0,8" PresenterPosition="LeftTop" Text="Copy stays opposite the presenter." Title="Left top">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="0,8,8,8" PresenterPosition="LeftBottom" Text="Copy stays opposite the presenter." Title="Left bottom">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="8,8,0,8" PresenterPosition="Top" Text="Copy stays below the presenter." Title="Top">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="0,8,8,8" PresenterPosition="Bottom" Text="Copy stays above the presenter." Title="Bottom">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="8,8,0,8" PresenterPosition="Right" Text="Copy stays opposite the presenter." Title="Right">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="0,8,8,0" PresenterPosition="RightTop" Text="Copy stays opposite the presenter." Title="Right top">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+          <flourish:IconCard MinHeight="150" Margin="8,8,0,0" PresenterPosition="RightBottom" Text="Copy stays opposite the presenter." Title="Right bottom">
+            <flourish:IconCard.Presenter>
+              <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="32" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Text="&#xE8A5;" />
+            </flourish:IconCard.Presenter>
+          </flourish:IconCard>
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="In Overlay mode, Presenter fills the card and stays centered. PresenterPosition is ignored, and the title, text, and content are rendered over the presenter."
+        ChunkTitle="IconCard overlay"
+      >
+        <flourish:IconCard
+          MinHeight="240"
+          PresenterMode="Overlay"
+          PresenterPosition="RightBottom"
+          Text="The copy is overlaid on a full-card visual."
+          Title="Overlay presenter"
+        >
+          <flourish:IconCard.Presenter>
+            <Border>
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                  <GradientStop Offset="0" Color="#0F6CBD" />
+                  <GradientStop Offset="1" Color="#5C2E91" />
+                </LinearGradientBrush>
+              </Border.Background>
+              <flourish:FlourishTextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{DynamicResource FlourishIconFontFamily}"
+                FontSize="64"
+                Foreground="#80FFFFFF"
+                Text="&#xE8A5;"
+              />
+            </Border>
+          </flourish:IconCard.Presenter>
+        </flourish:IconCard>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:FlourishScrollViewer>
+</Page>

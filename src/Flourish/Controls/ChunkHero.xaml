@@ -24,7 +24,7 @@
           Grid.Column="1"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
-          Content="{TemplateBinding ChunkHeroPresenter}"
+          Content="{TemplateBinding Presenter}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
         />
         <Border
@@ -76,11 +76,11 @@
       <Trigger Property="ChunkHeroBody" Value="{x:Null}">
         <Setter TargetName="BodyHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="ChunkHeroMode" Value="SplitRight">
+      <Trigger Property="PresenterPosition" Value="Left">
         <Setter TargetName="PresenterHost" Property="Grid.Column" Value="0" />
         <Setter TargetName="TextSurface" Property="Grid.Column" Value="1" />
       </Trigger>
-      <Trigger Property="ChunkHeroMode" Value="Overlay">
+      <Trigger Property="PresenterMode" Value="Overlay">
         <Setter TargetName="PresenterHost" Property="Grid.Column" Value="0" />
         <Setter TargetName="PresenterHost" Property="Grid.ColumnSpan" Value="2" />
         <Setter TargetName="OverlayScrim" Property="Opacity" Value="1" />
@@ -89,7 +89,7 @@
         <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishChunkHeroOverlayForegroundBrush}" />
         <Setter TargetName="DescriptionHost" Property="Foreground" Value="{DynamicResource FlourishChunkHeroOverlayForegroundBrush}" />
       </Trigger>
-      <Trigger Property="ChunkHeroPresenter" Value="{x:Null}">
+      <Trigger Property="Presenter" Value="{x:Null}">
         <Setter TargetName="PresenterHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="TextSurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="TextSurface" Property="Grid.ColumnSpan" Value="2" />

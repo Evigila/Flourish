@@ -19,7 +19,7 @@
         ChunkDescription="Button is the standard content action. Variant changes its visual emphasis while Content, Command, IsEnabled, ToolTip, and sizing remain standard WPF button properties."
         ChunkTitle="Button and Variant"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <flourish:FlourishTextBlock Role="FieldLabel" Text="VARIANT" />
             <WrapPanel Margin="0,8,0,0">
@@ -53,14 +53,14 @@
               </StackPanel>
             </Grid>
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="IconButton derives from Button and adds Icon. Icon-only actions use compact 32 by 32 geometry by default, while icon-plus-label commands keep the ordinary Button geometry. Plain ToolTip content automatically uses FlourishToolTip."
         ChunkTitle="IconButton"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <WrapPanel>
               <flourish:IconButton
@@ -94,7 +94,7 @@
               Text="Icon accepts either a glyph string or a visual element. Content is optional and is shown as the label when supplied."
             />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
@@ -122,7 +122,7 @@
         ChunkDescription="WindowCaptionButton derives from IconButton and is reserved for minimize, maximize, restore, and close commands in a window title bar. It intentionally uses dedicated caption geometry."
         ChunkTitle="WindowCaptionButton"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
             <Border
               HorizontalAlignment="Left"
@@ -142,14 +142,14 @@
               Text="Use Danger only for the close command so it receives the platform-appropriate red hover treatment. Other caption commands use Text."
             />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="The Button family participates in HoverReveal. Danger supplies its semantic feedback automatically, while the attached properties can adjust a local color or disable the effect."
         ChunkTitle="Hover feedback"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <WrapPanel>
             <flourish:Button Margin="0,0,8,0" Content="Default hover reveal" />
             <flourish:Button
@@ -159,7 +159,7 @@
             <flourish:Button Margin="8,0,0,0" Content="Danger hover reveal" Variant="Danger" />
             <flourish:Button Margin="8,0,0,0" Content="Accent hover reveal" Variant="Tonal" />
           </WrapPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

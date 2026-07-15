@@ -135,6 +135,7 @@ public sealed class FlourishXamlArchitectureTests
         var familyDependencyFiles = new HashSet<string>(StringComparer.Ordinal)
         {
             "Button.xaml",
+            "Card.xaml",
             "IconButton.xaml",
             "WindowCaptionButton.xaml",
         };
@@ -154,6 +155,12 @@ public sealed class FlourishXamlArchitectureTests
             source => Assert.StartsWith("/Flourish;component/Controls/", source)
         );
 
+        Assert.Equal(
+            ["Card.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "IconCard.xaml"))
+            )
+        );
         Assert.Equal(
             ["WindowCaptionButton.xaml"],
             GetMergedDictionarySources(

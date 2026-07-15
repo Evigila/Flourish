@@ -583,9 +583,9 @@ public sealed class RuntimeAppearanceServiceTests
             {
                 Resources = resources,
             };
-            var card = new FlourishCard
+            var card = new Card
             {
-                Style = Assert.IsType<Style>(resources[typeof(FlourishCard)]),
+                Style = Assert.IsType<Style>(resources[typeof(Card)]),
             };
             visualRoot.Children.Add(card);
             card.ApplyTemplate();

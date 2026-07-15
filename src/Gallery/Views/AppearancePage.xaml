@@ -16,7 +16,7 @@
         ChunkDescription="Select a requested mode or cycle through System, Light, and Dark."
         ChunkTitle="Theme"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:FlourishComboBox x:Name="ThemeBox" Width="220" />
@@ -25,14 +25,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="ThemeStatusText" Margin="0,12,0,0" Role="Status" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Update text family, base size, and icon family resources without rebuilding the visual tree."
         ChunkTitle="Typography"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -56,14 +56,14 @@
           <flourish:Button Margin="0,14,0,0" HorizontalAlignment="Left" Click="ApplyFont_Click" Content="Apply typography" />
           <flourish:FlourishTextBlock x:Name="FontStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Override only AppearancePage. Leave size empty to keep following the global base size, then clear the override to return to the global font."
         ChunkTitle="This page override"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -85,14 +85,14 @@
           </Grid>
           <flourish:FlourishTextBlock x:Name="PageFontOverrideStatusText" Margin="0,12,0,0" Role="Status" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Enable or disable Flourish tooltips and change their initial delay and spawn margin."
         ChunkTitle="Tooltips"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -114,14 +114,14 @@
           </Grid>
           <flourish:FlourishTextBlock x:Name="ToolTipStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Change transitions and timing, including whether system reduced-motion preferences suppress animation."
         ChunkTitle="Motion"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -155,14 +155,14 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="MotionStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
 
       <flourish:Chunk
         ChunkDescription="Request the native backdrop and immersive dark mode. Flourish reports platform support and whether the effect was actually applied."
         ChunkTitle="Window material"
       >
-        <flourish:FlourishCard>
+        <flourish:Card>
           <StackPanel>
           <WrapPanel>
             <flourish:FlourishComboBox x:Name="MaterialBox" Width="220" />
@@ -171,7 +171,7 @@
           </WrapPanel>
           <flourish:FlourishTextBlock x:Name="MaterialStatusText" Margin="0,12,0,0" Role="Description" />
           </StackPanel>
-        </flourish:FlourishCard>
+        </flourish:Card>
       </flourish:Chunk>
     </StackPanel>
   </flourish:FlourishScrollViewer>

@@ -11,12 +11,18 @@ public partial class ChunkPage : Page
         InitializeComponent();
     }
 
-    private void SplitLeft_Click(object sender, RoutedEventArgs e) =>
-        HeroPreview.ChunkHeroMode = ChunkHeroMode.SplitLeft;
+    private void PresenterRight_Click(object sender, RoutedEventArgs e)
+    {
+        HeroPreview.PresenterMode = PresenterMode.Split;
+        HeroPreview.PresenterPosition = PresenterPosition.Right;
+    }
 
-    private void SplitRight_Click(object sender, RoutedEventArgs e) =>
-        HeroPreview.ChunkHeroMode = ChunkHeroMode.SplitRight;
+    private void PresenterLeft_Click(object sender, RoutedEventArgs e)
+    {
+        HeroPreview.PresenterMode = PresenterMode.Split;
+        HeroPreview.PresenterPosition = PresenterPosition.Left;
+    }
 
     private void Overlay_Click(object sender, RoutedEventArgs e) =>
-        HeroPreview.ChunkHeroMode = ChunkHeroMode.Overlay;
+        HeroPreview.PresenterMode = PresenterMode.Overlay;
 }

@@ -1,64 +1,137 @@
 using System.Windows;
 using System.Windows.Controls;
+using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
+using WpfVerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// Describes the semantic appearance of a <see cref="FlourishCard" />.
+/// Describes the visual variant of a <see cref="Card" />.
 /// </summary>
-public enum FlourishCardAppearance
+public enum Variant
 {
-    /// <summary>A standard filled content surface.</summary>
-    Standard,
-
-    /// <summary>A secondary content surface with reduced visual emphasis.</summary>
-    Subtle,
-
-    /// <summary>A surface emphasized with the application accent.</summary>
-    Accent,
-
-    /// <summary>A content surface with elevation.</summary>
+    /// <summary>A content surface separated from its background by elevation.</summary>
     Elevated,
 
-    /// <summary>An introductory content surface with a gradient background and elevation.</summary>
-    Hero,
+    /// <summary>The default content surface.</summary>
+    Standard,
+
+    /// <summary>A quiet content surface filled with a neutral tone.</summary>
+    Tonal,
+
+    /// <summary>A high-emphasis content surface filled with the primary color.</summary>
+    Filled,
 }
 
 /// <summary>
-/// A themed content surface for grouping related Flourish content.
+/// A themed content surface with built-in title and supporting text.
 /// </summary>
-public class FlourishCard : ContentControl
+public class Card : ContentControl
 {
-    /// <summary>
-    /// Identifies the <see cref="Appearance" /> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty AppearanceProperty = DependencyProperty.Register(
-        nameof(Appearance),
-        typeof(FlourishCardAppearance),
-        typeof(FlourishCard),
-        new FrameworkPropertyMetadata(FlourishCardAppearance.Standard),
-        IsAppearanceValid
+    /// <summary>Identifies the <see cref="Variant" /> dependency property.</summary>
+    public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(
+        nameof(Variant),
+        typeof(Variant),
+        typeof(Card),
+        new FrameworkPropertyMetadata(Variant.Standard),
+        IsVariantValid
     );
 
-    static FlourishCard()
+    /// <summary>Identifies the <see cref="Title" /> dependency property.</summary>
+    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+        nameof(Title),
+        typeof(string),
+        typeof(Card),
+        new FrameworkPropertyMetadata(string.Empty)
+    );
+
+    /// <summary>Identifies the <see cref="Text" /> dependency property.</summary>
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text),
+        typeof(string),
+        typeof(Card),
+        new FrameworkPropertyMetadata(string.Empty)
+    );
+
+    /// <summary>
+    /// Identifies the <see cref="ContentHorizontalAlignment" /> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty ContentHorizontalAlignmentProperty =
+        DependencyProperty.Register(
+            nameof(ContentHorizontalAlignment),
+            typeof(WpfHorizontalAlignment),
+            typeof(Card),
+            new FrameworkPropertyMetadata(WpfHorizontalAlignment.Stretch),
+            IsHorizontalAlignmentValid
+        );
+
+    /// <summary>
+    /// Identifies the <see cref="ContentVerticalAlignment" /> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty ContentVerticalAlignmentProperty =
+        DependencyProperty.Register(
+            nameof(ContentVerticalAlignment),
+            typeof(WpfVerticalAlignment),
+            typeof(Card),
+            new FrameworkPropertyMetadata(WpfVerticalAlignment.Stretch),
+            IsVerticalAlignmentValid
+        );
+
+    static Card()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishCard),
-            new FrameworkPropertyMetadata(typeof(FlourishCard))
+            typeof(Card),
+            new FrameworkPropertyMetadata(typeof(Card))
         );
     }
 
-    /// <summary>
-    /// Gets or sets the semantic visual appearance of the card.
-    /// </summary>
-    public FlourishCardAppearance Appearance
+    /// <summary>Gets or sets the visual variant of the card.</summary>
+    public Variant Variant
     {
-        get => (FlourishCardAppearance)GetValue(AppearanceProperty);
-        set => SetValue(AppearanceProperty, value);
+        get => (Variant)GetValue(VariantProperty);
+        set => SetValue(VariantProperty, value);
     }
 
-    private static bool IsAppearanceValid(object value)
+    /// <summary>Gets or sets the card heading.</summary>
+    public string Title
     {
-        return value is FlourishCardAppearance appearance && Enum.IsDefined(appearance);
+        get => (string)GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
+
+    /// <summary>Gets or sets the card's supporting text.</summary>
+    public string Text
+    {
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
+    /// <summary>Gets or sets the horizontal alignment of the built-in textual content.</summary>
+    public WpfHorizontalAlignment ContentHorizontalAlignment
+    {
+        get => (WpfHorizontalAlignment)GetValue(ContentHorizontalAlignmentProperty);
+        set => SetValue(ContentHorizontalAlignmentProperty, value);
+    }
+
+    /// <summary>Gets or sets the vertical alignment of the built-in textual content.</summary>
+    public WpfVerticalAlignment ContentVerticalAlignment
+    {
+        get => (WpfVerticalAlignment)GetValue(ContentVerticalAlignmentProperty);
+        set => SetValue(ContentVerticalAlignmentProperty, value);
+    }
+
+    private static bool IsVariantValid(object value)
+    {
+        return value is Variant variant && Enum.IsDefined(variant);
+    }
+
+    private static bool IsHorizontalAlignmentValid(object value)
+    {
+        return value is WpfHorizontalAlignment alignment && Enum.IsDefined(alignment);
+    }
+
+    private static bool IsVerticalAlignmentValid(object value)
+    {
+        return value is WpfVerticalAlignment alignment && Enum.IsDefined(alignment);
     }
 }

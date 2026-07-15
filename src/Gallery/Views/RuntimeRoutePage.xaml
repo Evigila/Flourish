@@ -10,10 +10,10 @@
       ChunkDescription="This page was registered while Gallery was already running."
       ChunkTitle="A route created at runtime"
     >
-      <flourish:FlourishCard
+      <flourish:Card
         MaxWidth="680"
         HorizontalAlignment="Left"
-        Appearance="Elevated"
+        Variant="Elevated"
       >
         <StackPanel>
           <flourish:FlourishTextBlock Role="Paragraph" Text="This page was not present in ConfigureNavigation. Its route and menu entry were registered while Gallery was already running." />
@@ -22,7 +22,7 @@
           <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
           <flourish:FlourishTextBlock x:Name="ParameterText" FontFamily="Consolas" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
         </StackPanel>
-      </flourish:FlourishCard>
+      </flourish:Card>
     </flourish:Chunk>
   </StackPanel>
 </Page>
