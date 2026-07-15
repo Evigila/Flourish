@@ -331,11 +331,12 @@ public sealed class FlourishHoverRevealContractTests
             "controls:HoverReveal.OverrideColor",
             "{DynamicResource FlourishWindowCaptionCloseHoverBrush}"
         );
-        AssertSetter(
-            captionDangerTrigger,
-            null,
-            "controls:HoverReveal.IsMotionEnabled",
-            "False"
+        Assert.DoesNotContain(
+            captionDangerTrigger.Descendants(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("Property")
+                    == "controls:HoverReveal.IsMotionEnabled"
         );
 
         var cardDocument = LoadXaml(
@@ -528,6 +529,46 @@ public sealed class FlourishHoverRevealContractTests
                 > GetRelativeLuminance(
                     Composite(ParseColor(expectedPressed), controlBackground)
                 )
+        );
+    }
+
+    [Theory]
+    [InlineData(
+        "Colors.Light.xaml",
+        "#EBF3FC",
+        "#115EA3",
+        "#CFE4FA",
+        "#96C6FA",
+        "#0A2E4A"
+    )]
+    [InlineData(
+        "Colors.Dark.xaml",
+        "#082338",
+        "#62ABF5",
+        "#0C3B5E",
+        "#061724",
+        "#EBF3FC"
+    )]
+    public void TonalButtonPalette_UsesFluentBrandBackground2Tokens(
+        string fileName,
+        string expectedBackground,
+        string expectedForeground,
+        string expectedHover,
+        string expectedPressed,
+        string expectedPressedForeground
+    )
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
+        );
+
+        Assert.Equal(expectedBackground, GetBrushColor(document, "FlourishTonalButtonBackgroundBrush"));
+        Assert.Equal(expectedForeground, GetBrushColor(document, "FlourishTonalButtonForegroundBrush"));
+        Assert.Equal(expectedHover, GetBrushColor(document, "FlourishTonalButtonHoverBrush"));
+        Assert.Equal(expectedPressed, GetBrushColor(document, "FlourishTonalButtonPressedBrush"));
+        Assert.Equal(
+            expectedPressedForeground,
+            GetBrushColor(document, "FlourishTonalButtonPressedForegroundBrush")
         );
     }
 

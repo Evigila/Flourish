@@ -22,12 +22,21 @@
     x:Key="ButtonTemplate"
     TargetType="{x:Type controls:Button}"
   >
-    <Grid
-      x:Name="InteractionRoot"
-      ClipToBounds="True"
-      RenderTransformOrigin="0.5,0.5"
-      SnapsToDevicePixels="True"
-    >
+    <Grid SnapsToDevicePixels="True">
+      <Border
+        x:Name="ShadowChrome"
+        Background="{TemplateBinding Background}"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        Effect="{DynamicResource FlourishElevation1Effect}"
+        IsHitTestVisible="False"
+        Visibility="Collapsed"
+      />
+      <Grid
+        x:Name="InteractionRoot"
+        ClipToBounds="True"
+        RenderTransformOrigin="0.5,0.5"
+        SnapsToDevicePixels="True"
+      >
       <Border
         x:Name="Chrome"
         Background="{TemplateBinding Background}"
@@ -56,18 +65,19 @@
         IsHitTestVisible="False"
         Opacity="0"
       />
-      <ContentPresenter
-        x:Name="ContentHost"
-        Margin="{TemplateBinding Padding}"
-        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-        Content="{TemplateBinding Content}"
-        ContentStringFormat="{TemplateBinding ContentStringFormat}"
-        ContentTemplate="{TemplateBinding ContentTemplate}"
-        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-        RecognizesAccessKey="True"
-        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-      />
+        <ContentPresenter
+          x:Name="ContentHost"
+          Margin="{TemplateBinding Padding}"
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+          Content="{TemplateBinding Content}"
+          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+          ContentTemplate="{TemplateBinding ContentTemplate}"
+          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+          RecognizesAccessKey="True"
+          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+        />
+      </Grid>
     </Grid>
     <ControlTemplate.Triggers>
       <MultiTrigger>
@@ -83,6 +93,7 @@
         </Setter>
       </MultiTrigger>
       <Trigger Property="Variant" Value="Elevated">
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
         <Setter
           TargetName="PressedChrome"
           Property="Background"
@@ -124,10 +135,17 @@
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
-        <Setter Property="Effect" Value="{x:Null}" />
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Variant" Value="Tonal" />
+          <Condition Property="IsPressed" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Foreground" Value="{DynamicResource FlourishTonalButtonPressedForegroundBrush}" />
+      </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Variant" Value="Outlined" />
@@ -147,8 +165,8 @@
   </ControlTemplate>
 
   <Style TargetType="{x:Type controls:Button}">
-    <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
-    <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
+    <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+    <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
     <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
     <Setter Property="HorizontalContentAlignment" Value="Center" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -176,22 +194,18 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
-        <Setter Property="Effect" Value="{DynamicResource FlourishElevation1Effect}" />
-        <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishControlHoverBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Filled">
         <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
-        <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishPrimaryBackgroundHoverBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Tonal">
         <Setter Property="Background" Value="{DynamicResource FlourishTonalButtonBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishTonalButtonForegroundBrush}" />
-        <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishTonalButtonHoverBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Text">
         <Setter Property="Background" Value="Transparent" />

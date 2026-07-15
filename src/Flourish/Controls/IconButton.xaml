@@ -44,12 +44,21 @@
     x:Key="IconOnlyButtonTemplate"
     TargetType="{x:Type controls:IconButton}"
   >
-    <Grid
-      x:Name="InteractionRoot"
-      ClipToBounds="True"
-      RenderTransformOrigin="0.5,0.5"
-      SnapsToDevicePixels="True"
-    >
+    <Grid SnapsToDevicePixels="True">
+      <Border
+        x:Name="ShadowChrome"
+        Background="{TemplateBinding Background}"
+        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        Effect="{DynamicResource FlourishElevation1Effect}"
+        IsHitTestVisible="False"
+        Visibility="Collapsed"
+      />
+      <Grid
+        x:Name="InteractionRoot"
+        ClipToBounds="True"
+        RenderTransformOrigin="0.5,0.5"
+        SnapsToDevicePixels="True"
+      >
       <Border
         x:Name="Chrome"
         Background="{TemplateBinding Background}"
@@ -78,16 +87,17 @@
         IsHitTestVisible="False"
         Opacity="0"
       />
-      <ContentPresenter
-        x:Name="IconHost"
-        Margin="{TemplateBinding Padding}"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Content="{TemplateBinding Icon}"
-        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-        TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
-        TextElement.FontSize="{DynamicResource FlourishFontSizeCaption}"
-      />
+        <ContentPresenter
+          x:Name="IconHost"
+          Margin="{TemplateBinding Padding}"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Content="{TemplateBinding Icon}"
+          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+          TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
+          TextElement.FontSize="{DynamicResource FlourishFontSizeCaption}"
+        />
+      </Grid>
     </Grid>
     <ControlTemplate.Triggers>
       <MultiTrigger>
@@ -103,6 +113,7 @@
         </Setter>
       </MultiTrigger>
       <Trigger Property="Variant" Value="Elevated">
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
         <Setter
           TargetName="PressedChrome"
           Property="Background"
@@ -139,11 +150,19 @@
           </Setter.Value>
         </Setter>
       </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Variant" Value="Tonal" />
+          <Condition Property="IsPressed" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Foreground" Value="{DynamicResource FlourishTonalButtonPressedForegroundBrush}" />
+      </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
@@ -157,8 +176,8 @@
     <Setter Property="ContentTemplate" Value="{StaticResource IconButtonContentTemplate}" />
     <Style.Triggers>
       <Trigger Property="Content" Value="{x:Null}">
-        <Setter Property="Width" Value="30" />
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Width" Value="{DynamicResource FlourishIconButtonSize}" />
+        <Setter Property="Height" Value="{DynamicResource FlourishIconButtonSize}" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Padding" Value="0" />

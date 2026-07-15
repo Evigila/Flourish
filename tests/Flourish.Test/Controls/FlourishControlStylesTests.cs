@@ -484,8 +484,10 @@ public sealed class FlourishControlStylesTests
                 caption.ApplyTemplate();
                 card.ApplyTemplate();
 
-                Assert.Equal(30, icon.Width);
-                Assert.Equal(30, icon.Height);
+                Assert.Equal(32, button.MinHeight);
+                Assert.Equal(72, button.MinWidth);
+                Assert.Equal(32, icon.Width);
+                Assert.Equal(32, icon.Height);
                 Assert.Equal(0, icon.MinWidth);
                 Assert.Equal(0, icon.MinHeight);
                 Assert.Equal(new Thickness(), icon.Padding);
@@ -521,7 +523,7 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void ButtonVariants_ApplyMd3SurfacesAndElevatedShadow()
+    public void ButtonVariants_ApplyFluentSurfacesAndBackgroundOnlyElevatedShadow()
     {
         RunInSta(() =>
         {
@@ -561,8 +563,12 @@ public sealed class FlourishControlStylesTests
             {
                 window.Show();
                 window.UpdateLayout();
+                elevated.ApplyTemplate();
 
-                Assert.IsType<DropShadowEffect>(elevated.Effect);
+                Assert.Null(elevated.Effect);
+                var shadowChrome = AssertTemplatePart<Border>(elevated, "ShadowChrome");
+                Assert.IsType<DropShadowEffect>(shadowChrome.Effect);
+                Assert.Equal(Visibility.Visible, shadowChrome.Visibility);
                 Assert.False(elevated.ClipToBounds);
                 Assert.Equal(0, elevated.BorderThickness.Left);
                 Assert.Same(
@@ -582,6 +588,12 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(1, outlined.BorderThickness.Left);
                 Assert.Equal(Colors.Transparent, ((SolidColorBrush)textButton.Background).Color);
                 Assert.Equal(0, textButton.BorderThickness.Left);
+
+                var revealBrush = elevated.TryFindResource("FlourishHoverRevealBrush");
+                foreach (var button in new[] { elevated, filled, tonal, outlined, textButton })
+                {
+                    Assert.Same(revealBrush, HoverReveal.GetOverrideColor(button));
+                }
             }
             finally
             {
@@ -608,8 +620,13 @@ public sealed class FlourishControlStylesTests
             };
             var localBrush = new SolidColorBrush(Colors.MediumVioletRed);
             HoverReveal.SetOverrideColor(local, localBrush);
+            var captionDanger = new WindowCaptionButton
+            {
+                Icon = "Close",
+                Variant = ButtonVariant.Danger,
+            };
             var window = CreateWindow(
-                new StackPanel { Children = { outlined, danger, local } }
+                new StackPanel { Children = { outlined, danger, local, captionDanger } }
             );
 
             try
@@ -619,6 +636,7 @@ public sealed class FlourishControlStylesTests
                 outlined.ApplyTemplate();
                 danger.ApplyTemplate();
                 local.ApplyTemplate();
+                captionDanger.ApplyTemplate();
 
                 var outlinedBrush = Assert.IsType<SolidColorBrush>(
                     outlined.TryFindResource("FlourishHoverRevealBrush")
@@ -638,6 +656,8 @@ public sealed class FlourishControlStylesTests
                         .Color
                 );
                 Assert.Same(localBrush, HoverReveal.GetOverrideColor(local));
+                Assert.True(HoverReveal.GetIsMotionEnabled(captionDanger));
+                Assert.True(HoverReveal.GetIsEnabled(captionDanger));
                 Assert.Equal(
                     dangerBrush.Color,
                     AssertTemplatePart<Border>(danger, "HoverChrome").Background

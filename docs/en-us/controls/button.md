@@ -58,6 +58,8 @@ The Flourish button family consists of one general-purpose text button and three
 
 An action group should normally have only one `Filled` button. Use `Danger` for destructive intent; it is a Flourish semantic extension to the five Material Design 3 emphasis variants. Let the containing layout control external placement, and do not use `Variant` to select structural dimensions.
 
+`Tonal` uses Fluent Web's `colorBrandBackground2` and `colorBrandForeground2` ramps in both themes. All non-danger variants share the inherited `HoverReveal.OverrideColor`; `Danger` is the only semantic color override. Elevated shadows are drawn on a background-only template layer so text remains ClearType-rendered.
+
 ## IconButton
 
 `IconButton` adds an `Icon` property of type `object?` with a default of `null`. It accepts a glyph string from the Flourish icon font or any visual element. Inherited `Content` is optional and becomes the text label after the icon.
@@ -77,7 +79,7 @@ An action group should normally have only one `Filled` button. Use `Danger` for 
   Icon="&#xE710;" />
 ```
 
-When `Content` is `null`, `IconButton` uses compact `30 × 30` geometry without padding. Give every icon-only button a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action. Simple tooltip content such as a string is automatically wrapped in a `FlourishToolTip` so it follows the Shell-aware placement rules.
+When `Content` is `null`, `IconButton` uses compact `32 × 32` geometry without padding. Give every icon-only button a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action. Simple tooltip content such as a string is automatically wrapped in a `FlourishToolTip` so it follows the Shell-aware placement rules.
 
 ## CardButton
 

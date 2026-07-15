@@ -118,7 +118,6 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
         <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishWindowCaptionCloseHoverBrush}" />
-        <Setter Property="controls:HoverReveal.IsMotionEnabled" Value="False" />
       </Trigger>
     </Style.Triggers>
   </Style>

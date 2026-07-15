@@ -35,11 +35,14 @@
   <!-- Compact Fluent geometry with light borders and Material-style surface hierarchy. -->
   <sys:Double x:Key="FlourishControlHeight">30</sys:Double>
   <sys:Double x:Key="FlourishControlMinWidth">64</sys:Double>
-  <CornerRadius x:Key="FlourishControlCornerRadius">4</CornerRadius>
-  <CornerRadius x:Key="FlourishSurfaceCornerRadius">6</CornerRadius>
-  <CornerRadius x:Key="FlourishOverlayCornerRadius">8</CornerRadius>
-  <CornerRadius x:Key="FlourishDialogCornerRadius">10</CornerRadius>
-  <CornerRadius x:Key="FlourishDialogFooterCornerRadius">0,0,10,10</CornerRadius>
+  <sys:Double x:Key="FlourishButtonHeight">32</sys:Double>
+  <sys:Double x:Key="FlourishButtonMinWidth">72</sys:Double>
+  <sys:Double x:Key="FlourishIconButtonSize">32</sys:Double>
+  <CornerRadius x:Key="FlourishControlCornerRadius">6</CornerRadius>
+  <CornerRadius x:Key="FlourishSurfaceCornerRadius">8</CornerRadius>
+  <CornerRadius x:Key="FlourishOverlayCornerRadius">10</CornerRadius>
+  <CornerRadius x:Key="FlourishDialogCornerRadius">12</CornerRadius>
+  <CornerRadius x:Key="FlourishDialogFooterCornerRadius">0,0,12,12</CornerRadius>
   <Thickness x:Key="FlourishControlPadding">10,4</Thickness>
   <Thickness x:Key="FlourishCompactControlPadding">8,2</Thickness>
   <Thickness x:Key="FlourishControlBorderThickness">1</Thickness>

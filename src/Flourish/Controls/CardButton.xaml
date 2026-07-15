@@ -88,12 +88,21 @@
     x:Key="CardButtonTemplate"
     TargetType="{x:Type controls:CardButton}"
   >
-    <Grid
-      x:Name="InteractionRoot"
-      ClipToBounds="True"
-      RenderTransformOrigin="0.5,0.5"
-      SnapsToDevicePixels="True"
-    >
+    <Grid SnapsToDevicePixels="True">
+      <Border
+        x:Name="ShadowChrome"
+        Background="{TemplateBinding Background}"
+        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+        Effect="{DynamicResource FlourishElevation1Effect}"
+        IsHitTestVisible="False"
+        Visibility="Collapsed"
+      />
+      <Grid
+        x:Name="InteractionRoot"
+        ClipToBounds="True"
+        RenderTransformOrigin="0.5,0.5"
+        SnapsToDevicePixels="True"
+      >
       <Border
         x:Name="Chrome"
         Background="{TemplateBinding Background}"
@@ -120,14 +129,15 @@
         IsHitTestVisible="False"
         Opacity="0"
       />
-      <ContentPresenter
-        Margin="{TemplateBinding Padding}"
-        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-        Content="{TemplateBinding Content}"
-        ContentTemplate="{TemplateBinding ContentTemplate}"
-        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-      />
+        <ContentPresenter
+          Margin="{TemplateBinding Padding}"
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+          Content="{TemplateBinding Content}"
+          ContentTemplate="{TemplateBinding ContentTemplate}"
+          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+        />
+      </Grid>
     </Grid>
     <ControlTemplate.Triggers>
       <MultiTrigger>
@@ -143,6 +153,7 @@
         </Setter>
       </MultiTrigger>
       <Trigger Property="Variant" Value="Elevated">
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
         <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishControlPressedBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Filled">
@@ -163,11 +174,19 @@
           </Setter.Value>
         </Setter>
       </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Variant" Value="Tonal" />
+          <Condition Property="IsPressed" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Foreground" Value="{DynamicResource FlourishTonalButtonPressedForegroundBrush}" />
+      </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
