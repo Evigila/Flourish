@@ -213,7 +213,11 @@ internal sealed class WindowFrameFixService
         }
 
         WmGetMinMaxInfoCore(hwnd, lParam);
-        handled = true;
+
+        // Keep the message available to WPF after correcting the custom frame's
+        // maximized bounds. Window's native handler adds the DPI-aware MinWidth,
+        // MinHeight, MaxWidth, and MaxHeight track constraints to the same struct.
+        handled = false;
         return IntPtr.Zero;
     }
 

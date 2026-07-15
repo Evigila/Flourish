@@ -262,6 +262,52 @@ public sealed class FlourishShellWindowFrameTests
     }
 
     [Fact]
+    public void WindowFrameFixService_CustomFramePreservesWpfTrackSizeConstraints()
+    {
+        const int wmGetMinMaxInfo = 0x0024;
+        RunInSta(() =>
+        {
+            var window = CreateTestWindow();
+            window.MinWidth = 1280;
+            window.MinHeight = 720;
+            window.MaxWidth = 1600;
+            window.MaxHeight = 900;
+            var shellBorder = new Border();
+            window.Content = shellBorder;
+            var frame = new FlourishShellWindowFrame(window, shellBorder);
+            var frameFix = new WindowFrameFixService();
+            frame.Apply(FlourishShellWindowFrameMode.Custom);
+            frameFix.Attach(window, useCustomFrame: true);
+            window.Show();
+            var handle = new WindowInteropHelper(window).Handle;
+            var dpi = VisualTreeHelper.GetDpi(window);
+            var minMaxInfo = CreateNativeMinMaxInfo();
+            var pointer = Marshal.AllocHGlobal(Marshal.SizeOf<MinMaxInfo>());
+
+            try
+            {
+                AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
+                Marshal.StructureToPtr(minMaxInfo, pointer, false);
+
+                SendMessage(handle, wmGetMinMaxInfo, IntPtr.Zero, pointer);
+
+                minMaxInfo = Marshal.PtrToStructure<MinMaxInfo>(pointer);
+                AssertDevicePixels(window.MinWidth, dpi.DpiScaleX, minMaxInfo.MinTrackSize.X);
+                AssertDevicePixels(window.MinHeight, dpi.DpiScaleY, minMaxInfo.MinTrackSize.Y);
+                AssertDevicePixels(window.MaxWidth, dpi.DpiScaleX, minMaxInfo.MaxTrackSize.X);
+                AssertDevicePixels(window.MaxHeight, dpi.DpiScaleY, minMaxInfo.MaxTrackSize.Y);
+                Assert.True(minMaxInfo.MaxSize.X > 0);
+                Assert.True(minMaxInfo.MaxSize.Y > 0);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(pointer);
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void ApplyFrameTransition_DoesNotShowAHiddenWindow()
     {
         RunInSta(() =>
@@ -338,6 +384,18 @@ public sealed class FlourishShellWindowFrameTests
         Assert.False(IsWindowVisible(handle));
     }
 
+    private static MinMaxInfo CreateNativeMinMaxInfo() =>
+        new()
+        {
+            MinTrackSize = new NativePoint(1, 1),
+            MaxTrackSize = new NativePoint(100_000, 100_000),
+        };
+
+    private static void AssertDevicePixels(double logicalValue, double scale, int actual)
+    {
+        Assert.Equal((int)(logicalValue * scale + 0.5), actual);
+    }
+
     private static Window CreateTestWindow() =>
         new()
         {
@@ -385,4 +443,32 @@ public sealed class FlourishShellWindowFrameTests
         IntPtr wParam,
         IntPtr lParam
     );
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativePoint
+    {
+        public NativePoint(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public int X;
+
+        public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MinMaxInfo
+    {
+        public NativePoint Reserved;
+
+        public NativePoint MaxSize;
+
+        public NativePoint MaxPosition;
+
+        public NativePoint MinTrackSize;
+
+        public NativePoint MaxTrackSize;
+    }
 }
