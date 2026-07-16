@@ -167,7 +167,7 @@
                 BorderThickness="{DynamicResource FlourishControlBorderThickness}"
                 CornerRadius="{DynamicResource FlourishControlCornerRadius}"
               >
-                <controls:FlourishScrollViewer
+                <controls:ScrollViewer
                   CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
                   HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto"
@@ -177,7 +177,7 @@
                     KeyboardNavigation.DirectionalNavigation="Contained"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                   />
-                </controls:FlourishScrollViewer>
+                </controls:ScrollViewer>
               </Border>
             </Popup>
           </Grid>

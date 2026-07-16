@@ -7,7 +7,7 @@
   SnapsToDevicePixels="True"
   UseLayoutRounding="True"
 >
-  <flourish:FlourishScrollViewer
+  <flourish:ScrollViewer
     HorizontalScrollBarVisibility="Disabled"
     VerticalScrollBarVisibility="Auto"
   >
@@ -139,5 +139,5 @@
         </StackPanel>
       </flourish:Chunk>
     </StackPanel>
-  </flourish:FlourishScrollViewer>
+  </flourish:ScrollViewer>
 </Page>

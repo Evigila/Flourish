@@ -38,5 +38,6 @@ ListCard 的标题与说明各自只有一行，Body 中只有一个立即应用
 - [Chunk](chunk.md)：页面章节、页首焦点区与内容间距。
 - [Button](button.md)：普通按钮、图标按钮、卡片按钮与标题栏按钮。
 - [Card](card.md)：较长信息表面、单控件 `ListCard` 配置行、仅保留标题的 Output 与 Result 模式，以及可选的图标或图片展示内容。
+- [ScrollViewer](scroll-viewer.md)：平滑页面滚动、虚拟化逻辑滚动与细长滚动条外观。
 
 其余控件将随重构逐步迁移到本栏目。当前可从[控件库概览](../articles/control-library.md)了解迁移状态。

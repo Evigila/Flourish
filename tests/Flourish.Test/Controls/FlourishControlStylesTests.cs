@@ -5,9 +5,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using ArkheideSystem.Flourish.Controls;
+using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using WpfButton = System.Windows.Controls.Button;
 using WpfControl = System.Windows.Controls.Control;
+using WpfScrollViewer = System.Windows.Controls.ScrollViewer;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -127,7 +129,7 @@ public sealed class FlourishControlStylesTests
                 typeof(RadioButton),
                 typeof(TextBox),
                 typeof(PasswordBox),
-                typeof(ScrollViewer),
+                typeof(WpfScrollViewer),
                 typeof(ScrollBar),
                 typeof(TextBlock),
                 typeof(Label),
@@ -225,7 +227,7 @@ public sealed class FlourishControlStylesTests
                 passwordBox,
                 new FlourishRadioButton { Content = "Radio" },
                 scrollBar,
-                new FlourishScrollViewer
+                new CustomScrollViewer
                 {
                     Content = new FlourishTextBlock { Text = "Scrollable" },
                 },
@@ -259,8 +261,8 @@ public sealed class FlourishControlStylesTests
 
                 AssertTemplatePart<FrameworkElement>(button, "HoverChrome");
                 AssertTemplatePart<ScaleTransform>(button, "HoverRevealScale");
-                AssertTemplatePart<ScrollViewer>(textBox, "PART_ContentHost");
-                AssertTemplatePart<ScrollViewer>(searchBox, "PART_ContentHost");
+                AssertTemplatePart<WpfScrollViewer>(textBox, "PART_ContentHost");
+                AssertTemplatePart<WpfScrollViewer>(searchBox, "PART_ContentHost");
                 AssertTemplatePart<Popup>(comboBox, "PART_Popup");
                 AssertTemplatePart<Track>(scrollBar, "PART_Track");
 

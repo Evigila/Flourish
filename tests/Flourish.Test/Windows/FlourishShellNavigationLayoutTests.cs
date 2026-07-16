@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Views.Windows;
+using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -415,8 +416,8 @@ public sealed class FlourishShellNavigationLayoutTests
 
                 var parentLayout = GetLayoutSnapshot(listBox, parent, navigationHost);
                 var childLayout = GetLayoutSnapshot(listBox, child, navigationHost);
-                var scrollViewer = Assert.IsType<FlourishScrollViewer>(
-                    FindVisualDescendant<FlourishScrollViewer>(listBox)
+                var scrollViewer = Assert.IsType<CustomScrollViewer>(
+                    FindVisualDescendant<CustomScrollViewer>(listBox)
                 );
                 var scrollPresenter = Assert.IsType<ScrollContentPresenter>(
                     FindVisualDescendant(listBox, "PART_ScrollContentPresenter")
@@ -784,7 +785,7 @@ public sealed class FlourishShellNavigationLayoutTests
                     : parentLayout.ContainerBounds.Left;
 
                 Assert.Equal(Visibility.Visible, verticalScrollBar.Visibility);
-                Assert.Equal(10, scrollBarBounds.Width, 3);
+                Assert.Equal(7, scrollBarBounds.Width, 3);
                 if (isRightPlaced)
                 {
                     Assert.True(scrollBarBounds.Right <= presenterBounds.Left + 0.5);

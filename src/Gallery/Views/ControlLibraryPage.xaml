@@ -5,7 +5,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         ChunkHeroDescription="Preview controls that have not yet moved to dedicated pages."
@@ -95,14 +95,14 @@
                 </flourish:FlourishListBox>
 
                 <flourish:FlourishTextBlock Margin="0,14,0,5" Role="FieldLabel" Text="SCROLL VIEWER" />
-                <flourish:FlourishScrollViewer Height="104" VerticalScrollBarVisibility="Auto">
+                <flourish:ScrollViewer Height="104" VerticalScrollBarVisibility="Auto">
                   <StackPanel>
                     <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
                     <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Scrollbars use the same state tokens." />
                     <flourish:FlourishTextBlock Margin="8,6" Text="Keyboard and wheel input remain native." />
                     <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="End of sample" />
                   </StackPanel>
-                </flourish:FlourishScrollViewer>
+                </flourish:ScrollViewer>
               </StackPanel>
             </flourish:Card.Body>
           </flourish:Card>
@@ -110,5 +110,5 @@
       </flourish:Chunk>
 
     </StackPanel>
-  </flourish:FlourishScrollViewer>
+  </flourish:ScrollViewer>
 </Page>

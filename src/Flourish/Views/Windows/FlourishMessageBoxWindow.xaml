@@ -104,7 +104,7 @@
           />
         </Border>
 
-        <controls:FlourishScrollViewer
+        <controls:ScrollViewer
           Grid.Column="1"
           MaxHeight="260"
           HorizontalScrollBarVisibility="Disabled"
@@ -116,7 +116,7 @@
             Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
             Role="Paragraph"
           />
-        </controls:FlourishScrollViewer>
+        </controls:ScrollViewer>
       </Grid>
 
       <Border

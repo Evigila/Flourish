@@ -5,7 +5,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:FlourishScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         ChunkHeroDescription="Change navigation structure and behavior at runtime."
@@ -216,5 +216,5 @@
         </Grid>
       </flourish:Chunk>
     </StackPanel>
-  </flourish:FlourishScrollViewer>
+  </flourish:ScrollViewer>
 </Page>

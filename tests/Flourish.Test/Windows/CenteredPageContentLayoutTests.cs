@@ -5,6 +5,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Views.Windows;
+using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
+using WpfScrollViewer = System.Windows.Controls.ScrollViewer;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -18,7 +20,7 @@ public sealed class CenteredPageContentLayoutTests
     {
         RunInSta(() =>
         {
-            var scrollViewer = new ScrollViewer { Content = new Grid() };
+            var scrollViewer = new WpfScrollViewer { Content = new Grid() };
             var page = new Page { Content = scrollViewer };
 
             CenteredPageContentLayout.Apply(page, contentWidth: null);
@@ -37,7 +39,7 @@ public sealed class CenteredPageContentLayoutTests
         RunInSta(() =>
         {
             var content = new Border { Height = 900 };
-            var scrollViewer = new FlourishScrollViewer
+            var scrollViewer = new CustomScrollViewer
             {
                 Content = content,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -63,7 +65,7 @@ public sealed class CenteredPageContentLayoutTests
     {
         RunInSta(() =>
         {
-            var scrollViewer = new ScrollViewer { Content = new Grid() };
+            var scrollViewer = new WpfScrollViewer { Content = new Grid() };
             var page = new Page { Content = scrollViewer };
 
             CenteredPageContentLayout.Apply(page, 480);
@@ -83,7 +85,7 @@ public sealed class CenteredPageContentLayoutTests
         RunInSta(() =>
         {
             var content = new Border { Height = 900 };
-            var scrollViewer = new FlourishScrollViewer
+            var scrollViewer = new CustomScrollViewer
             {
                 Content = content,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -146,7 +148,7 @@ public sealed class CenteredPageContentLayoutTests
     {
         RunInSta(() =>
         {
-            var scrollViewer = new FlourishScrollViewer
+            var scrollViewer = new CustomScrollViewer
             {
                 Content = new Border { Height = 900 },
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,

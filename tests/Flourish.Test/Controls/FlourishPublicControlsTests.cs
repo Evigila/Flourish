@@ -5,6 +5,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Themes;
+using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using WpfButton = System.Windows.Controls.Button;
 
@@ -254,7 +255,7 @@ public sealed class FlourishPublicControlsTests
             var listCard = new ListCard();
             var gridSplitter = new FlourishGridSplitter();
             var listBox = new FlourishListBox();
-            var scrollViewer = new FlourishScrollViewer();
+            var scrollViewer = new CustomScrollViewer();
             var search = new FlourishSearchBox();
             var text = new FlourishTextBlock();
 
@@ -298,6 +299,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
+            Assert.True(scrollViewer.IsSmoothScrollingEnabled);
             Assert.False(scrollViewer.IsCompact);
             Assert.Equal(string.Empty, search.Placeholder);
             Assert.Equal(FlourishTextRole.Body, text.Role);

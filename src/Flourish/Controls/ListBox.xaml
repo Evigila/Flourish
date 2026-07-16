@@ -28,7 +28,7 @@
             CornerRadius="{DynamicResource FlourishControlCornerRadius}"
             SnapsToDevicePixels="True"
           >
-            <controls:FlourishScrollViewer
+            <controls:ScrollViewer
               CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
               Focusable="False"
               FlowDirection="{TemplateBinding FlowDirection}"
@@ -42,7 +42,7 @@
                 KeyboardNavigation.DirectionalNavigation="Contained"
                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
               />
-            </controls:FlourishScrollViewer>
+            </controls:ScrollViewer>
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsKeyboardFocused" Value="True">

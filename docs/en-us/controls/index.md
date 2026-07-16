@@ -38,5 +38,6 @@ Reference controls in XAML through the `http://schemas.arkheide.system/flourish`
 - [Chunk](chunk.md): page sections, page-leading hero regions, and content spacing.
 - [Button](button.md): ordinary, icon, card, and window-caption buttons.
 - [Card](card.md): longer information surfaces, single-control `ListCard` configuration rows, title-only Output and Result patterns, and optional icon or image presenters.
+- [ScrollViewer](scroll-viewer.md): smooth page scrolling, virtualized logical scrolling, and slender scroll bar presentation.
 
 The remaining controls will move into this section as their refactoring is completed. For now, the [control library overview](../articles/control-library.md) describes the migration status.
