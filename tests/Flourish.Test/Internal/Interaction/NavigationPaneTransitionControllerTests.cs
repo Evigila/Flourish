@@ -24,6 +24,20 @@ public sealed class NavigationPaneTransitionControllerTests
             { NavigationPanelDirection.Right, 220, 48 },
         };
 
+    public static TheoryData<NavigationPanelDirection, double, double, double>
+        CenteredGeometryCases =>
+        new()
+        {
+            { NavigationPanelDirection.Left, 220, 48, 1600 },
+            { NavigationPanelDirection.Left, 48, 220, 1600 },
+            { NavigationPanelDirection.Right, 220, 48, 1600 },
+            { NavigationPanelDirection.Right, 48, 220, 1600 },
+            { NavigationPanelDirection.Left, 220, 48, 700 },
+            { NavigationPanelDirection.Left, 48, 220, 700 },
+            { NavigationPanelDirection.Right, 220, 48, 700 },
+            { NavigationPanelDirection.Right, 48, 220, 700 },
+        };
+
     [Theory]
     [MemberData(nameof(GeometryCases))]
     public void Start_UsesRenderOnlyGeometryForLeftAndRightOpenClose(
@@ -97,6 +111,172 @@ public sealed class NavigationPaneTransitionControllerTests
             AssertClose(targetTranslation / 2, contentTranslation.X);
             Assert.False(IsWidthAnimated(fixture.PaneColumn));
             Assert.Equal(0, completionCount);
+        });
+    }
+
+    [Theory]
+    [MemberData(nameof(CenteredGeometryCases))]
+    public void Start_WithCenteredContent_KeepsTransformedWidthWithinTheMaximum(
+        NavigationPanelDirection direction,
+        double committedWidth,
+        double targetWidth,
+        double workWidth
+    )
+    {
+        RunInSta(() =>
+        {
+            var fixture = CenteredTransitionFixture.Create(
+                direction,
+                committedWidth,
+                workWidth
+            );
+            var sut = new NavigationPaneTransitionController();
+            var initialBounds = fixture.GetCenteredBounds();
+            AssertClose(initialBounds.Width, fixture.GetScrollableCenteredBounds().Width);
+            var targetBounds = fixture.GetExpectedCenteredBounds(targetWidth);
+            var completionCount = 0;
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    committedWidth,
+                    targetWidth,
+                    maximumPaneWidth: 420,
+                    referenceDistance: 172,
+                    Duration,
+                    new LinearEase(),
+                    () =>
+                    {
+                        completionCount++;
+                        fixture.SetPaneWidth(targetWidth);
+                        fixture.Layout();
+                    }
+                )
+            );
+            var clock = Assert.IsAssignableFrom<ClockController>(
+                sut.ActiveClockController
+            );
+
+            foreach (var progress in new[] { 0d, 0.25, 0.5, 0.75, 0.99 })
+            {
+                clock.SeekAlignedToLastTick(
+                    TimeSpan.FromTicks((long)(Duration.Ticks * progress)),
+                    TimeSeekOrigin.BeginTime
+                );
+                fixture.Layout();
+                var bounds = fixture.GetCenteredBounds();
+                var scrollableBounds = fixture.GetScrollableCenteredBounds();
+
+                AssertClose(
+                    Lerp(initialBounds.Width, targetBounds.Width, progress),
+                    bounds.Width
+                );
+                AssertClose(bounds.Width, scrollableBounds.Width);
+                AssertClose(
+                    Lerp(GetCenterX(initialBounds), GetCenterX(targetBounds), progress),
+                    GetCenterX(bounds)
+                );
+                AssertClose(GetCenterX(bounds), GetCenterX(scrollableBounds));
+                Assert.True(
+                    bounds.Width <= CenteredTransitionFixture.ContentMaximumWidth + 0.001,
+                    $"Centered content rendered at {bounds.Width} DIP."
+                );
+                Assert.False(IsWidthAnimated(fixture.PaneColumn));
+            }
+
+            clock.SeekAlignedToLastTick(Duration, TimeSeekOrigin.BeginTime);
+
+            var completedBounds = fixture.GetCenteredBounds();
+            Assert.Equal(1, completionCount);
+            AssertClose(targetBounds.Width, completedBounds.Width);
+            AssertClose(GetCenterX(targetBounds), GetCenterX(completedBounds));
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.Centered.ReadLocalValue(UIElement.RenderTransformProperty)
+            );
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.Centered.ReadLocalValue(UIElement.RenderTransformOriginProperty)
+            );
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.ScrollableCentered.ReadLocalValue(UIElement.RenderTransformProperty)
+            );
+            Assert.Same(
+                DependencyProperty.UnsetValue,
+                fixture.ScrollableCentered.ReadLocalValue(
+                    UIElement.RenderTransformOriginProperty
+                )
+            );
+        });
+    }
+
+    [Theory]
+    [InlineData(NavigationPanelDirection.Left)]
+    [InlineData(NavigationPanelDirection.Right)]
+    public void Reverse_WithCenteredContent_ContinuesFromCurrentTransformedBounds(
+        NavigationPanelDirection direction
+    )
+    {
+        RunInSta(() =>
+        {
+            var fixture = CenteredTransitionFixture.Create(direction, 220, 1600);
+            var sut = new NavigationPaneTransitionController();
+            var firstCompletionCount = 0;
+            var reverseCompletionCount = 0;
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    committedWidth: 220,
+                    targetWidth: 48,
+                    maximumPaneWidth: 420,
+                    referenceDistance: 172,
+                    Duration,
+                    new LinearEase(),
+                    () => firstCompletionCount++
+                )
+            );
+            var firstClock = Assert.IsAssignableFrom<ClockController>(
+                sut.ActiveClockController
+            );
+            firstClock.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
+            fixture.Layout();
+            var boundsBeforeReverse = fixture.GetCenteredBounds();
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    committedWidth: 220,
+                    targetWidth: 220,
+                    maximumPaneWidth: 420,
+                    referenceDistance: 172,
+                    Duration,
+                    new LinearEase(),
+                    () => reverseCompletionCount++
+                )
+            );
+            var reverseClock = Assert.IsAssignableFrom<ClockController>(
+                sut.ActiveClockController
+            );
+            reverseClock.SeekAlignedToLastTick(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
+            fixture.Layout();
+            var boundsAfterReverse = fixture.GetCenteredBounds();
+
+            AssertClose(boundsBeforeReverse.Width, boundsAfterReverse.Width);
+            AssertClose(GetCenterX(boundsBeforeReverse), GetCenterX(boundsAfterReverse));
+            Assert.True(
+                boundsAfterReverse.Width
+                    <= CenteredTransitionFixture.ContentMaximumWidth + 0.001
+            );
+            Assert.Equal(0, firstCompletionCount);
+            Assert.Equal(0, reverseCompletionCount);
+
+            reverseClock.SeekAlignedToLastTick(Duration, TimeSeekOrigin.BeginTime);
+
+            Assert.Equal(0, firstCompletionCount);
+            Assert.Equal(1, reverseCompletionCount);
+            Assert.False(sut.IsActive);
         });
     }
 
@@ -543,6 +723,62 @@ public sealed class NavigationPaneTransitionControllerTests
     }
 
     [Fact]
+    public void SeekingCenteredContentClocks_AnimatesMaximumWidthWithoutAnimatingPaneColumn()
+    {
+        RunInSta(() =>
+        {
+            var fixture = CenteredTransitionFixture.Create(
+                NavigationPanelDirection.Left,
+                paneWidth: 220,
+                workWidth: 1600
+            );
+            var sut = new NavigationPaneTransitionController();
+
+            Assert.True(
+                sut.Start(
+                    fixture.Target,
+                    committedWidth: 220,
+                    targetWidth: 48,
+                    maximumPaneWidth: 420,
+                    referenceDistance: 172,
+                    Duration,
+                    new LinearEase(),
+                    static () => { }
+                )
+            );
+            fixture.Layout();
+            var clock = Assert.IsAssignableFrom<ClockController>(
+                sut.ActiveClockController
+            );
+
+            clock.SeekAlignedToLastTick(Duration / 4, TimeSeekOrigin.BeginTime);
+            fixture.Layout();
+            clock.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
+            fixture.Layout();
+            clock.SeekAlignedToLastTick(Duration * 3 / 4, TimeSeekOrigin.BeginTime);
+            fixture.Layout();
+
+            Assert.True(
+                DependencyPropertyHelper
+                    .GetValueSource(
+                        fixture.Centered,
+                        FrameworkElement.MaxWidthProperty
+                    )
+                    .IsAnimated
+            );
+            Assert.True(
+                DependencyPropertyHelper
+                    .GetValueSource(
+                        fixture.ScrollableCentered,
+                        FrameworkElement.MaxWidthProperty
+                    )
+                    .IsAnimated
+            );
+            Assert.False(IsWidthAnimated(fixture.PaneColumn));
+        });
+    }
+
+    [Fact]
     public void ProductionSource_DoesNotAnimateColumnDefinitionWidth()
     {
         var flourishRoot = Path.Combine(FindRepositoryRoot(), "src", "Flourish");
@@ -587,6 +823,16 @@ public sealed class NavigationPaneTransitionControllerTests
     private static void AssertClose(double expected, double actual)
     {
         Assert.InRange(actual, expected - 0.001, expected + 0.001);
+    }
+
+    private static double GetCenterX(Rect bounds)
+    {
+        return bounds.Left + (bounds.Width / 2);
+    }
+
+    private static double Lerp(double from, double to, double progress)
+    {
+        return from + ((to - from) * progress);
     }
 
     private static void AssertContentPresentationRestored(TransitionFixture fixture)
@@ -707,6 +953,194 @@ public sealed class NavigationPaneTransitionControllerTests
             throw new InvalidOperationException(
                 "Injected render-transform-origin assignment failure."
             );
+        }
+    }
+
+    private sealed class CountingGrid : Grid
+    {
+        internal int MeasureCount { get; private set; }
+
+        internal int ArrangeCount { get; private set; }
+
+        internal void ResetLayoutCounts()
+        {
+            MeasureCount = 0;
+            ArrangeCount = 0;
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            MeasureCount++;
+            return base.MeasureOverride(constraint);
+        }
+
+        protected override Size ArrangeOverride(Size arrangeSize)
+        {
+            ArrangeCount++;
+            return base.ArrangeOverride(arrangeSize);
+        }
+    }
+
+    private sealed class CenteredTransitionFixture
+    {
+        internal const double ContentMaximumWidth = 480;
+        private const double ContentMargin = 32;
+        private readonly Size layoutSize;
+
+        private CenteredTransitionFixture(
+            Grid workArea,
+            Border pane,
+            CountingGrid content,
+            Border centered,
+            Border scrollableCentered,
+            ColumnDefinition paneColumn,
+            NavigationPanelDirection direction,
+            Size layoutSize
+        )
+        {
+            WorkArea = workArea;
+            Pane = pane;
+            Content = content;
+            Centered = centered;
+            ScrollableCentered = scrollableCentered;
+            PaneColumn = paneColumn;
+            Direction = direction;
+            this.layoutSize = layoutSize;
+        }
+
+        internal Grid WorkArea { get; }
+
+        internal Border Pane { get; }
+
+        internal CountingGrid Content { get; }
+
+        internal Border Centered { get; }
+
+        internal Border ScrollableCentered { get; }
+
+        internal ColumnDefinition PaneColumn { get; }
+
+        internal NavigationPanelDirection Direction { get; }
+
+        internal NavigationPaneTransitionTarget Target =>
+            new(WorkArea, Pane, Content, Direction, [Centered, ScrollableCentered]);
+
+        internal static CenteredTransitionFixture Create(
+            NavigationPanelDirection direction,
+            double paneWidth,
+            double workWidth
+        )
+        {
+            var layoutSize = new Size(workWidth, 480);
+            var workArea = new Grid { Width = workWidth, Height = layoutSize.Height };
+            var paneColumn = new ColumnDefinition { Width = new GridLength(paneWidth) };
+            var contentColumn = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star),
+            };
+            var paneColumnIndex = direction == NavigationPanelDirection.Left ? 0 : 1;
+            if (paneColumnIndex == 0)
+            {
+                workArea.ColumnDefinitions.Add(paneColumn);
+                workArea.ColumnDefinitions.Add(contentColumn);
+            }
+            else
+            {
+                workArea.ColumnDefinitions.Add(contentColumn);
+                workArea.ColumnDefinitions.Add(paneColumn);
+            }
+
+            var pane = new Border();
+            Grid.SetColumn(pane, paneColumnIndex);
+
+            var centered = new Border
+            {
+                Height = 120,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(ContentMargin, 0, ContentMargin, 0),
+                MaxWidth = ContentMaximumWidth,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+            var scrollableCentered = new Border
+            {
+                Height = 120,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(ContentMargin, 0, ContentMargin, 0),
+                MaxWidth = ContentMaximumWidth,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+            var scrollViewer = new ScrollViewer
+            {
+                Content = scrollableCentered,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            };
+            var content = new CountingGrid();
+            content.RowDefinitions.Add(new RowDefinition { Height = new GridLength(140) });
+            content.RowDefinitions.Add(new RowDefinition { Height = new GridLength(140) });
+            content.Children.Add(centered);
+            Grid.SetRow(scrollViewer, 1);
+            content.Children.Add(scrollViewer);
+            Grid.SetColumn(content, paneColumnIndex == 0 ? 1 : 0);
+
+            workArea.Children.Add(pane);
+            workArea.Children.Add(content);
+
+            var fixture = new CenteredTransitionFixture(
+                workArea,
+                pane,
+                content,
+                centered,
+                scrollableCentered,
+                paneColumn,
+                direction,
+                layoutSize
+            );
+            fixture.Layout();
+            return fixture;
+        }
+
+        internal Rect GetCenteredBounds()
+        {
+            return Centered
+                .TransformToAncestor(WorkArea)
+                .TransformBounds(new Rect(new Point(), Centered.RenderSize));
+        }
+
+        internal Rect GetScrollableCenteredBounds()
+        {
+            return ScrollableCentered
+                .TransformToAncestor(WorkArea)
+                .TransformBounds(new Rect(new Point(), ScrollableCentered.RenderSize));
+        }
+
+        internal Rect GetExpectedCenteredBounds(double paneWidth)
+        {
+            var contentWidth = layoutSize.Width - paneWidth;
+            var centeredWidth = Math.Min(
+                ContentMaximumWidth,
+                Math.Max(0, contentWidth - (ContentMargin * 2))
+            );
+            var contentLeft = Direction == NavigationPanelDirection.Left ? paneWidth : 0;
+            return new Rect(
+                contentLeft + ((contentWidth - centeredWidth) / 2),
+                0,
+                centeredWidth,
+                Centered.ActualHeight
+            );
+        }
+
+        internal void SetPaneWidth(double paneWidth)
+        {
+            PaneColumn.Width = new GridLength(paneWidth);
+        }
+
+        internal void Layout()
+        {
+            WorkArea.Measure(layoutSize);
+            WorkArea.Arrange(new Rect(layoutSize));
+            WorkArea.UpdateLayout();
         }
     }
 

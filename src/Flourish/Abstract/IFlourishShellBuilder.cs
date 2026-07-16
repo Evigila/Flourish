@@ -38,10 +38,11 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseNavigation(bool enabled = true);
 
     /// <summary>
-    /// Enables or disables a maximum width for navigated page content. Content stretches across
-    /// narrower viewports and is centered after the viewport exceeds <paramref name="contentWidth" />.
-    /// The page scrolling surface remains full width, so its vertical scrollbar stays at the edge
-    /// of the Shell content area, including while the window is maximized.
+    /// Enables or disables a maximum width for navigated page content and aligned Shell content
+    /// regions. Content stretches across narrower viewports and is centered after the viewport
+    /// exceeds <paramref name="contentWidth" />. The limit remains active while the navigation
+    /// panel transitions and while the window is maximized. The page scrolling surface remains
+    /// full width, so its vertical scrollbar stays at the edge of the Shell content area.
     /// </summary>
     /// <param name="enabled">
     /// A value indicating whether the content width limit should be enabled.

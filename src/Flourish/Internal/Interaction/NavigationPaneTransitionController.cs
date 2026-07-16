@@ -11,7 +11,8 @@ internal readonly record struct NavigationPaneTransitionTarget(
     Grid WorkArea,
     FrameworkElement PaneHost,
     FrameworkElement ContentHost,
-    NavigationPanelDirection Direction
+    NavigationPanelDirection Direction,
+    IReadOnlyList<FrameworkElement>? CenteredContentHosts = null
 );
 
 /// <summary>
@@ -76,12 +77,16 @@ internal sealed class NavigationPaneTransitionController
         double currentVisibleWidth;
         double currentScale;
         double currentTranslation;
+        double[] currentCenteredWidths;
         if (active is { } existing && existing.Matches(target))
         {
             state = existing;
             currentVisibleWidth = existing.Clip.Rect.Width;
             currentScale = existing.ContentScale.ScaleX;
             currentTranslation = existing.ContentTranslation.X;
+            currentCenteredWidths = existing.CenteredContentHosts
+                .Select(host => host.GetVisibleWidth(currentScale))
+                .ToArray();
             StopClocks(existing);
         }
         else
@@ -91,6 +96,9 @@ internal sealed class NavigationPaneTransitionController
             currentVisibleWidth = committedWidth;
             currentScale = state.ContentScale.ScaleX;
             currentTranslation = state.ContentTranslation.X;
+            currentCenteredWidths = state.CenteredContentHosts
+                .Select(host => host.LayoutWidth)
+                .ToArray();
         }
 
         currentVisibleWidth = Math.Clamp(currentVisibleWidth, 0, workWidth);
@@ -173,6 +181,25 @@ internal sealed class NavigationPaneTransitionController
             }
         );
 
+        var contentWidthDelta = committedWidth - targetWidth;
+        for (var index = 0; index < state.CenteredContentHosts.Count; index++)
+        {
+            var centeredHost = state.CenteredContentHosts[index];
+            var targetVisibleWidth = centeredHost.PredictTargetWidth(contentWidthDelta);
+            timeline.Children.Add(
+                new CenteredContentWidthAnimation
+                {
+                    Duration = new Duration(effectiveDuration),
+                    EasingFunction = easing,
+                    FillBehavior = FillBehavior.Stop,
+                    OuterScaleFrom = currentScale,
+                    OuterScaleTo = targetScale,
+                    VisibleWidthFrom = currentCenteredWidths[index],
+                    VisibleWidthTo = targetVisibleWidth,
+                }
+            );
+        }
+
         var clock = (ClockGroup)timeline.CreateClock(true);
         var runGeneration = ++generation;
         EventHandler completionHandler = (_, _) => Complete(state, runGeneration);
@@ -210,6 +237,15 @@ internal sealed class NavigationPaneTransitionController
                 (AnimationClock)clock.Children[2],
                 HandoffBehavior.SnapshotAndReplace
             );
+            for (var index = 0; index < state.CenteredContentHosts.Count; index++)
+            {
+                var centeredHost = state.CenteredContentHosts[index];
+                centeredHost.Element.ApplyAnimationClock(
+                    FrameworkElement.MaxWidthProperty,
+                    (AnimationClock)clock.Children[index + 3],
+                    HandoffBehavior.SnapshotAndReplace
+                );
+            }
         }
         catch
         {
@@ -272,6 +308,13 @@ internal sealed class NavigationPaneTransitionController
             TranslateTransform.XProperty,
             null
         );
+        foreach (var centeredHost in state.CenteredContentHosts)
+        {
+            centeredHost.Element.ApplyAnimationClock(
+                FrameworkElement.MaxWidthProperty,
+                null
+            );
+        }
         state.ClearRun();
     }
 
@@ -365,6 +408,13 @@ internal sealed class NavigationPaneTransitionController
             OriginalContentTransformOriginLocalValue = target.ContentHost.ReadLocalValue(
                 UIElement.RenderTransformOriginProperty
             );
+            CenteredContentHostReferences = NormalizeCenteredContentHosts(
+                target.CenteredContentHosts
+            );
+            CenteredContentHosts = CenteredContentHostReferences
+                .Where(CanAnimateCenteredContentHost)
+                .Select(host => new CenteredContentHostState(host, target.ContentHost))
+                .ToArray();
             ContentTransform.Children.Add(ContentScale);
             ContentTransform.Children.Add(ContentTranslation);
         }
@@ -378,6 +428,10 @@ internal sealed class NavigationPaneTransitionController
         internal ScaleTransform ContentScale { get; } = new(1, 1);
 
         internal TranslateTransform ContentTranslation { get; } = new();
+
+        internal IReadOnlyList<FrameworkElement> CenteredContentHostReferences { get; }
+
+        internal IReadOnlyList<CenteredContentHostState> CenteredContentHosts { get; }
 
         internal Geometry? OriginalClip { get; }
 
@@ -406,7 +460,11 @@ internal sealed class NavigationPaneTransitionController
             return ReferenceEquals(Target.WorkArea, target.WorkArea)
                 && ReferenceEquals(Target.PaneHost, target.PaneHost)
                 && ReferenceEquals(Target.ContentHost, target.ContentHost)
-                && Target.Direction == target.Direction;
+                && Target.Direction == target.Direction
+                && HaveSameCenteredContentHosts(
+                    CenteredContentHostReferences,
+                    target.CenteredContentHosts
+                );
         }
 
         internal void Begin(
@@ -429,5 +487,209 @@ internal sealed class NavigationPaneTransitionController
             CompletionHandler = null;
             Completed = null;
         }
+    }
+
+    private sealed class CenteredContentHostState
+    {
+        internal CenteredContentHostState(
+            FrameworkElement element,
+            FrameworkElement contentHost
+        )
+        {
+            Element = element;
+            LayoutWidth = element.ActualWidth;
+            AvailableWidth = GetAvailableWidth(element, contentHost);
+        }
+
+        internal FrameworkElement Element { get; }
+
+        internal double LayoutWidth { get; }
+
+        internal double AvailableWidth { get; }
+
+        internal double GetVisibleWidth(double outerScale)
+        {
+            return Element.ActualWidth * outerScale;
+        }
+
+        internal double PredictTargetWidth(double contentWidthDelta)
+        {
+            if (double.IsFinite(Element.Width))
+            {
+                return Math.Clamp(Element.Width, Element.MinWidth, Element.MaxWidth);
+            }
+
+            if (Element.HorizontalAlignment != HorizontalAlignment.Stretch)
+            {
+                return LayoutWidth;
+            }
+
+            var availableWidth = Math.Max(
+                0,
+                AvailableWidth
+                    + contentWidthDelta
+                    - Element.Margin.Left
+                    - Element.Margin.Right
+            );
+            return Math.Clamp(availableWidth, Element.MinWidth, Element.MaxWidth);
+        }
+
+        private static double GetAvailableWidth(
+            FrameworkElement element,
+            FrameworkElement contentHost
+        )
+        {
+            for (
+                DependencyObject? ancestor = VisualTreeHelper.GetParent(element);
+                ancestor is not null && !ReferenceEquals(ancestor, contentHost);
+                ancestor = VisualTreeHelper.GetParent(ancestor)
+            )
+            {
+                if (
+                    ancestor is ScrollViewer scrollViewer
+                    && double.IsFinite(scrollViewer.ViewportWidth)
+                    && scrollViewer.ViewportWidth > 0
+                )
+                {
+                    return scrollViewer.ViewportWidth;
+                }
+            }
+
+            return contentHost.ActualWidth;
+        }
+    }
+
+    private sealed class CenteredContentWidthAnimation : DoubleAnimationBase
+    {
+        internal static readonly DependencyProperty EasingFunctionProperty =
+            DependencyProperty.Register(
+                nameof(EasingFunction),
+                typeof(IEasingFunction),
+                typeof(CenteredContentWidthAnimation)
+            );
+
+        internal static readonly DependencyProperty OuterScaleFromProperty =
+            DependencyProperty.Register(
+                nameof(OuterScaleFrom),
+                typeof(double),
+                typeof(CenteredContentWidthAnimation)
+            );
+
+        internal static readonly DependencyProperty OuterScaleToProperty = DependencyProperty.Register(
+            nameof(OuterScaleTo),
+            typeof(double),
+            typeof(CenteredContentWidthAnimation)
+        );
+
+        internal static readonly DependencyProperty VisibleWidthFromProperty =
+            DependencyProperty.Register(
+                nameof(VisibleWidthFrom),
+                typeof(double),
+                typeof(CenteredContentWidthAnimation)
+            );
+
+        internal static readonly DependencyProperty VisibleWidthToProperty =
+            DependencyProperty.Register(
+                nameof(VisibleWidthTo),
+                typeof(double),
+                typeof(CenteredContentWidthAnimation)
+            );
+
+        internal IEasingFunction? EasingFunction
+        {
+            get => (IEasingFunction?)GetValue(EasingFunctionProperty);
+            set => SetValue(EasingFunctionProperty, value);
+        }
+
+        internal double OuterScaleFrom
+        {
+            get => (double)GetValue(OuterScaleFromProperty);
+            set => SetValue(OuterScaleFromProperty, value);
+        }
+
+        internal double OuterScaleTo
+        {
+            get => (double)GetValue(OuterScaleToProperty);
+            set => SetValue(OuterScaleToProperty, value);
+        }
+
+        internal double VisibleWidthFrom
+        {
+            get => (double)GetValue(VisibleWidthFromProperty);
+            set => SetValue(VisibleWidthFromProperty, value);
+        }
+
+        internal double VisibleWidthTo
+        {
+            get => (double)GetValue(VisibleWidthToProperty);
+            set => SetValue(VisibleWidthToProperty, value);
+        }
+
+        protected override Freezable CreateInstanceCore()
+        {
+            return new CenteredContentWidthAnimation();
+        }
+
+        protected override double GetCurrentValueCore(
+            double defaultOriginValue,
+            double defaultDestinationValue,
+            AnimationClock animationClock
+        )
+        {
+            var progress = animationClock.CurrentProgress ?? 0;
+            var easedProgress = EasingFunction?.Ease(progress) ?? progress;
+            var outerScale = Lerp(OuterScaleFrom, OuterScaleTo, easedProgress);
+            var visibleWidth = Lerp(VisibleWidthFrom, VisibleWidthTo, easedProgress);
+            return double.IsFinite(outerScale) && outerScale > 0
+                ? visibleWidth / outerScale
+                : defaultDestinationValue;
+        }
+
+        private static double Lerp(double from, double to, double progress)
+        {
+            return from + ((to - from) * progress);
+        }
+    }
+
+    private static bool CanAnimateCenteredContentHost(FrameworkElement host)
+    {
+        return double.IsFinite(host.ActualWidth)
+            && host.ActualWidth > 0
+            && double.IsFinite(host.MaxWidth)
+            && host.MaxWidth > 0;
+    }
+
+    private static IReadOnlyList<FrameworkElement> NormalizeCenteredContentHosts(
+        IReadOnlyList<FrameworkElement>? hosts
+    )
+    {
+        if (hosts is null || hosts.Count == 0)
+        {
+            return [];
+        }
+
+        var normalized = new List<FrameworkElement>(hosts.Count);
+        foreach (var host in hosts)
+        {
+            ArgumentNullException.ThrowIfNull(host);
+            if (!normalized.Any(existing => ReferenceEquals(existing, host)))
+            {
+                normalized.Add(host);
+            }
+        }
+
+        return normalized;
+    }
+
+    private static bool HaveSameCenteredContentHosts(
+        IReadOnlyList<FrameworkElement> existing,
+        IReadOnlyList<FrameworkElement>? candidate
+    )
+    {
+        var normalizedCandidate = NormalizeCenteredContentHosts(candidate);
+        return existing.Count == normalizedCandidate.Count
+            && existing
+                .Zip(normalizedCandidate)
+                .All(pair => ReferenceEquals(pair.First, pair.Second));
     }
 }

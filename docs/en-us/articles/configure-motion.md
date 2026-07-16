@@ -36,6 +36,10 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 `EnableHoverRevealAnimation` enables hover animation on supported controls.
 
+## Navigation panel behavior during transitions
+
+`Resize` animates the navigation panel and the visual bounds of the Shell content area, then commits the final column width when the transition completes. If centered content is enabled, the page and aligned Shell regions remain centered and within the configured maximum width throughout the transition, including when the available width crosses that limit.
+
 ## Page behavior during transitions
 
 `Fade` fades the navigated page into view. `EntranceFromBottom` combines the fade with a short upward translation. Flourish temporarily caches the transparent page surface while either transition is active, so the animation is composed from a bitmap instead of redrawing a complex page on every frame. Fractional movement remains available for a smooth translation. The live page, cache, and render transform are restored as soon as the transition completes or is cancelled, and neither transition changes the page's final layout.
