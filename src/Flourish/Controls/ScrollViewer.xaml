@@ -39,6 +39,167 @@
     </Setter>
   </Style>
 
+  <!-- Physical scrolling owns a private transform host. The viewport presenter and
+       its layout clip remain stationary while only this inner host is animated. -->
+  <ControlTemplate
+    x:Key="FlourishPhysicalScrollViewerTemplate"
+    TargetType="{x:Type controls:ScrollViewer}"
+  >
+    <Border
+      Background="{TemplateBinding Background}"
+      BorderBrush="{TemplateBinding BorderBrush}"
+      BorderThickness="{TemplateBinding BorderThickness}"
+      CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+      SnapsToDevicePixels="True"
+    >
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" ClipToBounds="True">
+          <ScrollContentPresenter
+            x:Name="PART_ScrollContentPresenter"
+            CanContentScroll="False"
+            HorizontalAlignment="Stretch"
+            Margin="{TemplateBinding Padding}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+            VerticalAlignment="Stretch"
+          >
+            <ScrollContentPresenter.Content>
+              <ContentPresenter
+                x:Name="PART_SmoothScrollContentHost"
+                Content="{TemplateBinding Content}"
+                ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                ContentTemplate="{TemplateBinding ContentTemplate}"
+                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+              />
+            </ScrollContentPresenter.Content>
+          </ScrollContentPresenter>
+        </Grid>
+        <controls:FlourishScrollBar
+          x:Name="PART_VerticalScrollBar"
+          Grid.Row="0"
+          Grid.Column="1"
+          Maximum="{TemplateBinding ScrollableHeight}"
+          Orientation="Vertical"
+          Width="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+          ViewportSize="{TemplateBinding ViewportHeight}"
+          Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+        />
+        <controls:FlourishScrollBar
+          x:Name="PART_HorizontalScrollBar"
+          Grid.Row="1"
+          Grid.Column="0"
+          Maximum="{TemplateBinding ScrollableWidth}"
+          Orientation="Horizontal"
+          Height="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+          ViewportSize="{TemplateBinding ViewportWidth}"
+          Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+        />
+      </Grid>
+    </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsCompact" Value="True">
+        <Setter
+          TargetName="PART_VerticalScrollBar"
+          Property="Width"
+          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
+        />
+        <Setter
+          TargetName="PART_HorizontalScrollBar"
+          Property="Height"
+          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
+        />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <!-- Logical scrolling stays directly connected to IScrollInfo so item
+       virtualization and recycling retain the native WPF behavior. -->
+  <ControlTemplate
+    x:Key="FlourishLogicalScrollViewerTemplate"
+    TargetType="{x:Type controls:ScrollViewer}"
+  >
+    <Border
+      Background="{TemplateBinding Background}"
+      BorderBrush="{TemplateBinding BorderBrush}"
+      BorderThickness="{TemplateBinding BorderThickness}"
+      CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+      SnapsToDevicePixels="True"
+    >
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" ClipToBounds="True">
+          <ScrollContentPresenter
+            x:Name="PART_ScrollContentPresenter"
+            CanContentScroll="True"
+            Content="{TemplateBinding Content}"
+            ContentStringFormat="{TemplateBinding ContentStringFormat}"
+            ContentTemplate="{TemplateBinding ContentTemplate}"
+            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+            Margin="{TemplateBinding Padding}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+          />
+        </Grid>
+        <controls:FlourishScrollBar
+          x:Name="PART_VerticalScrollBar"
+          Grid.Row="0"
+          Grid.Column="1"
+          Maximum="{TemplateBinding ScrollableHeight}"
+          Orientation="Vertical"
+          Width="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+          ViewportSize="{TemplateBinding ViewportHeight}"
+          Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+        />
+        <controls:FlourishScrollBar
+          x:Name="PART_HorizontalScrollBar"
+          Grid.Row="1"
+          Grid.Column="0"
+          Maximum="{TemplateBinding ScrollableWidth}"
+          Orientation="Horizontal"
+          Height="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+          ViewportSize="{TemplateBinding ViewportWidth}"
+          Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+        />
+      </Grid>
+    </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsCompact" Value="True">
+        <Setter
+          TargetName="PART_VerticalScrollBar"
+          Property="Width"
+          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
+        />
+        <Setter
+          TargetName="PART_HorizontalScrollBar"
+          Property="Height"
+          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
+        />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
   <Style TargetType="{x:Type controls:ScrollViewer}">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderBrush" Value="Transparent" />
@@ -47,80 +208,12 @@
     <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:ScrollViewer}">
-          <Border
-            Background="{TemplateBinding Background}"
-            BorderBrush="{TemplateBinding BorderBrush}"
-            BorderThickness="{TemplateBinding BorderThickness}"
-            CornerRadius="{DynamicResource FlourishControlCornerRadius}"
-            SnapsToDevicePixels="True"
-          >
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-              <Grid Grid.Row="0" Grid.Column="0" ClipToBounds="True">
-                <ScrollContentPresenter
-                  x:Name="PART_ScrollContentPresenter"
-                  CanContentScroll="{TemplateBinding CanContentScroll}"
-                  Content="{TemplateBinding Content}"
-                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                  Margin="{TemplateBinding Padding}"
-                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                />
-              </Grid>
-              <controls:FlourishScrollBar
-                x:Name="PART_VerticalScrollBar"
-                Grid.Row="0"
-                Grid.Column="1"
-                Maximum="{TemplateBinding ScrollableHeight}"
-                Orientation="Vertical"
-                Width="{DynamicResource FlourishSlenderScrollBarWidth}"
-                Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                ViewportSize="{TemplateBinding ViewportHeight}"
-                Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-              />
-              <controls:FlourishScrollBar
-                x:Name="PART_HorizontalScrollBar"
-                Grid.Row="1"
-                Grid.Column="0"
-                Maximum="{TemplateBinding ScrollableWidth}"
-                Orientation="Horizontal"
-                Height="{DynamicResource FlourishSlenderScrollBarWidth}"
-                Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                ViewportSize="{TemplateBinding ViewportWidth}"
-                Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-              />
-            </Grid>
-          </Border>
-          <ControlTemplate.Triggers>
-            <Trigger Property="IsCompact" Value="True">
-              <Setter
-                TargetName="PART_VerticalScrollBar"
-                Property="Width"
-                Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
-              />
-              <Setter
-                TargetName="PART_HorizontalScrollBar"
-                Property="Height"
-                Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
-              />
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
+    <Setter Property="Template" Value="{StaticResource FlourishPhysicalScrollViewerTemplate}" />
+    <Style.Triggers>
+      <Trigger Property="CanContentScroll" Value="True">
+        <Setter Property="Template" Value="{StaticResource FlourishLogicalScrollViewerTemplate}" />
+      </Trigger>
+    </Style.Triggers>
   </Style>
 
 </ResourceDictionary>

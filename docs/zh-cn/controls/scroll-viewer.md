@@ -25,6 +25,12 @@ description: 使用平滑像素滚动与细长 Flourish 滚动条承载超出视
 
 需要立即执行 WPF 原生像素滚动时，设置 `IsSmoothScrollingEnabled="False"`。
 
+## 自定义模板
+
+平滑像素滚动要求 `PART_ScrollContentPresenter` 保持静止，并在其内部放置名为 `PART_SmoothScrollContentHost` 的 `ContentPresenter`。控件只对这个专用宿主应用逐帧变换，使视口裁剪区域保持固定。模板缺少该宿主时，鼠标滚轮输入会安全回退到原生滚动。
+
+用于 `CanContentScroll="True"` 的模板应让虚拟化 `IScrollInfo` 或 `ItemsPresenter` 与 `PART_ScrollContentPresenter` 保持直接连接，并省略平滑滚动宿主，从而保留 WPF 逻辑滚动与容器回收。
+
 ## 虚拟化项目控件
 
 当 `CanContentScroll` 为 `true` 时，`ScrollViewer` 保留 WPF 逻辑滚动，不会将项目偏移误作像素偏移，因此项目虚拟化面板可以保持正确行为。包含大量项目的控件还应在所属控件上启用容器回收：
