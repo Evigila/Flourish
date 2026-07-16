@@ -24,8 +24,8 @@ public enum FlourishNavigationPanelTransition
     None,
 
     /// <summary>
-    /// Animates a visual resize, preserves centered Shell content width constraints during the
-    /// transition, and commits the final layout width when the transition ends.
+    /// Animates a visual resize, preserves the width and natural horizontal scale of capped
+    /// centered Shell content, and commits the final layout width when the transition ends.
     /// </summary>
     /// <example>
     /// <code><![CDATA[

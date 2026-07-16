@@ -2,6 +2,8 @@ using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Views.Windows;
@@ -187,6 +189,90 @@ public sealed class CenteredPageContentLayoutTests
                     scrollViewer.ViewportWidth - 65,
                     scrollViewer.ViewportWidth - 63
                 );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Apply_WithRootScrollViewer_HonorsPresenterRenderScale()
+    {
+        RunInSta(() =>
+        {
+            var content = new Border
+            {
+                Background = Brushes.Blue,
+                Height = 900,
+            };
+            var scrollViewer = new CustomScrollViewer
+            {
+                Content = content,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+            };
+            var page = new Page { Content = scrollViewer };
+            page.Resources["FlourishContentBodyMargin"] = new Thickness(32, 0, 32, 0);
+            CenteredPageContentLayout.Apply(page, 480);
+
+            var window = new Window
+            {
+                Width = 800,
+                Height = 400,
+                Left = -10_000,
+                Top = -10_000,
+                ShowActivated = false,
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Content = page,
+            };
+            window.Resources.MergedDictionaries.Add(
+                LoadResourceDictionary(GenericThemeSource)
+            );
+            window.Show();
+
+            try
+            {
+                PumpDispatcher();
+                var presenter = Assert.IsType<CenteredPageContentPresenter>(
+                    scrollViewer.Content
+                );
+                presenter.RenderTransformOrigin = new Point(0.5, 0);
+                presenter.RenderTransform = new ScaleTransform(0.5, 1);
+                PumpDispatcher();
+
+                var pixelWidth = (int)Math.Ceiling(scrollViewer.ActualWidth);
+                var bitmap = new RenderTargetBitmap(
+                    pixelWidth,
+                    (int)Math.Ceiling(scrollViewer.ActualHeight),
+                    96,
+                    96,
+                    PixelFormats.Pbgra32
+                );
+                bitmap.Render(scrollViewer);
+                var pixels = new byte[pixelWidth * 4];
+                bitmap.CopyPixels(
+                    new Int32Rect(0, 20, pixelWidth, 1),
+                    pixels,
+                    pixels.Length,
+                    0
+                );
+
+                var bluePixelCount = Enumerable
+                    .Range(0, pixelWidth)
+                    .Count(x =>
+                    {
+                        var offset = x * 4;
+                        return pixels[offset] > 200
+                            && pixels[offset + 1] < 20
+                            && pixels[offset + 2] < 20
+                            && pixels[offset + 3] > 200;
+                    });
+
+                Assert.InRange(bluePixelCount, 239, 241);
             }
             finally
             {

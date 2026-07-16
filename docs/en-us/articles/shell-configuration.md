@@ -63,7 +63,7 @@ The breadcrumb, dynamic toolbar, content page, and content-region hosts use the 
 
 Use `UseCenterContent(true, contentWidth)` to give navigated page content and aligned Shell regions—the content header, dynamic toolbar, breadcrumb, and content footer—a maximum width in device-independent pixels. When the available content area is wider than `contentWidth`, Flourish keeps those surfaces at that width and centers them. A narrower content area still uses all available width, and maximizing the window does not remove the configured limit.
 
-During a `Resize` navigation-panel transition, the centered surfaces move with the changing content area while the configured width limit remains active. This avoids a temporary stretch beyond `contentWidth` when the panel opens or closes.
+During a `Resize` navigation-panel transition, the centered surfaces move with the changing content area while the configured width limit remains active. A surface that remains at `contentWidth` is translated without horizontally scaling its text or internal spacing. This avoids both temporary stretching and an end-of-transition layout step when the panel opens or closes.
 
 The page's root scroll viewer remains full width. Its vertical scroll bar stays at the right edge of the content area and is not moved next to the centered content.
 

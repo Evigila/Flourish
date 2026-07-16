@@ -78,14 +78,24 @@ internal sealed class NavigationPaneTransitionController
         double currentScale;
         double currentTranslation;
         double[] currentCenteredWidths;
+        double[] currentCenteredNetScales;
+        double[] currentCenteredWorldOffsets;
+        var isContinuation = false;
         if (active is { } existing && existing.Matches(target))
         {
+            isContinuation = true;
             state = existing;
             currentVisibleWidth = existing.Clip.Rect.Width;
             currentScale = existing.ContentScale.ScaleX;
             currentTranslation = existing.ContentTranslation.X;
             currentCenteredWidths = existing.CenteredContentHosts
                 .Select(host => host.GetVisibleWidth(currentScale))
+                .ToArray();
+            currentCenteredNetScales = existing.CenteredContentHosts
+                .Select(host => host.GetNetScale(currentScale))
+                .ToArray();
+            currentCenteredWorldOffsets = existing.CenteredContentHosts
+                .Select(host => host.GetWorldOffset(currentScale))
                 .ToArray();
             StopClocks(existing);
         }
@@ -98,6 +108,12 @@ internal sealed class NavigationPaneTransitionController
             currentTranslation = state.ContentTranslation.X;
             currentCenteredWidths = state.CenteredContentHosts
                 .Select(host => host.LayoutWidth)
+                .ToArray();
+            currentCenteredNetScales = state.CenteredContentHosts
+                .Select(_ => 1d)
+                .ToArray();
+            currentCenteredWorldOffsets = state.CenteredContentHosts
+                .Select(_ => 0d)
                 .ToArray();
         }
 
@@ -182,21 +198,81 @@ internal sealed class NavigationPaneTransitionController
         );
 
         var contentWidthDelta = committedWidth - targetWidth;
+        var centeredRuns = new List<CenteredContentAnimationRun>(
+            state.CenteredContentHosts.Count
+        );
         for (var index = 0; index < state.CenteredContentHosts.Count; index++)
         {
             var centeredHost = state.CenteredContentHosts[index];
             var targetVisibleWidth = centeredHost.PredictTargetWidth(contentWidthDelta);
+            if (
+                centeredHost.IsAtMaximumWidth(currentCenteredWidths[index])
+                && centeredHost.IsAtMaximumWidth(targetVisibleWidth)
+                && (!isContinuation || centeredHost.IsUsingTransformCompensation)
+            )
+            {
+                // Keep capped content at its natural layout width. The child counter-scale
+                // cancels the content-area scale, while this offset corrects any difference
+                // between the content-area center and the host's actual viewport center.
+                var targetWorldOffset =
+                    centeredHost.PredictTargetCenter(contentWidthDelta)
+                    - (targetScale * centeredHost.CenterX);
+                var scaleClockIndex = timeline.Children.Count;
+                timeline.Children.Add(
+                    new CenteredContentCompensationAnimation
+                    {
+                        CompensatedValueFrom = currentCenteredNetScales[index],
+                        CompensatedValueTo = 1,
+                        Duration = new Duration(effectiveDuration),
+                        EasingFunction = easing,
+                        FillBehavior = FillBehavior.Stop,
+                        OuterScaleFrom = currentScale,
+                        OuterScaleTo = targetScale,
+                    }
+                );
+                var translationClockIndex = timeline.Children.Count;
+                timeline.Children.Add(
+                    new CenteredContentCompensationAnimation
+                    {
+                        CompensatedValueFrom = currentCenteredWorldOffsets[index],
+                        CompensatedValueTo = targetWorldOffset,
+                        Duration = new Duration(effectiveDuration),
+                        EasingFunction = easing,
+                        FillBehavior = FillBehavior.Stop,
+                        OuterScaleFrom = currentScale,
+                        OuterScaleTo = targetScale,
+                    }
+                );
+                centeredRuns.Add(
+                    CenteredContentAnimationRun.CreateTransform(
+                        centeredHost,
+                        scaleClockIndex,
+                        translationClockIndex,
+                        1 / targetScale,
+                        targetWorldOffset / targetScale
+                    )
+                );
+                continue;
+            }
+
+            var widthClockIndex = timeline.Children.Count;
             timeline.Children.Add(
-                new CenteredContentWidthAnimation
+                new CenteredContentCompensationAnimation
                 {
+                    CompensatedValueFrom = currentCenteredWidths[index],
+                    CompensatedValueTo = targetVisibleWidth,
                     Duration = new Duration(effectiveDuration),
                     EasingFunction = easing,
                     FillBehavior = FillBehavior.Stop,
                     OuterScaleFrom = currentScale,
                     OuterScaleTo = targetScale,
-                    VisibleWidthFrom = currentCenteredWidths[index],
-                    VisibleWidthTo = targetVisibleWidth,
                 }
+            );
+            centeredRuns.Add(
+                CenteredContentAnimationRun.CreateWidth(
+                    centeredHost,
+                    widthClockIndex
+                )
             );
         }
 
@@ -237,14 +313,9 @@ internal sealed class NavigationPaneTransitionController
                 (AnimationClock)clock.Children[2],
                 HandoffBehavior.SnapshotAndReplace
             );
-            for (var index = 0; index < state.CenteredContentHosts.Count; index++)
+            foreach (var run in centeredRuns)
             {
-                var centeredHost = state.CenteredContentHosts[index];
-                centeredHost.Element.ApplyAnimationClock(
-                    FrameworkElement.MaxWidthProperty,
-                    (AnimationClock)clock.Children[index + 3],
-                    HandoffBehavior.SnapshotAndReplace
-                );
+                run.Apply(clock);
             }
         }
         catch
@@ -314,6 +385,14 @@ internal sealed class NavigationPaneTransitionController
                 FrameworkElement.MaxWidthProperty,
                 null
             );
+            centeredHost.CounterScale.ApplyAnimationClock(
+                ScaleTransform.ScaleXProperty,
+                null
+            );
+            centeredHost.CounterTranslation.ApplyAnimationClock(
+                TranslateTransform.XProperty,
+                null
+            );
         }
         state.ClearRun();
     }
@@ -331,6 +410,10 @@ internal sealed class NavigationPaneTransitionController
             UIElement.RenderTransformOriginProperty,
             state.OriginalContentTransformOriginLocalValue
         );
+        foreach (var centeredHost in state.CenteredContentHosts)
+        {
+            centeredHost.RestoreTransform();
+        }
         target.PaneHost.Clip = state.OriginalClip;
         target.PaneHost.Width = state.OriginalWidth;
         target.PaneHost.HorizontalAlignment = state.OriginalHorizontalAlignment;
@@ -498,25 +581,74 @@ internal sealed class NavigationPaneTransitionController
         {
             Element = element;
             LayoutWidth = element.ActualWidth;
+            MaximumWidth = element.MaxWidth;
             AvailableWidth = GetAvailableWidth(element, contentHost);
+            CenterX = GetCenterX(element, contentHost);
+            OriginalTransformLocalValue = element.ReadLocalValue(
+                UIElement.RenderTransformProperty
+            );
+            OriginalTransformOriginLocalValue = element.ReadLocalValue(
+                UIElement.RenderTransformOriginProperty
+            );
+            CompensationTransform.Children.Add(CounterScale);
+            CompensationTransform.Children.Add(CounterTranslation);
         }
 
         internal FrameworkElement Element { get; }
 
         internal double LayoutWidth { get; }
 
+        internal double MaximumWidth { get; }
+
         internal double AvailableWidth { get; }
+
+        internal double CenterX { get; }
+
+        internal ScaleTransform CounterScale { get; } = new(1, 1);
+
+        internal TranslateTransform CounterTranslation { get; } = new();
+
+        internal TransformGroup CompensationTransform { get; } = new();
+
+        internal object OriginalTransformLocalValue { get; }
+
+        internal object OriginalTransformOriginLocalValue { get; }
+
+        internal bool IsUsingTransformCompensation { get; set; }
 
         internal double GetVisibleWidth(double outerScale)
         {
-            return Element.ActualWidth * outerScale;
+            return Element.ActualWidth * GetNetScale(outerScale);
+        }
+
+        internal double GetNetScale(double outerScale)
+        {
+            return outerScale
+                * (IsUsingTransformCompensation ? CounterScale.ScaleX : 1);
+        }
+
+        internal double GetWorldOffset(double outerScale)
+        {
+            return IsUsingTransformCompensation
+                ? outerScale * CounterTranslation.X
+                : 0;
+        }
+
+        internal bool IsAtMaximumWidth(double width)
+        {
+            return Math.Abs(width - MaximumWidth) < MinimumDistance;
+        }
+
+        internal double PredictTargetCenter(double contentWidthDelta)
+        {
+            return CenterX + (contentWidthDelta / 2);
         }
 
         internal double PredictTargetWidth(double contentWidthDelta)
         {
             if (double.IsFinite(Element.Width))
             {
-                return Math.Clamp(Element.Width, Element.MinWidth, Element.MaxWidth);
+                return Math.Clamp(Element.Width, Element.MinWidth, MaximumWidth);
             }
 
             if (Element.HorizontalAlignment != HorizontalAlignment.Stretch)
@@ -531,7 +663,34 @@ internal sealed class NavigationPaneTransitionController
                     - Element.Margin.Left
                     - Element.Margin.Right
             );
-            return Math.Clamp(availableWidth, Element.MinWidth, Element.MaxWidth);
+            return Math.Clamp(availableWidth, Element.MinWidth, MaximumWidth);
+        }
+
+        internal void ApplyTransform(
+            double targetCounterScale,
+            double targetLocalOffset
+        )
+        {
+            CounterScale.ScaleX = targetCounterScale;
+            CounterTranslation.X = targetLocalOffset;
+            Element.RenderTransformOrigin = new System.Windows.Point(0.5, 0);
+            Element.RenderTransform = CompensationTransform;
+            IsUsingTransformCompensation = true;
+        }
+
+        internal void RestoreTransform()
+        {
+            RestoreLocalValue(
+                Element,
+                UIElement.RenderTransformProperty,
+                OriginalTransformLocalValue
+            );
+            RestoreLocalValue(
+                Element,
+                UIElement.RenderTransformOriginProperty,
+                OriginalTransformOriginLocalValue
+            );
+            IsUsingTransformCompensation = false;
         }
 
         private static double GetAvailableWidth(
@@ -557,43 +716,154 @@ internal sealed class NavigationPaneTransitionController
 
             return contentHost.ActualWidth;
         }
+
+        private static double GetCenterX(
+            FrameworkElement element,
+            FrameworkElement contentHost
+        )
+        {
+            return element
+                .TransformToAncestor(contentHost)
+                .Transform(new System.Windows.Point(element.ActualWidth / 2, 0))
+                .X;
+        }
     }
 
-    private sealed class CenteredContentWidthAnimation : DoubleAnimationBase
+    private sealed class CenteredContentAnimationRun
     {
+        private CenteredContentAnimationRun(
+            CenteredContentHostState host,
+            int widthClockIndex,
+            int scaleClockIndex,
+            int translationClockIndex,
+            double targetCounterScale,
+            double targetLocalOffset
+        )
+        {
+            Host = host;
+            WidthClockIndex = widthClockIndex;
+            ScaleClockIndex = scaleClockIndex;
+            TranslationClockIndex = translationClockIndex;
+            TargetCounterScale = targetCounterScale;
+            TargetLocalOffset = targetLocalOffset;
+        }
+
+        private CenteredContentHostState Host { get; }
+
+        private int WidthClockIndex { get; }
+
+        private int ScaleClockIndex { get; }
+
+        private int TranslationClockIndex { get; }
+
+        private double TargetCounterScale { get; }
+
+        private double TargetLocalOffset { get; }
+
+        internal static CenteredContentAnimationRun CreateWidth(
+            CenteredContentHostState host,
+            int clockIndex
+        )
+        {
+            return new CenteredContentAnimationRun(host, clockIndex, -1, -1, 1, 0);
+        }
+
+        internal static CenteredContentAnimationRun CreateTransform(
+            CenteredContentHostState host,
+            int scaleClockIndex,
+            int translationClockIndex,
+            double targetCounterScale,
+            double targetLocalOffset
+        )
+        {
+            return new CenteredContentAnimationRun(
+                host,
+                -1,
+                scaleClockIndex,
+                translationClockIndex,
+                targetCounterScale,
+                targetLocalOffset
+            );
+        }
+
+        internal void Apply(ClockGroup clock)
+        {
+            if (WidthClockIndex >= 0)
+            {
+                Host.RestoreTransform();
+                Host.Element.ApplyAnimationClock(
+                    FrameworkElement.MaxWidthProperty,
+                    (AnimationClock)clock.Children[WidthClockIndex],
+                    HandoffBehavior.SnapshotAndReplace
+                );
+                return;
+            }
+
+            Host.ApplyTransform(TargetCounterScale, TargetLocalOffset);
+            Host.CounterScale.ApplyAnimationClock(
+                ScaleTransform.ScaleXProperty,
+                (AnimationClock)clock.Children[ScaleClockIndex],
+                HandoffBehavior.SnapshotAndReplace
+            );
+            Host.CounterTranslation.ApplyAnimationClock(
+                TranslateTransform.XProperty,
+                (AnimationClock)clock.Children[TranslationClockIndex],
+                HandoffBehavior.SnapshotAndReplace
+            );
+        }
+    }
+
+    /// <summary>
+    /// Converts a world-space value into the local coordinate system of the animated content
+    /// area. The same calculation drives visible width, net scale, and center offset.
+    /// </summary>
+    private sealed class CenteredContentCompensationAnimation : DoubleAnimationBase
+    {
+        internal static readonly DependencyProperty CompensatedValueFromProperty =
+            DependencyProperty.Register(
+                nameof(CompensatedValueFrom),
+                typeof(double),
+                typeof(CenteredContentCompensationAnimation)
+            );
+
+        internal static readonly DependencyProperty CompensatedValueToProperty =
+            DependencyProperty.Register(
+                nameof(CompensatedValueTo),
+                typeof(double),
+                typeof(CenteredContentCompensationAnimation)
+            );
+
         internal static readonly DependencyProperty EasingFunctionProperty =
             DependencyProperty.Register(
                 nameof(EasingFunction),
                 typeof(IEasingFunction),
-                typeof(CenteredContentWidthAnimation)
+                typeof(CenteredContentCompensationAnimation)
             );
 
         internal static readonly DependencyProperty OuterScaleFromProperty =
             DependencyProperty.Register(
                 nameof(OuterScaleFrom),
                 typeof(double),
-                typeof(CenteredContentWidthAnimation)
+                typeof(CenteredContentCompensationAnimation)
             );
 
         internal static readonly DependencyProperty OuterScaleToProperty = DependencyProperty.Register(
             nameof(OuterScaleTo),
             typeof(double),
-            typeof(CenteredContentWidthAnimation)
+            typeof(CenteredContentCompensationAnimation)
         );
 
-        internal static readonly DependencyProperty VisibleWidthFromProperty =
-            DependencyProperty.Register(
-                nameof(VisibleWidthFrom),
-                typeof(double),
-                typeof(CenteredContentWidthAnimation)
-            );
+        internal double CompensatedValueFrom
+        {
+            get => (double)GetValue(CompensatedValueFromProperty);
+            set => SetValue(CompensatedValueFromProperty, value);
+        }
 
-        internal static readonly DependencyProperty VisibleWidthToProperty =
-            DependencyProperty.Register(
-                nameof(VisibleWidthTo),
-                typeof(double),
-                typeof(CenteredContentWidthAnimation)
-            );
+        internal double CompensatedValueTo
+        {
+            get => (double)GetValue(CompensatedValueToProperty);
+            set => SetValue(CompensatedValueToProperty, value);
+        }
 
         internal IEasingFunction? EasingFunction
         {
@@ -613,21 +883,9 @@ internal sealed class NavigationPaneTransitionController
             set => SetValue(OuterScaleToProperty, value);
         }
 
-        internal double VisibleWidthFrom
-        {
-            get => (double)GetValue(VisibleWidthFromProperty);
-            set => SetValue(VisibleWidthFromProperty, value);
-        }
-
-        internal double VisibleWidthTo
-        {
-            get => (double)GetValue(VisibleWidthToProperty);
-            set => SetValue(VisibleWidthToProperty, value);
-        }
-
         protected override Freezable CreateInstanceCore()
         {
-            return new CenteredContentWidthAnimation();
+            return new CenteredContentCompensationAnimation();
         }
 
         protected override double GetCurrentValueCore(
@@ -636,18 +894,16 @@ internal sealed class NavigationPaneTransitionController
             AnimationClock animationClock
         )
         {
-            var progress = animationClock.CurrentProgress ?? 0;
-            var easedProgress = EasingFunction?.Ease(progress) ?? progress;
+            var easedProgress = GetEasedProgress(animationClock, EasingFunction);
             var outerScale = Lerp(OuterScaleFrom, OuterScaleTo, easedProgress);
-            var visibleWidth = Lerp(VisibleWidthFrom, VisibleWidthTo, easedProgress);
+            var compensatedValue = Lerp(
+                CompensatedValueFrom,
+                CompensatedValueTo,
+                easedProgress
+            );
             return double.IsFinite(outerScale) && outerScale > 0
-                ? visibleWidth / outerScale
+                ? compensatedValue / outerScale
                 : defaultDestinationValue;
-        }
-
-        private static double Lerp(double from, double to, double progress)
-        {
-            return from + ((to - from) * progress);
         }
     }
 
@@ -657,6 +913,20 @@ internal sealed class NavigationPaneTransitionController
             && host.ActualWidth > 0
             && double.IsFinite(host.MaxWidth)
             && host.MaxWidth > 0;
+    }
+
+    private static double GetEasedProgress(
+        AnimationClock animationClock,
+        IEasingFunction? easingFunction
+    )
+    {
+        var progress = animationClock.CurrentProgress ?? 0;
+        return easingFunction?.Ease(progress) ?? progress;
+    }
+
+    private static double Lerp(double from, double to, double progress)
+    {
+        return from + ((to - from) * progress);
     }
 
     private static IReadOnlyList<FrameworkElement> NormalizeCenteredContentHosts(

@@ -38,7 +38,7 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 ## Navigation panel behavior during transitions
 
-`Resize` animates the navigation panel and the visual bounds of the Shell content area, then commits the final column width when the transition completes. If centered content is enabled, the page and aligned Shell regions remain centered and within the configured maximum width throughout the transition, including when the available width crosses that limit.
+`Resize` animates the navigation panel and the visual bounds of the Shell content area, then commits the final column width when the transition completes. If centered content is enabled, the page and aligned Shell regions remain centered and within the configured maximum width throughout the transition. Content that remains at the maximum width translates without horizontal scaling, so text and internal spacing retain their natural metrics. When the available width crosses the limit, the centered surface resizes within that limit.
 
 ## Page behavior during transitions
 
