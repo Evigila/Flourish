@@ -91,7 +91,7 @@ summary: 禁用导航面板过渡动画。
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishNavigationPanelTransition.Resize
-summary: 通过调整布局列宽来为导航面板生成动画。
+summary: 通过视觉尺寸变化为导航面板生成动画，在过渡期间保持 Shell 居中内容的宽度限制，并在结束时提交最终布局宽度。
 ---
 
 ---
@@ -850,7 +850,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseCenterContent(System.Boolean,System.Double)
-summary: 配置导航页面内容是否在宽视口中按最大宽度居中显示。
+summary: 配置导航页面内容及对齐的 Shell 内容区域是否在宽视口和导航栏过渡期间按最大宽度居中显示。
 syntax:
   parameters:
   - id: enabled

@@ -1728,7 +1728,10 @@ internal partial class FlourishShellWindow : Window
                 WorkAreaGrid,
                 NavigationPaneTransitionHost,
                 ContentAreaGrid,
-                options.NavigationPanelDirection
+                options.NavigationPanelDirection,
+                options.IsCenterContentEnabled
+                    ? GetCenteredContentTransitionHosts()
+                    : null
             ),
             committedWidth,
             paneWidth,
@@ -1742,6 +1745,26 @@ internal partial class FlourishShellWindow : Window
                 UpdateNavigationPaneSplitterState();
             }
         );
+    }
+
+    private IReadOnlyList<FrameworkElement> GetCenteredContentTransitionHosts()
+    {
+        var hosts = new List<FrameworkElement>
+        {
+            ContentHeaderRegionHost,
+            ToolbarLayoutHost,
+            BreadcrumbLayoutHost,
+            ContentFooterRegionHost,
+        };
+        if (
+            RootFrame.Content is WpfPage page
+            && CenteredPageContentLayout.FindPresenter(page) is { } presenter
+        )
+        {
+            hosts.Add(presenter);
+        }
+
+        return hosts;
     }
 
     private void NavigationPaneSplitter_DragCompleted(object sender, DragCompletedEventArgs e)

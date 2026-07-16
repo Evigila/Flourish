@@ -45,6 +45,18 @@ internal static class CenteredPageContentLayout
         page.Content = CreatePresenter(content, maximumWidth);
     }
 
+    internal static CenteredPageContentPresenter? FindPresenter(WpfPage page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+
+        return page.Content switch
+        {
+            ScrollViewer { Content: CenteredPageContentPresenter presenter } => presenter,
+            CenteredPageContentPresenter presenter => presenter,
+            _ => null,
+        };
+    }
+
     private static void WrapContent(ContentControl owner, double contentWidth)
     {
         if (owner.Content is CenteredPageContentPresenter presenter)
