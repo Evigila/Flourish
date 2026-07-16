@@ -243,8 +243,8 @@ public sealed class FlourishShellNavigationLayoutTests
 
         Assert.Equal(8, outerInset);
         Assert.Equal(outerInset, titlebarSpacer);
-        Assert.Equal(new Thickness(outerInset, 0, 0, 0), leftPadding);
-        Assert.Equal(new Thickness(0, 0, outerInset, 0), rightPadding);
+        Assert.Equal(new Thickness(outerInset, 0, outerInset, 0), leftPadding);
+        Assert.Equal(new Thickness(outerInset, 0, outerInset, 0), rightPadding);
         Assert.Equal(new Thickness(4, 0, 4, 0), customRegionMargin);
         Assert.Equal(new Thickness(12, 3, 12, 3), statusBarPadding);
         Assert.Equal(
@@ -351,9 +351,9 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Theory]
-    [InlineData(FlowDirection.LeftToRight, 56)]
+    [InlineData(FlowDirection.LeftToRight, 64)]
     [InlineData(FlowDirection.LeftToRight, 72)]
-    [InlineData(FlowDirection.RightToLeft, 56)]
+    [InlineData(FlowDirection.RightToLeft, 64)]
     [InlineData(FlowDirection.RightToLeft, 72)]
     public void CollapsedNavigation_MirrorsTheSharedOuterBaselineAtAnyPaneWidth(
         FlowDirection flowDirection,
@@ -651,7 +651,9 @@ public sealed class FlourishShellNavigationLayoutTests
             "FlourishNavigationPaneRightPadding"
         );
 
-        Assert.Equal(56, NavigationPanelDimensions.MinimumCollapsedWidth);
+        Assert.Equal(64, NavigationPanelDimensions.MinimumCollapsedWidth);
+        Assert.Equal(leftPadding.Left, leftPadding.Right);
+        Assert.Equal(rightPadding.Left, rightPadding.Right);
         Assert.Equal(titlebarGeometry.Left, leftPadding.Left + itemMargin.Left);
         Assert.Equal(
             titlebarGeometry.Left,
@@ -661,6 +663,7 @@ public sealed class FlourishShellNavigationLayoutTests
             NavigationPanelDimensions.MinimumCollapsedWidth,
             titlebarGeometry.Left
                 + titlebarGeometry.Width
+                + leftPadding.Right
                 + compactScrollBarWidth
                 + dividerWidth
         );

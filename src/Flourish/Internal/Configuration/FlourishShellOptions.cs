@@ -116,7 +116,7 @@ internal sealed class FlourishShellOptions
 
     public double OpenPaneWidth { get; set; } = 220;
 
-    public double ClosedPaneWidth { get; set; } = 56;
+    public double ClosedPaneWidth { get; set; } = 64;
 
     public double NavigationPaneMinWidth { get; set; } = 160;
 

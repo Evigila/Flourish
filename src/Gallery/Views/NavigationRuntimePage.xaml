@@ -69,7 +69,7 @@
               Text="Set the panel width while navigation is closed."
             >
               <flourish:ListCard.Body>
-                <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="56" />
+                <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="64" />
               </flourish:ListCard.Body>
             </flourish:ListCard>
             <flourish:ListCard

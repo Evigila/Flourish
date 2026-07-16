@@ -14,8 +14,8 @@
   <GridLength x:Key="FlourishTitlebarLeadingSpacerWidth">8</GridLength>
   <Thickness x:Key="FlourishTitlebarNavigationToggleMargin">4</Thickness>
   <Thickness x:Key="FlourishCollapsedNavigationItemMargin">4,1,0,1</Thickness>
-  <Thickness x:Key="FlourishNavigationPaneLeftPadding">8,0,0,0</Thickness>
-  <Thickness x:Key="FlourishNavigationPaneRightPadding">0,0,8,0</Thickness>
+  <Thickness x:Key="FlourishNavigationPaneLeftPadding">8,0,8,0</Thickness>
+  <Thickness x:Key="FlourishNavigationPaneRightPadding">8,0,8,0</Thickness>
   <Thickness x:Key="FlourishNavigationCustomRegionMargin">4,0</Thickness>
   <Thickness x:Key="FlourishStatusBarPadding">12,3</Thickness>
 

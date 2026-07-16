@@ -21,13 +21,13 @@ public interface INavigationPanelService
     /// <param name="openWidth">The width of the open navigation panel.</param>
     /// <param name="closedWidth">
     /// The collapsed width. Use 0 to hide the collapsed panel completely; any visible
-    /// collapsed panel must be at least 56 device-independent pixels wide.
+    /// collapsed panel must be at least 64 device-independent pixels wide.
     /// </param>
     /// <param name="maxWidth">The maximum open width available to the splitter.</param>
     /// <param name="minWidth">The minimum open width available to the splitter.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// A dimension is non-finite or outside its supported range; <paramref name="closedWidth" />
-    /// is non-zero and less than 56; the closed width exceeds the open width; or the open
+    /// is non-zero and less than 64; the closed width exceeds the open width; or the open
     /// width is outside the supplied minimum and maximum range.
     /// </exception>
     void SetPanelWidth(double openWidth, double closedWidth, double maxWidth, double minWidth);

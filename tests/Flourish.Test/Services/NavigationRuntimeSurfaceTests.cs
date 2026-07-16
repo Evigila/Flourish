@@ -21,7 +21,7 @@ public sealed class NavigationRuntimeSurfaceTests
 
         sut.Open();
         sut.SetDirection(NavigationPanelDirection.Right);
-        sut.SetPanelWidth(280, 56, 500, 180);
+        sut.SetPanelWidth(280, 64, 500, 180);
 
         Assert.True(sut.Current.IsOpen);
         Assert.Equal(NavigationPanelDirection.Right, options.NavigationPanelDirection);
@@ -33,7 +33,7 @@ public sealed class NavigationRuntimeSurfaceTests
 
     [Theory]
     [InlineData(0)]
-    [InlineData(56)]
+    [InlineData(64)]
     public void NavigationPanel_SetPanelWidthAcceptsHiddenOrMinimumVisibleCollapsedWidth(
         double closedWidth
     )
@@ -50,7 +50,7 @@ public sealed class NavigationRuntimeSurfaceTests
 
     [Theory]
     [InlineData(1)]
-    [InlineData(55)]
+    [InlineData(63)]
     public void NavigationPanel_SetPanelWidthRejectsUndersizedVisibleCollapsedWidth(
         double closedWidth
     )
@@ -65,7 +65,7 @@ public sealed class NavigationRuntimeSurfaceTests
 
         Assert.Equal("closedWidth", exception.ParamName);
         Assert.Equal(before, sut.Current);
-        Assert.Contains("0 (fully hidden) or at least 56", exception.Message);
+        Assert.Contains("0 (fully hidden) or at least 64", exception.Message);
     }
 
     [Fact]

@@ -26,7 +26,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
 
     public IFlourishNavigationBuilder SetPanelWidth(
         double openWidth = 220,
-        double closedWidth = 56,
+        double closedWidth = 64,
         double maxWidth = 420,
         double minWidth = 160
     )

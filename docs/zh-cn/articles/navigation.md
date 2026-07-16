@@ -52,7 +52,7 @@ builder.ConfigureShell(shell =>
     navigation
         .SetDirection(NavigationPanelDirection.Left)
         .SetInitiallyOpen()
-        .SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180)
+        .SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
         .SetGroup("导航", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -90,10 +90,10 @@ nav.SetGroup("管理", groupId: 10, group =>
 使用 `SetPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
 
 ```csharp
-nav.SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180);
+nav.SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
 ```
 
-默认展开宽度为 `220`，折叠宽度为 `56`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `56`。可调整范围默认为 `160` 到 `420`。用户调整大小时，会在该范围内更新展开宽度。
+默认展开宽度为 `220`，折叠宽度为 `64`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `64`。可调整范围默认为 `160` 到 `420`。用户调整大小时，会在该范围内更新展开宽度。
 
 ## 添加命令项
 

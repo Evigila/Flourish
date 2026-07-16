@@ -685,7 +685,7 @@ syntax:
   - id: openWidth
     description: 导航栏展开宽度。
   - id: closedWidth
-    description: 导航栏折叠宽度。设为 0 会完全隐藏折叠导航栏；其他值不得小于 56 DIP。
+    description: 导航栏折叠宽度。设为 0 会完全隐藏折叠导航栏；其他值不得小于 64 DIP。
   - id: maxWidth
     description: 导航栏最大展开宽度。
   - id: minWidth

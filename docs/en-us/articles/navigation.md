@@ -52,7 +52,7 @@ builder.ConfigureShell(shell =>
     navigation
         .SetDirection(NavigationPanelDirection.Left)
         .SetInitiallyOpen()
-        .SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180)
+        .SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
         .SetGroup("Navigation", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -90,10 +90,10 @@ nav.SetGroup("Admin", groupId: 10, group =>
 Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize constraints for the navigation panel.
 
 ```csharp
-nav.SetPanelWidth(openWidth: 260, closedWidth: 56, maxWidth: 480, minWidth: 180);
+nav.SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `220` expanded and `56` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `56`. The default resize range is `160` to `420`. User resizing updates the expanded width within that range.
+The default widths are `220` expanded and `64` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `64`. The default resize range is `160` to `420`. User resizing updates the expanded width within that range.
 
 ## Add command items
 

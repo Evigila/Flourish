@@ -2,7 +2,7 @@ namespace ArkheideSystem.Flourish.Internal.Configuration;
 
 internal static class NavigationPanelDimensions
 {
-    internal const double MinimumCollapsedWidth = 56;
+    internal const double MinimumCollapsedWidth = 64;
 
     internal static void ValidateCollapsedWidth(double value, string parameterName)
     {
