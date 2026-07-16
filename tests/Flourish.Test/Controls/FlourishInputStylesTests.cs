@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
@@ -112,11 +113,12 @@ public sealed class FlourishInputStylesTests
     {
         RunInSta(() =>
         {
+            var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
             {
                 Width = 320,
                 Height = 120,
-                Content = new Border { Height = 600 },
+                Content = content,
             };
             var window = CreateWindow(scrollViewer);
 
@@ -142,9 +144,9 @@ public sealed class FlourishInputStylesTests
                     track.Thumb.Template.FindName("ThumbChrome", track.Thumb)
                 );
 
-                var transform = Assert.IsType<TranslateTransform>(
-                    presenter.RenderTransform
-                );
+                var transform = GetSmoothTransform(scrollViewer);
+                Assert.Equal(Matrix.Identity, presenter.RenderTransform.Value);
+                Assert.Equal(Matrix.Identity, content.RenderTransform.Value);
                 Assert.False(transform.IsFrozen);
                 Assert.Equal(7, scrollBar.ActualWidth);
                 Assert.Equal(new Thickness(2), thumbChrome.Margin);
@@ -162,11 +164,12 @@ public sealed class FlourishInputStylesTests
     {
         RunInSta(() =>
         {
+            var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
             {
                 Width = 320,
                 Height = 120,
-                Content = new Border { Height = 600 },
+                Content = content,
             };
             var window = CreateWindow(scrollViewer);
 
@@ -181,9 +184,8 @@ public sealed class FlourishInputStylesTests
                         scrollViewer
                     )
                 );
-                var transform = Assert.IsType<TranslateTransform>(
-                    presenter.RenderTransform
-                );
+                var transform = GetSmoothTransform(scrollViewer);
+                Assert.Equal(Matrix.Identity, presenter.RenderTransform.Value);
                 var wheel = new MouseWheelEventArgs(
                     Mouse.PrimaryDevice,
                     Environment.TickCount,
@@ -235,15 +237,17 @@ public sealed class FlourishInputStylesTests
     {
         RunInSta(() =>
         {
+            var firstContent = new Border { Height = 240 };
+            var secondContent = new Border { Height = 240 };
             var first = new CustomScrollViewer
             {
                 Height = 80,
-                Content = new Border { Height = 240 },
+                Content = firstContent,
             };
             var second = new CustomScrollViewer
             {
                 Height = 80,
-                Content = new Border { Height = 240 },
+                Content = secondContent,
             };
             var panel = new StackPanel { Children = { first, second } };
             var window = CreateWindow(panel);
@@ -259,16 +263,14 @@ public sealed class FlourishInputStylesTests
                 var secondPresenter = Assert.IsType<ScrollContentPresenter>(
                     second.Template.FindName("PART_ScrollContentPresenter", second)
                 );
-                var firstTransform = Assert.IsType<TranslateTransform>(
-                    firstPresenter.RenderTransform
-                );
-                var secondTransform = Assert.IsType<TranslateTransform>(
-                    secondPresenter.RenderTransform
-                );
+                var firstTransform = GetSmoothTransform(first);
+                var secondTransform = GetSmoothTransform(second);
 
                 Assert.NotSame(firstTransform, secondTransform);
                 Assert.False(firstTransform.IsFrozen);
                 Assert.False(secondTransform.IsFrozen);
+                Assert.Equal(Matrix.Identity, firstPresenter.RenderTransform.Value);
+                Assert.Equal(Matrix.Identity, secondPresenter.RenderTransform.Value);
             }
             finally
             {
@@ -282,11 +284,12 @@ public sealed class FlourishInputStylesTests
     {
         RunInSta(() =>
         {
+            var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
             {
                 Width = 320,
                 Height = 120,
-                Content = new Border { Height = 600 },
+                Content = content,
             };
             var window = CreateWindow(scrollViewer);
 
@@ -301,9 +304,8 @@ public sealed class FlourishInputStylesTests
                         scrollViewer
                     )
                 );
-                var transform = Assert.IsType<TranslateTransform>(
-                    presenter.RenderTransform
-                );
+                var transform = GetSmoothTransform(scrollViewer);
+                Assert.Equal(Matrix.Identity, presenter.RenderTransform.Value);
                 var wheel = new MouseWheelEventArgs(
                     Mouse.PrimaryDevice,
                     Environment.TickCount,
@@ -325,6 +327,241 @@ public sealed class FlourishInputStylesTests
                 );
 
                 Assert.Equal(0, transform.Y);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_SmoothTransformPreservesAndRestoresContentTransform()
+    {
+        RunInSta(() =>
+        {
+            var originalTransform = new ScaleTransform(1.05, 0.95);
+            var content = new Border
+            {
+                Height = 600,
+                RenderTransform = originalTransform,
+            };
+            var scrollViewer = new CustomScrollViewer
+            {
+                Width = 320,
+                Height = 120,
+                Content = content,
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var smoothTransform = GetSmoothTransform(scrollViewer);
+                Assert.Same(originalTransform, content.RenderTransform);
+                Assert.NotSame(originalTransform, smoothTransform);
+
+                window.Content = null;
+                PumpDispatcher();
+
+                Assert.Same(originalTransform, content.RenderTransform);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_SwitchingToLogicalScrollingStopsPhysicalAnimation()
+    {
+        RunInSta(() =>
+        {
+            var content = new Border { Height = 600 };
+            var scrollViewer = new CustomScrollViewer
+            {
+                Width = 320,
+                Height = 120,
+                Content = content,
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var transform = GetSmoothTransform(scrollViewer);
+                Assert.True(
+                    RaisePreviewMouseWheel(
+                        scrollViewer,
+                        -Mouse.MouseWheelDeltaForOneLine
+                    ).Handled
+                );
+                PumpDispatcherUntil(
+                    () => Math.Abs(transform.Y) > 0.001,
+                    TimeSpan.FromSeconds(1)
+                );
+
+                scrollViewer.CanContentScroll = true;
+                window.UpdateLayout();
+                PumpDispatcher();
+
+                Assert.False(GetIsRendering(scrollViewer));
+                Assert.Equal(0, transform.Y);
+                Assert.Null(
+                    scrollViewer.Template.FindName(
+                        "PART_SmoothScrollContentHost",
+                        scrollViewer
+                    )
+                );
+                var presenter = Assert.IsType<ScrollContentPresenter>(
+                    scrollViewer.Template.FindName(
+                        "PART_ScrollContentPresenter",
+                        scrollViewer
+                    )
+                );
+                Assert.Equal(Matrix.Identity, presenter.RenderTransform.Value);
+                Assert.Same(content, presenter.Content);
+
+                scrollViewer.CanContentScroll = false;
+                window.UpdateLayout();
+                PumpDispatcher();
+
+                var replacementHost = Assert.IsType<ContentPresenter>(
+                    scrollViewer.Template.FindName(
+                        "PART_SmoothScrollContentHost",
+                        scrollViewer
+                    )
+                );
+                Assert.Same(content, replacementHost.Content);
+                Assert.Equal(
+                    0,
+                    Assert.IsType<TranslateTransform>(
+                        replacementHost.RenderTransform
+                    ).Y
+                );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_PhysicalTemplateSupportsDataTemplatedContent()
+    {
+        RunInSta(() =>
+        {
+            var contentTemplate = Assert.IsType<DataTemplate>(
+                XamlReader.Parse(
+                    """
+                    <DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                      <Border Height="600" Background="Red" />
+                    </DataTemplate>
+                    """
+                )
+            );
+            var scrollViewer = new CustomScrollViewer
+            {
+                Width = 320,
+                Height = 120,
+                Content = "templated content",
+                ContentTemplate = contentTemplate,
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var host = Assert.IsType<ContentPresenter>(
+                    scrollViewer.Template.FindName(
+                        "PART_SmoothScrollContentHost",
+                        scrollViewer
+                    )
+                );
+                Assert.Equal("templated content", host.Content);
+                Assert.Same(contentTemplate, host.ContentTemplate);
+                Assert.InRange(scrollViewer.ScrollableHeight, 479, 481);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_SmoothScrollingKeepsBothViewportEdgesCovered()
+    {
+        RunInSta(() =>
+        {
+            var content = new Border
+            {
+                Height = 600,
+                Background = Brushes.Red,
+            };
+            var scrollViewer = new CustomScrollViewer
+            {
+                Width = 320,
+                Height = 120,
+                Background = Brushes.Blue,
+                Content = content,
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                scrollViewer.ScrollToVerticalOffset(240);
+                window.UpdateLayout();
+                PumpDispatcher();
+
+                var transform = GetSmoothTransform(scrollViewer);
+                Assert.True(
+                    RaisePreviewMouseWheel(
+                        scrollViewer,
+                        Mouse.MouseWheelDeltaForOneLine
+                    ).Handled
+                );
+                PumpDispatcherUntil(
+                    () => transform.Y > 2,
+                    TimeSpan.FromSeconds(1)
+                );
+
+                var viewportCenterX =
+                    (int)Math.Floor(scrollViewer.ActualWidth / 2d);
+                Assert.True(
+                    IsVisualDescendantOrSelf(
+                        content,
+                        scrollViewer.InputHitTest(new Point(viewportCenterX, 1))
+                    )
+                );
+
+                PumpDispatcherUntil(
+                    () => !GetIsRendering(scrollViewer),
+                    TimeSpan.FromSeconds(2)
+                );
+                transform.Y = -12;
+
+                Assert.True(
+                    IsVisualDescendantOrSelf(
+                        content,
+                        scrollViewer.InputHitTest(
+                            new Point(
+                                viewportCenterX,
+                                Math.Floor(scrollViewer.ActualHeight) - 2
+                            )
+                        )
+                    )
+                );
             }
             finally
             {
@@ -395,6 +632,56 @@ public sealed class FlourishInputStylesTests
         Dispatcher.PushFrame(frame);
 
         Assert.True(condition(), $"Condition was not met within {timeout}.");
+    }
+
+    private static TranslateTransform GetSmoothTransform(
+        CustomScrollViewer scrollViewer
+    )
+    {
+        var host = Assert.IsType<ContentPresenter>(
+            scrollViewer.Template.FindName(
+                "PART_SmoothScrollContentHost",
+                scrollViewer
+            )
+        );
+        return Assert.IsType<TranslateTransform>(host.RenderTransform);
+    }
+
+    private static MouseWheelEventArgs RaisePreviewMouseWheel(
+        UIElement source,
+        int delta
+    )
+    {
+        var wheel = new MouseWheelEventArgs(
+            Mouse.PrimaryDevice,
+            Environment.TickCount,
+            delta
+        )
+        {
+            RoutedEvent = Mouse.PreviewMouseWheelEvent,
+            Source = source,
+        };
+        source.RaiseEvent(wheel);
+        return wheel;
+    }
+
+    private static bool IsVisualDescendantOrSelf(
+        DependencyObject ancestor,
+        IInputElement? inputElement
+    )
+    {
+        var current = inputElement as DependencyObject;
+        while (current is not null)
+        {
+            if (ReferenceEquals(current, ancestor))
+            {
+                return true;
+            }
+
+            current = VisualTreeHelper.GetParent(current);
+        }
+
+        return false;
     }
 
     private static bool GetIsRendering(CustomScrollViewer scrollViewer)

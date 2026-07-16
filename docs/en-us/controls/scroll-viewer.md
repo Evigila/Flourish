@@ -25,6 +25,12 @@ Use the Flourish XML namespace to distinguish this control from the WPF type wit
 
 Set `IsSmoothScrollingEnabled="False"` when immediate native pixel scrolling is required.
 
+## Custom templates
+
+Smooth pixel scrolling requires a stationary `PART_ScrollContentPresenter` with a nested `ContentPresenter` named `PART_SmoothScrollContentHost`. The control applies the per-frame transform only to this private host so the viewport clip remains fixed. If the host is absent, mouse-wheel input safely falls back to native scrolling.
+
+For a template used with `CanContentScroll="True"`, keep the virtualizing `IScrollInfo` or `ItemsPresenter` directly connected to `PART_ScrollContentPresenter` and omit the smooth-scroll host. This preserves WPF logical scrolling and recycling.
+
 ## Virtualized item controls
 
 When `CanContentScroll` is `true`, `ScrollViewer` preserves WPF logical scrolling instead of treating item offsets as pixels. This keeps item-based virtualizing panels correct. Large item controls should also enable recycling on the owning control:

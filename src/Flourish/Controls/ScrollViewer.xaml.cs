@@ -11,9 +11,11 @@ namespace ArkheideSystem.Flourish.Controls;
 /// Hosts scrollable content with a Flourish appearance and render-only smooth scrolling.
 /// </summary>
 [TemplatePart(Name = ScrollContentPresenterPartName, Type = typeof(ScrollContentPresenter))]
+[TemplatePart(Name = SmoothScrollContentHostPartName, Type = typeof(ContentPresenter))]
 public class ScrollViewer : WpfScrollViewer
 {
     private const string ScrollContentPresenterPartName = "PART_ScrollContentPresenter";
+    private const string SmoothScrollContentHostPartName = "PART_SmoothScrollContentHost";
     private const double LogicalSyncIntervalSeconds = 1d / 24d;
     private const double OffsetTolerance = 0.1d;
     private const double ScrollResponse = 18d;
@@ -22,6 +24,7 @@ public class ScrollViewer : WpfScrollViewer
     private const double MaximumWheelVelocityFactor = 2.5d;
 
     private ScrollContentPresenter? _scrollContentPresenter;
+    private ContentPresenter? _smoothScrollContentHost;
     private TranslateTransform? _smoothScrollTransform;
     private bool _isRendering;
     private double _visualVerticalOffset;
@@ -55,6 +58,10 @@ public class ScrollViewer : WpfScrollViewer
         DefaultStyleKeyProperty.OverrideMetadata(
             typeof(ScrollViewer),
             new FrameworkPropertyMetadata(typeof(ScrollViewer))
+        );
+        CanContentScrollProperty.OverrideMetadata(
+            typeof(ScrollViewer),
+            new FrameworkPropertyMetadata(false, OnCanContentScrollChanged)
         );
     }
 
@@ -92,17 +99,24 @@ public class ScrollViewer : WpfScrollViewer
 
         _scrollContentPresenter =
             GetTemplateChild(ScrollContentPresenterPartName) as ScrollContentPresenter;
+        _smoothScrollContentHost =
+            GetTemplateChild(SmoothScrollContentHostPartName) as ContentPresenter;
+        _smoothScrollTransform = null;
 
-        if (_scrollContentPresenter is null)
+        if (_smoothScrollContentHost is not null)
         {
-            _smoothScrollTransform = null;
-            return;
+            _smoothScrollTransform = new TranslateTransform();
+            _smoothScrollContentHost.RenderTransform = _smoothScrollTransform;
         }
 
-        // Template Freezables can be frozen by WPF. Own one mutable transform per instance.
-        _smoothScrollTransform = new TranslateTransform();
-        _scrollContentPresenter.RenderTransform = _smoothScrollTransform;
+        RebaseAnimationState();
+    }
 
+    /// <inheritdoc />
+    protected override void OnContentChanged(object oldContent, object newContent)
+    {
+        StopRendering(resetTransform: true);
+        base.OnContentChanged(oldContent, newContent);
         RebaseAnimationState();
     }
 
@@ -185,14 +199,38 @@ public class ScrollViewer : WpfScrollViewer
         }
     }
 
+    private static void OnCanContentScrollChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs eventArgs
+    )
+    {
+        if (dependencyObject is not ScrollViewer viewer)
+        {
+            return;
+        }
+
+        // Pixel offsets and item offsets are different units. Never let an active
+        // physical-scroll animation continue after the scrolling mode changes.
+        viewer.StopRendering(resetTransform: true);
+        viewer.RebaseAnimationState();
+    }
+
     private bool CanUseSmoothScrolling()
     {
-        return IsSmoothScrollingEnabled
-            && IsLoaded
-            && !CanContentScroll
-            && _scrollContentPresenter is not null
-            && _smoothScrollTransform is not null
-            && ScrollableHeight > OffsetTolerance;
+        if (
+            !IsSmoothScrollingEnabled
+            || !IsLoaded
+            || CanContentScroll
+            || _scrollContentPresenter is null
+            || _smoothScrollContentHost is null
+            || _smoothScrollTransform is null
+            || ScrollableHeight <= OffsetTolerance
+        )
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private double GetWheelDistance(int delta)
