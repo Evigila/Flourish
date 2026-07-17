@@ -1980,7 +1980,7 @@ public sealed class FlourishXamlArchitectureTests
         (string File, string ElementName)[] namedHeadings =
         [
             ("Views/Windows/FlourishShellWindow.xaml", "NavigationGroupHeader"),
-            ("Views/Windows/TitleBar.xaml", "TitleText"),
+            ("Views/Windows/TitleBar.xaml", "TitleComboBox"),
             ("Views/Windows/FlourishMessageBoxWindow.xaml", "CaptionText"),
             ("Views/Page/ProfilePage.xaml", "DisplayNameText"),
         ];

@@ -26,7 +26,7 @@ Flourish 提供两层互补的配置方式：
 | `IAppSettingsStore` | 原子执行 `SetAsync`、`RemoveAsync`、`MergeAsync`、`AppendAsync`，或在一次 `UpdateAsync` 事务中完成多项编辑。文件发生变化后会重载 Host 配置。 |
 | `IFlourishLocalization` | 读取、格式化本地化键，运行时调用 `SetLocale`，以及注册、重载或注销 `lang_<locale>.json` 文件。 |
 
-只有 `IAppSettingsStore` 会写入基础 `appsettings.json`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
+`IAppSettingsStore` 会写入基础 `appsettings.json`。`IProjectService` 会另外将项目目录持久化到 `IAppSettingsStore.FilePath` 相邻的 `projects.json`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
@@ -66,10 +66,15 @@ public async ValueTask SaveEndpointAsync(
 | 服务 | 运行时用途 |
 | --- | --- |
 | `ITitleBarService` | 修改应用标题/副标题、未命名项目占位文本、Logo 及其信息字段可见性、搜索占位符、面包屑模式和各个 `TitleBarElement`。 |
-| `IProjectService` | 添加、更新、查询、激活和移除内存中的 `FlourishProject` 元数据；修改项目模式；观察快照；处理标题菜单发出的新建或激活请求。 |
+| `IProjectService` | 添加、更新、查询、激活和移除 `FlourishProject` 目录元数据；修改项目模式；观察不可变快照。每次目录变更都会原子写入 `projects.json`。 |
+| `IProjectBehavior` | 以异步方式新建、保存、激活和删除项目，并决定是否允许关闭。应用可以替换默认对话框与 `.txt` 文件生命周期。 |
 | `ITitleBarSearchService` | 控制搜索文本、可见性、占位符、清空和焦点；观察 `QueryChanged`；通过 `Subscribe` 按注册顺序添加异步处理器。 |
 
-启用项目模式时，标题栏显示 `IProjectService.Current.ActiveProject`；未启用时显示应用标题。项目存储路径仅用于描述，项目操作不会访问文件系统。应用应处理 `NewProjectRequested` 与 `ProjectActivationRequested`，完成业务操作后再调用 `AddProject` 或 `SetActiveProject` 更新 Shell。参见[项目](projects.md)。
+未启用项目模式时，标题选择器只显示并列出应用标题。启用项目模式后，选择器显示活动项目或未命名项目占位文本，并列出全部项目与“新建项目”。`StoragePath == null` 表示项目未持久化，占位文本只用于显示。
+
+直接调用 `IProjectService` 会更新 Shell 状态与持久化目录，但不会显示生命周期对话框或访问项目文件。启用项目模式时，选择项目、新建项目、右键删除、使用 Ctrl+S 保存以及关闭都会路由到 `IProjectBehavior`；内置 Ctrl+S 注册使用低优先级。未启用项目模式时，这些 Shell 路由保持停用，由应用代码管理单项目保存行为。替换该行为会改变项目对话框与文件操作，但不会停用 `IProjectService` 的目录持久化。
+
+激活操作只更新活动目录项与标题。应用仍负责加载或切换业务内容。参见[项目](projects.md)。
 
 ```csharp
 public sealed class SearchModule(

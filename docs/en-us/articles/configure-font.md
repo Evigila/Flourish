@@ -16,7 +16,9 @@ builder.ConfigureShell(shell =>
 
 The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `UseGlobalFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
 
-Built-in controls use Standard for ordinary text, Small for navigation group labels and status/output text, Icon for glyphs, Large with `Bold` for card titles, ExtraLarge with `Bold` for Chunk titles, and HeaderSize with `Bold` for ChunkHero titles. Small and Standard have compact line spacing and bottom space; Large, ExtraLarge, and HeaderSize progressively add more, while Icon adds none.
+Built-in controls use Standard for ordinary text, Small for navigation group labels and status/output text, Icon for glyphs, Large with `Bold` for card titles and the selected title-bar title, ExtraLarge with `Bold` for Chunk titles, and HeaderSize with `Bold` for ChunkHero titles. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitlebarApplicationInfo` retains its own WPF typography choices.
+
+Small and Standard have compact line spacing and bottom space; Large, ExtraLarge, and HeaderSize progressively add more, while Icon adds none.
 
 Icon is the default glyph size. Flourish applies fixed visual corrections where the Segoe MDL2 glyph bounds differ substantially: navigation `18`, title-bar commands `16`, window captions `12`, search `14`, status-bar items `14`, status-bar background tasks `12`, background-task detail rows `16`, and system-status detail rows `16` DIP. These contextual corrections do not change the configured default Icon value.
 

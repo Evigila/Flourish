@@ -24,8 +24,8 @@ public interface ITitleBarService
     /// <exception cref="ArgumentException"><paramref name="title" /> is empty or whitespace.</exception>
     void SetApplicationIdentity(string title, string? subTitle = null);
 
-    /// <summary>Sets the title shown when multi-project mode has no active project.</summary>
-    /// <param name="placeholder">The non-empty placeholder.</param>
+    /// <summary>Sets the display name used for a project that has no storage path or when no project is active.</summary>
+    /// <param name="placeholder">The non-empty display name for an unpersisted project.</param>
     /// <exception cref="ArgumentException"><paramref name="placeholder" /> is empty or whitespace.</exception>
     void SetUnnamedProjectPlaceholder(string placeholder);
 
@@ -70,7 +70,7 @@ public interface ITitleBarService
     /// <param name="element">The element to change.</param>
     /// <param name="visible"><see langword="true" /> to show the element; otherwise, <see langword="false" />.</param>
     /// <remarks>
-    /// Multi-project mode keeps the title button visible because it represents the active project or
+    /// Multi-project mode keeps the title selector visible because it represents the active project or
     /// unnamed-project placeholder. The obsolete <see cref="TitleBarElement.Subtitle" /> value changes
     /// subtitle visibility inside the logo information surface.
     /// </remarks>

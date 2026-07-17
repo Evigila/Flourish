@@ -41,10 +41,24 @@ Register the application services used by command handlers through `ConfigureSer
 
 Register `IProfileAuthService` to provide application authentication while retaining the built-in profile state and remembered-login behavior. Register `IProfileService` when the application owns the complete profile workflow. Flourish provides default implementations only when the application has not registered these interfaces.
 
+## Replace project behavior
+
+Register one singleton `IProjectBehavior` when the application owns project dialogs or file lifecycle. Flourish provides its `.txt` placeholder-file behavior only when the application has not registered this interface.
+
+```csharp
+builder.ConfigureServices((_, services) =>
+    services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
+```
+
+While multi-project mode is enabled, the Shell calls the replacement's five asynchronous Boolean operations: `CreateProjectAsync`, `SaveActiveProjectAsync`, `ActivateProjectAsync`, `DeleteProjectAsync`, and `CanCloseAsync`. Return `false` to cancel the corresponding Shell operation. Title selection, right-click deletion, Ctrl+S, and the project close guard use this service. Outside project mode these Shell entry points remain inactive so the application owns its single-project save behavior.
+
+Replacing `IProjectBehavior` changes dialog and project-file handling; it does not replace the project catalog. The replacement should publish metadata and active-selection changes through `IProjectService`. Flourish continues to write every catalog mutation atomically to `projects.json` beside `IAppSettingsStore.FilePath`. See [Projects](projects.md) for the lifecycle contract.
+
 ## Related features
 
 - [Navigation](navigation.md) explains explicit navigation groups and fixed items.
 - [Dynamic toolbar](dynamic-toolbar.md) attaches commands to registered page types.
 - [Profile](configure-profile.md) explains authentication and profile service replacement.
+- [Projects](projects.md) explains project behavior replacement and catalog persistence.
 - [Background tasks](background-tasks.md) explains asynchronous work, cancellation, progress, and results.
 - [Command dispatch](commands.md) explains command-key routing.

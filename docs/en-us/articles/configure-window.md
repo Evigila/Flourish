@@ -45,15 +45,21 @@ Use either a `WindowStartupLocation` or manual coordinates to make startup place
 
 The shell root enables device-pixel snapping and layout rounding. Flourish does not override WPF text formatting, rendering, or hinting modes. Supporting text uses the `Regular` face, while card, section, page, title-bar, and dialog headings use `Bold`.
 
+## Project close guard
+
+When multi-project mode is enabled, an actual close request runs `IProjectBehavior.CanCloseAsync` through the window close-guard pipeline. With the default behavior, an active project whose `StoragePath` is `null` offers **Save**, **Don't save**, and **Cancel**. Saving must complete before closing can continue; choosing **Don't save** closes without creating a project file, while **Cancel** or canceling the Save dialog keeps the application open. When multi-project mode is disabled, Flourish does not run the project close guard or display a project-save prompt.
+
+This guard applies to the title-bar close command, a direct window close, application close requests, and **Exit** from the notification-area menu. An application-provided `IProjectBehavior` can replace the decision and save workflow. See [Projects](projects.md).
+
 ## Close to the notification area
 
-`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation dialog. Double-clicking the tray icon or selecting Show restores the window; selecting Exit closes the application.
+`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation or project-save dialogs because the application is not closing. Double-clicking the tray icon or selecting Show restores the window; selecting Exit starts the actual close flow, including the project close guard.
 
 ```csharp
 builder.ConfigureWindow(window => window.SetTrayExit());
 ```
 
-When tray exit is disabled, the title bar close button uses the normal close-confirmation flow. Passing `false` is useful when a shared configuration enables tray behavior conditionally.
+When tray exit is disabled, the title bar close button uses the normal close-confirmation and project-guard flow. Passing `false` is useful when a shared configuration enables tray behavior conditionally.
 
 The close confirmation and tray menu use the locale selected through [Application data](configure-data.md).
 
@@ -61,4 +67,5 @@ The close confirmation and tray menu use the locale selected through [Applicatio
 
 - [Getting started](getting-started.md) shows window startup from `App.xaml.cs`.
 - [Title bar](configure-title-bar.md) controls the chrome displayed inside the window.
+- [Projects](projects.md) explains multi-project save, don't-save, and cancel handling before an actual close.
 - [Material effects](configure-material-effect.md) change the window background material.

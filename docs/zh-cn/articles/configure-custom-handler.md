@@ -30,7 +30,7 @@ builder
 
 自定义内容不会自动启用所属 Shell 功能。请在 [Shell 配置](shell-configuration.md)中使用 `UseTitleBar()` 启用标题栏区域、使用 `UseNavigation()` 启用导航区域、使用 `UseDynamicToolbar()` 启用工具栏区域，并使用 `UseStatusBar()` 启用页脚区域。`SetProfileContent` 还需要在[标题栏](configure-title-bar.md)中调用 `SetProfile()`。
 
-`FlourishRegion.TitlebarApplicationInfo` 区域会渲染为 Logo 信息视图的 Body。添加此内容前应通过 `SetLogo()` 配置 Logo。Body 完全由应用定义，可以显示动态详情，但 Flourish 不会因此接管底层 Project 或文档生命周期。
+`FlourishRegion.TitlebarApplicationInfo` 区域会渲染为 Logo 信息视图的 Body。添加此内容前应通过 `SetLogo()` 配置 Logo。Body 完全由应用定义，可以显示动态详情，但不会参与项目新建、保存、激活、删除或关闭处理。这些 Shell 入口由 `IProjectBehavior` 协调；参见[项目](projects.md)。
 
 ## 元素工厂
 
@@ -60,6 +60,7 @@ builder.ConfigureCustomHandler(custom =>
 ## 相关功能
 
 - [标题栏](configure-title-bar.md)控制内置标题栏内容和行为。
+- [项目](projects.md)说明持久化目录与可替换生命周期行为。
 - [动态工具栏](dynamic-toolbar.md) 配置随当前页面变化的工具栏命令。
 - [状态栏](status-bar.md) 配置后台任务指示器、自定义状态项和系统状态入口。
 - [命令调度](commands.md)处理命令键。

@@ -1,21 +1,23 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Manages the in-memory project identities displayed by the Flourish shell.
+/// Manages the project catalog displayed by the Flourish shell.
 /// </summary>
 /// <remarks>
-/// Flourish does not open, save, or close application data. Applications use this service to keep
-/// the shell display synchronized with their own project lifecycle.
+/// The production service stores the project list and active project ID in projects.json beside
+/// appsettings.json. Catalog mutations are written through an atomic file replacement. Project-file
+/// creation, saving, activation policy, deletion, and close checks are coordinated separately by
+/// <see cref="IProjectBehavior" />, which applications can replace through dependency injection.
 /// </remarks>
 public interface IProjectService
 {
     /// <summary>Occurs after project metadata, selection, or multi-project mode changes.</summary>
     event EventHandler<FlourishProjectsChangedEventArgs>? Changed;
 
-    /// <summary>Occurs when the title-bar project menu requests creation of a project.</summary>
+    /// <summary>Occurs when the title-bar selector requests creation of a project.</summary>
     event EventHandler<FlourishNewProjectRequestedEventArgs>? NewProjectRequested;
 
-    /// <summary>Occurs when the title-bar project menu requests activation of a project.</summary>
+    /// <summary>Occurs when the title-bar selector requests activation of a project.</summary>
     event EventHandler<FlourishProjectActivationRequestedEventArgs>? ProjectActivationRequested;
 
     /// <summary>Gets an immutable snapshot of the current project display state.</summary>
@@ -39,7 +41,10 @@ public interface IProjectService
     /// <summary>Changes the display metadata for an existing project.</summary>
     /// <param name="projectId">The case-sensitive project ID.</param>
     /// <param name="name">The non-empty project display name.</param>
-    /// <param name="storagePath">The optional local storage path represented by the project.</param>
+    /// <param name="storagePath">
+    /// The optional local storage path represented by the project. A missing path identifies an
+    /// unpersisted project.
+    /// </param>
     /// <exception cref="ArgumentException"><paramref name="projectId" /> or <paramref name="name" /> is empty or whitespace.</exception>
     /// <exception cref="KeyNotFoundException">The project is not registered.</exception>
     void SetProjectMetadata(string projectId, string name, string? storagePath = null);
@@ -73,7 +78,10 @@ public sealed record FlourishProject
     /// <summary>Creates project display metadata.</summary>
     /// <param name="id">The stable, case-sensitive project ID.</param>
     /// <param name="name">The project display name.</param>
-    /// <param name="storagePath">The optional local storage path represented by the project.</param>
+    /// <param name="storagePath">
+    /// The optional local storage path represented by the project. A missing path identifies an
+    /// unpersisted project.
+    /// </param>
     public FlourishProject(string id, string name, string? storagePath = null)
     {
         Id = id;
@@ -87,7 +95,10 @@ public sealed record FlourishProject
     /// <summary>Gets the project display name.</summary>
     public string Name { get; init; }
 
-    /// <summary>Gets the optional local storage path represented by this project.</summary>
+    /// <summary>
+    /// Gets the local storage path represented by this project, or <see langword="null" /> when the
+    /// project has not been persisted.
+    /// </summary>
     public string? StoragePath { get; init; }
 }
 

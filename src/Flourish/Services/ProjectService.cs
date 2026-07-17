@@ -1,15 +1,34 @@
+using System.IO;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class ProjectService(FlourishShellOptions options) : IProjectService
+internal sealed class ProjectService : IProjectService
 {
     private readonly Lock gate = new();
     private readonly Dictionary<string, FlourishProject> projects = new(StringComparer.Ordinal);
     private readonly List<string> projectOrder = [];
+    private readonly FlourishShellOptions options;
+    private readonly IProjectCatalogStore? catalogStore;
     private string? activeProjectId;
     private long version;
+
+    public ProjectService(
+        FlourishShellOptions options,
+        IProjectCatalogStore catalogStore
+    )
+    {
+        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.catalogStore = catalogStore
+            ?? throw new ArgumentNullException(nameof(catalogStore));
+        InitializeFromCatalog();
+    }
+
+    internal ProjectService(FlourishShellOptions options)
+    {
+        this.options = options ?? throw new ArgumentNullException(nameof(options));
+    }
 
     public event EventHandler<FlourishProjectsChangedEventArgs>? Changed;
 
@@ -43,16 +62,27 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
                 );
             }
 
-            projects.Add(project.Id, project);
-            projectOrder.Add(project.Id);
-            activeChanged = activate && !StringComparer.Ordinal.Equals(activeProjectId, project.Id);
-            if (activate)
+            var backup = CaptureState();
+            try
             {
-                activeProjectId = project.Id;
-            }
+                projects.Add(project.Id, project);
+                projectOrder.Add(project.Id);
+                activeChanged =
+                    activate && !StringComparer.Ordinal.Equals(activeProjectId, project.Id);
+                if (activate)
+                {
+                    activeProjectId = project.Id;
+                }
 
-            version++;
-            snapshot = CreateSnapshot();
+                version++;
+                PersistCatalog();
+                snapshot = CreateSnapshot();
+            }
+            catch
+            {
+                RestoreState(backup);
+                throw;
+            }
         }
 
         RaiseChanged(
@@ -83,24 +113,34 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
                 return;
             }
 
-            if (!exists)
+            var backup = CaptureState();
+            try
             {
-                projectOrder.Add(project.Id);
-            }
+                if (!exists)
+                {
+                    projectOrder.Add(project.Id);
+                }
 
-            projects[project.Id] = project;
-            changeKind = exists
-                ? FlourishRuntimeChangeKind.Updated
-                : FlourishRuntimeChangeKind.Added;
-            activeChanged = (exists && wasActive && previous != project)
-                || (activate && !wasActive);
-            if (activate)
+                projects[project.Id] = project;
+                changeKind = exists
+                    ? FlourishRuntimeChangeKind.Updated
+                    : FlourishRuntimeChangeKind.Added;
+                activeChanged = (exists && wasActive && previous != project)
+                    || (activate && !wasActive);
+                if (activate)
+                {
+                    activeProjectId = project.Id;
+                }
+
+                version++;
+                PersistCatalog();
+                snapshot = CreateSnapshot();
+            }
+            catch
             {
-                activeProjectId = project.Id;
+                RestoreState(backup);
+                throw;
             }
-
-            version++;
-            snapshot = CreateSnapshot();
         }
 
         RaiseChanged(snapshot, changeKind, project.Id, activeChanged);
@@ -126,10 +166,20 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
                 return;
             }
 
-            projects[projectId] = current;
-            activeProjectChanged = StringComparer.Ordinal.Equals(activeProjectId, projectId);
-            version++;
-            snapshot = CreateSnapshot();
+            var backup = CaptureState();
+            try
+            {
+                projects[projectId] = current;
+                activeProjectChanged = StringComparer.Ordinal.Equals(activeProjectId, projectId);
+                version++;
+                PersistCatalog();
+                snapshot = CreateSnapshot();
+            }
+            catch
+            {
+                RestoreState(backup);
+                throw;
+            }
         }
 
         RaiseChanged(
@@ -156,9 +206,19 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
                 return;
             }
 
-            activeProjectId = projectId;
-            version++;
-            snapshot = CreateSnapshot();
+            var backup = CaptureState();
+            try
+            {
+                activeProjectId = projectId;
+                version++;
+                PersistCatalog();
+                snapshot = CreateSnapshot();
+            }
+            catch
+            {
+                RestoreState(backup);
+                throw;
+            }
         }
 
         RaiseChanged(
@@ -176,20 +236,93 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
         bool activeChanged;
         lock (gate)
         {
-            if (!projects.Remove(projectId))
+            if (!projects.ContainsKey(projectId))
             {
                 return false;
             }
 
-            projectOrder.Remove(projectId);
-            activeChanged = StringComparer.Ordinal.Equals(activeProjectId, projectId);
-            if (activeChanged)
+            var backup = CaptureState();
+            try
             {
-                activeProjectId = null;
+                projects.Remove(projectId);
+                projectOrder.Remove(projectId);
+                activeChanged = StringComparer.Ordinal.Equals(activeProjectId, projectId);
+                if (activeChanged)
+                {
+                    activeProjectId = null;
+                }
+
+                version++;
+                PersistCatalog();
+                snapshot = CreateSnapshot();
+            }
+            catch
+            {
+                RestoreState(backup);
+                throw;
+            }
+        }
+
+        RaiseChanged(
+            snapshot,
+            FlourishRuntimeChangeKind.Removed,
+            projectId,
+            activeChanged
+        );
+        return true;
+    }
+
+    internal bool RemoveProjectAndEnsureActive(string projectId)
+    {
+        projectId = ValidateRequired(projectId, nameof(projectId));
+        FlourishProjectSnapshot snapshot;
+        bool activeChanged;
+        lock (gate)
+        {
+            if (!projects.ContainsKey(projectId))
+            {
+                return false;
             }
 
-            version++;
-            snapshot = CreateSnapshot();
+            var backup = CaptureState();
+            try
+            {
+                var previousActiveProjectId = activeProjectId;
+                projects.Remove(projectId);
+                projectOrder.Remove(projectId);
+                if (StringComparer.Ordinal.Equals(activeProjectId, projectId))
+                {
+                    activeProjectId = null;
+                }
+
+                if (activeProjectId is null)
+                {
+                    if (projectOrder.Count > 0)
+                    {
+                        activeProjectId = projectOrder[0];
+                    }
+                    else
+                    {
+                        var unnamedProject = CreateUnnamedProject();
+                        projects.Add(unnamedProject.Id, unnamedProject);
+                        projectOrder.Add(unnamedProject.Id);
+                        activeProjectId = unnamedProject.Id;
+                    }
+                }
+
+                activeChanged = !StringComparer.Ordinal.Equals(
+                    previousActiveProjectId,
+                    activeProjectId
+                );
+                version++;
+                PersistCatalog();
+                snapshot = CreateSnapshot();
+            }
+            catch
+            {
+                RestoreState(backup);
+                throw;
+            }
         }
 
         RaiseChanged(
@@ -276,6 +409,100 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
         return true;
     }
 
+    internal FlourishProject AddUnnamedProject(bool activate = true)
+    {
+        var project = CreateUnnamedProject();
+        AddProject(project, activate);
+        return project;
+    }
+
+    private void InitializeFromCatalog()
+    {
+        var catalog = catalogStore!.Load();
+        var catalogChanged = false;
+        foreach (var candidate in catalog.Projects)
+        {
+            var project = NormalizeProject(candidate);
+            catalogChanged |= project != candidate;
+            if (!projects.TryAdd(project.Id, project))
+            {
+                throw new InvalidDataException(
+                    $"projects.json contains duplicate project ID '{project.Id}'."
+                );
+            }
+
+            projectOrder.Add(project.Id);
+        }
+
+        var requestedActiveId = NormalizeOptional(catalog.ActiveProjectId);
+        catalogChanged |= !StringComparer.Ordinal.Equals(
+            requestedActiveId,
+            catalog.ActiveProjectId
+        );
+        if (requestedActiveId is not null && projects.ContainsKey(requestedActiveId))
+        {
+            activeProjectId = requestedActiveId;
+        }
+        else if (projectOrder.Count > 0)
+        {
+            activeProjectId = projectOrder[0];
+            catalogChanged = true;
+        }
+        else
+        {
+            var project = CreateUnnamedProject();
+            projects.Add(project.Id, project);
+            projectOrder.Add(project.Id);
+            activeProjectId = project.Id;
+            catalogChanged = true;
+        }
+
+        if (catalogChanged)
+        {
+            PersistCatalog();
+        }
+    }
+
+    private FlourishProject CreateUnnamedProject()
+    {
+        var name = string.IsNullOrWhiteSpace(options.UnnamedProjectPlaceholder)
+            ? "Unnamed project"
+            : options.UnnamedProjectPlaceholder.Trim();
+        return new FlourishProject(Guid.NewGuid().ToString("N"), name);
+    }
+
+    private void PersistCatalog()
+    {
+        catalogStore?.Save(
+            new ProjectCatalog(
+                projectOrder.Select(id => projects[id]).ToArray(),
+                activeProjectId
+            )
+        );
+    }
+
+    private ProjectStateBackup CaptureState() =>
+        new(
+            projects.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal),
+            [.. projectOrder],
+            activeProjectId,
+            version
+        );
+
+    private void RestoreState(ProjectStateBackup backup)
+    {
+        projects.Clear();
+        foreach (var pair in backup.Projects)
+        {
+            projects.Add(pair.Key, pair.Value);
+        }
+
+        projectOrder.Clear();
+        projectOrder.AddRange(backup.ProjectOrder);
+        activeProjectId = backup.ActiveProjectId;
+        version = backup.Version;
+    }
+
     private FlourishProjectSnapshot CreateSnapshot()
     {
         var orderedProjects = Array.AsReadOnly(
@@ -335,4 +562,11 @@ internal sealed class ProjectService(FlourishShellOptions options) : IProjectSer
     {
         return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
+
+    private sealed record ProjectStateBackup(
+        IReadOnlyDictionary<string, FlourishProject> Projects,
+        IReadOnlyList<string> ProjectOrder,
+        string? ActiveProjectId,
+        long Version
+    );
 }

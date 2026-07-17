@@ -5,7 +5,7 @@ description: Configure application identity, project selection, search, navigati
 
 # Title bar
 
-Enable the title bar through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to provide application identity and select its controls. The visible title represents either the application or the active project; the logo opens a separate information surface for the application identity.
+Enable the title bar through [Shell configuration](shell-configuration.md), then use `ConfigureTitleBar` to provide application identity and select its controls. The visible title is itself a dropdown selector: it represents the application when project mode is disabled and the active project when project mode is enabled. The logo opens a separate information surface for the application identity.
 
 ## Configure identity and controls
 
@@ -36,9 +36,9 @@ builder
 | Method | Result |
 | --- | --- |
 | `SetLogo(...)` | Displays the logo button and selects which identity fields appear in its information surface. |
-| `SetApplicationTitle(title)` | Sets the application title and enables the title button. |
+| `SetApplicationTitle(title)` | Sets the application title and enables the title selector. |
 | `SetApplicationSubTitle(subTitle)` | Sets supporting application text shown in the logo information surface. |
-| `SetUnnamedProjectPlaceholder(placeholder)` | Sets the title used when project mode has no active project; the default is `Unnamed project`. |
+| `SetUnnamedProjectPlaceholder(placeholder)` | Sets the display text for an unpersisted or missing project selection; the default is `Unnamed project`. |
 | `SetSearch(placeholder, handler)` | Displays search and invokes the handler when the text changes. |
 | `SetBreadcrumbButton(option)` | Displays back and forward navigation according to the selected behavior. |
 | `SetNavToggle()` | Displays the navigation panel toggle. |
@@ -47,17 +47,21 @@ builder
 
 Built-in tooltips and theme labels follow the locale selected through [Application data](configure-data.md). Application and project names are application-provided text and are not translated automatically.
 
-## Application and project titles
+## Application title and project dropdown
 
-The application identity remains stable while the active project can change during a session.
+The application identity remains stable while the active project can change during a session. The project-mode switch controls both the selected title and the choices exposed by the title selector.
 
-| Project mode | Title button | Title menu |
+| Project mode | Selected title | Dropdown choices |
 | --- | --- | --- |
-| `UseMultiProject(false)` | Application title | Application title only |
-| `UseMultiProject(true)` with an active project | Active project name | Registered projects and **New project** |
-| `UseMultiProject(true)` without an active project | Unnamed-project placeholder | Placeholder and **New project** |
+| `UseMultiProject(false)` | Application title | The application title only |
+| `UseMultiProject(true)` with a persisted active project | Active project name | Every registered project and **New project** |
+| `UseMultiProject(true)` with an unpersisted or missing active project | Unnamed-project placeholder | Every registered project and **New project** |
 
-The application subtitle is not displayed directly in the title bar. It belongs to the logo information surface together with the application title and, when requested by `SetLogo`, the current project title. [Projects](projects.md) explains project metadata, selection requests, and runtime updates.
+When project mode is disabled, the selector has no project-title semantics and selecting its only application-title entry performs no project operation. When project mode is enabled, selecting a project invokes `IProjectBehavior.ActivateProjectAsync`, selecting **New project** invokes `CreateProjectAsync`, and right-clicking a project exposes deletion through `DeleteProjectAsync`. [Projects](projects.md) explains lifecycle behavior, catalog persistence, and runtime updates.
+
+The application subtitle is not displayed directly in the title bar. It belongs to the logo information surface together with the application title and, when requested by `SetLogo`, the current project title. `StoragePath == null`, rather than the placeholder text, identifies an unpersisted project.
+
+The selected title uses the configured Large typography tier. Choices in its dropdown and built-in text in the logo information surface use Standard. See [Typography](configure-font.md).
 
 ## Logo information surface
 
@@ -116,11 +120,11 @@ Omitting the argument uses `Auto`.
 
 ## Window commands
 
-The built-in title bar provides minimize, maximize or restore, and close commands. Maximize follows the configured resize mode, and close follows the [Window](configure-window.md) configuration. Logo, title-menu, and window commands support keyboard focus, and their flyouts close with Esc or an outside click.
+The built-in title bar provides minimize, maximize or restore, and close commands. Maximize follows the configured resize mode, and close follows the [Window](configure-window.md) configuration. Logo, title selector, and window commands support keyboard focus; the logo surface closes with Esc or an outside click.
 
 ## Related features
 
-- [Projects](projects.md) manages the project identities displayed by the title bar.
+- [Projects](projects.md) manages the persistent project catalog and title-bar lifecycle behavior.
 - [Custom shell content](configure-custom-handler.md) adds application content to title bar regions and the logo information surface.
 - [Profile](configure-profile.md) configures profile content, authentication, and persistence.
 - [Navigation](navigation.md) provides the panel controlled by `SetNavToggle`.

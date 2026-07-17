@@ -26,7 +26,7 @@ public enum TitleBarElement
     Logo,
 
     /// <summary>
-    /// The application or active-project title button.
+    /// The application or active-project title selector.
     /// </summary>
     Title,
 
