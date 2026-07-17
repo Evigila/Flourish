@@ -11,6 +11,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
     private readonly Dictionary<string, FlourishNavigationRoute> routes = new(
         StringComparer.Ordinal
     );
+    private readonly Dictionary<Type, FlourishNavigationRoute> routesByPageType = [];
     private readonly Dictionary<string, Guid> leases = new(StringComparer.Ordinal);
     private long version;
 
@@ -29,6 +30,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
             ValidateRoute(route);
             EnsurePageTypeAvailable(route.PageType, exceptNavigationKey: null);
             routes.Add(route.NavigationKey, route);
+            routesByPageType.Add(route.PageType, route);
         }
     }
 
@@ -61,6 +63,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
 
             EnsurePageTypeAvailable(route.PageType, exceptNavigationKey: null);
             routes.Add(route.NavigationKey, route);
+            routesByPageType.Add(route.PageType, route);
             leases[route.NavigationKey] = lease;
             version++;
             snapshot = CreateSnapshot();
@@ -88,7 +91,13 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
         {
             routes.TryGetValue(route.NavigationKey, out previous);
             EnsurePageTypeAvailable(route.PageType, route.NavigationKey);
+            if (previous is not null && previous.PageType != route.PageType)
+            {
+                routesByPageType.Remove(previous.PageType);
+            }
+
             routes[route.NavigationKey] = route;
+            routesByPageType[route.PageType] = route;
             leases[route.NavigationKey] = lease;
             version++;
             snapshot = CreateSnapshot();
@@ -137,6 +146,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
 
             current = previous with { CacheMode = cacheMode };
             routes[navigationKey] = current;
+            routesByPageType[current.PageType] = current;
             version++;
             snapshot = CreateSnapshot();
         }
@@ -173,8 +183,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
     {
         lock (gate)
         {
-            route = routes.Values.FirstOrDefault(value => value.PageType == pageType)!;
-            return route is not null;
+            return routesByPageType.TryGetValue(pageType, out route!);
         }
     }
 
@@ -183,7 +192,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
         FlourishNavigationRoute? route;
         lock (gate)
         {
-            route = routes.Values.FirstOrDefault(value => value.PageType == pageType);
+            routesByPageType.TryGetValue(pageType, out route);
             routeVersion = version;
         }
 
@@ -226,6 +235,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
             }
 
             leases.Remove(navigationKey);
+            routesByPageType.Remove(removed.PageType);
             version++;
             snapshot = CreateSnapshot();
         }
@@ -244,11 +254,10 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
 
     private void EnsurePageTypeAvailable(Type pageType, string? exceptNavigationKey)
     {
-        var existing = routes.Values.FirstOrDefault(route =>
-            route.PageType == pageType
-            && !StringComparer.Ordinal.Equals(route.NavigationKey, exceptNavigationKey)
-        );
-        if (existing is not null)
+        if (
+            routesByPageType.TryGetValue(pageType, out var existing)
+            && !StringComparer.Ordinal.Equals(existing.NavigationKey, exceptNavigationKey)
+        )
         {
             throw new InvalidOperationException(
                 $"Page type '{pageType.FullName}' is already registered as route '{existing.NavigationKey}'."
