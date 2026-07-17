@@ -34,6 +34,7 @@
         >
           <controls:FlourishTextBlock
             x:Name="OutputHost"
+            FontFamily="{TemplateBinding FontFamily}"
             Foreground="{TemplateBinding Foreground}"
             Role="Caption"
             Text="{TemplateBinding Output}"
@@ -46,11 +47,12 @@
 
   <Style TargetType="{x:Type controls:OutputCard}">
     <Setter Property="MinHeight" Value="{DynamicResource FlourishOutputCardMinHeight}" />
-    <Setter Property="Padding" Value="{DynamicResource FlourishCardPadding}" />
+    <Setter Property="Padding" Value="{DynamicResource FlourishOutputCardPadding}" />
     <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
     <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
-    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishOutputFontFamily}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishOutputViewportForegroundBrush}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
     <Setter Property="SnapsToDevicePixels" Value="True" />

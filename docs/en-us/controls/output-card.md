@@ -87,9 +87,11 @@ For a ListCard-plus-output layout, place the complete ListCard column and `Outpu
 
 Long lines do not wrap and use the horizontal scrollbar when needed. The viewport uses compact scrollbars so both axes remain available without adding substantial visual weight.
 
+When the pointer is over overflowing output, the inner viewport consumes the mouse wheel while it can move in that direction. At the top or bottom boundary, outward wheel input continues to the containing page instead of trapping scrolling inside the card.
+
 ## Viewport and typography
 
-The output viewport uses a rounded neutral background to distinguish messages from ordinary card content. It sits inside the outer card spacing rather than replacing that spacing, and its text uses the compact Small typography tier to minimize the control's required height.
+The output viewport uses a darker rounded neutral background and reduced outer spacing so messages occupy more of the card surface. Output uses the compact Small typography tier, the dedicated `FlourishOutputFontFamily` monospaced family (Consolas by default), and a theme-specific green foreground. Set `FontFamily` or `Foreground` on an individual `OutputCard` when a different output treatment is required.
 
 Give the control an `AutomationProperties.Name` when the surrounding section and action labels do not already identify the output clearly.
 

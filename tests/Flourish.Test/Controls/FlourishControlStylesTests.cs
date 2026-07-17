@@ -1154,10 +1154,15 @@ public sealed class FlourishControlStylesTests
                 window.UpdateLayout();
 
                 Assert.Equal(72d, outputCard.MinHeight);
-                Assert.Equal(new Thickness(20), outputCard.Padding);
+                Assert.Equal(new Thickness(12), outputCard.Padding);
+                Assert.Equal("Consolas", outputCard.FontFamily.Source);
                 Assert.Same(
                     outputCard.TryFindResource("FlourishCardBackgroundBrush"),
                     outputCard.Background
+                );
+                Assert.Same(
+                    outputCard.TryFindResource("FlourishOutputViewportForegroundBrush"),
+                    outputCard.Foreground
                 );
 
                 var surface = AssertTemplatePart<Border>(outputCard, "SurfaceChrome");
@@ -1191,6 +1196,8 @@ public sealed class FlourishControlStylesTests
                     scrollViewer.VerticalScrollBarVisibility
                 );
                 Assert.Equal(FlourishTextRole.Caption, outputHost.Role);
+                Assert.Equal("Consolas", outputHost.FontFamily.Source);
+                Assert.Same(outputCard.Foreground, outputHost.Foreground);
                 Assert.Equal(12d, outputHost.FontSize);
                 Assert.Equal(14d, outputHost.LineHeight);
                 Assert.True(scrollViewer.ViewportHeight >= outputHost.LineHeight);

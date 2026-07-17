@@ -25,6 +25,10 @@ Use the Flourish XML namespace to distinguish this control from the WPF type wit
 
 Set `IsSmoothScrollingEnabled="False"` when immediate native pixel scrolling is required.
 
+## Nested viewports
+
+With the default physical scrolling mode, mouse-wheel input starts at the deepest Flourish `ScrollViewer`. An inner viewport consumes the wheel while it can move in that direction. At its top or bottom boundary, outward wheel input remains available to an ancestor viewport, so a compact inner history does not trap page scrolling.
+
 ## Custom templates
 
 Smooth pixel scrolling requires a stationary `PART_ScrollContentPresenter` with a nested `ContentPresenter` named `PART_SmoothScrollContentHost`. The control applies the per-frame transform only to this private host so the viewport clip remains fixed. If the host is absent, mouse-wheel input safely falls back to native scrolling.

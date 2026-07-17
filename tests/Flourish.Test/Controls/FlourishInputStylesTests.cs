@@ -192,7 +192,7 @@ public sealed class FlourishInputStylesTests
                     -Mouse.MouseWheelDeltaForOneLine
                 )
                 {
-                    RoutedEvent = Mouse.PreviewMouseWheelEvent,
+                    RoutedEvent = Mouse.MouseWheelEvent,
                     Source = scrollViewer,
                 };
 
@@ -218,12 +218,166 @@ public sealed class FlourishInputStylesTests
                     -Mouse.MouseWheelDeltaForOneLine
                 )
                 {
-                    RoutedEvent = Mouse.PreviewMouseWheelEvent,
+                    RoutedEvent = Mouse.MouseWheelEvent,
                     Source = scrollViewer,
                 };
                 scrollViewer.RaiseEvent(unloadedWheel);
 
                 Assert.False(unloadedWheel.Handled);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_MissingSmoothHostFallsBackToNativeWheelScrolling()
+    {
+        RunInSta(() =>
+        {
+            var scrollViewer = new CustomScrollViewer
+            {
+                Width = 320,
+                Height = 120,
+                Content = new Border { Height = 600 },
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var smoothHostField = typeof(CustomScrollViewer).GetField(
+                    "_smoothScrollContentHost",
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                );
+                Assert.NotNull(smoothHostField);
+                smoothHostField.SetValue(scrollViewer, null);
+
+                var wheel = RaiseMouseWheel(
+                    scrollViewer,
+                    -Mouse.MouseWheelDeltaForOneLine
+                );
+
+                Assert.True(wheel.Handled);
+                window.UpdateLayout();
+                PumpDispatcher();
+                Assert.True(scrollViewer.VerticalOffset > 0);
+
+                scrollViewer.ScrollToEnd();
+                window.UpdateLayout();
+                var boundaryWheel = RaiseMouseWheel(
+                    scrollViewer,
+                    -Mouse.MouseWheelDeltaForOneLine
+                );
+
+                Assert.False(boundaryWheel.Handled);
+                Assert.Equal(
+                    scrollViewer.ScrollableHeight,
+                    scrollViewer.VerticalOffset,
+                    precision: 3
+                );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void OutputCard_OverflowViewportConsumesWheelBeforeAncestorAndReleasesItAtBoundary()
+    {
+        RunInSta(() =>
+        {
+            var outputCard = new OutputCard
+            {
+                Width = 320,
+                Height = 120,
+            };
+            for (var index = 1; index <= 80; index++)
+            {
+                outputCard.WriteLine($"Output message {index:00}");
+            }
+
+            var pageContent = new StackPanel();
+            pageContent.Children.Add(outputCard);
+            pageContent.Children.Add(new Border { Height = 600 });
+            var pageScrollViewer = new CustomScrollViewer
+            {
+                Width = 360,
+                Height = 240,
+                Content = pageContent,
+            };
+            var window = CreateWindow(pageScrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                outputCard.ApplyTemplate();
+                PumpDispatcher();
+
+                var outputScrollViewer = Assert.IsType<CustomScrollViewer>(
+                    outputCard.Template.FindName(
+                        "PART_OutputScrollViewer",
+                        outputCard
+                    )
+                );
+                var outputHost = Assert.IsType<FlourishTextBlock>(
+                    outputCard.Template.FindName("OutputHost", outputCard)
+                );
+                Assert.True(outputScrollViewer.ScrollableHeight > 0);
+                Assert.True(pageScrollViewer.ScrollableHeight > 0);
+
+                outputScrollViewer.ScrollToHome();
+                pageScrollViewer.ScrollToHome();
+                window.UpdateLayout();
+                PumpDispatcher();
+
+                var innerWheel = RaiseMouseWheel(
+                    outputHost,
+                    -Mouse.MouseWheelDeltaForOneLine
+                );
+
+                Assert.True(innerWheel.Handled);
+                PumpDispatcherUntil(
+                    () => outputScrollViewer.VerticalOffset > 0,
+                    TimeSpan.FromSeconds(1)
+                );
+                Assert.Equal(0, pageScrollViewer.VerticalOffset, precision: 3);
+                PumpDispatcherUntil(
+                    () => !GetIsRendering(outputScrollViewer),
+                    TimeSpan.FromSeconds(2)
+                );
+
+                outputScrollViewer.ScrollToEnd();
+                window.UpdateLayout();
+                PumpDispatcher();
+                Assert.Equal(
+                    outputScrollViewer.ScrollableHeight,
+                    outputScrollViewer.VerticalOffset,
+                    precision: 3
+                );
+
+                var boundaryWheel = RaiseMouseWheel(
+                    outputHost,
+                    -Mouse.MouseWheelDeltaForOneLine
+                );
+
+                Assert.True(boundaryWheel.Handled);
+                PumpDispatcherUntil(
+                    () => pageScrollViewer.VerticalOffset > 0,
+                    TimeSpan.FromSeconds(1)
+                );
+                Assert.Equal(
+                    outputScrollViewer.ScrollableHeight,
+                    outputScrollViewer.VerticalOffset,
+                    precision: 3
+                );
             }
             finally
             {
@@ -312,7 +466,7 @@ public sealed class FlourishInputStylesTests
                     -Mouse.MouseWheelDeltaForOneLine
                 )
                 {
-                    RoutedEvent = Mouse.PreviewMouseWheelEvent,
+                    RoutedEvent = Mouse.MouseWheelEvent,
                     Source = scrollViewer,
                 };
 
@@ -396,7 +550,7 @@ public sealed class FlourishInputStylesTests
 
                 var transform = GetSmoothTransform(scrollViewer);
                 Assert.True(
-                    RaisePreviewMouseWheel(
+                    RaiseMouseWheel(
                         scrollViewer,
                         -Mouse.MouseWheelDeltaForOneLine
                     ).Handled
@@ -526,7 +680,7 @@ public sealed class FlourishInputStylesTests
 
                 var transform = GetSmoothTransform(scrollViewer);
                 Assert.True(
-                    RaisePreviewMouseWheel(
+                    RaiseMouseWheel(
                         scrollViewer,
                         Mouse.MouseWheelDeltaForOneLine
                     ).Handled
@@ -647,7 +801,7 @@ public sealed class FlourishInputStylesTests
         return Assert.IsType<TranslateTransform>(host.RenderTransform);
     }
 
-    private static MouseWheelEventArgs RaisePreviewMouseWheel(
+    private static MouseWheelEventArgs RaiseMouseWheel(
         UIElement source,
         int delta
     )
@@ -658,7 +812,7 @@ public sealed class FlourishInputStylesTests
             delta
         )
         {
-            RoutedEvent = Mouse.PreviewMouseWheelEvent,
+            RoutedEvent = Mouse.MouseWheelEvent,
             Source = source,
         };
         source.RaiseEvent(wheel);

@@ -121,16 +121,21 @@ public class ScrollViewer : WpfScrollViewer
     }
 
     /// <inheritdoc />
-    protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
-        base.OnPreviewMouseWheel(e);
-
-        if (
-            e.Handled
-            || !CanUseSmoothScrolling()
-            || (Keyboard.Modifiers & ModifierKeys.Shift) != 0
-        )
+        if (e.Handled)
         {
+            return;
+        }
+
+        if (!IsLoaded)
+        {
+            return;
+        }
+
+        if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+        {
+            base.OnMouseWheel(e);
             return;
         }
 
@@ -139,10 +144,31 @@ public class ScrollViewer : WpfScrollViewer
             RebaseAnimationState();
         }
 
+        // Do not invoke native scrolling at a vertical boundary because WPF may
+        // mark the event handled even when the offset cannot change.
+        if (!CanScrollInWheelDirection(e.Delta))
+        {
+            return;
+        }
+
+        if (!IsSmoothScrollingEnabled || CanContentScroll)
+        {
+            base.OnMouseWheel(e);
+            return;
+        }
+
+        // Custom templates without the smooth host retain native wheel scrolling.
+        if (!CanUseSmoothScrolling())
+        {
+            base.OnMouseWheel(e);
+            return;
+        }
+
         var wheelDistance = GetWheelDistance(e.Delta);
         var nextTarget = ClampVerticalOffset(_targetVerticalOffset - wheelDistance);
 
-        // Leave an outward wheel event unhandled so an ancestor viewer can consume it.
+        // Bubbling gives the deepest viewer first refusal. Leave an outward wheel
+        // event unhandled at either boundary so an ancestor viewer can consume it.
         if (Math.Abs(nextTarget - _targetVerticalOffset) <= OffsetTolerance)
         {
             return;
@@ -151,6 +177,17 @@ public class ScrollViewer : WpfScrollViewer
         _targetVerticalOffset = nextTarget;
         StartRendering();
         e.Handled = true;
+    }
+
+    private bool CanScrollInWheelDirection(int delta)
+    {
+        var offset = _isRendering ? _targetVerticalOffset : VerticalOffset;
+        return delta switch
+        {
+            < 0 => offset < ScrollableHeight - OffsetTolerance,
+            > 0 => offset > OffsetTolerance,
+            _ => false,
+        };
     }
 
     /// <inheritdoc />
