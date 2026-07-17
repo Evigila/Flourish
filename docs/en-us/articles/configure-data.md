@@ -158,9 +158,9 @@ Flourish preserves unrelated settings when it writes the base file, but serializ
 
 ## Project catalog
 
-`IProjectService` stores the ordered project metadata and active project ID in `projects.json`. The file is placed in the same directory as `IAppSettingsStore.FilePath`, normally beside the base `appsettings.json`, but is not a Host configuration source and does not participate in configuration precedence.
+`IProjectService` stores ordered project mappings whose local files exist, plus the active persisted project ID, in `projects.json`. The file is placed in the same directory as `IAppSettingsStore.FilePath`, normally beside the base `appsettings.json`, but is not a Host configuration source and does not participate in configuration precedence.
 
-Flourish loads this catalog when the project service starts and writes every catalog mutation atomically. Registering a replacement `IProjectBehavior` changes project dialogs and file lifecycle only; it does not disable catalog persistence. The directory must be writable. See [Projects](projects.md) for unpersisted projects and lifecycle behavior.
+Flourish loads this catalog when the project service starts, removes entries whose mapped files no longer exist, and writes valid catalog mutations atomically. Registering a replacement `IProjectBehavior` changes project dialogs and file lifecycle only; it does not disable catalog persistence. The directory must be writable. See [Projects](projects.md) for process-local unpersisted projects and lifecycle behavior.
 
 ## User Secrets
 

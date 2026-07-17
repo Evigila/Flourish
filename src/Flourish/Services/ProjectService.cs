@@ -12,6 +12,7 @@ internal sealed class ProjectService : IProjectService
     private readonly FlourishShellOptions options;
     private readonly IProjectCatalogStore? catalogStore;
     private string? activeProjectId;
+    private FlourishProjectSnapshot? cachedSnapshot;
     private long version;
 
     public ProjectService(
@@ -409,13 +410,6 @@ internal sealed class ProjectService : IProjectService
         return true;
     }
 
-    internal FlourishProject AddUnnamedProject(bool activate = true)
-    {
-        var project = CreateUnnamedProject();
-        AddProject(project, activate);
-        return project;
-    }
-
     private void InitializeFromCatalog()
     {
         var catalog = catalogStore!.Load();
@@ -424,6 +418,12 @@ internal sealed class ProjectService : IProjectService
         {
             var project = NormalizeProject(candidate);
             catalogChanged |= project != candidate;
+            if (!IsPersistableProject(project))
+            {
+                catalogChanged = true;
+                continue;
+            }
+
             if (!projects.TryAdd(project.Id, project))
             {
                 throw new InvalidDataException(
@@ -454,7 +454,7 @@ internal sealed class ProjectService : IProjectService
             projects.Add(project.Id, project);
             projectOrder.Add(project.Id);
             activeProjectId = project.Id;
-            catalogChanged = true;
+            catalogChanged |= requestedActiveId is not null;
         }
 
         if (catalogChanged)
@@ -473,13 +473,25 @@ internal sealed class ProjectService : IProjectService
 
     private void PersistCatalog()
     {
+        var persistedProjects = projectOrder
+            .Select(id => projects[id])
+            .Where(IsPersistableProject)
+            .ToArray();
+        var persistedActiveProjectId = activeProjectId is not null
+            && projects.TryGetValue(activeProjectId, out var activeProject)
+            && IsPersistableProject(activeProject)
+                ? activeProjectId
+                : null;
         catalogStore?.Save(
             new ProjectCatalog(
-                projectOrder.Select(id => projects[id]).ToArray(),
-                activeProjectId
+                persistedProjects,
+                persistedActiveProjectId
             )
         );
     }
+
+    private static bool IsPersistableProject(FlourishProject project) =>
+        project.StoragePath is not null && File.Exists(project.StoragePath);
 
     private ProjectStateBackup CaptureState() =>
         new(
@@ -505,18 +517,24 @@ internal sealed class ProjectService : IProjectService
 
     private FlourishProjectSnapshot CreateSnapshot()
     {
+        if (cachedSnapshot?.Version == version)
+        {
+            return cachedSnapshot;
+        }
+
         var orderedProjects = Array.AsReadOnly(
             projectOrder.Select(id => projects[id]).ToArray()
         );
         var activeProject = activeProjectId is not null
             ? projects.GetValueOrDefault(activeProjectId)
             : null;
-        return new FlourishProjectSnapshot(
+        cachedSnapshot = new FlourishProjectSnapshot(
             orderedProjects,
             activeProject,
             options.IsMultiProjectEnabled,
             version
         );
+        return cachedSnapshot;
     }
 
     private void RaiseChanged(

@@ -60,7 +60,7 @@
               Margin="{DynamicResource FlourishListCardPeerMargin}"
               Presenter="&#xE838;"
               Title="Storage path"
-              Text="Projects without a path are unsaved; the default behavior manages .txt project files."
+              Text="Choose an existing local file before adding, replacing, or updating a project mapping."
             >
               <flourish:ListCard.Body>
                 <flourish:FlourishTextBox
@@ -74,7 +74,7 @@
               Margin="{DynamicResource FlourishListCardPeerMargin}"
               Presenter="&#xE710;"
               Title="Add project"
-              Text="Register the metadata and make this project active."
+              Text="Register a project bound to the existing local file above and make it active."
             >
               <flourish:ListCard.Body>
                 <flourish:Button Click="AddProject_Click" Content="Add project" />
@@ -84,7 +84,7 @@
               Margin="{DynamicResource FlourishListCardPeerMargin}"
               Presenter="&#xE70F;"
               Title="Upsert project"
-              Text="Add the project or replace matching metadata."
+              Text="Add or replace a project only when its local file exists."
             >
               <flourish:ListCard.Body>
                 <flourish:Button Click="UpsertProject_Click" Content="Add or replace" />

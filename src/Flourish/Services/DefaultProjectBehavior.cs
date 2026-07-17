@@ -12,6 +12,7 @@ internal sealed class DefaultProjectBehavior(
     IFlourishLocalization localization
 ) : IProjectBehavior
 {
+    private const string DefaultProjectFileName = "NewProject";
     private const string SaveOptionId = "save";
     private const string DontSaveOptionId = "dont-save";
     private const string CancelOptionId = "cancel";
@@ -39,7 +40,10 @@ internal sealed class DefaultProjectBehavior(
 
             projectService.RequestNewProject();
             var selectedPath = await saveFileDialog
-                .ShowAsync(new ProjectSaveFileDialogRequest(string.Empty), cancellationToken)
+                .ShowAsync(
+                    new ProjectSaveFileDialogRequest(DefaultProjectFileName),
+                    cancellationToken
+                )
                 .ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(selectedPath))
             {
@@ -257,7 +261,7 @@ internal sealed class DefaultProjectBehavior(
     )
     {
         var activeProject = projectService.Current.ActiveProject;
-        if (activeProject is null || activeProject.StoragePath is not null)
+        if (activeProject is null || IsPersistedProject(activeProject))
         {
             return true;
         }
@@ -302,7 +306,7 @@ internal sealed class DefaultProjectBehavior(
     )
     {
         var activeProject = projectService.Current.ActiveProject;
-        if (activeProject is null || activeProject.StoragePath is not null)
+        if (activeProject is null || IsPersistedProject(activeProject))
         {
             return true;
         }
@@ -346,14 +350,14 @@ internal sealed class DefaultProjectBehavior(
             return false;
         }
 
-        if (activeProject.StoragePath is not null)
+        if (IsPersistedProject(activeProject))
         {
             return true;
         }
 
         var selectedPath = await saveFileDialog
             .ShowAsync(
-                new ProjectSaveFileDialogRequest(activeProject.Name),
+                new ProjectSaveFileDialogRequest(DefaultProjectFileName),
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -417,6 +421,9 @@ internal sealed class DefaultProjectBehavior(
             ".txt",
             StringComparison.OrdinalIgnoreCase
         );
+
+    private static bool IsPersistedProject(FlourishProject project) =>
+        project.StoragePath is not null && File.Exists(project.StoragePath);
 
     private static async ValueTask<bool> EnsurePlaceholderFileExistsAsync(
         string storagePath,

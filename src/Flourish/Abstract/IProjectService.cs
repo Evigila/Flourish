@@ -4,10 +4,12 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// Manages the project catalog displayed by the Flourish shell.
 /// </summary>
 /// <remarks>
-/// The production service stores the project list and active project ID in projects.json beside
-/// appsettings.json. Catalog mutations are written through an atomic file replacement. Project-file
-/// creation, saving, activation policy, deletion, and close checks are coordinated separately by
-/// <see cref="IProjectBehavior" />, which applications can replace through dependency injection.
+/// The production service stores projects whose local storage files exist, plus their active project
+/// ID, in projects.json beside appsettings.json. Unpersisted projects remain process-local, and stale
+/// mappings are removed when the catalog is loaded. Catalog mutations are written through an atomic
+/// file replacement. Project-file creation, saving, activation policy, deletion, and close checks are
+/// coordinated separately by <see cref="IProjectBehavior" />, which applications can replace through
+/// dependency injection.
 /// </remarks>
 public interface IProjectService
 {

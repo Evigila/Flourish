@@ -52,7 +52,7 @@ builder.ConfigureServices((_, services) =>
 
 While multi-project mode is enabled, the Shell calls the replacement's five asynchronous Boolean operations: `CreateProjectAsync`, `SaveActiveProjectAsync`, `ActivateProjectAsync`, `DeleteProjectAsync`, and `CanCloseAsync`. Return `false` to cancel the corresponding Shell operation. Title selection, right-click deletion, Ctrl+S, and the project close guard use this service. Outside project mode these Shell entry points remain inactive so the application owns its single-project save behavior.
 
-Replacing `IProjectBehavior` changes dialog and project-file handling; it does not replace the project catalog. The replacement should publish metadata and active-selection changes through `IProjectService`. Flourish continues to write every catalog mutation atomically to `projects.json` beside `IAppSettingsStore.FilePath`. See [Projects](projects.md) for the lifecycle contract.
+Replacing `IProjectBehavior` changes dialog and project-file handling; it does not replace the project catalog. The replacement should publish metadata and active-selection changes through `IProjectService`. Flourish continues to write mappings to existing local files atomically to `projects.json` beside `IAppSettingsStore.FilePath`; transient and stale mappings are excluded. See [Projects](projects.md) for the lifecycle contract.
 
 ## Related features
 

@@ -67,11 +67,11 @@ reapplies that material request to the custom frame.
 | Service | Runtime use |
 | --- | --- |
 | `ITitleBarService` | Change the application title/subtitle, unnamed-project placeholder, logo and information-field visibility, search placeholder, breadcrumb mode, and each `TitleBarElement`. |
-| `IProjectService` | Add, update, query, activate, and remove `FlourishProject` catalog metadata; change project mode; and observe immutable snapshots. Every catalog mutation is written atomically to `projects.json`. |
+| `IProjectService` | Add, update, query, activate, and remove `FlourishProject` metadata; change project mode; and observe immutable snapshots. Mappings to existing local files are written atomically to `projects.json`; transient and stale entries are excluded. |
 | `IProjectBehavior` | Asynchronously create, save, activate, and delete projects, and approve a close request. Applications can replace the default dialog and `.txt` file lifecycle. |
 | `ITitleBarSearchService` | Control search text, visibility, placeholder, clearing and focus; observe `QueryChanged`; and add ordered asynchronous handlers through `Subscribe`. |
 
-The title selector displays and lists only the application title while project mode is disabled. With project mode enabled, it displays the active project or unnamed-project placeholder and lists all projects plus **New project**. `StoragePath == null` identifies an unpersisted project; the placeholder is display text only.
+The title selector displays and lists only the application title while project mode is disabled. With project mode enabled, it displays the active project or unnamed-project placeholder and lists all projects plus **New project**. `StoragePath == null` identifies a process-local unpersisted project; the placeholder is display text only. Catalog entries whose local files are missing are removed during startup.
 
 Direct `IProjectService` mutations update Shell state and the persistent catalog, but do not show lifecycle dialogs or access project files. While project mode is enabled, selecting, creating, right-click deleting, saving with Ctrl+S, and closing route through `IProjectBehavior`; the built-in Ctrl+S registration uses low priority. Outside project mode these Shell routes are inactive and application code owns single-project save behavior. Replacing the behavior changes project dialogs and file operations but leaves `IProjectService` catalog persistence intact.
 

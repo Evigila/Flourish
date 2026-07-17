@@ -74,6 +74,15 @@ public sealed class GalleryProjectRuntimePageTests
         Assert.Contains("RefreshState();", handler);
     }
 
+    [Fact]
+    public void CollectionMutations_RequireAnExistingLocalStoragePath()
+    {
+        Assert.Contains("ReadExistingStoragePath(StoragePathBox.Text)", ProjectPageCode);
+        Assert.Contains("string.IsNullOrWhiteSpace(value)", ProjectPageCode);
+        Assert.Contains("File.Exists(storagePath)", ProjectPageCode);
+        Assert.DoesNotContain("NullIfWhiteSpace(StoragePathBox.Text)", ProjectPageCode);
+    }
+
     private static string FindRepositoryRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

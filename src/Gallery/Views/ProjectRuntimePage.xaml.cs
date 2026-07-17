@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -154,7 +155,7 @@ public partial class ProjectRuntimePage : Page
             projects.SetProjectMetadata(
                 project.Id,
                 ProjectNameBox.Text,
-                NullIfWhiteSpace(StoragePathBox.Text)
+                ReadExistingStoragePath(StoragePathBox.Text)
             );
             ActiveProjectOutput.WriteLine($"Updated metadata for project '{project.Id}'.");
         }
@@ -321,7 +322,7 @@ public partial class ProjectRuntimePage : Page
         new(
             ProjectIdBox.Text,
             ProjectNameBox.Text,
-            NullIfWhiteSpace(StoragePathBox.Text)
+            ReadExistingStoragePath(StoragePathBox.Text)
         );
 
     private void PopulateProjectInput(FlourishProject project)
@@ -364,6 +365,24 @@ public partial class ProjectRuntimePage : Page
         e.Handled = true;
     }
 
-    private static string? NullIfWhiteSpace(string value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    private static string ReadExistingStoragePath(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidOperationException(
+                "Select an existing local project file before registering the project."
+            );
+        }
+
+        var storagePath = Path.GetFullPath(value.Trim());
+        if (!File.Exists(storagePath))
+        {
+            throw new FileNotFoundException(
+                "The selected local project file does not exist.",
+                storagePath
+            );
+        }
+
+        return storagePath;
+    }
 }

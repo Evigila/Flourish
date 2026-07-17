@@ -28,6 +28,7 @@ public sealed class DefaultProjectBehaviorTests
         Assert.Equal(1, requestCount);
         Assert.True(File.Exists(expectedPath));
         Assert.Equal(0, new FileInfo(expectedPath).Length);
+        Assert.Equal("NewProject", Assert.Single(dialog.Requests).SuggestedFileName);
         var project = Assert.Single(projects.Current.Projects);
         Assert.Equal("Created project", project.Name);
         Assert.Equal(expectedPath, project.StoragePath);
@@ -47,7 +48,7 @@ public sealed class DefaultProjectBehaviorTests
         var result = await sut.SaveActiveProjectAsync();
 
         Assert.True(result);
-        Assert.Equal("Draft", Assert.Single(dialog.Requests).SuggestedFileName);
+        Assert.Equal("NewProject", Assert.Single(dialog.Requests).SuggestedFileName);
         Assert.True(File.Exists(selectedPath));
         Assert.Equal("Saved draft", projects.Current.ActiveProject?.Name);
         Assert.Equal(Path.GetFullPath(selectedPath), projects.Current.ActiveProject?.StoragePath);
@@ -72,6 +73,27 @@ public sealed class DefaultProjectBehaviorTests
     }
 
     [Fact]
+    public async Task SaveActiveProjectAsync_WhenMappedFileWasDeleted_RequestsANewPath()
+    {
+        using var directory = new TemporaryDirectory();
+        var deletedPath = Path.Combine(directory.Path, "Deleted.txt");
+        var replacementPath = Path.Combine(directory.Path, "Replacement.txt");
+        await File.WriteAllTextAsync(deletedPath, "application-owned content");
+        var projects = new ProjectService(new FlourishShellOptions());
+        projects.AddProject(new FlourishProject("deleted", "Deleted", deletedPath));
+        File.Delete(deletedPath);
+        var dialog = new RecordingSaveFileDialog(replacementPath);
+        var sut = CreateBehavior(projects, dialog, new Mock<IMessageService>().Object);
+
+        var result = await sut.SaveActiveProjectAsync();
+
+        Assert.True(result);
+        Assert.Equal("NewProject", Assert.Single(dialog.Requests).SuggestedFileName);
+        Assert.True(File.Exists(replacementPath));
+        Assert.Equal(Path.GetFullPath(replacementPath), projects.Current.ActiveProject?.StoragePath);
+    }
+
+    [Fact]
     public async Task SaveActiveProjectAsync_WhenCatalogPersistenceFails_PreservesExistingFile()
     {
         using var directory = new TemporaryDirectory();
@@ -79,7 +101,8 @@ public sealed class DefaultProjectBehaviorTests
         await File.WriteAllTextAsync(storagePath, "existing content");
         var draft = new FlourishProject("draft", "Draft");
         var catalogStore = new FailingProjectCatalogStore(
-            new ProjectCatalog([draft], draft.Id)
+            new ProjectCatalog([draft], draft.Id),
+            successfulSavesBeforeFailure: 1
         );
         var projects = new ProjectService(new FlourishShellOptions(), catalogStore);
         var sut = CreateBehavior(
@@ -455,7 +478,10 @@ public sealed class DefaultProjectBehaviorTests
         }
     }
 
-    private sealed class FailingProjectCatalogStore(ProjectCatalog catalog)
+    private sealed class FailingProjectCatalogStore(
+        ProjectCatalog catalog,
+        int successfulSavesBeforeFailure = 0
+    )
         : IProjectCatalogStore
     {
         public int SaveCallCount { get; private set; }
@@ -465,6 +491,11 @@ public sealed class DefaultProjectBehaviorTests
         public void Save(ProjectCatalog catalog)
         {
             SaveCallCount++;
+            if (SaveCallCount <= successfulSavesBeforeFailure)
+            {
+                return;
+            }
+
             throw new IOException("catalog persistence failed");
         }
     }

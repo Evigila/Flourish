@@ -300,7 +300,7 @@ public sealed class ProjectServiceTests
     }
 
     [Fact]
-    public void PersistentService_CreatesAndReloadsActiveUnnamedProject()
+    public void PersistentService_DoesNotPersistActiveUnnamedProject()
     {
         using var directory = new TemporaryDirectory();
         var options = new FlourishShellOptions
@@ -317,12 +317,15 @@ public sealed class ProjectServiceTests
         Assert.Equal("Configured unnamed project", created.Name);
         Assert.Null(created.StoragePath);
         Assert.Equal(created, first.Current.ActiveProject);
-        Assert.True(File.Exists(Path.Combine(directory.Path, "projects.json")));
+        Assert.False(File.Exists(Path.Combine(directory.Path, "projects.json")));
 
         var reloaded = new ProjectService(options, store);
 
-        Assert.Equal(created, Assert.Single(reloaded.Current.Projects));
-        Assert.Equal(created.Id, reloaded.Current.ActiveProject?.Id);
+        var replacement = Assert.Single(reloaded.Current.Projects);
+        Assert.Equal("Configured unnamed project", replacement.Name);
+        Assert.Null(replacement.StoragePath);
+        Assert.NotEqual(created.Id, replacement.Id);
+        Assert.Equal(replacement, reloaded.Current.ActiveProject);
         Assert.Empty(Directory.EnumerateFiles(directory.Path, ".projects.json.*.tmp"));
     }
 
@@ -336,9 +339,13 @@ public sealed class ProjectServiceTests
         );
         var first = new ProjectService(options, store);
         var unnamed = Assert.Single(first.Current.Projects);
-        first.SetProjectMetadata(unnamed.Id, "First", Path.Combine(directory.Path, "First.txt"));
+        var firstPath = Path.Combine(directory.Path, "First.txt");
+        var secondPath = Path.Combine(directory.Path, "Second.txt");
+        File.WriteAllText(firstPath, string.Empty);
+        File.WriteAllText(secondPath, string.Empty);
+        first.SetProjectMetadata(unnamed.Id, "First", firstPath);
         first.AddProject(
-            new FlourishProject("second", "Second", Path.Combine(directory.Path, "Second.txt")),
+            new FlourishProject("second", "Second", secondPath),
             activate: false
         );
         first.SetActiveProject("second");
@@ -352,6 +359,62 @@ public sealed class ProjectServiceTests
         Assert.Equal("First", reloaded.Current.Projects[0].Name);
         Assert.Equal("second", reloaded.Current.ActiveProject?.Id);
         Assert.Equal(0, reloaded.Current.Version);
+    }
+
+    [Fact]
+    public void PersistentService_PersistsOnlyExistingStorageMappings()
+    {
+        using var directory = new TemporaryDirectory();
+        var options = new FlourishShellOptions();
+        var store = new ProjectCatalogStore(
+            new TestAppSettingsStore(Path.Combine(directory.Path, "appsettings.json"))
+        );
+        var existingPath = Path.Combine(directory.Path, "Existing.txt");
+        File.WriteAllText(existingPath, string.Empty);
+        var missingPath = Path.Combine(directory.Path, "Missing.txt");
+        var first = new ProjectService(options, store);
+        var initial = Assert.Single(first.Current.Projects);
+        first.SetProjectMetadata(initial.Id, "Existing", existingPath);
+        first.AddProject(
+            new FlourishProject("missing", "Missing", missingPath),
+            activate: false
+        );
+        first.AddProject(new FlourishProject("unmapped", "Unmapped"));
+
+        var reloaded = new ProjectService(options, store);
+
+        var remaining = Assert.Single(reloaded.Current.Projects);
+        Assert.Equal(initial.Id, remaining.Id);
+        Assert.Equal(Path.GetFullPath(existingPath), Path.GetFullPath(remaining.StoragePath!));
+        Assert.Equal(remaining, reloaded.Current.ActiveProject);
+        Assert.False(reloaded.TryGetProject("missing", out _));
+        Assert.False(reloaded.TryGetProject("unmapped", out _));
+    }
+
+    [Fact]
+    public void PersistentService_LoadPrunesStaleMappingsAndRepairsActiveProject()
+    {
+        using var directory = new TemporaryDirectory();
+        var existingPath = Path.Combine(directory.Path, "Existing.txt");
+        File.WriteAllText(existingPath, string.Empty);
+        var existing = new FlourishProject("existing", "Existing", existingPath);
+        var missing = new FlourishProject(
+            "missing",
+            "Missing",
+            Path.Combine(directory.Path, "Missing.txt")
+        );
+        var unmapped = new FlourishProject("unmapped", "Unmapped");
+        var store = new RecordingProjectCatalogStore(
+            new ProjectCatalog([existing, missing, unmapped], missing.Id)
+        );
+
+        var sut = new ProjectService(new FlourishShellOptions(), store);
+
+        Assert.Equal(existing, Assert.Single(sut.Current.Projects));
+        Assert.Equal(existing, sut.Current.ActiveProject);
+        var repaired = Assert.Single(store.SavedCatalogs);
+        Assert.Equal(existing, Assert.Single(repaired.Projects));
+        Assert.Equal(existing.Id, repaired.ActiveProjectId);
     }
 
     private sealed class TestAppSettingsStore(string filePath) : IAppSettingsStore
@@ -385,6 +448,16 @@ public sealed class ProjectServiceTests
             T value,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
+    }
+
+    private sealed class RecordingProjectCatalogStore(ProjectCatalog catalog)
+        : IProjectCatalogStore
+    {
+        public List<ProjectCatalog> SavedCatalogs { get; } = [];
+
+        public ProjectCatalog Load() => catalog;
+
+        public void Save(ProjectCatalog catalog) => SavedCatalogs.Add(catalog);
     }
 
     private sealed class TemporaryDirectory : IDisposable

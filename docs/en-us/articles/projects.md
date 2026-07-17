@@ -42,19 +42,19 @@ public sealed class WorkspaceCatalog(IProjectService projects)
                 @"C:\Work\Reports.txt"));
 
         projects.UpsertProject(
-            new FlourishProject("samples", "Samples"),
+            new FlourishProject("samples", "Samples", @"C:\Work\Samples.txt"),
             activate: false);
     }
 }
 ```
 
-`StoragePath == null` means that a project is unpersisted. The unnamed-project placeholder is display text only; do not compare a project name with the placeholder to determine persistence. Names are not required to be unique and the placeholder can be changed or localized.
+`StoragePath == null` means that a project is unpersisted. Unpersisted projects may exist in the current process, but they are excluded from `projects.json`. The unnamed-project placeholder is display text only; do not compare a project name with the placeholder to determine persistence. Names are not required to be unique and the placeholder can be changed or localized.
 
-Flourish loads the ordered catalog and active project ID from `projects.json`. The file is stored beside `IAppSettingsStore.FilePath`, normally beside the base `appsettings.json`. Every catalog mutation through `IProjectService` rewrites this file atomically. If the write fails, the in-memory mutation is rolled back and the change event is not published.
+Flourish loads the ordered catalog and active project ID from `projects.json`. The file is stored beside `IAppSettingsStore.FilePath`, normally beside the base `appsettings.json`. Only mappings whose `StoragePath` refers to an existing local file are retained. On startup, entries with an empty path or a missing target file are removed and the repaired catalog is written back atomically. Every catalog mutation through `IProjectService` also rewrites the valid mappings atomically. If the write fails, the in-memory mutation is rolled back and the change event is not published.
 
-Catalog persistence belongs to `IProjectService` and remains active when the application replaces `IProjectBehavior`. The catalog stores metadata only; `IProjectService` does not read or write the path represented by a project.
+Catalog persistence belongs to `IProjectService` and remains active when the application replaces `IProjectBehavior`. The catalog stores metadata only; `IProjectService` checks whether the represented file exists but does not read or write its contents.
 
-When no persisted catalog entries exist, Flourish creates and activates one unpersisted project and displays it with the configured placeholder.
+When no persisted catalog entries exist, Flourish creates and activates one process-local, unpersisted project and displays it with the configured placeholder. That temporary identity receives a new ID after an application restart unless it is saved to a local file first.
 
 ## Runtime catalog operations
 
@@ -78,8 +78,8 @@ Flourish registers a default `IProjectBehavior` when the application does not pr
 
 | User operation | Default behavior |
 | --- | --- |
-| **New project** | Resolves an unpersisted active project first, then opens a Save dialog, creates a `.txt` placeholder when the selected file does not exist, adds its metadata, and activates it. Canceling either step prevents creation. |
-| Ctrl+S | In project mode, saves the active project metadata. An unpersisted project opens the Save dialog, then receives the file name and path. An existing selected file is mapped without changing its contents, and saving an already-persisted project is a no-op. Outside project mode Flourish does not handle Ctrl+S, so the application owns its save semantics. The built-in command and shortcut use low priority so application registrations can take precedence. |
+| **New project** | Resolves an unpersisted active project first, then opens a Save dialog with `NewProject` as the suggested file name, creates a `.txt` placeholder when the selected file does not exist, adds its metadata, and activates it. Canceling either step prevents creation. |
+| Ctrl+S | In project mode, saves the active project metadata. An unpersisted project, or one whose mapped file was deleted, opens the Save dialog with `NewProject` as the suggested file name, then receives the selected file name and path. An existing selected file is mapped without changing its contents, and saving a project whose mapped file still exists is a no-op. Outside project mode Flourish does not handle Ctrl+S, so the application owns its save semantics. The built-in command and shortcut use low priority so application registrations can take precedence. |
 | Select another project | If the active project is unpersisted, offers only **Save** or **Cancel**. Activation continues only after saving succeeds. |
 | Close the application | In project mode, an unpersisted active project offers **Save**, **Don't save**, and **Cancel** before an actual close. **Save** must complete, **Don't save** allows closing without a project file, and **Cancel** prevents the close. Outside project mode no project-save prompt is shown. |
 | Right-click a project | Requests confirmation, removes the catalog entry, and deletes a managed `.txt` file when no other project references the same path. A catalog-write failure restores the isolated file and leaves the catalog unchanged. |
