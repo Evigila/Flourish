@@ -25,6 +25,10 @@ description: 使用平滑像素滚动与细长 Flourish 滚动条承载超出视
 
 需要立即执行 WPF 原生像素滚动时，设置 `IsSmoothScrollingEnabled="False"`。
 
+## 嵌套视口
+
+使用默认物理滚动模式时，鼠标滚轮输入从最深层的 Flourish `ScrollViewer` 开始处理。只要内部视口在当前方向上仍可移动，它就会消费滚轮；到达顶部或底部边界后，继续向外滚动的输入会保留给父级视口，因此紧凑的内部历史不会阻断页面滚动。
+
 ## 自定义模板
 
 平滑像素滚动要求 `PART_ScrollContentPresenter` 保持静止，并在其内部放置名为 `PART_SmoothScrollContentHost` 的 `ContentPresenter`。控件只对这个专用宿主应用逐帧变换，使视口裁剪区域保持固定。模板缺少该宿主时，鼠标滚轮输入会安全回退到原生滚动。
