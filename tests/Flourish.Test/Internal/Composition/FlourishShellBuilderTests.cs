@@ -14,6 +14,7 @@ public sealed class FlourishShellBuilderTests
 
         Assert.False(options.IsCenterContentEnabled);
         Assert.Equal(0, options.CenterContentWidth);
+        Assert.False(options.IsMultiProjectEnabled);
     }
 
     [Fact]
@@ -28,6 +29,7 @@ public sealed class FlourishShellBuilderTests
         );
 
         Assert.Same(sut, sut.UseTitleBar());
+        Assert.Same(sut, sut.UseMultiProject());
         Assert.Same(sut, sut.UseNavigation());
         Assert.Same(sut, sut.UseCenterContent(enabled: true, contentWidth: 1080));
         Assert.Same(sut, sut.UseDynamicToolbar());
@@ -44,6 +46,7 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, sut.UseStatusBar());
 
         Assert.True(options.IsTitlebarEnabled);
+        Assert.True(options.IsMultiProjectEnabled);
         Assert.True(options.IsNavigationPanelEnabled);
         Assert.True(options.IsCenterContentEnabled);
         Assert.Equal(1080, options.CenterContentWidth);
@@ -95,6 +98,7 @@ public sealed class FlourishShellBuilderTests
         var options = new FlourishShellOptions
         {
             IsTitlebarEnabled = true,
+            IsMultiProjectEnabled = true,
             IsNavigationPanelEnabled = true,
             IsCenterContentEnabled = true,
             IsDynamicToolbarEnabled = true,
@@ -104,6 +108,7 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(options);
 
         Assert.Same(sut, sut.UseTitleBar(false));
+        Assert.Same(sut, sut.UseMultiProject(false));
         Assert.Same(sut, sut.UseNavigation(false));
         Assert.Same(sut, sut.UseCenterContent(enabled: false, contentWidth: 1200));
         Assert.Same(sut, sut.UseDynamicToolbar(false));
@@ -111,6 +116,7 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, sut.UseStatusBar(false));
 
         Assert.False(options.IsTitlebarEnabled);
+        Assert.False(options.IsMultiProjectEnabled);
         Assert.False(options.IsNavigationPanelEnabled);
         Assert.False(options.IsCenterContentEnabled);
         Assert.False(options.IsDynamicToolbarEnabled);

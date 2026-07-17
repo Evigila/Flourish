@@ -38,6 +38,7 @@ public sealed class FlourishControlStylesTests
             "/Flourish;component/Controls/Card.xaml",
             "/Flourish;component/Controls/IconCard.xaml",
             "/Flourish;component/Controls/ListCard.xaml",
+            "/Flourish;component/Controls/OutputCard.xaml",
             "/Flourish;component/Controls/CheckBox.xaml",
             "/Flourish;component/Controls/ComboBox.xaml",
             "/Flourish;component/Controls/ComboBoxItem.xaml",
@@ -343,6 +344,7 @@ public sealed class FlourishControlStylesTests
                 new Card { Title = "Card", Text = "Description" },
                 new IconCard { Title = "Icon card", Presenter = "Icon" },
                 new ListCard { Title = "List card", Presenter = "Icon" },
+                new OutputCard(),
                 new FlourishCheckBox { Content = "Check" },
                 comboBox,
                 new FlourishComboBoxItem { Content = "Choice" },
@@ -1116,6 +1118,158 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(new Thickness(), emptyPresenter.Margin);
                 Assert.Equal(Visibility.Collapsed, emptyBody.Visibility);
                 Assert.Equal(new Thickness(), emptyBody.Margin);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void OutputCard_UsesCompactScrollableCaptionViewportInsideCardPadding()
+    {
+        RunInSta(() =>
+        {
+            var outputCard = new OutputCard
+            {
+                Width = 420,
+                Height = 72,
+            };
+            for (var index = 1; index <= 48; index++)
+            {
+                outputCard.WriteLine($"Output message {index:00} with a stable long value.");
+            }
+
+            var window = CreateWindow(outputCard);
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                outputCard.ApplyTemplate();
+                window.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                    static () => { }
+                );
+                window.UpdateLayout();
+
+                Assert.Equal(72d, outputCard.MinHeight);
+                Assert.Equal(new Thickness(20), outputCard.Padding);
+                Assert.Same(
+                    outputCard.TryFindResource("FlourishCardBackgroundBrush"),
+                    outputCard.Background
+                );
+
+                var surface = AssertTemplatePart<Border>(outputCard, "SurfaceChrome");
+                var viewport = AssertTemplatePart<Border>(outputCard, "OutputViewport");
+                var scrollViewer = AssertTemplatePart<CustomScrollViewer>(
+                    outputCard,
+                    "PART_OutputScrollViewer"
+                );
+                var outputHost = AssertTemplatePart<FlourishTextBlock>(
+                    outputCard,
+                    "OutputHost"
+                );
+
+                Assert.Equal(new CornerRadius(8), surface.CornerRadius);
+                Assert.Equal(outputCard.Padding, surface.Padding);
+                Assert.Equal(new CornerRadius(6), viewport.CornerRadius);
+                Assert.Same(
+                    outputCard.TryFindResource("FlourishOutputViewportBackgroundBrush"),
+                    viewport.Background
+                );
+                Assert.True(viewport.ClipToBounds);
+                Assert.Equal(new Thickness(12, 8, 12, 8), scrollViewer.Padding);
+                Assert.True(scrollViewer.IsCompact);
+                Assert.False(scrollViewer.Focusable);
+                Assert.Equal(
+                    ScrollBarVisibility.Auto,
+                    scrollViewer.HorizontalScrollBarVisibility
+                );
+                Assert.Equal(
+                    ScrollBarVisibility.Auto,
+                    scrollViewer.VerticalScrollBarVisibility
+                );
+                Assert.Equal(FlourishTextRole.Caption, outputHost.Role);
+                Assert.Equal(12d, outputHost.FontSize);
+                Assert.Equal(14d, outputHost.LineHeight);
+                Assert.True(scrollViewer.ViewportHeight >= outputHost.LineHeight);
+                Assert.Equal(TextWrapping.NoWrap, outputHost.TextWrapping);
+                Assert.Equal(outputCard.Output, outputHost.Text);
+                Assert.Null(outputCard.Template.FindName("TitleHost", outputCard));
+                Assert.Null(outputCard.Template.FindName("TextHost", outputCard));
+                Assert.Null(outputCard.Template.FindName("BodyHost", outputCard));
+                Assert.True(scrollViewer.ScrollableHeight > 0);
+                Assert.Equal(
+                    scrollViewer.ScrollableHeight,
+                    scrollViewer.VerticalOffset,
+                    precision: 3
+                );
+
+                outputCard.Clear();
+                window.UpdateLayout();
+
+                Assert.Equal(string.Empty, outputHost.Text);
+                Assert.Equal(0, scrollViewer.VerticalOffset);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void OutputCard_HistoryDoesNotDriveAnAutoSizedPeerRowHeight()
+    {
+        RunInSta(() =>
+        {
+            var listColumn = new StackPanel();
+            for (var index = 0; index < 3; index++)
+            {
+                listColumn.Children.Add(
+                    new ListCard
+                    {
+                        Margin = index == 0
+                            ? new Thickness()
+                            : new Thickness(0, 4, 0, 0),
+                        Presenter = "\uE8A5",
+                        Title = $"Setting {index + 1}",
+                    }
+                );
+            }
+
+            var outputCard = new OutputCard();
+            for (var index = 1; index <= 80; index++)
+            {
+                outputCard.WriteLine($"Historical output {index:00}");
+            }
+
+            var row = new UniformGrid
+            {
+                Columns = 2,
+                Width = 600,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            row.Children.Add(listColumn);
+            row.Children.Add(outputCard);
+
+            var window = CreateWindow(new StackPanel { Children = { row } });
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                outputCard.ApplyTemplate();
+
+                var scrollViewer = AssertTemplatePart<CustomScrollViewer>(
+                    outputCard,
+                    "PART_OutputScrollViewer"
+                );
+
+                Assert.Equal(outputCard.MinHeight, outputCard.DesiredSize.Height, precision: 3);
+                Assert.Equal(listColumn.ActualHeight, outputCard.ActualHeight, precision: 3);
+                Assert.True(outputCard.ActualHeight > outputCard.DesiredSize.Height);
+                Assert.True(scrollViewer.ScrollableHeight > 0);
             }
             finally
             {

@@ -31,30 +31,37 @@ public partial class ConfigurationPage : Page
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
         RefreshLocaleState();
-        RefreshSnapshotState();
     }
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-        configuration.Changed -= Configuration_Changed;
         localization.Changed -= Localization_Changed;
-        configuration.Changed += Configuration_Changed;
         localization.Changed += Localization_Changed;
         RefreshLocaleState();
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        configuration.Changed -= Configuration_Changed;
         localization.Changed -= Localization_Changed;
     }
 
     private void ReadValue_Click(object sender, RoutedEventArgs e)
     {
-        var key = ReadKeyBox.Text.Trim();
-        ReadValueText.Text = string.IsNullOrWhiteSpace(key)
-            ? "Enter a configuration path."
-            : configuration[key] ?? "<null>";
+        try
+        {
+            var key = ReadKeyBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                ReadOutput.WriteLine("Enter a configuration path.");
+                return;
+            }
+
+            ReadOutput.WriteLine($"Read {key}: {configuration[key] ?? "<null>"}");
+        }
+        catch (Exception error)
+        {
+            ReadOutput.WriteLine($"Error: {error.Message}");
+        }
     }
 
     private void Reload_Click(object sender, RoutedEventArgs e)
@@ -62,24 +69,27 @@ public partial class ConfigurationPage : Page
         try
         {
             configuration.Reload();
-            RefreshSnapshotState();
+            var snapshot = configuration.Current;
+            ReadOutput.WriteLine(
+                $"Reloaded configuration providers. Snapshot v{snapshot.Version} contains {snapshot.Values.Count} values (captured {snapshot.CapturedAt.LocalDateTime:T})."
+            );
         }
         catch (Exception error)
         {
-            ReadValueText.Text = error.Message;
+            ReadOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
     private async void SetValue_Click(object sender, RoutedEventArgs e)
     {
-        await ExecuteSettingUpdateAsync(() =>
+        await ExecuteSettingUpdateAsync("Set", () =>
             settings.SetAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
         );
     }
 
     private async void AppendValue_Click(object sender, RoutedEventArgs e)
     {
-        await ExecuteSettingUpdateAsync(() =>
+        await ExecuteSettingUpdateAsync("Append", () =>
             settings.AppendAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
         );
     }
@@ -91,7 +101,7 @@ public partial class ConfigurationPage : Page
         var parentPath = separator > 0 ? path[..separator] : path;
         var propertyName = separator > 0 ? path[(separator + 1)..] : "Value";
 
-        await ExecuteSettingUpdateAsync(() =>
+        await ExecuteSettingUpdateAsync("Merge", () =>
             settings
                 .MergeAsync(
                     parentPath,
@@ -107,7 +117,10 @@ public partial class ConfigurationPage : Page
 
     private async void RemoveValue_Click(object sender, RoutedEventArgs e)
     {
-        await ExecuteSettingUpdateAsync(() => settings.RemoveAsync(WriteKeyBox.Text).AsTask());
+        await ExecuteSettingUpdateAsync(
+            "Remove",
+            () => settings.RemoveAsync(WriteKeyBox.Text).AsTask()
+        );
     }
 
     private void LocaleBox_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
@@ -124,10 +137,11 @@ public partial class ConfigurationPage : Page
         {
             localization.SetLocale(locale);
             RefreshLocaleState();
+            LocaleOutput.WriteLine($"Locale changed to {localization.CurrentLocale}.");
         }
         catch (Exception error)
         {
-            LocaleStatusText.Text = error.Message;
+            LocaleOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -142,13 +156,14 @@ public partial class ConfigurationPage : Page
 
             localeFileRegistration = localization.RegisterFile(LocaleFilePathBox.Text);
             LocaleFilePathBox.Text = localeFileRegistration.FilePath;
-            LocaleFileStatusText.Text =
-                $"Registered {localeFileRegistration.Locale} from {localeFileRegistration.FilePath}.";
+            LocaleFileOutput.WriteLine(
+                $"Registered {localeFileRegistration.Locale} from {localeFileRegistration.FilePath}."
+            );
             RefreshLocaleState();
         }
         catch (Exception error)
         {
-            LocaleFileStatusText.Text = error.Message;
+            LocaleFileOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -156,19 +171,20 @@ public partial class ConfigurationPage : Page
     {
         if (localeFileRegistration is null)
         {
-            LocaleFileStatusText.Text = "Register a locale file first.";
+            LocaleFileOutput.WriteLine("Register a locale file first.");
             return;
         }
 
         try
         {
             localization.ReloadFile(localeFileRegistration);
-            LocaleFileStatusText.Text =
-                $"Reloaded {localeFileRegistration.Locale} at {DateTime.Now:T}.";
+            LocaleFileOutput.WriteLine(
+                $"Reloaded {localeFileRegistration.Locale} at {DateTime.Now:T}."
+            );
         }
         catch (Exception error)
         {
-            LocaleFileStatusText.Text = error.Message;
+            LocaleFileOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -176,45 +192,46 @@ public partial class ConfigurationPage : Page
     {
         if (localeFileRegistration is null)
         {
-            LocaleFileStatusText.Text = "No locale file is registered by this page.";
+            LocaleFileOutput.WriteLine("No locale file is registered by this page.");
             return;
         }
 
-        var locale = localeFileRegistration.Locale;
-        var removed = localization.Unregister(localeFileRegistration);
-        localeFileRegistration = null;
-        LocaleFileStatusText.Text = removed
-            ? $"Unregistered locale source {locale}."
-            : "That locale source was already unregistered.";
-        RefreshLocaleState();
+        try
+        {
+            var locale = localeFileRegistration.Locale;
+            var removed = localization.Unregister(localeFileRegistration);
+            localeFileRegistration = null;
+            LocaleFileOutput.WriteLine(
+                removed
+                    ? $"Unregistered locale source {locale}."
+                    : "That locale source was already unregistered."
+            );
+            RefreshLocaleState();
+        }
+        catch (Exception error)
+        {
+            LocaleFileOutput.WriteLine($"Error: {error.Message}");
+        }
     }
 
-    private async Task ExecuteSettingUpdateAsync(Func<Task<AppSettingsUpdateResult>> update)
+    private async Task ExecuteSettingUpdateAsync(
+        string operation,
+        Func<Task<AppSettingsUpdateResult>> update
+    )
     {
         try
         {
             var result = await update();
-            WriteResultText.Text = result.Changed
-                ? $"Saved {result.FilePath}. Configuration reloaded: {result.ConfigurationReloaded}."
-                : "The transaction completed without changing the document.";
+            WriteOutput.WriteLine(
+                result.Changed
+                    ? $"{operation} saved {result.FilePath}. Configuration reloaded: {result.ConfigurationReloaded}."
+                    : $"{operation} completed without changing the document."
+            );
         }
         catch (Exception error)
         {
-            WriteResultText.Text = error.Message;
+            WriteOutput.WriteLine($"Error: {error.Message}");
         }
-    }
-
-    private void Configuration_Changed(object? sender, FlourishConfigurationChangedEventArgs e)
-    {
-        Dispatcher.BeginInvoke(() =>
-        {
-            if (!string.IsNullOrWhiteSpace(ReadKeyBox.Text))
-            {
-                ReadValueText.Text = configuration[ReadKeyBox.Text.Trim()] ?? "<null>";
-            }
-
-            RefreshSnapshotState();
-        });
     }
 
     private void Localization_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
@@ -244,7 +261,6 @@ public partial class ConfigurationPage : Page
                     StringComparison.OrdinalIgnoreCase
                 )
             );
-            LocaleStatusText.Text = $"Current locale: {localization.CurrentLocale}";
         }
         finally
         {
@@ -252,10 +268,4 @@ public partial class ConfigurationPage : Page
         }
     }
 
-    private void RefreshSnapshotState()
-    {
-        var snapshot = configuration.Current;
-        SnapshotText.Text =
-            $"Snapshot v{snapshot.Version} contains {snapshot.Values.Count} values (captured {snapshot.CapturedAt.LocalDateTime:T}).";
-    }
 }

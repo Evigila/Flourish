@@ -5,9 +5,11 @@ namespace ArkheideSystem.Flourish.Internal.Configuration;
 
 internal sealed class FlourishShellOptions
 {
-    public string Title { get; set; } = string.Empty;
+    public string ApplicationTitle { get; set; } = string.Empty;
 
-    public string Subtitle { get; set; } = "WPF Application";
+    public string ApplicationSubtitle { get; set; } = "WPF Application";
+
+    public string UnnamedProjectPlaceholder { get; set; } = "Unnamed project";
 
     public string SearchPlaceholder { get; set; } = "Search";
 
@@ -16,6 +18,12 @@ internal sealed class FlourishShellOptions
     public string? LogoPath { get; set; }
 
     public string LogoFallbackText { get; set; } = "F";
+
+    public bool ShowApplicationTitleInLogoFlyout { get; set; } = true;
+
+    public bool ShowApplicationSubtitleInLogoFlyout { get; set; } = true;
+
+    public bool ShowProjectTitleInLogoFlyout { get; set; }
 
     public string FontFamily { get; set; } = "Segoe UI";
 
@@ -96,6 +104,8 @@ internal sealed class FlourishShellOptions
 
     public bool IsTitlebarEnabled { get; set; }
 
+    public bool IsMultiProjectEnabled { get; set; }
+
     public bool IsProfileEnabled { get; set; }
 
     public bool IsTitlebarSearchEnabled { get; set; }
@@ -105,8 +115,6 @@ internal sealed class FlourishShellOptions
     public bool IsTitlebarLogoEnabled { get; set; }
 
     public bool IsTitlebarTitleEnabled { get; set; }
-
-    public bool IsTitlebarSubtitleEnabled { get; set; }
 
     public bool IsTitlebarProfileEnabled { get; set; }
 

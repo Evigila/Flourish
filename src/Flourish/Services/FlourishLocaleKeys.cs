@@ -9,6 +9,9 @@ internal static class FlourishLocaleKeys
     public const string TitleBarThemeSystem = "TitleBar.ThemeSystem";
     public const string TitleBarThemeCurrent = "TitleBar.ThemeCurrent";
     public const string TitleBarProfile = "TitleBar.Profile";
+    public const string TitleBarApplicationInfo = "TitleBar.ApplicationInfo";
+    public const string TitleBarProjectMenu = "TitleBar.ProjectMenu";
+    public const string TitleBarNewProject = "TitleBar.NewProject";
     public const string TitleBarMinimize = "TitleBar.Minimize";
     public const string TitleBarMaximize = "TitleBar.Maximize";
     public const string TitleBarRestore = "TitleBar.Restore";
@@ -22,9 +25,7 @@ internal static class FlourishLocaleKeys
     public const string ProfileLastName = "Profile.LastName";
     public const string ProfileImage = "Profile.Image";
     public const string ProfileChooseImage = "Profile.ChooseImage";
-    public const string ProfileChangeImage = "Profile.ChangeImage";
     public const string ProfileUploadImage = "Profile.UploadImage";
-    public const string ProfileImageSelected = "Profile.ImageSelected";
     public const string ProfilePassword = "Profile.Password";
     public const string ProfileCancel = "Profile.Cancel";
     public const string ProfileRememberLogin = "Profile.RememberLogin";
@@ -71,6 +72,9 @@ internal static class FlourishLocaleKeys
         TitleBarThemeSystem,
         TitleBarThemeCurrent,
         TitleBarProfile,
+        TitleBarApplicationInfo,
+        TitleBarProjectMenu,
+        TitleBarNewProject,
         TitleBarMinimize,
         TitleBarMaximize,
         TitleBarRestore,
@@ -84,9 +88,7 @@ internal static class FlourishLocaleKeys
         ProfileLastName,
         ProfileImage,
         ProfileChooseImage,
-        ProfileChangeImage,
         ProfileUploadImage,
-        ProfileImageSelected,
         ProfilePassword,
         ProfileCancel,
         ProfileRememberLogin,

@@ -63,7 +63,7 @@ public partial class App : Application
             .ConfigureShell(shell =>
                 shell.UseTitleBar().UseNavigation())
             .ConfigureTitleBar(titleBar =>
-                titleBar.SetTitle("Foobar").SetNavToggle())
+                titleBar.SetApplicationTitle("Foobar").SetNavToggle())
             .ConfigureNavigation(navigation =>
                 navigation.SetGroup(null, groupId: 0, group =>
                     group.AddNavigableViewItem<HomePage>(isInitial: true)))
@@ -104,7 +104,7 @@ return FlourishBuilder
     .ConfigureShell(shell =>
         shell.UseTitleBar().UseNavigation())
     .ConfigureTitleBar(titleBar =>
-        titleBar.SetTitle("Foobar").SetNavToggle())
+        titleBar.SetApplicationTitle("Foobar").SetNavToggle())
     .ConfigureNavigation(navigation =>
         navigation.SetGroup(null, groupId: 0, group =>
             group.AddNavigableViewItem<HomePage>(isInitial: true)))
@@ -137,6 +137,7 @@ public partial class HomePage : Page
 - [应用数据](configure-data.md)选择内置界面语言并注册自定义语言。
 - [Shell 配置](shell-configuration.md)启用 Shell 功能并说明其前置条件。
 - [标题栏](configure-title-bar.md)配置标题栏内容。
+- [项目](projects.md)添加项目感知的标题语义与运行时显示元数据。
 - [导航](navigation.md)把已注册页面和命令项放入显式导航分组。
 - [后台任务](background-tasks.md)运行可取消异步工作。
 - [提示浮层](configure-tips.md)、[排版](configure-font.md)和[窗口](configure-window.md)配置其他 Shell 行为。

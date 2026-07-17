@@ -5,7 +5,7 @@ description: Insert application-provided WPF elements and commands into predefin
 
 # Custom shell content
 
-Flourish exposes extension regions in the title bar, navigation panel, dynamic toolbar, content frame, and status bar. Use `ConfigureCustomHandler` to place application-provided WPF elements or commands in these regions.
+Flourish exposes extension regions in the title bar, the logo information surface, navigation panel, dynamic toolbar, content frame, and status bar. Use `ConfigureCustomHandler` to place application-provided WPF elements or commands in these regions.
 
 ## Add custom content and commands
 
@@ -30,6 +30,8 @@ builder
 
 Custom content does not enable its owning surface. Enable title bar regions with `UseTitleBar()`, navigation regions with `UseNavigation()`, toolbar regions with `UseDynamicToolbar()`, and footer regions with `UseStatusBar()` in [Shell configuration](shell-configuration.md). `SetProfileContent` also requires `SetProfile()` in [Title bar](configure-title-bar.md).
 
+The `FlourishRegion.TitlebarApplicationInfo` region is rendered as the Body of the logo information surface. Configure a logo with `SetLogo()` before adding this content. The Body is application-defined and can present dynamic details without making Flourish responsible for the underlying project or document lifecycle.
+
 ## Element factories
 
 Element factories receive `IServiceProvider`, so they can resolve application services when needed. Use the same factory form even when an element has no dependencies. Element factories must return elements without an existing WPF parent.
@@ -37,10 +39,15 @@ Element factories receive `IServiceProvider`, so they can resolve application se
 ```csharp
 builder.ConfigureCustomHandler(custom =>
 {
-    custom.Add(
-        FlourishRegion.TitlebarEnd,
-        services => new SyncStatusView(
-            services.GetRequiredService<SyncService>()));
+    custom
+        .Add(
+            FlourishRegion.TitlebarEnd,
+            services => new SyncStatusView(
+                services.GetRequiredService<SyncService>()))
+        .Add(
+            FlourishRegion.TitlebarApplicationInfo,
+            services => new ApplicationDetailsView(
+                services.GetRequiredService<ApplicationDetailsService>()));
 });
 ```
 

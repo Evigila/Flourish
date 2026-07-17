@@ -10,29 +10,63 @@ namespace ArkheideSystem.Flourish.Test.Services;
 public sealed class RuntimeShellStateServiceTests
 {
     [Fact]
-    public void TitleBarService_UpdatesContentVisibilityAndRaisesOnlyMaterialChanges()
+    public void TitleBarService_UpdatesApplicationIdentityLogoDetailsAndRaisesOnlyMaterialChanges()
     {
         var options = new FlourishShellOptions();
         ITitleBarService sut = new TitleBarService(options);
         var changes = new List<FlourishTitleBarState>();
         sut.Changed += (_, args) => changes.Add(args.State);
 
-        sut.SetIdentity("Runtime Gallery", "Live APIs");
-        sut.SetLogo(null, "RG");
+        sut.SetApplicationIdentity("Runtime Gallery", "Live APIs");
+        sut.SetApplicationIdentity("Runtime Gallery", "Live APIs");
+        sut.SetUnnamedProjectPlaceholder("Untitled workspace");
+        sut.SetLogo(
+            null,
+            "RG",
+            showApplicationTitle: false,
+            showApplicationSubTitle: false,
+            showProjectTitle: true
+        );
+        sut.SetLogo(
+            null,
+            "RG",
+            showApplicationTitle: false,
+            showApplicationSubTitle: false,
+            showProjectTitle: true
+        );
         sut.SetElementVisible(TitleBarElement.Search, true);
         sut.SetBreadcrumbMode(BreadcrumbShowOption.Hidden);
         sut.SetBreadcrumbMode(BreadcrumbShowOption.Hidden);
 
-        Assert.Equal("Runtime Gallery", sut.Current.Title);
-        Assert.Equal("Live APIs", sut.Current.Subtitle);
+        Assert.Equal("Runtime Gallery", sut.Current.ApplicationTitle);
+        Assert.Equal("Live APIs", sut.Current.ApplicationSubTitle);
+        Assert.Equal("Untitled workspace", sut.Current.UnnamedProjectPlaceholder);
         Assert.Equal("RG", sut.Current.LogoFallbackText);
+        Assert.False(sut.Current.ShowApplicationTitle);
+        Assert.False(sut.Current.ShowApplicationSubTitle);
+        Assert.True(sut.Current.ShowProjectTitle);
+        Assert.True(sut.Current.IsLogoVisible);
+        Assert.True(sut.Current.IsTitleVisible);
         Assert.True(sut.Current.IsSearchVisible);
         Assert.False(sut.Current.IsBreadcrumbVisible);
-        Assert.Equal(4, changes.Count);
-        Assert.Throws<ArgumentException>(() => sut.SetTitle("  "));
+        Assert.Equal(5, changes.Count);
+        Assert.Throws<ArgumentException>(() => sut.SetApplicationTitle("  "));
+        Assert.Throws<ArgumentException>(() =>
+            sut.SetUnnamedProjectPlaceholder("  ")
+        );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             sut.SetElementVisible((TitleBarElement)int.MaxValue, true)
         );
+    }
+
+    [Fact]
+    public void TitleBarService_MultiProjectModeMakesTheTitleButtonVisible()
+    {
+        var options = new FlourishShellOptions { IsMultiProjectEnabled = true };
+        ITitleBarService sut = new TitleBarService(options);
+
+        Assert.True(sut.Current.IsTitleVisible);
+        Assert.Equal("Unnamed project", sut.Current.UnnamedProjectPlaceholder);
     }
 
     [Fact]

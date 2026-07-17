@@ -63,7 +63,7 @@ public partial class App : Application
             .ConfigureShell(shell =>
                 shell.UseTitleBar().UseNavigation())
             .ConfigureTitleBar(titleBar =>
-                titleBar.SetTitle("Foobar").SetNavToggle())
+                titleBar.SetApplicationTitle("Foobar").SetNavToggle())
             .ConfigureNavigation(navigation =>
                 navigation.SetGroup(null, groupId: 0, group =>
                     group.AddNavigableViewItem<HomePage>(isInitial: true)))
@@ -104,7 +104,7 @@ return FlourishBuilder
     .ConfigureShell(shell =>
         shell.UseTitleBar().UseNavigation())
     .ConfigureTitleBar(titleBar =>
-        titleBar.SetTitle("Foobar").SetNavToggle())
+        titleBar.SetApplicationTitle("Foobar").SetNavToggle())
     .ConfigureNavigation(navigation =>
         navigation.SetGroup(null, groupId: 0, group =>
             group.AddNavigableViewItem<HomePage>(isInitial: true)))
@@ -137,6 +137,7 @@ public partial class HomePage : Page
 - [Application data](configure-data.md) selects the built-in interface language and registers custom locales.
 - [Shell configuration](shell-configuration.md) enables shell features and explains their prerequisites.
 - [Title bar](configure-title-bar.md) configures title bar content.
+- [Projects](projects.md) adds project-aware title semantics and runtime display metadata.
 - [Navigation](navigation.md) places registered pages and command items in explicit navigation groups.
 - [Background tasks](background-tasks.md) runs cancellable asynchronous work.
 - [Tooltips](configure-tips.md), [Typography](configure-font.md), and [Window](configure-window.md) configure supporting shell behavior.

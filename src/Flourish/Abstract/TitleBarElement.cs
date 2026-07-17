@@ -26,13 +26,14 @@ public enum TitleBarElement
     Logo,
 
     /// <summary>
-    /// The primary application title.
+    /// The application or active-project title button.
     /// </summary>
     Title,
 
     /// <summary>
-    /// The secondary application subtitle.
+    /// The application subtitle in the logo information surface. It is not shown directly in the title bar.
     /// </summary>
+    [Obsolete("Application subtitles are displayed in the logo information surface.")]
     Subtitle,
 
     /// <summary>

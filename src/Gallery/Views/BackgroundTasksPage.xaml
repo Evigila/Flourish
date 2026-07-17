@@ -68,15 +68,11 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card
+          <flourish:OutputCard
+            x:Name="ServiceOutput"
             Margin="8,0,0,0"
             VerticalAlignment="Stretch"
-            Title="Output"
-          >
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="ServiceStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          />
         </UniformGrid>
       </flourish:Chunk>
 

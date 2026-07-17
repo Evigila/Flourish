@@ -34,26 +34,41 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetLogo(string? logoPath = null)
+    public IFlourishTitlebarBuilder SetLogo(
+        string? logoPath = null,
+        bool showApplicationTitle = true,
+        bool showApplicationSubTitle = true,
+        bool showProjectTitle = false
+    )
     {
         options.LogoPath = logoPath is null
             ? null
             : ValidateNotBlank(logoPath, nameof(logoPath));
         options.IsTitlebarLogoEnabled = true;
+        options.ShowApplicationTitleInLogoFlyout = showApplicationTitle;
+        options.ShowApplicationSubtitleInLogoFlyout = showApplicationSubTitle;
+        options.ShowProjectTitleInLogoFlyout = showProjectTitle;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetTitle(string title)
+    public IFlourishTitlebarBuilder SetApplicationTitle(string title)
     {
-        options.Title = ValidateNotBlank(title, nameof(title));
+        options.ApplicationTitle = ValidateNotBlank(title, nameof(title));
         options.IsTitlebarTitleEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetSubTitle(string subTitle)
+    public IFlourishTitlebarBuilder SetApplicationSubTitle(string subTitle)
     {
-        options.Subtitle = ValidateNotBlank(subTitle, nameof(subTitle));
-        options.IsTitlebarSubtitleEnabled = true;
+        options.ApplicationSubtitle = ValidateNotBlank(subTitle, nameof(subTitle));
+        return this;
+    }
+
+    public IFlourishTitlebarBuilder SetUnnamedProjectPlaceholder(
+        string placeholder = "Unnamed project"
+    )
+    {
+        options.UnnamedProjectPlaceholder = ValidateNotBlank(placeholder, nameof(placeholder));
         return this;
     }
 

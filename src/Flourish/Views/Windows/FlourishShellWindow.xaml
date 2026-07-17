@@ -112,7 +112,7 @@
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
-      <view:FlourishTitlebar x:Name="Titlebar" Grid.Row="0" Height="40" />
+      <view:FlourishTitlebar x:Name="Titlebar" Grid.Row="0" Panel.ZIndex="150" Height="40" />
 
       <Border
         Grid.Row="1"
@@ -430,6 +430,132 @@
         Panel.ZIndex="200"
         AutomationProperties.LiveSetting="Polite"
       />
+
+      <Canvas
+        x:Name="TitleBarFlyoutOverlay"
+        Grid.RowSpan="3"
+        Panel.ZIndex="145"
+        Background="Transparent"
+        ClipToBounds="True"
+        PreviewMouseLeftButtonDown="TitleBarFlyoutOverlay_PreviewMouseLeftButtonDown"
+        Visibility="Collapsed"
+      >
+        <Grid
+          x:Name="TitleBarFlyoutCard"
+          Width="340"
+          MaxHeight="520"
+          AutomationProperties.LiveSetting="Polite"
+          Focusable="True"
+          KeyboardNavigation.TabNavigation="Cycle"
+          SizeChanged="TitleBarFlyoutCard_SizeChanged"
+        >
+          <Border
+            Padding="16,14"
+            Background="{DynamicResource FlourishCardBackgroundBrush}"
+            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+            BorderThickness="{DynamicResource FlourishControlBorderThickness}"
+            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
+          >
+            <Grid>
+              <Grid x:Name="ApplicationInfoContent" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="72" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Border
+                    Width="64"
+                    Height="64"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="{DynamicResource FlourishAccentSurfaceBrush}"
+                    ClipToBounds="True"
+                    CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
+                  >
+                    <Grid>
+                      <Image x:Name="ApplicationInfoLogoImage" Stretch="UniformToFill" />
+                      <control:FlourishTextBlock
+                        x:Name="ApplicationInfoLogoFallback"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="{DynamicResource FlourishFontSizeExtraLarge}"
+                        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+                      />
+                    </Grid>
+                  </Border>
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <control:FlourishTextBlock
+                      x:Name="ApplicationInfoTitle"
+                      FontWeight="Bold"
+                      Role="CardTitle"
+                      TextWrapping="Wrap"
+                    />
+                    <control:FlourishTextBlock
+                      x:Name="ApplicationInfoSubTitle"
+                      Margin="0,3,0,0"
+                      Role="Description"
+                      TextWrapping="Wrap"
+                    />
+                    <control:FlourishTextBlock
+                      x:Name="ApplicationInfoProjectTitle"
+                      Margin="0,8,0,0"
+                      Role="Status"
+                      TextWrapping="Wrap"
+                    />
+                  </StackPanel>
+                </Grid>
+                <ScrollViewer
+                  x:Name="ApplicationInfoBodyScrollViewer"
+                  Grid.Row="1"
+                  Margin="0,14,0,0"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                  Visibility="Collapsed"
+                >
+                  <StackPanel
+                    x:Name="ApplicationInfoBodyHost"
+                    Orientation="Vertical"
+                  />
+                </ScrollViewer>
+              </Grid>
+
+              <Grid x:Name="ProjectMenuContent" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <control:FlourishTextBlock
+                  x:Name="ProjectMenuTitle"
+                  Margin="2,0,2,10"
+                  Focusable="True"
+                  Role="CardTitle"
+                />
+                <ScrollViewer
+                  Grid.Row="1"
+                  MaxHeight="360"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                >
+                  <StackPanel x:Name="ProjectMenuItemsHost" />
+                </ScrollViewer>
+                <control:Button
+                  x:Name="NewProjectButton"
+                  Grid.Row="2"
+                  Variant="Outlined"
+                  Margin="0,12,0,0"
+                  HorizontalAlignment="Stretch"
+                  Click="NewProjectButton_Click"
+                />
+              </Grid>
+            </Grid>
+          </Border>
+        </Grid>
+      </Canvas>
 
       <Canvas
         x:Name="ProfileOverlay"

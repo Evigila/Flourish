@@ -30,7 +30,9 @@ public sealed class FlourishShellRenderingContractTests
     {
         var document = XDocument.Load(ShellXamlPath);
 
-        foreach (var cardName in new[] { "ProfileCard", "StatusFlyoutCard" })
+        foreach (
+            var cardName in new[] { "ProfileCard", "StatusFlyoutCard", "TitleBarFlyoutCard" }
+        )
         {
             var card = FindNamedElement(document, cardName);
 

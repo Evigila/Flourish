@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
@@ -47,6 +48,14 @@ internal partial class FlourishTitlebar : UserControl
 
     public event EventHandler? ProfileToggleRequested;
 
+    public event EventHandler? LogoHoverRequested;
+
+    public event EventHandler? LogoClickRequested;
+
+    public event EventHandler? TitleClickRequested;
+
+    public event EventHandler? InteractionStarted;
+
     public event EventHandler<string>? SearchTextChanged;
 
     public void ApplyLocale(FlourishLocalizationService localization)
@@ -63,6 +72,12 @@ internal partial class FlourishTitlebar : UserControl
         ProfileButton.ToolTip = CreateToolTip(
             localization.Get(FlourishLocaleKeys.TitleBarProfile)
         );
+        LogoButton.ToolTip = CreateToolTip(
+            localization.Get(FlourishLocaleKeys.TitleBarApplicationInfo)
+        );
+        TitleButton.ToolTip = CreateToolTip(
+            localization.Get(FlourishLocaleKeys.TitleBarProjectMenu)
+        );
         MinimizeButton.ToolTip = CreateToolTip(
             localization.Get(FlourishLocaleKeys.TitleBarMinimize)
         );
@@ -72,14 +87,10 @@ internal partial class FlourishTitlebar : UserControl
         CloseButton.ToolTip = CreateToolTip(localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
-    public void SetTitle(string title)
+    public void SetDisplayTitle(string title)
     {
         TitleText.Text = title;
-    }
-
-    public void SetSubtitle(string subtitle)
-    {
-        SubtitleText.Text = subtitle;
+        AutomationProperties.SetName(TitleButton, title);
     }
 
     public void SetSearchPlaceholder(string placeholder)
@@ -211,13 +222,26 @@ internal partial class FlourishTitlebar : UserControl
         );
     }
 
+    public Rect GetLogoButtonBounds(UIElement relativeTo)
+    {
+        return GetElementBounds(LogoButton, relativeTo);
+    }
+
+    public FrameworkElement GetLogoButtonAnchor() => LogoButton;
+
+    public Rect GetTitleButtonBounds(UIElement relativeTo)
+    {
+        return GetElementBounds(TitleButton, relativeTo);
+    }
+
+    public FrameworkElement GetTitleButtonAnchor() => TitleButton;
+
     public void ConfigureVisibility(
         bool enableSearch,
         bool enableBreadcrumb,
         bool enableNavToggle,
         bool enableLogo,
         bool enableTitle,
-        bool enableSubTitle,
         bool enableThemeToggle,
         bool enableProfile
     )
@@ -225,13 +249,9 @@ internal partial class FlourishTitlebar : UserControl
         breadcrumbVisibility.SetFeatureEnabled(enableBreadcrumb);
         UpdateBreadcrumbNavigationVisibility();
         NavigationToggleButton.Visibility = ToVisibility(enableNavToggle);
-        LogoHost.Visibility = ToVisibility(enableLogo);
-        TitleText.Visibility = ToVisibility(enableTitle);
-        SubtitleText.Visibility = ToVisibility(enableSubTitle);
-        SubtitleText.Margin =
-            enableTitle && enableSubTitle ? new Thickness(8, 1, 0, 0) : new Thickness();
-        TitleTextHost.Visibility = ToVisibility(enableTitle || enableSubTitle);
-        BrandHost.Visibility = ToVisibility(enableLogo || enableTitle || enableSubTitle);
+        LogoButton.Visibility = ToVisibility(enableLogo);
+        TitleButton.Visibility = ToVisibility(enableTitle);
+        BrandHost.Visibility = ToVisibility(enableLogo || enableTitle);
         SearchBox.Visibility = ToVisibility(enableSearch);
         ThemeToggleButton.Visibility = ToVisibility(enableThemeToggle);
         isProfileEnabled = enableProfile;
@@ -305,6 +325,21 @@ internal partial class FlourishTitlebar : UserControl
         ProfileToggleRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    private void LogoButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        LogoHoverRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void LogoButton_Click(object sender, RoutedEventArgs e)
+    {
+        LogoClickRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void TitleButton_Click(object sender, RoutedEventArgs e)
+    {
+        TitleClickRequested?.Invoke(this, EventArgs.Empty);
+    }
+
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         SearchTextChanged?.Invoke(this, SearchBox.Text);
@@ -326,9 +361,24 @@ internal partial class FlourishTitlebar : UserControl
         DragRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    private void Titlebar_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        InteractionStarted?.Invoke(this, EventArgs.Empty);
+    }
+
     private static Visibility ToVisibility(bool visible)
     {
         return visible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private static Rect GetElementBounds(FrameworkElement element, UIElement relativeTo)
+    {
+        ArgumentNullException.ThrowIfNull(relativeTo);
+        var topLeft = element.TranslatePoint(new System.Windows.Point(), relativeTo);
+        return new Rect(
+            topLeft,
+            new System.Windows.Size(element.ActualWidth, element.ActualHeight)
+        );
     }
 
     private void UpdateBreadcrumbNavigationVisibility()

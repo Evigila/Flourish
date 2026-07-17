@@ -253,6 +253,7 @@ public sealed class FlourishPublicControlsTests
             var card = new Card();
             var iconCard = new IconCard();
             var listCard = new ListCard();
+            var outputCard = new OutputCard();
             var gridSplitter = new FlourishGridSplitter();
             var listBox = new FlourishListBox();
             var scrollViewer = new CustomScrollViewer();
@@ -296,6 +297,7 @@ public sealed class FlourishPublicControlsTests
             );
             Assert.Equal(VerticalAlignment.Center, listCard.ContentVerticalAlignment);
             Assert.IsAssignableFrom<Card>(listCard);
+            Assert.Equal(string.Empty, outputCard.Output);
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
@@ -429,6 +431,47 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(
                 assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCardAppearance")
             );
+        });
+    }
+
+    [Fact]
+    public void OutputCard_ExposesAppendOnlyHistoryWithoutCardCopyOrBodyProperties()
+    {
+        RunInSta(() =>
+        {
+            var outputCard = new OutputCard();
+
+            Assert.True(OutputCard.OutputProperty.ReadOnly);
+            Assert.Null(typeof(OutputCard).GetProperty(nameof(OutputCard.Output))?.SetMethod);
+            Assert.False(typeof(Card).IsAssignableFrom(typeof(OutputCard)));
+            Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.Title)));
+            Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.Text)));
+            Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.Body)));
+
+            outputCard.WriteLine("First message");
+            outputCard.WriteLine();
+            outputCard.WriteLine(null);
+            outputCard.WriteLine("Last message");
+
+            Assert.Equal(
+                string.Join(
+                    Environment.NewLine,
+                    "First message",
+                    string.Empty,
+                    string.Empty,
+                    "Last message"
+                ),
+                outputCard.Output
+            );
+
+            outputCard.Clear();
+
+            Assert.Equal(string.Empty, outputCard.Output);
+
+            outputCard.WriteLine(null);
+            outputCard.WriteLine("After clear");
+
+            Assert.Equal(Environment.NewLine + "After clear", outputCard.Output);
         });
     }
 

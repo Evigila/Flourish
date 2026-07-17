@@ -59,11 +59,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="WindowStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="WindowOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -100,11 +96,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="TrayStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="TrayOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -145,11 +137,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Result">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="CloseStatusText" Role="Status" Text="No close guard registered by this page." />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="CloseOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -180,11 +168,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="ProfileStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="ProfileOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -206,11 +190,7 @@
                 </flourish:ListCard.Body>
               </flourish:ListCard>
             </StackPanel>
-            <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Message result">
-              <flourish:Card.Body>
-                <flourish:FlourishTextBlock x:Name="MessageStatusText" Role="Status" />
-              </flourish:Card.Body>
-            </flourish:Card>
+            <flourish:OutputCard x:Name="MessageOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
           </UniformGrid>
           <UniformGrid Margin="0,16,0,0" VerticalAlignment="Stretch" Columns="2">
             <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
@@ -245,11 +225,7 @@
                 </flourish:ListCard.Body>
               </flourish:ListCard>
             </StackPanel>
-            <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Notification result">
-              <flourish:Card.Body>
-                <flourish:FlourishTextBlock x:Name="NotificationStatusText" Role="Status" />
-              </flourish:Card.Body>
-            </flourish:Card>
+            <flourish:OutputCard x:Name="NotificationOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
           </UniformGrid>
         </StackPanel>
       </flourish:Chunk>

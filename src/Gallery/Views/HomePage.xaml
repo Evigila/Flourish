@@ -71,6 +71,16 @@
           <flourish:CardButton
             MinHeight="150"
             Margin="6"
+            AutomationProperties.Name="Projects"
+            Click="DemoCard_Click"
+            Content="Register project metadata, change the active project, and handle title-bar requests."
+            Icon="&#xE8F9;"
+            Tag="ProjectRuntime"
+            Title="Projects"
+          />
+          <flourish:CardButton
+            MinHeight="150"
+            Margin="6"
             AutomationProperties.Name="Navigation"
             Click="DemoCard_Click"
             Content="Panel placement, sizing, routes, cache, and menu items."

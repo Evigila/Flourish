@@ -13,8 +13,8 @@
       />
 
       <flourish:Chunk
-        ChunkDescription="Update shell identity values."
-        ChunkTitle="Identity"
+        ChunkDescription="Update application metadata and logo information."
+        ChunkTitle="Application identity"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -24,8 +24,8 @@
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
               Presenter="&#xE8D2;"
-              Title="Window title"
-              Text="Set the primary identity text shown by the shell."
+              Title="Application title"
+              Text="Set the application name used by the title and logo surfaces."
             >
               <flourish:ListCard.Body>
                 <flourish:FlourishTextBox x:Name="TitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
@@ -34,8 +34,8 @@
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
               Presenter="&#xE8D2;"
-              Title="Window subtitle"
-              Text="Set the supporting identity text shown by the shell."
+              Title="Application subtitle"
+              Text="Set supporting application text shown in the logo surface."
             >
               <flourish:ListCard.Body>
                 <flourish:FlourishTextBox x:Name="SubtitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
@@ -61,12 +61,18 @@
                 <flourish:FlourishTextBox x:Name="LogoFallbackBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
               </flourish:ListCard.Body>
             </flourish:ListCard>
+            <flourish:ListCard
+              Margin="{DynamicResource FlourishListCardPeerMargin}"
+              Presenter="&#xE8D2;"
+              Title="Unnamed project"
+              Text="Set the title shown when no project is active."
+            >
+              <flourish:ListCard.Body>
+                <flourish:FlourishTextBox x:Name="UnnamedProjectBox" Width="220" KeyDown="UnnamedProjectBox_KeyDown" LostFocus="UnnamedProjectBox_LostFocus" />
+              </flourish:ListCard.Body>
+            </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="IdentityStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="IdentityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -74,7 +80,12 @@
         ChunkDescription="Toggle individual title-bar elements."
         ChunkTitle="Element visibility"
       >
-        <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ListCard
             Presenter="&#xE713;"
             Title="Title-bar element"
@@ -110,7 +121,9 @@
               <flourish:FlourishComboBox x:Name="BreadcrumbModeBox" Width="220" SelectionChanged="BreadcrumbModeBox_SelectionChanged" />
             </flourish:ListCard.Body>
           </flourish:ListCard>
-        </StackPanel>
+          </StackPanel>
+          <flourish:OutputCard x:Name="ElementOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+        </Grid>
       </flourish:Chunk>
 
       <flourish:Chunk
@@ -173,11 +186,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="SearchStatusText" Role="Status" Text="Waiting for a query." />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="SearchOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -217,11 +226,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="ShellFeatureStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="ShellFeatureOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
     </StackPanel>

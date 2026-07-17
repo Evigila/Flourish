@@ -73,4 +73,9 @@ public enum FlourishRegion
     /// The end of the footer, after custom and built-in status indicators.
     /// </summary>
     FooterEnd,
+
+    /// <summary>
+    /// The application-provided body displayed below identity metadata in the logo information surface.
+    /// </summary>
+    TitlebarApplicationInfo,
 }

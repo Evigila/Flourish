@@ -64,6 +64,9 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 | `TitleBar.ThemeSystem` | Theme: System ({0}) | 主题：跟随系统（{0}） |
 | `TitleBar.ThemeCurrent` | Theme: {0} | 主题：{0} |
 | `TitleBar.Profile` | Profile | 个人资料 |
+| `TitleBar.ApplicationInfo` | Application information | 应用信息 |
+| `TitleBar.ProjectMenu` | Projects | 项目 |
+| `TitleBar.NewProject` | New project | 新建项目 |
 | `TitleBar.Minimize` | Minimize | 最小化 |
 | `TitleBar.Maximize` | Maximize | 最大化 |
 | `TitleBar.Restore` | Restore | 还原 |
@@ -77,9 +80,7 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 | `Profile.LastName` | Last Name | 姓 |
 | `Profile.Image` | Profile image | 个人资料图片 |
 | `Profile.ChooseImage` | Choose profile image | 选择个人资料图片 |
-| `Profile.ChangeImage` | Change profile image | 更换个人资料图片 |
 | `Profile.UploadImage` | Upload image | 上传图片 |
-| `Profile.ImageSelected` | Image selected | 已选择图片 |
 | `Profile.Password` | Password | 密码 |
 | `Profile.Cancel` | Cancel | 取消 |
 | `Profile.RememberLogin` | Remember login | 记住登录状态 |

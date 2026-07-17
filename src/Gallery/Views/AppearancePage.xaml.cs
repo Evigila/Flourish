@@ -70,7 +70,7 @@ public partial class AppearancePage : Page
     {
         if (ThemeBox.SelectedItem is FlourishTheme selected)
         {
-            Execute(() => theme.SetTheme(selected), ThemeStatusText);
+            Execute(() => theme.SetTheme(selected), ThemeOutput, FormatThemeOutput);
         }
     }
 
@@ -84,7 +84,7 @@ public partial class AppearancePage : Page
 
     private void ToggleTheme_Click(object sender, RoutedEventArgs e)
     {
-        Execute(theme.ToggleTheme, ThemeStatusText);
+        Execute(theme.ToggleTheme, ThemeOutput, FormatThemeOutput);
     }
 
     private void ApplyFont_Click(object sender, RoutedEventArgs e)
@@ -103,7 +103,8 @@ public partial class AppearancePage : Page
                 );
                 font.SetIconFontFamily(IconFontFamilyBox.Text);
             },
-            FontStatusText
+            FontOutput,
+            FormatTypographyOutput
         );
     }
 
@@ -153,7 +154,8 @@ public partial class AppearancePage : Page
                     )
                 );
             },
-            PageFontOverrideStatusText
+            PageFontOverrideOutput,
+            FormatPageTypographyOutput
         );
     }
 
@@ -175,7 +177,8 @@ public partial class AppearancePage : Page
     {
         Execute(
             () => font.ClearOverrideFont<AppearancePage>(),
-            PageFontOverrideStatusText
+            PageFontOverrideOutput,
+            () => "AppearancePage typography override cleared."
         );
     }
 
@@ -187,7 +190,8 @@ public partial class AppearancePage : Page
                     ParseInt(ToolTipDelayBox.Text, "tooltip delay"),
                     ParseDouble(ToolTipMarginBox.Text, "tooltip margin")
                 ),
-            ToolTipStatusText
+            ToolTipOutput,
+            FormatToolTipOutput
         );
     }
 
@@ -206,7 +210,11 @@ public partial class AppearancePage : Page
 
     private void ToggleToolTip_Click(object sender, RoutedEventArgs e)
     {
-        Execute(() => toolTips.SetEnabled(!toolTips.Current.IsEnabled), ToolTipStatusText);
+        Execute(
+            () => toolTips.SetEnabled(!toolTips.Current.IsEnabled),
+            ToolTipOutput,
+            FormatToolTipOutput
+        );
     }
 
     private void ApplyMotion_Click(object sender, RoutedEventArgs e)
@@ -232,7 +240,8 @@ public partial class AppearancePage : Page
                     )
                 );
             },
-            MotionStatusText
+            MotionOutput,
+            FormatMotionOutput
         );
     }
 
@@ -259,7 +268,8 @@ public partial class AppearancePage : Page
 
         Execute(
             () => motion.SetPageTransition(transition, motion.Current.PageTransitionDuration),
-            MotionStatusText
+            MotionOutput,
+            FormatMotionOutput
         );
     }
 
@@ -281,7 +291,8 @@ public partial class AppearancePage : Page
                     transition,
                     motion.Current.NavigationPanelTransitionDuration
                 ),
-            MotionStatusText
+            MotionOutput,
+            FormatMotionOutput
         );
     }
 
@@ -291,7 +302,8 @@ public partial class AppearancePage : Page
         {
             Execute(
                 () => motion.SetEnabled(MotionEnabledBox.IsChecked == true),
-                MotionStatusText
+                MotionOutput,
+                FormatMotionOutput
             );
         }
     }
@@ -302,7 +314,8 @@ public partial class AppearancePage : Page
         {
             Execute(
                 () => motion.SetHoverReveal(HoverRevealBox.IsChecked == true),
-                MotionStatusText
+                MotionOutput,
+                FormatMotionOutput
             );
         }
     }
@@ -313,7 +326,8 @@ public partial class AppearancePage : Page
         {
             Execute(
                 () => motion.SetRespectSystemReducedMotion(ReducedMotionBox.IsChecked == true),
-                MotionStatusText
+                MotionOutput,
+                FormatMotionOutput
             );
         }
     }
@@ -325,7 +339,7 @@ public partial class AppearancePage : Page
             return;
         }
 
-        Execute(() => material.SetEffect(effect), MaterialStatusText);
+        Execute(() => material.SetEffect(effect), MaterialOutput, FormatMaterialOutput);
     }
 
     private void MaterialDarkModeBox_Changed(object sender, RoutedEventArgs e)
@@ -334,7 +348,8 @@ public partial class AppearancePage : Page
         {
             Execute(
                 () => material.SetDarkMode(MaterialDarkModeBox.IsChecked == true),
-                MaterialStatusText
+                MaterialOutput,
+                FormatMaterialOutput
             );
         }
     }
@@ -352,16 +367,17 @@ public partial class AppearancePage : Page
         e.Handled = true;
     }
 
-    private void Execute(Action action, FlourishTextBlock status)
+    private void Execute(Action action, OutputCard output, Func<string> successMessage)
     {
         try
         {
             action();
             RefreshAll();
+            output.WriteLine(successMessage());
         }
         catch (Exception error)
         {
-            status.Text = error.Message;
+            output.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -371,8 +387,6 @@ public partial class AppearancePage : Page
         try
         {
             ThemeBox.SelectedItem = theme.CurrentTheme;
-            ThemeStatusText.Text =
-                $"Requested: {theme.CurrentTheme}  |  Effective: {theme.EffectiveTheme}  |  Dark: {theme.IsDark}";
 
             FontFamilyBox.Text = font.FontFamily;
             SmallFontSizeBox.Text = font.SmallFontSize.ToString(
@@ -400,8 +414,6 @@ public partial class AppearancePage : Page
                 CultureInfo.CurrentCulture
             );
             IconFontFamilyBox.Text = font.IconFontFamily;
-            FontStatusText.Text =
-                $"Text: {font.FontFamily}, {FormatScale(font.SmallFontSize, font.StandardFontSize, font.IconFontSize, font.LargeFontSize, font.ExtraLargeFontSize, font.HeaderSizeFontSize)}  |  Icons: {font.IconFontFamily}";
 
             if (font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
             {
@@ -432,8 +444,6 @@ public partial class AppearancePage : Page
                         "0.##",
                         CultureInfo.CurrentCulture
                     ) ?? string.Empty;
-                PageFontOverrideStatusText.Text =
-                    $"AppearancePage override: {pageOverride.FontFamily}, {FormatScale(pageOverride.SmallFontSize ?? font.SmallFontSize, pageOverride.StandardFontSize ?? font.StandardFontSize, pageOverride.IconFontSize ?? font.IconFontSize, pageOverride.LargeFontSize ?? font.LargeFontSize, pageOverride.ExtraLargeFontSize ?? font.ExtraLargeFontSize, pageOverride.HeaderSizeFontSize ?? font.HeaderSizeFontSize)}.";
             }
             else
             {
@@ -443,8 +453,6 @@ public partial class AppearancePage : Page
                 PageOverrideLargeFontSizeBox.Text = string.Empty;
                 PageOverrideExtraLargeFontSizeBox.Text = string.Empty;
                 PageOverrideHeaderSizeFontSizeBox.Text = string.Empty;
-                PageFontOverrideStatusText.Text =
-                    $"No page override. AppearancePage follows {font.FontFamily}, {FormatScale(font.SmallFontSize, font.StandardFontSize, font.IconFontSize, font.LargeFontSize, font.ExtraLargeFontSize, font.HeaderSizeFontSize)}.";
             }
 
             var currentToolTips = toolTips.Current;
@@ -458,8 +466,6 @@ public partial class AppearancePage : Page
             ToggleToolTipButton.Content = currentToolTips.IsEnabled
                 ? "Disable tooltips"
                 : "Enable tooltips";
-            ToolTipStatusText.Text =
-                $"Enabled: {currentToolTips.IsEnabled}  |  Delay: {currentToolTips.InitialShowDelayMilliseconds} ms  |  Margin: {currentToolTips.SpawnableMargin:0.##}";
 
             var currentMotion = motion.Current;
             MotionEnabledBox.IsChecked = currentMotion.IsEnabled;
@@ -473,22 +479,49 @@ public partial class AppearancePage : Page
                 currentMotion.NavigationPanelTransitionDuration.TotalMilliseconds.ToString(
                     "0",
                     CultureInfo.CurrentCulture
-                );
+            );
             HoverRevealBox.IsChecked = currentMotion.IsHoverRevealEnabled;
             ReducedMotionBox.IsChecked = currentMotion.RespectSystemReducedMotion;
-            MotionStatusText.Text =
-                $"Animation allowed now: {motion.CanAnimate}  |  Hover duration: {currentMotion.HoverRevealAnimationDuration.TotalMilliseconds:0} ms";
 
             MaterialBox.SelectedItem = material.CurrentEffect;
             MaterialDarkModeBox.IsChecked = material.IsDarkMode;
-            MaterialStatusText.Text =
-                $"Requested: {material.CurrentEffect}  |  Supported: {material.IsSupported(material.CurrentEffect)}  |  Applied: {material.IsApplied}";
         }
         finally
         {
             isRefreshing = false;
         }
     }
+
+    private string FormatThemeOutput() =>
+        $"Theme updated: requested {theme.CurrentTheme}; effective {theme.EffectiveTheme}; dark {theme.IsDark}.";
+
+    private string FormatTypographyOutput() =>
+        $"Typography updated: text {font.FontFamily}; {FormatScale(font.SmallFontSize, font.StandardFontSize, font.IconFontSize, font.LargeFontSize, font.ExtraLargeFontSize, font.HeaderSizeFontSize)}; icons {font.IconFontFamily}.";
+
+    private string FormatPageTypographyOutput()
+    {
+        if (!font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
+        {
+            return "AppearancePage typography override was not applied.";
+        }
+
+        return $"AppearancePage typography override applied: {pageOverride.FontFamily}; {FormatScale(pageOverride.SmallFontSize ?? font.SmallFontSize, pageOverride.StandardFontSize ?? font.StandardFontSize, pageOverride.IconFontSize ?? font.IconFontSize, pageOverride.LargeFontSize ?? font.LargeFontSize, pageOverride.ExtraLargeFontSize ?? font.ExtraLargeFontSize, pageOverride.HeaderSizeFontSize ?? font.HeaderSizeFontSize)}.";
+    }
+
+    private string FormatToolTipOutput()
+    {
+        var current = toolTips.Current;
+        return $"Tooltips updated: enabled {current.IsEnabled}; delay {current.InitialShowDelayMilliseconds} ms; margin {current.SpawnableMargin:0.##}.";
+    }
+
+    private string FormatMotionOutput()
+    {
+        var current = motion.Current;
+        return $"Motion updated: enabled {current.IsEnabled}; page {current.PageTransition} ({current.PageTransitionDuration.TotalMilliseconds:0} ms); navigation {current.NavigationPanelTransition} ({current.NavigationPanelTransitionDuration.TotalMilliseconds:0} ms); hover reveal {current.IsHoverRevealEnabled}; reduced motion {current.RespectSystemReducedMotion}; animation allowed {motion.CanAnimate}.";
+    }
+
+    private string FormatMaterialOutput() =>
+        $"Window material updated: requested {material.CurrentEffect}; supported {material.IsSupported(material.CurrentEffect)}; applied {material.IsApplied}; dark mode {material.IsDarkMode}.";
 
     private static double ParseDouble(string text, string name)
     {

@@ -49,14 +49,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <StackPanel>
-                <flourish:FlourishTextBlock x:Name="ToolbarStateText" Role="Status" />
-                <flourish:FlourishTextBlock x:Name="CommandLogText" Margin="0,8,0,0" Role="Status" Text="The toolbar command has not run yet." />
-              </StackPanel>
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="ToolbarOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -112,11 +105,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="StatusStateText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="StatusOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -147,11 +136,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="RegionStateText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="RegionOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
     </StackPanel>

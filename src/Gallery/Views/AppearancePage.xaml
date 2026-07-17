@@ -42,16 +42,12 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card
+          <flourish:OutputCard
+            x:Name="ThemeOutput"
             Grid.Column="1"
             Margin="8,0,0,0"
             VerticalAlignment="Stretch"
-            Title="Output"
-          >
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="ThemeStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          />
         </Grid>
       </flourish:Chunk>
 
@@ -145,11 +141,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="FontStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="FontOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -243,11 +235,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="PageFontOverrideStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="PageFontOverrideOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -291,11 +279,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="ToolTipStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="ToolTipOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -379,11 +363,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="MotionStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="MotionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -417,11 +397,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="MaterialStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="MaterialOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
     </StackPanel>

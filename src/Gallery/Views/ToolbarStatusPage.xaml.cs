@@ -35,7 +35,6 @@ public partial class ToolbarStatusPage : Page
 
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
-        RefreshState();
     }
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -48,40 +47,37 @@ public partial class ToolbarStatusPage : Page
                 DuplicatePolicy = CommandDuplicatePolicy.Replace,
             }
         );
-        toolbar.Changed -= RuntimeState_Changed;
-        status.Changed -= RuntimeState_Changed;
-        regions.Changed -= RuntimeState_Changed;
-        toolbar.Changed += RuntimeState_Changed;
-        status.Changed += RuntimeState_Changed;
-        regions.Changed += RuntimeState_Changed;
-        RefreshState();
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        toolbar.Changed -= RuntimeState_Changed;
-        status.Changed -= RuntimeState_Changed;
-        regions.Changed -= RuntimeState_Changed;
         commandRegistration?.Dispose();
         commandRegistration = null;
     }
 
     private void AddToolbarItem_Click(object sender, RoutedEventArgs e)
     {
-        toolbar.SetEnabled(true);
-        toolbar.Upsert(
-            new FlourishToolbarItem("Run live command", "\uE768", ToolbarCommandKey)
+        Execute(
+            () =>
             {
-                Id = ToolbarItemId,
+                toolbar.SetEnabled(true);
+                toolbar.Upsert(
+                    new FlourishToolbarItem("Run live command", "\uE768", ToolbarCommandKey)
+                    {
+                        Id = ToolbarItemId,
+                    },
+                    typeof(ToolbarStatusPage)
+                );
+                toolbar.Upsert(
+                    new FlourishToolbarItem("Companion", "\uE8EF", ToolbarCommandKey)
+                    {
+                        Id = CompanionToolbarItemId,
+                    },
+                    typeof(ToolbarStatusPage)
+                );
             },
-            typeof(ToolbarStatusPage)
-        );
-        toolbar.Upsert(
-            new FlourishToolbarItem("Companion", "\uE8EF", ToolbarCommandKey)
-            {
-                Id = CompanionToolbarItemId,
-            },
-            typeof(ToolbarStatusPage)
+            ToolbarOutput,
+            "Added or updated the two runtime toolbar actions."
         );
     }
 
@@ -90,7 +86,16 @@ public partial class ToolbarStatusPage : Page
         var item = GetToolbarItem();
         if (item is not null)
         {
-            toolbar.SetItemEnabled(ToolbarItemId, !item.IsEnabled, typeof(ToolbarStatusPage));
+            var enabled = !item.IsEnabled;
+            Execute(
+                () => toolbar.SetItemEnabled(ToolbarItemId, enabled, typeof(ToolbarStatusPage)),
+                ToolbarOutput,
+                $"Runtime toolbar action {(enabled ? "enabled" : "disabled")}."
+            );
+        }
+        else
+        {
+            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
         }
     }
 
@@ -99,7 +104,16 @@ public partial class ToolbarStatusPage : Page
         var item = GetToolbarItem();
         if (item is not null)
         {
-            toolbar.SetItemVisible(ToolbarItemId, !item.IsVisible, typeof(ToolbarStatusPage));
+            var visible = !item.IsVisible;
+            Execute(
+                () => toolbar.SetItemVisible(ToolbarItemId, visible, typeof(ToolbarStatusPage)),
+                ToolbarOutput,
+                $"Runtime toolbar action {(visible ? "shown" : "hidden")}."
+            );
+        }
+        else
+        {
+            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
         }
     }
 
@@ -108,7 +122,16 @@ public partial class ToolbarStatusPage : Page
         var page = toolbar.Current.Pages.GetValueOrDefault(typeof(ToolbarStatusPage));
         if (page is not null)
         {
-            toolbar.SetIconOnly(typeof(ToolbarStatusPage), !page.IconOnly);
+            var iconOnly = !page.IconOnly;
+            Execute(
+                () => toolbar.SetIconOnly(typeof(ToolbarStatusPage), iconOnly),
+                ToolbarOutput,
+                $"Toolbar presentation set to {(iconOnly ? "icon only" : "icon and text")}."
+            );
+        }
+        else
+        {
+            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
         }
     }
 
@@ -120,18 +143,34 @@ public partial class ToolbarStatusPage : Page
             var currentIndex = items.Select((item, index) => (item, index))
                 .First(pair => pair.item.Id == ToolbarItemId)
                 .index;
-            toolbar.Move(
-                ToolbarItemId,
-                currentIndex == 0 ? items.Count - 1 : 0,
-                typeof(ToolbarStatusPage)
+            var targetIndex = currentIndex == 0 ? items.Count - 1 : 0;
+            Execute(
+                () => toolbar.Move(
+                    ToolbarItemId,
+                    targetIndex,
+                    typeof(ToolbarStatusPage)
+                ),
+                ToolbarOutput,
+                $"Moved the runtime toolbar action to index {targetIndex}."
             );
+        }
+        else
+        {
+            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
         }
     }
 
     private void RemoveToolbarItem_Click(object sender, RoutedEventArgs e)
     {
-        toolbar.Remove(ToolbarItemId, typeof(ToolbarStatusPage));
-        toolbar.Remove(CompanionToolbarItemId, typeof(ToolbarStatusPage));
+        Execute(
+            () =>
+            {
+                toolbar.Remove(ToolbarItemId, typeof(ToolbarStatusPage));
+                toolbar.Remove(CompanionToolbarItemId, typeof(ToolbarStatusPage));
+            },
+            ToolbarOutput,
+            "Removed the runtime toolbar actions."
+        );
     }
 
     private ValueTask<CommandResult> ExecuteToolbarCommandAsync(
@@ -143,11 +182,11 @@ public partial class ToolbarStatusPage : Page
         var message = $"Executed at {DateTimeOffset.Now:HH:mm:ss.fff} from {context.Source}.";
         if (Dispatcher.CheckAccess())
         {
-            CommandLogText.Text = message;
+            ToolbarOutput.WriteLine(message);
         }
         else
         {
-            Dispatcher.Invoke(() => CommandLogText.Text = message);
+            Dispatcher.Invoke(() => ToolbarOutput.WriteLine(message));
         }
 
         status.Upsert(new FlourishStatusItem(StatusItemId, message, "\uE930"));
@@ -163,7 +202,8 @@ public partial class ToolbarStatusPage : Page
                     new FlourishStatusItem(StatusItemId, StatusTextBox.Text, "\uE946")
                 );
             },
-            StatusStateText
+            StatusOutput,
+            "Added or updated the persistent status item."
         );
 
     private void ShowTimedStatus_Click(object sender, RoutedEventArgs e) =>
@@ -178,7 +218,8 @@ public partial class ToolbarStatusPage : Page
                     TimeSpan.FromSeconds(4)
                 );
             },
-            StatusStateText
+            StatusOutput,
+            "Displayed the timed status item for four seconds."
         );
 
     private void ToggleStatusVisible_Click(object sender, RoutedEventArgs e)
@@ -186,11 +227,25 @@ public partial class ToolbarStatusPage : Page
         var item = status.Current.Items.FirstOrDefault(candidate => candidate.Id == StatusItemId);
         if (item is not null)
         {
-            status.SetItemVisible(StatusItemId, !item.IsVisible);
+            var visible = !item.IsVisible;
+            Execute(
+                () => status.SetItemVisible(StatusItemId, visible),
+                StatusOutput,
+                $"Persistent status item {(visible ? "shown" : "hidden")}."
+            );
+        }
+        else
+        {
+            StatusOutput.WriteLine("Add the persistent status item first.");
         }
     }
 
-    private void RemoveStatus_Click(object sender, RoutedEventArgs e) => status.Remove(StatusItemId);
+    private void RemoveStatus_Click(object sender, RoutedEventArgs e) =>
+        Execute(
+            () => status.Remove(StatusItemId),
+            StatusOutput,
+            "Removed the persistent status item."
+        );
 
     private void MoveStatus_Click(object sender, RoutedEventArgs e)
     {
@@ -200,26 +255,60 @@ public partial class ToolbarStatusPage : Page
             .index;
         if (items.Any(item => item.Id == StatusItemId))
         {
-            status.Move(StatusItemId, currentIndex == 0 ? items.Count - 1 : 0);
+            var targetIndex = currentIndex == 0 ? items.Count - 1 : 0;
+            Execute(
+                () => status.Move(StatusItemId, targetIndex),
+                StatusOutput,
+                $"Moved the persistent status item to index {targetIndex}."
+            );
+        }
+        else
+        {
+            StatusOutput.WriteLine("Add the persistent status item first.");
         }
     }
 
-    private void ToggleLan_Click(object sender, RoutedEventArgs e) =>
-        status.SetLanStatusEnabled(!status.Current.IsLanStatusEnabled);
+    private void ToggleLan_Click(object sender, RoutedEventArgs e)
+    {
+        var enabled = !status.Current.IsLanStatusEnabled;
+        Execute(
+            () => status.SetLanStatusEnabled(enabled),
+            StatusOutput,
+            $"LAN indicator {(enabled ? "enabled" : "disabled")}."
+        );
+    }
 
-    private void TogglePower_Click(object sender, RoutedEventArgs e) =>
-        status.SetPowerStatusEnabled(!status.Current.IsPowerStatusEnabled);
+    private void TogglePower_Click(object sender, RoutedEventArgs e)
+    {
+        var enabled = !status.Current.IsPowerStatusEnabled;
+        Execute(
+            () => status.SetPowerStatusEnabled(enabled),
+            StatusOutput,
+            $"Power indicator {(enabled ? "enabled" : "disabled")}."
+        );
+    }
 
-    private void ToggleStatusBar_Click(object sender, RoutedEventArgs e) =>
-        status.SetEnabled(!status.Current.IsEnabled);
+    private void ToggleStatusBar_Click(object sender, RoutedEventArgs e)
+    {
+        var enabled = !status.Current.IsEnabled;
+        Execute(
+            () => status.SetEnabled(enabled),
+            StatusOutput,
+            $"Status bar {(enabled ? "enabled" : "disabled")}."
+        );
+    }
 
     private void AddRegion_Click(object sender, RoutedEventArgs e)
     {
-        regions.Upsert(
-            RegionId,
-            FlourishRegion.ContentHeader,
-            static _ => CreateRegionContent(),
-            order: 50
+        Execute(
+            () => regions.Upsert(
+                RegionId,
+                FlourishRegion.ContentHeader,
+                static _ => CreateRegionContent(),
+                order: 50
+            ),
+            RegionOutput,
+            "Added or updated the ContentHeader region at order 50."
         );
     }
 
@@ -228,18 +317,41 @@ public partial class ToolbarStatusPage : Page
         var entry = regions.Current.Entries.FirstOrDefault(candidate => candidate.Id == RegionId);
         if (entry is not null)
         {
-            regions.SetEnabled(RegionId, !entry.IsEnabled);
+            var enabled = !entry.IsEnabled;
+            Execute(
+                () => regions.SetEnabled(RegionId, enabled),
+                RegionOutput,
+                $"ContentHeader region {(enabled ? "enabled" : "disabled")}."
+            );
+        }
+        else
+        {
+            RegionOutput.WriteLine("Add the ContentHeader region first.");
         }
     }
 
-    private void RemoveRegion_Click(object sender, RoutedEventArgs e) => regions.Remove(RegionId);
+    private void RemoveRegion_Click(object sender, RoutedEventArgs e) =>
+        Execute(
+            () => regions.Remove(RegionId),
+            RegionOutput,
+            "Removed the ContentHeader region."
+        );
 
     private void ReorderRegion_Click(object sender, RoutedEventArgs e)
     {
         var entry = regions.Current.Entries.FirstOrDefault(candidate => candidate.Id == RegionId);
         if (entry is not null)
         {
-            regions.SetOrder(RegionId, entry.Order >= 90 ? 10 : 90);
+            var order = entry.Order >= 90 ? 10 : 90;
+            Execute(
+                () => regions.SetOrder(RegionId, order),
+                RegionOutput,
+                $"Moved the ContentHeader region to order {order}."
+            );
+        }
+        else
+        {
+            RegionOutput.WriteLine("Add the ContentHeader region first.");
         }
     }
 
@@ -275,37 +387,16 @@ public partial class ToolbarStatusPage : Page
         toolbar.Current.Pages.GetValueOrDefault(typeof(ToolbarStatusPage))?.Items
             .FirstOrDefault(item => item.Id == ToolbarItemId);
 
-    private void RuntimeState_Changed(object? sender, EventArgs e) =>
-        Dispatcher.BeginInvoke(RefreshState);
-
-    private void Execute(Action action, FlourishTextBlock statusText)
+    private void Execute(Action action, OutputCard output, string successMessage)
     {
         try
         {
             action();
-            RefreshState();
+            output.WriteLine(successMessage);
         }
         catch (Exception error)
         {
-            statusText.Text = error.Message;
+            output.WriteLine($"Error: {error.Message}");
         }
-    }
-
-    private void RefreshState()
-    {
-        var pageToolbar = toolbar.Current.Pages.GetValueOrDefault(typeof(ToolbarStatusPage));
-        var item = pageToolbar?.Items.FirstOrDefault(candidate => candidate.Id == ToolbarItemId);
-        ToolbarStateText.Text = item is null
-            ? "No runtime item is installed for this page."
-            : $"Toolbar enabled: {toolbar.Current.IsEnabled}  |  Item enabled: {item.IsEnabled}  |  Visible: {item.IsVisible}  |  Icon only: {pageToolbar!.IconOnly}";
-
-        var statusItem = status.Current.Items.FirstOrDefault(candidate => candidate.Id == StatusItemId);
-        StatusStateText.Text =
-            $"Bar enabled: {status.Current.IsEnabled}  |  LAN: {status.Current.IsLanStatusEnabled}  |  Power: {status.Current.IsPowerStatusEnabled}  |  Demo item: {(statusItem is null ? "missing" : statusItem.IsVisible ? "visible" : "hidden")}";
-
-        var region = regions.Current.Entries.FirstOrDefault(candidate => candidate.Id == RegionId);
-        RegionStateText.Text = region is null
-            ? "No runtime ContentHeader registration."
-            : $"Region: {region.Region}  |  Enabled: {region.IsEnabled}  |  Order: {region.Order}";
     }
 }

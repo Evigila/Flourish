@@ -78,11 +78,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Result">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="CommandResultText" Role="Status" Text="Register the demo command to begin." />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="CommandOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 
@@ -122,11 +118,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Result">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="ShortcutResultText" Role="Status" Text="No shortcut registered by this page." />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="ShortcutOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
       </flourish:Chunk>
 

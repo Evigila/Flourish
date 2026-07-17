@@ -26,6 +26,7 @@ internal static class Program
                     services.AddNavigable<ConfigurationPage>("Configuration", "\uE713");
                     services.AddNavigable<AppearancePage>("Appearance", "\uE790");
                     services.AddNavigable<TitleBarRuntimePage>("Title bar", "\uE8A4");
+                    services.AddNavigable<ProjectRuntimePage>("Projects", "\uE8F9");
                     services.AddNavigable<NavigationRuntimePage>("Navigation", "\uE700");
                     services.AddNavigable<ToolbarStatusPage>("Regions", "\uE945");
                     services.AddNavigable<CommandsPage>("Commands", "\uE756");
@@ -35,12 +36,14 @@ internal static class Program
                     services.AddNavigable<ChunkPage>("Chunk", "\uE7C8");
                     services.AddNavigable<ButtonPage>("Button", "\uE8FB");
                     services.AddNavigable<CardPage>("Card", "\uE8A5");
+                    services.AddNavigable<OutputCardPage>("Output Card", "\uE756");
                 }
             )
             .ConfigureShell(shell =>
             {
                 shell
                     .UseTitleBar()
+                    .UseMultiProject(false)
                     .UseNavigation()
                     .UseCenterContent()
                     .UseDynamicToolbar()
@@ -56,11 +59,25 @@ internal static class Program
                     .SetBreadcrumbButton()
                     .SetNavToggle()
                     .SetLogo()
-                    .SetTitle("Flourish Gallery")
-                    .SetSubTitle("Playground")
+                    .SetApplicationTitle("Flourish Gallery")
+                    .SetApplicationSubTitle("Playground")
+                    .SetUnnamedProjectPlaceholder("Unnamed gallery project")
                     .SetProfile(NameOrder.FirstLast)
                     .SetThemeToggle(FlourishTheme.System)
                     .SetSearch("Type here to search", (_, _) => { });
+            })
+            .ConfigureCustomHandler(custom =>
+            {
+                custom.Add(
+                    FlourishRegion.TitlebarApplicationInfo,
+                    _ =>
+                        new ArkheideSystem.Flourish.Controls.FlourishTextBlock
+                        {
+                            Role = ArkheideSystem.Flourish.Controls.FlourishTextRole.Description,
+                            Text = "This Body is supplied by the Gallery application.",
+                            TextWrapping = System.Windows.TextWrapping.Wrap,
+                        }
+                );
             })
             .ConfigureNavigation(nav =>
             {
@@ -78,6 +95,7 @@ internal static class Program
                         group =>
                         {
                             group.AddNavigableViewItem<ConfigurationPage>();
+                            group.AddNavigableViewItem<ProjectRuntimePage>();
                             group.AddNavigableViewItem<CommandsPage>();
                             group.AddNavigableViewItem<BackgroundTasksPage>();
                         }
@@ -103,6 +121,7 @@ internal static class Program
                             group.AddNavigableViewItem<ChunkPage>(childId: 1);
                             group.AddNavigableViewItem<ButtonPage>(childId: 1);
                             group.AddNavigableViewItem<CardPage>(childId: 1);
+                            group.AddNavigableViewItem<OutputCardPage>(childId: 1);
                         }
                     )
                     .SetGroup(

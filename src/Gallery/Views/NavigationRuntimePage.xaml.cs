@@ -62,10 +62,17 @@ public partial class NavigationRuntimePage : Page
         cache.Changed -= RuntimeState_Changed;
     }
 
-    private void TogglePanel_Click(object sender, RoutedEventArgs e) => panel.Toggle();
+    private void TogglePanel_Click(object sender, RoutedEventArgs e)
+    {
+        panel.Toggle();
+        PanelOutput.WriteLine($"Navigation panel {(panel.Current.IsOpen ? "opened" : "closed")}.");
+    }
 
-    private void TogglePanelEnabled_Click(object sender, RoutedEventArgs e) =>
+    private void TogglePanelEnabled_Click(object sender, RoutedEventArgs e)
+    {
         panel.SetEnabled(!panel.Current.IsEnabled);
+        PanelOutput.WriteLine($"Navigation panel {(panel.Current.IsEnabled ? "enabled" : "disabled")}.");
+    }
 
     private void DirectionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -74,6 +81,7 @@ public partial class NavigationRuntimePage : Page
             && DirectionBox.SelectedItem is NavigationPanelDirection direction)
         {
             panel.SetDirection(direction);
+            PanelOutput.WriteLine($"Navigation panel moved to {direction}.");
         }
     }
 
@@ -87,10 +95,14 @@ public partial class NavigationRuntimePage : Page
                 Parse(MaxWidthBox.Text),
                 Parse(MinWidthBox.Text)
             );
+            var state = panel.Current;
+            PanelOutput.WriteLine(
+                $"Panel widths set to closed {state.ClosedWidth:0}, open {state.OpenWidth:0}, range {state.MinWidth:0}-{state.MaxWidth:0}."
+            );
         }
         catch (Exception error)
         {
-            PanelStateText.Text = error.Message;
+            PanelOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -149,10 +161,11 @@ public partial class NavigationRuntimePage : Page
                     )
                 );
             });
+            RouteOutput.WriteLine("Installed the demo route and navigation item.");
         }
         catch (Exception error)
         {
-            RouteStateText.Text = error.Message;
+            RouteOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -161,10 +174,11 @@ public partial class NavigationRuntimePage : Page
         try
         {
             navigation.Navigate(RuntimeRouteKey, DateTimeOffset.Now);
+            RouteOutput.WriteLine($"Navigated to '{RuntimeRouteKey}'.");
         }
         catch (Exception error)
         {
-            RouteStateText.Text = error.Message;
+            RouteOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -174,11 +188,12 @@ public partial class NavigationRuntimePage : Page
             .FirstOrDefault(candidate => candidate.Id == RuntimeItemId);
         if (item is null)
         {
-            RouteStateText.Text = "Install the demo route first.";
+            RouteOutput.WriteLine("Install the demo route first.");
             return;
         }
 
         menu.Update(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
+        RouteOutput.WriteLine($"Demo navigation item {(!item.IsEnabled ? "enabled" : "disabled")}.");
     }
 
     private void RemoveRoute_Click(object sender, RoutedEventArgs e)
@@ -191,7 +206,10 @@ public partial class NavigationRuntimePage : Page
                 editor.RemoveGroup(RuntimeGroupId);
             }
         });
-        routes.Remove(RuntimeRouteKey);
+        var removed = routes.Remove(RuntimeRouteKey);
+        RouteOutput.WriteLine(
+            removed ? "Removed the demo route and navigation item." : "The demo route was already absent."
+        );
     }
 
     private void EnableCache_Click(object sender, RoutedEventArgs e) =>
@@ -202,14 +220,17 @@ public partial class NavigationRuntimePage : Page
 
     private void EvictCache_Click(object sender, RoutedEventArgs e)
     {
-        cache.Evict(typeof(RuntimeRoutePage));
-        RefreshState();
+        CacheOutput.WriteLine(
+            cache.Evict(typeof(RuntimeRoutePage))
+                ? "Evicted the cached demo page instance."
+                : "No cached demo page instance was present."
+        );
     }
 
     private void ClearCache_Click(object sender, RoutedEventArgs e)
     {
         cache.Clear();
-        RefreshState();
+        CacheOutput.WriteLine("Cleared all cached page instances.");
     }
 
     private void SetCacheMode(FlourishPageCacheMode mode)
@@ -223,10 +244,11 @@ public partial class NavigationRuntimePage : Page
 
             routes.SetCacheMode(RuntimeRouteKey, mode);
             cache.SetCacheMode(typeof(RuntimeRoutePage), mode);
+            CacheOutput.WriteLine($"Demo page cache mode set to {mode}.");
         }
         catch (Exception error)
         {
-            CacheStateText.Text = error.Message;
+            CacheOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -240,22 +262,6 @@ public partial class NavigationRuntimePage : Page
         {
             var panelState = panel.Current;
             DirectionBox.SelectedItem = panelState.Direction;
-            PanelStateText.Text =
-                $"Enabled: {panelState.IsEnabled}  |  Open: {panelState.IsOpen}  |  Side: {panelState.Direction}  |  Widths: {panelState.ClosedWidth:0}-{panelState.OpenWidth:0} ({panelState.MinWidth:0}-{panelState.MaxWidth:0})";
-
-        var routeInstalled = routes.Contains(RuntimeRouteKey);
-        var menuItem = menu.Current.Groups.SelectMany(group => group.Items)
-            .FirstOrDefault(item => item.Id == RuntimeItemId);
-        RouteStateText.Text =
-            $"Route installed: {routeInstalled}  |  Menu item: {(menuItem is null ? "missing" : menuItem.IsEnabled ? "enabled" : "disabled")}  |  Current route: {navigation.CurrentNavigationKey ?? "<none>"}";
-
-        var cacheState = cache.Current;
-        var configuredMode = cacheState.CacheModes.GetValueOrDefault(
-            typeof(RuntimeRoutePage),
-            FlourishPageCacheMode.Disabled
-        );
-            CacheStateText.Text =
-                $"Mode: {configuredMode}  |  Instance cached: {cacheState.CachedPageTypes.Contains(typeof(RuntimeRoutePage))}  |  Total cached types: {cacheState.CachedPageTypes.Count}";
         }
         finally
         {

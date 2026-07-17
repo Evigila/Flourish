@@ -52,14 +52,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Result">
-            <flourish:Card.Body>
-              <StackPanel>
-                <flourish:FlourishTextBlock x:Name="ReadValueText" Role="Status" Text="No value read yet." />
-                <flourish:FlourishTextBlock x:Name="SnapshotText" Margin="0,8,0,0" Role="Status" />
-              </StackPanel>
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="ReadOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -133,11 +126,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Result">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="WriteResultText" Role="Status" Text="No runtime update yet." />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="WriteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -166,11 +155,7 @@
               />
             </flourish:ListCard.Body>
           </flourish:ListCard>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="LocaleStatusText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="LocaleOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -224,11 +209,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Result">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="LocaleFileStatusText" Role="Status" Text="No locale file registered by this page." />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="LocaleFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
     </StackPanel>

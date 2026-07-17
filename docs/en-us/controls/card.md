@@ -104,25 +104,9 @@ The built-in copy consists of `Title` and `Text`. `ContentHorizontalAlignment` a
 </flourish:Card>
 ```
 
-## Output and Result cards
+## Operation output
 
-Use an `Output` Card for raw or ongoing output and a `Result` Card for a completed outcome. Prefer only `Title` on these cards. Omit `Text`, then put one concise Description-role text element followed by the output or status content in `Body`.
-
-```xml
-<flourish:Card Title="Result">
-  <flourish:Card.Body>
-    <StackPanel>
-      <flourish:FlourishTextBlock
-        Role="Description"
-        Text="The most recent synchronization result." />
-      <flourish:FlourishTextBlock
-        Margin="{DynamicResource FlourishCardBodySpacing}"
-        Role="Status"
-        Text="{Binding SynchronizationResult}" />
-    </StackPanel>
-  </flourish:Card.Body>
-</flourish:Card>
-```
+Do not use an ordinary `Card` as an output or result surface. Append raw messages, progress, completed results, and failures to a dedicated [OutputCard](output-card.md). `OutputCard` owns its compact scrolling viewport and has no `Title`, `Text`, or arbitrary `Body`; keep explanatory information in the action surface or the containing `Chunk`.
 
 ## ListCard
 
@@ -161,7 +145,7 @@ Keep `Title` and `Text` concise. Each is limited to one line and overflows with 
 | `Body` | `object?` | `null` | Exactly one local interactive control displayed on the right. |
 | `Variant` | `Variant` | `Standard` | Inherited property that is always coerced to `Standard`; ListCard has no visual variants. |
 
-Stack related ListCards so every row fills its column, and use the compact `FlourishListCardPeerMargin` between rows so they read as one related group without merging their surfaces. Use one row for one independent function. Do not mix `ListCard` with any other card type in that same column. Prefer a single-column `Chunk` containing only ListCards. When the section also needs output, another column in the same Chunk may hold a dedicated `Output` or `Result` Card; the complete ListCard column and adjacent Card must have the same overall height. A `UniformGrid` or another stretching parent can enforce this equality.
+Stack related ListCards so every row fills its column, and use the compact `FlourishListCardPeerMargin` between rows so they read as one related group without merging their surfaces. Use one row for one independent function. Do not mix `ListCard` with any other card type in that same column. Prefer a single-column `Chunk` containing only ListCards. When the section also needs output, another column in the same Chunk may hold an `OutputCard`. Place both columns in the same auto-sized `Grid` row, let the complete ListCard column determine the row height, and stretch `OutputCard` to the arranged height. Its message history does not increase its desired height; overflow remains inside the scrolling viewport.
 
 Prefer `FlourishComboBox`, `FlourishCheckBox`, and `Button` in `Body`; use `FlourishTextBox` and `FlourishRadioButton` when the option requires them. Selections, toggles, and edits must apply immediately. Never add a separate Apply action to a ListCard.
 
@@ -232,5 +216,6 @@ In `Overlay` mode, `Presenter` fills the card while copy and `Body` are rendered
 
 - [Conception](../conception/index.md) defines how cards participate in a consistent page hierarchy.
 - [Chunk](chunk.md) explains how to place cards in page sections.
+- [OutputCard](output-card.md) explains how to append operation messages without growing a peer layout.
 - [Button](button.md) explains when an information surface should instead be an interactive `CardButton`.
 - The [Variant API](xref:ArkheideSystem.Flourish.Controls.Variant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [ListCard API](xref:ArkheideSystem.Flourish.Controls.ListCard), [IconCard API](xref:ArkheideSystem.Flourish.Controls.IconCard), [PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode), and [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) list all members.

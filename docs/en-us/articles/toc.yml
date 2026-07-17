@@ -19,6 +19,8 @@ items:
   href: configure-font.md
 - name: Title bar
   href: configure-title-bar.md
+- name: Projects
+  href: projects.md
 - name: Profile
   href: configure-profile.md
 - name: Navigation

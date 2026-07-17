@@ -64,6 +64,9 @@ public interface IFlourishDataBuilder
     /// <item><term><c>TitleBar.ThemeSystem</c></term><description>Theme: System ({0}) / 主题：跟随系统（{0}）</description></item>
     /// <item><term><c>TitleBar.ThemeCurrent</c></term><description>Theme: {0} / 主题：{0}</description></item>
     /// <item><term><c>TitleBar.Profile</c></term><description>Profile / 个人资料</description></item>
+    /// <item><term><c>TitleBar.ApplicationInfo</c></term><description>Application information / 应用信息</description></item>
+    /// <item><term><c>TitleBar.ProjectMenu</c></term><description>Projects / 项目</description></item>
+    /// <item><term><c>TitleBar.NewProject</c></term><description>New project / 新建项目</description></item>
     /// <item><term><c>TitleBar.Minimize</c></term><description>Minimize / 最小化</description></item>
     /// <item><term><c>TitleBar.Maximize</c></term><description>Maximize / 最大化</description></item>
     /// <item><term><c>TitleBar.Restore</c></term><description>Restore / 还原</description></item>
@@ -77,9 +80,7 @@ public interface IFlourishDataBuilder
     /// <item><term><c>Profile.LastName</c></term><description>Last Name / 姓</description></item>
     /// <item><term><c>Profile.Image</c></term><description>Profile image / 个人资料图片</description></item>
     /// <item><term><c>Profile.ChooseImage</c></term><description>Choose profile image / 选择个人资料图片</description></item>
-    /// <item><term><c>Profile.ChangeImage</c></term><description>Change profile image / 更换个人资料图片</description></item>
     /// <item><term><c>Profile.UploadImage</c></term><description>Upload image / 上传图片</description></item>
-    /// <item><term><c>Profile.ImageSelected</c></term><description>Image selected / 已选择图片</description></item>
     /// <item><term><c>Profile.Password</c></term><description>Password / 密码</description></item>
     /// <item><term><c>Profile.Cancel</c></term><description>Cancel / 取消</description></item>
     /// <item><term><c>Profile.RememberLogin</c></term><description>Remember login / 记住登录状态</description></item>

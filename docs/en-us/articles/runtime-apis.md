@@ -1,6 +1,6 @@
 ---
 title: Runtime APIs
-description: Inspect and change Flourish configuration, shell surfaces, navigation, commands, windows, notifications, and background work while the application is running.
+description: Inspect and change Flourish configuration, shell surfaces, projects, navigation, commands, windows, notifications, and background work while the application is running.
 ---
 
 # Runtime APIs
@@ -62,9 +62,15 @@ Windows title bar. Disabling the feature restores the native title bar without c
 the requested material effect; enabling it again restores the Flourish title bar and
 reapplies that material request to the custom frame.
 
-## Title bar and search
+## Title bar, projects, and search
 
-`ITitleBarService` changes identity, logo, search placeholder, breadcrumb mode, and the visibility of each `TitleBarElement`. `ITitleBarSearchService` controls search text, visibility, placeholder, clearing and focus; it also publishes `QueryChanged` and supports ordered asynchronous handlers through `Subscribe`.
+| Service | Runtime use |
+| --- | --- |
+| `ITitleBarService` | Change the application title/subtitle, unnamed-project placeholder, logo and information-field visibility, search placeholder, breadcrumb mode, and each `TitleBarElement`. |
+| `IProjectService` | Add, update, query, activate, and remove in-memory `FlourishProject` metadata; change project mode; observe snapshots; and handle title-menu creation or activation requests. |
+| `ITitleBarSearchService` | Control search text, visibility, placeholder, clearing and focus; observe `QueryChanged`; and add ordered asynchronous handlers through `Subscribe`. |
+
+The title bar displays `IProjectService.Current.ActiveProject` while project mode is enabled and otherwise displays the application title. Project storage paths are descriptive only; project operations do not access the file system. Handle `NewProjectRequested` and `ProjectActivationRequested`, complete application work, then call `AddProject` or `SetActiveProject` to update the shell. See [Projects](projects.md).
 
 ```csharp
 public sealed class SearchModule(
@@ -230,6 +236,6 @@ Task delegates do not run on the WPF UI thread. Observe `TasksChanged` for live 
 ## Related guides
 
 - [IFlourishBuilder](flourish-builder.md) and [Dependency injection](configure-services.md)
-- [Application data](configure-data.md), [Navigation](navigation.md), and [Command dispatch](commands.md)
+- [Application data](configure-data.md), [Projects](projects.md), [Navigation](navigation.md), and [Command dispatch](commands.md)
 - [Dynamic toolbar](dynamic-toolbar.md), [Status bar](status-bar.md), and [Background tasks](background-tasks.md)
 - [Window](configure-window.md), [Profile](configure-profile.md), and [Message service](message-service.md)

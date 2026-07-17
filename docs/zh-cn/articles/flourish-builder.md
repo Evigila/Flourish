@@ -42,6 +42,7 @@ return flourish.Run<App>();
 | [Shell 配置](shell-configuration.md) | `ConfigureShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
 | [用户资料（Profile）](configure-profile.md) | `ConfigureProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |
 | [标题栏](configure-title-bar.md) | `ConfigureTitleBar` | 配置标题栏内容和行为。 |
+| [项目](projects.md) | `ConfigureShell`、`IProjectService` | 启用项目感知的标题显示，并在运行时管理内存中的项目元数据。 |
 | [导航](navigation.md) | `ConfigureNavigation` | 配置导航栏展示、页面位置、命令项、分组和固定项。 |
 | [自定义 Shell 内容](configure-custom-handler.md) | `ConfigureCustomHandler` | 将自定义 WPF 元素或命令插入预定义 Shell 区域。 |
 | [动态工具栏](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | 注册按页面变化的工具栏项。 |
@@ -71,7 +72,7 @@ builder.ConfigureServices((_, services) =>
 
 调用 `Build()` 后，应用可以从 `IFlourish.Services` 解析公开服务。
 
-其中包括 `IBackgroundTaskService`。应用通过依赖注入解析它并提交异步工作；完整用法参见[后台任务](background-tasks.md)。
+其中包括 `IBackgroundTaskService` 与 `IProjectService`。应用通过依赖注入解析它们，以提交异步工作或同步项目显示元数据；完整用法参见[后台任务](background-tasks.md)与[项目](projects.md)。
 
 ## 注册导航页面
 

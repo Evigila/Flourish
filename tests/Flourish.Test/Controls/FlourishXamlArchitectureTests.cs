@@ -186,6 +186,7 @@ public sealed class FlourishXamlArchitectureTests
         {
             "Button.xaml",
             "Card.xaml",
+            "IconCard.xaml",
             "IconButton.xaml",
             "ListCard.xaml",
             "WindowCaptionButton.xaml",
@@ -206,6 +207,12 @@ public sealed class FlourishXamlArchitectureTests
             source => Assert.StartsWith("/Flourish;component/Controls/", source)
         );
 
+        Assert.Equal(
+            ["IconCard.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "OutputCard.xaml"))
+            )
+        );
         Assert.Equal(
             ["ListCard.xaml"],
             GetMergedDictionarySources(
@@ -648,7 +655,10 @@ public sealed class FlourishXamlArchitectureTests
                     .Elements()
                     .Where(element =>
                         element.Name.LocalName
-                            is nameof(Card) or nameof(IconCard) or nameof(ListCard)
+                            is nameof(Card)
+                                or nameof(IconCard)
+                                or nameof(ListCard)
+                                or nameof(OutputCard)
                     )
                     .ToArray();
                 if (
@@ -863,10 +873,11 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void GalleryOutputAndResultCards_KeepDescriptionInBody()
+    public void GalleryOutputSurfaces_UseTheDedicatedOutputCardControl()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
+        var outputCardCount = 0;
 
         foreach (
             var path in Directory.EnumerateFiles(
@@ -877,6 +888,9 @@ public sealed class FlourishXamlArchitectureTests
         )
         {
             var document = LoadXaml(path);
+            outputCardCount += document.Descendants().Count(element =>
+                element.Name.LocalName == nameof(OutputCard)
+            );
             foreach (
                 var card in document.Descendants().Where(element =>
                     element.Name.LocalName is nameof(Card) or nameof(IconCard)
@@ -884,19 +898,25 @@ public sealed class FlourishXamlArchitectureTests
             )
             {
                 var title = (string?)card.Attribute(nameof(Card.Title)) ?? string.Empty;
-                var isOutput = title.Contains("Output", StringComparison.OrdinalIgnoreCase)
+                var hasOutputSemantics = title.Contains(
+                        "Output",
+                        StringComparison.OrdinalIgnoreCase
+                    )
                     || title.Contains("Result", StringComparison.OrdinalIgnoreCase);
-                var text = (string?)card.Attribute(nameof(Card.Text));
-                if (isOutput && !string.IsNullOrWhiteSpace(text))
+                if (hasOutputSemantics)
                 {
-                    violations.Add(FormatViolation(path, card));
+                    violations.Add(
+                        $"{FormatViolation(path, card)} uses {card.Name.LocalName} "
+                            + $"with output title '{title}'"
+                    );
                 }
             }
         }
 
+        Assert.True(outputCardCount > 0, "The Gallery must demonstrate OutputCard.");
         AssertNoArchitectureViolations(
             violations,
-            "Output and Result cards should keep only their title in built-in copy; explanatory and result content belongs in Body."
+            "Gallery output and result histories must use OutputCard instead of a titled Card or IconCard."
         );
     }
 
@@ -942,7 +962,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "A single ListCard must be a direct stretched column peer so its visible surface matches the Output or Result card height."
+            "A single ListCard must be a direct stretched column peer so its visible surface matches the OutputCard height."
         );
     }
 
@@ -1047,40 +1067,64 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Dynamic response text must live in an adjacent Output or Result card, not in the action card."
+            "Dynamic response text must live in an adjacent OutputCard, not in the action card."
         );
     }
 
     [Fact]
-    public void GalleryOutputAndResultCards_UseTheSmallStatusRoleForTextResults()
+    public void GalleryOutputCards_AreNamedContentlessStretchingPeers()
     {
-        var responseCards = EnumerateXamlFiles(Path.Combine(GalleryRoot, "Views"))
+        var outputCards = EnumerateXamlFiles(Path.Combine(GalleryRoot, "Views"))
             .SelectMany(path =>
             {
                 var document = LoadXaml(path);
                 return document
                     .Descendants()
-                    .Where(element =>
-                        element.Name.LocalName == nameof(Card)
-                        && (string?)element.Attribute("Title") is "Output" or "Result"
-                    )
-                    .Select(element => (Path: path, Card: element));
+                    .Where(element => element.Name.LocalName == nameof(OutputCard))
+                    .Select(element => (Path: path, OutputCard: element));
             })
             .ToArray();
-        var violations = responseCards
-            .SelectMany(item =>
-                item.Card
-                    .Descendants()
-                    .Where(element => element.Name.LocalName == "FlourishTextBlock")
-                    .Where(element => (string?)element.Attribute("Role") != "Status")
-                    .Select(element => FormatViolation(item.Path, element))
-            )
-            .ToArray();
+        var violations = new List<string>();
 
-        Assert.NotEmpty(responseCards);
+        foreach (var item in outputCards)
+        {
+            var outputCard = item.OutputCard;
+            var location = FormatViolation(item.Path, outputCard);
+            if (outputCard.Attribute(XName.Get("Name", XamlNamespace)) is null)
+            {
+                violations.Add($"{location} has no x:Name for WriteLine calls");
+            }
+
+            if ((string?)outputCard.Attribute("VerticalAlignment") != "Stretch")
+            {
+                violations.Add($"{location} does not stretch to its peer column");
+            }
+
+            if (outputCard.Elements().Any())
+            {
+                violations.Add($"{location} declares inline content");
+            }
+
+            string[] forbiddenProperties =
+            [
+                nameof(Card.Title),
+                nameof(Card.Text),
+                nameof(Card.Body),
+                nameof(OutputCard.Output),
+            ];
+            foreach (var property in forbiddenProperties)
+            {
+                if (outputCard.Attribute(property) is not null)
+                {
+                    violations.Add($"{location} sets forbidden property {property}");
+                }
+            }
+        }
+
+        Assert.NotEmpty(outputCards);
         AssertNoArchitectureViolations(
             violations,
-            "Text results inside Gallery Output and Result cards must use the small Status role."
+            "Gallery OutputCards must be named, contentless, append-only stretching peers; typography and scrolling belong to the control template."
         );
     }
 
@@ -1966,7 +2010,7 @@ public sealed class FlourishXamlArchitectureTests
             )
             .ToArray();
 
-        Assert.Equal(8, demoCards.Length);
+        Assert.Equal(9, demoCards.Length);
         Assert.All(
             demoCards,
             card => Assert.False(

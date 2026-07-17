@@ -78,7 +78,7 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigureTitleBar(titleBar =>
     /// {
-    ///     titleBar.SetTitle("Foobar");
+    ///     titleBar.SetApplicationTitle("Foobar");
     /// });
     /// ]]></code>
     /// </example>

@@ -1,6 +1,6 @@
 ---
 title: 运行时 API
-description: 在应用运行期间读取和修改 Flourish 配置、Shell 界面、导航、命令、窗口、通知与后台任务。
+description: 在应用运行期间读取和修改 Flourish 配置、Shell 界面、项目、导航、命令、窗口、通知与后台任务。
 ---
 
 # 运行时 API
@@ -61,9 +61,15 @@ public async ValueTask SaveEndpointAsync(
 禁用后会恢复原生标题栏，但不会改变请求的材质效果；重新启用后会恢复 Flourish 标题栏，
 并将该材质请求重新应用到自定义窗口框架。
 
-## 标题栏与搜索
+## 标题栏、项目与搜索
 
-`ITitleBarService` 可修改标题/副标题、Logo、搜索占位符、面包屑模式，以及每个 `TitleBarElement` 的可见性。`ITitleBarSearchService` 可控制搜索文本、可见性、占位符、清空和焦点；它还公开 `QueryChanged`，并可通过 `Subscribe` 按注册顺序添加异步处理器。
+| 服务 | 运行时用途 |
+| --- | --- |
+| `ITitleBarService` | 修改应用标题/副标题、未命名项目占位文本、Logo 及其信息字段可见性、搜索占位符、面包屑模式和各个 `TitleBarElement`。 |
+| `IProjectService` | 添加、更新、查询、激活和移除内存中的 `FlourishProject` 元数据；修改项目模式；观察快照；处理标题菜单发出的新建或激活请求。 |
+| `ITitleBarSearchService` | 控制搜索文本、可见性、占位符、清空和焦点；观察 `QueryChanged`；通过 `Subscribe` 按注册顺序添加异步处理器。 |
+
+启用项目模式时，标题栏显示 `IProjectService.Current.ActiveProject`；未启用时显示应用标题。项目存储路径仅用于描述，项目操作不会访问文件系统。应用应处理 `NewProjectRequested` 与 `ProjectActivationRequested`，完成业务操作后再调用 `AddProject` 或 `SetActiveProject` 更新 Shell。参见[项目](projects.md)。
 
 ```csharp
 public sealed class SearchModule(
@@ -229,6 +235,6 @@ public FlourishBackgroundTaskHandle StartExport(
 ## 相关指南
 
 - [IFlourishBuilder](flourish-builder.md)与[依赖注入](configure-services.md)
-- [应用数据](configure-data.md)、[导航](navigation.md)与[命令调度](commands.md)
+- [应用数据](configure-data.md)、[项目](projects.md)、[导航](navigation.md)与[命令调度](commands.md)
 - [动态工具栏](dynamic-toolbar.md)、[状态栏](status-bar.md)与[后台任务](background-tasks.md)
 - [窗口](configure-window.md)、[Profile](configure-profile.md)与[消息服务](message-service.md)

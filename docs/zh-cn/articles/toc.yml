@@ -19,6 +19,8 @@ items:
   href: configure-font.md
 - name: 标题栏
   href: configure-title-bar.md
+- name: 项目
+  href: projects.md
 - name: 用户资料（Profile）
   href: configure-profile.md
 - name: 导航

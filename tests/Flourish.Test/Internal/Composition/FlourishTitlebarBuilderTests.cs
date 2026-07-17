@@ -16,7 +16,12 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.False(options.IsTitlebarNavigationToggleEnabled);
         Assert.False(options.IsTitlebarLogoEnabled);
         Assert.False(options.IsTitlebarTitleEnabled);
-        Assert.False(options.IsTitlebarSubtitleEnabled);
+        Assert.Equal(string.Empty, options.ApplicationTitle);
+        Assert.Equal("WPF Application", options.ApplicationSubtitle);
+        Assert.Equal("Unnamed project", options.UnnamedProjectPlaceholder);
+        Assert.True(options.ShowApplicationTitleInLogoFlyout);
+        Assert.True(options.ShowApplicationSubtitleInLogoFlyout);
+        Assert.False(options.ShowProjectTitleInLogoFlyout);
         Assert.False(options.IsProfileEnabled);
         Assert.False(options.IsTitlebarProfileEnabled);
         Assert.False(options.IsThemeEnabled);
@@ -31,9 +36,18 @@ public sealed class FlourishTitlebarBuilderTests
 
         Assert.Same(sut, sut.SetBreadcrumbButton(BreadcrumbShowOption.Always));
         Assert.Same(sut, sut.SetNavToggle());
-        Assert.Same(sut, sut.SetLogo("Assets/logo.png"));
-        Assert.Same(sut, sut.SetTitle("Foobar"));
-        Assert.Same(sut, sut.SetSubTitle("Workspace"));
+        Assert.Same(
+            sut,
+            sut.SetLogo(
+                "Assets/logo.png",
+                showApplicationTitle: false,
+                showApplicationSubTitle: false,
+                showProjectTitle: true
+            )
+        );
+        Assert.Same(sut, sut.SetApplicationTitle("Foobar"));
+        Assert.Same(sut, sut.SetApplicationSubTitle("Workspace"));
+        Assert.Same(sut, sut.SetUnnamedProjectPlaceholder("Untitled workspace"));
         Assert.Same(sut, sut.SetProfile(NameOrder.LastFirst));
         Assert.Same(sut, sut.SetThemeToggle(FlourishTheme.Dark));
 
@@ -42,10 +56,13 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.True(options.IsTitlebarNavigationToggleEnabled);
         Assert.True(options.IsTitlebarLogoEnabled);
         Assert.Equal("Assets/logo.png", options.LogoPath);
+        Assert.False(options.ShowApplicationTitleInLogoFlyout);
+        Assert.False(options.ShowApplicationSubtitleInLogoFlyout);
+        Assert.True(options.ShowProjectTitleInLogoFlyout);
         Assert.True(options.IsTitlebarTitleEnabled);
-        Assert.Equal("Foobar", options.Title);
-        Assert.True(options.IsTitlebarSubtitleEnabled);
-        Assert.Equal("Workspace", options.Subtitle);
+        Assert.Equal("Foobar", options.ApplicationTitle);
+        Assert.Equal("Workspace", options.ApplicationSubtitle);
+        Assert.Equal("Untitled workspace", options.UnnamedProjectPlaceholder);
         Assert.True(options.IsProfileEnabled);
         Assert.True(options.IsTitlebarProfileEnabled);
         Assert.Equal(NameOrder.LastFirst, options.Profile.NameOrder);
@@ -109,6 +126,9 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.Same(sut, result);
         Assert.True(options.IsTitlebarLogoEnabled);
         Assert.Null(options.LogoPath);
+        Assert.True(options.ShowApplicationTitleInLogoFlyout);
+        Assert.True(options.ShowApplicationSubtitleInLogoFlyout);
+        Assert.False(options.ShowProjectTitleInLogoFlyout);
     }
 
     [Fact]
@@ -145,11 +165,23 @@ public sealed class FlourishTitlebarBuilderTests
 
         Assert.Equal(
             "title",
-            Assert.Throws<ArgumentException>(() => sut.SetTitle(value!)).ParamName
+            Assert
+                .Throws<ArgumentException>(() => sut.SetApplicationTitle(value!))
+                .ParamName
         );
         Assert.Equal(
             "subTitle",
-            Assert.Throws<ArgumentException>(() => sut.SetSubTitle(value!)).ParamName
+            Assert
+                .Throws<ArgumentException>(() => sut.SetApplicationSubTitle(value!))
+                .ParamName
+        );
+        Assert.Equal(
+            "placeholder",
+            Assert
+                .Throws<ArgumentException>(() =>
+                    sut.SetUnnamedProjectPlaceholder(value!)
+                )
+                .ParamName
         );
         Assert.Equal(
             "placeholder",

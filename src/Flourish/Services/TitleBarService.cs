@@ -20,40 +20,47 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
         }
     }
 
-    public void SetTitle(string title)
+    public void SetApplicationTitle(string title)
     {
         title = ValidateRequired(title, nameof(title));
         Update(() =>
         {
-            options.Title = title;
+            options.ApplicationTitle = title;
             options.IsTitlebarTitleEnabled = true;
         });
     }
 
-    public void SetSubtitle(string? subtitle)
+    public void SetApplicationSubTitle(string? subTitle)
     {
-        var normalized = subtitle?.Trim() ?? string.Empty;
-        Update(() =>
-        {
-            options.Subtitle = normalized;
-            options.IsTitlebarSubtitleEnabled = normalized.Length > 0;
-        });
+        var normalized = subTitle?.Trim() ?? string.Empty;
+        Update(() => options.ApplicationSubtitle = normalized);
     }
 
-    public void SetIdentity(string title, string? subtitle = null)
+    public void SetApplicationIdentity(string title, string? subTitle = null)
     {
         title = ValidateRequired(title, nameof(title));
-        var normalizedSubtitle = subtitle?.Trim() ?? string.Empty;
+        var normalizedSubTitle = subTitle?.Trim() ?? string.Empty;
         Update(() =>
         {
-            options.Title = title;
-            options.Subtitle = normalizedSubtitle;
+            options.ApplicationTitle = title;
+            options.ApplicationSubtitle = normalizedSubTitle;
             options.IsTitlebarTitleEnabled = true;
-            options.IsTitlebarSubtitleEnabled = normalizedSubtitle.Length > 0;
         });
     }
 
-    public void SetLogo(string? logoPath, string? fallbackText = null)
+    public void SetUnnamedProjectPlaceholder(string placeholder)
+    {
+        placeholder = ValidateRequired(placeholder, nameof(placeholder));
+        Update(() => options.UnnamedProjectPlaceholder = placeholder);
+    }
+
+    public void SetLogo(
+        string? logoPath,
+        string? fallbackText = null,
+        bool showApplicationTitle = true,
+        bool showApplicationSubTitle = true,
+        bool showProjectTitle = false
+    )
     {
         var normalizedPath = string.IsNullOrWhiteSpace(logoPath) ? null : logoPath.Trim();
         var normalizedFallback = string.IsNullOrWhiteSpace(fallbackText)
@@ -64,8 +71,21 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
             options.LogoPath = normalizedPath;
             options.LogoFallbackText = normalizedFallback;
             options.IsTitlebarLogoEnabled = true;
+            options.ShowApplicationTitleInLogoFlyout = showApplicationTitle;
+            options.ShowApplicationSubtitleInLogoFlyout = showApplicationSubTitle;
+            options.ShowProjectTitleInLogoFlyout = showProjectTitle;
         });
     }
+
+    [Obsolete("Use SetApplicationTitle.")]
+    public void SetTitle(string title) => SetApplicationTitle(title);
+
+    [Obsolete("Use SetApplicationSubTitle.")]
+    public void SetSubtitle(string? subtitle) => SetApplicationSubTitle(subtitle);
+
+    [Obsolete("Use SetApplicationIdentity.")]
+    public void SetIdentity(string title, string? subtitle = null) =>
+        SetApplicationIdentity(title, subtitle);
 
     public void SetSearchPlaceholder(string placeholder)
     {
@@ -103,9 +123,11 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
                 case TitleBarElement.Title:
                     options.IsTitlebarTitleEnabled = visible;
                     break;
+#pragma warning disable CS0618
                 case TitleBarElement.Subtitle:
-                    options.IsTitlebarSubtitleEnabled = visible;
+                    options.ShowApplicationSubtitleInLogoFlyout = visible;
                     break;
+#pragma warning restore CS0618
                 case TitleBarElement.ThemeToggle:
                     options.IsTitlebarThemeToggleEnabled = visible;
                     break;
@@ -150,17 +172,20 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
     private FlourishTitleBarState CreateSnapshot()
     {
         return new FlourishTitleBarState(
-            options.Title,
-            options.Subtitle,
+            options.ApplicationTitle,
+            options.ApplicationSubtitle,
+            options.UnnamedProjectPlaceholder,
             options.SearchPlaceholder,
             options.LogoPath,
             options.LogoFallbackText,
+            options.ShowApplicationTitleInLogoFlyout,
+            options.ShowApplicationSubtitleInLogoFlyout,
+            options.ShowProjectTitleInLogoFlyout,
             options.IsTitlebarSearchEnabled,
             options.IsBreadcrumbEnabled,
             options.IsTitlebarNavigationToggleEnabled,
             options.IsTitlebarLogoEnabled,
-            options.IsTitlebarTitleEnabled,
-            options.IsTitlebarSubtitleEnabled,
+            options.IsTitlebarTitleEnabled || options.IsMultiProjectEnabled,
             options.IsTitlebarThemeToggleEnabled,
             options.IsTitlebarProfileEnabled,
             options.BreadcrumbShowOption

@@ -12,6 +12,7 @@ builder.ConfigureShell(shell =>
 {
     shell
         .UseTitleBar()
+        .UseMultiProject()
         .UseNavigation()
         .UseCenterContent(true, 1200)
         .UseDynamicToolbar()
@@ -32,6 +33,7 @@ builder.ConfigureNavigation(navigation =>
 | Shell 方法 | 行为 | 功能文章 |
 | --- | --- | --- |
 | `UseTitleBar` | 启用 Flourish 标题栏；禁用后使用 Windows 原生标题栏。 | [标题栏](configure-title-bar.md) |
+| `UseMultiProject` | 让标题按钮显示并选择内存中的项目标识。 | [项目](projects.md) |
 | `UseNavigation` | 启用导航栏。 | [导航](navigation.md) |
 | `UseCenterContent` | 在宽视口中限制导航页面内容宽度并将其居中。 | [内容对齐](#自定义内容对齐) |
 | `UseDynamicToolbar` | 启用页面专属工具栏内容。 | [动态工具栏](dynamic-toolbar.md) |
@@ -49,7 +51,7 @@ builder.ConfigureNavigation(navigation =>
 
 布尔功能开关的优先级高于详细配置。例如，启用 `UseDynamicToolbar(false)` 时不会显示已注册的工具栏项，启用 `UseStatusBar(false)` 时不会显示已配置的状态项。
 
-标题栏元素需要 `UseTitleBar()`。导航切换按钮还需要 `UseNavigation()`，因为它控制该面板。向预定义 Shell 区域加入应用内容时，也需要启用对应的标题栏、导航、工具栏或状态栏区域。
+标题栏元素与 `UseMultiProject()` 都需要 `UseTitleBar()`。项目模式会在尚无活动项目时让标题按钮保持可见，并显示已配置的未命名项目占位文本。导航切换按钮还需要 `UseNavigation()`，因为它控制该面板。向预定义 Shell 区域加入应用内容时，也需要启用对应的标题栏、导航、工具栏或状态栏区域。
 
 后台任务是常驻状态栏可见性的例外。即使省略 `UseStatusBar()`，活动任务也会临时显示任务指示器；没有活动任务后，状态栏会恢复到配置决定的可见性。参见[后台任务](background-tasks.md)。
 
@@ -71,13 +73,14 @@ builder.ConfigureNavigation(navigation =>
 
 ## 禁用功能
 
-`UseTitleBar`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接受可选的 `enabled` 值。`UseCenterContent` 要求同时传入 `enabled` 与 `contentWidth`；共用 builder 设置需要禁用页面内容居中时，传入 `false` 和已配置的宽度。
+`UseTitleBar`、`UseMultiProject`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接受可选的 `enabled` 值。`UseCenterContent` 要求同时传入 `enabled` 与 `contentWidth`；共用 builder 设置需要禁用页面内容居中时，传入 `false` 和已配置的宽度。
 
 ```csharp
 builder.ConfigureShell(shell =>
 {
     shell
         .UseNavigation(showNavigation)
+        .UseMultiProject(useProjects)
         .UseCenterContent(useCenteredPages, 1200)
         .UseMotion(!useStaticInterface)
         .UseStatusBar(showStatusBar);
@@ -93,6 +96,7 @@ builder.ConfigureNavigation(navigation =>
 ## 相关功能
 
 - [窗口](configure-window.md)配置尺寸、位置和关闭行为。
+- [项目](projects.md)说明项目元数据与标题菜单请求。
 - [应用数据](configure-data.md)配置本地化与 Host 设置。
 - [依赖注入](configure-services.md)注册应用服务与可替换的 Flourish 服务。
 - [自定义 Shell 内容](configure-custom-handler.md)向已启用的 Shell 区域插入应用元素。

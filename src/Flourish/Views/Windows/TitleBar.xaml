@@ -6,6 +6,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   x:ClassModifier="internal"
+  PreviewMouseLeftButtonDown="Titlebar_PreviewMouseLeftButtonDown"
   mc:Ignorable="d"
 >
   <Grid Background="Transparent">
@@ -115,50 +116,74 @@
       Grid.Column="4"
       Margin="4,0,14,0"
       VerticalAlignment="Center"
-      MouseLeftButtonDown="Titlebar_MouseLeftButtonDown"
       Orientation="Horizontal"
     >
-      <Border
-        x:Name="LogoHost"
-        Width="26"
-        Height="26"
-        Background="{DynamicResource FlourishAccentSurfaceBrush}"
-        ClipToBounds="True"
-        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+      <controls:IconButton
+        x:Name="LogoButton"
+        Variant="Text"
+        Width="34"
+        Height="32"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="4,3"
+        Click="LogoButton_Click"
+        MouseEnter="LogoButton_MouseEnter"
       >
-        <Grid>
-          <Image x:Name="LogoImage" Stretch="UniformToFill" />
+        <controls:IconButton.Icon>
+          <Border
+            x:Name="LogoHost"
+            Width="26"
+            Height="26"
+            Background="{DynamicResource FlourishAccentSurfaceBrush}"
+            ClipToBounds="True"
+            CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+          >
+            <Grid>
+              <Image x:Name="LogoImage" Stretch="UniformToFill" />
+              <controls:FlourishTextBlock
+                x:Name="LogoFallback"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="{DynamicResource FlourishFontSizeStandard}"
+                FontWeight="Regular"
+                Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+              />
+            </Grid>
+          </Border>
+        </controls:IconButton.Icon>
+      </controls:IconButton>
+      <controls:Button
+        x:Name="TitleButton"
+        Variant="Text"
+        Height="32"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="8,0"
+        Margin="2,0,0,0"
+        Click="TitleButton_Click"
+      >
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
           <controls:FlourishTextBlock
-            x:Name="LogoFallback"
-            HorizontalAlignment="Center"
+            x:Name="TitleText"
+            MaxWidth="280"
             VerticalAlignment="Center"
             FontSize="{DynamicResource FlourishFontSizeStandard}"
-            FontWeight="Regular"
-            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+            FontWeight="Bold"
+            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:Button}}}"
+            TextTrimming="CharacterEllipsis"
           />
-        </Grid>
-      </Border>
-      <StackPanel
-        x:Name="TitleTextHost"
-        Margin="8,0,0,0"
-        VerticalAlignment="Center"
-        Orientation="Horizontal"
-      >
-        <controls:FlourishTextBlock
-          x:Name="TitleText"
-          VerticalAlignment="Center"
-          FontSize="{DynamicResource FlourishFontSizeStandard}"
-          FontWeight="Bold"
-          Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
-        />
-        <controls:FlourishTextBlock
-          x:Name="SubtitleText"
-          Margin="8,1,0,0"
-          VerticalAlignment="Center"
-          FontSize="{DynamicResource FlourishFontSizeStandard}"
-          Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
-        />
-      </StackPanel>
+          <controls:FlourishTextBlock
+            Margin="6,0,0,0"
+            VerticalAlignment="Center"
+            FontFamily="{DynamicResource FlourishIconFontFamily}"
+            FontSize="{DynamicResource FlourishIconFontSizeWindowCaption}"
+            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:Button}}}"
+            LineHeight="{DynamicResource FlourishIconFontSizeWindowCaption}"
+            Role="Icon"
+            Text="&#xE70D;"
+          />
+        </StackPanel>
+      </controls:Button>
     </StackPanel>
 
     <Grid Grid.Column="5">

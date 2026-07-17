@@ -12,6 +12,12 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
+    public IFlourishShellBuilder UseMultiProject(bool enabled = true)
+    {
+        options.IsMultiProjectEnabled = enabled;
+        return this;
+    }
+
     public IFlourishShellBuilder UseNavigation(bool enabled = true)
     {
         options.IsNavigationPanelEnabled = enabled;

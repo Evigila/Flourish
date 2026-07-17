@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Services;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -40,7 +39,6 @@ internal partial class FlourishProfilePage : WpfPage
         LastNameLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileLastName);
         ProfileImageLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileImage);
         UploadImageText.Text = localizationService.Get(FlourishLocaleKeys.ProfileUploadImage);
-        ImageSelectedText.Text = localizationService.Get(FlourishLocaleKeys.ProfileImageSelected);
         PasswordLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfilePassword);
         CancelLoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileCancel);
         SubmitLoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignIn);
@@ -120,7 +118,6 @@ internal partial class FlourishProfilePage : WpfPage
             PasswordInput.Clear();
             ErrorText.Text = string.Empty;
             ApplyNameOrder(profile.NameOrder);
-            UpdateSelectedImageButton();
         }
         finally
         {
@@ -141,7 +138,6 @@ internal partial class FlourishProfilePage : WpfPage
         selectedImagePath = null;
         PasswordInput.Clear();
         ErrorText.Text = string.Empty;
-        UpdateSelectedImageButton();
         UpdateState();
     }
 
@@ -172,7 +168,6 @@ internal partial class FlourishProfilePage : WpfPage
 
         selectedImagePath = dialog.FileName;
         ErrorText.Text = string.Empty;
-        UpdateSelectedImageButton();
         UpdateAvatarPreview();
     }
 
@@ -211,7 +206,6 @@ internal partial class FlourishProfilePage : WpfPage
             isEditingLogin = false;
             selectedImagePath = null;
             PasswordInput.Clear();
-            UpdateSelectedImageButton();
             UpdateState();
         }
         catch (Exception error)
@@ -259,7 +253,6 @@ internal partial class FlourishProfilePage : WpfPage
             await profileService.SignOutAsync();
             isEditingLogin = false;
             selectedImagePath = null;
-            UpdateSelectedImageButton();
             UpdateState();
         }
         catch (Exception error)
@@ -336,26 +329,6 @@ internal partial class FlourishProfilePage : WpfPage
                 selectedImagePath
             )
         );
-    }
-
-    private void UpdateSelectedImageButton()
-    {
-        var imageSource = ProfileImageLoader.Load(selectedImagePath);
-        SelectedImagePreview.Background = imageSource is null
-            ? null
-            : new ImageBrush(imageSource) { Stretch = Stretch.UniformToFill };
-        SelectedImageContent.Visibility = imageSource is null
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-        UploadImagePrompt.Visibility = imageSource is null
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-        UploadImageButton.ToolTip = new FlourishToolTip
-        {
-            Content = imageSource is null
-                ? localizationService.Get(FlourishLocaleKeys.ProfileChooseImage)
-                : localizationService.Get(FlourishLocaleKeys.ProfileChangeImage),
-        };
     }
 
     private void SetAvatar(ProfileUser profile)

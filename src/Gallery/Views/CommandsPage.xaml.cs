@@ -75,12 +75,12 @@ public partial class CommandsPage : Page
                     Priority = 100,
                 }
             );
-            CommandResultText.Text = $"Registered '{key}' with priority 100.";
+            CommandOutput.WriteLine($"Registered '{key}' with priority 100.");
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            CommandResultText.Text = error.Message;
+            CommandOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -99,11 +99,11 @@ public partial class CommandsPage : Page
                 CommandParameterBox.Text,
                 CommandSource.Application
             );
-            CommandResultText.Text = FormatResult("Command", result, canExecute);
+            CommandOutput.WriteLine(FormatResult("Command", result, canExecute));
         }
         catch (Exception error)
         {
-            CommandResultText.Text = error.Message;
+            CommandOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -111,23 +111,39 @@ public partial class CommandsPage : Page
     {
         if (commandRegistration is null)
         {
-            CommandResultText.Text = "This page does not currently own a command registration.";
+            CommandOutput.WriteLine("This page does not currently own a command registration.");
             return;
         }
 
-        commandRegistration.Dispose();
-        commandRegistration = null;
-        CommandResultText.Text = "The runtime command registration was removed.";
-        RefreshRegistryState();
+        try
+        {
+            commandRegistration.Dispose();
+            commandRegistration = null;
+            CommandOutput.WriteLine("The runtime command registration was removed.");
+            RefreshRegistryState();
+        }
+        catch (Exception error)
+        {
+            CommandOutput.WriteLine($"Error: {error.Message}");
+        }
     }
 
     private void CommandEnabled_Changed(object sender, RoutedEventArgs e)
     {
-        commandEnabled = CommandEnabledBox.IsChecked == true;
-        commandRegistration?.NotifyCanExecuteChanged();
-        CommandResultText.Text = commandRegistration is null
-            ? $"The next registered handler will be {(commandEnabled ? "enabled" : "disabled")}."
-            : $"The command is now {(commandEnabled ? "enabled" : "disabled")}.";
+        try
+        {
+            commandEnabled = CommandEnabledBox.IsChecked == true;
+            commandRegistration?.NotifyCanExecuteChanged();
+            CommandOutput.WriteLine(
+                commandRegistration is null
+                    ? $"The next registered handler will be {(commandEnabled ? "enabled" : "disabled")}."
+                    : $"The command is now {(commandEnabled ? "enabled" : "disabled")}."
+            );
+        }
+        catch (Exception error)
+        {
+            CommandOutput.WriteLine($"Error: {error.Message}");
+        }
     }
 
     private void RegisterShortcut_Click(object sender, RoutedEventArgs e)
@@ -147,12 +163,12 @@ public partial class CommandsPage : Page
                     Priority = 100,
                 }
             );
-            ShortcutResultText.Text = $"Ctrl+Shift+G now dispatches '{key}'.";
+            ShortcutOutput.WriteLine($"Ctrl+Shift+G now dispatches '{key}'.");
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            ShortcutResultText.Text = error.Message;
+            ShortcutOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -164,11 +180,11 @@ public partial class CommandsPage : Page
                 DemoGesture,
                 new ShortcutResolutionContext(pageKey: nameof(CommandsPage))
             );
-            ShortcutResultText.Text = FormatResult("Shortcut", result, null);
+            ShortcutOutput.WriteLine(FormatResult("Shortcut", result, null));
         }
         catch (Exception error)
         {
-            ShortcutResultText.Text = error.Message;
+            ShortcutOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -176,14 +192,21 @@ public partial class CommandsPage : Page
     {
         if (shortcutRegistration is null)
         {
-            ShortcutResultText.Text = "This page does not currently own a shortcut registration.";
+            ShortcutOutput.WriteLine("This page does not currently own a shortcut registration.");
             return;
         }
 
-        shortcutRegistration.Dispose();
-        shortcutRegistration = null;
-        ShortcutResultText.Text = "The Ctrl+Shift+G registration was removed.";
-        RefreshRegistryState();
+        try
+        {
+            shortcutRegistration.Dispose();
+            shortcutRegistration = null;
+            ShortcutOutput.WriteLine("The Ctrl+Shift+G registration was removed.");
+            RefreshRegistryState();
+        }
+        catch (Exception error)
+        {
+            ShortcutOutput.WriteLine($"Error: {error.Message}");
+        }
     }
 
     private async ValueTask<CommandResult> ExecuteDemoHandlerAsync(

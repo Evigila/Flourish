@@ -7,5 +7,7 @@ items:
   href: button.md
 - name: Card
   href: card.md
+- name: OutputCard
+  href: output-card.md
 - name: ScrollViewer
   href: scroll-viewer.md

@@ -42,6 +42,7 @@ The public builder separates hosting, application services, feature switches, an
 | [Shell configuration](shell-configuration.md) | `ConfigureShell` | Configures shell surfaces, tooltips, typography, and material effects. |
 | [Profile](configure-profile.md) | `ConfigureProfile` | Selects a custom page for the profile enabled by the title bar. |
 | [Title bar](configure-title-bar.md) | `ConfigureTitleBar` | Configures title bar content and behavior. |
+| [Projects](projects.md) | `ConfigureShell`, `IProjectService` | Enables project-aware title display and manages its in-memory metadata at runtime. |
 | [Navigation](navigation.md) | `ConfigureNavigation` | Configures the navigation panel and visible model. |
 | [Custom shell content](configure-custom-handler.md) | `ConfigureCustomHandler` | Inserts custom WPF elements into shell regions. |
 | [Dynamic toolbar](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
@@ -71,7 +72,7 @@ builder.ConfigureServices((_, services) =>
 
 After `Build()`, applications can resolve public services from `IFlourish.Services`.
 
-This includes `IBackgroundTaskService`. Resolve it through dependency injection to submit asynchronous work. See [Background tasks](background-tasks.md).
+This includes `IBackgroundTaskService` and `IProjectService`. Resolve them through dependency injection to submit asynchronous work or synchronize project display metadata. See [Background tasks](background-tasks.md) and [Projects](projects.md).
 
 ## Register navigation pages
 

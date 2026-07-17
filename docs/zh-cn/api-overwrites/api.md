@@ -292,6 +292,9 @@ remarks: |
   | `TitleBar.ThemeSystem` | Theme: System ({0}) | 主题：跟随系统（{0}） |
   | `TitleBar.ThemeCurrent` | Theme: {0} | 主题：{0} |
   | `TitleBar.Profile` | Profile | 个人资料 |
+  | `TitleBar.ApplicationInfo` | Application information | 应用信息 |
+  | `TitleBar.ProjectMenu` | Projects | 项目 |
+  | `TitleBar.NewProject` | New project | 新建项目 |
   | `TitleBar.Minimize` | Minimize | 最小化 |
   | `TitleBar.Maximize` | Maximize | 最大化 |
   | `TitleBar.Restore` | Restore | 还原 |
@@ -305,9 +308,7 @@ remarks: |
   | `Profile.LastName` | Last Name | 姓 |
   | `Profile.Image` | Profile image | 个人资料图片 |
   | `Profile.ChooseImage` | Choose profile image | 选择个人资料图片 |
-  | `Profile.ChangeImage` | Change profile image | 更换个人资料图片 |
   | `Profile.UploadImage` | Upload image | 上传图片 |
-  | `Profile.ImageSelected` | Image selected | 已选择图片 |
   | `Profile.Password` | Password | 密码 |
   | `Profile.Cancel` | Cancel | 取消 |
   | `Profile.RememberLogin` | Remember login | 记住登录状态 |
@@ -838,6 +839,17 @@ syntax:
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseMultiProject(System.Boolean)
+summary: 启用或禁用标题栏的多项目语义；调用时默认启用。
+syntax:
+  parameters:
+  - id: enabled
+    description: 是否使标题按钮与菜单使用项目显示状态。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseNavigation(System.Boolean)
 summary: 启用或禁用 Shell 导航栏。
 syntax:
@@ -1029,34 +1041,51 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetLogo(System.String)
-summary: 设置并显示 Logo；省略路径时使用 Flourish 内置应用图标。同一图像也用于 Shell 窗口图标。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetLogo(System.String,System.Boolean,System.Boolean,System.Boolean)
+summary: 设置 Logo 按钮及其信息视图中显示的应用与项目标识；省略路径时使用 Flourish 内置图标。
 syntax:
   parameters:
   - id: logoPath
     description: Logo 图像的相对 URI、绝对 URI 或 WPF pack URI；省略时使用内置图标。
+  - id: showApplicationTitle
+    description: 是否在 Logo 信息视图中显示应用标题；默认为 true。
+  - id: showApplicationSubTitle
+    description: 是否在 Logo 信息视图中显示应用副标题；默认为 true。
+  - id: showProjectTitle
+    description: 是否在 Logo 信息视图中显示当前项目标题；默认为 false。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetTitle(System.String)
-summary: 设置并显示标题文本。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetApplicationTitle(System.String)
+summary: 设置应用标题并显示标题按钮；未启用多项目时，按钮直接显示该标题。
 syntax:
   parameters:
   - id: title
-    description: 显示在标题栏中的标题。
+    description: 应用的非空显示标题。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetSubTitle(System.String)
-summary: 设置并显示副标题文本。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetApplicationSubTitle(System.String)
+summary: 设置在 Logo 信息视图中显示的应用副标题。
 syntax:
   parameters:
   - id: subTitle
-    description: 显示在标题旁边的副标题。
+    description: 应用的非空辅助标题。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishTitlebarBuilder.SetUnnamedProjectPlaceholder(System.String)
+summary: 设置多项目模式下没有活动项目时的标题占位文本。
+syntax:
+  parameters:
+  - id: placeholder
+    description: 非空占位文本；默认为 Unnamed project。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -1914,6 +1943,336 @@ summary: 提供后台任务变化后的当前活动任务列表。
 ---
 uid: ArkheideSystem.Flourish.Abstract.FlourishBackgroundTasksChangedEventArgs.Tasks
 summary: 获取按提交顺序排列的等待中、运行中和正在取消任务。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService
+summary: 管理 Flourish Shell 显示的内存项目标识；应用仍负责项目数据的创建、打开、保存与关闭。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.Changed
+summary: 项目元数据、活动选择或多项目模式变化后发生。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.NewProjectRequested
+summary: 标题菜单请求创建项目时发生；事件本身不创建业务数据。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.ProjectActivationRequested
+summary: 标题菜单请求激活项目时发生；事件本身不切换业务状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.Current
+summary: 获取当前项目显示状态的只读快照。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.AddProject(ArkheideSystem.Flourish.Abstract.FlourishProject,System.Boolean)
+summary: 添加项目标识，并可选将其设为活动项目。
+syntax:
+  parameters:
+  - id: project
+    description: 要添加的项目显示元数据。
+  - id: activate
+    description: 是否将新项目设为活动项目。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.UpsertProject(ArkheideSystem.Flourish.Abstract.FlourishProject,System.Boolean)
+summary: 添加项目，或按区分大小写的 ID 替换已有项目元数据。
+syntax:
+  parameters:
+  - id: project
+    description: 要添加或替换的项目显示元数据。
+  - id: activate
+    description: 是否将该项目设为活动项目。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetProjectMetadata(System.String,System.String,System.String)
+summary: 修改已注册项目的显示名称与可选本地存储路径。
+syntax:
+  parameters:
+  - id: projectId
+    description: 区分大小写的项目 ID。
+  - id: name
+    description: 非空项目显示名称。
+  - id: storagePath
+    description: 项目表示的可选本地存储路径；Flourish 不会读写该位置。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetActiveProject(System.String)
+summary: 更改活动项目；传入 null 或空白文本可清除选择。
+syntax:
+  parameters:
+  - id: projectId
+    description: 区分大小写的项目 ID，或 null。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.RemoveProject(System.String)
+summary: 移除 Shell 中的项目元数据；移除活动项目时会清除选择。
+syntax:
+  parameters:
+  - id: projectId
+    description: 区分大小写的项目 ID。
+  return:
+    description: 成功移除项目时为 true。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.TryGetProject(System.String,ArkheideSystem.Flourish.Abstract.FlourishProject@)
+summary: 按区分大小写的 ID 查询项目元数据。
+syntax:
+  parameters:
+  - id: projectId
+    description: 要查询的项目 ID。
+  - id: project
+    description: 匹配的项目；未注册时为 null。
+  return:
+    description: 存在匹配项目时为 true。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetMultiProjectEnabled(System.Boolean)
+summary: 在运行时启用或禁用标题栏的项目感知显示。
+syntax:
+  parameters:
+  - id: enabled
+    description: 标题按钮是否使用活动项目标识。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject
+summary: 描述 Flourish Shell 所表示的一个应用项目。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.#ctor(System.String,System.String,System.String)
+summary: 创建项目显示元数据。
+syntax:
+  parameters:
+  - id: id
+    description: 稳定且区分大小写的项目 ID。
+  - id: name
+    description: 项目显示名称。
+  - id: storagePath
+    description: 项目表示的可选本地存储路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.Id
+summary: 获取稳定且区分大小写的项目 ID。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.Name
+summary: 获取项目显示名称。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.StoragePath
+summary: 获取项目表示的可选本地存储路径。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot
+summary: 表示当前项目标识、活动选择与模式的只读快照。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.#ctor(System.Collections.Generic.IReadOnlyList{ArkheideSystem.Flourish.Abstract.FlourishProject},ArkheideSystem.Flourish.Abstract.FlourishProject,System.Boolean,System.Int64)
+summary: 创建项目显示状态快照。
+syntax:
+  parameters:
+  - id: Projects
+    description: 按插入顺序排列的已注册项目。
+  - id: ActiveProject
+    description: 活动项目，或 null。
+  - id: IsMultiProjectEnabled
+    description: 是否启用项目感知标题显示。
+  - id: Version
+    description: 项目状态版本号。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.Projects
+summary: 获取按插入顺序排列的已注册项目。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.ActiveProject
+summary: 获取活动项目；尚未选择时为 null。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.IsMultiProjectEnabled
+summary: 获取标题栏是否使用项目感知的显示语义。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.Version
+summary: 获取单调递增的项目状态版本号。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs
+summary: 提供项目显示状态变化后的数据。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot,ArkheideSystem.Flourish.Abstract.FlourishRuntimeChangeKind,System.String,System.Boolean)
+summary: 创建项目状态变更事件数据。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.Current
+summary: 获取变更后的项目状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.ChangeKind
+summary: 获取引发事件的变更种类。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.ProjectId
+summary: 获取受影响的项目 ID；不适用时为 null。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.ActiveProjectChanged
+summary: 获取活动项目标识或其显示元数据是否变化。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishNewProjectRequestedEventArgs
+summary: 标题栏请求创建项目时提供项目状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishNewProjectRequestedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot)
+summary: 创建新建项目请求事件数据。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishNewProjectRequestedEventArgs.Current
+summary: 获取发出请求时的项目状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs
+summary: 提供标题栏请求激活的项目与当前状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.FlourishProject,ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot)
+summary: 创建项目激活请求事件数据。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs.Project
+summary: 获取用户选择的项目。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs.Current
+summary: 获取发出请求时的项目状态。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService
+summary: 在应用运行期间更改 Flourish 标题栏内容与可见性。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetApplicationTitle(System.String)
+summary: 在运行时设置应用标题并显示标题按钮。
+syntax:
+  parameters:
+  - id: title
+    description: 非空应用标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetApplicationSubTitle(System.String)
+summary: 设置 Logo 信息视图中的应用副标题；传入 null 可清除。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetApplicationIdentity(System.String,System.String)
+summary: 在运行时原子更新应用标题与副标题。
+syntax:
+  parameters:
+  - id: title
+    description: 非空应用标题。
+  - id: subTitle
+    description: 应用副标题，或 null。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetUnnamedProjectPlaceholder(System.String)
+summary: 设置多项目模式下无活动项目时显示的标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetLogo(System.String,System.String,System.Boolean,System.Boolean,System.Boolean)
+summary: 在运行时更改 Logo 来源与信息视图字段，并显示 Logo 按钮。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState
+summary: 表示当前 Flourish 标题栏状态的只读快照。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ApplicationTitle
+summary: 获取应用标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ApplicationSubTitle
+summary: 获取 Logo 信息视图使用的应用副标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.UnnamedProjectPlaceholder
+summary: 获取无活动项目时显示的标题占位文本。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ShowApplicationTitle
+summary: 获取 Logo 信息视图是否显示应用标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ShowApplicationSubTitle
+summary: 获取 Logo 信息视图是否显示应用副标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ShowProjectTitle
+summary: 获取 Logo 信息视图是否显示活动项目标题。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.FlourishRegion.TitlebarApplicationInfo
+summary: Logo 信息视图中位于标识元数据下方的应用自定义 Body 区域。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.TitleBarElement.Title
+summary: 应用或活动项目标题按钮。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.TitleBarElement.Subtitle
+summary: Logo 信息视图中的应用副标题；不再直接显示于标题栏。
 ---
 
 ---

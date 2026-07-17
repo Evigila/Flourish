@@ -45,75 +45,116 @@ public partial class BackgroundTasksPage : Page
 
     private void AddProgressTask_Click(object sender, RoutedEventArgs e)
     {
-        AddProgressTask("Interactive progress task", 150);
+        try
+        {
+            var taskName = AddProgressTask("Interactive progress task", 150);
+            ServiceOutput.WriteLine($"Queued {taskName}.");
+        }
+        catch (Exception error)
+        {
+            WriteError(error);
+        }
     }
 
     private void AddResultTask_Click(object sender, RoutedEventArgs e)
     {
-        var sequence = Interlocked.Increment(ref taskSequence);
-        var handle = backgroundTasks.AddTask(
-            new FlourishBackgroundTaskMetadata(
-                $"Result task {sequence}",
-                "Calculates a value and returns it through the typed handle.",
-                "\uE945"
-            ),
-            async context =>
-            {
-                var total = 0;
-                for (var step = 1; step <= 10; step++)
+        try
+        {
+            var sequence = Interlocked.Increment(ref taskSequence);
+            var handle = backgroundTasks.AddTask(
+                new FlourishBackgroundTaskMetadata(
+                    $"Result task {sequence}",
+                    "Calculates a value and returns it through the typed handle.",
+                    "\uE945"
+                ),
+                async context =>
                 {
-                    await Task.Delay(120, context.CancellationToken);
-                    total += step;
-                    context.ReportProgress(step / 10d);
+                    var total = 0;
+                    for (var step = 1; step <= 10; step++)
+                    {
+                        await Task.Delay(120, context.CancellationToken);
+                        total += step;
+                        context.ReportProgress(step / 10d);
+                    }
+
+                    return total;
                 }
+            );
 
-                return total;
-            }
-        );
-
-        lastTaskId = handle.Id;
-        ServiceStatusText.Text = $"Queued typed result task {handle.Id}.";
-        _ = ObserveResultTaskAsync(handle);
+            lastTaskId = handle.Id;
+            ServiceOutput.WriteLine($"Queued typed result task {handle.Id}.");
+            _ = ObserveResultTaskAsync(handle);
+        }
+        catch (Exception error)
+        {
+            WriteError(error);
+        }
     }
 
     private void AddBurst_Click(object sender, RoutedEventArgs e)
     {
-        for (var index = 1; index <= 4; index++)
+        try
         {
-            AddProgressTask($"Burst item {index}", 90 + (index * 30));
-        }
+            for (var index = 1; index <= 4; index++)
+            {
+                AddProgressTask($"Burst item {index}", 90 + (index * 30));
+            }
 
-        ServiceStatusText.Text =
-            $"Queued four tasks. The configured concurrency limit is {backgroundTasks.MaxConcurrency}.";
+            ServiceOutput.WriteLine(
+                $"Queued four tasks. The configured concurrency limit is {backgroundTasks.MaxConcurrency}."
+            );
+        }
+        catch (Exception error)
+        {
+            WriteError(error);
+        }
     }
 
     private void CancelLast_Click(object sender, RoutedEventArgs e)
     {
         if (lastTaskId is not Guid id)
         {
-            ServiceStatusText.Text = "No task has been submitted by this page yet.";
+            ServiceOutput.WriteLine("No task has been submitted by this page yet.");
             return;
         }
 
-        ServiceStatusText.Text = backgroundTasks.CancelTask(id)
-            ? $"Cancellation requested for {id}."
-            : $"Task {id} is no longer active.";
+        try
+        {
+            ServiceOutput.WriteLine(
+                backgroundTasks.CancelTask(id)
+                    ? $"Cancellation requested for {id}."
+                    : $"Task {id} is no longer active."
+            );
+        }
+        catch (Exception error)
+        {
+            WriteError(error);
+        }
     }
 
     private void CancelSelected_Click(object sender, RoutedEventArgs e)
     {
         if (ActiveTaskList.SelectedItem is not ActiveTaskRow row)
         {
-            ServiceStatusText.Text = "Select an active task first.";
+            ServiceOutput.WriteLine("Select an active task first.");
             return;
         }
 
-        ServiceStatusText.Text = backgroundTasks.CancelTask(row.Id)
-            ? $"Cancellation requested for {row.Name}."
-            : $"{row.Name} is no longer active.";
+        try
+        {
+            ServiceOutput.WriteLine(
+                backgroundTasks.CancelTask(row.Id)
+                    ? $"Cancellation requested for {row.Name}."
+                    : $"{row.Name} is no longer active."
+            );
+        }
+        catch (Exception error)
+        {
+            WriteError(error);
+        }
     }
 
-    private void AddProgressTask(string name, int delayMilliseconds)
+    private string AddProgressTask(string name, int delayMilliseconds)
     {
         var sequence = Interlocked.Increment(ref taskSequence);
         var handle = backgroundTasks.AddTask(
@@ -133,8 +174,8 @@ public partial class BackgroundTasksPage : Page
         );
 
         lastTaskId = handle.Id;
-        ServiceStatusText.Text = $"Queued {handle.Snapshot.Metadata.Name}.";
         _ = ObserveTaskAsync(handle);
+        return handle.Snapshot.Metadata.Name;
     }
 
     private async Task ObserveTaskAsync(FlourishBackgroundTaskHandle handle)
@@ -163,9 +204,9 @@ public partial class BackgroundTasksPage : Page
     private void RefreshActiveTasks(IReadOnlyList<FlourishBackgroundTaskInfo> tasks)
     {
         ActiveTaskList.ItemsSource = tasks.Select(info => new ActiveTaskRow(info)).ToArray();
-        ServiceStatusText.Text =
-            $"Active: {tasks.Count}  |  Max concurrency: {backgroundTasks.MaxConcurrency}";
     }
+
+    private void WriteError(Exception error) => ServiceOutput.WriteLine($"Error: {error.Message}");
 
     private sealed record ActiveTaskRow(Guid Id, string Name, FlourishBackgroundTaskState State, double? Progress)
     {

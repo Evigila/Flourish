@@ -12,6 +12,7 @@ builder.ConfigureShell(shell =>
 {
     shell
         .UseTitleBar()
+        .UseMultiProject()
         .UseNavigation()
         .UseCenterContent(true, 1200)
         .UseDynamicToolbar()
@@ -32,6 +33,7 @@ builder.ConfigureNavigation(navigation =>
 | Shell method | Behavior | Feature guide |
 | --- | --- | --- |
 | `UseTitleBar` | Enables the Flourish title bar. When disabled, the Shell uses the native Windows title bar. | [Title bar](configure-title-bar.md) |
+| `UseMultiProject` | Makes the title button display and select in-memory project identities. | [Projects](projects.md) |
 | `UseNavigation` | Enables the navigation panel. | [Navigation](navigation.md) |
 | `UseCenterContent` | Limits and centers navigated page content on wide viewports. | [Content alignment](#customize-content-alignment) |
 | `UseDynamicToolbar` | Enables page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
@@ -49,7 +51,7 @@ builder.ConfigureNavigation(navigation =>
 
 Boolean feature switches take priority over detailed configuration. For example, registered toolbar items remain hidden when `UseDynamicToolbar(false)` is active, and configured status items remain hidden when `UseStatusBar(false)` is active.
 
-Title bar elements require `UseTitleBar()`. The navigation toggle also requires `UseNavigation()` because it controls that panel. Application content added to a predefined Shell region requires the corresponding title bar, navigation, toolbar, or status surface to be enabled.
+Title bar elements and `UseMultiProject()` require `UseTitleBar()`. Project mode makes the title button visible even before an active project exists, using the configured unnamed-project placeholder. The navigation toggle also requires `UseNavigation()` because it controls that panel. Application content added to a predefined Shell region requires the corresponding title bar, navigation, toolbar, or status surface to be enabled.
 
 Background tasks are the exception to persistent status-bar visibility. Active work temporarily shows its task indicators even when `UseStatusBar()` is omitted; the bar returns to its configured visibility after no active tasks remain. See [Background tasks](background-tasks.md).
 
@@ -71,13 +73,14 @@ If `UseCenterContent` is omitted, or is called with `enabled: false`, navigated 
 
 ## Disable a feature
 
-`UseTitleBar`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an optional `enabled` value. `UseCenterContent` requires both `enabled` and `contentWidth`; pass `false` with the configured width when a shared builder setup must keep centered page content disabled.
+`UseTitleBar`, `UseMultiProject`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an optional `enabled` value. `UseCenterContent` requires both `enabled` and `contentWidth`; pass `false` with the configured width when a shared builder setup must keep centered page content disabled.
 
 ```csharp
 builder.ConfigureShell(shell =>
 {
     shell
         .UseNavigation(showNavigation)
+        .UseMultiProject(useProjects)
         .UseCenterContent(useCenteredPages, 1200)
         .UseMotion(!useStaticInterface)
         .UseStatusBar(showStatusBar);
@@ -93,6 +96,7 @@ Omit `UseTips` or `UseGlobalFont` to retain their default behavior. Use `Materia
 ## Related features
 
 - [Window](configure-window.md) configures size, placement, and close behavior.
+- [Projects](projects.md) explains project metadata and title-menu requests.
 - [Application data](configure-data.md) configures localization and Host settings.
 - [Dependency injection](configure-services.md) registers application services and replaceable Flourish services.
 - [Custom shell content](configure-custom-handler.md) inserts application elements into enabled Shell regions.

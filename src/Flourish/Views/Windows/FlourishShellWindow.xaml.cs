@@ -45,6 +45,7 @@ internal partial class FlourishShellWindow : Window
     private readonly ThemeService themeService;
     private readonly FlourishMotionService motionService;
     private readonly TitleBarService titleBarService;
+    private readonly ProjectService projectService;
     private readonly TitleBarSearchService titleBarSearchService;
     private readonly WindowService windowService;
     private readonly WindowCloseService windowCloseService;
@@ -99,6 +100,10 @@ internal partial class FlourishShellWindow : Window
     private bool backgroundTaskRefreshLoopActive;
     private volatile bool isShellClosed;
     private bool statusFlyoutOpenedWithFocus;
+    private FrameworkElement? titleBarFlyoutAnchor;
+    private IInputElement? titleBarFlyoutRestoreFocusTarget;
+    private TitleBarFlyoutKind titleBarFlyoutKind;
+    private bool titleBarFlyoutOpenedWithFocus;
     private bool allowClose;
     private bool closeRequestPending;
     private bool isProfileServiceSubscribed;
@@ -114,6 +119,13 @@ internal partial class FlourishShellWindow : Window
         None,
         BackgroundTasks,
         System,
+    }
+
+    private enum TitleBarFlyoutKind
+    {
+        None,
+        ApplicationInfo,
+        ProjectMenu,
     }
 
     private sealed class BackgroundTaskIconView(
@@ -182,6 +194,7 @@ internal partial class FlourishShellWindow : Window
         ThemeService themeService,
         FlourishMotionService motionService,
         TitleBarService titleBarService,
+        ProjectService projectService,
         TitleBarSearchService titleBarSearchService,
         WindowService windowService,
         WindowCloseService windowCloseService,
@@ -222,6 +235,7 @@ internal partial class FlourishShellWindow : Window
         this.themeService = themeService;
         this.motionService = motionService;
         this.titleBarService = titleBarService;
+        this.projectService = projectService;
         this.titleBarSearchService = titleBarSearchService;
         this.windowService = windowService;
         this.windowCloseService = windowCloseService;
@@ -249,6 +263,7 @@ internal partial class FlourishShellWindow : Window
         statusService.Changed += StatusService_Changed;
         shellRegionService.Changed += ShellRegionService_Changed;
         titleBarService.Changed += TitleBarService_Changed;
+        projectService.Changed += ProjectService_Changed;
         titleBarSearchService.StateChanged += TitleBarSearchService_StateChanged;
         notificationService.NotificationsChanged += NotificationService_NotificationsChanged;
         profileFlyoutService.Changed += ProfileFlyoutService_Changed;
@@ -277,22 +292,20 @@ internal partial class FlourishShellWindow : Window
     private void ApplyOptions()
     {
         ApplyWindowOptions();
-        Title = options.Title;
+        Title = options.ApplicationTitle;
         RequestTitleBarLogo(
             options.LogoPath,
             options.LogoFallbackText,
             options.IsTitlebarLogoEnabled
         );
-        Titlebar.SetTitle(options.Title);
-        Titlebar.SetSubtitle(options.Subtitle);
+        Titlebar.SetDisplayTitle(GetDisplayedTitle());
         Titlebar.SetSearchPlaceholder(options.SearchPlaceholder);
         Titlebar.ConfigureVisibility(
             options.IsTitlebarSearchEnabled,
             IsBreadcrumbFeatureEnabled(),
             options.IsTitlebarNavigationToggleEnabled && options.IsNavigationPanelEnabled,
             options.IsTitlebarLogoEnabled,
-            options.IsTitlebarTitleEnabled,
-            options.IsTitlebarSubtitleEnabled,
+            options.IsTitlebarTitleEnabled || options.IsMultiProjectEnabled,
             options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
             options.IsProfileEnabled && options.IsTitlebarProfileEnabled
         );
@@ -322,7 +335,7 @@ internal partial class FlourishShellWindow : Window
         );
         themeService.Attach(this);
         ApplyThemeState();
-        trayIconService.Initialize(this, options.Title);
+        trayIconService.Initialize(this, options.ApplicationTitle);
     }
 
     private void ConfigureProfileSurface()
@@ -446,6 +459,7 @@ internal partial class FlourishShellWindow : Window
 
         ProfileOverlay.Visibility = Visibility.Visible;
         CloseStatusFlyout(restoreFocus: false);
+        CloseTitleBarFlyout(restoreFocus: false);
         Dispatcher.BeginInvoke(new Action(UpdateProfileCardPosition));
     }
 
@@ -516,6 +530,7 @@ internal partial class FlourishShellWindow : Window
         }
 
         Titlebar.SetMaximized(WindowState == WindowState.Maximized);
+        EnsureTitleBarFlyoutIsAvailable();
         if (!options.IsTitlebarEnabled || !titleBarSearchService.Current.FocusRequested)
         {
             return;
@@ -545,7 +560,36 @@ internal partial class FlourishShellWindow : Window
         Titlebar.ToggleWindowStateRequested += Titlebar_ToggleWindowStateRequested;
         Titlebar.ThemeToggleRequested += Titlebar_ThemeToggleRequested;
         Titlebar.ProfileToggleRequested += Titlebar_ProfileToggleRequested;
+        Titlebar.LogoHoverRequested += Titlebar_LogoHoverRequested;
+        Titlebar.LogoClickRequested += Titlebar_LogoClickRequested;
+        Titlebar.TitleClickRequested += Titlebar_TitleClickRequested;
+        Titlebar.InteractionStarted += Titlebar_InteractionStarted;
         Titlebar.SearchTextChanged += Titlebar_SearchTextChanged;
+    }
+
+    private void Titlebar_InteractionStarted(object? sender, EventArgs e)
+    {
+        CloseTitleBarFlyout(restoreFocus: false);
+    }
+
+    private void Titlebar_LogoHoverRequested(object? sender, EventArgs e)
+    {
+        if (titleBarFlyoutOpenedWithFocus)
+        {
+            return;
+        }
+
+        OpenApplicationInfoFlyout(focusFlyout: false);
+    }
+
+    private void Titlebar_LogoClickRequested(object? sender, EventArgs e)
+    {
+        OpenApplicationInfoFlyout(focusFlyout: true);
+    }
+
+    private void Titlebar_TitleClickRequested(object? sender, EventArgs e)
+    {
+        OpenProjectMenuFlyout(focusFlyout: true);
     }
 
     private void Titlebar_ProfileToggleRequested(object? sender, EventArgs e)
@@ -560,6 +604,7 @@ internal partial class FlourishShellWindow : Window
         }
 
         CloseStatusFlyout(restoreFocus: false);
+        CloseTitleBarFlyout(restoreFocus: false);
         profileFlyoutService.Toggle();
     }
 
@@ -592,6 +637,13 @@ internal partial class FlourishShellWindow : Window
     {
         if (e.Key == Key.Escape)
         {
+            if (TitleBarFlyoutOverlay.Visibility == Visibility.Visible)
+            {
+                CloseTitleBarFlyout();
+                e.Handled = true;
+                return;
+            }
+
             if (StatusFlyoutOverlay.Visibility == Visibility.Visible)
             {
                 CloseStatusFlyout();
@@ -720,6 +772,7 @@ internal partial class FlourishShellWindow : Window
 
         UpdateProfileCardPosition();
         UpdateStatusFlyoutPosition();
+        UpdateTitleBarFlyoutPosition();
     }
 
     private void ProfileCard_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -779,6 +832,476 @@ internal partial class FlourishShellWindow : Window
 
         Canvas.SetLeft(ProfileCard, left);
         Canvas.SetTop(ProfileCard, top);
+    }
+
+    private string GetDisplayedTitle()
+    {
+        return GetDisplayedTitle(titleBarService.Current, projectService.Current);
+    }
+
+    private static string GetDisplayedTitle(
+        FlourishTitleBarState titleState,
+        FlourishProjectSnapshot projectState
+    )
+    {
+        return projectState.IsMultiProjectEnabled
+            ? projectState.ActiveProject?.Name ?? titleState.UnnamedProjectPlaceholder
+            : titleState.ApplicationTitle;
+    }
+
+    private void EnsureTitleBarFlyoutIsAvailable()
+    {
+        if (TitleBarFlyoutOverlay.Visibility != Visibility.Visible)
+        {
+            return;
+        }
+
+        var titleState = titleBarService.Current;
+        var projectState = projectService.Current;
+        var isAvailable = options.IsTitlebarEnabled
+            && (
+                titleBarFlyoutKind switch
+                {
+                    TitleBarFlyoutKind.ApplicationInfo => titleState.IsLogoVisible,
+                    TitleBarFlyoutKind.ProjectMenu =>
+                        titleState.IsTitleVisible || projectState.IsMultiProjectEnabled,
+                    _ => false,
+                }
+            );
+        if (!isAvailable)
+        {
+            CloseTitleBarFlyout(restoreFocus: false);
+        }
+    }
+
+    private void OpenApplicationInfoFlyout(bool focusFlyout)
+    {
+        if (!options.IsTitlebarEnabled || !titleBarService.Current.IsLogoVisible)
+        {
+            return;
+        }
+
+        BuildApplicationInfoFlyoutContent();
+        OpenTitleBarFlyout(
+            Titlebar.GetLogoButtonAnchor(),
+            TitleBarFlyoutKind.ApplicationInfo,
+            focusFlyout
+        );
+    }
+
+    private void OpenProjectMenuFlyout(bool focusFlyout)
+    {
+        if (
+            !options.IsTitlebarEnabled
+            || !(titleBarService.Current.IsTitleVisible || projectService.Current.IsMultiProjectEnabled)
+        )
+        {
+            return;
+        }
+
+        BuildProjectMenuFlyoutContent();
+        OpenTitleBarFlyout(
+            Titlebar.GetTitleButtonAnchor(),
+            TitleBarFlyoutKind.ProjectMenu,
+            focusFlyout
+        );
+    }
+
+    private void OpenTitleBarFlyout(
+        FrameworkElement anchor,
+        TitleBarFlyoutKind kind,
+        bool focusFlyout
+    )
+    {
+        CloseStatusFlyout(restoreFocus: false);
+        CloseProfileOverlay();
+
+        var wasVisible = TitleBarFlyoutOverlay.Visibility == Visibility.Visible;
+        if (focusFlyout && !titleBarFlyoutOpenedWithFocus)
+        {
+            titleBarFlyoutOpenedWithFocus = true;
+            titleBarFlyoutRestoreFocusTarget = anchor;
+        }
+        else if (!focusFlyout && !wasVisible)
+        {
+            titleBarFlyoutOpenedWithFocus = false;
+            titleBarFlyoutRestoreFocusTarget = null;
+        }
+
+        titleBarFlyoutAnchor = anchor;
+        titleBarFlyoutKind = kind;
+        ApplicationInfoContent.Visibility =
+            kind == TitleBarFlyoutKind.ApplicationInfo
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        ProjectMenuContent.Visibility =
+            kind == TitleBarFlyoutKind.ProjectMenu
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        TitleBarFlyoutOverlay.Visibility = Visibility.Visible;
+        Dispatcher.BeginInvoke(
+            new Action(() =>
+            {
+                UpdateTitleBarFlyoutPosition();
+                if (focusFlyout)
+                {
+                    FocusTitleBarFlyoutContent();
+                }
+            })
+        );
+    }
+
+    private void BuildApplicationInfoFlyoutContent()
+    {
+        var titleState = titleBarService.Current;
+        var projectState = projectService.Current;
+        var source = currentTitleBarLogoSource;
+        ApplicationInfoLogoImage.Source = source;
+        ApplicationInfoLogoImage.Visibility = source is null
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        ApplicationInfoLogoFallback.Text = string.IsNullOrWhiteSpace(
+            titleState.LogoFallbackText
+        )
+            ? "F"
+            : titleState.LogoFallbackText[..1];
+        ApplicationInfoLogoFallback.Visibility = source is null
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+
+        ApplicationInfoTitle.Text = titleState.ApplicationTitle;
+        ApplicationInfoTitle.Visibility =
+            titleState.ShowApplicationTitle
+            && !string.IsNullOrWhiteSpace(titleState.ApplicationTitle)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        ApplicationInfoSubTitle.Text = titleState.ApplicationSubTitle;
+        ApplicationInfoSubTitle.Visibility =
+            titleState.ShowApplicationSubTitle
+            && !string.IsNullOrWhiteSpace(titleState.ApplicationSubTitle)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+        var projectTitle = projectState.ActiveProject?.Name;
+
+        ApplicationInfoProjectTitle.Text = projectTitle ?? string.Empty;
+        ApplicationInfoProjectTitle.Visibility =
+            titleState.ShowProjectTitle && !string.IsNullOrWhiteSpace(projectTitle)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        ApplicationInfoBodyScrollViewer.Visibility =
+            ApplicationInfoBodyHost.Children.Count > 0
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+
+        var identityParts = new[]
+        {
+            ApplicationInfoTitle.Visibility == Visibility.Visible
+                ? ApplicationInfoTitle.Text
+                : null,
+            ApplicationInfoSubTitle.Visibility == Visibility.Visible
+                ? ApplicationInfoSubTitle.Text
+                : null,
+            ApplicationInfoProjectTitle.Visibility == Visibility.Visible
+                ? ApplicationInfoProjectTitle.Text
+                : null,
+        }.Where(value => !string.IsNullOrWhiteSpace(value));
+        AutomationProperties.SetName(TitleBarFlyoutCard, string.Join(", ", identityParts));
+    }
+
+    private void BuildProjectMenuFlyoutContent()
+    {
+        var titleState = titleBarService.Current;
+        var projectState = projectService.Current;
+        var displayTitle = GetDisplayedTitle();
+        ProjectMenuTitle.Text = displayTitle;
+        ProjectMenuTitle.Margin = projectState.IsMultiProjectEnabled
+            ? new Thickness(2, 0, 2, 10)
+            : new Thickness(2, 0, 2, 0);
+        AutomationProperties.SetName(ProjectMenuTitle, displayTitle);
+        AutomationProperties.SetName(TitleBarFlyoutCard, displayTitle);
+        ProjectMenuItemsHost.Children.Clear();
+
+        if (!projectState.IsMultiProjectEnabled)
+        {
+            NewProjectButton.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        foreach (var project in projectState.Projects)
+        {
+            var button = CreateProjectMenuButton(
+                project,
+                projectState.ActiveProject?.Id == project.Id
+            );
+            ProjectMenuItemsHost.Children.Add(button);
+        }
+
+        if (projectState.Projects.Count == 0)
+        {
+            var empty = new TextBlock
+            {
+                Margin = new Thickness(8, 6, 8, 6),
+                Text = titleState.UnnamedProjectPlaceholder,
+                TextWrapping = TextWrapping.Wrap,
+            };
+            empty.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "FlourishNeutralForeground2Brush"
+            );
+            ProjectMenuItemsHost.Children.Add(empty);
+        }
+
+        NewProjectButton.Content = localizationService.Get(FlourishLocaleKeys.TitleBarNewProject);
+        NewProjectButton.Visibility = Visibility.Visible;
+    }
+
+    private Button CreateProjectMenuButton(FlourishProject project, bool isActive)
+    {
+        var layout = new Grid();
+        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
+        layout.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+        );
+
+        var indicator = new TextBlock
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = isActive ? "\uE73E" : string.Empty,
+        };
+        BindIconTypography(indicator, "FlourishFontSizeIcon");
+        layout.Children.Add(indicator);
+
+        var details = new StackPanel();
+        Grid.SetColumn(details, 1);
+        var name = new TextBlock
+        {
+            FontWeight = isActive ? FontWeights.Bold : FontWeights.Normal,
+            Text = project.Name,
+            TextTrimming = TextTrimming.CharacterEllipsis,
+        };
+        details.Children.Add(name);
+        if (!string.IsNullOrWhiteSpace(project.StoragePath))
+        {
+            var path = new TextBlock
+            {
+                Margin = new Thickness(0, 2, 0, 0),
+                Text = project.StoragePath,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+            };
+            path.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "FlourishNeutralForeground2Brush"
+            );
+            details.Children.Add(path);
+        }
+
+        layout.Children.Add(details);
+        var button = new Button
+        {
+            MinHeight = 42,
+            Padding = new Thickness(8, 6, 8, 6),
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+            HorizontalContentAlignment = System.Windows.HorizontalAlignment.Stretch,
+            Content = layout,
+            Tag = project.Id,
+            Variant = ButtonVariant.Text,
+        };
+        AutomationProperties.SetName(button, project.Name);
+        button.Click += ProjectMenuItem_Click;
+        return button;
+    }
+
+    private void ProjectMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: string projectId })
+        {
+            return;
+        }
+
+        CloseTitleBarFlyout();
+        projectService.TryRequestProjectActivation(projectId);
+    }
+
+    private void NewProjectButton_Click(object sender, RoutedEventArgs e)
+    {
+        CloseTitleBarFlyout();
+        projectService.RequestNewProject();
+    }
+
+    private void FocusTitleBarFlyoutContent()
+    {
+        if (titleBarFlyoutKind == TitleBarFlyoutKind.ProjectMenu)
+        {
+            foreach (var button in ProjectMenuItemsHost.Children.OfType<Button>())
+            {
+                if (button.Focus())
+                {
+                    return;
+                }
+            }
+
+            if (NewProjectButton.Visibility == Visibility.Visible && NewProjectButton.Focus())
+            {
+                return;
+            }
+
+            if (ProjectMenuTitle.Focus())
+            {
+                return;
+            }
+        }
+
+        TitleBarFlyoutCard.Focus();
+    }
+
+    private void RefreshOpenProjectMenuFlyout()
+    {
+        var focusedProjectId = (Keyboard.FocusedElement as Button)?.Tag as string;
+        var wasNewProjectFocused = ReferenceEquals(
+            Keyboard.FocusedElement,
+            NewProjectButton
+        );
+        var hadKeyboardFocus = TitleBarFlyoutCard.IsKeyboardFocusWithin;
+
+        BuildProjectMenuFlyoutContent();
+        if (!hadKeyboardFocus)
+        {
+            return;
+        }
+
+        Dispatcher.BeginInvoke(
+            DispatcherPriority.Input,
+            new Action(() =>
+            {
+                if (
+                    TitleBarFlyoutOverlay.Visibility != Visibility.Visible
+                    || titleBarFlyoutKind != TitleBarFlyoutKind.ProjectMenu
+                )
+                {
+                    return;
+                }
+
+                if (focusedProjectId is not null)
+                {
+                    var matchingButton = ProjectMenuItemsHost
+                        .Children.OfType<Button>()
+                        .FirstOrDefault(button =>
+                            StringComparer.Ordinal.Equals(
+                                button.Tag as string,
+                                focusedProjectId
+                            )
+                        );
+                    if (matchingButton?.Focus() == true)
+                    {
+                        return;
+                    }
+                }
+
+                if (
+                    wasNewProjectFocused
+                    && NewProjectButton.Visibility == Visibility.Visible
+                    && NewProjectButton.Focus()
+                )
+                {
+                    return;
+                }
+
+                FocusTitleBarFlyoutContent();
+            })
+        );
+    }
+
+    private void CloseTitleBarFlyout(bool restoreFocus = true)
+    {
+        if (TitleBarFlyoutOverlay.Visibility != Visibility.Visible)
+        {
+            return;
+        }
+
+        TitleBarFlyoutOverlay.Visibility = Visibility.Collapsed;
+        var restoreTarget = titleBarFlyoutRestoreFocusTarget ?? titleBarFlyoutAnchor;
+        var shouldRestoreFocus = restoreFocus && titleBarFlyoutOpenedWithFocus;
+        titleBarFlyoutAnchor = null;
+        titleBarFlyoutRestoreFocusTarget = null;
+        titleBarFlyoutKind = TitleBarFlyoutKind.None;
+        titleBarFlyoutOpenedWithFocus = false;
+        if (shouldRestoreFocus && restoreTarget is not null)
+        {
+            Keyboard.Focus(restoreTarget);
+        }
+    }
+
+    private void TitleBarFlyoutOverlay_PreviewMouseLeftButtonDown(
+        object sender,
+        MouseButtonEventArgs e
+    )
+    {
+        var position = e.GetPosition(TitleBarFlyoutCard);
+        if (
+            position.X >= 0
+            && position.Y >= 0
+            && position.X <= TitleBarFlyoutCard.ActualWidth
+            && position.Y <= TitleBarFlyoutCard.ActualHeight
+        )
+        {
+            return;
+        }
+
+        CloseTitleBarFlyout();
+        e.Handled = true;
+    }
+
+    private void TitleBarFlyoutCard_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateTitleBarFlyoutPosition();
+    }
+
+    private void UpdateTitleBarFlyoutPosition()
+    {
+        const double edgeSafeMargin = 14;
+        const double anchorGap = 6;
+        if (
+            TitleBarFlyoutOverlay.Visibility != Visibility.Visible
+            || titleBarFlyoutAnchor is null
+            || ShellRootGrid.ActualWidth <= edgeSafeMargin * 2
+            || ShellRootGrid.ActualHeight <= edgeSafeMargin * 2
+        )
+        {
+            return;
+        }
+
+        var topLeft = titleBarFlyoutAnchor.TranslatePoint(
+            new System.Windows.Point(),
+            ShellRootGrid
+        );
+        var anchor = new Rect(
+            topLeft,
+            new System.Windows.Size(
+                titleBarFlyoutAnchor.ActualWidth,
+                titleBarFlyoutAnchor.ActualHeight
+            )
+        );
+        var availableWidth = Math.Max(0, ShellRootGrid.ActualWidth - edgeSafeMargin * 2);
+        TitleBarFlyoutCard.MaxWidth = availableWidth;
+        var cardWidth = TitleBarFlyoutCard.ActualWidth > 0
+            ? Math.Min(TitleBarFlyoutCard.ActualWidth, availableWidth)
+            : Math.Min(TitleBarFlyoutCard.Width, availableWidth);
+        var desiredLeft = titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo
+            ? anchor.Left + (anchor.Width - cardWidth) / 2
+            : anchor.Left;
+        var maximumLeft = Math.Max(
+            edgeSafeMargin,
+            ShellRootGrid.ActualWidth - cardWidth - edgeSafeMargin
+        );
+        var left = Math.Clamp(desiredLeft, edgeSafeMargin, maximumLeft);
+        var top = Math.Max(edgeSafeMargin, anchor.Bottom + anchorGap);
+        TitleBarFlyoutCard.MaxHeight = Math.Max(
+            0,
+            ShellRootGrid.ActualHeight - top - edgeSafeMargin
+        );
+        Canvas.SetLeft(TitleBarFlyoutCard, left);
+        Canvas.SetTop(TitleBarFlyoutCard, top);
     }
 
     private void BackgroundTaskService_TasksChanged(
@@ -1450,6 +1973,7 @@ internal partial class FlourishShellWindow : Window
     private void OpenStatusFlyout(FrameworkElement anchor, StatusFlyoutKind kind, bool focusFlyout)
     {
         CloseProfileOverlay();
+        CloseTitleBarFlyout(restoreFocus: false);
         var wasVisible = StatusFlyoutOverlay.Visibility == Visibility.Visible;
         if (focusFlyout && !statusFlyoutOpenedWithFocus)
         {
@@ -1924,6 +2448,13 @@ internal partial class FlourishShellWindow : Window
             case FlourishRegion.TitlebarProfile:
                 Titlebar.SetRegionContent(region, elements);
                 break;
+            case FlourishRegion.TitlebarApplicationInfo:
+                SetPanelContent(ApplicationInfoBodyHost, elements);
+                if (titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo)
+                {
+                    BuildApplicationInfoFlyoutContent();
+                }
+                break;
             case FlourishRegion.NavigationHeader:
                 SetPanelContent(NavigationHeaderRegionHost, elements);
                 break;
@@ -2329,8 +2860,7 @@ internal partial class FlourishShellWindow : Window
                 IsBreadcrumbFeatureEnabled(),
                 options.IsTitlebarNavigationToggleEnabled && current.IsEnabled,
                 options.IsTitlebarLogoEnabled,
-                options.IsTitlebarTitleEnabled,
-                options.IsTitlebarSubtitleEnabled,
+                options.IsTitlebarTitleEnabled || projectService.Current.IsMultiProjectEnabled,
                 options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
                 options.IsProfileEnabled && options.IsTitlebarProfileEnabled
             );
@@ -2407,11 +2937,44 @@ internal partial class FlourishShellWindow : Window
         });
     }
 
+    private void ProjectService_Changed(object? sender, FlourishProjectsChangedEventArgs e)
+    {
+        DispatchRuntimeChange(() =>
+        {
+            var titleState = titleBarService.Current;
+            var projectState = projectService.Current;
+            Titlebar.SetDisplayTitle(GetDisplayedTitle(titleState, projectState));
+            Titlebar.ConfigureVisibility(
+                titleState.IsSearchVisible,
+                titleState.IsBreadcrumbVisible
+                    && titleState.BreadcrumbMode != BreadcrumbShowOption.Hidden,
+                titleState.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
+                titleState.IsLogoVisible,
+                titleState.IsTitleVisible || projectState.IsMultiProjectEnabled,
+                titleState.IsThemeToggleVisible && options.IsThemeEnabled,
+                titleState.IsProfileVisible && options.IsProfileEnabled
+            );
+            EnsureTitleBarFlyoutIsAvailable();
+
+            switch (titleBarFlyoutKind)
+            {
+                case TitleBarFlyoutKind.ApplicationInfo:
+                    BuildApplicationInfoFlyoutContent();
+                    break;
+                case TitleBarFlyoutKind.ProjectMenu:
+                    RefreshOpenProjectMenuFlyout();
+                    break;
+            }
+
+            UpdateTitleBarFlyoutPosition();
+        });
+    }
+
     private void ApplyTitleBarState(FlourishTitleBarState state)
     {
-        Title = state.Title;
-        Titlebar.SetTitle(state.Title);
-        Titlebar.SetSubtitle(state.Subtitle);
+        var projectState = projectService.Current;
+        Title = state.ApplicationTitle;
+        Titlebar.SetDisplayTitle(GetDisplayedTitle(state, projectState));
         Titlebar.SetSearchPlaceholder(state.SearchPlaceholder);
         RequestTitleBarLogo(state.LogoPath, state.LogoFallbackText, state.IsLogoVisible);
         Titlebar.ConfigureVisibility(
@@ -2419,12 +2982,22 @@ internal partial class FlourishShellWindow : Window
             state.IsBreadcrumbVisible && state.BreadcrumbMode != BreadcrumbShowOption.Hidden,
             state.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
             state.IsLogoVisible,
-            state.IsTitleVisible,
-            state.IsSubtitleVisible,
+            state.IsTitleVisible || projectState.IsMultiProjectEnabled,
             state.IsThemeToggleVisible && options.IsThemeEnabled,
             state.IsProfileVisible && options.IsProfileEnabled
         );
+        EnsureTitleBarFlyoutIsAvailable();
         UpdateTitlebarBreadcrumbNavigation();
+        if (titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo)
+        {
+            BuildApplicationInfoFlyoutContent();
+            UpdateTitleBarFlyoutPosition();
+        }
+        else if (titleBarFlyoutKind == TitleBarFlyoutKind.ProjectMenu)
+        {
+            RefreshOpenProjectMenuFlyout();
+            UpdateTitleBarFlyoutPosition();
+        }
         if (navigationService.CurrentSourcePageType is { } pageType)
         {
             UpdateBreadcrumb(pageType);
@@ -2498,6 +3071,10 @@ internal partial class FlourishShellWindow : Window
         currentTitleBarLogoSource = effectiveSource;
         Titlebar.SetLogo(effectiveSource, currentTitleBarLogoFallbackText);
         Icon = isTitleBarLogoVisible ? effectiveSource : null;
+        if (titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo)
+        {
+            BuildApplicationInfoFlyoutContent();
+        }
     }
 
     private void TitleBarSearchService_StateChanged(
@@ -2522,8 +3099,7 @@ internal partial class FlourishShellWindow : Window
                     && titleState.BreadcrumbMode != BreadcrumbShowOption.Hidden,
                 titleState.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
                 titleState.IsLogoVisible,
-                titleState.IsTitleVisible,
-                titleState.IsSubtitleVisible,
+                titleState.IsTitleVisible || projectService.Current.IsMultiProjectEnabled,
                 titleState.IsThemeToggleVisible && options.IsThemeEnabled,
                 titleState.IsProfileVisible && options.IsProfileEnabled
             );
@@ -2601,6 +3177,11 @@ internal partial class FlourishShellWindow : Window
                 case StatusFlyoutKind.System:
                     OpenSystemStatusFlyout(statusFlyoutOpenedWithFocus);
                     break;
+            }
+
+            if (titleBarFlyoutKind == TitleBarFlyoutKind.ProjectMenu)
+            {
+                RefreshOpenProjectMenuFlyout();
             }
         });
     }
@@ -3004,7 +3585,7 @@ internal partial class FlourishShellWindow : Window
         var label =
             navigationItemsByPage.GetValueOrDefault(sourcePageType)?.Label ?? sourcePageType.Name;
 
-        BreadcrumbText.Text = $"{options.Title} / {label}";
+        BreadcrumbText.Text = $"{options.ApplicationTitle} / {label}";
         BreadcrumbHost.Visibility = Visibility.Visible;
     }
 
@@ -3361,6 +3942,7 @@ internal partial class FlourishShellWindow : Window
         statusService.Changed -= StatusService_Changed;
         shellRegionService.Changed -= ShellRegionService_Changed;
         titleBarService.Changed -= TitleBarService_Changed;
+        projectService.Changed -= ProjectService_Changed;
         titleBarLogoLoadCoordinator.Dispose();
         titleBarSearchService.StateChanged -= TitleBarSearchService_StateChanged;
         notificationService.NotificationsChanged -= NotificationService_NotificationsChanged;
@@ -3372,6 +3954,21 @@ internal partial class FlourishShellWindow : Window
         commandRegistry.Changed -= CommandRegistry_Changed;
         commandRegistry.CanExecuteChanged -= CommandRegistry_CanExecuteChanged;
         navigationService.Navigated -= RootFrame_Navigated;
+        Titlebar.BackRequested -= Titlebar_BackRequested;
+        Titlebar.ForwardRequested -= Titlebar_ForwardRequested;
+        Titlebar.NavigationToggleRequested -= Titlebar_NavigationToggleRequested;
+        Titlebar.MinimizeRequested -= Titlebar_MinimizeRequested;
+        Titlebar.MaximizeRequested -= Titlebar_MaximizeRequested;
+        Titlebar.CloseRequested -= Titlebar_CloseRequested;
+        Titlebar.DragRequested -= Titlebar_DragRequested;
+        Titlebar.ToggleWindowStateRequested -= Titlebar_ToggleWindowStateRequested;
+        Titlebar.ThemeToggleRequested -= Titlebar_ThemeToggleRequested;
+        Titlebar.ProfileToggleRequested -= Titlebar_ProfileToggleRequested;
+        Titlebar.LogoHoverRequested -= Titlebar_LogoHoverRequested;
+        Titlebar.LogoClickRequested -= Titlebar_LogoClickRequested;
+        Titlebar.TitleClickRequested -= Titlebar_TitleClickRequested;
+        Titlebar.InteractionStarted -= Titlebar_InteractionStarted;
+        Titlebar.SearchTextChanged -= Titlebar_SearchTextChanged;
         backgroundTaskRefreshTimer.Stop();
         backgroundTaskRefreshTimer.Tick -= BackgroundTaskRefreshTimer_Tick;
         ResetBackgroundTaskRefreshLoop();

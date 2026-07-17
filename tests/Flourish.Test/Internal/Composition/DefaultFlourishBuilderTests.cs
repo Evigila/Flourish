@@ -44,6 +44,7 @@ public sealed class DefaultFlourishBuilderTests
             .ConfigureServices((_, services) => services.AddSingleton(marker))
             .ConfigureShell(shell =>
                 shell
+                    .UseMultiProject()
                     .UseNavigation()
                     .UseCenterContent(enabled: true, contentWidth: 900)
                     .UseTips(350)
@@ -54,7 +55,14 @@ public sealed class DefaultFlourishBuilderTests
             .ConfigureShell(shell => shell.UseStatusBar(enabled: false))
             .ConfigureTitleBar(titlebar =>
                 titlebar
-                    .SetTitle("Test Shell")
+                    .SetLogo(
+                        showApplicationTitle: false,
+                        showApplicationSubTitle: true,
+                        showProjectTitle: true
+                    )
+                    .SetApplicationTitle("Test Shell")
+                    .SetApplicationSubTitle("Test workspace")
+                    .SetUnnamedProjectPlaceholder("Untitled project")
                     .SetProfile(NameOrder.LastFirst)
                     .SetThemeToggle(FlourishTheme.Dark)
             )
@@ -73,14 +81,24 @@ public sealed class DefaultFlourishBuilderTests
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
         var dataOptions = flourish.GetRequiredService<FlourishDataOptions>();
+        var projects = flourish.GetRequiredService<IProjectService>();
 
         Assert.Same(marker, flourish.GetRequiredService<object>());
         Assert.Equal("CN", dataOptions.Locale);
+        Assert.True(options.IsMultiProjectEnabled);
+        Assert.True(projects.Current.IsMultiProjectEnabled);
+        Assert.Equal(0, projects.Current.Version);
         Assert.True(options.IsNavigationPanelEnabled);
         Assert.True(options.IsCenterContentEnabled);
         Assert.Equal(900, options.CenterContentWidth);
         Assert.False(options.IsStatusBarEnabled);
-        Assert.Equal("Test Shell", options.Title);
+        Assert.Equal("Test Shell", options.ApplicationTitle);
+        Assert.Equal("Test workspace", options.ApplicationSubtitle);
+        Assert.Equal("Untitled project", options.UnnamedProjectPlaceholder);
+        Assert.True(options.IsTitlebarLogoEnabled);
+        Assert.False(options.ShowApplicationTitleInLogoFlyout);
+        Assert.True(options.ShowApplicationSubtitleInLogoFlyout);
+        Assert.True(options.ShowProjectTitleInLogoFlyout);
         Assert.True(options.IsTitlebarTitleEnabled);
         Assert.True(options.IsProfileEnabled);
         Assert.True(options.IsTitlebarProfileEnabled);

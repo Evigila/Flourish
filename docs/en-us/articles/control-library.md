@@ -11,6 +11,7 @@ Design guidance, properties, defaults, and examples now live in the dedicated [C
 
 - [Chunk and ChunkHero](../controls/chunk.md) define page sections, page-leading hero regions, and their standard spacing.
 - The [Button family](../controls/button.md) includes `Button`, `IconButton`, `CardButton`, and `WindowCaptionButton`.
-- The [Card family](../controls/card.md) includes `Card` for longer information, single-control and immediately applied `ListCard` configuration rows, title-only Output and Result patterns, and presenter-aware `IconCard` surfaces.
+- The [Card family](../controls/card.md) includes `Card` for longer information, single-control and immediately applied `ListCard` configuration rows, and presenter-aware `IconCard` surfaces.
+- [OutputCard](../controls/output-card.md) appends raw messages, progress, completed results, and failures to a compact scrolling history that does not determine a peer layout's height.
 
 All other existing controls remain available through their current APIs. Dedicated documentation will be added after each corresponding control is refactored. See the [Controls API](xref:ArkheideSystem.Flourish.Controls) for the complete type list and member signatures.

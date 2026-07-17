@@ -20,6 +20,7 @@ public partial class WindowRuntimePage : Page
     private IWindowCloseGuardRegistration? closeGuard;
     private FlourishNotificationHandle? notificationHandle;
     private bool closeGuardAllows = true;
+    private bool isRefreshingCloseBehavior;
     private bool isRefreshingTrayToolTip;
 
     public WindowRuntimePage(
@@ -78,25 +79,43 @@ public partial class WindowRuntimePage : Page
     }
 
     private void SetDemoSize_Click(object sender, RoutedEventArgs e) =>
-        Execute(() => window.SetSize(1100, 760), WindowStatusText);
+        Execute(
+            () => window.SetSize(1100, 760),
+            WindowOutput,
+            "Set the shell window size to 1100 × 760."
+        );
 
     private void CenterWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.CenterOnScreen, WindowStatusText);
+        Execute(window.CenterOnScreen, WindowOutput, "Centered the shell window on screen.");
 
-    private void ToggleTopmost_Click(object sender, RoutedEventArgs e) =>
-        Execute(() => window.SetTopmost(!window.Current.IsTopmost), WindowStatusText);
+    private void ToggleTopmost_Click(object sender, RoutedEventArgs e)
+    {
+        var topmost = !window.Current.IsTopmost;
+        Execute(
+            () => window.SetTopmost(topmost),
+            WindowOutput,
+            $"Shell window topmost mode {(topmost ? "enabled" : "disabled")}."
+        );
+    }
 
-    private void ToggleTaskbar_Click(object sender, RoutedEventArgs e) =>
-        Execute(() => window.SetShownInTaskbar(!window.Current.IsShownInTaskbar), WindowStatusText);
+    private void ToggleTaskbar_Click(object sender, RoutedEventArgs e)
+    {
+        var shown = !window.Current.IsShownInTaskbar;
+        Execute(
+            () => window.SetShownInTaskbar(shown),
+            WindowOutput,
+            $"Shell window {(shown ? "shown in" : "removed from")} the taskbar."
+        );
+    }
 
     private void MinimizeWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.Minimize, WindowStatusText);
+        Execute(window.Minimize, WindowOutput, "Minimized the shell window.");
 
     private void MaximizeWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.Maximize, WindowStatusText);
+        Execute(window.Maximize, WindowOutput, "Maximized the shell window.");
 
     private void RestoreWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.Restore, WindowStatusText);
+        Execute(window.Restore, WindowOutput, "Restored the shell window.");
 
     private async void HideBriefly_Click(object sender, RoutedEventArgs e)
     {
@@ -106,15 +125,23 @@ public partial class WindowRuntimePage : Page
             await Task.Delay(1000);
             window.Show();
             window.Activate();
+            WindowOutput.WriteLine("Restored the shell window after one second.");
         }
         catch (Exception error)
         {
-            WindowStatusText.Text = error.Message;
+            WindowOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
-    private void ToggleTray_Click(object sender, RoutedEventArgs e) =>
-        Execute(() => tray.SetEnabled(!tray.Current.IsEnabled), TrayStatusText);
+    private void ToggleTray_Click(object sender, RoutedEventArgs e)
+    {
+        var enabled = !tray.Current.IsEnabled;
+        Execute(
+            () => tray.SetEnabled(enabled),
+            TrayOutput,
+            $"Notification-area tray icon {(enabled ? "enabled" : "disabled")}."
+        );
+    }
 
     private void TrayToolTipBox_LostFocus(object sender, RoutedEventArgs e) =>
         ApplyTrayToolTip();
@@ -144,7 +171,11 @@ public partial class WindowRuntimePage : Page
             return;
         }
 
-        Execute(() => tray.SetToolTip(TrayToolTipBox.Text), TrayStatusText);
+        Execute(
+            () => tray.SetToolTip(TrayToolTipBox.Text),
+            TrayOutput,
+            $"Tray tooltip set to \"{TrayToolTipBox.Text}\"."
+        );
     }
 
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e) =>
@@ -156,29 +187,37 @@ public partial class WindowRuntimePage : Page
                     throw new InvalidOperationException("Enable the tray icon before minimizing to it.");
                 }
             },
-            TrayStatusText
+            TrayOutput,
+            "Minimized the shell window to the notification area."
         );
 
     private void RestoreFromTray_Click(object sender, RoutedEventArgs e) =>
-        Execute(tray.Restore, TrayStatusText);
+        Execute(tray.Restore, TrayOutput, "Restored the shell window from the notification area.");
 
     private void CloseBehaviorBox_SelectionChanged(
         object sender,
         SelectionChangedEventArgs e
     )
     {
-        if (CloseBehaviorBox.SelectedItem is WindowCloseBehavior behavior)
+        if (
+            !isRefreshingCloseBehavior
+            && CloseBehaviorBox.SelectedItem is WindowCloseBehavior behavior
+        )
         {
-            Execute(() => close.SetBehavior(behavior), CloseStatusText);
+            Execute(
+                () => close.SetBehavior(behavior),
+                CloseOutput,
+                $"Close behavior set to {behavior}."
+            );
         }
     }
 
     private void CloseGuardAllowsBox_Click(object sender, RoutedEventArgs e)
     {
         closeGuardAllows = CloseGuardAllowsBox.IsChecked == true;
-        CloseStatusText.Text = closeGuard is null
+        CloseOutput.WriteLine(closeGuard is null
             ? $"The next registered guard will {(closeGuardAllows ? "allow" : "cancel")} close requests."
-            : $"The registered guard will now {(closeGuardAllows ? "allow" : "cancel")} close requests.";
+            : $"The registered guard will now {(closeGuardAllows ? "allow" : "cancel")} close requests.");
     }
 
     private void RegisterCloseGuard_Click(object sender, RoutedEventArgs e)
@@ -198,9 +237,9 @@ public partial class WindowRuntimePage : Page
                         ),
                     order: 100
                 );
-                CloseStatusText.Text = "Close guard registered at order 100.";
             },
-            CloseStatusText
+            CloseOutput,
+            "Close guard registered at order 100."
         );
     }
 
@@ -208,7 +247,7 @@ public partial class WindowRuntimePage : Page
     {
         closeGuard?.Dispose();
         closeGuard = null;
-        CloseStatusText.Text = "The Gallery close guard was removed.";
+        CloseOutput.WriteLine("The Gallery close guard was removed.");
     }
 
     private async void EvaluateClose_Click(object sender, RoutedEventArgs e)
@@ -216,11 +255,11 @@ public partial class WindowRuntimePage : Page
         try
         {
             var allowed = await close.CanCloseAsync(WindowCloseRequestReason.Application);
-            CloseStatusText.Text = $"Current guard evaluation: {(allowed ? "allow" : "cancel")}.";
+            CloseOutput.WriteLine($"Current guard evaluation: {(allowed ? "allow" : "cancel")}.");
         }
         catch (Exception error)
         {
-            CloseStatusText.Text = error.Message;
+            CloseOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -229,30 +268,46 @@ public partial class WindowRuntimePage : Page
         try
         {
             var closed = await close.RequestCloseAsync(WindowCloseRequestReason.Application);
-            CloseStatusText.Text = closed
+            CloseOutput.WriteLine(closed
                 ? "The close request was accepted."
-                : "The close request was canceled.";
+                : "The close request was canceled.");
         }
         catch (Exception error)
         {
-            CloseStatusText.Text = error.Message;
+            CloseOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
-    private void ToggleProfileEnabled_Click(object sender, RoutedEventArgs e) =>
+    private void ToggleProfileEnabled_Click(object sender, RoutedEventArgs e)
+    {
+        var enabled = !profileFlyout.Current.IsEnabled;
         Execute(
-            () => profileFlyout.SetEnabled(!profileFlyout.Current.IsEnabled),
-            ProfileStatusText
+            () => profileFlyout.SetEnabled(enabled),
+            ProfileOutput,
+            $"Profile flyout {(enabled ? "enabled" : "disabled")}."
         );
+    }
 
     private void ToggleProfileFlyout_Click(object sender, RoutedEventArgs e) =>
-        Execute(profileFlyout.Toggle, ProfileStatusText);
+        Execute(
+            profileFlyout.Toggle,
+            ProfileOutput,
+            () => $"Profile flyout {(profileFlyout.Current.IsVisible ? "opened" : "closed")}."
+        );
 
     private void UseConfigurationProfilePage_Click(object sender, RoutedEventArgs e) =>
-        Execute(() => profileFlyout.SetContentPage<ConfigurationPage>(), ProfileStatusText);
+        Execute(
+            () => profileFlyout.SetContentPage<ConfigurationPage>(),
+            ProfileOutput,
+            "Profile content changed to ConfigurationPage."
+        );
 
     private void RestoreProfilePage_Click(object sender, RoutedEventArgs e) =>
-        Execute(() => profileFlyout.SetContentPage(startupProfilePageType), ProfileStatusText);
+        Execute(
+            () => profileFlyout.SetContentPage(startupProfilePageType),
+            ProfileOutput,
+            $"Profile content restored to {startupProfilePageType.Name}."
+        );
 
     private async void ShowMessage_Click(object sender, RoutedEventArgs e)
     {
@@ -264,11 +319,11 @@ public partial class WindowRuntimePage : Page
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Information
             );
-            MessageStatusText.Text = $"Standard message result: {result}.";
+            MessageOutput.WriteLine($"Standard message result: {result}.");
         }
         catch (Exception error)
         {
-            MessageStatusText.Text = error.Message;
+            MessageOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -290,11 +345,11 @@ public partial class WindowRuntimePage : Page
                 },
                 MessageBoxImage.Question
             );
-            MessageStatusText.Text = $"Custom message result: {result?.Id ?? "dismissed"}.";
+            MessageOutput.WriteLine($"Custom message result: {result?.Id ?? "dismissed"}.");
         }
         catch (Exception error)
         {
-            MessageStatusText.Text = error.Message;
+            MessageOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -304,9 +359,9 @@ public partial class WindowRuntimePage : Page
             () =>
             {
                 notificationHandle = notifications.Show(CreateNotification());
-                NotificationStatusText.Text = $"Shown: {notificationHandle.Id}.";
             },
-            NotificationStatusText
+            NotificationOutput,
+            () => $"Shown notification: {notificationHandle!.Id}."
         );
     }
 
@@ -316,26 +371,33 @@ public partial class WindowRuntimePage : Page
             () =>
             {
                 notificationHandle = notifications.Upsert(CreateNotification());
-                NotificationStatusText.Text = $"Upserted: {notificationHandle.Id}.";
             },
-            NotificationStatusText
+            NotificationOutput,
+            () => $"Upserted notification: {notificationHandle!.Id}."
         );
     }
 
-    private void DismissNotification_Click(object sender, RoutedEventArgs e) =>
+    private void DismissNotification_Click(object sender, RoutedEventArgs e)
+    {
+        var dismissed = false;
         Execute(
             () =>
             {
-                var dismissed = notifications.Dismiss(NotificationIdBox.Text.Trim());
-                NotificationStatusText.Text = dismissed
-                    ? "Notification dismissed."
-                    : "No active notification matched that ID.";
+                dismissed = notifications.Dismiss(NotificationIdBox.Text.Trim());
             },
-            NotificationStatusText
+            NotificationOutput,
+            () => dismissed
+                ? "Notification dismissed."
+                : "No active notification matched that ID."
         );
+    }
 
     private void DismissAllNotifications_Click(object sender, RoutedEventArgs e) =>
-        Execute(notifications.DismissAll, NotificationStatusText);
+        Execute(
+            notifications.DismissAll,
+            NotificationOutput,
+            "Dismissed all shell notifications."
+        );
 
     private FlourishNotification CreateNotification()
     {
@@ -354,25 +416,25 @@ public partial class WindowRuntimePage : Page
         );
     }
 
-    private void Execute(Action action, FlourishTextBlock status)
+    private void Execute(Action action, OutputCard output, string successMessage) =>
+        Execute(action, output, () => successMessage);
+
+    private void Execute(Action action, OutputCard output, Func<string> successMessage)
     {
         try
         {
             action();
+            output.WriteLine(successMessage());
             RefreshAll();
         }
         catch (Exception error)
         {
-            status.Text = error.Message;
+            output.WriteLine($"Error: {error.Message}");
         }
     }
 
     private void RefreshAll()
     {
-        var windowState = window.Current;
-        WindowStatusText.Text =
-            $"{windowState.Bounds.Width:0} × {windowState.Bounds.Height:0} at ({windowState.Bounds.X:0}, {windowState.Bounds.Y:0})  |  {windowState.WindowState}  |  Topmost: {windowState.IsTopmost}  |  Taskbar: {windowState.IsShownInTaskbar}";
-
         var trayState = tray.Current;
         ToggleTrayButton.Content = trayState.IsEnabled ? "Disable tray" : "Enable tray";
         isRefreshingTrayToolTip = true;
@@ -384,19 +446,19 @@ public partial class WindowRuntimePage : Page
         {
             isRefreshingTrayToolTip = false;
         }
-        TrayStatusText.Text =
-            $"Enabled: {trayState.IsEnabled}  |  Icon visible: {trayState.IsIconVisible}  |  Window hidden: {trayState.IsWindowHidden}";
-
-        CloseBehaviorBox.SelectedItem = close.Behavior;
+        isRefreshingCloseBehavior = true;
+        try
+        {
+            CloseBehaviorBox.SelectedItem = close.Behavior;
+        }
+        finally
+        {
+            isRefreshingCloseBehavior = false;
+        }
 
         var profileState = profileFlyout.Current;
         ToggleProfileEnabledButton.Content = profileState.IsEnabled
             ? "Disable profile"
             : "Enable profile";
-        ProfileStatusText.Text =
-            $"Enabled: {profileState.IsEnabled}  |  Visible: {profileState.IsVisible}  |  Content: {profileState.ContentPageType.Name}";
-
-        NotificationStatusText.Text =
-            $"Active shell notifications: {notifications.ActiveNotifications.Count}.";
     }
 }

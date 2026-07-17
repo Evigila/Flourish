@@ -92,11 +92,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="PanelStateText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="PanelOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -150,11 +146,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="RouteStateText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="RouteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
 
@@ -208,11 +200,7 @@
               </flourish:ListCard.Body>
             </flourish:ListCard>
           </StackPanel>
-          <flourish:Card Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" Title="Output">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock x:Name="CacheStateText" Role="Status" />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:OutputCard x:Name="CacheOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
       </flourish:Chunk>
     </StackPanel>

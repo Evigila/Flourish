@@ -45,6 +45,9 @@
     <Compile Update="Controls\ListCard.xaml.cs">
       <DependentUpon>ListCard.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\OutputCard.xaml.cs">
+      <DependentUpon>OutputCard.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\CheckBox.xaml.cs">
       <DependentUpon>CheckBox.xaml</DependentUpon>
     </Compile>

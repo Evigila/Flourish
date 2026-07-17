@@ -10,6 +10,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// builder.ConfigureShell(shell =>
 /// {
 ///     shell.UseTitleBar()
+///          .UseMultiProject()
 ///          .UseNavigation()
 ///          .UseCenterContent(enabled: true, contentWidth: 1200)
 ///          .UseDynamicToolbar()
@@ -29,6 +30,17 @@ public interface IFlourishShellBuilder
     /// <param name="enabled">A value indicating whether the title bar should be enabled.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishShellBuilder UseTitleBar(bool enabled = true);
+
+    /// <summary>
+    /// Enables or disables the project-aware title bar and its project selection surface.
+    /// </summary>
+    /// <param name="enabled">A value indicating whether multiple projects should be managed by the shell.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// This switch only enables the framework UI and in-memory project state. Applications remain
+    /// responsible for creating, opening, saving, and closing project data.
+    /// </remarks>
+    IFlourishShellBuilder UseMultiProject(bool enabled = true);
 
     /// <summary>
     /// Enables or disables the shell navigation panel.

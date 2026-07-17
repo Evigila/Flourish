@@ -1201,7 +1201,6 @@ public sealed class FlourishShellNavigationLayoutTests
             enableNavToggle: true,
             enableLogo: false,
             enableTitle: false,
-            enableSubTitle: false,
             enableThemeToggle: false,
             enableProfile: false
         );

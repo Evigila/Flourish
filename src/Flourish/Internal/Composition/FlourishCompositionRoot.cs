@@ -560,6 +560,10 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<ITitleBarService>(provider =>
             provider.GetRequiredService<TitleBarService>()
         );
+        services.AddSingleton<ProjectService>();
+        services.AddSingleton<IProjectService>(provider =>
+            provider.GetRequiredService<ProjectService>()
+        );
         services.AddSingleton<TitleBarSearchService>();
         services.AddSingleton<ITitleBarSearchService>(provider =>
             provider.GetRequiredService<TitleBarSearchService>()

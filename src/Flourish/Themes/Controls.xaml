@@ -21,8 +21,8 @@
     <ResourceDictionary Source="/Flourish;component/Controls/ComboBox.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/ListBoxItem.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/ListBox.xaml" />
-    <!-- IconCard is the terminal dictionary in the Card-family dependency chain. -->
-    <ResourceDictionary Source="/Flourish;component/Controls/IconCard.xaml" />
+    <!-- OutputCard is the terminal dictionary in the Card-family dependency chain. -->
+    <ResourceDictionary Source="/Flourish;component/Controls/OutputCard.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/ToolTip.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/GridSplitter.xaml" />
   </ResourceDictionary.MergedDictionaries>

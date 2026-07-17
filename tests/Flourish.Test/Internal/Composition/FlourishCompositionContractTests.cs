@@ -88,6 +88,7 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<CommandDispatcher, ICommandDispatcher>(flourish);
         AssertSingletonAdapter<ShortcutService, IShortcutService>(flourish);
         AssertSingletonAdapter<TitleBarService, ITitleBarService>(flourish);
+        AssertSingletonAdapter<ProjectService, IProjectService>(flourish);
         AssertSingletonAdapter<TitleBarSearchService, ITitleBarSearchService>(flourish);
         AssertSingletonAdapter<WindowService, IWindowService>(flourish);
         AssertSingletonAdapter<WindowCloseService, IWindowCloseService>(flourish);

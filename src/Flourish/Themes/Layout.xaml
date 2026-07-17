@@ -40,6 +40,8 @@
   <Thickness x:Key="FlourishCardBodySpacing">0,12,0,0</Thickness>
   <Thickness x:Key="FlourishCardReversedBodySpacing">0,0,0,12</Thickness>
   <Thickness x:Key="FlourishCardHorizontalBodySpacing">16,0,0,0</Thickness>
+  <sys:Double x:Key="FlourishOutputCardMinHeight">72</sys:Double>
+  <Thickness x:Key="FlourishOutputViewportPadding">12,8</Thickness>
   <sys:Double x:Key="FlourishListCardMinHeight">72</sys:Double>
   <Thickness x:Key="FlourishListCardPadding">16,12</Thickness>
   <Thickness x:Key="FlourishListCardPresenterSpacing">8,0,24,0</Thickness>
