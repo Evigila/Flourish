@@ -1,3 +1,4 @@
+using System.IO;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
@@ -296,5 +297,115 @@ public sealed class ProjectServiceTests
                 .Throws<ArgumentException>(() => sut.TryGetProject(" ", out _))
                 .ParamName
         );
+    }
+
+    [Fact]
+    public void PersistentService_CreatesAndReloadsActiveUnnamedProject()
+    {
+        using var directory = new TemporaryDirectory();
+        var options = new FlourishShellOptions
+        {
+            UnnamedProjectPlaceholder = "Configured unnamed project",
+        };
+        var store = new ProjectCatalogStore(
+            new TestAppSettingsStore(Path.Combine(directory.Path, "appsettings.json"))
+        );
+
+        var first = new ProjectService(options, store);
+
+        var created = Assert.Single(first.Current.Projects);
+        Assert.Equal("Configured unnamed project", created.Name);
+        Assert.Null(created.StoragePath);
+        Assert.Equal(created, first.Current.ActiveProject);
+        Assert.True(File.Exists(Path.Combine(directory.Path, "projects.json")));
+
+        var reloaded = new ProjectService(options, store);
+
+        Assert.Equal(created, Assert.Single(reloaded.Current.Projects));
+        Assert.Equal(created.Id, reloaded.Current.ActiveProject?.Id);
+        Assert.Empty(Directory.EnumerateFiles(directory.Path, ".projects.json.*.tmp"));
+    }
+
+    [Fact]
+    public void PersistentService_RoundTripsProjectOrderMetadataAndActiveId()
+    {
+        using var directory = new TemporaryDirectory();
+        var options = new FlourishShellOptions();
+        var store = new ProjectCatalogStore(
+            new TestAppSettingsStore(Path.Combine(directory.Path, "appsettings.json"))
+        );
+        var first = new ProjectService(options, store);
+        var unnamed = Assert.Single(first.Current.Projects);
+        first.SetProjectMetadata(unnamed.Id, "First", Path.Combine(directory.Path, "First.txt"));
+        first.AddProject(
+            new FlourishProject("second", "Second", Path.Combine(directory.Path, "Second.txt")),
+            activate: false
+        );
+        first.SetActiveProject("second");
+
+        var reloaded = new ProjectService(options, store);
+
+        Assert.Equal(
+            [unnamed.Id, "second"],
+            reloaded.Current.Projects.Select(project => project.Id)
+        );
+        Assert.Equal("First", reloaded.Current.Projects[0].Name);
+        Assert.Equal("second", reloaded.Current.ActiveProject?.Id);
+        Assert.Equal(0, reloaded.Current.Version);
+    }
+
+    private sealed class TestAppSettingsStore(string filePath) : IAppSettingsStore
+    {
+        public string FilePath { get; } = filePath;
+
+        public ValueTask<AppSettingsUpdateResult> UpdateAsync(
+            Action<IAppSettingsEditor> update,
+            CancellationToken cancellationToken = default
+        ) => throw new NotSupportedException();
+
+        public ValueTask<AppSettingsUpdateResult> SetAsync<T>(
+            string path,
+            T value,
+            CancellationToken cancellationToken = default
+        ) => throw new NotSupportedException();
+
+        public ValueTask<AppSettingsUpdateResult> RemoveAsync(
+            string path,
+            CancellationToken cancellationToken = default
+        ) => throw new NotSupportedException();
+
+        public ValueTask<AppSettingsUpdateResult> MergeAsync<T>(
+            string path,
+            T value,
+            CancellationToken cancellationToken = default
+        ) => throw new NotSupportedException();
+
+        public ValueTask<AppSettingsUpdateResult> AppendAsync<T>(
+            string path,
+            T value,
+            CancellationToken cancellationToken = default
+        ) => throw new NotSupportedException();
+    }
+
+    private sealed class TemporaryDirectory : IDisposable
+    {
+        public TemporaryDirectory()
+        {
+            Path = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                $"flourish-project-service-{Guid.NewGuid():N}"
+            );
+            Directory.CreateDirectory(Path);
+        }
+
+        public string Path { get; }
+
+        public void Dispose()
+        {
+            if (Directory.Exists(Path))
+            {
+                Directory.Delete(Path, recursive: true);
+            }
+        }
     }
 }

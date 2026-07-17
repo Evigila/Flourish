@@ -67,6 +67,15 @@ public interface IFlourishDataBuilder
     /// <item><term><c>TitleBar.ApplicationInfo</c></term><description>Application information / 应用信息</description></item>
     /// <item><term><c>TitleBar.ProjectMenu</c></term><description>Projects / 项目</description></item>
     /// <item><term><c>TitleBar.NewProject</c></term><description>New project / 新建项目</description></item>
+    /// <item><term><c>Project.Delete</c></term><description>Delete project / 删除项目</description></item>
+    /// <item><term><c>Project.Save</c></term><description>Save / 保存</description></item>
+    /// <item><term><c>Project.DontSave</c></term><description>Don't save / 不保存</description></item>
+    /// <item><term><c>Project.SaveDialogTitle</c></term><description>Save project / 保存项目</description></item>
+    /// <item><term><c>Project.TextFileFilter</c></term><description>Text project files (*.txt)|*.txt / 文本项目文件 (*.txt)|*.txt</description></item>
+    /// <item><term><c>Project.UnsavedTitle</c></term><description>Save project / 保存项目</description></item>
+    /// <item><term><c>Project.UnsavedPrompt</c></term><description>&quot;{0}&quot; has not been saved. Save it before continuing? / “{0}”尚未保存。是否先保存再继续？</description></item>
+    /// <item><term><c>Project.DeleteTitle</c></term><description>Delete project / 删除项目</description></item>
+    /// <item><term><c>Project.DeletePrompt</c></term><description>Delete &quot;{0}&quot;? Its managed project file is also deleted when no other project uses it. / 是否删除“{0}”？没有其他项目使用同一路径时，也会删除其受管理的项目文件。</description></item>
     /// <item><term><c>TitleBar.Minimize</c></term><description>Minimize / 最小化</description></item>
     /// <item><term><c>TitleBar.Maximize</c></term><description>Maximize / 最大化</description></item>
     /// <item><term><c>TitleBar.Restore</c></term><description>Restore / 还原</description></item>

@@ -8,13 +8,18 @@ namespace ArkheideSystem.Gallery.Views;
 public partial class ProjectRuntimePage : Page
 {
     private readonly IProjectService projects;
+    private readonly IProjectBehavior projectBehavior;
     private readonly ITitleBarService titleBar;
     private bool isRefreshing;
-    private int untitledProjectSequence = 1;
 
-    public ProjectRuntimePage(IProjectService projects, ITitleBarService titleBar)
+    public ProjectRuntimePage(
+        IProjectService projects,
+        IProjectBehavior projectBehavior,
+        ITitleBarService titleBar
+    )
     {
         this.projects = projects;
+        this.projectBehavior = projectBehavior;
         this.titleBar = titleBar;
         InitializeComponent();
 
@@ -107,7 +112,7 @@ public partial class ProjectRuntimePage : Page
         RefreshState();
     }
 
-    private void ActiveProjectBox_SelectionChanged(
+    private async void ActiveProjectBox_SelectionChanged(
         object sender,
         SelectionChangedEventArgs e
     )
@@ -120,8 +125,12 @@ public partial class ProjectRuntimePage : Page
         PopulateProjectInput(project);
         try
         {
-            projects.SetActiveProject(project.Id);
-            ActiveProjectOutput.WriteLine($"Activated project '{project.Id}'.");
+            var activated = await projectBehavior.ActivateProjectAsync(project.Id);
+            ActiveProjectOutput.WriteLine(
+                activated
+                    ? $"Activated project '{project.Id}'."
+                    : $"Activation of project '{project.Id}' was canceled."
+            );
         }
         catch (Exception error)
         {
@@ -172,7 +181,7 @@ public partial class ProjectRuntimePage : Page
         RefreshState();
     }
 
-    private void RemoveProject_Click(object sender, RoutedEventArgs e)
+    private async void RemoveProject_Click(object sender, RoutedEventArgs e)
     {
         if (ActiveProjectBox.SelectedItem is not FlourishProject project)
         {
@@ -183,10 +192,11 @@ public partial class ProjectRuntimePage : Page
 
         try
         {
+            var deleted = await projectBehavior.DeleteProjectAsync(project.Id);
             ActiveProjectOutput.WriteLine(
-                projects.RemoveProject(project.Id)
+                deleted
                     ? $"Deleted project '{project.Id}'."
-                    : $"Project '{project.Id}' was not registered."
+                    : $"Deletion of project '{project.Id}' was canceled."
             );
         }
         catch (Exception error)
@@ -206,7 +216,7 @@ public partial class ProjectRuntimePage : Page
                 projects.SetMultiProjectEnabled(MultiProjectEnabledBox.IsChecked == true);
                 RequestOutput.WriteLine(
                     MultiProjectEnabledBox.IsChecked == true
-                        ? "Enabled the project-aware title button."
+                        ? "Enabled the project-aware title selector."
                         : "Disabled project-aware title display; project metadata remains registered."
                 );
             }
@@ -252,32 +262,11 @@ public partial class ProjectRuntimePage : Page
         FlourishNewProjectRequestedEventArgs e
     )
     {
-        if (HandleTitleBarRequestsBox.IsChecked != true)
+        Dispatcher.BeginInvoke(() =>
         {
-            RequestOutput.WriteLine("Observed a new-project request without handling it.");
+            RequestOutput.WriteLine("Observed a new-project request from the title selector.");
             RefreshState();
-            return;
-        }
-
-        try
-        {
-            var sequence = NextUntitledProjectSequence();
-            var project = new FlourishProject(
-                $"untitled-{sequence}",
-                $"Untitled project {sequence}"
-            );
-            projects.AddProject(project);
-            PopulateProjectInput(project);
-            RequestOutput.WriteLine(
-                $"Handled the title-bar request by adding '{project.Name}' [{project.Id}]."
-            );
-        }
-        catch (Exception error)
-        {
-            RequestOutput.WriteLine($"Error: {error.Message}");
-        }
-
-        RefreshState();
+        });
     }
 
     private void Projects_ProjectActivationRequested(
@@ -285,21 +274,22 @@ public partial class ProjectRuntimePage : Page
         FlourishProjectActivationRequestedEventArgs e
     )
     {
-        if (HandleTitleBarRequestsBox.IsChecked != true)
+        Dispatcher.BeginInvoke(() =>
         {
             RequestOutput.WriteLine(
-                $"Observed an activation request for '{e.Project.Name}' without handling it."
+                $"Observed an activation request for '{e.Project.Name}' [{e.Project.Id}]."
             );
             RefreshState();
-            return;
-        }
+        });
+    }
 
+    private async void CreateProject_Click(object sender, RoutedEventArgs e)
+    {
         try
         {
-            projects.SetActiveProject(e.Project.Id);
-            PopulateProjectInput(e.Project);
+            var created = await projectBehavior.CreateProjectAsync();
             RequestOutput.WriteLine(
-                $"Handled the title-bar request by activating '{e.Project.Name}' [{e.Project.Id}]."
+                created ? "Created a persisted project." : "Project creation was canceled."
             );
         }
         catch (Exception error)
@@ -310,19 +300,21 @@ public partial class ProjectRuntimePage : Page
         RefreshState();
     }
 
-    private int NextUntitledProjectSequence()
+    private async void SaveActiveProject_Click(object sender, RoutedEventArgs e)
     {
-        while (
-            projects.TryGetProject(
-                $"untitled-{untitledProjectSequence}",
-                out _
-            )
-        )
+        try
         {
-            untitledProjectSequence++;
+            var saved = await projectBehavior.SaveActiveProjectAsync();
+            RequestOutput.WriteLine(
+                saved ? "Saved the active project." : "Project save was canceled."
+            );
+        }
+        catch (Exception error)
+        {
+            RequestOutput.WriteLine($"Error: {error.Message}");
         }
 
-        return untitledProjectSequence++;
+        RefreshState();
     }
 
     private FlourishProject ReadProjectInput() =>
@@ -349,6 +341,9 @@ public partial class ProjectRuntimePage : Page
             ActiveProjectBox.SelectedItem = current.ActiveProject;
             MultiProjectEnabledBox.IsChecked = current.IsMultiProjectEnabled;
             UnnamedProjectPlaceholderBox.Text = titleBar.Current.UnnamedProjectPlaceholder;
+            ProjectCollectionControls.IsEnabled = current.IsMultiProjectEnabled;
+            ActiveProjectControls.IsEnabled = current.IsMultiProjectEnabled;
+            MultiProjectBehaviorControls.IsEnabled = current.IsMultiProjectEnabled;
         }
         finally
         {

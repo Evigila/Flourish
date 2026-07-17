@@ -2,6 +2,7 @@ using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
@@ -89,6 +90,9 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<ShortcutService, IShortcutService>(flourish);
         AssertSingletonAdapter<TitleBarService, ITitleBarService>(flourish);
         AssertSingletonAdapter<ProjectService, IProjectService>(flourish);
+        Assert.IsType<DefaultProjectBehavior>(
+            flourish.GetRequiredService<IProjectBehavior>()
+        );
         AssertSingletonAdapter<TitleBarSearchService, ITitleBarSearchService>(flourish);
         AssertSingletonAdapter<WindowService, IWindowService>(flourish);
         AssertSingletonAdapter<WindowCloseService, IWindowCloseService>(flourish);
@@ -98,6 +102,21 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<PageCacheService, IPageCacheService>(flourish);
         AssertSingletonAdapter<NavigationService, INavigationService>(flourish);
         AssertSingletonAdapter<NavigationService, IFrameNavigationService>(flourish);
+    }
+
+    [Fact]
+    public void Build_CustomProjectBehaviorRegistration_ReplacesDefaultBehavior()
+    {
+        var customBehavior = new TestProjectBehavior();
+        var builder = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigureServices((_, services) =>
+                services.AddSingleton<IProjectBehavior>(customBehavior)
+            );
+
+        using var flourish = builder.Build();
+
+        Assert.Same(customBehavior, flourish.GetRequiredService<IProjectBehavior>());
     }
 
     [Fact]
@@ -215,4 +234,29 @@ public sealed class FlourishCompositionContractTests
     private sealed class HomePage : Page { }
 
     private sealed class SettingsPage : Page { }
+
+    private sealed class TestProjectBehavior : IProjectBehavior
+    {
+        public ValueTask<bool> CreateProjectAsync(
+            CancellationToken cancellationToken = default
+        ) => ValueTask.FromResult(true);
+
+        public ValueTask<bool> SaveActiveProjectAsync(
+            CancellationToken cancellationToken = default
+        ) => ValueTask.FromResult(true);
+
+        public ValueTask<bool> ActivateProjectAsync(
+            string projectId,
+            CancellationToken cancellationToken = default
+        ) => ValueTask.FromResult(true);
+
+        public ValueTask<bool> DeleteProjectAsync(
+            string projectId,
+            CancellationToken cancellationToken = default
+        ) => ValueTask.FromResult(true);
+
+        public ValueTask<bool> CanCloseAsync(
+            CancellationToken cancellationToken = default
+        ) => ValueTask.FromResult(true);
+    }
 }

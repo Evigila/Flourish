@@ -126,6 +126,7 @@
         MinWidth="0"
         MinHeight="0"
         Padding="4,3"
+        Margin="0,0,2,0"
         Click="LogoButton_Click"
         MouseEnter="LogoButton_MouseEnter"
       >
@@ -152,38 +153,23 @@
           </Border>
         </controls:IconButton.Icon>
       </controls:IconButton>
-      <controls:Button
-        x:Name="TitleButton"
-        Variant="Text"
+      <controls:FlourishComboBox
+        x:Name="TitleComboBox"
         Height="32"
         MinWidth="0"
+        MaxWidth="328"
         MinHeight="0"
         Padding="8,0"
         Margin="2,0,0,0"
-        Click="TitleButton_Click"
-      >
-        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-          <controls:FlourishTextBlock
-            x:Name="TitleText"
-            MaxWidth="280"
-            VerticalAlignment="Center"
-            FontSize="{DynamicResource FlourishFontSizeStandard}"
-            FontWeight="Bold"
-            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:Button}}}"
-            TextTrimming="CharacterEllipsis"
-          />
-          <controls:FlourishTextBlock
-            Margin="6,0,0,0"
-            VerticalAlignment="Center"
-            FontFamily="{DynamicResource FlourishIconFontFamily}"
-            FontSize="{DynamicResource FlourishIconFontSizeWindowCaption}"
-            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type controls:Button}}}"
-            LineHeight="{DynamicResource FlourishIconFontSizeWindowCaption}"
-            Role="Icon"
-            Text="&#xE70D;"
-          />
-        </StackPanel>
-      </controls:Button>
+        Background="Transparent"
+        BorderBrush="Transparent"
+        BorderThickness="0"
+        FontSize="{DynamicResource FlourishFontSizeLarge}"
+        FontWeight="Bold"
+        MaxDropDownHeight="360"
+        DropDownOpened="TitleComboBox_DropDownOpened"
+        SelectionChanged="TitleComboBox_SelectionChanged"
+      />
     </StackPanel>
 
     <Grid Grid.Column="5">

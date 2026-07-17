@@ -7,6 +7,8 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Services;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
+using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
+using SelectionChangedEventHandler = System.Windows.Controls.SelectionChangedEventHandler;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPanel = System.Windows.Controls.Panel;
 
@@ -52,7 +54,9 @@ internal partial class FlourishTitlebar : UserControl
 
     public event EventHandler? LogoClickRequested;
 
-    public event EventHandler? TitleClickRequested;
+    public event SelectionChangedEventHandler? TitleSelectionChanged;
+
+    public event EventHandler? TitleDropDownOpened;
 
     public event EventHandler? InteractionStarted;
 
@@ -75,7 +79,7 @@ internal partial class FlourishTitlebar : UserControl
         LogoButton.ToolTip = CreateToolTip(
             localization.Get(FlourishLocaleKeys.TitleBarApplicationInfo)
         );
-        TitleButton.ToolTip = CreateToolTip(
+        TitleComboBox.ToolTip = CreateToolTip(
             localization.Get(FlourishLocaleKeys.TitleBarProjectMenu)
         );
         MinimizeButton.ToolTip = CreateToolTip(
@@ -89,9 +93,10 @@ internal partial class FlourishTitlebar : UserControl
 
     public void SetDisplayTitle(string title)
     {
-        TitleText.Text = title;
-        AutomationProperties.SetName(TitleButton, title);
+        AutomationProperties.SetName(TitleComboBox, title);
     }
+
+    internal FlourishComboBox TitleSelector => TitleComboBox;
 
     public void SetSearchPlaceholder(string placeholder)
     {
@@ -229,13 +234,6 @@ internal partial class FlourishTitlebar : UserControl
 
     public FrameworkElement GetLogoButtonAnchor() => LogoButton;
 
-    public Rect GetTitleButtonBounds(UIElement relativeTo)
-    {
-        return GetElementBounds(TitleButton, relativeTo);
-    }
-
-    public FrameworkElement GetTitleButtonAnchor() => TitleButton;
-
     public void ConfigureVisibility(
         bool enableSearch,
         bool enableBreadcrumb,
@@ -250,7 +248,7 @@ internal partial class FlourishTitlebar : UserControl
         UpdateBreadcrumbNavigationVisibility();
         NavigationToggleButton.Visibility = ToVisibility(enableNavToggle);
         LogoButton.Visibility = ToVisibility(enableLogo);
-        TitleButton.Visibility = ToVisibility(enableTitle);
+        TitleComboBox.Visibility = ToVisibility(enableTitle);
         BrandHost.Visibility = ToVisibility(enableLogo || enableTitle);
         SearchBox.Visibility = ToVisibility(enableSearch);
         ThemeToggleButton.Visibility = ToVisibility(enableThemeToggle);
@@ -335,9 +333,14 @@ internal partial class FlourishTitlebar : UserControl
         LogoClickRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private void TitleButton_Click(object sender, RoutedEventArgs e)
+    private void TitleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        TitleClickRequested?.Invoke(this, EventArgs.Empty);
+        TitleSelectionChanged?.Invoke(this, e);
+    }
+
+    private void TitleComboBox_DropDownOpened(object? sender, EventArgs e)
+    {
+        TitleDropDownOpened?.Invoke(this, EventArgs.Empty);
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

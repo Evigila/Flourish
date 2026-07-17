@@ -41,10 +41,24 @@ ViewModel 可以使用生成的键导航，例如 `navigation.Navigate("Settings
 
 注册 `IProfileAuthService` 可以提供应用认证，同时保留内置 Profile 状态和记住登录行为。应用自行管理完整 Profile 流程时，请注册 `IProfileService`。只有应用没有注册这些接口时，Flourish 才会提供默认实现。
 
+## 替换项目行为
+
+应用自行管理项目对话框或文件生命周期时，注册一个单例 `IProjectBehavior`。只有应用没有注册该接口时，Flourish 才会提供默认的 `.txt` 占位文件行为。
+
+```csharp
+builder.ConfigureServices((_, services) =>
+    services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
+```
+
+启用多项目模式时，Shell 会调用替换实现中的五个异步布尔操作：`CreateProjectAsync`、`SaveActiveProjectAsync`、`ActivateProjectAsync`、`DeleteProjectAsync` 与 `CanCloseAsync`。返回 `false` 可取消对应的 Shell 操作。标题选择、右键删除、Ctrl+S 和项目关闭守卫都会使用该服务。未启用项目模式时，这些 Shell 入口保持停用，由应用管理单项目保存行为。
+
+替换 `IProjectBehavior` 只会改变对话框和项目文件处理，不会替换项目目录。替换实现应通过 `IProjectService` 发布元数据与活动选择变更；Flourish 仍会将每次目录变更原子写入 `IAppSettingsStore.FilePath` 相邻的 `projects.json`。完整生命周期契约参见[项目](projects.md)。
+
 ## 相关功能
 
 - [导航](navigation.md)说明显式导航分组与固定项。
 - [动态工具栏](dynamic-toolbar.md)将命令附加到已注册页面类型。
 - [用户资料（Profile）](configure-profile.md)说明认证和 Profile 服务替换。
+- [项目](projects.md)说明项目行为替换与目录持久化。
 - [后台任务](background-tasks.md)说明异步工作、取消、进度和结果。
 - [命令调度](commands.md)说明命令键路由。

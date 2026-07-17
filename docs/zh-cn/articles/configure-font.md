@@ -16,7 +16,9 @@ builder.ConfigureShell(shell =>
 
 七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `UseGlobalFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
 
-内置控件将普通文字设为 Standard，导航分组与状态/输出文字使用 Small，图标字形使用 Icon，卡片标题使用 `Bold` 的 Large，Chunk 标题使用 `Bold` 的 ExtraLarge，ChunkHero 标题使用 `Bold` 的 HeaderSize。Small 与 Standard 使用紧凑行高和最小下方空间，Large、ExtraLarge 与 HeaderSize 逐级增大，Icon 不增加下方空间。
+内置控件将普通文字设为 Standard，导航分组与状态/输出文字使用 Small，图标字形使用 Icon，卡片标题和标题栏当前标题使用 `Bold` 的 Large，Chunk 标题使用 `Bold` 的 ExtraLarge，ChunkHero 标题使用 `Bold` 的 HeaderSize。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitlebarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
+
+Small 与 Standard 使用紧凑行高和最小下方空间，Large、ExtraLarge 与 HeaderSize 逐级增大，Icon 不增加下方空间。
 
 Icon 是默认图标字号。由于 Segoe MDL2 的不同字形拥有不同的天然边界，Flourish 会进行固定的视觉校正：导航栏 `18`、标题栏命令 `16`、窗口标题按钮 `12`、搜索图标 `14`、状态栏项目 `14`、状态栏后台任务 `12`、后台任务详情 `16`、系统状态详情 `16` DIP。这些场景校正不会改变配置的默认 Icon 值。
 

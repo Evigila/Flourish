@@ -35,17 +35,52 @@ public sealed class FlourishShellTitleBarFlyoutTests
     );
 
     [Fact]
-    public void BrandIdentity_UsesInteractiveButtonFamilyWithoutDirectSubtitleText()
+    public void BrandIdentity_UsesALogoButtonAndDirectTitleComboBoxWithoutSubtitleText()
     {
         var document = XDocument.Load(TitleBarXamlPath);
+        var logo = FindNamedElement(document, "LogoButton");
+        var title = FindNamedElement(document, "TitleComboBox");
 
-        Assert.Equal("IconButton", FindNamedElement(document, "LogoButton").Name.LocalName);
-        Assert.Equal("Button", FindNamedElement(document, "TitleButton").Name.LocalName);
-        Assert.Equal("Text", (string?)FindNamedElement(document, "LogoButton").Attribute("Variant"));
-        Assert.Equal("Text", (string?)FindNamedElement(document, "TitleButton").Attribute("Variant"));
+        Assert.Equal("IconButton", logo.Name.LocalName);
+        Assert.Equal("FlourishComboBox", title.Name.LocalName);
+        Assert.Equal("Text", (string?)logo.Attribute("Variant"));
+        Assert.Equal("0,0,2,0", (string?)logo.Attribute("Margin"));
+        Assert.Equal("2,0,0,0", (string?)title.Attribute("Margin"));
+        Assert.Equal(
+            "{DynamicResource FlourishFontSizeLarge}",
+            (string?)title.Attribute("FontSize")
+        );
+        Assert.Equal(
+            "TitleComboBox_SelectionChanged",
+            (string?)title.Attribute("SelectionChanged")
+        );
+        Assert.Contains(
+            "Titlebar.TitleSelectionChanged += ProjectComboBox_SelectionChanged;",
+            ShellCode
+        );
         Assert.DoesNotContain(
             document.Descendants(),
             element => (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == "SubtitleText"
+        );
+    }
+
+    [Fact]
+    public void ProjectSurface_IsTheLargeTitleComboBoxAndDoesNotUseAnIndependentView()
+    {
+        var titleDocument = XDocument.Load(TitleBarXamlPath);
+        var shellDocument = XDocument.Load(ShellXamlPath);
+        var selector = FindNamedElement(titleDocument, "TitleComboBox");
+
+        Assert.Equal("FlourishComboBox", selector.Name.LocalName);
+        Assert.Equal(
+            "{DynamicResource FlourishFontSizeLarge}",
+            (string?)selector.Attribute("FontSize")
+        );
+        Assert.DoesNotContain(
+            shellDocument.Descendants(),
+            element =>
+                (string?)element.Attribute(XName.Get("Name", XamlNamespace))
+                == "ProjectMenuContent"
         );
     }
 
@@ -69,21 +104,61 @@ public sealed class FlourishShellTitleBarFlyoutTests
     }
 
     [Fact]
-    public void ProjectMenu_RequestsApplicationWorkInsteadOfChangingTheActiveProjectDirectly()
+    public void ProjectSelector_RoutesLifecycleOperationsThroughReplaceableBehavior()
     {
-        var selection = GetMethod(
-            "private void ProjectMenuItem_Click(",
-            "private void NewProjectButton_Click("
+        var itemFactory = GetMethod(
+            "private FlourishComboBoxItem CreateProjectComboBoxItem(",
+            "private FlourishComboBoxItem CreateProjectPlaceholderComboBoxItem("
         );
-        var creation = GetMethod(
-            "private void NewProjectButton_Click(",
-            "private void FocusTitleBarFlyoutContent("
+        var selection = GetMethod(
+            "private async void ProjectComboBox_SelectionChanged(",
+            "private async void ProjectDeleteMenuItem_Click("
+        );
+        var deletion = GetMethod(
+            "private async void ProjectDeleteMenuItem_Click(",
+            "private async Task<bool> ExecuteProjectBehaviorAsync("
         );
 
-        Assert.Contains("projectService.TryRequestProjectActivation(projectId);", selection);
+        Assert.Contains("projectBehavior.ActivateProjectAsync(projectId, token)", selection);
+        Assert.Contains("projectBehavior.CreateProjectAsync", selection);
+        Assert.Contains("projectBehavior.DeleteProjectAsync(projectId, token)", deletion);
+        Assert.Contains("new System.Windows.Controls.ContextMenu", itemFactory);
+        Assert.Contains("FlourishLocaleKeys.ProjectDelete", itemFactory);
+        Assert.Contains("suppressProjectSelectionChanged", selection);
+        Assert.Contains("ProjectComboBox.IsDropDownOpen = false;", selection);
+        Assert.Contains("BuildTitleSelectorItems();", selection);
+        Assert.Contains("FlourishFontSizeStandard", ShellCode);
         Assert.DoesNotContain("SetActiveProject", selection, StringComparison.Ordinal);
-        Assert.Contains("projectService.RequestNewProject();", creation);
-        Assert.DoesNotContain("AddProject", creation, StringComparison.Ordinal);
+        Assert.DoesNotContain("RemoveProject", deletion, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ProjectSelector_UsesApplicationOnlyOrAllProjectsWithNewProjectAction()
+    {
+        var build = GetMethod(
+            "private void BuildTitleSelectorItems()",
+            "private static FlourishComboBoxItem CreateApplicationTitleComboBoxItem("
+        );
+
+        Assert.Contains("projectState.IsMultiProjectEnabled", build);
+        Assert.Contains("foreach (var project in projectState.Projects)", build);
+        Assert.Contains("CreateNewProjectComboBoxItem()", build);
+        Assert.Contains("CreateApplicationTitleComboBoxItem(titleState.ApplicationTitle)", build);
+        Assert.Contains("ProjectComboBox.Items.Add(selectedItem);", build);
+    }
+
+    [Fact]
+    public void ProjectSaveShortcutAndCloseGuard_UseTheReplaceableBehavior()
+    {
+        Assert.Contains("new KeyGesture(Key.S, ModifierKeys.Control)", ShellCode);
+        Assert.Contains("ConflictPolicy = ShortcutConflictPolicy.Append", ShellCode);
+        Assert.Contains("Priority = BuiltInProjectBehaviorPriority", ShellCode);
+        Assert.Contains("AllowWhenTextInputFocused = true", ShellCode);
+        Assert.Contains("projectBehavior.SaveActiveProjectAsync", ShellCode);
+        Assert.Contains("projectBehavior.CanCloseAsync", ShellCode);
+        Assert.Contains("!projectService.Current.IsMultiProjectEnabled", ShellCode);
+        Assert.Contains("context.Reason != WindowCloseRequestReason.Tray", ShellCode);
+        Assert.Contains("windowCloseService.Behavior == WindowCloseBehavior.MinimizeToTray", ShellCode);
     }
 
     [Fact]
@@ -95,9 +170,21 @@ public sealed class FlourishShellTitleBarFlyoutTests
         );
 
         Assert.Contains("projectState.IsMultiProjectEnabled", method);
-        Assert.Contains("projectState.ActiveProject?.Name", method);
+        Assert.Contains("GetProjectDisplayTitle(activeProject, titleState)", method);
         Assert.Contains("titleState.UnnamedProjectPlaceholder", method);
         Assert.Contains("titleState.ApplicationTitle", method);
+    }
+
+    [Fact]
+    public void LogoInformation_ExposesProjectTitleOnlyInMultiProjectMode()
+    {
+        var method = GetMethod(
+            "private void BuildApplicationInfoFlyoutContent()",
+            "private void BuildTitleSelectorItems()"
+        );
+
+        Assert.Contains("projectState.IsMultiProjectEnabled", method);
+        Assert.Contains("projectState.ActiveProject is { } activeProject", method);
     }
 
     [Fact]

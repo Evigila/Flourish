@@ -68,7 +68,7 @@ public interface IFlourishTitlebarBuilder
     );
 
     /// <summary>
-    /// Configures the application title and displays the title button when multi-project mode is disabled.
+    /// Configures the application title and displays it in the title selector when multi-project mode is disabled.
     /// </summary>
     /// <param name="title">The application title.</param>
     /// <returns>The current builder for chained configuration.</returns>
@@ -82,9 +82,9 @@ public interface IFlourishTitlebarBuilder
     IFlourishTitlebarBuilder SetApplicationSubTitle(string subTitle);
 
     /// <summary>
-    /// Configures the text shown by the title button when multi-project mode has no active project.
+    /// Configures the display name used for a project that has no storage path or when no project is active.
     /// </summary>
-    /// <param name="placeholder">The non-empty unnamed-project placeholder.</param>
+    /// <param name="placeholder">The non-empty display name for an unpersisted project.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishTitlebarBuilder SetUnnamedProjectPlaceholder(string placeholder = "Unnamed project");
 

@@ -560,10 +560,16 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<ITitleBarService>(provider =>
             provider.GetRequiredService<TitleBarService>()
         );
+        services.AddSingleton<ProjectCatalogStore>();
+        services.AddSingleton<IProjectCatalogStore>(provider =>
+            provider.GetRequiredService<ProjectCatalogStore>()
+        );
         services.AddSingleton<ProjectService>();
         services.AddSingleton<IProjectService>(provider =>
             provider.GetRequiredService<ProjectService>()
         );
+        services.AddSingleton<IProjectSaveFileDialog, ProjectSaveFileDialog>();
+        services.TryAddSingleton<IProjectBehavior, DefaultProjectBehavior>();
         services.AddSingleton<TitleBarSearchService>();
         services.AddSingleton<ITitleBarSearchService>(provider =>
             provider.GetRequiredService<TitleBarSearchService>()

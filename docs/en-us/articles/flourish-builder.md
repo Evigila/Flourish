@@ -42,7 +42,7 @@ The public builder separates hosting, application services, feature switches, an
 | [Shell configuration](shell-configuration.md) | `ConfigureShell` | Configures shell surfaces, tooltips, typography, and material effects. |
 | [Profile](configure-profile.md) | `ConfigureProfile` | Selects a custom page for the profile enabled by the title bar. |
 | [Title bar](configure-title-bar.md) | `ConfigureTitleBar` | Configures title bar content and behavior. |
-| [Projects](projects.md) | `ConfigureShell`, `IProjectService` | Enables project-aware title display and manages its in-memory metadata at runtime. |
+| [Projects](projects.md) | `ConfigureShell`, `IProjectService`, `IProjectBehavior` | Enables project-aware title display, persists its metadata catalog, and provides a replaceable lifecycle. |
 | [Navigation](navigation.md) | `ConfigureNavigation` | Configures the navigation panel and visible model. |
 | [Custom shell content](configure-custom-handler.md) | `ConfigureCustomHandler` | Inserts custom WPF elements into shell regions. |
 | [Dynamic toolbar](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
@@ -72,7 +72,7 @@ builder.ConfigureServices((_, services) =>
 
 After `Build()`, applications can resolve public services from `IFlourish.Services`.
 
-This includes `IBackgroundTaskService` and `IProjectService`. Resolve them through dependency injection to submit asynchronous work or synchronize project display metadata. See [Background tasks](background-tasks.md) and [Projects](projects.md).
+This includes `IBackgroundTaskService`, `IProjectService`, and `IProjectBehavior`. Resolve them through dependency injection to submit asynchronous work, mutate the persistent project catalog, or invoke project lifecycle behavior. Applications can register their own singleton `IProjectBehavior` before `Build()` to replace the default dialog and `.txt` file workflow. See [Background tasks](background-tasks.md) and [Projects](projects.md).
 
 ## Register navigation pages
 

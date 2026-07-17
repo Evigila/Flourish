@@ -26,6 +26,9 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal partial class FlourishShellWindow : Window
 {
+    private const string ProjectSaveCommandKey = "flourish.project.save";
+    private const int BuiltInProjectBehaviorPriority = -1000;
+
     private readonly INavigationService navigationService;
     private readonly IFrameNavigationService frameNavigationService;
     private readonly NavigationPanelService navigationPanelService;
@@ -46,6 +49,7 @@ internal partial class FlourishShellWindow : Window
     private readonly FlourishMotionService motionService;
     private readonly TitleBarService titleBarService;
     private readonly ProjectService projectService;
+    private readonly IProjectBehavior projectBehavior;
     private readonly TitleBarSearchService titleBarSearchService;
     private readonly WindowService windowService;
     private readonly WindowCloseService windowCloseService;
@@ -57,6 +61,10 @@ internal partial class FlourishShellWindow : Window
     private readonly IServiceProvider serviceProvider;
     private readonly FlourishShellOptions options;
     private readonly FlourishShellWindowFrame shellWindowFrame;
+    private readonly ICommandRegistration projectSaveCommandRegistration;
+    private readonly IShortcutRegistration projectSaveShortcutRegistration;
+    private readonly IWindowCloseGuardRegistration projectCloseGuardRegistration;
+    private readonly CancellationTokenSource projectBehaviorCancellation = new();
     private readonly Dictionary<string, FlourishNavigationItem> navigationItemsByKey = new(
         StringComparer.Ordinal
     );
@@ -104,6 +112,8 @@ internal partial class FlourishShellWindow : Window
     private IInputElement? titleBarFlyoutRestoreFocusTarget;
     private TitleBarFlyoutKind titleBarFlyoutKind;
     private bool titleBarFlyoutOpenedWithFocus;
+    private bool suppressProjectSelectionChanged;
+    private bool isProjectBehaviorPending;
     private bool allowClose;
     private bool closeRequestPending;
     private bool isProfileServiceSubscribed;
@@ -125,8 +135,19 @@ internal partial class FlourishShellWindow : Window
     {
         None,
         ApplicationInfo,
-        ProjectMenu,
     }
+
+    private enum ProjectMenuItemKind
+    {
+        Application,
+        Project,
+        Placeholder,
+        NewProject,
+    }
+
+    private sealed record ProjectMenuItemTag(ProjectMenuItemKind Kind, string? ProjectId = null);
+
+    private FlourishComboBox ProjectComboBox => Titlebar.TitleSelector;
 
     private sealed class BackgroundTaskIconView(
         Button button,
@@ -195,6 +216,7 @@ internal partial class FlourishShellWindow : Window
         FlourishMotionService motionService,
         TitleBarService titleBarService,
         ProjectService projectService,
+        IProjectBehavior projectBehavior,
         TitleBarSearchService titleBarSearchService,
         WindowService windowService,
         WindowCloseService windowCloseService,
@@ -236,6 +258,7 @@ internal partial class FlourishShellWindow : Window
         this.motionService = motionService;
         this.titleBarService = titleBarService;
         this.projectService = projectService;
+        this.projectBehavior = projectBehavior;
         this.titleBarSearchService = titleBarSearchService;
         this.windowService = windowService;
         this.windowCloseService = windowCloseService;
@@ -251,6 +274,32 @@ internal partial class FlourishShellWindow : Window
         ApplyOptions();
         windowService.Attach(this);
         windowCloseService.Attach(RequestCloseCoreAsync);
+        projectSaveCommandRegistration = commandRegistry.Register(
+            ProjectSaveCommandKey,
+            SaveActiveProjectCommandAsync,
+            _ =>
+                projectService.Current.IsMultiProjectEnabled
+                && projectService.Current.ActiveProject is not null,
+            new CommandRegistrationOptions
+            {
+                DuplicatePolicy = CommandDuplicatePolicy.Append,
+                Priority = BuiltInProjectBehaviorPriority,
+            }
+        );
+        projectSaveShortcutRegistration = shortcutService.Register(
+            new KeyGesture(Key.S, ModifierKeys.Control),
+            ProjectSaveCommandKey,
+            options: new ShortcutRegistrationOptions
+            {
+                ConflictPolicy = ShortcutConflictPolicy.Append,
+                Priority = BuiltInProjectBehaviorPriority,
+                AllowWhenTextInputFocused = true,
+            }
+        );
+        projectCloseGuardRegistration = windowCloseService.RegisterGuard(
+            "flourish.project.behavior",
+            ProjectBehaviorCloseGuardAsync
+        );
         BuildRegionContents();
         ConfigureProfileSurface();
         BuildToolbarItems();
@@ -299,6 +348,7 @@ internal partial class FlourishShellWindow : Window
             options.IsTitlebarLogoEnabled
         );
         Titlebar.SetDisplayTitle(GetDisplayedTitle());
+        BuildTitleSelectorItems();
         Titlebar.SetSearchPlaceholder(options.SearchPlaceholder);
         Titlebar.ConfigureVisibility(
             options.IsTitlebarSearchEnabled,
@@ -562,7 +612,8 @@ internal partial class FlourishShellWindow : Window
         Titlebar.ProfileToggleRequested += Titlebar_ProfileToggleRequested;
         Titlebar.LogoHoverRequested += Titlebar_LogoHoverRequested;
         Titlebar.LogoClickRequested += Titlebar_LogoClickRequested;
-        Titlebar.TitleClickRequested += Titlebar_TitleClickRequested;
+        Titlebar.TitleSelectionChanged += ProjectComboBox_SelectionChanged;
+        Titlebar.TitleDropDownOpened += Titlebar_TitleDropDownOpened;
         Titlebar.InteractionStarted += Titlebar_InteractionStarted;
         Titlebar.SearchTextChanged += Titlebar_SearchTextChanged;
     }
@@ -587,9 +638,11 @@ internal partial class FlourishShellWindow : Window
         OpenApplicationInfoFlyout(focusFlyout: true);
     }
 
-    private void Titlebar_TitleClickRequested(object? sender, EventArgs e)
+    private void Titlebar_TitleDropDownOpened(object? sender, EventArgs e)
     {
-        OpenProjectMenuFlyout(focusFlyout: true);
+        CloseStatusFlyout(restoreFocus: false);
+        CloseProfileOverlay();
+        CloseTitleBarFlyout(restoreFocus: false);
     }
 
     private void Titlebar_ProfileToggleRequested(object? sender, EventArgs e)
@@ -845,8 +898,20 @@ internal partial class FlourishShellWindow : Window
     )
     {
         return projectState.IsMultiProjectEnabled
-            ? projectState.ActiveProject?.Name ?? titleState.UnnamedProjectPlaceholder
+            ? projectState.ActiveProject is { } activeProject
+                ? GetProjectDisplayTitle(activeProject, titleState)
+                : titleState.UnnamedProjectPlaceholder
             : titleState.ApplicationTitle;
+    }
+
+    private static string GetProjectDisplayTitle(
+        FlourishProject project,
+        FlourishTitleBarState titleState
+    )
+    {
+        return project.StoragePath is null
+            ? titleState.UnnamedProjectPlaceholder
+            : project.Name;
     }
 
     private void EnsureTitleBarFlyoutIsAvailable()
@@ -857,14 +922,11 @@ internal partial class FlourishShellWindow : Window
         }
 
         var titleState = titleBarService.Current;
-        var projectState = projectService.Current;
         var isAvailable = options.IsTitlebarEnabled
             && (
                 titleBarFlyoutKind switch
                 {
                     TitleBarFlyoutKind.ApplicationInfo => titleState.IsLogoVisible,
-                    TitleBarFlyoutKind.ProjectMenu =>
-                        titleState.IsTitleVisible || projectState.IsMultiProjectEnabled,
                     _ => false,
                 }
             );
@@ -885,24 +947,6 @@ internal partial class FlourishShellWindow : Window
         OpenTitleBarFlyout(
             Titlebar.GetLogoButtonAnchor(),
             TitleBarFlyoutKind.ApplicationInfo,
-            focusFlyout
-        );
-    }
-
-    private void OpenProjectMenuFlyout(bool focusFlyout)
-    {
-        if (
-            !options.IsTitlebarEnabled
-            || !(titleBarService.Current.IsTitleVisible || projectService.Current.IsMultiProjectEnabled)
-        )
-        {
-            return;
-        }
-
-        BuildProjectMenuFlyoutContent();
-        OpenTitleBarFlyout(
-            Titlebar.GetTitleButtonAnchor(),
-            TitleBarFlyoutKind.ProjectMenu,
             focusFlyout
         );
     }
@@ -932,10 +976,6 @@ internal partial class FlourishShellWindow : Window
         titleBarFlyoutKind = kind;
         ApplicationInfoContent.Visibility =
             kind == TitleBarFlyoutKind.ApplicationInfo
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-        ProjectMenuContent.Visibility =
-            kind == TitleBarFlyoutKind.ProjectMenu
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         TitleBarFlyoutOverlay.Visibility = Visibility.Visible;
@@ -982,7 +1022,10 @@ internal partial class FlourishShellWindow : Window
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-        var projectTitle = projectState.ActiveProject?.Name;
+        var projectTitle = projectState.IsMultiProjectEnabled
+            && projectState.ActiveProject is { } activeProject
+            ? GetProjectDisplayTitle(activeProject, titleState)
+            : null;
 
         ApplicationInfoProjectTitle.Text = projectTitle ?? string.Empty;
         ApplicationInfoProjectTitle.Visibility =
@@ -1009,163 +1052,338 @@ internal partial class FlourishShellWindow : Window
         AutomationProperties.SetName(TitleBarFlyoutCard, string.Join(", ", identityParts));
     }
 
-    private void BuildProjectMenuFlyoutContent()
+    private void BuildTitleSelectorItems()
     {
         var titleState = titleBarService.Current;
         var projectState = projectService.Current;
-        var displayTitle = GetDisplayedTitle();
-        ProjectMenuTitle.Text = displayTitle;
-        ProjectMenuTitle.Margin = projectState.IsMultiProjectEnabled
-            ? new Thickness(2, 0, 2, 10)
-            : new Thickness(2, 0, 2, 0);
-        AutomationProperties.SetName(ProjectMenuTitle, displayTitle);
-        AutomationProperties.SetName(TitleBarFlyoutCard, displayTitle);
-        ProjectMenuItemsHost.Children.Clear();
-
-        if (!projectState.IsMultiProjectEnabled)
+        FlourishComboBoxItem? selectedItem = null;
+        suppressProjectSelectionChanged = true;
+        try
         {
-            NewProjectButton.Visibility = Visibility.Collapsed;
-            return;
-        }
+            ProjectComboBox.Items.Clear();
 
-        foreach (var project in projectState.Projects)
-        {
-            var button = CreateProjectMenuButton(
-                project,
-                projectState.ActiveProject?.Id == project.Id
-            );
-            ProjectMenuItemsHost.Children.Add(button);
-        }
-
-        if (projectState.Projects.Count == 0)
-        {
-            var empty = new TextBlock
+            if (projectState.IsMultiProjectEnabled)
             {
-                Margin = new Thickness(8, 6, 8, 6),
-                Text = titleState.UnnamedProjectPlaceholder,
-                TextWrapping = TextWrapping.Wrap,
-            };
-            empty.SetResourceReference(
-                TextBlock.ForegroundProperty,
-                "FlourishNeutralForeground2Brush"
-            );
-            ProjectMenuItemsHost.Children.Add(empty);
+                foreach (var project in projectState.Projects)
+                {
+                    var item = CreateProjectComboBoxItem(project, titleState);
+                    ProjectComboBox.Items.Add(item);
+                    if (
+                        StringComparer.Ordinal.Equals(
+                            projectState.ActiveProject?.Id,
+                            project.Id
+                        )
+                    )
+                    {
+                        selectedItem = item;
+                    }
+                }
+
+                if (selectedItem is null)
+                {
+                    selectedItem = CreateProjectPlaceholderComboBoxItem(titleState);
+                    ProjectComboBox.Items.Add(selectedItem);
+                }
+
+                ProjectComboBox.Items.Add(CreateNewProjectComboBoxItem());
+            }
+            else
+            {
+                selectedItem = CreateApplicationTitleComboBoxItem(titleState.ApplicationTitle);
+                ProjectComboBox.Items.Add(selectedItem);
+            }
+
+            ProjectComboBox.SelectedItem = selectedItem;
+        }
+        finally
+        {
+            suppressProjectSelectionChanged = false;
         }
 
-        NewProjectButton.Content = localizationService.Get(FlourishLocaleKeys.TitleBarNewProject);
-        NewProjectButton.Visibility = Visibility.Visible;
+        var displayTitle = GetDisplayedTitle(titleState, projectState);
+        AutomationProperties.SetName(ProjectComboBox, displayTitle);
     }
 
-    private Button CreateProjectMenuButton(FlourishProject project, bool isActive)
+    private static FlourishComboBoxItem CreateApplicationTitleComboBoxItem(string title)
     {
-        var layout = new Grid();
-        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
-        layout.ColumnDefinitions.Add(
-            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-        );
-
-        var indicator = new TextBlock
+        var item = new FlourishComboBoxItem
         {
-            VerticalAlignment = VerticalAlignment.Center,
-            Text = isActive ? "\uE73E" : string.Empty,
+            Content = title,
+            Tag = new ProjectMenuItemTag(ProjectMenuItemKind.Application),
         };
-        BindIconTypography(indicator, "FlourishFontSizeIcon");
-        layout.Children.Add(indicator);
+        ConfigureTitleSelectorDropDownItem(item);
+        AutomationProperties.SetName(item, title);
+        return item;
+    }
 
-        var details = new StackPanel();
-        Grid.SetColumn(details, 1);
-        var name = new TextBlock
+    private FlourishComboBoxItem CreateProjectComboBoxItem(
+        FlourishProject project,
+        FlourishTitleBarState titleState
+    )
+    {
+        var displayTitle = GetProjectDisplayTitle(project, titleState);
+        var item = new FlourishComboBoxItem
         {
-            FontWeight = isActive ? FontWeights.Bold : FontWeights.Normal,
-            Text = project.Name,
-            TextTrimming = TextTrimming.CharacterEllipsis,
+            Content = displayTitle,
+            Tag = new ProjectMenuItemTag(ProjectMenuItemKind.Project, project.Id),
         };
-        details.Children.Add(name);
-        if (!string.IsNullOrWhiteSpace(project.StoragePath))
+        ConfigureTitleSelectorDropDownItem(item);
+        if (project.StoragePath is not null)
         {
-            var path = new TextBlock
-            {
-                Margin = new Thickness(0, 2, 0, 0),
-                Text = project.StoragePath,
-                TextTrimming = TextTrimming.CharacterEllipsis,
-            };
-            path.SetResourceReference(
-                TextBlock.ForegroundProperty,
-                "FlourishNeutralForeground2Brush"
-            );
-            details.Children.Add(path);
+            item.ToolTip = new FlourishToolTip { Content = project.StoragePath };
         }
 
-        layout.Children.Add(details);
-        var button = new Button
+        var deleteItem = new System.Windows.Controls.MenuItem
         {
-            MinHeight = 42,
-            Padding = new Thickness(8, 6, 8, 6),
-            HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-            HorizontalContentAlignment = System.Windows.HorizontalAlignment.Stretch,
-            Content = layout,
+            Header = localizationService.Get(FlourishLocaleKeys.ProjectDelete),
             Tag = project.Id,
-            Variant = ButtonVariant.Text,
         };
-        AutomationProperties.SetName(button, project.Name);
-        button.Click += ProjectMenuItem_Click;
-        return button;
+        deleteItem.SetResourceReference(
+            System.Windows.Controls.MenuItem.FontSizeProperty,
+            "FlourishFontSizeStandard"
+        );
+        deleteItem.Click += ProjectDeleteMenuItem_Click;
+        item.ContextMenu = new System.Windows.Controls.ContextMenu
+        {
+            Items = { deleteItem },
+        };
+        AutomationProperties.SetName(item, displayTitle);
+        return item;
     }
 
-    private void ProjectMenuItem_Click(object sender, RoutedEventArgs e)
+    private FlourishComboBoxItem CreateProjectPlaceholderComboBoxItem(
+        FlourishTitleBarState titleState
+    )
     {
-        if (sender is not Button { Tag: string projectId })
+        var item = new FlourishComboBoxItem
+        {
+            Content = titleState.UnnamedProjectPlaceholder,
+            IsEnabled = false,
+            Tag = new ProjectMenuItemTag(ProjectMenuItemKind.Placeholder),
+        };
+        ConfigureTitleSelectorDropDownItem(item);
+        return item;
+    }
+
+    private FlourishComboBoxItem CreateNewProjectComboBoxItem()
+    {
+        var label = localizationService.Get(FlourishLocaleKeys.TitleBarNewProject);
+        var item = new FlourishComboBoxItem
+        {
+            Content = label,
+            Tag = new ProjectMenuItemTag(ProjectMenuItemKind.NewProject),
+        };
+        ConfigureTitleSelectorDropDownItem(item);
+        AutomationProperties.SetName(item, label);
+        return item;
+    }
+
+    private static void ConfigureTitleSelectorDropDownItem(FlourishComboBoxItem item)
+    {
+        item.SetResourceReference(
+            System.Windows.Controls.Control.FontSizeProperty,
+            "FlourishFontSizeStandard"
+        );
+        item.FontWeight = FontWeights.Normal;
+    }
+
+    private async void ProjectComboBox_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e
+    )
+    {
+        if (
+            suppressProjectSelectionChanged
+            || ProjectComboBox.SelectedItem is not FlourishComboBoxItem selectedItem
+            || selectedItem.Tag is not ProjectMenuItemTag selection
+        )
         {
             return;
         }
 
-        CloseTitleBarFlyout();
-        projectService.TryRequestProjectActivation(projectId);
+        switch (selection.Kind)
+        {
+            case ProjectMenuItemKind.Project when selection.ProjectId is { } projectId:
+                if (
+                    StringComparer.Ordinal.Equals(
+                        projectService.Current.ActiveProject?.Id,
+                        projectId
+                    )
+                )
+                {
+                    return;
+                }
+
+                ProjectComboBox.IsDropDownOpen = false;
+                await ExecuteProjectBehaviorAsync(
+                    "activate",
+                    "Project activation failed",
+                    token => projectBehavior.ActivateProjectAsync(projectId, token)
+                );
+                BuildTitleSelectorItems();
+                break;
+            case ProjectMenuItemKind.NewProject:
+                ProjectComboBox.IsDropDownOpen = false;
+                await ExecuteProjectBehaviorAsync(
+                    "create",
+                    "Project creation failed",
+                    projectBehavior.CreateProjectAsync
+                );
+                BuildTitleSelectorItems();
+                break;
+        }
     }
 
-    private void NewProjectButton_Click(object sender, RoutedEventArgs e)
+    private async void ProjectDeleteMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        CloseTitleBarFlyout();
-        projectService.RequestNewProject();
+        if (sender is not System.Windows.Controls.MenuItem { Tag: string projectId })
+        {
+            return;
+        }
+
+        await ExecuteProjectBehaviorAsync(
+            "delete",
+            "Project deletion failed",
+            token => projectBehavior.DeleteProjectAsync(projectId, token)
+        );
+        BuildTitleSelectorItems();
+    }
+
+    private async Task<bool> ExecuteProjectBehaviorAsync(
+        string operationId,
+        string failureTitle,
+        Func<CancellationToken, ValueTask<bool>> operation
+    )
+    {
+        if (isProjectBehaviorPending || isShellClosed)
+        {
+            return false;
+        }
+
+        isProjectBehaviorPending = true;
+        ProjectComboBox.IsEnabled = false;
+        try
+        {
+            return await operation(projectBehaviorCancellation.Token);
+        }
+        catch (OperationCanceledException)
+            when (projectBehaviorCancellation.IsCancellationRequested)
+        {
+            return false;
+        }
+        catch (Exception error)
+        {
+            ShowProjectBehaviorFailure(operationId, failureTitle, error);
+            return false;
+        }
+        finally
+        {
+            isProjectBehaviorPending = false;
+            if (!isShellClosed)
+            {
+                ProjectComboBox.IsEnabled = true;
+            }
+        }
+    }
+
+    private async ValueTask<CommandResult> SaveActiveProjectCommandAsync(
+        CommandContext context,
+        CancellationToken cancellationToken
+    )
+    {
+        if (!projectService.Current.IsMultiProjectEnabled)
+        {
+            return CommandResult.NotHandled;
+        }
+
+        using var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(
+            cancellationToken,
+            projectBehaviorCancellation.Token
+        );
+        try
+        {
+            return await projectBehavior.SaveActiveProjectAsync(linkedCancellation.Token)
+                ? CommandResult.Handled
+                : CommandResult.NotHandled;
+        }
+        catch (OperationCanceledException) when (linkedCancellation.IsCancellationRequested)
+        {
+            return CommandResult.Canceled;
+        }
+        catch (Exception error)
+        {
+            ShowProjectBehaviorFailure("save", "Project save failed", error);
+            return CommandResult.Failed(error);
+        }
+    }
+
+    private async ValueTask<WindowCloseDecision> ProjectBehaviorCloseGuardAsync(
+        WindowCloseContext context,
+        CancellationToken cancellationToken
+    )
+    {
+        if (!projectService.Current.IsMultiProjectEnabled)
+        {
+            return WindowCloseDecision.Allow;
+        }
+
+        if (
+            context.Reason != WindowCloseRequestReason.Tray
+            && windowCloseService.Behavior == WindowCloseBehavior.MinimizeToTray
+        )
+        {
+            return WindowCloseDecision.Allow;
+        }
+
+        try
+        {
+            return await projectBehavior.CanCloseAsync(cancellationToken)
+                ? WindowCloseDecision.Allow
+                : WindowCloseDecision.Cancel;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception error)
+        {
+            ShowProjectBehaviorFailure("close", "Project close check failed", error);
+            return WindowCloseDecision.Cancel;
+        }
+    }
+
+    private void ShowProjectBehaviorFailure(
+        string operationId,
+        string failureTitle,
+        Exception error
+    )
+    {
+        DispatchRuntimeChange(() =>
+        {
+            notificationService.Upsert(
+                new FlourishNotification(
+                    $"flourish.project.{operationId}.error",
+                    failureTitle,
+                    error.Message,
+                    FlourishNotificationSeverity.Error,
+                    Duration: TimeSpan.FromSeconds(8)
+                )
+            );
+        });
     }
 
     private void FocusTitleBarFlyoutContent()
     {
-        if (titleBarFlyoutKind == TitleBarFlyoutKind.ProjectMenu)
-        {
-            foreach (var button in ProjectMenuItemsHost.Children.OfType<Button>())
-            {
-                if (button.Focus())
-                {
-                    return;
-                }
-            }
-
-            if (NewProjectButton.Visibility == Visibility.Visible && NewProjectButton.Focus())
-            {
-                return;
-            }
-
-            if (ProjectMenuTitle.Focus())
-            {
-                return;
-            }
-        }
-
         TitleBarFlyoutCard.Focus();
     }
 
-    private void RefreshOpenProjectMenuFlyout()
+    private void RefreshTitleSelector()
     {
-        var focusedProjectId = (Keyboard.FocusedElement as Button)?.Tag as string;
-        var wasNewProjectFocused = ReferenceEquals(
-            Keyboard.FocusedElement,
-            NewProjectButton
-        );
-        var hadKeyboardFocus = TitleBarFlyoutCard.IsKeyboardFocusWithin;
+        var hadKeyboardFocus = ProjectComboBox.IsKeyboardFocusWithin;
+        var wasDropDownOpen = ProjectComboBox.IsDropDownOpen;
 
-        BuildProjectMenuFlyoutContent();
-        if (!hadKeyboardFocus)
+        BuildTitleSelectorItems();
+        if (!hadKeyboardFocus && !wasDropDownOpen)
         {
             return;
         }
@@ -1174,40 +1392,20 @@ internal partial class FlourishShellWindow : Window
             DispatcherPriority.Input,
             new Action(() =>
             {
-                if (
-                    TitleBarFlyoutOverlay.Visibility != Visibility.Visible
-                    || titleBarFlyoutKind != TitleBarFlyoutKind.ProjectMenu
-                )
+                if (isShellClosed || ProjectComboBox.Visibility != Visibility.Visible)
                 {
                     return;
                 }
 
-                if (focusedProjectId is not null)
+                if (hadKeyboardFocus || wasDropDownOpen)
                 {
-                    var matchingButton = ProjectMenuItemsHost
-                        .Children.OfType<Button>()
-                        .FirstOrDefault(button =>
-                            StringComparer.Ordinal.Equals(
-                                button.Tag as string,
-                                focusedProjectId
-                            )
-                        );
-                    if (matchingButton?.Focus() == true)
-                    {
-                        return;
-                    }
+                    ProjectComboBox.Focus();
                 }
 
-                if (
-                    wasNewProjectFocused
-                    && NewProjectButton.Visibility == Visibility.Visible
-                    && NewProjectButton.Focus()
-                )
+                if (wasDropDownOpen)
                 {
-                    return;
+                    ProjectComboBox.IsDropDownOpen = true;
                 }
-
-                FocusTitleBarFlyoutContent();
             })
         );
     }
@@ -2943,7 +3141,9 @@ internal partial class FlourishShellWindow : Window
         {
             var titleState = titleBarService.Current;
             var projectState = projectService.Current;
+            projectSaveCommandRegistration.NotifyCanExecuteChanged();
             Titlebar.SetDisplayTitle(GetDisplayedTitle(titleState, projectState));
+            RefreshTitleSelector();
             Titlebar.ConfigureVisibility(
                 titleState.IsSearchVisible,
                 titleState.IsBreadcrumbVisible
@@ -2956,14 +3156,9 @@ internal partial class FlourishShellWindow : Window
             );
             EnsureTitleBarFlyoutIsAvailable();
 
-            switch (titleBarFlyoutKind)
+            if (titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo)
             {
-                case TitleBarFlyoutKind.ApplicationInfo:
-                    BuildApplicationInfoFlyoutContent();
-                    break;
-                case TitleBarFlyoutKind.ProjectMenu:
-                    RefreshOpenProjectMenuFlyout();
-                    break;
+                BuildApplicationInfoFlyoutContent();
             }
 
             UpdateTitleBarFlyoutPosition();
@@ -2975,6 +3170,7 @@ internal partial class FlourishShellWindow : Window
         var projectState = projectService.Current;
         Title = state.ApplicationTitle;
         Titlebar.SetDisplayTitle(GetDisplayedTitle(state, projectState));
+        RefreshTitleSelector();
         Titlebar.SetSearchPlaceholder(state.SearchPlaceholder);
         RequestTitleBarLogo(state.LogoPath, state.LogoFallbackText, state.IsLogoVisible);
         Titlebar.ConfigureVisibility(
@@ -2991,11 +3187,6 @@ internal partial class FlourishShellWindow : Window
         if (titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo)
         {
             BuildApplicationInfoFlyoutContent();
-            UpdateTitleBarFlyoutPosition();
-        }
-        else if (titleBarFlyoutKind == TitleBarFlyoutKind.ProjectMenu)
-        {
-            RefreshOpenProjectMenuFlyout();
             UpdateTitleBarFlyoutPosition();
         }
         if (navigationService.CurrentSourcePageType is { } pageType)
@@ -3179,10 +3370,7 @@ internal partial class FlourishShellWindow : Window
                     break;
             }
 
-            if (titleBarFlyoutKind == TitleBarFlyoutKind.ProjectMenu)
-            {
-                RefreshOpenProjectMenuFlyout();
-            }
+            RefreshTitleSelector();
         });
     }
 
@@ -3935,6 +4123,10 @@ internal partial class FlourishShellWindow : Window
             isShellClosed = true;
         }
 
+        projectBehaviorCancellation.Cancel();
+        projectSaveShortcutRegistration.Dispose();
+        projectSaveCommandRegistration.Dispose();
+        projectCloseGuardRegistration.Dispose();
         backgroundTaskService.TasksChanged -= BackgroundTaskService_TasksChanged;
         navigationPanelService.Changed -= NavigationPanelService_Changed;
         navigationMenuService.Changed -= NavigationMenuService_Changed;
@@ -3966,7 +4158,8 @@ internal partial class FlourishShellWindow : Window
         Titlebar.ProfileToggleRequested -= Titlebar_ProfileToggleRequested;
         Titlebar.LogoHoverRequested -= Titlebar_LogoHoverRequested;
         Titlebar.LogoClickRequested -= Titlebar_LogoClickRequested;
-        Titlebar.TitleClickRequested -= Titlebar_TitleClickRequested;
+        Titlebar.TitleSelectionChanged -= ProjectComboBox_SelectionChanged;
+        Titlebar.TitleDropDownOpened -= Titlebar_TitleDropDownOpened;
         Titlebar.InteractionStarted -= Titlebar_InteractionStarted;
         Titlebar.SearchTextChanged -= Titlebar_SearchTextChanged;
         backgroundTaskRefreshTimer.Stop();
@@ -3983,6 +4176,7 @@ internal partial class FlourishShellWindow : Window
         pageTransition.Cancel();
         StopNavigationPaneAnimations();
         windowCloseService.Detach();
+        projectBehaviorCancellation.Dispose();
         ClearToolbarButtonCache();
         foreach (var regionElement in regionElementsById.Values)
         {

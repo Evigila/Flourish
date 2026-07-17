@@ -34,11 +34,14 @@ public interface IFlourishShellBuilder
     /// <summary>
     /// Enables or disables the project-aware title bar and its project selection surface.
     /// </summary>
-    /// <param name="enabled">A value indicating whether multiple projects should be managed by the shell.</param>
+    /// <param name="enabled">A value indicating whether the title selector should expose every registered project and the new-project action.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// This switch only enables the framework UI and in-memory project state. Applications remain
-    /// responsible for creating, opening, saving, and closing project data.
+    /// Project metadata is restored from and written to <c>projects.json</c>. The built-in
+    /// <see cref="IProjectBehavior" /> supplies save prompts and placeholder <c>.txt</c> files;
+    /// applications can replace that behavior for their own project lifecycle. Selecting a project
+    /// changes the active shell identity but does not load application-owned project content. When
+    /// disabled, Flourish does not route Ctrl+S or window closing through project behavior.
     /// </remarks>
     IFlourishShellBuilder UseMultiProject(bool enabled = true);
 

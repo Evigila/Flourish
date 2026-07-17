@@ -1,11 +1,11 @@
 ---
 title: Application data
-description: Configure localization and use the Generic Host configuration shared by Flourish and the application.
+description: Configure localization, shared Generic Host configuration, and the adjacent project catalog.
 ---
 
 # Application data
 
-`ConfigureData` controls Flourish built-in interface language and custom locale files. Localization is always available: when `ConfigureData` or `SetLocale` is omitted, Flourish uses the built-in English (`EN`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host.
+`ConfigureData` controls Flourish built-in interface language and custom locale files. Localization is always available: when `ConfigureData` or `SetLocale` is omitted, Flourish uses the built-in English (`EN`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata is stored separately in an adjacent catalog.
 
 ## Select a built-in locale
 
@@ -67,6 +67,15 @@ The built-in locale files define the following keys. `{0}` is a format placehold
 | `TitleBar.ApplicationInfo` | Application information | 应用信息 |
 | `TitleBar.ProjectMenu` | Projects | 项目 |
 | `TitleBar.NewProject` | New project | 新建项目 |
+| `Project.Delete` | Delete project | 删除项目 |
+| `Project.Save` | Save | 保存 |
+| `Project.DontSave` | Don't save | 不保存 |
+| `Project.SaveDialogTitle` | Save project | 保存项目 |
+| `Project.TextFileFilter` | Text project files (*.txt)\|*.txt | 文本项目文件 (*.txt)\|*.txt |
+| `Project.UnsavedTitle` | Save project | 保存项目 |
+| `Project.UnsavedPrompt` | "{0}" has not been saved. Save it before continuing? | “{0}”尚未保存。是否先保存再继续？ |
+| `Project.DeleteTitle` | Delete project | 删除项目 |
+| `Project.DeletePrompt` | Delete "{0}"? Its managed project file is also deleted when no other project uses it. | 是否删除“{0}”？没有其他项目使用同一路径时，也会删除其受管理的项目文件。 |
 | `TitleBar.Minimize` | Minimize | 最小化 |
 | `TitleBar.Maximize` | Maximize | 最大化 |
 | `TitleBar.Restore` | Restore | 还原 |
@@ -147,6 +156,12 @@ The configuration key is `Flourish:Preferences:Theme`. Reads follow the complete
 
 Flourish preserves unrelated settings when it writes the base file, but serializes the complete JSON object again. This reformats the document and removes comments. The content root must be writable, and an existing file must contain valid JSON with an object at its root.
 
+## Project catalog
+
+`IProjectService` stores the ordered project metadata and active project ID in `projects.json`. The file is placed in the same directory as `IAppSettingsStore.FilePath`, normally beside the base `appsettings.json`, but is not a Host configuration source and does not participate in configuration precedence.
+
+Flourish loads this catalog when the project service starts and writes every catalog mutation atomically. Registering a replacement `IProjectBehavior` changes project dialogs and file lifecycle only; it does not disable catalog persistence. The directory must be writable. See [Projects](projects.md) for unpersisted projects and lifecycle behavior.
+
 ## User Secrets
 
 Remembered Profile credentials use the application's User Secrets configuration. [Profile](configure-profile.md) explains the required `UserSecretsId`, credential protection, and behavior when the provider is unavailable.
@@ -156,4 +171,5 @@ Remembered Profile credentials use the application's User Secrets configuration.
 - [Title bar](configure-title-bar.md), [Window](configure-window.md), [Background tasks](background-tasks.md), [Status bar](status-bar.md), and [Message service](message-service.md) use localized built-in text.
 - [Themes](configure-themes.md) persist the selected theme through Host configuration.
 - [Profile](configure-profile.md) explains remembered credentials and User Secrets setup.
+- [Projects](projects.md) explains the persistent project catalog and replaceable lifecycle behavior.
 - [IFlourishBuilder](flourish-builder.md) explains when configuration callbacks are applied.

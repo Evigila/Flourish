@@ -30,7 +30,7 @@ builder
 
 Custom content does not enable its owning surface. Enable title bar regions with `UseTitleBar()`, navigation regions with `UseNavigation()`, toolbar regions with `UseDynamicToolbar()`, and footer regions with `UseStatusBar()` in [Shell configuration](shell-configuration.md). `SetProfileContent` also requires `SetProfile()` in [Title bar](configure-title-bar.md).
 
-The `FlourishRegion.TitlebarApplicationInfo` region is rendered as the Body of the logo information surface. Configure a logo with `SetLogo()` before adding this content. The Body is application-defined and can present dynamic details without making Flourish responsible for the underlying project or document lifecycle.
+The `FlourishRegion.TitlebarApplicationInfo` region is rendered as the Body of the logo information surface. Configure a logo with `SetLogo()` before adding this content. The Body is application-defined and can present dynamic details, but it does not participate in project creation, saving, activation, deletion, or close handling. Those Shell entry points are coordinated by `IProjectBehavior`; see [Projects](projects.md).
 
 ## Element factories
 
@@ -60,6 +60,7 @@ Footer command helpers require an explicit `FlourishRegion.FooterStart` or `Flou
 ## Related features
 
 - [Title bar](configure-title-bar.md) controls built-in title bar content.
+- [Projects](projects.md) explains the persistent catalog and replaceable lifecycle behavior.
 - [Dynamic toolbar](dynamic-toolbar.md) provides page-specific commands.
 - [Status bar](status-bar.md) describes background-task indicators, custom items, and system status.
 - [Command dispatch](commands.md) handles command keys.

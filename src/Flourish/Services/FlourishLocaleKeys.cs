@@ -12,6 +12,15 @@ internal static class FlourishLocaleKeys
     public const string TitleBarApplicationInfo = "TitleBar.ApplicationInfo";
     public const string TitleBarProjectMenu = "TitleBar.ProjectMenu";
     public const string TitleBarNewProject = "TitleBar.NewProject";
+    public const string ProjectDelete = "Project.Delete";
+    public const string ProjectSave = "Project.Save";
+    public const string ProjectDontSave = "Project.DontSave";
+    public const string ProjectSaveDialogTitle = "Project.SaveDialogTitle";
+    public const string ProjectTextFileFilter = "Project.TextFileFilter";
+    public const string ProjectUnsavedTitle = "Project.UnsavedTitle";
+    public const string ProjectUnsavedPrompt = "Project.UnsavedPrompt";
+    public const string ProjectDeleteTitle = "Project.DeleteTitle";
+    public const string ProjectDeletePrompt = "Project.DeletePrompt";
     public const string TitleBarMinimize = "TitleBar.Minimize";
     public const string TitleBarMaximize = "TitleBar.Maximize";
     public const string TitleBarRestore = "TitleBar.Restore";
@@ -75,6 +84,15 @@ internal static class FlourishLocaleKeys
         TitleBarApplicationInfo,
         TitleBarProjectMenu,
         TitleBarNewProject,
+        ProjectDelete,
+        ProjectSave,
+        ProjectDontSave,
+        ProjectSaveDialogTitle,
+        ProjectTextFileFilter,
+        ProjectUnsavedTitle,
+        ProjectUnsavedPrompt,
+        ProjectDeleteTitle,
+        ProjectDeletePrompt,
         TitleBarMinimize,
         TitleBarMaximize,
         TitleBarRestore,

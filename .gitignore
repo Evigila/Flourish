@@ -371,3 +371,6 @@ docs/api/
 docs/en-us/api/
 docs/zh-cn/api/
 docs/_site/
+
+# Flourish runtime project catalog
+projects.json
