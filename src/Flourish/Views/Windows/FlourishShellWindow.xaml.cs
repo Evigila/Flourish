@@ -76,6 +76,7 @@ internal partial class FlourishShellWindow : Window
         List<FlourishNavigationItem>
     > navigationChildrenByParentKey = [];
     private readonly Dictionary<Type, IReadOnlyList<Button>> toolbarButtonsByPageType = [];
+    private readonly ToolbarCommandButtonIndex toolbarCommandButtons;
     private readonly Dictionary<string, RegionElementView> regionElementsById = new(
         StringComparer.Ordinal
     );
@@ -251,6 +252,7 @@ internal partial class FlourishShellWindow : Window
         this.trayIconService = trayIconService;
         this.commandRegistry = commandRegistry;
         this.commandDispatcher = commandDispatcher;
+        toolbarCommandButtons = new ToolbarCommandButtonIndex(commandDispatcher);
         this.shortcutService = shortcutService;
         this.fontService = fontService;
         this.materialEffectService = materialEffectService;
@@ -2773,22 +2775,14 @@ internal partial class FlourishShellWindow : Window
                 Margin = buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness(),
                 ToolTip = new FlourishToolTip { Content = item.DisplayName },
                 Variant = ButtonVariant.Text,
-                Tag = item.CommandKey,
+                Tag = item,
                 Width = useIconOnly ? 30 : double.NaN,
                 Height = 28,
                 MinWidth = useIconOnly ? 0 : 28,
                 MinHeight = 0,
                 Padding = new Thickness(7, 0, 7, 0),
-                IsEnabled =
-                    item.IsEnabled
-                    && (
-                        string.IsNullOrWhiteSpace(item.CommandKey)
-                        || commandDispatcher.CanExecute(
-                            item.CommandKey,
-                            source: CommandSource.Toolbar
-                        )
-                    ),
             };
+            toolbarCommandButtons.Track(button, item);
             button.Click += ToolbarButton_Click;
             buttons.Add(button);
         }
@@ -2803,7 +2797,13 @@ internal partial class FlourishShellWindow : Window
 
     private async void ToolbarButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: string commandKey })
+        if (
+            sender is Button
+            {
+                Tag: FlourishToolbarItem { CommandKey: string commandKey },
+            }
+            && !string.IsNullOrWhiteSpace(commandKey)
+        )
         {
             await commandDispatcher.ExecuteAsync(commandKey, source: CommandSource.Toolbar);
         }
@@ -3470,7 +3470,7 @@ internal partial class FlourishShellWindow : Window
 
     private void CommandRegistry_Changed(object? sender, CommandRegistryChangedEventArgs e)
     {
-        DispatchRuntimeChange(RefreshCommandAvailability);
+        DispatchRuntimeChange(() => RefreshCommandAvailability(e.CommandKey));
     }
 
     private void CommandRegistry_CanExecuteChanged(
@@ -3478,15 +3478,12 @@ internal partial class FlourishShellWindow : Window
         CommandCanExecuteChangedEventArgs e
     )
     {
-        DispatchRuntimeChange(RefreshCommandAvailability);
+        DispatchRuntimeChange(() => RefreshCommandAvailability(e.CommandKey));
     }
 
-    private void RefreshCommandAvailability()
+    private void RefreshCommandAvailability(string? commandKey)
     {
-        ClearToolbarButtonCache();
-        BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);
-        NavigationItemsHost.Items.Refresh();
-        FixedNavigationItemsHost.Items.Refresh();
+        toolbarCommandButtons.Refresh(commandKey);
     }
 
     private void DispatchRuntimeChange(Action action)
@@ -3517,6 +3514,7 @@ internal partial class FlourishShellWindow : Window
 
     private void ClearToolbarButtonCache()
     {
+        toolbarCommandButtons.Clear();
         if (defaultToolbarButtons is not null)
         {
             foreach (var button in defaultToolbarButtons)

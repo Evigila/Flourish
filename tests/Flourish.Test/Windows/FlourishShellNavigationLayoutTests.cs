@@ -167,6 +167,44 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
+    public void CommandAvailabilityChanges_UpdateIndexedButtonsWithoutRebuildingControls()
+    {
+        var shellCode = File.ReadAllText(ShellCodePath);
+        var handlersStart = shellCode.IndexOf(
+            "private void CommandRegistry_Changed(",
+            StringComparison.Ordinal
+        );
+        var refreshStart = shellCode.IndexOf(
+            "private void RefreshCommandAvailability(",
+            handlersStart,
+            StringComparison.Ordinal
+        );
+        var dispatchStart = shellCode.IndexOf(
+            "private void DispatchRuntimeChange(",
+            refreshStart,
+            StringComparison.Ordinal
+        );
+
+        Assert.True(handlersStart >= 0);
+        Assert.True(refreshStart > handlersStart);
+        Assert.True(dispatchStart > refreshStart);
+
+        var handlers = shellCode[handlersStart..refreshStart];
+        var refresh = shellCode[refreshStart..dispatchStart];
+        Assert.Equal(
+            2,
+            handlers.Split(
+                "RefreshCommandAvailability(e.CommandKey)",
+                StringSplitOptions.None
+            ).Length - 1
+        );
+        Assert.Contains("toolbarCommandButtons.Refresh(commandKey);", refresh);
+        Assert.DoesNotContain("ClearToolbarButtonCache", refresh, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildToolbarItems", refresh, StringComparison.Ordinal);
+        Assert.DoesNotContain("Items.Refresh", refresh, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NavigationContainer_UsesAppearanceAndCompactTriggersFromItsControlDictionary()
     {
         var document = XDocument.Load(ListBoxItemXamlPath);
