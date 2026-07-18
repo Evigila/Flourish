@@ -776,6 +776,14 @@ public sealed class FontServicePropagationTests
         var shellSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Views", "Windows", "FlourishShellWindow.xaml.cs")
         );
+        var statusItemSource = File.ReadAllText(
+            Path.Combine(
+                flourishRoot,
+                "Internal",
+                "Interaction",
+                "StatusItemViewCache.cs"
+            )
+        );
         var runtimeSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Internal", "Composition", "FlourishRuntime.cs")
         );
@@ -788,12 +796,18 @@ public sealed class FontServicePropagationTests
         Assert.DoesNotContain("window.FontSize =", fontSource, StringComparison.Ordinal);
         Assert.DoesNotContain("iconFontFamily", shellSource, StringComparison.Ordinal);
         Assert.DoesNotContain("new FontFamily", shellSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("new FontFamily", statusItemSource, StringComparison.Ordinal);
         Assert.Contains(
             "textBlock.SetResourceReference(TextBlock.FontFamilyProperty, \"FlourishIconFontFamily\")",
             shellSource,
             StringComparison.Ordinal
         );
-        Assert.Equal(6, CountOccurrences(shellSource, "BindIconTypography(icon"));
+        Assert.Contains(
+            "\"FlourishIconFontFamily\"",
+            statusItemSource,
+            StringComparison.Ordinal
+        );
+        Assert.Equal(5, CountOccurrences(shellSource, "BindIconTypography(icon"));
 
         var root = Assert.IsType<XElement>(shellXaml.Root);
         Assert.Equal(

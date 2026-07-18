@@ -7,7 +7,7 @@ namespace ArkheideSystem.Flourish.Test.Services;
 public sealed class FlourishStatusServiceTests
 {
     [Fact]
-    public void Properties_ReturnCurrentStatusOptions()
+    public void Current_ReturnsAnIndependentStatusSnapshot()
     {
         var options = new FlourishShellOptions
         {
@@ -17,15 +17,47 @@ public sealed class FlourishStatusServiceTests
         options.StatusItems.Add(new FlourishStatusItem("Offline", "O"));
         var sut = new FlourishStatusService(options);
 
-        Assert.Same(options.StatusItems, sut.StatusItems);
-        Assert.True(sut.IsLANConnectionStatusEnabled);
-        Assert.False(sut.IsPowerStatusEnabled);
+        var initial = sut.Current;
+        Assert.True(initial.IsLanStatusEnabled);
+        Assert.False(initial.IsPowerStatusEnabled);
+        Assert.Equal("Offline", Assert.Single(initial.Items).Text);
 
         options.IsPowerStatusEnabled = true;
         options.StatusItems.Add(new FlourishStatusItem("Online", "N"));
 
-        Assert.True(sut.IsPowerStatusEnabled);
-        Assert.Equal(2, sut.StatusItems.Count);
-        Assert.Equal("Online", sut.StatusItems[1].Text);
+        var updated = sut.Current;
+        Assert.True(updated.IsPowerStatusEnabled);
+        Assert.Equal(2, updated.Items.Count);
+        Assert.Equal("Online", updated.Items[1].Text);
+        Assert.Single(initial.Items);
+    }
+
+    [Fact]
+    public void ShowWithDuration_AllowsReentrantRemovalDuringChangedEvent()
+    {
+        var sut = new FlourishStatusService(new FlourishShellOptions());
+        sut.Changed += (_, change) =>
+        {
+            if (
+                change.ChangeKind == FlourishRuntimeChangeKind.Updated
+                && change.ItemId == "transient"
+            )
+            {
+                sut.Remove("transient");
+            }
+        };
+
+        var error = Record.Exception(() =>
+        {
+            using var handle = sut.Show(
+                "transient",
+                "Working",
+                "W",
+                TimeSpan.FromSeconds(1)
+            );
+        });
+
+        Assert.Null(error);
+        Assert.Empty(sut.Current.Items);
     }
 }

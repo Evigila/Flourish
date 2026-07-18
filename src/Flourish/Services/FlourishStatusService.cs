@@ -32,39 +32,6 @@ internal sealed class FlourishStatusService : IStatusBarService
         }
     }
 
-    internal IReadOnlyList<FlourishStatusItem> StatusItems
-    {
-        get
-        {
-            lock (gate)
-            {
-                return options.StatusItems;
-            }
-        }
-    }
-
-    internal bool IsLANConnectionStatusEnabled
-    {
-        get
-        {
-            lock (gate)
-            {
-                return options.IsLANConnectionStatusEnabled;
-            }
-        }
-    }
-
-    internal bool IsPowerStatusEnabled
-    {
-        get
-        {
-            lock (gate)
-            {
-                return options.IsPowerStatusEnabled;
-            }
-        }
-    }
-
     public void SetEnabled(bool enabled)
     {
         Mutate(
@@ -252,7 +219,7 @@ internal sealed class FlourishStatusService : IStatusBarService
         }
 
         var lease = Guid.NewGuid();
-        CancellationTokenSource? expiration = null;
+        CancellationToken? expirationToken = null;
         Mutate(
             () =>
             {
@@ -270,7 +237,8 @@ internal sealed class FlourishStatusService : IStatusBarService
                 leases[id] = lease;
                 if (duration is not null)
                 {
-                    expiration = new CancellationTokenSource();
+                    var expiration = new CancellationTokenSource();
+                    expirationToken = expiration.Token;
                     expirations[id] = expiration;
                 }
 
@@ -280,9 +248,9 @@ internal sealed class FlourishStatusService : IStatusBarService
             id
         );
 
-        if (duration is { } delay && expiration is not null)
+        if (duration is { } delay && expirationToken is { } cancellationToken)
         {
-            _ = ExpireAsync(id, lease, delay, expiration.Token);
+            _ = ExpireAsync(id, lease, delay, cancellationToken);
         }
 
         return new StatusBarItemHandle(this, id, lease);

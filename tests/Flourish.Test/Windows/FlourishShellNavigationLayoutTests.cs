@@ -42,6 +42,14 @@ public sealed class FlourishShellNavigationLayoutTests
         "Windows",
         "FlourishShellWindow.xaml.cs"
     );
+    private static readonly string StatusItemViewCachePath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Internal",
+        "Interaction",
+        "StatusItemViewCache.cs"
+    );
     private static readonly string ListBoxItemXamlPath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -725,13 +733,13 @@ public sealed class FlourishShellNavigationLayoutTests
         AssertIconTypography(searchIcon, "FlourishIconFontSizeTitlebarSearch");
 
         var shellSource = File.ReadAllText(ShellCodePath);
+        var statusItemSource = File.ReadAllText(StatusItemViewCachePath);
         foreach (
             var expectedCall in new[]
             {
                 "BindIconTypography(icon, \"FlourishIconFontSizeStatusBarBackgroundTask\");",
                 "BindIconTypography(icon, \"FlourishIconFontSizeBackgroundTaskView\");",
                 "BindIconTypography(icon, \"FlourishIconFontSizeSystemStatusView\");",
-                "BindIconTypography(iconText, \"FlourishIconFontSizeStatusBar\");",
             }
         )
         {
@@ -739,10 +747,11 @@ public sealed class FlourishShellNavigationLayoutTests
         }
 
         AssertSourceBlockCentersVertically(
-            shellSource,
-            "var status = new StackPanel",
-            "var iconText"
+            statusItemSource,
+            "var root = new WpfStackPanel",
+            "root.Children.Add(iconText)"
         );
+        Assert.Contains("\"FlourishIconFontSizeStatusBar\"", statusItemSource);
         AssertSourceBlockCentersVertically(
             shellSource,
             "var button = new IconButton",
@@ -772,13 +781,9 @@ public sealed class FlourishShellNavigationLayoutTests
         );
 
         var shellSource = File.ReadAllText(ShellCodePath);
-        var statusItemsBlock = GetSourceBlock(
-            shellSource,
-            "private void BuildStatusItems()",
-            "private void BuildNotifications("
-        );
+        var statusItemsBlock = File.ReadAllText(StatusItemViewCachePath);
         Assert.Contains(
-            "BindTextSize(labelText, \"FlourishFontSizeSmall\");",
+            "\"FlourishFontSizeSmall\"",
             statusItemsBlock,
             StringComparison.Ordinal
         );
@@ -808,6 +813,26 @@ public sealed class FlourishShellNavigationLayoutTests
             backgroundTasksBlock,
             StringComparison.Ordinal
         );
+    }
+
+    [Fact]
+    public void StatusRuntimeChangesUseVersionedSnapshotsWithoutRebuildingThePanel()
+    {
+        var shellSource = File.ReadAllText(ShellCodePath);
+        var handler = GetSourceBlock(
+            shellSource,
+            "private void StatusService_Changed(",
+            "private void ShellRegionService_Changed("
+        );
+        var cacheSource = File.ReadAllText(StatusItemViewCachePath);
+
+        Assert.Contains("statusItemViews.Apply(e)", handler, StringComparison.Ordinal);
+        Assert.Contains("statusBarSnapshot = e.Current", handler, StringComparison.Ordinal);
+        Assert.DoesNotContain("statusService.Current", handler, StringComparison.Ordinal);
+        Assert.DoesNotContain("statusService.StatusItems", shellSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("host.Children.Clear()", cacheSource, StringComparison.Ordinal);
+        Assert.Contains("snapshot.Version <= appliedVersion", cacheSource, StringComparison.Ordinal);
+        Assert.Contains("snapshot.Version != appliedVersion + 1", cacheSource, StringComparison.Ordinal);
     }
 
     [Fact]

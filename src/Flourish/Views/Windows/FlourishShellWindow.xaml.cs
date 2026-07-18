@@ -15,7 +15,6 @@ using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Button = ArkheideSystem.Flourish.Controls.Button;
 using ListBox = ArkheideSystem.Flourish.Controls.FlourishListBox;
-using Orientation = System.Windows.Controls.Orientation;
 using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
 using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 using WpfComboBox = System.Windows.Controls.ComboBox;
@@ -35,6 +34,7 @@ internal partial class FlourishShellWindow : Window
     private readonly NavigationMenuService navigationMenuService;
     private readonly FlourishToolbarService toolbarService;
     private readonly FlourishStatusService statusService;
+    private readonly StatusItemViewCache statusItemViews;
     private readonly ShellRegionService shellRegionService;
     private readonly IBackgroundTaskService backgroundTaskService;
     private readonly IMessageService messageService;
@@ -89,6 +89,7 @@ internal partial class FlourishShellWindow : Window
         TitleBarVisualAssets.LoadLogoAsync
     );
     private readonly DispatcherTimer backgroundTaskRefreshTimer;
+    private FlourishStatusBarSnapshot statusBarSnapshot;
     private IReadOnlyList<Button>? defaultToolbarButtons;
     private FlourishNavigationItem? firstNavigationItem;
     private Type? activeToolbarPageType;
@@ -245,6 +246,8 @@ internal partial class FlourishShellWindow : Window
         this.navigationMenuService = navigationMenuService;
         this.toolbarService = toolbarService;
         this.statusService = statusService;
+        statusItemViews = new StatusItemViewCache(StatusItemsHost);
+        statusBarSnapshot = statusService.Current;
         this.shellRegionService = shellRegionService;
         this.backgroundTaskService = backgroundTaskService;
         this.messageService = messageService;
@@ -306,12 +309,14 @@ internal partial class FlourishShellWindow : Window
         ConfigureProfileSurface();
         BuildToolbarItems();
         BuildNavigationItems();
-        BuildStatusItems();
+        statusService.Changed += StatusService_Changed;
+        statusBarSnapshot = statusService.Current;
+        statusItemViews.Synchronize(statusBarSnapshot);
+        UpdateStatusBarVisibility();
         BuildNotifications(notificationService.ActiveNotifications);
         navigationPanelService.Changed += NavigationPanelService_Changed;
         navigationMenuService.Changed += NavigationMenuService_Changed;
         toolbarService.Changed += ToolbarService_Changed;
-        statusService.Changed += StatusService_Changed;
         shellRegionService.Changed += ShellRegionService_Changed;
         titleBarService.Changed += TitleBarService_Changed;
         projectService.Changed += ProjectService_Changed;
@@ -1602,7 +1607,7 @@ internal partial class FlourishShellWindow : Window
     private void UpdateStatusBarVisibility()
     {
         var hasBackgroundTasks = backgroundTasks.Count > 0;
-        var showConfiguredContent = options.IsStatusBarEnabled;
+        var showConfiguredContent = statusBarSnapshot.IsEnabled;
         var showStatusBar = showConfiguredContent || hasBackgroundTasks;
 
         StatusBarBorder.Visibility = showStatusBar ? Visibility.Visible : Visibility.Collapsed;
@@ -1612,7 +1617,7 @@ internal partial class FlourishShellWindow : Window
                 : Visibility.Collapsed;
         SystemStatusButton.Visibility =
             showConfiguredContent
-            && (statusService.IsLANConnectionStatusEnabled || statusService.IsPowerStatusEnabled)
+            && (statusBarSnapshot.IsLanStatusEnabled || statusBarSnapshot.IsPowerStatusEnabled)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         FooterStartRegionHost.Visibility =
@@ -2088,7 +2093,7 @@ internal partial class FlourishShellWindow : Window
         AutomationProperties.SetName(StatusFlyoutCard, title);
         StatusFlyoutContentHost.Items.Clear();
 
-        if (statusService.IsLANConnectionStatusEnabled)
+        if (statusBarSnapshot.IsLanStatusEnabled)
         {
             var networkState = localizationService.Get(FlourishLocaleKeys.SystemStatusUnknown);
             try
@@ -2115,7 +2120,7 @@ internal partial class FlourishShellWindow : Window
             );
         }
 
-        if (statusService.IsPowerStatusEnabled)
+        if (statusBarSnapshot.IsPowerStatusEnabled)
         {
             var powerSource = localizationService.Get(FlourishLocaleKeys.SystemStatusUnknown);
             try
@@ -2885,59 +2890,6 @@ internal partial class FlourishShellWindow : Window
         children.Add(item);
     }
 
-    private void BuildStatusItems()
-    {
-        StatusItemsHost.Children.Clear();
-
-        foreach (var item in statusService.StatusItems)
-        {
-            if (!item.IsVisible)
-            {
-                continue;
-            }
-
-            var status = new StackPanel
-            {
-                Margin =
-                    StatusItemsHost.Children.Count > 0
-                        ? new Thickness(14, 0, 0, 0)
-                        : new Thickness(),
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            var iconText = new TextBlock
-            {
-                VerticalAlignment = VerticalAlignment.Center,
-                Text = item.IconGlyph,
-            };
-            BindIconTypography(iconText, "FlourishIconFontSizeStatusBar");
-            iconText.SetResourceReference(
-                TextBlock.ForegroundProperty,
-                "FlourishNeutralForeground2Brush"
-            );
-            status.Children.Add(iconText);
-
-            var labelText = new TextBlock
-            {
-                Margin = new Thickness(5, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Text = item.Text,
-            };
-            BindTextSize(labelText, "FlourishFontSizeSmall");
-            labelText.SetResourceReference(TextBlock.LineHeightProperty, "FlourishLineHeightSmall");
-            labelText.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
-            labelText.SetResourceReference(
-                TextBlock.ForegroundProperty,
-                "FlourishNeutralForeground2Brush"
-            );
-            status.Children.Add(labelText);
-
-            StatusItemsHost.Children.Add(status);
-        }
-
-        UpdateStatusBarVisibility();
-    }
-
     private void BuildNotifications(IReadOnlyList<FlourishNotificationInfo> notifications)
     {
         NotificationItemsHost.Children.Clear();
@@ -3141,7 +3093,16 @@ internal partial class FlourishShellWindow : Window
 
     private void StatusService_Changed(object? sender, FlourishStatusBarChangedEventArgs e)
     {
-        DispatchRuntimeChange(BuildStatusItems);
+        DispatchRuntimeChange(() =>
+        {
+            if (!statusItemViews.Apply(e))
+            {
+                return;
+            }
+
+            statusBarSnapshot = e.Current;
+            UpdateStatusBarVisibility();
+        });
     }
 
     private void ShellRegionService_Changed(object? sender, FlourishShellRegionChangedEventArgs e)
