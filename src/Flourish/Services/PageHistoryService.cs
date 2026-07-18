@@ -6,6 +6,7 @@ internal sealed class PageHistoryService
 
     private readonly LinkedList<FlourishPageStackEntry> backStack = new();
     private readonly LinkedList<FlourishPageStackEntry> forwardStack = new();
+    private readonly Lock gate = new();
     private readonly int maximumEntries;
 
     public PageHistoryService()
@@ -25,71 +26,141 @@ internal sealed class PageHistoryService
         this.maximumEntries = maximumEntries;
     }
 
-    public bool CanGoBack => backStack.Count > 0;
+    public bool CanGoBack
+    {
+        get
+        {
+            lock (gate)
+            {
+                return backStack.Count > 0;
+            }
+        }
+    }
 
-    public bool CanGoForward => forwardStack.Count > 0;
+    public bool CanGoForward
+    {
+        get
+        {
+            lock (gate)
+            {
+                return forwardStack.Count > 0;
+            }
+        }
+    }
 
-    public IReadOnlyCollection<FlourishPageStackEntry> BackStack => backStack;
+    public IReadOnlyCollection<FlourishPageStackEntry> BackStack
+    {
+        get
+        {
+            lock (gate)
+            {
+                return backStack.ToArray();
+            }
+        }
+    }
 
-    public IReadOnlyCollection<FlourishPageStackEntry> ForwardStack => forwardStack;
+    public IReadOnlyCollection<FlourishPageStackEntry> ForwardStack
+    {
+        get
+        {
+            lock (gate)
+            {
+                return forwardStack.ToArray();
+            }
+        }
+    }
 
     public void Push(FlourishPageStackEntry entry)
     {
-        Push(backStack, entry);
+        ArgumentNullException.ThrowIfNull(entry);
+        lock (gate)
+        {
+            Push(backStack, entry);
+        }
     }
 
     public void PushForward(FlourishPageStackEntry entry)
     {
-        Push(forwardStack, entry);
+        ArgumentNullException.ThrowIfNull(entry);
+        lock (gate)
+        {
+            Push(forwardStack, entry);
+        }
     }
 
     public bool TryPopBack(out FlourishPageStackEntry entry)
     {
-        if (backStack.Count == 0)
+        lock (gate)
         {
-            entry = default!;
-            return false;
-        }
+            if (backStack.Count == 0)
+            {
+                entry = default!;
+                return false;
+            }
 
-        entry = backStack.First!.Value;
-        backStack.RemoveFirst();
-        return true;
+            entry = backStack.First!.Value;
+            backStack.RemoveFirst();
+            return true;
+        }
     }
 
     public bool TryPopForward(out FlourishPageStackEntry entry)
     {
-        if (forwardStack.Count == 0)
+        lock (gate)
         {
-            entry = default!;
-            return false;
-        }
+            if (forwardStack.Count == 0)
+            {
+                entry = default!;
+                return false;
+            }
 
-        entry = forwardStack.First!.Value;
-        forwardStack.RemoveFirst();
-        return true;
+            entry = forwardStack.First!.Value;
+            forwardStack.RemoveFirst();
+            return true;
+        }
     }
 
     public void ClearForward()
     {
-        forwardStack.Clear();
+        lock (gate)
+        {
+            forwardStack.Clear();
+        }
     }
 
     public void ClearBack()
     {
-        backStack.Clear();
+        lock (gate)
+        {
+            backStack.Clear();
+        }
     }
 
     public void Clear()
     {
-        backStack.Clear();
-        forwardStack.Clear();
+        lock (gate)
+        {
+            backStack.Clear();
+            forwardStack.Clear();
+        }
     }
 
     public void Remove(string navigationKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(navigationKey);
-        RemoveFromHistory(backStack, navigationKey);
-        RemoveFromHistory(forwardStack, navigationKey);
+        RemoveWhere(entry =>
+            StringComparer.Ordinal.Equals(entry.NavigationKey, navigationKey)
+        );
+    }
+
+    public bool RemoveWhere(Func<FlourishPageStackEntry, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(predicate);
+        lock (gate)
+        {
+            return RemoveFromHistory(backStack, predicate)
+                | RemoveFromHistory(forwardStack, predicate);
+        }
     }
 
     private void Push(
@@ -97,7 +168,6 @@ internal sealed class PageHistoryService
         FlourishPageStackEntry entry
     )
     {
-        ArgumentNullException.ThrowIfNull(entry);
         history.AddFirst(entry);
         if (history.Count > maximumEntries)
         {
@@ -105,21 +175,25 @@ internal sealed class PageHistoryService
         }
     }
 
-    private static void RemoveFromHistory(
+    private static bool RemoveFromHistory(
         LinkedList<FlourishPageStackEntry> history,
-        string navigationKey
+        Func<FlourishPageStackEntry, bool> predicate
     )
     {
+        var removed = false;
         var node = history.First;
         while (node is not null)
         {
             var next = node.Next;
-            if (StringComparer.Ordinal.Equals(node.Value.NavigationKey, navigationKey))
+            if (predicate(node.Value))
             {
                 history.Remove(node);
+                removed = true;
             }
 
             node = next;
         }
+
+        return removed;
     }
 }

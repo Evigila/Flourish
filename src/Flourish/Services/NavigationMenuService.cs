@@ -61,6 +61,11 @@ internal sealed class NavigationMenuService : INavigationMenuService
             var editor = new NavigationMenuEditor(workingGroups, workingFixedItems);
 
             update(editor);
+            if (MenuEquals(groups, fixedItems, workingGroups, workingFixedItems))
+            {
+                return;
+            }
+
             var routes = routeRegistry.Current.Routes;
             ValidateState(workingGroups, workingFixedItems, routes);
             RebuildOptions(workingGroups, workingFixedItems, routes);
@@ -588,6 +593,38 @@ internal sealed class NavigationMenuService : INavigationMenuService
         return source
             .Select(group => new GroupState(group.Id, group.Title, [.. group.Items]))
             .ToList();
+    }
+
+    private static bool MenuEquals(
+        IReadOnlyList<GroupState> leftGroups,
+        IReadOnlyList<FlourishNavigationMenuItem> leftFixedItems,
+        IReadOnlyList<GroupState> rightGroups,
+        IReadOnlyList<FlourishNavigationMenuItem> rightFixedItems
+    )
+    {
+        if (
+            leftGroups.Count != rightGroups.Count
+            || !leftFixedItems.SequenceEqual(rightFixedItems)
+        )
+        {
+            return false;
+        }
+
+        for (var index = 0; index < leftGroups.Count; index++)
+        {
+            var left = leftGroups[index];
+            var right = rightGroups[index];
+            if (
+                !StringComparer.Ordinal.Equals(left.Id, right.Id)
+                || !StringComparer.Ordinal.Equals(left.Title, right.Title)
+                || !left.Items.SequenceEqual(right.Items)
+            )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool TryFindItem(

@@ -68,6 +68,26 @@ public sealed class FlourishShellRenderingContractTests
             buildNotifications,
             StringComparison.Ordinal
         );
+        Assert.Contains("notificationViewsById", buildNotifications, StringComparison.Ordinal);
+        Assert.Contains(
+            "SynchronizePanelChildren(NotificationItemsHost, desiredViews)",
+            buildNotifications,
+            StringComparison.Ordinal
+        );
+        Assert.DoesNotContain(
+            "NotificationItemsHost.Children.Clear()",
+            buildNotifications,
+            StringComparison.Ordinal
+        );
+
+        var changedHandler = GetMethod(
+            File.ReadAllText(ShellCodePath),
+            "private void NotificationService_NotificationsChanged(",
+            "private void ProfileFlyoutService_Changed("
+        );
+        Assert.Contains("pendingNotifications = e.Notifications", changedHandler);
+        Assert.Contains("e.Version <= pendingNotificationVersion", changedHandler);
+        Assert.DoesNotContain("notificationService.ActiveNotifications", changedHandler);
     }
 
     [Fact]

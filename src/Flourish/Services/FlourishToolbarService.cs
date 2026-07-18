@@ -49,6 +49,11 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         Mutate(
             () =>
             {
+                if (options.ToolbarItems.SequenceEqual(replacement))
+                {
+                    return false;
+                }
+
                 options.ToolbarItems.Clear();
                 options.ToolbarItems.AddRange(replacement);
                 return true;
@@ -66,6 +71,16 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         Mutate(
             () =>
             {
+                if (
+                    options.DynamicToolbarItems.TryGetValue(pageType, out var current)
+                    && current.SequenceEqual(replacement)
+                    && options.DynamicToolbarIconModes.GetValueOrDefault(pageType, true)
+                        == iconOnly
+                )
+                {
+                    return false;
+                }
+
                 options.DynamicToolbarItems[pageType] = replacement;
                 options.DynamicToolbarIconModes[pageType] = iconOnly;
                 return true;
@@ -118,6 +133,14 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
                 var existingIndex = FindIndex(items, item.Id);
                 if (existingIndex >= 0)
                 {
+                    if (
+                        items[existingIndex] == item
+                        && (index is null || index.Value == existingIndex)
+                    )
+                    {
+                        return false;
+                    }
+
                     items.RemoveAt(existingIndex);
                     Insert(items, item, index ?? existingIndex);
                 }
@@ -257,10 +280,10 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
                 && options.DynamicToolbarItems.TryGetValue(pageType, out var dynamicItems)
             )
             {
-                return dynamicItems;
+                return dynamicItems.ToArray();
             }
 
-            return options.ToolbarItems;
+            return options.ToolbarItems.ToArray();
         }
     }
 

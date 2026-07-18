@@ -27,6 +27,7 @@ internal sealed class TrayIconService(
     private bool isWindowHidden;
     private bool isLocalizationSubscribed;
     private string toolTipText = "Flourish";
+    private FlourishTrayState? lastPublishedState;
 
     public event EventHandler<FlourishTrayStateChangedEventArgs>? StateChanged;
 
@@ -376,6 +377,15 @@ internal sealed class TrayIconService(
 
     private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
     {
+        if (
+            e.Kind != FlourishLocalizationChangeKind.LocaleChanged
+            && !string.Equals(e.AffectedLocale, e.CurrentLocale, StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(e.AffectedLocale, "EN", StringComparison.OrdinalIgnoreCase)
+        )
+        {
+            return;
+        }
+
         InvokeOnOwner(() =>
         {
             Forms.ContextMenuStrip? previousMenu;
@@ -453,6 +463,24 @@ internal sealed class TrayIconService(
 
     private void RaiseChanged()
     {
-        StateChanged?.Invoke(this, new FlourishTrayStateChangedEventArgs(Current));
+        FlourishTrayState state;
+        lock (gate)
+        {
+            state = new FlourishTrayState(
+                options.IsTrayExitEnabled,
+                isIconVisible,
+                isWindowHidden,
+                isExitRequested,
+                toolTipText
+            );
+            if (state == lastPublishedState)
+            {
+                return;
+            }
+
+            lastPublishedState = state;
+        }
+
+        StateChanged?.Invoke(this, new FlourishTrayStateChangedEventArgs(state));
     }
 }

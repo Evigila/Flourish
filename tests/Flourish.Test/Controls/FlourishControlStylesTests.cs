@@ -102,19 +102,19 @@ public sealed class FlourishControlStylesTests
                 {
                     var (expectedSize, expectedLineHeight, expectedBottomSpace, expectedWeight) =
                         textBlock.Role switch
-                    {
-                        FlourishTextRole.Caption or FlourishTextRole.Status =>
-                            (12d, 14d, 1d, FontWeights.Regular),
-                        FlourishTextRole.Icon =>
-                            (16d, 16d, 0d, FontWeights.Regular),
-                        FlourishTextRole.CardTitle =>
-                            (16d, 20d, 2d, FontWeights.Bold),
-                        FlourishTextRole.SectionTitle =>
-                            (24d, 29d, 3d, FontWeights.Bold),
-                        FlourishTextRole.PageTitle =>
-                            (32d, 37d, 4d, FontWeights.Bold),
-                        _ => (14d, 16d, 1d, FontWeights.Regular),
-                    };
+                        {
+                            FlourishTextRole.Caption or FlourishTextRole.Status =>
+                                (12d, 14d, 1d, FontWeights.Regular),
+                            FlourishTextRole.Icon =>
+                                (16d, 16d, 0d, FontWeights.Regular),
+                            FlourishTextRole.CardTitle =>
+                                (16d, 20d, 2d, FontWeights.Bold),
+                            FlourishTextRole.SectionTitle =>
+                                (24d, 29d, 3d, FontWeights.Bold),
+                            FlourishTextRole.PageTitle =>
+                                (32d, 37d, 4d, FontWeights.Bold),
+                            _ => (14d, 16d, 1d, FontWeights.Regular),
+                        };
                     Assert.Equal(expectedSize, textBlock.FontSize);
                     Assert.Equal(expectedLineHeight, textBlock.LineHeight);
                     Assert.Equal(new Thickness(0, 0, 0, expectedBottomSpace), textBlock.Padding);
@@ -483,7 +483,7 @@ public sealed class FlourishControlStylesTests
                     var scrim = AssertTemplatePart<Border>(hero, "OverlayScrim");
                     var body = AssertTemplatePart<ContentPresenter>(hero, "BodyHost");
                     var clipHost = AssertTemplatePart<Grid>(hero, "PART_ClipHost");
-                    var roundedClip = Assert.IsType<StreamGeometry>(clipHost.Clip);
+                    var roundedClip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
 
                     Assert.Equal(expectation.PresenterColumn, Grid.GetColumn(presenter));
                     Assert.Equal(expectation.TextColumn, Grid.GetColumn(text));
@@ -540,8 +540,12 @@ public sealed class FlourishControlStylesTests
 
                     hero.Width = 420;
                     window.UpdateLayout();
+                    window.Dispatcher.Invoke(
+                        System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                        static () => { }
+                    );
 
-                    var resizedClip = Assert.IsType<StreamGeometry>(clipHost.Clip);
+                    var resizedClip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
                     Assert.NotSame(roundedClip, resizedClip);
                     Assert.True(resizedClip.IsFrozen);
                     Assert.Equal(
@@ -1267,6 +1271,11 @@ public sealed class FlourishControlStylesTests
                 window.Show();
                 window.UpdateLayout();
                 outputCard.ApplyTemplate();
+                window.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                    static () => { }
+                );
+                window.UpdateLayout();
 
                 var scrollViewer = AssertTemplatePart<CustomScrollViewer>(
                     outputCard,
@@ -1447,7 +1456,7 @@ public sealed class FlourishControlStylesTests
                         overlay,
                         "PART_SurfaceChrome"
                     );
-                    var clip = Assert.IsType<StreamGeometry>(clipHost.Clip);
+                    var clip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
                     Assert.True(surface.CornerRadius.TopLeft > 0);
                     Assert.Equal(clipHost.RenderSize.Width, clip.Bounds.Width, 3);
                     Assert.Equal(clipHost.RenderSize.Height, clip.Bounds.Height, 3);

@@ -52,10 +52,13 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     public void SetEffect(MaterialEffect effect)
     {
         ValidateEffect(effect, nameof(effect));
-        bool effectChanged;
         lock (stateGate)
         {
-            effectChanged = CurrentEffect != effect;
+            if (CurrentEffect == effect)
+            {
+                return;
+            }
+
             CurrentEffect = effect;
             if (options is not null)
             {
@@ -77,10 +80,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             }
         }
 
-        if (effectChanged)
-        {
-            RaiseChanged();
-        }
+        RaiseChanged();
     }
 
     public void SetDarkMode(bool isDarkMode)

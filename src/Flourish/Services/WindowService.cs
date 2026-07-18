@@ -8,6 +8,8 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
 {
     private readonly Lock gate = new();
     private Window? owner;
+    private FlourishWindowState? lastPublishedState;
+    private int ownerChangeSuppression;
 
     public event EventHandler<FlourishWindowStateChangedEventArgs>? StateChanged;
 
@@ -219,6 +221,7 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
 
             DetachCore();
             owner = window;
+            lastPublishedState = null;
             owner.StateChanged += OwnerChanged;
             owner.LocationChanged += OwnerChanged;
             owner.SizeChanged += OwnerSizeChanged;
@@ -228,7 +231,7 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
             owner.Closed += OwnerClosed;
         }
 
-        RaiseChanged(window);
+        ProcessOwnerChange(window);
     }
 
     private void Apply(Action<Window> action)
@@ -246,30 +249,39 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
 
         if (current is null)
         {
-            StateChanged?.Invoke(this, new FlourishWindowStateChangedEventArgs(unattachedState!));
+            Publish(unattachedState!);
             return;
         }
 
         if (current.Dispatcher.CheckAccess())
         {
-            action(current);
-            RaiseChanged(current);
+            ApplyCore(current, action);
             return;
         }
 
-        current.Dispatcher.Invoke(() =>
+        current.Dispatcher.Invoke(() => ApplyCore(current, action));
+    }
+
+    private void ApplyCore(Window window, Action<Window> action)
+    {
+        ownerChangeSuppression++;
+        try
         {
-            action(current);
-            RaiseChanged(current);
-        });
+            action(window);
+        }
+        finally
+        {
+            ownerChangeSuppression--;
+        }
+
+        ProcessOwnerChange(window);
     }
 
     private void OwnerChanged(object? sender, EventArgs e)
     {
-        if (sender is Window window)
+        if (ownerChangeSuppression == 0 && sender is Window window)
         {
-            SynchronizeOptions(window);
-            RaiseChanged(window);
+            ProcessOwnerChange(window);
         }
     }
 
@@ -277,10 +289,9 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
 
     private void OwnerVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (sender is Window window)
+        if (ownerChangeSuppression == 0 && sender is Window window)
         {
-            SynchronizeOptions(window);
-            RaiseChanged(window);
+            ProcessOwnerChange(window);
         }
     }
 
@@ -293,7 +304,7 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
             state = CreateOptionsSnapshot();
         }
 
-        StateChanged?.Invoke(this, new FlourishWindowStateChangedEventArgs(state));
+        Publish(state);
     }
 
     private void DetachCore()
@@ -313,31 +324,50 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
         owner = null;
     }
 
-    private void SynchronizeOptions(Window window)
+    private void ProcessOwnerChange(Window window)
     {
+        var state = ReadOwner(window);
         lock (gate)
         {
-            options.WindowState = window.WindowState;
-            options.WindowResizeMode = window.ResizeMode;
-            options.WindowTopmost = window.Topmost;
-            options.WindowShowInTaskbar = window.ShowInTaskbar;
-            if (window.WindowState == WindowState.Normal)
+            if (!ReferenceEquals(owner, window))
             {
-                options.WindowLeft = window.Left;
-                options.WindowTop = window.Top;
-                options.WindowWidth = window.ActualWidth > 0 ? window.ActualWidth : window.Width;
-                options.WindowHeight =
-                    window.ActualHeight > 0 ? window.ActualHeight : window.Height;
+                return;
             }
+
+            SynchronizeOptionsLocked(state);
+        }
+
+        Publish(state);
+    }
+
+    private void SynchronizeOptionsLocked(FlourishWindowState state)
+    {
+        options.WindowState = state.WindowState;
+        options.WindowResizeMode = state.ResizeMode;
+        options.WindowTopmost = state.IsTopmost;
+        options.WindowShowInTaskbar = state.IsShownInTaskbar;
+        if (state.WindowState == WindowState.Normal)
+        {
+            options.WindowLeft = state.Bounds.X;
+            options.WindowTop = state.Bounds.Y;
+            options.WindowWidth = state.Bounds.Width;
+            options.WindowHeight = state.Bounds.Height;
         }
     }
 
-    private void RaiseChanged(Window window)
+    private void Publish(FlourishWindowState state)
     {
-        StateChanged?.Invoke(
-            this,
-            new FlourishWindowStateChangedEventArgs(ReadOwnerThreadSafe(window))
-        );
+        lock (gate)
+        {
+            if (state == lastPublishedState)
+            {
+                return;
+            }
+
+            lastPublishedState = state;
+        }
+
+        StateChanged?.Invoke(this, new FlourishWindowStateChangedEventArgs(state));
     }
 
     private static FlourishWindowState ReadOwnerThreadSafe(Window window)

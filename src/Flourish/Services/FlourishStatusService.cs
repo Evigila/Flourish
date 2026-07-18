@@ -121,18 +121,28 @@ internal sealed class FlourishStatusService : IStatusBarService
 
     public void UpdateText(string id, string text)
     {
+        UpdateText(id, text, lease: null);
+    }
+
+    private void UpdateText(string id, string text, Guid? lease)
+    {
         if (string.IsNullOrWhiteSpace(text))
         {
             throw new ArgumentException("Status text cannot be empty.", nameof(text));
         }
 
-        UpdateItem(id, item => item with { Text = text });
+        UpdateItem(id, item => item with { Text = text }, lease);
     }
 
     public void UpdateIcon(string id, string iconGlyph)
     {
+        UpdateIcon(id, iconGlyph, lease: null);
+    }
+
+    private void UpdateIcon(string id, string iconGlyph, Guid? lease)
+    {
         ArgumentNullException.ThrowIfNull(iconGlyph);
-        UpdateItem(id, item => item with { IconGlyph = iconGlyph });
+        UpdateItem(id, item => item with { IconGlyph = iconGlyph }, lease);
     }
 
     public void SetItemVisible(string id, bool visible)
@@ -303,12 +313,24 @@ internal sealed class FlourishStatusService : IStatusBarService
         return removed;
     }
 
-    private void UpdateItem(string id, Func<FlourishStatusItem, FlourishStatusItem> update)
+    private void UpdateItem(
+        string id,
+        Func<FlourishStatusItem, FlourishStatusItem> update,
+        Guid? lease = null
+    )
     {
         id = ValidateId(id, nameof(id));
         Mutate(
             () =>
             {
+                if (
+                    lease is not null
+                    && (!leases.TryGetValue(id, out var currentLease) || currentLease != lease)
+                )
+                {
+                    return false;
+                }
+
                 var index = FindIndex(id);
                 if (index < 0)
                 {
@@ -460,12 +482,12 @@ internal sealed class FlourishStatusService : IStatusBarService
 
         public void UpdateText(string text)
         {
-            owner?.UpdateText(Id, text);
+            owner?.UpdateText(Id, text, lease);
         }
 
         public void UpdateIcon(string iconGlyph)
         {
-            owner?.UpdateIcon(Id, iconGlyph);
+            owner?.UpdateIcon(Id, iconGlyph, lease);
         }
 
         public void Dispose()

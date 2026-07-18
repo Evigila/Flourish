@@ -28,6 +28,23 @@ public sealed class ToolbarStatusRegionRuntimeTests
     }
 
     [Fact]
+    public void Toolbar_EquivalentReplaceAndUpsertDoNotPublish()
+    {
+        var options = new FlourishShellOptions { IsDynamicToolbarEnabled = true };
+        var item = new FlourishToolbarItem("Save", "S", "save") { Id = "save" };
+        var sut = new FlourishToolbarService(options);
+        var changes = 0;
+        sut.Changed += (_, _) => changes++;
+
+        sut.Replace<EditorPage>([item]);
+        sut.Replace<EditorPage>([item]);
+        sut.Upsert(item, typeof(EditorPage));
+
+        Assert.Equal(1, changes);
+        Assert.Equal(1, sut.Current.Version);
+    }
+
+    [Fact]
     public void Status_HandleOnlyRemovesTheRegistrationItOwns()
     {
         var options = new FlourishShellOptions { IsStatusBarEnabled = true };
@@ -35,9 +52,12 @@ public sealed class ToolbarStatusRegionRuntimeTests
         var oldHandle = sut.Show("sync", "Syncing", "S");
         var newHandle = sut.Show("sync", "Complete", "C");
 
+        oldHandle.UpdateText("Stale");
+        oldHandle.UpdateIcon("X");
         oldHandle.Dispose();
 
         Assert.Equal("Complete", Assert.Single(sut.Current.Items).Text);
+        Assert.Equal("C", Assert.Single(sut.Current.Items).IconGlyph);
         newHandle.UpdateText("Done");
         Assert.Equal("Done", Assert.Single(sut.Current.Items).Text);
         newHandle.Dispose();

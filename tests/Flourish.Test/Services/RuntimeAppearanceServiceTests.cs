@@ -316,6 +316,21 @@ public sealed class RuntimeAppearanceServiceTests
     }
 
     [Fact]
+    public void MaterialEffectService_IgnoresRepeatedRequestedState()
+    {
+        IMaterialEffectService sut = new MaterialEffectService();
+        var changes = 0;
+        sut.Changed += (_, _) => changes++;
+
+        sut.SetEffect(MaterialEffect.Mica);
+        sut.SetEffect(MaterialEffect.Mica);
+        sut.SetDarkMode(true);
+        sut.SetDarkMode(true);
+
+        Assert.Equal(2, changes);
+    }
+
+    [Fact]
     public async Task ThemeService_SetThemeActivatesRuntimeThemeBeforePersistenceCompletes()
     {
         using var directory = new TemporaryDirectory();

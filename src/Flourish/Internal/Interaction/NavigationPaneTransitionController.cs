@@ -77,20 +77,14 @@ internal sealed class NavigationPaneTransitionController
         double currentVisibleWidth;
         double currentScale;
         double currentTranslation;
-        double[] currentCenteredWidths;
         double[] currentCenteredNetScales;
         double[] currentCenteredWorldOffsets;
-        var isContinuation = false;
         if (active is { } existing && existing.Matches(target))
         {
-            isContinuation = true;
             state = existing;
             currentVisibleWidth = existing.Clip.Rect.Width;
             currentScale = existing.ContentScale.ScaleX;
             currentTranslation = existing.ContentTranslation.X;
-            currentCenteredWidths = existing.CenteredContentHosts
-                .Select(host => host.GetVisibleWidth(currentScale))
-                .ToArray();
             currentCenteredNetScales = existing.CenteredContentHosts
                 .Select(host => host.GetNetScale(currentScale))
                 .ToArray();
@@ -106,9 +100,6 @@ internal sealed class NavigationPaneTransitionController
             currentVisibleWidth = committedWidth;
             currentScale = state.ContentScale.ScaleX;
             currentTranslation = state.ContentTranslation.X;
-            currentCenteredWidths = state.CenteredContentHosts
-                .Select(host => host.LayoutWidth)
-                .ToArray();
             currentCenteredNetScales = state.CenteredContentHosts
                 .Select(_ => 1d)
                 .ToArray();
@@ -205,62 +196,32 @@ internal sealed class NavigationPaneTransitionController
         {
             var centeredHost = state.CenteredContentHosts[index];
             var targetVisibleWidth = centeredHost.PredictTargetWidth(contentWidthDelta);
-            if (
-                centeredHost.IsAtMaximumWidth(currentCenteredWidths[index])
-                && centeredHost.IsAtMaximumWidth(targetVisibleWidth)
-                && (!isContinuation || centeredHost.IsUsingTransformCompensation)
-            )
-            {
-                // Keep capped content at its natural layout width. The child counter-scale
-                // cancels the content-area scale, while this offset corrects any difference
-                // between the content-area center and the host's actual viewport center.
-                var targetWorldOffset =
-                    centeredHost.PredictTargetCenter(contentWidthDelta)
-                    - (targetScale * centeredHost.CenterX);
-                var scaleClockIndex = timeline.Children.Count;
-                timeline.Children.Add(
-                    new CenteredContentCompensationAnimation
-                    {
-                        CompensatedValueFrom = currentCenteredNetScales[index],
-                        CompensatedValueTo = 1,
-                        Duration = new Duration(effectiveDuration),
-                        EasingFunction = easing,
-                        FillBehavior = FillBehavior.Stop,
-                        OuterScaleFrom = currentScale,
-                        OuterScaleTo = targetScale,
-                    }
-                );
-                var translationClockIndex = timeline.Children.Count;
-                timeline.Children.Add(
-                    new CenteredContentCompensationAnimation
-                    {
-                        CompensatedValueFrom = currentCenteredWorldOffsets[index],
-                        CompensatedValueTo = targetWorldOffset,
-                        Duration = new Duration(effectiveDuration),
-                        EasingFunction = easing,
-                        FillBehavior = FillBehavior.Stop,
-                        OuterScaleFrom = currentScale,
-                        OuterScaleTo = targetScale,
-                    }
-                );
-                centeredRuns.Add(
-                    CenteredContentAnimationRun.CreateTransform(
-                        centeredHost,
-                        scaleClockIndex,
-                        translationClockIndex,
-                        1 / targetScale,
-                        targetWorldOffset / targetScale
-                    )
-                );
-                continue;
-            }
-
-            var widthClockIndex = timeline.Children.Count;
+            // Keep the host's layout size fixed for the whole transition. The inner
+            // counter-scale expresses the desired visible width after the outer content
+            // scale is applied, while the translation keeps its world-space center exact.
+            var targetNetScale = targetVisibleWidth / centeredHost.LayoutWidth;
+            var targetWorldOffset =
+                centeredHost.PredictTargetCenter(contentWidthDelta)
+                - (targetScale * centeredHost.CenterX);
+            var scaleClockIndex = timeline.Children.Count;
             timeline.Children.Add(
                 new CenteredContentCompensationAnimation
                 {
-                    CompensatedValueFrom = currentCenteredWidths[index],
-                    CompensatedValueTo = targetVisibleWidth,
+                    CompensatedValueFrom = currentCenteredNetScales[index],
+                    CompensatedValueTo = targetNetScale,
+                    Duration = new Duration(effectiveDuration),
+                    EasingFunction = easing,
+                    FillBehavior = FillBehavior.Stop,
+                    OuterScaleFrom = currentScale,
+                    OuterScaleTo = targetScale,
+                }
+            );
+            var translationClockIndex = timeline.Children.Count;
+            timeline.Children.Add(
+                new CenteredContentCompensationAnimation
+                {
+                    CompensatedValueFrom = currentCenteredWorldOffsets[index],
+                    CompensatedValueTo = targetWorldOffset,
                     Duration = new Duration(effectiveDuration),
                     EasingFunction = easing,
                     FillBehavior = FillBehavior.Stop,
@@ -269,9 +230,12 @@ internal sealed class NavigationPaneTransitionController
                 }
             );
             centeredRuns.Add(
-                CenteredContentAnimationRun.CreateWidth(
+                new CenteredContentAnimationRun(
                     centeredHost,
-                    widthClockIndex
+                    scaleClockIndex,
+                    translationClockIndex,
+                    targetNetScale / targetScale,
+                    targetWorldOffset / targetScale
                 )
             );
         }
@@ -381,10 +345,6 @@ internal sealed class NavigationPaneTransitionController
         );
         foreach (var centeredHost in state.CenteredContentHosts)
         {
-            centeredHost.Element.ApplyAnimationClock(
-                FrameworkElement.MaxWidthProperty,
-                null
-            );
             centeredHost.CounterScale.ApplyAnimationClock(
                 ScaleTransform.ScaleXProperty,
                 null
@@ -616,11 +576,6 @@ internal sealed class NavigationPaneTransitionController
 
         internal bool IsUsingTransformCompensation { get; set; }
 
-        internal double GetVisibleWidth(double outerScale)
-        {
-            return Element.ActualWidth * GetNetScale(outerScale);
-        }
-
         internal double GetNetScale(double outerScale)
         {
             return outerScale
@@ -632,11 +587,6 @@ internal sealed class NavigationPaneTransitionController
             return IsUsingTransformCompensation
                 ? outerScale * CounterTranslation.X
                 : 0;
-        }
-
-        internal bool IsAtMaximumWidth(double width)
-        {
-            return Math.Abs(width - MaximumWidth) < MinimumDistance;
         }
 
         internal double PredictTargetCenter(double contentWidthDelta)
@@ -731,9 +681,8 @@ internal sealed class NavigationPaneTransitionController
 
     private sealed class CenteredContentAnimationRun
     {
-        private CenteredContentAnimationRun(
+        internal CenteredContentAnimationRun(
             CenteredContentHostState host,
-            int widthClockIndex,
             int scaleClockIndex,
             int translationClockIndex,
             double targetCounterScale,
@@ -741,7 +690,6 @@ internal sealed class NavigationPaneTransitionController
         )
         {
             Host = host;
-            WidthClockIndex = widthClockIndex;
             ScaleClockIndex = scaleClockIndex;
             TranslationClockIndex = translationClockIndex;
             TargetCounterScale = targetCounterScale;
@@ -749,8 +697,6 @@ internal sealed class NavigationPaneTransitionController
         }
 
         private CenteredContentHostState Host { get; }
-
-        private int WidthClockIndex { get; }
 
         private int ScaleClockIndex { get; }
 
@@ -760,45 +706,8 @@ internal sealed class NavigationPaneTransitionController
 
         private double TargetLocalOffset { get; }
 
-        internal static CenteredContentAnimationRun CreateWidth(
-            CenteredContentHostState host,
-            int clockIndex
-        )
-        {
-            return new CenteredContentAnimationRun(host, clockIndex, -1, -1, 1, 0);
-        }
-
-        internal static CenteredContentAnimationRun CreateTransform(
-            CenteredContentHostState host,
-            int scaleClockIndex,
-            int translationClockIndex,
-            double targetCounterScale,
-            double targetLocalOffset
-        )
-        {
-            return new CenteredContentAnimationRun(
-                host,
-                -1,
-                scaleClockIndex,
-                translationClockIndex,
-                targetCounterScale,
-                targetLocalOffset
-            );
-        }
-
         internal void Apply(ClockGroup clock)
         {
-            if (WidthClockIndex >= 0)
-            {
-                Host.RestoreTransform();
-                Host.Element.ApplyAnimationClock(
-                    FrameworkElement.MaxWidthProperty,
-                    (AnimationClock)clock.Children[WidthClockIndex],
-                    HandoffBehavior.SnapshotAndReplace
-                );
-                return;
-            }
-
             Host.ApplyTransform(TargetCounterScale, TargetLocalOffset);
             Host.CounterScale.ApplyAnimationClock(
                 ScaleTransform.ScaleXProperty,

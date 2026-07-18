@@ -14,6 +14,17 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
 
     public event EventHandler<FlourishNotificationsChangedEventArgs>? NotificationsChanged;
 
+    internal long CurrentVersion
+    {
+        get
+        {
+            lock (gate)
+            {
+                return version;
+            }
+        }
+    }
+
     public IReadOnlyList<FlourishNotificationInfo> ActiveNotifications
     {
         get
@@ -211,9 +222,17 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
 
     private void NotifyChanged()
     {
+        IReadOnlyList<FlourishNotificationInfo> notifications;
+        long currentVersion;
+        lock (gate)
+        {
+            notifications = CreateSnapshotLocked();
+            currentVersion = version;
+        }
+
         NotificationsChanged?.Invoke(
             this,
-            new FlourishNotificationsChangedEventArgs(ActiveNotifications)
+            new FlourishNotificationsChangedEventArgs(notifications, currentVersion)
         );
     }
 

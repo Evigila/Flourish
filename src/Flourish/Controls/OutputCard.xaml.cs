@@ -1,3 +1,4 @@
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -24,9 +25,12 @@ public class OutputCard : WpfControl
     public static readonly DependencyProperty OutputProperty =
         OutputPropertyKey.DependencyProperty;
 
+    private StringBuilder _outputBuilder = new();
     private ScrollViewer? _outputScrollViewer;
+    private string? _materializedOutput = string.Empty;
     private int _lineCount;
-    private bool _scrollToEndPending;
+    private bool _refreshPending;
+    private long _refreshGeneration;
 
     static OutputCard()
     {
@@ -37,7 +41,14 @@ public class OutputCard : WpfControl
     }
 
     /// <summary>Gets the complete output history.</summary>
-    public string Output => (string)GetValue(OutputProperty);
+    public string Output
+    {
+        get
+        {
+            VerifyAccess();
+            return MaterializeOutput();
+        }
+    }
 
     /// <summary>Appends an empty line to the output history.</summary>
     public void WriteLine()
@@ -49,18 +60,32 @@ public class OutputCard : WpfControl
     /// <param name="message">The message to append. A <see langword="null" /> value writes an empty line.</param>
     public void WriteLine(string? message)
     {
-        var separator = _lineCount == 0 ? string.Empty : Environment.NewLine;
-        SetValue(OutputPropertyKey, string.Concat(Output, separator, message));
+        VerifyAccess();
+
+        if (_lineCount > 0)
+        {
+            _outputBuilder.Append(Environment.NewLine);
+        }
+
+        _outputBuilder.Append(message);
+        _materializedOutput = null;
         _lineCount++;
-        ScheduleScrollToEnd();
+        ScheduleRefresh();
     }
 
     /// <summary>Removes every message from the output history.</summary>
     public void Clear()
     {
+        VerifyAccess();
+
+        // Replacing the builder releases large retained buffers after a long-running
+        // output session instead of keeping their capacity alive for the next session.
+        _outputBuilder = new StringBuilder();
+        _materializedOutput = string.Empty;
         SetValue(OutputPropertyKey, string.Empty);
         _lineCount = 0;
-        _scrollToEndPending = false;
+        _refreshGeneration++;
+        _refreshPending = false;
         _outputScrollViewer?.ScrollToHome();
     }
 
@@ -72,7 +97,7 @@ public class OutputCard : WpfControl
 
         if (_lineCount > 0)
         {
-            ScheduleScrollToEnd();
+            ScheduleRefresh();
         }
     }
 
@@ -97,19 +122,36 @@ public class OutputCard : WpfControl
         );
     }
 
-    private void ScheduleScrollToEnd()
+    private string MaterializeOutput()
     {
-        if (_outputScrollViewer is null || _scrollToEndPending)
+        return _materializedOutput ??= _outputBuilder.ToString();
+    }
+
+    private void ScheduleRefresh()
+    {
+        if (_refreshPending)
         {
             return;
         }
 
-        _scrollToEndPending = true;
+        _refreshPending = true;
+        var generation = _refreshGeneration;
         Dispatcher.BeginInvoke(
             DispatcherPriority.Loaded,
             () =>
             {
-                _scrollToEndPending = false;
+                if (generation != _refreshGeneration)
+                {
+                    return;
+                }
+
+                _refreshPending = false;
+                var output = MaterializeOutput();
+                if (!ReferenceEquals(GetValue(OutputProperty), output))
+                {
+                    SetValue(OutputPropertyKey, output);
+                }
+
                 _outputScrollViewer?.ScrollToEnd();
             }
         );

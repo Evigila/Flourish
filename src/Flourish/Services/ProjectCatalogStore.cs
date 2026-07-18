@@ -21,6 +21,8 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
         WriteIndented = true,
     };
     private readonly string filePath;
+    private readonly Lock gate = new();
+    private ProjectCatalog? lastPersistedCatalog;
 
     public ProjectCatalogStore(IAppSettingsStore appSettingsStore)
     {
@@ -37,6 +39,10 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
     {
         if (!File.Exists(filePath))
         {
+            lock (gate)
+            {
+                lastPersistedCatalog = ProjectCatalog.Empty;
+            }
             return ProjectCatalog.Empty;
         }
 
@@ -61,7 +67,13 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
                 throw new InvalidDataException($"{CatalogFileName} is empty.");
             }
 
-            return new ProjectCatalog(document.Projects ?? [], document.ActiveProjectId);
+            var catalog = new ProjectCatalog(document.Projects ?? [], document.ActiveProjectId);
+            lock (gate)
+            {
+                lastPersistedCatalog = Snapshot(catalog);
+            }
+
+            return catalog;
         }
         catch (JsonException error)
         {
@@ -75,6 +87,20 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
     public void Save(ProjectCatalog catalog)
     {
         ArgumentNullException.ThrowIfNull(catalog);
+        lock (gate)
+        {
+            if (CatalogEquals(lastPersistedCatalog, catalog))
+            {
+                return;
+            }
+
+            SaveCore(catalog);
+            lastPersistedCatalog = Snapshot(catalog);
+        }
+    }
+
+    private void SaveCore(ProjectCatalog catalog)
+    {
         var directory = Path.GetDirectoryName(filePath)
             ?? throw new InvalidOperationException($"{CatalogFileName} has no parent directory.");
         Directory.CreateDirectory(directory);
@@ -103,9 +129,11 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
             )
             {
                 JsonSerializer.Serialize(stream, document, SerializerOptions);
-                stream.Flush(flushToDisk: true);
             }
 
+            // Closing the temporary stream flushes it to the operating-system cache before the
+            // atomic replace. Avoid forcing a physical-disk barrier for every metadata change;
+            // callers still observe serialization and file-system failures synchronously.
             File.Move(temporaryPath, filePath, overwrite: true);
         }
         finally
@@ -115,6 +143,31 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
                 File.Delete(temporaryPath);
             }
         }
+    }
+
+    private static ProjectCatalog Snapshot(ProjectCatalog catalog) =>
+        new([.. catalog.Projects], catalog.ActiveProjectId);
+
+    private static bool CatalogEquals(ProjectCatalog? left, ProjectCatalog right)
+    {
+        if (
+            left is null
+            || !StringComparer.Ordinal.Equals(left.ActiveProjectId, right.ActiveProjectId)
+            || left.Projects.Count != right.Projects.Count
+        )
+        {
+            return false;
+        }
+
+        for (var index = 0; index < left.Projects.Count; index++)
+        {
+            if (left.Projects[index] != right.Projects[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private sealed record ProjectCatalogDocument(

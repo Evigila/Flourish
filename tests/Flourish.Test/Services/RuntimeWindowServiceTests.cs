@@ -35,6 +35,21 @@ public sealed class RuntimeWindowServiceTests
     }
 
     [Fact]
+    public void WindowService_DoesNotPublishIdenticalUnattachedSnapshots()
+    {
+        var sut = new WindowService(new FlourishShellOptions());
+        var changes = 0;
+        sut.StateChanged += (_, _) => changes++;
+
+        sut.SetTopmost(true);
+        sut.SetTopmost(true);
+        sut.SetSize(900, 600);
+        sut.SetSize(900, 600);
+
+        Assert.Equal(2, changes);
+    }
+
+    [Fact]
     public void WindowService_RejectsInvalidGeometryAndReportsCorrectDimension()
     {
         var options = new FlourishShellOptions

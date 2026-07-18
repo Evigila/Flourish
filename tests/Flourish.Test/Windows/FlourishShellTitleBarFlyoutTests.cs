@@ -126,7 +126,8 @@ public sealed class FlourishShellTitleBarFlyoutTests
         Assert.Contains("FlourishLocaleKeys.ProjectDelete", itemFactory);
         Assert.Contains("suppressProjectSelectionChanged", selection);
         Assert.Contains("ProjectComboBox.IsDropDownOpen = false;", selection);
-        Assert.Contains("BuildTitleSelectorItems();", selection);
+        Assert.DoesNotContain("BuildTitleSelectorItems();", selection, StringComparison.Ordinal);
+        Assert.Contains("ProjectService_Changed", ShellCode);
         Assert.Contains("FlourishFontSizeStandard", ShellCode);
         Assert.DoesNotContain("SetActiveProject", selection, StringComparison.Ordinal);
         Assert.DoesNotContain("RemoveProject", deletion, StringComparison.Ordinal);
@@ -136,7 +137,7 @@ public sealed class FlourishShellTitleBarFlyoutTests
     public void ProjectSelector_UsesApplicationOnlyOrAllProjectsWithNewProjectAction()
     {
         var build = GetMethod(
-            "private void BuildTitleSelectorItems()",
+            "private void BuildTitleSelectorItems(",
             "private static FlourishComboBoxItem CreateApplicationTitleComboBoxItem("
         );
 
@@ -144,7 +145,9 @@ public sealed class FlourishShellTitleBarFlyoutTests
         Assert.Contains("foreach (var project in projectState.Projects)", build);
         Assert.Contains("CreateNewProjectComboBoxItem()", build);
         Assert.Contains("CreateApplicationTitleComboBoxItem(titleState.ApplicationTitle)", build);
-        Assert.Contains("ProjectComboBox.Items.Add(selectedItem);", build);
+        Assert.Contains("projectSelectorItemsById", build);
+        Assert.Contains("SynchronizeItems(ProjectComboBox, desiredItems);", build);
+        Assert.DoesNotContain("ProjectComboBox.Items.Clear();", build, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -180,7 +183,7 @@ public sealed class FlourishShellTitleBarFlyoutTests
     {
         var method = GetMethod(
             "private void BuildApplicationInfoFlyoutContent()",
-            "private void BuildTitleSelectorItems()"
+            "private void BuildTitleSelectorItems("
         );
 
         Assert.Contains("projectState.IsMultiProjectEnabled", method);
@@ -209,15 +212,16 @@ public sealed class FlourishShellTitleBarFlyoutTests
     }
 
     [Fact]
-    public void ProjectChanges_RenderTheLatestSnapshotInsteadOfAnOutOfOrderEventSnapshot()
+    public void ProjectChanges_UseVersionedEventSnapshotsAndRejectOutOfOrderUpdates()
     {
         var method = GetMethod(
             "private void ProjectService_Changed(",
             "private void ApplyTitleBarState("
         );
 
-        Assert.Contains("var projectState = projectService.Current;", method);
-        Assert.DoesNotContain("e.Current.IsMultiProjectEnabled", method, StringComparison.Ordinal);
+        Assert.Contains("var projectState = e.Current;", method);
+        Assert.Contains("projectState.Version <= appliedProjectVersion", method);
+        Assert.Contains("RefreshTitleSelector(titleState, projectState);", method);
     }
 
     private static XElement FindNamedElement(XDocument document, string name)

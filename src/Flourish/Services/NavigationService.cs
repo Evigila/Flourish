@@ -9,9 +9,11 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
     private readonly INavigationPageProvider pageProvider;
     private readonly PageHistoryService pageHistoryService;
     private readonly NavigationRouteRegistry routeRegistry;
-    private readonly Lock routeChangeGate = new();
+    private readonly Lock navigationGate = new();
     private INavigationContentHost? contentHost;
     private Dispatcher? dispatcher;
+    private Type? currentSourcePageType;
+    private string? currentNavigationKey;
     private object? currentParameter;
     private long lastAppliedRouteVersion = -1;
 
@@ -34,7 +36,7 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
         this.routeRegistry =
             routeRegistry ?? throw new ArgumentNullException(nameof(routeRegistry));
         routeRegistry.Changed += RouteRegistry_Changed;
-        lock (routeChangeGate)
+        lock (navigationGate)
         {
             lastAppliedRouteVersion = Math.Max(
                 lastAppliedRouteVersion,
@@ -47,33 +49,88 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
 
     public event EventHandler<FlourishNavigationStateChangedEventArgs>? StateChanged;
 
-    public bool CanGoBack => pageHistoryService.CanGoBack;
+    public bool CanGoBack
+    {
+        get
+        {
+            lock (navigationGate)
+            {
+                return pageHistoryService.CanGoBack;
+            }
+        }
+    }
 
-    public bool CanGoForward => pageHistoryService.CanGoForward;
+    public bool CanGoForward
+    {
+        get
+        {
+            lock (navigationGate)
+            {
+                return pageHistoryService.CanGoForward;
+            }
+        }
+    }
 
-    public Type? CurrentSourcePageType { get; private set; }
+    public Type? CurrentSourcePageType
+    {
+        get
+        {
+            lock (navigationGate)
+            {
+                return currentSourcePageType;
+            }
+        }
+    }
 
-    public string? CurrentNavigationKey { get; private set; }
+    public string? CurrentNavigationKey
+    {
+        get
+        {
+            lock (navigationGate)
+            {
+                return currentNavigationKey;
+            }
+        }
+    }
 
-    public object? CurrentParameter => currentParameter;
+    public object? CurrentParameter
+    {
+        get
+        {
+            lock (navigationGate)
+            {
+                return currentParameter;
+            }
+        }
+    }
 
     public IReadOnlyCollection<string> Routes => routeRegistry.Current.Routes.Keys.ToArray();
 
     public void Initialize(Frame contentFrame)
     {
         ArgumentNullException.ThrowIfNull(contentFrame);
-        dispatcher = contentFrame.Dispatcher;
-        Initialize(new FrameNavigationContentHost(contentFrame));
+        lock (navigationGate)
+        {
+            dispatcher = contentFrame.Dispatcher;
+            contentHost = new FrameNavigationContentHost(contentFrame);
+        }
     }
 
     internal void Initialize(INavigationContentHost contentHost)
     {
-        this.contentHost = contentHost ?? throw new ArgumentNullException(nameof(contentHost));
+        ArgumentNullException.ThrowIfNull(contentHost);
+        lock (navigationGate)
+        {
+            this.contentHost = contentHost;
+        }
     }
 
     public bool Navigate(string navigationKey, object? parameter = null, bool addToBackStack = true)
     {
-        return NavigateCore(navigationKey, parameter, addToBackStack);
+        lock (navigationGate)
+        {
+            return NavigateCore(navigationKey, parameter, addToBackStack);
+        }
     }
 
     public bool CanNavigate(string navigationKey)
@@ -102,12 +159,18 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
     )
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (dispatcher is null || dispatcher.CheckAccess())
+        Dispatcher? currentDispatcher;
+        lock (navigationGate)
+        {
+            currentDispatcher = dispatcher;
+        }
+
+        if (currentDispatcher is null || currentDispatcher.CheckAccess())
         {
             return Navigate(navigationKey, parameter, addToBackStack);
         }
 
-        var operation = dispatcher.InvokeAsync(
+        var operation = currentDispatcher.InvokeAsync(
             () => Navigate(navigationKey, parameter, addToBackStack),
             DispatcherPriority.Normal,
             cancellationToken
@@ -117,66 +180,81 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
 
     public bool GoBack()
     {
-        if (!pageHistoryService.TryPopBack(out var entry))
+        lock (navigationGate)
         {
-            return false;
-        }
-
-        var currentEntry = CreateCurrentEntry();
-        return NavigateCore(
-            entry.NavigationKey,
-            entry.Parameter,
-            false,
-            commitHistory: () =>
+            if (!pageHistoryService.TryPopBack(out var entry))
             {
-                if (currentEntry is not null)
+                return false;
+            }
+
+            var currentEntry = CreateCurrentEntry();
+            return NavigateCore(
+                entry.NavigationKey,
+                entry.Parameter,
+                false,
+                commitHistory: () =>
                 {
-                    pageHistoryService.PushForward(currentEntry);
-                }
-            },
-            rollbackHistory: () => pageHistoryService.Push(entry)
-        );
+                    if (currentEntry is not null)
+                    {
+                        pageHistoryService.PushForward(currentEntry);
+                    }
+                },
+                rollbackHistory: () => pageHistoryService.Push(entry)
+            );
+        }
     }
 
     public bool GoForward()
     {
-        if (!pageHistoryService.TryPopForward(out var entry))
+        lock (navigationGate)
         {
-            return false;
-        }
-
-        var currentEntry = CreateCurrentEntry();
-        return NavigateCore(
-            entry.NavigationKey,
-            entry.Parameter,
-            false,
-            commitHistory: () =>
+            if (!pageHistoryService.TryPopForward(out var entry))
             {
-                if (currentEntry is not null)
+                return false;
+            }
+
+            var currentEntry = CreateCurrentEntry();
+            return NavigateCore(
+                entry.NavigationKey,
+                entry.Parameter,
+                false,
+                commitHistory: () =>
                 {
-                    pageHistoryService.Push(currentEntry);
-                }
-            },
-            rollbackHistory: () => pageHistoryService.PushForward(entry)
-        );
+                    if (currentEntry is not null)
+                    {
+                        pageHistoryService.Push(currentEntry);
+                    }
+                },
+                rollbackHistory: () => pageHistoryService.PushForward(entry)
+            );
+        }
     }
 
     public void ClearBackStack()
     {
-        pageHistoryService.ClearBack();
-        RaiseStateChanged();
+        lock (navigationGate)
+        {
+            pageHistoryService.ClearBack();
+            RaiseStateChangedLocked();
+        }
     }
 
     public void ClearForwardStack()
     {
-        pageHistoryService.ClearForward();
-        RaiseStateChanged();
+        lock (navigationGate)
+        {
+            pageHistoryService.ClearForward();
+            RaiseStateChangedLocked();
+        }
     }
 
     public void ClearHistory()
     {
-        pageHistoryService.Clear();
-        RaiseStateChanged();
+        lock (navigationGate)
+        {
+            pageHistoryService.Clear();
+            RaiseStateChangedLocked();
+        }
     }
 
     private bool NavigateCore(
@@ -207,7 +285,7 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
 
             var sourcePageType = route.PageType;
 
-            if (CurrentNavigationKey == navigationKey && Equals(currentParameter, parameter))
+            if (currentNavigationKey == navigationKey && Equals(currentParameter, parameter))
             {
                 rollbackHistory?.Invoke();
                 return false;
@@ -228,15 +306,15 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
             }
 
             historyCommitted = true;
-            CurrentSourcePageType = sourcePageType;
-            CurrentNavigationKey = navigationKey;
+            currentSourcePageType = sourcePageType;
+            currentNavigationKey = navigationKey;
             currentParameter = parameter;
 
             Navigated?.Invoke(
                 this,
                 new FlourishNavigatedEventArgs(navigationKey, sourcePageType, page, parameter)
             );
-            RaiseStateChanged();
+            RaiseStateChangedLocked();
             return true;
         }
         catch
@@ -252,15 +330,14 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
 
     private FlourishPageStackEntry? CreateCurrentEntry()
     {
-        return CurrentNavigationKey is null
+        return currentNavigationKey is null
             ? null
-            : new FlourishPageStackEntry(CurrentNavigationKey, currentParameter);
+            : new FlourishPageStackEntry(currentNavigationKey, currentParameter);
     }
 
     private void RouteRegistry_Changed(object? sender, FlourishNavigationRoutesChangedEventArgs e)
     {
-        var historyChanged = false;
-        lock (routeChangeGate)
+        lock (navigationGate)
         {
             if (e.Current.Version <= lastAppliedRouteVersion)
             {
@@ -268,38 +345,26 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
             }
 
             lastAppliedRouteVersion = e.Current.Version;
-            var registeredKeys = e.Current.Routes.Keys.ToHashSet(StringComparer.Ordinal);
-            var staleHistoryKeys = pageHistoryService
-                .BackStack.Concat(pageHistoryService.ForwardStack)
-                .Select(entry => entry.NavigationKey)
-                .Where(key => !registeredKeys.Contains(key))
-                .Distinct(StringComparer.Ordinal)
-                .ToArray();
-            foreach (var staleHistoryKey in staleHistoryKeys)
+            var historyChanged = pageHistoryService.RemoveWhere(entry =>
+                !e.Current.Routes.ContainsKey(entry.NavigationKey)
+            );
+            if (historyChanged || e.ChangeKind == FlourishRuntimeChangeKind.Removed)
             {
-                pageHistoryService.Remove(staleHistoryKey);
+                RaiseStateChangedLocked();
             }
-
-            historyChanged =
-                staleHistoryKeys.Length > 0 || e.ChangeKind == FlourishRuntimeChangeKind.Removed;
-        }
-
-        if (historyChanged)
-        {
-            RaiseStateChanged();
         }
     }
 
-    private void RaiseStateChanged()
+    private void RaiseStateChangedLocked()
     {
         StateChanged?.Invoke(
             this,
             new FlourishNavigationStateChangedEventArgs(
                 new FlourishNavigationState(
-                    CurrentNavigationKey,
-                    CurrentSourcePageType,
-                    CanGoBack,
-                    CanGoForward
+                    currentNavigationKey,
+                    currentSourcePageType,
+                    pageHistoryService.CanGoBack,
+                    pageHistoryService.CanGoForward
                 )
             )
         );

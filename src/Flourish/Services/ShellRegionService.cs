@@ -79,7 +79,19 @@ internal sealed class ShellRegionService : IShellRegionService
             var index = FindIndex(id);
             if (index >= 0)
             {
-                previousRegion = options.RegionContents[index].Region;
+                var current = options.RegionContents[index];
+                if (
+                    current.Region == region
+                    && current.Order == order
+                    && current.IsEnabled
+                    && current.ContentFactory.Equals(contentFactory)
+                )
+                {
+                    leases[id] = lease;
+                    return new Registration(this, id, region, lease);
+                }
+
+                previousRegion = current.Region;
                 options.RegionContents[index] = new FlourishRegionContent(
                     region,
                     contentFactory,

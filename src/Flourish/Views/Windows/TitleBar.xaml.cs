@@ -414,10 +414,26 @@ internal partial class FlourishTitlebar : UserControl
 
     private static void SetPanelContent(WpfPanel host, IReadOnlyList<FrameworkElement> elements)
     {
-        host.Children.Clear();
-        foreach (var element in elements)
+        for (var index = 0; index < elements.Count; index++)
         {
-            host.Children.Add(element);
+            var element = elements[index];
+            if (index < host.Children.Count && ReferenceEquals(host.Children[index], element))
+            {
+                continue;
+            }
+
+            var existingIndex = host.Children.IndexOf(element);
+            if (existingIndex >= 0)
+            {
+                host.Children.RemoveAt(existingIndex);
+            }
+
+            host.Children.Insert(index, element);
+        }
+
+        while (host.Children.Count > elements.Count)
+        {
+            host.Children.RemoveAt(host.Children.Count - 1);
         }
 
         host.Visibility = ToVisibility(elements.Count > 0);

@@ -114,6 +114,25 @@ public sealed class NavigationRuntimeSurfaceTests
     }
 
     [Fact]
+    public void NavigationMenu_EmptyAndEquivalentUpdatesDoNotPublish()
+    {
+        var options = CreateRouteOptions();
+        var sut = new NavigationMenuService(options, new NavigationRouteRegistry(options));
+        var changes = 0;
+        sut.Changed += (_, _) => changes++;
+
+        sut.Update(_ => { });
+        sut.Update(editor =>
+        {
+            editor.AddGroup("temporary");
+            editor.RemoveGroup("temporary");
+        });
+
+        Assert.Equal(0, changes);
+        Assert.Equal(0, sut.Current.Version);
+    }
+
+    [Fact]
     public void NavigationMenu_WhenBatchValidationFails_DoesNotCommitPartialChanges()
     {
         var options = CreateRouteOptions();

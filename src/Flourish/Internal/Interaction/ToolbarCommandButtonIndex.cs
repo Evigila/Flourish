@@ -48,6 +48,32 @@ internal sealed class ToolbarCommandButtonIndex(ICommandDispatcher commandDispat
         }
     }
 
+    internal void Untrack(IEnumerable<WpfButton> buttons)
+    {
+        ArgumentNullException.ThrowIfNull(buttons);
+        var removedButtons = buttons.ToHashSet();
+        if (removedButtons.Count == 0)
+        {
+            return;
+        }
+
+        entries.RemoveAll(entry => removedButtons.Contains(entry.Button));
+        foreach (var commandEntries in entriesByCommandKey.Values)
+        {
+            commandEntries.RemoveAll(entry => removedButtons.Contains(entry.Button));
+        }
+
+        foreach (
+            var commandKey in entriesByCommandKey
+                .Where(pair => pair.Value.Count == 0)
+                .Select(pair => pair.Key)
+                .ToArray()
+        )
+        {
+            entriesByCommandKey.Remove(commandKey);
+        }
+    }
+
     internal void Clear()
     {
         entries.Clear();

@@ -80,9 +80,17 @@ internal partial class FlourishShellWindow : Window
     private readonly Dictionary<string, RegionElementView> regionElementsById = new(
         StringComparer.Ordinal
     );
+    private readonly Dictionary<string, FlourishComboBoxItem> projectSelectorItemsById = new(
+        StringComparer.Ordinal
+    );
     private readonly Dictionary<Guid, BackgroundTaskIconView> backgroundTaskIconsById = [];
     private readonly Dictionary<Guid, BackgroundTaskRowView> backgroundTaskRowsById = [];
+    private readonly Dictionary<string, NotificationItemView> notificationViewsById = new(
+        StringComparer.Ordinal
+    );
     private readonly Lock backgroundTaskRefreshGate = new();
+    private readonly Lock notificationRefreshGate = new();
+    private readonly Lock statusRefreshGate = new();
     private readonly NavigationPaneTransitionController navigationPaneTransition = new();
     private readonly PageTransitionController pageTransition = new();
     private readonly TitleBarLogoLoadCoordinator titleBarLogoLoadCoordinator = new(
@@ -108,6 +116,10 @@ internal partial class FlourishShellWindow : Window
     private IInputElement? statusFlyoutRestoreFocusTarget;
     private bool backgroundTaskRefreshPending;
     private bool backgroundTaskRefreshLoopActive;
+    private bool notificationRefreshPending;
+    private IReadOnlyList<FlourishNotificationInfo> pendingNotifications = [];
+    private long pendingNotificationVersion;
+    private long appliedNotificationVersion;
     private volatile bool isShellClosed;
     private bool statusFlyoutOpenedWithFocus;
     private FrameworkElement? titleBarFlyoutAnchor;
@@ -123,6 +135,16 @@ internal partial class FlourishShellWindow : Window
     private ImageSource? currentTitleBarLogoSource;
     private string currentTitleBarLogoFallbackText = "F";
     private bool isTitleBarLogoVisible;
+    private bool lastToolbarEnabled;
+    private long appliedToolbarVersion;
+    private FlourishTitleBarState? appliedTitleBarState;
+    private long appliedTitleBarVersion;
+    private long appliedProjectVersion;
+    private FlourishStatusBarChangedEventArgs? pendingStatusChange;
+    private bool statusRefreshPending;
+    private FlourishComboBoxItem? applicationTitleSelectorItem;
+    private FlourishComboBoxItem? projectPlaceholderSelectorItem;
+    private FlourishComboBoxItem? newProjectSelectorItem;
 
     private readonly record struct NavigationTreeKey(bool IsFixed, int GroupId, int RelationshipId);
 
@@ -192,6 +214,30 @@ internal partial class FlourishShellWindow : Window
         public Button CancelButton { get; } = cancelButton;
     }
 
+    private sealed class NotificationItemView(
+        Border container,
+        TextBlock icon,
+        TextBlock title,
+        TextBlock message,
+        Button action,
+        Button dismiss
+    )
+    {
+        public Border Container { get; } = container;
+
+        public TextBlock Icon { get; } = icon;
+
+        public TextBlock Title { get; } = title;
+
+        public TextBlock Message { get; } = message;
+
+        public Button Action { get; } = action;
+
+        public Button Dismiss { get; } = dismiss;
+
+        public long Version { get; set; } = -1;
+    }
+
     private sealed record RegionElementView(
         FlourishRegionContent Definition,
         FrameworkElement Element
@@ -245,6 +291,9 @@ internal partial class FlourishShellWindow : Window
         this.navigationPanelService = navigationPanelService;
         this.navigationMenuService = navigationMenuService;
         this.toolbarService = toolbarService;
+        var toolbarSnapshot = toolbarService.Current;
+        lastToolbarEnabled = toolbarSnapshot.IsEnabled;
+        appliedToolbarVersion = toolbarSnapshot.Version;
         this.statusService = statusService;
         statusItemViews = new StatusItemViewCache(StatusItemsHost);
         statusBarSnapshot = statusService.Current;
@@ -252,6 +301,7 @@ internal partial class FlourishShellWindow : Window
         this.backgroundTaskService = backgroundTaskService;
         this.messageService = messageService;
         this.notificationService = notificationService;
+        appliedNotificationVersion = notificationService.CurrentVersion;
         this.trayIconService = trayIconService;
         this.commandRegistry = commandRegistry;
         this.commandDispatcher = commandDispatcher;
@@ -262,7 +312,9 @@ internal partial class FlourishShellWindow : Window
         this.themeService = themeService;
         this.motionService = motionService;
         this.titleBarService = titleBarService;
+        appliedTitleBarVersion = titleBarService.CurrentVersion;
         this.projectService = projectService;
+        appliedProjectVersion = projectService.Current.Version;
         this.projectBehavior = projectBehavior;
         this.titleBarSearchService = titleBarSearchService;
         this.windowService = windowService;
@@ -277,6 +329,7 @@ internal partial class FlourishShellWindow : Window
 
         Titlebar.ApplyLocale(localizationService);
         ApplyOptions();
+        appliedTitleBarState = titleBarService.Current;
         windowService.Attach(this);
         windowCloseService.Attach(RequestCloseCoreAsync);
         projectSaveCommandRegistration = commandRegistry.Register(
@@ -727,6 +780,11 @@ internal partial class FlourishShellWindow : Window
             return;
         }
 
+        if (!shortcutService.HasRegistrations(key, modifiers))
+        {
+            return;
+        }
+
         var isTextInputFocused = IsTextInputTarget(
             e.KeyboardDevice.FocusedElement ?? e.OriginalSource
         );
@@ -1060,22 +1118,45 @@ internal partial class FlourishShellWindow : Window
         AutomationProperties.SetName(TitleBarFlyoutCard, string.Join(", ", identityParts));
     }
 
-    private void BuildTitleSelectorItems()
+    private void BuildTitleSelectorItems(
+        FlourishTitleBarState? titleState = null,
+        FlourishProjectSnapshot? projectState = null
+    )
     {
-        var titleState = titleBarService.Current;
-        var projectState = projectService.Current;
+        titleState ??= titleBarService.Current;
+        projectState ??= projectService.Current;
         FlourishComboBoxItem? selectedItem = null;
+        var desiredItems = new List<UIElement>(projectState.Projects.Count + 2);
         suppressProjectSelectionChanged = true;
         try
         {
-            ProjectComboBox.Items.Clear();
+            var activeIds = projectState.Projects
+                .Select(project => project.Id)
+                .ToHashSet(StringComparer.Ordinal);
+            foreach (
+                var removedId in projectSelectorItemsById.Keys
+                    .Where(id => !activeIds.Contains(id))
+                    .ToArray()
+            )
+            {
+                projectSelectorItemsById.Remove(removedId);
+            }
 
             if (projectState.IsMultiProjectEnabled)
             {
                 foreach (var project in projectState.Projects)
                 {
-                    var item = CreateProjectComboBoxItem(project, titleState);
-                    ProjectComboBox.Items.Add(item);
+                    if (!projectSelectorItemsById.TryGetValue(project.Id, out var item))
+                    {
+                        item = CreateProjectComboBoxItem(project, titleState);
+                        projectSelectorItemsById.Add(project.Id, item);
+                    }
+                    else
+                    {
+                        UpdateProjectComboBoxItem(item, project, titleState);
+                    }
+
+                    desiredItems.Add(item);
                     if (
                         StringComparer.Ordinal.Equals(
                             projectState.ActiveProject?.Id,
@@ -1089,18 +1170,30 @@ internal partial class FlourishShellWindow : Window
 
                 if (selectedItem is null)
                 {
-                    selectedItem = CreateProjectPlaceholderComboBoxItem(titleState);
-                    ProjectComboBox.Items.Add(selectedItem);
+                    selectedItem = projectPlaceholderSelectorItem ??=
+                        CreateProjectPlaceholderComboBoxItem(titleState);
+                    selectedItem.Content = titleState.UnnamedProjectPlaceholder;
+                    desiredItems.Add(selectedItem);
                 }
 
-                ProjectComboBox.Items.Add(CreateNewProjectComboBoxItem());
+                newProjectSelectorItem ??= CreateNewProjectComboBoxItem();
+                var newProjectLabel = localizationService.Get(
+                    FlourishLocaleKeys.TitleBarNewProject
+                );
+                newProjectSelectorItem.Content = newProjectLabel;
+                AutomationProperties.SetName(newProjectSelectorItem, newProjectLabel);
+                desiredItems.Add(newProjectSelectorItem);
             }
             else
             {
-                selectedItem = CreateApplicationTitleComboBoxItem(titleState.ApplicationTitle);
-                ProjectComboBox.Items.Add(selectedItem);
+                selectedItem = applicationTitleSelectorItem ??=
+                    CreateApplicationTitleComboBoxItem(titleState.ApplicationTitle);
+                selectedItem.Content = titleState.ApplicationTitle;
+                AutomationProperties.SetName(selectedItem, titleState.ApplicationTitle);
+                desiredItems.Add(selectedItem);
             }
 
+            SynchronizeItems(ProjectComboBox, desiredItems);
             ProjectComboBox.SelectedItem = selectedItem;
         }
         finally
@@ -1110,6 +1203,53 @@ internal partial class FlourishShellWindow : Window
 
         var displayTitle = GetDisplayedTitle(titleState, projectState);
         AutomationProperties.SetName(ProjectComboBox, displayTitle);
+    }
+
+    private void UpdateProjectComboBoxItem(
+        FlourishComboBoxItem item,
+        FlourishProject project,
+        FlourishTitleBarState titleState
+    )
+    {
+        var displayTitle = GetProjectDisplayTitle(project, titleState);
+        if (!StringComparer.Ordinal.Equals(item.Content as string, displayTitle))
+        {
+            item.Content = displayTitle;
+            AutomationProperties.SetName(item, displayTitle);
+        }
+
+        if (
+            item.Tag is not ProjectMenuItemTag tag
+            || tag.Kind != ProjectMenuItemKind.Project
+            || !StringComparer.Ordinal.Equals(tag.ProjectId, project.Id)
+        )
+        {
+            item.Tag = new ProjectMenuItemTag(ProjectMenuItemKind.Project, project.Id);
+        }
+
+        if (project.StoragePath is null)
+        {
+            item.ToolTip = null;
+        }
+        else if (item.ToolTip is FlourishToolTip toolTip)
+        {
+            if (!StringComparer.Ordinal.Equals(toolTip.Content as string, project.StoragePath))
+            {
+                toolTip.Content = project.StoragePath;
+            }
+        }
+        else
+        {
+            item.ToolTip = new FlourishToolTip { Content = project.StoragePath };
+        }
+        if (
+            item.ContextMenu?.Items.Count > 0
+            && item.ContextMenu.Items[0] is System.Windows.Controls.MenuItem deleteItem
+        )
+        {
+            deleteItem.Header = localizationService.Get(FlourishLocaleKeys.ProjectDelete);
+            deleteItem.Tag = project.Id;
+        }
     }
 
     private static FlourishComboBoxItem CreateApplicationTitleComboBoxItem(string title)
@@ -1228,7 +1368,6 @@ internal partial class FlourishShellWindow : Window
                     "Project activation failed",
                     token => projectBehavior.ActivateProjectAsync(projectId, token)
                 );
-                BuildTitleSelectorItems();
                 break;
             case ProjectMenuItemKind.NewProject:
                 ProjectComboBox.IsDropDownOpen = false;
@@ -1237,7 +1376,6 @@ internal partial class FlourishShellWindow : Window
                     "Project creation failed",
                     projectBehavior.CreateProjectAsync
                 );
-                BuildTitleSelectorItems();
                 break;
         }
     }
@@ -1254,7 +1392,6 @@ internal partial class FlourishShellWindow : Window
             "Project deletion failed",
             token => projectBehavior.DeleteProjectAsync(projectId, token)
         );
-        BuildTitleSelectorItems();
     }
 
     private async Task<bool> ExecuteProjectBehaviorAsync(
@@ -1385,12 +1522,15 @@ internal partial class FlourishShellWindow : Window
         TitleBarFlyoutCard.Focus();
     }
 
-    private void RefreshTitleSelector()
+    private void RefreshTitleSelector(
+        FlourishTitleBarState? titleState = null,
+        FlourishProjectSnapshot? projectState = null
+    )
     {
         var hadKeyboardFocus = ProjectComboBox.IsKeyboardFocusWithin;
         var wasDropDownOpen = ProjectComboBox.IsDropDownOpen;
 
-        BuildTitleSelectorItems();
+        BuildTitleSelectorItems(titleState, projectState);
         if (!hadKeyboardFocus && !wasDropDownOpen)
         {
             return;
@@ -2642,9 +2782,11 @@ internal partial class FlourishShellWindow : Window
     {
         if (
             regionElementsById.TryGetValue(content.Id, out var cached)
-            && ReferenceEquals(cached.Definition, content)
+            && cached.Definition.Region == content.Region
+            && cached.Definition.ContentFactory.Equals(content.ContentFactory)
         )
         {
+            regionElementsById[content.Id] = new RegionElementView(content, cached.Element);
             return cached.Element;
         }
 
@@ -2729,12 +2871,7 @@ internal partial class FlourishShellWindow : Window
 
     private static void SetPanelContent(WpfPanel host, IReadOnlyList<FrameworkElement> elements)
     {
-        host.Children.Clear();
-        foreach (var element in elements)
-        {
-            host.Children.Add(element);
-        }
-
+        SynchronizePanelChildren(host, elements);
         host.Visibility = elements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -2892,100 +3029,138 @@ internal partial class FlourishShellWindow : Window
 
     private void BuildNotifications(IReadOnlyList<FlourishNotificationInfo> notifications)
     {
-        NotificationItemsHost.Children.Clear();
-        foreach (var info in notifications.Reverse().Take(5))
+        var activeIds = notifications
+            .Select(info => info.Notification.Id)
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (
+            var removedId in notificationViewsById.Keys
+                .Where(id => !activeIds.Contains(id))
+                .ToArray()
+        )
         {
-            var definition = info.Notification;
-            var layout = new Grid();
-            layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            layout.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            );
-            layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-            var icon = new TextBlock
-            {
-                Width = 24,
-                Margin = new Thickness(0, 2, 10, 0),
-                VerticalAlignment = VerticalAlignment.Top,
-                Text = definition.IconGlyph ?? GetNotificationGlyph(definition.Severity),
-            };
-            BindIconTypography(icon, "FlourishFontSizeIcon");
-            icon.SetResourceReference(
-                TextBlock.ForegroundProperty,
-                "FlourishPrimaryForegroundBrush"
-            );
-            layout.Children.Add(icon);
-
-            var content = new StackPanel();
-            content.Children.Add(
-                new FlourishTextBlock { Role = FlourishTextRole.CardTitle, Text = definition.Title }
-            );
-            var message = new FlourishTextBlock
-            {
-                Margin = new Thickness(0, 4, 0, 0),
-                Role = FlourishTextRole.Description,
-                Text = definition.Message,
-            };
-            content.Children.Add(message);
-
-            if (!string.IsNullOrWhiteSpace(definition.CommandKey))
-            {
-                var action = new Button
-                {
-                    Margin = new Thickness(0, 8, 0, 0),
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                    Height = 28,
-                    MinWidth = 28,
-                    MinHeight = 0,
-                    Padding = new Thickness(7, 0, 7, 0),
-                    Content = "Run action",
-                    Tag = info,
-                    Variant = ButtonVariant.Text,
-                };
-                action.Click += NotificationAction_Click;
-                content.Children.Add(action);
-            }
-
-            Grid.SetColumn(content, 1);
-            layout.Children.Add(content);
-
-            var dismiss = new IconButton
-            {
-                Width = 28,
-                Height = 28,
-                MinWidth = 0,
-                MinHeight = 0,
-                Padding = new Thickness(),
-                Margin = new Thickness(8, 0, 0, 0),
-                Icon = CreateIconContent("\uE711"),
-                Tag = definition.Id,
-                Variant = ButtonVariant.Text,
-                ToolTip = new FlourishToolTip { Content = "Dismiss" },
-            };
-            dismiss.Click += NotificationDismiss_Click;
-            Grid.SetColumn(dismiss, 2);
-            layout.Children.Add(dismiss);
-
-            var surface = new Border { Padding = new Thickness(14, 12, 10, 12), Child = layout };
-            surface.SetResourceReference(Border.BackgroundProperty, "FlourishCardBackgroundBrush");
-            surface.SetResourceReference(Border.BorderBrushProperty, "FlourishControlStrokeBrush");
-            surface.SetResourceReference(
-                Border.BorderThicknessProperty,
-                "FlourishControlBorderThickness"
-            );
-            surface.SetResourceReference(
-                Border.CornerRadiusProperty,
-                "FlourishOverlayCornerRadius"
-            );
-
-            surface.Margin = new Thickness(0, 0, 0, 14);
-            AutomationProperties.SetName(surface, $"{definition.Title}: {definition.Message}");
-            NotificationItemsHost.Children.Add(surface);
+            notificationViewsById.Remove(removedId);
         }
 
+        var visibleNotifications = notifications.Reverse().Take(5).ToArray();
+        var desiredViews = new List<UIElement>(visibleNotifications.Length);
+        foreach (var info in visibleNotifications)
+        {
+            var view = GetOrCreateNotificationView(info.Notification.Id);
+            UpdateNotificationView(view, info);
+            desiredViews.Add(view.Container);
+        }
+
+        SynchronizePanelChildren(NotificationItemsHost, desiredViews);
         NotificationItemsHost.Visibility =
             NotificationItemsHost.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private NotificationItemView GetOrCreateNotificationView(string id)
+    {
+        if (notificationViewsById.TryGetValue(id, out var cached))
+        {
+            return cached;
+        }
+
+        var layout = new Grid();
+        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        layout.ColumnDefinitions.Add(
+            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+        );
+        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        var icon = new TextBlock
+        {
+            Width = 24,
+            Margin = new Thickness(0, 2, 10, 0),
+            VerticalAlignment = VerticalAlignment.Top,
+        };
+        BindIconTypography(icon, "FlourishFontSizeIcon");
+        icon.SetResourceReference(TextBlock.ForegroundProperty, "FlourishPrimaryForegroundBrush");
+        layout.Children.Add(icon);
+
+        var title = new FlourishTextBlock { Role = FlourishTextRole.CardTitle };
+        var message = new FlourishTextBlock
+        {
+            Margin = new Thickness(0, 4, 0, 0),
+            Role = FlourishTextRole.Description,
+        };
+        var action = new Button
+        {
+            Margin = new Thickness(0, 8, 0, 0),
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+            Height = 28,
+            MinWidth = 28,
+            MinHeight = 0,
+            Padding = new Thickness(7, 0, 7, 0),
+            Content = "Run action",
+            Variant = ButtonVariant.Text,
+        };
+        action.Click += NotificationAction_Click;
+        var content = new StackPanel { Children = { title, message, action } };
+        Grid.SetColumn(content, 1);
+        layout.Children.Add(content);
+
+        var dismiss = new IconButton
+        {
+            Width = 28,
+            Height = 28,
+            MinWidth = 0,
+            MinHeight = 0,
+            Padding = new Thickness(),
+            Margin = new Thickness(8, 0, 0, 0),
+            Icon = CreateIconContent("\uE711"),
+            Tag = id,
+            Variant = ButtonVariant.Text,
+            ToolTip = new FlourishToolTip { Content = "Dismiss" },
+        };
+        dismiss.Click += NotificationDismiss_Click;
+        Grid.SetColumn(dismiss, 2);
+        layout.Children.Add(dismiss);
+
+        var surface = new Border
+        {
+            Padding = new Thickness(14, 12, 10, 12),
+            Margin = new Thickness(0, 0, 0, 14),
+            Child = layout,
+        };
+        surface.SetResourceReference(Border.BackgroundProperty, "FlourishCardBackgroundBrush");
+        surface.SetResourceReference(Border.BorderBrushProperty, "FlourishControlStrokeBrush");
+        surface.SetResourceReference(
+            Border.BorderThicknessProperty,
+            "FlourishControlBorderThickness"
+        );
+        surface.SetResourceReference(Border.CornerRadiusProperty, "FlourishOverlayCornerRadius");
+
+        var view = new NotificationItemView(surface, icon, title, message, action, dismiss);
+        notificationViewsById.Add(id, view);
+        return view;
+    }
+
+    private static void UpdateNotificationView(
+        NotificationItemView view,
+        FlourishNotificationInfo info
+    )
+    {
+        if (view.Version == info.Version)
+        {
+            return;
+        }
+
+        var definition = info.Notification;
+        view.Icon.Text = definition.IconGlyph ?? GetNotificationGlyph(definition.Severity);
+        view.Title.Text = definition.Title;
+        view.Message.Text = definition.Message;
+        view.Action.Tag = info;
+        view.Action.Visibility = string.IsNullOrWhiteSpace(definition.CommandKey)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        view.Dismiss.Tag = definition.Id;
+        AutomationProperties.SetName(
+            view.Container,
+            $"{definition.Title}: {definition.Message}"
+        );
+        view.Version = info.Version;
     }
 
     private async void NotificationAction_Click(object sender, RoutedEventArgs e)
@@ -3073,8 +3248,6 @@ internal partial class FlourishShellWindow : Window
         DispatchRuntimeChange(() =>
         {
             BuildNavigationItems();
-            ClearToolbarButtonCache();
-            BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);
             if (navigationService.CurrentSourcePageType is { } pageType)
             {
                 UpdateBreadcrumb(pageType);
@@ -3086,23 +3259,83 @@ internal partial class FlourishShellWindow : Window
     {
         DispatchRuntimeChange(() =>
         {
-            ClearToolbarButtonCache();
-            BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);
+            if (e.Current.Version <= appliedToolbarVersion)
+            {
+                return;
+            }
+
+            appliedToolbarVersion = e.Current.Version;
+            var enabledChanged = lastToolbarEnabled != e.Current.IsEnabled;
+            lastToolbarEnabled = e.Current.IsEnabled;
+            if (enabledChanged)
+            {
+                ClearToolbarButtonCache();
+                BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);
+                return;
+            }
+
+            InvalidateToolbarButtonCache(e.PageType, e.Current);
+            var currentPageType = navigationService.CurrentSourcePageType;
+            if (
+                e.PageType is null
+                    ? currentPageType is null || !e.Current.Pages.ContainsKey(currentPageType)
+                    : e.PageType == currentPageType
+            )
+            {
+                BuildToolbarItems(currentPageType, force: true);
+            }
         });
     }
 
     private void StatusService_Changed(object? sender, FlourishStatusBarChangedEventArgs e)
     {
-        DispatchRuntimeChange(() =>
+        lock (statusRefreshGate)
         {
-            if (!statusItemViews.Apply(e))
+            if (
+                pendingStatusChange is not null
+                && pendingStatusChange.Current.Version >= e.Current.Version
+            )
             {
                 return;
             }
 
-            statusBarSnapshot = e.Current;
-            UpdateStatusBarVisibility();
-        });
+            pendingStatusChange = e;
+            if (statusRefreshPending)
+            {
+                return;
+            }
+
+            statusRefreshPending = true;
+        }
+
+        if (isShellClosed || Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
+        {
+            return;
+        }
+
+        _ = Dispatcher.BeginInvoke(
+            DispatcherPriority.DataBind,
+            new Action(FlushPendingStatusChange)
+        );
+    }
+
+    private void FlushPendingStatusChange()
+    {
+        FlourishStatusBarChangedEventArgs? change;
+        lock (statusRefreshGate)
+        {
+            change = pendingStatusChange;
+            pendingStatusChange = null;
+            statusRefreshPending = false;
+        }
+
+        if (isShellClosed || change is null || !statusItemViews.Apply(change))
+        {
+            return;
+        }
+
+        statusBarSnapshot = change.Current;
+        UpdateStatusBarVisibility();
     }
 
     private void ShellRegionService_Changed(object? sender, FlourishShellRegionChangedEventArgs e)
@@ -3114,8 +3347,14 @@ internal partial class FlourishShellWindow : Window
     {
         DispatchRuntimeChange(() =>
         {
-            var current = titleBarService.Current;
-            ApplyTitleBarState(current);
+            if (e.Version <= appliedTitleBarVersion)
+            {
+                return;
+            }
+
+            appliedTitleBarVersion = e.Version;
+            var current = e.State;
+            ApplyTitleBarStateChanges(current);
             var shouldSubscribeToProfile =
                 options.IsTitlebarEnabled
                 && profileFlyoutService.Current.IsEnabled
@@ -3132,10 +3371,16 @@ internal partial class FlourishShellWindow : Window
         DispatchRuntimeChange(() =>
         {
             var titleState = titleBarService.Current;
-            var projectState = projectService.Current;
+            var projectState = e.Current;
+            if (projectState.Version <= appliedProjectVersion)
+            {
+                return;
+            }
+
+            appliedProjectVersion = projectState.Version;
             projectSaveCommandRegistration.NotifyCanExecuteChanged();
             Titlebar.SetDisplayTitle(GetDisplayedTitle(titleState, projectState));
-            RefreshTitleSelector();
+            RefreshTitleSelector(titleState, projectState);
             Titlebar.ConfigureVisibility(
                 titleState.IsSearchVisible,
                 titleState.IsBreadcrumbVisible
@@ -3185,6 +3430,107 @@ internal partial class FlourishShellWindow : Window
         {
             UpdateBreadcrumb(pageType);
         }
+
+        appliedTitleBarState = state;
+    }
+
+    private void ApplyTitleBarStateChanges(FlourishTitleBarState current)
+    {
+        var previous = appliedTitleBarState;
+        if (previous is null)
+        {
+            ApplyTitleBarState(current);
+            return;
+        }
+
+        var projectState = projectService.Current;
+        var selectorChanged =
+            !StringComparer.Ordinal.Equals(previous.ApplicationTitle, current.ApplicationTitle)
+            || !StringComparer.Ordinal.Equals(
+                previous.UnnamedProjectPlaceholder,
+                current.UnnamedProjectPlaceholder
+            );
+        if (!StringComparer.Ordinal.Equals(previous.ApplicationTitle, current.ApplicationTitle))
+        {
+            Title = current.ApplicationTitle;
+        }
+
+        if (selectorChanged)
+        {
+            Titlebar.SetDisplayTitle(GetDisplayedTitle(current, projectState));
+            RefreshTitleSelector(current, projectState);
+        }
+
+        if (!StringComparer.Ordinal.Equals(previous.SearchPlaceholder, current.SearchPlaceholder))
+        {
+            Titlebar.SetSearchPlaceholder(current.SearchPlaceholder);
+        }
+
+        var logoChanged =
+            !StringComparer.Ordinal.Equals(previous.LogoPath, current.LogoPath)
+            || !StringComparer.Ordinal.Equals(previous.LogoFallbackText, current.LogoFallbackText)
+            || previous.IsLogoVisible != current.IsLogoVisible;
+        if (logoChanged)
+        {
+            RequestTitleBarLogo(
+                current.LogoPath,
+                current.LogoFallbackText,
+                current.IsLogoVisible
+            );
+        }
+
+        var visibilityChanged =
+            previous.IsSearchVisible != current.IsSearchVisible
+            || previous.IsBreadcrumbVisible != current.IsBreadcrumbVisible
+            || previous.IsNavigationToggleVisible != current.IsNavigationToggleVisible
+            || previous.IsLogoVisible != current.IsLogoVisible
+            || previous.IsTitleVisible != current.IsTitleVisible
+            || previous.IsThemeToggleVisible != current.IsThemeToggleVisible
+            || previous.IsProfileVisible != current.IsProfileVisible
+            || previous.BreadcrumbMode != current.BreadcrumbMode;
+        if (visibilityChanged)
+        {
+            Titlebar.ConfigureVisibility(
+                current.IsSearchVisible,
+                current.IsBreadcrumbVisible
+                    && current.BreadcrumbMode != BreadcrumbShowOption.Hidden,
+                current.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
+                current.IsLogoVisible,
+                current.IsTitleVisible || projectState.IsMultiProjectEnabled,
+                current.IsThemeToggleVisible && options.IsThemeEnabled,
+                current.IsProfileVisible && options.IsProfileEnabled
+            );
+            EnsureTitleBarFlyoutIsAvailable();
+        }
+
+        if (
+            previous.IsBreadcrumbVisible != current.IsBreadcrumbVisible
+            || previous.BreadcrumbMode != current.BreadcrumbMode
+        )
+        {
+            UpdateTitlebarBreadcrumbNavigation();
+            if (navigationService.CurrentSourcePageType is { } pageType)
+            {
+                UpdateBreadcrumb(pageType);
+            }
+        }
+
+        var flyoutContentChanged =
+            selectorChanged
+            || !StringComparer.Ordinal.Equals(
+                previous.ApplicationSubTitle,
+                current.ApplicationSubTitle
+            )
+            || previous.ShowApplicationTitle != current.ShowApplicationTitle
+            || previous.ShowApplicationSubTitle != current.ShowApplicationSubTitle
+            || previous.ShowProjectTitle != current.ShowProjectTitle;
+        if (flyoutContentChanged && titleBarFlyoutKind == TitleBarFlyoutKind.ApplicationInfo)
+        {
+            BuildApplicationInfoFlyoutContent();
+            UpdateTitleBarFlyoutPosition();
+        }
+
+        appliedTitleBarState = current;
     }
 
     private void RequestTitleBarLogo(string? logoPath, string fallbackText, bool isVisible)
@@ -3299,7 +3645,61 @@ internal partial class FlourishShellWindow : Window
         FlourishNotificationsChangedEventArgs e
     )
     {
-        DispatchRuntimeChange(() => BuildNotifications(notificationService.ActiveNotifications));
+        lock (notificationRefreshGate)
+        {
+            if (
+                e.Version <= appliedNotificationVersion
+                || e.Version <= pendingNotificationVersion
+            )
+            {
+                return;
+            }
+
+            pendingNotifications = e.Notifications;
+            pendingNotificationVersion = e.Version;
+            if (notificationRefreshPending)
+            {
+                return;
+            }
+
+            notificationRefreshPending = true;
+        }
+
+        if (isShellClosed || Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
+        {
+            return;
+        }
+
+        _ = Dispatcher.BeginInvoke(
+            DispatcherPriority.DataBind,
+            new Action(() =>
+            {
+                if (!isShellClosed)
+                {
+                    FlushPendingNotifications();
+                }
+            })
+        );
+    }
+
+    private void FlushPendingNotifications()
+    {
+        IReadOnlyList<FlourishNotificationInfo> notifications;
+        long version;
+        lock (notificationRefreshGate)
+        {
+            notifications = pendingNotifications;
+            version = pendingNotificationVersion;
+            notificationRefreshPending = false;
+        }
+
+        if (version <= appliedNotificationVersion)
+        {
+            return;
+        }
+
+        appliedNotificationVersion = version;
+        BuildNotifications(notifications);
     }
 
     private void ProfileFlyoutService_Changed(
@@ -3497,6 +3897,48 @@ internal partial class FlourishShellWindow : Window
         toolbarButtonsByPageType.Clear();
         activeToolbarPageType = null;
         isDefaultToolbarActive = false;
+    }
+
+    private void InvalidateToolbarButtonCache(
+        Type? pageType,
+        FlourishToolbarSnapshot snapshot
+    )
+    {
+        if (pageType is not null)
+        {
+            if (toolbarButtonsByPageType.Remove(pageType, out var buttons))
+            {
+                ReleaseToolbarButtons(buttons);
+            }
+
+            return;
+        }
+
+        if (defaultToolbarButtons is not null)
+        {
+            ReleaseToolbarButtons(defaultToolbarButtons);
+            defaultToolbarButtons = null;
+        }
+
+        foreach (
+            var fallbackPageType in toolbarButtonsByPageType.Keys
+                .Where(candidate => !snapshot.Pages.ContainsKey(candidate))
+                .ToArray()
+        )
+        {
+            var buttons = toolbarButtonsByPageType[fallbackPageType];
+            toolbarButtonsByPageType.Remove(fallbackPageType);
+            ReleaseToolbarButtons(buttons);
+        }
+    }
+
+    private void ReleaseToolbarButtons(IReadOnlyList<Button> buttons)
+    {
+        toolbarCommandButtons.Untrack(buttons);
+        foreach (var button in buttons)
+        {
+            button.Click -= ToolbarButton_Click;
+        }
     }
 
     private void UpdateRuntimeSurfaceVisibility()

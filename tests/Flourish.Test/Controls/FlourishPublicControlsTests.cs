@@ -1,8 +1,10 @@
+using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Themes;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
@@ -472,6 +474,77 @@ public sealed class FlourishPublicControlsTests
             outputCard.WriteLine("After clear");
 
             Assert.Equal(Environment.NewLine + "After clear", outputCard.Output);
+        });
+    }
+
+    [Fact]
+    public void OutputCard_CoalescesDependencyPropertyRefreshWhileKeepingOutputImmediatelyReadable()
+    {
+        RunInSta(() =>
+        {
+            var outputCard = new OutputCard();
+            var outputDescriptor = DependencyPropertyDescriptor.FromProperty(
+                OutputCard.OutputProperty,
+                typeof(OutputCard)
+            );
+            Assert.NotNull(outputDescriptor);
+
+            var outputChanges = 0;
+            EventHandler handler = (_, _) => outputChanges++;
+            outputDescriptor.AddValueChanged(outputCard, handler);
+
+            try
+            {
+                var expectedLines = Enumerable.Range(0, 100)
+                    .Select(index => $"Line {index:000}")
+                    .ToArray();
+
+                foreach (var line in expectedLines)
+                {
+                    outputCard.WriteLine(line);
+                }
+
+                var expected = string.Join(Environment.NewLine, expectedLines);
+                Assert.Equal(expected, outputCard.Output);
+                Assert.Equal(string.Empty, outputCard.GetValue(OutputCard.OutputProperty));
+                Assert.Equal(0, outputChanges);
+
+                outputCard.Dispatcher.Invoke(
+                    DispatcherPriority.ApplicationIdle,
+                    static () => { }
+                );
+
+                Assert.Equal(expected, outputCard.GetValue(OutputCard.OutputProperty));
+                Assert.Equal(1, outputChanges);
+            }
+            finally
+            {
+                outputDescriptor.RemoveValueChanged(outputCard, handler);
+            }
+        });
+    }
+
+    [Fact]
+    public void OutputCard_ClearInvalidatesAnOlderQueuedRefresh()
+    {
+        RunInSta(() =>
+        {
+            var outputCard = new OutputCard();
+
+            outputCard.WriteLine("Discarded");
+            outputCard.Clear();
+            outputCard.WriteLine(null);
+            outputCard.WriteLine("After clear");
+
+            var expected = Environment.NewLine + "After clear";
+            Assert.Equal(expected, outputCard.Output);
+
+            outputCard.Dispatcher.Invoke(
+                DispatcherPriority.ApplicationIdle,
+                static () => { }
+            );
+
+            Assert.Equal(expected, outputCard.GetValue(OutputCard.OutputProperty));
         });
     }
 

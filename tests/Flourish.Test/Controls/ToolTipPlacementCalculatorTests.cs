@@ -1,5 +1,7 @@
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -140,5 +142,78 @@ public sealed class ToolTipPlacementCalculatorTests
     public void IsNonNegativeFinite_RejectsInvalidMargins(double value, bool expected)
     {
         Assert.Equal(expected, ToolTipPlacementCalculator.IsNonNegativeFinite(value));
+    }
+
+    [Fact]
+    public void ResolveRegion_PreservesStatusUpperAndNavigationPrecedence()
+    {
+        RunInSta(() =>
+        {
+            Assert.Equal(
+                ToolTipPlacementRegion.StatusBar,
+                ResolveRegion(
+                    "NavigationPaneBorder",
+                    "ToolbarHostBorder",
+                    "StatusBarBorder"
+                )
+            );
+            Assert.Equal(
+                ToolTipPlacementRegion.UpperShell,
+                ResolveRegion("NavigationPaneBorder", "BreadcrumbHost")
+            );
+            Assert.Equal(
+                ToolTipPlacementRegion.NavigationLeft,
+                ResolveRegion("NavigationPaneBorder")
+            );
+            Assert.Equal(ToolTipPlacementRegion.Content, ResolveRegion());
+        });
+    }
+
+    private static ToolTipPlacementRegion ResolveRegion(params string[] ancestorNames)
+    {
+        var target = new Border();
+        FrameworkElement child = target;
+        foreach (var name in ancestorNames)
+        {
+            var parent = new Border { Name = name, Child = child };
+            if (name == "NavigationPaneBorder")
+            {
+                parent.Width = 80;
+                parent.HorizontalAlignment = HorizontalAlignment.Left;
+            }
+
+            child = parent;
+        }
+
+        var root = new Grid { Width = 300, Height = 200 };
+        root.Children.Add(child);
+        root.Measure(new Size(300, 200));
+        root.Arrange(new Rect(0, 0, 300, 200));
+
+        return FlourishToolTipPlacement.ResolveRegion(target, root);
+    }
+
+    private static void RunInSta(Action action)
+    {
+        Exception? error = null;
+        var thread = new Thread(() =>
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception exception)
+            {
+                error = exception;
+            }
+        });
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
+        thread.Join();
+
+        if (error is not null)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
+        }
     }
 }

@@ -306,6 +306,55 @@ public sealed class NavigationServiceTests
     }
 
     [Fact]
+    public async Task ConcurrentNavigations_AreSerializedAcrossTheHostAndHistoryCommit()
+    {
+        var options = new FlourishShellOptions();
+        Register(options, HomeKey, typeof(HomePage));
+        Register(options, SettingsKey, typeof(SettingsPage));
+        var pageProvider = new Mock<INavigationPageProvider>(MockBehavior.Strict);
+        pageProvider
+            .Setup(provider => provider.GetPage(typeof(HomePage)))
+            .Returns(CreatePage());
+        pageProvider
+            .Setup(provider => provider.GetPage(typeof(SettingsPage)))
+            .Returns(CreatePage());
+        var host = new BlockingNavigationContentHost();
+        var sut = new NavigationService(
+            pageProvider.Object,
+            new PageHistoryService(),
+            new NavigationRouteRegistry(options)
+        );
+        sut.Initialize(host);
+        using var secondStarted = new ManualResetEventSlim();
+
+        var firstNavigation = Task.Run(() => sut.Navigate(HomeKey));
+        Task<bool>? secondNavigation = null;
+        try
+        {
+            Assert.True(host.FirstCallEntered.Wait(TimeSpan.FromSeconds(5)));
+            secondNavigation = Task.Run(() =>
+            {
+                secondStarted.Set();
+                return sut.Navigate(SettingsKey);
+            });
+            Assert.True(secondStarted.Wait(TimeSpan.FromSeconds(5)));
+
+            Assert.False(host.SecondCallEntered.Wait(TimeSpan.FromMilliseconds(200)));
+        }
+        finally
+        {
+            host.ReleaseFirstCall.Set();
+        }
+
+        Assert.True(await firstNavigation.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.NotNull(secondNavigation);
+        Assert.True(await secondNavigation.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Equal(1, host.MaximumConcurrentCalls);
+        Assert.Equal(SettingsKey, sut.CurrentNavigationKey);
+        Assert.True(sut.CanGoBack);
+    }
+
+    [Fact]
     public async Task RouteEventsArrivingOutOfOrderDoNotRemoveHistoryForReRegisteredRoute()
     {
         var options = new FlourishShellOptions();
@@ -424,6 +473,62 @@ public sealed class NavigationServiceTests
     private sealed class GalleryPage : Page { }
 
     private sealed class PageCreationException : Exception { }
+
+    private sealed class BlockingNavigationContentHost : INavigationContentHost
+    {
+        private int activeCalls;
+        private int callCount;
+        private int maximumConcurrentCalls;
+
+        public ManualResetEventSlim FirstCallEntered { get; } = new();
+
+        public ManualResetEventSlim SecondCallEntered { get; } = new();
+
+        public ManualResetEventSlim ReleaseFirstCall { get; } = new();
+
+        public int MaximumConcurrentCalls => Volatile.Read(ref maximumConcurrentCalls);
+
+        public bool Navigate(Page page)
+        {
+            var currentActiveCalls = Interlocked.Increment(ref activeCalls);
+            UpdateMaximumConcurrentCalls(currentActiveCalls);
+            var call = Interlocked.Increment(ref callCount);
+            try
+            {
+                if (call == 1)
+                {
+                    FirstCallEntered.Set();
+                    Assert.True(ReleaseFirstCall.Wait(TimeSpan.FromSeconds(5)));
+                }
+                else if (call == 2)
+                {
+                    SecondCallEntered.Set();
+                }
+
+                return true;
+            }
+            finally
+            {
+                Interlocked.Decrement(ref activeCalls);
+            }
+        }
+
+        private void UpdateMaximumConcurrentCalls(int concurrentCalls)
+        {
+            var observed = Volatile.Read(ref maximumConcurrentCalls);
+            while (
+                concurrentCalls > observed
+                && Interlocked.CompareExchange(
+                    ref maximumConcurrentCalls,
+                    concurrentCalls,
+                    observed
+                ) != observed
+            )
+            {
+                observed = Volatile.Read(ref maximumConcurrentCalls);
+            }
+        }
+    }
 
     private const string HomeKey = "Home";
     private const string SettingsKey = "Settings";

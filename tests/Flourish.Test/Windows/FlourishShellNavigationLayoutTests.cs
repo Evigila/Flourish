@@ -125,7 +125,7 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
-    public void RuntimeNavigationChanges_ClearAndRebuildTheToolbarControlCache()
+    public void RuntimeNavigationAndToolbarChanges_KeepInvalidationTargeted()
     {
         var shellCode = File.ReadAllText(ShellCodePath);
         var navigationChangedStart = shellCode.IndexOf(
@@ -157,16 +157,15 @@ public sealed class FlourishShellNavigationLayoutTests
         ];
         var clearCacheMethod = shellCode[clearCacheStart..nextMethodStart];
 
-        Assert.Contains(
+        Assert.DoesNotContain(
             "ClearToolbarButtonCache();",
             navigationChangedMethod,
             StringComparison.Ordinal
         );
-        Assert.Contains(
-            "BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);",
-            navigationChangedMethod,
-            StringComparison.Ordinal
-        );
+        Assert.DoesNotContain("BuildToolbarItems(", navigationChangedMethod, StringComparison.Ordinal);
+        var toolbarChangedMethod = shellCode[toolbarChangedStart..clearCacheStart];
+        Assert.Contains("InvalidateToolbarButtonCache(e.PageType, e.Current);", toolbarChangedMethod);
+        Assert.Contains("e.PageType == currentPageType", toolbarChangedMethod);
         Assert.Contains(
             "button.Click -= ToolbarButton_Click;",
             clearCacheMethod,
@@ -826,8 +825,10 @@ public sealed class FlourishShellNavigationLayoutTests
         );
         var cacheSource = File.ReadAllText(StatusItemViewCachePath);
 
-        Assert.Contains("statusItemViews.Apply(e)", handler, StringComparison.Ordinal);
-        Assert.Contains("statusBarSnapshot = e.Current", handler, StringComparison.Ordinal);
+        Assert.Contains("pendingStatusChange = e", handler, StringComparison.Ordinal);
+        Assert.Contains("FlushPendingStatusChange", handler, StringComparison.Ordinal);
+        Assert.Contains("statusItemViews.Apply(change)", handler, StringComparison.Ordinal);
+        Assert.Contains("statusBarSnapshot = change.Current", handler, StringComparison.Ordinal);
         Assert.DoesNotContain("statusService.Current", handler, StringComparison.Ordinal);
         Assert.DoesNotContain("statusService.StatusItems", shellSource, StringComparison.Ordinal);
         Assert.DoesNotContain("host.Children.Clear()", cacheSource, StringComparison.Ordinal);

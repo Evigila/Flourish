@@ -11,6 +11,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
     private readonly ICommandDispatcher commandDispatcher =
         commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
     private readonly List<ShortcutEntry> entries = [];
+    private readonly Dictionary<ShortcutGestureKey, ShortcutGestureIndex> entriesByGesture = [];
     private long nextSequence;
     private long version;
 
@@ -45,16 +46,19 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         ShortcutRegistryChangedEventArgs changed;
         lock (gate)
         {
-            var conflicts = entries
-                .Where(candidate =>
-                    candidate.IsRegistered
-                    && GestureEquals(candidate.Gesture, storedGesture)
-                    && candidate.Scope == options.Scope
-                    && string.Equals(candidate.ScopeKey, scopeKey, StringComparison.Ordinal)
-                )
-                .ToArray();
+            var gestureKey = new ShortcutGestureKey(
+                storedGesture.Key,
+                storedGesture.Modifiers
+            );
+            if (!entriesByGesture.TryGetValue(gestureKey, out var gestureIndex))
+            {
+                gestureIndex = new ShortcutGestureIndex();
+                entriesByGesture.Add(gestureKey, gestureIndex);
+            }
 
-            if (conflicts.Length > 0 && options.ConflictPolicy == ShortcutConflictPolicy.Reject)
+            var conflictGroup = gestureIndex.GetGroup(options.Scope, scopeKey);
+
+            if (conflictGroup.Count > 0 && options.ConflictPolicy == ShortcutConflictPolicy.Reject)
             {
                 throw new InvalidOperationException(
                     $"Shortcut '{FormatGesture(storedGesture)}' is already registered in the {options.Scope} scope."
@@ -62,12 +66,19 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
             }
 
             var changeKind = ShortcutRegistryChangeKind.Registered;
-            if (conflicts.Length > 0 && options.ConflictPolicy == ShortcutConflictPolicy.Replace)
+            if (
+                conflictGroup.Count > 0
+                && options.ConflictPolicy == ShortcutConflictPolicy.Replace
+            )
             {
-                foreach (var conflict in conflicts)
+                foreach (var conflict in conflictGroup.ToArray())
                 {
-                    conflict.TryDeactivate();
-                    entries.Remove(conflict);
+                    RemoveEntryLocked(
+                        conflict,
+                        gestureKey,
+                        gestureIndex,
+                        removeEmptyIndex: false
+                    );
                 }
 
                 changeKind = ShortcutRegistryChangeKind.Replaced;
@@ -84,6 +95,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
                 nextSequence++
             );
             entries.Add(entry);
+            gestureIndex.Add(entry);
             changed = CreateChangedEventArgsLocked(changeKind, entry.CreateSnapshot());
         }
 
@@ -119,6 +131,14 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         var entry = ResolveEntry(key, modifiers, context, isTextInputFocused);
         registration = entry?.CreateSnapshot();
         return registration is not null;
+    }
+
+    internal bool HasRegistrations(Key key, ModifierKeys modifiers)
+    {
+        lock (gate)
+        {
+            return entriesByGesture.ContainsKey(new ShortcutGestureKey(key, modifiers));
+        }
     }
 
     public ValueTask<CommandResult> ExecuteAsync(
@@ -184,18 +204,12 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
     {
         lock (gate)
         {
-            return entries
-                .Where(entry =>
-                    entry.IsRegistered
-                    && GestureEquals(entry.Gesture, key, modifiers)
-                    && IsEligible(entry, context)
-                    && (!isTextInputFocused || entry.AllowWhenTextInputFocused)
-                )
-                .OrderByDescending(entry => GetScopePrecedence(entry.Scope))
-                .ThenByDescending(entry => GetScopeKeyPrecedence(entry, context))
-                .ThenByDescending(entry => entry.Priority)
-                .ThenBy(entry => entry.Sequence)
-                .FirstOrDefault();
+            return entriesByGesture.TryGetValue(
+                new ShortcutGestureKey(key, modifiers),
+                out var gestureIndex
+            )
+                ? gestureIndex.Resolve(context, isTextInputFocused)
+                : null;
         }
     }
 
@@ -204,14 +218,20 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         ShortcutRegistryChangedEventArgs? changed = null;
         lock (gate)
         {
-            if (!entry.IsRegistered || !entries.Contains(entry))
+            var gestureKey = new ShortcutGestureKey(
+                entry.Gesture.Key,
+                entry.Gesture.Modifiers
+            );
+            if (
+                !entry.IsRegistered
+                || !entriesByGesture.TryGetValue(gestureKey, out var gestureIndex)
+                || !RemoveEntryLocked(entry, gestureKey, gestureIndex)
+            )
             {
                 return;
             }
 
             var removed = entry.CreateSnapshot();
-            entry.TryDeactivate();
-            entries.Remove(entry);
             changed = CreateChangedEventArgsLocked(
                 ShortcutRegistryChangeKind.Unregistered,
                 removed
@@ -219,6 +239,28 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         }
 
         RaiseChanged(changed);
+    }
+
+    private bool RemoveEntryLocked(
+        ShortcutEntry entry,
+        ShortcutGestureKey gestureKey,
+        ShortcutGestureIndex gestureIndex,
+        bool removeEmptyIndex = true
+    )
+    {
+        if (!entries.Remove(entry))
+        {
+            return false;
+        }
+
+        entry.TryDeactivate();
+        gestureIndex.Remove(entry);
+        if (removeEmptyIndex && gestureIndex.IsEmpty)
+        {
+            entriesByGesture.Remove(gestureKey);
+        }
+
+        return true;
     }
 
     private ReadOnlyCollection<ShortcutRegistrationInfo> CreateSnapshotLocked()
@@ -269,69 +311,9 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         }
     }
 
-    private static bool IsEligible(ShortcutEntry entry, ShortcutResolutionContext? context)
-    {
-        return entry.Scope switch
-        {
-            ShortcutScope.Application => true,
-            ShortcutScope.Window => context?.WindowKey is not null
-                && (
-                    entry.ScopeKey is null
-                    || string.Equals(entry.ScopeKey, context.WindowKey, StringComparison.Ordinal)
-                ),
-            ShortcutScope.Page => context?.PageKey is not null
-                && (
-                    entry.ScopeKey is null
-                    || string.Equals(entry.ScopeKey, context.PageKey, StringComparison.Ordinal)
-                ),
-            _ => false,
-        };
-    }
-
-    private static int GetScopePrecedence(ShortcutScope scope)
-    {
-        return scope switch
-        {
-            ShortcutScope.Page => 2,
-            ShortcutScope.Window => 1,
-            _ => 0,
-        };
-    }
-
-    private static int GetScopeKeyPrecedence(
-        ShortcutEntry entry,
-        ShortcutResolutionContext? context
-    )
-    {
-        if (entry.ScopeKey is null)
-        {
-            return 0;
-        }
-
-        return entry.Scope switch
-        {
-            ShortcutScope.Window
-                when string.Equals(entry.ScopeKey, context?.WindowKey, StringComparison.Ordinal) =>
-                1,
-            ShortcutScope.Page
-                when string.Equals(entry.ScopeKey, context?.PageKey, StringComparison.Ordinal) => 1,
-            _ => 0,
-        };
-    }
-
     private static KeyGesture CloneGesture(KeyGesture gesture)
     {
         return new KeyGesture(gesture.Key, gesture.Modifiers, gesture.DisplayString);
-    }
-
-    private static bool GestureEquals(KeyGesture left, KeyGesture right)
-    {
-        return left.Key == right.Key && left.Modifiers == right.Modifiers;
-    }
-
-    private static bool GestureEquals(KeyGesture gesture, Key key, ModifierKeys modifiers)
-    {
-        return gesture.Key == key && gesture.Modifiers == modifiers;
     }
 
     private static string FormatGesture(KeyGesture gesture)
@@ -398,6 +380,180 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         return scope == ShortcutScope.Application || string.IsNullOrWhiteSpace(scopeKey)
             ? null
             : scopeKey;
+    }
+
+    private readonly record struct ShortcutGestureKey(Key Key, ModifierKeys Modifiers);
+
+    private sealed class ShortcutGestureIndex
+    {
+        private readonly List<ShortcutEntry> applicationEntries = [];
+        private readonly List<ShortcutEntry> pageWildcardEntries = [];
+        private readonly Dictionary<string, List<ShortcutEntry>> pageEntries = new(
+            StringComparer.Ordinal
+        );
+        private readonly List<ShortcutEntry> windowWildcardEntries = [];
+        private readonly Dictionary<string, List<ShortcutEntry>> windowEntries = new(
+            StringComparer.Ordinal
+        );
+
+        public bool IsEmpty =>
+            applicationEntries.Count == 0
+            && pageWildcardEntries.Count == 0
+            && pageEntries.Count == 0
+            && windowWildcardEntries.Count == 0
+            && windowEntries.Count == 0;
+
+        public List<ShortcutEntry> GetGroup(ShortcutScope scope, string? scopeKey)
+        {
+            return scope switch
+            {
+                ShortcutScope.Application => applicationEntries,
+                ShortcutScope.Page when scopeKey is null => pageWildcardEntries,
+                ShortcutScope.Page => GetOrCreate(pageEntries, scopeKey),
+                ShortcutScope.Window when scopeKey is null => windowWildcardEntries,
+                ShortcutScope.Window => GetOrCreate(windowEntries, scopeKey),
+                _ => throw new ArgumentOutOfRangeException(nameof(scope), scope, null),
+            };
+        }
+
+        public void Add(ShortcutEntry entry)
+        {
+            var group = GetGroup(entry.Scope, entry.ScopeKey);
+            var insertionIndex = group.BinarySearch(entry, ShortcutEntryComparer.Instance);
+            group.Insert(insertionIndex < 0 ? ~insertionIndex : insertionIndex, entry);
+        }
+
+        public void Remove(ShortcutEntry entry)
+        {
+            var group = GetExistingGroup(entry.Scope, entry.ScopeKey);
+            if (group is null || !group.Remove(entry) || group.Count > 0 || entry.ScopeKey is null)
+            {
+                return;
+            }
+
+            if (entry.Scope == ShortcutScope.Page)
+            {
+                pageEntries.Remove(entry.ScopeKey);
+            }
+            else if (entry.Scope == ShortcutScope.Window)
+            {
+                windowEntries.Remove(entry.ScopeKey);
+            }
+        }
+
+        public ShortcutEntry? Resolve(
+            ShortcutResolutionContext? context,
+            bool isTextInputFocused
+        )
+        {
+            if (context?.PageKey is { } pageKey)
+            {
+                if (
+                    pageEntries.TryGetValue(pageKey, out var exactPageEntries)
+                    && Resolve(exactPageEntries, isTextInputFocused) is { } pageEntry
+                )
+                {
+                    return pageEntry;
+                }
+
+                if (Resolve(pageWildcardEntries, isTextInputFocused) is { } pageWildcard)
+                {
+                    return pageWildcard;
+                }
+            }
+
+            if (context?.WindowKey is { } windowKey)
+            {
+                if (
+                    windowEntries.TryGetValue(windowKey, out var exactWindowEntries)
+                    && Resolve(exactWindowEntries, isTextInputFocused) is { } windowEntry
+                )
+                {
+                    return windowEntry;
+                }
+
+                if (Resolve(windowWildcardEntries, isTextInputFocused) is { } windowWildcard)
+                {
+                    return windowWildcard;
+                }
+            }
+
+            return Resolve(applicationEntries, isTextInputFocused);
+        }
+
+        private List<ShortcutEntry>? GetExistingGroup(ShortcutScope scope, string? scopeKey)
+        {
+            return scope switch
+            {
+                ShortcutScope.Application => applicationEntries,
+                ShortcutScope.Page when scopeKey is null => pageWildcardEntries,
+                ShortcutScope.Page => pageEntries.GetValueOrDefault(scopeKey),
+                ShortcutScope.Window when scopeKey is null => windowWildcardEntries,
+                ShortcutScope.Window => windowEntries.GetValueOrDefault(scopeKey),
+                _ => null,
+            };
+        }
+
+        private static List<ShortcutEntry> GetOrCreate(
+            Dictionary<string, List<ShortcutEntry>> entriesByScopeKey,
+            string scopeKey
+        )
+        {
+            if (!entriesByScopeKey.TryGetValue(scopeKey, out var entries))
+            {
+                entries = [];
+                entriesByScopeKey.Add(scopeKey, entries);
+            }
+
+            return entries;
+        }
+
+        private static ShortcutEntry? Resolve(
+            List<ShortcutEntry> entries,
+            bool isTextInputFocused
+        )
+        {
+            foreach (var entry in entries)
+            {
+                if (
+                    entry.IsRegistered
+                    && (!isTextInputFocused || entry.AllowWhenTextInputFocused)
+                )
+                {
+                    return entry;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    private sealed class ShortcutEntryComparer : IComparer<ShortcutEntry>
+    {
+        public static ShortcutEntryComparer Instance { get; } = new();
+
+        public int Compare(ShortcutEntry? left, ShortcutEntry? right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return 0;
+            }
+
+            if (left is null)
+            {
+                return 1;
+            }
+
+            if (right is null)
+            {
+                return -1;
+            }
+
+            var priorityComparison = right.Priority.CompareTo(left.Priority);
+            return priorityComparison != 0
+                ? priorityComparison
+                : left.Sequence.CompareTo(right.Sequence);
+        }
     }
 
     private sealed class ShortcutEntry(

@@ -13,7 +13,12 @@ public sealed class RuntimeNotificationAndTrayServiceTests
     {
         using var sut = CreateNotificationService();
         var snapshots = new List<IReadOnlyList<FlourishNotificationInfo>>();
-        sut.NotificationsChanged += (_, args) => snapshots.Add(args.Notifications);
+        var versions = new List<long>();
+        sut.NotificationsChanged += (_, args) =>
+        {
+            snapshots.Add(args.Notifications);
+            versions.Add(args.Version);
+        };
         using var first = sut.Show(new FlourishNotification("one", "One", "Initial"));
         using var second = sut.Show(new FlourishNotification("two", "Two", "Second"));
 
@@ -37,6 +42,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         sut.DismissAll();
         Assert.Empty(sut.ActiveNotifications);
         Assert.Equal(6, snapshots.Count);
+        Assert.Equal([1, 2, 3, 4, 5, 6], versions);
     }
 
     [Fact]

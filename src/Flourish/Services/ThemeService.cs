@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Runtime.InteropServices;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Themes;
@@ -226,10 +227,7 @@ internal sealed class ThemeService(
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (
-            (msg == WmSettingChange || msg == WmThemeChanged)
-            && CurrentTheme == FlourishTheme.System
-        )
+        if (IsThemeChangeMessage(msg, lParam) && CurrentTheme == FlourishTheme.System)
         {
             ApplyTheme(notify: true);
         }
@@ -253,7 +251,7 @@ internal sealed class ThemeService(
                 effectiveTheme = effective;
             }
 
-            if (application is not null)
+            if (application is not null && changed)
             {
                 ApplyApplicationResources(application, effective);
                 ApplyStyleOverrides(application.Resources, shellOptions, effective);
@@ -277,6 +275,25 @@ internal sealed class ThemeService(
         }
 
         application.Dispatcher.Invoke(ApplyCore);
+    }
+
+    private static bool IsThemeChangeMessage(int message, IntPtr settingName)
+    {
+        if (message == WmThemeChanged)
+        {
+            return true;
+        }
+
+        if (message != WmSettingChange || settingName == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        var name = Marshal.PtrToStringUni(settingName);
+        return name is not null
+            && (name.Equals("ImmersiveColorSet", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("WindowsThemeElement", StringComparison.OrdinalIgnoreCase)
+                || name.Equals(AppsUseLightThemeValue, StringComparison.OrdinalIgnoreCase));
     }
 
     private FlourishTheme ResolveTheme(FlourishTheme theme)
@@ -340,11 +357,15 @@ internal sealed class ThemeService(
         if (options.CornerRadius is { } radius)
         {
             var cornerRadius = new CornerRadius(radius);
-            resources["FlourishControlCornerRadius"] = cornerRadius;
-            resources["FlourishSurfaceCornerRadius"] = cornerRadius;
-            resources["FlourishOverlayCornerRadius"] = cornerRadius;
-            resources["FlourishDialogCornerRadius"] = cornerRadius;
-            resources["FlourishDialogFooterCornerRadius"] = new CornerRadius(0, 0, radius, radius);
+            SetResource(resources, "FlourishControlCornerRadius", cornerRadius);
+            SetResource(resources, "FlourishSurfaceCornerRadius", cornerRadius);
+            SetResource(resources, "FlourishOverlayCornerRadius", cornerRadius);
+            SetResource(resources, "FlourishDialogCornerRadius", cornerRadius);
+            SetResource(
+                resources,
+                "FlourishDialogFooterCornerRadius",
+                new CornerRadius(0, 0, radius, radius)
+            );
         }
     }
 
@@ -421,9 +442,9 @@ internal sealed class ThemeService(
             (neutralForeground, cardBackgroundOnControl)
         );
 
-        resources["FlourishPrimaryColor"] = colors.Primary;
-        resources["FlourishSecondaryColor"] = colors.Secondary;
-        resources["FlourishAccentColor"] = colors.Accent;
+        SetResource(resources, "FlourishPrimaryColor", colors.Primary);
+        SetResource(resources, "FlourishSecondaryColor", colors.Secondary);
+        SetResource(resources, "FlourishAccentColor", colors.Accent);
 
         SetBrush(resources, "FlourishPrimaryBrush", colors.Primary);
         SetBrush(resources, "FlourishPrimaryHoverBrush", primaryHover);
@@ -466,6 +487,11 @@ internal sealed class ThemeService(
 
     private static void SetBrush(ResourceDictionary resources, string key, Color color)
     {
+        if (resources[key] is SolidColorBrush existing && existing.Color == color)
+        {
+            return;
+        }
+
         var brush = new SolidColorBrush(color);
         if (brush.CanFreeze)
         {
@@ -477,15 +503,29 @@ internal sealed class ThemeService(
 
     private static void SetHeroBackground(ResourceDictionary resources, FlourishThemeColors colors)
     {
+        var primary = CreateSurface(colors.Primary);
+        var secondary = CreateSurface(colors.Secondary);
+        var accent = CreateSurface(colors.Accent);
+        if (
+            resources["FlourishHeroBackgroundBrush"] is LinearGradientBrush existing
+            && existing.GradientStops.Count == 3
+            && existing.GradientStops[0].Color == primary
+            && existing.GradientStops[1].Color == secondary
+            && existing.GradientStops[2].Color == accent
+        )
+        {
+            return;
+        }
+
         var brush = new LinearGradientBrush
         {
             StartPoint = new System.Windows.Point(0, 0),
             EndPoint = new System.Windows.Point(1, 1),
             GradientStops =
             {
-                new GradientStop(CreateSurface(colors.Primary), 0),
-                new GradientStop(CreateSurface(colors.Secondary), 0.68),
-                new GradientStop(CreateSurface(colors.Accent), 1),
+                new GradientStop(primary, 0),
+                new GradientStop(secondary, 0.68),
+                new GradientStop(accent, 1),
             },
         };
         if (brush.CanFreeze)
@@ -494,6 +534,16 @@ internal sealed class ThemeService(
         }
 
         resources["FlourishHeroBackgroundBrush"] = brush;
+    }
+
+    private static void SetResource(ResourceDictionary resources, string key, object value)
+    {
+        if (Equals(resources[key], value))
+        {
+            return;
+        }
+
+        resources[key] = value;
     }
 
     private static Color Blend(Color source, Color target, double amount)

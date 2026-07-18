@@ -15,7 +15,12 @@ public sealed class RuntimeShellStateServiceTests
         var options = new FlourishShellOptions();
         ITitleBarService sut = new TitleBarService(options);
         var changes = new List<FlourishTitleBarState>();
-        sut.Changed += (_, args) => changes.Add(args.State);
+        var versions = new List<long>();
+        sut.Changed += (_, args) =>
+        {
+            changes.Add(args.State);
+            versions.Add(args.Version);
+        };
 
         sut.SetApplicationIdentity("Runtime Gallery", "Live APIs");
         sut.SetApplicationIdentity("Runtime Gallery", "Live APIs");
@@ -50,6 +55,7 @@ public sealed class RuntimeShellStateServiceTests
         Assert.True(sut.Current.IsSearchVisible);
         Assert.False(sut.Current.IsBreadcrumbVisible);
         Assert.Equal(5, changes.Count);
+        Assert.Equal([1, 2, 3, 4, 5], versions);
         Assert.Throws<ArgumentException>(() => sut.SetApplicationTitle("  "));
         Assert.Throws<ArgumentException>(() =>
             sut.SetUnnamedProjectPlaceholder("  ")

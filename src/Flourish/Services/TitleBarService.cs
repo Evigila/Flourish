@@ -6,8 +6,20 @@ namespace ArkheideSystem.Flourish.Services;
 internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarService
 {
     private readonly Lock gate = new();
+    private long version;
 
     public event EventHandler<FlourishTitleBarChangedEventArgs>? Changed;
+
+    internal long CurrentVersion
+    {
+        get
+        {
+            lock (gate)
+            {
+                return version;
+            }
+        }
+    }
 
     public FlourishTitleBarState Current
     {
@@ -155,6 +167,7 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
     private void Update(Action update)
     {
         FlourishTitleBarState state;
+        long currentVersion;
         lock (gate)
         {
             var previous = CreateSnapshot();
@@ -164,9 +177,11 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
             {
                 return;
             }
+
+            currentVersion = ++version;
         }
 
-        Changed?.Invoke(this, new FlourishTitleBarChangedEventArgs(state));
+        Changed?.Invoke(this, new FlourishTitleBarChangedEventArgs(state, currentVersion));
     }
 
     private FlourishTitleBarState CreateSnapshot()

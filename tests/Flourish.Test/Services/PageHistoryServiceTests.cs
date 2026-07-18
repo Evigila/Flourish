@@ -171,4 +171,52 @@ public sealed class PageHistoryServiceTests
         Assert.True(sut.TryPopBack(out var second));
         Assert.Equal(oldest, second);
     }
+
+    [Fact]
+    public void RemoveWhere_VisitsEachEntryOnceAndPreservesBothStackOrders()
+    {
+        var sut = new PageHistoryService();
+        sut.Push(new FlourishPageStackEntry("back-oldest", null));
+        sut.Push(new FlourishPageStackEntry("stale-back", null));
+        sut.Push(new FlourishPageStackEntry("back-newest", null));
+        sut.PushForward(new FlourishPageStackEntry("forward-oldest", null));
+        sut.PushForward(new FlourishPageStackEntry("stale-forward", null));
+        var visits = 0;
+
+        var removed = sut.RemoveWhere(entry =>
+        {
+            visits++;
+            return entry.NavigationKey.StartsWith("stale-", StringComparison.Ordinal);
+        });
+
+        Assert.True(removed);
+        Assert.Equal(5, visits);
+        Assert.Equal(
+            ["back-newest", "back-oldest"],
+            sut.BackStack.Select(entry => entry.NavigationKey)
+        );
+        Assert.Equal(
+            ["forward-oldest"],
+            sut.ForwardStack.Select(entry => entry.NavigationKey)
+        );
+    }
+
+    [Fact]
+    public void ConcurrentPushes_AreSerializedWithoutLosingEntries()
+    {
+        const int entryCount = 512;
+        var sut = new PageHistoryService(maximumEntries: entryCount);
+
+        Parallel.For(
+            0,
+            entryCount,
+            index => sut.Push(new FlourishPageStackEntry($"page-{index}", index))
+        );
+
+        Assert.Equal(entryCount, sut.BackStack.Count);
+        Assert.Equal(
+            entryCount,
+            sut.BackStack.Select(entry => entry.NavigationKey).Distinct().Count()
+        );
+    }
 }

@@ -18,7 +18,8 @@ public sealed class FlourishToolbarServiceTests
 
         var result = sut.GetToolbarItems(typeof(TestPage));
 
-        Assert.Same(dynamicItems, result);
+        Assert.NotSame(dynamicItems, result);
+        Assert.Equal(dynamicItems, result);
     }
 
     [Fact]
@@ -34,7 +35,8 @@ public sealed class FlourishToolbarServiceTests
 
         var result = sut.GetToolbarItems(typeof(TestPage));
 
-        Assert.Same(options.ToolbarItems, result);
+        Assert.NotSame(options.ToolbarItems, result);
+        Assert.Equal(options.ToolbarItems, result);
     }
 
     [Fact]
@@ -51,8 +53,10 @@ public sealed class FlourishToolbarServiceTests
         var nullPageResult = sut.GetToolbarItems();
         var unknownPageResult = sut.GetToolbarItems(typeof(OtherPage));
 
-        Assert.Same(options.ToolbarItems, nullPageResult);
-        Assert.Same(options.ToolbarItems, unknownPageResult);
+        Assert.NotSame(options.ToolbarItems, nullPageResult);
+        Assert.NotSame(options.ToolbarItems, unknownPageResult);
+        Assert.Equal(options.ToolbarItems, nullPageResult);
+        Assert.Equal(options.ToolbarItems, unknownPageResult);
     }
 
     private sealed class TestPage : Page { }

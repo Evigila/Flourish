@@ -70,6 +70,14 @@ public sealed class ShortcutServiceTests
         Assert.False(original.IsRegistered);
         Assert.True(replacement.IsRegistered);
         Assert.Equal("editor.saveAs", Assert.Single(sut.Registrations).CommandKey);
+        Assert.True(
+            sut.TryResolve(
+                Gesture(Key.S, ModifierKeys.Control),
+                context: null,
+                out var resolved
+            )
+        );
+        Assert.Equal("editor.saveAs", resolved!.CommandKey);
     }
 
     [Fact]
@@ -100,6 +108,76 @@ public sealed class ShortcutServiceTests
         Assert.True(resolved);
         Assert.NotNull(shortcut);
         Assert.Equal("editor.saveAll", shortcut.CommandKey);
+    }
+
+    [Fact]
+    public void TryResolve_PresortedCandidatesUsePriorityThenRegistrationOrder()
+    {
+        var sut = new ShortcutService(new RecordingCommandDispatcher());
+        var gesture = Gesture(Key.S, ModifierKeys.Control);
+        sut.Register(
+            gesture,
+            "editor.lowPriority",
+            options: new ShortcutRegistrationOptions { Priority = 1 }
+        );
+        var firstHighPriority = sut.Register(
+            gesture,
+            "editor.firstHighPriority",
+            options: new ShortcutRegistrationOptions
+            {
+                ConflictPolicy = ShortcutConflictPolicy.Append,
+                Priority = 10,
+            }
+        );
+        sut.Register(
+            gesture,
+            "editor.secondHighPriority",
+            options: new ShortcutRegistrationOptions
+            {
+                ConflictPolicy = ShortcutConflictPolicy.Append,
+                Priority = 10,
+            }
+        );
+
+        Assert.True(sut.TryResolve(gesture, context: null, out var firstWinner));
+        Assert.Equal("editor.firstHighPriority", firstWinner!.CommandKey);
+
+        firstHighPriority.Dispose();
+
+        Assert.True(sut.TryResolve(gesture, context: null, out var secondWinner));
+        Assert.Equal("editor.secondHighPriority", secondWinner!.CommandKey);
+    }
+
+    [Fact]
+    public void TryResolve_GestureIndexIgnoresUnrelatedGesturesAndNonMatchingScopes()
+    {
+        var sut = new ShortcutService(new RecordingCommandDispatcher());
+        foreach (var key in new[] { Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G })
+        {
+            sut.Register(Gesture(key, ModifierKeys.Control), $"unrelated.{key}");
+        }
+
+        var targetGesture = Gesture(Key.S, ModifierKeys.Control);
+        sut.Register(targetGesture, "editor.save");
+        sut.Register(
+            targetGesture,
+            "otherPage.save",
+            options: new ShortcutRegistrationOptions
+            {
+                Scope = ShortcutScope.Page,
+                ScopeKey = "Other",
+                Priority = 100,
+            }
+        );
+
+        Assert.True(
+            sut.TryResolve(
+                targetGesture,
+                new ShortcutResolutionContext(pageKey: "Editor"),
+                out var shortcut
+            )
+        );
+        Assert.Equal("editor.save", shortcut!.CommandKey);
     }
 
     [Fact]
@@ -187,6 +265,43 @@ public sealed class ShortcutServiceTests
             )
         );
         Assert.Equal("page.editor", shortcut!.CommandKey);
+    }
+
+    [Fact]
+    public void TryResolve_TextInputFallsBackFromExactScopeToEligibleWildcard()
+    {
+        var sut = new ShortcutService(new RecordingCommandDispatcher());
+        var gesture = Gesture(Key.S, ModifierKeys.Control);
+        sut.Register(
+            gesture,
+            "page.wildcard",
+            options: new ShortcutRegistrationOptions
+            {
+                Scope = ShortcutScope.Page,
+                AllowWhenTextInputFocused = true,
+            }
+        );
+        sut.Register(
+            gesture,
+            "page.editor",
+            options: new ShortcutRegistrationOptions
+            {
+                Scope = ShortcutScope.Page,
+                ScopeKey = "Editor",
+                Priority = 100,
+            }
+        );
+
+        Assert.True(
+            sut.TryResolve(
+                Key.S,
+                ModifierKeys.Control,
+                new ShortcutResolutionContext(pageKey: "Editor"),
+                isTextInputFocused: true,
+                out var shortcut
+            )
+        );
+        Assert.Equal("page.wildcard", shortcut!.CommandKey);
     }
 
     [Fact]

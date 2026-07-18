@@ -97,27 +97,67 @@ public static class FlourishToolTipPlacement
         ];
     }
 
-    private static ToolTipPlacementRegion ResolveRegion(
+    internal static ToolTipPlacementRegion ResolveRegion(
         FrameworkElement target,
         FrameworkElement root
     )
     {
-        if (FindAncestorByName(target, "StatusBarBorder") is not null)
+        var isInStatusBar = false;
+        var isInUpperShell = false;
+        FrameworkElement? navigationPane = null;
+
+        for (
+            DependencyObject? current = target;
+            current is not null;
+            current = VisualTreeHelper.GetParent(current)
+        )
+        {
+            if (current is not FrameworkElement element)
+            {
+                continue;
+            }
+
+            var name = element.Name;
+            isInStatusBar |= string.Equals(
+                name,
+                "StatusBarBorder",
+                StringComparison.Ordinal
+            );
+            isInUpperShell |=
+                string.Equals(name, "Titlebar", StringComparison.Ordinal)
+                || string.Equals(
+                    element.GetType().Name,
+                    "FlourishTitlebar",
+                    StringComparison.Ordinal
+                )
+                || string.Equals(name, "ToolbarHostBorder", StringComparison.Ordinal)
+                || string.Equals(name, "BreadcrumbHost", StringComparison.Ordinal);
+
+            if (
+                navigationPane is null
+                && string.Equals(
+                    name,
+                    "NavigationPaneBorder",
+                    StringComparison.Ordinal
+                )
+            )
+            {
+                navigationPane = element;
+            }
+        }
+
+        // Preserve the original category precedence even for unusual nested templates.
+        if (isInStatusBar)
         {
             return ToolTipPlacementRegion.StatusBar;
         }
 
-        if (
-            FindAncestorByName(target, "Titlebar") is not null
-            || FindAncestorByTypeName(target, "FlourishTitlebar") is not null
-            || FindAncestorByName(target, "ToolbarHostBorder") is not null
-            || FindAncestorByName(target, "BreadcrumbHost") is not null
-        )
+        if (isInUpperShell)
         {
             return ToolTipPlacementRegion.UpperShell;
         }
 
-        if (FindAncestorByName(target, "NavigationPaneBorder") is { } navigationPane)
+        if (navigationPane is not null)
         {
             return IsLeftSide(navigationPane, root)
                 ? ToolTipPlacementRegion.NavigationLeft
@@ -146,47 +186,6 @@ public static class FlourishToolTipPlacement
                 new Size(element.ActualWidth, element.ActualHeight),
                 new Size(root.ActualWidth, root.ActualHeight)
             );
-    }
-
-    private static FrameworkElement? FindAncestorByName(DependencyObject source, string name)
-    {
-        var current = source;
-        while (current is not null)
-        {
-            if (
-                current is FrameworkElement { Name: var currentName } element
-                && string.Equals(currentName, name, StringComparison.Ordinal)
-            )
-            {
-                return element;
-            }
-
-            current = VisualTreeHelper.GetParent(current);
-        }
-
-        return null;
-    }
-
-    private static FrameworkElement? FindAncestorByTypeName(
-        DependencyObject source,
-        string typeName
-    )
-    {
-        var current = source;
-        while (current is not null)
-        {
-            if (
-                current is FrameworkElement element
-                && string.Equals(element.GetType().Name, typeName, StringComparison.Ordinal)
-            )
-            {
-                return element;
-            }
-
-            current = VisualTreeHelper.GetParent(current);
-        }
-
-        return null;
     }
 
     private static bool TryGetElementPosition(
