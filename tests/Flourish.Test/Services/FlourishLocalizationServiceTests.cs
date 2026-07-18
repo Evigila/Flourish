@@ -16,6 +16,10 @@ public sealed class FlourishLocalizationServiceTests
         Assert.Equal("EN", sut.CurrentLocale);
         Assert.Equal("Back", sut.Get(FlourishLocaleKeys.TitleBarBack));
         Assert.Equal("User", sut.Get(FlourishLocaleKeys.ProfileDefaultName));
+        Assert.Equal(
+            "Stop tasks and exit",
+            sut.Get(FlourishLocaleKeys.WindowBackgroundTasksStopAndExit)
+        );
     }
 
     [Fact]

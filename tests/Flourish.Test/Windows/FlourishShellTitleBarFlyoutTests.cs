@@ -165,6 +165,36 @@ public sealed class FlourishShellTitleBarFlyoutTests
     }
 
     [Fact]
+    public void ClosePrompt_ReplacesTheStandardConfirmationWhenBackgroundTasksAreActive()
+    {
+        var backgroundTaskPrompt = GetMethod(
+            "private async Task<bool> ConfirmBackgroundTasksCloseRequestAsync(",
+            "private void CancelActiveBackgroundTasks()"
+        );
+        var cancellation = GetMethod(
+            "private void CancelActiveBackgroundTasks()",
+            "private async ValueTask<bool> RequestCloseCoreAsync("
+        );
+        var closeRequest = GetMethod(
+            "private async ValueTask<bool> RequestCloseCoreAsync(",
+            "private void ShellWindow_Closing("
+        );
+
+        Assert.Contains("WindowBackgroundTasksClosePrompt", backgroundTaskPrompt);
+        Assert.Contains("WindowBackgroundTasksCloseTitle", backgroundTaskPrompt);
+        Assert.Contains("WindowBackgroundTasksKeepRunning", backgroundTaskPrompt);
+        Assert.Contains("WindowBackgroundTasksStopAndExit", backgroundTaskPrompt);
+        Assert.Contains("MessageBoxImage.Warning", backgroundTaskPrompt);
+        Assert.Contains("backgroundTaskService.ActiveTasks", cancellation);
+        Assert.Contains("backgroundTaskService.CancelTask(task.Id);", cancellation);
+        Assert.Contains("var activeTaskCount = backgroundTaskService.ActiveTasks.Count;", closeRequest);
+        Assert.Contains("if (activeTaskCount > 0)", closeRequest);
+        Assert.Contains("ConfirmBackgroundTasksCloseRequestAsync", closeRequest);
+        Assert.Contains("CancelActiveBackgroundTasks();", closeRequest);
+        Assert.Contains("else if (!await ConfirmCloseRequestAsync", closeRequest);
+    }
+
+    [Fact]
     public void DisplayedTitle_UsesProjectOrPlaceholderOnlyInMultiProjectMode()
     {
         var method = GetMethod(

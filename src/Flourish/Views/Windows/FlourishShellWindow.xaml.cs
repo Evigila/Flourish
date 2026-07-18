@@ -4461,6 +4461,59 @@ internal partial class FlourishShellWindow : Window
             )?.Id == "yes";
     }
 
+    private async Task<bool> ConfirmBackgroundTasksCloseRequestAsync(
+        int activeTaskCount,
+        CancellationToken cancellationToken
+    )
+    {
+        FlourishMessageOption[] closeOptions =
+        [
+            new(
+                "keep-running",
+                localizationService.Get(
+                    FlourishLocaleKeys.WindowBackgroundTasksKeepRunning
+                )
+            )
+            {
+                IsDefault = true,
+                IsCancel = true,
+            },
+            new(
+                "stop-and-exit",
+                localizationService.Get(
+                    FlourishLocaleKeys.WindowBackgroundTasksStopAndExit
+                )
+            )
+            {
+                IsPrimary = true,
+            },
+        ];
+
+        return (
+                await messageService.ShowAsync(
+                    this,
+                    localizationService.Format(
+                        FlourishLocaleKeys.WindowBackgroundTasksClosePrompt,
+                        activeTaskCount
+                    ),
+                    localizationService.Get(
+                        FlourishLocaleKeys.WindowBackgroundTasksCloseTitle
+                    ),
+                    closeOptions,
+                    MessageBoxImage.Warning,
+                    cancellationToken: cancellationToken
+                )
+            )?.Id == "stop-and-exit";
+    }
+
+    private void CancelActiveBackgroundTasks()
+    {
+        foreach (var task in backgroundTaskService.ActiveTasks)
+        {
+            backgroundTaskService.CancelTask(task.Id);
+        }
+    }
+
     private async ValueTask<bool> RequestCloseCoreAsync(
         WindowCloseRequestReason reason,
         CancellationToken cancellationToken
@@ -4497,10 +4550,27 @@ internal partial class FlourishShellWindow : Window
             if (
                 reason != WindowCloseRequestReason.Tray
                 && windowCloseService.Behavior == WindowCloseBehavior.Prompt
-                && !await ConfirmCloseRequestAsync(cancellationToken)
             )
             {
-                return false;
+                var activeTaskCount = backgroundTaskService.ActiveTasks.Count;
+                if (activeTaskCount > 0)
+                {
+                    if (
+                        !await ConfirmBackgroundTasksCloseRequestAsync(
+                            activeTaskCount,
+                            cancellationToken
+                        )
+                    )
+                    {
+                        return false;
+                    }
+
+                    CancelActiveBackgroundTasks();
+                }
+                else if (!await ConfirmCloseRequestAsync(cancellationToken))
+                {
+                    return false;
+                }
             }
 
             allowClose = true;

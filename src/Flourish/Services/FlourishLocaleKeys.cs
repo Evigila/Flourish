@@ -67,6 +67,14 @@ internal static class FlourishLocaleKeys
     public const string MessageBoxNo = "MessageBox.No";
     public const string WindowCloseTitle = "Window.CloseTitle";
     public const string WindowClosePrompt = "Window.ClosePrompt";
+    public const string WindowBackgroundTasksCloseTitle =
+        "Window.BackgroundTasksCloseTitle";
+    public const string WindowBackgroundTasksClosePrompt =
+        "Window.BackgroundTasksClosePrompt";
+    public const string WindowBackgroundTasksKeepRunning =
+        "Window.BackgroundTasksKeepRunning";
+    public const string WindowBackgroundTasksStopAndExit =
+        "Window.BackgroundTasksStopAndExit";
     public const string TrayShow = "Tray.Show";
     public const string TrayExit = "Tray.Exit";
     public const string StatusConnected = "Status.Connected";
@@ -138,6 +146,10 @@ internal static class FlourishLocaleKeys
         MessageBoxNo,
         WindowCloseTitle,
         WindowClosePrompt,
+        WindowBackgroundTasksCloseTitle,
+        WindowBackgroundTasksClosePrompt,
+        WindowBackgroundTasksKeepRunning,
+        WindowBackgroundTasksStopAndExit,
         TrayShow,
         TrayExit,
         StatusConnected,
