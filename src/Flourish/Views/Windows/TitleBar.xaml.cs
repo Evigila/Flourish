@@ -17,10 +17,8 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 internal partial class FlourishTitlebar : UserControl
 {
     private readonly TitleBarBreadcrumbVisibilityState breadcrumbVisibility = new();
+    private readonly ProfileImageBrushCache profileImageCache = new();
     private FlourishLocalizationService? localizationService;
-    private string? cachedProfileImagePath;
-    private ImageSource? cachedProfileImageSource;
-    private bool hasCachedProfileImage;
     private bool hasProfileRegionContent;
     private bool isProfileEnabled;
 
@@ -193,27 +191,16 @@ internal partial class FlourishTitlebar : UserControl
     {
         ArgumentNullException.ThrowIfNull(profile);
 
-        if (
-            !hasCachedProfileImage
-            || !string.Equals(
-                cachedProfileImagePath,
-                profile.ImagePath,
-                StringComparison.Ordinal
-            )
-        )
+        var imageBrush = profileImageCache.Get(profile.ImagePath);
+        if (!ReferenceEquals(ProfileAvatarImage.Fill, imageBrush))
         {
-            cachedProfileImagePath = profile.ImagePath;
-            cachedProfileImageSource = ProfileImageLoader.Load(profile.ImagePath);
-            hasCachedProfileImage = true;
+            ProfileAvatarImage.Fill = imageBrush;
         }
 
-        var imageSource = cachedProfileImageSource;
-        ProfileAvatarImage.Fill = imageSource is null
-            ? null
-            : new ImageBrush(imageSource) { Stretch = Stretch.UniformToFill };
-        ProfileAvatarImage.Visibility = ToVisibility(imageSource is not null);
+        var hasImage = imageBrush is not null;
+        ProfileAvatarImage.Visibility = ToVisibility(hasImage);
         ProfileInitialsText.Text = profile.Initials;
-        ProfileInitialsText.Visibility = ToVisibility(imageSource is null);
+        ProfileInitialsText.Visibility = ToVisibility(!hasImage);
         ProfileButton.ToolTip = CreateToolTip(profile.DisplayName);
     }
 

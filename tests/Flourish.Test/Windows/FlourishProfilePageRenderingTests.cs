@@ -52,6 +52,30 @@ public sealed class FlourishProfilePageRenderingTests
         Assert.DoesNotContain("UpdateSelectedImageButton", source);
     }
 
+    [Fact]
+    public void AvatarPreview_ReusesTheDecodedImageWhileNamesChange()
+    {
+        var source = File.ReadAllText(ProfileCodePath);
+
+        Assert.Contains("profileImageCache.Get(profile.ImagePath)", source);
+        Assert.Contains("profileImageCache.Set(profile.ImagePath, imageSource)", source);
+        Assert.Contains("profileImageCache.Set(dialog.FileName, imageSource)", source);
+        Assert.Equal(2, CountOccurrences(source, "ProfileImageLoader.Load("));
+    }
+
+    private static int CountOccurrences(string source, string value)
+    {
+        var count = 0;
+        var startIndex = 0;
+        while ((startIndex = source.IndexOf(value, startIndex, StringComparison.Ordinal)) >= 0)
+        {
+            count++;
+            startIndex += value.Length;
+        }
+
+        return count;
+    }
+
     private static XElement FindNamedElement(XDocument document, string name)
     {
         return document

@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Services;
@@ -13,6 +12,7 @@ internal partial class FlourishProfilePage : WpfPage
 {
     private readonly IProfileService profileService;
     private readonly FlourishLocalizationService localizationService;
+    private readonly ProfileImageBrushCache profileImageCache = new();
     private string? selectedImagePath;
     private bool isEditingLogin;
     private bool isUpdatingState;
@@ -112,7 +112,9 @@ internal partial class FlourishProfilePage : WpfPage
             isEditingLogin = true;
             FirstNameInput.Text = profile.FirstName;
             LastNameInput.Text = profile.LastName;
-            selectedImagePath = ProfileImageLoader.Load(profile.ImagePath) is null
+            var imageSource = ProfileImageLoader.Load(profile.ImagePath);
+            profileImageCache.Set(profile.ImagePath, imageSource);
+            selectedImagePath = imageSource is null
                 ? null
                 : profile.ImagePath;
             PasswordInput.Clear();
@@ -158,7 +160,8 @@ internal partial class FlourishProfilePage : WpfPage
             return;
         }
 
-        if (ProfileImageLoader.Load(dialog.FileName) is null)
+        var imageSource = ProfileImageLoader.Load(dialog.FileName);
+        if (imageSource is null)
         {
             ErrorText.Text = localizationService.Get(
                 FlourishLocaleKeys.ProfileImageLoadFailed
@@ -166,6 +169,7 @@ internal partial class FlourishProfilePage : WpfPage
             return;
         }
 
+        profileImageCache.Set(dialog.FileName, imageSource);
         selectedImagePath = dialog.FileName;
         ErrorText.Text = string.Empty;
         UpdateAvatarPreview();
@@ -333,15 +337,17 @@ internal partial class FlourishProfilePage : WpfPage
 
     private void SetAvatar(ProfileUser profile)
     {
-        var imageSource = ProfileImageLoader.Load(profile.ImagePath);
-        AvatarImage.Fill = imageSource is null
-            ? null
-            : new ImageBrush(imageSource) { Stretch = Stretch.UniformToFill };
-        AvatarImage.Visibility = imageSource is null
+        var imageBrush = profileImageCache.Get(profile.ImagePath);
+        if (!ReferenceEquals(AvatarImage.Fill, imageBrush))
+        {
+            AvatarImage.Fill = imageBrush;
+        }
+
+        AvatarImage.Visibility = imageBrush is null
             ? Visibility.Collapsed
             : Visibility.Visible;
         AvatarInitials.Text = profile.Initials;
-        AvatarInitials.Visibility = imageSource is null
+        AvatarInitials.Visibility = imageBrush is null
             ? Visibility.Visible
             : Visibility.Collapsed;
     }
