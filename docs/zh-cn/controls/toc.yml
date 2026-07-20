@@ -9,5 +9,7 @@ items:
   href: card.md
 - name: OutputCard
   href: output-card.md
+- name: Overlay
+  href: overlay.md
 - name: ScrollViewer
   href: scroll-viewer.md

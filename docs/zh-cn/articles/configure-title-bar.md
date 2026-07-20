@@ -75,7 +75,7 @@ titleBar.SetLogo(
     showProjectTitle: false);
 ```
 
-三个显示参数的默认值依次为 `true`、`true` 和 `false`。点击或指向 Logo 时会打开信息视图。应用可以通过 `TitlebarApplicationInfo` Shell 区域，在标识元数据下方加入 WPF Body：
+三个显示参数的默认值依次为 `true`、`true` 和 `false`。点击或指向 Logo 时会打开临时 [Overlay](../controls/overlay.md)；指针同时离开 Logo 与浮层后，它会自行关闭。应用可以通过 `TitlebarApplicationInfo` Shell 区域，在标识元数据下方加入 WPF Body：
 
 ```csharp
 builder.ConfigureCustomHandler(custom =>
@@ -120,7 +120,7 @@ builder.ConfigureTitleBar(titleBar =>
 
 ## 窗口命令
 
-内置标题栏提供最小化、最大化或还原以及关闭命令。最大化遵循窗口调整大小模式，关闭遵循[窗口](configure-window.md)配置。Logo、标题选择器与窗口命令支持键盘焦点；Logo 信息视图可以通过 Esc 或点击外部关闭。
+内置标题栏提供最小化、最大化或还原以及关闭命令。最大化遵循窗口调整大小模式，关闭遵循[窗口](configure-window.md)配置。Logo、标题选择器与窗口命令支持键盘焦点；Logo 信息视图也可以通过 <kbd>Esc</kbd> 或点击外部关闭。
 
 ## 相关功能
 

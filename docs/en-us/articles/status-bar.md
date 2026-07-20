@@ -56,7 +56,7 @@ statusBar
     .ShowPowerStatus();
 ```
 
-Hover or click the icon to open its anchored flyout. The network row reads current network availability when the flyout opens. The power row reports AC, battery, or unknown power source and includes the battery percentage when Windows supplies a valid value. These are current snapshots taken when the surface opens, not a continuous connectivity or battery monitor.
+Hover or click the icon to open its temporary [Overlay](../controls/overlay.md). It closes after the pointer leaves both the icon and surface. The network row reads current network availability when the overlay opens. The power row reports AC, battery, or unknown power source and includes the battery percentage when Windows supplies a valid value. These are current snapshots taken when the surface opens, not a continuous connectivity or battery monitor.
 
 Built-in labels follow the locale selected through [Application data](configure-data.md).
 

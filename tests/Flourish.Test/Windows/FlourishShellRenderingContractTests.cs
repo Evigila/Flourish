@@ -26,7 +26,7 @@ public sealed class FlourishShellRenderingContractTests
     );
 
     [Fact]
-    public void TransientShellCards_UseStrokeChromeInsteadOfRealtimeEffects()
+    public void ShellFloatingSurfaces_UseTheSharedOverlayControl()
     {
         var document = XDocument.Load(ShellXamlPath);
 
@@ -40,15 +40,12 @@ public sealed class FlourishShellRenderingContractTests
                 card.DescendantsAndSelf().Attributes(),
                 attribute => attribute.Name.LocalName == "Effect"
             );
-            Assert.Contains(
-                card.Descendants("{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Border"),
-                border =>
-                    (string?)border.Attribute("BorderBrush")
-                        == "{DynamicResource FlourishControlStrokeBrush}"
-                    && (string?)border.Attribute("BorderThickness")
-                        == "{DynamicResource FlourishControlBorderThickness}"
-            );
+            Assert.Equal("Overlay", card.Name.LocalName);
         }
+
+        Assert.Equal("Temporary", (string?)FindNamedElement(document, "TitleBarFlyoutCard").Attribute("Variant"));
+        Assert.Equal("Strong", (string?)FindNamedElement(document, "ProfileCard").Attribute("Variant"));
+        Assert.Equal("StatusFlyoutCard_DismissRequested", (string?)FindNamedElement(document, "StatusFlyoutCard").Attribute("DismissRequested"));
 
         var buildNotifications = GetMethod(
             File.ReadAllText(ShellCodePath),

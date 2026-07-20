@@ -75,7 +75,7 @@ titleBar.SetLogo(
     showProjectTitle: false);
 ```
 
-The three display arguments default to `true`, `true`, and `false`. Clicking or pointing at the logo opens the information surface. Applications can add a WPF body below the identity metadata through the `TitlebarApplicationInfo` shell region:
+The three display arguments default to `true`, `true`, and `false`. Clicking or pointing at the logo opens a temporary [Overlay](../controls/overlay.md). It closes after the pointer leaves both the logo and surface. Applications can add a WPF body below the identity metadata through the `TitlebarApplicationInfo` shell region:
 
 ```csharp
 builder.ConfigureCustomHandler(custom =>
@@ -120,7 +120,7 @@ Omitting the argument uses `Auto`.
 
 ## Window commands
 
-The built-in title bar provides minimize, maximize or restore, and close commands. Maximize follows the configured resize mode, and close follows the [Window](configure-window.md) configuration. Logo, title selector, and window commands support keyboard focus; the logo surface closes with Esc or an outside click.
+The built-in title bar provides minimize, maximize or restore, and close commands. Maximize follows the configured resize mode, and close follows the [Window](configure-window.md) configuration. Logo, title selector, and window commands support keyboard focus; the logo surface also closes with <kbd>Esc</kbd> or an outside click.
 
 ## Related features
 

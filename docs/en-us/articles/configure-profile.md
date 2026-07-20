@@ -31,7 +31,7 @@ Labels, status text, file-picker filters, and validation messages on the built-i
 
 ## Interaction behavior
 
-Use the profile trigger, click outside the profile card, or press <kbd>Esc</kbd> to close it. Opening the native Windows file picker does not close the profile surface; selecting or cancelling an image returns to the same sign-in form.
+Profile uses a strong [Overlay](../controls/overlay.md), so pointer movement does not dismiss it. Use the profile trigger, click outside the profile card, or press <kbd>Esc</kbd> to close it. Opening the native Windows file picker does not close the profile surface; selecting or cancelling an image returns to the same sign-in form.
 
 The host does not provide a scrolling region. If custom content can exceed the available height, include a `ScrollViewer` or another scrolling region in the custom page.
 

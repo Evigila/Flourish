@@ -13,5 +13,6 @@ Design guidance, properties, defaults, and examples now live in the dedicated [C
 - The [Button family](../controls/button.md) includes `Button`, `IconButton`, `CardButton`, and `WindowCaptionButton`.
 - The [Card family](../controls/card.md) includes `Card` for longer information, single-control and immediately applied `ListCard` configuration rows, and presenter-aware `IconCard` surfaces.
 - [OutputCard](../controls/output-card.md) appends raw messages, progress, completed results, and failures to a compact scrolling history that does not determine a peer layout's height.
+- [Overlay](../controls/overlay.md) gives temporary hover details and strong floating content a shared surface and dismissal contract.
 
 All other existing controls remain available through their current APIs. Dedicated documentation will be added after each corresponding control is refactored. See the [Controls API](xref:ArkheideSystem.Flourish.Controls) for the complete type list and member signatures.

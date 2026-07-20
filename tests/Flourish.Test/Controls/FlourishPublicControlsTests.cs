@@ -27,6 +27,7 @@ public sealed class FlourishPublicControlsTests
             typeof(FlourishThemeResources),
             typeof(ButtonVariant),
             typeof(Variant),
+            typeof(OverlayVariant),
             typeof(PresenterMode),
             typeof(PresenterPosition),
             typeof(FlourishGridSplitterVariant),
@@ -256,6 +257,7 @@ public sealed class FlourishPublicControlsTests
             var iconCard = new IconCard();
             var listCard = new ListCard();
             var outputCard = new OutputCard();
+            var overlay = new Overlay();
             var gridSplitter = new FlourishGridSplitter();
             var listBox = new FlourishListBox();
             var scrollViewer = new CustomScrollViewer();
@@ -300,6 +302,8 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(VerticalAlignment.Center, listCard.ContentVerticalAlignment);
             Assert.IsAssignableFrom<Card>(listCard);
             Assert.Equal(string.Empty, outputCard.Output);
+            Assert.Equal(OverlayVariant.Temporary, overlay.Variant);
+            Assert.Null(overlay.PlacementTarget);
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
@@ -474,6 +478,59 @@ public sealed class FlourishPublicControlsTests
             outputCard.WriteLine("After clear");
 
             Assert.Equal(Environment.NewLine + "After clear", outputCard.Output);
+        });
+    }
+
+    [Fact]
+    public void Overlay_ExposesTemporaryAndStrongDismissalVariants()
+    {
+        RunInSta(() =>
+        {
+            var target = new Border();
+            var overlay = new Overlay
+            {
+                Content = "Details",
+                PlacementTarget = target,
+                Variant = OverlayVariant.Strong,
+            };
+
+            Assert.Equal(new[] { "Temporary", "Strong" }, Enum.GetNames<OverlayVariant>());
+            Assert.Equal("Details", overlay.Content);
+            Assert.Same(target, overlay.PlacementTarget);
+            Assert.Equal(OverlayVariant.Strong, overlay.Variant);
+            Assert.NotNull(Overlay.DismissRequestedEvent);
+        });
+    }
+
+    [Fact]
+    public void Overlay_TemporaryRequestsDismissalButStrongDoesNot()
+    {
+        RunInSta(() =>
+        {
+            var target = new Border();
+            var overlay = new Overlay { PlacementTarget = target };
+            var panel = new StackPanel { Children = { target, overlay } };
+            var window = new Window { Content = panel };
+            var dismissCount = 0;
+            overlay.DismissRequested += (_, _) => dismissCount++;
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                RaiseMouseLeave(overlay);
+                PumpDispatcher(TimeSpan.FromMilliseconds(180));
+                Assert.Equal(1, dismissCount);
+
+                overlay.Variant = OverlayVariant.Strong;
+                RaiseMouseLeave(overlay);
+                PumpDispatcher(TimeSpan.FromMilliseconds(180));
+                Assert.Equal(1, dismissCount);
+            }
+            finally
+            {
+                window.Close();
+            }
         });
     }
 
@@ -931,6 +988,35 @@ public sealed class FlourishPublicControlsTests
                 ?.IsPublic,
             methodName
         );
+    }
+
+    private static void RaiseMouseLeave(UIElement element)
+    {
+        element.RaiseEvent(
+            new System.Windows.Input.MouseEventArgs(
+                System.Windows.Input.Mouse.PrimaryDevice,
+                Environment.TickCount
+            )
+            {
+                RoutedEvent = System.Windows.Input.Mouse.MouseLeaveEvent,
+            }
+        );
+    }
+
+    private static void PumpDispatcher(TimeSpan duration)
+    {
+        var frame = new DispatcherFrame();
+        var timer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = duration,
+        };
+        timer.Tick += (_, _) =>
+        {
+            timer.Stop();
+            frame.Continue = false;
+        };
+        timer.Start();
+        Dispatcher.PushFrame(frame);
     }
 
     private static object? GetDefaultStyleKey(FrameworkElement element)

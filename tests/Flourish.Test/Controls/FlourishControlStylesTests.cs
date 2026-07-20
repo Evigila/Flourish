@@ -39,6 +39,7 @@ public sealed class FlourishControlStylesTests
             "/Flourish;component/Controls/IconCard.xaml",
             "/Flourish;component/Controls/ListCard.xaml",
             "/Flourish;component/Controls/OutputCard.xaml",
+            "/Flourish;component/Controls/Overlay.xaml",
             "/Flourish;component/Controls/CheckBox.xaml",
             "/Flourish;component/Controls/ComboBox.xaml",
             "/Flourish;component/Controls/ComboBoxItem.xaml",
@@ -345,6 +346,7 @@ public sealed class FlourishControlStylesTests
                 new IconCard { Title = "Icon card", Presenter = "Icon" },
                 new ListCard { Title = "List card", Presenter = "Icon" },
                 new OutputCard(),
+                new Overlay { Content = "Overlay" },
                 new FlourishCheckBox { Content = "Check" },
                 comboBox,
                 new FlourishComboBoxItem { Content = "Choice" },
@@ -386,9 +388,9 @@ public sealed class FlourishControlStylesTests
                 }
                 toolTip.ApplyTemplate();
                 Assert.NotNull(toolTip.Template);
-                var toolTipSurface = AssertTemplatePart<Border>(toolTip, "SurfaceChrome");
+                var toolTipSurface = AssertTemplatePart<Overlay>(toolTip, "SurfaceChrome");
                 Assert.Same(toolTip.Background, toolTipSurface.Background);
-                Assert.NotNull(toolTipSurface.Effect);
+                Assert.Equal(OverlayVariant.Temporary, toolTipSurface.Variant);
 
                 AssertTemplatePart<FrameworkElement>(button, "HoverChrome");
                 AssertTemplatePart<ScaleTransform>(button, "HoverRevealScale");

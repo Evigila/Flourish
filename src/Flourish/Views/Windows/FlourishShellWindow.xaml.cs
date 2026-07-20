@@ -1040,6 +1040,8 @@ internal partial class FlourishShellWindow : Window
 
         titleBarFlyoutAnchor = anchor;
         titleBarFlyoutKind = kind;
+        TitleBarFlyoutCard.PlacementTarget = anchor;
+        TitleBarFlyoutCard.Variant = OverlayVariant.Temporary;
         ApplicationInfoContent.Visibility =
             kind == TitleBarFlyoutKind.ApplicationInfo
                 ? Visibility.Visible
@@ -1569,6 +1571,7 @@ internal partial class FlourishShellWindow : Window
         var restoreTarget = titleBarFlyoutRestoreFocusTarget ?? titleBarFlyoutAnchor;
         var shouldRestoreFocus = restoreFocus && titleBarFlyoutOpenedWithFocus;
         titleBarFlyoutAnchor = null;
+        TitleBarFlyoutCard.PlacementTarget = null;
         titleBarFlyoutRestoreFocusTarget = null;
         titleBarFlyoutKind = TitleBarFlyoutKind.None;
         titleBarFlyoutOpenedWithFocus = false;
@@ -1601,6 +1604,12 @@ internal partial class FlourishShellWindow : Window
     private void TitleBarFlyoutCard_SizeChanged(object sender, SizeChangedEventArgs e)
     {
         UpdateTitleBarFlyoutPosition();
+    }
+
+    private void TitleBarFlyoutCard_DismissRequested(object sender, RoutedEventArgs e)
+    {
+        CloseTitleBarFlyout();
+        e.Handled = true;
     }
 
     private void UpdateTitleBarFlyoutPosition()
@@ -2369,6 +2378,10 @@ internal partial class FlourishShellWindow : Window
 
         statusFlyoutAnchor = anchor;
         statusFlyoutKind = kind;
+        StatusFlyoutCard.PlacementTarget = anchor;
+        StatusFlyoutCard.Variant = kind == StatusFlyoutKind.System
+            ? OverlayVariant.Temporary
+            : OverlayVariant.Strong;
         StatusFlyoutOverlay.Visibility = Visibility.Visible;
         Dispatcher.BeginInvoke(
             new Action(() =>
@@ -2417,6 +2430,7 @@ internal partial class FlourishShellWindow : Window
         var shouldRestoreFocus = restoreFocus && statusFlyoutOpenedWithFocus;
         var restoreTarget = statusFlyoutRestoreFocusTarget ?? previousAnchor;
         statusFlyoutAnchor = null;
+        StatusFlyoutCard.PlacementTarget = null;
         statusFlyoutAnchorTaskId = null;
         statusFlyoutKind = StatusFlyoutKind.None;
         statusFlyoutOpenedWithFocus = false;
@@ -2465,6 +2479,12 @@ internal partial class FlourishShellWindow : Window
     private void StatusFlyoutCard_SizeChanged(object sender, SizeChangedEventArgs e)
     {
         UpdateStatusFlyoutPosition();
+    }
+
+    private void StatusFlyoutCard_DismissRequested(object sender, RoutedEventArgs e)
+    {
+        CloseStatusFlyout();
+        e.Handled = true;
     }
 
     private void UpdateStatusFlyoutPosition()

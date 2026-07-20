@@ -13,7 +13,7 @@ Flourish tooltips provide labels for compact or icon-only shell controls. `UseTi
 builder.ConfigureShell(shell => shell.UseTips(delay: 200));
 ```
 
-The `delay` argument is the time in milliseconds between pointer hover and display. It defaults to `200` and must be non-negative.
+The `delay` argument is the time in milliseconds between pointer hover and display. It defaults to `200` and must be non-negative. Tooltips use a temporary [Overlay](../controls/overlay.md) and close when the pointer leaves the tooltip context.
 
 Flourish keeps these tooltips within the shell boundary. Omit `UseTips` when they should remain disabled. Changing the `ToolTips` feature at runtime applies consistently to title-bar, navigation, toolbar, and status controls.
 

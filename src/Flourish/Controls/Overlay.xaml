@@ -1,0 +1,39 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <ControlTemplate x:Key="OverlayTemplate" TargetType="{x:Type controls:Overlay}">
+    <Border
+      x:Name="SurfaceChrome"
+      Padding="{TemplateBinding Padding}"
+      Background="{TemplateBinding Background}"
+      BorderBrush="{TemplateBinding BorderBrush}"
+      BorderThickness="{TemplateBinding BorderThickness}"
+      CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
+      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+    >
+      <ContentPresenter
+        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+        Content="{TemplateBinding Content}"
+        ContentStringFormat="{TemplateBinding ContentStringFormat}"
+        ContentTemplate="{TemplateBinding ContentTemplate}"
+        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+      />
+    </Border>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type controls:Overlay}">
+    <Setter Property="Padding" Value="{DynamicResource FlourishOverlayPadding}" />
+    <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Template" Value="{StaticResource OverlayTemplate}" />
+  </Style>
+</ResourceDictionary>

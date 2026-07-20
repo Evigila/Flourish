@@ -1,0 +1,65 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.OverlayPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        ChunkHeroDescription="Use Overlay to present temporary hover details or strong surfaces that require explicit dismissal."
+        ChunkHeroTitle="Overlay"
+      />
+
+      <flourish:Chunk
+        ChunkDescription="Choose the dismissal contract that matches the lifetime of the floating content."
+        ChunkTitle="Variants"
+      >
+        <UniformGrid Columns="2">
+          <flourish:Overlay Margin="0,0,8,0" Variant="Temporary">
+            <StackPanel>
+              <flourish:FlourishTextBlock Role="CardTitle" Text="Temporary" />
+              <flourish:FlourishTextBlock
+                Margin="0,4,0,0"
+                Role="Description"
+                Text="Closes after the pointer leaves both its trigger and surface."
+              />
+            </StackPanel>
+          </flourish:Overlay>
+          <flourish:Overlay Margin="8,0,0,0" Variant="Strong">
+            <StackPanel>
+              <flourish:FlourishTextBlock Role="CardTitle" Text="Strong" />
+              <flourish:FlourishTextBlock
+                Margin="0,4,0,0"
+                Role="Description"
+                Text="Remains open until outside click, Escape, or an explicit close request."
+              />
+            </StackPanel>
+          </flourish:Overlay>
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="Map common shell surfaces to a consistent lifetime."
+        ChunkTitle="Usage"
+      >
+        <StackPanel>
+          <flourish:ListCard
+            Presenter="&#xE946;"
+            Text="Tooltips, Logo details, and device information follow pointer hover."
+            Title="Temporary surfaces"
+          />
+          <flourish:ListCard
+            Margin="{DynamicResource FlourishListCardPeerMargin}"
+            Presenter="&#xE77B;"
+            Text="Profile and interactive task views wait for deliberate dismissal."
+            Title="Strong surfaces"
+          />
+        </StackPanel>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:ScrollViewer>
+</Page>

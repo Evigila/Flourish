@@ -440,22 +440,17 @@
         PreviewMouseLeftButtonDown="TitleBarFlyoutOverlay_PreviewMouseLeftButtonDown"
         Visibility="Collapsed"
       >
-        <Grid
+        <control:Overlay
           x:Name="TitleBarFlyoutCard"
           Width="340"
           MaxHeight="520"
           AutomationProperties.LiveSetting="Polite"
+          DismissRequested="TitleBarFlyoutCard_DismissRequested"
           Focusable="True"
           KeyboardNavigation.TabNavigation="Cycle"
+          Variant="Temporary"
           SizeChanged="TitleBarFlyoutCard_SizeChanged"
         >
-          <Border
-            Padding="16,14"
-            Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
-            BorderThickness="{DynamicResource FlourishControlBorderThickness}"
-            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
-          >
             <Grid>
               <Grid x:Name="ApplicationInfoContent" Visibility="Collapsed">
                 <Grid.RowDefinitions>
@@ -524,8 +519,7 @@
               </Grid>
 
             </Grid>
-          </Border>
-        </Grid>
+        </control:Overlay>
       </Canvas>
 
       <Canvas
@@ -537,13 +531,13 @@
         PreviewMouseLeftButtonDown="ProfileOverlay_PreviewMouseLeftButtonDown"
         Visibility="Collapsed"
       >
-        <Grid x:Name="ProfileCard" Width="304" SizeChanged="ProfileCard_SizeChanged">
-          <Border
-            Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
-            BorderThickness="{DynamicResource FlourishControlBorderThickness}"
-            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
-          >
+        <control:Overlay
+          x:Name="ProfileCard"
+          Width="304"
+          Padding="0"
+          SizeChanged="ProfileCard_SizeChanged"
+          Variant="Strong"
+        >
             <Frame
               x:Name="ProfileFrame"
               Background="Transparent"
@@ -558,8 +552,7 @@
               ScrollViewer.VerticalScrollBarVisibility="Disabled"
               SizeChanged="ProfileFrame_SizeChanged"
             />
-          </Border>
-        </Grid>
+        </control:Overlay>
       </Canvas>
 
       <Canvas
@@ -571,22 +564,17 @@
         PreviewMouseLeftButtonDown="StatusFlyoutOverlay_PreviewMouseLeftButtonDown"
         Visibility="Collapsed"
       >
-        <Grid
+        <control:Overlay
           x:Name="StatusFlyoutCard"
           Width="360"
           MaxHeight="480"
           AutomationProperties.LiveSetting="Polite"
+          DismissRequested="StatusFlyoutCard_DismissRequested"
           Focusable="True"
           KeyboardNavigation.TabNavigation="Cycle"
+          Padding="14,12"
           SizeChanged="StatusFlyoutCard_SizeChanged"
         >
-          <Border
-            Padding="14,12"
-            Background="{DynamicResource FlourishCardBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
-            BorderThickness="{DynamicResource FlourishControlBorderThickness}"
-            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
-          >
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -615,8 +603,7 @@
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
             </Grid>
-          </Border>
-        </Grid>
+        </control:Overlay>
       </Canvas>
     </Grid>
   </Border>

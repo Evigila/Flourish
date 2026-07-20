@@ -35,7 +35,7 @@ internal static class Program
                     services.AddNavigable<ChunkPage>("Chunk", "\uE7C8");
                     services.AddNavigable<ButtonPage>("Button", "\uE8FB");
                     services.AddNavigable<CardPage>("Card", "\uE8A5");
-                    services.AddNavigable<OutputCardPage>("Output Card", "\uE756");
+                    services.AddNavigable<OverlayPage>("Overlay", "\uE7B3");
                 }
             )
             .ConfigureShell(shell =>
@@ -91,7 +91,7 @@ internal static class Program
                             group.AddNavigableViewItem<ChunkPage>(childId: 1);
                             group.AddNavigableViewItem<ButtonPage>(childId: 1);
                             group.AddNavigableViewItem<CardPage>(childId: 1);
-                            group.AddNavigableViewItem<OutputCardPage>(childId: 1);
+                            group.AddNavigableViewItem<OverlayPage>(childId: 1);
                         }
                     )
                     .SetGroup(

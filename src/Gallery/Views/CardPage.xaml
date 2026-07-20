@@ -13,7 +13,7 @@
   >
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Explore Card content, ListCard configuration rows, alignment, variants, and IconCard presenter layouts."
+        ChunkHeroDescription="Explore Card-family surfaces, layouts, and append-only OutputCard message history."
         ChunkHeroTitle="Card"
       />
 
@@ -371,6 +371,68 @@
             <flourish:FlourishTextBlock Role="Status" Text="Overlay body content" />
           </flourish:IconCard.Body>
         </flourish:IconCard>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        ChunkDescription="Append, inspect, and clear output while the action column determines the shared row height."
+        ChunkTitle="OutputCard message history"
+      >
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+
+          <StackPanel>
+            <flourish:ListCard
+              Presenter="&#xE8F2;"
+              Text="Append one timestamped message without replacing earlier output."
+              Title="Append message"
+            >
+              <flourish:ListCard.Body>
+                <flourish:Button Click="AppendMessage_Click" Content="Write line" />
+              </flourish:ListCard.Body>
+            </flourish:ListCard>
+            <flourish:ListCard
+              Margin="{DynamicResource FlourishListCardPeerMargin}"
+              Presenter="&#xE8FD;"
+              Text="Write enough messages to exercise automatic viewport scrolling."
+              Title="Append burst"
+            >
+              <flourish:ListCard.Body>
+                <flourish:Button Click="AppendBurst_Click" Content="Write 24 lines" />
+              </flourish:ListCard.Body>
+            </flourish:ListCard>
+            <flourish:ListCard
+              Margin="{DynamicResource FlourishListCardPeerMargin}"
+              Presenter="&#xE946;"
+              Text="Read the complete history through the read-only Output property."
+              Title="Inspect output"
+            >
+              <flourish:ListCard.Body>
+                <flourish:Button Click="InspectOutput_Click" Content="Write summary" />
+              </flourish:ListCard.Body>
+            </flourish:ListCard>
+            <flourish:ListCard
+              Margin="{DynamicResource FlourishListCardPeerMargin}"
+              Presenter="&#xE74D;"
+              Text="Remove every message and return the viewport to its initial position."
+              Title="Clear history"
+            >
+              <flourish:ListCard.Body>
+                <flourish:Button Click="ClearHistory_Click" Content="Clear" Variant="Danger" />
+              </flourish:ListCard.Body>
+            </flourish:ListCard>
+          </StackPanel>
+
+          <flourish:OutputCard
+            x:Name="HistoryOutput"
+            Grid.Column="2"
+            AutomationProperties.Name="Output history"
+            VerticalAlignment="Stretch"
+          />
+        </Grid>
       </flourish:Chunk>
     </StackPanel>
   </flourish:ScrollViewer>

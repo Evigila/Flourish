@@ -23,6 +23,7 @@
     <ResourceDictionary Source="/Flourish;component/Controls/ListBox.xaml" />
     <!-- OutputCard is the terminal dictionary in the Card-family dependency chain. -->
     <ResourceDictionary Source="/Flourish;component/Controls/OutputCard.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Overlay.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/ToolTip.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/GridSplitter.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -45,6 +46,7 @@
   <CornerRadius x:Key="FlourishDialogCornerRadius">12</CornerRadius>
   <CornerRadius x:Key="FlourishDialogFooterCornerRadius">0,0,12,12</CornerRadius>
   <Thickness x:Key="FlourishControlPadding">10,4</Thickness>
+  <Thickness x:Key="FlourishOverlayPadding">16,14</Thickness>
   <Thickness x:Key="FlourishCompactControlPadding">8,2</Thickness>
   <Thickness x:Key="FlourishControlBorderThickness">1</Thickness>
   <Thickness x:Key="FlourishSurfaceBorderThickness">0</Thickness>

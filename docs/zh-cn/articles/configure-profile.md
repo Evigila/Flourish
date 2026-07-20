@@ -31,7 +31,7 @@ builder
 
 ## 交互行为
 
-再次使用 Profile 入口、点击 Profile 卡片外部或按 <kbd>Esc</kbd> 可关闭界面。打开 Windows 原生文件选择器不会关闭 Profile；选择或取消图片后会返回同一登录表单。
+Profile 使用强 [Overlay](../controls/overlay.md)，因此不会随指针移动而关闭。再次使用 Profile 入口、点击 Profile 卡片外部或按 <kbd>Esc</kbd> 可关闭界面。打开 Windows 原生文件选择器不会关闭 Profile；选择或取消图片后会返回同一登录表单。
 
 承载区域不提供滚动功能。如果自定义内容可能超过可用高度，请在自定义页面中加入 `ScrollViewer` 或其他滚动区域。
 
