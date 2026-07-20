@@ -30,9 +30,48 @@ The transition allowance lets the pointer cross the gap between an anchor and it
 
 Handle `DismissRequested` by updating the open state owned by the surrounding popup or shell host. A `Strong` overlay does not raise this event in response to pointer movement.
 
+## Host an Overlay in application UI
+
+An application page can place `Overlay` inside a WPF `Popup`. Set both placement targets to the interactive trigger, let the Popup own `IsOpen`, and close it when the Overlay requests dismissal:
+
+```xml
+<Button x:Name="DetailsButton" Content="Show details" Click="DetailsButton_Click" />
+<Popup
+  x:Name="DetailsPopup"
+  AllowsTransparency="True"
+  Placement="Bottom"
+  StaysOpen="True">
+  <flourish:Overlay
+    x:Name="DetailsOverlay"
+    Variant="Temporary"
+    DismissRequested="DetailsOverlay_DismissRequested">
+    <TextBlock Text="Workspace details" />
+  </flourish:Overlay>
+</Popup>
+```
+
+```csharp
+DetailsPopup.PlacementTarget = DetailsButton;
+DetailsOverlay.PlacementTarget = DetailsButton;
+
+private void DetailsButton_Click(object sender, RoutedEventArgs e) =>
+    DetailsPopup.IsOpen = true;
+
+private void DetailsOverlay_DismissRequested(object sender, RoutedEventArgs e) =>
+    DetailsPopup.IsOpen = false;
+```
+
+For a `Strong` Overlay, the host must also provide deliberate dismissal, such as an action button, <kbd>Esc</kbd>, and outside-click handling. A Popup can supply outside-click behavior with `StaysOpen="False"`.
+
+## Shell integration
+
+Flourish Shell features host their Overlays in a window-bounded layer instead of an application Popup. The Shell calculates the anchored position, changes the host visibility when a feature is invoked, and handles `DismissRequested`, outside clicks, and <kbd>Esc</kbd>. Code that adds a Shell feature therefore invokes the feature's Shell integration point; it does not ask `Overlay` to open itself.
+
+Use an interactive control such as [Button](button.md), `IconButton`, or `CardButton` as the trigger. These controls provide click or command activation, keyboard focus, and automation semantics. `Card`, `ListCard`, and `IconCard` are information surfaces and do not support Overlay-trigger interaction.
+
 ## Tooltip integration
 
-`FlourishToolTip` uses a `Temporary` Overlay for the shared surface appearance. WPF `ToolTipService` continues to own tooltip opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
+Native WPF `ToolTip` and `FlourishToolTip` share a template containing one `Temporary` Overlay. This also styles ToolTips that WPF generates from string values, including ToolTips shown for disabled Button-family controls. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
 
 ## Related controls
 

@@ -1,0 +1,97 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.DataGridPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        ChunkHeroDescription="Present native WPF rows and columns on a Flourish surface."
+        ChunkHeroTitle="DataGrid"
+      />
+
+      <flourish:Chunk ChunkTitle="Table">
+        <flourish:DataGrid
+          x:Name="MemberGrid"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+        >
+          <flourish:DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Name}" Header="Property" Width="224" />
+            <DataGridTextColumn Binding="{Binding Description}" Header="Function" Width="*" />
+          </flourish:DataGrid.Columns>
+        </flourish:DataGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk ChunkTitle="Example">
+        <flourish:DataGrid
+          x:Name="ExampleGrid"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+        >
+          <flourish:DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Name}" Header="Project" Width="2*" />
+            <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="*" />
+            <DataGridTextColumn Binding="{Binding Owner}" Header="Owner" Width="*" />
+          </flourish:DataGrid.Columns>
+        </flourish:DataGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk ChunkTitle="Counts">
+        <UniformGrid Columns="2">
+          <flourish:Card Margin="0,0,8,0" Title="Rows">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock
+                Role="Status"
+                Text="{Binding RowCount, ElementName=ExampleGrid}"
+              />
+            </flourish:Card.Body>
+          </flourish:Card>
+          <flourish:Card Margin="8,0,0,0" Title="Columns">
+            <flourish:Card.Body>
+              <flourish:FlourishTextBlock
+                Role="Status"
+                Text="{Binding ColumnCount, ElementName=ExampleGrid}"
+              />
+            </flourish:Card.Body>
+          </flourish:Card>
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk ChunkTitle="Usage">
+        <flourish:FlourishTextBlock
+          Role="Description"
+          Text="Bind ItemsSource and declare DataGridColumn objects as in WPF. RowCount and ColumnCount report current data-row and column counts; FirstColumnForeground changes the first displayed column."
+          TextWrapping="Wrap"
+        />
+      </flourish:Chunk>
+
+      <flourish:Chunk ChunkTitle="Reference">
+        <UniformGrid Columns="2">
+          <flourish:CardButton
+            Margin="0,0,8,0"
+            AutomationProperties.Name="Flourish GitHub repository"
+            Content="Repository link placeholder"
+            Icon="&#xE943;"
+            IsEnabled="False"
+            Title="GitHub repository"
+            ToolTip="External navigation is not available in Gallery."
+          />
+          <flourish:CardButton
+            Margin="8,0,0,0"
+            AutomationProperties.Name="DataGrid documentation"
+            Content="Canonical documentation link placeholder"
+            Icon="&#xE8A5;"
+            IsEnabled="False"
+            Title="DataGrid documentation"
+            ToolTip="External navigation is not available in Gallery."
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:ScrollViewer>
+</Page>

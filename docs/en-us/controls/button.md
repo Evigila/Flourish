@@ -79,7 +79,7 @@ An action group should normally have only one `Filled` button. Use `Danger` for 
   Icon="&#xE710;" />
 ```
 
-When `Content` is `null`, `IconButton` uses compact `32 × 32` geometry without padding. Give every icon-only button a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action. Simple tooltip content such as a string is automatically wrapped in a `FlourishToolTip` so it follows the Shell-aware placement rules.
+When `Content` is `null`, `IconButton` uses compact `32 × 32` geometry without padding. Give every icon-only button a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action. Native WPF tooltips created from strings and explicit `FlourishToolTip` instances share the Flourish Temporary Overlay surface and Shell-aware placement behavior. Button-family controls also show their tooltip while disabled.
 
 ## CardButton
 

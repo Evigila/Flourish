@@ -395,7 +395,11 @@ public sealed class FlourishXamlArchitectureTests
             )
             {
                 var targetType = (string?)style.Attribute("TargetType") ?? string.Empty;
-                if (!targetType.Contains("controls:", StringComparison.Ordinal))
+                var isSharedToolTipStyle = targetType == "{x:Type ToolTip}";
+                if (
+                    !targetType.Contains("controls:", StringComparison.Ordinal)
+                    && !isSharedToolTipStyle
+                )
                 {
                     violations.Add(
                         $"{FormatViolation(file, style)} implicitly styles {targetType}"
@@ -406,7 +410,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Native WPF controls must retain their native theme unless a Flourish control is used."
+            "Native WPF controls must retain their native theme except for the shared Flourish ToolTip host."
         );
     }
 
@@ -549,6 +553,79 @@ public sealed class FlourishXamlArchitectureTests
             violations,
             "A Gallery page may have one leading ChunkHero only."
         );
+    }
+
+    [Fact]
+    public void ControlsGalleryPages_FollowTheCanonicalLearningSequence()
+    {
+        string[] pages =
+        [
+            "ControlLibraryPage.xaml",
+            "ChunkPage.xaml",
+            "ButtonPage.xaml",
+            "CardPage.xaml",
+            "DataGridPage.xaml",
+            "OverlayPage.xaml",
+        ];
+
+        foreach (var fileName in pages)
+        {
+            var document = LoadXaml(Path.Combine(GalleryRoot, "Views", fileName));
+            var chunks = document
+                .Descendants()
+                .Where(element => element.Name.LocalName == nameof(Chunk))
+                .ToArray();
+            var actualTitles = chunks
+                .Select(element =>
+                    (string?)element.Attribute(nameof(Chunk.ChunkTitle)) ?? string.Empty
+                )
+                .ToArray();
+
+            var variantIndex = Array.IndexOf(actualTitles, "Variant");
+            var tableIndex = Array.IndexOf(actualTitles, "Table");
+            var usageIndex = Array.IndexOf(actualTitles, "Usage");
+            var referenceIndex = Array.IndexOf(actualTitles, "Reference");
+
+            Assert.True(variantIndex is -1 or 0, $"{fileName}: Variant must be first when present.");
+            Assert.Equal(variantIndex + 1, tableIndex);
+            Assert.True(
+                usageIndex > tableIndex + 1,
+                $"{fileName}: Table and Usage must be separated by topic-specific examples."
+            );
+            Assert.Equal(actualTitles.Length - 2, usageIndex);
+            Assert.Equal(actualTitles.Length - 1, referenceIndex);
+            Assert.Equal(actualTitles.Length, actualTitles.Distinct(StringComparer.Ordinal).Count());
+
+            var table = chunks[tableIndex];
+            var dataGrid = Assert.Single(
+                table.Descendants(),
+                element => element.Name.LocalName == "DataGrid"
+            );
+            Assert.Equal("False", (string?)dataGrid.Attribute("AutoGenerateColumns"));
+            Assert.Equal("True", (string?)dataGrid.Attribute("IsReadOnly"));
+            Assert.Equal(
+                2,
+                dataGrid.Descendants().Count(element =>
+                    element.Name.LocalName == "DataGridTextColumn"
+                )
+            );
+            Assert.DoesNotContain(
+                table.Descendants(),
+                element => element.Name.LocalName == "Border"
+            );
+
+            var reference = chunks[^1];
+            var referenceButtons = reference
+                .Descendants()
+                .Where(element => element.Name.LocalName == nameof(CardButton))
+                .ToArray();
+            Assert.Equal(2, referenceButtons.Length);
+            Assert.All(referenceButtons, button =>
+            {
+                Assert.Equal("False", (string?)button.Attribute("IsEnabled"));
+                Assert.False(string.IsNullOrWhiteSpace((string?)button.Attribute("ToolTip")));
+            });
+        }
     }
 
     [Fact]

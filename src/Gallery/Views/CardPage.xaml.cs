@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using ArkheideSystem.Gallery.Models;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -11,6 +12,15 @@ public partial class CardPage : Page
     public CardPage()
     {
         InitializeComponent();
+        CardMemberGrid.ItemsSource = new ControlMemberRow[]
+        {
+            new("Variant", "Chooses Standard, Tonal, Filled, or Elevated."),
+            new("Title", "Sets the heading."),
+            new("Text", "Sets the supporting description."),
+            new("Body", "Supplies the implicit arbitrary content."),
+            new("ContentHorizontalAlignment", "Aligns the copy-and-body group horizontally."),
+            new("ContentVerticalAlignment", "Aligns the group vertically."),
+        };
         HistoryOutput.WriteLine("OutputCard is ready.");
         HistoryOutput.WriteLine(
             "Each action appends a line instead of replacing the existing history."
