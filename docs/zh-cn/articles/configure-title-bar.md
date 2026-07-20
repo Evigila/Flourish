@@ -65,7 +65,7 @@ builder
 
 ## Logo 信息视图
 
-`SetLogo()` 使用 Flourish 内置图标。如需替换，可传入相对 URI、绝对 URI 或 WPF pack URI。最终图像也会设置为 Shell 窗口图标。
+`SetLogo()` 使用 Flourish 内置图标。如需替换，可传入相对 URI、绝对 URI 或 WPF pack URI。最终图像也会设置为 Shell 窗口图标。标题栏与信息视图会保持图像宽高比，将完整图形限制在各自边界内，并且不会填充透明像素。
 
 ```csharp
 titleBar.SetLogo(

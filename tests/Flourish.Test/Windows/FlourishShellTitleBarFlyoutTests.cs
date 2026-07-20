@@ -65,6 +65,30 @@ public sealed class FlourishShellTitleBarFlyoutTests
     }
 
     [Fact]
+    public void BrandLogos_PreserveTransparentArtworkWithoutCroppingOrTint()
+    {
+        var titleDocument = XDocument.Load(TitleBarXamlPath);
+        var shellDocument = XDocument.Load(ShellXamlPath);
+        var titleLogo = FindNamedElement(titleDocument, "LogoImage");
+        var overlayLogo = FindNamedElement(shellDocument, "ApplicationInfoLogoImage");
+
+        Assert.Equal("Uniform", (string?)titleLogo.Attribute("Stretch"));
+        Assert.Equal("Uniform", (string?)overlayLogo.Attribute("Stretch"));
+        Assert.Null(
+            titleLogo
+                .Ancestors()
+                .First(element => element.Name.LocalName == "Border")
+                .Attribute("Background")
+        );
+        Assert.Null(
+            overlayLogo
+                .Ancestors()
+                .First(element => element.Name.LocalName == "Border")
+                .Attribute("Background")
+        );
+    }
+
+    [Fact]
     public void ProjectSurface_IsTheLargeTitleComboBoxAndDoesNotUseAnIndependentView()
     {
         var titleDocument = XDocument.Load(TitleBarXamlPath);

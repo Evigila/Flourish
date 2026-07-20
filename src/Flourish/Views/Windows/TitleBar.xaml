@@ -135,12 +135,11 @@
             x:Name="LogoHost"
             Width="26"
             Height="26"
-            Background="{DynamicResource FlourishAccentSurfaceBrush}"
             ClipToBounds="True"
             CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
           >
             <Grid>
-              <Image x:Name="LogoImage" Stretch="UniformToFill" />
+              <Image x:Name="LogoImage" Stretch="Uniform" />
               <controls:FlourishTextBlock
                 x:Name="LogoFallback"
                 HorizontalAlignment="Center"

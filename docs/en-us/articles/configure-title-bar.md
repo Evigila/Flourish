@@ -65,7 +65,7 @@ The selected title uses the configured Large typography tier. Choices in its dro
 
 ## Logo information surface
 
-`SetLogo()` uses the built-in Flourish icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. The effective image is also assigned to the shell window icon.
+`SetLogo()` uses the built-in Flourish icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. The effective image is also assigned to the shell window icon. The title-bar and information-surface presentations preserve the image aspect ratio, keep the complete artwork within their bounds, and leave transparent pixels unfilled.
 
 ```csharp
 titleBar.SetLogo(
