@@ -72,6 +72,9 @@
     <Compile Update="Controls\ListBoxItem.xaml.cs">
       <DependentUpon>ListBoxItem.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\DataGrid.xaml.cs">
+      <DependentUpon>DataGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\PasswordBox.xaml.cs">
       <DependentUpon>PasswordBox.xaml</DependentUpon>
     </Compile>

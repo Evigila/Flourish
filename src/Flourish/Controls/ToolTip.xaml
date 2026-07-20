@@ -3,7 +3,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
-  <Style TargetType="{x:Type controls:FlourishToolTip}">
+  <Style x:Key="FlourishToolTipBaseStyle" TargetType="{x:Type ToolTip}">
     <Setter Property="controls:FlourishToolTipPlacement.IsEnabled" Value="True" />
     <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground1Brush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
@@ -16,7 +16,7 @@
     <Setter Property="HasDropShadow" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:FlourishToolTip}">
+        <ControlTemplate TargetType="{x:Type ToolTip}">
           <Grid MaxWidth="344" Margin="12,10,12,14">
             <controls:Overlay
               x:Name="SurfaceChrome"
@@ -44,5 +44,20 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <!--
+    WPF wraps non-ToolTip values assigned through ToolTipService in a native ToolTip.
+    Keep that generated host on the same Overlay surface as an explicit
+    FlourishToolTip instead of requiring every Flourish control to wrap strings.
+  -->
+  <Style
+    TargetType="{x:Type ToolTip}"
+    BasedOn="{StaticResource FlourishToolTipBaseStyle}"
+  />
+
+  <Style
+    TargetType="{x:Type controls:FlourishToolTip}"
+    BasedOn="{StaticResource FlourishToolTipBaseStyle}"
+  />
 
 </ResourceDictionary>

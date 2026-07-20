@@ -243,7 +243,7 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void GenericTheme_DoesNotOverrideNativeWpfControlStyles()
+    public void GenericTheme_DoesNotOverrideUnrelatedNativeWpfControlStyles()
     {
         RunInSta(() =>
         {
@@ -266,7 +266,6 @@ public sealed class FlourishControlStylesTests
                 typeof(ListBox),
                 typeof(ListBoxItem),
                 typeof(GridSplitter),
-                typeof(ToolTip),
             ];
 
             foreach (var nativeType in nativeTypes)
@@ -275,6 +274,59 @@ public sealed class FlourishControlStylesTests
                     resources.Contains(nativeType),
                     $"Generic.xaml unexpectedly supplies an implicit Style for {nativeType.FullName}."
                 );
+            }
+        });
+    }
+
+    [Fact]
+    public void NativeAndFlourishToolTips_UseTheSharedTemporaryOverlayTemplate()
+    {
+        RunInSta(() =>
+        {
+            var resources = LoadResourceDictionary(GenericThemeSource);
+            var nativeStyle = Assert.IsType<Style>(resources[typeof(ToolTip)]);
+            var flourishStyle = Assert.IsType<Style>(
+                resources[typeof(FlourishToolTip)]
+            );
+            Assert.Equal(typeof(ToolTip), nativeStyle.TargetType);
+            Assert.Equal(typeof(FlourishToolTip), flourishStyle.TargetType);
+            Assert.Same(nativeStyle.BasedOn, flourishStyle.BasedOn);
+
+            var target = new CardButton
+            {
+                Content = "Reference",
+                IsEnabled = false,
+                ToolTip = "External navigation is not available in Gallery.",
+            };
+            var nativeToolTip = new ToolTip
+            {
+                Content = target.ToolTip,
+                PlacementTarget = target,
+                Style = nativeStyle,
+            };
+            target.ToolTip = nativeToolTip;
+            var window = CreateWindow(target);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                target.ApplyTemplate();
+                nativeToolTip.IsOpen = true;
+                nativeToolTip.ApplyTemplate();
+
+                Assert.True(ToolTipService.GetShowOnDisabled(target));
+                Assert.True(FlourishToolTipPlacement.GetIsEnabled(nativeToolTip));
+                var surface = AssertTemplatePart<Overlay>(
+                    nativeToolTip,
+                    "SurfaceChrome"
+                );
+                Assert.Equal(OverlayVariant.Temporary, surface.Variant);
+            }
+            finally
+            {
+                nativeToolTip.IsOpen = false;
+                window.Close();
             }
         });
     }

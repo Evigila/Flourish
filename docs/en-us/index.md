@@ -35,8 +35,8 @@ Application setup normally lives in `App.xaml.cs` or another entry point configu
 
 ## Project links
 
-- [GitHub repository](https://github.com/typoo910/Flourish)
-- [Issues](https://github.com/typoo910/Flourish/issues)
-- [Pull requests](https://github.com/typoo910/Flourish/pulls)
+- [GitHub repository](https://github.com/Evigila/Flourish)
+- [Issues](https://github.com/Evigila/Flourish/issues)
+- [Pull requests](https://github.com/Evigila/Flourish/pulls)
 
 Issues and pull requests are welcome for bug reports, documentation fixes, API feedback, and examples.

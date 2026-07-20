@@ -69,7 +69,7 @@ public class Overlay : ContentControl
         Unloaded += Overlay_Unloaded;
     }
 
-    /// <summary>Occurs when a temporary overlay asks its host to close it.</summary>
+    /// <summary>Occurs when the overlay asks its host to close it.</summary>
     public event RoutedEventHandler DismissRequested
     {
         add => AddHandler(DismissRequestedEvent, value);

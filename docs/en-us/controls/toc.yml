@@ -7,6 +7,8 @@ items:
   href: button.md
 - name: Card
   href: card.md
+- name: DataGrid
+  href: data-grid.md
 - name: OutputCard
   href: output-card.md
 - name: Overlay

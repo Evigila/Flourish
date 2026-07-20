@@ -35,8 +35,8 @@ Flourish 是面向 WPF 的开源桌面应用组合与控件库。它提供基于
 
 ## 项目链接
 
-- [GitHub 仓库](https://github.com/typoo910/Flourish)
-- [Issues](https://github.com/typoo910/Flourish/issues)
-- [Pull requests](https://github.com/typoo910/Flourish/pulls)
+- [GitHub 仓库](https://github.com/Evigila/Flourish)
+- [Issues](https://github.com/Evigila/Flourish/issues)
+- [Pull requests](https://github.com/Evigila/Flourish/pulls)
 
 欢迎通过 issue 或 pull request 提交缺陷报告、文档修正、API 反馈和示例。

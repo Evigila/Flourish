@@ -18,15 +18,39 @@ Build each page as a clear hierarchy: page introduction, concise sections, and f
 
 Do not make a `Chunk` and a single oversized card represent unrelated concepts. Split unrelated topics into full-width chunks; split related behaviors into peer cards inside one chunk.
 
+## Structure control gallery pages
+
+Pages registered beneath the Gallery's **Controls** navigation node use one consistent learning sequence. Place these sections after the single `ChunkHero`, in this order:
+
+1. `Variant`, when the demonstrated control exposes variants or another named presentation mode that users must choose between.
+2. `Table`, when public parameters, properties, events, or named options benefit from a compact reference. Use the Flourish `DataGrid` control instead of constructing a table from `Grid`, `Border`, cards, or aligned text. Put the member name in the first column and one short functional description in the second.
+3. One or more example chunks when the control has meaningful visual or interactive examples. Use `Example` only for a single general example; otherwise title each chunk for its specific subject, such as `Button`, `IconButton`, `CardButton`, or `Window caption button`.
+4. One or more topic-specific content or information chunks. Give each distinct subject its own descriptive `ChunkTitle`, such as `Content`, `Alignment`, `Presenter`, `Selection`, or `Dismissal`.
+5. `Usage`, explaining how application or Shell code creates, invokes, hosts, updates, or dismisses the control.
+6. `Reference`, containing two `CardButton` surfaces for the GitHub repository and the canonical documentation page.
+
+Use the exact singular titles `Variant`, `Table`, `Usage`, and `Reference` for those structural sections. Use `Example` only when its content is genuinely one subject. Omit `Variant`, `Table`, or examples when the concept does not apply; do not invent content to fill the sequence. Topic-specific content, examples, and information chunks are not fixed numbered slots and must not be collapsed into one generic section merely to satisfy the ordering. Keep related details together, but split independent subjects into separate full-width chunks with meaningful titles. `Usage` and `Reference` are required, `Reference` is always last, and no peer chunks follow it.
+
+The `ChunkHero` introduces the control and may contain a focused preview or action, but it does not replace the `Example` section. `Example` must let users observe the control's defining behavior when interaction is part of its contract.
+
+Keep `Table` scannable. Use `flourish:DataGrid` with native WPF `ItemsSource`, `Columns`, and `DataGridTextColumn` composition. The first column is the exact public member or option name and the second describes its purpose in one sentence. Rely on the control's default first-column emphasis and Regular typography instead of locally restyling cells. Do not duplicate exhaustive API reference material; include only the members needed to understand the page's examples and usage.
+
+In `Usage`, connect the visual control to code rather than listing properties without context. Explain the relevant XAML host, event or command, service, Shell integration point, and ownership of open state or changing data. Use `Button`, `IconButton`, or `CardButton` for interactive triggers. Do not attach click, command, hover, or popup-trigger behavior to `Card`, `ListCard`, or `IconCard`; those types remain non-interactive surfaces.
+
+Use two peer `CardButton` controls in `Reference`. The first represents the Flourish GitHub repository and the second represents the canonical English control document or API page. Give both an accessible title and concise destination text. When navigation is implemented, store the absolute HTTPS destination on `Tag` and route both clicks through one shared, validated external-link helper; otherwise leave the buttons disabled as explicit placeholders.
+
 ## Write Chunk copy
 
 - Write `ChunkTitle` as a short noun phrase or action-oriented label. Prefer established control or feature names.
-- Keep `ChunkDescription` to one direct sentence that states the section's purpose.
+- `ChunkDescription` is optional. Omit it when the title and content already make the section clear.
+- When needed, keep `ChunkDescription` to one direct sentence that states the section's purpose.
 - Exclude exhaustive behavior, property lists, implementation details, and multi-step instructions from `ChunkDescription`.
 - Move detailed explanation to the chosen surface's `Title`, `Text`, or `Body`, or to a deliberate plain text block in the chunk body. `OutputCard` is the exception: it contains messages only, so its context belongs in the action surface or Chunk copy.
 - Avoid repeating the card title or text in the chunk description.
 
-Use a plain text block instead of a card when the content is continuous explanatory prose and does not need a bounded surface.
+Use a plain text block instead of a card when the content is continuous explanatory prose with one subject and does not need a bounded surface. This avoids repeating both a Chunk title and Card title, or both a Chunk description and Card description.
+
+Keep page copy sparse. Prefer one short explanation over parallel descriptions in `ChunkDescription`, `Card.Title`, and `Card.Text`. When a demonstration benefits from a two-column composition, one peer Card may contain only the visual, icon, or interactive control while the other contains only the concise explanation. Do not combine unrelated control families in that pair.
 
 ## Compose cards
 
@@ -148,4 +172,10 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm peer cards in a row share a height and horizontal and vertical gaps use the same spacing.
 - Confirm ordinary Card-family controls use `Body`, not a manually constructed catch-all text stack, for detailed content; `OutputCard` contains only messages appended through `WriteLine`.
 - Confirm interactive semantics, automation names, keyboard access, and tooltips remain correct.
+- Confirm a Controls page orders its applicable structural chunks as `Variant`, `Table`, `Example`, topic-specific content/information chunks, `Usage`, then final `Reference`.
+- Confirm independent control topics use separate, meaningfully titled chunks instead of one catch-all `Information` chunk.
+- Confirm every Controls-page `Table` uses `flourish:DataGrid` with native column definitions and contains no hand-built Grid/Border table.
+- Confirm distinct control families or example types use separate chunks instead of sharing one generic `Example` chunk.
+- Confirm optional Chunk descriptions and Card copy are omitted when they repeat the surrounding title or content.
+- Confirm single-subject prose is presented directly rather than wrapped in a redundant Card.
 - Build the Gallery and run the page architecture tests after structural changes.
