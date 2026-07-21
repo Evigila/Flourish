@@ -8,13 +8,13 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Change title-bar identity, features, and search at runtime."
-        ChunkHeroTitle="Title bar &amp; search"
+        Description="Change title-bar identity, features, and search at runtime."
+        Title="Title bar &amp; search"
       />
 
       <flourish:Chunk
-        ChunkDescription="Update application metadata and logo information."
-        ChunkTitle="Application identity"
+        Description="Update application metadata and logo information."
+        Title="Application identity"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -23,53 +23,53 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Application title"
-              Text="Set the application name used by the title and logo surfaces."
+              MainText="Set the application name used by the title and logo surfaces."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="TitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Application subtitle"
-              Text="Set supporting application text shown in the logo surface."
+              MainText="Set supporting application text shown in the logo surface."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="SubtitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8B9;"
+              Icon="&#xE8B9;"
               Title="Logo path"
-              Text="Optionally provide an image for the title-bar logo."
+              MainText="Optionally provide an image for the title-bar logo."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="LogoPathBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Logo fallback text"
-              Text="Provide text to use when an image is unavailable."
+              MainText="Provide text to use when an image is unavailable."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="LogoFallbackBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Unnamed project"
-              Text="Set the title shown when no project is active."
+              MainText="Set the title shown when no project is active."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="UnnamedProjectBox" Width="220" KeyDown="UnnamedProjectBox_KeyDown" LostFocus="UnnamedProjectBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="IdentityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -77,8 +77,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Toggle individual title-bar elements."
-        ChunkTitle="Element visibility"
+        Description="Toggle individual title-bar elements."
+        Title="Element visibility"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -87,21 +87,21 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ListCard
-            Presenter="&#xE713;"
+            Icon="&#xE713;"
             Title="Title-bar element"
-            Text="Choose the element whose visibility will change."
+            MainText="Choose the element whose visibility will change."
           >
-            <flourish:ListCard.Body>
+            <flourish:ListCard.ActionBody>
               <flourish:FlourishComboBox x:Name="TitleBarElementBox" Width="220" SelectionChanged="TitleBarElementBox_SelectionChanged" />
-            </flourish:ListCard.Body>
+            </flourish:ListCard.ActionBody>
           </flourish:ListCard>
           <flourish:ListCard
             Margin="{DynamicResource FlourishListCardPeerMargin}"
-            Presenter="&#xE7B3;"
+            Icon="&#xE7B3;"
             Title="Element visibility"
-            Text="Show or hide the selected title-bar element."
+            MainText="Show or hide the selected title-bar element."
           >
-            <flourish:ListCard.Body>
+            <flourish:ListCard.ActionBody>
               <flourish:FlourishCheckBox
                 x:Name="TitleBarElementVisibleBox"
                 VerticalAlignment="Center"
@@ -109,17 +109,17 @@
                 Content="Visible"
                 Unchecked="TitleBarElementVisibleBox_Changed"
               />
-            </flourish:ListCard.Body>
+            </flourish:ListCard.ActionBody>
           </flourish:ListCard>
           <flourish:ListCard
             Margin="{DynamicResource FlourishListCardPeerMargin}"
-            Presenter="&#xE72A;"
+            Icon="&#xE72A;"
             Title="Breadcrumb display"
-            Text="Choose the breadcrumb visibility policy."
+            MainText="Choose the breadcrumb visibility policy."
           >
-            <flourish:ListCard.Body>
+            <flourish:ListCard.ActionBody>
               <flourish:FlourishComboBox x:Name="BreadcrumbModeBox" Width="220" SelectionChanged="BreadcrumbModeBox_SelectionChanged" />
-            </flourish:ListCard.Body>
+            </flourish:ListCard.ActionBody>
           </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="ElementOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -127,8 +127,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Bind and exercise asynchronous search."
-        ChunkTitle="Runtime search binding"
+        Description="Bind and exercise asynchronous search."
+        Title="Runtime search binding"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -137,53 +137,53 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE721;"
+              Icon="&#xE721;"
               Title="Search query"
-              Text="Set the text shared with the title-bar search box."
+              MainText="Set the text shared with the title-bar search box."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="SearchTextBox" Width="220" KeyDown="SearchTextBox_KeyDown" LostFocus="SearchTextBox_LostFocus" Text="runtime API" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8A7;"
+              Icon="&#xE8A7;"
               Title="Search focus"
-              Text="Move keyboard focus to the title-bar search box."
+              MainText="Move keyboard focus to the title-bar search box."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="FocusSearch_Click" Content="Focus search" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE74D;"
+              Icon="&#xE74D;"
               Title="Clear query"
-              Text="Remove the current title-bar search text."
+              MainText="Remove the current title-bar search text."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ClearSearch_Click" Content="Clear" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Search placeholder"
-              Text="Set the hint shown when the search box is empty."
+              MainText="Set the hint shown when the search box is empty."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="SearchPlaceholderBox" Width="220" KeyDown="SearchPlaceholderBox_KeyDown" LostFocus="SearchPlaceholderBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE7B3;"
+              Icon="&#xE7B3;"
               Title="Search visibility"
-              Text="Show or hide the title-bar search feature."
+              MainText="Show or hide the title-bar search feature."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button x:Name="ToggleSearchVisibilityButton" Click="ToggleSearchVisibility_Click" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="SearchOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -191,8 +191,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Toggle complete shell capabilities."
-        ChunkTitle="High-level shell features"
+        Description="Toggle complete shell capabilities."
+        Title="High-level shell features"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -201,21 +201,21 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Shell feature"
-              Text="Choose the complete shell surface to configure."
+              MainText="Choose the complete shell surface to configure."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="ShellFeatureBox" Width="220" SelectionChanged="ShellFeatureBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE74E;"
+              Icon="&#xE74E;"
               Title="Feature availability"
-              Text="Enable or disable the selected shell surface."
+              MainText="Enable or disable the selected shell surface."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishCheckBox
                   x:Name="ShellFeatureEnabledBox"
                   VerticalAlignment="Center"
@@ -223,7 +223,7 @@
                   Content="Enabled"
                   Unchecked="ShellFeatureEnabledBox_Changed"
                 />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="ShellFeatureOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />

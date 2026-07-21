@@ -11,11 +11,11 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Themed WPF controls for text, forms, collections, and scrolling."
-        ChunkHeroTitle="Control library"
+        Description="Themed WPF controls for text, forms, collections, and scrolling."
+        Title="Control library"
       />
 
-      <flourish:Chunk ChunkTitle="Table">
+      <flourish:Chunk Title="Table">
         <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
           <DataGrid.Columns>
             <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
@@ -24,44 +24,40 @@
         </flourish:DataGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Example">
-        <UniformGrid Columns="2">
-          <flourish:Card Margin="0,0,8,0" Title="Inputs">
-            <flourish:Card.Body>
-              <StackPanel>
-                <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
-                <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
-                <flourish:FlourishSearchBox Margin="0,12,0,0" Placeholder="Search controls" />
-                <flourish:FlourishCheckBox Margin="0,12,0,0" Content="Use compact controls" IsChecked="True" />
-                <flourish:FlourishComboBox Margin="0,12,0,0" SelectedIndex="0">
-                  <flourish:FlourishComboBoxItem Content="Standard density" />
-                  <flourish:FlourishComboBoxItem Content="Compact density" />
-                </flourish:FlourishComboBox>
-              </StackPanel>
-            </flourish:Card.Body>
-          </flourish:Card>
-          <flourish:Card Margin="8,0,0,0" Title="Collections">
-            <flourish:Card.Body>
-              <StackPanel>
-                <flourish:FlourishListBox Height="104" SelectedIndex="0">
-                  <flourish:FlourishListBoxItem Content="Typography" />
-                  <flourish:FlourishListBoxItem Content="Inputs" />
-                  <flourish:FlourishListBoxItem Content="Scrolling" />
-                </flourish:FlourishListBox>
-                <flourish:ScrollViewer Height="104" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto">
-                  <StackPanel>
-                    <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
-                    <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Native keyboard and wheel input" />
-                    <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="Ready" />
-                  </StackPanel>
-                </flourish:ScrollViewer>
-              </StackPanel>
-            </flourish:Card.Body>
-          </flourish:Card>
-        </UniformGrid>
+      <flourish:Chunk Title="Example">
+        <StackPanel>
+          <flourish:Presenter Title="Inputs">
+            <StackPanel>
+              <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
+              <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
+              <flourish:FlourishSearchBox Margin="0,12,0,0" Placeholder="Search controls" />
+              <flourish:FlourishCheckBox Margin="0,12,0,0" Content="Use compact controls" IsChecked="True" />
+              <flourish:FlourishComboBox Margin="0,12,0,0" SelectedIndex="0">
+                <flourish:FlourishComboBoxItem Content="Standard density" />
+                <flourish:FlourishComboBoxItem Content="Compact density" />
+              </flourish:FlourishComboBox>
+            </StackPanel>
+          </flourish:Presenter>
+          <flourish:Presenter Margin="{DynamicResource FlourishPeerCardMargin}" Title="Collections">
+            <StackPanel>
+              <flourish:FlourishListBox Height="104" SelectedIndex="0">
+                <flourish:FlourishListBoxItem Content="Typography" />
+                <flourish:FlourishListBoxItem Content="Inputs" />
+                <flourish:FlourishListBoxItem Content="Scrolling" />
+              </flourish:FlourishListBox>
+              <flourish:ScrollViewer Height="104" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                  <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
+                  <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Native keyboard and wheel input" />
+                  <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="Ready" />
+                </StackPanel>
+              </flourish:ScrollViewer>
+            </StackPanel>
+          </flourish:Presenter>
+        </StackPanel>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Typography">
+      <flourish:Chunk Title="Typography">
         <UniformGrid Columns="3">
           <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Body" Text="Body" />
           <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Paragraph" Text="Paragraph" />
@@ -72,19 +68,19 @@
         </UniformGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Input controls">
-        <flourish:FlourishTextBlock Role="Paragraph" Text="TextBox, PasswordBox, SearchBox, CheckBox, RadioButton, ComboBox, and Label cover form input." />
+      <flourish:Chunk Title="Input controls">
+        <flourish:Card MainText="TextBox, PasswordBox, SearchBox, CheckBox, RadioButton, ComboBox, and Label cover form input." />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Collection controls">
-        <flourish:FlourishTextBlock Role="Paragraph" Text="ListBox, ScrollViewer, and ScrollBar retain native selection, keyboard, wheel, and virtualization behavior." />
+      <flourish:Chunk Title="Collection controls">
+        <flourish:Card MainText="ListBox, ScrollViewer, and ScrollBar retain native selection, keyboard, wheel, and virtualization behavior." />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Usage">
-        <flourish:FlourishTextBlock Role="Paragraph" Text="Load Flourish theme resources, declare the Flourish XAML namespace, and choose the semantic control that matches the interaction." />
+      <flourish:Chunk Title="Usage">
+        <flourish:Card MainText="Load Flourish theme resources, declare the Flourish XAML namespace, and choose the semantic control that matches the interaction." />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Reference">
+      <flourish:Chunk Title="Reference">
         <UniformGrid Columns="2">
           <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE8A5;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
           <flourish:CardButton Margin="8,0,0,0" Content="Read the control library documentation." Icon="&#xE946;" IsEnabled="False" Title="Control documentation" ToolTip="External navigation is not available in Gallery." />

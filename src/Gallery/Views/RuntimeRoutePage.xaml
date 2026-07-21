@@ -5,27 +5,29 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-    <flourish:Chunk
-      ChunkDescription="Inspect a route registered after startup."
-      ChunkTitle="Runtime route"
-    >
-      <flourish:Card
-        MaxWidth="680"
-        HorizontalAlignment="Left"
-        Title="Route instance"
-        Text="This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running."
-        Variant="Elevated"
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        Description="Inspect a route registered after startup."
+        Title="Runtime route"
+      />
+
+      <flourish:Chunk
+        Description="Review the instance and navigation parameter created by the runtime route."
+        Title="Route details"
       >
-        <flourish:Card.Body>
+        <flourish:Presenter
+          Description="This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running."
+          Title="Route instance"
+        >
           <StackPanel>
             <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
-            <flourish:FlourishTextBlock x:Name="InstanceText" FontSize="{DynamicResource FlourishFontSizeStandard}" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
+            <flourish:FlourishTextBlock x:Name="InstanceText" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
             <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
             <flourish:FlourishTextBlock x:Name="ParameterText" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
           </StackPanel>
-        </flourish:Card.Body>
-      </flourish:Card>
-    </flourish:Chunk>
-  </StackPanel>
+        </flourish:Presenter>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:ScrollViewer>
 </Page>

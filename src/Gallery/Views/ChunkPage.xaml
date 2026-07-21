@@ -12,36 +12,36 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         x:Name="HeroPreview"
-        ChunkHeroDescription="Compose Gallery pages from focused sections."
-        ChunkHeroTitle="Chunk"
+        Description="Compose Gallery pages from focused sections."
+        Title="Chunk"
         PresenterMode="Split"
         PresenterPosition="Right"
       >
-        <flourish:ChunkHero.ChunkHeroBody>
+        <flourish:ChunkHero.Body>
           <WrapPanel>
-            <flourish:Button Variant="Filled" Click="PresenterRight_Click" Content="Presenter right" />
-            <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="PresenterLeft_Click" Content="Presenter left" />
+            <flourish:Button Variant="Filled" Click="PresenterRight_Click" Content="Presentation right" />
+            <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="PresenterLeft_Click" Content="Presentation left" />
             <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="Overlay_Click" Content="Overlay" />
           </WrapPanel>
-        </flourish:ChunkHero.ChunkHeroBody>
-        <flourish:ChunkHero.Presenter>
+        </flourish:ChunkHero.Body>
+        <flourish:ChunkHero.Presentation>
           <Border MinHeight="220" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="12">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
               <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="{DynamicResource FlourishFontSizeIcon}" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Role="Icon" Text="&#xE7C8;" />
               <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Presenter" />
             </StackPanel>
           </Border>
-        </flourish:ChunkHero.Presenter>
+        </flourish:ChunkHero.Presentation>
       </flourish:ChunkHero>
 
-      <flourish:Chunk ChunkTitle="Variant">
+      <flourish:Chunk Title="Variant">
         <UniformGrid Columns="2">
-          <flourish:Card Margin="0,0,8,0" Text="Places the presenter beside the hero content." Title="Split" />
-          <flourish:Card Margin="8,0,0,0" Text="Layers the hero content over the presenter." Title="Overlay" />
+          <flourish:Card Margin="0,0,8,0" MainText="Places the presenter beside the hero content." Title="Split" />
+          <flourish:Card Margin="8,0,0,0" MainText="Layers the hero content over the presenter." Title="Overlay" />
         </UniformGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Table">
+      <flourish:Chunk Title="Table">
         <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
           <DataGrid.Columns>
             <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
@@ -50,30 +50,35 @@
         </flourish:DataGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Example">
+      <flourish:Chunk Title="Example">
         <UniformGrid Columns="2">
-          <flourish:Card Margin="0,0,8,0">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="{DynamicResource FlourishFontSizeIcon}" Foreground="{DynamicResource FlourishAccentForegroundBrush}" Role="Icon" Text="&#xE8A5;" />
-            </flourish:Card.Body>
-          </flourish:Card>
-          <flourish:Card Margin="8,0,0,0" Text="ChunkBody accepts controls, cards, lists, and custom layouts." />
+          <flourish:IconCard
+            Margin="0,0,8,0"
+            Icon="&#xE8A5;"
+            MainText="Use IconCard when a concise card needs one icon."
+            Title="Single icon"
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            MainText="Body accepts controls, cards, lists, presenters, paragraphs, and custom layouts."
+            Title="Chunk body"
+          />
         </UniformGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Chunk content">
-        <flourish:FlourishTextBlock Role="Paragraph" Text="ChunkTitle names one topic, ChunkDescription adds optional context, and ChunkBody hosts its content." />
+      <flourish:Chunk Title="Chunk content">
+        <flourish:Card MainText="Title names one topic, Description adds optional context, and Body hosts the section content." />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Hero content">
-        <flourish:FlourishTextBlock Role="Paragraph" Text="ChunkHero adds a presenter and reserves the page-leading position for one introduction." />
+      <flourish:Chunk Title="Hero content">
+        <flourish:Card MainText="ChunkHero adds Presentation and reserves the page-leading position for exactly one introduction." />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Usage">
-        <flourish:FlourishTextBlock Role="Paragraph" Text="Start with at most one ChunkHero, then place each distinct topic in its own Chunk. Omit ChunkDescription when the title is sufficient." />
+      <flourish:Chunk Title="Usage">
+        <flourish:Card MainText="Start with exactly one leading ChunkHero, then place each distinct topic in its own full-width Chunk. Omit Description when Title is sufficient." />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Reference">
+      <flourish:Chunk Title="Reference">
         <UniformGrid Columns="2">
           <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE8A5;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
           <flourish:CardButton Margin="8,0,0,0" Content="Read the Chunk and ChunkHero guide." Icon="&#xE946;" IsEnabled="False" Title="Chunk documentation" ToolTip="External navigation is not available in Gallery." />

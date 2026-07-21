@@ -485,40 +485,12 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void EveryGalleryPage_ComposesItsContentFromChunks()
-    {
-        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
-        var violations = Directory
-            .EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
-            .Select(path => new { Path = path, Document = LoadXaml(path) })
-            .Where(item => item.Document.Root?.Name.LocalName == "Page")
-            .Where(item =>
-                !item.Document.Descendants().Any(element =>
-                    element.Name.LocalName is nameof(Chunk) or nameof(ChunkHero)
-                )
-            )
-            .Select(item => RelativePath(item.Path))
-            .ToArray();
-
-        AssertNoArchitectureViolations(
-            violations,
-            "Every Gallery page must place its content in a Chunk or ChunkHero."
-        );
-    }
-
-    [Fact]
-    public void GalleryChunkHero_IsUniqueAndPrecedesRegularChunks()
+    public void EveryGalleryPage_UsesOneLeadingHeroFollowedOnlyByChunks()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
 
-        foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
-        )
+        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
         {
             var document = LoadXaml(path);
             if (document.Root?.Name.LocalName != "Page")
@@ -526,32 +498,117 @@ public sealed class FlourishXamlArchitectureTests
                 continue;
             }
 
-            var chunks = document
+            var heroes = document
                 .Descendants()
-                .Where(element =>
-                    element.Name.LocalName is nameof(Chunk) or nameof(ChunkHero)
-                )
+                .Where(element => element.Name.LocalName == nameof(ChunkHero))
+                .Where(element => !IsInsidePopup(element))
                 .ToArray();
-            var heroCount = chunks.Count(element =>
-                element.Name.LocalName == nameof(ChunkHero)
-            );
 
-            if (heroCount > 1)
+            if (heroes.Length != 1)
             {
-                violations.Add($"{RelativePath(path)} declares {heroCount} ChunkHero elements");
+                violations.Add(
+                    $"{RelativePath(path)} declares {heroes.Length} main-content ChunkHero elements"
+                );
+                continue;
             }
-            else if (
-                heroCount == 1
-                && chunks.FirstOrDefault()?.Name.LocalName != nameof(ChunkHero)
-            )
+
+            var hero = heroes[0];
+            var flow = hero.Parent;
+            if (flow is null)
             {
-                violations.Add($"{RelativePath(path)} places ChunkHero after a regular Chunk");
+                violations.Add($"{FormatViolation(path, hero)} has no main content container");
+                continue;
+            }
+
+            var visibleSections = flow
+                .Elements()
+                .Where(element => !IsPropertyElement(element))
+                .Where(element => element.Name.LocalName != "Popup")
+                .ToArray();
+            if (!ReferenceEquals(visibleSections.FirstOrDefault(), hero))
+            {
+                violations.Add($"{FormatViolation(path, hero)} is not the leading main section");
+            }
+
+            foreach (var element in visibleSections.Skip(1))
+            {
+                if (element.Name.LocalName != nameof(Chunk))
+                {
+                    violations.Add(
+                        $"{FormatViolation(path, element)} follows ChunkHero outside a Chunk"
+                    );
+                }
             }
         }
 
         AssertNoArchitectureViolations(
             violations,
-            "A Gallery page may have one leading ChunkHero only."
+            "Every Gallery page must have exactly one leading ChunkHero and place each subsequent visible main section in a full-width Chunk; Popup infrastructure is excluded."
+        );
+    }
+
+    [Fact]
+    public void ProfilePage_IsAnInternalShellFlyoutRatherThanAMainContentPage()
+    {
+        var path = Path.Combine(FlourishRoot, "Views", "Page", "ProfilePage.xaml");
+        var document = LoadXaml(path);
+        var root = Assert.IsType<XElement>(document.Root);
+        var xamlNamespace = XNamespace.Get(
+            "http://schemas.microsoft.com/winfx/2006/xaml"
+        );
+
+        Assert.Equal("Page", root.Name.LocalName);
+        Assert.Equal("internal", (string?)root.Attribute(xamlNamespace + "ClassModifier"));
+        Assert.DoesNotContain(
+            root.Descendants(),
+            element => element.Name.LocalName is nameof(ChunkHero) or nameof(Chunk)
+        );
+    }
+
+    [Fact]
+    public void GalleryChunks_DeclareRequiredTitleAndBody()
+    {
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+
+        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        {
+            var document = LoadXaml(path);
+            if (document.Root?.Name.LocalName != "Page")
+            {
+                continue;
+            }
+
+            foreach (
+                var chunk in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == nameof(Chunk))
+                    .Where(element => !IsInsidePopup(element))
+            )
+            {
+                var title =
+                    (string?)chunk.Attribute(nameof(Chunk.Title))
+                    ?? chunk
+                        .Elements()
+                        .FirstOrDefault(element =>
+                            element.Name.LocalName == $"{nameof(Chunk)}.{nameof(Chunk.Title)}"
+                        )
+                        ?.Value;
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    violations.Add($"{FormatViolation(path, chunk)} has no required Title");
+                }
+
+                if (!HasChunkBody(chunk))
+                {
+                    violations.Add($"{FormatViolation(path, chunk)} has no required Body");
+                }
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Every Gallery Chunk must declare a non-empty Title and a Body."
         );
     }
 
@@ -577,7 +634,7 @@ public sealed class FlourishXamlArchitectureTests
                 .ToArray();
             var actualTitles = chunks
                 .Select(element =>
-                    (string?)element.Attribute(nameof(Chunk.ChunkTitle)) ?? string.Empty
+                    (string?)element.Attribute(nameof(Chunk.Title)) ?? string.Empty
                 )
                 .ToArray();
 
@@ -708,8 +765,6 @@ public sealed class FlourishXamlArchitectureTests
                     nameof(Card.Variant),
                     nameof(Card.ContentHorizontalAlignment),
                     nameof(Card.ContentVerticalAlignment),
-                    nameof(IconCard.PresenterMode),
-                    nameof(IconCard.PresenterPosition),
                 ];
                 foreach (var property in fixedProperties)
                 {
@@ -757,7 +812,7 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void GalleryListCardBodies_ContainAtMostOneInteractiveControl()
+    public void GalleryListCardActionBodies_ContainAtMostOneInteractiveControl()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var interactiveControlNames = new HashSet<string>(StringComparer.Ordinal)
@@ -789,7 +844,7 @@ public sealed class FlourishXamlArchitectureTests
             var document = LoadXaml(path);
             foreach (
                 var body in document.Descendants().Where(element =>
-                    element.Name.LocalName == "ListCard.Body"
+                    element.Name.LocalName == "ListCard.ActionBody"
                 )
             )
             {
@@ -812,7 +867,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "ListCard.Body must contain at most one interactive control; split independent inputs and actions into separate rows."
+            "ListCard.ActionBody must contain at most one interactive control; split independent inputs and actions into separate rows."
         );
     }
 
@@ -1044,7 +1099,7 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void GalleryCardBodies_DoNotCreateASecondCopyHierarchy()
+    public void GalleryCards_DoNotDeclareRetiredBodySlots()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
@@ -1063,27 +1118,35 @@ public sealed class FlourishXamlArchitectureTests
                 continue;
             }
 
-            var secondaryCopy = document
+            var retiredBodies = document
                 .Descendants()
                 .Where(element =>
                     element.Name.LocalName
                         is "Card.Body"
                             or "IconCard.Body"
                             or "ListCard.Body"
-                )
-                .SelectMany(body => body.Descendants())
-                .Where(element => element.Name.LocalName == "FlourishTextBlock")
-                .Where(element =>
-                    (string?)element.Attribute("Role") is "CardTitle" or "Description"
                 );
             violations.AddRange(
-                secondaryCopy.Select(element => FormatViolation(path, element))
+                retiredBodies.Select(element => FormatViolation(path, element))
+            );
+
+            violations.AddRange(
+                document
+                    .Descendants()
+                    .Where(element =>
+                        (
+                            element.Name.LocalName
+                                is nameof(Card) or nameof(IconCard) or nameof(ListCard)
+                        )
+                        && element.Attribute("Body") is not null
+                    )
+                    .Select(element => FormatViolation(path, element))
             );
         }
 
         AssertNoArchitectureViolations(
             violations,
-            "Card.Text is the single Description region; Card.Body must not add another title or explanatory copy hierarchy."
+            "Card, IconCard, and ListCard do not expose Body; use MainText, Icon, or ListCard.ActionBody instead."
         );
     }
 
@@ -1111,10 +1174,7 @@ public sealed class FlourishXamlArchitectureTests
                 var body in document
                     .Descendants()
                     .Where(element =>
-                        element.Name.LocalName
-                            is "Card.Body"
-                                or "IconCard.Body"
-                                or "ListCard.Body"
+                        element.Name.LocalName == "ListCard.ActionBody"
                     )
             )
             {
@@ -1185,8 +1245,8 @@ public sealed class FlourishXamlArchitectureTests
             string[] forbiddenProperties =
             [
                 nameof(Card.Title),
-                nameof(Card.Text),
-                nameof(Card.Body),
+                nameof(Card.MainText),
+                "Body",
                 nameof(OutputCard.Output),
             ];
             foreach (var property in forbiddenProperties)
@@ -1940,7 +2000,7 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void CardAndChunkTitleHosts_UseTheirCanonicalHeadingRoles()
+    public void CardPresenterAndChunkTitleHosts_UseTheirCanonicalHeadingRoles()
     {
         (string FileName, string ExpectedRole)[] expectations =
         [
@@ -1948,6 +2008,7 @@ public sealed class FlourishXamlArchitectureTests
             ("CardButton.xaml", "CardTitle"),
             ("IconCard.xaml", "CardTitle"),
             ("ListCard.xaml", "CardTitle"),
+            ("Presenter.xaml", "CardTitle"),
             ("Chunk.xaml", "SectionTitle"),
             ("ChunkHero.xaml", "PageTitle"),
         ];
@@ -1966,6 +2027,25 @@ public sealed class FlourishXamlArchitectureTests
 
             Assert.Equal(expectedRole, (string?)titleHost.Attribute("Role"));
         }
+    }
+
+    [Fact]
+    public void ShellApplicationLogoFallback_UsesTheStandardFontSize()
+    {
+        var shell = LoadXaml(
+            Path.Combine(FlourishRoot, "Views", "Windows", "FlourishShellWindow.xaml")
+        );
+        var fallback = shell
+            .Descendants()
+            .Single(element =>
+                (string?)element.Attribute(XName.Get("Name", XamlNamespace))
+                == "ApplicationInfoLogoFallback"
+            );
+
+        Assert.Equal(
+            "{DynamicResource FlourishFontSizeStandard}",
+            (string?)fallback.Attribute("FontSize")
+        );
     }
 
     [Fact]
@@ -2167,6 +2247,44 @@ public sealed class FlourishXamlArchitectureTests
                 .Cast<string>()
                 .ToArray()
             ?? [];
+    }
+
+    private static bool IsInsidePopup(XElement element)
+    {
+        return element.Ancestors().Any(ancestor => ancestor.Name.LocalName == "Popup");
+    }
+
+    private static bool IsPropertyElement(XElement element)
+    {
+        return element.Name.LocalName.Contains('.', StringComparison.Ordinal);
+    }
+
+    private static bool HasChunkBody(XElement chunk)
+    {
+        var explicitBody = chunk
+            .Elements()
+            .FirstOrDefault(element =>
+                element.Name.LocalName == $"{nameof(Chunk)}.{nameof(Chunk.Body)}"
+            );
+        if (explicitBody is not null)
+        {
+            return explicitBody.Nodes().Any(IsMeaningfulContentNode);
+        }
+
+        return chunk.Nodes().Any(node =>
+            node is XElement element && !IsPropertyElement(element)
+            || IsMeaningfulTextNode(node)
+        );
+    }
+
+    private static bool IsMeaningfulContentNode(XNode node)
+    {
+        return node is XElement || IsMeaningfulTextNode(node);
+    }
+
+    private static bool IsMeaningfulTextNode(XNode node)
+    {
+        return node is XText text && !string.IsNullOrWhiteSpace(text.Value);
     }
 
     private static void AssertNoArchitectureViolations(

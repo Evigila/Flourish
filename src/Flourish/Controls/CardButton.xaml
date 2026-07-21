@@ -45,6 +45,12 @@
         <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
       </DataTrigger>
       <DataTrigger
+        Binding="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
+        Value=""
+      >
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+      </DataTrigger>
+      <DataTrigger
         Binding="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
         Value=""
       >
@@ -52,8 +58,21 @@
         <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
       </DataTrigger>
       <DataTrigger
+        Binding="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
+        Value="{x:Null}"
+      >
+        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
+      </DataTrigger>
+      <DataTrigger
         Binding="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
         Value="{x:Null}"
+      >
+        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
+      </DataTrigger>
+      <DataTrigger
+        Binding="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
+        Value=""
       >
         <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
       </DataTrigger>

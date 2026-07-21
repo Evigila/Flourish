@@ -11,7 +11,10 @@ public enum FlourishTextRole
     /// <summary>Regular body copy.</summary>
     Body,
 
-    /// <summary>A wrapped body paragraph with increased line spacing.</summary>
+    /// <summary>
+    /// A single wrapped block of body copy. Use <see cref="Paragraph" /> to arrange multiple
+    /// paragraphs with standard indentation and spacing.
+    /// </summary>
     Paragraph,
 
     /// <summary>Compact supporting copy.</summary>
@@ -29,13 +32,13 @@ public enum FlourishTextRole
     /// <summary>Compact supporting copy below a heading.</summary>
     Description,
 
-    /// <summary>A heading used inside a card or compact content surface.</summary>
+    /// <summary>A heading used inside a card, presenter, or compact content surface.</summary>
     CardTitle,
 
-    /// <summary>A heading for a content section.</summary>
+    /// <summary>The large heading used by a <see cref="Chunk" /> content section.</summary>
     SectionTitle,
 
-    /// <summary>The primary heading for a page.</summary>
+    /// <summary>The primary page heading reserved for <see cref="ChunkHero" />.</summary>
     PageTitle,
 
     /// <summary>Status or feedback text.</summary>

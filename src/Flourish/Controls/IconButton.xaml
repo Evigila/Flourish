@@ -32,8 +32,21 @@
         <Setter TargetName="LabelHost" Property="Margin" Value="0" />
       </DataTrigger>
       <DataTrigger
+        Binding="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type controls:IconButton}}}"
+        Value=""
+      >
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="LabelHost" Property="Margin" Value="0" />
+      </DataTrigger>
+      <DataTrigger
         Binding="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:IconButton}}}"
         Value="{x:Null}"
+      >
+        <Setter TargetName="LabelHost" Property="Visibility" Value="Collapsed" />
+      </DataTrigger>
+      <DataTrigger
+        Binding="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:IconButton}}}"
+        Value=""
       >
         <Setter TargetName="LabelHost" Property="Visibility" Value="Collapsed" />
       </DataTrigger>
@@ -170,6 +183,15 @@
     <Setter Property="ContentTemplate" Value="{StaticResource IconButtonContentTemplate}" />
     <Style.Triggers>
       <Trigger Property="Content" Value="{x:Null}">
+        <Setter Property="Width" Value="{DynamicResource FlourishIconButtonSize}" />
+        <Setter Property="Height" Value="{DynamicResource FlourishIconButtonSize}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ContentTemplate" Value="{x:Null}" />
+        <Setter Property="Template" Value="{StaticResource IconOnlyButtonTemplate}" />
+      </Trigger>
+      <Trigger Property="Content" Value="">
         <Setter Property="Width" Value="{DynamicResource FlourishIconButtonSize}" />
         <Setter Property="Height" Value="{DynamicResource FlourishIconButtonSize}" />
         <Setter Property="MinWidth" Value="0" />

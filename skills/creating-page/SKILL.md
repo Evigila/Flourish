@@ -1,146 +1,192 @@
 ---
 name: creating-page
-description: Create or refactor Flourish WPF pages with full-width Chunk hierarchy, focused Card-family surfaces, compact ListCard configuration rows, dedicated OutputCard message histories, equal-height peer layouts, and appropriate interactive controls. Use when adding or editing Gallery/Page XAML, reviewing page information architecture, standardizing ChunkTitle or ChunkDescription text, choosing between Card, ListCard, OutputCard, IconCard, and CardButton, deciding how many surfaces a section needs, or validating a Flourish page before delivery.
+description: Create or refactor Flourish WPF pages with exactly one leading ChunkHero, full-width Chunk sections, standardized typography and spacing, non-nesting Card-family surfaces, Paragraph prose, Presenter compositions, compact ListCard actions, OutputCard histories, and the correct Button-family interaction semantics. Use when adding or editing page XAML, reviewing page information architecture, choosing layout or content controls, or validating a Flourish page before delivery.
 ---
 
 # Creating Flourish Pages
 
-Build each page as a clear hierarchy: page introduction, concise sections, and focused content surfaces. Keep structural copy short and place details in the content that owns them.
+Build every content page as one explicit hierarchy: one page-leading hero, several full-width sections, purpose-built content controls, and clearly bounded actions. Keep structural copy concise and let each control perform only its documented role.
 
 ## Build the page hierarchy
 
 1. Place page content in a Flourish scroll viewer and use the standard page margin resource.
-2. Use at most one `ChunkHero`, and place it before every ordinary `Chunk`.
-3. Give each distinct topic or task one `Chunk`.
-4. Make every `Chunk` full-width. Never place two chunks beside each other in one row.
-5. Use the Flourish surface whose semantics match the content inside an ordinary `Chunk`.
-6. Use several peer cards or a column of `ListCard` rows inside one chunk when a section describes several related behaviors, states, settings, or tasks.
+2. Start with exactly one `ChunkHero`. Never omit it or create a second hero.
+3. Follow the hero with one or more `Chunk` controls.
+4. Make every `ChunkHero` and `Chunk` full-width and place each in its own row.
+5. Put every page element inside the hero or a chunk. Do not add peer-level headings, cards, or manually spaced regions.
+6. Give each distinct topic or task its own `Chunk`.
+7. Arrange related cards within one chunk body only when they share the same section topic.
 
-Do not make a `Chunk` and a single oversized card represent unrelated concepts. Split unrelated topics into full-width chunks; split related behaviors into peer cards inside one chunk.
+Every `Chunk` has these semantic fields:
 
-## Structure control gallery pages
+- `Title` is required and names the section's subject.
+- `Description` is optional. Add it only when the title cannot communicate essential context by itself.
+- `Body` is required and contains the actual content control or layout tree. It is the default XAML content property.
 
-Pages registered beneath the Gallery's **Controls** navigation node use one consistent learning sequence. Place these sections after the single `ChunkHero`, in this order:
+Empty or `null` optional regions must collapse together with their spacing. Keep the default large gap between chunks and between `ChunkHero` and the first ordinary chunk.
 
-1. `Variant`, when the demonstrated control exposes variants or another named presentation mode that users must choose between.
-2. `Table`, when public parameters, properties, events, or named options benefit from a compact reference. Use the Flourish `DataGrid` control instead of constructing a table from `Grid`, `Border`, cards, or aligned text. Put the member name in the first column and one short functional description in the second.
-3. One or more example chunks when the control has meaningful visual or interactive examples. Use `Example` only for a single general example; otherwise title each chunk for its specific subject, such as `Button`, `IconButton`, `CardButton`, or `Window caption button`.
-4. One or more topic-specific content or information chunks. Give each distinct subject its own descriptive `ChunkTitle`, such as `Content`, `Alignment`, `Presenter`, `Selection`, or `Dismissal`.
-5. `Usage`, explaining how application or Shell code creates, invokes, hosts, updates, or dismisses the control.
-6. `Reference`, containing two `CardButton` surfaces for the GitHub repository and the canonical documentation page.
+`ChunkHero` inherits the Presenter contract: `Title`, `Description`, `Body`, `Presentation`, `PresenterMode`, and `PresenterPosition`. Its title is required and uses the page-header role. Use `Body` for supporting controls in the copy region and `Presentation` for the visual being presented.
 
-Use the exact singular titles `Variant`, `Table`, `Usage`, and `Reference` for those structural sections. Use `Example` only when its content is genuinely one subject. Omit `Variant`, `Table`, or examples when the concept does not apply; do not invent content to fill the sequence. Topic-specific content, examples, and information chunks are not fixed numbered slots and must not be collapsed into one generic section merely to satisfy the ordering. Keep related details together, but split independent subjects into separate full-width chunks with meaningful titles. `Usage` and `Reference` are required, `Reference` is always last, and no peer chunks follow it.
+## Use the typography contract
 
-The `ChunkHero` introduces the control and may contain a focused preview or action, but it does not replace the `Example` section. `Example` must let users observe the control's defining behavior when interaction is part of its contract.
+Flourish defines six size tiers. When no tier is explicitly selected, use `Standard`.
 
-Keep `Table` scannable. Use `flourish:DataGrid` with native WPF `ItemsSource`, `Columns`, and `DataGridTextColumn` composition. The first column is the exact public member or option name and the second describes its purpose in one sentence. Rely on the control's default first-column emphasis and Regular typography instead of locally restyling cells. Do not duplicate exhaustive API reference material; include only the members needed to understand the page's examples and usage.
+- `Small`: navigation group labels, OutputCard output, and compact control-owned caption or status text.
+- `Standard`: ordinary body and control text, including every unspecified case.
+- `Icon`: general icon glyphs; a specialized icon control may apply its own local correction.
+- `Large`: card-title-level emphasis.
+- `ExtraLarge`: section-title family, including `Chunk.Title`.
+- `HeaderSize`: `ChunkHero.Title` only.
 
-In `Usage`, connect the visual control to code rather than listing properties without context. Explain the relevant XAML host, event or command, service, Shell integration point, and ownership of open state or changing data. Use `Button`, `IconButton`, or `CardButton` for interactive triggers. Do not attach click, command, hover, or popup-trigger behavior to `Card`, `ListCard`, or `IconCard`; those types remain non-interactive surfaces.
+Do not select a larger tier merely to make text look more important. Select the control or text role that expresses the correct hierarchy.
 
-Use two peer `CardButton` controls in `Reference`. The first represents the Flourish GitHub repository and the second represents the canonical English control document or API page. Give both an accessible title and concise destination text. When navigation is implemented, store the absolute HTTPS destination on `Tag` and route both clicks through one shared, validated external-link helper; otherwise leave the buttons disabled as explicit placeholders.
+## Choose the content control
 
-## Write Chunk copy
+Use the smallest control whose semantic contract matches the content:
 
-- Write `ChunkTitle` as a short noun phrase or action-oriented label. Prefer established control or feature names.
-- `ChunkDescription` is optional. Omit it when the title and content already make the section clear.
-- When needed, keep `ChunkDescription` to one direct sentence that states the section's purpose.
-- Exclude exhaustive behavior, property lists, implementation details, and multi-step instructions from `ChunkDescription`.
-- Move detailed explanation to the chosen surface's `Title`, `Text`, or `Body`, or to a deliberate plain text block in the chunk body. `OutputCard` is the exception: it contains messages only, so its context belongs in the action surface or Chunk copy.
-- Avoid repeating the card title or text in the chunk description.
+- Use `Card` for an optional title and one optional paragraph in `MainText`.
+- Use `IconCard` for the same copy plus one icon.
+- Use `Paragraph` for several text paragraphs.
+- Use `Presenter` for an image, several icons, an illustration, a preview, or composed presentation content.
+- Use `ListCard` for one compact setting or local action row.
+- Use `OutputCard` for append-only raw messages, logs, progress, completed results, and failures.
+- Use `CardButton` when the complete card-shaped surface is one action.
 
-Use a plain text block instead of a card when the content is continuous explanatory prose with one subject and does not need a bounded surface. This avoids repeating both a Chunk title and Card title, or both a Chunk description and Card description.
-
-Keep page copy sparse. Prefer one short explanation over parallel descriptions in `ChunkDescription`, `Card.Title`, and `Card.Text`. When a demonstration benefits from a two-column composition, one peer Card may contain only the visual, icon, or interactive control while the other contains only the concise explanation. Do not combine unrelated control families in that pair.
+One surface communicates one subject or behavior. Split unrelated subjects into peer controls instead of building a large nested surface.
 
 ## Compose cards
 
-Use the three Card regions consistently:
+`Card`, `IconCard`, and `ListCard` are terminal presentation surfaces. They do not have a general-purpose `Body` and must not host arbitrary nested content.
 
-- `Title`: identify the card's single subject or behavior. Use exactly one title.
-- `Text`: serve as an ordinary card's single Description region for supporting explanatory copy.
-- `Body`: host examples, controls, status, actions, lists, media, or any other detailed content. It may be empty.
+For `Card`:
 
-Do not add another heading or explanatory paragraph inside an ordinary card's `Body`. Necessary field labels, option labels, result data, and list items are content rather than competing card copy and may remain in `Body`.
+- `Title` and `MainText` are both optional.
+- `MainText` contains one paragraph only.
+- Missing fields collapse together with their spacing.
+- `Variant` may be `Standard`, `Tonal`, `Filled`, or `Elevated` according to surface emphasis.
+- Card and IconCard may form two or more columns when the available width keeps copy readable.
 
-Move changing response text out of an action surface and place an adjacent `OutputCard`. Append raw messages, progress, completed results, and failures through `WriteLine` so earlier outcomes remain visible. `OutputCard` has no `Title`, `Text`, or arbitrary `Body`; keep its explanatory context in the action surface or containing Chunk. Use `Clear` only for an explicit history-reset action. Keep the action and output surfaces in the same chunk.
+For `IconCard`:
 
-Prefer explicit `Card.Body` property elements for complex XAML. Keep one card focused on one behavior. Use a `UniformGrid` or another parent layout that gives ordinary peer cards in a row the same arranged height. For a two-column ListCard-plus-OutputCard composition, put the complete ListCard column and `OutputCard` in one auto-sized `Grid` row. Let the ListCard column determine the row height and stretch `OutputCard` to match it; its history must scroll internally instead of increasing the row's desired height. Never calculate `Height` from `Output`. Use the same gap between columns and rows; prefer a shared spacing resource or one consistent value.
+- `Icon` contains exactly one semantic icon, not an image, icon group, or arbitrary content tree.
+- `IconPosition` uses `Dock.Left`, `Top`, `Right`, or `Bottom`; the default is `Left`.
+- It has no `Body`, `Presentation`, Presenter modes, or overlay layout.
 
-Choose the correct semantic control:
-
-- Use `ListCard` for one compact configuration option or local configuration action.
-- Use `Card` for longer explanatory or display-oriented grouped information.
-- Use `OutputCard` for append-only raw messages, progress, completed results, and failures.
-- Use `IconCard` when an icon, image, illustration, or preview is part of longer explanatory or display-oriented information.
-- Use `CardButton` when invoking the entire surface is the action.
-- Use an ordinary `Button` or `IconButton` inside `Body` when only a local action is interactive.
-
-Do not add click handlers to `Card`, `ListCard`, or `IconCard`, or use visual variants to imply behavior that belongs to another control type.
+Do not attach click, command, hover-trigger, or popup-trigger behavior to non-interactive cards. Use the appropriate Button-family control when the surface is interactive.
 
 ## Compose ListCards
 
-Treat `ListCard` as a compact, non-interactive row for one independent setting. It inherits `Title`, `Text`, and `Body` from `Card`, adds an optional `Presenter`, and always uses the `Standard` variant. The presenter stays on the left with deliberately generous horizontal breathing room, the title and short description form a vertical copy stack in the center, and `Body` stays on the right; all three regions are vertically centered. Do not reduce the presenter spacing with local margins or attempt to reposition the regions with Card alignment properties.
+Treat `ListCard` as a compact row for one independent setting. Its layout is fixed: optional `Icon` on the left, vertically stacked `Title` and `MainText` in the center, and `ActionBody` on the right. The complete row is vertically centered and left-oriented.
 
-Keep both `Title` and `Text` concise. Each is limited to one line and overflows with an ellipsis; rewrite copy that would depend on wrapping. Put exactly one interactive control in each `ListCard.Body`. Do not combine several inputs or actions in a panel inside one row.
+- Keep `Title` and `MainText` concise. Each is one line and uses ellipsis overflow.
+- Put exactly one local interactive control in `ActionBody`; it is the default XAML content property.
+- Prefer `FlourishComboBox`, `FlourishCheckBox`, or `Button`; use `FlourishTextBox` or `FlourishRadioButton` when required.
+- Apply selections, toggles, and edits immediately. Never add a separate Apply action.
+- Keep `Variant` at its coerced `Standard` value.
+- Stack related ListCards in their own column and use `FlourishListCardPeerMargin` only between consecutive rows.
+- Do not interleave another card type in the same ListCard column.
 
-Stack related ListCards so each row fills its column. Use `FlourishListCardPeerMargin` between consecutive rows to create a compact visual group while preserving distinct surfaces. Do not mix `ListCard` with any other card type in that same column. Prefer a single-column chunk containing only ListCards. A chunk may still use multiple columns when another column has a different purpose, such as an adjacent `OutputCard`.
+An adjacent column may contain an `OutputCard`. Put the complete ListCard column and `OutputCard` in one auto-sized Grid row, let the ListCard column determine the row height, and stretch `OutputCard` to match it. Output overflow stays inside its scrolling viewport.
 
-Prefer `FlourishComboBox`, `FlourishCheckBox`, or `Button` in `ListCard.Body`; use `FlourishTextBox` or `FlourishRadioButton` when the option genuinely needs them. Apply selections, toggles, and edits immediately. Never add a separate Apply action to a ListCard.
+## Compose Paragraphs
+
+Use `Paragraph` as a `Chunk`'s only body when the section is continuous multi-paragraph prose. Add any number of direct `TextBlock` children; each child is one paragraph.
+
+`Paragraph` owns the gap between paragraphs and the visual first-line indentation equivalent to four standard spaces. Do not insert literal leading spaces or local margins. It always remains transparent and borderless, has no title or description, and exposes no visual variants. Use `Card` instead when the content is one paragraph.
+
+Do not confuse the container with `FlourishTextRole.Paragraph`, which styles one `FlourishTextBlock`.
+
+## Compose Presenters
+
+Use `Presenter` as a full-width chunk body when rich visual content must be arranged with copy or supporting controls.
+
+- `Title` and `Description` provide optional copy.
+- `Body` contains controls or supporting content in the same region as the copy and is the default content property.
+- `Presentation` contains an image, icon group, illustration, preview, or composed visual tree.
+- `PresenterMode="Split"` places the presentation beside the copy. `PresenterPosition` accepts only `Left` or `Right` and names the presentation side.
+- `PresenterMode="Overlay"` places the presentation behind copy and Body; `PresenterPosition` is ignored.
+- Missing optional regions collapse with their spacing.
+- Ordinary Presenter is transparent and borderless by default and occupies the full row.
+
+Choose or compose Overlay presentation content that keeps text readable in both light and dark themes. `ChunkHero` uses the same Presenter fields and modes but supplies the larger, emphasized page-leading treatment.
+
+## Use Button-family actions
+
+The complete visual boundary of a button is interactive.
+
+- Use `Button` for the default text action without an icon.
+- Use `IconButton` when the action has an icon; omit Content only for an icon-only button.
+- Use `CardButton` for a whole-card action with IconCard-like presentation.
+- Use `WindowCaptionButton` only in a window caption or title-bar toolbar.
+
+Give every icon-only button a visible tooltip and a meaningful `AutomationProperties.Name`. Use one `Filled` primary action per action group, lower-emphasis variants for supporting actions, and `Danger` for destructive actions.
+
+## Structure control Gallery pages
+
+Pages beneath the Gallery's Controls navigation node use one consistent learning sequence after the single `ChunkHero`:
+
+1. `Variant`, when the demonstrated control exposes variants or another named mode users must choose between.
+2. `Table`, when public members or named options benefit from a compact reference. Use Flourish `DataGrid` with native WPF columns.
+3. One or more specific example chunks. Use `Example` only when there is one general example.
+4. Topic-specific content chunks such as `Content`, `Alignment`, `Presentation`, `Selection`, or `Dismissal`.
+5. `Usage`, connecting the visual control to its XAML host, command or event, service, and state ownership.
+6. `Reference`, always last, with two peer `CardButton` links for the repository and canonical documentation.
+
+Use the exact singular titles `Variant`, `Table`, `Usage`, and `Reference`. Omit inapplicable optional sections instead of inventing content. `Usage` and `Reference` are required. A hero preview does not replace an example when interaction is part of the control's contract.
+
+Keep Table content selective rather than duplicating the generated API reference. Use a public member or option name in the first column and one short functional description in the second. Use purpose-built controls directly in the chunk body or within a Presenter; do not restore the removed Card Body pattern to contain demonstrations.
 
 ## Example
 
 ```xml
-<flourish:Chunk
-  ChunkTitle="Synchronization"
-  ChunkDescription="Review and control workspace synchronization."
->
-  <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="16" />
-      <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <StackPanel>
-      <flourish:ListCard
-        Title="Sync mode"
-        Text="Choose when workspace changes synchronize."
-      >
-        <flourish:ListCard.Presenter>
-          <flourish:FlourishTextBlock
-            AutomationProperties.Name="Synchronization"
-            Role="Icon"
-            Text="&#xE895;"
-          />
-        </flourish:ListCard.Presenter>
-        <flourish:ListCard.Body>
-          <flourish:FlourishComboBox
-            Width="160"
-            ItemsSource="{Binding SynchronizationModes}"
-            SelectedItem="{Binding SynchronizationMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-          />
-        </flourish:ListCard.Body>
-      </flourish:ListCard>
-      <flourish:ListCard
-        Margin="{DynamicResource FlourishListCardPeerMargin}"
-        Title="Refresh now"
-        Text="Request a new synchronization pass."
-      >
-        <flourish:ListCard.Body>
-          <flourish:Button Click="Refresh_Click" Content="Refresh" />
-        </flourish:ListCard.Body>
-      </flourish:ListCard>
-    </StackPanel>
-    <flourish:OutputCard
-      x:Name="SynchronizationOutput"
-      Grid.Column="2"
-      AutomationProperties.Name="Synchronization output"
-      VerticalAlignment="Stretch"
-    />
-  </Grid>
-</flourish:Chunk>
+<ScrollViewer>
+  <StackPanel>
+    <flourish:ChunkHero
+      Title="Synchronization"
+      Description="Review and control workspace synchronization."
+      Presentation="{StaticResource SynchronizationIllustration}" />
+
+    <flourish:Chunk
+      Title="Settings"
+      Description="Changes apply immediately and their results appear in the output history.">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="16" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel>
+          <flourish:ListCard
+            Icon="&#xE895;"
+            Title="Sync mode"
+            MainText="Choose when workspace changes synchronize.">
+            <flourish:FlourishComboBox
+              Width="160"
+              ItemsSource="{Binding SynchronizationModes}"
+              SelectedItem="{Binding SynchronizationMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+          </flourish:ListCard>
+          <flourish:ListCard
+            Margin="{DynamicResource FlourishListCardPeerMargin}"
+            Icon="&#xE72C;"
+            Title="Refresh now"
+            MainText="Request a new synchronization pass.">
+            <flourish:Button Click="Refresh_Click" Content="Refresh" />
+          </flourish:ListCard>
+        </StackPanel>
+
+        <flourish:OutputCard
+          x:Name="SynchronizationOutput"
+          Grid.Column="2"
+          AutomationProperties.Name="Synchronization output"
+          VerticalAlignment="Stretch" />
+      </Grid>
+    </flourish:Chunk>
+  </StackPanel>
+</ScrollViewer>
 ```
 
-Append a message for each observable outcome instead of replacing the existing history:
+Append every observable outcome instead of replacing history:
 
 ```csharp
 private void Refresh_Click(object sender, RoutedEventArgs e)
@@ -152,30 +198,17 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 
 ## Validate before delivery
 
-- Confirm every page element belongs to a `Chunk` or the single leading `ChunkHero`.
-- Confirm every chunk spans the available row and no parent arranges two chunks side by side.
-- Confirm ordinary chunks use appropriate Flourish surfaces as their primary content containers unless continuous prose is intentional.
-- Confirm each `ChunkDescription` is concise and details live in cards or body text.
-- Confirm each ordinary card has one title and one Description region, with no competing headings or explanatory paragraphs in `Body`.
-- Confirm independent behaviors are split across peer surfaces and changing output is isolated in an adjacent `OutputCard` with context in the action surface or Chunk.
-- Confirm every raw message, progress update, completed result, and failure is appended through `WriteLine` instead of replacing earlier history.
-- Confirm `OutputCard` has no attempted `Title`, `Text`, or `Body` content, and `Clear` is reserved for an explicit history-reset action.
-- Confirm compact settings use one `ListCard` per independent option and longer copy or display content remains in `Card` or `IconCard`.
-- Confirm each ListCard keeps its presenter left, copy centered, Body right, all regions vertically centered, and its variant `Standard`.
-- Confirm each ListCard Title and Text is concise, limited to one line, and safe to trim with an ellipsis.
-- Confirm presenter spacing remains generous on both horizontal sides and local margins do not collapse it.
-- Confirm each ListCard Body contains exactly one interactive control.
-- Confirm consecutive ListCards use `FlourishListCardPeerMargin` between rows and do not add that margin before the first row.
-- Confirm a ListCard column contains only ListCards; place `OutputCard` or other surface types in a separate column.
-- Confirm ListCard selections, toggles, and edits apply immediately and no ListCard adds an Apply action.
-- Confirm a two-column ListCard-plus-OutputCard composition uses one auto-sized Grid row, lets the ListCard column determine its height, stretches `OutputCard`, and keeps overflow inside the output viewport.
-- Confirm peer cards in a row share a height and horizontal and vertical gaps use the same spacing.
-- Confirm ordinary Card-family controls use `Body`, not a manually constructed catch-all text stack, for detailed content; `OutputCard` contains only messages appended through `WriteLine`.
-- Confirm interactive semantics, automation names, keyboard access, and tooltips remain correct.
-- Confirm a Controls page orders its applicable structural chunks as `Variant`, `Table`, `Example`, topic-specific content/information chunks, `Usage`, then final `Reference`.
-- Confirm independent control topics use separate, meaningfully titled chunks instead of one catch-all `Information` chunk.
-- Confirm every Controls-page `Table` uses `flourish:DataGrid` with native column definitions and contains no hand-built Grid/Border table.
-- Confirm distinct control families or example types use separate chunks instead of sharing one generic `Example` chunk.
-- Confirm optional Chunk descriptions and Card copy are omitted when they repeat the surrounding title or content.
-- Confirm single-subject prose is presented directly rather than wrapped in a redundant Card.
-- Build the Gallery and run the page architecture tests after structural changes.
+- Confirm exactly one `ChunkHero` leads the page and every other page element belongs to a full-width `Chunk`.
+- Confirm every Chunk has a concise `Title` and real `Body`; descriptions are optional and omitted when redundant.
+- Confirm empty optional regions leave no placeholder or spacing.
+- Confirm unspecified typography uses Standard and specialized tiers follow their assigned roles.
+- Confirm Card-family controls use `MainText` and never attempt a general `Body`.
+- Confirm one paragraph uses Card, several paragraphs use Paragraph, one icon uses IconCard, and images or composed visuals use Presenter.
+- Confirm Paragraph is the chunk's only body and owns paragraph gaps and indentation.
+- Confirm Presenter is full-width, uses only Left or Right in Split, and preserves Overlay readability in both themes.
+- Confirm each ListCard uses one `ActionBody` control, immediate application, Standard variant, and compact peer spacing.
+- Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.
+- Confirm the complete interactive surface uses the correct Button-family member and icon-only actions have accessible names and tooltips.
+- Confirm card grids use consistent row and column gaps and peer cards have compatible arranged heights.
+- Confirm Gallery control pages follow the applicable `Variant`, `Table`, examples, topic-specific content, `Usage`, and final `Reference` sequence.
+- Recommend manual checks for light and dark themes, keyboard focus order, enlarged or localized text, collapsed optional regions, Split and Overlay layouts, and output scrolling.

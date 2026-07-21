@@ -9,11 +9,12 @@ public partial class ChunkPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("ChunkTitle", "Names the topic represented by the section."),
-        new("ChunkDescription", "Adds optional supporting context."),
-        new("ChunkBody", "Hosts the section content."),
+        new("Title", "Names the topic represented by a Chunk or Presenter."),
+        new("Description", "Adds optional supporting context."),
+        new("Body", "Hosts the required section or presenter content."),
+        new("Presentation", "Hosts ChunkHero imagery, icons, or other presented content."),
         new("PresenterMode", "Chooses Split or Overlay composition."),
-        new("PresenterPosition", "Places a Split presenter on the left or right."),
+        new("PresenterPosition", "Places Split presentation content on the left or right."),
     ];
 
     public ChunkPage()

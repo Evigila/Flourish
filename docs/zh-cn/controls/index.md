@@ -1,19 +1,33 @@
 ---
 title: 控件
-description: 了解 Flourish 控件的布局规则、交互语义与使用方式。
+description: 了解 Flourish 控件的布局、内容、交互、间距和字体约定。
 ---
 
 # 控件
 
-Flourish 控件是一组面向 WPF 应用的显式自定义控件。它们使用 Flourish 的主题、排版与交互资源，不会为 WPF 基础类型安装隐式样式。
+Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体系统和交互语言。它们不会为 WPF 基础类型安装隐式样式。
 
-所有页面内容都应由 [Chunk](chunk.md) 建立可预期的章节与间距。章节内的操作使用 [Button](button.md) 及其专用衍生控件表达语义。[Card 卡片家族](card.md)使用 `ListCard` 承载紧凑配置行，并将 `Card` 与 `IconCard` 保留给较长说明或展示型信息。[OutputCard](output-card.md) 则为操作消息提供专用表面。
+每个内容页面都以且仅以一个 [ChunkHero](chunk.md#chunkhero) 开头，随后放置一个或多个全宽 [Chunk](chunk.md)。所有内容都应位于这些区块中。当控件或文本角色没有显式选择其他字号层级时，Flourish 使用 Standard 字号。
 
-ListCard 的标题与说明各自只有一行，Body 中只有一个立即应用的交互控件，并且绝不增加 Apply 操作。`OutputCard` 将原始、持续和已完成的操作消息追加到只读历史中；内部视口负责滚动，历史长度不会决定控件的期望高度。[Overlay](overlay.md)为浮动内容提供统一的临时或强关闭约定。
+## 选择控件
+
+| 文档 | 用途 |
+| --- | --- |
+| [Chunk](chunk.md) | 页面层级、唯一头部区块、全宽区块和标准区块间距。 |
+| [Paragraph](paragraph.md) | 将多段缩进文本作为 Chunk 的唯一主体。 |
+| [Presenter](presenter.md) | 组合图片、图标组、组合视觉内容、文案和辅助控件的全宽 Split 或 Overlay 布局。 |
+| [Card](card.md) | 简洁的 Card 和 IconCard 信息，以及紧凑的 ListCard 设置行。 |
+| [OutputCard](output-card.md) | 在滚动视口中显示使用 Small 字号的输出、日志、进度、结果和错误。 |
+| [Button](button.md) | 文本、图标、整卡和窗口标题栏操作。 |
+| [DataGrid](data-grid.md) | 表格数据呈现与交互。 |
+| [Overlay](overlay.md) | 临时悬浮详情和具有强关闭语义的浮动表面。 |
+| [ScrollViewer](scroll-viewer.md) | 平滑页面滚动、逻辑滚动和 Flourish 滚动条。 |
+
+一段正文使用 `Card`，多段正文使用 `Paragraph`。一个图标使用 `IconCard`，图片、多个图标或其他组合视觉内容使用 `Presenter`。卡片没有任意主体；只有 `ListCard.ActionBody` 提供一个局部操作区。完整视觉表面可交互时，使用按钮家族中的成员。
 
 ## 开始使用
 
-应用通过 `FlourishBuilder` 启动 Shell 时，Flourish 会在显示 Shell 前将控件和主题资源加入 `Application.Resources`。需要让 WPF 设计器显示控件、在 Shell 启动前创建控件，或者不使用 Flourish Shell 时，请在应用级别显式加载主题资源：
+应用程序通过 `FlourishBuilder` 启动 Shell 时，Flourish 会在显示 Shell 前将控件和主题资源加入 `Application.Resources`。需要让控件在 WPF 设计器中呈现、在 Shell 启动前创建，或不使用 Flourish Shell 时，请在应用级显式加载资源：
 
 ```xml
 <Application
@@ -31,15 +45,4 @@ ListCard 的标题与说明各自只有一行，Body 中只有一个立即应用
 </Application>
 ```
 
-在 XAML 中使用 `http://schemas.arkheide.system/flourish` 命名空间引用控件。完整的类型与成员签名参见 [Controls API](xref:ArkheideSystem.Flourish.Controls)。
-
-## 已有专项文档
-
-- [Chunk](chunk.md)：页面章节、页首焦点区与内容间距。
-- [Button](button.md)：普通按钮、图标按钮、卡片按钮与标题栏按钮。
-- [Card](card.md)：较长信息表面、单控件 `ListCard` 配置行，以及可选的图标或图片展示内容。
-- [OutputCard](output-card.md)：在滚动视口中显示紧凑的追加式操作消息。
-- [Overlay](overlay.md)：具有明确关闭语义的临时悬浮详情与强浮层表面。
-- [ScrollViewer](scroll-viewer.md)：平滑页面滚动、虚拟化逻辑滚动与细长滚动条外观。
-
-其余控件将随重构逐步迁移到本栏目。当前可从[控件库概览](../articles/control-library.md)了解迁移状态。
+在 XAML 中通过 `http://schemas.arkheide.system/flourish` 命名空间引用控件。完整类型和成员签名参见 [Controls API](xref:ArkheideSystem.Flourish.Controls)，应用级组合规则参见[设计理念](../conception/index.md)。

@@ -7,6 +7,8 @@ description: Use Flourish Button, IconButton, CardButton, and WindowCaptionButto
 
 The Flourish button family consists of one general-purpose text button and three specialized derivatives. They keep the command, click event, content, keyboard, and automation behavior of WPF `Button` while supplying Flourish theme, focus, and pointer feedback.
 
+The complete visual boundary of every button is interactive. Choose the family member by the information shown on that boundary:
+
 | Control | Use for |
 | --- | --- |
 | `Button` | Ordinary actions expressed with text. |
@@ -83,13 +85,13 @@ When `Content` is `null`, `IconButton` uses compact `32 × 32` geometry without 
 
 ## CardButton
 
-`CardButton` represents an interactive card rather than an appearance variant of an ordinary button. Use it when invoking the complete card is the action. If only a button within the card is interactive, use a non-interactive card container with an ordinary `Button` instead.
+`CardButton` represents an interactive card rather than an appearance variant of an ordinary button. It uses an IconCard-like arrangement and is appropriate only when invoking the complete card is the action. For a local action at the right of a compact setting row, use `ListCard.ActionBody`; for an ordinary action in another layout, use `Button` or `IconButton`.
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
 | `Title` | `string` | `""` | The card heading. |
 | `Content` | inherited `object?` | `null` | The card description or other supporting content. |
-| `Icon` | `object?` | `null` | A card icon or other visual content. |
+| `Icon` | `object?` | `null` | The single icon shown by the card action. |
 | `IconPosition` | `Dock` | `Top` | Places the icon at `Left`, `Top`, `Right`, or `Bottom`. |
 
 ```xml
@@ -132,6 +134,7 @@ The button family participates in the public `HoverReveal` attached behavior. Pr
 
 ## Related content
 
-- [Chunk](chunk.md) explains how to organize buttons and card content within page sections.
+- [Chunk](chunk.md) explains how to organize buttons within page sections.
+- [Card](card.md) distinguishes non-interactive cards, ListCard action regions, and whole-card actions.
 - [Motion](../articles/configure-motion.md) configures hover reveal and reduced motion.
 - The [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant), [Button API](xref:ArkheideSystem.Flourish.Controls.Button), [IconButton API](xref:ArkheideSystem.Flourish.Controls.IconButton), [CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton), and [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton) list all members.

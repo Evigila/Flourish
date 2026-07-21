@@ -10,15 +10,14 @@
   Unloaded="Page_Unloaded"
   UseLayoutRounding="True"
 >
-  <Grid>
-    <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
       <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
         <flourish:ChunkHero
-          ChunkHeroDescription="Anchored floating content with two dismissal contracts."
-          ChunkHeroTitle="Overlay"
+          Description="Anchored floating content with two dismissal contracts."
+          Title="Overlay"
         />
 
-        <flourish:Chunk ChunkTitle="Variant">
+        <flourish:Chunk Title="Variant">
           <UniformGrid Columns="2">
             <flourish:Overlay Margin="0,0,8,0" Variant="Temporary">
               <StackPanel>
@@ -43,7 +42,7 @@
           </UniformGrid>
         </flourish:Chunk>
 
-        <flourish:Chunk ChunkTitle="Table">
+        <flourish:Chunk Title="Table">
           <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
               <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
@@ -52,60 +51,115 @@
           </flourish:DataGrid>
         </flourish:Chunk>
 
-        <flourish:Chunk ChunkTitle="Example">
-          <UniformGrid Columns="2">
-            <flourish:Card
-              Margin="0,0,8,0"
-              Text="Hover or activate the button."
+        <flourish:Chunk Title="Example">
+          <StackPanel>
+            <flourish:ListCard
+              Icon="&#xE823;"
+              MainText="Hover or activate the action to show a temporary surface."
               Title="Temporary preview"
             >
-              <flourish:Card.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button
                   x:Name="TemporaryTrigger"
                   Click="TemporaryTrigger_Click"
                   Content="Show temporary Overlay"
                   MouseEnter="TemporaryTrigger_MouseEnter"
                 />
-              </flourish:Card.Body>
-            </flourish:Card>
+              </flourish:ListCard.ActionBody>
+            </flourish:ListCard>
             <flourish:CardButton
               x:Name="StrongTrigger"
-              Margin="8,0,0,0"
+              Margin="{DynamicResource FlourishListCardPeerMargin}"
               Click="StrongTrigger_Click"
               Content="Open until explicitly dismissed."
               Icon="&#xE77B;"
               Title="Show strong Overlay"
             />
-          </UniformGrid>
+
+            <Popup
+              x:Name="TemporaryPopup"
+              AllowsTransparency="True"
+              Placement="Bottom"
+              PopupAnimation="Fade"
+              StaysOpen="True"
+            >
+              <flourish:Overlay
+                x:Name="TemporaryOverlay"
+                Width="300"
+                Margin="0,6,0,0"
+                DismissRequested="Overlay_DismissRequested"
+                Variant="Temporary"
+              >
+                <StackPanel>
+                  <flourish:FlourishTextBlock Role="CardTitle" Text="Temporary Overlay" />
+                  <flourish:FlourishTextBlock
+                    Margin="0,4,0,0"
+                    Role="Description"
+                    Text="Move the pointer here, then leave both this surface and its trigger to close it."
+                    TextWrapping="Wrap"
+                  />
+                </StackPanel>
+              </flourish:Overlay>
+            </Popup>
+
+            <Popup
+              x:Name="StrongPopup"
+              AllowsTransparency="True"
+              Opened="StrongPopup_Opened"
+              Placement="Bottom"
+              PopupAnimation="Fade"
+              StaysOpen="False"
+            >
+              <flourish:Overlay
+                x:Name="StrongOverlay"
+                Width="320"
+                Margin="0,6,0,0"
+                DismissRequested="Overlay_DismissRequested"
+                PreviewKeyDown="Page_PreviewKeyDown"
+                Variant="Strong"
+              >
+                <StackPanel>
+                  <flourish:FlourishTextBlock Role="CardTitle" Text="Strong Overlay" />
+                  <flourish:FlourishTextBlock
+                    Margin="0,4,0,12"
+                    Role="Description"
+                    Text="Pointer movement does not close this surface. Use the action, Escape, or click elsewhere."
+                    TextWrapping="Wrap"
+                  />
+                  <flourish:Button
+                    x:Name="StrongCloseButton"
+                    HorizontalAlignment="Left"
+                    Click="StrongCloseButton_Click"
+                    Content="Close Overlay"
+                  />
+                </StackPanel>
+              </flourish:Overlay>
+            </Popup>
+          </StackPanel>
         </flourish:Chunk>
 
-        <flourish:Chunk ChunkTitle="Dismissal">
-          <flourish:FlourishTextBlock
-            Role="Paragraph"
-            Text="PlacementTarget extends Temporary hover tracking to the anchor. DismissRequested tells the host to close."
-          />
+        <flourish:Chunk Title="Dismissal">
+          <flourish:Card MainText="PlacementTarget extends Temporary hover tracking to the anchor. DismissRequested tells the host to close." />
         </flourish:Chunk>
 
-        <flourish:Chunk ChunkTitle="Interactive triggers">
-          <flourish:FlourishTextBlock Role="Paragraph" Text="Use Button, IconButton, or CardButton. Card is an information surface and is not an Overlay trigger." />
+        <flourish:Chunk Title="Interactive triggers">
+          <flourish:Card MainText="Use Button, IconButton, or CardButton. Card is an information surface and is not an Overlay trigger." />
         </flourish:Chunk>
 
-        <flourish:Chunk ChunkTitle="Usage">
-          <UniformGrid Columns="2">
-            <flourish:Card Margin="0,0,8,0" Title="Popup host">
-              <flourish:Card.Body>
-                <flourish:FlourishTextBlock
-                  FontFamily="{DynamicResource FlourishOutputFontFamily}"
-                  Role="Caption"
-                  Text="overlay.PlacementTarget = trigger;&#x0a;popup.PlacementTarget = trigger;&#x0a;popup.IsOpen = true;"
-                />
-              </flourish:Card.Body>
-            </flourish:Card>
-            <flourish:Card Margin="8,0,0,0" Text="Popup or Shell owns visibility and placement. Overlay owns its surface and dismissal request." />
-          </UniformGrid>
+        <flourish:Chunk Title="Usage">
+          <flourish:Presenter
+            Description="Popup or Shell owns visibility and placement. Overlay owns its surface and dismissal request."
+            Title="Popup host"
+          >
+            <flourish:FlourishTextBlock
+              FontFamily="{DynamicResource FlourishOutputFontFamily}"
+              Role="Caption"
+              Text="overlay.PlacementTarget = trigger;&#x0a;popup.PlacementTarget = trigger;&#x0a;popup.IsOpen = true;"
+            />
+          </flourish:Presenter>
         </flourish:Chunk>
 
-        <flourish:Chunk ChunkTitle="Reference">
+        <flourish:Chunk Title="Reference">
           <UniformGrid Columns="2">
             <flourish:CardButton
               Margin="0,0,8,0"
@@ -129,65 +183,4 @@
         </flourish:Chunk>
       </StackPanel>
     </flourish:ScrollViewer>
-
-    <Popup
-      x:Name="TemporaryPopup"
-      AllowsTransparency="True"
-      Placement="Bottom"
-      PopupAnimation="Fade"
-      StaysOpen="True"
-    >
-      <flourish:Overlay
-        x:Name="TemporaryOverlay"
-        Width="300"
-        Margin="0,6,0,0"
-        DismissRequested="Overlay_DismissRequested"
-        Variant="Temporary"
-      >
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="CardTitle" Text="Temporary Overlay" />
-          <flourish:FlourishTextBlock
-            Margin="0,4,0,0"
-            Role="Description"
-            Text="Move the pointer here, then leave both this surface and its trigger to close it."
-            TextWrapping="Wrap"
-          />
-        </StackPanel>
-      </flourish:Overlay>
-    </Popup>
-
-    <Popup
-      x:Name="StrongPopup"
-      AllowsTransparency="True"
-      Opened="StrongPopup_Opened"
-      Placement="Bottom"
-      PopupAnimation="Fade"
-      StaysOpen="False"
-    >
-      <flourish:Overlay
-        x:Name="StrongOverlay"
-        Width="320"
-        Margin="0,6,0,0"
-        DismissRequested="Overlay_DismissRequested"
-        PreviewKeyDown="Page_PreviewKeyDown"
-        Variant="Strong"
-      >
-        <StackPanel>
-          <flourish:FlourishTextBlock Role="CardTitle" Text="Strong Overlay" />
-          <flourish:FlourishTextBlock
-            Margin="0,4,0,12"
-            Role="Description"
-            Text="Pointer movement does not close this surface. Use the action, Escape, or click elsewhere."
-            TextWrapping="Wrap"
-          />
-          <flourish:Button
-            x:Name="StrongCloseButton"
-            HorizontalAlignment="Left"
-            Click="StrongCloseButton_Click"
-            Content="Close Overlay"
-          />
-        </StackPanel>
-      </flourish:Overlay>
-    </Popup>
-  </Grid>
 </Page>

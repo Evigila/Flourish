@@ -476,7 +476,7 @@
                         x:Name="ApplicationInfoLogoFallback"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontSize="{DynamicResource FlourishFontSizeExtraLarge}"
+                        FontSize="{DynamicResource FlourishFontSizeStandard}"
                         Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
                       />
                     </Grid>

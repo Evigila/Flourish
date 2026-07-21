@@ -5,5 +5,5 @@ items:
   href: api/
 - name: Controls
   href: controls/
-- name: Conception
+- name: Design principles
   href: conception/

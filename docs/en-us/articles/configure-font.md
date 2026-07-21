@@ -1,11 +1,11 @@
 ---
 title: Typography
-description: Set the global font used by Flourish shell surfaces and application pages, with optional page-specific overrides.
+description: Configure the font family and six Flourish font-size tiers, with Standard as the default when no tier is selected explicitly.
 ---
 
 # Typography
 
-Use `UseGlobalFont` inside `ConfigureShell` to set the font family, five text sizes, and the dedicated icon size for shell surfaces, navigated application pages, and the Profile page.
+Use `UseGlobalFont` inside `ConfigureShell` to set the font family and six size tiers for shell surfaces, navigated application pages, and the Profile page.
 
 ## Configure shell typography
 
@@ -16,7 +16,20 @@ builder.ConfigureShell(shell =>
 
 The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `UseGlobalFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
 
-Built-in controls use Standard for ordinary text, Small for navigation group labels and status/output text, Icon for glyphs, Large with `Bold` for card titles and the selected title-bar title, ExtraLarge with `Bold` for Chunk titles, and HeaderSize with `Bold` for ChunkHero titles. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitlebarApplicationInfo` retains its own WPF typography choices.
+## Size tier roles
+
+When a text element or control does not explicitly select a font-size tier, it uses Standard. Treat that as the universal default rather than choosing another tier for visual emphasis.
+
+| Tier | Role |
+| --- | --- |
+| `Small` | Navigation group labels, OutputCard output, and other compact status or caption text owned by a control. |
+| `Standard` | All ordinary body and control text, including unspecified text. |
+| `Icon` | General icon glyphs. Specialized icon controls may apply a local correction for their geometry. |
+| `Large` | Card titles and the selected title-bar title. |
+| `ExtraLarge` | The section-title family, including `Chunk.Title`. |
+| `HeaderSize` | Reserved for the page title in `ChunkHero`. |
+
+Large, ExtraLarge, and HeaderSize title roles use `Bold`. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitlebarApplicationInfo` retains its own WPF typography choices.
 
 Small and Standard have compact line spacing and bottom space; Large, ExtraLarge, and HeaderSize progressively add more, while Icon adds none.
 

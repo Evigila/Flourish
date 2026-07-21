@@ -6,31 +6,29 @@ using WpfControl = System.Windows.Controls.Control;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// Defines a consistently spaced page section with a title, optional description,
-/// and body content.
+/// Defines a full-width page section with a required title and body plus an optional description.
 /// </summary>
-[ContentProperty(nameof(ChunkBody))]
+[ContentProperty(nameof(Body))]
 public class Chunk : WpfControl
 {
     private static readonly Thickness DefaultChunkMargin = new(0, 32, 0, 0);
     private static readonly Thickness DefaultChunkSpacing = new(0, 12, 0, 0);
 
-    /// <summary>Identifies the <see cref="ChunkTitle" /> dependency property.</summary>
-    public static readonly DependencyProperty ChunkTitleProperty = DependencyProperty.Register(
-        nameof(ChunkTitle),
+    /// <summary>Identifies the <see cref="Title" /> dependency property.</summary>
+    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+        nameof(Title),
         typeof(string),
         typeof(Chunk),
         new FrameworkPropertyMetadata(string.Empty)
     );
 
-    /// <summary>Identifies the <see cref="ChunkDescription" /> dependency property.</summary>
-    public static readonly DependencyProperty ChunkDescriptionProperty =
-        DependencyProperty.Register(
-            nameof(ChunkDescription),
-            typeof(string),
-            typeof(Chunk),
-            new FrameworkPropertyMetadata(null)
-        );
+    /// <summary>Identifies the <see cref="Description" /> dependency property.</summary>
+    public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
+        nameof(Description),
+        typeof(string),
+        typeof(Chunk),
+        new FrameworkPropertyMetadata(null)
+    );
 
     /// <summary>Identifies the <see cref="ChunkMargin" /> dependency property.</summary>
     public static readonly DependencyProperty ChunkMarginProperty = DependencyProperty.Register(
@@ -49,12 +47,12 @@ public class Chunk : WpfControl
             new FrameworkPropertyMetadata(DefaultChunkSpacing)
         );
 
-    /// <summary>Identifies the <see cref="ChunkBody" /> dependency property.</summary>
-    public static readonly DependencyProperty ChunkBodyProperty = DependencyProperty.Register(
-        nameof(ChunkBody),
+    /// <summary>Identifies the <see cref="Body" /> dependency property.</summary>
+    public static readonly DependencyProperty BodyProperty = DependencyProperty.Register(
+        nameof(Body),
         typeof(object),
         typeof(Chunk),
-        new FrameworkPropertyMetadata(null, OnChunkBodyChanged)
+        new FrameworkPropertyMetadata(null, OnBodyChanged)
     );
 
     static Chunk()
@@ -65,45 +63,45 @@ public class Chunk : WpfControl
         );
     }
 
-    /// <summary>Gets or sets the section heading.</summary>
-    public string ChunkTitle
+    /// <summary>Gets or sets the required section heading.</summary>
+    public string Title
     {
-        get => (string)GetValue(ChunkTitleProperty);
-        set => SetValue(ChunkTitleProperty, value);
+        get => (string)GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Gets or sets the optional supporting description.</summary>
-    public string? ChunkDescription
+    /// <summary>Gets or sets optional supporting information not covered by the title.</summary>
+    public string? Description
     {
-        get => (string?)GetValue(ChunkDescriptionProperty);
-        set => SetValue(ChunkDescriptionProperty, value);
+        get => (string?)GetValue(DescriptionProperty);
+        set => SetValue(DescriptionProperty, value);
     }
 
-    /// <summary>Gets or sets the space reserved after this section.</summary>
+    /// <summary>Gets or sets the space before this section.</summary>
     public Thickness ChunkMargin
     {
         get => (Thickness)GetValue(ChunkMarginProperty);
         set => SetValue(ChunkMarginProperty, value);
     }
 
-    /// <summary>Gets or sets the spacing between the section header elements and body.</summary>
+    /// <summary>Gets or sets the spacing between the section header regions and body.</summary>
     public Thickness ChunkSpacing
     {
         get => (Thickness)GetValue(ChunkSpacingProperty);
         set => SetValue(ChunkSpacingProperty, value);
     }
 
-    /// <summary>Gets or sets the content presented by the section.</summary>
-    public object? ChunkBody
+    /// <summary>Gets or sets the required content presented by the section.</summary>
+    public object? Body
     {
-        get => GetValue(ChunkBodyProperty);
-        set => SetValue(ChunkBodyProperty, value);
+        get => GetValue(BodyProperty);
+        set => SetValue(BodyProperty, value);
     }
 
     /// <inheritdoc />
     protected override IEnumerator LogicalChildren => EnumerateLogicalChildren();
 
-    private static void OnChunkBodyChanged(
+    private static void OnBodyChanged(
         DependencyObject dependencyObject,
         DependencyPropertyChangedEventArgs eventArgs
     )
@@ -122,9 +120,9 @@ public class Chunk : WpfControl
 
     private IEnumerator EnumerateLogicalChildren()
     {
-        if (ChunkBody is not null)
+        if (Body is not null)
         {
-            yield return ChunkBody;
+            yield return Body;
         }
     }
 }

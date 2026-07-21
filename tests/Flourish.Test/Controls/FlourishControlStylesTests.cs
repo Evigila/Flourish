@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,6 +9,8 @@ using System.Windows.Media.Effects;
 using ArkheideSystem.Flourish.Controls;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using FlourishParagraph = ArkheideSystem.Flourish.Controls.Paragraph;
+using WpfBinding = System.Windows.Data.Binding;
 using WpfButton = System.Windows.Controls.Button;
 using WpfControl = System.Windows.Controls.Control;
 using WpfScrollViewer = System.Windows.Controls.ScrollViewer;
@@ -35,6 +38,8 @@ public sealed class FlourishControlStylesTests
             "/Flourish;component/Controls/CardButton.xaml",
             "/Flourish;component/Controls/Chunk.xaml",
             "/Flourish;component/Controls/ChunkHero.xaml",
+            "/Flourish;component/Controls/Presenter.xaml",
+            "/Flourish;component/Controls/Paragraph.xaml",
             "/Flourish;component/Controls/Card.xaml",
             "/Flourish;component/Controls/IconCard.xaml",
             "/Flourish;component/Controls/ListCard.xaml",
@@ -152,8 +157,8 @@ public sealed class FlourishControlStylesTests
                 Text = "\uE10F",
             };
             var iconButton = new IconButton { Icon = "\uE10F" };
-            var iconCard = new IconCard { Title = "Icon card", Presenter = "\uE8A5" };
-            var listCard = new ListCard { Title = "List card", Presenter = "\uE8A5" };
+            var iconCard = new IconCard { Title = "Icon card", Icon = "\uE8A5" };
+            var listCard = new ListCard { Title = "List card", Icon = "\uE8A5" };
             var panel = new StackPanel();
             panel.Children.Add(iconText);
             panel.Children.Add(iconButton);
@@ -174,8 +179,8 @@ public sealed class FlourishControlStylesTests
                 foreach (var (control, partName) in new (WpfControl Control, string PartName)[]
                 {
                     (iconButton, "IconHost"),
-                    (iconCard, "PresenterHost"),
-                    (listCard, "PresenterHost"),
+                    (iconCard, "IconHost"),
+                    (listCard, "IconHost"),
                 })
                 {
                     control.ApplyTemplate();
@@ -198,15 +203,16 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void CardChunkAndChunkHero_TitleHostsUseTheirExplicitHeadingTiers()
+    public void CardPresenterChunkAndChunkHero_TitleHostsUseTheirExplicitHeadingTiers()
     {
         RunInSta(() =>
         {
             WpfControl[] controls =
             [
                 new Card { Title = "Card" },
-                new Chunk { ChunkTitle = "Section" },
-                new ChunkHero { ChunkHeroTitle = "Hero" },
+                new Presenter { Title = "Presenter" },
+                new Chunk { Title = "Section" },
+                new ChunkHero { Title = "Hero" },
             ];
             var panel = new StackPanel();
             foreach (var control in controls)
@@ -226,12 +232,17 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(FontWeights.Bold, cardTitle.FontWeight);
 
                 controls[1].ApplyTemplate();
-                var chunkTitle = AssertTemplatePart<FlourishTextBlock>(controls[1], "TitleHost");
+                var presenterTitle = AssertTemplatePart<FlourishTextBlock>(controls[1], "TitleHost");
+                Assert.Equal(16d, presenterTitle.FontSize);
+                Assert.Equal(FontWeights.Bold, presenterTitle.FontWeight);
+
+                controls[2].ApplyTemplate();
+                var chunkTitle = AssertTemplatePart<FlourishTextBlock>(controls[2], "TitleHost");
                 Assert.Equal(24d, chunkTitle.FontSize);
                 Assert.Equal(FontWeights.Bold, chunkTitle.FontWeight);
 
-                controls[2].ApplyTemplate();
-                var heroTitle = AssertTemplatePart<FlourishTextBlock>(controls[2], "TitleHost");
+                controls[3].ApplyTemplate();
+                var heroTitle = AssertTemplatePart<FlourishTextBlock>(controls[3], "TitleHost");
                 Assert.Equal(32d, heroTitle.FontSize);
                 Assert.Equal(FontWeights.Bold, heroTitle.FontWeight);
             }
@@ -383,20 +394,34 @@ public sealed class FlourishControlStylesTests
                 button,
                 new Chunk
                 {
-                    ChunkTitle = "Section",
-                    ChunkDescription = "Description",
-                    ChunkBody = new Border(),
+                    Title = "Section",
+                    Description = "Description",
+                    Body = new Border(),
                 },
                 new ChunkHero
                 {
-                    ChunkHeroTitle = "Hero",
-                    ChunkHeroDescription = "Description",
-                    ChunkHeroBody = new FlourishButton { Content = "Action" },
-                    Presenter = new Border(),
+                    Title = "Hero",
+                    Description = "Description",
+                    Body = new FlourishButton { Content = "Action" },
+                    Presentation = new Border(),
                 },
-                new Card { Title = "Card", Text = "Description" },
-                new IconCard { Title = "Icon card", Presenter = "Icon" },
-                new ListCard { Title = "List card", Presenter = "Icon" },
+                new Presenter
+                {
+                    Title = "Presenter",
+                    Description = "Description",
+                    Body = new FlourishButton { Content = "Action" },
+                    Presentation = new Border(),
+                },
+                new FlourishParagraph
+                {
+                    Items =
+                    {
+                        new FlourishTextBlock { Text = "Paragraph" },
+                    },
+                },
+                new Card { Title = "Card", MainText = "Description" },
+                new IconCard { Title = "Icon card", Icon = "\uE8A5" },
+                new ListCard { Title = "List card", Icon = "\uE8A5" },
                 new OutputCard(),
                 new Overlay { Content = "Overlay" },
                 new FlourishCheckBox { Content = "Check" },
@@ -476,7 +501,7 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void ChunkHero_PresenterModesArrangePresenterAndTextAndNullPresenterUsesFullWidth()
+    public void ChunkHero_PresenterModesArrangePresentationAndCopyAndNullPresentationUsesFullWidth()
     {
         RunInSta(() =>
         {
@@ -489,7 +514,7 @@ public sealed class FlourishControlStylesTests
                     PresenterColumn = 1,
                     TextColumn = 0,
                     ColumnSpan = 1,
-                    ScrimOpacity = 0d,
+                    ScrimVisibility = Visibility.Collapsed,
                 },
                 new
                 {
@@ -498,7 +523,7 @@ public sealed class FlourishControlStylesTests
                     PresenterColumn = 0,
                     TextColumn = 1,
                     ColumnSpan = 1,
-                    ScrimOpacity = 0d,
+                    ScrimVisibility = Visibility.Collapsed,
                 },
                 new
                 {
@@ -507,7 +532,7 @@ public sealed class FlourishControlStylesTests
                     PresenterColumn = 0,
                     TextColumn = 0,
                     ColumnSpan = 2,
-                    ScrimOpacity = 1d,
+                    ScrimVisibility = Visibility.Visible,
                 },
             };
 
@@ -515,11 +540,11 @@ public sealed class FlourishControlStylesTests
             {
                 var hero = new ChunkHero
                 {
-                    ChunkHeroTitle = expectation.Mode.ToString(),
-                    ChunkHeroBody = new Border(),
+                    Title = expectation.Mode.ToString(),
+                    Body = new Border(),
                     PresenterMode = expectation.Mode,
                     PresenterPosition = expectation.Position,
-                    Presenter = new Border(),
+                    Presentation = new Border(),
                 };
                 var window = CreateWindow(hero);
 
@@ -531,9 +556,9 @@ public sealed class FlourishControlStylesTests
 
                     var presenter = AssertTemplatePart<ContentPresenter>(
                         hero,
-                        "PresenterHost"
+                        "PresentationHost"
                     );
-                    var text = AssertTemplatePart<Border>(hero, "TextSurface");
+                    var text = AssertTemplatePart<Border>(hero, "CopySurface");
                     var scrim = AssertTemplatePart<Border>(hero, "OverlayScrim");
                     var body = AssertTemplatePart<ContentPresenter>(hero, "BodyHost");
                     var clipHost = AssertTemplatePart<Grid>(hero, "PART_ClipHost");
@@ -543,7 +568,7 @@ public sealed class FlourishControlStylesTests
                     Assert.Equal(expectation.TextColumn, Grid.GetColumn(text));
                     Assert.Equal(expectation.ColumnSpan, Grid.GetColumnSpan(presenter));
                     Assert.Equal(expectation.ColumnSpan, Grid.GetColumnSpan(text));
-                    Assert.Equal(expectation.ScrimOpacity, scrim.Opacity);
+                    Assert.Equal(expectation.ScrimVisibility, scrim.Visibility);
                     Assert.Equal(HorizontalAlignment.Stretch, body.HorizontalAlignment);
                     Assert.Equal(new Thickness(0, 32, 0, 0), hero.Margin);
                     Assert.True(roundedClip.IsFrozen);
@@ -621,7 +646,7 @@ public sealed class FlourishControlStylesTests
 
             var presenterlessHero = new ChunkHero
             {
-                ChunkHeroTitle = "Presenterless",
+                Title = "Presenterless",
                 PresenterMode = PresenterMode.Split,
                 PresenterPosition = PresenterPosition.Left,
             };
@@ -635,11 +660,11 @@ public sealed class FlourishControlStylesTests
 
                 var presenter = AssertTemplatePart<ContentPresenter>(
                     presenterlessHero,
-                    "PresenterHost"
+                    "PresentationHost"
                 );
                 var text = AssertTemplatePart<Border>(
                     presenterlessHero,
-                    "TextSurface"
+                    "CopySurface"
                 );
 
                 Assert.Equal(Visibility.Collapsed, presenter.Visibility);
@@ -654,12 +679,274 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void Presenter_UsesFullWidthSplitAndOverlayLayoutsAndCollapsesAbsentRegions()
+    {
+        RunInSta(() =>
+        {
+            var splitRight = new Presenter
+            {
+                Title = "Right",
+                Presentation = new Border(),
+            };
+            var splitLeft = new Presenter
+            {
+                Title = "Left",
+                Presentation = new Border(),
+                PresenterPosition = PresenterPosition.Left,
+            };
+            var overlay = new Presenter
+            {
+                Title = "Overlay",
+                Description = "Supporting copy",
+                Body = new Border(),
+                Presentation = new Border(),
+                PresenterMode = PresenterMode.Overlay,
+            };
+            var overlayWithoutPresentation = new Presenter
+            {
+                Title = "No presentation",
+                Description = "Foreground remains readable",
+                Body = new Border(),
+                PresenterMode = PresenterMode.Overlay,
+                PresenterPosition = PresenterPosition.Left,
+            };
+            var empty = new Presenter();
+            var panel = new StackPanel
+            {
+                Children =
+                {
+                    splitRight,
+                    splitLeft,
+                    overlay,
+                    overlayWithoutPresentation,
+                    empty,
+                },
+            };
+            var window = CreateWindow(panel);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var presenter in new[]
+                {
+                    splitRight,
+                    splitLeft,
+                    overlay,
+                    overlayWithoutPresentation,
+                    empty,
+                })
+                {
+                    presenter.ApplyTemplate();
+                    Assert.Equal(HorizontalAlignment.Stretch, presenter.HorizontalAlignment);
+                    Assert.Null(presenter.Background);
+                    Assert.Null(presenter.BorderBrush);
+                    Assert.Equal(new Thickness(), presenter.BorderThickness);
+                    Assert.Equal(14d, presenter.FontSize);
+                }
+
+                AssertPresenterLayout(
+                    splitRight,
+                    presentationColumn: 1,
+                    copyColumn: 0,
+                    columnSpan: 1,
+                    scrimVisibility: Visibility.Collapsed
+                );
+                AssertPresenterLayout(
+                    splitLeft,
+                    presentationColumn: 0,
+                    copyColumn: 1,
+                    columnSpan: 1,
+                    scrimVisibility: Visibility.Collapsed
+                );
+                AssertPresenterLayout(
+                    overlay,
+                    presentationColumn: 0,
+                    copyColumn: 0,
+                    columnSpan: 2,
+                    scrimVisibility: Visibility.Visible
+                );
+
+                var absentPresentation = AssertTemplatePart<ContentPresenter>(
+                    overlayWithoutPresentation,
+                    "PresentationHost"
+                );
+                var readableCopy = AssertTemplatePart<Border>(
+                    overlayWithoutPresentation,
+                    "CopySurface"
+                );
+                var readableTitle = AssertTemplatePart<FlourishTextBlock>(
+                    overlayWithoutPresentation,
+                    "TitleHost"
+                );
+                var readableDescription = AssertTemplatePart<FlourishTextBlock>(
+                    overlayWithoutPresentation,
+                    "DescriptionHost"
+                );
+                var readableBody = AssertTemplatePart<ContentPresenter>(
+                    overlayWithoutPresentation,
+                    "BodyHost"
+                );
+                Assert.Equal(Visibility.Collapsed, absentPresentation.Visibility);
+                Assert.Equal(0, Grid.GetColumn(readableCopy));
+                Assert.Equal(2, Grid.GetColumnSpan(readableCopy));
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<Border>(overlayWithoutPresentation, "OverlayScrim")
+                        .Visibility
+                );
+                Assert.Same(overlayWithoutPresentation.Foreground, readableTitle.Foreground);
+                Assert.Same(
+                    overlayWithoutPresentation.Foreground,
+                    readableDescription.Foreground
+                );
+                Assert.Same(
+                    overlayWithoutPresentation.Foreground,
+                    readableBody.GetValue(TextElement.ForegroundProperty)
+                );
+
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<StackPanel>(empty, "CopyHost").Visibility
+                );
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<FlourishTextBlock>(empty, "TitleHost").Visibility
+                );
+                var emptyDescription = AssertTemplatePart<FlourishTextBlock>(
+                    empty,
+                    "DescriptionHost"
+                );
+                var emptyBody = AssertTemplatePart<ContentPresenter>(empty, "BodyHost");
+                Assert.Equal(Visibility.Collapsed, emptyDescription.Visibility);
+                Assert.Equal(new Thickness(), emptyDescription.Margin);
+                Assert.Equal(Visibility.Collapsed, emptyBody.Visibility);
+                Assert.Equal(new Thickness(), emptyBody.Margin);
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<ContentPresenter>(empty, "PresentationHost").Visibility
+                );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Paragraph_DoesNotRenderBackgroundOrBorderProperties()
+    {
+        RunInSta(() =>
+        {
+            var paragraph = new FlourishParagraph
+            {
+                Background = Brushes.Red,
+                BorderBrush = Brushes.Blue,
+                BorderThickness = new Thickness(8),
+                Items = { new FlourishTextBlock { Text = "Paragraph" } },
+            };
+            var window = CreateWindow(paragraph);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                paragraph.ApplyTemplate();
+
+                Assert.Same(Brushes.Red, paragraph.Background);
+                Assert.Same(Brushes.Blue, paragraph.BorderBrush);
+                Assert.Equal(new Thickness(8), paragraph.BorderThickness);
+                Assert.IsType<ItemsPresenter>(VisualTreeHelper.GetChild(paragraph, 0));
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Paragraph_UsesFourFontMeasuredSpacesWithoutWholeItemInset()
+    {
+        RunInSta(() =>
+        {
+            var bindingSource = new System.Windows.Controls.TextBlock
+            {
+                Text = "First paragraph",
+            };
+            var first = new FlourishTextBlock { FontSize = 14 };
+            System.Windows.Data.BindingOperations.SetBinding(
+                first,
+                System.Windows.Controls.TextBlock.TextProperty,
+                new WpfBinding(nameof(System.Windows.Controls.TextBlock.Text))
+            );
+            var second = new FlourishTextBlock { Text = "Second paragraph" };
+            var paragraph = new FlourishParagraph
+            {
+                DataContext = bindingSource,
+                Items = { first, second },
+            };
+            var window = CreateWindow(paragraph);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                paragraph.ApplyTemplate();
+
+                Assert.Equal(14d, paragraph.FontSize);
+                Assert.Equal(HorizontalAlignment.Stretch, paragraph.HorizontalAlignment);
+                Assert.Equal(TextWrapping.Wrap, first.TextWrapping);
+                Assert.Equal(TextWrapping.Wrap, second.TextWrapping);
+
+                var firstContainer = Assert.IsType<ContentPresenter>(
+                    paragraph.ItemContainerGenerator.ContainerFromIndex(0)
+                );
+                var secondContainer = Assert.IsType<ContentPresenter>(
+                    paragraph.ItemContainerGenerator.ContainerFromIndex(1)
+                );
+                Assert.Equal(new Thickness(), firstContainer.Margin);
+                Assert.Equal(new Thickness(0, 12, 0, 0), secondContainer.Margin);
+
+                var firstProxy = Assert.IsType<System.Windows.Controls.TextBlock>(
+                    firstContainer.Content
+                );
+                var secondProxy = Assert.IsType<System.Windows.Controls.TextBlock>(
+                    secondContainer.Content
+                );
+                Assert.Equal("ParagraphTextProxy", firstProxy.Name);
+                Assert.Equal("ParagraphTextProxy", secondProxy.Name);
+                Assert.Equal("First paragraph", first.Text);
+                Assert.Equal("    First paragraph", firstProxy.Text);
+                Assert.Equal("    Second paragraph", secondProxy.Text);
+
+                var initialIndentWidth = MeasureParagraphIndent(firstProxy);
+                first.FontSize = 28;
+                bindingSource.Text = "Updated paragraph";
+                window.UpdateLayout();
+
+                Assert.Equal("Updated paragraph", first.Text);
+                Assert.Equal("    Updated paragraph", firstProxy.Text);
+                Assert.Equal(28d, firstProxy.FontSize);
+                Assert.True(MeasureParagraphIndent(firstProxy) > initialIndentWidth);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void ButtonFamily_UsesCompactIconOnlyGeometryAndKeepsCaptionGeometrySpecialized()
     {
         RunInSta(() =>
         {
             var button = new FlourishButton { Content = "Action" };
             var icon = new IconButton { Icon = "Icon" };
+            var emptyContentIcon = new IconButton { Icon = "Icon", Content = "" };
             var labeledIcon = new IconButton { Icon = "Icon", Content = "Action" };
             var caption = new WindowCaptionButton { Icon = "Caption" };
             var card = new CardButton
@@ -668,9 +955,19 @@ public sealed class FlourishControlStylesTests
                 Title = "Title",
                 Content = "Description",
             };
+            var emptyCard = new CardButton { Icon = "", Title = "", Content = "" };
             var panel = new StackPanel
             {
-                Children = { button, icon, labeledIcon, caption, card },
+                Children =
+                {
+                    button,
+                    icon,
+                    emptyContentIcon,
+                    labeledIcon,
+                    caption,
+                    card,
+                    emptyCard,
+                },
             };
             var window = CreateWindow(panel);
 
@@ -680,9 +977,11 @@ public sealed class FlourishControlStylesTests
                 window.UpdateLayout();
                 button.ApplyTemplate();
                 icon.ApplyTemplate();
+                emptyContentIcon.ApplyTemplate();
                 labeledIcon.ApplyTemplate();
                 caption.ApplyTemplate();
                 card.ApplyTemplate();
+                emptyCard.ApplyTemplate();
 
                 Assert.Equal(32, button.MinHeight);
                 Assert.Equal(72, button.MinWidth);
@@ -691,6 +990,9 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(0, icon.MinWidth);
                 Assert.Equal(0, icon.MinHeight);
                 Assert.Equal(new Thickness(), icon.Padding);
+                Assert.Equal(32, emptyContentIcon.Width);
+                Assert.Equal(32, emptyContentIcon.Height);
+                Assert.Equal(new Thickness(), emptyContentIcon.Padding);
                 Assert.Equal(button.MinWidth, labeledIcon.MinWidth);
                 Assert.Equal(button.MinHeight, labeledIcon.MinHeight);
                 Assert.Equal(button.Padding, labeledIcon.Padding);
@@ -698,6 +1000,10 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(40, caption.Height);
                 AssertTemplatePart<ContentPresenter>(icon, "IconHost");
                 Assert.Null(icon.Template.FindName("ContentHost", icon));
+                AssertTemplatePart<ContentPresenter>(emptyContentIcon, "IconHost");
+                Assert.Null(
+                    emptyContentIcon.Template.FindName("ContentHost", emptyContentIcon)
+                );
                 AssertTemplatePart<ContentPresenter>(labeledIcon, "ContentHost");
                 Assert.Null(caption.Template.FindName("IconHost", caption));
                 Assert.NotNull(button.FocusVisualStyle);
@@ -714,6 +1020,20 @@ public sealed class FlourishControlStylesTests
                 Assert.Null(labeledIcon.Template.FindName("FocusChrome", labeledIcon));
                 Assert.Null(caption.Template.FindName("FocusChrome", caption));
                 Assert.Null(card.Template.FindName("FocusChrome", card));
+
+                var emptyCardIcon = Assert.IsType<ContentPresenter>(
+                    FindVisualDescendant<ContentPresenter>(emptyCard, "IconHost")
+                );
+                var emptyCardTitle = Assert.IsType<FlourishTextBlock>(
+                    FindVisualDescendant<FlourishTextBlock>(emptyCard, "TitleHost")
+                );
+                var emptyCardDescription = Assert.IsType<ContentPresenter>(
+                    FindVisualDescendant<ContentPresenter>(emptyCard, "DescriptionHost")
+                );
+                Assert.Equal(Visibility.Collapsed, emptyCardIcon.Visibility);
+                Assert.Equal(Visibility.Collapsed, emptyCardTitle.Visibility);
+                Assert.Equal(Visibility.Collapsed, emptyCardDescription.Visibility);
+                Assert.Equal(new Thickness(), emptyCardDescription.Margin);
             }
             finally
             {
@@ -882,7 +1202,7 @@ public sealed class FlourishControlStylesTests
     {
         RunInSta(() =>
         {
-            var standard = new Card { Title = "Standard", Text = "Description" };
+            var standard = new Card { Title = "Standard", MainText = "Description" };
             var elevated = new Card
             {
                 Variant = Variant.Elevated,
@@ -897,14 +1217,12 @@ public sealed class FlourishControlStylesTests
                 Background = customBrush,
                 Title = "Custom",
             };
-            var alignedContent = new Border();
             var aligned = new Card
             {
                 Width = 320,
                 Height = 180,
                 Title = "Aligned",
-                Text = "Copy",
-                Body = alignedContent,
+                MainText = "Copy",
                 ContentHorizontalAlignment = HorizontalAlignment.Right,
                 ContentVerticalAlignment = VerticalAlignment.Bottom,
             };
@@ -958,7 +1276,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Same(customBrush, customFilled.Background);
                 Assert.Equal(
                     HorizontalAlignment.Stretch,
-                    AssertTemplatePart<Grid>(standard, "BuiltInContentHost")
+                    AssertTemplatePart<StackPanel>(standard, "CopyHost")
                         .HorizontalAlignment
                 );
                 Assert.Equal(
@@ -967,20 +1285,17 @@ public sealed class FlourishControlStylesTests
                 );
                 Assert.Equal(
                     "Description",
-                    AssertTemplatePart<FlourishTextBlock>(standard, "TextHost").Text
+                    AssertTemplatePart<FlourishTextBlock>(standard, "MainTextHost").Text
                 );
                 aligned.ApplyTemplate();
                 var copyHost = AssertTemplatePart<StackPanel>(aligned, "CopyHost");
-                var bodyHost = AssertTemplatePart<ContentPresenter>(
-                    aligned,
-                    "BodyHost"
+                Assert.Equal(HorizontalAlignment.Right, copyHost.HorizontalAlignment);
+                Assert.Equal(VerticalAlignment.Bottom, copyHost.VerticalAlignment);
+                Assert.Equal(
+                    TextAlignment.Right,
+                    AssertTemplatePart<FlourishTextBlock>(aligned, "TitleHost")
+                        .TextAlignment
                 );
-                var contentGroup = AssertTemplatePart<Grid>(aligned, "BuiltInContentHost");
-                Assert.Equal(HorizontalAlignment.Right, contentGroup.HorizontalAlignment);
-                Assert.Equal(VerticalAlignment.Bottom, contentGroup.VerticalAlignment);
-                Assert.Equal(1, Grid.GetRow(copyHost));
-                Assert.Equal(0, Grid.GetRow(bodyHost));
-                Assert.Same(alignedContent, bodyHost.Content);
             }
             finally
             {
@@ -990,41 +1305,15 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void Card_ArrangesBodyAroundCopyAndCentersTheCombinedGroup()
+    public void Card_OptionalCopyRegionsCollapseWithoutLeavingSpacing()
     {
         RunInSta(() =>
         {
-            var top = new Card
-            {
-                Width = 320,
-                Height = 180,
-                Title = "Top copy",
-                Text = "Description",
-                Body = new Border { Width = 80, Height = 24 },
-                ContentHorizontalAlignment = HorizontalAlignment.Left,
-                ContentVerticalAlignment = VerticalAlignment.Top,
-            };
-            var bottom = new Card
-            {
-                Width = 320,
-                Height = 180,
-                Title = "Bottom copy",
-                Body = new Border { Width = 80, Height = 24 },
-                ContentHorizontalAlignment = HorizontalAlignment.Right,
-                ContentVerticalAlignment = VerticalAlignment.Bottom,
-            };
-            var centered = new Card
-            {
-                Width = 320,
-                Height = 180,
-                Title = "Centered copy",
-                Body = new Border { Width = 80, Height = 24 },
-                ContentHorizontalAlignment = HorizontalAlignment.Center,
-                ContentVerticalAlignment = VerticalAlignment.Center,
-            };
-            var emptyBody = new Card { Title = "No body" };
+            var titleOnly = new Card { Title = "Title" };
+            var textOnly = new Card { MainText = "Main text" };
+            var empty = new Card();
             var window = CreateWindow(
-                new StackPanel { Children = { top, bottom, centered, emptyBody } }
+                new StackPanel { Children = { titleOnly, textOnly, empty } }
             );
 
             try
@@ -1032,47 +1321,27 @@ public sealed class FlourishControlStylesTests
                 window.Show();
                 window.UpdateLayout();
 
-                foreach (var card in new[] { top, bottom, centered, emptyBody })
+                foreach (var card in new[] { titleOnly, textOnly, empty })
                 {
                     card.ApplyTemplate();
                 }
 
-                var topCopy = AssertTemplatePart<StackPanel>(top, "CopyHost");
-                var topBody = AssertTemplatePart<ContentPresenter>(top, "BodyHost");
-                Assert.Equal(0, Grid.GetRow(topCopy));
-                Assert.Equal(1, Grid.GetRow(topBody));
-
-                var bottomCopy = AssertTemplatePart<StackPanel>(bottom, "CopyHost");
-                var bottomBody = AssertTemplatePart<ContentPresenter>(bottom, "BodyHost");
-                Assert.Equal(1, Grid.GetRow(bottomCopy));
-                Assert.Equal(0, Grid.GetRow(bottomBody));
-
-                var centeredGroup = AssertTemplatePart<Grid>(
-                    centered,
-                    "BuiltInContentHost"
-                );
-                Assert.Equal(HorizontalAlignment.Center, centeredGroup.HorizontalAlignment);
-                Assert.Equal(VerticalAlignment.Center, centeredGroup.VerticalAlignment);
                 Assert.Equal(
-                    centered.ActualWidth / 2,
-                    centeredGroup.TranslatePoint(
-                        new Point(centeredGroup.ActualWidth / 2, 0),
-                        centered
-                    ).X,
-                    3
-                );
-                Assert.Equal(
-                    centered.ActualHeight / 2,
-                    centeredGroup.TranslatePoint(
-                        new Point(0, centeredGroup.ActualHeight / 2),
-                        centered
-                    ).Y,
-                    3
+                    Visibility.Collapsed,
+                    AssertTemplatePart<FlourishTextBlock>(titleOnly, "MainTextHost")
+                        .Visibility
                 );
                 Assert.Equal(
                     Visibility.Collapsed,
-                    AssertTemplatePart<ContentPresenter>(emptyBody, "BodyHost")
-                        .Visibility
+                    AssertTemplatePart<FlourishTextBlock>(textOnly, "TitleHost").Visibility
+                );
+                Assert.Equal(
+                    new Thickness(),
+                    AssertTemplatePart<FlourishTextBlock>(textOnly, "MainTextHost").Margin
+                );
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<StackPanel>(empty, "CopyHost").Visibility
                 );
             }
             finally
@@ -1087,8 +1356,8 @@ public sealed class FlourishControlStylesTests
     {
         RunInSta(() =>
         {
-            var presenterContent = new Border { Width = 24, Height = 24 };
-            var bodyContent = new FlourishComboBox
+            const string iconContent = "\uE790";
+            var actionContent = new FlourishComboBox
             {
                 Width = 160,
                 ItemsSource = new[] { "System", "Light", "Dark" },
@@ -1097,10 +1366,10 @@ public sealed class FlourishControlStylesTests
             var card = new ListCard
             {
                 Width = 520,
-                Presenter = presenterContent,
+                Icon = iconContent,
                 Title = "Theme",
-                Text = "Choose the application color theme.",
-                Body = bodyContent,
+                MainText = "Choose the application color theme.",
+                ActionBody = actionContent,
                 Variant = Variant.Filled,
                 ContentHorizontalAlignment = HorizontalAlignment.Right,
                 ContentVerticalAlignment = VerticalAlignment.Bottom,
@@ -1136,25 +1405,25 @@ public sealed class FlourishControlStylesTests
                 var surface = AssertTemplatePart<Border>(card, "SurfaceChrome");
                 Assert.Equal(new CornerRadius(8), surface.CornerRadius);
 
-                var presenter = AssertTemplatePart<ContentPresenter>(
+                var icon = AssertTemplatePart<ContentPresenter>(
                     card,
-                    "PresenterHost"
+                    "IconHost"
                 );
                 var copy = AssertTemplatePart<StackPanel>(card, "CopyHost");
-                var body = AssertTemplatePart<ContentPresenter>(card, "BodyHost");
-                Assert.Equal(0, Grid.GetColumn(presenter));
+                var action = AssertTemplatePart<ContentPresenter>(card, "ActionHost");
+                Assert.Equal(0, Grid.GetColumn(icon));
                 Assert.Equal(1, Grid.GetColumn(copy));
-                Assert.Equal(2, Grid.GetColumn(body));
-                Assert.Equal(VerticalAlignment.Center, presenter.VerticalAlignment);
+                Assert.Equal(2, Grid.GetColumn(action));
+                Assert.Equal(VerticalAlignment.Center, icon.VerticalAlignment);
                 Assert.Equal(VerticalAlignment.Center, copy.VerticalAlignment);
-                Assert.Equal(VerticalAlignment.Center, body.VerticalAlignment);
-                Assert.Equal(new Thickness(8, 0, 24, 0), presenter.Margin);
-                Assert.Same(presenterContent, presenter.Content);
-                Assert.Same(bodyContent, body.Content);
+                Assert.Equal(VerticalAlignment.Center, action.VerticalAlignment);
+                Assert.Equal(new Thickness(8, 0, 24, 0), icon.Margin);
+                Assert.Equal(iconContent, icon.Content);
+                Assert.Same(actionContent, action.Content);
                 var title = AssertTemplatePart<FlourishTextBlock>(card, "TitleHost");
                 var description = AssertTemplatePart<FlourishTextBlock>(
                     card,
-                    "TextHost"
+                    "MainTextHost"
                 );
                 Assert.Equal(TextWrapping.NoWrap, title.TextWrapping);
                 Assert.Equal(TextWrapping.NoWrap, description.TextWrapping);
@@ -1164,18 +1433,18 @@ public sealed class FlourishControlStylesTests
                     description.TextTrimming
                 );
 
-                var emptyPresenter = AssertTemplatePart<ContentPresenter>(
+                var emptyIcon = AssertTemplatePart<ContentPresenter>(
                     empty,
-                    "PresenterHost"
+                    "IconHost"
                 );
-                var emptyBody = AssertTemplatePart<ContentPresenter>(
+                var emptyAction = AssertTemplatePart<ContentPresenter>(
                     empty,
-                    "BodyHost"
+                    "ActionHost"
                 );
-                Assert.Equal(Visibility.Collapsed, emptyPresenter.Visibility);
-                Assert.Equal(new Thickness(), emptyPresenter.Margin);
-                Assert.Equal(Visibility.Collapsed, emptyBody.Visibility);
-                Assert.Equal(new Thickness(), emptyBody.Margin);
+                Assert.Equal(Visibility.Collapsed, emptyIcon.Visibility);
+                Assert.Equal(new Thickness(), emptyIcon.Margin);
+                Assert.Equal(Visibility.Collapsed, emptyAction.Visibility);
+                Assert.Equal(new Thickness(), emptyAction.Margin);
             }
             finally
             {
@@ -1262,7 +1531,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(TextWrapping.NoWrap, outputHost.TextWrapping);
                 Assert.Equal(outputCard.Output, outputHost.Text);
                 Assert.Null(outputCard.Template.FindName("TitleHost", outputCard));
-                Assert.Null(outputCard.Template.FindName("TextHost", outputCard));
+                Assert.Null(outputCard.Template.FindName("MainTextHost", outputCard));
                 Assert.Null(outputCard.Template.FindName("BodyHost", outputCard));
                 Assert.True(scrollViewer.ScrollableHeight > 0);
                 Assert.Equal(
@@ -1298,7 +1567,7 @@ public sealed class FlourishControlStylesTests
                         Margin = index == 0
                             ? new Thickness()
                             : new Thickness(0, 4, 0, 0),
-                        Presenter = "\uE8A5",
+                        Icon = "\uE8A5",
                         Title = $"Setting {index + 1}",
                     }
                 );
@@ -1349,83 +1618,31 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void IconCard_SplitPositionsPresenterOppositeTextAndOverlayIgnoresPosition()
+    public void IconCard_ArrangesOneIconAtAnyDockAndCollapsesAbsentIcons()
     {
         RunInSta(() =>
         {
-            var expectedPositions = new Dictionary<
-                PresenterPosition,
-                (int PresenterRow, int PresenterColumn, int TextRow, int TextColumn)
-            >
-            {
-                [PresenterPosition.Left] = (1, 0, 1, 2),
-                [PresenterPosition.LeftTop] = (0, 0, 2, 2),
-                [PresenterPosition.LeftBottom] = (2, 0, 0, 2),
-                [PresenterPosition.Top] = (0, 1, 2, 1),
-                [PresenterPosition.Bottom] = (2, 1, 0, 1),
-                [PresenterPosition.Right] = (1, 2, 1, 0),
-                [PresenterPosition.RightTop] = (0, 2, 2, 0),
-                [PresenterPosition.RightBottom] = (2, 2, 0, 0),
-            };
-            var cards = expectedPositions.Keys
+            var cards = Enum.GetValues<Dock>()
                 .Select(position =>
                     new IconCard
                     {
-                        Width = 320,
-                        Height = 180,
-                        Presenter = position.ToString(),
-                        PresenterPosition = position,
+                        Icon = "\uE8A5",
+                        IconPosition = position,
                         Title = "Title",
-                        Text = "Description",
-                        Body = new Border(),
+                        MainText = "Description",
                     }
                 )
                 .ToArray();
-            var overlayLeft = new IconCard
-            {
-                Width = 320,
-                Height = 180,
-                Presenter = new Border(),
-                PresenterMode = PresenterMode.Overlay,
-                PresenterPosition = PresenterPosition.Left,
-                Title = "Overlay",
-                Body = new Border(),
-            };
-            var overlayRightBottom = new IconCard
-            {
-                Width = 320,
-                Height = 180,
-                Presenter = new Border(),
-                PresenterMode = PresenterMode.Overlay,
-                PresenterPosition = PresenterPosition.RightBottom,
-                Title = "Overlay",
-                Body = new Border(),
-            };
-            var presenterlessSplit = new IconCard
-            {
-                Width = 320,
-                Height = 180,
-                PresenterPosition = PresenterPosition.RightBottom,
-                Title = "Presenterless split",
-            };
-            var presenterlessOverlay = new IconCard
-            {
-                Width = 320,
-                Height = 180,
-                PresenterMode = PresenterMode.Overlay,
-                PresenterPosition = PresenterPosition.RightBottom,
-                Title = "Presenterless overlay",
-            };
+            var nullIcon = new IconCard { Title = "Null icon" };
+            var emptyIcon = new IconCard { Title = "Empty icon", Icon = "" };
             var panel = new StackPanel();
             foreach (var card in cards)
             {
                 panel.Children.Add(card);
             }
 
-            panel.Children.Add(overlayLeft);
-            panel.Children.Add(overlayRightBottom);
-            panel.Children.Add(presenterlessSplit);
-            panel.Children.Add(presenterlessOverlay);
+            panel.Children.Add(nullIcon);
+            panel.Children.Add(emptyIcon);
             var window = CreateWindow(panel);
 
             try
@@ -1436,128 +1653,32 @@ public sealed class FlourishControlStylesTests
                 foreach (var card in cards)
                 {
                     card.ApplyTemplate();
-                    var expectation = expectedPositions[card.PresenterPosition];
-                    var presenter = AssertTemplatePart<ContentPresenter>(
-                        card,
-                        "PresenterHost"
-                    );
-                    var text = AssertTemplatePart<Grid>(
-                        card,
-                        "BuiltInContentHost"
-                    );
-
-                    Assert.Equal(expectation.PresenterRow, Grid.GetRow(presenter));
-                    Assert.Equal(expectation.PresenterColumn, Grid.GetColumn(presenter));
-                    Assert.Equal(expectation.TextRow, Grid.GetRow(text));
-                    Assert.Equal(expectation.TextColumn, Grid.GetColumn(text));
-
-                    var copy = AssertTemplatePart<StackPanel>(card, "CopyHost");
-                    var body = AssertTemplatePart<ContentPresenter>(card, "BodyHost");
-                    if (
-                        card.PresenterPosition
-                        is PresenterPosition.Top or PresenterPosition.Bottom
-                    )
-                    {
-                        Assert.Equal(0, Grid.GetRow(copy));
-                        Assert.Equal(0, Grid.GetRow(body));
-                        Assert.Equal(0, Grid.GetColumn(copy));
-                        Assert.Equal(1, Grid.GetColumn(body));
-                    }
-                    else
-                    {
-                        Assert.Equal(0, Grid.GetRow(copy));
-                        Assert.Equal(1, Grid.GetRow(body));
-                        Assert.Equal(0, Grid.GetColumn(copy));
-                        Assert.Equal(0, Grid.GetColumn(body));
-                    }
-                }
-
-                foreach (var overlay in new[] { overlayLeft, overlayRightBottom })
-                {
-                    overlay.ApplyTemplate();
-                    var presenter = AssertTemplatePart<ContentPresenter>(
-                        overlay,
-                        "PresenterHost"
-                    );
-                    var text = AssertTemplatePart<Grid>(
-                        overlay,
-                        "BuiltInContentHost"
-                    );
-                    var scrim = AssertTemplatePart<Border>(overlay, "OverlayScrim");
-
-                    Assert.Equal(0, Grid.GetRow(presenter));
-                    Assert.Equal(3, Grid.GetRowSpan(presenter));
-                    Assert.Equal(0, Grid.GetColumn(presenter));
-                    Assert.Equal(3, Grid.GetColumnSpan(presenter));
-                    Assert.Equal(0, Grid.GetRow(text));
-                    Assert.Equal(3, Grid.GetRowSpan(text));
-                    Assert.Equal(0, Grid.GetColumn(text));
-                    Assert.Equal(3, Grid.GetColumnSpan(text));
-                    Assert.Equal(Visibility.Visible, scrim.Visibility);
+                    var icon = AssertTemplatePart<ContentPresenter>(card, "IconHost");
+                    Assert.Equal(card.IconPosition, DockPanel.GetDock(icon));
+                    Assert.Equal(card.Icon, icon.Content);
                     Assert.Equal(
-                        0,
-                        Grid.GetRow(AssertTemplatePart<StackPanel>(overlay, "CopyHost"))
+                        card.IconPosition switch
+                        {
+                            Dock.Left => new Thickness(0, 0, 16, 0),
+                            Dock.Top => new Thickness(0, 0, 0, 16),
+                            Dock.Right => new Thickness(16, 0, 0, 0),
+                            Dock.Bottom => new Thickness(0, 16, 0, 0),
+                            _ => throw new InvalidOperationException(),
+                        },
+                        icon.Margin
                     );
                     Assert.Equal(
-                        1,
-                        Grid.GetRow(
-                            AssertTemplatePart<ContentPresenter>(overlay, "BodyHost")
-                        )
-                    );
-
-                    var clipHost = AssertTemplatePart<Grid>(overlay, "PART_ClipHost");
-                    var surface = AssertTemplatePart<Border>(
-                        overlay,
-                        "PART_SurfaceChrome"
-                    );
-                    var clip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
-                    Assert.True(surface.CornerRadius.TopLeft > 0);
-                    Assert.Equal(clipHost.RenderSize.Width, clip.Bounds.Width, 3);
-                    Assert.Equal(clipHost.RenderSize.Height, clip.Bounds.Height, 3);
-                    Assert.False(clip.FillContains(new Point(0, 0)));
-                    Assert.True(
-                        clip.FillContains(
-                            new Point(
-                                surface.CornerRadius.TopLeft,
-                                surface.CornerRadius.TopLeft
-                            )
-                        )
+                        Visibility.Visible,
+                        AssertTemplatePart<StackPanel>(card, "CopyHost").Visibility
                     );
                 }
 
-                foreach (
-                    var presenterless in new[] { presenterlessSplit, presenterlessOverlay }
-                )
+                foreach (var card in new[] { nullIcon, emptyIcon })
                 {
-                    presenterless.ApplyTemplate();
-                    var presenter = AssertTemplatePart<ContentPresenter>(
-                        presenterless,
-                        "PresenterHost"
-                    );
-                    var text = AssertTemplatePart<Grid>(
-                        presenterless,
-                        "BuiltInContentHost"
-                    );
-                    var title = AssertTemplatePart<FlourishTextBlock>(
-                        presenterless,
-                        "TitleHost"
-                    );
-                    var scrim = AssertTemplatePart<Border>(
-                        presenterless,
-                        "OverlayScrim"
-                    );
-
-                    Assert.Equal(Visibility.Collapsed, presenter.Visibility);
-                    Assert.Equal(Visibility.Collapsed, scrim.Visibility);
-                    Assert.Equal(0, Grid.GetRow(text));
-                    Assert.Equal(3, Grid.GetRowSpan(text));
-                    Assert.Equal(0, Grid.GetColumn(text));
-                    Assert.Equal(3, Grid.GetColumnSpan(text));
-                    Assert.Same(presenterless.Foreground, title.Foreground);
-                    Assert.Equal(
-                        presenterless.Padding,
-                        AssertTemplatePart<Grid>(presenterless, "PART_ClipHost").Margin
-                    );
+                    card.ApplyTemplate();
+                    var icon = AssertTemplatePart<ContentPresenter>(card, "IconHost");
+                    Assert.Equal(Visibility.Collapsed, icon.Visibility);
+                    Assert.Equal(new Thickness(), icon.Margin);
                 }
             }
             finally
@@ -1782,6 +1903,72 @@ public sealed class FlourishControlStylesTests
             LoadResourceDictionary(GenericThemeSource)
         );
         return window;
+    }
+
+    private static void AssertPresenterLayout(
+        Presenter presenter,
+        int presentationColumn,
+        int copyColumn,
+        int columnSpan,
+        Visibility scrimVisibility
+    )
+    {
+        var presentation = AssertTemplatePart<ContentPresenter>(
+            presenter,
+            "PresentationHost"
+        );
+        var copy = AssertTemplatePart<Border>(presenter, "CopySurface");
+        var scrim = AssertTemplatePart<Border>(presenter, "OverlayScrim");
+
+        Assert.Equal(presentationColumn, Grid.GetColumn(presentation));
+        Assert.Equal(copyColumn, Grid.GetColumn(copy));
+        Assert.Equal(columnSpan, Grid.GetColumnSpan(presentation));
+        Assert.Equal(columnSpan, Grid.GetColumnSpan(copy));
+        Assert.Equal(scrimVisibility, scrim.Visibility);
+    }
+
+    private static double MeasureParagraphIndent(
+        System.Windows.Controls.TextBlock textBlock
+    )
+    {
+        var typeface = new Typeface(
+            textBlock.FontFamily,
+            textBlock.FontStyle,
+            textBlock.FontWeight,
+            textBlock.FontStretch
+        );
+        var formattedText = new FormattedText(
+            "    ",
+            CultureInfo.CurrentCulture,
+            textBlock.FlowDirection,
+            typeface,
+            textBlock.FontSize,
+            textBlock.Foreground,
+            VisualTreeHelper.GetDpi(textBlock).PixelsPerDip
+        );
+
+        return formattedText.WidthIncludingTrailingWhitespace;
+    }
+
+    private static T? FindVisualDescendant<T>(DependencyObject root, string name)
+        where T : FrameworkElement
+    {
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var child = VisualTreeHelper.GetChild(root, index);
+            if (child is T candidate && candidate.Name == name)
+            {
+                return candidate;
+            }
+
+            var descendant = FindVisualDescendant<T>(child, name);
+            if (descendant is not null)
+            {
+                return descendant;
+            }
+        }
+
+        return null;
     }
 
     private static T AssertTemplatePart<T>(WpfControl control, string partName)

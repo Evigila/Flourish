@@ -8,12 +8,12 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Every page calls Flourish APIs directly. Change configuration, appearance, navigation, shell surfaces, commands, window behavior, and background work without restarting the application."
+        Description="Every page calls Flourish APIs directly. Change configuration, appearance, navigation, shell surfaces, commands, window behavior, and background work without restarting the application."
         PresenterMode="Split"
         PresenterPosition="Right"
-        ChunkHeroTitle="Flourish Gallery"
+        Title="Flourish Gallery"
       >
-        <flourish:ChunkHero.Presenter>
+        <flourish:ChunkHero.Presentation>
           <Border MinHeight="180" Background="{DynamicResource FlourishHeroBackgroundBrush}" CornerRadius="12">
             <flourish:FlourishTextBlock
               HorizontalAlignment="Center"
@@ -25,12 +25,12 @@
               Text="&#xE950;"
             />
           </Border>
-        </flourish:ChunkHero.Presenter>
+        </flourish:ChunkHero.Presentation>
       </flourish:ChunkHero>
 
       <flourish:Chunk
-        ChunkDescription="Open an interactive runtime capability demo."
-        ChunkTitle="Demos"
+        Description="Open an interactive runtime capability demo."
+        Title="Demos"
       >
         <UniformGrid
           x:Name="DemoGrid"

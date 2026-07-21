@@ -16,18 +16,26 @@ internal static class FlourishRegionElementFactory
         Action<IServiceProvider>? action
     )
     {
-        var button = new IconButton
-        {
-            Width = 38,
-            Height = 32,
-            MinWidth = 0,
-            MinHeight = 0,
-            Padding = new Thickness(),
-            Margin = new Thickness(2, 4, 2, 4),
-            Icon = CreateIconOrText(iconGlyph, displayName, "FlourishFontSizeIcon"),
-            Variant = ButtonVariant.Text,
-            ToolTip = new FlourishToolTip { Content = displayName },
-        };
+        var hasIcon = !string.IsNullOrWhiteSpace(iconGlyph);
+        ButtonBase button = hasIcon
+            ? new IconButton
+            {
+                Width = 38,
+                MinWidth = 0,
+                Padding = new Thickness(),
+                Icon = CreateIconOrText(iconGlyph, displayName, "FlourishFontSizeIcon"),
+            }
+            : new ButtonBase
+            {
+                MinWidth = 38,
+                Padding = new Thickness(10, 0, 10, 0),
+                Content = displayName,
+            };
+        button.Height = 32;
+        button.MinHeight = 0;
+        button.Margin = new Thickness(2, 4, 2, 4);
+        button.Variant = ButtonVariant.Text;
+        button.ToolTip = new FlourishToolTip { Content = displayName };
         AttachClick(button, services, commandKey, action, CommandSource.TitleBar);
         return button;
     }
@@ -40,18 +48,20 @@ internal static class FlourishRegionElementFactory
         Action<IServiceProvider>? action
     )
     {
-        var button = new IconButton
-        {
-            Margin = new Thickness(8, -2, 0, -2),
-            Height = 28,
-            MinWidth = 28,
-            MinHeight = 0,
-            Padding = new Thickness(7, 0, 7, 0),
-            Icon = string.IsNullOrWhiteSpace(iconGlyph) ? null : iconGlyph,
-            Content = displayText,
-            Variant = ButtonVariant.Text,
-            ToolTip = new FlourishToolTip { Content = displayText },
-        };
+        ButtonBase button = string.IsNullOrWhiteSpace(iconGlyph)
+            ? new ButtonBase { Content = displayText }
+            : new IconButton
+            {
+                Icon = iconGlyph,
+                Content = displayText,
+            };
+        button.Margin = new Thickness(8, -2, 0, -2);
+        button.Height = 28;
+        button.MinWidth = 28;
+        button.MinHeight = 0;
+        button.Padding = new Thickness(7, 0, 7, 0);
+        button.Variant = ButtonVariant.Text;
+        button.ToolTip = new FlourishToolTip { Content = displayText };
         AttachClick(button, services, commandKey, action, CommandSource.StatusBar);
         return button;
     }

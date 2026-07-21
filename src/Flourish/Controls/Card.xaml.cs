@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Windows;
-using System.Windows.Markup;
 using WpfControl = System.Windows.Controls.Control;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
@@ -26,9 +24,8 @@ public enum Variant
 }
 
 /// <summary>
-/// A themed content surface with built-in title, supporting text, and a flexible body.
+/// A themed, non-interactive surface that presents an optional title and one block of text.
 /// </summary>
-[ContentProperty(nameof(Body))]
 public class Card : WpfControl
 {
     /// <summary>Identifies the <see cref="Variant" /> dependency property.</summary>
@@ -48,20 +45,12 @@ public class Card : WpfControl
         new FrameworkPropertyMetadata(string.Empty)
     );
 
-    /// <summary>Identifies the <see cref="Text" /> dependency property.</summary>
-    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-        nameof(Text),
+    /// <summary>Identifies the <see cref="MainText" /> dependency property.</summary>
+    public static readonly DependencyProperty MainTextProperty = DependencyProperty.Register(
+        nameof(MainText),
         typeof(string),
         typeof(Card),
         new FrameworkPropertyMetadata(string.Empty)
-    );
-
-    /// <summary>Identifies the <see cref="Body" /> dependency property.</summary>
-    public static readonly DependencyProperty BodyProperty = DependencyProperty.Register(
-        nameof(Body),
-        typeof(object),
-        typeof(Card),
-        new FrameworkPropertyMetadata(null, OnBodyChanged)
     );
 
     /// <summary>
@@ -103,65 +92,32 @@ public class Card : WpfControl
         set => SetValue(VariantProperty, value);
     }
 
-    /// <summary>Gets or sets the card heading.</summary>
+    /// <summary>Gets or sets the optional card heading.</summary>
     public string Title
     {
         get => (string)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Gets or sets the card's supporting text.</summary>
-    public string Text
+    /// <summary>Gets or sets the optional body text presented by the card.</summary>
+    public string MainText
     {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
+        get => (string)GetValue(MainTextProperty);
+        set => SetValue(MainTextProperty, value);
     }
 
-    /// <summary>
-    /// Gets or sets arbitrary content displayed with the built-in title and text. This is the
-    /// card's implicit XAML content and can be <see langword="null" />.
-    /// </summary>
-    public object? Body
-    {
-        get => GetValue(BodyProperty);
-        set => SetValue(BodyProperty, value);
-    }
-
-    /// <summary>Gets or sets the horizontal alignment of the copy-and-body group.</summary>
+    /// <summary>Gets or sets the horizontal alignment of the card copy.</summary>
     public WpfHorizontalAlignment ContentHorizontalAlignment
     {
         get => (WpfHorizontalAlignment)GetValue(ContentHorizontalAlignmentProperty);
         set => SetValue(ContentHorizontalAlignmentProperty, value);
     }
 
-    /// <summary>
-    /// Gets or sets the vertical alignment of the copy-and-body group. When set to
-    /// <see cref="WpfVerticalAlignment.Bottom" />, the body is placed above the copy.
-    /// </summary>
+    /// <summary>Gets or sets the vertical alignment of the card copy.</summary>
     public WpfVerticalAlignment ContentVerticalAlignment
     {
         get => (WpfVerticalAlignment)GetValue(ContentVerticalAlignmentProperty);
         set => SetValue(ContentVerticalAlignmentProperty, value);
-    }
-
-    /// <inheritdoc />
-    protected override IEnumerator LogicalChildren => EnumerateLogicalChildren();
-
-    private static void OnBodyChanged(
-        DependencyObject dependencyObject,
-        DependencyPropertyChangedEventArgs eventArgs
-    )
-    {
-        var card = (Card)dependencyObject;
-        if (eventArgs.OldValue is not null)
-        {
-            card.RemoveLogicalChild(eventArgs.OldValue);
-        }
-
-        if (eventArgs.NewValue is not null)
-        {
-            card.AddLogicalChild(eventArgs.NewValue);
-        }
     }
 
     private static bool IsVariantValid(object value)
@@ -177,13 +133,5 @@ public class Card : WpfControl
     private static bool IsVerticalAlignmentValid(object value)
     {
         return value is WpfVerticalAlignment alignment && Enum.IsDefined(alignment);
-    }
-
-    private IEnumerator EnumerateLogicalChildren()
-    {
-        if (Body is not null)
-        {
-            yield return Body;
-        }
     }
 }

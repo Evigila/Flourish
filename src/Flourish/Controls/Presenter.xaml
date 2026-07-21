@@ -3,18 +3,15 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
-  <ControlTemplate x:Key="ChunkHeroTemplate" TargetType="{x:Type controls:ChunkHero}">
+  <ControlTemplate x:Key="PresenterTemplate" TargetType="{x:Type controls:Presenter}">
     <Border
-      x:Name="PART_HeroSurface"
-      MinHeight="{DynamicResource FlourishChunkHeroMinHeight}"
+      Padding="{TemplateBinding Padding}"
       Background="{TemplateBinding Background}"
       BorderBrush="{TemplateBinding BorderBrush}"
       BorderThickness="{TemplateBinding BorderThickness}"
-      ClipToBounds="True"
-      CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
-      <Grid x:Name="PART_ClipHost">
+      <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
@@ -31,7 +28,7 @@
           x:Name="OverlayScrim"
           Grid.ColumnSpan="2"
           Panel.ZIndex="1"
-          Background="{DynamicResource FlourishChunkHeroOverlayScrimBrush}"
+          Background="{DynamicResource FlourishCardOverlayScrimBrush}"
           IsHitTestVisible="False"
           Visibility="Collapsed"
         />
@@ -39,39 +36,35 @@
           x:Name="CopySurface"
           Grid.Column="0"
           Panel.ZIndex="2"
-          Padding="{TemplateBinding Padding}"
+          Padding="{DynamicResource FlourishPresenterCopyPadding}"
         >
           <StackPanel
+            x:Name="CopyAndBodyHost"
             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
           >
             <StackPanel x:Name="CopyHost">
               <controls:FlourishTextBlock
                 x:Name="TitleHost"
-                FontSize="{DynamicResource FlourishFontSizeHeaderSize}"
-                FontWeight="Bold"
                 Foreground="{TemplateBinding Foreground}"
-                Role="PageTitle"
+                Role="CardTitle"
                 Text="{TemplateBinding Title}"
-                TextWrapping="Wrap"
               />
               <controls:FlourishTextBlock
                 x:Name="DescriptionHost"
-                Margin="{DynamicResource FlourishChunkHeroDescriptionMargin}"
+                Margin="{DynamicResource FlourishPresenterDescriptionSpacing}"
                 Foreground="{TemplateBinding Foreground}"
-                Role="Subtitle"
+                Role="Description"
                 Text="{TemplateBinding Description}"
               />
             </StackPanel>
             <ContentPresenter
               x:Name="BodyHost"
-              Margin="{DynamicResource FlourishChunkHeroBodyMargin}"
+              Margin="{DynamicResource FlourishPresenterBodySpacing}"
               HorizontalAlignment="Stretch"
-              VerticalAlignment="Center"
+              VerticalAlignment="Stretch"
               Content="{TemplateBinding Body}"
               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-              TextElement.FontFamily="{TemplateBinding FontFamily}"
-              TextElement.FontSize="{TemplateBinding FontSize}"
               TextElement.Foreground="{TemplateBinding Foreground}"
             />
           </StackPanel>
@@ -89,9 +82,9 @@
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Visible" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
-        <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishChunkHeroOverlayForegroundBrush}" />
-        <Setter TargetName="DescriptionHost" Property="Foreground" Value="{DynamicResource FlourishChunkHeroOverlayForegroundBrush}" />
-        <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishChunkHeroOverlayForegroundBrush}" />
+        <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
+        <Setter TargetName="DescriptionHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
+        <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
       </Trigger>
       <Trigger Property="Presentation" Value="{x:Null}">
         <Setter TargetName="PresentationHost" Property="Visibility" Value="Collapsed" />
@@ -119,10 +112,10 @@
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
       </Trigger>
-      <Trigger Property="Description" Value="{x:Null}">
+      <Trigger Property="Description" Value="">
         <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="Description" Value="">
+      <Trigger Property="Description" Value="{x:Null}">
         <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
       <Trigger Property="Body" Value="{x:Null}">
@@ -165,22 +158,24 @@
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="BodyHost" Property="Margin" Value="0" />
       </MultiTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Opacity" Value="0.62" />
+      </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
-  <Style TargetType="{x:Type controls:ChunkHero}">
-    <Setter Property="Margin" Value="{DynamicResource FlourishChunkHeroMargin}" />
-    <Setter Property="Padding" Value="{DynamicResource FlourishChunkHeroPadding}" />
-    <Setter Property="Background" Value="{DynamicResource FlourishHeroBackgroundBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
-    <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
-    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
-    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
-    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
+  <Style TargetType="{x:Type controls:Presenter}">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="{x:Null}" />
+    <Setter Property="BorderBrush" Value="{x:Null}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
-    <Setter Property="Template" Value="{StaticResource ChunkHeroTemplate}" />
+    <Setter Property="Template" Value="{StaticResource PresenterTemplate}" />
   </Style>
 </ResourceDictionary>

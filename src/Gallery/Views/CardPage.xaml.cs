@@ -16,10 +16,9 @@ public partial class CardPage : Page
         {
             new("Variant", "Chooses Standard, Tonal, Filled, or Elevated."),
             new("Title", "Sets the heading."),
-            new("Text", "Sets the supporting description."),
-            new("Body", "Supplies the implicit arbitrary content."),
-            new("ContentHorizontalAlignment", "Aligns the copy-and-body group horizontally."),
-            new("ContentVerticalAlignment", "Aligns the group vertically."),
+            new("MainText", "Sets the single block of supporting copy."),
+            new("ContentHorizontalAlignment", "Aligns the title-and-copy group horizontally."),
+            new("ContentVerticalAlignment", "Aligns the title-and-copy group vertically."),
         };
         HistoryOutput.WriteLine("OutputCard is ready.");
         HistoryOutput.WriteLine(

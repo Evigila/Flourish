@@ -574,8 +574,8 @@ public sealed class FontServicePropagationTests
 
             WpfControl[] controls =
             [
-                new Chunk { ChunkTitle = "Section" },
-                new ChunkHero { ChunkHeroTitle = "Hero" },
+                new Chunk { Title = "Section" },
+                new ChunkHero { Title = "Hero" },
             ];
             var panel = new StackPanel();
             foreach (var control in controls)

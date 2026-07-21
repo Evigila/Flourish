@@ -3,14 +3,18 @@ items:
   href: index.md
 - name: Chunk
   href: chunk.md
-- name: Button
-  href: button.md
+- name: Paragraph
+  href: paragraph.md
+- name: Presenter
+  href: presenter.md
 - name: Card
   href: card.md
-- name: DataGrid
-  href: data-grid.md
 - name: OutputCard
   href: output-card.md
+- name: Button
+  href: button.md
+- name: DataGrid
+  href: data-grid.md
 - name: Overlay
   href: overlay.md
 - name: ScrollViewer

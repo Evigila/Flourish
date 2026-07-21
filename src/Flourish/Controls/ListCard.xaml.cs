@@ -1,30 +1,33 @@
 using System.Collections;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// A compact, non-interactive configuration surface with a left presenter, centered copy,
-/// and a right-aligned body. The surface always uses the Standard card variant, while
-/// interactive controls may be placed inside <see cref="Card.Body" />.
+/// A compact configuration row with a left icon, vertically stacked copy, and a right action.
 /// </summary>
-/// <remarks>
-/// <see cref="Presenter" />, the inherited copy, and <see cref="Card.Body" /> are vertically
-/// centered in one row. The inherited variant and content-alignment properties are coerced
-/// to <see cref="Variant.Standard" />, horizontal stretch, and vertical center. Title and
-/// supporting text are rendered as single trimmed lines. Body should contain one local control;
-/// selection and toggle controls should normally apply their value immediately.
-/// </remarks>
+[ContentProperty(nameof(ActionBody))]
 public class ListCard : Card
 {
-    /// <summary>Identifies the <see cref="Presenter" /> dependency property.</summary>
-    public static readonly DependencyProperty PresenterProperty = DependencyProperty.Register(
-        nameof(Presenter),
+    /// <summary>Identifies the <see cref="Icon" /> dependency property.</summary>
+    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
+        nameof(Icon),
+        typeof(string),
+        typeof(ListCard),
+        new FrameworkPropertyMetadata(null),
+        IsIconValid
+    );
+
+    /// <summary>Identifies the <see cref="ActionBody" /> dependency property.</summary>
+    public static readonly DependencyProperty ActionBodyProperty = DependencyProperty.Register(
+        nameof(ActionBody),
         typeof(object),
         typeof(ListCard),
-        new FrameworkPropertyMetadata(null, OnPresenterChanged)
+        new FrameworkPropertyMetadata(null, OnLogicalContentChanged)
     );
 
     static ListCard()
@@ -56,12 +59,19 @@ public class ListCard : Card
     }
 
     /// <summary>
-    /// Gets or sets the icon, image, or custom visual displayed in the fixed left region.
+    /// Gets or sets the single icon-font glyph displayed in the fixed left region.
     /// </summary>
-    public object? Presenter
+    public string? Icon
     {
-        get => GetValue(PresenterProperty);
-        set => SetValue(PresenterProperty, value);
+        get => (string?)GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    /// <summary>Gets or sets the interactive control displayed in the right action region.</summary>
+    public object? ActionBody
+    {
+        get => GetValue(ActionBodyProperty);
+        set => SetValue(ActionBodyProperty, value);
     }
 
     /// <inheritdoc />
@@ -88,7 +98,14 @@ public class ListCard : Card
         return WpfVerticalAlignment.Center;
     }
 
-    private static void OnPresenterChanged(
+    private static bool IsIconValid(object? value)
+    {
+        return value is null
+            || value is string icon
+                && (icon.Length == 0 || new StringInfo(icon).LengthInTextElements == 1);
+    }
+
+    private static void OnLogicalContentChanged(
         DependencyObject dependencyObject,
         DependencyPropertyChangedEventArgs eventArgs
     )
@@ -107,15 +124,9 @@ public class ListCard : Card
 
     private IEnumerator EnumerateLogicalChildren()
     {
-        var baseChildren = base.LogicalChildren;
-        while (baseChildren.MoveNext())
+        if (ActionBody is not null)
         {
-            yield return baseChildren.Current;
-        }
-
-        if (Presenter is not null)
-        {
-            yield return Presenter;
+            yield return ActionBody;
         }
     }
 }

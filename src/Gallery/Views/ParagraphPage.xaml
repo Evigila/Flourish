@@ -1,0 +1,86 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ParagraphPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        Description="Present several paragraphs as one quiet, full-width reading surface."
+        Title="Paragraph"
+      />
+
+      <flourish:Chunk Title="Table">
+        <flourish:DataGrid
+          ItemsSource="{Binding Properties, ElementName=RootPage}"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+        >
+          <DataGrid.Columns>
+            <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+            <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          </DataGrid.Columns>
+        </flourish:DataGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        Description="Each TextBlock item becomes one indented paragraph with standard spacing."
+        Title="Example"
+      >
+        <flourish:Paragraph>
+          <flourish:FlourishTextBlock Text="Paragraph is intended for sustained reading rather than a short summary. It has no title, description, background, border, or visual variant of its own." />
+          <flourish:FlourishTextBlock Text="Every TextBlock added to Paragraph is treated as a separate paragraph. The control supplies the standard first-line inset and the gap between adjacent paragraphs." />
+          <flourish:FlourishTextBlock Text="Keep Paragraph as the only Body of its Chunk. Place controls, cards, and illustrations in separate Chunks so the reading flow remains predictable." />
+        </flourish:Paragraph>
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Card or Paragraph">
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            MainText="Use Card when one concise block of copy is enough."
+            Title="One block"
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            MainText="Use Paragraph when the content needs several distinct paragraphs."
+            Title="Several paragraphs"
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Usage">
+        <flourish:Paragraph>
+          <flourish:FlourishTextBlock Text="Add TextBlock items directly. Their normal text styling remains available, but their default font size stays at the standard tier." />
+          <flourish:FlourishTextBlock Text="Do not place buttons, cards, images, or other controls inside Paragraph. Choose Presenter or another dedicated Chunk for those elements." />
+        </flourish:Paragraph>
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Reference">
+        <UniformGrid Columns="2">
+          <flourish:CardButton
+            Margin="0,0,8,0"
+            Content="Browse the Flourish source repository."
+            Icon="&#xE8A5;"
+            IsEnabled="False"
+            Title="GitHub repository"
+            ToolTip="External navigation is not available in Gallery."
+          />
+          <flourish:CardButton
+            Margin="8,0,0,0"
+            Content="Read the Paragraph guide."
+            Icon="&#xE946;"
+            IsEnabled="False"
+            Title="Paragraph documentation"
+            ToolTip="External navigation is not available in Gallery."
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:ScrollViewer>
+</Page>

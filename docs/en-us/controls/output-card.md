@@ -8,7 +8,7 @@ description: Append operation messages to a compact scrolling history that does 
 `OutputCard` displays raw messages, ongoing progress, completed results, and failures in one read-only history. It owns a themed neutral viewport inside the standard card spacing, uses compact text, and scrolls when the history exceeds the arranged height.
 
 > [!IMPORTANT]
-> `OutputCard` has no `Title`, `Text`, or arbitrary `Body`. Keep explanatory copy and actions in the containing `Chunk`, `Card`, or `ListCard`, then append each observable outcome as a message.
+> `OutputCard` has no `Title`, `Description`, `MainText`, or arbitrary `Body`. Keep explanatory copy in the containing `Chunk` and actions in a purpose-built action control, then append each observable outcome as a message.
 
 ## Basic usage
 
@@ -16,8 +16,8 @@ Place `OutputCard` beside the actions that produce its messages. In a two-column
 
 ```xml
 <flourish:Chunk
-  ChunkTitle="Report generation"
-  ChunkDescription="Generate a report and review the complete operation history.">
+  Title="Report generation"
+  Description="Generate a report and review the complete operation history.">
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
@@ -27,21 +27,21 @@ Place `OutputCard` beside the actions that produce its messages. In a two-column
 
     <StackPanel>
       <flourish:ListCard
-        Presenter="&#xE9D2;"
+        Icon="&#xE9D2;"
         Title="Generate report"
-        Text="Start a report generation pass.">
-        <flourish:ListCard.Body>
+        MainText="Start a report generation pass.">
+        <flourish:ListCard.ActionBody>
           <flourish:Button Click="GenerateReport_Click" Content="Generate" />
-        </flourish:ListCard.Body>
+        </flourish:ListCard.ActionBody>
       </flourish:ListCard>
       <flourish:ListCard
         Margin="{DynamicResource FlourishListCardPeerMargin}"
-        Presenter="&#xE74D;"
+        Icon="&#xE74D;"
         Title="Output history"
-        Text="Remove all recorded messages.">
-        <flourish:ListCard.Body>
+        MainText="Remove all recorded messages.">
+        <flourish:ListCard.ActionBody>
           <flourish:Button Click="ClearOutput_Click" Content="Clear" />
-        </flourish:ListCard.Body>
+        </flourish:ListCard.ActionBody>
       </flourish:ListCard>
     </StackPanel>
 

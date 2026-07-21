@@ -253,6 +253,8 @@ public sealed class FlourishPublicControlsTests
             var cardButton = new CardButton();
             var chunk = new Chunk();
             var chunkHero = new ChunkHero();
+            var presenter = new Presenter();
+            var paragraph = new Paragraph();
             var card = new Card();
             var iconCard = new IconCard();
             var listCard = new ListCard();
@@ -272,28 +274,35 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(Dock.Top, cardButton.IconPosition);
             Assert.Equal(string.Empty, cardButton.Title);
             Assert.IsAssignableFrom<FlourishButton>(cardButton);
-            Assert.Equal(string.Empty, chunk.ChunkTitle);
-            Assert.Null(chunk.ChunkDescription);
+            Assert.Equal(string.Empty, chunk.Title);
+            Assert.Null(chunk.Description);
             Assert.Equal(new Thickness(0, 32, 0, 0), chunk.ChunkMargin);
             Assert.Equal(new Thickness(0, 12, 0, 0), chunk.ChunkSpacing);
-            Assert.Null(chunk.ChunkBody);
-            Assert.Equal(string.Empty, chunkHero.ChunkHeroTitle);
-            Assert.Null(chunkHero.ChunkHeroDescription);
-            Assert.Null(chunkHero.ChunkHeroBody);
+            Assert.Null(chunk.Body);
+            Assert.Equal(string.Empty, chunkHero.Title);
+            Assert.Null(chunkHero.Description);
+            Assert.Null(chunkHero.Body);
             Assert.Equal(PresenterMode.Split, chunkHero.PresenterMode);
             Assert.Equal(PresenterPosition.Right, chunkHero.PresenterPosition);
-            Assert.Null(chunkHero.Presenter);
+            Assert.Null(chunkHero.Presentation);
+            Assert.IsAssignableFrom<Presenter>(chunkHero);
+            Assert.Equal(string.Empty, presenter.Title);
+            Assert.Null(presenter.Description);
+            Assert.Null(presenter.Body);
+            Assert.Null(presenter.Presentation);
+            Assert.Equal(PresenterMode.Split, presenter.PresenterMode);
+            Assert.Equal(PresenterPosition.Right, presenter.PresenterPosition);
+            Assert.Empty(paragraph.Items);
             Assert.Equal(Variant.Standard, card.Variant);
             Assert.Equal(string.Empty, card.Title);
-            Assert.Equal(string.Empty, card.Text);
-            Assert.Null(card.Body);
+            Assert.Equal(string.Empty, card.MainText);
             Assert.Equal(HorizontalAlignment.Stretch, card.ContentHorizontalAlignment);
             Assert.Equal(VerticalAlignment.Stretch, card.ContentVerticalAlignment);
-            Assert.Null(iconCard.Presenter);
-            Assert.Equal(PresenterMode.Split, iconCard.PresenterMode);
-            Assert.Equal(PresenterPosition.Left, iconCard.PresenterPosition);
+            Assert.Null(iconCard.Icon);
+            Assert.Equal(Dock.Left, iconCard.IconPosition);
             Assert.IsAssignableFrom<Card>(iconCard);
-            Assert.Null(listCard.Presenter);
+            Assert.Null(listCard.Icon);
+            Assert.Null(listCard.ActionBody);
             Assert.Equal(Variant.Standard, listCard.Variant);
             Assert.Equal(
                 HorizontalAlignment.Stretch,
@@ -378,27 +387,24 @@ public sealed class FlourishPublicControlsTests
     {
         RunInSta(() =>
         {
-            var content = new Border();
-            var presenter = new Border();
             var card = new Card
             {
                 Variant = Variant.Filled,
                 Title = "Title",
-                Text = "Supporting text",
-                Body = content,
+                MainText = "Supporting text",
                 ContentHorizontalAlignment = HorizontalAlignment.Right,
                 ContentVerticalAlignment = VerticalAlignment.Bottom,
             };
             var iconCard = new IconCard
             {
-                Presenter = presenter,
-                PresenterMode = PresenterMode.Overlay,
-                PresenterPosition = PresenterPosition.RightBottom,
+                Icon = "\uE8A5",
+                IconPosition = Dock.Bottom,
             };
-            var listPresenter = new Border();
+            var actionBody = new FlourishButton();
             var listCard = new ListCard
             {
-                Presenter = listPresenter,
+                Icon = "\uE790",
+                ActionBody = actionBody,
                 Variant = Variant.Filled,
                 ContentHorizontalAlignment = HorizontalAlignment.Right,
                 ContentVerticalAlignment = VerticalAlignment.Bottom,
@@ -410,26 +416,25 @@ public sealed class FlourishPublicControlsTests
             );
             Assert.Equal(Variant.Filled, card.Variant);
             Assert.Equal("Title", card.Title);
-            Assert.Equal("Supporting text", card.Text);
-            Assert.Same(content, card.Body);
+            Assert.Equal("Supporting text", card.MainText);
             Assert.Equal(HorizontalAlignment.Right, card.ContentHorizontalAlignment);
             Assert.Equal(VerticalAlignment.Bottom, card.ContentVerticalAlignment);
-            Assert.Same(presenter, iconCard.Presenter);
-            Assert.Equal(PresenterMode.Overlay, iconCard.PresenterMode);
-            Assert.Equal(PresenterPosition.RightBottom, iconCard.PresenterPosition);
-            Assert.Same(listPresenter, listCard.Presenter);
+            Assert.Equal("\uE8A5", iconCard.Icon);
+            Assert.Equal(Dock.Bottom, iconCard.IconPosition);
+            Assert.Equal("\uE790", listCard.Icon);
+            Assert.Same(actionBody, listCard.ActionBody);
             Assert.Equal(Variant.Standard, listCard.Variant);
             Assert.Equal(
                 HorizontalAlignment.Stretch,
                 listCard.ContentHorizontalAlignment
             );
             Assert.Equal(VerticalAlignment.Center, listCard.ContentVerticalAlignment);
-            Assert.Null(typeof(ListCard).GetProperty(nameof(IconCard.PresenterMode)));
-            Assert.Null(typeof(ListCard).GetProperty(nameof(IconCard.PresenterPosition)));
             Assert.Equal(
-                nameof(Card.Body),
-                typeof(Card).GetCustomAttribute<ContentPropertyAttribute>()?.Name
+                nameof(ListCard.ActionBody),
+                typeof(ListCard).GetCustomAttribute<ContentPropertyAttribute>()?.Name
             );
+            Assert.Null(typeof(Card).GetProperty("Text"));
+            Assert.Null(typeof(Card).GetProperty("Body"));
             Assert.Null(typeof(Card).GetProperty("Content"));
 
             var assembly = typeof(Card).Assembly;
@@ -451,8 +456,8 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(typeof(OutputCard).GetProperty(nameof(OutputCard.Output))?.SetMethod);
             Assert.False(typeof(Card).IsAssignableFrom(typeof(OutputCard)));
             Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.Title)));
-            Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.Text)));
-            Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.Body)));
+            Assert.Null(typeof(OutputCard).GetProperty(nameof(Card.MainText)));
+            Assert.Null(typeof(OutputCard).GetProperty("Body"));
 
             outputCard.WriteLine("First message");
             outputCard.WriteLine();
@@ -606,115 +611,73 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
-    public void Card_OwnsBodyLogicalContentBeforeAndAfterReplacement()
+    public void CardFamily_DoesNotExposeNestedBodyContent()
     {
-        RunInSta(() =>
-        {
-            var dataContext = new object();
-            var firstBody = new Border();
-            var replacementBody = new Border();
-            var card = new Card { DataContext = dataContext, Body = firstBody };
-            card.Resources["CardResource"] = "Available";
-
-            Assert.Same(card, LogicalTreeHelper.GetParent(firstBody));
-            Assert.Same(dataContext, firstBody.DataContext);
-            Assert.Equal("Available", firstBody.FindResource("CardResource"));
-            Assert.Equal(
-                new object[] { firstBody },
-                LogicalTreeHelper.GetChildren(card).Cast<object>()
-            );
-
-            card.Body = replacementBody;
-
-            Assert.Null(LogicalTreeHelper.GetParent(firstBody));
-            Assert.Same(card, LogicalTreeHelper.GetParent(replacementBody));
-
-            card.ClearValue(Card.BodyProperty);
-
-            Assert.Null(LogicalTreeHelper.GetParent(replacementBody));
-            Assert.Empty(LogicalTreeHelper.GetChildren(card).Cast<object>());
-        });
+        Assert.All(
+            new[] { typeof(Card), typeof(IconCard), typeof(ListCard) },
+            type => Assert.Null(type.GetProperty("Body"))
+        );
+        Assert.Null(typeof(Card).GetCustomAttribute<ContentPropertyAttribute>());
+        Assert.Null(typeof(IconCard).GetCustomAttribute<ContentPropertyAttribute>());
     }
 
     [Fact]
-    public void IconCard_OwnsPresenterLogicalContentBeforeAndAfterReplacement()
+    public void CardIcons_AcceptOnlyOneTextGlyphAndCannotHostImagesOrComposedContent()
     {
         RunInSta(() =>
         {
-            var dataContext = new object();
-            var body = new Border();
-            var firstPresenter = new Border();
-            var replacementPresenter = new Border();
-            var card = new IconCard
-            {
-                DataContext = dataContext,
-                Body = body,
-                Presenter = firstPresenter,
-            };
-            card.Resources["CardResource"] = "Available";
+            var iconCard = new IconCard { Icon = "\uE8A5" };
+            var listCard = new ListCard { Icon = "\uE790" };
 
-            Assert.Same(card, LogicalTreeHelper.GetParent(body));
-            Assert.Same(card, LogicalTreeHelper.GetParent(firstPresenter));
-            Assert.Same(dataContext, firstPresenter.DataContext);
-            Assert.Equal("Available", firstPresenter.FindResource("CardResource"));
-            Assert.Equal(
-                new object[] { body, firstPresenter },
-                LogicalTreeHelper.GetChildren(card).Cast<object>()
+            Assert.Equal(typeof(string), IconCard.IconProperty.PropertyType);
+            Assert.Equal(typeof(string), ListCard.IconProperty.PropertyType);
+            Assert.Equal("\uE8A5", iconCard.Icon);
+            Assert.Equal("\uE790", listCard.Icon);
+            Assert.Throws<ArgumentException>(() => iconCard.Icon = "\uE8A5\uE790");
+            Assert.Throws<ArgumentException>(() => listCard.Icon = "AB");
+            Assert.Throws<ArgumentException>(() =>
+                iconCard.SetValue(IconCard.IconProperty, new Image())
             );
-
-            card.Presenter = replacementPresenter;
-
-            Assert.Null(LogicalTreeHelper.GetParent(firstPresenter));
-            Assert.Same(card, LogicalTreeHelper.GetParent(replacementPresenter));
-
-            card.ClearValue(IconCard.PresenterProperty);
-
-            Assert.Null(LogicalTreeHelper.GetParent(replacementPresenter));
-            Assert.Equal(
-                new object[] { body },
-                LogicalTreeHelper.GetChildren(card).Cast<object>()
+            Assert.Throws<ArgumentException>(() =>
+                listCard.SetValue(ListCard.IconProperty, new StackPanel())
             );
         });
     }
 
     [Fact]
-    public void ListCard_OwnsPresenterLogicalContentBeforeAndAfterReplacement()
+    public void ListCard_OwnsIconAndActionLogicalContentBeforeAndAfterReplacement()
     {
         RunInSta(() =>
         {
             var dataContext = new object();
-            var body = new Border();
-            var firstPresenter = new Border();
-            var replacementPresenter = new Border();
+            var firstAction = new FlourishButton();
+            var replacementAction = new FlourishButton();
             var card = new ListCard
             {
                 DataContext = dataContext,
-                Body = body,
-                Presenter = firstPresenter,
+                Icon = "\uE8A5",
+                ActionBody = firstAction,
             };
             card.Resources["CardResource"] = "Available";
 
-            Assert.Same(card, LogicalTreeHelper.GetParent(body));
-            Assert.Same(card, LogicalTreeHelper.GetParent(firstPresenter));
-            Assert.Same(dataContext, firstPresenter.DataContext);
-            Assert.Equal("Available", firstPresenter.FindResource("CardResource"));
+            Assert.Same(card, LogicalTreeHelper.GetParent(firstAction));
+            Assert.Same(dataContext, firstAction.DataContext);
+            Assert.Equal("Available", firstAction.FindResource("CardResource"));
             Assert.Equal(
-                new object[] { body, firstPresenter },
+                new object[] { firstAction },
                 LogicalTreeHelper.GetChildren(card).Cast<object>()
             );
 
-            card.Presenter = replacementPresenter;
+            card.ActionBody = replacementAction;
 
-            Assert.Null(LogicalTreeHelper.GetParent(firstPresenter));
-            Assert.Same(card, LogicalTreeHelper.GetParent(replacementPresenter));
+            Assert.Null(LogicalTreeHelper.GetParent(firstAction));
+            Assert.Same(card, LogicalTreeHelper.GetParent(replacementAction));
 
-            card.ClearValue(ListCard.PresenterProperty);
+            card.ClearValue(ListCard.IconProperty);
+            card.ClearValue(ListCard.ActionBodyProperty);
 
-            Assert.Null(LogicalTreeHelper.GetParent(replacementPresenter));
-            Assert.Equal(
-                new object[] { body },
-                LogicalTreeHelper.GetChildren(card).Cast<object>()
-            );
+            Assert.Null(LogicalTreeHelper.GetParent(replacementAction));
+            Assert.Empty(LogicalTreeHelper.GetChildren(card).Cast<object>());
         });
     }
 
@@ -725,42 +688,42 @@ public sealed class FlourishPublicControlsTests
         {
             var chunkBody = new Border();
             var heroBody = new StackPanel();
-            var presenter = new Border();
+            var presentation = new Border();
             var chunk = new Chunk
             {
-                ChunkTitle = "Section",
-                ChunkDescription = "Supporting copy",
+                Title = "Section",
+                Description = "Supporting copy",
                 ChunkMargin = new Thickness(1, 2, 3, 4),
                 ChunkSpacing = new Thickness(5, 6, 7, 8),
-                ChunkBody = chunkBody,
+                Body = chunkBody,
             };
             var hero = new ChunkHero
             {
-                ChunkHeroTitle = "Hero",
-                ChunkHeroDescription = "Leading copy",
-                ChunkHeroBody = heroBody,
+                Title = "Hero",
+                Description = "Leading copy",
+                Body = heroBody,
                 PresenterMode = PresenterMode.Overlay,
                 PresenterPosition = PresenterPosition.Left,
-                Presenter = presenter,
+                Presentation = presentation,
             };
 
-            Assert.Equal("Section", chunk.ChunkTitle);
-            Assert.Equal("Supporting copy", chunk.ChunkDescription);
+            Assert.Equal("Section", chunk.Title);
+            Assert.Equal("Supporting copy", chunk.Description);
             Assert.Equal(new Thickness(1, 2, 3, 4), chunk.ChunkMargin);
             Assert.Equal(new Thickness(5, 6, 7, 8), chunk.ChunkSpacing);
-            Assert.Same(chunkBody, chunk.ChunkBody);
+            Assert.Same(chunkBody, chunk.Body);
             Assert.Equal(
-                nameof(Chunk.ChunkBody),
+                nameof(Chunk.Body),
                 typeof(Chunk).GetCustomAttribute<ContentPropertyAttribute>()?.Name
             );
-            Assert.Equal("Hero", hero.ChunkHeroTitle);
-            Assert.Equal("Leading copy", hero.ChunkHeroDescription);
-            Assert.Same(heroBody, hero.ChunkHeroBody);
+            Assert.Equal("Hero", hero.Title);
+            Assert.Equal("Leading copy", hero.Description);
+            Assert.Same(heroBody, hero.Body);
             Assert.Equal(PresenterMode.Overlay, hero.PresenterMode);
             Assert.Equal(PresenterPosition.Left, hero.PresenterPosition);
-            Assert.Same(presenter, hero.Presenter);
+            Assert.Same(presentation, hero.Presentation);
             Assert.Equal(
-                nameof(ChunkHero.ChunkHeroBody),
+                nameof(ChunkHero.Body),
                 typeof(ChunkHero).GetCustomAttribute<ContentPropertyAttribute>()?.Name
             );
         });
@@ -777,45 +740,86 @@ public sealed class FlourishPublicControlsTests
             var chunk = new Chunk { DataContext = dataContext };
             chunk.Resources["ChunkResource"] = "Available";
 
-            chunk.ChunkBody = firstBody;
+            chunk.Body = firstBody;
 
             Assert.Same(chunk, LogicalTreeHelper.GetParent(firstBody));
             Assert.Same(dataContext, firstBody.DataContext);
             Assert.Equal("Available", firstBody.FindResource("ChunkResource"));
 
-            chunk.ChunkBody = replacementBody;
+            chunk.Body = replacementBody;
 
             Assert.Null(LogicalTreeHelper.GetParent(firstBody));
             Assert.Same(chunk, LogicalTreeHelper.GetParent(replacementBody));
 
-            chunk.ClearValue(Chunk.ChunkBodyProperty);
+            chunk.ClearValue(Chunk.BodyProperty);
 
             Assert.Null(LogicalTreeHelper.GetParent(replacementBody));
 
-            var heroBody = new Border();
-            var heroPresenter = new Border();
-            var hero = new ChunkHero
+            var presenterBody = new Border();
+            var presentation = new Border();
+            var presenter = new Presenter
             {
                 DataContext = dataContext,
-                ChunkHeroBody = heroBody,
-                Presenter = heroPresenter,
+                Body = presenterBody,
+                Presentation = presentation,
             };
 
-            Assert.Same(hero, LogicalTreeHelper.GetParent(heroBody));
-            Assert.Same(hero, LogicalTreeHelper.GetParent(heroPresenter));
-            Assert.Same(dataContext, heroBody.DataContext);
-            Assert.Same(dataContext, heroPresenter.DataContext);
+            Assert.Same(presenter, LogicalTreeHelper.GetParent(presenterBody));
+            Assert.Same(presenter, LogicalTreeHelper.GetParent(presentation));
+            Assert.Same(dataContext, presenterBody.DataContext);
+            Assert.Same(dataContext, presentation.DataContext);
             Assert.Equal(
-                new object[] { heroBody, heroPresenter },
-                LogicalTreeHelper.GetChildren(hero).Cast<object>()
+                new object[] { presenterBody, presentation },
+                LogicalTreeHelper.GetChildren(presenter).Cast<object>()
             );
 
-            hero.ChunkHeroBody = null;
-            hero.Presenter = null;
+            presenter.Body = null;
+            presenter.Presentation = null;
 
-            Assert.Null(LogicalTreeHelper.GetParent(heroBody));
-            Assert.Null(LogicalTreeHelper.GetParent(heroPresenter));
-            Assert.Empty(LogicalTreeHelper.GetChildren(hero).Cast<object>());
+            Assert.Null(LogicalTreeHelper.GetParent(presenterBody));
+            Assert.Null(LogicalTreeHelper.GetParent(presentation));
+            Assert.Empty(LogicalTreeHelper.GetChildren(presenter).Cast<object>());
+        });
+    }
+
+    [Fact]
+    public void PresenterAndParagraph_ExposeContentContractsAndParagraphOwnsItsItems()
+    {
+        RunInSta(() =>
+        {
+            Assert.Equal(
+                nameof(Presenter.Body),
+                typeof(Presenter).GetCustomAttribute<ContentPropertyAttribute>()?.Name
+            );
+            Assert.Equal(
+                nameof(ItemsControl.Items),
+                typeof(Paragraph).GetCustomAttribute<ContentPropertyAttribute>()?.Name
+            );
+
+            var dataContext = new object();
+            var firstParagraph = new FlourishTextBlock { Text = "First" };
+            var secondParagraph = new FlourishTextBlock { Text = "Second" };
+            var paragraph = new Paragraph { DataContext = dataContext };
+            paragraph.Resources["ParagraphResource"] = "Available";
+
+            paragraph.Items.Add(firstParagraph);
+            paragraph.Items.Add(secondParagraph);
+
+            Assert.Same(paragraph, LogicalTreeHelper.GetParent(firstParagraph));
+            Assert.Same(dataContext, firstParagraph.DataContext);
+            Assert.Equal("Available", firstParagraph.FindResource("ParagraphResource"));
+            Assert.Equal(
+                new object[] { firstParagraph, secondParagraph },
+                LogicalTreeHelper.GetChildren(paragraph).Cast<object>()
+            );
+
+            paragraph.Items.Remove(firstParagraph);
+
+            Assert.Null(LogicalTreeHelper.GetParent(firstParagraph));
+            Assert.Equal(
+                new object[] { secondParagraph },
+                LogicalTreeHelper.GetChildren(paragraph).Cast<object>()
+            );
         });
     }
 
@@ -849,12 +853,16 @@ public sealed class FlourishPublicControlsTests
         {
             var button = new FlourishButton();
 
+            Assert.Equal(new[] { "Left", "Right" }, Enum.GetNames<PresenterPosition>());
             Assert.Throws<ArgumentException>(() => button.Variant = (ButtonVariant)(-1));
             Assert.Throws<ArgumentException>(() =>
-                new ChunkHero().PresenterMode = (PresenterMode)(-1)
+                new Presenter().PresenterMode = (PresenterMode)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
-                new ChunkHero().PresenterPosition = PresenterPosition.Top
+                new Presenter().PresenterPosition = (PresenterPosition)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new ChunkHero().PresenterPosition = (PresenterPosition)2
             );
             Assert.Throws<ArgumentException>(() =>
                 new CardButton().IconPosition = (Dock)(-1)
@@ -869,10 +877,7 @@ public sealed class FlourishPublicControlsTests
                 new Card().ContentVerticalAlignment = (VerticalAlignment)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
-                new IconCard().PresenterMode = (PresenterMode)(-1)
-            );
-            Assert.Throws<ArgumentException>(() =>
-                new IconCard().PresenterPosition = (PresenterPosition)(-1)
+                new IconCard().IconPosition = (Dock)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
                 new FlourishGridSplitter().Variant = (FlourishGridSplitterVariant)(-1)

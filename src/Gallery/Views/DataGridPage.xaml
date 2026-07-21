@@ -10,11 +10,11 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Present native WPF rows and columns on a Flourish surface."
-        ChunkHeroTitle="DataGrid"
+        Description="Present native WPF rows and columns on a Flourish surface."
+        Title="DataGrid"
       />
 
-      <flourish:Chunk ChunkTitle="Table">
+      <flourish:Chunk Title="Table">
         <flourish:DataGrid
           x:Name="MemberGrid"
           AutoGenerateColumns="False"
@@ -27,7 +27,7 @@
         </flourish:DataGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Example">
+      <flourish:Chunk Title="Example">
         <flourish:DataGrid
           x:Name="ExampleGrid"
           AutoGenerateColumns="False"
@@ -41,36 +41,28 @@
         </flourish:DataGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Counts">
+      <flourish:Chunk Title="Counts">
         <UniformGrid Columns="2">
-          <flourish:Card Margin="0,0,8,0" Title="Rows">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock
-                Role="Status"
-                Text="{Binding RowCount, ElementName=ExampleGrid}"
-              />
-            </flourish:Card.Body>
-          </flourish:Card>
-          <flourish:Card Margin="8,0,0,0" Title="Columns">
-            <flourish:Card.Body>
-              <flourish:FlourishTextBlock
-                Role="Status"
-                Text="{Binding ColumnCount, ElementName=ExampleGrid}"
-              />
-            </flourish:Card.Body>
-          </flourish:Card>
+          <flourish:Card
+            Margin="0,0,8,0"
+            MainText="{Binding RowCount, ElementName=ExampleGrid}"
+            Title="Rows"
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            MainText="{Binding ColumnCount, ElementName=ExampleGrid}"
+            Title="Columns"
+          />
         </UniformGrid>
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Usage">
-        <flourish:FlourishTextBlock
-          Role="Description"
-          Text="Bind ItemsSource and declare DataGridColumn objects as in WPF. RowCount and ColumnCount report current data-row and column counts; FirstColumnForeground changes the first displayed column."
-          TextWrapping="Wrap"
+      <flourish:Chunk Title="Usage">
+        <flourish:Card
+          MainText="Bind ItemsSource and declare DataGridColumn objects as in WPF. RowCount and ColumnCount report current data-row and column counts; FirstColumnForeground changes the first displayed column."
         />
       </flourish:Chunk>
 
-      <flourish:Chunk ChunkTitle="Reference">
+      <flourish:Chunk Title="Reference">
         <UniformGrid Columns="2">
           <flourish:CardButton
             Margin="0,0,8,0"

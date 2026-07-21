@@ -8,13 +8,13 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Change navigation structure and behavior at runtime."
-        ChunkHeroTitle="Navigation at runtime"
+        Description="Change navigation structure and behavior at runtime."
+        Title="Navigation at runtime"
       />
 
       <flourish:Chunk
-        ChunkDescription="Configure the live navigation panel."
-        ChunkTitle="Navigation panel"
+        Description="Configure the live navigation panel."
+        Title="Navigation panel"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -23,73 +23,73 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE700;"
+              Icon="&#xE700;"
               Title="Panel state"
-              Text="Open or close the live navigation panel."
+              MainText="Open or close the live navigation panel."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="TogglePanel_Click" Content="Open / close" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Panel availability"
-              Text="Enable or disable navigation without recreating the shell."
+              MainText="Enable or disable navigation without recreating the shell."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="TogglePanelEnabled_Click" Content="Enable / disable" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE72A;"
+              Icon="&#xE72A;"
               Title="Panel direction"
-              Text="Choose the edge that hosts the navigation panel."
+              MainText="Choose the edge that hosts the navigation panel."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" SelectionChanged="DirectionBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Open width"
-              Text="Set the panel width while navigation is open."
+              MainText="Set the panel width while navigation is open."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="OpenWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="240" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Closed width"
-              Text="Set the panel width while navigation is closed."
+              MainText="Set the panel width while navigation is closed."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="64" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Minimum width"
-              Text="Set the minimum allowed panel width."
+              MainText="Set the minimum allowed panel width."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="MinWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="150" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Maximum width"
-              Text="Set the maximum allowed panel width."
+              MainText="Set the maximum allowed panel width."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="480" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="PanelOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -97,8 +97,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Add and remove a route with its menu item."
-        ChunkTitle="Route transaction"
+        Description="Add and remove a route with its menu item."
+        Title="Route transaction"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -107,43 +107,43 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE710;"
+              Icon="&#xE710;"
               Title="Install demo route"
-              Text="Register the runtime route and its navigation item."
+              MainText="Register the runtime route and its navigation item."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="InstallRoute_Click" Content="Install demo route" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE72A;"
+              Icon="&#xE72A;"
               Title="Navigate to route"
-              Text="Open the registered runtime destination."
+              MainText="Open the registered runtime destination."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="NavigateRoute_Click" Content="Navigate to route" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Navigation item"
-              Text="Enable or disable the installed menu item."
+              MainText="Enable or disable the installed menu item."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ToggleMenuItem_Click" Content="Enable / disable item" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE74D;"
+              Icon="&#xE74D;"
               Title="Remove demo route"
-              Text="Remove the route and its navigation item."
+              MainText="Remove the route and its navigation item."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RemoveRoute_Click" Content="Remove route" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="RouteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -151,8 +151,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Manage cached page instances."
-        ChunkTitle="Page cache"
+        Description="Manage cached page instances."
+        Title="Page cache"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -161,43 +161,43 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE74E;"
+              Icon="&#xE74E;"
               Title="Enable cache"
-              Text="Retain page instances for subsequent navigation."
+              MainText="Retain page instances for subsequent navigation."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="EnableCache_Click" Content="Enable cache" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE711;"
+              Icon="&#xE711;"
               Title="Disable cache"
-              Text="Stop retaining page instances for this route."
+              MainText="Stop retaining page instances for this route."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="DisableCache_Click" Content="Disable cache" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE74D;"
+              Icon="&#xE74D;"
               Title="Evict demo page"
-              Text="Remove the demo instance while preserving its route."
+              MainText="Remove the demo instance while preserving its route."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="EvictCache_Click" Content="Evict demo page" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE74D;"
+              Icon="&#xE74D;"
               Title="Clear page cache"
-              Text="Remove every active cached page instance."
+              MainText="Remove every active cached page instance."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ClearCache_Click" Content="Clear all" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="CacheOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />

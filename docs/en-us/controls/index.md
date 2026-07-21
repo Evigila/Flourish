@@ -1,19 +1,33 @@
 ---
 title: Controls
-description: Learn the layout rules, interaction semantics, and usage of Flourish controls.
+description: Learn the layout, content, interaction, spacing, and typography contracts of Flourish controls.
 ---
 
 # Controls
 
-Flourish controls are explicit custom controls for WPF applications. They use Flourish theme, typography, and interaction resources without installing implicit styles for WPF base types.
+Flourish provides explicit WPF custom controls that share one theme, typography system, and interaction language. They do not install implicit styles for WPF base types.
 
-Every page should place its content in [Chunk](chunk.md) controls to establish predictable sections and spacing. Actions within those sections use [Button](button.md) and its specialized derivatives to communicate their intent. The [Card family](card.md) uses `ListCard` for compact configuration rows and reserves `Card` and `IconCard` for longer explanatory or display-oriented information. [OutputCard](output-card.md) provides a dedicated surface for operation messages.
+Every content page starts with exactly one [ChunkHero](chunk.md#chunkhero) and continues with one or more full-width [Chunk](chunk.md) sections. Put all content inside those sections. When no control or text role explicitly selects another font tier, Flourish uses the Standard size.
 
-A ListCard keeps its title and description to one line each, contains one immediately applied interactive control, and never adds an Apply action. `OutputCard` appends raw, ongoing, and completed operation messages to a read-only history whose internal viewport scrolls without allowing the history length to determine the control's desired height. [Overlay](overlay.md) gives floating content a shared temporary or strong dismissal contract.
+## Choose a control
+
+| Documentation | Use it for |
+| --- | --- |
+| [Chunk](chunk.md) | Page hierarchy, the single leading hero, full-width sections, and standard section spacing. |
+| [Paragraph](paragraph.md) | Several indented text paragraphs as the only body of a chunk. |
+| [Presenter](presenter.md) | Full-width Split or Overlay layouts with images, icon groups, composed visuals, copy, and supporting controls. |
+| [Card](card.md) | Concise Card and IconCard information, plus compact ListCard setting rows. |
+| [OutputCard](output-card.md) | Small-text output, logs, progress, results, and failures in a scrolling viewport. |
+| [Button](button.md) | Text, icon, whole-card, and window-caption actions. |
+| [DataGrid](data-grid.md) | Tabular data presentation and interaction. |
+| [Overlay](overlay.md) | Temporary hover details and strongly dismissible floating surfaces. |
+| [ScrollViewer](scroll-viewer.md) | Smooth page scrolling, logical scrolling, and Flourish scroll bars. |
+
+Use `Card` for one paragraph and `Paragraph` for several. Use `IconCard` for one icon, and `Presenter` for an image, several icons, or another composed visual. Cards do not have arbitrary bodies; only `ListCard.ActionBody` provides one local action region. Use a member of the Button family whenever the complete visual surface is interactive.
 
 ## Get started
 
-When an application starts its Shell through `FlourishBuilder`, Flourish adds the control and theme resources to `Application.Resources` before showing the Shell. Load the theme resources explicitly at application scope when controls must render in the WPF designer, be created before Shell startup, or work without the Flourish Shell:
+When an application starts its Shell through `FlourishBuilder`, Flourish adds the control and theme resources to `Application.Resources` before showing the Shell. Load the resources explicitly at application scope when controls must render in the WPF designer, be created before Shell startup, or work without the Flourish Shell:
 
 ```xml
 <Application
@@ -31,15 +45,4 @@ When an application starts its Shell through `FlourishBuilder`, Flourish adds th
 </Application>
 ```
 
-Reference controls in XAML through the `http://schemas.arkheide.system/flourish` namespace. See the [Controls API](xref:ArkheideSystem.Flourish.Controls) for complete type and member signatures.
-
-## Dedicated documentation
-
-- [Chunk](chunk.md): page sections, page-leading hero regions, and content spacing.
-- [Button](button.md): ordinary, icon, card, and window-caption buttons.
-- [Card](card.md): longer information surfaces, single-control `ListCard` configuration rows, and optional icon or image presenters.
-- [OutputCard](output-card.md): compact append-only operation messages in a scrolling viewport.
-- [Overlay](overlay.md): temporary hover details and strong floating surfaces with explicit dismissal semantics.
-- [ScrollViewer](scroll-viewer.md): smooth page scrolling, virtualized logical scrolling, and slender scroll bar presentation.
-
-The remaining controls will move into this section as their refactoring is completed. For now, the [control library overview](../articles/control-library.md) describes the migration status.
+Reference controls in XAML through the `http://schemas.arkheide.system/flourish` namespace. See the [Controls API](xref:ArkheideSystem.Flourish.Controls) for complete type and member signatures, and the [design principles](../conception/index.md) for the application-wide composition rules.

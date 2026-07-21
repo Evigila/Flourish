@@ -12,7 +12,7 @@ Use this skill in the Flourish repository root.
 - `.config/dotnet-tools.json`: local .NET tool manifest. DocFX is pinned as `docfx` version `2.78.5`.
 - `docs/docfx.en-us.json`: English DocFX config. Outputs to `docs/_site/en-us`.
 - `docs/docfx.zh-cn.json`: Chinese DocFX config. Outputs to `docs/_site/zh-cn` and applies `docs/zh-cn/api-overwrites/**/*.md`.
-- `docs/filterConfig.yml`: API filter. Only `ArkheideSystem.Flourish.Abstract` is public in generated API docs.
+- `docs/filterConfig.yml`: API filter. The generated API docs include `ArkheideSystem.Flourish.Abstract`, `ArkheideSystem.Flourish.Controls`, and `ArkheideSystem.Flourish.Themes`.
 - `docs/en-us/`: English conceptual docs and TOCs.
 - `docs/zh-cn/`: Chinese conceptual docs, TOCs, and API overwrite docs.
 - `docs/material/material/public/main.css`: active shared custom theme CSS.
@@ -78,7 +78,7 @@ Do not force a section when the article is too small to need it. Keep English an
 - If you change shared templates or assets such as `docs/material/material/public/main.css` or `docs/templates/flourish/public/main.js`, rebuild both English and Chinese sites before previewing.
 - If you change only English conceptual docs, rebuild and preview English.
 - If you change only Chinese conceptual docs or API overwrites, rebuild and preview Chinese.
-- If you change public API XML comments or public types in `src/Flourish/Abstract`, rebuild both language sites because both configs regenerate API pages from the project metadata.
+- If you change public API XML comments or public types in `src/Flourish/Abstract`, `src/Flourish/Controls`, or `src/Flourish/Themes`, rebuild both language sites because both configs regenerate API pages from the project metadata.
 - Read Markdown, YAML, and skill files with UTF-8 explicitly in PowerShell, especially Chinese content:
 
 ```powershell

@@ -1,11 +1,11 @@
 ---
 title: 排版
-description: 配置 Flourish Shell 与应用页面使用的全局字体、五档文字字号、Icon 字号及可选的页面覆盖。
+description: 配置字体系列和 Flourish 六种字号层级；未显式选择层级时默认使用 Standard。
 ---
 
 # 排版
 
-在 `ConfigureShell` 中调用 `UseGlobalFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列、五档文字字号与独立 Icon 字号。
+在 `ConfigureShell` 中调用 `UseGlobalFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列与六种字号层级。
 
 ## 配置全局字体
 
@@ -16,7 +16,20 @@ builder.ConfigureShell(shell =>
 
 七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `UseGlobalFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
 
-内置控件将普通文字设为 Standard，导航分组与状态/输出文字使用 Small，图标字形使用 Icon，卡片标题和标题栏当前标题使用 `Bold` 的 Large，Chunk 标题使用 `Bold` 的 ExtraLarge，ChunkHero 标题使用 `Bold` 的 HeaderSize。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitlebarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
+## 字号层级角色
+
+文本元素或控件没有显式选择字号层级时，使用 Standard。应将它视为通用默认值，不要仅为了视觉强调而选择其他层级。
+
+| 层级 | 角色 |
+| --- | --- |
+| `Small` | 导航栏分组标签、OutputCard 输出，以及由控件管理的其他紧凑状态或说明文字。 |
+| `Standard` | 所有普通正文和控件文字，包括未指定层级的文本。 |
+| `Icon` | 通用图标字形。专用图标控件可根据自身几何应用局部校正。 |
+| `Large` | 卡片标题和标题栏当前标题。 |
+| `ExtraLarge` | 区块标题一族，包括 `Chunk.Title`。 |
+| `HeaderSize` | 仅保留给 `ChunkHero` 中的页面标题。 |
+
+Large、ExtraLarge 和 HeaderSize 标题角色使用 `Bold`。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitlebarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
 
 Small 与 Standard 使用紧凑行高和最小下方空间，Large、ExtraLarge 与 HeaderSize 逐级增大，Icon 不增加下方空间。
 

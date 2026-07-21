@@ -949,8 +949,8 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseGlobalFont(System.String,System.Double,System.Double,System.Double,System.Double,System.Double)
-summary: 设置 Flourish Shell UI 使用的全局字体、四档文字字号与独立 Icon 字号。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseGlobalFont(System.String,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+summary: 设置 Flourish Shell UI 使用的全局字体与 Small、Standard、Icon、Large、ExtraLarge 和 HeaderSize 六种字号。
 syntax:
   parameters:
   - id: fontFamily
@@ -959,10 +959,14 @@ syntax:
     description: Small 字号。
   - id: standardFontSize
     description: 标准字号。
+  - id: iconFontSize
+    description: Icon 字号。
   - id: largeFontSize
     description: Large 字号。
   - id: extraLargeFontSize
     description: ExtraLarge 字号。
+  - id: headerSizeFontSize
+    description: HeaderSize 字号。
   return:
     description: 用于链式配置的当前 builder。
 ---

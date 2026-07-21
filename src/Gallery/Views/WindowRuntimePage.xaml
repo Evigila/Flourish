@@ -8,55 +8,55 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Control window, tray, profile, and notification behavior."
-        ChunkHeroTitle="Window, profile &amp; notifications"
+        Description="Control window, tray, profile, and notification behavior."
+        Title="Window, profile &amp; notifications"
       />
 
       <flourish:Chunk
-        ChunkDescription="Control the live shell window."
-        ChunkTitle="Shell window"
+        Description="Control the live shell window."
+        Title="Shell window"
       >
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
           <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Presenter="&#xE740;" Text="Resize the live shell to the Gallery demonstration size." Title="Window size">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Icon="&#xE740;" MainText="Resize the live shell to the Gallery demonstration size." Title="Window size">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="SetDemoSize_Click" Content="Set 1100 × 760" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xF2D9;" Text="Center the shell on its current display." Title="Window position">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xF2D9;" MainText="Center the shell on its current display." Title="Window position">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="CenterWindow_Click" Content="Center" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE718;" Text="Toggle whether the shell stays above other windows." Title="Topmost">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE718;" MainText="Toggle whether the shell stays above other windows." Title="Topmost">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ToggleTopmost_Click" Content="Toggle topmost" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE7C9;" Text="Toggle whether the shell appears in the taskbar." Title="Taskbar visibility">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE7C9;" MainText="Toggle whether the shell appears in the taskbar." Title="Taskbar visibility">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ToggleTaskbar_Click" Content="Toggle taskbar" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE737;" Text="Minimize the live shell window." Title="Minimize window">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE737;" MainText="Minimize the live shell window." Title="Minimize window">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="MinimizeWindow_Click" Content="Minimize" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE739;" Text="Maximize the live shell window." Title="Maximize window">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE739;" MainText="Maximize the live shell window." Title="Maximize window">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="MaximizeWindow_Click" Content="Maximize" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE923;" Text="Restore the live shell to its normal state." Title="Restore window">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE923;" MainText="Restore the live shell to its normal state." Title="Restore window">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RestoreWindow_Click" Content="Restore" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE890;" Text="Hide the shell briefly, then restore it automatically." Title="Temporary visibility">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE890;" MainText="Hide the shell briefly, then restore it automatically." Title="Temporary visibility">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="HideBriefly_Click" Content="Hide for 1 second" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="WindowOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -64,13 +64,13 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Manage the notification-area tray icon."
-        ChunkTitle="Notification-area tray"
+        Description="Manage the notification-area tray icon."
+        Title="Notification-area tray"
       >
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
           <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Presenter="&#xE7E8;" Text="Set the text shown for the notification-area icon." Title="Tray tooltip">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Icon="&#xE7E8;" MainText="Set the text shown for the notification-area icon." Title="Tray tooltip">
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox
                   x:Name="TrayToolTipBox"
                   Width="240"
@@ -78,22 +78,22 @@
                   LostFocus="TrayToolTipBox_LostFocus"
                   Text="Flourish Runtime Gallery"
                 />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE7C9;" Text="Enable or disable the notification-area icon." Title="Tray availability">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE7C9;" MainText="Enable or disable the notification-area icon." Title="Tray availability">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button x:Name="ToggleTrayButton" Click="ToggleTray_Click" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE7E8;" Text="Hide the shell while leaving it available from the tray." Title="Minimize to tray">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE7E8;" MainText="Hide the shell while leaving it available from the tray." Title="Minimize to tray">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="MinimizeToTray_Click" Content="Minimize to tray" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE8F4;" Text="Restore the shell from its notification-area icon." Title="Restore from tray">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8F4;" MainText="Restore the shell from its notification-area icon." Title="Restore from tray">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RestoreFromTray_Click" Content="Restore from tray" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="TrayOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -101,40 +101,40 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Configure close policy and guards."
-        ChunkTitle="Close behavior"
+        Description="Configure close policy and guards."
+        Title="Close behavior"
       >
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
           <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Presenter="&#xE8BB;" Text="Choose the shell's default close policy; changes apply immediately." Title="Close policy">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Icon="&#xE8BB;" MainText="Choose the shell's default close policy; changes apply immediately." Title="Close policy">
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="CloseBehaviorBox" Width="220" SelectionChanged="CloseBehaviorBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE73E;" Text="Choose the decision returned by the demo guard." Title="Guard decision">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE73E;" MainText="Choose the decision returned by the demo guard." Title="Guard decision">
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishCheckBox x:Name="CloseGuardAllowsBox" VerticalAlignment="Center" Click="CloseGuardAllowsBox_Click" Content="Guard allows close" IsChecked="True" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE72E;" Text="Install the disposable close guard for this page." Title="Register guard">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE72E;" MainText="Install the disposable close guard for this page." Title="Register guard">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RegisterCloseGuard_Click" Content="Register guard" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE74D;" Text="Dispose the guard registered by this page." Title="Remove guard">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE74D;" MainText="Dispose the guard registered by this page." Title="Remove guard">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RemoveCloseGuard_Click" Content="Remove guard" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE73E;" Text="Evaluate the active guards without closing the app." Title="Evaluate guards">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE73E;" MainText="Evaluate the active guards without closing the app." Title="Evaluate guards">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="EvaluateClose_Click" Content="Evaluate guards" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE8BB;" Text="Submit a close request through the configured policy." Title="Request app close">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8BB;" MainText="Submit a close request through the configured policy." Title="Request app close">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RequestClose_Click" Content="Request app close" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="CloseOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -142,30 +142,30 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Manage the profile surface."
-        ChunkTitle="Profile flyout"
+        Description="Manage the profile surface."
+        Title="Profile flyout"
       >
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
           <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Presenter="&#xE716;" Text="Enable or disable the shell profile surface." Title="Profile availability">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Icon="&#xE716;" MainText="Enable or disable the shell profile surface." Title="Profile availability">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button x:Name="ToggleProfileEnabledButton" Click="ToggleProfileEnabled_Click" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE77B;" Text="Open or close the live profile flyout." Title="Profile flyout">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE77B;" MainText="Open or close the live profile flyout." Title="Profile flyout">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ToggleProfileFlyout_Click" Content="Toggle flyout" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE713;" Text="Replace the flyout content with the configuration page." Title="Configuration profile page">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE713;" MainText="Replace the flyout content with the configuration page." Title="Configuration profile page">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="UseConfigurationProfilePage_Click" Content="Use configuration page" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE72C;" Text="Restore the profile page type configured at startup." Title="Restore profile page">
-              <flourish:ListCard.Body>
+            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE72C;" MainText="Restore the profile page type configured at startup." Title="Restore profile page">
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="RestoreProfilePage_Click" Content="Restore profile page" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="ProfileOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -173,56 +173,56 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Publish modal and non-modal messages."
-        ChunkTitle="Messages"
+        Description="Publish modal and non-modal messages."
+        Title="Messages"
       >
         <StackPanel>
           <UniformGrid VerticalAlignment="Stretch" Columns="2">
             <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-              <flourish:ListCard Presenter="&#xE715;" Text="Await a standard modal choice without blocking application logic." Title="Standard message">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Icon="&#xE715;" MainText="Await a standard modal choice without blocking application logic." Title="Standard message">
+                <flourish:ListCard.ActionBody>
                   <flourish:Button Click="ShowMessage_Click" Content="Show async message" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
-              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE8BD;" Text="Await a modal message with custom choices." Title="Custom choices">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8BD;" MainText="Await a modal message with custom choices." Title="Custom choices">
+                <flourish:ListCard.ActionBody>
                   <flourish:Button Click="ShowCustomMessage_Click" Content="Show custom choices" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
             </StackPanel>
             <flourish:OutputCard x:Name="MessageOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
           </UniformGrid>
           <UniformGrid Margin="0,16,0,0" VerticalAlignment="Stretch" Columns="2">
             <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-              <flourish:ListCard Presenter="&#xE8EC;" Text="Choose the stable identifier used for notification operations." Title="Notification ID">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Icon="&#xE8EC;" MainText="Choose the stable identifier used for notification operations." Title="Notification ID">
+                <flourish:ListCard.ActionBody>
                   <flourish:FlourishTextBox x:Name="NotificationIdBox" Width="240" Text="gallery.runtime.notice" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
-              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE715;" Text="Enter the content published to the shell host." Title="Notification message">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE715;" MainText="Enter the content published to the shell host." Title="Notification message">
+                <flourish:ListCard.ActionBody>
                   <flourish:FlourishTextBox x:Name="NotificationMessageBox" Width="240" Text="A runtime notification from the Gallery." />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
-              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE8BD;" Text="Publish a new non-modal notification." Title="Show notification">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8BD;" MainText="Publish a new non-modal notification." Title="Show notification">
+                <flourish:ListCard.ActionBody>
                   <flourish:Button Click="ShowNotification_Click" Content="Show" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
-              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE70F;" Text="Insert the notification or update its current content." Title="Upsert notification">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE70F;" MainText="Insert the notification or update its current content." Title="Upsert notification">
+                <flourish:ListCard.ActionBody>
                   <flourish:Button Click="UpsertNotification_Click" Content="Upsert" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
-              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE74D;" Text="Dismiss the notification with the selected identifier." Title="Dismiss notification">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE74D;" MainText="Dismiss the notification with the selected identifier." Title="Dismiss notification">
+                <flourish:ListCard.ActionBody>
                   <flourish:Button Click="DismissNotification_Click" Content="Dismiss ID" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
-              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Presenter="&#xE738;" Text="Dismiss every notification in the shell host." Title="Dismiss all notifications">
-                <flourish:ListCard.Body>
+              <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE738;" MainText="Dismiss every notification in the shell host." Title="Dismiss all notifications">
+                <flourish:ListCard.ActionBody>
                   <flourish:Button Click="DismissAllNotifications_Click" Content="Dismiss all" />
-                </flourish:ListCard.Body>
+                </flourish:ListCard.ActionBody>
               </flourish:ListCard>
             </StackPanel>
             <flourish:OutputCard x:Name="NotificationOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />

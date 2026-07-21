@@ -2934,21 +2934,22 @@ internal partial class FlourishShellWindow : Window
                 continue;
             }
 
-            var useIconOnly = showIconOnly && !string.IsNullOrWhiteSpace(item.IconGlyph);
-            var button = new IconButton
-            {
-                Icon = string.IsNullOrWhiteSpace(item.IconGlyph) ? null : item.IconGlyph,
-                Content = useIconOnly ? null : item.DisplayName,
-                Margin = buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness(),
-                ToolTip = new FlourishToolTip { Content = item.DisplayName },
-                Variant = ButtonVariant.Text,
-                Tag = item,
-                Width = useIconOnly ? 30 : double.NaN,
-                Height = 28,
-                MinWidth = useIconOnly ? 0 : 28,
-                MinHeight = 0,
-                Padding = new Thickness(7, 0, 7, 0),
-            };
+            var hasIcon = !string.IsNullOrWhiteSpace(item.IconGlyph);
+            var useIconOnly = showIconOnly && hasIcon;
+            Button button = hasIcon
+                ? new IconButton { Icon = item.IconGlyph }
+                : new Button();
+            button.Content = useIconOnly ? null : item.DisplayName;
+            button.Margin =
+                buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness();
+            button.ToolTip = new FlourishToolTip { Content = item.DisplayName };
+            button.Variant = ButtonVariant.Text;
+            button.Tag = item;
+            button.Width = useIconOnly ? 30 : double.NaN;
+            button.Height = 28;
+            button.MinWidth = useIconOnly ? 0 : 28;
+            button.MinHeight = 0;
+            button.Padding = new Thickness(7, 0, 7, 0);
             toolbarCommandButtons.Track(button, item);
             button.Click += ToolbarButton_Click;
             buttons.Add(button);

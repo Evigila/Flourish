@@ -8,64 +8,64 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Queue, observe, cancel, and inspect background work."
-        ChunkHeroTitle="Background tasks"
+        Description="Queue, observe, cancel, and inspect background work."
+        Title="Background tasks"
       />
 
       <flourish:Chunk
-        ChunkDescription="Submit several forms of runtime work."
-        ChunkTitle="Queue runtime work"
+        Description="Submit several forms of runtime work."
+        Title="Queue runtime work"
       >
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
           <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE768;"
-              Text="Queue work that reports progress while it runs."
+              Icon="&#xE768;"
+              MainText="Queue work that reports progress while it runs."
               Title="Progress task"
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="AddProgressTask_Click" Content="Add task" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8F1;"
-              Text="Queue work that returns a captured value."
+              Icon="&#xE8F1;"
+              MainText="Queue work that returns a captured value."
               Title="Result task"
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="AddResultTask_Click" Content="Add task" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8FD;"
-              Text="Queue four tasks to demonstrate bounded concurrency."
+              Icon="&#xE8FD;"
+              MainText="Queue four tasks to demonstrate bounded concurrency."
               Title="Task burst"
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="AddBurst_Click" Content="Queue 4 tasks" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE711;"
-              Text="Cancel the most recently submitted task."
+              Icon="&#xE711;"
+              MainText="Cancel the most recently submitted task."
               Title="Last task"
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="CancelLast_Click" Content="Cancel last" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE74D;"
-              Text="Cancel the task selected in the live task list."
+              Icon="&#xE74D;"
+              MainText="Cancel the task selected in the live task list."
               Title="Selected task"
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="CancelSelected_Click" Content="Cancel selected" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard
@@ -77,31 +77,24 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Compare active tasks with their captured outcomes."
-        ChunkTitle="Task state"
+        Description="Compare active tasks with their captured outcomes."
+        Title="Task state"
       >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <flourish:Card
-            Margin="0,0,8,0"
-            VerticalAlignment="Stretch"
+        <StackPanel>
+          <flourish:Presenter
+            Description="Queued, running, and cancelling items update through TasksChanged."
             Title="Live tasks"
-            Text="Queued, running, and cancelling items update through TasksChanged."
           >
-            <flourish:Card.Body>
-              <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
-            </flourish:Card.Body>
-          </flourish:Card>
-          <flourish:Card
-            Margin="8,0,0,0"
-            VerticalAlignment="Stretch"
+            <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+          </flourish:Presenter>
+          <flourish:Presenter
+            Margin="{DynamicResource FlourishPeerCardMargin}"
+            Description="Completion never faults; failures and cancellation are represented in the result object."
             Title="Recent outcomes"
-            Text="Completion never faults; failures and cancellation are represented in the result object."
           >
-            <flourish:Card.Body>
-              <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
-            </flourish:Card.Body>
-          </flourish:Card>
-        </UniformGrid>
+            <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+          </flourish:Presenter>
+        </StackPanel>
       </flourish:Chunk>
     </StackPanel>
   </flourish:ScrollViewer>

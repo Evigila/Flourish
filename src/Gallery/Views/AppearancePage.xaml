@@ -8,13 +8,13 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        ChunkHeroDescription="Change visual resources and shell effects at runtime."
-        ChunkHeroTitle="Appearance &amp; motion"
+        Description="Change visual resources and shell effects at runtime."
+        Title="Appearance &amp; motion"
       />
 
       <flourish:Chunk
-        ChunkDescription="Switch the active color theme."
-        ChunkTitle="Theme"
+        Description="Switch the active color theme."
+        Title="Theme"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -23,23 +23,23 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE713;"
+              Icon="&#xE713;"
               Title="Theme"
-              Text="Choose the requested application color mode."
+              MainText="Choose the requested application color mode."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="ThemeBox" Width="220" SelectionChanged="ThemeBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE72C;"
+              Icon="&#xE72C;"
               Title="Cycle theme"
-              Text="Move through System, Light, and Dark."
+              MainText="Move through System, Light, and Dark."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ToggleTheme_Click" Content="Cycle theme" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard
@@ -52,8 +52,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Update application-wide typography resources."
-        ChunkTitle="Typography"
+        Description="Update application-wide typography resources."
+        Title="Typography"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -62,83 +62,83 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Text font family"
-              Text="Set the application-wide text family."
+              MainText="Set the application-wide text family."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="FontFamilyBox" Width="220" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Small text size"
-              Text="Set the small typography tier."
+              MainText="Set the small typography tier."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="SmallFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Standard text size"
-              Text="Set the standard typography tier."
+              MainText="Set the standard typography tier."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="StandardFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Icon size"
-              Text="Set the dedicated icon glyph size."
+              MainText="Set the dedicated icon glyph size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="IconFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Large text size"
-              Text="Set the bold large typography tier."
+              MainText="Set the bold large typography tier."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="LargeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Extra-large text size"
-              Text="Set the bold extra-large typography tier."
+              MainText="Set the bold extra-large typography tier."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="ExtraLargeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Header text size"
-              Text="Set the bold page-header typography tier."
+              MainText="Set the bold page-header typography tier."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="HeaderSizeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8B9;"
+              Icon="&#xE8B9;"
               Title="Icon font family"
-              Text="Set the font used for application glyphs."
+              MainText="Set the font used for application glyphs."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="IconFontFamilyBox" Width="220" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="FontOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -146,8 +146,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Override typography for this page only."
-        ChunkTitle="Page typography"
+        Description="Override typography for this page only."
+        Title="Page typography"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -156,83 +156,83 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page font family"
-              Text="Override the text family on this page."
+              MainText="Override the text family on this page."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideFontFamilyBox" Width="220" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" Text="Georgia" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page small size"
-              Text="Leave empty to follow the global small size."
+              MainText="Leave empty to follow the global small size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideSmallFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page standard size"
-              Text="Leave empty to follow the global standard size."
+              MainText="Leave empty to follow the global standard size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideStandardFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page icon size"
-              Text="Leave empty to follow the global icon size."
+              MainText="Leave empty to follow the global icon size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideIconFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page large size"
-              Text="Leave empty to follow the global large size."
+              MainText="Leave empty to follow the global large size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideLargeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page extra-large size"
-              Text="Leave empty to follow the global extra-large size."
+              MainText="Leave empty to follow the global extra-large size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideExtraLargeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8D2;"
+              Icon="&#xE8D2;"
               Title="Page header size"
-              Text="Leave empty to follow the global header size."
+              MainText="Leave empty to follow the global header size."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageOverrideHeaderSizeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE72C;"
+              Icon="&#xE72C;"
               Title="Clear page override"
-              Text="Restore the global application typography."
+              MainText="Restore the global application typography."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button Click="ClearPageFontOverride_Click" Content="Clear override" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="PageFontOverrideOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -240,8 +240,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Configure tooltip availability and timing."
-        ChunkTitle="Tooltips"
+        Description="Configure tooltip availability and timing."
+        Title="Tooltips"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -250,33 +250,33 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE823;"
+              Icon="&#xE823;"
               Title="Initial delay"
-              Text="Set the delay before a tooltip appears."
+              MainText="Set the delay before a tooltip appears."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="ToolTipDelayBox" Width="140" KeyDown="ToolTipBox_KeyDown" LostFocus="ToolTipBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE7C8;"
+              Icon="&#xE7C8;"
               Title="Spawn margin"
-              Text="Set the separation from the tooltip target."
+              MainText="Set the separation from the tooltip target."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="ToolTipMarginBox" Width="140" KeyDown="ToolTipBox_KeyDown" LostFocus="ToolTipBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE8BD;"
+              Icon="&#xE8BD;"
               Title="Tooltip availability"
-              Text="Enable or disable Flourish tooltips."
+              MainText="Enable or disable Flourish tooltips."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:Button x:Name="ToggleToolTipButton" Click="ToggleToolTip_Click" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="ToolTipOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -284,8 +284,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Configure transition types and timing."
-        ChunkTitle="Motion"
+        Description="Configure transition types and timing."
+        Title="Motion"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -294,73 +294,73 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE768;"
+              Icon="&#xE768;"
               Title="Page transition"
-              Text="Choose the transition between pages."
+              MainText="Choose the transition between pages."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="PageTransitionBox" Width="200" SelectionChanged="PageTransitionBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE823;"
+              Icon="&#xE823;"
               Title="Page duration"
-              Text="Set the page transition duration in milliseconds."
+              MainText="Set the page transition duration in milliseconds."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="PageDurationBox" Width="130" KeyDown="MotionDurationBox_KeyDown" LostFocus="MotionDurationBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE700;"
+              Icon="&#xE700;"
               Title="Navigation transition"
-              Text="Choose the navigation-panel transition."
+              MainText="Choose the navigation-panel transition."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="NavigationTransitionBox" Width="200" SelectionChanged="NavigationTransitionBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE823;"
+              Icon="&#xE823;"
               Title="Navigation duration"
-              Text="Set the panel transition duration in milliseconds."
+              MainText="Set the panel transition duration in milliseconds."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishTextBox x:Name="NavigationDurationBox" Width="130" KeyDown="MotionDurationBox_KeyDown" LostFocus="MotionDurationBox_LostFocus" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE768;"
+              Icon="&#xE768;"
               Title="Motion"
-              Text="Enable or disable application animation."
+              MainText="Enable or disable application animation."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishCheckBox x:Name="MotionEnabledBox" VerticalAlignment="Center" Checked="MotionEnabledBox_Changed" Content="Motion enabled" Unchecked="MotionEnabledBox_Changed" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE706;"
+              Icon="&#xE706;"
               Title="Hover reveal"
-              Text="Enable animated pointer feedback."
+              MainText="Enable animated pointer feedback."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishCheckBox x:Name="HoverRevealBox" VerticalAlignment="Center" Checked="HoverRevealBox_Changed" Content="Hover reveal" Unchecked="HoverRevealBox_Changed" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE776;"
+              Icon="&#xE776;"
               Title="Reduced motion"
-              Text="Respect the system reduced-motion preference."
+              MainText="Respect the system reduced-motion preference."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishCheckBox x:Name="ReducedMotionBox" VerticalAlignment="Center" Checked="ReducedMotionBox_Changed" Content="Respect system reduced motion" Unchecked="ReducedMotionBox_Changed" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="MotionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
@@ -368,8 +368,8 @@
       </flourish:Chunk>
 
       <flourish:Chunk
-        ChunkDescription="Configure the shell window backdrop."
-        ChunkTitle="Window material"
+        Description="Configure the shell window backdrop."
+        Title="Window material"
       >
         <Grid>
           <Grid.ColumnDefinitions>
@@ -378,23 +378,23 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
             <flourish:ListCard
-              Presenter="&#xE7F4;"
+              Icon="&#xE7F4;"
               Title="Window material"
-              Text="Choose the native shell backdrop."
+              MainText="Choose the native shell backdrop."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishComboBox x:Name="MaterialBox" Width="220" SelectionChanged="MaterialBox_SelectionChanged" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
             <flourish:ListCard
               Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Presenter="&#xE708;"
+              Icon="&#xE708;"
               Title="Immersive dark mode"
-              Text="Request dark native window chrome."
+              MainText="Request dark native window chrome."
             >
-              <flourish:ListCard.Body>
+              <flourish:ListCard.ActionBody>
                 <flourish:FlourishCheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="Immersive dark mode" Unchecked="MaterialDarkModeBox_Changed" />
-              </flourish:ListCard.Body>
+              </flourish:ListCard.ActionBody>
             </flourish:ListCard>
           </StackPanel>
           <flourish:OutputCard x:Name="MaterialOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />

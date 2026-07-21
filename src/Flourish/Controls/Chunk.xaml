@@ -14,41 +14,49 @@
           FontSize="{DynamicResource FlourishFontSizeExtraLarge}"
           FontWeight="Bold"
           Role="SectionTitle"
-          Text="{TemplateBinding ChunkTitle}"
+          Text="{TemplateBinding Title}"
           TextWrapping="Wrap"
         />
         <controls:FlourishTextBlock
           x:Name="DescriptionHost"
           Margin="{TemplateBinding ChunkSpacing}"
           Role="Description"
-          Text="{TemplateBinding ChunkDescription}"
+          Text="{TemplateBinding Description}"
         />
         <ContentPresenter
           x:Name="BodyHost"
           Margin="{TemplateBinding ChunkSpacing}"
           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-          Content="{TemplateBinding ChunkBody}"
+          Content="{TemplateBinding Body}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+          TextElement.FontFamily="{TemplateBinding FontFamily}"
+          TextElement.FontSize="{TemplateBinding FontSize}"
+          TextElement.Foreground="{TemplateBinding Foreground}"
         />
       </StackPanel>
     </Grid>
     <ControlTemplate.Triggers>
-      <Trigger Property="ChunkDescription" Value="{x:Null}">
+      <Trigger Property="Description" Value="{x:Null}">
         <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="ChunkDescription" Value="">
+      <Trigger Property="Description" Value="">
         <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="ChunkBody" Value="{x:Null}">
+      <Trigger Property="Body" Value="{x:Null}">
         <Setter TargetName="BodyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="BodyHost" Property="Margin" Value="0" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
   <Style TargetType="{x:Type controls:Chunk}">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="ChunkMargin" Value="{DynamicResource FlourishChunkMargin}" />
     <Setter Property="ChunkSpacing" Value="{DynamicResource FlourishChunkSpacing}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
     <Setter Property="Template" Value="{StaticResource ChunkTemplate}" />

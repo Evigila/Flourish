@@ -6,6 +6,7 @@
   <FontFamily x:Key="FlourishIconFontFamily">Segoe MDL2 Assets</FontFamily>
   <FontFamily x:Key="FlourishOutputFontFamily">Consolas</FontFamily>
 
+  <!-- Standard is the implicit text size. Other tiers require a semantic role or an explicit use. -->
   <sys:Double x:Key="FlourishFontSizeSmall" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     12
   </sys:Double>

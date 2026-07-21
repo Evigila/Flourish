@@ -1,0 +1,150 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.PresenterPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        Description="Combine copy and controls with images, illustrations, or groups of icons in one full-width presentation layout."
+        Title="Presenter"
+      />
+
+      <flourish:Chunk Title="Table">
+        <flourish:DataGrid
+          ItemsSource="{Binding Properties, ElementName=RootPage}"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+        >
+          <DataGrid.Columns>
+            <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
+            <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          </DataGrid.Columns>
+        </flourish:DataGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        Description="Split places Presentation beside the copy-and-body region."
+        Title="Split"
+      >
+        <StackPanel>
+          <flourish:Presenter
+            Description="Presentation defaults to the right. Body stays in the same region as the text."
+            PresenterPosition="Right"
+            Title="Right presentation"
+          >
+            <flourish:Presenter.Body>
+              <flourish:Button Content="Explore layout" Variant="Filled" />
+            </flourish:Presenter.Body>
+            <flourish:Presenter.Presentation>
+              <Border
+                MinHeight="180"
+                Background="{DynamicResource FlourishPrimarySurfaceBrush}"
+                CornerRadius="12"
+              >
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                  <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE8A5;" />
+                  <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE7C8;" />
+                  <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE790;" />
+                </StackPanel>
+              </Border>
+            </flourish:Presenter.Presentation>
+          </flourish:Presenter>
+
+          <flourish:Presenter
+            Margin="{DynamicResource FlourishPeerCardMargin}"
+            Description="Move Presentation to the left without changing the copy or Body hierarchy."
+            PresenterPosition="Left"
+            Title="Left presentation"
+          >
+            <flourish:Presenter.Presentation>
+              <Border
+                MinHeight="180"
+                Background="{DynamicResource FlourishCardTonalBackgroundBrush}"
+                CornerRadius="12"
+              >
+                <flourish:FlourishTextBlock
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Role="Icon"
+                  Text="&#xE950;"
+                />
+              </Border>
+            </flourish:Presenter.Presentation>
+          </flourish:Presenter>
+        </StackPanel>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        Description="Overlay layers copy and Body over Presentation."
+        Title="Overlay"
+      >
+        <flourish:Presenter
+          Description="The presentation fills the surface while the copy remains readable above its scrim."
+          PresenterMode="Overlay"
+          Title="Layered presentation"
+        >
+          <flourish:Presenter.Body>
+            <flourish:Button Content="Overlay action" Variant="Filled" />
+          </flourish:Presenter.Body>
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="240" CornerRadius="12">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                  <GradientStop Offset="0" Color="#0F6CBD" />
+                  <GradientStop Offset="1" Color="#5C2E91" />
+                </LinearGradientBrush>
+              </Border.Background>
+              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <flourish:FlourishTextBlock Margin="12" Foreground="#80FFFFFF" Role="Icon" Text="&#xE8A5;" />
+                <flourish:FlourishTextBlock Margin="12" Foreground="#80FFFFFF" Role="Icon" Text="&#xE8B9;" />
+                <flourish:FlourishTextBlock Margin="12" Foreground="#80FFFFFF" Role="Icon" Text="&#xE790;" />
+              </StackPanel>
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Choosing a surface">
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            MainText="Use IconCard when concise copy needs exactly one icon and no arbitrary child controls."
+            Title="One icon"
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            MainText="Use Presenter for images, multiple icons, illustrations, or controls arranged with copy."
+            Title="Rich presentation"
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Reference">
+        <UniformGrid Columns="2">
+          <flourish:CardButton
+            Margin="0,0,8,0"
+            Content="Browse the Flourish source repository."
+            Icon="&#xE8A5;"
+            IsEnabled="False"
+            Title="GitHub repository"
+            ToolTip="External navigation is not available in Gallery."
+          />
+          <flourish:CardButton
+            Margin="8,0,0,0"
+            Content="Read the Presenter guide."
+            Icon="&#xE946;"
+            IsEnabled="False"
+            Title="Presenter documentation"
+            ToolTip="External navigation is not available in Gallery."
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:ScrollViewer>
+</Page>

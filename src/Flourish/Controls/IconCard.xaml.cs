@@ -1,49 +1,31 @@
-using System.Collections;
+using System.Globalization;
 using System.Windows;
-using ArkheideSystem.Flourish.Internal.Interaction;
-using WpfBorder = System.Windows.Controls.Border;
+using System.Windows.Controls;
 
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// A card that presents an icon, image, or custom visual beside or behind its copy and body.
+/// A card that adds one icon to the optional title and body text presented by <see cref="Card" />.
 /// </summary>
-[TemplatePart(Name = PartSurfaceChrome, Type = typeof(WpfBorder))]
-[TemplatePart(Name = PartClipHost, Type = typeof(FrameworkElement))]
 public class IconCard : Card
 {
-    private const string PartSurfaceChrome = "PART_SurfaceChrome";
-    private const string PartClipHost = "PART_ClipHost";
-
-    private readonly RoundedClipCoordinator roundedClip = new();
-
-    /// <summary>Identifies the <see cref="Presenter" /> dependency property.</summary>
-    public static readonly DependencyProperty PresenterProperty = DependencyProperty.Register(
-        nameof(Presenter),
-        typeof(object),
+    /// <summary>Identifies the <see cref="Icon" /> dependency property.</summary>
+    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
+        nameof(Icon),
+        typeof(string),
         typeof(IconCard),
-        new FrameworkPropertyMetadata(null, OnPresenterChanged)
+        new FrameworkPropertyMetadata(null),
+        IsIconValid
     );
 
-    /// <summary>Identifies the <see cref="PresenterMode" /> dependency property.</summary>
-    public static readonly DependencyProperty PresenterModeProperty =
-        DependencyProperty.Register(
-            nameof(PresenterMode),
-            typeof(PresenterMode),
-            typeof(IconCard),
-            new FrameworkPropertyMetadata(PresenterMode.Split),
-            IsPresenterModeValid
-        );
-
-    /// <summary>Identifies the <see cref="PresenterPosition" /> dependency property.</summary>
-    public static readonly DependencyProperty PresenterPositionProperty =
-        DependencyProperty.Register(
-            nameof(PresenterPosition),
-            typeof(PresenterPosition),
-            typeof(IconCard),
-            new FrameworkPropertyMetadata(PresenterPosition.Left),
-            IsPresenterPositionValid
-        );
+    /// <summary>Identifies the <see cref="IconPosition" /> dependency property.</summary>
+    public static readonly DependencyProperty IconPositionProperty = DependencyProperty.Register(
+        nameof(IconPosition),
+        typeof(Dock),
+        typeof(IconCard),
+        new FrameworkPropertyMetadata(Dock.Left),
+        value => value is Dock position && Enum.IsDefined(position)
+    );
 
     static IconCard()
     {
@@ -53,83 +35,26 @@ public class IconCard : Card
         );
     }
 
-    /// <summary>Gets or sets the icon, image, or custom visual presented by the card.</summary>
-    public object? Presenter
-    {
-        get => GetValue(PresenterProperty);
-        set => SetValue(PresenterProperty, value);
-    }
-
-    /// <summary>Gets or sets how the presenter is arranged with the copy-and-body group.</summary>
-    public PresenterMode PresenterMode
-    {
-        get => (PresenterMode)GetValue(PresenterModeProperty);
-        set => SetValue(PresenterModeProperty, value);
-    }
-
     /// <summary>
-    /// Gets or sets the presenter's position in split mode. Overlay mode ignores this value.
+    /// Gets or sets the single icon-font glyph presented by the card. Empty content collapses.
     /// </summary>
-    public PresenterPosition PresenterPosition
+    public string? Icon
     {
-        get => (PresenterPosition)GetValue(PresenterPositionProperty);
-        set => SetValue(PresenterPositionProperty, value);
+        get => (string?)GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
     }
 
-    /// <inheritdoc />
-    public override void OnApplyTemplate()
+    /// <summary>Gets or sets where the icon appears relative to the card copy.</summary>
+    public Dock IconPosition
     {
-        roundedClip.Detach();
-        base.OnApplyTemplate();
-
-        roundedClip.Attach(
-            GetTemplateChild(PartClipHost) as FrameworkElement,
-            GetTemplateChild(PartSurfaceChrome) as WpfBorder
-        );
+        get => (Dock)GetValue(IconPositionProperty);
+        set => SetValue(IconPositionProperty, value);
     }
 
-    /// <inheritdoc />
-    protected override IEnumerator LogicalChildren => EnumerateLogicalChildren();
-
-    private static void OnPresenterChanged(
-        DependencyObject dependencyObject,
-        DependencyPropertyChangedEventArgs eventArgs
-    )
+    private static bool IsIconValid(object? value)
     {
-        var card = (IconCard)dependencyObject;
-        if (eventArgs.OldValue is not null)
-        {
-            card.RemoveLogicalChild(eventArgs.OldValue);
-        }
-
-        if (eventArgs.NewValue is not null)
-        {
-            card.AddLogicalChild(eventArgs.NewValue);
-        }
+        return value is null
+            || value is string icon
+                && (icon.Length == 0 || new StringInfo(icon).LengthInTextElements == 1);
     }
-
-    private static bool IsPresenterModeValid(object value)
-    {
-        return value is PresenterMode mode && Enum.IsDefined(mode);
-    }
-
-    private static bool IsPresenterPositionValid(object value)
-    {
-        return value is PresenterPosition position && Enum.IsDefined(position);
-    }
-
-    private IEnumerator EnumerateLogicalChildren()
-    {
-        var baseChildren = base.LogicalChildren;
-        while (baseChildren.MoveNext())
-        {
-            yield return baseChildren.Current;
-        }
-
-        if (Presenter is not null)
-        {
-            yield return Presenter;
-        }
-    }
-
 }

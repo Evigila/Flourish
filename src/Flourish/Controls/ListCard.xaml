@@ -25,12 +25,12 @@
         </Grid.ColumnDefinitions>
 
         <ContentPresenter
-          x:Name="PresenterHost"
+          x:Name="IconHost"
           Grid.Column="0"
-          Margin="{DynamicResource FlourishListCardPresenterSpacing}"
+          Margin="{DynamicResource FlourishListCardIconSpacing}"
           HorizontalAlignment="Left"
           VerticalAlignment="Center"
-          Content="{TemplateBinding Presenter}"
+          Content="{TemplateBinding Icon}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
           TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
           TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
@@ -51,22 +51,22 @@
             TextWrapping="NoWrap"
           />
           <controls:FlourishTextBlock
-            x:Name="TextHost"
+            x:Name="MainTextHost"
             Margin="{DynamicResource FlourishCardTextSpacing}"
             Foreground="{TemplateBinding Foreground}"
             Role="Description"
-            Text="{TemplateBinding Text}"
+            Text="{TemplateBinding MainText}"
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
           />
         </StackPanel>
         <ContentPresenter
-          x:Name="BodyHost"
+          x:Name="ActionHost"
           Grid.Column="2"
-          Margin="{DynamicResource FlourishListCardBodySpacing}"
+          Margin="{DynamicResource FlourishListCardActionSpacing}"
           HorizontalAlignment="Right"
           VerticalAlignment="Center"
-          Content="{TemplateBinding Body}"
+          Content="{TemplateBinding ActionBody}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
           TextElement.Foreground="{TemplateBinding Foreground}"
         />
@@ -75,51 +75,59 @@
     <ControlTemplate.Triggers>
       <Trigger Property="Title" Value="">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="TextHost" Property="Margin" Value="0" />
+        <Setter TargetName="MainTextHost" Property="Margin" Value="0" />
       </Trigger>
       <Trigger Property="Title" Value="{x:Null}">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="TextHost" Property="Margin" Value="0" />
+        <Setter TargetName="MainTextHost" Property="Margin" Value="0" />
       </Trigger>
-      <Trigger Property="Text" Value="">
-        <Setter TargetName="TextHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="MainText" Value="">
+        <Setter TargetName="MainTextHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="Text" Value="{x:Null}">
-        <Setter TargetName="TextHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="MainText" Value="{x:Null}">
+        <Setter TargetName="MainTextHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="Presenter" Value="{x:Null}">
-        <Setter TargetName="PresenterHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="PresenterHost" Property="Margin" Value="0" />
+      <Trigger Property="Icon" Value="{x:Null}">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </Trigger>
-      <Trigger Property="Body" Value="{x:Null}">
-        <Setter TargetName="BodyHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="BodyHost" Property="Margin" Value="0" />
+      <Trigger Property="Icon" Value="">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="ActionBody" Value="{x:Null}">
+        <Setter TargetName="ActionHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ActionHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="ActionBody" Value="">
+        <Setter TargetName="ActionHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ActionHost" Property="Margin" Value="0" />
       </Trigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="" />
-          <Condition Property="Text" Value="" />
+          <Condition Property="MainText" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="{x:Null}" />
-          <Condition Property="Text" Value="{x:Null}" />
+          <Condition Property="MainText" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="" />
-          <Condition Property="Text" Value="{x:Null}" />
+          <Condition Property="MainText" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="{x:Null}" />
-          <Condition Property="Text" Value="" />
+          <Condition Property="MainText" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
       </MultiTrigger>

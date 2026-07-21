@@ -35,6 +35,8 @@ internal static class Program
                     services.AddNavigable<ChunkPage>("Chunk", "\uE7C8");
                     services.AddNavigable<ButtonPage>("Button", "\uE8FB");
                     services.AddNavigable<CardPage>("Card", "\uE8A5");
+                    services.AddNavigable<PresenterPage>("Presenter", "\uE8B9");
+                    services.AddNavigable<ParagraphPage>("Paragraph", "\uE8D2");
                     services.AddNavigable<DataGridPage>("DataGrid", "\uE80A");
                     services.AddNavigable<OverlayPage>("Overlay", "\uE7B3");
                 }
@@ -92,6 +94,8 @@ internal static class Program
                             group.AddNavigableViewItem<ChunkPage>(childId: 1);
                             group.AddNavigableViewItem<ButtonPage>(childId: 1);
                             group.AddNavigableViewItem<CardPage>(childId: 1);
+                            group.AddNavigableViewItem<PresenterPage>(childId: 1);
+                            group.AddNavigableViewItem<ParagraphPage>(childId: 1);
                             group.AddNavigableViewItem<DataGridPage>(childId: 1);
                             group.AddNavigableViewItem<OverlayPage>(childId: 1);
                         }
