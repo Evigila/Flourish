@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Inspect a route registered after startup."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Runtime route"
       />
 
@@ -18,14 +20,18 @@
       >
         <flourish:Presenter
           Description="This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Route instance"
         >
-          <StackPanel>
-            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
-            <flourish:FlourishTextBlock x:Name="InstanceText" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
-            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
-            <flourish:FlourishTextBlock x:Name="ParameterText" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
-          </StackPanel>
+          <flourish:Presenter.Presentation>
+            <StackPanel>
+              <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
+              <flourish:FlourishTextBlock x:Name="InstanceText" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
+              <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
+              <flourish:FlourishTextBlock x:Name="ParameterText" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
+            </StackPanel>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
     </StackPanel>

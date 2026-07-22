@@ -12,6 +12,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Themed WPF controls for text, forms, collections, and scrolling."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Control library"
       />
 
@@ -26,33 +28,48 @@
 
       <flourish:Chunk Title="Example">
         <StackPanel>
-          <flourish:Presenter Title="Inputs">
-            <StackPanel>
-              <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
-              <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
-              <flourish:FlourishSearchBox Margin="0,12,0,0" Placeholder="Search controls" />
-              <flourish:FlourishCheckBox Margin="0,12,0,0" Content="Use compact controls" IsChecked="True" />
-              <flourish:FlourishComboBox Margin="0,12,0,0" SelectedIndex="0">
-                <flourish:FlourishComboBoxItem Content="Standard density" />
-                <flourish:FlourishComboBoxItem Content="Compact density" />
-              </flourish:FlourishComboBox>
-            </StackPanel>
+          <flourish:Presenter
+            Description="Edit text, search content, and choose options with themed form controls."
+            PresenterMode="Split"
+            PresenterPosition="Right"
+            Title="Inputs"
+          >
+            <flourish:Presenter.Presentation>
+              <StackPanel>
+                <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
+                <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
+                <flourish:FlourishSearchBox Margin="0,12,0,0" Placeholder="Search controls" />
+                <flourish:FlourishCheckBox Margin="0,12,0,0" Content="Use compact controls" IsChecked="True" />
+                <flourish:FlourishComboBox Margin="0,12,0,0" SelectedIndex="0">
+                  <flourish:FlourishComboBoxItem Content="Standard density" />
+                  <flourish:FlourishComboBoxItem Content="Compact density" />
+                </flourish:FlourishComboBox>
+              </StackPanel>
+            </flourish:Presenter.Presentation>
           </flourish:Presenter>
-          <flourish:Presenter Margin="{DynamicResource FlourishPeerCardMargin}" Title="Collections">
-            <StackPanel>
-              <flourish:FlourishListBox Height="104" SelectedIndex="0">
-                <flourish:FlourishListBoxItem Content="Typography" />
-                <flourish:FlourishListBoxItem Content="Inputs" />
-                <flourish:FlourishListBoxItem Content="Scrolling" />
-              </flourish:FlourishListBox>
-              <flourish:ScrollViewer Height="104" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                  <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
-                  <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Native keyboard and wheel input" />
-                  <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="Ready" />
-                </StackPanel>
-              </flourish:ScrollViewer>
-            </StackPanel>
+          <flourish:Presenter
+            Margin="{DynamicResource FlourishPresenterPeerMargin}"
+            Description="Browse selectable items and scroll content with native collection behavior."
+            PresenterMode="Split"
+            PresenterPosition="Right"
+            Title="Collections"
+          >
+            <flourish:Presenter.Presentation>
+              <StackPanel>
+                <flourish:FlourishListBox Height="104" SelectedIndex="0">
+                  <flourish:FlourishListBoxItem Content="Typography" />
+                  <flourish:FlourishListBoxItem Content="Inputs" />
+                  <flourish:FlourishListBoxItem Content="Scrolling" />
+                </flourish:FlourishListBox>
+                <flourish:ScrollViewer Height="104" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto">
+                  <StackPanel>
+                    <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
+                    <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Native keyboard and wheel input" />
+                    <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="Ready" />
+                  </StackPanel>
+                </flourish:ScrollViewer>
+              </StackPanel>
+            </flourish:Presenter.Presentation>
           </flourish:Presenter>
         </StackPanel>
       </flourish:Chunk>

@@ -50,7 +50,7 @@ An empty or `null` optional region collapses completely, including its associate
 
 ## ChunkHero
 
-`ChunkHero` is the single page-leading hero section. It inherits the complete [Presenter](presenter.md) contract: `Title`, `Description`, `Body`, `Presentation`, `PresenterMode`, and `PresenterPosition`. Its larger title and emphasized background distinguish it from an ordinary `Presenter`.
+`ChunkHero` is the single page-leading hero section. It inherits the complete [Presenter](presenter.md) contract: every declaration explicitly supplies `Title`, `Description`, `PresenterMode`, and `PresenterPosition`; `Body` and `Presentation` occupy their defined content regions. Its larger title and emphasized background distinguish it from an ordinary `Presenter`.
 
 ```xml
 <flourish:ChunkHero
@@ -78,14 +78,14 @@ An empty or `null` optional region collapses completely, including its associate
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `Title` | `string` | `""` | Required page heading, rendered with the dedicated HeaderSize tier. |
-| `Description` | `string?` | `null` | Optional supporting copy for the page heading. |
-| `Body` | `object?` | `null` | Supporting controls or content arranged with the hero copy. It is the default XAML content property. |
-| `Presentation` | `object?` | `null` | An image, icon group, illustration, or other presented content. |
-| `PresenterMode` | `PresenterMode` | `Split` | Places the presentation beside the copy or behind it. |
-| `PresenterPosition` | `PresenterPosition` | `Right` | Places the presentation at `Left` or `Right` in `Split` mode. |
+| `Title` | `string` | `""` | Required page heading, rendered with the dedicated HeaderSize tier. Declare it explicitly. |
+| `Description` | `string?` | `null` | Required supporting copy for the page heading. Declare it explicitly. |
+| `Body` | `object?` | `null` | Supporting controls or content in the same region as the hero copy. It remains the default XAML content property for `ChunkHero`. |
+| `Presentation` | `object?` | `null` | An image, icon group, illustration, or other presented content. Assign it explicitly with `ChunkHero.Presentation`. |
+| `PresenterMode` | `PresenterMode` | `Split` | Required explicit composition choice. The runtime fallback is `Split`. |
+| `PresenterPosition` | `PresenterPosition` | `Right` | Required explicit presentation-side choice. The runtime fallback is `Right`. |
 
-Optional hero regions follow the same collapse rule as `Chunk`: an absent `Description`, `Body`, or `Presentation` leaves no empty placeholder or spacing. In `Overlay` mode, choose presentation content that keeps all overlaid copy readable in light and dark themes.
+An absent hero `Body` or `Presentation` leaves no empty placeholder or spacing. Standard Split keeps the title, description, and body together on the left and places presentation content on the right. In `Overlay` mode, choose presentation content that keeps all overlaid copy readable in light and dark themes; explicitly declare `PresenterPosition` even though Overlay ignores it.
 
 ## Page structure
 
@@ -97,6 +97,8 @@ The canonical page skeleton contains one leading `ChunkHero` followed by several
     <flourish:ChunkHero
       Title="Design system"
       Description="Foundations and reusable controls for this application."
+      PresenterMode="Split"
+      PresenterPosition="Right"
       Presentation="{StaticResource DesignSystemIllustration}" />
 
     <flourish:Chunk Title="Foundations">

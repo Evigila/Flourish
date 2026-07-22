@@ -12,6 +12,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Combine copy and controls with images, illustrations, or groups of icons in one full-width presentation layout."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Presenter"
       />
 
@@ -34,7 +36,8 @@
       >
         <StackPanel>
           <flourish:Presenter
-            Description="Presentation defaults to the right. Body stays in the same region as the text."
+            Description="Presentation defaults to the right. Body shares the copy region and its left alignment."
+            PresenterMode="Split"
             PresenterPosition="Right"
             Title="Right presentation"
           >
@@ -42,11 +45,7 @@
               <flourish:Button Content="Explore layout" Variant="Filled" />
             </flourish:Presenter.Body>
             <flourish:Presenter.Presentation>
-              <Border
-                MinHeight="180"
-                Background="{DynamicResource FlourishPrimarySurfaceBrush}"
-                CornerRadius="12"
-              >
+              <Border MinHeight="180">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                   <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE8A5;" />
                   <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE7C8;" />
@@ -57,17 +56,14 @@
           </flourish:Presenter>
 
           <flourish:Presenter
-            Margin="{DynamicResource FlourishPeerCardMargin}"
+            Margin="{DynamicResource FlourishPresenterPeerMargin}"
             Description="Move Presentation to the left without changing the copy or Body hierarchy."
+            PresenterMode="Split"
             PresenterPosition="Left"
             Title="Left presentation"
           >
             <flourish:Presenter.Presentation>
-              <Border
-                MinHeight="180"
-                Background="{DynamicResource FlourishCardTonalBackgroundBrush}"
-                CornerRadius="12"
-              >
+              <Border MinHeight="180">
                 <flourish:FlourishTextBlock
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
@@ -87,6 +83,7 @@
         <flourish:Presenter
           Description="The presentation fills the surface while the copy remains readable above its scrim."
           PresenterMode="Overlay"
+          PresenterPosition="Right"
           Title="Layered presentation"
         >
           <flourish:Presenter.Body>

@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Queue, observe, cancel, and inspect background work."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Background tasks"
       />
 
@@ -83,16 +85,24 @@
         <StackPanel>
           <flourish:Presenter
             Description="Queued, running, and cancelling items update through TasksChanged."
+            PresenterMode="Split"
+            PresenterPosition="Right"
             Title="Live tasks"
           >
-            <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+            <flourish:Presenter.Presentation>
+              <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+            </flourish:Presenter.Presentation>
           </flourish:Presenter>
           <flourish:Presenter
-            Margin="{DynamicResource FlourishPeerCardMargin}"
+            Margin="{DynamicResource FlourishPresenterPeerMargin}"
             Description="Completion never faults; failures and cancellation are represented in the result object."
+            PresenterMode="Split"
+            PresenterPosition="Right"
             Title="Recent outcomes"
           >
-            <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+            <flourish:Presenter.Presentation>
+              <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+            </flourish:Presenter.Presentation>
           </flourish:Presenter>
         </StackPanel>
       </flourish:Chunk>

@@ -14,6 +14,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Use the Card family for concise text, icon-accompanied content, settings rows, and append-only output."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Card"
       />
 

@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Change navigation structure and behavior at runtime."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Navigation at runtime"
       />
 

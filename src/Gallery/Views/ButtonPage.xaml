@@ -14,22 +14,28 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Accessible application actions built on the WPF button contract."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Button"
       />
 
       <flourish:Chunk Title="Variant">
         <flourish:Presenter
           Description="Filled is primary, Tonal is softer, and Danger identifies destructive intent."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Visual hierarchy"
         >
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,8" Content="Elevated" Variant="Elevated" />
-            <flourish:Button Margin="0,0,8,8" Content="Filled" Variant="Filled" />
-            <flourish:Button Margin="0,0,8,8" Content="Tonal" Variant="Tonal" />
-            <flourish:Button Margin="0,0,8,8" Content="Outlined" Variant="Outlined" />
-            <flourish:Button Margin="0,0,8,8" Content="Text" Variant="Text" />
-            <flourish:Button Margin="0,0,0,8" Content="Danger" Variant="Danger" />
-          </WrapPanel>
+          <flourish:Presenter.Presentation>
+            <WrapPanel>
+              <flourish:Button Margin="0,0,8,8" Content="Elevated" Variant="Elevated" />
+              <flourish:Button Margin="0,0,8,8" Content="Filled" Variant="Filled" />
+              <flourish:Button Margin="0,0,8,8" Content="Tonal" Variant="Tonal" />
+              <flourish:Button Margin="0,0,8,8" Content="Outlined" Variant="Outlined" />
+              <flourish:Button Margin="0,0,8,8" Content="Text" Variant="Text" />
+              <flourish:Button Margin="0,0,0,8" Content="Danger" Variant="Danger" />
+            </WrapPanel>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
 
@@ -61,35 +67,43 @@
       <flourish:Chunk Title="Button">
         <flourish:Presenter
           Description="Bind Command for reusable actions, or handle Click for local behavior."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Standard action"
         >
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,0" Content="Continue" Variant="Filled" />
-            <flourish:Button Content="Cancel" Variant="Outlined" />
-          </WrapPanel>
+          <flourish:Presenter.Presentation>
+            <WrapPanel>
+              <flourish:Button Margin="0,0,8,0" Content="Continue" Variant="Filled" />
+              <flourish:Button Content="Cancel" Variant="Outlined" />
+            </WrapPanel>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
 
       <flourish:Chunk Title="IconButton">
         <flourish:Presenter
           Description="Use a ToolTip or automation name when the action has no visible label."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Icon actions"
         >
-          <WrapPanel>
-            <flourish:IconButton
-              Margin="0,0,8,0"
-              Icon="&#xE72C;"
-              ToolTip="Refresh"
-              Variant="Text"
-            />
-            <flourish:IconButton
-              Margin="0,0,8,0"
-              Icon="&#xE8D4;"
-              ToolTip="Search"
-              Variant="Text"
-            />
-            <flourish:IconButton Content="Add item" Icon="&#xE710;" Variant="Filled" />
-          </WrapPanel>
+          <flourish:Presenter.Presentation>
+            <WrapPanel>
+              <flourish:IconButton
+                Margin="0,0,8,0"
+                Icon="&#xE72C;"
+                ToolTip="Refresh"
+                Variant="Text"
+              />
+              <flourish:IconButton
+                Margin="0,0,8,0"
+                Icon="&#xE8D4;"
+                ToolTip="Search"
+                Variant="Text"
+              />
+              <flourish:IconButton Content="Add item" Icon="&#xE710;" Variant="Filled" />
+            </WrapPanel>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
 
@@ -114,32 +128,39 @@
       <flourish:Chunk Title="WindowCaptionButton">
         <flourish:Presenter
           Description="Use dedicated title-bar geometry and reserve Danger for close."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Caption actions"
         >
-          <Border
-            HorizontalAlignment="Left"
-            Background="{DynamicResource FlourishControlBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
-            BorderThickness="1"
-          >
-            <StackPanel Orientation="Horizontal">
-              <flourish:WindowCaptionButton Icon="&#xE921;" ToolTip="Minimize" Variant="Text" />
-              <flourish:WindowCaptionButton Icon="&#xE922;" ToolTip="Maximize" Variant="Text" />
-              <flourish:WindowCaptionButton Icon="&#xE8BB;" ToolTip="Close" Variant="Danger" />
-            </StackPanel>
-          </Border>
+          <flourish:Presenter.Presentation>
+            <Border
+              Background="{DynamicResource FlourishControlBackgroundBrush}"
+              BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+              BorderThickness="1"
+            >
+              <StackPanel Orientation="Horizontal">
+                <flourish:WindowCaptionButton Icon="&#xE921;" ToolTip="Minimize" Variant="Text" />
+                <flourish:WindowCaptionButton Icon="&#xE922;" ToolTip="Maximize" Variant="Text" />
+                <flourish:WindowCaptionButton Icon="&#xE8BB;" ToolTip="Close" Variant="Danger" />
+              </StackPanel>
+            </Border>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
 
       <flourish:Chunk Title="Hover feedback">
         <flourish:Presenter
           Description="HoverReveal supplies feedback and can be disabled for a local action."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Pointer feedback"
         >
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,0" Content="Default reveal" />
-            <flourish:Button flourish:HoverReveal.IsEnabled="False" Content="Static feedback" />
-          </WrapPanel>
+          <flourish:Presenter.Presentation>
+            <WrapPanel>
+              <flourish:Button Margin="0,0,8,0" Content="Default reveal" />
+              <flourish:Button flourish:HoverReveal.IsEnabled="False" Content="Static feedback" />
+            </WrapPanel>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
 

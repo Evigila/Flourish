@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Control window, tray, profile, and notification behavior."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Window, profile &amp; notifications"
       />
 

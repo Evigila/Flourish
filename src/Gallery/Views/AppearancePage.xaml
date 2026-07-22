@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Change visual resources and shell effects at runtime."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Appearance &amp; motion"
       />
 

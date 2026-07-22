@@ -56,6 +56,7 @@
   <Thickness x:Key="FlourishPresenterCopyPadding">20</Thickness>
   <Thickness x:Key="FlourishPresenterDescriptionSpacing">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterBodySpacing">0,16,0,0</Thickness>
+  <Thickness x:Key="FlourishPresenterPeerMargin">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishChunkMargin">0,32,0,0</Thickness>
   <Thickness x:Key="FlourishChunkSpacing">0,12,0,0</Thickness>
   <Thickness x:Key="FlourishChunkHeroMargin">0,32,0,0</Thickness>

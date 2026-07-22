@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Edit toolbar, status, and custom shell regions at runtime."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Toolbar, status and shell regions"
       />
 

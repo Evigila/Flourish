@@ -25,7 +25,7 @@ Every `Chunk` has these semantic fields:
 
 Empty or `null` optional regions must collapse together with their spacing. Keep the default large gap between chunks and between `ChunkHero` and the first ordinary chunk.
 
-`ChunkHero` inherits the Presenter contract: `Title`, `Description`, `Body`, `Presentation`, `PresenterMode`, and `PresenterPosition`. Its title is required and uses the page-header role. Use `Body` for supporting controls in the copy region and `Presentation` for the visual being presented.
+`ChunkHero` inherits the Presenter contract. Every declaration explicitly supplies the required `Title`, `Description`, `PresenterMode`, and `PresenterPosition`; the title uses the page-header role. Unlike an ordinary Presenter, `Body` remains the default XAML content property for `ChunkHero`. Assign `Presentation` through an explicit `ChunkHero.Presentation` property element when the hero includes a presented visual.
 
 ## Use the typography contract
 
@@ -100,15 +100,17 @@ Do not confuse the container with `FlourishTextRole.Paragraph`, which styles one
 
 Use `Presenter` as a full-width chunk body when rich visual content must be arranged with copy or supporting controls.
 
-- `Title` and `Description` provide optional copy.
-- `Body` contains controls or supporting content in the same region as the copy and is the default content property.
-- `Presentation` contains an image, icon group, illustration, preview, or composed visual tree.
-- `PresenterMode="Split"` places the presentation beside the copy. `PresenterPosition` accepts only `Left` or `Right` and names the presentation side.
-- `PresenterMode="Overlay"` places the presentation behind copy and Body; `PresenterPosition` is ignored.
-- Missing optional regions collapse with their spacing.
-- Ordinary Presenter is transparent and borderless by default and occupies the full row.
+- `Title` and `Description` provide required copy and are explicitly declared.
+- `Body` contains controls or supporting content in the same region as the copy. Assign it only through an explicit `Presenter.Body` property element.
+- `Presentation` contains an image, icon group, illustration, preview, or composed visual tree and is the default XAML content property.
+- Every declaration explicitly sets `PresenterMode` and `PresenterPosition`. Runtime fallback values remain `Split` and `Right`, but they do not replace the authoring requirement.
+- Standard `PresenterMode="Split" PresenterPosition="Right"` uses the fixed horizontal layout: copy plus Body on the left and Presentation on the right. `PresenterPosition="Left"` deliberately reverses the two regions without changing their internal structure.
+- `PresenterMode="Overlay"` places the presentation behind copy and Body. `PresenterPosition` is ignored visually but is still declared.
+- A missing Body collapses with its spacing.
+- Ordinary Presenter occupies the full row. Keep the copy-and-body side transparent; Title, Description, and the separate Body host share one left alignment. Only the Presentation region uses the adaptive light-neutral background and shared surface corner radius. Split centers Presentation content within that full surface; Overlay expands both the surface and its root content across both columns.
+- When several Presenters are stacked vertically in one section, apply `FlourishPresenterPeerMargin` only to each Presenter after the first. Do not reuse a Card peer margin or hard-code local spacing.
 
-Choose or compose Overlay presentation content that keeps text readable in both light and dark themes. `ChunkHero` uses the same Presenter fields and modes but supplies the larger, emphasized page-leading treatment.
+Do not add an external Grid or local margins to reposition copy, Body, or Presentation; the Presenter template owns those regions. Choose or compose Overlay presentation content that keeps text readable in both light and dark themes. `ChunkHero` uses the same Presenter fields and modes but supplies the larger, emphasized page-leading treatment.
 
 ## Use Button-family actions
 
@@ -144,6 +146,8 @@ Keep Table content selective rather than duplicating the generated API reference
     <flourish:ChunkHero
       Title="Synchronization"
       Description="Review and control workspace synchronization."
+      PresenterMode="Split"
+      PresenterPosition="Right"
       Presentation="{StaticResource SynchronizationIllustration}" />
 
     <flourish:Chunk
@@ -205,7 +209,11 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm Card-family controls use `MainText` and never attempt a general `Body`.
 - Confirm one paragraph uses Card, several paragraphs use Paragraph, one icon uses IconCard, and images or composed visuals use Presenter.
 - Confirm Paragraph is the chunk's only body and owns paragraph gaps and indentation.
-- Confirm Presenter is full-width, uses only Left or Right in Split, and preserves Overlay readability in both themes.
+- Confirm every Presenter and ChunkHero explicitly declares Title, Description, PresenterMode, and PresenterPosition.
+- Confirm standard Split is full-width with copy plus Body fixed on the left and Presentation on the right; alternate Left reverses only the two regions.
+- Confirm Presentation receives direct XAML content, Body is assigned explicitly, and Overlay declares Position even though it ignores the value visually.
+- Confirm vertically stacked Presenters use `FlourishPresenterPeerMargin` after the first item and do not reuse Card spacing.
+- Confirm Overlay presentation content preserves readability in both themes.
 - Confirm each ListCard uses one `ActionBody` control, immediate application, Standard variant, and compact peer spacing.
 - Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.
 - Confirm the complete interactive surface uses the correct Button-family member and icon-only actions have accessible names and tooltips.

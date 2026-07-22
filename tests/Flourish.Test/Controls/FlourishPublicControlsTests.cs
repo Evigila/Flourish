@@ -788,8 +788,12 @@ public sealed class FlourishPublicControlsTests
         RunInSta(() =>
         {
             Assert.Equal(
-                nameof(Presenter.Body),
+                nameof(Presenter.Presentation),
                 typeof(Presenter).GetCustomAttribute<ContentPropertyAttribute>()?.Name
+            );
+            Assert.Equal(
+                nameof(ChunkHero.Body),
+                typeof(ChunkHero).GetCustomAttribute<ContentPropertyAttribute>()?.Name
             );
             Assert.Equal(
                 nameof(ItemsControl.Items),
@@ -820,6 +824,32 @@ public sealed class FlourishPublicControlsTests
                 new object[] { secondParagraph },
                 LogicalTreeHelper.GetChildren(paragraph).Cast<object>()
             );
+        });
+    }
+
+    [Fact]
+    public void Presenter_ImplicitXamlContentTargetsPresentation()
+    {
+        RunInSta(() =>
+        {
+            const string xaml = """
+                <flourish:Presenter
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:flourish="http://schemas.arkheide.system/flourish"
+                  Description="Supporting copy"
+                  PresenterMode="Split"
+                  PresenterPosition="Right"
+                  Title="Example">
+                  <Border />
+                </flourish:Presenter>
+                """;
+
+            var presenter = Assert.IsType<Presenter>(XamlReader.Parse(xaml));
+
+            Assert.Null(presenter.Body);
+            Assert.IsType<Border>(presenter.Presentation);
+            Assert.Equal(PresenterMode.Split, presenter.PresenterMode);
+            Assert.Equal(PresenterPosition.Right, presenter.PresenterPosition);
         });
     }
 

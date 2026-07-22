@@ -5,10 +5,12 @@
 >
   <ControlTemplate x:Key="PresenterTemplate" TargetType="{x:Type controls:Presenter}">
     <Border
+      x:Name="PresenterSurface"
       Padding="{TemplateBinding Padding}"
-      Background="{TemplateBinding Background}"
       BorderBrush="{TemplateBinding BorderBrush}"
       BorderThickness="{TemplateBinding BorderThickness}"
+      ClipToBounds="True"
+      CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
       <Grid>
@@ -16,14 +18,21 @@
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ContentPresenter
-          x:Name="PresentationHost"
+        <Border
+          x:Name="PresentationSurface"
           Grid.Column="1"
-          HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch"
-          Content="{TemplateBinding Presentation}"
-          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-        />
+          Background="{TemplateBinding Background}"
+          ClipToBounds="True"
+          CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+        >
+          <ContentPresenter
+            x:Name="PresentationHost"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="{TemplateBinding Presentation}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+          />
+        </Border>
         <Border
           x:Name="OverlayScrim"
           Grid.ColumnSpan="2"
@@ -43,12 +52,13 @@
             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
           >
-            <StackPanel x:Name="CopyHost">
+            <StackPanel x:Name="CopyHost" HorizontalAlignment="Stretch">
               <controls:FlourishTextBlock
                 x:Name="TitleHost"
                 Foreground="{TemplateBinding Foreground}"
                 Role="CardTitle"
                 Text="{TemplateBinding Title}"
+                TextAlignment="Left"
               />
               <controls:FlourishTextBlock
                 x:Name="DescriptionHost"
@@ -56,13 +66,14 @@
                 Foreground="{TemplateBinding Foreground}"
                 Role="Description"
                 Text="{TemplateBinding Description}"
+                TextAlignment="Left"
               />
             </StackPanel>
             <ContentPresenter
               x:Name="BodyHost"
               Margin="{DynamicResource FlourishPresenterBodySpacing}"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center"
               Content="{TemplateBinding Body}"
               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
               TextElement.Foreground="{TemplateBinding Foreground}"
@@ -73,12 +84,14 @@
     </Border>
     <ControlTemplate.Triggers>
       <Trigger Property="PresenterPosition" Value="Left">
-        <Setter TargetName="PresentationHost" Property="Grid.Column" Value="0" />
+        <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="1" />
       </Trigger>
       <Trigger Property="PresenterMode" Value="Overlay">
-        <Setter TargetName="PresentationHost" Property="Grid.Column" Value="0" />
-        <Setter TargetName="PresentationHost" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
+        <Setter TargetName="PresentationSurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="PresentationHost" Property="HorizontalAlignment" Value="Stretch" />
+        <Setter TargetName="PresentationHost" Property="VerticalAlignment" Value="Stretch" />
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Visible" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
@@ -87,6 +100,7 @@
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
       </Trigger>
       <Trigger Property="Presentation" Value="{x:Null}">
+        <Setter TargetName="PresentationSurface" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PresentationHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
@@ -96,6 +110,7 @@
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
       </Trigger>
       <Trigger Property="Presentation" Value="">
+        <Setter TargetName="PresentationSurface" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PresentationHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
@@ -169,7 +184,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="Padding" Value="0" />
-    <Setter Property="Background" Value="{x:Null}" />
+    <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground2Brush}" />
     <Setter Property="BorderBrush" Value="{x:Null}" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />

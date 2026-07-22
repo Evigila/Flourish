@@ -613,6 +613,172 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void GalleryPresenters_DeclareTheCompleteCompositionContract()
+    {
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+        string[] requiredProperties =
+        [
+            nameof(Presenter.Title),
+            nameof(Presenter.Description),
+            nameof(Presenter.PresenterMode),
+            nameof(Presenter.PresenterPosition),
+        ];
+
+        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        {
+            var document = LoadXaml(path);
+            foreach (
+                var presenter in document
+                    .Descendants()
+                    .Where(element =>
+                        element.Name.LocalName is nameof(Presenter) or nameof(ChunkHero)
+                    )
+            )
+            {
+                foreach (var property in requiredProperties)
+                {
+                    if (string.IsNullOrWhiteSpace((string?)presenter.Attribute(property)))
+                    {
+                        violations.Add(
+                            $"{FormatViolation(path, presenter)} has no explicit {property}"
+                        );
+                    }
+                }
+
+                if (presenter.Name.LocalName != nameof(Presenter))
+                {
+                    continue;
+                }
+
+                if (
+                    !presenter.Elements().Any(element =>
+                        element.Name.LocalName
+                            == $"{nameof(Presenter)}.{nameof(Presenter.Presentation)}"
+                    )
+                )
+                {
+                    violations.Add(
+                        $"{FormatViolation(path, presenter)} has no explicit Presentation"
+                    );
+                }
+
+                foreach (var directContent in presenter.Elements().Where(element =>
+                    !IsPropertyElement(element)
+                ))
+                {
+                    violations.Add(
+                        $"{FormatViolation(path, directContent)} is implicit Presenter content"
+                    );
+                }
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Gallery Presenter and ChunkHero declarations must explicitly set Title, Description, PresenterMode, and PresenterPosition; ordinary Presenter visuals must use Presenter.Presentation."
+        );
+    }
+
+    [Fact]
+    public void PresenterTemplate_FixesCopyAndPresentationIntoTwoEqualColumns()
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "Presenter.xaml")
+        );
+        var template = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "ControlTemplate"
+                && (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Key")
+                    == "PresenterTemplate"
+            );
+        var layoutGrid = template
+            .Descendants()
+            .First(element =>
+                element.Name.LocalName == "Grid"
+                && element.Elements().Any(child =>
+                    child.Name.LocalName == "Grid.ColumnDefinitions"
+                )
+            );
+        var columns = layoutGrid
+            .Elements()
+            .Single(element => element.Name.LocalName == "Grid.ColumnDefinitions")
+            .Elements()
+            .ToArray();
+
+        Assert.Equal(2, columns.Length);
+        Assert.All(columns, column => Assert.Equal("*", (string?)column.Attribute("Width")));
+
+        var presentationSurface = layoutGrid
+            .Elements()
+            .Single(element =>
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+                    == "PresentationSurface"
+            );
+        var presentationHost = presentationSurface
+            .Descendants()
+            .Single(element =>
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+                    == "PresentationHost"
+            );
+        var copySurface = layoutGrid
+            .Elements()
+            .Single(element =>
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+                    == "CopySurface"
+            );
+
+        var presenterSurface = template
+            .Descendants()
+            .Single(element =>
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+                    == "PresenterSurface"
+            );
+        Assert.Equal("True", (string?)presenterSurface.Attribute("ClipToBounds"));
+        Assert.Equal(
+            "{DynamicResource FlourishSurfaceCornerRadius}",
+            (string?)presenterSurface.Attribute("CornerRadius")
+        );
+        Assert.Null((string?)presenterSurface.Attribute("Background"));
+
+        Assert.Equal("1", (string?)presentationSurface.Attribute("Grid.Column"));
+        Assert.Equal(
+            "{TemplateBinding Background}",
+            (string?)presentationSurface.Attribute("Background")
+        );
+        Assert.Equal("True", (string?)presentationSurface.Attribute("ClipToBounds"));
+        Assert.Equal(
+            "{DynamicResource FlourishSurfaceCornerRadius}",
+            (string?)presentationSurface.Attribute("CornerRadius")
+        );
+        Assert.Equal("0", (string?)copySurface.Attribute("Grid.Column"));
+        Assert.Null((string?)copySurface.Attribute("Background"));
+        Assert.Equal("Center", (string?)presentationHost.Attribute("HorizontalAlignment"));
+        Assert.Equal("Center", (string?)presentationHost.Attribute("VerticalAlignment"));
+
+        var bodyHost = copySurface
+            .Descendants()
+            .Single(element =>
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+                    == "BodyHost"
+            );
+        Assert.Equal("Left", (string?)bodyHost.Attribute("HorizontalAlignment"));
+        Assert.Equal("Center", (string?)bodyHost.Attribute("VerticalAlignment"));
+
+        foreach (var hostName in new[] { "TitleHost", "DescriptionHost" })
+        {
+            var textHost = copySurface
+                .Descendants()
+                .Single(element =>
+                    (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+                        == hostName
+                );
+            Assert.Equal("Left", (string?)textHost.Attribute("TextAlignment"));
+        }
+    }
+
+    [Fact]
     public void ControlsGalleryPages_FollowTheCanonicalLearningSequence()
     {
         string[] pages =

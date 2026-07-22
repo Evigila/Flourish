@@ -6,10 +6,12 @@ using WpfControl = System.Windows.Controls.Control;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// A full-width presentation layout with copy and supporting body content beside or over a
-/// flexible presentation region.
+/// A full-width presentation layout with required copy and an explicitly selected composition.
+/// In the standard split composition, copy and body content occupy one side while the presented
+/// visual occupies the other. The presentation surface fills its region and centers presentation
+/// content, while body content aligns with the copy on the transparent side.
 /// </summary>
-[ContentProperty(nameof(Body))]
+[ContentProperty(nameof(Presentation))]
 public class Presenter : WpfControl
 {
     /// <summary>Identifies the <see cref="Title" /> dependency property.</summary>
@@ -76,21 +78,24 @@ public class Presenter : WpfControl
         );
     }
 
-    /// <summary>Gets or sets the optional presentation heading.</summary>
+    /// <summary>Gets or sets the required presentation heading.</summary>
     public string Title
     {
         get => (string)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Gets or sets optional supporting copy below the heading.</summary>
+    /// <summary>Gets or sets the required supporting copy below the heading.</summary>
     public string? Description
     {
         get => (string?)GetValue(DescriptionProperty);
         set => SetValue(DescriptionProperty, value);
     }
 
-    /// <summary>Gets or sets controls or supporting content arranged with the copy.</summary>
+    /// <summary>
+    /// Gets or sets optional controls or supporting content arranged on the same side as the
+    /// copy. This property must be assigned explicitly in XAML.
+    /// </summary>
     public object? Body
     {
         get => GetValue(BodyProperty);
@@ -98,7 +103,8 @@ public class Presenter : WpfControl
     }
 
     /// <summary>
-    /// Gets or sets the image, icon group, illustration, or other content being presented.
+    /// Gets or sets the image, icon group, illustration, or other content being presented. This
+    /// is the default XAML content property.
     /// </summary>
     public object? Presentation
     {
@@ -106,14 +112,21 @@ public class Presenter : WpfControl
         set => SetValue(PresentationProperty, value);
     }
 
-    /// <summary>Gets or sets whether the presentation is split from or behind the copy.</summary>
+    /// <summary>
+    /// Gets or sets whether the presentation is split from or behind the copy. Authors should
+    /// assign this property explicitly; its runtime fallback is
+    /// <see cref="ArkheideSystem.Flourish.Controls.PresenterMode.Split" />.
+    /// </summary>
     public PresenterMode PresenterMode
     {
         get => (PresenterMode)GetValue(PresenterModeProperty);
         set => SetValue(PresenterModeProperty, value);
     }
 
-    /// <summary>Gets or sets the presentation position in split mode.</summary>
+    /// <summary>
+    /// Gets or sets the presentation position in split mode. Authors should assign this property
+    /// explicitly; its runtime fallback places the presentation on the right.
+    /// </summary>
     public PresenterPosition PresenterPosition
     {
         get => (PresenterPosition)GetValue(PresenterPositionProperty);

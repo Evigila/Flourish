@@ -686,7 +686,9 @@ public sealed class FlourishControlStylesTests
             var splitRight = new Presenter
             {
                 Title = "Right",
-                Presentation = new Border(),
+                Description = "Supporting copy",
+                Body = new FlourishButton { Content = "Action" },
+                Presentation = new Border { Width = 120, Height = 72 },
             };
             var splitLeft = new Presenter
             {
@@ -740,10 +742,30 @@ public sealed class FlourishControlStylesTests
                 {
                     presenter.ApplyTemplate();
                     Assert.Equal(HorizontalAlignment.Stretch, presenter.HorizontalAlignment);
-                    Assert.Null(presenter.Background);
+                    Assert.Same(
+                        presenter.TryFindResource("FlourishNeutralBackground2Brush"),
+                        presenter.Background
+                    );
                     Assert.Null(presenter.BorderBrush);
                     Assert.Equal(new Thickness(), presenter.BorderThickness);
                     Assert.Equal(14d, presenter.FontSize);
+                    var surface = AssertTemplatePart<Border>(presenter, "PresenterSurface");
+                    var presentationSurface = AssertTemplatePart<Border>(
+                        presenter,
+                        "PresentationSurface"
+                    );
+                    Assert.Null(surface.Background);
+                    Assert.Same(presenter.Background, presentationSurface.Background);
+                    Assert.True(presentationSurface.ClipToBounds);
+                    Assert.Equal(
+                        presenter.TryFindResource("FlourishSurfaceCornerRadius"),
+                        presentationSurface.CornerRadius
+                    );
+                    Assert.True(surface.ClipToBounds);
+                    Assert.Equal(
+                        presenter.TryFindResource("FlourishSurfaceCornerRadius"),
+                        surface.CornerRadius
+                    );
                 }
 
                 AssertPresenterLayout(
@@ -752,6 +774,72 @@ public sealed class FlourishControlStylesTests
                     copyColumn: 0,
                     columnSpan: 1,
                     scrimVisibility: Visibility.Collapsed
+                );
+                Assert.Equal(PresenterMode.Split, splitRight.PresenterMode);
+                Assert.Equal(PresenterPosition.Right, splitRight.PresenterPosition);
+                var splitCopy = AssertTemplatePart<Border>(splitRight, "CopySurface");
+                var splitPresentationSurface = AssertTemplatePart<Border>(
+                    splitRight,
+                    "PresentationSurface"
+                );
+                var splitPresentation = AssertTemplatePart<ContentPresenter>(
+                    splitRight,
+                    "PresentationHost"
+                );
+                Assert.Equal(
+                    HorizontalAlignment.Center,
+                    splitPresentation.HorizontalAlignment
+                );
+                Assert.Equal(
+                    VerticalAlignment.Center,
+                    splitPresentation.VerticalAlignment
+                );
+                Assert.Null(splitCopy.Background);
+                Assert.Same(splitRight.Background, splitPresentationSurface.Background);
+                Assert.True(splitPresentationSurface.ActualWidth > splitPresentation.ActualWidth);
+                Assert.True(splitPresentationSurface.ActualHeight > splitPresentation.ActualHeight);
+                var presentationOrigin = splitPresentation
+                    .TransformToAncestor(splitPresentationSurface)
+                    .Transform(new Point());
+                Assert.Equal(
+                    (splitPresentationSurface.ActualWidth - splitPresentation.ActualWidth) / 2,
+                    presentationOrigin.X,
+                    3
+                );
+                Assert.Equal(
+                    (splitPresentationSurface.ActualHeight - splitPresentation.ActualHeight) / 2,
+                    presentationOrigin.Y,
+                    3
+                );
+                var presentedBorder = Assert.IsType<Border>(splitPresentation.Content);
+                Assert.Equal(splitPresentation.ActualWidth, presentedBorder.ActualWidth, 3);
+                Assert.Equal(splitPresentation.ActualHeight, presentedBorder.ActualHeight, 3);
+                var splitBody = AssertTemplatePart<ContentPresenter>(
+                    splitRight,
+                    "BodyHost"
+                );
+                Assert.Equal(HorizontalAlignment.Left, splitBody.HorizontalAlignment);
+                Assert.Equal(VerticalAlignment.Center, splitBody.VerticalAlignment);
+                var copyAndBodyHost = AssertTemplatePart<StackPanel>(
+                    splitRight,
+                    "CopyAndBodyHost"
+                );
+                var copyHost = AssertTemplatePart<StackPanel>(splitRight, "CopyHost");
+                var copyOrigin = copyHost
+                    .TransformToAncestor(copyAndBodyHost)
+                    .Transform(new Point());
+                var bodyOrigin = splitBody
+                    .TransformToAncestor(copyAndBodyHost)
+                    .Transform(new Point());
+                Assert.Equal(copyOrigin.X, bodyOrigin.X, 3);
+                Assert.Equal(
+                    TextAlignment.Left,
+                    AssertTemplatePart<FlourishTextBlock>(splitRight, "TitleHost")
+                        .TextAlignment
+                );
+                Assert.Same(
+                    splitBody,
+                    FindVisualDescendant<ContentPresenter>(splitCopy, "BodyHost")
                 );
                 AssertPresenterLayout(
                     splitLeft,
@@ -767,10 +855,25 @@ public sealed class FlourishControlStylesTests
                     columnSpan: 2,
                     scrimVisibility: Visibility.Visible
                 );
-
+                var overlayPresentation = AssertTemplatePart<ContentPresenter>(
+                    overlay,
+                    "PresentationHost"
+                );
+                Assert.Equal(
+                    HorizontalAlignment.Stretch,
+                    overlayPresentation.HorizontalAlignment
+                );
+                Assert.Equal(
+                    VerticalAlignment.Stretch,
+                    overlayPresentation.VerticalAlignment
+                );
                 var absentPresentation = AssertTemplatePart<ContentPresenter>(
                     overlayWithoutPresentation,
                     "PresentationHost"
+                );
+                var absentPresentationSurface = AssertTemplatePart<Border>(
+                    overlayWithoutPresentation,
+                    "PresentationSurface"
                 );
                 var readableCopy = AssertTemplatePart<Border>(
                     overlayWithoutPresentation,
@@ -789,6 +892,7 @@ public sealed class FlourishControlStylesTests
                     "BodyHost"
                 );
                 Assert.Equal(Visibility.Collapsed, absentPresentation.Visibility);
+                Assert.Equal(Visibility.Collapsed, absentPresentationSurface.Visibility);
                 Assert.Equal(0, Grid.GetColumn(readableCopy));
                 Assert.Equal(2, Grid.GetColumnSpan(readableCopy));
                 Assert.Equal(
@@ -826,6 +930,10 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(
                     Visibility.Collapsed,
                     AssertTemplatePart<ContentPresenter>(empty, "PresentationHost").Visibility
+                );
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<Border>(empty, "PresentationSurface").Visibility
                 );
             }
             finally
@@ -1913,9 +2021,9 @@ public sealed class FlourishControlStylesTests
         Visibility scrimVisibility
     )
     {
-        var presentation = AssertTemplatePart<ContentPresenter>(
+        var presentation = AssertTemplatePart<Border>(
             presenter,
-            "PresentationHost"
+            "PresentationSurface"
         );
         var copy = AssertTemplatePart<Border>(presenter, "CopySurface");
         var scrim = AssertTemplatePart<Border>(presenter, "OverlayScrim");

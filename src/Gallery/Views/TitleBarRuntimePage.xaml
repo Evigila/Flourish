@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Change title-bar identity, features, and search at runtime."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Title bar &amp; search"
       />
 

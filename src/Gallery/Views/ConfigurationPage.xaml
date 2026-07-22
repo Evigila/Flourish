@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Edit configuration and localization while the app runs."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Configuration &amp; localization"
       />
 

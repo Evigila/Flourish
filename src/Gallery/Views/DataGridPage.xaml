@@ -11,6 +11,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Present native WPF rows and columns on a Flourish surface."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="DataGrid"
       />
 

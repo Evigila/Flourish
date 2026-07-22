@@ -23,7 +23,7 @@ Use the three `Chunk` regions deliberately:
 | `Description` | Optional. Add only the essential context that a good title cannot cover. |
 | `Body` | Required. Put the actual content control or layout tree here. `Chunk` does not present content itself. |
 
-`ChunkHero` inherits the [Presenter](../controls/presenter.md) fields. Its `Title` is the required page heading; `Description`, `Body`, and `Presentation` support that message without creating another section hierarchy.
+`ChunkHero` inherits the [Presenter](../controls/presenter.md) fields. Every hero declaration explicitly supplies the required `Title`, `Description`, `PresenterMode`, and `PresenterPosition`. `Body` supports the message in the copy region, while `Presentation` supplies the presented visual without creating another section hierarchy.
 
 ## Use typography by role
 
@@ -60,6 +60,7 @@ Layout regions normally have explicit space between them. Use the layout control
 
 - Keep the large standard separation between every pair of chunks and between `ChunkHero` and the first `Chunk`.
 - Keep related ListCards closer together with `FlourishListCardPeerMargin` so they read as one group.
+- Use `FlourishPresenterPeerMargin` after the first Presenter when several Presenters form one vertical stack; do not reuse Card spacing.
 - Let `Paragraph` create the gap between each pair of paragraphs.
 - When an optional region is empty or `null`, its presenter and associated spacing must collapse completely.
 - Use one consistent row and column gap when cards wrap into a grid.
@@ -82,9 +83,11 @@ Use `Paragraph` as a chunk's only body. If the content is a single paragraph, us
 
 ## Use Presenter for rich presentation
 
-`Presenter` separates three concerns: `Title` and `Description` provide copy, `Body` holds supporting controls in the copy region, and `Presentation` holds an image, icon group, illustration, or composed visual.
+`Presenter` separates three concerns: the required `Title` and `Description` provide copy, `Body` holds supporting controls in the copy region, and `Presentation` holds an image, icon group, illustration, or composed visual. Every declaration also names `PresenterMode` and `PresenterPosition` explicitly. The runtime fallback values remain `Split` and `Right`, but they do not replace the authoring requirement.
 
-`Split` mode places `Presentation` at `Left` or `Right` and places copy plus `Body` on the opposite side. `Overlay` mode fills the presenter with `Presentation` and renders copy plus `Body` above it; position is ignored. An ordinary Presenter is full width, transparent, and borderless by default.
+Standard `Split` uses a fixed horizontal composition: copy plus `Body` stay together on the left and `Presentation` occupies the right. `PresenterPosition="Left"` deliberately reverses those regions without changing their internal structure. `Overlay` fills the Presenter with `Presentation` and renders copy plus `Body` above it; position is ignored but is still declared. Consumers do not build a second Grid or use local margins to reposition these regions.
+
+`Presentation` is the default XAML content property. Assign `Body` through an explicit `Presenter.Body` property element so direct content cannot silently move from the presentation side into the copy column. An ordinary Presenter is full width: the copy-and-body side remains transparent, with Title, Description, and Body on one left alignment; only the presentation region uses an adaptive light-neutral rounded surface, and Split presentation content is centered within it.
 
 `ChunkHero` is the page-level Presenter specialization. It uses the same fields and modes but adds the emphasized hero background, HeaderSize title, and page-leading semantics.
 
@@ -115,12 +118,13 @@ Before considering a page complete, verify that:
 
 1. Exactly one `ChunkHero` leads the page, followed by full-width chunks with no peer content outside them.
 2. Every `Chunk` has a concise `Title` and real `Body`; descriptions appear only when needed and empty optional regions leave no gap.
-3. Unspecified text uses `Standard`; specialized tiers follow their defined roles.
-4. One paragraph uses Card, several paragraphs use Paragraph, one icon uses IconCard, and images or composed visuals use Presenter.
-5. Cards have no arbitrary Body; ListCard uses one `ActionBody` control and immediate application.
-6. Chunk gaps are large, ListCard peer gaps are compact, and Paragraph owns its paragraph spacing and indentation.
-7. The complete interactive surface uses the correct member of the Button family.
-8. Variants, theme resources, contrast, accessible names, and focus order remain semantically consistent.
+3. Every `ChunkHero` and `Presenter` explicitly declares `Title`, `Description`, `PresenterMode`, and `PresenterPosition`; standard Split keeps copy plus Body on the left and Presentation on the right.
+4. Unspecified text uses `Standard`; specialized tiers follow their defined roles.
+5. One paragraph uses Card, several paragraphs use Paragraph, one icon uses IconCard, and images or composed visuals use Presenter.
+6. Cards have no arbitrary Body; ListCard uses one `ActionBody` control and immediate application.
+7. Chunk gaps are large, ListCard peer gaps are compact, and Paragraph owns its paragraph spacing and indentation.
+8. The complete interactive surface uses the correct member of the Button family.
+9. Variants, theme resources, contrast, accessible names, and focus order remain semantically consistent.
 
 ## Related content
 

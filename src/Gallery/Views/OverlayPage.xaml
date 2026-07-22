@@ -14,6 +14,8 @@
       <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
         <flourish:ChunkHero
           Description="Anchored floating content with two dismissal contracts."
+          PresenterMode="Split"
+          PresenterPosition="Right"
           Title="Overlay"
         />
 
@@ -149,13 +151,17 @@
         <flourish:Chunk Title="Usage">
           <flourish:Presenter
             Description="Popup or Shell owns visibility and placement. Overlay owns its surface and dismissal request."
+            PresenterMode="Split"
+            PresenterPosition="Right"
             Title="Popup host"
           >
-            <flourish:FlourishTextBlock
-              FontFamily="{DynamicResource FlourishOutputFontFamily}"
-              Role="Caption"
-              Text="overlay.PlacementTarget = trigger;&#x0a;popup.PlacementTarget = trigger;&#x0a;popup.IsOpen = true;"
-            />
+            <flourish:Presenter.Presentation>
+              <flourish:FlourishTextBlock
+                FontFamily="{DynamicResource FlourishOutputFontFamily}"
+                Role="Caption"
+                Text="overlay.PlacementTarget = trigger;&#x0a;popup.PlacementTarget = trigger;&#x0a;popup.IsOpen = true;"
+              />
+            </flourish:Presenter.Presentation>
           </flourish:Presenter>
         </flourish:Chunk>
 

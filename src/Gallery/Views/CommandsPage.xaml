@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Register, dispatch, and inspect commands at runtime."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Commands &amp; shortcuts"
       />
 
@@ -127,13 +129,17 @@
         Title="Registry snapshots"
       >
         <flourish:Presenter
-          Title="Registry state"
           Description="Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces."
+          PresenterMode="Split"
+          PresenterPosition="Right"
+          Title="Registry state"
         >
-          <StackPanel>
-            <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
-            <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
-          </StackPanel>
+          <flourish:Presenter.Presentation>
+            <StackPanel>
+              <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
+              <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
+            </StackPanel>
+          </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </flourish:Chunk>
     </StackPanel>

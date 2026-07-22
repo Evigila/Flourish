@@ -12,6 +12,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Present several paragraphs as one quiet, full-width reading surface."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Paragraph"
       />
 

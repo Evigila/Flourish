@@ -8,6 +8,13 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <summary>
 /// A page-leading, full-width <see cref="Presenter" /> with an emphasized background and title.
 /// </summary>
+/// <remarks>
+/// Authors should explicitly assign <see cref="Presenter.Title" />,
+/// <see cref="Presenter.Description" />, <see cref="Presenter.PresenterMode" />, and
+/// <see cref="Presenter.PresenterPosition" />. Unlike an ordinary <see cref="Presenter" />,
+/// implicit XAML content is assigned to <see cref="Presenter.Body" />; presentation content must
+/// use an explicit <see cref="Presenter.Presentation" /> property element.
+/// </remarks>
 [TemplatePart(Name = PartHeroSurface, Type = typeof(WpfBorder))]
 [TemplatePart(Name = PartClipHost, Type = typeof(FrameworkElement))]
 [ContentProperty(nameof(Body))]

@@ -50,7 +50,7 @@ description: 使用 Chunk 和 ChunkHero 构建 Flourish 页面必需的全宽区
 
 ## ChunkHero
 
-`ChunkHero` 是页面唯一的头部区块。它继承 [Presenter](presenter.md) 的完整约定：`Title`、`Description`、`Body`、`Presentation`、`PresenterMode` 和 `PresenterPosition`。更大的标题和强调背景使它区别于普通 `Presenter`。
+`ChunkHero` 是页面唯一的头部区块。它继承 [Presenter](presenter.md) 的完整约定：每个声明都必须显式提供 `Title`、`Description`、`PresenterMode` 和 `PresenterPosition`，`Body` 与 `Presentation` 则位于各自规定的内容区域。更大的标题和强调背景使它区别于普通 `Presenter`。
 
 ```xml
 <flourish:ChunkHero
@@ -78,14 +78,14 @@ description: 使用 Chunk 和 ChunkHero 构建 Flourish 页面必需的全宽区
 
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
-| `Title` | `string` | `""` | 必需的页面标题，使用专用 HeaderSize 字号。 |
-| `Description` | `string?` | `null` | 页面标题的可选补充说明。 |
-| `Body` | `object?` | `null` | 与头部文案一起排列的辅助控件或内容，也是默认 XAML 内容属性。 |
-| `Presentation` | `object?` | `null` | 图片、图标组、插图或其他展示内容。 |
-| `PresenterMode` | `PresenterMode` | `Split` | 将展示内容放在文案旁边或文案后方。 |
-| `PresenterPosition` | `PresenterPosition` | `Right` | 在 `Split` 模式下将展示内容放在 `Left` 或 `Right`。 |
+| `Title` | `string` | `""` | 必需的页面标题，使用专用 HeaderSize 字号，必须显式声明。 |
+| `Description` | `string?` | `null` | 页面标题必需的补充说明，必须显式声明。 |
+| `Body` | `object?` | `null` | 与头部文案位于同一区域的辅助控件或内容，并继续作为 `ChunkHero` 的默认 XAML 内容属性。 |
+| `Presentation` | `object?` | `null` | 图片、图标组、插图或其他展示内容。请通过 `ChunkHero.Presentation` 显式赋值。 |
+| `PresenterMode` | `PresenterMode` | `Split` | 必须显式声明的组合模式；运行时回退值为 `Split`。 |
+| `PresenterPosition` | `PresenterPosition` | `Right` | 必须显式声明的展示侧；运行时回退值为 `Right`。 |
 
-头部的可选区域遵循与 `Chunk` 相同的折叠规则：缺少 `Description`、`Body` 或 `Presentation` 时，不会留下空占位或间距。在 `Overlay` 模式下，应选择能让叠加文案在浅色和深色主题下都保持可读的展示内容。
+头部 `Body` 或 `Presentation` 缺失时不会留下空占位或间距。标准 Split 会将标题、描述和主体固定在左侧，将展示内容放在右侧。在 `Overlay` 模式下，应选择能使全部叠加文案在浅色和深色主题中都保持可读的展示内容；即使 Overlay 会忽略 `PresenterPosition`，声明中也仍需显式提供它。
 
 ## 页面结构
 
@@ -97,6 +97,8 @@ description: 使用 Chunk 和 ChunkHero 构建 Flourish 页面必需的全宽区
     <flourish:ChunkHero
       Title="设计系统"
       Description="此应用程序的基础规范和可复用控件。"
+      PresenterMode="Split"
+      PresenterPosition="Right"
       Presentation="{StaticResource DesignSystemIllustration}" />
 
     <flourish:Chunk Title="基础规范">

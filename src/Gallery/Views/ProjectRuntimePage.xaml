@@ -9,6 +9,8 @@
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
         Description="Manage the persisted project catalog and exercise the replaceable default project behavior."
+        PresenterMode="Split"
+        PresenterPosition="Right"
         Title="Projects at runtime"
       />
 
