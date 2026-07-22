@@ -255,6 +255,7 @@ public sealed class FlourishPublicControlsTests
             var chunkHero = new ChunkHero();
             var presenter = new Presenter();
             var paragraph = new Paragraph();
+            var codeSpace = new CodeSpace();
             var card = new Card();
             var iconCard = new IconCard();
             var listCard = new ListCard();
@@ -293,6 +294,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(PresenterMode.Split, presenter.PresenterMode);
             Assert.Equal(PresenterPosition.Right, presenter.PresenterPosition);
             Assert.Empty(paragraph.Items);
+            Assert.Equal(string.Empty, codeSpace.Text);
             Assert.Equal(Variant.Standard, card.Variant);
             Assert.Equal(string.Empty, card.Title);
             Assert.Equal(string.Empty, card.MainText);
@@ -783,7 +785,7 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
-    public void PresenterAndParagraph_ExposeContentContractsAndParagraphOwnsItsItems()
+    public void PresenterParagraphAndCodeSpace_ExposeTheirContentContracts()
     {
         RunInSta(() =>
         {
@@ -799,6 +801,9 @@ public sealed class FlourishPublicControlsTests
                 nameof(ItemsControl.Items),
                 typeof(Paragraph).GetCustomAttribute<ContentPropertyAttribute>()?.Name
             );
+            Assert.Null(typeof(CodeSpace).GetCustomAttribute<ContentPropertyAttribute>());
+            Assert.Equal(typeof(CodeSpace), CodeSpace.TextProperty.OwnerType);
+            Assert.Equal(string.Empty, CodeSpace.TextProperty.DefaultMetadata.DefaultValue);
 
             var dataContext = new object();
             var firstParagraph = new FlourishTextBlock { Text = "First" };
@@ -824,6 +829,24 @@ public sealed class FlourishPublicControlsTests
                 new object[] { secondParagraph },
                 LogicalTreeHelper.GetChildren(paragraph).Cast<object>()
             );
+        });
+    }
+
+    [Fact]
+    public void CodeSpace_ExplicitXamlTextPreservesWhitespace()
+    {
+        RunInSta(() =>
+        {
+            const string xaml = """
+                <flourish:CodeSpace
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:flourish="http://schemas.arkheide.system/flourish"
+                  Text="  return value;&#xA;next" />
+                """;
+
+            var codeSpace = Assert.IsType<CodeSpace>(XamlReader.Parse(xaml));
+
+            Assert.Equal("  return value;\nnext", codeSpace.Text);
         });
     }
 

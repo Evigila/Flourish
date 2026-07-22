@@ -9,6 +9,7 @@ public partial class ParagraphPage : Page
     [
         new("Items", "Contains TextBlock paragraphs in reading order."),
         new("ItemsSource", "Binds an application-owned paragraph collection when needed."),
+        new("Margin", "Adds the standard separation from Chunk title and description copy."),
     ];
 
     public ParagraphPage()

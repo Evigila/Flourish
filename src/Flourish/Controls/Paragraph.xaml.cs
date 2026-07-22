@@ -8,7 +8,7 @@ using WpfBinding = System.Windows.Data.Binding;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// Presents multiple text blocks as indented paragraphs with consistent spacing between them.
+/// Presents multiple text blocks at the Large reading size within a rounded, lightly outlined surface.
 /// </summary>
 [ContentProperty(nameof(Items))]
 public class Paragraph : ItemsControl
@@ -75,7 +75,7 @@ public class Paragraph : ItemsControl
         base.ClearContainerForItemOverride(element, item);
     }
 
-    private static TextBlock CreateTextProxy(TextBlock source)
+    private TextBlock CreateTextProxy(TextBlock source)
     {
         var proxy = new TextBlock { Name = "ParagraphTextProxy" };
 
@@ -87,7 +87,7 @@ public class Paragraph : ItemsControl
             PrefixFirstLineConverter.Instance
         );
         Bind(proxy, TextBlock.FontFamilyProperty, source, TextBlock.FontFamilyProperty);
-        Bind(proxy, TextBlock.FontSizeProperty, source, TextBlock.FontSizeProperty);
+        Bind(proxy, TextBlock.FontSizeProperty, this, FontSizeProperty);
         Bind(proxy, TextBlock.FontStretchProperty, source, TextBlock.FontStretchProperty);
         Bind(proxy, TextBlock.FontStyleProperty, source, TextBlock.FontStyleProperty);
         Bind(proxy, TextBlock.FontWeightProperty, source, TextBlock.FontWeightProperty);

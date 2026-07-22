@@ -1,6 +1,6 @@
 ---
 name: creating-page
-description: Create or refactor Flourish WPF pages with exactly one leading ChunkHero, full-width Chunk sections, standardized typography and spacing, non-nesting Card-family surfaces, Paragraph prose, Presenter compositions, compact ListCard actions, OutputCard histories, and the correct Button-family interaction semantics. Use when adding or editing page XAML, reviewing page information architecture, choosing layout or content controls, or validating a Flourish page before delivery.
+description: Create or refactor Flourish WPF pages with exactly one leading ChunkHero, full-width Chunk sections, standardized typography and spacing, non-nesting Card-family surfaces, outlined Paragraph prose, copyable CodeSpace snippets, Presenter compositions, compact ListCard actions, OutputCard histories, and the correct Button-family interaction semantics. Use when adding or editing page XAML, reviewing page information architecture, choosing layout or content controls, or validating a Flourish page before delivery.
 ---
 
 # Creating Flourish Pages
@@ -47,6 +47,7 @@ Use the smallest control whose semantic contract matches the content:
 - Use `Card` for an optional title and one optional paragraph in `MainText`.
 - Use `IconCard` for the same copy plus one icon.
 - Use `Paragraph` for several text paragraphs.
+- Use `CodeSpace` for exact source or command text that readers may copy.
 - Use `Presenter` for an image, several icons, an illustration, a preview, or composed presentation content.
 - Use `ListCard` for one compact setting or local action row.
 - Use `OutputCard` for append-only raw messages, logs, progress, completed results, and failures.
@@ -92,9 +93,21 @@ An adjacent column may contain an `OutputCard`. Put the complete ListCard column
 
 Use `Paragraph` as a `Chunk`'s only body when the section is continuous multi-paragraph prose. Add any number of direct `TextBlock` children; each child is one paragraph.
 
-`Paragraph` owns the gap between paragraphs and the visual first-line indentation equivalent to four standard spaces. Do not insert literal leading spaces or local margins. It always remains transparent and borderless, has no title or description, and exposes no visual variants. Use `Card` instead when the content is one paragraph.
+`Paragraph` owns the gap between paragraphs and the visual first-line indentation equivalent to four standard spaces. Do not insert literal leading spaces or local item margins. It uses a transparent background, a rounded thin low-contrast border, and a small default outer top margin that separates the surface from Chunk Title and Description. Preserve that outer margin. Its rendered font size always uses the effective Large tier; do not override it on child TextBlocks. Paragraph has no title or description and exposes no visual variants. Use `Card` instead when the content is one paragraph.
 
 Do not confuse the container with `FlourishTextRole.Paragraph`, which styles one `FlourishTextBlock`.
+
+## Compose CodeSpaces
+
+Use `CodeSpace` for one exact source-code or command-text value. Assign the complete snippet explicitly through `Text`; CodeSpace is not a content container and must not receive child controls.
+
+- Preserve source whitespace and line endings. Do not add Paragraph-style indentation or rewrite the value before display or copy.
+- Keep the built-in transparent background, rounded thin low-contrast border, padding, and small outer top margin that separates it from Chunk copy.
+- Keep the temporary fixed presentation: the effective Large tier, Normal style, Bold weight, Consolas family, and adaptive blue foreground.
+- Treat this presentation as a placeholder for future syntax highlighting. Do not create per-language token colors or a language-selection API yet.
+- Use the built-in upper-right copy action. Do not wrap CodeSpace with a second copy button.
+- Keep the copy tooltip on the shared Tip typography; it remains Normal and Regular instead of inheriting the Bold code presentation.
+- Expect long lines to remain unwrapped and scroll horizontally. The copy action always targets the complete `Text` value and is disabled when it is empty.
 
 ## Compose Presenters
 
@@ -207,8 +220,8 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm empty optional regions leave no placeholder or spacing.
 - Confirm unspecified typography uses Standard and specialized tiers follow their assigned roles.
 - Confirm Card-family controls use `MainText` and never attempt a general `Body`.
-- Confirm one paragraph uses Card, several paragraphs use Paragraph, one icon uses IconCard, and images or composed visuals use Presenter.
-- Confirm Paragraph is the chunk's only body and owns paragraph gaps and indentation.
+- Confirm one paragraph uses Card, several prose paragraphs use Paragraph, exact copyable code uses CodeSpace, one icon uses IconCard, and images or composed visuals use Presenter.
+- Confirm Paragraph is the chunk's only body and owns its outer separation, paragraph gaps, and indentation; confirm CodeSpace preserves its outer separation and uses its built-in copy action.
 - Confirm every Presenter and ChunkHero explicitly declares Title, Description, PresenterMode, and PresenterPosition.
 - Confirm standard Split is full-width with copy plus Body fixed on the left and Presentation on the right; alternate Left reverses only the two regions.
 - Confirm Presentation receives direct XAML content, Body is assigned explicitly, and Overlay declares Position even though it ignores the value visually.
@@ -219,4 +232,4 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm the complete interactive surface uses the correct Button-family member and icon-only actions have accessible names and tooltips.
 - Confirm card grids use consistent row and column gaps and peer cards have compatible arranged heights.
 - Confirm Gallery control pages follow the applicable `Variant`, `Table`, examples, topic-specific content, `Usage`, and final `Reference` sequence.
-- Recommend manual checks for light and dark themes, keyboard focus order, enlarged or localized text, collapsed optional regions, Split and Overlay layouts, and output scrolling.
+- Recommend manual checks for light and dark themes, keyboard focus order, enlarged or localized text, collapsed optional regions, Paragraph and CodeSpace surfaces, CodeSpace copying, Split and Overlay layouts, and output scrolling.

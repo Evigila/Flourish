@@ -50,9 +50,12 @@
   <Thickness x:Key="FlourishListCardActionSpacing">24,0,0,0</Thickness>
   <Thickness x:Key="FlourishListCardPeerMargin">0,4,0,0</Thickness>
   <Thickness x:Key="FlourishInteractiveCardPadding">18</Thickness>
-  <!-- Paragraph containers own only the vertical gap; first-line indentation is textual. -->
+  <!-- Paragraph owns its outlined surface spacing; item margins remain vertical and indentation is textual. -->
+  <Thickness x:Key="FlourishParagraphMargin">0,8,0,0</Thickness>
+  <Thickness x:Key="FlourishParagraphPadding">16,12</Thickness>
   <Thickness x:Key="FlourishParagraphFirstItemMargin">0</Thickness>
   <Thickness x:Key="FlourishParagraphItemMargin">0,12,0,0</Thickness>
+  <Thickness x:Key="FlourishCodeSpaceContentMargin">0,0,40,0</Thickness>
   <Thickness x:Key="FlourishPresenterCopyPadding">20</Thickness>
   <Thickness x:Key="FlourishPresenterDescriptionSpacing">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterBodySpacing">0,16,0,0</Thickness>

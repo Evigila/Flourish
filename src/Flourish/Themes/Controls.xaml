@@ -11,6 +11,7 @@
     <!-- CardButton is the terminal dictionary in the Button-family dependency chain. -->
     <ResourceDictionary Source="/Flourish;component/Controls/CardButton.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Paragraph.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/CodeSpace.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Presenter.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Chunk.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/ChunkHero.xaml" />

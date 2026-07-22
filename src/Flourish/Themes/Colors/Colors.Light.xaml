@@ -88,6 +88,7 @@
   <SolidColorBrush x:Key="FlourishCardStrokeBrush" Color="#12000000" />
   <SolidColorBrush x:Key="FlourishOutputViewportBackgroundBrush" Color="#E2E6EA" />
   <SolidColorBrush x:Key="FlourishOutputViewportForegroundBrush" Color="#0B6B2F" />
+  <SolidColorBrush x:Key="FlourishCodeForegroundBrush" Color="#0F6CBD" />
   <SolidColorBrush x:Key="FlourishShadowBrush" Color="#33000000" />
   <DropShadowEffect x:Key="FlourishElevation1Effect" BlurRadius="10" Direction="270" Opacity="0.12" ShadowDepth="2" Color="#000000" />
   <DropShadowEffect x:Key="FlourishElevation2Effect" BlurRadius="18" Direction="270" Opacity="0.18" ShadowDepth="4" Color="#000000" />

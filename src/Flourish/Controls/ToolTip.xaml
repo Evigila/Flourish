@@ -11,6 +11,8 @@
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
+    <Setter Property="FontStyle" Value="Normal" />
+    <Setter Property="FontWeight" Value="Regular" />
     <Setter Property="Padding" Value="8,5" />
     <Setter Property="Placement" Value="Custom" />
     <Setter Property="HasDropShadow" Value="False" />

@@ -1,0 +1,69 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.CodeSpacePage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
+      <flourish:ChunkHero
+        Description="Present exact code text in a copyable, rounded, lightly outlined code surface."
+        PresenterMode="Split"
+        PresenterPosition="Right"
+        Title="CodeSpace"
+      />
+
+      <flourish:Chunk Title="Table">
+        <flourish:DataGrid
+          ItemsSource="{Binding Properties, ElementName=RootPage}"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+        >
+          <DataGrid.Columns>
+            <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+            <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          </DataGrid.Columns>
+        </flourish:DataGrid>
+      </flourish:Chunk>
+
+      <flourish:Chunk
+        Description="The copy action preserves every newline and indentation character in Text."
+        Title="Example"
+      >
+        <flourish:CodeSpace Text="{Binding ExampleCode, ElementName=RootPage}" />
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Usage">
+        <flourish:Paragraph>
+          <flourish:FlourishTextBlock Text="Assign the complete snippet through Text. CodeSpace keeps whitespace intact, uses a fixed Large-tier monospaced presentation, and reserves its upper-right corner for the copy action." />
+          <flourish:FlourishTextBlock Text="Syntax-aware highlighting is intentionally deferred. The current blue, bold Consolas treatment is one fixed code style rather than a language parser." />
+        </flourish:Paragraph>
+      </flourish:Chunk>
+
+      <flourish:Chunk Title="Reference">
+        <UniformGrid Columns="2">
+          <flourish:CardButton
+            Margin="0,0,8,0"
+            Content="Browse the Flourish source repository."
+            Icon="&#xE8A5;"
+            IsEnabled="False"
+            Title="GitHub repository"
+            ToolTip="External navigation is not available in Gallery."
+          />
+          <flourish:CardButton
+            Margin="8,0,0,0"
+            Content="Read the CodeSpace guide."
+            Icon="&#xE946;"
+            IsEnabled="False"
+            Title="CodeSpace documentation"
+            ToolTip="External navigation is not available in Gallery."
+          />
+        </UniformGrid>
+      </flourish:Chunk>
+    </StackPanel>
+  </flourish:ScrollViewer>
+</Page>

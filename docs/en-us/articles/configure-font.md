@@ -29,6 +29,8 @@ When a text element or control does not explicitly select a font-size tier, it u
 | `ExtraLarge` | The section-title family, including `Chunk.Title`. |
 | `HeaderSize` | Reserved for the page title in `ChunkHero`. |
 
+`Paragraph` and `CodeSpace` explicitly use the Large tier. They therefore follow global and page-specific Large changes instead of deriving another size from Standard.
+
 Large, ExtraLarge, and HeaderSize title roles use `Bold`. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitlebarApplicationInfo` retains its own WPF typography choices.
 
 Small and Standard have compact line spacing and bottom space; Large, ExtraLarge, and HeaderSize progressively add more, while Icon adds none.

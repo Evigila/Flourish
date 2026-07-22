@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -40,6 +41,7 @@ public sealed class FlourishControlStylesTests
             "/Flourish;component/Controls/ChunkHero.xaml",
             "/Flourish;component/Controls/Presenter.xaml",
             "/Flourish;component/Controls/Paragraph.xaml",
+            "/Flourish;component/Controls/CodeSpace.xaml",
             "/Flourish;component/Controls/Card.xaml",
             "/Flourish;component/Controls/IconCard.xaml",
             "/Flourish;component/Controls/ListCard.xaml",
@@ -306,6 +308,8 @@ public sealed class FlourishControlStylesTests
             var target = new CardButton
             {
                 Content = "Reference",
+                FontStyle = FontStyles.Italic,
+                FontWeight = FontWeights.Bold,
                 IsEnabled = false,
                 ToolTip = "External navigation is not available in Gallery.",
             };
@@ -328,6 +332,8 @@ public sealed class FlourishControlStylesTests
 
                 Assert.True(ToolTipService.GetShowOnDisabled(target));
                 Assert.True(FlourishToolTipPlacement.GetIsEnabled(nativeToolTip));
+                Assert.Equal(FontStyles.Normal, nativeToolTip.FontStyle);
+                Assert.Equal(FontWeights.Regular, nativeToolTip.FontWeight);
                 var surface = AssertTemplatePart<Overlay>(
                     nativeToolTip,
                     "SurfaceChrome"
@@ -944,29 +950,136 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void Paragraph_DoesNotRenderBackgroundOrBorderProperties()
+    public void Paragraph_RendersItsSubtleSurfaceAndSupportsLocalOverrides()
     {
         RunInSta(() =>
         {
             var paragraph = new FlourishParagraph
+            {
+                Items = { new FlourishTextBlock { Text = "Paragraph" } },
+            };
+            var overriddenParagraph = new FlourishParagraph
             {
                 Background = Brushes.Red,
                 BorderBrush = Brushes.Blue,
                 BorderThickness = new Thickness(8),
                 Items = { new FlourishTextBlock { Text = "Paragraph" } },
             };
-            var window = CreateWindow(paragraph);
+            var panel = new StackPanel
+            {
+                Children = { paragraph, overriddenParagraph },
+            };
+            var window = CreateWindow(panel);
 
             try
             {
                 window.Show();
                 window.UpdateLayout();
                 paragraph.ApplyTemplate();
+                overriddenParagraph.ApplyTemplate();
 
-                Assert.Same(Brushes.Red, paragraph.Background);
-                Assert.Same(Brushes.Blue, paragraph.BorderBrush);
-                Assert.Equal(new Thickness(8), paragraph.BorderThickness);
-                Assert.IsType<ItemsPresenter>(VisualTreeHelper.GetChild(paragraph, 0));
+                Assert.Equal(new Thickness(0, 8, 0, 0), paragraph.Margin);
+                Assert.Equal(new Thickness(16, 12, 16, 12), paragraph.Padding);
+                Assert.Null(paragraph.Background);
+                Assert.Same(
+                    paragraph.FindResource("FlourishSurfaceStrokeBrush"),
+                    paragraph.BorderBrush
+                );
+                Assert.Equal(new Thickness(1), paragraph.BorderThickness);
+
+                var surface = AssertTemplatePart<Border>(paragraph, "ParagraphSurface");
+                Assert.Equal(paragraph.Padding, surface.Padding);
+                Assert.Same(paragraph.Background, surface.Background);
+                Assert.Same(paragraph.BorderBrush, surface.BorderBrush);
+                Assert.Equal(paragraph.BorderThickness, surface.BorderThickness);
+                Assert.Equal(new CornerRadius(8), surface.CornerRadius);
+
+                var overriddenSurface = AssertTemplatePart<Border>(
+                    overriddenParagraph,
+                    "ParagraphSurface"
+                );
+                Assert.Same(Brushes.Red, overriddenSurface.Background);
+                Assert.Same(Brushes.Blue, overriddenSurface.BorderBrush);
+                Assert.Equal(new Thickness(8), overriddenSurface.BorderThickness);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void CodeSpace_UsesTheFixedCodeStyleAndCopiesItsExactText()
+    {
+        RunInSta(() =>
+        {
+            const string code = "public static void Main()\r\n{\r\n    Run();\r\n}";
+            string? copiedText = null;
+            var codeSpace = new CodeSpace { Text = code };
+            codeSpace.ClipboardWriter = value => copiedText = value;
+            var window = CreateWindow(codeSpace);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                codeSpace.ApplyTemplate();
+
+                Assert.Equal(new Thickness(0, 8, 0, 0), codeSpace.Margin);
+                Assert.Equal(new Thickness(16, 12, 16, 12), codeSpace.Padding);
+                Assert.Null(codeSpace.Background);
+                Assert.Same(
+                    codeSpace.FindResource("FlourishSurfaceStrokeBrush"),
+                    codeSpace.BorderBrush
+                );
+                Assert.Equal(new Thickness(1), codeSpace.BorderThickness);
+
+                var surface = AssertTemplatePart<Border>(codeSpace, "CodeSpaceSurface");
+                Assert.Equal(codeSpace.Padding, surface.Padding);
+                Assert.Same(codeSpace.Background, surface.Background);
+                Assert.Same(codeSpace.BorderBrush, surface.BorderBrush);
+                Assert.Equal(codeSpace.BorderThickness, surface.BorderThickness);
+                Assert.Equal(new CornerRadius(8), surface.CornerRadius);
+
+                var textHost = AssertTemplatePart<System.Windows.Controls.TextBlock>(
+                    codeSpace,
+                    "CodeTextHost"
+                );
+                Assert.Equal("Consolas", textHost.FontFamily.Source);
+                Assert.Equal(16d, textHost.FontSize);
+                Assert.Equal(FontStyles.Normal, textHost.FontStyle);
+                Assert.Equal(FontWeights.Bold, textHost.FontWeight);
+                Assert.Same(
+                    codeSpace.FindResource("FlourishCodeForegroundBrush"),
+                    textHost.Foreground
+                );
+                Assert.Equal(code, textHost.Text);
+                Assert.Equal(TextWrapping.NoWrap, textHost.TextWrapping);
+
+                var copyButton = AssertTemplatePart<IconButton>(
+                    codeSpace,
+                    "PART_CopyButton"
+                );
+                Assert.Same(ApplicationCommands.Copy, copyButton.Command);
+                Assert.Same(codeSpace, copyButton.CommandTarget);
+                Assert.Equal("\uE8C8", copyButton.Icon);
+                Assert.Equal(HorizontalAlignment.Right, copyButton.HorizontalAlignment);
+                Assert.Equal(VerticalAlignment.Top, copyButton.VerticalAlignment);
+                Assert.Equal("Copy code", AutomationProperties.GetName(copyButton));
+                var copyToolTip = Assert.IsType<FlourishToolTip>(copyButton.ToolTip);
+                Assert.Equal("Copy code", copyToolTip.Content);
+                Assert.Equal(FontStyles.Normal, copyToolTip.FontStyle);
+                Assert.Equal(FontWeights.Regular, copyToolTip.FontWeight);
+
+                Assert.True(ApplicationCommands.Copy.CanExecute(null, codeSpace));
+                ApplicationCommands.Copy.Execute(null, codeSpace);
+                Assert.Equal(code, copiedText);
+
+                codeSpace.Text = string.Empty;
+                CommandManager.InvalidateRequerySuggested();
+                window.UpdateLayout();
+                Assert.False(ApplicationCommands.Copy.CanExecute(null, codeSpace));
             }
             finally
             {
@@ -1004,7 +1117,7 @@ public sealed class FlourishControlStylesTests
                 window.UpdateLayout();
                 paragraph.ApplyTemplate();
 
-                Assert.Equal(14d, paragraph.FontSize);
+                Assert.Equal(16d, paragraph.FontSize);
                 Assert.Equal(HorizontalAlignment.Stretch, paragraph.HorizontalAlignment);
                 Assert.Equal(TextWrapping.Wrap, first.TextWrapping);
                 Assert.Equal(TextWrapping.Wrap, second.TextWrapping);
@@ -1029,6 +1142,8 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal("First paragraph", first.Text);
                 Assert.Equal("    First paragraph", firstProxy.Text);
                 Assert.Equal("    Second paragraph", secondProxy.Text);
+                Assert.Equal(16d, firstProxy.FontSize);
+                Assert.Equal(16d, secondProxy.FontSize);
 
                 var initialIndentWidth = MeasureParagraphIndent(firstProxy);
                 first.FontSize = 28;
@@ -1037,8 +1152,9 @@ public sealed class FlourishControlStylesTests
 
                 Assert.Equal("Updated paragraph", first.Text);
                 Assert.Equal("    Updated paragraph", firstProxy.Text);
-                Assert.Equal(28d, firstProxy.FontSize);
-                Assert.True(MeasureParagraphIndent(firstProxy) > initialIndentWidth);
+                Assert.Equal(28d, first.FontSize);
+                Assert.Equal(16d, firstProxy.FontSize);
+                Assert.Equal(initialIndentWidth, MeasureParagraphIndent(firstProxy));
             }
             finally
             {

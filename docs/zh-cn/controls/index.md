@@ -15,6 +15,7 @@ Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体
 | --- | --- |
 | [Chunk](chunk.md) | 页面层级、唯一头部区块、全宽区块和标准区块间距。 |
 | [Paragraph](paragraph.md) | 将多段缩进文本作为 Chunk 的唯一主体。 |
+| [CodeSpace](code-space.md) | 以固定等宽样式呈现可精确复制的代码文本。 |
 | [Presenter](presenter.md) | 组合图片、图标组、组合视觉内容、文案和辅助控件的全宽 Split 或 Overlay 布局。 |
 | [Card](card.md) | 简洁的 Card 和 IconCard 信息，以及紧凑的 ListCard 设置行。 |
 | [OutputCard](output-card.md) | 在滚动视口中显示使用 Small 字号的输出、日志、进度、结果和错误。 |
@@ -23,7 +24,7 @@ Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体
 | [Overlay](overlay.md) | 临时悬浮详情和具有强关闭语义的浮动表面。 |
 | [ScrollViewer](scroll-viewer.md) | 平滑页面滚动、逻辑滚动和 Flourish 滚动条。 |
 
-一段正文使用 `Card`，多段正文使用 `Paragraph`。一个图标使用 `IconCard`，图片、多个图标或其他组合视觉内容使用 `Presenter`。卡片没有任意主体；只有 `ListCard.ActionBody` 提供一个局部操作区。完整视觉表面可交互时，使用按钮家族中的成员。
+一段正文使用 `Card`，多段正文使用 `Paragraph`，需要精确复制的代码使用 `CodeSpace`。一个图标使用 `IconCard`，图片、多个图标或其他组合视觉内容使用 `Presenter`。卡片没有任意主体；只有 `ListCard.ActionBody` 提供一个局部操作区。完整视觉表面可交互时，使用按钮家族中的成员。
 
 ## 开始使用
 

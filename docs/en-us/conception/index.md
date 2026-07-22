@@ -77,9 +77,11 @@ An ordinary `Card` presents one paragraph. `IconCard` adds one icon and permits 
 
 ## Use Paragraph for continuous prose
 
-`Paragraph` is transparent, borderless, and has no title, description, or variants. Each direct `TextBlock` is one paragraph. The control supplies a gap between paragraphs and a leading visual indentation equivalent to four standard spaces. Do not add literal spaces or per-paragraph margins.
+`Paragraph` has a transparent background, a rounded thin low-contrast border, and no title, description, or variants. Each direct `TextBlock` is one paragraph. The control supplies a gap between paragraphs, a leading visual indentation equivalent to four standard spaces, and a small outer top margin that separates its surface from Chunk copy. Its fixed rendered size uses the Large tier. Do not add literal spaces, per-paragraph margins, an overriding outer margin, or a competing child font size.
 
 Use `Paragraph` as a chunk's only body. If the content is a single paragraph, use `Card`; if the content needs controls or a visual composition, choose the appropriate card or Presenter instead.
+
+Use `CodeSpace` for exact copyable source or command text. It shares Paragraph's rounded subtle outlined surface, outer separation, and Large size, but displays one `Text` value in the fixed Normal-style, Bold Consolas blue treatment and provides its own upper-right copy action. The copy tooltip follows the shared Tip typography instead of inheriting the code weight. Syntax-aware token highlighting is intentionally deferred.
 
 ## Use Presenter for rich presentation
 
@@ -120,9 +122,9 @@ Before considering a page complete, verify that:
 2. Every `Chunk` has a concise `Title` and real `Body`; descriptions appear only when needed and empty optional regions leave no gap.
 3. Every `ChunkHero` and `Presenter` explicitly declares `Title`, `Description`, `PresenterMode`, and `PresenterPosition`; standard Split keeps copy plus Body on the left and Presentation on the right.
 4. Unspecified text uses `Standard`; specialized tiers follow their defined roles.
-5. One paragraph uses Card, several paragraphs use Paragraph, one icon uses IconCard, and images or composed visuals use Presenter.
+5. One paragraph uses Card, several prose paragraphs use Paragraph, exact copyable code uses CodeSpace, one icon uses IconCard, and images or composed visuals use Presenter.
 6. Cards have no arbitrary Body; ListCard uses one `ActionBody` control and immediate application.
-7. Chunk gaps are large, ListCard peer gaps are compact, and Paragraph owns its paragraph spacing and indentation.
+7. Chunk gaps are large, ListCard peer gaps are compact, and Paragraph owns its outer separation, paragraph spacing, and indentation.
 8. The complete interactive surface uses the correct member of the Button family.
 9. Variants, theme resources, contrast, accessible names, and focus order remain semantically consistent.
 
@@ -131,6 +133,7 @@ Before considering a page complete, verify that:
 - [Chunk](../controls/chunk.md) documents the page hierarchy and hero rules.
 - [Card](../controls/card.md) documents Card, IconCard, and ListCard.
 - [Paragraph](../controls/paragraph.md) documents multi-paragraph text layout.
+- [CodeSpace](../controls/code-space.md) documents exact code text and the built-in copy action.
 - [Presenter](../controls/presenter.md) documents Split, Overlay, and presentation content.
 - [OutputCard](../controls/output-card.md) documents compact scrolling output.
 - [Button](../controls/button.md) documents the action controls.

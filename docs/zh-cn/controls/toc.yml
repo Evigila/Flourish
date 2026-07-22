@@ -5,6 +5,8 @@ items:
   href: chunk.md
 - name: Paragraph
   href: paragraph.md
+- name: CodeSpace
+  href: code-space.md
 - name: Presenter
   href: presenter.md
 - name: Card

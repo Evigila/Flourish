@@ -36,6 +36,9 @@
     <Compile Update="Controls\Paragraph.xaml.cs">
       <DependentUpon>Paragraph.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\CodeSpace.xaml.cs">
+      <DependentUpon>CodeSpace.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\Presenter.xaml.cs">
       <DependentUpon>Presenter.xaml</DependentUpon>
     </Compile>

@@ -15,6 +15,7 @@ Every content page starts with exactly one [ChunkHero](chunk.md#chunkhero) and c
 | --- | --- |
 | [Chunk](chunk.md) | Page hierarchy, the single leading hero, full-width sections, and standard section spacing. |
 | [Paragraph](paragraph.md) | Several indented text paragraphs as the only body of a chunk. |
+| [CodeSpace](code-space.md) | Exact, copyable code text in a fixed monospaced presentation. |
 | [Presenter](presenter.md) | Full-width Split or Overlay layouts with images, icon groups, composed visuals, copy, and supporting controls. |
 | [Card](card.md) | Concise Card and IconCard information, plus compact ListCard setting rows. |
 | [OutputCard](output-card.md) | Small-text output, logs, progress, results, and failures in a scrolling viewport. |
@@ -23,7 +24,7 @@ Every content page starts with exactly one [ChunkHero](chunk.md#chunkhero) and c
 | [Overlay](overlay.md) | Temporary hover details and strongly dismissible floating surfaces. |
 | [ScrollViewer](scroll-viewer.md) | Smooth page scrolling, logical scrolling, and Flourish scroll bars. |
 
-Use `Card` for one paragraph and `Paragraph` for several. Use `IconCard` for one icon, and `Presenter` for an image, several icons, or another composed visual. Cards do not have arbitrary bodies; only `ListCard.ActionBody` provides one local action region. Use a member of the Button family whenever the complete visual surface is interactive.
+Use `Card` for one paragraph, `Paragraph` for several prose paragraphs, and `CodeSpace` for exact copyable code. Use `IconCard` for one icon, and `Presenter` for an image, several icons, or another composed visual. Cards do not have arbitrary bodies; only `ListCard.ActionBody` provides one local action region. Use a member of the Button family whenever the complete visual surface is interactive.
 
 ## Get started
 

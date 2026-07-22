@@ -11,7 +11,7 @@
   <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
       <flourish:ChunkHero
-        Description="Present several paragraphs as one quiet, full-width reading surface."
+        Description="Present several paragraphs as one rounded, lightly outlined, full-width reading surface."
         PresenterMode="Split"
         PresenterPosition="Right"
         Title="Paragraph"
@@ -35,9 +35,9 @@
         Title="Example"
       >
         <flourish:Paragraph>
-          <flourish:FlourishTextBlock Text="Paragraph is intended for sustained reading rather than a short summary. It has no title, description, background, border, or visual variant of its own." />
+          <flourish:FlourishTextBlock Text="Paragraph is intended for sustained reading rather than a short summary. Its transparent surface uses a rounded, thin, low-contrast outline without adding a title, description, or visual variant." />
           <flourish:FlourishTextBlock Text="Every TextBlock added to Paragraph is treated as a separate paragraph. The control supplies the standard first-line inset and the gap between adjacent paragraphs." />
-          <flourish:FlourishTextBlock Text="Keep Paragraph as the only Body of its Chunk. Place controls, cards, and illustrations in separate Chunks so the reading flow remains predictable." />
+          <flourish:FlourishTextBlock Text="Keep Paragraph as the only Body of its Chunk and preserve its default outer spacing from the Chunk copy. Place controls, cards, and illustrations in separate Chunks so the reading flow remains predictable." />
         </flourish:Paragraph>
       </flourish:Chunk>
 
@@ -58,8 +58,8 @@
 
       <flourish:Chunk Title="Usage">
         <flourish:Paragraph>
-          <flourish:FlourishTextBlock Text="Add TextBlock items directly. Their normal text styling remains available, but their default font size stays at the standard tier." />
-          <flourish:FlourishTextBlock Text="Do not place buttons, cards, images, or other controls inside Paragraph. Choose Presenter or another dedicated Chunk for those elements." />
+          <flourish:FlourishTextBlock Text="Add TextBlock items directly. Their normal text styling remains available except for size: Paragraph always renders at the effective Large tier." />
+          <flourish:FlourishTextBlock Text="Do not place buttons, cards, images, code, or other controls inside Paragraph. Use CodeSpace for copyable code and choose Presenter or another dedicated Chunk for other elements." />
         </flourish:Paragraph>
       </flourish:Chunk>
 

@@ -1,0 +1,67 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <ControlTemplate x:Key="CodeSpaceTemplate" TargetType="{x:Type controls:CodeSpace}">
+    <Border
+      x:Name="CodeSpaceSurface"
+      Padding="{TemplateBinding Padding}"
+      Background="{TemplateBinding Background}"
+      BorderBrush="{TemplateBinding BorderBrush}"
+      BorderThickness="{TemplateBinding BorderThickness}"
+      CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+    >
+      <Grid>
+        <controls:ScrollViewer
+          Background="Transparent"
+          BorderThickness="0"
+          HorizontalScrollBarVisibility="Auto"
+          VerticalScrollBarVisibility="Auto"
+        >
+          <TextBlock
+            x:Name="CodeTextHost"
+            Margin="{DynamicResource FlourishCodeSpaceContentMargin}"
+            FontFamily="{TemplateBinding FontFamily}"
+            FontSize="{TemplateBinding FontSize}"
+            FontStyle="{TemplateBinding FontStyle}"
+            FontWeight="Bold"
+            Foreground="{TemplateBinding Foreground}"
+            Text="{TemplateBinding Text}"
+            TextWrapping="NoWrap"
+          />
+        </controls:ScrollViewer>
+        <controls:IconButton
+          x:Name="PART_CopyButton"
+          AutomationProperties.Name="Copy code"
+          Command="{x:Static ApplicationCommands.Copy}"
+          CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          Icon="&#xE8C8;"
+          ToolTip="Copy code"
+          Variant="Text"
+        />
+      </Grid>
+    </Border>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type controls:CodeSpace}">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Margin" Value="{DynamicResource FlourishParagraphMargin}" />
+    <Setter Property="Padding" Value="{DynamicResource FlourishParagraphPadding}" />
+    <Setter Property="Background" Value="{x:Null}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishOutputFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeLarge}" />
+    <Setter Property="FontStyle" Value="Normal" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishCodeForegroundBrush}" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Template" Value="{StaticResource CodeSpaceTemplate}" />
+  </Style>
+</ResourceDictionary>

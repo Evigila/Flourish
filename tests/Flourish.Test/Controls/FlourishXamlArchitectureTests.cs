@@ -787,6 +787,8 @@ public sealed class FlourishXamlArchitectureTests
             "ChunkPage.xaml",
             "ButtonPage.xaml",
             "CardPage.xaml",
+            "ParagraphPage.xaml",
+            "CodeSpacePage.xaml",
             "DataGridPage.xaml",
             "OverlayPage.xaml",
         ];
