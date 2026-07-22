@@ -5,16 +5,18 @@
 >
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Flourish;component/Controls/ScrollBar.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Controls/ScrollViewer.xaml" />
+    <!-- PageBody is the terminal dictionary in the ScrollViewer dependency chain. -->
+    <ResourceDictionary Source="/Flourish;component/Controls/PageBody.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/TextBlock.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Label.xaml" />
     <!-- CardButton is the terminal dictionary in the Button-family dependency chain. -->
     <ResourceDictionary Source="/Flourish;component/Controls/CardButton.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Paragraph.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Document.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/CodeSpace.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Presenter.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/Chunk.xaml" />
-    <ResourceDictionary Source="/Flourish;component/Controls/ChunkHero.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/HeaderChunk.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/TextBox.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/PasswordBox.xaml" />
     <ResourceDictionary Source="/Flourish;component/Controls/SearchBox.xaml" />
@@ -44,7 +46,7 @@
   <sys:Double x:Key="FlourishControlMinWidth">64</sys:Double>
   <sys:Double x:Key="FlourishButtonHeight">32</sys:Double>
   <sys:Double x:Key="FlourishButtonMinWidth">72</sys:Double>
-  <sys:Double x:Key="FlourishIconButtonSize">32</sys:Double>
+  <sys:Double x:Key="FlourishButtonIconOnlySize">32</sys:Double>
   <CornerRadius x:Key="FlourishControlCornerRadius">6</CornerRadius>
   <CornerRadius x:Key="FlourishSurfaceCornerRadius">8</CornerRadius>
   <CornerRadius x:Key="FlourishOverlayCornerRadius">10</CornerRadius>

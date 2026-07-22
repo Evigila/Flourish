@@ -18,7 +18,7 @@ internal static class FlourishRegionElementFactory
     {
         var hasIcon = !string.IsNullOrWhiteSpace(iconGlyph);
         ButtonBase button = hasIcon
-            ? new IconButton
+            ? new ButtonBase
             {
                 Width = 38,
                 MinWidth = 0,
@@ -50,7 +50,7 @@ internal static class FlourishRegionElementFactory
     {
         ButtonBase button = string.IsNullOrWhiteSpace(iconGlyph)
             ? new ButtonBase { Content = displayText }
-            : new IconButton
+            : new ButtonBase
             {
                 Icon = iconGlyph,
                 Content = displayText,

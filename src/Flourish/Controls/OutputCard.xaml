@@ -5,7 +5,7 @@
 >
   <ResourceDictionary.MergedDictionaries>
     <!-- Terminal Card-family dictionary: this dependency chain loads each family resource once. -->
-    <ResourceDictionary Source="IconCard.xaml" />
+    <ResourceDictionary Source="ActionCard.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <ControlTemplate x:Key="OutputCardTemplate" TargetType="{x:Type controls:OutputCard}">

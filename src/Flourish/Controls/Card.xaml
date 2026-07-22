@@ -22,84 +22,120 @@
         CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
       >
-        <StackPanel
-          x:Name="CopyHost"
+        <DockPanel
+          x:Name="ContentLayout"
           HorizontalAlignment="{TemplateBinding ContentHorizontalAlignment}"
           VerticalAlignment="{TemplateBinding ContentVerticalAlignment}"
+          LastChildFill="True"
         >
-          <controls:FlourishTextBlock
-            x:Name="TitleHost"
-            Foreground="{TemplateBinding Foreground}"
-            Role="CardTitle"
-            Text="{TemplateBinding Title}"
+          <ContentPresenter
+            x:Name="IconHost"
+            Margin="{DynamicResource FlourishCardIconSpacingLeft}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            DockPanel.Dock="{TemplateBinding IconPosition}"
+            Content="{TemplateBinding Icon}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+            TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
+            TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
+            TextElement.Foreground="{TemplateBinding Foreground}"
           />
-          <controls:FlourishTextBlock
-            x:Name="MainTextHost"
-            Margin="{DynamicResource FlourishCardTextSpacing}"
-            Foreground="{TemplateBinding Foreground}"
-            Role="Description"
-            Text="{TemplateBinding MainText}"
-          />
-        </StackPanel>
+          <StackPanel x:Name="CopyHost">
+            <controls:FlourishTextBlock
+              x:Name="TitleHost"
+              Foreground="{TemplateBinding Foreground}"
+              Role="CardTitle"
+              Text="{TemplateBinding Title}"
+            />
+            <controls:FlourishTextBlock
+              x:Name="ContentHost"
+              Margin="{DynamicResource FlourishCardTextSpacing}"
+              Foreground="{TemplateBinding Foreground}"
+              Role="Description"
+              Text="{TemplateBinding Content}"
+            />
+          </StackPanel>
+        </DockPanel>
       </Border>
     </Grid>
     <ControlTemplate.Triggers>
       <Trigger Property="Variant" Value="Elevated">
         <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
       </Trigger>
+      <Trigger Property="IconPosition" Value="Top">
+        <Setter TargetName="IconHost" Property="Margin" Value="{DynamicResource FlourishCardIconSpacingTop}" />
+      </Trigger>
+      <Trigger Property="IconPosition" Value="Right">
+        <Setter TargetName="IconHost" Property="Margin" Value="{DynamicResource FlourishCardIconSpacingRight}" />
+      </Trigger>
+      <Trigger Property="IconPosition" Value="Bottom">
+        <Setter TargetName="IconHost" Property="Margin" Value="{DynamicResource FlourishCardIconSpacingBottom}" />
+      </Trigger>
       <Trigger Property="ContentHorizontalAlignment" Value="Left">
         <Setter TargetName="TitleHost" Property="TextAlignment" Value="Left" />
-        <Setter TargetName="MainTextHost" Property="TextAlignment" Value="Left" />
+        <Setter TargetName="ContentHost" Property="TextAlignment" Value="Left" />
       </Trigger>
       <Trigger Property="ContentHorizontalAlignment" Value="Center">
         <Setter TargetName="TitleHost" Property="TextAlignment" Value="Center" />
-        <Setter TargetName="MainTextHost" Property="TextAlignment" Value="Center" />
+        <Setter TargetName="ContentHost" Property="TextAlignment" Value="Center" />
       </Trigger>
       <Trigger Property="ContentHorizontalAlignment" Value="Right">
         <Setter TargetName="TitleHost" Property="TextAlignment" Value="Right" />
-        <Setter TargetName="MainTextHost" Property="TextAlignment" Value="Right" />
+        <Setter TargetName="ContentHost" Property="TextAlignment" Value="Right" />
+      </Trigger>
+      <Trigger Property="Icon" Value="{x:Null}">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Icon" Value="">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </Trigger>
       <Trigger Property="Title" Value="">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="MainTextHost" Property="Margin" Value="0" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
       </Trigger>
       <Trigger Property="Title" Value="{x:Null}">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="MainTextHost" Property="Margin" Value="0" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
       </Trigger>
-      <Trigger Property="MainText" Value="">
-        <Setter TargetName="MainTextHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Content" Value="">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="MainText" Value="{x:Null}">
-        <Setter TargetName="MainTextHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="" />
-          <Condition Property="MainText" Value="" />
+          <Condition Property="Content" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="{x:Null}" />
-          <Condition Property="MainText" Value="{x:Null}" />
+          <Condition Property="Content" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="" />
-          <Condition Property="MainText" Value="{x:Null}" />
+          <Condition Property="Content" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="{x:Null}" />
-          <Condition Property="MainText" Value="" />
+          <Condition Property="Content" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Opacity" Value="0.62" />

@@ -27,9 +27,9 @@ When a text element or control does not explicitly select a font-size tier, it u
 | `Icon` | General icon glyphs. Specialized icon controls may apply a local correction for their geometry. |
 | `Large` | Card titles and the selected title-bar title. |
 | `ExtraLarge` | The section-title family, including `Chunk.Title`. |
-| `HeaderSize` | Reserved for the page title in `ChunkHero`. |
+| `HeaderSize` | Reserved for the page title in `HeaderChunk`. |
 
-`Paragraph` and `CodeSpace` explicitly use the Large tier. They therefore follow global and page-specific Large changes instead of deriving another size from Standard.
+`Document` paragraphs and `CodeSpace` explicitly use the Large tier. They therefore follow global and page-specific Large changes instead of deriving another size from Standard.
 
 Large, ExtraLarge, and HeaderSize title roles use `Bold`. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitlebarApplicationInfo` retains its own WPF typography choices.
 

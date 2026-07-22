@@ -342,7 +342,7 @@
             Orientation="Horizontal"
           />
 
-          <control:IconButton
+          <control:Button
             x:Name="BackgroundTaskQueueButton"
             Grid.Column="1"
             Variant="Text"
@@ -356,7 +356,7 @@
             MouseEnter="BackgroundTaskQueueButton_MouseEnter"
             Visibility="Collapsed"
           >
-            <control:IconButton.Icon>
+            <control:Button.Icon>
               <control:FlourishTextBlock
                 x:Name="BackgroundTaskQueueCountText"
                 HorizontalAlignment="Center"
@@ -365,8 +365,8 @@
                 Role="Status"
                 TextAlignment="Center"
               />
-            </control:IconButton.Icon>
-          </control:IconButton>
+            </control:Button.Icon>
+          </control:Button>
 
           <StackPanel
             x:Name="FooterStartRegionHost"
@@ -383,7 +383,7 @@
             Orientation="Horizontal"
           />
 
-          <control:IconButton
+          <control:Button
             x:Name="SystemStatusButton"
             Grid.Column="5"
             Variant="Text"
@@ -397,7 +397,7 @@
             MouseEnter="SystemStatusButton_MouseEnter"
             Visibility="Collapsed"
           >
-            <control:IconButton.Icon>
+            <control:Button.Icon>
               <control:FlourishTextBlock
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -407,8 +407,8 @@
                 Role="Icon"
                 Text="&#xE950;"
               />
-            </control:IconButton.Icon>
-          </control:IconButton>
+            </control:Button.Icon>
+          </control:Button>
 
           <StackPanel
             x:Name="FooterEndRegionHost"

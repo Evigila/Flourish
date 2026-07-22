@@ -3,53 +3,17 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
-  <ItemsPanelTemplate x:Key="ParagraphItemsPanel">
-    <StackPanel />
-  </ItemsPanelTemplate>
-
-  <Style x:Key="ParagraphItemStyle" TargetType="{x:Type ContentPresenter}">
-    <Setter Property="Margin" Value="{DynamicResource FlourishParagraphItemMargin}" />
-    <Setter Property="HorizontalAlignment" Value="Stretch" />
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="TextElement.FontFamily" Value="{DynamicResource FlourishFontFamily}" />
-    <Setter Property="TextElement.FontSize" Value="{DynamicResource FlourishFontSizeLarge}" />
-    <Setter Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
-    <Style.Triggers>
-      <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-        <Setter Property="Margin" Value="{DynamicResource FlourishParagraphFirstItemMargin}" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-
-  <ControlTemplate x:Key="ParagraphTemplate" TargetType="{x:Type controls:Paragraph}">
-    <Border
-      x:Name="ParagraphSurface"
-      Padding="{TemplateBinding Padding}"
-      Background="{TemplateBinding Background}"
-      BorderBrush="{TemplateBinding BorderBrush}"
-      BorderThickness="{TemplateBinding BorderThickness}"
-      CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-    >
-      <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-    </Border>
-  </ControlTemplate>
-
   <Style TargetType="{x:Type controls:Paragraph}">
-    <Setter Property="AlternationCount" Value="2147483647" />
+    <Setter Property="Role" Value="Paragraph" />
     <Setter Property="HorizontalAlignment" Value="Stretch" />
-    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    <Setter Property="Margin" Value="{DynamicResource FlourishParagraphMargin}" />
-    <Setter Property="Padding" Value="{DynamicResource FlourishParagraphPadding}" />
-    <Setter Property="Background" Value="{x:Null}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
-    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeLarge}" />
+    <Setter Property="FontStyle" Value="Normal" />
+    <Setter Property="FontWeight" Value="Regular" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
-    <Setter Property="ItemContainerStyle" Value="{StaticResource ParagraphItemStyle}" />
-    <Setter Property="ItemsPanel" Value="{StaticResource ParagraphItemsPanel}" />
-    <Setter Property="SnapsToDevicePixels" Value="True" />
-    <Setter Property="Template" Value="{StaticResource ParagraphTemplate}" />
+    <Setter Property="LineHeight" Value="{DynamicResource FlourishLineHeightLarge}" />
+    <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="TextWrapping" Value="Wrap" />
   </Style>
 </ResourceDictionary>

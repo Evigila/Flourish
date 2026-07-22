@@ -1,33 +1,21 @@
 ---
 title: Button
-description: Use Flourish Button, IconButton, CardButton, and WindowCaptionButton to communicate action hierarchy and intent.
+description: Use Button, CardButton, and WindowCaptionButton to express ordinary, card-shaped, and window-caption actions.
 ---
 
 # Button
 
-The Flourish button family consists of one general-purpose text button and three specialized derivatives. They keep the command, click event, content, keyboard, and automation behavior of WPF `Button` while supplying Flourish theme, focus, and pointer feedback.
-
-The complete visual boundary of every button is interactive. Choose the family member by the information shown on that boundary:
+The Flourish button family keeps the command, click, keyboard, focus, and automation behavior of WPF `Button` while supplying consistent theme and pointer feedback. The complete visual boundary is interactive.
 
 | Control | Use for |
 | --- | --- |
-| `Button` | Ordinary actions expressed with text. |
-| `IconButton` | Icon-only actions or actions that need an icon before their text. |
-| `CardButton` | Navigation or selection actions where the complete card is invokable. |
+| `Button` | Ordinary actions, with or without one icon. |
+| `CardButton` | Actions whose complete card-shaped surface is invokable. |
 | `WindowCaptionButton` | Minimize, maximize, restore, and close actions in a window caption. |
 
 ## Button
 
-`Button.Variant` selects the button's visual presentation and emphasis, not its size or layout. Its default is `Outlined`.
-
-| `ButtonVariant` | When to use it |
-| --- | --- |
-| `Elevated` | An important action that needs separation from a patterned, image-based, or similarly busy background. Use elevation sparingly. |
-| `Filled` | The highest-emphasis, primary action in a screen or action group. |
-| `Tonal` | A prominent supporting action that needs more emphasis than an outline without competing with a filled primary action. |
-| `Outlined` | A medium-emphasis secondary action with a visible boundary. This is the default. |
-| `Text` | The lowest-emphasis action, such as a compact, inline, toolbar, or tertiary action. |
-| `Danger` | A destructive or difficult-to-reverse action such as delete or reset. |
+`Button` exposes optional `Icon` and inherited `Content` regions. Use text alone for the usual action, combine text with an icon when the icon reinforces the label, or omit `Content` for an icon-only action. A `null` or empty region and its associated spacing collapse completely.
 
 ```xml
 <WrapPanel>
@@ -35,67 +23,49 @@ The complete visual boundary of every button is interactive. Choose the family m
     Variant="Filled"
     Command="{Binding SaveCommand}"
     Content="Save" />
+
   <flourish:Button
     Variant="Tonal"
-    Command="{Binding SaveDraftCommand}"
-    Content="Save draft" />
-  <flourish:Button
-    Variant="Outlined"
-    Command="{Binding CancelCommand}"
-    Content="Cancel" />
+    Command="{Binding AddCommand}"
+    Content="Add item"
+    Icon="&#xE710;" />
+
   <flourish:Button
     Variant="Text"
-    Command="{Binding LearnMoreCommand}"
-    Content="Learn more" />
-  <flourish:Button
-    Variant="Elevated"
-    Command="{Binding OpenPreviewCommand}"
-    Content="Open preview" />
-  <flourish:Button
-    Variant="Danger"
-    Command="{Binding DeleteCommand}"
-    Content="Delete" />
+    AutomationProperties.Name="Refresh"
+    Command="{Binding RefreshCommand}"
+    Icon="&#xE72C;"
+    ToolTip="Refresh" />
 </WrapPanel>
 ```
 
-An action group should normally have only one `Filled` button. Use `Danger` for destructive intent; it is the destructive semantic option in Flourish's six-variant set. Let the containing layout control external placement, and do not use `Variant` to select structural dimensions.
+`Icon` accepts an icon glyph or another WPF object. Icon-only buttons use compact square geometry. Give every icon-only action a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action.
 
-`Tonal` uses a palette inspired by Fluent Web's brand color ramp and tuned independently for each theme. All non-danger variants share the inherited `HoverReveal.OverrideColor`; `Danger` is the only semantic color override. Elevated shadows are drawn on a background-only template layer so text remains ClearType-rendered.
+`Button.Variant` selects action emphasis, not size or layout. Its default is `Outlined`.
 
-## IconButton
+| `ButtonVariant` | When to use it |
+| --- | --- |
+| `Elevated` | An important action that needs separation from a busy background. |
+| `Filled` | The highest-emphasis primary action in a screen or action group. |
+| `Tonal` | A prominent supporting action that should not compete with the primary action. |
+| `Outlined` | A medium-emphasis secondary action. This is the ordinary `Button` default. |
+| `Text` | The lowest-emphasis inline, toolbar, or tertiary action. |
+| `Danger` | A destructive or difficult-to-reverse action. |
+| `Standard` | The neutral card surface used by `CardButton`; do not use it as an ordinary button treatment. |
 
-`IconButton` adds an `Icon` property of type `object?` with a default of `null`. It accepts a glyph string from the Flourish icon font or any visual element. Inherited `Content` is optional and becomes the text label after the icon.
+An action group should normally have only one `Filled` button. Use `Danger` for destructive intent. Let the containing layout control determine placement rather than using `Variant` to select structural dimensions.
 
-```xml
-<flourish:IconButton
-  Variant="Text"
-  AutomationProperties.Name="Refresh"
-  Command="{Binding RefreshCommand}"
-  Icon="&#xE72C;"
-  ToolTip="Refresh" />
-
-<flourish:IconButton
-  Variant="Filled"
-  Command="{Binding AddCommand}"
-  Content="Add item"
-  Icon="&#xE710;" />
-```
-
-When `Content` is `null`, `IconButton` uses compact `32 × 32` geometry without padding. Give every icon-only button a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action. With `UseTips` active, Button-family hints use the Flourish Temporary Overlay surface, Shell-aware placement, and disabled-control behavior. Without it, the same hint content uses the native WPF tooltip appearance and defaults. Tooltips attached to native WPF and third-party controls remain unchanged in either mode.
+With `UseTips` active, Button-family hints use the Flourish temporary Overlay surface and Shell-aware placement. Without it, the same hint content uses the native WPF tooltip appearance. Tooltips attached to native WPF and third-party controls remain unchanged.
 
 ## CardButton
 
-`CardButton` represents an interactive card rather than an appearance variant of an ordinary button. It uses an IconCard-like arrangement and is appropriate only when invoking the complete card is the action. For a local action at the right of a compact setting row, use `ListCard.ActionBody`; for an ordinary action in another layout, use `Button` or `IconButton`.
+`CardButton` is an interactive card. Use it when invoking the complete surface is the action. When only one control inside a card should be interactive, use [ActionCard](card.md#actioncard) instead.
 
-| Property | Type | Default | Purpose |
-| --- | --- | --- | --- |
-| `Title` | `string` | `""` | The card heading. |
-| `Content` | inherited `object?` | `null` | The card description or other supporting content. |
-| `Icon` | `object?` | `null` | The single icon shown by the card action. |
-| `IconPosition` | `Dock` | `Top` | Places the icon at `Left`, `Top`, `Right`, or `Bottom`. |
+Like `Card`, it exposes optional `Title`, `Content`, and `Icon` regions. Each absent region and its spacing collapse completely. `IconPosition` places the icon at `Left`, `Top`, `Right`, or `Bottom`; its default is `Top`.
 
 ```xml
 <flourish:CardButton
+  Variant="Elevated"
   Command="{Binding OpenReportsCommand}"
   Content="Review generated reports and recent exports."
   Icon="&#xE8A5;"
@@ -103,11 +73,22 @@ When `Content` is `null`, `IconButton` uses compact `32 × 32` geometry without 
   Title="Reports" />
 ```
 
+Use the Card-equivalent visual treatments when `CardButton` participates in a card layout:
+
+| `ButtonVariant` | Card treatment |
+| --- | --- |
+| `Standard` | Ordinary neutral card. This is the `CardButton` default. |
+| `Tonal` | Quiet neutral fill. |
+| `Filled` | Strong primary-color emphasis. |
+| `Elevated` | Visual separation through elevation. |
+
+The control still inherits the complete `Button` interaction contract, including `Command`, `CommandParameter`, `Click`, keyboard activation, and enabled state.
+
 ## WindowCaptionButton
 
-`WindowCaptionButton` is reserved for window captions. It inherits `Icon`, `Variant`, and the standard WPF button contract from `IconButton`, but uses dedicated caption geometry with a default size of `46 × 40`.
+`WindowCaptionButton` is reserved for window captions and has dedicated caption geometry. Connect the actual window operation through `Command` or `Click`.
 
-Set a close action to `Variant="Danger"` and use `Text` for the other caption actions. The control supplies presentation and button interaction only; connect the actual window operation through `Command` or `Click`.
+Set a close action to `Variant="Danger"` and use `Text` for the other caption actions.
 
 ```xml
 <flourish:WindowCaptionButton
@@ -120,7 +101,7 @@ Set a close action to `Variant="Danger"` and use `Text` for the other caption ac
 
 ## Hover feedback and reduced motion
 
-The button family participates in the public `HoverReveal` attached behavior. Prefer application-wide configuration through [Motion](../articles/configure-motion.md), including the operating system reduced-motion preference. Set the attached properties directly only for a local override:
+The button family participates in the public `HoverReveal` attached behavior. Prefer application-wide configuration through [Motion](../articles/configure-motion.md), including the operating system reduced-motion preference. Set attached properties directly only for a local override:
 
 ```xml
 <flourish:Button
@@ -134,7 +115,7 @@ The button family participates in the public `HoverReveal` attached behavior. Pr
 
 ## Related content
 
-- [Chunk](chunk.md) explains how to organize buttons within page sections.
-- [Card](card.md) distinguishes non-interactive cards, ListCard action regions, and whole-card actions.
+- [Chunk](chunk.md) explains how to organize actions within page sections.
+- [Card](card.md) distinguishes non-interactive cards, local ActionCard controls, and whole-card actions.
 - [Motion](../articles/configure-motion.md) configures hover reveal and reduced motion.
-- The [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant), [Button API](xref:ArkheideSystem.Flourish.Controls.Button), [IconButton API](xref:ArkheideSystem.Flourish.Controls.IconButton), [CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton), and [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton) list all members.
+- The [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant), [Button API](xref:ArkheideSystem.Flourish.Controls.Button), [CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton), and [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton) list all members.

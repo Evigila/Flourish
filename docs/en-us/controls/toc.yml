@@ -1,10 +1,12 @@
 items:
 - name: Controls
   href: index.md
+- name: PageBody
+  href: page-body.md
 - name: Chunk
   href: chunk.md
-- name: Paragraph
-  href: paragraph.md
+- name: Document
+  href: document.md
 - name: CodeSpace
   href: code-space.md
 - name: Presenter

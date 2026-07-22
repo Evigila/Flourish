@@ -27,9 +27,9 @@ builder.ConfigureShell(shell =>
 | `Icon` | 通用图标字形。专用图标控件可根据自身几何应用局部校正。 |
 | `Large` | 卡片标题和标题栏当前标题。 |
 | `ExtraLarge` | 区块标题一族，包括 `Chunk.Title`。 |
-| `HeaderSize` | 仅保留给 `ChunkHero` 中的页面标题。 |
+| `HeaderSize` | 仅保留给 `HeaderChunk` 中的页面标题。 |
 
-`Paragraph` 和 `CodeSpace` 显式使用 Large 层级，因此会跟随全局和页面级 Large 设置变化，而不会从 Standard 派生额外字号。
+`Document` 中的 `Paragraph` 与 `CodeSpace` 显式使用 Large 层级，因此会跟随全局和页面级 Large 设置变化，而不会从 Standard 派生额外字号。
 
 Large、ExtraLarge 和 HeaderSize 标题角色使用 `Bold`。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitlebarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
 

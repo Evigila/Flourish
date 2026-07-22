@@ -10,10 +10,10 @@ public partial class ChunkPage : Page
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
         new("Title", "Names the topic represented by a Chunk or Presenter."),
-        new("Description", "Adds optional supporting context."),
+        new("Content", "Adds optional supporting context."),
         new("Body", "Hosts the required section or presenter content."),
-        new("Presentation", "Hosts ChunkHero imagery, icons, or other presented content."),
-        new("PresenterMode", "Chooses Split or Overlay composition."),
+        new("Presentation", "Hosts HeaderChunk imagery, icons, or other presented content."),
+        new("PresenterMode", "Chooses Split, Overlay, or TopDown composition."),
         new("PresenterPosition", "Places Split presentation content on the left or right."),
     ];
 
@@ -36,4 +36,7 @@ public partial class ChunkPage : Page
 
     private void Overlay_Click(object sender, RoutedEventArgs e) =>
         HeroPreview.PresenterMode = PresenterMode.Overlay;
+
+    private void TopDown_Click(object sender, RoutedEventArgs e) =>
+        HeroPreview.PresenterMode = PresenterMode.TopDown;
 }

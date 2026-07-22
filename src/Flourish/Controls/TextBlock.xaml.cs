@@ -12,8 +12,8 @@ public enum FlourishTextRole
     Body,
 
     /// <summary>
-    /// A single wrapped block of body copy. Use <see cref="Paragraph" /> to arrange multiple
-    /// paragraphs with standard indentation and spacing.
+    /// A single wrapped block of body copy. Use <see cref="Document" /> to arrange multiple
+    /// <see cref="Paragraph" /> elements with standard indentation and spacing.
     /// </summary>
     Paragraph,
 
@@ -38,7 +38,7 @@ public enum FlourishTextRole
     /// <summary>The large heading used by a <see cref="Chunk" /> content section.</summary>
     SectionTitle,
 
-    /// <summary>The primary page heading reserved for <see cref="ChunkHero" />.</summary>
+    /// <summary>The primary page heading reserved for <see cref="HeaderChunk" />.</summary>
     PageTitle,
 
     /// <summary>Status or feedback text.</summary>

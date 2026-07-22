@@ -18,9 +18,14 @@
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Border
           x:Name="PresentationSurface"
           Grid.Column="1"
+          Grid.RowSpan="2"
           Background="{TemplateBinding Background}"
           ClipToBounds="True"
           CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
@@ -36,6 +41,7 @@
         <Border
           x:Name="OverlayScrim"
           Grid.ColumnSpan="2"
+          Grid.RowSpan="2"
           Panel.ZIndex="1"
           Background="{DynamicResource FlourishCardOverlayScrimBrush}"
           IsHitTestVisible="False"
@@ -44,6 +50,7 @@
         <Border
           x:Name="CopySurface"
           Grid.Column="0"
+          Grid.RowSpan="2"
           Panel.ZIndex="2"
           Padding="{DynamicResource FlourishPresenterCopyPadding}"
         >
@@ -61,11 +68,11 @@
                 TextAlignment="Left"
               />
               <controls:FlourishTextBlock
-                x:Name="DescriptionHost"
-                Margin="{DynamicResource FlourishPresenterDescriptionSpacing}"
+                x:Name="ContentHost"
+                Margin="{DynamicResource FlourishPresenterContentSpacing}"
                 Foreground="{TemplateBinding Foreground}"
                 Role="Description"
-                Text="{TemplateBinding Description}"
+                Text="{TemplateBinding Content}"
                 TextAlignment="Left"
               />
             </StackPanel>
@@ -90,14 +97,28 @@
       <Trigger Property="PresenterMode" Value="Overlay">
         <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="PresentationSurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="PresentationSurface" Property="Grid.Row" Value="0" />
+        <Setter TargetName="PresentationSurface" Property="Grid.RowSpan" Value="2" />
         <Setter TargetName="PresentationHost" Property="HorizontalAlignment" Value="Stretch" />
         <Setter TargetName="PresentationHost" Property="VerticalAlignment" Value="Stretch" />
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Visible" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="CopySurface" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopySurface" Property="Grid.RowSpan" Value="2" />
         <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
-        <Setter TargetName="DescriptionHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
+        <Setter TargetName="ContentHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
+      </Trigger>
+      <Trigger Property="PresenterMode" Value="TopDown">
+        <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
+        <Setter TargetName="PresentationSurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="PresentationSurface" Property="Grid.Row" Value="0" />
+        <Setter TargetName="PresentationSurface" Property="Grid.RowSpan" Value="1" />
+        <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
+        <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="CopySurface" Property="Grid.Row" Value="1" />
+        <Setter TargetName="CopySurface" Property="Grid.RowSpan" Value="1" />
       </Trigger>
       <Trigger Property="Presentation" Value="{x:Null}">
         <Setter TargetName="PresentationSurface" Property="Visibility" Value="Collapsed" />
@@ -105,8 +126,10 @@
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="CopySurface" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopySurface" Property="Grid.RowSpan" Value="2" />
         <Setter TargetName="TitleHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-        <Setter TargetName="DescriptionHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Setter TargetName="ContentHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
       </Trigger>
       <Trigger Property="Presentation" Value="">
@@ -115,23 +138,25 @@
         <Setter TargetName="OverlayScrim" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="CopySurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
+        <Setter TargetName="CopySurface" Property="Grid.Row" Value="0" />
+        <Setter TargetName="CopySurface" Property="Grid.RowSpan" Value="2" />
         <Setter TargetName="TitleHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-        <Setter TargetName="DescriptionHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+        <Setter TargetName="ContentHost" Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
       </Trigger>
       <Trigger Property="Title" Value="">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
       </Trigger>
       <Trigger Property="Title" Value="{x:Null}">
         <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
       </Trigger>
-      <Trigger Property="Description" Value="">
-        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Content" Value="">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="Description" Value="{x:Null}">
-        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
       <Trigger Property="Body" Value="{x:Null}">
         <Setter TargetName="BodyHost" Property="Visibility" Value="Collapsed" />
@@ -144,7 +169,7 @@
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="" />
-          <Condition Property="Description" Value="" />
+          <Condition Property="Content" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="BodyHost" Property="Margin" Value="0" />
@@ -152,7 +177,7 @@
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="{x:Null}" />
-          <Condition Property="Description" Value="{x:Null}" />
+          <Condition Property="Content" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="BodyHost" Property="Margin" Value="0" />
@@ -160,7 +185,7 @@
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="" />
-          <Condition Property="Description" Value="{x:Null}" />
+          <Condition Property="Content" Value="{x:Null}" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="BodyHost" Property="Margin" Value="0" />
@@ -168,7 +193,7 @@
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="Title" Value="{x:Null}" />
-          <Condition Property="Description" Value="" />
+          <Condition Property="Content" Value="" />
         </MultiTrigger.Conditions>
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="BodyHost" Property="Margin" Value="0" />

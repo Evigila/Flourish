@@ -563,7 +563,7 @@ public sealed class FontServicePropagationTests
     }
 
     [Fact]
-    public void AttachedGlobalScaleUpdatesExistingChunkAndHeroTitleHostsAtDistinctTiers()
+    public void AttachedGlobalScaleUpdatesExistingChunkAndHeaderTitleHostsAtDistinctTiers()
     {
         RunInSta(() =>
         {
@@ -575,7 +575,7 @@ public sealed class FontServicePropagationTests
             WpfControl[] controls =
             [
                 new Chunk { Title = "Section" },
-                new ChunkHero { Title = "Hero" },
+                new HeaderChunk { Title = "Hero" },
             ];
             var panel = new StackPanel();
             foreach (var control in controls)

@@ -16,7 +16,8 @@ public partial class CardPage : Page
         {
             new("Variant", "Chooses Standard, Tonal, Filled, or Elevated."),
             new("Title", "Sets the heading."),
-            new("MainText", "Sets the single block of supporting copy."),
+            new("Content", "Sets the single block of supporting copy."),
+            new("Icon", "Sets one optional icon glyph."),
             new("ContentHorizontalAlignment", "Aligns the title-and-copy group horizontally."),
             new("ContentVerticalAlignment", "Aligns the title-and-copy group vertically."),
         };

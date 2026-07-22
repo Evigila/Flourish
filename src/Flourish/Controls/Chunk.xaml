@@ -18,10 +18,10 @@
           TextWrapping="Wrap"
         />
         <controls:FlourishTextBlock
-          x:Name="DescriptionHost"
+          x:Name="ContentHost"
           Margin="{TemplateBinding ChunkSpacing}"
           Role="Description"
-          Text="{TemplateBinding Description}"
+          Text="{TemplateBinding Content}"
         />
         <ContentPresenter
           x:Name="BodyHost"
@@ -37,11 +37,11 @@
       </StackPanel>
     </Grid>
     <ControlTemplate.Triggers>
-      <Trigger Property="Description" Value="{x:Null}">
-        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
-      <Trigger Property="Description" Value="">
-        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
+      <Trigger Property="Content" Value="">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
       </Trigger>
       <Trigger Property="Body" Value="{x:Null}">
         <Setter TargetName="BodyHost" Property="Visibility" Value="Collapsed" />

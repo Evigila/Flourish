@@ -2,9 +2,11 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
 using FlourishDataGrid = ArkheideSystem.Flourish.Controls.DataGrid;
+using FlourishScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -95,6 +97,177 @@ public sealed class FlourishDataGridTests
                 window.Close();
             }
         });
+    }
+
+    [Fact]
+    public void DataGrid_WheelBubblesToThePageWhenItsRowsDoNotNeedScrolling()
+    {
+        RunInSta(() =>
+        {
+            var grid = CreateGrid(3);
+            var pageContent = new StackPanel();
+            pageContent.Children.Add(grid);
+            pageContent.Children.Add(new Border { Height = 480 });
+            var pageScrollViewer = new FlourishScrollViewer
+            {
+                Width = 420,
+                Height = 180,
+                Content = pageContent,
+                IsSmoothScrollingEnabled = false,
+            };
+            var window = CreateWindow(pageScrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                grid.ApplyTemplate();
+                pageScrollViewer.ApplyTemplate();
+                window.UpdateLayout();
+
+                var gridScrollViewer = Assert.IsType<FlourishScrollViewer>(
+                    grid.Template.FindName("DG_ScrollViewer", grid)
+                );
+                var cell = Assert.IsType<DataGridCell>(FindVisualDescendant<DataGridCell>(grid));
+
+                Assert.Equal(0, gridScrollViewer.ScrollableHeight);
+                Assert.True(pageScrollViewer.ScrollableHeight > 0);
+                Assert.Equal(0, pageScrollViewer.VerticalOffset);
+
+                var wheel = RaiseMouseWheel(cell, -Mouse.MouseWheelDeltaForOneLine);
+                PumpDispatcher(window);
+
+                Assert.True(wheel.Handled);
+                Assert.True(pageScrollViewer.VerticalOffset > 0);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DataGrid_WheelScrollsRowsFirstAndThenBubblesAtTheBoundary()
+    {
+        RunInSta(() =>
+        {
+            var grid = CreateGrid(40);
+            grid.Height = 140;
+            var pageContent = new StackPanel();
+            pageContent.Children.Add(grid);
+            pageContent.Children.Add(new Border { Height = 480 });
+            var pageScrollViewer = new FlourishScrollViewer
+            {
+                Width = 420,
+                Height = 220,
+                Content = pageContent,
+                IsSmoothScrollingEnabled = false,
+            };
+            var window = CreateWindow(pageScrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                grid.ApplyTemplate();
+                pageScrollViewer.ApplyTemplate();
+                window.UpdateLayout();
+
+                var gridScrollViewer = Assert.IsType<FlourishScrollViewer>(
+                    grid.Template.FindName("DG_ScrollViewer", grid)
+                );
+                var cell = Assert.IsType<DataGridCell>(FindVisualDescendant<DataGridCell>(grid));
+
+                Assert.True(gridScrollViewer.ScrollableHeight > 0);
+                Assert.True(pageScrollViewer.ScrollableHeight > 0);
+
+                var innerWheel = RaiseMouseWheel(cell, -Mouse.MouseWheelDeltaForOneLine);
+                PumpDispatcher(window);
+
+                Assert.True(innerWheel.Handled);
+                Assert.True(gridScrollViewer.VerticalOffset > 0);
+                Assert.Equal(0, pageScrollViewer.VerticalOffset);
+
+                gridScrollViewer.ScrollToEnd();
+                window.UpdateLayout();
+                cell = Assert.IsType<DataGridCell>(FindVisualDescendant<DataGridCell>(grid));
+                Assert.Equal(
+                    gridScrollViewer.ScrollableHeight,
+                    gridScrollViewer.VerticalOffset,
+                    precision: 3
+                );
+
+                var boundaryWheel = RaiseMouseWheel(
+                    cell,
+                    -Mouse.MouseWheelDeltaForOneLine
+                );
+                PumpDispatcher(window);
+
+                Assert.True(boundaryWheel.Handled);
+                Assert.Equal(
+                    gridScrollViewer.ScrollableHeight,
+                    gridScrollViewer.VerticalOffset,
+                    precision: 3
+                );
+                Assert.True(pageScrollViewer.VerticalOffset > 0);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    private static FlourishDataGrid CreateGrid(int rowCount)
+    {
+        var grid = new FlourishDataGrid
+        {
+            AutoGenerateColumns = false,
+            CanUserAddRows = false,
+            IsReadOnly = true,
+            ItemsSource = Enumerable.Range(1, rowCount)
+                .Select(index => new MemberRow($"Member {index}", $"Description {index}")),
+        };
+        grid.Columns.Add(
+            new DataGridTextColumn
+            {
+                Header = "Property",
+                Binding = new System.Windows.Data.Binding(nameof(MemberRow.Name)),
+            }
+        );
+        grid.Columns.Add(
+            new DataGridTextColumn
+            {
+                Header = "Function",
+                Binding = new System.Windows.Data.Binding(nameof(MemberRow.Description)),
+            }
+        );
+        return grid;
+    }
+
+    private static MouseWheelEventArgs RaiseMouseWheel(UIElement source, int delta)
+    {
+        var wheel = new MouseWheelEventArgs(
+            Mouse.PrimaryDevice,
+            Environment.TickCount,
+            delta
+        )
+        {
+            RoutedEvent = Mouse.MouseWheelEvent,
+            Source = source,
+        };
+        source.RaiseEvent(wheel);
+        return wheel;
+    }
+
+    private static void PumpDispatcher(Window window)
+    {
+        window.Dispatcher.Invoke(
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+            static () => { }
+        );
+        window.UpdateLayout();
     }
 
     private static Window CreateWindow(UIElement content)

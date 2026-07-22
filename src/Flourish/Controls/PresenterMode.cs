@@ -11,6 +11,12 @@ public enum PresenterMode
     /// </summary>
     Split,
 
+    /// <summary>
+    /// Presentation content occupies the upper region while copy and body content occupy the
+    /// lower, left-aligned region.
+    /// </summary>
+    TopDown,
+
     /// <summary>The presenter fills the control and the textual content is drawn over it.</summary>
     Overlay,
 }

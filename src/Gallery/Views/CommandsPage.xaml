@@ -5,143 +5,141 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:ChunkHero
-        Description="Register, dispatch, and inspect commands at runtime."
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Register, dispatch, and inspect commands at runtime."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Commands &amp; shortcuts"
+    />
+
+    <flourish:Chunk
+      Content="Register and invoke a command handler."
+      Title="Runtime command registration"
+    >
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE71B;"
+            Title="Command key"
+            Content="Identify the handler registered in the runtime command registry."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox x:Name="CommandKeyBox" Width="220" Text="gallery.runtime.greet" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Title="Dispatch parameter"
+            Content="Provide the value passed to the demo handler."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox x:Name="CommandParameterBox" Width="220" Text="Flourish user" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74E;"
+            Title="Command availability"
+            Content="Choose whether the registered handler can execute."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishCheckBox x:Name="CommandEnabledBox" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE710;"
+            Title="Register command"
+            Content="Register the handler or replace its existing definition."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RegisterCommand_Click" Content="Register / replace" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72A;"
+            Title="Execute command"
+            Content="Dispatch the registered handler asynchronously."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ExecuteCommand_Click" Content="Execute async" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="Remove command"
+            Content="Delete the handler from the runtime registry."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveCommand_Click" Content="Remove command" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="CommandOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Bind and invoke a runtime shortcut."
+      Title="Keyboard shortcut"
+    >
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE710;"
+            Title="Register Ctrl+Shift+G"
+            Content="Bind the global shortcut to the runtime command."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72A;"
+            Title="Dispatch shortcut"
+            Content="Invoke the same command API from this page."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="Remove shortcut"
+            Content="Unregister the global Ctrl+Shift+G binding."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="ShortcutOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Inspect immutable registry state."
+      Title="Registry snapshots"
+    >
+      <flourish:Presenter
+        Content="Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces."
         PresenterMode="Split"
         PresenterPosition="Right"
-        Title="Commands &amp; shortcuts"
-      />
-
-      <flourish:Chunk
-        Description="Register and invoke a command handler."
-        Title="Runtime command registration"
+        Title="Registry state"
       >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard
-              Icon="&#xE71B;"
-              Title="Command key"
-              MainText="Identify the handler registered in the runtime command registry."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishTextBox x:Name="CommandKeyBox" Width="220" Text="gallery.runtime.greet" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE8D2;"
-              Title="Dispatch parameter"
-              MainText="Provide the value passed to the demo handler."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishTextBox x:Name="CommandParameterBox" Width="220" Text="Flourish user" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE74E;"
-              Title="Command availability"
-              MainText="Choose whether the registered handler can execute."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishCheckBox x:Name="CommandEnabledBox" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE710;"
-              Title="Register command"
-              MainText="Register the handler or replace its existing definition."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RegisterCommand_Click" Content="Register / replace" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE72A;"
-              Title="Execute command"
-              MainText="Dispatch the registered handler asynchronously."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ExecuteCommand_Click" Content="Execute async" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE74D;"
-              Title="Remove command"
-              MainText="Delete the handler from the runtime registry."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RemoveCommand_Click" Content="Remove command" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
+        <flourish:Presenter.Presentation>
+          <StackPanel>
+            <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
+            <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
           </StackPanel>
-          <flourish:OutputCard x:Name="CommandOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Description="Bind and invoke a runtime shortcut."
-        Title="Keyboard shortcut"
-      >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard
-              Icon="&#xE710;"
-              Title="Register Ctrl+Shift+G"
-              MainText="Bind the global shortcut to the runtime command."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RegisterShortcut_Click" Content="Register Ctrl+Shift+G" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE72A;"
-              Title="Dispatch shortcut"
-              MainText="Invoke the same command API from this page."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ExecuteShortcut_Click" Content="Dispatch shortcut" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE74D;"
-              Title="Remove shortcut"
-              MainText="Unregister the global Ctrl+Shift+G binding."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RemoveShortcut_Click" Content="Remove shortcut" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="ShortcutOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Description="Inspect immutable registry state."
-        Title="Registry snapshots"
-      >
-        <flourish:Presenter
-          Description="Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces."
-          PresenterMode="Split"
-          PresenterPosition="Right"
-          Title="Registry state"
-        >
-          <flourish:Presenter.Presentation>
-            <StackPanel>
-              <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
-              <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
-            </StackPanel>
-          </flourish:Presenter.Presentation>
-        </flourish:Presenter>
-      </flourish:Chunk>
-    </StackPanel>
-  </flourish:ScrollViewer>
+        </flourish:Presenter.Presentation>
+      </flourish:Presenter>
+    </flourish:Chunk>
+  </flourish:PageBody>
 </Page>

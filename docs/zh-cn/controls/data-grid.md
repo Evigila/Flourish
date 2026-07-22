@@ -39,7 +39,15 @@ description: 使用 Flourish 样式展示表格数据，同时保留原生 WPF D
 
 首列需要其他语义颜色时可设置 `FirstColumnForeground`。表头和单元格的其余颜色会跟随 Flourish 主题，并统一使用 Regular 字重。
 
+## 页面滚轮协作
+
+DataGrid 位于可滚动页面中时，不会无条件截留鼠标滚轮。只要内部内容在滚轮方向上仍可移动，DataGrid 会优先滚动自己的行；到达顶部或底部边界后，继续向外滚动的输入会交给外层 [PageBody](page-body.md) 或 ScrollViewer。DataGrid 本身没有可滚动范围时，页面可以直接响应滚轮。
+
+因此通常不需要为 DataGrid 编写 `PreviewMouseWheel` 转发处理程序。保留标准滚动属性即可同时获得表格内部浏览和连续页面滚动。
+
 ## 相关内容
 
 - [Card](card.md) 说明信息容器共享的表面语言。
+- [PageBody](page-body.md) 说明页面根滚动容器。
+- [ScrollViewer](scroll-viewer.md) 说明边界滚轮交接行为。
 - [WPF DataGrid 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/datagrid) 介绍列、编辑、排序与选择功能。

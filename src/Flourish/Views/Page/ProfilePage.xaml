@@ -101,30 +101,30 @@
           FontSize="{DynamicResource FlourishFontSizeStandard}"
           Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
         />
-        <flourish:IconButton
+        <flourish:Button
           x:Name="UploadImageButton"
           Variant="Outlined"
           HorizontalAlignment="Stretch"
           Click="UploadImageButton_Click"
         >
-          <flourish:IconButton.Icon>
+          <flourish:Button.Icon>
             <Viewbox Width="15" Height="15">
               <Path
                 Data="M 3,16 L 3,20 L 21,20 L 21,16 M 12,3 L 12,16 M 7,8 L 12,3 L 17,8"
                 Fill="Transparent"
-                Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type flourish:IconButton}}}"
+                Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type flourish:Button}}}"
                 StrokeEndLineCap="Round"
                 StrokeLineJoin="Round"
                 StrokeStartLineCap="Round"
                 StrokeThickness="2"
               />
             </Viewbox>
-          </flourish:IconButton.Icon>
+          </flourish:Button.Icon>
           <flourish:FlourishTextBlock
             x:Name="UploadImageText"
             VerticalAlignment="Center"
           />
-        </flourish:IconButton>
+        </flourish:Button>
 
         <flourish:FlourishTextBlock
           x:Name="PasswordLabel"

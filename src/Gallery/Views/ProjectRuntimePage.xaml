@@ -5,242 +5,240 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:ChunkHero
-        Description="Manage the persisted project catalog and exercise the replaceable default project behavior."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Projects at runtime"
-      />
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Manage the persisted project catalog and exercise the replaceable default project behavior."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Projects at runtime"
+    />
 
-      <flourish:Chunk
-        Description="Register and query project display metadata."
-        Title="Project collection"
-      >
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-          <StackPanel
-            x:Name="ProjectCollectionControls"
-            Grid.Column="0"
-            Margin="0,0,8,0"
-            VerticalAlignment="Stretch"
+    <flourish:Chunk
+      Content="Register and query project display metadata."
+      Title="Project collection"
+    >
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel
+          x:Name="ProjectCollectionControls"
+          Grid.Column="0"
+          Margin="0,0,8,0"
+          VerticalAlignment="Stretch"
+        >
+          <flourish:ActionCard
+            Icon="&#xE8F9;"
+            Title="Project ID"
+            Content="Enter the stable, case-sensitive project identifier."
           >
-            <flourish:ListCard
-              Icon="&#xE8F9;"
-              Title="Project ID"
-              MainText="Enter the stable, case-sensitive project identifier."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishTextBox
-                  x:Name="ProjectIdBox"
-                  Width="220"
-                  AutomationProperties.Name="Project ID"
-                  Text="gallery"
-                />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox
+                x:Name="ProjectIdBox"
+                Width="220"
+                AutomationProperties.Name="Project ID"
+                Text="gallery"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Title="Project name"
+            Content="Enter the project name displayed by the title bar."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox
+                x:Name="ProjectNameBox"
+                Width="220"
+                AutomationProperties.Name="Project name"
+                Text="Flourish Gallery"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE838;"
+            Title="Storage path"
+            Content="Choose an existing local file before adding, replacing, or updating a project mapping."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox
+                x:Name="StoragePathBox"
+                Width="220"
+                AutomationProperties.Name="Project storage path"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE710;"
+            Title="Add project"
+            Content="Register a project bound to the existing local file above and make it active."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddProject_Click" Content="Add project" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE70F;"
+            Title="Upsert project"
+            Content="Add or replace a project only when its local file exists."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="UpsertProject_Click" Content="Add or replace" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE721;"
+            Title="Find project"
+            Content="Query the registered project with the entered ID."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="FindProject_Click" Content="Find by ID" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="CollectionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Change the active project and maintain registered metadata."
+      Title="Active project"
+    >
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel
+          x:Name="ActiveProjectControls"
+          Grid.Column="0"
+          Margin="0,0,8,0"
+          VerticalAlignment="Stretch"
+        >
+          <flourish:ActionCard
+            Icon="&#xE8F9;"
+            Title="Project selection"
+            Content="Select a registered project to make it active."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishComboBox
+                x:Name="ActiveProjectBox"
+                Width="220"
+                AutomationProperties.Name="Active project"
+                DisplayMemberPath="Name"
+                SelectionChanged="ActiveProjectBox_SelectionChanged"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE70F;"
+            Title="Project metadata"
+            Content="Update the selected name and path from the fields above."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="UpdateMetadata_Click" Content="Update metadata" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE711;"
+            Title="Active selection"
+            Content="Clear the selection without removing any project."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ClearActiveProject_Click" Content="Clear active" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="Delete project"
+            Content="Use the active project behavior to confirm deletion and remove a managed .txt file."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveProject_Click" Content="Delete selected" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="ActiveProjectOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Connect project state to the title selector and its replaceable default file workflow."
+      Title="Title-bar integration"
+    >
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE7B3;"
+            Title="Multi-project mode"
+            Content="Enable the project-aware title selector and dropdown."
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishCheckBox
+                x:Name="MultiProjectEnabledBox"
+                VerticalAlignment="Center"
+                Checked="MultiProjectEnabledBox_Changed"
+                Content="Enabled multi-project mode"
+                Unchecked="MultiProjectEnabledBox_Changed"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <StackPanel
+            x:Name="MultiProjectBehaviorControls"
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          >
+            <flourish:ActionCard
               Icon="&#xE8D2;"
-              Title="Project name"
-              MainText="Enter the project name displayed by the title bar."
+              Title="Unnamed placeholder"
+              Content="Set the display name used for projects that do not yet have a storage path."
             >
-              <flourish:ListCard.ActionBody>
+              <flourish:ActionCard.Body>
                 <flourish:FlourishTextBox
-                  x:Name="ProjectNameBox"
+                  x:Name="UnnamedProjectPlaceholderBox"
                   Width="220"
-                  AutomationProperties.Name="Project name"
-                  Text="Flourish Gallery"
+                  AutomationProperties.Name="Unnamed project placeholder"
+                  KeyDown="UnnamedProjectPlaceholderBox_KeyDown"
+                  LostFocus="UnnamedProjectPlaceholderBox_LostFocus"
                 />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE838;"
-              Title="Storage path"
-              MainText="Choose an existing local file before adding, replacing, or updating a project mapping."
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Icon="&#xE8F2;"
+              Title="Create project"
+              Content="Open the default save picker and register a persisted project."
             >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishTextBox
-                  x:Name="StoragePathBox"
-                  Width="220"
-                  AutomationProperties.Name="Project storage path"
-                />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE710;"
-              Title="Add project"
-              MainText="Register a project bound to the existing local file above and make it active."
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="CreateProject_Click" Content="Create project" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Icon="&#xE74E;"
+              Title="Save active project"
+              Content="Persist the active unnamed project through the registered behavior."
             >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="AddProject_Click" Content="Add project" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE70F;"
-              Title="Upsert project"
-              MainText="Add or replace a project only when its local file exists."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="UpsertProject_Click" Content="Add or replace" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE721;"
-              Title="Find project"
-              MainText="Query the registered project with the entered ID."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="FindProject_Click" Content="Find by ID" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="SaveActiveProject_Click" Content="Save active" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
           </StackPanel>
-          <flourish:OutputCard x:Name="CollectionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </Grid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Description="Change the active project and maintain registered metadata."
-        Title="Active project"
-      >
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-          <StackPanel
-            x:Name="ActiveProjectControls"
-            Grid.Column="0"
-            Margin="0,0,8,0"
-            VerticalAlignment="Stretch"
-          >
-            <flourish:ListCard
-              Icon="&#xE8F9;"
-              Title="Project selection"
-              MainText="Select a registered project to make it active."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishComboBox
-                  x:Name="ActiveProjectBox"
-                  Width="220"
-                  AutomationProperties.Name="Active project"
-                  DisplayMemberPath="Name"
-                  SelectionChanged="ActiveProjectBox_SelectionChanged"
-                />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE70F;"
-              Title="Project metadata"
-              MainText="Update the selected name and path from the fields above."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="UpdateMetadata_Click" Content="Update metadata" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE711;"
-              Title="Active selection"
-              MainText="Clear the selection without removing any project."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ClearActiveProject_Click" Content="Clear active" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE74D;"
-              Title="Delete project"
-              MainText="Use the active project behavior to confirm deletion and remove a managed .txt file."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RemoveProject_Click" Content="Delete selected" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="ActiveProjectOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </Grid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Description="Connect project state to the title selector and its replaceable default file workflow."
-        Title="Title-bar integration"
-      >
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-          <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard
-              Icon="&#xE7B3;"
-              Title="Multi-project mode"
-              MainText="Enable the project-aware title selector and dropdown."
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishCheckBox
-                  x:Name="MultiProjectEnabledBox"
-                  VerticalAlignment="Center"
-                  Checked="MultiProjectEnabledBox_Changed"
-                  Content="Enabled multi-project mode"
-                  Unchecked="MultiProjectEnabledBox_Changed"
-                />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <StackPanel
-              x:Name="MultiProjectBehaviorControls"
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-            >
-              <flourish:ListCard
-                Icon="&#xE8D2;"
-                Title="Unnamed placeholder"
-                MainText="Set the display name used for projects that do not yet have a storage path."
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:FlourishTextBox
-                    x:Name="UnnamedProjectPlaceholderBox"
-                    Width="220"
-                    AutomationProperties.Name="Unnamed project placeholder"
-                    KeyDown="UnnamedProjectPlaceholderBox_KeyDown"
-                    LostFocus="UnnamedProjectPlaceholderBox_LostFocus"
-                  />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-              <flourish:ListCard
-                Margin="{DynamicResource FlourishListCardPeerMargin}"
-                Icon="&#xE8F2;"
-                Title="Create project"
-                MainText="Open the default save picker and register a persisted project."
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:Button Click="CreateProject_Click" Content="Create project" />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-              <flourish:ListCard
-                Margin="{DynamicResource FlourishListCardPeerMargin}"
-                Icon="&#xE74E;"
-                Title="Save active project"
-                MainText="Persist the active unnamed project through the registered behavior."
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:Button Click="SaveActiveProject_Click" Content="Save active" />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-            </StackPanel>
-          </StackPanel>
-          <flourish:OutputCard x:Name="RequestOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </Grid>
-      </flourish:Chunk>
-    </StackPanel>
-  </flourish:ScrollViewer>
+        </StackPanel>
+        <flourish:OutputCard x:Name="RequestOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+    </flourish:Chunk>
+  </flourish:PageBody>
 </Page>

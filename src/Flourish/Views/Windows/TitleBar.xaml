@@ -32,7 +32,7 @@
       Margin="4,0,0,0"
       Orientation="Horizontal"
     >
-      <controls:IconButton
+      <controls:Button
         x:Name="BackButton"
         Variant="Text"
         Width="{DynamicResource FlourishShellCommandButtonWidth}"
@@ -44,7 +44,7 @@
         Click="BackButton_Click"
         IsEnabled="False"
       >
-        <controls:IconButton.Icon>
+        <controls:Button.Icon>
           <controls:FlourishTextBlock
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="{DynamicResource FlourishIconFontSizeTitlebar}"
@@ -52,10 +52,10 @@
             Role="Icon"
             Text="&#xE72B;"
           />
-        </controls:IconButton.Icon>
-      </controls:IconButton>
+        </controls:Button.Icon>
+      </controls:Button>
 
-      <controls:IconButton
+      <controls:Button
         x:Name="ForwardButton"
         Variant="Text"
         Width="{DynamicResource FlourishShellCommandButtonWidth}"
@@ -67,7 +67,7 @@
         Click="ForwardButton_Click"
         IsEnabled="False"
       >
-        <controls:IconButton.Icon>
+        <controls:Button.Icon>
           <controls:FlourishTextBlock
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="{DynamicResource FlourishIconFontSizeTitlebar}"
@@ -75,11 +75,11 @@
             Role="Icon"
             Text="&#xE72A;"
           />
-        </controls:IconButton.Icon>
-      </controls:IconButton>
+        </controls:Button.Icon>
+      </controls:Button>
     </StackPanel>
 
-    <controls:IconButton
+    <controls:Button
       x:Name="NavigationToggleButton"
       Grid.Column="2"
       Variant="Text"
@@ -91,7 +91,7 @@
       Margin="{DynamicResource FlourishTitlebarNavigationToggleMargin}"
       Click="NavigationToggleButton_Click"
     >
-      <controls:IconButton.Icon>
+      <controls:Button.Icon>
         <controls:FlourishTextBlock
           FontFamily="{DynamicResource FlourishIconFontFamily}"
           FontSize="{DynamicResource FlourishIconFontSizeTitlebar}"
@@ -99,8 +99,8 @@
           Role="Icon"
           Text="&#xE700;"
         />
-      </controls:IconButton.Icon>
-    </controls:IconButton>
+      </controls:Button.Icon>
+    </controls:Button>
 
     <StackPanel
       x:Name="TitlebarStartRegionHost"
@@ -118,7 +118,7 @@
       VerticalAlignment="Center"
       Orientation="Horizontal"
     >
-      <controls:IconButton
+      <controls:Button
         x:Name="LogoButton"
         Variant="Text"
         Width="34"
@@ -130,7 +130,7 @@
         Click="LogoButton_Click"
         MouseEnter="LogoButton_MouseEnter"
       >
-        <controls:IconButton.Icon>
+        <controls:Button.Icon>
           <Border
             x:Name="LogoHost"
             Width="26"
@@ -150,8 +150,8 @@
               />
             </Grid>
           </Border>
-        </controls:IconButton.Icon>
-      </controls:IconButton>
+        </controls:Button.Icon>
+      </controls:Button>
       <controls:FlourishComboBox
         x:Name="TitleComboBox"
         Height="32"
@@ -195,7 +195,7 @@
       TextChanged="SearchBox_TextChanged"
     />
 
-    <controls:IconButton
+    <controls:Button
       x:Name="ThemeToggleButton"
       Grid.Column="7"
       Variant="Text"
@@ -207,7 +207,7 @@
       Margin="0,4,6,4"
       Click="ThemeToggleButton_Click"
     >
-      <controls:IconButton.Icon>
+      <controls:Button.Icon>
         <Viewbox Width="16" Height="16">
           <Path
             x:Name="ThemeToggleButtonIcon"
@@ -220,8 +220,8 @@
             StrokeThickness="2"
           />
         </Viewbox>
-      </controls:IconButton.Icon>
-    </controls:IconButton>
+      </controls:Button.Icon>
+    </controls:Button>
 
     <Grid
       x:Name="ProfileRegionContainer"
@@ -229,7 +229,7 @@
       Margin="0,0,10,0"
       VerticalAlignment="Center"
     >
-      <controls:IconButton
+      <controls:Button
         x:Name="ProfileButton"
         Variant="Text"
         Width="34"
@@ -239,7 +239,7 @@
         Padding="0"
         Click="ProfileButton_Click"
       >
-        <controls:IconButton.Icon>
+        <controls:Button.Icon>
           <Grid Width="26" Height="26">
             <Border
               Background="{DynamicResource FlourishProfileBackgroundBrush}"
@@ -255,8 +255,8 @@
               Foreground="{DynamicResource FlourishProfileForegroundBrush}"
             />
           </Grid>
-        </controls:IconButton.Icon>
-      </controls:IconButton>
+        </controls:Button.Icon>
+      </controls:Button>
       <StackPanel
         x:Name="TitlebarProfileRegionHost"
         Orientation="Horizontal"

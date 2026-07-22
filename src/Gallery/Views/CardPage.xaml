@@ -7,326 +7,332 @@
   SnapsToDevicePixels="True"
   UseLayoutRounding="True"
 >
-  <flourish:ScrollViewer
-    HorizontalScrollBarVisibility="Disabled"
-    VerticalScrollBarVisibility="Auto"
-  >
-    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:ChunkHero
-        Description="Use the Card family for concise text, icon-accompanied content, settings rows, and append-only output."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Card"
-      />
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Use the Card family for concise text, icon-accompanied content, settings rows, and append-only output."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Card"
+    />
 
-      <flourish:Chunk
-        Title="Variant"
-      >
-        <StackPanel>
-          <UniformGrid Columns="2">
-            <flourish:Card
-              MinHeight="112"
-              Margin="0,0,8,8"
-              MainText="Default surface."
-              Title="Standard"
-              Variant="Standard"
-            />
-            <flourish:Card
-              MinHeight="112"
-              Margin="8,0,0,8"
-              MainText="Quiet neutral surface."
-              Title="Tonal"
-              Variant="Tonal"
-            />
-            <flourish:Card
-              MinHeight="112"
-              Margin="0,8,8,0"
-              MainText="Primary emphasis."
-              Title="Filled"
-              Variant="Filled"
-            />
-            <flourish:Card
-              MinHeight="112"
-              Margin="8,8,0,0"
-              MainText="Raised emphasis."
-              Title="Elevated"
-              Variant="Elevated"
-            />
-          </UniformGrid>
+    <flourish:Chunk
+      Title="Variant"
+    >
+      <StackPanel>
+        <UniformGrid Columns="2">
           <flourish:Card
-            Margin="0,16,0,0"
-            Background="{DynamicResource FlourishSecondaryBrush}"
-            Foreground="{DynamicResource FlourishForegroundOnSecondaryBrush}"
-            MainText="Background and Foreground override the filled palette."
-            Title="Custom filled surface"
+            MinHeight="112"
+            Margin="0,0,8,8"
+            Content="Default surface."
+            Title="Standard"
+            Variant="Standard"
+          />
+          <flourish:Card
+            MinHeight="112"
+            Margin="8,0,0,8"
+            Content="Quiet neutral surface."
+            Title="Tonal"
+            Variant="Tonal"
+          />
+          <flourish:Card
+            MinHeight="112"
+            Margin="0,8,8,0"
+            Content="Primary emphasis."
+            Title="Filled"
             Variant="Filled"
           />
-        </StackPanel>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Title="Table"
-      >
-        <flourish:DataGrid
-          x:Name="CardMemberGrid"
-          AutoGenerateColumns="False"
-          IsReadOnly="True"
-        >
-          <flourish:DataGrid.Columns>
-            <DataGridTextColumn Binding="{Binding Name}" Header="Property" Width="224" />
-            <DataGridTextColumn Binding="{Binding Description}" Header="Function" Width="*" />
-          </flourish:DataGrid.Columns>
-        </flourish:DataGrid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Title="Card"
-      >
-        <UniformGrid Columns="2">
           <flourish:Card
-            MinHeight="160"
-            Margin="0,0,8,0"
-            MainText="Use Card when a title and one concise block of text are enough."
-            Title="Title and main text"
-          />
-          <flourish:Card
-            MinHeight="160"
-            Margin="8,0,0,0"
-            MainText="Omitting the optional title collapses its region and spacing completely."
+            MinHeight="112"
+            Margin="8,8,0,0"
+            Content="Raised emphasis."
+            Title="Elevated"
+            Variant="Elevated"
           />
         </UniformGrid>
-      </flourish:Chunk>
+        <flourish:Card
+          Margin="0,16,0,0"
+          Background="{DynamicResource FlourishSecondaryBrush}"
+          Foreground="{DynamicResource FlourishForegroundOnSecondaryBrush}"
+          Content="Background and Foreground override the filled palette."
+          Title="Custom filled surface"
+          Variant="Filled"
+        />
+      </StackPanel>
+    </flourish:Chunk>
 
-      <flourish:Chunk Title="OutputCard">
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="16" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel>
-              <flourish:ListCard
-                Icon="&#xE8F2;"
-                MainText="Append one timestamped message."
-                Title="Append message"
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:Button Click="AppendMessage_Click" Content="Write line" />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-              <flourish:ListCard
-                Margin="{DynamicResource FlourishListCardPeerMargin}"
-                Icon="&#xE8FD;"
-                MainText="Exercise automatic viewport scrolling."
-                Title="Append burst"
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:Button Click="AppendBurst_Click" Content="Write 24 lines" />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-              <flourish:ListCard
-                Margin="{DynamicResource FlourishListCardPeerMargin}"
-                Icon="&#xE946;"
-                MainText="Read the current Output value."
-                Title="Inspect output"
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:Button Click="InspectOutput_Click" Content="Write summary" />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-              <flourish:ListCard
-                Margin="{DynamicResource FlourishListCardPeerMargin}"
-                Icon="&#xE74D;"
-                MainText="Reset the message history."
-                Title="Clear history"
-              >
-                <flourish:ListCard.ActionBody>
-                  <flourish:Button Click="ClearHistory_Click" Content="Clear" Variant="Danger" />
-                </flourish:ListCard.ActionBody>
-              </flourish:ListCard>
-            </StackPanel>
-            <flourish:OutputCard
-              x:Name="HistoryOutput"
-              Grid.Column="2"
-              AutomationProperties.Name="Output history"
-              VerticalAlignment="Stretch"
-            />
-          </Grid>
-      </flourish:Chunk>
+    <flourish:Chunk
+      Title="Table"
+    >
+      <flourish:DataGrid
+        x:Name="CardMemberGrid"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="Property" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Function" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
 
-      <flourish:Chunk Title="ListCard">
+    <flourish:Chunk
+      Title="Card"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Card
+          MinHeight="160"
+          Margin="0,0,8,0"
+          Content="Use Card when a title and one concise block of text are enough."
+          Title="Title and content"
+        />
+        <flourish:Card
+          MinHeight="160"
+          Margin="8,0,0,0"
+          Content="Omitting the optional title collapses its region and spacing completely."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="OutputCard">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
           <StackPanel>
-            <flourish:ListCard
-              Icon="&#xE790;"
-              MainText="Choose a theme value."
-              Title="Application theme"
+            <flourish:ActionCard
+              Icon="&#xE8F2;"
+              Content="Append one timestamped message."
+              Title="Append message"
             >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishComboBox Width="160" SelectedIndex="0">
-                  <flourish:FlourishComboBoxItem Content="System" />
-                  <flourish:FlourishComboBoxItem Content="Light" />
-                  <flourish:FlourishComboBoxItem Content="Dark" />
-                </flourish:FlourishComboBox>
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE838;"
-              MainText="Preview a local action."
-              Title="Open configuration"
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="AppendMessage_Click" Content="Write line" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Icon="&#xE8FD;"
+              Content="Exercise automatic viewport scrolling."
+              Title="Append burst"
             >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Content="Open" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE8D2;"
-              MainText="Edit a setting value."
-              Title="Configuration key"
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="AppendBurst_Click" Content="Write 24 lines" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Icon="&#xE946;"
+              Content="Read the current Output value."
+              Title="Inspect output"
             >
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishTextBox Width="200" Text="Flourish:Theme" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="InspectOutput_Click" Content="Write summary" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Icon="&#xE74D;"
+              Content="Reset the message history."
+              Title="Clear history"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="ClearHistory_Click" Content="Clear" Variant="Danger" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
           </StackPanel>
-      </flourish:Chunk>
+          <flourish:OutputCard
+            x:Name="HistoryOutput"
+            Grid.Column="2"
+            AutomationProperties.Name="Output history"
+            VerticalAlignment="Stretch"
+          />
+        </Grid>
+    </flourish:Chunk>
 
-      <flourish:Chunk
-        Title="Alignment"
-      >
+    <flourish:Chunk Title="ActionCard">
         <StackPanel>
-          <UniformGrid Columns="3">
-            <flourish:Card
-              MinHeight="176"
-              Margin="0,0,8,0"
-              ContentHorizontalAlignment="Left"
-              MainText="Copy aligns left."
-              Title="Left"
-            />
-            <flourish:Card
-              MinHeight="176"
-              Margin="4,0"
-              ContentHorizontalAlignment="Center"
-              MainText="Copy aligns center."
-              Title="Center"
-            />
-            <flourish:Card
-              MinHeight="176"
-              Margin="8,0,0,0"
-              ContentHorizontalAlignment="Right"
-              MainText="Copy aligns right."
-              Title="Right"
-            />
-          </UniformGrid>
-
-          <UniformGrid Margin="0,16,0,0" Columns="3">
-            <flourish:Card
-              MinHeight="224"
-              Margin="0,0,8,0"
-              ContentVerticalAlignment="Top"
-              MainText="Copy stays at the top."
-              Title="Top"
-            />
-            <flourish:Card
-              MinHeight="224"
-              Margin="4,0"
-              ContentHorizontalAlignment="Center"
-              ContentVerticalAlignment="Center"
-              MainText="Copy stays in the center."
-              Title="Center"
-            />
-            <flourish:Card
-              MinHeight="224"
-              Margin="8,0,0,0"
-              ContentVerticalAlignment="Bottom"
-              MainText="Copy stays at the bottom."
-              Title="Bottom"
-            />
-          </UniformGrid>
-
+          <flourish:ActionCard
+            Icon="&#xE790;"
+            Content="Choose a theme value."
+            Title="Horizontal application theme"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishComboBox Width="160" SelectedIndex="0">
+                <flourish:FlourishComboBoxItem Content="System" />
+                <flourish:FlourishComboBoxItem Content="Light" />
+                <flourish:FlourishComboBoxItem Content="Dark" />
+              </flourish:FlourishComboBox>
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE946;"
+            Content="Place the single action below the copy in a card-shaped vertical layout."
+            Title="Vertical details"
+            Variant="Vertical"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Content="View details" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE838;"
+            Content="Preview a local action."
+            Title="Open configuration"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Content="Open" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Content="Edit a setting value."
+            Title="Configuration key"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox Width="200" Text="Flourish:Theme" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
         </StackPanel>
-      </flourish:Chunk>
+    </flourish:Chunk>
 
-      <flourish:Chunk
-        Title="IconCard"
-      >
-          <UniformGrid Columns="2">
-            <flourish:IconCard
-              MinHeight="184"
-              Margin="0,0,8,8"
-              Icon="&#xE8A5;"
-              IconPosition="Top"
-              MainText="The icon appears above the copy."
-              Title="Top icon"
-            />
-            <flourish:IconCard
-              MinHeight="184"
-              Margin="8,0,0,8"
-              Icon="&#xE8A5;"
-              IconPosition="Left"
-              MainText="The icon appears before the copy."
-              Title="Left icon"
-            />
-            <flourish:IconCard
-              MinHeight="184"
-              Margin="0,8,8,0"
-              Icon="&#xE8A5;"
-              IconPosition="Right"
-              MainText="The icon appears after the copy."
-              Title="Right icon"
-            />
-            <flourish:IconCard
-              MinHeight="184"
-              Margin="8,8,0,0"
-              Icon="&#xE8A5;"
-              IconPosition="Bottom"
-              MainText="The icon appears below the copy."
-              Title="Bottom icon"
-            />
-          </UniformGrid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Title="Usage"
-      >
-        <flourish:Paragraph>
-          <flourish:FlourishTextBlock
-            Text="Set Title and MainText on Card for concise display-only content. Neither property reserves spacing when it is omitted."
-          />
-          <flourish:FlourishTextBlock
-            Text="Use IconCard for one icon, ListCard for one right-side interactive action, and Presenter for images, multiple icons, or arbitrary supporting controls."
-          />
-          <flourish:FlourishTextBlock
-            Text="Append OutputCard history with WriteLine and reset it only through an explicit Clear action. Use CardButton when the entire surface invokes a command."
-          />
-        </flourish:Paragraph>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Title="Reference"
-      >
-        <UniformGrid Columns="2">
-          <flourish:CardButton
+    <flourish:Chunk
+      Title="Alignment"
+    >
+      <StackPanel>
+        <UniformGrid Columns="3">
+          <flourish:Card
+            MinHeight="176"
             Margin="0,0,8,0"
-            AutomationProperties.Name="Flourish GitHub repository"
-            Content="Repository link placeholder"
-            Icon="&#xE943;"
-            IsEnabled="False"
-            Title="GitHub repository"
-            ToolTip="External navigation is not available in Gallery."
+            ContentHorizontalAlignment="Left"
+            Content="Copy aligns left."
+            Title="Left"
           />
-          <flourish:CardButton
+          <flourish:Card
+            MinHeight="176"
+            Margin="4,0"
+            ContentHorizontalAlignment="Center"
+            Content="Copy aligns center."
+            Title="Center"
+          />
+          <flourish:Card
+            MinHeight="176"
             Margin="8,0,0,0"
-            AutomationProperties.Name="Card documentation"
-            Content="Canonical documentation link placeholder"
-            Icon="&#xE8A5;"
-            IsEnabled="False"
-            Title="Card documentation"
-            ToolTip="External navigation is not available in Gallery."
+            ContentHorizontalAlignment="Right"
+            Content="Copy aligns right."
+            Title="Right"
           />
         </UniformGrid>
-      </flourish:Chunk>
-    </StackPanel>
-  </flourish:ScrollViewer>
+
+        <UniformGrid Margin="0,16,0,0" Columns="3">
+          <flourish:Card
+            MinHeight="224"
+            Margin="0,0,8,0"
+            ContentVerticalAlignment="Top"
+            Content="Copy stays at the top."
+            Title="Top"
+          />
+          <flourish:Card
+            MinHeight="224"
+            Margin="4,0"
+            ContentHorizontalAlignment="Center"
+            ContentVerticalAlignment="Center"
+            Content="Copy stays in the center."
+            Title="Center"
+          />
+          <flourish:Card
+            MinHeight="224"
+            Margin="8,0,0,0"
+            ContentVerticalAlignment="Bottom"
+            Content="Copy stays at the bottom."
+            Title="Bottom"
+          />
+        </UniformGrid>
+
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Title="Card with icon"
+    >
+        <UniformGrid Columns="2">
+          <flourish:Card
+            MinHeight="184"
+            Margin="0,0,8,8"
+            Icon="&#xE8A5;"
+            IconPosition="Top"
+            Content="The icon appears above the copy."
+            Title="Top icon"
+          />
+          <flourish:Card
+            MinHeight="184"
+            Margin="8,0,0,8"
+            Icon="&#xE8A5;"
+            IconPosition="Left"
+            Content="The icon appears before the copy."
+            Title="Left icon"
+          />
+          <flourish:Card
+            MinHeight="184"
+            Margin="0,8,8,0"
+            Icon="&#xE8A5;"
+            IconPosition="Right"
+            Content="The icon appears after the copy."
+            Title="Right icon"
+          />
+          <flourish:Card
+            MinHeight="184"
+            Margin="8,8,0,0"
+            Icon="&#xE8A5;"
+            IconPosition="Bottom"
+            Content="The icon appears below the copy."
+            Title="Bottom icon"
+          />
+        </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Title="Usage"
+    >
+      <flourish:Document>
+        <flourish:Paragraph
+          Text="Set Title, Content, and Icon on Card for concise display-only content. None of these properties reserves spacing when it is omitted."
+        />
+        <flourish:Paragraph
+          Text="Use Card for one icon, ActionCard for one local interactive control in a Horizontal or Vertical layout, and Presenter for images, multiple icons, or arbitrary supporting controls."
+        />
+        <flourish:Paragraph
+          Text="Append OutputCard history with WriteLine and reset it only through an explicit Clear action. Use CardButton when the entire surface invokes a command."
+        />
+      </flourish:Document>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Title="Reference"
+    >
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="Flourish GitHub repository"
+          Content="Repository link placeholder"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="Card documentation"
+          Content="Canonical documentation link placeholder"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="Card documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
 </Page>

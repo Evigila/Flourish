@@ -23,17 +23,17 @@ public sealed class FlourishProfilePageRenderingTests
     );
 
     [Fact]
-    public void UploadImageButton_UsesSharedIconButtonWithoutASelectionPreview()
+    public void UploadImageButton_UsesSharedButtonWithoutASelectionPreview()
     {
         var document = XDocument.Load(ProfileXamlPath);
         var uploadButton = FindNamedElement(document, "UploadImageButton");
 
-        Assert.Equal("IconButton", uploadButton.Name.LocalName);
+        Assert.Equal("Button", uploadButton.Name.LocalName);
         Assert.Equal(FlourishControlsNamespace, uploadButton.Name.NamespaceName);
         Assert.Equal("Outlined", (string?)uploadButton.Attribute("Variant"));
         Assert.Contains(
             uploadButton.Elements(),
-            element => element.Name.LocalName == "IconButton.Icon"
+            element => element.Name.LocalName == "Button.Icon"
         );
         Assert.DoesNotContain(
             document.Descendants(),

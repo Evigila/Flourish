@@ -1959,7 +1959,7 @@ internal partial class FlourishShellWindow : Window
         toolTip.Children.Add(toolTipDescription);
         toolTip.Children.Add(toolTipState);
 
-        var button = new IconButton
+        var button = new Button
         {
             Width = 26,
             Height = 22,
@@ -1972,7 +1972,7 @@ internal partial class FlourishShellWindow : Window
             Tag = task.Id,
             ToolTip = toolTip,
         };
-        button.Click += BackgroundTaskIconButton_Click;
+        button.Click += BackgroundTaskButton_Click;
         return new BackgroundTaskIconView(
             button,
             icon,
@@ -2000,7 +2000,7 @@ internal partial class FlourishShellWindow : Window
         );
     }
 
-    private void BackgroundTaskIconButton_Click(object sender, RoutedEventArgs e)
+    private void BackgroundTaskButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement anchor)
         {
@@ -2930,7 +2930,7 @@ internal partial class FlourishShellWindow : Window
             var hasIcon = !string.IsNullOrWhiteSpace(item.IconGlyph);
             var useIconOnly = showIconOnly && hasIcon;
             Button button = hasIcon
-                ? new IconButton { Icon = item.IconGlyph }
+                ? new Button { Icon = item.IconGlyph }
                 : new Button();
             button.Content = useIconOnly ? null : item.DisplayName;
             button.Margin =
@@ -3119,7 +3119,7 @@ internal partial class FlourishShellWindow : Window
         Grid.SetColumn(content, 1);
         layout.Children.Add(content);
 
-        var dismiss = new IconButton
+        var dismiss = new Button
         {
             Width = 28,
             Height = 28,

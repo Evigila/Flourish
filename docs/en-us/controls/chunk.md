@@ -1,28 +1,27 @@
 ---
 title: Chunk
-description: Use Chunk and ChunkHero to build the required full-width section hierarchy of a Flourish page.
+description: Use HeaderChunk and Chunk as the full-width section hierarchy inside a PageBody.
 ---
 
 # Chunk
 
-`Chunk` is the root layout unit of a Flourish main-navigation content page. Every such page starts with exactly one `ChunkHero` and continues with one or more `Chunk` controls. Both controls fill their row, so do not place two of them side by side.
+`HeaderChunk` and `Chunk` are the direct layout units of a Flourish content page. A standard page begins with one `HeaderChunk` and continues with one or more `Chunk` controls. Both fill their row, so do not arrange them side by side.
 
-> [!IMPORTANT]
-> Put all page content inside the leading `ChunkHero` or a following `Chunk`. Do not add peer-level text, cards, or manually spaced regions outside that structure.
+Place them directly in [PageBody](page-body.md). `PageBody` rejects every other direct child, more than one `HeaderChunk`, and a `HeaderChunk` that is not first.
 
 > [!NOTE]
-> This page skeleton does not apply to Shell-owned transient surfaces such as the profile flyout, a popup, or a dialog. Those surfaces are not main-navigation content pages and should not be given an oversized `ChunkHero`. Their internal content still follows the Flourish typography, spacing, control-selection, and Button-family rules.
+> Shell-owned transient surfaces such as the profile flyout, a popup, or a dialog are not content pages and do not need the complete PageBody hierarchy. Their internal content still follows the Flourish typography, spacing, control-selection, and Button-family rules.
 
-## Basic usage
+## Chunk
 
-Every `Chunk` needs a concise `Title` and a `Body`. `Description` is optional: add it only when the title cannot communicate the section's essential context on its own.
+Every `Chunk` needs a concise `Title` and a real `Body`. `Content` is optional: add it only when the title cannot communicate the section's essential context on its own.
 
-`Body` is the default XAML content property. One child can therefore be written directly inside `Chunk`; use a layout container when the section needs several children.
+`Body` is the default XAML content property. Write one child directly inside `Chunk`, or use a layout container when the section needs several peer controls.
 
 ```xml
 <flourish:Chunk
   Title="Recent projects"
-  Description="Continue where you left off, or open another project.">
+  Content="Continue where you left off, or open another project.">
   <UniformGrid Columns="2">
     <flourish:CardButton
       Command="{Binding OpenProjectCommand}"
@@ -38,27 +37,29 @@ Every `Chunk` needs a concise `Title` and a `Body`. `Description` is optional: a
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `Title` | `string` | `""` | Required section heading that identifies the section's subject. |
-| `Description` | `string?` | `null` | Optional supporting copy below the heading. |
+| `Title` | `string` | `""` | Required section heading that identifies the subject. |
+| `Content` | `string?` | `null` | Optional supporting copy below the heading. |
 | `Body` | `object?` | `null` | Required section content and the default XAML content property. |
 | `ChunkMargin` | `Thickness` | `0,32,0,0` | Supplies the large separation from the preceding page section. |
-| `ChunkSpacing` | `Thickness` | `0,12,0,0` | Supplies the internal separation between populated regions. |
+| `ChunkSpacing` | `Thickness` | `0,12,0,0` | Supplies internal separation between populated regions. |
 
-An empty or `null` optional region collapses completely, including its associated spacing. Keep the default `ChunkMargin` and `ChunkSpacing` in ordinary pages so all sections follow the same vertical rhythm.
+An empty or `null` optional region collapses completely, including associated spacing. Keep the standard `ChunkMargin` and `ChunkSpacing` in ordinary pages so all sections follow the same vertical rhythm.
 
-`Chunk` defines layout only. Choose a [Card](card.md), [Paragraph](paragraph.md), [Presenter](presenter.md), or another purpose-built control for `Body` rather than making `Chunk` present the content itself.
+`Chunk` defines layout only. Choose a [Card](card.md), [Document](document.md), [Presenter](presenter.md), or another purpose-built control for `Body` rather than making `Chunk` present content itself.
 
-## ChunkHero
+## HeaderChunk
 
-`ChunkHero` is the single page-leading hero section. It inherits the complete [Presenter](presenter.md) contract: every declaration explicitly supplies `Title`, `Description`, `PresenterMode`, and `PresenterPosition`; `Body` and `Presentation` occupy their defined content regions. Its larger title and emphasized background distinguish it from an ordinary `Presenter`.
+`HeaderChunk` is the single page-leading section and a larger [Presenter](presenter.md) specialization. Explicitly supply `Title`, `Content`, `PresenterMode`, and `PresenterPosition`. Its `Body` supports the copy while `Presentation` holds the presented visual.
+
+Unlike an ordinary `Presenter`, direct XAML content is assigned to `HeaderChunk.Body`. Assign presentation content explicitly with `HeaderChunk.Presentation`.
 
 ```xml
-<flourish:ChunkHero
+<flourish:HeaderChunk
   Title="Welcome to Flourish"
-  Description="Build WPF applications with one consistent layout system."
+  Content="Build WPF applications with one consistent layout system."
   PresenterMode="Split"
   PresenterPosition="Right">
-  <flourish:ChunkHero.Body>
+  <flourish:HeaderChunk.Body>
     <StackPanel Orientation="Horizontal">
       <flourish:Button
         Variant="Filled"
@@ -69,56 +70,52 @@ An empty or `null` optional region collapses completely, including its associate
         Command="{Binding OpenDocumentationCommand}"
         Content="Read the documentation" />
     </StackPanel>
-  </flourish:ChunkHero.Body>
-  <flourish:ChunkHero.Presentation>
-    <Image Source="Assets/flourish-hero.png" Stretch="Uniform" />
-  </flourish:ChunkHero.Presentation>
-</flourish:ChunkHero>
+  </flourish:HeaderChunk.Body>
+  <flourish:HeaderChunk.Presentation>
+    <Image Source="Assets/flourish-header.png" Stretch="Uniform" />
+  </flourish:HeaderChunk.Presentation>
+</flourish:HeaderChunk>
 ```
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `Title` | `string` | `""` | Required page heading, rendered with the dedicated HeaderSize tier. Declare it explicitly. |
-| `Description` | `string?` | `null` | Required supporting copy for the page heading. Declare it explicitly. |
-| `Body` | `object?` | `null` | Supporting controls or content in the same region as the hero copy. It remains the default XAML content property for `ChunkHero`. |
-| `Presentation` | `object?` | `null` | An image, icon group, illustration, or other presented content. Assign it explicitly with `ChunkHero.Presentation`. |
-| `PresenterMode` | `PresenterMode` | `Split` | Required explicit composition choice. The runtime fallback is `Split`. |
-| `PresenterPosition` | `PresenterPosition` | `Right` | Required explicit presentation-side choice. The runtime fallback is `Right`. |
+| `Title` | `string` | `""` | Required page heading rendered with the HeaderSize tier. |
+| `Content` | `string?` | `null` | Required supporting copy for the page heading. |
+| `Body` | `object?` | `null` | Supporting controls in the same region as the copy; the default XAML content property. |
+| `Presentation` | `object?` | `null` | Image, icon group, illustration, or other presented content. |
+| `PresenterMode` | `PresenterMode` | `Split` | Explicit composition choice: `Split`, `TopDown`, or `Overlay`. |
+| `PresenterPosition` | `PresenterPosition` | `Right` | Explicit presentation-side choice for `Split`. |
 
-An absent hero `Body` or `Presentation` leaves no empty placeholder or spacing. Standard Split keeps the title, description, and body together on the left and places presentation content on the right. In `Overlay` mode, choose presentation content that keeps all overlaid copy readable in light and dark themes; explicitly declare `PresenterPosition` even though Overlay ignores it.
+An absent `Body` or `Presentation` leaves no placeholder or spacing. `Split` keeps title, content, and body together on one side and presentation content on the other. `TopDown` places the presentation above a left-aligned copy-and-body region. `Overlay` places copy and body over the presentation. Continue to declare `PresenterPosition` in every mode even though `TopDown` and `Overlay` do not use it for placement.
 
-## Page structure
-
-The canonical page skeleton contains one leading `ChunkHero` followed by several full-width `Chunk` controls. Each ordinary chunk still supplies a real body.
+## Complete page structure
 
 ```xml
-<ScrollViewer>
-  <StackPanel>
-    <flourish:ChunkHero
-      Title="Design system"
-      Description="Foundations and reusable controls for this application."
-      PresenterMode="Split"
-      PresenterPosition="Right"
-      Presentation="{StaticResource DesignSystemIllustration}" />
+<flourish:PageBody>
+  <flourish:HeaderChunk
+    Title="Design system"
+    Content="Foundations and reusable controls for this application."
+    PresenterMode="Split"
+    PresenterPosition="Right"
+    Presentation="{StaticResource DesignSystemIllustration}" />
 
-    <flourish:Chunk Title="Foundations">
-      <flourish:Card MainText="Color, typography, spacing, and motion." />
-    </flourish:Chunk>
+  <flourish:Chunk Title="Foundations">
+    <flourish:Card Content="Color, typography, spacing, and motion." />
+  </flourish:Chunk>
 
-    <flourish:Chunk Title="Components">
-      <flourish:Card MainText="Reusable controls built on those foundations." />
-    </flourish:Chunk>
-  </StackPanel>
-</ScrollViewer>
+  <flourish:Chunk Title="Components">
+    <flourish:Card Content="Reusable controls built on those foundations." />
+  </flourish:Chunk>
+</flourish:PageBody>
 ```
 
-Do not add a second `ChunkHero`, omit the leading hero, or place multiple chunks in the same row.
+Do not add a second `HeaderChunk`, place it after a `Chunk`, or put peer content outside the PageBody sections.
 
 ## Related content
 
-- [Presenter](presenter.md) defines the presentation model inherited by `ChunkHero`.
-- [Paragraph](paragraph.md) presents several text paragraphs as a chunk's sole body.
+- [PageBody](page-body.md) enforces the page root and direct-child contract.
+- [Presenter](presenter.md) defines the composition model inherited by `HeaderChunk`.
+- [Document](document.md) presents several text paragraphs as a chunk's sole body.
 - [Card](card.md) presents concise information inside a chunk.
-- [Button](button.md) defines actions used in chunk and hero bodies.
-- [Typography](../articles/configure-font.md) describes the six font-size tiers.
-- The [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) and [ChunkHero API](xref:ArkheideSystem.Flourish.Controls.ChunkHero) list all members.
+- [Typography](../articles/configure-font.md) describes the font-size tiers.
+- The [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) and [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk) list all members.

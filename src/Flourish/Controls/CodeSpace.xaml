@@ -32,7 +32,7 @@
             TextWrapping="NoWrap"
           />
         </controls:ScrollViewer>
-        <controls:IconButton
+        <controls:Button
           x:Name="PART_CopyButton"
           AutomationProperties.Name="Copy code"
           Command="{x:Static ApplicationCommands.Copy}"

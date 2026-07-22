@@ -68,7 +68,7 @@
           x:Name="PART_ColumnHeadersPresenter"
           Visibility="{Binding HeadersVisibility, Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, RelativeSource={RelativeSource TemplatedParent}}"
         />
-        <ScrollViewer
+        <controls:ScrollViewer
           x:Name="DG_ScrollViewer"
           Grid.Row="1"
           CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
@@ -77,7 +77,7 @@
           VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
         >
           <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-        </ScrollViewer>
+        </controls:ScrollViewer>
       </Grid>
     </Border>
   </ControlTemplate>

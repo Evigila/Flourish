@@ -63,11 +63,32 @@ private void DetailsOverlay_DismissRequested(object sender, RoutedEventArgs e) =
 
 For a `Strong` Overlay, the host must also provide deliberate dismissal, such as an action button, <kbd>Esc</kbd>, and outside-click handling. A Popup can supply outside-click behavior with `StaysOpen="False"`.
 
+## Compose Overlay content
+
+`Overlay` is a content container, so its child may be any one WPF content tree. Use a vertical [ActionCard](card.md#actioncard) for the common floating-card structure: icon first, copy below it, and one action at the bottom.
+
+```xml
+<flourish:Overlay Variant="Strong">
+  <flourish:ActionCard
+    Variant="Vertical"
+    Icon="&#xE77B;"
+    Title="Profile"
+    Content="Manage the active account and preferences.">
+    <flourish:Button
+      Variant="Filled"
+      Command="{Binding OpenProfileCommand}"
+      Content="Open profile" />
+  </flourish:ActionCard>
+</flourish:Overlay>
+```
+
+The ActionCard pattern is a recommendation, not an Overlay restriction. Use a custom `Grid`, panel, or purpose-built view when the floating surface needs a different composition. For example, a profile view may arrange identity information, account actions, and status content without placing them in an ActionCard. The host still owns positioning, open state, and dismissal.
+
 ## Shell integration
 
 Flourish Shell features host their Overlays in a window-bounded layer instead of an application Popup. The Shell calculates the anchored position, changes the host visibility when a feature is invoked, and handles `DismissRequested`, outside clicks, and <kbd>Esc</kbd>. Code that adds a Shell feature therefore invokes the feature's Shell integration point; it does not ask `Overlay` to open itself.
 
-Use an interactive control such as [Button](button.md), `IconButton`, or `CardButton` as the trigger. These controls provide click or command activation, keyboard focus, and automation semantics. `Card`, `ListCard`, and `IconCard` are information surfaces and do not support Overlay-trigger interaction.
+Use an interactive control such as [Button](button.md) or `CardButton` as the trigger. These controls provide click or command activation, keyboard focus, and automation semantics. `Card` and `ActionCard` are presentation surfaces; do not attach pointer handlers to them to imitate a trigger.
 
 ## Tooltip integration
 
@@ -78,6 +99,7 @@ When `UseTips` is omitted or the `ToolTips` feature is disabled at runtime, Flou
 ## Related controls
 
 - [Card](card.md) is an in-layout information surface rather than floating content.
+- [ActionCard](card.md#actioncard) supplies the standard vertical floating-card composition.
 - [Button](button.md) provides common Overlay triggers.
 - [ScrollViewer](scroll-viewer.md) contains content that can exceed the available Overlay height.
 - The [Overlay API](xref:ArkheideSystem.Flourish.Controls.Overlay) and [OverlayVariant API](xref:ArkheideSystem.Flourish.Controls.OverlayVariant) list the complete member signatures.

@@ -8,7 +8,7 @@ description: Append operation messages to a compact scrolling history that does 
 `OutputCard` displays raw messages, ongoing progress, completed results, and failures in one read-only history. It owns a themed neutral viewport inside the standard card spacing, uses compact text, and scrolls when the history exceeds the arranged height.
 
 > [!IMPORTANT]
-> `OutputCard` has no `Title`, `Description`, `MainText`, or arbitrary `Body`. Keep explanatory copy in the containing `Chunk` and actions in a purpose-built action control, then append each observable outcome as a message.
+> `OutputCard` has no `Title`, `Content`, `Icon`, or arbitrary `Body`. Keep explanatory copy in the containing `Chunk` and actions in a purpose-built action control, then append each observable outcome as a message.
 
 ## Basic usage
 
@@ -17,7 +17,7 @@ Place `OutputCard` beside the actions that produce its messages. In a two-column
 ```xml
 <flourish:Chunk
   Title="Report generation"
-  Description="Generate a report and review the complete operation history.">
+  Content="Generate a report and review the complete operation history.">
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
@@ -26,23 +26,23 @@ Place `OutputCard` beside the actions that produce its messages. In a two-column
     </Grid.ColumnDefinitions>
 
     <StackPanel>
-      <flourish:ListCard
+      <flourish:ActionCard
         Icon="&#xE9D2;"
         Title="Generate report"
-        MainText="Start a report generation pass.">
-        <flourish:ListCard.ActionBody>
+        Content="Start a report generation pass.">
+        <flourish:ActionCard.Body>
           <flourish:Button Click="GenerateReport_Click" Content="Generate" />
-        </flourish:ListCard.ActionBody>
-      </flourish:ListCard>
-      <flourish:ListCard
-        Margin="{DynamicResource FlourishListCardPeerMargin}"
+        </flourish:ActionCard.Body>
+      </flourish:ActionCard>
+      <flourish:ActionCard
+        Margin="{DynamicResource FlourishActionCardPeerMargin}"
         Icon="&#xE74D;"
         Title="Output history"
-        MainText="Remove all recorded messages.">
-        <flourish:ListCard.ActionBody>
+        Content="Remove all recorded messages.">
+        <flourish:ActionCard.Body>
           <flourish:Button Click="ClearOutput_Click" Content="Clear" />
-        </flourish:ListCard.ActionBody>
-      </flourish:ListCard>
+        </flourish:ActionCard.Body>
+      </flourish:ActionCard>
     </StackPanel>
 
     <flourish:OutputCard
@@ -83,7 +83,7 @@ Every `WriteLine` call adds the supplied message as the next line and scrolls th
 
 With automatic height, the output history does not increase `OutputCard`'s desired height. Its minimum height still participates in measurement, while a stretching parent or an explicit height determines the arranged viewport size.
 
-For a ListCard-plus-output layout, place the complete ListCard column and `OutputCard` in the same auto-sized `Grid` row and leave `OutputCard.VerticalAlignment` as `Stretch`. The ListCard column then determines the row height. Additional output remains inside the viewport and uses its vertical scrollbar instead of making the ListCards taller. Do not recalculate `Height` from `Output` or wrap `OutputCard` in another scrolling container.
+For an ActionCard-plus-output layout, place the complete ActionCard column and `OutputCard` in the same auto-sized `Grid` row and leave `OutputCard.VerticalAlignment` as `Stretch`. The ActionCard column then determines the row height. Additional output remains inside the viewport and uses its vertical scrollbar instead of making the ActionCards taller. Do not recalculate `Height` from `Output` or wrap `OutputCard` in another scrolling container.
 
 Long lines do not wrap and use the horizontal scrollbar when needed. The viewport uses compact scrollbars so both axes remain available without adding substantial visual weight.
 

@@ -244,7 +244,6 @@ public sealed class FlourishHoverRevealContractTests
         foreach (
             var (fileName, templateKey) in new[]
             {
-                ("IconButton.xaml", "IconOnlyButtonTemplate"),
                 ("CardButton.xaml", "CardButtonTemplate"),
                 ("WindowCaptionButton.xaml", "WindowCaptionButtonTemplate"),
             }

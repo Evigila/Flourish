@@ -5,107 +5,105 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:ChunkHero
-        Description="Queue, observe, cancel, and inspect background work."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Background tasks"
-      />
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Queue, observe, cancel, and inspect background work."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Background tasks"
+    />
 
-      <flourish:Chunk
-        Description="Submit several forms of runtime work."
-        Title="Queue runtime work"
-      >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard
-              Icon="&#xE768;"
-              MainText="Queue work that reports progress while it runs."
-              Title="Progress task"
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="AddProgressTask_Click" Content="Add task" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE8F1;"
-              MainText="Queue work that returns a captured value."
-              Title="Result task"
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="AddResultTask_Click" Content="Add task" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE8FD;"
-              MainText="Queue four tasks to demonstrate bounded concurrency."
-              Title="Task burst"
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="AddBurst_Click" Content="Queue 4 tasks" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE711;"
-              MainText="Cancel the most recently submitted task."
-              Title="Last task"
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="CancelLast_Click" Content="Cancel last" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard
-              Margin="{DynamicResource FlourishListCardPeerMargin}"
-              Icon="&#xE74D;"
-              MainText="Cancel the task selected in the live task list."
-              Title="Selected task"
-            >
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="CancelSelected_Click" Content="Cancel selected" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-          </StackPanel>
-          <flourish:OutputCard
-            x:Name="ServiceOutput"
-            Margin="8,0,0,0"
-            VerticalAlignment="Stretch"
-          />
-        </UniformGrid>
-      </flourish:Chunk>
-
-      <flourish:Chunk
-        Description="Compare active tasks with their captured outcomes."
-        Title="Task state"
-      >
-        <StackPanel>
-          <flourish:Presenter
-            Description="Queued, running, and cancelling items update through TasksChanged."
-            PresenterMode="Split"
-            PresenterPosition="Right"
-            Title="Live tasks"
+    <flourish:Chunk
+      Content="Submit several forms of runtime work."
+      Title="Queue runtime work"
+    >
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE768;"
+            Content="Queue work that reports progress while it runs."
+            Title="Progress task"
           >
-            <flourish:Presenter.Presentation>
-              <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
-            </flourish:Presenter.Presentation>
-          </flourish:Presenter>
-          <flourish:Presenter
-            Margin="{DynamicResource FlourishPresenterPeerMargin}"
-            Description="Completion never faults; failures and cancellation are represented in the result object."
-            PresenterMode="Split"
-            PresenterPosition="Right"
-            Title="Recent outcomes"
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddProgressTask_Click" Content="Add task" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8F1;"
+            Content="Queue work that returns a captured value."
+            Title="Result task"
           >
-            <flourish:Presenter.Presentation>
-              <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
-            </flourish:Presenter.Presentation>
-          </flourish:Presenter>
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddResultTask_Click" Content="Add task" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8FD;"
+            Content="Queue four tasks to demonstrate bounded concurrency."
+            Title="Task burst"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddBurst_Click" Content="Queue 4 tasks" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE711;"
+            Content="Cancel the most recently submitted task."
+            Title="Last task"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="CancelLast_Click" Content="Cancel last" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Content="Cancel the task selected in the live task list."
+            Title="Selected task"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="CancelSelected_Click" Content="Cancel selected" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
         </StackPanel>
-      </flourish:Chunk>
-    </StackPanel>
-  </flourish:ScrollViewer>
+        <flourish:OutputCard
+          x:Name="ServiceOutput"
+          Margin="8,0,0,0"
+          VerticalAlignment="Stretch"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Compare active tasks with their captured outcomes."
+      Title="Task state"
+    >
+      <StackPanel>
+        <flourish:Presenter
+          Content="Queued, running, and cancelling items update through TasksChanged."
+          PresenterMode="Split"
+          PresenterPosition="Right"
+          Title="Live tasks"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Completion never faults; failures and cancellation are represented in the result object."
+          PresenterMode="Split"
+          PresenterPosition="Right"
+          Title="Recent outcomes"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+  </flourish:PageBody>
 </Page>

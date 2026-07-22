@@ -186,9 +186,8 @@ public sealed class FlourishXamlArchitectureTests
         {
             "Button.xaml",
             "Card.xaml",
-            "IconCard.xaml",
-            "IconButton.xaml",
-            "ListCard.xaml",
+            "ActionCard.xaml",
+            "ScrollViewer.xaml",
             "WindowCaptionButton.xaml",
         };
         var expectedSources = Directory
@@ -208,21 +207,15 @@ public sealed class FlourishXamlArchitectureTests
         );
 
         Assert.Equal(
-            ["IconCard.xaml"],
+            ["ActionCard.xaml"],
             GetMergedDictionarySources(
                 LoadXaml(Path.Combine(controlsRoot, "OutputCard.xaml"))
             )
         );
         Assert.Equal(
-            ["ListCard.xaml"],
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "IconCard.xaml"))
-            )
-        );
-        Assert.Equal(
             ["Card.xaml"],
             GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "ListCard.xaml"))
+                LoadXaml(Path.Combine(controlsRoot, "ActionCard.xaml"))
             )
         );
         Assert.Equal(
@@ -232,15 +225,14 @@ public sealed class FlourishXamlArchitectureTests
             )
         );
         Assert.Equal(
-            ["IconButton.xaml"],
+            ["Button.xaml"],
             GetMergedDictionarySources(
                 LoadXaml(Path.Combine(controlsRoot, "WindowCaptionButton.xaml"))
             )
         );
-        Assert.Equal(
-            ["Button.xaml"],
+        Assert.Empty(
             GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "IconButton.xaml"))
+                LoadXaml(Path.Combine(controlsRoot, "Card.xaml"))
             )
         );
         Assert.Empty(
@@ -481,7 +473,42 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void EveryGalleryPage_UsesOneLeadingHeroFollowedOnlyByChunks()
+    public void EveryGalleryPage_UsesPageBodyAsItsRootContent()
+    {
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+
+        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        {
+            var document = LoadXaml(path);
+            if (document.Root?.Name.LocalName != "Page")
+            {
+                continue;
+            }
+
+            var rootContent = document
+                .Root.Elements()
+                .Where(element => !IsPropertyElement(element))
+                .ToArray();
+            if (
+                rootContent.Length != 1
+                || rootContent[0].Name.LocalName != nameof(PageBody)
+            )
+            {
+                violations.Add(
+                    $"{RelativePath(path)} must contain exactly one root {nameof(PageBody)}"
+                );
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Gallery pages must use PageBody for the canonical scrolling page layout."
+        );
+    }
+
+    [Fact]
+    public void EveryGalleryPage_UsesOneLeadingHeaderFollowedOnlyByChunks()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
@@ -496,14 +523,14 @@ public sealed class FlourishXamlArchitectureTests
 
             var heroes = document
                 .Descendants()
-                .Where(element => element.Name.LocalName == nameof(ChunkHero))
+                .Where(element => element.Name.LocalName == nameof(HeaderChunk))
                 .Where(element => !IsInsidePopup(element))
                 .ToArray();
 
             if (heroes.Length != 1)
             {
                 violations.Add(
-                    $"{RelativePath(path)} declares {heroes.Length} main-content ChunkHero elements"
+                    $"{RelativePath(path)} declares {heroes.Length} main-content HeaderChunk elements"
                 );
                 continue;
             }
@@ -531,7 +558,7 @@ public sealed class FlourishXamlArchitectureTests
                 if (element.Name.LocalName != nameof(Chunk))
                 {
                     violations.Add(
-                        $"{FormatViolation(path, element)} follows ChunkHero outside a Chunk"
+                        $"{FormatViolation(path, element)} follows HeaderChunk outside a Chunk"
                     );
                 }
             }
@@ -539,7 +566,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Every Gallery page must have exactly one leading ChunkHero and place each subsequent visible main section in a full-width Chunk; Popup infrastructure is excluded."
+            "Every Gallery page must have exactly one leading HeaderChunk and place each subsequent visible main section in a full-width Chunk; Popup infrastructure is excluded."
         );
     }
 
@@ -557,7 +584,7 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal("internal", (string?)root.Attribute(xamlNamespace + "ClassModifier"));
         Assert.DoesNotContain(
             root.Descendants(),
-            element => element.Name.LocalName is nameof(ChunkHero) or nameof(Chunk)
+            element => element.Name.LocalName is nameof(HeaderChunk) or nameof(Chunk)
         );
     }
 
@@ -616,7 +643,7 @@ public sealed class FlourishXamlArchitectureTests
         string[] requiredProperties =
         [
             nameof(Presenter.Title),
-            nameof(Presenter.Description),
+            nameof(Presenter.Content),
             nameof(Presenter.PresenterMode),
             nameof(Presenter.PresenterPosition),
         ];
@@ -628,7 +655,7 @@ public sealed class FlourishXamlArchitectureTests
                 var presenter in document
                     .Descendants()
                     .Where(element =>
-                        element.Name.LocalName is nameof(Presenter) or nameof(ChunkHero)
+                        element.Name.LocalName is nameof(Presenter) or nameof(HeaderChunk)
                     )
             )
             {
@@ -672,12 +699,12 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Gallery Presenter and ChunkHero declarations must explicitly set Title, Description, PresenterMode, and PresenterPosition; ordinary Presenter visuals must use Presenter.Presentation."
+            "Gallery Presenter and HeaderChunk declarations must explicitly set Title, Content, PresenterMode, and PresenterPosition; ordinary Presenter visuals must use Presenter.Presentation."
         );
     }
 
     [Fact]
-    public void PresenterTemplate_FixesCopyAndPresentationIntoTwoEqualColumns()
+    public void PresenterTemplate_DefinesSplitColumnsAndTopDownRows()
     {
         var document = LoadXaml(
             Path.Combine(FlourishRoot, "Controls", "Presenter.xaml")
@@ -702,9 +729,16 @@ public sealed class FlourishXamlArchitectureTests
             .Single(element => element.Name.LocalName == "Grid.ColumnDefinitions")
             .Elements()
             .ToArray();
+        var rows = layoutGrid
+            .Elements()
+            .Single(element => element.Name.LocalName == "Grid.RowDefinitions")
+            .Elements()
+            .ToArray();
 
         Assert.Equal(2, columns.Length);
         Assert.All(columns, column => Assert.Equal("*", (string?)column.Attribute("Width")));
+        Assert.Equal(2, rows.Length);
+        Assert.All(rows, row => Assert.Equal("*", (string?)row.Attribute("Height")));
 
         var presentationSurface = layoutGrid
             .Elements()
@@ -762,7 +796,7 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal("Left", (string?)bodyHost.Attribute("HorizontalAlignment"));
         Assert.Equal("Center", (string?)bodyHost.Attribute("VerticalAlignment"));
 
-        foreach (var hostName in new[] { "TitleHost", "DescriptionHost" })
+        foreach (var hostName in new[] { "TitleHost", "ContentHost" })
         {
             var textHost = copySurface
                 .Descendants()
@@ -772,6 +806,29 @@ public sealed class FlourishXamlArchitectureTests
                 );
             Assert.Equal("Left", (string?)textHost.Attribute("TextAlignment"));
         }
+
+        var topDownSetters = template
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Trigger"
+                && (string?)element.Attribute("Property") == nameof(Presenter.PresenterMode)
+                && (string?)element.Attribute("Value") == nameof(PresenterMode.TopDown)
+            )
+            .Elements()
+            .Where(element => element.Name.LocalName == "Setter")
+            .ToDictionary(
+                element =>
+                    $"{(string?)element.Attribute("TargetName")}.{(string?)element.Attribute("Property")}",
+                element => (string?)element.Attribute("Value")
+            );
+        Assert.Equal("0", topDownSetters["PresentationSurface.Grid.Column"]);
+        Assert.Equal("2", topDownSetters["PresentationSurface.Grid.ColumnSpan"]);
+        Assert.Equal("0", topDownSetters["PresentationSurface.Grid.Row"]);
+        Assert.Equal("1", topDownSetters["PresentationSurface.Grid.RowSpan"]);
+        Assert.Equal("0", topDownSetters["CopySurface.Grid.Column"]);
+        Assert.Equal("2", topDownSetters["CopySurface.Grid.ColumnSpan"]);
+        Assert.Equal("1", topDownSetters["CopySurface.Grid.Row"]);
+        Assert.Equal("1", topDownSetters["CopySurface.Grid.RowSpan"]);
     }
 
     [Fact]
@@ -881,8 +938,9 @@ public sealed class FlourishXamlArchitectureTests
                 }
 
                 var isVerticalStack =
-                    parent.Name.LocalName == "StackPanel"
-                    && (string?)parent.Attribute("Orientation") is null or "Vertical";
+                    parent.Name.LocalName == nameof(PageBody)
+                    || parent.Name.LocalName == "StackPanel"
+                        && (string?)parent.Attribute("Orientation") is null or "Vertical";
                 if (!isVerticalStack)
                 {
                     violations.Add(
@@ -899,7 +957,7 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
-    public void GalleryListCardColumns_StayPureAndUseTheFixedLayoutContract()
+    public void GalleryActionCardGroups_StayPureAndUseTheFixedLayoutContract()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
@@ -920,13 +978,12 @@ public sealed class FlourishXamlArchitectureTests
 
             foreach (
                 var listCard in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(ListCard)
+                    element.Name.LocalName == nameof(ActionCard)
                 )
             )
             {
                 string[] fixedProperties =
                 [
-                    nameof(Card.Variant),
                     nameof(Card.ContentHorizontalAlignment),
                     nameof(Card.ContentVerticalAlignment),
                 ];
@@ -952,18 +1009,17 @@ public sealed class FlourishXamlArchitectureTests
                     .Where(element =>
                         element.Name.LocalName
                             is nameof(Card)
-                                or nameof(IconCard)
-                                or nameof(ListCard)
+                                or nameof(ActionCard)
                                 or nameof(OutputCard)
                     )
                     .ToArray();
                 if (
-                    directCards.Any(element => element.Name.LocalName == nameof(ListCard))
-                    && directCards.Any(element => element.Name.LocalName != nameof(ListCard))
+                    directCards.Any(element => element.Name.LocalName == nameof(ActionCard))
+                    && directCards.Any(element => element.Name.LocalName != nameof(ActionCard))
                 )
                 {
                     violations.Add(
-                        $"{FormatViolation(path, parent)} mixes ListCard with another card type"
+                        $"{FormatViolation(path, parent)} mixes ActionCard with another card type"
                     );
                 }
             }
@@ -971,18 +1027,17 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "ListCard columns must stay pure and must use their fixed Standard left-copy-right contract."
+            "ActionCard groups must stay pure and use only the fixed Horizontal or Vertical layout contract."
         );
     }
 
     [Fact]
-    public void GalleryListCardActionBodies_ContainAtMostOneInteractiveControl()
+    public void GalleryActionCardActionBodies_ContainAtMostOneInteractiveControl()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var interactiveControlNames = new HashSet<string>(StringComparer.Ordinal)
         {
             "Button",
-            "IconButton",
             "FlourishTextBox",
             "FlourishPasswordBox",
             "FlourishSearchBox",
@@ -1008,7 +1063,7 @@ public sealed class FlourishXamlArchitectureTests
             var document = LoadXaml(path);
             foreach (
                 var body in document.Descendants().Where(element =>
-                    element.Name.LocalName == "ListCard.ActionBody"
+                    element.Name.LocalName == "ActionCard.Body"
                 )
             )
             {
@@ -1031,14 +1086,14 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "ListCard.ActionBody must contain at most one interactive control; split independent inputs and actions into separate rows."
+            "ActionCard.Body must contain at most one interactive control; split independent inputs and actions into separate rows."
         );
     }
 
     [Fact]
-    public void GalleryListCardPeers_UseTheCompactSpacingToken()
+    public void GalleryActionCardPeers_UseTheCompactSpacingToken()
     {
-        const string compactMargin = "{DynamicResource FlourishListCardPeerMargin}";
+        const string compactMargin = "{DynamicResource FlourishActionCardPeerMargin}";
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
 
@@ -1053,24 +1108,24 @@ public sealed class FlourishXamlArchitectureTests
             var document = LoadXaml(path);
             foreach (
                 var listCard in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(ListCard)
+                    element.Name.LocalName == nameof(ActionCard)
                 )
             )
             {
                 var previousPeer = listCard.ElementsBeforeSelf().LastOrDefault();
-                var followsListCard = previousPeer?.Name.LocalName == nameof(ListCard);
+                var followsActionCard = previousPeer?.Name.LocalName == nameof(ActionCard);
                 var margin = (string?)listCard.Attribute("Margin");
 
-                if (followsListCard && margin != compactMargin)
+                if (followsActionCard && margin != compactMargin)
                 {
                     violations.Add(
-                        $"{FormatViolation(path, listCard)} follows another ListCard without the compact peer margin"
+                        $"{FormatViolation(path, listCard)} follows another ActionCard without the compact peer margin"
                     );
                 }
-                else if (!followsListCard && margin == compactMargin)
+                else if (!followsActionCard && margin == compactMargin)
                 {
                     violations.Add(
-                        $"{FormatViolation(path, listCard)} adds peer spacing before the first ListCard in its group"
+                        $"{FormatViolation(path, listCard)} adds peer spacing before the first ActionCard in its group"
                     );
                 }
             }
@@ -1078,12 +1133,12 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Consecutive ListCards must use the compact ListCard-specific margin between rows only."
+            "Consecutive ActionCards must use the compact ActionCard-specific margin between rows only."
         );
     }
 
     [Fact]
-    public void GalleryListCards_DoNotAddApplyRows()
+    public void GalleryActionCards_DoNotAddApplyRows()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
@@ -1099,11 +1154,12 @@ public sealed class FlourishXamlArchitectureTests
             var document = LoadXaml(path);
             foreach (
                 var listCard in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(ListCard)
+                    element.Name.LocalName == nameof(ActionCard)
                 )
             )
             {
-                var title = (string?)listCard.Attribute(nameof(Card.Title)) ?? string.Empty;
+                var title =
+                    (string?)listCard.Attribute(nameof(ActionCard.Title)) ?? string.Empty;
                 var hasApplyHandler = listCard
                     .Descendants()
                     .Where(element => element.Name.LocalName == "Button")
@@ -1124,7 +1180,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "ListCard settings must apply as their value is committed; do not add a separate Apply row."
+            "ActionCard settings must apply as their value is committed; do not add a separate Apply row."
         );
     }
 
@@ -1189,7 +1245,7 @@ public sealed class FlourishXamlArchitectureTests
             );
             foreach (
                 var card in document.Descendants().Where(element =>
-                    element.Name.LocalName is nameof(Card) or nameof(IconCard)
+                    element.Name.LocalName == nameof(Card)
                 )
             )
             {
@@ -1212,12 +1268,12 @@ public sealed class FlourishXamlArchitectureTests
         Assert.True(outputCardCount > 0, "The Gallery must demonstrate OutputCard.");
         AssertNoArchitectureViolations(
             violations,
-            "Gallery output and result histories must use OutputCard instead of a titled Card or IconCard."
+            "Gallery output and result histories must use OutputCard instead of a titled Card."
         );
     }
 
     [Fact]
-    public void GalleryTwoColumnSingleListCard_IsNotWrappedInAStackPanel()
+    public void GalleryTwoColumnSingleActionCard_IsNotWrappedInAStackPanel()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
@@ -1246,7 +1302,7 @@ public sealed class FlourishXamlArchitectureTests
                 {
                     var listCards = stack
                         .Elements()
-                        .Where(element => element.Name.LocalName == nameof(ListCard))
+                        .Where(element => element.Name.LocalName == nameof(ActionCard))
                         .ToArray();
                     if (listCards.Length == 1)
                     {
@@ -1258,7 +1314,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "A single ListCard must be a direct stretched column peer so its visible surface matches the OutputCard height."
+            "A single ActionCard must be a direct stretched column peer so its visible surface matches the OutputCard height."
         );
     }
 
@@ -1284,12 +1340,7 @@ public sealed class FlourishXamlArchitectureTests
 
             var retiredBodies = document
                 .Descendants()
-                .Where(element =>
-                    element.Name.LocalName
-                        is "Card.Body"
-                            or "IconCard.Body"
-                            or "ListCard.Body"
-                );
+                .Where(element => element.Name.LocalName == "Card.Body");
             violations.AddRange(
                 retiredBodies.Select(element => FormatViolation(path, element))
             );
@@ -1298,10 +1349,7 @@ public sealed class FlourishXamlArchitectureTests
                 document
                     .Descendants()
                     .Where(element =>
-                        (
-                            element.Name.LocalName
-                                is nameof(Card) or nameof(IconCard) or nameof(ListCard)
-                        )
+                        element.Name.LocalName == nameof(Card)
                         && element.Attribute("Body") is not null
                     )
                     .Select(element => FormatViolation(path, element))
@@ -1310,7 +1358,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Card, IconCard, and ListCard do not expose Body; use MainText, Icon, or ListCard.ActionBody instead."
+            "Card does not expose Body; use Content or Icon. Use ActionCard when one interactive Body is required."
         );
     }
 
@@ -1338,15 +1386,13 @@ public sealed class FlourishXamlArchitectureTests
                 var body in document
                     .Descendants()
                     .Where(element =>
-                        element.Name.LocalName == "ListCard.ActionBody"
+                        element.Name.LocalName == "ActionCard.Body"
                     )
             )
             {
                 var hasLocalAction = body.Descendants().Any(element =>
                     element.Name.LocalName
-                        is "Button"
-                            or nameof(IconButton)
-                            or nameof(WindowCaptionButton)
+                        is nameof(Button) or nameof(WindowCaptionButton)
                 );
                 if (!hasLocalAction)
                 {
@@ -1409,7 +1455,7 @@ public sealed class FlourishXamlArchitectureTests
             string[] forbiddenProperties =
             [
                 nameof(Card.Title),
-                nameof(Card.MainText),
+                nameof(Card.Content),
                 "Body",
                 nameof(OutputCard.Output),
             ];
@@ -2170,11 +2216,10 @@ public sealed class FlourishXamlArchitectureTests
         [
             ("Card.xaml", "CardTitle"),
             ("CardButton.xaml", "CardTitle"),
-            ("IconCard.xaml", "CardTitle"),
-            ("ListCard.xaml", "CardTitle"),
+            ("ActionCard.xaml", "CardTitle"),
             ("Presenter.xaml", "CardTitle"),
             ("Chunk.xaml", "SectionTitle"),
-            ("ChunkHero.xaml", "PageTitle"),
+            ("HeaderChunk.xaml", "PageTitle"),
         ];
 
         foreach (var (fileName, expectedRole) in expectations)

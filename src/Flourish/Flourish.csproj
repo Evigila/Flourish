@@ -21,9 +21,6 @@
     <Compile Update="Controls\Button.xaml.cs">
       <DependentUpon>Button.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Controls\IconButton.xaml.cs">
-      <DependentUpon>IconButton.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Controls\WindowCaptionButton.xaml.cs">
       <DependentUpon>WindowCaptionButton.xaml</DependentUpon>
     </Compile>
@@ -36,23 +33,23 @@
     <Compile Update="Controls\Paragraph.xaml.cs">
       <DependentUpon>Paragraph.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\Document.xaml.cs">
+      <DependentUpon>Document.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\CodeSpace.xaml.cs">
       <DependentUpon>CodeSpace.xaml</DependentUpon>
     </Compile>
     <Compile Update="Controls\Presenter.xaml.cs">
       <DependentUpon>Presenter.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Controls\ChunkHero.xaml.cs">
-      <DependentUpon>ChunkHero.xaml</DependentUpon>
+    <Compile Update="Controls\HeaderChunk.xaml.cs">
+      <DependentUpon>HeaderChunk.xaml</DependentUpon>
     </Compile>
     <Compile Update="Controls\Card.xaml.cs">
       <DependentUpon>Card.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Controls\IconCard.xaml.cs">
-      <DependentUpon>IconCard.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Controls\ListCard.xaml.cs">
-      <DependentUpon>ListCard.xaml</DependentUpon>
+    <Compile Update="Controls\ActionCard.xaml.cs">
+      <DependentUpon>ActionCard.xaml</DependentUpon>
     </Compile>
     <Compile Update="Controls\OutputCard.xaml.cs">
       <DependentUpon>OutputCard.xaml</DependentUpon>
@@ -95,6 +92,9 @@
     </Compile>
     <Compile Update="Controls\ScrollViewer.xaml.cs">
       <DependentUpon>ScrollViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\PageBody.xaml.cs">
+      <DependentUpon>PageBody.xaml</DependentUpon>
     </Compile>
     <Compile Update="Controls\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>

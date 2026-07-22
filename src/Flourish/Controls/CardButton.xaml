@@ -8,101 +8,6 @@
     <ResourceDictionary Source="WindowCaptionButton.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
-  <DataTemplate x:Key="CardButtonContentTemplate">
-    <DockPanel LastChildFill="True">
-      <ContentPresenter
-        x:Name="IconHost"
-        Margin="0,0,0,12"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Top"
-        DockPanel.Dock="Top"
-        Content="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
-        TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
-        TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-      />
-      <StackPanel x:Name="TextHost">
-        <controls:FlourishTextBlock
-          x:Name="TitleHost"
-          Role="CardTitle"
-          Text="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        />
-        <ContentPresenter
-          x:Name="DescriptionHost"
-          Margin="0,4,0,0"
-          Content="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-          TextElement.FontFamily="{DynamicResource FlourishFontFamily}"
-          TextElement.FontSize="{DynamicResource FlourishFontSizeStandard}"
-          TextElement.Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
-        />
-      </StackPanel>
-    </DockPanel>
-    <DataTemplate.Triggers>
-      <DataTrigger
-        Binding="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value="{x:Null}"
-      >
-        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value=""
-      >
-        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value=""
-      >
-        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value="{x:Null}"
-      >
-        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="DescriptionHost" Property="Margin" Value="0" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value="{x:Null}"
-      >
-        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value=""
-      >
-        <Setter TargetName="DescriptionHost" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding IconPosition, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value="Left"
-      >
-        <Setter TargetName="IconHost" Property="DockPanel.Dock" Value="Left" />
-        <Setter TargetName="IconHost" Property="Margin" Value="0,0,12,0" />
-        <Setter TargetName="IconHost" Property="VerticalAlignment" Value="Center" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding IconPosition, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value="Right"
-      >
-        <Setter TargetName="IconHost" Property="DockPanel.Dock" Value="Right" />
-        <Setter TargetName="IconHost" Property="Margin" Value="12,0,0,0" />
-        <Setter TargetName="IconHost" Property="HorizontalAlignment" Value="Right" />
-        <Setter TargetName="IconHost" Property="VerticalAlignment" Value="Center" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding IconPosition, RelativeSource={RelativeSource AncestorType={x:Type controls:CardButton}}}"
-        Value="Bottom"
-      >
-        <Setter TargetName="IconHost" Property="DockPanel.Dock" Value="Bottom" />
-        <Setter TargetName="IconHost" Property="Margin" Value="0,12,0,0" />
-      </DataTrigger>
-    </DataTemplate.Triggers>
-  </DataTemplate>
-
   <ControlTemplate
     x:Key="CardButtonTemplate"
     TargetType="{x:Type controls:CardButton}"
@@ -121,43 +26,146 @@
         ClipToBounds="True"
         SnapsToDevicePixels="True"
       >
-      <Border
-        x:Name="Chrome"
-        Background="{TemplateBinding Background}"
-        BorderBrush="{TemplateBinding BorderBrush}"
-        BorderThickness="{TemplateBinding BorderThickness}"
-        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-      />
-      <Border
-        x:Name="HoverChrome"
-        Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
-        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-        IsHitTestVisible="False"
-        Opacity="0"
-        RenderTransformOrigin="0.5,0.5"
-      >
-        <Border.RenderTransform>
-          <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
-        </Border.RenderTransform>
-      </Border>
-      <Border
-        x:Name="PressedChrome"
-        Background="{DynamicResource FlourishPressedRevealBrush}"
-        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-        IsHitTestVisible="False"
-        Opacity="0"
-      />
-        <ContentPresenter
+        <Border
+          x:Name="Chrome"
+          Background="{TemplateBinding Background}"
+          BorderBrush="{TemplateBinding BorderBrush}"
+          BorderThickness="{TemplateBinding BorderThickness}"
+          CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+        />
+        <Border
+          x:Name="HoverChrome"
+          Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
+          BorderThickness="0"
+          CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+          IsHitTestVisible="False"
+          Opacity="0"
+          RenderTransformOrigin="0.5,0.5"
+        >
+          <Border.RenderTransform>
+            <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+          </Border.RenderTransform>
+        </Border>
+        <Border
+          x:Name="PressedChrome"
+          Background="{DynamicResource FlourishPressedRevealBrush}"
+          BorderThickness="0"
+          CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+          IsHitTestVisible="False"
+          Opacity="0"
+        />
+        <DockPanel
+          x:Name="ContentLayout"
           Margin="{TemplateBinding Padding}"
           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-          Content="{TemplateBinding Content}"
-          ContentTemplate="{TemplateBinding ContentTemplate}"
-          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-        />
+          LastChildFill="True"
+        >
+          <ContentPresenter
+            x:Name="IconHost"
+            Margin="0,0,0,12"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            DockPanel.Dock="Top"
+            Content="{TemplateBinding Icon}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+            TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
+            TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
+            TextElement.Foreground="{TemplateBinding Foreground}"
+          />
+          <StackPanel x:Name="CopyHost">
+            <controls:FlourishTextBlock
+              x:Name="TitleHost"
+              Foreground="{TemplateBinding Foreground}"
+              Role="CardTitle"
+              Text="{TemplateBinding Title}"
+            />
+            <ContentPresenter
+              x:Name="ContentHost"
+              Margin="{DynamicResource FlourishCardTextSpacing}"
+              Content="{TemplateBinding Content}"
+              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+              ContentTemplate="{TemplateBinding ContentTemplate}"
+              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+              TextElement.FontFamily="{DynamicResource FlourishFontFamily}"
+              TextElement.FontSize="{DynamicResource FlourishFontSizeStandard}"
+              TextElement.Foreground="{TemplateBinding Foreground}"
+            />
+          </StackPanel>
+        </DockPanel>
       </Grid>
     </Grid>
     <ControlTemplate.Triggers>
+      <Trigger Property="IconPosition" Value="Left">
+        <Setter TargetName="IconHost" Property="DockPanel.Dock" Value="Left" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0,0,12,0" />
+        <Setter TargetName="IconHost" Property="VerticalAlignment" Value="Center" />
+      </Trigger>
+      <Trigger Property="IconPosition" Value="Right">
+        <Setter TargetName="IconHost" Property="DockPanel.Dock" Value="Right" />
+        <Setter TargetName="IconHost" Property="Margin" Value="12,0,0,0" />
+        <Setter TargetName="IconHost" Property="HorizontalAlignment" Value="Right" />
+        <Setter TargetName="IconHost" Property="VerticalAlignment" Value="Center" />
+      </Trigger>
+      <Trigger Property="IconPosition" Value="Bottom">
+        <Setter TargetName="IconHost" Property="DockPanel.Dock" Value="Bottom" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0,12,0,0" />
+      </Trigger>
+      <Trigger Property="Icon" Value="{x:Null}">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Icon" Value="">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Title" Value="">
+        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Title" Value="{x:Null}">
+        <Setter TargetName="TitleHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <Trigger Property="Content" Value="">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="" />
+          <Condition Property="Content" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="{x:Null}" />
+          <Condition Property="Content" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="" />
+          <Condition Property="Content" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Title" Value="{x:Null}" />
+          <Condition Property="Content" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="IconHost" Property="Margin" Value="0" />
+      </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="IsMouseOver" Value="True" />
@@ -214,9 +222,51 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
     <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
-    <Setter Property="BorderBrush" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="ContentTemplate" Value="{StaticResource CardButtonContentTemplate}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="Template" Value="{StaticResource CardButtonTemplate}" />
+    <Style.Triggers>
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishInteractiveCardPadding}" />
+        <Setter Property="Template" Value="{StaticResource CardButtonTemplate}" />
+      </Trigger>
+      <Trigger Property="Content" Value="">
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishInteractiveCardPadding}" />
+        <Setter Property="Template" Value="{StaticResource CardButtonTemplate}" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Standard">
+        <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Elevated">
+        <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Tonal">
+        <Setter Property="Background" Value="{DynamicResource FlourishCardTonalBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Filled">
+        <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
+      </Trigger>
+    </Style.Triggers>
   </Style>
 </ResourceDictionary>

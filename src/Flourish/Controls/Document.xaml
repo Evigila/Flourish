@@ -1,0 +1,55 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <ItemsPanelTemplate x:Key="DocumentItemsPanel">
+    <StackPanel />
+  </ItemsPanelTemplate>
+
+  <Style x:Key="DocumentParagraphItemStyle" TargetType="{x:Type ContentPresenter}">
+    <Setter Property="Margin" Value="{DynamicResource FlourishDocumentParagraphMargin}" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="TextElement.FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="TextElement.FontSize" Value="{DynamicResource FlourishFontSizeLarge}" />
+    <Setter Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Style.Triggers>
+      <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+        <Setter Property="Margin" Value="{DynamicResource FlourishDocumentFirstParagraphMargin}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <ControlTemplate x:Key="DocumentTemplate" TargetType="{x:Type controls:Document}">
+    <Border
+      x:Name="DocumentSurface"
+      Padding="{TemplateBinding Padding}"
+      Background="{TemplateBinding Background}"
+      BorderBrush="{TemplateBinding BorderBrush}"
+      BorderThickness="{TemplateBinding BorderThickness}"
+      CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+    >
+      <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+    </Border>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type controls:Document}">
+    <Setter Property="AlternationCount" Value="2147483647" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="Margin" Value="{DynamicResource FlourishDocumentMargin}" />
+    <Setter Property="Padding" Value="{DynamicResource FlourishDocumentPadding}" />
+    <Setter Property="Background" Value="{x:Null}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
+    <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
+    <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeLarge}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
+    <Setter Property="ItemContainerStyle" Value="{StaticResource DocumentParagraphItemStyle}" />
+    <Setter Property="ItemsPanel" Value="{StaticResource DocumentItemsPanel}" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Template" Value="{StaticResource DocumentTemplate}" />
+  </Style>
+</ResourceDictionary>

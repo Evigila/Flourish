@@ -56,3 +56,4 @@ description: 使用平滑像素滚动与细长 Flourish 滚动条承载超出视
 
 - [控件](index.md)
 - [Chunk](chunk.md)
+- [DataGrid](data-grid.md) 在内部滚动边界使用相同的滚轮交接规则。

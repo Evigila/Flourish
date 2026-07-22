@@ -5,142 +5,140 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
-  <flourish:ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="{DynamicResource FlourishPageContentMargin}">
-      <flourish:ChunkHero
-        Description="Edit toolbar, status, and custom shell regions at runtime."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Toolbar, status and shell regions"
-      />
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Edit toolbar, status, and custom shell regions at runtime."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Toolbar, status and shell regions"
+    />
 
-      <flourish:Chunk
-        Description="Manage this page's toolbar actions."
-        Title="Dynamic toolbar"
-      >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Icon="&#xE710;" MainText="Add the Gallery runtime action or refresh its registration." Title="Toolbar action">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="AddToolbarItem_Click" Content="Add / update" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8D7;" MainText="Enable or disable command invocation." Title="Action availability">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleToolbarItemEnabled_Click" Content="Enable / disable" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE890;" MainText="Show or hide the toolbar action." Title="Action visibility">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleToolbarItemVisible_Click" Content="Show / hide" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8A5;" MainText="Switch between icon-only and icon-with-text presentation." Title="Action presentation">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleIconOnly_Click" Content="Toggle format" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8CB;" MainText="Move the action within the toolbar order." Title="Action order">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="MoveToolbarItem_Click" Content="Move action" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE74D;" MainText="Remove the runtime toolbar action." Title="Toolbar action">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RemoveToolbarItem_Click" Content="Remove" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="ToolbarOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-      </flourish:Chunk>
+    <flourish:Chunk
+      Content="Manage this page's toolbar actions."
+      Title="Dynamic toolbar"
+    >
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard Icon="&#xE710;" Content="Add the Gallery runtime action or refresh its registration." Title="Toolbar action">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddToolbarItem_Click" Content="Add / update" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8D7;" Content="Enable or disable command invocation." Title="Action availability">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleToolbarItemEnabled_Click" Content="Enable / disable" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="Show or hide the toolbar action." Title="Action visibility">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleToolbarItemVisible_Click" Content="Show / hide" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8A5;" Content="Switch between icon-only and icon-with-text presentation." Title="Action presentation">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleIconOnly_Click" Content="Toggle format" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="Move the action within the toolbar order." Title="Action order">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="MoveToolbarItem_Click" Content="Move action" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Remove the runtime toolbar action." Title="Toolbar action">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveToolbarItem_Click" Content="Remove" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="ToolbarOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </UniformGrid>
+    </flourish:Chunk>
 
-      <flourish:Chunk
-        Description="Manage status items and indicators."
-        Title="Status bar"
-      >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Icon="&#xE8D2;" MainText="Set the content used by persistent and timed status items." Title="Status text">
-              <flourish:ListCard.ActionBody>
-                <flourish:FlourishTextBox x:Name="StatusTextBox" Width="230" Text="Gallery runtime API is ready" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE710;" MainText="Add the persistent item or update its current text." Title="Persistent status">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="UpsertStatus_Click" Content="Add / update" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE823;" MainText="Show the current status text for four seconds." Title="Timed status">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ShowTimedStatus_Click" Content="Show for 4 seconds" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE890;" MainText="Show or hide the registered status item." Title="Status visibility">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleStatusVisible_Click" Content="Show / hide" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8CB;" MainText="Move the item within the status bar order." Title="Status order">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="MoveStatus_Click" Content="Move item" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE74D;" MainText="Remove the registered status item." Title="Persistent status">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RemoveStatus_Click" Content="Remove" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE968;" MainText="Toggle the shell LAN indicator." Title="LAN indicator">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleLan_Click" Content="Toggle LAN" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE945;" MainText="Toggle the shell power indicator." Title="Power indicator">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="TogglePower_Click" Content="Toggle power" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE7E8;" MainText="Enable or disable the complete status bar." Title="Status bar availability">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleStatusBar_Click" Content="Enable / disable" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="StatusOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-      </flourish:Chunk>
+    <flourish:Chunk
+      Content="Manage status items and indicators."
+      Title="Status bar"
+    >
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard Icon="&#xE8D2;" Content="Set the content used by persistent and timed status items." Title="Status text">
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox x:Name="StatusTextBox" Width="230" Text="Gallery runtime API is ready" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE710;" Content="Add the persistent item or update its current text." Title="Persistent status">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="UpsertStatus_Click" Content="Add / update" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE823;" Content="Show the current status text for four seconds." Title="Timed status">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ShowTimedStatus_Click" Content="Show for 4 seconds" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="Show or hide the registered status item." Title="Status visibility">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleStatusVisible_Click" Content="Show / hide" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="Move the item within the status bar order." Title="Status order">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="MoveStatus_Click" Content="Move item" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Remove the registered status item." Title="Persistent status">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveStatus_Click" Content="Remove" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE968;" Content="Toggle the shell LAN indicator." Title="LAN indicator">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleLan_Click" Content="Toggle LAN" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE945;" Content="Toggle the shell power indicator." Title="Power indicator">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="TogglePower_Click" Content="Toggle power" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7E8;" Content="Enable or disable the complete status bar." Title="Status bar availability">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleStatusBar_Click" Content="Enable / disable" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="StatusOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </UniformGrid>
+    </flourish:Chunk>
 
-      <flourish:Chunk
-        Description="Manage content in a custom shell region."
-        Title="Custom shell region"
-      >
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ListCard Icon="&#xE710;" MainText="Register the demo WPF element in ContentHeader." Title="Header content">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="AddRegion_Click" Content="Add content" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8D7;" MainText="Enable or disable the custom shell region." Title="Region availability">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ToggleRegion_Click" Content="Enable / disable" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE8CB;" MainText="Move the region within the shell order." Title="Region order">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="ReorderRegion_Click" Content="Change order" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-            <flourish:ListCard Margin="{DynamicResource FlourishListCardPeerMargin}" Icon="&#xE74D;" MainText="Remove the ContentHeader registration." Title="Header content">
-              <flourish:ListCard.ActionBody>
-                <flourish:Button Click="RemoveRegion_Click" Content="Remove" />
-              </flourish:ListCard.ActionBody>
-            </flourish:ListCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="RegionOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-      </flourish:Chunk>
-    </StackPanel>
-  </flourish:ScrollViewer>
+    <flourish:Chunk
+      Content="Manage content in a custom shell region."
+      Title="Custom shell region"
+    >
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard Icon="&#xE710;" Content="Register the demo WPF element in ContentHeader." Title="Header content">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddRegion_Click" Content="Add content" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8D7;" Content="Enable or disable the custom shell region." Title="Region availability">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleRegion_Click" Content="Enable / disable" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="Move the region within the shell order." Title="Region order">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ReorderRegion_Click" Content="Change order" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Remove the ContentHeader registration." Title="Header content">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveRegion_Click" Content="Remove" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="RegionOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
 </Page>

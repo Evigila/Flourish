@@ -66,8 +66,8 @@
     <GradientStop Offset="0.68" Color="#385C2E91" />
     <GradientStop Offset="1" Color="#30D83B01" />
   </LinearGradientBrush>
-  <SolidColorBrush x:Key="FlourishChunkHeroOverlayScrimBrush" Color="#70000000" />
-  <SolidColorBrush x:Key="FlourishChunkHeroOverlayForegroundBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FlourishHeaderChunkOverlayScrimBrush" Color="#70000000" />
+  <SolidColorBrush x:Key="FlourishHeaderChunkOverlayForegroundBrush" Color="#FFFFFF" />
 
   <!-- Semantic feedback roles. -->
   <SolidColorBrush x:Key="FlourishDangerForegroundBrush" Color="#F1707B" />

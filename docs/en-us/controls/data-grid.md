@@ -39,7 +39,15 @@ The control does not replace WPF's item or column collections. Native properties
 
 Set `FirstColumnForeground` when the leading field needs a different semantic color. Headers and cells otherwise inherit the active Flourish theme and use Regular font weight.
 
+## Mouse-wheel scrolling
+
+The grid consumes mouse-wheel input while its internal vertical viewport can move in the requested direction. At the top or bottom boundary, outward wheel input continues to the containing [PageBody](page-body.md) or Flourish [ScrollViewer](scroll-viewer.md). A grid with no internal scroll range also leaves the wheel available to the page.
+
+This boundary behavior lets users continue scrolling a long page without moving the pointer outside the table. Avoid wrapping `DataGrid` in another scroll viewer, because an additional viewport makes ownership of the scroll range ambiguous and can interfere with row virtualization.
+
 ## Related content
 
 - [Card](card.md) describes the surface language shared by informational containers.
+- [PageBody](page-body.md) provides the scrolling root for a content page.
 - The [WPF DataGrid documentation](https://learn.microsoft.com/dotnet/desktop/wpf/controls/datagrid) covers columns, editing, sorting, and selection.
+- The [DataGrid API](xref:ArkheideSystem.Flourish.Controls.DataGrid) lists Flourish-specific members.

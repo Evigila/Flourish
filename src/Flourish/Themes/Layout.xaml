@@ -37,34 +37,39 @@
   <Thickness x:Key="FlourishPeerCardMargin">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishCardPadding">20</Thickness>
   <Thickness x:Key="FlourishCardTextSpacing">0,4,0,0</Thickness>
-  <Thickness x:Key="FlourishIconCardIconSpacingLeft">0,0,16,0</Thickness>
-  <Thickness x:Key="FlourishIconCardIconSpacingTop">0,0,0,16</Thickness>
-  <Thickness x:Key="FlourishIconCardIconSpacingRight">16,0,0,0</Thickness>
-  <Thickness x:Key="FlourishIconCardIconSpacingBottom">0,16,0,0</Thickness>
+  <Thickness x:Key="FlourishCardIconSpacingLeft">0,0,16,0</Thickness>
+  <Thickness x:Key="FlourishCardIconSpacingTop">0,0,0,16</Thickness>
+  <Thickness x:Key="FlourishCardIconSpacingRight">16,0,0,0</Thickness>
+  <Thickness x:Key="FlourishCardIconSpacingBottom">0,16,0,0</Thickness>
   <sys:Double x:Key="FlourishOutputCardMinHeight">72</sys:Double>
   <Thickness x:Key="FlourishOutputCardPadding">12</Thickness>
   <Thickness x:Key="FlourishOutputViewportPadding">12,8</Thickness>
-  <sys:Double x:Key="FlourishListCardMinHeight">72</sys:Double>
-  <Thickness x:Key="FlourishListCardPadding">16,12</Thickness>
-  <Thickness x:Key="FlourishListCardIconSpacing">8,0,24,0</Thickness>
-  <Thickness x:Key="FlourishListCardActionSpacing">24,0,0,0</Thickness>
-  <Thickness x:Key="FlourishListCardPeerMargin">0,4,0,0</Thickness>
+  <sys:Double x:Key="FlourishActionCardMinHeight">72</sys:Double>
+  <Thickness x:Key="FlourishActionCardPadding">16,12</Thickness>
+  <Thickness x:Key="FlourishActionCardHorizontalIconSpacing">8,0,24,0</Thickness>
+  <Thickness x:Key="FlourishActionCardHorizontalBodySpacing">24,0,0,0</Thickness>
+  <Thickness x:Key="FlourishActionCardVerticalIconSpacing">0,0,0,16</Thickness>
+  <Thickness x:Key="FlourishActionCardVerticalBodySpacing">0,16,0,0</Thickness>
+  <Thickness x:Key="FlourishActionCardPeerMargin">0,4,0,0</Thickness>
   <Thickness x:Key="FlourishInteractiveCardPadding">18</Thickness>
-  <!-- Paragraph owns its outlined surface spacing; item margins remain vertical and indentation is textual. -->
+  <!-- Document owns its outlined surface spacing; paragraph gaps remain vertical and indentation is textual. -->
+  <Thickness x:Key="FlourishDocumentMargin">0,8,0,0</Thickness>
+  <Thickness x:Key="FlourishDocumentPadding">16,12</Thickness>
+  <Thickness x:Key="FlourishDocumentFirstParagraphMargin">0</Thickness>
+  <Thickness x:Key="FlourishDocumentParagraphMargin">0,12,0,0</Thickness>
+  <!-- Retained for CodeSpace, whose surface shares the same established geometry. -->
   <Thickness x:Key="FlourishParagraphMargin">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishParagraphPadding">16,12</Thickness>
-  <Thickness x:Key="FlourishParagraphFirstItemMargin">0</Thickness>
-  <Thickness x:Key="FlourishParagraphItemMargin">0,12,0,0</Thickness>
   <Thickness x:Key="FlourishCodeSpaceContentMargin">0,0,40,0</Thickness>
   <Thickness x:Key="FlourishPresenterCopyPadding">20</Thickness>
-  <Thickness x:Key="FlourishPresenterDescriptionSpacing">0,8,0,0</Thickness>
+  <Thickness x:Key="FlourishPresenterContentSpacing">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterBodySpacing">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterPeerMargin">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishChunkMargin">0,32,0,0</Thickness>
   <Thickness x:Key="FlourishChunkSpacing">0,12,0,0</Thickness>
-  <Thickness x:Key="FlourishChunkHeroMargin">0,32,0,0</Thickness>
-  <Thickness x:Key="FlourishChunkHeroPadding">40</Thickness>
-  <Thickness x:Key="FlourishChunkHeroDescriptionMargin">0,8,0,0</Thickness>
-  <Thickness x:Key="FlourishChunkHeroBodyMargin">0,20,0,0</Thickness>
-  <sys:Double x:Key="FlourishChunkHeroMinHeight">280</sys:Double>
+  <Thickness x:Key="FlourishHeaderChunkMargin">0,32,0,0</Thickness>
+  <Thickness x:Key="FlourishHeaderChunkPadding">40</Thickness>
+  <Thickness x:Key="FlourishHeaderChunkContentMargin">0,8,0,0</Thickness>
+  <Thickness x:Key="FlourishHeaderChunkBodyMargin">0,20,0,0</Thickness>
+  <sys:Double x:Key="FlourishHeaderChunkMinHeight">280</sys:Double>
 </ResourceDictionary>

@@ -22,9 +22,9 @@ public class Presenter : WpfControl
         new FrameworkPropertyMetadata(string.Empty)
     );
 
-    /// <summary>Identifies the <see cref="Description" /> dependency property.</summary>
-    public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
-        nameof(Description),
+    /// <summary>Identifies the <see cref="Content" /> dependency property.</summary>
+    public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+        nameof(Content),
         typeof(string),
         typeof(Presenter),
         new FrameworkPropertyMetadata(null)
@@ -86,10 +86,10 @@ public class Presenter : WpfControl
     }
 
     /// <summary>Gets or sets the required supporting copy below the heading.</summary>
-    public string? Description
+    public string? Content
     {
-        get => (string?)GetValue(DescriptionProperty);
-        set => SetValue(DescriptionProperty, value);
+        get => (string?)GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
     }
 
     /// <summary>
@@ -113,8 +113,8 @@ public class Presenter : WpfControl
     }
 
     /// <summary>
-    /// Gets or sets whether the presentation is split from or behind the copy. Authors should
-    /// assign this property explicitly; its runtime fallback is
+    /// Gets or sets whether the presentation is split beside, stacked above, or placed behind
+    /// the copy. Authors should assign this property explicitly; its runtime fallback is
     /// <see cref="ArkheideSystem.Flourish.Controls.PresenterMode.Split" />.
     /// </summary>
     public PresenterMode PresenterMode

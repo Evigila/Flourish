@@ -64,21 +64,78 @@
         IsHitTestVisible="False"
         Opacity="0"
       />
-        <ContentPresenter
-          x:Name="ContentHost"
+        <StackPanel
+          x:Name="ContentLayout"
           Margin="{TemplateBinding Padding}"
           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-          Content="{TemplateBinding Content}"
-          ContentStringFormat="{TemplateBinding ContentStringFormat}"
-          ContentTemplate="{TemplateBinding ContentTemplate}"
-          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-          RecognizesAccessKey="True"
-          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-        />
+          Orientation="Horizontal"
+        >
+          <ContentPresenter
+            x:Name="IconHost"
+            VerticalAlignment="Center"
+            Content="{TemplateBinding Icon}"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+            TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
+            TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
+          />
+          <ContentPresenter
+            x:Name="ContentHost"
+            Margin="6,0,0,0"
+            VerticalAlignment="Center"
+            Content="{TemplateBinding Content}"
+            ContentStringFormat="{TemplateBinding ContentStringFormat}"
+            ContentTemplate="{TemplateBinding ContentTemplate}"
+            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+            RecognizesAccessKey="True"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+          />
+        </StackPanel>
       </Grid>
     </Grid>
     <ControlTemplate.Triggers>
+      <Trigger Property="Icon" Value="{x:Null}">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Icon" Value="">
+        <Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="ContentHost" Property="Margin" Value="0" />
+      </Trigger>
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <Trigger Property="Content" Value="">
+        <Setter TargetName="ContentHost" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Icon" Value="{x:Null}" />
+          <Condition Property="Content" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="ContentLayout" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Icon" Value="" />
+          <Condition Property="Content" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="ContentLayout" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Icon" Value="{x:Null}" />
+          <Condition Property="Content" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="ContentLayout" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Icon" Value="" />
+          <Condition Property="Content" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="ContentLayout" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="IsMouseOver" Value="True" />
@@ -180,6 +237,64 @@
     <Setter Property="controls:HoverReveal.TemplateHandlesInteraction" Value="True" />
     <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
     <Style.Triggers>
+      <Trigger Property="Content" Value="{x:Null}">
+        <Setter Property="Width" Value="{DynamicResource FlourishButtonIconOnlySize}" />
+        <Setter Property="Height" Value="{DynamicResource FlourishButtonIconOnlySize}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+      </Trigger>
+      <Trigger Property="Content" Value="">
+        <Setter Property="Width" Value="{DynamicResource FlourishButtonIconOnlySize}" />
+        <Setter Property="Height" Value="{DynamicResource FlourishButtonIconOnlySize}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Content" Value="{x:Null}" />
+          <Condition Property="Icon" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Content" Value="{x:Null}" />
+          <Condition Property="Icon" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Content" Value="" />
+          <Condition Property="Icon" Value="{x:Null}" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Content" Value="" />
+          <Condition Property="Icon" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="MinWidth" Value="{DynamicResource FlourishButtonMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
+      </MultiTrigger>
       <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
         <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
         <Setter Property="ToolTipService.BetweenShowDelay" Value="0" />

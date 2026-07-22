@@ -6,14 +6,6 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <summary>An interactive card with an icon, title, and descriptive content.</summary>
 public class CardButton : Button
 {
-    /// <summary>Identifies the <see cref="Icon" /> dependency property.</summary>
-    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
-        nameof(Icon),
-        typeof(object),
-        typeof(CardButton),
-        new FrameworkPropertyMetadata(null)
-    );
-
     /// <summary>Identifies the <see cref="IconPosition" /> dependency property.</summary>
     public static readonly DependencyProperty IconPositionProperty = DependencyProperty.Register(
         nameof(IconPosition),
@@ -37,13 +29,10 @@ public class CardButton : Button
             typeof(CardButton),
             new FrameworkPropertyMetadata(typeof(CardButton))
         );
-    }
-
-    /// <summary>Gets or sets the icon presented by the card.</summary>
-    public object? Icon
-    {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
+        VariantProperty.OverrideMetadata(
+            typeof(CardButton),
+            new FrameworkPropertyMetadata(ButtonVariant.Standard)
+        );
     }
 
     /// <summary>Gets or sets where the icon appears relative to the card text.</summary>
@@ -54,9 +43,9 @@ public class CardButton : Button
     }
 
     /// <summary>Gets or sets the card heading.</summary>
-    public string Title
+    public string? Title
     {
-        get => (string)GetValue(TitleProperty);
+        get => (string?)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 }

@@ -1,34 +1,34 @@
 ---
 title: Presenter
-description: Use Presenter for full-width Split or Overlay compositions that combine copy, controls, and rich presentation content.
+description: Use Presenter for full-width Split, TopDown, or Overlay compositions that combine copy, controls, and rich presentation content.
 ---
 
 # Presenter
 
-`Presenter` is a full-width, three-part layout for copy, supporting controls, and rich presentation content. Use it for an image, several icons, an illustration, a preview, or another composed visual. Only one `Presenter` belongs in a row.
+`Presenter` is a full-width, three-part layout for copy, supporting controls, and rich presentation content. Use it for an image, several icons, an illustration, a preview, or another composed visual. Only one Presenter belongs in a row.
 
-Use [IconCard](card.md#iconcard) when a card needs one icon. Use `Presenter` when the presentation needs an image, an icon group, or its own content tree.
+Use [Card](card.md) when a surface needs at most one icon and one paragraph. Use `Presenter` when the presentation needs an image, an icon group, or its own content tree.
 
-Every Presenter declaration explicitly supplies `Title`, `Description`, `PresenterMode`, and `PresenterPosition`. The runtime fallback values are `Split` and `Right`, but declarations still name both values so the intended composition remains visible at the call site.
+Every Presenter declaration explicitly supplies `Title`, `Content`, `PresenterMode`, and `PresenterPosition`. The runtime fallback values are `Split` and `Right`, but naming them at the call site keeps the intended composition clear.
 
 ## Content regions
 
 | Property | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `Title` | `string` | `""` | Required presentation heading. Declare it explicitly. |
-| `Description` | `string?` | `null` | Required supporting copy below the title. Declare it explicitly. |
-| `Body` | `object?` | `null` | Controls or supporting content arranged in the same copy region as the text. Assign it with `Presenter.Body`; it is not the default XAML content property. |
-| `Presentation` | `object?` | `null` | The image, icon group, illustration, preview, or composed content being presented. It is the default XAML content property. |
-| `PresenterMode` | `PresenterMode` | `Split` | Required explicit composition choice. The runtime fallback is `Split`. |
-| `PresenterPosition` | `PresenterPosition` | `Right` | Required explicit presentation-side choice. The runtime fallback is `Right`. |
+| `Title` | `string` | `""` | Required presentation heading. |
+| `Content` | `string?` | `null` | Required supporting copy below the title. |
+| `Body` | `object?` | `null` | Controls or supporting content arranged with the copy; assign it explicitly with `Presenter.Body`. |
+| `Presentation` | `object?` | `null` | Image, icon group, illustration, preview, or composed visual; the default XAML content property. |
+| `PresenterMode` | `PresenterMode` | `Split` | Explicit composition choice: `Split`, `TopDown`, or `Overlay`. |
+| `PresenterPosition` | `PresenterPosition` | `Right` | Explicit presentation-side choice for `Split`. |
 
-An absent `Body` collapses completely together with its spacing. The copy-and-body side remains transparent. Only the `Presentation` region uses the adaptive light-neutral background and shared surface corner radius, making the two sides visually distinct without adding another card around `Body`.
+An absent `Body` collapses with its spacing. The copy-and-body region stays transparent and aligns its contents together to the left. Only the `Presentation` region uses the adaptive light-neutral background and shared surface corner radius. That region fills its allocated space while centering the presented content within it.
 
-When several Presenters are stacked vertically in one section, apply `FlourishPresenterPeerMargin` to each Presenter after the first. This keeps Presenter rhythm separate from Card spacing without requiring a hard-coded margin.
+When several Presenters are stacked vertically in one section, apply `FlourishPresenterPeerMargin` to each Presenter after the first.
 
 ## Split mode
 
-`Split` is the standard mode and always uses a fixed horizontal two-region layout. `Title`, `Description`, and the separate `Body` host share the same left alignment in the copy region. The rounded `Presentation` surface fills the other region, while its content is centered within that complete surface by default. `PresenterPosition` always describes the presentation region, not the text:
+`Split` uses a horizontal two-region layout. `Title`, `Content`, and `Body` remain together on one side; the rounded `Presentation` surface fills the other.
 
 | Position | Arrangement |
 | --- | --- |
@@ -38,7 +38,7 @@ When several Presenters are stacked vertically in one section, apply `FlourishPr
 ```xml
 <flourish:Presenter
   Title="Workspace overview"
-  Description="See activity and open the complete report."
+  Content="See activity and open the complete report."
   PresenterMode="Split"
   PresenterPosition="Right">
   <flourish:Presenter.Body>
@@ -52,17 +52,40 @@ When several Presenters are stacked vertically in one section, apply `FlourishPr
 </flourish:Presenter>
 ```
 
-`PresenterPosition` accepts only `Left` and `Right`. For an icon above, below, or beside short card copy, use `IconCard.IconPosition` instead.
+`PresenterPosition` always describes the presentation region, not the text. Reversing the position does not change the shared left alignment of title, content, and body.
+
+## TopDown mode
+
+`TopDown` places the `Presentation` region across the top and the copy-and-body region below it. The lower region keeps `Title`, `Content`, and `Body` aligned together on the left.
+
+```xml
+<flourish:Presenter
+  Title="Release summary"
+  Content="Review the main changes, then open the full notes."
+  PresenterMode="TopDown"
+  PresenterPosition="Right">
+  <flourish:Presenter.Body>
+    <flourish:Button
+      Command="{Binding OpenReleaseNotesCommand}"
+      Content="Open release notes" />
+  </flourish:Presenter.Body>
+  <flourish:Presenter.Presentation>
+    <Image Source="Assets/release-summary.png" Stretch="Uniform" />
+  </flourish:Presenter.Presentation>
+</flourish:Presenter>
+```
+
+`PresenterPosition` does not change TopDown placement, but declare it as part of the standard Presenter contract.
 
 ## Overlay mode
 
-In `Overlay` mode, the rounded `Presentation` surface and its root content span the complete control, while the title, description, and body render above it. `PresenterPosition` has no visual effect, but the declaration still supplies it as part of the Presenter contract.
+In `Overlay` mode, `Presentation` spans the complete control while title, content, and body render above it. `PresenterPosition` has no visual effect, but the declaration still supplies it.
 
 ```xml
 <flourish:Presenter
   MinHeight="240"
   Title="Release highlights"
-  Description="Explore what changed in this version."
+  Content="Explore what changed in this version."
   PresenterMode="Overlay"
   PresenterPosition="Right">
   <flourish:Presenter.Presentation>
@@ -71,7 +94,7 @@ In `Overlay` mode, the rounded `Presentation` surface and its root content span 
 </flourish:Presenter>
 ```
 
-Choose or compose presentation content that keeps overlaid text readable in both light and dark themes. A `Grid` assigned to `Presentation` can combine an image with a contrast layer when necessary.
+Choose presentation content that keeps overlaid text readable in both light and dark themes. A `Grid` assigned to `Presentation` can combine an image with a contrast layer when necessary.
 
 ## Present several elements
 
@@ -80,7 +103,7 @@ Choose or compose presentation content that keeps overlaid text readable in both
 ```xml
 <flourish:Presenter
   Title="Supported formats"
-  Description="Review the formats available for this export."
+  Content="Review the formats available for this export."
   PresenterMode="Split"
   PresenterPosition="Right">
   <UniformGrid Columns="3">
@@ -91,16 +114,16 @@ Choose or compose presentation content that keeps overlaid text readable in both
 </flourish:Presenter>
 ```
 
-The direct `UniformGrid` is assigned to `Presentation`, the default XAML content property. Always use an explicit `<flourish:Presenter.Body>` element when the copy side also needs supporting controls.
+The direct `UniformGrid` is assigned to `Presentation`. Always use an explicit `<flourish:Presenter.Body>` element when the copy side also needs supporting controls.
 
-## ChunkHero
+## HeaderChunk
 
-`ChunkHero` inherits `Presenter` and uses the same explicit `Title`, `Description`, `PresenterMode`, and `PresenterPosition` contract, including the same `Body` and `Presentation` regions. It is a page-level peer of `Chunk`, uses an emphasized background and the dedicated HeaderSize title, and appears exactly once at the beginning of every content page. An ordinary `Presenter` remains the smaller layout whose rounded neutral surface belongs only to its presentation region.
+`HeaderChunk` inherits `Presenter` and uses the same explicit title, content, mode, position, body, and presentation contract. It is a page-level peer of `Chunk`, uses an emphasized background and the HeaderSize title, and appears once at the beginning of a standard content page. Unlike `Presenter`, its default XAML content property is `Body`, so assign `HeaderChunk.Presentation` explicitly.
 
 ## Related content
 
-- [Chunk](chunk.md) defines the page hierarchy and the specialized `ChunkHero`.
+- [Chunk](chunk.md) defines the page hierarchy and the specialized `HeaderChunk`.
 - [Card](card.md) explains when concise text or one icon belongs on a card.
-- [Paragraph](paragraph.md) presents several text-only paragraphs.
+- [Document](document.md) presents several text-only paragraphs.
 - [Button](button.md) defines controls that may appear in `Body`.
-- The [Presenter API](xref:ArkheideSystem.Flourish.Controls.Presenter), [PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode), and [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) list all members.
+- The [Presenter API](xref:ArkheideSystem.Flourish.Controls.Presenter), [PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode), [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition), and [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk) list all members.

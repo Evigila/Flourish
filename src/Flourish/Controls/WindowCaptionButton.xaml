@@ -4,7 +4,7 @@
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="IconButton.xaml" />
+    <ResourceDictionary Source="Button.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <ControlTemplate
@@ -89,7 +89,7 @@
 
   <Style
     TargetType="{x:Type controls:WindowCaptionButton}"
-    BasedOn="{StaticResource {x:Type controls:IconButton}}"
+    BasedOn="{StaticResource {x:Type controls:Button}}"
   >
     <Setter Property="Width" Value="46" />
     <Setter Property="Height" Value="40" />

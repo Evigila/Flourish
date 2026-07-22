@@ -7,9 +7,9 @@ public partial class ParagraphPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Items", "Contains TextBlock paragraphs in reading order."),
+        new("Items", "Contains Paragraph elements in reading order."),
         new("ItemsSource", "Binds an application-owned paragraph collection when needed."),
-        new("Margin", "Adds the standard separation from Chunk title and description copy."),
+        new("Margin", "Adds the standard separation from Chunk title and content copy."),
     ];
 
     public ParagraphPage()

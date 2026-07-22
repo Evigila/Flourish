@@ -41,7 +41,7 @@ public sealed class FlourishShellTitleBarFlyoutTests
         var logo = FindNamedElement(document, "LogoButton");
         var title = FindNamedElement(document, "TitleComboBox");
 
-        Assert.Equal("IconButton", logo.Name.LocalName);
+        Assert.Equal("Button", logo.Name.LocalName);
         Assert.Equal("FlourishComboBox", title.Name.LocalName);
         Assert.Equal("Text", (string?)logo.Attribute("Variant"));
         Assert.Equal("0,0,2,0", (string?)logo.Attribute("Margin"));

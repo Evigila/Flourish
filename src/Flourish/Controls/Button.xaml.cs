@@ -25,6 +25,9 @@ public enum ButtonVariant
 
     /// <summary>A destructive action with warning feedback.</summary>
     Danger,
+
+    /// <summary>A neutral card surface used by card-shaped buttons.</summary>
+    Standard,
 }
 
 /// <summary>
@@ -32,6 +35,14 @@ public enum ButtonVariant
 /// </summary>
 public class Button : WpfButton
 {
+    /// <summary>Identifies the <see cref="Icon" /> dependency property.</summary>
+    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
+        nameof(Icon),
+        typeof(object),
+        typeof(Button),
+        new FrameworkPropertyMetadata(null)
+    );
+
     /// <summary>
     /// Identifies the <see cref="Variant" /> dependency property.
     /// </summary>
@@ -58,6 +69,13 @@ public class Button : WpfButton
     {
         get => (ButtonVariant)GetValue(VariantProperty);
         set => SetValue(VariantProperty, value);
+    }
+
+    /// <summary>Gets or sets the optional icon displayed with the button content.</summary>
+    public object? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
     }
 
     /// <inheritdoc />

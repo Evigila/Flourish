@@ -6,7 +6,7 @@ using WpfControl = System.Windows.Controls.Control;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// Defines a full-width page section with a required title and body plus an optional description.
+/// Defines a full-width page section with a required title and body plus optional supporting content.
 /// </summary>
 [ContentProperty(nameof(Body))]
 public class Chunk : WpfControl
@@ -22,9 +22,9 @@ public class Chunk : WpfControl
         new FrameworkPropertyMetadata(string.Empty)
     );
 
-    /// <summary>Identifies the <see cref="Description" /> dependency property.</summary>
-    public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
-        nameof(Description),
+    /// <summary>Identifies the <see cref="Content" /> dependency property.</summary>
+    public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+        nameof(Content),
         typeof(string),
         typeof(Chunk),
         new FrameworkPropertyMetadata(null)
@@ -71,10 +71,10 @@ public class Chunk : WpfControl
     }
 
     /// <summary>Gets or sets optional supporting information not covered by the title.</summary>
-    public string? Description
+    public string? Content
     {
-        get => (string?)GetValue(DescriptionProperty);
-        set => SetValue(DescriptionProperty, value);
+        get => (string?)GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
     }
 
     /// <summary>Gets or sets the space before this section.</summary>

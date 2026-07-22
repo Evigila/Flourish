@@ -1,28 +1,27 @@
 ---
 title: Chunk
-description: 使用 Chunk 和 ChunkHero 构建 Flourish 页面必需的全宽区块层级。
+description: 使用 PageBody、HeaderChunk 和 Chunk 建立 Flourish 页面必需的全宽区块层级。
 ---
 
 # Chunk
 
-`Chunk` 是 Flourish 主导航内容页面的根布局单元。每个此类页面都以且仅以一个 `ChunkHero` 开头，随后放置一个或多个 `Chunk`。两种控件都会占满所在行，因此不要把两个区块并排放置。
+`HeaderChunk` 与 `Chunk` 是 Flourish 页面布局的两个基础元素。它们应作为 [PageBody](page-body.md) 的直接子项并各自占满一行。标准内容页面以一个 `HeaderChunk` 开头，随后放置一个或多个 `Chunk`。
 
 > [!IMPORTANT]
-> 所有页面内容都应放在开头的 `ChunkHero` 或后续 `Chunk` 中。不要在这个结构之外添加同级文本、卡片或依赖手工间距的区域。
+> 不要在 `PageBody` 下直接放置文本、卡片、面板或 Presenter。所有实际内容都应位于 HeaderChunk 或 Chunk 中；同一页面不得出现第二个 HeaderChunk。
 
-> [!NOTE]
-> 此页面骨架不适用于 Shell 自有的瞬时表面，例如 Profile 浮出层、Popup 或 Dialog。这些表面不是主导航内容页面，不应放入超大 `ChunkHero`；其内部内容仍需遵循 Flourish 的字体、间距、控件选择和 Button 家族规范。
+Shell 自有的 Profile 浮出层、Popup 和 Dialog 不是导航内容页面，不需要加入完整 PageBody 或超大的 HeaderChunk。它们仍应遵循 Flourish 的字体、间距、控件选择和交互规范。
 
-## 基本用法
+## Chunk
 
-每个 `Chunk` 都需要简洁的 `Title` 和实际的 `Body`。`Description` 是可选的：仅当标题本身无法表达区块所需的关键信息时才添加描述。
+每个 `Chunk` 都需要简洁的 `Title` 和实际的 `Body`。`Content` 是可选补充文案：只有标题不足以覆盖关键信息时才添加。
 
-`Body` 是默认 XAML 内容属性，因此可将一个子元素直接写在 `Chunk` 内；区块需要多个子元素时，请用布局容器组成一个内容树。
+`Body` 是默认 XAML 内容属性。需要放置多个内容元素时，应先用布局容器组成一个内容树。
 
 ```xml
 <flourish:Chunk
   Title="最近的项目"
-  Description="继续上次的工作，或打开另一个项目。">
+  Content="继续上次的工作，或打开另一个项目。">
   <UniformGrid Columns="2">
     <flourish:CardButton
       Command="{Binding OpenProjectCommand}"
@@ -39,26 +38,26 @@ description: 使用 Chunk 和 ChunkHero 构建 Flourish 页面必需的全宽区
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
 | `Title` | `string` | `""` | 必需的区块标题，用于指出区块主题。 |
-| `Description` | `string?` | `null` | 标题下方的可选补充说明。 |
-| `Body` | `object?` | `null` | 必需的区块内容，也是默认 XAML 内容属性。 |
-| `ChunkMargin` | `Thickness` | `0,32,0,0` | 提供与前一个页面区块之间的大间距。 |
-| `ChunkSpacing` | `Thickness` | `0,12,0,0` | 提供各个已填充内部区域之间的间距。 |
+| `Content` | `string?` | `null` | 标题下方的可选补充说明。 |
+| `Body` | `object?` | `null` | 必需的实际内容，也是默认 XAML 内容属性。 |
+| `ChunkMargin` | `Thickness` | 主题默认值 | 提供与前一个页面区块之间的大间距。 |
+| `ChunkSpacing` | `Thickness` | 主题默认值 | 提供各个已填充内部区域之间的间距。 |
 
-可选区域为 `null` 或空字符串时，会连同相关间距一起完全折叠。普通页面应保留默认的 `ChunkMargin` 和 `ChunkSpacing`，使所有区块遵循统一的垂直节奏。
+可选区域为 `null` 或空字符串时，会连同相关间距完全折叠。`Chunk` 只负责布局；请为 `Body` 选择 [Card](card.md)、[Document](document.md)、[Presenter](presenter.md) 或其他专用内容控件。
 
-`Chunk` 只负责布局。请根据内容为 `Body` 选择 [Card](card.md)、[Paragraph](paragraph.md)、[Presenter](presenter.md) 或其他专用控件，不要让 `Chunk` 自身承担内容呈现职责。
+## HeaderChunk
 
-## ChunkHero
+`HeaderChunk` 是页面开头的头部区块，也是具有更大标题与强调背景的特殊 [Presenter](presenter.md)。它采用 `Title`、`Content`、`Body`、`Presentation`、`PresenterMode` 与 `PresenterPosition` 的展示模型。
 
-`ChunkHero` 是页面唯一的头部区块。它继承 [Presenter](presenter.md) 的完整约定：每个声明都必须显式提供 `Title`、`Description`、`PresenterMode` 和 `PresenterPosition`，`Body` 与 `Presentation` 则位于各自规定的内容区域。更大的标题和强调背景使它区别于普通 `Presenter`。
+每个 HeaderChunk 声明都应显式提供 `Title`、`Content`、`PresenterMode` 和 `PresenterPosition`。与普通 Presenter 不同，HeaderChunk 的默认 XAML 内容会赋给 `Body`；展示内容应通过 `HeaderChunk.Presentation` 显式赋值。
 
 ```xml
-<flourish:ChunkHero
+<flourish:HeaderChunk
   Title="欢迎使用 Flourish"
-  Description="使用统一布局系统构建 WPF 应用程序。"
+  Content="使用统一布局系统构建 WPF 应用程序。"
   PresenterMode="Split"
   PresenterPosition="Right">
-  <flourish:ChunkHero.Body>
+  <flourish:HeaderChunk.Body>
     <StackPanel Orientation="Horizontal">
       <flourish:Button
         Variant="Filled"
@@ -69,56 +68,53 @@ description: 使用 Chunk 和 ChunkHero 构建 Flourish 页面必需的全宽区
         Command="{Binding OpenDocumentationCommand}"
         Content="阅读文档" />
     </StackPanel>
-  </flourish:ChunkHero.Body>
-  <flourish:ChunkHero.Presentation>
-    <Image Source="Assets/flourish-hero.png" Stretch="Uniform" />
-  </flourish:ChunkHero.Presentation>
-</flourish:ChunkHero>
+  </flourish:HeaderChunk.Body>
+  <flourish:HeaderChunk.Presentation>
+    <Image Source="Assets/flourish-header.png" Stretch="Uniform" />
+  </flourish:HeaderChunk.Presentation>
+</flourish:HeaderChunk>
 ```
 
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
-| `Title` | `string` | `""` | 必需的页面标题，使用专用 HeaderSize 字号，必须显式声明。 |
-| `Description` | `string?` | `null` | 页面标题必需的补充说明，必须显式声明。 |
-| `Body` | `object?` | `null` | 与头部文案位于同一区域的辅助控件或内容，并继续作为 `ChunkHero` 的默认 XAML 内容属性。 |
-| `Presentation` | `object?` | `null` | 图片、图标组、插图或其他展示内容。请通过 `ChunkHero.Presentation` 显式赋值。 |
-| `PresenterMode` | `PresenterMode` | `Split` | 必须显式声明的组合模式；运行时回退值为 `Split`。 |
-| `PresenterPosition` | `PresenterPosition` | `Right` | 必须显式声明的展示侧；运行时回退值为 `Right`。 |
+| `Title` | `string` | `""` | 页面标题，使用专用 HeaderSize 字号。 |
+| `Content` | `string?` | `null` | 标题下方的补充文案。 |
+| `Body` | `object?` | `null` | 与文案位于同一区域的辅助控件，也是默认 XAML 内容属性。 |
+| `Presentation` | `object?` | `null` | 图片、图标组、插图或其他展示内容。 |
+| `PresenterMode` | `PresenterMode` | `Split` | `Split`、`TopDown` 或 `Overlay` 组合模式。 |
+| `PresenterPosition` | `PresenterPosition` | `Right` | Split 模式中的展示侧。 |
 
-头部 `Body` 或 `Presentation` 缺失时不会留下空占位或间距。标准 Split 会将标题、描述和主体固定在左侧，将展示内容放在右侧。在 `Overlay` 模式下，应选择能使全部叠加文案在浅色和深色主题中都保持可读的展示内容；即使 Overlay 会忽略 `PresenterPosition`，声明中也仍需显式提供它。
+`Split` 默认将文案与 Body 放在左侧、Presentation 放在右侧；`PresenterPosition="Left"` 会交换两侧。`TopDown` 将 Presentation 放在上方，并把 Title、Content 与 Body 放在下方靠左。`Overlay` 将文案与 Body 叠加在 Presentation 上方。TopDown 与 Overlay 不使用 `PresenterPosition` 的视觉位置，但仍建议显式声明完整展示契约。
 
 ## 页面结构
 
-标准页面骨架包含一个开头的 `ChunkHero`，随后是若干全宽 `Chunk`。每个普通区块仍必须提供实际的主体内容。
+`PageBody` 封装页面滚动和标准内容间距，并限制直接子项。页面不需要再重复声明外层 ScrollViewer 与 StackPanel。
 
 ```xml
-<ScrollViewer>
-  <StackPanel>
-    <flourish:ChunkHero
-      Title="设计系统"
-      Description="此应用程序的基础规范和可复用控件。"
-      PresenterMode="Split"
-      PresenterPosition="Right"
-      Presentation="{StaticResource DesignSystemIllustration}" />
+<flourish:PageBody>
+  <flourish:HeaderChunk
+    Title="设计系统"
+    Content="此应用程序的基础规范和可复用控件。"
+    PresenterMode="Split"
+    PresenterPosition="Right"
+    Presentation="{StaticResource DesignSystemIllustration}" />
 
-    <flourish:Chunk Title="基础规范">
-      <flourish:Card MainText="颜色、字体、间距和动效。" />
-    </flourish:Chunk>
+  <flourish:Chunk Title="基础规范">
+    <flourish:Card Content="颜色、字体、间距和动效。" />
+  </flourish:Chunk>
 
-    <flourish:Chunk Title="组件">
-      <flourish:Card MainText="基于这些基础规范构建的可复用控件。" />
-    </flourish:Chunk>
-  </StackPanel>
-</ScrollViewer>
+  <flourish:Chunk Title="组件">
+    <flourish:Card Content="基于这些基础规范构建的可复用控件。" />
+  </flourish:Chunk>
+</flourish:PageBody>
 ```
-
-不要添加第二个 `ChunkHero`，不要省略开头的头部区块，也不要把多个 `Chunk` 放在同一行。
 
 ## 相关内容
 
-- [Presenter](presenter.md) 定义 `ChunkHero` 继承的展示模型。
-- [Paragraph](paragraph.md) 将多段文本作为区块唯一的主体呈现。
-- [Card](card.md) 在区块中呈现简洁信息。
-- [Button](button.md) 定义区块和头部主体中使用的操作。
-- [字体](../articles/configure-font.md) 说明六种字号层级。
-- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) 和 [ChunkHero API](xref:ArkheideSystem.Flourish.Controls.ChunkHero) 列出全部成员。
+- [PageBody](page-body.md)定义页面根容器及其直接子项限制。
+- [Presenter](presenter.md)定义 HeaderChunk 使用的展示模型。
+- [Document](document.md)将多段文本作为区块唯一主体呈现。
+- [Card](card.md)在区块中呈现简洁信息。
+- [Button](button.md)定义区块和头部主体中使用的操作。
+- [字体](../articles/configure-font.md)说明六种字号层级。
+- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) 和 [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk) 列出全部成员。

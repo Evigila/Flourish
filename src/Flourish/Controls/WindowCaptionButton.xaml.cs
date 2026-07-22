@@ -3,7 +3,7 @@ using System.Windows;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A native-sized window caption command button.</summary>
-public class WindowCaptionButton : IconButton
+public class WindowCaptionButton : Button
 {
     static WindowCaptionButton()
     {

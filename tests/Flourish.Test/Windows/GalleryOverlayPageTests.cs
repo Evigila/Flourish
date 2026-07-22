@@ -28,9 +28,10 @@ public sealed class GalleryOverlayPageTests
         var strongPopup = FindNamedElement(document, "StrongPopup");
         var temporaryOverlay = FindNamedElement(document, "TemporaryOverlay");
         var strongOverlay = FindNamedElement(document, "StrongOverlay");
+        var customLayoutOverlay = FindNamedElement(document, "CustomLayoutOverlay");
 
         Assert.Equal("Button", temporaryTrigger.Name.LocalName);
-        Assert.Equal("CardButton", strongTrigger.Name.LocalName);
+        Assert.Equal("Button", strongTrigger.Name.LocalName);
         Assert.DoesNotContain(
             new[] { temporaryTrigger, strongTrigger },
             element => element.Name.LocalName == "Card"
@@ -46,6 +47,32 @@ public sealed class GalleryOverlayPageTests
         Assert.Equal(
             "Overlay_DismissRequested",
             (string?)strongOverlay.Attribute("DismissRequested")
+        );
+        AssertVerticalActionCard(temporaryOverlay, requiresBody: false);
+        AssertVerticalActionCard(strongOverlay, requiresBody: true);
+        Assert.Equal("Strong", (string?)customLayoutOverlay.Attribute("Variant"));
+        Assert.Equal("Grid", Assert.Single(customLayoutOverlay.Elements()).Name.LocalName);
+    }
+
+    [Fact]
+    public void Page_UsesTheCanonicalLayoutAndRenamedContentProperties()
+    {
+        var document = XDocument.Load(OverlayPageXamlPath);
+        var pageBody = Assert.Single(
+            document.Descendants(),
+            element => element.Name.LocalName == "PageBody"
+        );
+        var directChildren = pageBody.Elements().ToArray();
+
+        Assert.Equal("HeaderChunk", directChildren[0].Name.LocalName);
+        Assert.NotNull(directChildren[0].Attribute("Content"));
+        Assert.DoesNotContain(
+            document.Descendants(),
+            element => element.Name.LocalName is "ChunkHero" or "ListCard" or "IconButton"
+        );
+        Assert.DoesNotContain(
+            document.Descendants().Attributes(),
+            attribute => attribute.Name.LocalName is "Description" or "MainText"
         );
     }
 
@@ -71,6 +98,29 @@ public sealed class GalleryOverlayPageTests
         Assert.Equal("Bottom", (string?)popup.Attribute("Placement"));
         Assert.Equal("Fade", (string?)popup.Attribute("PopupAnimation"));
         Assert.Equal(staysOpen, (string?)popup.Attribute("StaysOpen"));
+    }
+
+    private static void AssertVerticalActionCard(XElement overlay, bool requiresBody)
+    {
+        var actionCard = Assert.Single(
+            overlay.Elements(),
+            element => element.Name.LocalName == "ActionCard"
+        );
+        Assert.Equal("Vertical", (string?)actionCard.Attribute("Variant"));
+        Assert.NotNull(actionCard.Attribute("Title"));
+        Assert.NotNull(actionCard.Attribute("Content"));
+        var body = actionCard.Elements()
+            .SingleOrDefault(element => element.Name.LocalName == "ActionCard.Body");
+        Assert.Equal(requiresBody, body is not null);
+        Assert.Equal(
+            requiresBody,
+            body?.Descendants().Any(
+                element =>
+                    element.Name.LocalName == "Button"
+                    && (string?)element.Attribute(XName.Get("Name", XamlNamespace))
+                        == "StrongCloseButton"
+            ) == true
+        );
     }
 
     private static XElement FindNamedElement(XDocument document, string name)

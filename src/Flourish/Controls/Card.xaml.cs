@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using WpfControl = System.Windows.Controls.Control;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
@@ -45,12 +47,30 @@ public class Card : WpfControl
         new FrameworkPropertyMetadata(string.Empty)
     );
 
-    /// <summary>Identifies the <see cref="MainText" /> dependency property.</summary>
-    public static readonly DependencyProperty MainTextProperty = DependencyProperty.Register(
-        nameof(MainText),
+    /// <summary>Identifies the <see cref="Content" /> dependency property.</summary>
+    public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+        nameof(Content),
         typeof(string),
         typeof(Card),
         new FrameworkPropertyMetadata(string.Empty)
+    );
+
+    /// <summary>Identifies the <see cref="Icon" /> dependency property.</summary>
+    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
+        nameof(Icon),
+        typeof(string),
+        typeof(Card),
+        new FrameworkPropertyMetadata(null),
+        IsIconValid
+    );
+
+    /// <summary>Identifies the <see cref="IconPosition" /> dependency property.</summary>
+    public static readonly DependencyProperty IconPositionProperty = DependencyProperty.Register(
+        nameof(IconPosition),
+        typeof(Dock),
+        typeof(Card),
+        new FrameworkPropertyMetadata(Dock.Left),
+        value => value is Dock position && Enum.IsDefined(position)
     );
 
     /// <summary>
@@ -93,17 +113,33 @@ public class Card : WpfControl
     }
 
     /// <summary>Gets or sets the optional card heading.</summary>
-    public string Title
+    public string? Title
     {
-        get => (string)GetValue(TitleProperty);
+        get => (string?)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
     /// <summary>Gets or sets the optional body text presented by the card.</summary>
-    public string MainText
+    public string? Content
     {
-        get => (string)GetValue(MainTextProperty);
-        set => SetValue(MainTextProperty, value);
+        get => (string?)GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the optional single icon-font glyph presented by the card.
+    /// </summary>
+    public string? Icon
+    {
+        get => (string?)GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    /// <summary>Gets or sets where the icon appears relative to the card copy.</summary>
+    public Dock IconPosition
+    {
+        get => (Dock)GetValue(IconPositionProperty);
+        set => SetValue(IconPositionProperty, value);
     }
 
     /// <summary>Gets or sets the horizontal alignment of the card copy.</summary>
@@ -123,6 +159,13 @@ public class Card : WpfControl
     private static bool IsVariantValid(object value)
     {
         return value is Variant variant && Enum.IsDefined(variant);
+    }
+
+    private static bool IsIconValid(object? value)
+    {
+        return value is null
+            || value is string icon
+                && (icon.Length == 0 || new StringInfo(icon).LengthInTextElements == 1);
     }
 
     private static bool IsHorizontalAlignmentValid(object value)
