@@ -47,16 +47,6 @@
     </Setter>
   </Style>
 
-  <!--
-    WPF wraps non-ToolTip values assigned through ToolTipService in a native ToolTip.
-    Keep that generated host on the same Overlay surface as an explicit
-    FlourishToolTip instead of requiring every Flourish control to wrap strings.
-  -->
-  <Style
-    TargetType="{x:Type ToolTip}"
-    BasedOn="{StaticResource FlourishToolTipBaseStyle}"
-  />
-
   <Style
     TargetType="{x:Type controls:FlourishToolTip}"
     BasedOn="{StaticResource FlourishToolTipBaseStyle}"

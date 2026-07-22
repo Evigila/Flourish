@@ -19,12 +19,12 @@ public interface IToolTipService
     event EventHandler<FlourishToolTipChangedEventArgs>? Changed;
 
     /// <summary>
-    /// Enables or disables Flourish tooltips.
+    /// Enables or disables the Flourish presentation for tooltips owned by Flourish controls.
     /// </summary>
     void SetEnabled(bool enabled);
 
     /// <summary>
-    /// Changes the tooltip delay and placement margin and enables tooltips.
+    /// Changes the Flourish tooltip delay and placement margin and enables its presentation.
     /// </summary>
     void Configure(int initialShowDelayMilliseconds, double spawnableMargin = 5);
 }

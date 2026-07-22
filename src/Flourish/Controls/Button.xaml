@@ -173,16 +173,19 @@
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisualStyle}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
-    <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
-    <Setter Property="ToolTipService.BetweenShowDelay" Value="0" />
-    <Setter Property="ToolTipService.ShowDuration" Value="10000" />
-    <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+    <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
     <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
     <Setter Property="controls:HoverReveal.IsMotionEnabled" Value="{DynamicResource FlourishHoverRevealEnabled}" />
     <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
     <Setter Property="controls:HoverReveal.TemplateHandlesInteraction" Value="True" />
     <Setter Property="Template" Value="{StaticResource ButtonTemplate}" />
     <Style.Triggers>
+      <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+        <Setter Property="ToolTipService.BetweenShowDelay" Value="0" />
+        <Setter Property="ToolTipService.ShowDuration" Value="10000" />
+        <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+      </Trigger>
       <Trigger Property="Variant" Value="Elevated">
         <Setter Property="Background" Value="{DynamicResource FlourishControlBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />

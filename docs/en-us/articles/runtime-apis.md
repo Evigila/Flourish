@@ -53,7 +53,7 @@ public async ValueTask SaveEndpointAsync(
 | `IShellFeatureService` | Enable or disable `TitleBar`, `Navigation`, `DynamicToolbar`, `StatusContent`, `ToolTips`, `Motion`, or `Profile` with `SetEnabled`. |
 | `IThemeService` | Select and persist `System`, `Light`, or `Dark` with `SetTheme`, or cycle with `ToggleTheme`; inspect `EffectiveTheme` and `IsDark`. |
 | `IFontService` | Atomically change the global family and independent positive, finite Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes with `SetFont`; change the icon family; inspect, set, and clear page-specific overrides through `PageOverrides`, `SetOverrideFont`, and `ClearOverrideFont`. |
-| `IToolTipService` | Enable tooltips and change their initial delay and spawn margin with `Configure`. |
+| `IToolTipService` | Switch Flourish-owned tooltips between native WPF and Flourish presentation, and change the Flourish initial delay and spawn margin with `Configure`; native and third-party controls are outside its scope. |
 | `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
 | `IMaterialEffectService` | Test support and apply a `MaterialEffect`, or change immersive dark mode. |
 

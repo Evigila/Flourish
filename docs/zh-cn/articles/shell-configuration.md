@@ -37,7 +37,7 @@ builder.ConfigureNavigation(navigation =>
 | `UseNavigation` | 启用导航栏。 | [导航](navigation.md) |
 | `UseCenterContent` | 在宽视口中限制导航页面内容宽度并将其居中。 | [内容对齐](#自定义内容对齐) |
 | `UseDynamicToolbar` | 启用页面专属工具栏内容。 | [动态工具栏](dynamic-toolbar.md) |
-| `UseTips` | 设置首次显示延迟并启用 Flourish 提示浮层。 | [提示浮层](configure-tips.md) |
+| `UseTips` | 将 Flourish 控件与 Shell 区域自有的 Tooltip 从原生 WPF 呈现切换为 Flourish 呈现，并设置首次显示延迟。 | [提示浮层](configure-tips.md) |
 | `UseMotion` | 启用已配置的过渡和动画。 | [动效](configure-motion.md) |
 | `UseMaterialEffect` | 选择并启用窗口材质；`None` 会禁用材质。 | [材质特效](configure-material-effect.md) |
 | `UseThemeColors` | 设置主要色、辅助色和强调色。 | [主题](configure-themes.md) |
@@ -93,7 +93,7 @@ builder.ConfigureNavigation(navigation =>
         group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
-省略 `UseTips` 或 `UseGlobalFont` 时保留其默认行为。共用配置需要显式禁用材质时，使用 `MaterialEffect.None`。
+省略 `UseTips` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。省略 `UseGlobalFont` 时保留其默认行为。共用配置需要显式禁用材质时，使用 `MaterialEffect.None`。
 
 ## 相关功能
 

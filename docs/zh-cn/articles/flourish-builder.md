@@ -47,7 +47,7 @@ return flourish.Run<App>();
 | [自定义 Shell 内容](configure-custom-handler.md) | `ConfigureCustomHandler` | 将自定义 WPF 元素或命令插入预定义 Shell 区域。 |
 | [动态工具栏](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | 注册按页面变化的工具栏项。 |
 | [后台任务](background-tasks.md) | `IBackgroundTaskService` | 提交有并发上限、可取消的异步工作。 |
-| [提示浮层](configure-tips.md) | `ConfigureShell` | 使用 `UseTips` 配置并启用提示浮层。 |
+| [提示浮层](configure-tips.md) | `ConfigureShell` | 使用 `UseTips` 选择并配置 Flourish 自有 Tooltip 的 Flourish 呈现。 |
 | [动效](configure-motion.md) | `ConfigureMotion` | 配置页面过渡、导航栏过渡和悬停揭示动画。 |
 | [窗口](configure-window.md) | `ConfigureWindow` | 配置 Shell 窗口属性与行为。 |
 | [排版](configure-font.md) | `ConfigureShell` | 使用 `UseGlobalFont` 配置 Shell 排版。 |

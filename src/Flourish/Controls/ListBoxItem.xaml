@@ -15,7 +15,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+    <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
     <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
     <Setter
       Property="controls:HoverReveal.IsMotionEnabled"
@@ -87,6 +87,9 @@
       </Setter.Value>
     </Setter>
     <Style.Triggers>
+      <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+      </Trigger>
       <DataTrigger
         Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishListBox}}}"
         Value="Navigation"

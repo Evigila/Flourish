@@ -1233,16 +1233,9 @@ internal partial class FlourishShellWindow : Window
         {
             item.ToolTip = null;
         }
-        else if (item.ToolTip is FlourishToolTip toolTip)
-        {
-            if (!StringComparer.Ordinal.Equals(toolTip.Content as string, project.StoragePath))
-            {
-                toolTip.Content = project.StoragePath;
-            }
-        }
         else
         {
-            item.ToolTip = new FlourishToolTip { Content = project.StoragePath };
+            item.ToolTip = project.StoragePath;
         }
         if (
             item.ContextMenu?.Items.Count > 0
@@ -1280,7 +1273,7 @@ internal partial class FlourishShellWindow : Window
         ConfigureTitleSelectorDropDownItem(item);
         if (project.StoragePath is not null)
         {
-            item.ToolTip = new FlourishToolTip { Content = project.StoragePath };
+            item.ToolTip = project.StoragePath;
         }
 
         var deleteItem = new System.Windows.Controls.MenuItem
@@ -1977,7 +1970,7 @@ internal partial class FlourishShellWindow : Window
             Icon = icon,
             Variant = ButtonVariant.Text,
             Tag = task.Id,
-            ToolTip = new FlourishToolTip { Content = toolTip },
+            ToolTip = toolTip,
         };
         button.Click += BackgroundTaskIconButton_Click;
         return new BackgroundTaskIconView(
@@ -2942,7 +2935,7 @@ internal partial class FlourishShellWindow : Window
             button.Content = useIconOnly ? null : item.DisplayName;
             button.Margin =
                 buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness();
-            button.ToolTip = new FlourishToolTip { Content = item.DisplayName };
+            button.ToolTip = item.DisplayName;
             button.Variant = ButtonVariant.Text;
             button.Tag = item;
             button.Width = useIconOnly ? 30 : double.NaN;
@@ -3137,7 +3130,7 @@ internal partial class FlourishShellWindow : Window
             Icon = CreateIconContent("\uE711"),
             Tag = id,
             Variant = ButtonVariant.Text,
-            ToolTip = new FlourishToolTip { Content = "Dismiss" },
+            ToolTip = "Dismiss",
         };
         dismiss.Click += NotificationDismiss_Click;
         Grid.SetColumn(dismiss, 2);

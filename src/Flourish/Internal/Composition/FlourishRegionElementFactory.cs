@@ -35,7 +35,7 @@ internal static class FlourishRegionElementFactory
         button.MinHeight = 0;
         button.Margin = new Thickness(2, 4, 2, 4);
         button.Variant = ButtonVariant.Text;
-        button.ToolTip = new FlourishToolTip { Content = displayName };
+        button.ToolTip = displayName;
         AttachClick(button, services, commandKey, action, CommandSource.TitleBar);
         return button;
     }
@@ -61,7 +61,7 @@ internal static class FlourishRegionElementFactory
         button.MinHeight = 0;
         button.Padding = new Thickness(7, 0, 7, 0);
         button.Variant = ButtonVariant.Text;
-        button.ToolTip = new FlourishToolTip { Content = displayText };
+        button.ToolTip = displayText;
         AttachClick(button, services, commandKey, action, CommandSource.StatusBar);
         return button;
     }

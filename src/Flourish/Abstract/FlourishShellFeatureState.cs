@@ -7,7 +7,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <param name="IsNavigationEnabled">Whether the navigation surface is enabled.</param>
 /// <param name="IsDynamicToolbarEnabled">Whether the dynamic toolbar is enabled.</param>
 /// <param name="IsStatusContentEnabled">Whether status content is enabled.</param>
-/// <param name="AreToolTipsEnabled">Whether shell tooltips are enabled.</param>
+/// <param name="AreToolTipsEnabled">Whether shell tooltips use the Flourish presentation.</param>
 /// <param name="IsMotionEnabled">Whether shell motion is enabled.</param>
 /// <param name="IsProfileEnabled">Whether the profile feature is enabled.</param>
 /// <param name="Version">A monotonically increasing state version.</param>

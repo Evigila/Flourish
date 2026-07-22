@@ -895,7 +895,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseTips(System.Int32)
-summary: 设置初始显示延迟并启用 Flourish 工具提示；提示间距使用内置默认值。
+summary: 将 Flourish 控件与 Shell 区域自有的工具提示切换为 Flourish 呈现并设置首次显示延迟；提示间距使用内置默认值，原生与第三方控件不受影响。
 syntax:
   parameters:
   - id: delay

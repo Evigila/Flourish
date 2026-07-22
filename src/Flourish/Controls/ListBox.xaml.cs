@@ -138,12 +138,7 @@ public class FlourishListBox : WpfListBox
         Bind(container, FlourishListBoxItem.IsCommandItemProperty, item, "IsCommandItem");
         Bind(container, IsEnabledProperty, item, "IsEnabled");
 
-        var toolTip = new FlourishToolTip();
-        toolTip.SetBinding(
-            ContentControl.ContentProperty,
-            new WpfBinding("Label") { Source = item }
-        );
-        container.ToolTip = toolTip;
+        Bind(container, ToolTipProperty, item, "Label");
         container.SetValue(IsNavigationPreparedProperty, true);
     }
 

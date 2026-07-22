@@ -34,11 +34,20 @@ public sealed class FlourishPublicControlsTests
             typeof(FlourishListBoxAppearance),
             typeof(FlourishTextRole),
             typeof(HoverReveal),
+            typeof(FlourishToolTipPolicy),
             typeof(FlourishToolTipPlacement),
             .. GetPublicFlourishControlTypes(),
         ];
 
         Assert.All(publicContractTypes, type => Assert.True(type.IsPublic, type.FullName));
+        Assert.All(
+            new[]
+            {
+                nameof(FlourishToolTipPolicy.GetIsEnabled),
+                nameof(FlourishToolTipPolicy.SetIsEnabled),
+            },
+            methodName => AssertPublicStaticMethod(typeof(FlourishToolTipPolicy), methodName)
+        );
         Assert.All(
             new[]
             {
@@ -877,7 +886,7 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
-    public void IconButton_SimpleToolTipContentUsesFlourishToolTip()
+    public void ToolTipPolicy_WrapsSimpleContentAndRestoresItWhenDisabled()
     {
         RunInSta(() =>
         {
@@ -888,12 +897,31 @@ public sealed class FlourishPublicControlsTests
             var explicitButton = new IconButton { ToolTip = explicitToolTip };
             var nativeButton = new IconButton { ToolTip = nativeToolTip };
 
+            Assert.Equal("Refresh", iconButton.ToolTip);
+            Assert.Equal("Close", captionButton.ToolTip);
+
+            FlourishToolTipPolicy.SetIsEnabled(iconButton, true);
+            FlourishToolTipPolicy.SetIsEnabled(captionButton, true);
+            FlourishToolTipPolicy.SetIsEnabled(explicitButton, true);
+            FlourishToolTipPolicy.SetIsEnabled(nativeButton, true);
+
             var iconToolTip = Assert.IsType<FlourishToolTip>(iconButton.ToolTip);
             Assert.Equal("Refresh", iconToolTip.Content);
             Assert.Equal(
                 "Close",
                 Assert.IsType<FlourishToolTip>(captionButton.ToolTip).Content
             );
+            Assert.Same(explicitToolTip, explicitButton.ToolTip);
+            Assert.Same(nativeToolTip, nativeButton.ToolTip);
+
+            FlourishToolTipPolicy.SetIsEnabled(iconButton, false);
+            FlourishToolTipPolicy.SetIsEnabled(captionButton, false);
+            FlourishToolTipPolicy.SetIsEnabled(explicitButton, false);
+            FlourishToolTipPolicy.SetIsEnabled(nativeButton, false);
+
+            Assert.Equal("Refresh", iconButton.ToolTip);
+            Assert.Equal("Close", captionButton.ToolTip);
+            Assert.Null(iconToolTip.Content);
             Assert.Same(explicitToolTip, explicitButton.ToolTip);
             Assert.Same(nativeToolTip, nativeButton.ToolTip);
         });

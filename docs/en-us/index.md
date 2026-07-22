@@ -15,7 +15,7 @@ Application setup normally lives in `App.xaml.cs` or another entry point configu
 ## What Flourish provides
 
 - Host-based startup with `FlourishBuilder` and `IFlourish`
-- A reusable control library of explicit `Flourish*` custom controls that leaves native WPF controls unchanged
+- A reusable control library of explicit `Flourish*` custom controls that leaves native WPF and third-party controls, including their tooltip templates, unchanged
 - Shell window configuration for title bar, navigation panel, material effect, font, and window sizing
 - Page registration and navigation through dependency injection
 - Page-specific dynamic toolbar items connected to command dispatch

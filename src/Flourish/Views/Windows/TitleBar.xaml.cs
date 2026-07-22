@@ -64,30 +64,30 @@ internal partial class FlourishTitlebar : UserControl
     public void ApplyLocale(FlourishLocalizationService localization)
     {
         localizationService = localization ?? throw new ArgumentNullException(nameof(localization));
-        BackButton.ToolTip = CreateToolTip(localization.Get(FlourishLocaleKeys.TitleBarBack));
-        ForwardButton.ToolTip = CreateToolTip(localization.Get(FlourishLocaleKeys.TitleBarForward));
-        NavigationToggleButton.ToolTip = CreateToolTip(
+        BackButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarBack));
+        ForwardButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarForward));
+        NavigationToggleButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarToggleNavigation)
         );
-        ThemeToggleButton.ToolTip = CreateToolTip(
+        ThemeToggleButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarTheme)
         );
-        ProfileButton.ToolTip = CreateToolTip(
+        ProfileButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarProfile)
         );
-        LogoButton.ToolTip = CreateToolTip(
+        LogoButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarApplicationInfo)
         );
-        TitleComboBox.ToolTip = CreateToolTip(
+        TitleComboBox.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarProjectMenu)
         );
-        MinimizeButton.ToolTip = CreateToolTip(
+        MinimizeButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarMinimize)
         );
-        MaximizeButton.ToolTip = CreateToolTip(
+        MaximizeButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarMaximize)
         );
-        CloseButton.ToolTip = CreateToolTip(localization.Get(FlourishLocaleKeys.TitleBarClose));
+        CloseButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
     public void SetDisplayTitle(string title)
@@ -162,7 +162,7 @@ internal partial class FlourishTitlebar : UserControl
         MaximizeButtonIcon.Text = isMaximized ? "\uE923" : "\uE922";
         if (localizationService is not null)
         {
-            MaximizeButton.ToolTip = CreateToolTip(
+            MaximizeButton.ToolTip = GetToolTipContent(
                 localizationService.Get(
                     isMaximized
                         ? FlourishLocaleKeys.TitleBarRestore
@@ -189,7 +189,7 @@ internal partial class FlourishTitlebar : UserControl
                 ? FlourishLocaleKeys.ThemeDark
                 : FlourishLocaleKeys.ThemeLight
         );
-        ThemeToggleButton.ToolTip = CreateToolTip(
+        ThemeToggleButton.ToolTip = GetToolTipContent(
             requestedTheme == FlourishTheme.System
                 ? localizationService.Format(
                     FlourishLocaleKeys.TitleBarThemeSystem,
@@ -216,7 +216,7 @@ internal partial class FlourishTitlebar : UserControl
         ProfileAvatarImage.Visibility = ToVisibility(hasImage);
         ProfileInitialsText.Text = profile.Initials;
         ProfileInitialsText.Visibility = ToVisibility(!hasImage);
-        ProfileButton.ToolTip = CreateToolTip(profile.DisplayName);
+        ProfileButton.ToolTip = GetToolTipContent(profile.DisplayName);
     }
 
     public Rect GetProfileButtonBounds(UIElement relativeTo)
@@ -407,9 +407,9 @@ internal partial class FlourishTitlebar : UserControl
         );
     }
 
-    private static FlourishToolTip CreateToolTip(object content)
+    private static object GetToolTipContent(object content)
     {
-        return new FlourishToolTip { Content = content };
+        return content;
     }
 
     private static void SetPanelContent(WpfPanel host, IReadOnlyList<FrameworkElement> elements)

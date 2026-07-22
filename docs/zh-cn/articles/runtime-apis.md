@@ -53,7 +53,7 @@ public async ValueTask SaveEndpointAsync(
 | `IShellFeatureService` | 通过 `SetEnabled` 启用或禁用 `TitleBar`、`Navigation`、`DynamicToolbar`、`StatusContent`、`ToolTips`、`Motion` 或 `Profile`。 |
 | `IThemeService` | 使用 `SetTheme` 选择并持久化 `System`、`Light` 或 `Dark`，或通过 `ToggleTheme` 循环切换；可读取 `EffectiveTheme` 和 `IsDark`。 |
 | `IFontService` | 通过 `SetFont` 原子修改全局字体及彼此独立、仅要求有限正数的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号；可独立修改图标字体，并通过 `PageOverrides`、`SetOverrideFont` 与 `ClearOverrideFont` 查看、设置和清除页面字体覆盖。 |
-| `IToolTipService` | 启用提示，并通过 `Configure` 修改首次显示延迟和生成边距。 |
+| `IToolTipService` | 在原生 WPF 与 Flourish 呈现之间切换 Flourish 自有 Tooltip，并通过 `Configure` 修改 Flourish 呈现的首次显示延迟和生成边距；原生与第三方控件不受其控制。 |
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
 | `IMaterialEffectService` | 检查并应用 `MaterialEffect`，或修改沉浸式深色模式。 |
 

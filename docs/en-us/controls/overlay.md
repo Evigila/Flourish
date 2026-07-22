@@ -71,7 +71,9 @@ Use an interactive control such as [Button](button.md), `IconButton`, or `CardBu
 
 ## Tooltip integration
 
-Native WPF `ToolTip` and `FlourishToolTip` share a template containing one `Temporary` Overlay. This also styles ToolTips that WPF generates from string values, including ToolTips shown for disabled Button-family controls. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
+When `UseTips` is active, Flourish controls present their own hints with a `FlourishToolTip` template containing one `Temporary` Overlay. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
+
+When `UseTips` is omitted or the `ToolTips` feature is disabled at runtime, Flourish controls present the same hint content with the native WPF tooltip appearance and default behavior. Tooltips attached to native WPF controls and tooltips owned by third-party controls always keep their own templates and default behavior; Flourish does not globally re-template them.
 
 ## Related controls
 

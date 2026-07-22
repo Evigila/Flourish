@@ -76,7 +76,8 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseDynamicToolbar(bool enabled = true);
 
     /// <summary>
-    /// Configures and enables Flourish tooltips.
+    /// Switches tooltips owned by Flourish controls to the Flourish presentation and
+    /// configures their initial display delay.
     /// </summary>
     /// <param name="delay">The initial tooltip delay in milliseconds.</param>
     /// <returns>The current builder for chained configuration.</returns>

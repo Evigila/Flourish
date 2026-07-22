@@ -37,7 +37,7 @@ builder.ConfigureNavigation(navigation =>
 | `UseNavigation` | Enables the navigation panel. | [Navigation](navigation.md) |
 | `UseCenterContent` | Limits and centers navigated page content on wide viewports. | [Content alignment](#customize-content-alignment) |
 | `UseDynamicToolbar` | Enables page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
-| `UseTips` | Sets the initial delay and enables Flourish tooltips. | [Tooltips](configure-tips.md) |
+| `UseTips` | Switches tooltips owned by Flourish controls and Shell surfaces from native WPF presentation to the Flourish presentation and sets its initial delay. | [Tooltips](configure-tips.md) |
 | `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
 | `UseMaterialEffect` | Selects and enables the window material; `None` disables it. | [Material effects](configure-material-effect.md) |
 | `UseThemeColors` | Sets the primary, secondary, and accent colors. | [Themes](configure-themes.md) |
@@ -93,7 +93,7 @@ builder.ConfigureNavigation(navigation =>
         group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
-Omit `UseTips` or `UseGlobalFont` to retain their default behavior. Use `MaterialEffect.None` when shared configuration must explicitly disable the material.
+Omit `UseTips` to present Flourish-owned tooltip content with the native WPF appearance and default behavior. Tooltips attached to native WPF and third-party controls remain unchanged. Omit `UseGlobalFont` to retain its default behavior. Use `MaterialEffect.None` when shared configuration must explicitly disable the material.
 
 ## Related features
 

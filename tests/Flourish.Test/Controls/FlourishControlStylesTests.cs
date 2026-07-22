@@ -292,18 +292,16 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void NativeAndFlourishToolTips_UseTheSharedTemporaryOverlayTemplate()
+    public void GenericTheme_StylesOnlyFlourishToolTipsWithTheTemporaryOverlayTemplate()
     {
         RunInSta(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
-            var nativeStyle = Assert.IsType<Style>(resources[typeof(ToolTip)]);
             var flourishStyle = Assert.IsType<Style>(
                 resources[typeof(FlourishToolTip)]
             );
-            Assert.Equal(typeof(ToolTip), nativeStyle.TargetType);
+            Assert.False(resources.Contains(typeof(ToolTip)));
             Assert.Equal(typeof(FlourishToolTip), flourishStyle.TargetType);
-            Assert.Same(nativeStyle.BasedOn, flourishStyle.BasedOn);
 
             var target = new CardButton
             {
@@ -313,13 +311,12 @@ public sealed class FlourishControlStylesTests
                 IsEnabled = false,
                 ToolTip = "External navigation is not available in Gallery.",
             };
-            var nativeToolTip = new ToolTip
+            var flourishToolTip = new FlourishToolTip
             {
                 Content = target.ToolTip,
                 PlacementTarget = target,
-                Style = nativeStyle,
             };
-            target.ToolTip = nativeToolTip;
+            target.ToolTip = flourishToolTip;
             var window = CreateWindow(target);
 
             try
@@ -327,22 +324,21 @@ public sealed class FlourishControlStylesTests
                 window.Show();
                 window.UpdateLayout();
                 target.ApplyTemplate();
-                nativeToolTip.IsOpen = true;
-                nativeToolTip.ApplyTemplate();
+                flourishToolTip.IsOpen = true;
+                flourishToolTip.ApplyTemplate();
 
-                Assert.True(ToolTipService.GetShowOnDisabled(target));
-                Assert.True(FlourishToolTipPlacement.GetIsEnabled(nativeToolTip));
-                Assert.Equal(FontStyles.Normal, nativeToolTip.FontStyle);
-                Assert.Equal(FontWeights.Regular, nativeToolTip.FontWeight);
+                Assert.True(FlourishToolTipPlacement.GetIsEnabled(flourishToolTip));
+                Assert.Equal(FontStyles.Normal, flourishToolTip.FontStyle);
+                Assert.Equal(FontWeights.Regular, flourishToolTip.FontWeight);
                 var surface = AssertTemplatePart<Overlay>(
-                    nativeToolTip,
+                    flourishToolTip,
                     "SurfaceChrome"
                 );
                 Assert.Equal(OverlayVariant.Temporary, surface.Variant);
             }
             finally
             {
-                nativeToolTip.IsOpen = false;
+                flourishToolTip.IsOpen = false;
                 window.Close();
             }
         });
@@ -1067,10 +1063,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(HorizontalAlignment.Right, copyButton.HorizontalAlignment);
                 Assert.Equal(VerticalAlignment.Top, copyButton.VerticalAlignment);
                 Assert.Equal("Copy code", AutomationProperties.GetName(copyButton));
-                var copyToolTip = Assert.IsType<FlourishToolTip>(copyButton.ToolTip);
-                Assert.Equal("Copy code", copyToolTip.Content);
-                Assert.Equal(FontStyles.Normal, copyToolTip.FontStyle);
-                Assert.Equal(FontWeights.Regular, copyToolTip.FontWeight);
+                Assert.Equal("Copy code", copyButton.ToolTip);
 
                 Assert.True(ApplicationCommands.Copy.CanExecute(null, codeSpace));
                 ApplicationCommands.Copy.Execute(null, codeSpace);
@@ -1962,6 +1955,7 @@ public sealed class FlourishControlStylesTests
             };
             var resources = new ResourceDictionary
             {
+                ["FlourishToolTipsEnabled"] = true,
                 ["FlourishToolTipInitialShowDelay"] = int.MaxValue,
             };
             var window = CreateWindow(listBox);

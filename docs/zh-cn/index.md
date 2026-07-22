@@ -15,7 +15,7 @@ Flourish 是面向 WPF 的开源桌面应用组合与控件库。它提供基于
 ## Flourish 提供什么
 
 - 基于 `FlourishBuilder` 和 `IFlourish` 的 Host 启动流程
-- 由显式 `Flourish*` 自定义控件组成、不会改写原生 WPF 控件的可复用控件库
+- 由显式 `Flourish*` 自定义控件组成、不会改写原生 WPF 与第三方控件（包括其 Tooltip 模板）的可复用控件库
 - 标题栏、导航栏、材质特效、字体和窗口尺寸等 Shell 配置
 - 通过依赖注入注册页面并执行导航
 - 连接到命令调度的页面专属动态工具栏项

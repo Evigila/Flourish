@@ -10,6 +10,7 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
 {
     private const string InitialShowDelayResourceKey = "FlourishToolTipInitialShowDelay";
     private const string SpawnableMarginResourceKey = "FlourishToolTipSpawnableMargin";
+    private const string IsEnabledResourceKey = "FlourishToolTipsEnabled";
     private readonly Lock gate = new();
     private Dispatcher? applicationDispatcher;
     private ResourceDictionary? applicationResources;
@@ -255,6 +256,7 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
         FlourishToolTipSettings settings
     )
     {
+        SetResourceIfChanged(resources, IsEnabledResourceKey, settings.IsEnabled);
         SetResourceIfChanged(
             resources,
             InitialShowDelayResourceKey,

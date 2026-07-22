@@ -395,11 +395,7 @@ public sealed class FlourishXamlArchitectureTests
             )
             {
                 var targetType = (string?)style.Attribute("TargetType") ?? string.Empty;
-                var isSharedToolTipStyle = targetType == "{x:Type ToolTip}";
-                if (
-                    !targetType.Contains("controls:", StringComparison.Ordinal)
-                    && !isSharedToolTipStyle
-                )
+                if (!targetType.Contains("controls:", StringComparison.Ordinal))
                 {
                     violations.Add(
                         $"{FormatViolation(file, style)} implicitly styles {targetType}"
@@ -410,7 +406,7 @@ public sealed class FlourishXamlArchitectureTests
 
         AssertNoArchitectureViolations(
             violations,
-            "Native WPF controls must retain their native theme except for the shared Flourish ToolTip host."
+            "Native WPF controls must retain their native theme; Generic-reachable dictionaries may not publish unkeyed native Styles."
         );
     }
 

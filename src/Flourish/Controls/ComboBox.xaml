@@ -93,6 +93,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="MaxDropDownHeight" Value="320" />
@@ -208,6 +209,11 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+    <Style.Triggers>
+      <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+      </Trigger>
+    </Style.Triggers>
   </Style>
 
 </ResourceDictionary>

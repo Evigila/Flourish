@@ -47,7 +47,7 @@ The public builder separates hosting, application services, feature switches, an
 | [Custom shell content](configure-custom-handler.md) | `ConfigureCustomHandler` | Inserts custom WPF elements into shell regions. |
 | [Dynamic toolbar](dynamic-toolbar.md) | `ConfigureDynamicToolbar` | Registers page-specific toolbar items. |
 | [Background tasks](background-tasks.md) | `IBackgroundTaskService` | Submits bounded, cancellable asynchronous work. |
-| [Tooltips](configure-tips.md) | `ConfigureShell` | Configures and enables tooltips with `UseTips`. |
+| [Tooltips](configure-tips.md) | `ConfigureShell` | Selects and configures the Flourish presentation for Flourish-owned tooltips with `UseTips`. |
 | [Motion](configure-motion.md) | `ConfigureMotion` | Configures transitions and hover animation. |
 | [Window](configure-window.md) | `ConfigureWindow` | Configures shell window properties and behavior. |
 | [Typography](configure-font.md) | `ConfigureShell` | Configures shell typography with `UseGlobalFont`. |

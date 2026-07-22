@@ -35,6 +35,7 @@
   <!-- Runtime services may override these public interaction defaults. -->
   <sys:Boolean x:Key="FlourishHoverRevealEnabled">True</sys:Boolean>
   <sys:TimeSpan x:Key="FlourishHoverRevealDuration">0:0:0.140</sys:TimeSpan>
+  <sys:Boolean x:Key="FlourishToolTipsEnabled">False</sys:Boolean>
   <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">200</sys:Int32>
   <sys:Double x:Key="FlourishToolTipSpawnableMargin">5</sys:Double>
 
