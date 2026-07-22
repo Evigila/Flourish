@@ -41,6 +41,8 @@ window.SetManualWindowPosition(left: 120, top: 80);
 
 `SetWindowResizeMode` 控制自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `ShowInTaskbar` 对应标准 WPF 窗口行为。
 
+自定义窗口最大化时，标题栏按钮会延伸至屏幕边缘，因此可以从右上角直接执行关闭命令。还原窗口后，可缩放边缘也会恢复。
+
 ## 文本与像素默认值
 
 Shell 根窗口默认启用设备像素对齐和布局取整，并保持 WPF 默认的文本格式化、呈现与 hinting 模式。辅助文本使用 `Regular` 字形，卡片、分区、页面、标题栏和对话框标题使用 `Bold` 字形。

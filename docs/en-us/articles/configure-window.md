@@ -41,6 +41,8 @@ Use either a `WindowStartupLocation` or manual coordinates to make startup place
 
 `SetWindowResizeMode` controls whether the custom title bar maximize command is available. `ShowInTaskbar` and `UseTopmost` map to normal WPF window behavior.
 
+When the custom window is maximized, its caption buttons extend to the screen edges so the close command remains available from the upper-right corner. Restoring the window also restores its resizable edge.
+
 ## Text and pixel defaults
 
 The shell root enables device-pixel snapping and layout rounding. Flourish does not override WPF text formatting, rendering, or hinting modes. Supporting text uses the `Regular` face, while card, section, page, title-bar, and dialog headings use `Bold`.

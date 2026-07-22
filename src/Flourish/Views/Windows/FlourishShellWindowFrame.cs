@@ -40,6 +40,14 @@ internal sealed class FlourishShellWindowFrame(Window window, Border shellBorder
         CurrentMode = mode;
     }
 
+    public void UpdateWindowState()
+    {
+        if (CurrentMode == FlourishShellWindowFrameMode.Custom)
+        {
+            UpdateCustomFrameMetrics();
+        }
+    }
+
     private void ApplyCustomFrame()
     {
         window.WindowStyle = WindowStyle.None;
@@ -48,7 +56,7 @@ internal sealed class FlourishShellWindowFrame(Window window, Border shellBorder
             WindowChrome.SetWindowChrome(window, Chrome);
         }
 
-        shellBorder.BorderThickness = new Thickness(1);
+        UpdateCustomFrameMetrics();
     }
 
     private void ApplyNativeFrame()
@@ -60,5 +68,12 @@ internal sealed class FlourishShellWindowFrame(Window window, Border shellBorder
 
         window.WindowStyle = WindowStyle.SingleBorderWindow;
         shellBorder.BorderThickness = new Thickness();
+    }
+
+    private void UpdateCustomFrameMetrics()
+    {
+        var isMaximized = window.WindowState == WindowState.Maximized;
+        shellBorder.BorderThickness = isMaximized ? new Thickness() : new Thickness(1);
+        Chrome.ResizeBorderThickness = isMaximized ? new Thickness() : new Thickness(6);
     }
 }

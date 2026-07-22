@@ -4716,6 +4716,8 @@ internal partial class FlourishShellWindow : Window
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
     {
+        shellWindowFrame.UpdateWindowState();
+        windowFrameFixService.RefreshFrame(this, options.IsTitlebarEnabled);
         Titlebar.SetMaximized(WindowState == WindowState.Maximized);
     }
 

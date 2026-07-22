@@ -262,6 +262,51 @@ public sealed class FlourishShellWindowFrameTests
     }
 
     [Fact]
+    public void UpdateWindowState_RemovesCustomEdgeMetricsWhenMaximizedAndRestoresThem()
+    {
+        RunInSta(() =>
+        {
+            var window = CreateTestWindow();
+            var shellBorder = new Border();
+            window.Content = shellBorder;
+            var frame = new FlourishShellWindowFrame(window, shellBorder);
+            frame.Apply(FlourishShellWindowFrameMode.Custom);
+
+            Assert.Equal(new Thickness(1), shellBorder.BorderThickness);
+
+            window.WindowState = WindowState.Maximized;
+            frame.UpdateWindowState();
+
+            Assert.Equal(new Thickness(), shellBorder.BorderThickness);
+            Assert.Equal(new Thickness(), frame.Chrome.ResizeBorderThickness);
+
+            window.WindowState = WindowState.Normal;
+            frame.UpdateWindowState();
+
+            Assert.Equal(new Thickness(1), shellBorder.BorderThickness);
+            Assert.Equal(new Thickness(6), frame.Chrome.ResizeBorderThickness);
+        });
+    }
+
+    [Fact]
+    public void Apply_CustomFrameStartsWithoutBorderWhenWindowIsAlreadyMaximized()
+    {
+        RunInSta(() =>
+        {
+            var window = CreateTestWindow();
+            var shellBorder = new Border();
+            window.Content = shellBorder;
+            window.WindowState = WindowState.Maximized;
+            var frame = new FlourishShellWindowFrame(window, shellBorder);
+
+            frame.Apply(FlourishShellWindowFrameMode.Custom);
+
+            Assert.Equal(new Thickness(), shellBorder.BorderThickness);
+            Assert.Equal(new Thickness(), frame.Chrome.ResizeBorderThickness);
+        });
+    }
+
+    [Fact]
     public void WindowFrameFixService_CustomFramePreservesWpfTrackSizeConstraints()
     {
         const int wmGetMinMaxInfo = 0x0024;
