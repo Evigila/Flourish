@@ -20,22 +20,24 @@
 
     <flourish:Chunk Title="Variant">
       <UniformGrid Columns="2">
-        <flourish:Overlay Margin="0,0,8,0" Variant="Temporary">
-          <flourish:ActionCard
-            Content="Closes after pointer exit."
-            Icon="&#xE823;"
-            Title="Temporary"
-            Variant="Vertical"
-          />
-        </flourish:Overlay>
-        <flourish:Overlay Margin="8,0,0,0" Variant="Strong">
-          <flourish:ActionCard
-            Content="Waits for an explicit action."
-            Icon="&#xE77B;"
-            Title="Strong"
-            Variant="Vertical"
-          />
-        </flourish:Overlay>
+        <flourish:Presenter Margin="0,0,8,0" Content="Dismisses when pointer tracking leaves the surface and its anchor." PresenterMode="TopDown" PresenterPosition="Left" Title="Temporary">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="240" Padding="16">
+              <flourish:Overlay Variant="Temporary">
+                <flourish:ActionCard Content="Closes after pointer exit." Icon="&#xE823;" Title="Temporary" Variant="Vertical" />
+              </flourish:Overlay>
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,0,0,0" Content="Remains open until an explicit dismissal action occurs." PresenterMode="TopDown" PresenterPosition="Left" Title="Strong">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="240" Padding="16">
+              <flourish:Overlay Variant="Strong">
+                <flourish:ActionCard Content="Waits for an explicit action." Icon="&#xE77B;" Title="Strong" Variant="Vertical" />
+              </flourish:Overlay>
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
       </UniformGrid>
     </flourish:Chunk>
 
@@ -181,20 +183,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:Presenter
-        Content="Popup or Shell owns visibility and placement. Overlay owns its surface and dismissal request."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Popup host"
-      >
-        <flourish:Presenter.Presentation>
-          <flourish:FlourishTextBlock
-            FontFamily="{DynamicResource FlourishOutputFontFamily}"
-            Role="Caption"
-            Text="overlay.PlacementTarget = trigger;&#x0a;popup.PlacementTarget = trigger;&#x0a;popup.IsOpen = true;"
-          />
-        </flourish:Presenter.Presentation>
-      </flourish:Presenter>
+      <flourish:CodeSpace Text="&lt;flourish:Overlay x:Name=&quot;ProfileOverlay&quot; Variant=&quot;Strong&quot;&gt;&#xA;  &lt;flourish:ActionCard Title=&quot;Profile&quot; Content=&quot;Manage account details.&quot; Variant=&quot;Vertical&quot; /&gt;&#xA;&lt;/flourish:Overlay&gt;&#xA;&#xA;ProfileOverlay.PlacementTarget = trigger;" />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

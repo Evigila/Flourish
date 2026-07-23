@@ -40,6 +40,8 @@ Use [Document](document.md) when the content contains several paragraphs. Use [P
 
 `Icon` accepts at most one Unicode text element rendered with the configured icon font. Images, icon groups, and composed control trees belong in `Presenter.Presentation`. `Card` has no `Body` and cannot host arbitrary controls.
 
+Card and ActionCard icons use the adaptive primary foreground so they remain visually distinct from neutral copy. A Filled Card uses the on-primary foreground for contrast.
+
 ### Variants
 
 | Variant | Use |

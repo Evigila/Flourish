@@ -63,6 +63,8 @@ With `UseTips` active, Button-family hints use the Flourish temporary Overlay su
 
 Like `Card`, it exposes optional `Title`, `Content`, and `Icon` regions. Each absent region and its spacing collapse completely. `IconPosition` places the icon at `Left`, `Top`, `Right`, or `Bottom`; its default is `Top`.
 
+CardButton icons use the adaptive primary foreground on neutral surfaces, the on-primary foreground in Filled, and the shared muted foreground while disabled.
+
 ```xml
 <flourish:CardButton
   Variant="Elevated"
@@ -81,6 +83,8 @@ Use the Card-equivalent visual treatments when `CardButton` participates in a ca
 | `Tonal` | Quiet neutral fill. |
 | `Filled` | Strong primary-color emphasis. |
 | `Elevated` | Visual separation through elevation. |
+
+When `IsEnabled` is `false`, every CardButton variant uses the shared disabled background, border, and foreground and suppresses elevation and pointer feedback.
 
 The control still inherits the complete `Button` interaction contract, including `Command`, `CommandParameter`, `Click`, keyboard activation, and enabled state.
 

@@ -204,5 +204,14 @@
         <flourish:OutputCard x:Name="CacheOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
     </flourish:Chunk>
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder&#10;    .ConfigureServices((_, services) =&gt;&#10;        services.AddNavigable&lt;HomePage&gt;(&quot;Overview&quot;, &quot;\uE80F&quot;))&#10;    .ConfigureShell(shell =&gt; shell.UseNavigation())&#10;    .ConfigureNavigation(navigation =&gt; navigation.SetGroup(&#10;        &quot;General&quot;,&#10;        groupId: 0,&#10;        group =&gt; group.AddNavigableViewItem&lt;HomePage&gt;(isInitial: true)));" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
   </flourish:PageBody>
 </Page>

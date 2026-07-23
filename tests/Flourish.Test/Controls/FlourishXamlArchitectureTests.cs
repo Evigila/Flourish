@@ -836,14 +836,36 @@ public sealed class FlourishXamlArchitectureTests
     {
         string[] pages =
         [
-            "ControlLibraryPage.xaml",
             "ChunkPage.xaml",
+            "HeaderChunkPage.xaml",
             "ButtonPage.xaml",
+            "CardButtonPage.xaml",
+            "WindowCaptionButtonPage.xaml",
             "CardPage.xaml",
+            "ActionCardPage.xaml",
+            "OutputCardPage.xaml",
+            "PresenterPage.xaml",
+            "PageBodyPage.xaml",
+            "DocumentPage.xaml",
             "ParagraphPage.xaml",
             "CodeSpacePage.xaml",
             "DataGridPage.xaml",
             "OverlayPage.xaml",
+            "TextBlockPage.xaml",
+            "ListBoxPage.xaml",
+            "ListBoxItemPage.xaml",
+            "ScrollViewerPage.xaml",
+            "ScrollBarPage.xaml",
+            "GridSplitterPage.xaml",
+            "ToolTipPage.xaml",
+            "TextBoxPage.xaml",
+            "PasswordBoxPage.xaml",
+            "SearchBoxPage.xaml",
+            "CheckBoxPage.xaml",
+            "RadioButtonPage.xaml",
+            "ComboBoxPage.xaml",
+            "ComboBoxItemPage.xaml",
+            "LabelPage.xaml",
         ];
 
         foreach (var fileName in pages)

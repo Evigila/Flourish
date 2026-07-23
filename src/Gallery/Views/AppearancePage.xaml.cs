@@ -11,29 +11,21 @@ public partial class AppearancePage : Page
 {
     private readonly IThemeService theme;
     private readonly IFontService font;
-    private readonly IToolTipService toolTips;
-    private readonly IMotionService motion;
     private readonly IMaterialEffectService material;
     private bool isRefreshing;
 
     public AppearancePage(
         IThemeService theme,
         IFontService font,
-        IToolTipService toolTips,
-        IMotionService motion,
         IMaterialEffectService material
     )
     {
         this.theme = theme;
         this.font = font;
-        this.toolTips = toolTips;
-        this.motion = motion;
         this.material = material;
         InitializeComponent();
 
         ThemeBox.ItemsSource = Enum.GetValues<FlourishTheme>();
-        PageTransitionBox.ItemsSource = Enum.GetValues<FlourishPageTransition>();
-        NavigationTransitionBox.ItemsSource = Enum.GetValues<FlourishNavigationPanelTransition>();
         MaterialBox.ItemsSource = Enum.GetValues<MaterialEffect>();
 
         Loaded += Page_Loaded;
@@ -46,8 +38,6 @@ public partial class AppearancePage : Page
         Page_Unloaded(sender, e);
         theme.ThemeChanged += RuntimeState_Changed;
         font.Changed += RuntimeState_Changed;
-        toolTips.Changed += RuntimeState_Changed;
-        motion.Changed += RuntimeState_Changed;
         material.Changed += RuntimeState_Changed;
         RefreshAll();
     }
@@ -56,8 +46,6 @@ public partial class AppearancePage : Page
     {
         theme.ThemeChanged -= RuntimeState_Changed;
         font.Changed -= RuntimeState_Changed;
-        toolTips.Changed -= RuntimeState_Changed;
-        motion.Changed -= RuntimeState_Changed;
         material.Changed -= RuntimeState_Changed;
     }
 
@@ -180,156 +168,6 @@ public partial class AppearancePage : Page
             PageFontOverrideOutput,
             () => "AppearancePage typography override cleared."
         );
-    }
-
-    private void ConfigureToolTip_Click(object sender, RoutedEventArgs e)
-    {
-        Execute(
-            () =>
-                toolTips.Configure(
-                    ParseInt(ToolTipDelayBox.Text, "tooltip delay"),
-                    ParseDouble(ToolTipMarginBox.Text, "tooltip margin")
-                ),
-            ToolTipOutput,
-            FormatToolTipOutput
-        );
-    }
-
-    private void ToolTipBox_LostFocus(object sender, RoutedEventArgs e) => CommitToolTips();
-
-    private void ToolTipBox_KeyDown(object sender, KeyEventArgs e) =>
-        CommitOnEnter(e, CommitToolTips);
-
-    private void CommitToolTips()
-    {
-        if (CanApplyImmediately)
-        {
-            ConfigureToolTip_Click(this, new RoutedEventArgs());
-        }
-    }
-
-    private void ToggleToolTip_Click(object sender, RoutedEventArgs e)
-    {
-        Execute(
-            () => toolTips.SetEnabled(!toolTips.Current.IsEnabled),
-            ToolTipOutput,
-            FormatToolTipOutput
-        );
-    }
-
-    private void ApplyMotion_Click(object sender, RoutedEventArgs e)
-    {
-        Execute(
-            () =>
-            {
-                if (PageTransitionBox.SelectedItem is not FlourishPageTransition pageTransition
-                    || NavigationTransitionBox.SelectedItem
-                        is not FlourishNavigationPanelTransition navigationTransition)
-                {
-                    throw new InvalidOperationException("Select both transition modes.");
-                }
-
-                motion.SetPageTransition(
-                    pageTransition,
-                    TimeSpan.FromMilliseconds(ParseDouble(PageDurationBox.Text, "page duration"))
-                );
-                motion.SetNavigationPanelTransition(
-                    navigationTransition,
-                    TimeSpan.FromMilliseconds(
-                        ParseDouble(NavigationDurationBox.Text, "navigation duration")
-                    )
-                );
-            },
-            MotionOutput,
-            FormatMotionOutput
-        );
-    }
-
-    private void MotionDurationBox_LostFocus(object sender, RoutedEventArgs e) =>
-        CommitMotionDurations();
-
-    private void MotionDurationBox_KeyDown(object sender, KeyEventArgs e) =>
-        CommitOnEnter(e, CommitMotionDurations);
-
-    private void CommitMotionDurations()
-    {
-        if (CanApplyImmediately)
-        {
-            ApplyMotion_Click(this, new RoutedEventArgs());
-        }
-    }
-
-    private void PageTransitionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (!CanApplyImmediately || PageTransitionBox.SelectedItem is not FlourishPageTransition transition)
-        {
-            return;
-        }
-
-        Execute(
-            () => motion.SetPageTransition(transition, motion.Current.PageTransitionDuration),
-            MotionOutput,
-            FormatMotionOutput
-        );
-    }
-
-    private void NavigationTransitionBox_SelectionChanged(
-        object sender,
-        SelectionChangedEventArgs e
-    )
-    {
-        if (!CanApplyImmediately
-            || NavigationTransitionBox.SelectedItem
-                is not FlourishNavigationPanelTransition transition)
-        {
-            return;
-        }
-
-        Execute(
-            () =>
-                motion.SetNavigationPanelTransition(
-                    transition,
-                    motion.Current.NavigationPanelTransitionDuration
-                ),
-            MotionOutput,
-            FormatMotionOutput
-        );
-    }
-
-    private void MotionEnabledBox_Changed(object sender, RoutedEventArgs e)
-    {
-        if (CanApplyImmediately)
-        {
-            Execute(
-                () => motion.SetEnabled(MotionEnabledBox.IsChecked == true),
-                MotionOutput,
-                FormatMotionOutput
-            );
-        }
-    }
-
-    private void HoverRevealBox_Changed(object sender, RoutedEventArgs e)
-    {
-        if (CanApplyImmediately)
-        {
-            Execute(
-                () => motion.SetHoverReveal(HoverRevealBox.IsChecked == true),
-                MotionOutput,
-                FormatMotionOutput
-            );
-        }
-    }
-
-    private void ReducedMotionBox_Changed(object sender, RoutedEventArgs e)
-    {
-        if (CanApplyImmediately)
-        {
-            Execute(
-                () => motion.SetRespectSystemReducedMotion(ReducedMotionBox.IsChecked == true),
-                MotionOutput,
-                FormatMotionOutput
-            );
-        }
     }
 
     private void MaterialBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -455,34 +293,6 @@ public partial class AppearancePage : Page
                 PageOverrideHeaderSizeFontSizeBox.Text = string.Empty;
             }
 
-            var currentToolTips = toolTips.Current;
-            ToolTipDelayBox.Text = currentToolTips.InitialShowDelayMilliseconds.ToString(
-                CultureInfo.CurrentCulture
-            );
-            ToolTipMarginBox.Text = currentToolTips.SpawnableMargin.ToString(
-                "0.##",
-                CultureInfo.CurrentCulture
-            );
-            ToggleToolTipButton.Content = currentToolTips.IsEnabled
-                ? "Disable tooltips"
-                : "Enable tooltips";
-
-            var currentMotion = motion.Current;
-            MotionEnabledBox.IsChecked = currentMotion.IsEnabled;
-            PageTransitionBox.SelectedItem = currentMotion.PageTransition;
-            PageDurationBox.Text = currentMotion.PageTransitionDuration.TotalMilliseconds.ToString(
-                "0",
-                CultureInfo.CurrentCulture
-            );
-            NavigationTransitionBox.SelectedItem = currentMotion.NavigationPanelTransition;
-            NavigationDurationBox.Text =
-                currentMotion.NavigationPanelTransitionDuration.TotalMilliseconds.ToString(
-                    "0",
-                    CultureInfo.CurrentCulture
-            );
-            HoverRevealBox.IsChecked = currentMotion.IsHoverRevealEnabled;
-            ReducedMotionBox.IsChecked = currentMotion.RespectSystemReducedMotion;
-
             MaterialBox.SelectedItem = material.CurrentEffect;
             MaterialDarkModeBox.IsChecked = material.IsDarkMode;
         }
@@ -506,18 +316,6 @@ public partial class AppearancePage : Page
         }
 
         return $"AppearancePage typography override applied: {pageOverride.FontFamily}; {FormatScale(pageOverride.SmallFontSize ?? font.SmallFontSize, pageOverride.StandardFontSize ?? font.StandardFontSize, pageOverride.IconFontSize ?? font.IconFontSize, pageOverride.LargeFontSize ?? font.LargeFontSize, pageOverride.ExtraLargeFontSize ?? font.ExtraLargeFontSize, pageOverride.HeaderSizeFontSize ?? font.HeaderSizeFontSize)}.";
-    }
-
-    private string FormatToolTipOutput()
-    {
-        var current = toolTips.Current;
-        return $"Tooltips updated: enabled {current.IsEnabled}; delay {current.InitialShowDelayMilliseconds} ms; margin {current.SpawnableMargin:0.##}.";
-    }
-
-    private string FormatMotionOutput()
-    {
-        var current = motion.Current;
-        return $"Motion updated: enabled {current.IsEnabled}; page {current.PageTransition} ({current.PageTransitionDuration.TotalMilliseconds:0} ms); navigation {current.NavigationPanelTransition} ({current.NavigationPanelTransitionDuration.TotalMilliseconds:0} ms); hover reveal {current.IsHoverRevealEnabled}; reduced motion {current.RespectSystemReducedMotion}; animation allowed {motion.CanAnimate}.";
     }
 
     private string FormatMaterialOutput() =>
@@ -550,13 +348,4 @@ public partial class AppearancePage : Page
         return $"small {smallFontSize:0.##}, standard {standardFontSize:0.##}, icon {iconFontSize:0.##}, large {largeFontSize:0.##}, extra-large {extraLargeFontSize:0.##}, header {headerSizeFontSize:0.##} DIP";
     }
 
-    private static int ParseInt(string text, string name)
-    {
-        if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var value))
-        {
-            throw new ArgumentException($"Enter a valid {name}.");
-        }
-
-        return value;
-    }
 }

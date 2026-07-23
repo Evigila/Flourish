@@ -79,8 +79,6 @@ public static class FlourishToolTipPolicy
             return;
         }
 
-        ReleaseWrapper(state);
-        state.OriginalValue = null;
         WrapCurrentValue(owner, state);
     }
 
@@ -89,10 +87,13 @@ public static class FlourishToolTipPolicy
         var current = owner.ToolTip;
         if (current is null || current is WpfToolTip)
         {
+            state.OriginalValue = null;
+            state.Wrapper = null;
             return;
         }
 
-        var wrapper = new FlourishToolTip { Content = current };
+        var wrapper = state.Wrapper ?? new FlourishToolTip();
+        wrapper.Content = current;
         state.OriginalValue = current;
         state.Wrapper = wrapper;
         SetToolTip(owner, state, wrapper);
@@ -103,21 +104,14 @@ public static class FlourishToolTipPolicy
         if (ReferenceEquals(owner.ToolTip, state.Wrapper))
         {
             var originalValue = state.OriginalValue;
-            ReleaseWrapper(state);
+            state.OriginalValue = null;
+            state.Wrapper = null;
             SetToolTip(owner, state, originalValue);
             return;
         }
 
-        ReleaseWrapper(state);
-    }
-
-    private static void ReleaseWrapper(ToolTipState state)
-    {
-        if (state.Wrapper is { } wrapper)
-        {
-            wrapper.Content = null;
-            state.Wrapper = null;
-        }
+        state.OriginalValue = null;
+        state.Wrapper = null;
     }
 
     private static void SetToolTip(

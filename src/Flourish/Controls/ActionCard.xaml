@@ -40,7 +40,7 @@
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
           TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
           TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
-          TextElement.Foreground="{TemplateBinding Foreground}"
+          TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
         />
         <StackPanel
           x:Name="CopyHost"

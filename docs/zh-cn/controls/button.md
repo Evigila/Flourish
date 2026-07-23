@@ -64,6 +64,8 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 
 `CardButton` 是具有 Card 视觉语言的按钮。它支持可选的 `Title`、`Content` 和 `Icon`，三者为空时各自的区域与间距都会折叠。`IconPosition` 可将图标放在 `Left`、`Top`、`Right` 或 `Bottom`，默认位于上方。
 
+CardButton 图标在中性表面使用自适应主色前景，在 Filled 表面使用主色背景上的对比前景，禁用时使用统一的弱化前景。
+
 ```xml
 <flourish:CardButton
   Variant="Elevated"
@@ -82,7 +84,7 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 | `IconPosition` | `Dock` | `Top` | 图标相对于文案的位置。 |
 | `Variant` | `ButtonVariant` | `Standard` | 交互卡片的表面样式。 |
 
-`CardButton` 支持 Card 的 `Standard`、`Elevated`、`Tonal` 和 `Filled` 视觉变体。整个卡片都应执行同一项操作时使用它；只有卡片中的局部控件需要交互时，使用 [ActionCard](card.md#actioncard)。
+`CardButton` 支持 Card 的 `Standard`、`Elevated`、`Tonal` 和 `Filled` 视觉变体。`IsEnabled` 为 `false` 时，所有变体统一使用禁用背景、边框与前景色，并停用阴影和指针反馈。整个卡片都应执行同一项操作时使用它；只有卡片中的局部控件需要交互时，使用 [ActionCard](card.md#actioncard)。
 
 ## WindowCaptionButton
 

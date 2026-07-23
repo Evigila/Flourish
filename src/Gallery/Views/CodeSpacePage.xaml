@@ -37,10 +37,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:Document>
-        <flourish:Paragraph Text="Assign the complete snippet through Text. CodeSpace keeps whitespace intact, uses a fixed Large-tier monospaced presentation, and reserves its upper-right corner for the copy action." />
-        <flourish:Paragraph Text="Syntax-aware highlighting is intentionally deferred. The current blue, bold Consolas treatment is one fixed code style rather than a language parser." />
-      </flourish:Document>
+      <flourish:CodeSpace Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

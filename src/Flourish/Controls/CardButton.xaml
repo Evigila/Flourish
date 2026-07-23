@@ -71,7 +71,7 @@
             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
             TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
             TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
-            TextElement.Foreground="{TemplateBinding Foreground}"
+            TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
           />
           <StackPanel x:Name="CopyHost">
             <controls:FlourishTextBlock
@@ -184,6 +184,7 @@
       </Trigger>
       <Trigger Property="Variant" Value="Filled">
         <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
+        <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Tonal">
         <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishTonalButtonPressedBrush}" />
@@ -207,6 +208,7 @@
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter TargetName="ShadowChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
@@ -266,6 +268,13 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

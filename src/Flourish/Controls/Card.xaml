@@ -38,7 +38,7 @@
             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
             TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
             TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
-            TextElement.Foreground="{TemplateBinding Foreground}"
+            TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
           />
           <StackPanel x:Name="CopyHost">
             <controls:FlourishTextBlock
@@ -61,6 +61,9 @@
     <ControlTemplate.Triggers>
       <Trigger Property="Variant" Value="Elevated">
         <Setter TargetName="ShadowChrome" Property="Visibility" Value="Visible" />
+      </Trigger>
+      <Trigger Property="Variant" Value="Filled">
+        <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
       </Trigger>
       <Trigger Property="IconPosition" Value="Top">
         <Setter TargetName="IconHost" Property="Margin" Value="{DynamicResource FlourishCardIconSpacingTop}" />

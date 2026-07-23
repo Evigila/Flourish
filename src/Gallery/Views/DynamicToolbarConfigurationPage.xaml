@@ -1,0 +1,34 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.DynamicToolbarConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="Dynamic toolbar"
+      Content="Associate toolbar actions with the page type that owns their workflow."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk Title="Page-scoped actions">
+      <flourish:Card
+        Icon="&#xE945;"
+        Title="Toolbar items"
+        Content="Each FlourishToolbarItem supplies display text, a glyph, and a command key. The active page determines which set is visible."
+      />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseDynamicToolbar())&#10;    .ConfigureDynamicToolbar(toolbar =&gt;&#10;        toolbar.CreateToolbarItems&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;reports.refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;reports.export&quot;)));" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

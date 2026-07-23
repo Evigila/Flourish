@@ -10,7 +10,7 @@
       Content="Change visual resources and shell effects at runtime."
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Appearance &amp; motion"
+      Title="Appearance"
     />
 
     <flourish:Chunk
@@ -241,134 +241,6 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Configure tooltip availability and timing."
-      Title="Tooltips"
-    >
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard
-            Icon="&#xE823;"
-            Title="Initial delay"
-            Content="Set the delay before a tooltip appears."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="ToolTipDelayBox" Width="140" KeyDown="ToolTipBox_KeyDown" LostFocus="ToolTipBox_LostFocus" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE7C8;"
-            Title="Spawn margin"
-            Content="Set the separation from the tooltip target."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="ToolTipMarginBox" Width="140" KeyDown="ToolTipBox_KeyDown" LostFocus="ToolTipBox_LostFocus" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE8BD;"
-            Title="Tooltip availability"
-            Content="Enable or disable Flourish tooltips."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:Button x:Name="ToggleToolTipButton" Click="ToggleToolTip_Click" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-        </StackPanel>
-        <flourish:OutputCard x:Name="ToolTipOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </Grid>
-    </flourish:Chunk>
-
-    <flourish:Chunk
-      Content="Configure transition types and timing."
-      Title="Motion"
-    >
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard
-            Icon="&#xE768;"
-            Title="Page transition"
-            Content="Choose the transition between pages."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishComboBox x:Name="PageTransitionBox" Width="200" SelectionChanged="PageTransitionBox_SelectionChanged" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE823;"
-            Title="Page duration"
-            Content="Set the page transition duration in milliseconds."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="PageDurationBox" Width="130" KeyDown="MotionDurationBox_KeyDown" LostFocus="MotionDurationBox_LostFocus" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE700;"
-            Title="Navigation transition"
-            Content="Choose the navigation-panel transition."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishComboBox x:Name="NavigationTransitionBox" Width="200" SelectionChanged="NavigationTransitionBox_SelectionChanged" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE823;"
-            Title="Navigation duration"
-            Content="Set the panel transition duration in milliseconds."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="NavigationDurationBox" Width="130" KeyDown="MotionDurationBox_KeyDown" LostFocus="MotionDurationBox_LostFocus" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE768;"
-            Title="Motion"
-            Content="Enable or disable application animation."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox x:Name="MotionEnabledBox" VerticalAlignment="Center" Checked="MotionEnabledBox_Changed" Content="Motion enabled" Unchecked="MotionEnabledBox_Changed" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE706;"
-            Title="Hover reveal"
-            Content="Enable animated pointer feedback."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox x:Name="HoverRevealBox" VerticalAlignment="Center" Checked="HoverRevealBox_Changed" Content="Hover reveal" Unchecked="HoverRevealBox_Changed" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
-            Icon="&#xE776;"
-            Title="Reduced motion"
-            Content="Respect the system reduced-motion preference."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox x:Name="ReducedMotionBox" VerticalAlignment="Center" Checked="ReducedMotionBox_Changed" Content="Respect system reduced motion" Unchecked="ReducedMotionBox_Changed" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-        </StackPanel>
-        <flourish:OutputCard x:Name="MotionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </Grid>
-    </flourish:Chunk>
-
-    <flourish:Chunk
       Content="Configure the shell window backdrop."
       Title="Window material"
     >
@@ -400,6 +272,16 @@
         </StackPanel>
         <flourish:OutputCard x:Name="MaterialOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder.ConfigureShell(shell =&gt; shell&#xA;    .UseGlobalFont()&#xA;    .UseMaterialEffect(MaterialEffect.Mica));&#xA;&#xA;themeService.SetTheme(Theme.Dark);&#xA;fontService.SetFont(&quot;Segoe UI Variable&quot;);" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>
 </Page>

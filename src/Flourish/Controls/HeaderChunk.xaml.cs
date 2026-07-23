@@ -13,7 +13,8 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <see cref="Presenter.Content" />, <see cref="Presenter.PresenterMode" />, and
 /// <see cref="Presenter.PresenterPosition" />. Unlike an ordinary <see cref="Presenter" />,
 /// implicit XAML content is assigned to <see cref="Presenter.Body" />; presentation content must
-/// use an explicit <see cref="Presenter.Presentation" /> property element.
+/// use an explicit <see cref="Presenter.Presentation" /> property element. A HeaderChunk always
+/// occupies one complete row, including in TopDown mode.
 /// </remarks>
 [TemplatePart(Name = PartHeaderSurface, Type = typeof(WpfBorder))]
 [TemplatePart(Name = PartClipHost, Type = typeof(FrameworkElement))]
@@ -30,6 +31,12 @@ public class HeaderChunk : Presenter
         DefaultStyleKeyProperty.OverrideMetadata(
             typeof(HeaderChunk),
             new FrameworkPropertyMetadata(typeof(HeaderChunk))
+        );
+        PresenterPositionProperty.OverrideMetadata(
+            typeof(HeaderChunk),
+            new FrameworkPropertyMetadata(
+                global::ArkheideSystem.Flourish.Controls.PresenterPosition.Right
+            )
         );
     }
 

@@ -2,6 +2,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Imaging;
+using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -109,6 +111,29 @@ public sealed class FlourishTitlebarTests
     {
         Assert.True(TitleBarVisualAssets.SunIconGeometry.IsFrozen);
         Assert.True(TitleBarVisualAssets.MoonIconGeometry.IsFrozen);
+    }
+
+    [Fact]
+    public void LocalizedToolTips_KeepTheirOpenWrapperWhenTitleBarStateRefreshes()
+    {
+        RunInSta(() =>
+        {
+            var sut = new FlourishTitlebar();
+            var localization = new FlourishLocalizationService(new FlourishDataOptions());
+            sut.ApplyLocale(localization);
+
+            var maximizeButton = Assert.IsType<WindowCaptionButton>(
+                sut.FindName("MaximizeButton")
+            );
+            FlourishToolTipPolicy.SetIsEnabled(maximizeButton, true);
+            var wrapper = Assert.IsType<FlourishToolTip>(maximizeButton.ToolTip);
+            Assert.Equal("Maximize", wrapper.Content);
+
+            sut.SetMaximized(isMaximized: true);
+
+            Assert.Same(wrapper, maximizeButton.ToolTip);
+            Assert.Equal("Restore", wrapper.Content);
+        });
     }
 
     [Fact]

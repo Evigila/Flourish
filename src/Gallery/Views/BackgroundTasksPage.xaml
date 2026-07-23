@@ -85,7 +85,7 @@
         <flourish:Presenter
           Content="Queued, running, and cancelling items update through TasksChanged."
           PresenterMode="Split"
-          PresenterPosition="Right"
+          PresenterPosition="Left"
           Title="Live tasks"
         >
           <flourish:Presenter.Presentation>
@@ -96,7 +96,7 @@
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
           Content="Completion never faults; failures and cancellation are represented in the result object."
           PresenterMode="Split"
-          PresenterPosition="Right"
+          PresenterPosition="Left"
           Title="Recent outcomes"
         >
           <flourish:Presenter.Presentation>
@@ -104,6 +104,16 @@
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="var handle = backgroundTasks.AddTask(&#xA;    &quot;Refresh reports&quot;,&#xA;    async context =&gt; await RefreshReportsAsync(context.CancellationToken));&#xA;&#xA;var result = await handle.Completion;" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>
 </Page>

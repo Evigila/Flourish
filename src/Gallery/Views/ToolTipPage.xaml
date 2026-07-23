@@ -1,0 +1,72 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ToolTipPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Show compact Tip-typography help with Flourish placement and shell-region behavior."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="FlourishToolTip"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Hover or focus the button. The tooltip owns its Normal, Regular Tip typography instead of inheriting the button's text treatment."
+      Title="Example"
+    >
+      <flourish:Presenter
+        Content="Declare FlourishToolTip explicitly when the content needs a control instance. A plain ToolTip string is upgraded by the enabled shell tip policy."
+        PresenterMode="Split"
+        PresenterPosition="Left"
+        Title="Hover help"
+      >
+        <flourish:Presenter.Presentation>
+          <Grid MinHeight="180">
+            <flourish:Button
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Hover for help"
+            >
+              <flourish:Button.ToolTip>
+                <flourish:FlourishToolTip Content="This action refreshes the current workspace." />
+              </flourish:Button.ToolTip>
+            </flourish:Button>
+          </Grid>
+        </flourish:Presenter.Presentation>
+      </flourish:Presenter>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Keep tooltip text short and actionable. Icon-only buttons also need an AutomationProperties.Name."
+      Title="Content"
+    >
+      <flourish:Card Title="Empty values" Content="Do not create a tooltip for null, empty, or whitespace-only content. The shared policy suppresses empty popup surfaces." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishToolTip API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishToolTip documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

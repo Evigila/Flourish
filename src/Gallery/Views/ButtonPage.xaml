@@ -16,23 +16,38 @@
     />
 
     <flourish:Chunk Title="Variant">
-      <flourish:Presenter
-        Content="Filled is primary, Tonal is softer, and Danger identifies destructive intent."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Visual hierarchy"
-      >
-        <flourish:Presenter.Presentation>
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,8" Content="Elevated" Variant="Elevated" />
-            <flourish:Button Margin="0,0,8,8" Content="Filled" Variant="Filled" />
-            <flourish:Button Margin="0,0,8,8" Content="Tonal" Variant="Tonal" />
-            <flourish:Button Margin="0,0,8,8" Content="Outlined" Variant="Outlined" />
-            <flourish:Button Margin="0,0,8,8" Content="Text" Variant="Text" />
-            <flourish:Button Margin="0,0,0,8" Content="Danger" Variant="Danger" />
-          </WrapPanel>
-        </flourish:Presenter.Presentation>
-      </flourish:Presenter>
+      <UniformGrid Columns="3">
+        <flourish:Presenter Margin="0,0,8,8" Content="Adds elevation to separate an action from its surrounding surface." PresenterMode="TopDown" PresenterPosition="Left" Title="Elevated">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Elevated" Variant="Elevated" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,0,8,8" Content="Expresses the primary action in a group." PresenterMode="TopDown" PresenterPosition="Left" Title="Filled">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Filled" Variant="Filled" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,0,0,8" Content="Provides a softer filled emphasis for supporting actions." PresenterMode="TopDown" PresenterPosition="Left" Title="Tonal">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Tonal" Variant="Tonal" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="0,8,8,0" Content="Uses a boundary for a medium-emphasis secondary action." PresenterMode="TopDown" PresenterPosition="Left" Title="Outlined">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Outlined" Variant="Outlined" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,8,8,0" Content="Keeps tertiary and toolbar actions visually quiet." PresenterMode="TopDown" PresenterPosition="Left" Title="Text">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Text" Variant="Text" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,8,0,0" Content="Identifies destructive or difficult-to-reverse intent." PresenterMode="TopDown" PresenterPosition="Left" Title="Danger">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Danger" Variant="Danger" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Table">
@@ -64,7 +79,7 @@
       <flourish:Presenter
         Content="Bind Command for reusable actions, or handle Click for local behavior."
         PresenterMode="Split"
-        PresenterPosition="Right"
+        PresenterPosition="Left"
         Title="Standard action"
       >
         <flourish:Presenter.Presentation>
@@ -80,7 +95,7 @@
       <flourish:Presenter
         Content="Use a ToolTip or automation name when the action has no visible label."
         PresenterMode="Split"
-        PresenterPosition="Right"
+        PresenterPosition="Left"
         Title="Icon actions"
       >
         <flourish:Presenter.Presentation>
@@ -105,52 +120,11 @@
       </flourish:Presenter>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="CardButton">
-      <UniformGrid Columns="2">
-        <flourish:CardButton
-          Margin="0,0,8,0"
-          Content="Review generated reports."
-          Icon="&#xE8A5;"
-          Title="Open reports"
-        />
-        <flourish:CardButton
-          Margin="8,0,0,0"
-          Content="Use a compact horizontal layout."
-          Icon="&#xE946;"
-          IconPosition="Left"
-          Title="View details"
-        />
-      </UniformGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="WindowCaptionButton">
-      <flourish:Presenter
-        Content="Use dedicated title-bar geometry and reserve Danger for close."
-        PresenterMode="Split"
-        PresenterPosition="Right"
-        Title="Caption actions"
-      >
-        <flourish:Presenter.Presentation>
-          <Border
-            Background="{DynamicResource FlourishControlBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
-            BorderThickness="1"
-          >
-            <StackPanel Orientation="Horizontal">
-              <flourish:WindowCaptionButton AutomationProperties.Name="Minimize" Icon="&#xE921;" ToolTip="Minimize" Variant="Text" />
-              <flourish:WindowCaptionButton AutomationProperties.Name="Maximize" Icon="&#xE922;" ToolTip="Maximize" Variant="Text" />
-              <flourish:WindowCaptionButton AutomationProperties.Name="Close" Icon="&#xE8BB;" ToolTip="Close" Variant="Danger" />
-            </StackPanel>
-          </Border>
-        </flourish:Presenter.Presentation>
-      </flourish:Presenter>
-    </flourish:Chunk>
-
     <flourish:Chunk Title="Hover feedback">
       <flourish:Presenter
         Content="HoverReveal supplies feedback and can be disabled for a local action."
         PresenterMode="Split"
-        PresenterPosition="Right"
+        PresenterPosition="Left"
         Title="Pointer feedback"
       >
         <flourish:Presenter.Presentation>
@@ -169,14 +143,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:Document>
-        <flourish:Paragraph
-          Text="Handle Click for local behavior or bind Command and CommandParameter when the application owns the action."
-        />
-        <flourish:Paragraph
-          Text="Use CardButton for an interactive card surface; Card remains display-only."
-        />
-      </flourish:Document>
+      <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  Command=&quot;{Binding SaveCommand}&quot;&#xA;  Content=&quot;Save&quot;&#xA;  Icon=&quot;&amp;#xE74E;&quot;&#xA;  Variant=&quot;Filled&quot; /&gt;" />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

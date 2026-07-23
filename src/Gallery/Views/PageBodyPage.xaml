@@ -1,0 +1,64 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.PageBodyPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Own the scrolling page surface and enforce the HeaderChunk-then-Chunk hierarchy."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="PageBody"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        ItemsSource="{Binding Properties, ElementName=RootPage}"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="This Gallery page is itself hosted by PageBody: one leading HeaderChunk is followed by full-width Chunks."
+      Title="Structure"
+    >
+      <flourish:CodeSpace Text="{Binding StructureCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the PageBody API reference."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="PageBody documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

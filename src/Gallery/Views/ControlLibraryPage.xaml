@@ -1,105 +1,65 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.ControlLibraryPage"
-  x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
-  SnapsToDevicePixels="True"
-  UseLayoutRounding="True"
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Themed WPF controls for text, forms, collections, and scrolling."
+      Content="Browse every public Flourish control from one navigation overview."
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Control library"
+      Title="Controls"
     />
 
-    <flourish:Chunk Title="Table">
-      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
-        <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
-        </DataGrid.Columns>
-      </flourish:DataGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Example">
-      <StackPanel>
-        <flourish:Presenter
-          Content="Edit text, search content, and choose options with themed form controls."
-          PresenterMode="Split"
-          PresenterPosition="Right"
-          Title="Inputs"
-        >
-          <flourish:Presenter.Presentation>
-            <StackPanel>
-              <flourish:FlourishLabel Content="_Text box" Target="{Binding ElementName=ControlTextBox}" />
-              <flourish:FlourishTextBox x:Name="ControlTextBox" Text="Editable text" />
-              <flourish:FlourishSearchBox Margin="0,12,0,0" Placeholder="Search controls" />
-              <flourish:FlourishCheckBox Margin="0,12,0,0" Content="Use compact controls" IsChecked="True" />
-              <flourish:FlourishComboBox Margin="0,12,0,0" SelectedIndex="0">
-                <flourish:FlourishComboBoxItem Content="Standard density" />
-                <flourish:FlourishComboBoxItem Content="Compact density" />
-              </flourish:FlourishComboBox>
-            </StackPanel>
-          </flourish:Presenter.Presentation>
-        </flourish:Presenter>
-        <flourish:Presenter
-          Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Browse selectable items and scroll content with native collection behavior."
-          PresenterMode="Split"
-          PresenterPosition="Right"
-          Title="Collections"
-        >
-          <flourish:Presenter.Presentation>
-            <StackPanel>
-              <flourish:FlourishListBox Height="104" SelectedIndex="0">
-                <flourish:FlourishListBoxItem Content="Typography" />
-                <flourish:FlourishListBoxItem Content="Inputs" />
-                <flourish:FlourishListBoxItem Content="Scrolling" />
-              </flourish:FlourishListBox>
-              <flourish:ScrollViewer Height="104" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                  <flourish:FlourishTextBlock Margin="8,6" Text="A compact scrolling surface" />
-                  <flourish:FlourishTextBlock Margin="8,6" Role="Muted" Text="Native keyboard and wheel input" />
-                  <flourish:FlourishTextBlock Margin="8,6" Role="Status" Text="Ready" />
-                </StackPanel>
-              </flourish:ScrollViewer>
-            </StackPanel>
-          </flourish:Presenter.Presentation>
-        </flourish:Presenter>
-      </StackPanel>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Typography">
+    <flourish:Chunk Title="Control library">
       <UniformGrid Columns="3">
-        <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Body" Text="Body" />
-        <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Paragraph" Text="Document" />
-        <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Caption" Text="Caption" />
-        <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Muted" Text="Muted" />
-        <flourish:FlourishTextBlock Margin="0,0,16,10" Role="FieldLabel" Text="FIELD LABEL" />
-        <flourish:FlourishTextBlock Margin="0,0,16,10" Role="Status" Text="Status" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open HeaderChunk page" Click="ControlCard_Click" Content="The single emphasized header at the top of a page." Icon="&#xE840;" Tag="HeaderChunk" Title="HeaderChunk" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Chunk page" Click="ControlCard_Click" Content="A full-width section for one page topic." Icon="&#xE81E;" Tag="Chunk" Title="Chunk" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open PageBody page" Click="ControlCard_Click" Content="The canonical scrolling root for a Flourish page." Icon="&#xE8A7;" Tag="PageBody" Title="PageBody" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Presenter page" Click="ControlCard_Click" Content="Advanced text and presentation layouts." Icon="&#xE8BA;" Tag="Presenter" Title="Presenter" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Document page" Click="ControlCard_Click" Content="A bordered surface for multiple paragraphs." Icon="&#xE8A5;" Tag="Document" Title="Document" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Paragraph page" Click="ControlCard_Click" Content="One standardized paragraph inside a Document." Icon="&#xE8D2;" Tag="Paragraph" Title="Paragraph" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Card page" Click="ControlCard_Click" Content="Concise display-only content with one optional icon." Icon="&#xE7FB;" Tag="Card" Title="Card" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ActionCard page" Click="ControlCard_Click" Content="A fixed setting row or vertical local action." Icon="&#xE7C9;" Tag="ActionCard" Title="ActionCard" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open OutputCard page" Click="ControlCard_Click" Content="Scrollable output for logs and diagnostic text." Icon="&#xE78B;" Tag="OutputCard" Title="OutputCard" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Button page" Click="ControlCard_Click" Content="A standard action with optional content and icon." Icon="&#xE815;" Tag="Button" Title="Button" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open CardButton page" Click="ControlCard_Click" Content="An entire card surface that responds as a button." Icon="&#xF271;" Tag="CardButton" Title="CardButton" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open WindowCaptionButton page" Click="ControlCard_Click" Content="A window-specific caption action." Icon="&#xE8BB;" Tag="WindowCaptionButton" Title="WindowCaptionButton" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open CodeSpace page" Click="ControlCard_Click" Content="Fixed-style code text with clipboard copy support." Icon="&#xE943;" Tag="CodeSpace" Title="CodeSpace" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open DataGrid page" Click="ControlCard_Click" Content="Tabular data without trapping page wheel scrolling." Icon="&#xE80A;" Tag="DataGrid" Title="DataGrid" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Overlay page" Click="ControlCard_Click" Content="A floating container for transient surfaces." Icon="&#xE89B;" Tag="Overlay" Title="Overlay" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open TextBlock page" Click="ControlCard_Click" Content="Role-based standardized text presentation." Icon="&#xE8D2;" Tag="TextBlock" Title="TextBlock" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Label page" Click="ControlCard_Click" Content="A label that targets an input or presents a caption." Icon="&#xE8EC;" Tag="Label" Title="Label" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ToolTip page" Click="ControlCard_Click" Content="A themed tip surface for concise assistance." Icon="&#xE8BD;" Tag="ToolTip" Title="ToolTip" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open TextBox page" Click="ControlCard_Click" Content="Single- or multi-line editable text input." Icon="&#xE8D2;" Tag="TextBox" Title="TextBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open PasswordBox page" Click="ControlCard_Click" Content="Masked input for secret values." Icon="&#xE72E;" Tag="PasswordBox" Title="PasswordBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open SearchBox page" Click="ControlCard_Click" Content="Search input with standard affordances." Icon="&#xE721;" Tag="SearchBox" Title="SearchBox" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open CheckBox page" Click="ControlCard_Click" Content="Independent binary or indeterminate selection." Icon="&#xE73E;" Tag="CheckBox" Title="CheckBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open RadioButton page" Click="ControlCard_Click" Content="One selection within a related option group." Icon="&#xECCA;" Tag="RadioButton" Title="RadioButton" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ComboBox page" Click="ControlCard_Click" Content="A compact drop-down selection surface." Icon="&#xE70D;" Tag="ComboBox" Title="ComboBox" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ComboBoxItem page" Click="ControlCard_Click" Content="A standardized selectable ComboBox entry." Icon="&#xE8FD;" Tag="ComboBoxItem" Title="ComboBoxItem" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ListBox page" Click="ControlCard_Click" Content="A visible collection with selection behavior." Icon="&#xE8FD;" Tag="ListBox" Title="ListBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ListBoxItem page" Click="ControlCard_Click" Content="A standardized selectable ListBox entry." Icon="&#xE8FD;" Tag="ListBoxItem" Title="ListBoxItem" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ScrollViewer page" Click="ControlCard_Click" Content="A viewport for content larger than its available space." Icon="&#xE896;" Tag="ScrollViewer" Title="ScrollViewer" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ScrollBar page" Click="ControlCard_Click" Content="A themed scrollbar for explicit scrolling." Icon="&#xE70E;" Tag="ScrollBar" Title="ScrollBar" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open GridSplitter page" Click="ControlCard_Click" Content="A draggable divider between Grid regions." Icon="&#xE8A9;" Tag="GridSplitter" Title="GridSplitter" />
       </UniformGrid>
     </flourish:Chunk>
-
-    <flourish:Chunk Title="Input controls">
-      <flourish:Card Content="TextBox, PasswordBox, SearchBox, CheckBox, RadioButton, ComboBox, and Label cover form input." />
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Collection controls">
-      <flourish:Card Content="ListBox, ScrollViewer, and ScrollBar retain native selection, keyboard, wheel, and virtualization behavior." />
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:Card Content="Load Flourish theme resources, declare the Flourish XAML namespace, and choose the semantic control that matches the interaction." />
-    </flourish:Chunk>
-
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE8A5;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the control library documentation." Icon="&#xE946;" IsEnabled="False" Title="Control documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the control documentation." Icon="&#xE946;" IsEnabled="False" Title="Control documentation" ToolTip="External navigation is not available in Gallery." />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

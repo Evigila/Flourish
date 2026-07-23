@@ -28,6 +28,8 @@ builder.ConfigureServices((_, services) =>
 
 Pages must derive from `System.Windows.Controls.Page`. Flourish generates the navigation key from the simple class name by removing one trailing, case-sensitive `Page` suffix: `SettingsPage` becomes `Settings`, `ReportPagePage` becomes `ReportPage`, and `Page1` remains `Page1`. Display names do not affect keys. The display name and icon set here are reused by `AddNavigableViewItem`, so view items do not ask for those values again.
 
+The standard shell renders navigation icon glyphs with the adaptive primary foreground while keeping labels neutral, providing a consistent visual accent in light and dark themes.
+
 ```csharp
 services.AddNavigable<ReportsPage>("Reports", "\uE9D2");
 services.AddNavigable<EditorPage>(

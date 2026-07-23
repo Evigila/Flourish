@@ -16,6 +16,7 @@ Build every content page as one explicit hierarchy: one page-leading header, sev
 5. Keep every `HeaderChunk` and `Chunk` full-width and on its own row.
 6. Put headings, cards, documents, presenters, actions, and custom layouts inside a chunk region rather than beside chunks at the `PageBody` level.
 7. Give each distinct topic or task its own `Chunk`. Arrange related peer controls within one chunk body only when they share that section topic.
+8. End every Gallery page with exactly one `Chunk Title="Reference"`. Its two peer CardButtons point to the repository and the most relevant canonical documentation; keep them disabled while Gallery does not provide external navigation.
 
 Every `Chunk` has these semantic fields:
 
@@ -25,7 +26,7 @@ Every `Chunk` has these semantic fields:
 
 Empty or `null` optional regions must collapse together with their spacing. Keep the default large gap between chunks and between `HeaderChunk` and the first ordinary chunk.
 
-`HeaderChunk` follows the Presenter contract. Every declaration explicitly supplies `Title`, `Content`, `PresenterMode`, and `PresenterPosition`; the title uses the page-header role. Unlike an ordinary Presenter, `Body` is the default XAML content property for `HeaderChunk`. Assign `Presentation` through an explicit `HeaderChunk.Presentation` property element when the header includes a presented visual.
+`HeaderChunk` follows the Presenter contract. Every declaration explicitly supplies `Title`, `Content`, `PresenterMode`, and `PresenterPosition`; the title uses the page-header role. Unlike an ordinary Presenter, `Body` is the default XAML content property for `HeaderChunk`. Assign `Presentation` through an explicit `HeaderChunk.Presentation` property element when the header includes a presented visual. HeaderChunk always occupies one complete row, including in TopDown mode; never put it in a multi-column layout.
 
 ## Use the typography contract
 
@@ -100,21 +101,22 @@ Use `CodeSpace` for one exact source-code or command-text value. Assign the comp
 
 ## Compose Presenters
 
-Use `Presenter` as a full-width chunk body when rich visual content must be arranged with copy or supporting controls.
+Use `Presenter` as a chunk body when rich visual content must be arranged with copy or supporting controls. Split and Overlay are full-width; TopDown may use the documented multi-column exception.
 
 - `Title` and `Content` provide required copy and are explicitly declared.
 - `Body` contains controls or supporting content in the same region as the copy. Assign it only through an explicit `Presenter.Body` property element.
 - `Presentation` contains an image, icon group, illustration, preview, or composed visual tree and is the default XAML content property.
-- Every declaration explicitly sets `PresenterMode` and `PresenterPosition`. Runtime fallback values remain `Split` and `Right`, but they do not replace the authoring requirement.
-- `PresenterMode="Split" PresenterPosition="Right"` uses the standard horizontal layout: Title, Content, and Body on the left, with Presentation on the right.
-- `PresenterMode="Split" PresenterPosition="Left"` reverses the two regions without changing their internal structure or left alignment.
+- Every declaration explicitly sets `PresenterMode` and `PresenterPosition`. Runtime fallback values are `Split` and `Left`, but they do not replace the authoring requirement.
+- `PresenterMode="Split" PresenterPosition="Left"` is the default horizontal layout: Presentation on the left, with Title, Content, and Body together on the right.
+- `PresenterMode="Split" PresenterPosition="Right"` reverses the two regions without changing their internal structure or left alignment.
 - `PresenterMode="Overlay"` places Presentation behind Title, Content, and Body. Position does not change the visual result.
 - `PresenterMode="TopDown"` places Presentation across the top, then places Title, Content, and Body below it as one left-aligned group. Position does not change the visual result.
 - A missing Body collapses with its spacing.
-- Presenter occupies the full row. Keep the copy-and-body region transparent and aligned as one unit. Only the Presentation region uses the adaptive light-neutral background and shared surface corner radius. Presentation content fills the available region while its own content remains centered.
+- Split and Overlay Presenters occupy the full row and must not share a multi-column layout. A TopDown Presenter may be placed in a multi-column layout when each cell remains readable; this is the only Presenter mode that may share a row.
+- Keep the copy-and-body region transparent and aligned as one unit. Only the Presentation region uses the adaptive light-neutral background and shared surface corner radius. Presentation content fills the available region while its own content remains centered.
 - When several Presenters are stacked vertically in one section, apply `FlourishPresenterPeerMargin` only to each Presenter after the first.
 
-Do not add an external Grid or local margins to reposition copy, Body, or Presentation; the Presenter template owns those regions. Choose Overlay presentation content that keeps text readable in both light and dark themes. `HeaderChunk` exposes the same fields and modes but supplies the larger, emphasized page-leading treatment.
+Do not add an external Grid or local margins to reposition copy, Body, or Presentation inside one Presenter; the Presenter template owns those regions. A parent grid may arrange peer TopDown Presenters into columns. Choose Overlay presentation content that keeps text readable in both light and dark themes. `HeaderChunk` exposes the same fields and modes but supplies the larger, emphasized page-leading treatment. Its independent Split fallback remains `Right`, keeping copy on the left and Presentation on the right. HeaderChunk never receives the TopDown multi-column exception.
 
 ## Use Button-family actions
 
@@ -144,16 +146,28 @@ Use `Overlay` as the floating-layer container, not as a replacement for page str
 
 Pages beneath the Gallery's Controls navigation node use one consistent learning sequence after the single `HeaderChunk`:
 
+Give each public control its own Gallery page. Combine named variants or modes of that control on the same page, but do not combine sibling controls merely because they share a family or base type. For example, `Button`, `CardButton`, and `WindowCaptionButton` each use a dedicated page.
+
+The Controls parent page is a navigation overview, not a control demonstration. After its HeaderChunk, give it exactly one control-navigation Chunk containing a complete grid of CardButtons that navigate to every control page, followed only by the final Reference Chunk. Reuse the same icon glyph registered for each navigation route so the overview and navigation tree stay synchronized.
+
 1. `Variant`, when the demonstrated control exposes variants or another named mode users must choose between.
 2. `Table`, when public members or named options benefit from a compact reference. Use Flourish `DataGrid` with native WPF columns.
 3. One or more specific example chunks. Use `Example` only when there is one general example.
 4. Topic-specific content chunks such as `Content`, `Alignment`, `Presentation`, `Selection`, or `Dismissal`.
-5. `Usage`, connecting the visual control to its XAML host, command or event, service, and state ownership.
+5. `Usage`, containing one `CodeSpace` with a concrete XAML declaration, C# configuration call, or runtime invocation. Put explanatory prose in an earlier example or topic-specific Chunk, never beside the snippet in Usage.
 6. `Reference`, always last, with two peer `CardButton` links for the repository and canonical documentation.
 
 Use the exact singular titles `Variant`, `Table`, `Usage`, and `Reference`. Omit inapplicable optional sections instead of inventing content. Usage and Reference are required. A header preview does not replace an example when interaction is part of the control's contract.
 
+On every Gallery page, ordinary `PresenterMode="Split"` examples explicitly use `PresenterPosition="Left"` so Presentation remains on the left and Title, Content, and Body remain together on the right. This Gallery authoring default does not change HeaderChunk: its Split default continues to place copy on the left and Presentation on the right.
+
 Keep Table content selective rather than duplicating the generated API reference. Use a public member or option name in the first column and one short functional summary in the second. Use purpose-built controls directly in the chunk body or within a Presenter; do not put arbitrary demonstrations inside a terminal Card.
+
+In a `Variant` Chunk, normally give each named variant its own `PresenterMode="TopDown"` Presenter cell. Put only that variant's live example in `Presentation`, put its explanation in `Title` and `Content` below the presentation region, and leave `Body` unset. Arrange these TopDown Presenters in two or more columns when the available width remains readable. `WindowCaptionButton` is the exception: keep its complete caption group in one Split Presenter with `PresenterPosition="Left"` so the sample is on the left and the explanatory copy is on the right.
+
+Every multi-column Chunk uses one shared row layout that stretches all peer cells to the same arranged height. Prefer `UniformGrid` for equivalent peers. Do not use independent vertical stacks as columns when their heights can diverge. In Variant grids, give every `Presentation` example in the same row the same meaningful minimum height, with enough room around the demonstrated control.
+
+Use adaptive color to enrich semantic icons without coloring ordinary copy. Navigation glyphs and Card, ActionCard, and CardButton icons use the primary foreground on neutral surfaces. Filled surfaces use their on-primary foreground, and disabled interactive cards use the disabled foreground.
 
 ## Example
 
@@ -234,6 +248,8 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm every Presenter and HeaderChunk explicitly declares Title, Content, PresenterMode, and PresenterPosition.
 - Confirm Split Right places copy plus Body on the left and Presentation on the right; Split Left reverses only the two regions.
 - Confirm TopDown fills the upper Presentation region and keeps Title, Content, and Body left-aligned below it.
+- Confirm Split and Overlay Presenters occupy a complete row; only TopDown Presenters may share a multi-column row.
+- Confirm HeaderChunk always occupies a complete row, even when it uses TopDown.
 - Confirm Presentation receives direct XAML content, Body is assigned explicitly, and Overlay mode preserves readability in both themes.
 - Confirm vertically stacked Presenters use `FlourishPresenterPeerMargin` after the first item.
 - Confirm each ActionCard has at most one Body control; Horizontal centers the row and Vertical left-aligns the complete stack.
@@ -243,4 +259,12 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.
 - Confirm card grids use consistent row and column gaps and peer cards have compatible arranged heights.
 - Confirm Gallery control pages follow the applicable Variant, Table, examples, topic-specific content, Usage, and final Reference sequence.
+- Confirm every Gallery page ends with one Reference Chunk containing two disabled CardButtons.
+- Confirm each Gallery page demonstrates one public control only; keep variants together but split sibling controls into dedicated pages.
+- Confirm each Variant Chunk uses one Body-free TopDown Presenter per variant in a readable grid, except the Split Left WindowCaptionButton group.
+- Confirm the Controls parent has one control-navigation Chunk whose CardButtons cover every registered control route and reuse its icon, followed only by Reference.
+- Confirm every ordinary Split Presenter in Gallery uses PresenterPosition Left; do not apply that rule to HeaderChunk.
+- Confirm every control Usage Chunk contains one CodeSpace and no prose control.
+- Confirm multi-column peers stretch to one row height and Variant Presentation examples share a sufficient minimum height.
+- Confirm navigation and card icons use adaptive semantic foregrounds while ordinary copy remains neutral.
 - Recommend manual checks for light and dark themes, keyboard focus order, enlarged or localized text, collapsed optional regions, Document and CodeSpace surfaces, CodeSpace copying, all Presenter modes, both ActionCard variants, DataGrid boundary scrolling, Overlay dismissal, and output scrolling.

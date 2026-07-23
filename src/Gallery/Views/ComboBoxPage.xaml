@@ -1,0 +1,106 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ComboBoxPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Choose one value from a compact collection using Flourish item containers."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="FlourishComboBox"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="MemberGrid"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Declare a short static list in XAML or bind ItemsSource to application-owned data."
+      Title="Selection"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Direct items make a concise fixed option list."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Declared items"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="152">
+              <flourish:FlourishComboBox
+                Width="240"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                SelectedIndex="0"
+              >
+                <flourish:FlourishComboBoxItem Content="System" />
+                <flourish:FlourishComboBoxItem Content="Light" />
+                <flourish:FlourishComboBoxItem Content="Dark" />
+              </flourish:FlourishComboBox>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="ItemsSource automatically receives FlourishComboBoxItem containers."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Generated items"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="152">
+              <flourish:FlourishComboBox
+                Width="240"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ItemsSource="{Binding DensityOptions, ElementName=RootPage}"
+                SelectedIndex="0"
+              />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the FlourishComboBox API reference."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="FlourishComboBox documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

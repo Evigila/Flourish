@@ -7,10 +7,16 @@ public partial class ParagraphPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Items", "Contains Paragraph elements in reading order."),
-        new("ItemsSource", "Binds an application-owned paragraph collection when needed."),
-        new("Margin", "Adds the standard separation from Chunk title and content copy."),
+        new("Text", "Sets the text for exactly one paragraph."),
+        new("Document parent", "Supplies paragraph spacing, indentation, border, and reading layout."),
+        new("Typography", "Uses the normalized Large-size paragraph presentation."),
     ];
+
+    public string UsageCode { get; } =
+        "<flourish:Document>\n"
+        + "  <flourish:Paragraph Text=\"The first paragraph.\" />\n"
+        + "  <flourish:Paragraph Text=\"The second paragraph.\" />\n"
+        + "</flourish:Document>";
 
     public ParagraphPage()
     {

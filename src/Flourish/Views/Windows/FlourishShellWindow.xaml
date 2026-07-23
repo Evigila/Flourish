@@ -52,6 +52,7 @@
             Role="Icon"
             Text="{Binding IconGlyph}"
             TextAlignment="Center"
+            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
           />
           <control:FlourishTextBlock
             x:Name="NavigationItemLabel"

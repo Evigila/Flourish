@@ -8,15 +8,11 @@ namespace ArkheideSystem.Gallery.Views;
 
 public partial class WindowRuntimePage : Page
 {
-    private static Type? initialProfilePageType;
-
     private readonly IWindowService window;
     private readonly ITrayService tray;
     private readonly IWindowCloseService close;
-    private readonly IProfileFlyoutService profileFlyout;
     private readonly IMessageService messages;
     private readonly INotificationService notifications;
-    private readonly Type startupProfilePageType;
     private IWindowCloseGuardRegistration? closeGuard;
     private FlourishNotificationHandle? notificationHandle;
     private bool closeGuardAllows = true;
@@ -27,7 +23,6 @@ public partial class WindowRuntimePage : Page
         IWindowService window,
         ITrayService tray,
         IWindowCloseService close,
-        IProfileFlyoutService profileFlyout,
         IMessageService messages,
         INotificationService notifications
     )
@@ -35,16 +30,8 @@ public partial class WindowRuntimePage : Page
         this.window = window;
         this.tray = tray;
         this.close = close;
-        this.profileFlyout = profileFlyout;
         this.messages = messages;
         this.notifications = notifications;
-        var currentProfilePageType = profileFlyout.Current.ContentPageType;
-        startupProfilePageType =
-            Interlocked.CompareExchange(
-                ref initialProfilePageType,
-                currentProfilePageType,
-                null
-            ) ?? currentProfilePageType;
         InitializeComponent();
 
         CloseBehaviorBox.ItemsSource = Enum.GetValues<WindowCloseBehavior>();
@@ -58,7 +45,6 @@ public partial class WindowRuntimePage : Page
         Page_Unloaded(sender, e);
         window.StateChanged += RuntimeState_Changed;
         tray.StateChanged += RuntimeState_Changed;
-        profileFlyout.Changed += RuntimeState_Changed;
         notifications.NotificationsChanged += RuntimeState_Changed;
         RefreshAll();
     }
@@ -67,7 +53,6 @@ public partial class WindowRuntimePage : Page
     {
         window.StateChanged -= RuntimeState_Changed;
         tray.StateChanged -= RuntimeState_Changed;
-        profileFlyout.Changed -= RuntimeState_Changed;
         notifications.NotificationsChanged -= RuntimeState_Changed;
         closeGuard?.Dispose();
         closeGuard = null;
@@ -278,37 +263,6 @@ public partial class WindowRuntimePage : Page
         }
     }
 
-    private void ToggleProfileEnabled_Click(object sender, RoutedEventArgs e)
-    {
-        var enabled = !profileFlyout.Current.IsEnabled;
-        Execute(
-            () => profileFlyout.SetEnabled(enabled),
-            ProfileOutput,
-            $"Profile flyout {(enabled ? "enabled" : "disabled")}."
-        );
-    }
-
-    private void ToggleProfileFlyout_Click(object sender, RoutedEventArgs e) =>
-        Execute(
-            profileFlyout.Toggle,
-            ProfileOutput,
-            () => $"Profile flyout {(profileFlyout.Current.IsVisible ? "opened" : "closed")}."
-        );
-
-    private void UseConfigurationProfilePage_Click(object sender, RoutedEventArgs e) =>
-        Execute(
-            () => profileFlyout.SetContentPage<ConfigurationPage>(),
-            ProfileOutput,
-            "Profile content changed to ConfigurationPage."
-        );
-
-    private void RestoreProfilePage_Click(object sender, RoutedEventArgs e) =>
-        Execute(
-            () => profileFlyout.SetContentPage(startupProfilePageType),
-            ProfileOutput,
-            $"Profile content restored to {startupProfilePageType.Name}."
-        );
-
     private async void ShowMessage_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -319,11 +273,11 @@ public partial class WindowRuntimePage : Page
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Information
             );
-            MessageOutput.WriteLine($"Standard message result: {result}.");
+            MessageActivityOutput.WriteLine($"Standard message result: {result}.");
         }
         catch (Exception error)
         {
-            MessageOutput.WriteLine($"Error: {error.Message}");
+            MessageActivityOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -345,11 +299,11 @@ public partial class WindowRuntimePage : Page
                 },
                 MessageBoxImage.Question
             );
-            MessageOutput.WriteLine($"Custom message result: {result?.Id ?? "dismissed"}.");
+            MessageActivityOutput.WriteLine($"Custom message result: {result?.Id ?? "dismissed"}.");
         }
         catch (Exception error)
         {
-            MessageOutput.WriteLine($"Error: {error.Message}");
+            MessageActivityOutput.WriteLine($"Error: {error.Message}");
         }
     }
 
@@ -360,7 +314,7 @@ public partial class WindowRuntimePage : Page
             {
                 notificationHandle = notifications.Show(CreateNotification());
             },
-            NotificationOutput,
+            MessageActivityOutput,
             () => $"Shown notification: {notificationHandle!.Id}."
         );
     }
@@ -372,7 +326,7 @@ public partial class WindowRuntimePage : Page
             {
                 notificationHandle = notifications.Upsert(CreateNotification());
             },
-            NotificationOutput,
+            MessageActivityOutput,
             () => $"Upserted notification: {notificationHandle!.Id}."
         );
     }
@@ -385,7 +339,7 @@ public partial class WindowRuntimePage : Page
             {
                 dismissed = notifications.Dismiss(NotificationIdBox.Text.Trim());
             },
-            NotificationOutput,
+            MessageActivityOutput,
             () => dismissed
                 ? "Notification dismissed."
                 : "No active notification matched that ID."
@@ -395,7 +349,7 @@ public partial class WindowRuntimePage : Page
     private void DismissAllNotifications_Click(object sender, RoutedEventArgs e) =>
         Execute(
             notifications.DismissAll,
-            NotificationOutput,
+            MessageActivityOutput,
             "Dismissed all shell notifications."
         );
 
@@ -456,9 +410,5 @@ public partial class WindowRuntimePage : Page
             isRefreshingCloseBehavior = false;
         }
 
-        var profileState = profileFlyout.Current;
-        ToggleProfileEnabledButton.Content = profileState.IsEnabled
-            ? "Disable profile"
-            : "Enable profile";
     }
 }

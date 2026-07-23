@@ -140,5 +140,11 @@
         <flourish:OutputCard x:Name="RegionOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
     </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the shell surface documentation." Icon="&#xE946;" IsEnabled="False" Title="Shell documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
   </flourish:PageBody>
 </Page>

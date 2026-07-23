@@ -11,7 +11,7 @@ Flourish treats layout and control selection as part of an application's meaning
 
 Use `PageBody` as the page root. Its direct children are limited to `HeaderChunk` and `Chunk`; cards, panels, presenters, and other content belong inside a chunk body.
 
-A standard page has one leading `HeaderChunk` followed by one or more `Chunk` controls. `PageBody` rejects a second header, a header that is not first, and every other direct child. `HeaderChunk`, `Chunk`, and `Presenter` are full-width controls; each occupies its own row.
+A standard page has one leading `HeaderChunk` followed by one or more `Chunk` controls. `PageBody` rejects a second header, a header that is not first, and every other direct child. HeaderChunk and Chunk always occupy a complete row. Split and Overlay Presenters are also full-width; only TopDown Presenter may place readable peer presentations in columns.
 
 Shell-owned transient surfaces—including the profile flyout, popups, and dialogs—are not main-navigation content pages. They do not require a PageBody or oversized HeaderChunk. Their internal content still follows the typography, spacing, content-control, interaction, theming, and accessibility rules in this article.
 
@@ -86,13 +86,13 @@ Use `CodeSpace` for exact copyable source or command text. It shares Document's 
 
 `Presenter` separates three concerns: required `Title` and `Content` provide copy, `Body` holds supporting controls with that copy, and `Presentation` holds an image, icon group, illustration, or composed visual. Explicitly declare `PresenterMode` and `PresenterPosition`.
 
-- `Split` places copy plus body on one side and the presentation surface on the other. `PresenterPosition="Right"` is the standard arrangement; `Left` reverses the regions.
-- `TopDown` places presentation above a left-aligned copy-and-body region.
+- `Split` places copy plus body on one side and the presentation surface on the other. `PresenterPosition="Left"` is the default arrangement; `Right` reverses the regions.
+- `TopDown` places presentation above a left-aligned copy-and-body region and is the only ordinary Presenter mode that may share a multi-column row.
 - `Overlay` fills the Presenter with presentation content and draws copy plus body above it.
 
 The `Presentation` region fills its allocated space and centers its child content. Only that region receives the adaptive neutral rounded background; the copy-and-body side stays transparent. In every mode, title, content, and body keep one shared left alignment.
 
-`Presentation` is the default XAML content property. Assign `Body` through an explicit `Presenter.Body` property element. `HeaderChunk` is the page-level Presenter specialization; unlike Presenter, its default XAML content property is `Body`.
+`Presentation` is the default XAML content property. Assign `Body` through an explicit `Presenter.Body` property element. `HeaderChunk` is the page-level Presenter specialization; unlike Presenter, its default XAML content property is `Body`. HeaderChunk never participates in multi-column layout, including when its mode is TopDown.
 
 ## Use the button family by action
 

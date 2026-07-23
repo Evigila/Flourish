@@ -1,0 +1,109 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.CardButtonPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="A card-shaped action whose complete surface participates in button interaction."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="CardButton"
+    />
+
+    <flourish:Chunk Title="Variant">
+      <UniformGrid Columns="2">
+        <flourish:Presenter Margin="0,0,8,8" Content="Uses the neutral interactive card surface." PresenterMode="TopDown" PresenterPosition="Left" Title="Standard">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Default card action." Icon="&#xE8A5;" Title="Standard" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,0,0,8" Content="Adds elevation while the complete surface remains interactive." PresenterMode="TopDown" PresenterPosition="Left" Title="Elevated">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Raised card action." Icon="&#xE8A5;" Title="Elevated" Variant="Elevated" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="0,8,8,0" Content="Uses primary-color emphasis for a prominent card action." PresenterMode="TopDown" PresenterPosition="Left" Title="Filled">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Prominent card action." Icon="&#xE8A5;" Title="Filled" Variant="Filled" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,8,0,0" Content="Provides a quieter filled card action." PresenterMode="TopDown" PresenterPosition="Left" Title="Tonal">
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Softer card action." Icon="&#xE8A5;" Title="Tonal" Variant="Tonal" /></Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="PropertiesGrid"
+        AutoGenerateColumns="False"
+        CanUserAddRows="False"
+        CanUserDeleteRows="False"
+        CanUserReorderColumns="False"
+        FontWeight="Regular"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Layout">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="The icon appears above the copy."
+          Icon="&#xE8A5;"
+          Title="Vertical content"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="The icon appears beside the copy."
+          Icon="&#xE946;"
+          IconPosition="Left"
+          Title="Horizontal content"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Interaction contract">
+      <flourish:Card Content="The complete CardButton surface supports focus, keyboard activation, commands, disabled state, pointer feedback, and automation." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="&lt;flourish:CardButton&#xA;  Command=&quot;{Binding OpenReportsCommand}&quot;&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  Icon=&quot;&amp;#xE8A5;&quot;&#xA;  Variant=&quot;Elevated&quot; /&gt;" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="Flourish GitHub repository"
+          Content="Repository link placeholder"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="CardButton documentation"
+          Content="Canonical documentation link placeholder"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="CardButton documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

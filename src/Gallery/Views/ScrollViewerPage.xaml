@@ -1,0 +1,105 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ScrollViewerPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Host scrollable content with Flourish scroll bars, boundary handoff, and optional smooth wheel motion."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="ScrollViewer"
+    />
+
+    <flourish:Chunk
+      Content="The compact mode changes the scroll-bar footprint while preserving the same viewport behavior."
+      Title="Variant"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Default scroll bars for an ordinary content viewport."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Standard"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="210">
+              <flourish:ScrollViewer
+                Width="260"
+                Height="160"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                VerticalScrollBarVisibility="Visible"
+              >
+                <StackPanel>
+                  <flourish:Card Margin="0,0,0,8" Title="First" Content="Scroll through a bounded surface." />
+                  <flourish:Card Margin="0,0,0,8" Title="Second" Content="Wheel input moves the inner viewport first." />
+                  <flourish:Card Title="Third" Content="At the boundary, input may bubble to PageBody." />
+                </StackPanel>
+              </flourish:ScrollViewer>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="A smaller scroll affordance for space-constrained surfaces."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Compact"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="210">
+              <flourish:ScrollViewer
+                Width="260"
+                Height="160"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsCompact="True"
+                VerticalScrollBarVisibility="Visible"
+              >
+                <StackPanel>
+                  <flourish:Card Margin="0,0,0,8" Title="Compact" Content="The viewport keeps its native content contract." />
+                  <flourish:Card Margin="0,0,0,8" Title="Smooth" Content="Physical scrolling uses render-only interpolation." />
+                  <flourish:Card Title="Boundary" Content="Outward wheel input is left unhandled." />
+                </StackPanel>
+              </flourish:ScrollViewer>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="The deepest scrollable viewport consumes wheel input only while it can move in that direction."
+      Title="Boundary scrolling"
+    >
+      <flourish:Card Title="Nested viewports" Content="Do not add a PreviewMouseWheel handler that marks every event handled. Flourish lets outward wheel events bubble at the top and bottom." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the ScrollViewer API reference." Icon="&#xE8A5;" IsEnabled="False" Title="ScrollViewer documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

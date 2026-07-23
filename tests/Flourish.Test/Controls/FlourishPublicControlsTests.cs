@@ -300,7 +300,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(presenter.Body);
             Assert.Null(presenter.Presentation);
             Assert.Equal(PresenterMode.Split, presenter.PresenterMode);
-            Assert.Equal(PresenterPosition.Right, presenter.PresenterPosition);
+            Assert.Equal(PresenterPosition.Left, presenter.PresenterPosition);
             Assert.Empty(document.Items);
             Assert.Equal(string.Empty, paragraph.Text);
             Assert.IsAssignableFrom<FlourishTextBlock>(paragraph);
@@ -915,14 +915,18 @@ public sealed class FlourishPublicControlsTests
             Assert.Same(explicitToolTip, explicitButton.ToolTip);
             Assert.Same(nativeToolTip, nativeButton.ToolTip);
 
+            iconButton.ToolTip = "Reload";
+            Assert.Same(iconToolTip, iconButton.ToolTip);
+            Assert.Equal("Reload", iconToolTip.Content);
+
             FlourishToolTipPolicy.SetIsEnabled(iconButton, false);
             FlourishToolTipPolicy.SetIsEnabled(captionButton, false);
             FlourishToolTipPolicy.SetIsEnabled(explicitButton, false);
             FlourishToolTipPolicy.SetIsEnabled(nativeButton, false);
 
-            Assert.Equal("Refresh", iconButton.ToolTip);
+            Assert.Equal("Reload", iconButton.ToolTip);
             Assert.Equal("Close", captionButton.ToolTip);
-            Assert.Null(iconToolTip.Content);
+            Assert.Equal("Reload", iconToolTip.Content);
             Assert.Same(explicitToolTip, explicitButton.ToolTip);
             Assert.Same(nativeToolTip, nativeButton.ToolTip);
         });

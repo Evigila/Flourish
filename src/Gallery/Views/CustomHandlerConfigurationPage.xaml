@@ -1,0 +1,43 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.CustomHandlerConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="Custom handler"
+      Content="Place application-owned WPF content and command actions in predefined shell regions."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk Title="Regions">
+      <UniformGrid Columns="2">
+        <flourish:Card
+          Margin="0,0,8,0"
+          Icon="&#xE8BA;"
+          Title="WPF content"
+          Content="Add receives a region, service-aware element factory, and stable display order."
+        />
+        <flourish:Card
+          Margin="8,0,0,0"
+          Icon="&#xE756;"
+          Title="Command actions"
+          Content="Dedicated title-bar and footer helpers create buttons backed by command keys or callbacks."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder.ConfigureCustomHandler(custom =&gt; custom&#10;    .AddTitlebarAction(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;app.refresh&quot;)&#10;    .AddFooterCommand(&#10;        FlourishRegion.FooterEnd,&#10;        &quot;Settings&quot;,&#10;        &quot;\uE713&quot;,&#10;        &quot;app.settings&quot;));" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

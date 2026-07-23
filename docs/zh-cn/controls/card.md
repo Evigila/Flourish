@@ -40,6 +40,8 @@ description: 使用 Card、ActionCard 和 OutputCard 构建职责清晰的信息
 
 `Icon` 只接受一个使用图标字体呈现的 Unicode 文本元素。图片、图标组和组合控件树应放入 `Presenter.Presentation`。`Card` 没有 `Body`，不能承载任意子控件。
 
+Card 与 ActionCard 的图标使用随主题变化的主色前景，与中性文案形成区分。Filled Card 则使用主色背景上的对比前景。
+
 ### 样式变体
 
 | 变体 | 用途 |

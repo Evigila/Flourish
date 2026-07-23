@@ -1,0 +1,34 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ProfileConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="Profile"
+      Content="Choose the page hosted by the title-bar profile flyout."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk Title="Contract">
+      <flourish:Card
+        Icon="&#xE77B;"
+        Title="Profile page"
+        Content="The page type is resolved through dependency injection when the profile surface is opened. Enable the profile region through ConfigureTitleBar."
+      />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder&#10;    .ConfigureTitleBar(titleBar =&gt; titleBar.SetProfile(NameOrder.FirstLast))&#10;    .ConfigureProfile(profile =&gt; profile.SetProfilePage&lt;AccountPage&gt;());" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

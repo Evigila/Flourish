@@ -1,0 +1,111 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ComboBoxItemPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Represent a selectable option inside a FlourishComboBox."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="FlourishComboBoxItem"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="MemberGrid"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Use explicit item containers when each static option needs its own content, enabled state, or tooltip."
+      Title="Items"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Content supplies the option displayed in the closed selector and popup."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Selectable item"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="152">
+              <flourish:FlourishComboBox
+                Width="240"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                SelectedIndex="0"
+              >
+                <flourish:FlourishComboBoxItem Content="Standard density" />
+                <flourish:FlourishComboBoxItem Content="Compact density" />
+              </flourish:FlourishComboBox>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="Disable an unavailable option while keeping the reason visible in a tooltip."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Unavailable item"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="152">
+              <flourish:FlourishComboBox
+                Width="240"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                SelectedIndex="0"
+              >
+                <flourish:FlourishComboBoxItem Content="Stable channel" />
+                <flourish:FlourishComboBoxItem
+                  Content="Preview channel"
+                  IsEnabled="False"
+                  ToolTip="Preview updates are not configured."
+                />
+              </flourish:FlourishComboBox>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the FlourishComboBoxItem API reference."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="FlourishComboBoxItem documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

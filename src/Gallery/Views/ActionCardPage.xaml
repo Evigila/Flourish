@@ -1,0 +1,129 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.ActionCardPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="A fixed card layout for one setting or local action with one interactive body."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="ActionCard"
+    />
+
+    <flourish:Chunk Title="Variant">
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Icon and copy stay on the left while the single interactive Body stays on the right."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Horizontal"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="240" Padding="16">
+              <flourish:ActionCard Icon="&#xE790;" Content="Choose a theme value." Title="Application theme" Variant="Horizontal">
+                <flourish:ActionCard.Body>
+                  <flourish:FlourishComboBox Width="144" SelectedIndex="0">
+                    <flourish:FlourishComboBoxItem Content="System" />
+                    <flourish:FlourishComboBoxItem Content="Light" />
+                    <flourish:FlourishComboBoxItem Content="Dark" />
+                  </flourish:FlourishComboBox>
+                </flourish:ActionCard.Body>
+              </flourish:ActionCard>
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="Icon, copy, and the single interactive Body form one left-aligned vertical stack."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Vertical"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="240" Padding="16">
+              <flourish:ActionCard Icon="&#xE946;" Content="Open the detailed configuration." Title="Configuration" Variant="Vertical">
+                <flourish:ActionCard.Body>
+                  <flourish:Button Content="View details" />
+                </flourish:ActionCard.Body>
+              </flourish:ActionCard>
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="ActionCardMemberGrid"
+        AutoGenerateColumns="False"
+        CanUserAddRows="False"
+        CanUserDeleteRows="False"
+        CanUserReorderColumns="False"
+        FontWeight="Regular"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Body controls">
+      <StackPanel>
+        <flourish:ActionCard
+          Icon="&#xE838;"
+          Content="Invoke one local action."
+          Title="Open configuration"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:Button Content="Open" />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:ActionCard
+          Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          Icon="&#xE8D2;"
+          Content="Edit one setting value."
+          Title="Configuration key"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:FlourishTextBox Width="200" Text="Flourish:Theme" />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="&lt;flourish:ActionCard Title=&quot;Theme&quot; Content=&quot;Choose the application theme.&quot; Icon=&quot;&amp;#xE790;&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishComboBox ItemsSource=&quot;{Binding Themes}&quot; SelectedItem=&quot;{Binding Theme}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="Flourish GitHub repository"
+          Content="Repository link placeholder"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="ActionCard documentation"
+          Content="Canonical documentation link placeholder"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="ActionCard documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

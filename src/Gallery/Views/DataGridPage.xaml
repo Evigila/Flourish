@@ -58,9 +58,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:Card
-        Content="Bind ItemsSource and declare DataGridColumn objects as in WPF. RowCount and ColumnCount report current data-row and column counts; FirstColumnForeground changes the first displayed column."
-      />
+      <flourish:CodeSpace Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

@@ -1,0 +1,43 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.MotionConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="Motion"
+      Content="Configure page, navigation, and hover transitions while respecting accessibility preferences."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk Title="Motion families">
+      <UniformGrid Columns="2">
+        <flourish:Card
+          Margin="0,0,8,0"
+          Icon="&#xE768;"
+          Title="Transitions"
+          Content="Choose page-entry and navigation-panel transition types with optional explicit durations."
+        />
+        <flourish:Card
+          Margin="8,0,0,0"
+          Icon="&#xE7C8;"
+          Title="Interaction"
+          Content="Enable hover reveal and keep the system reduced-motion preference authoritative."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseMotion())&#10;    .ConfigureMotion(motion =&gt; motion&#10;        .EnablePageTransition(FlourishPageTransition.Fade)&#10;        .EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize)&#10;        .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))&#10;        .RespectSystemReducedMotion());" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

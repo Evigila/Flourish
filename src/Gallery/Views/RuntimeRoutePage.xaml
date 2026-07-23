@@ -20,7 +20,7 @@
       <flourish:Presenter
         Content="This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running."
         PresenterMode="Split"
-        PresenterPosition="Right"
+        PresenterPosition="Left"
         Title="Route instance"
       >
         <flourish:Presenter.Presentation>
@@ -32,6 +32,12 @@
           </StackPanel>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the navigation documentation." Icon="&#xE946;" IsEnabled="False" Title="Navigation documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>
 </Page>

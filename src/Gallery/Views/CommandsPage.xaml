@@ -130,7 +130,7 @@
       <flourish:Presenter
         Content="Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces."
         PresenterMode="Split"
-        PresenterPosition="Right"
+        PresenterPosition="Left"
         Title="Registry state"
       >
         <flourish:Presenter.Presentation>
@@ -140,6 +140,16 @@
           </StackPanel>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder.ConfigureServices((_, services) =&gt;&#xA;    services.AddCommandParser&lt;ReportCommandParser&gt;());&#xA;&#xA;await commandDispatcher.ExecuteAsync(&quot;reports.refresh&quot;);" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>
 </Page>

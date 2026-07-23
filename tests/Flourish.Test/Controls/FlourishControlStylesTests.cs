@@ -727,6 +727,7 @@ public sealed class FlourishControlStylesTests
                 Content = "Supporting copy",
                 Body = new FlourishButton { Content = "Action" },
                 Presentation = new Border { Width = 120, Height = 72 },
+                PresenterPosition = PresenterPosition.Right,
             };
             var splitLeft = new Presenter
             {
@@ -1616,6 +1617,73 @@ public sealed class FlourishControlStylesTests
                     AssertTemplatePart<FlourishTextBlock>(aligned, "TitleHost")
                         .TextAlignment
                 );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DisabledCardButtons_UseTheDisabledSurfaceForEveryVariant()
+    {
+        RunInSta(() =>
+        {
+            var cards = new[]
+            {
+                new CardButton { Title = "Standard", IsEnabled = false },
+                new CardButton
+                {
+                    Title = "Elevated",
+                    IsEnabled = false,
+                    Variant = ButtonVariant.Elevated,
+                },
+                new CardButton
+                {
+                    Title = "Tonal",
+                    IsEnabled = false,
+                    Variant = ButtonVariant.Tonal,
+                },
+                new CardButton
+                {
+                    Title = "Filled",
+                    IsEnabled = false,
+                    Variant = ButtonVariant.Filled,
+                },
+            };
+            var panel = new StackPanel();
+            foreach (var card in cards)
+            {
+                panel.Children.Add(card);
+            }
+
+            var window = CreateWindow(panel);
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var card in cards)
+                {
+                    card.ApplyTemplate();
+                    Assert.Same(
+                        card.TryFindResource("FlourishControlDisabledBrush"),
+                        card.Background
+                    );
+                    Assert.Same(
+                        card.TryFindResource("FlourishControlStrokeDisabledBrush"),
+                        card.BorderBrush
+                    );
+                    Assert.Same(
+                        card.TryFindResource("FlourishNeutralForegroundDisabledBrush"),
+                        card.Foreground
+                    );
+                    Assert.Equal(
+                        Visibility.Collapsed,
+                        AssertTemplatePart<Border>(card, "ShadowChrome").Visibility
+                    );
+                }
             }
             finally
             {

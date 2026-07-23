@@ -6,11 +6,15 @@ using WpfControl = System.Windows.Controls.Control;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// A full-width presentation layout with required copy and an explicitly selected composition.
+/// A presentation layout with required copy and an explicitly selected composition.
 /// In the standard split composition, copy and body content occupy one side while the presented
 /// visual occupies the other. The presentation surface fills its region and centers presentation
 /// content, while body content aligns with the copy on the transparent side.
 /// </summary>
+/// <remarks>
+/// Split and Overlay compositions occupy a complete row. TopDown is the only composition that
+/// may be arranged in columns with peer Presenter controls.
+/// </remarks>
 [ContentProperty(nameof(Presentation))]
 public class Presenter : WpfControl
 {
@@ -65,7 +69,7 @@ public class Presenter : WpfControl
             typeof(PresenterPosition),
             typeof(Presenter),
             new FrameworkPropertyMetadata(
-                global::ArkheideSystem.Flourish.Controls.PresenterPosition.Right
+                global::ArkheideSystem.Flourish.Controls.PresenterPosition.Left
             ),
             IsPresenterPositionValid
         );
@@ -125,7 +129,7 @@ public class Presenter : WpfControl
 
     /// <summary>
     /// Gets or sets the presentation position in split mode. Authors should assign this property
-    /// explicitly; its runtime fallback places the presentation on the right.
+    /// explicitly; its runtime fallback places the presentation on the left.
     /// </summary>
     public PresenterPosition PresenterPosition
     {

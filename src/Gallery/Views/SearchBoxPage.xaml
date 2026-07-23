@@ -1,0 +1,102 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.SearchBoxPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Collect compact query text with a search glyph and an in-control placeholder."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="FlourishSearchBox"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="MemberGrid"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="The placeholder collapses when a query exists or the field receives focus."
+      Title="Query"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Placeholder supplies a concise hint before the user enters a query."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Empty query"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="136">
+              <flourish:FlourishSearchBox
+                Width="260"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Placeholder="Search controls"
+              />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="Text uses the same binding, validation, and change notification contract as FlourishTextBox."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Active query"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="136">
+              <flourish:FlourishSearchBox
+                Width="260"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Placeholder="Search controls"
+                Text="Presenter"
+              />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the FlourishSearchBox API reference."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="FlourishSearchBox documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

@@ -28,6 +28,8 @@ builder.ConfigureServices((_, services) =>
 
 页面类型必须派生自 `System.Windows.Controls.Page`。Flourish 从简单类名生成导航键，并移除一个末尾、区分大小写的 `Page` 后缀：`SettingsPage` 生成 `Settings`，`ReportPagePage` 生成 `ReportPage`，`Page1` 仍生成 `Page1`。显示名称不会影响 key。这里设置的显示名称和图标会被 `AddNavigableViewItem` 复用，因此 ViewItem 不会再次要求传入这些值。
 
+标准 Shell 使用随主题变化的主色前景呈现导航图标，同时让标签保持中性色，从而在浅色与深色主题中提供一致的视觉强调。
+
 ```csharp
 services.AddNavigable<ReportsPage>("报表", "\uE9D2");
 services.AddNavigable<EditorPage>(

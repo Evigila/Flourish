@@ -50,12 +50,12 @@
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Appearance and motion"
+          AutomationProperties.Name="Appearance"
           Click="DemoCard_Click"
-          Content="Theme, fonts, tooltips, animation, and material effects."
+          Content="Theme, typography, page overrides, and material effects."
           Icon="&#xE790;"
           Tag="Appearance"
-          Title="Appearance &amp; motion"
+          Title="Appearance"
         />
         <flourish:CardButton
           MinHeight="150"
@@ -90,12 +90,12 @@
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Toolbar and status"
+          AutomationProperties.Name="Dynamic toolbar"
           Click="DemoCard_Click"
-          Content="Dynamic actions, status messages, and custom shell regions."
+          Content="Associate command actions with the page that owns each workflow."
           Icon="&#xE945;"
-          Tag="ToolbarStatus"
-          Title="Toolbar &amp; status"
+          Tag="DynamicToolbarConfiguration"
+          Title="Dynamic toolbar"
         />
         <flourish:CardButton
           MinHeight="150"
@@ -110,12 +110,12 @@
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Window and profile"
+          AutomationProperties.Name="Window"
           Click="DemoCard_Click"
-          Content="Window, tray, close guards, profile, dialogs, and notifications."
+          Content="Window state, tray behavior, close guards, dialogs, and notifications."
           Icon="&#xE737;"
           Tag="WindowRuntime"
-          Title="Window &amp; profile"
+          Title="Window"
         />
         <flourish:CardButton
           MinHeight="150"
@@ -127,6 +127,12 @@
           Tag="BackgroundTasks"
           Title="Background tasks"
         />
+      </UniformGrid>
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

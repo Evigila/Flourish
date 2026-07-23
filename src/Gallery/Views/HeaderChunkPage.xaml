@@ -1,0 +1,119 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.HeaderChunkPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      x:Name="HeaderPreview"
+      Content="Introduce one page with emphasized copy and presentation."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="HeaderChunk"
+    >
+      <flourish:HeaderChunk.Body>
+        <WrapPanel>
+          <flourish:Button Variant="Filled" Click="SplitRight_Click" Content="Split right" />
+          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="SplitLeft_Click" Content="Split left" />
+          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="Overlay_Click" Content="Overlay" />
+          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="TopDown_Click" Content="Top down" />
+        </WrapPanel>
+      </flourish:HeaderChunk.Body>
+      <flourish:HeaderChunk.Presentation>
+        <Border MinHeight="220" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="12">
+          <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="{DynamicResource FlourishFontSizeIcon}" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Role="Icon" Text="&#xE7C8;" />
+            <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Page header" />
+          </StackPanel>
+        </Border>
+      </flourish:HeaderChunk.Presentation>
+    </flourish:HeaderChunk>
+
+    <flourish:Chunk
+      Content="Each compact diagram identifies the Presentation region; the page-leading preview above renders the actual HeaderChunk."
+      Title="Variant"
+    >
+      <UniformGrid Columns="3">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Places Presentation beside the copy. Right is the HeaderChunk default."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Split"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="180">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Border Margin="8" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+              <Border Grid.Column="1" Margin="8" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="8" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="4,0"
+          Content="Layers the header copy and Body over Presentation."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Overlay"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="180">
+              <Border Margin="8" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="8" />
+              <Border Width="120" Height="64" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="Places Presentation above a left-aligned copy and Body region while remaining full-width."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="TopDown"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="180">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Border Margin="8" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="8" />
+              <Border Grid.Row="1" Margin="8" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Presentation">
+      <flourish:Card Content="Presentation hosts the page illustration while Title, Content, and Body remain one copy group. HeaderChunk always owns a complete row, including TopDown mode." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE8A5;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the HeaderChunk guide." Icon="&#xE946;" IsEnabled="False" Title="HeaderChunk documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

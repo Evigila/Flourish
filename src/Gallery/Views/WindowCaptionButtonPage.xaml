@@ -1,0 +1,93 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.WindowCaptionButtonPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="A dedicated title-bar action with caption geometry and window interaction semantics."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="WindowCaptionButton"
+    />
+
+    <flourish:Chunk Title="Variant">
+      <flourish:Presenter
+        Content="Use Text for ordinary caption commands and reserve Danger for the close command."
+        PresenterMode="Split"
+        PresenterPosition="Left"
+        Title="Caption semantics"
+      >
+        <flourish:Presenter.Presentation>
+          <Border
+            Background="{DynamicResource FlourishControlBackgroundBrush}"
+            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+            BorderThickness="1"
+          >
+            <StackPanel Orientation="Horizontal">
+              <flourish:WindowCaptionButton AutomationProperties.Name="Minimize" Icon="&#xE921;" ToolTip="Minimize" Variant="Text" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="Maximize" Icon="&#xE922;" ToolTip="Maximize" Variant="Text" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="Close" Icon="&#xE8BB;" ToolTip="Close" Variant="Danger" />
+            </StackPanel>
+          </Border>
+        </flourish:Presenter.Presentation>
+      </flourish:Presenter>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="PropertiesGrid"
+        AutoGenerateColumns="False"
+        CanUserAddRows="False"
+        CanUserDeleteRows="False"
+        CanUserReorderColumns="False"
+        FontWeight="Regular"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Caption geometry">
+      <flourish:Card Content="WindowCaptionButton is sized for the title bar and keeps the caption hit target separate from ordinary application buttons." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Interaction contract">
+      <flourish:Card Content="Provide an automation name and ToolTip for each icon-only action, and bind the action to the corresponding window command." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="&lt;flourish:WindowCaptionButton&#xA;  AutomationProperties.Name=&quot;Close&quot;&#xA;  Command=&quot;{x:Static SystemCommands.CloseWindowCommand}&quot;&#xA;  Icon=&quot;&amp;#xE8BB;&quot;&#xA;  ToolTip=&quot;Close&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="Flourish GitHub repository"
+          Content="Repository link placeholder"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="WindowCaptionButton documentation"
+          Content="Canonical documentation link placeholder"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="WindowCaptionButton documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

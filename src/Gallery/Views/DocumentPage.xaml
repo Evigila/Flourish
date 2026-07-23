@@ -1,0 +1,83 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.DocumentPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Present several normalized Paragraph elements as one rounded, lightly outlined, full-width reading surface."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Document"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        ItemsSource="{Binding Properties, ElementName=RootPage}"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Each Paragraph item receives the standard indentation, spacing, and Large reading size."
+      Title="Example"
+    >
+      <flourish:Document>
+        <flourish:Paragraph Text="Document is intended for sustained reading rather than a short summary. Its transparent surface uses a rounded, thin, low-contrast outline without adding a title, content field, or visual variant." />
+        <flourish:Paragraph Text="Every Paragraph added to Document receives the standard first-line inset and the gap between adjacent paragraphs." />
+        <flourish:Paragraph Text="Keep Document as the only Body of its Chunk and preserve its default outer spacing from the Chunk copy. Place controls, cards, and illustrations in separate Chunks so the reading flow remains predictable." />
+      </flourish:Document>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Card or Document">
+      <UniformGrid Columns="2">
+        <flourish:Card
+          Margin="0,0,8,0"
+          Content="Use Card when one concise block of copy is enough."
+          Title="One block"
+        />
+        <flourish:Card
+          Margin="8,0,0,0"
+          Content="Use Document when the content needs several distinct Paragraph elements."
+          Title="Several paragraphs"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the Document guide."
+          Icon="&#xE946;"
+          IsEnabled="False"
+          Title="Document documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

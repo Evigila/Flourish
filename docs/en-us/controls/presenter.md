@@ -1,15 +1,15 @@
 ---
 title: Presenter
-description: Use Presenter for full-width Split, TopDown, or Overlay compositions that combine copy, controls, and rich presentation content.
+description: Use Presenter for Split, TopDown, or Overlay compositions that combine copy, controls, and rich presentation content.
 ---
 
 # Presenter
 
-`Presenter` is a full-width, three-part layout for copy, supporting controls, and rich presentation content. Use it for an image, several icons, an illustration, a preview, or another composed visual. Only one Presenter belongs in a row.
+`Presenter` is a three-part layout for copy, supporting controls, and rich presentation content. Use it for an image, several icons, an illustration, a preview, or another composed visual. Split and Overlay Presenters are full-width and occupy a row alone. TopDown is the only mode that may place peer Presenters in columns.
 
 Use [Card](card.md) when a surface needs at most one icon and one paragraph. Use `Presenter` when the presentation needs an image, an icon group, or its own content tree.
 
-Every Presenter declaration explicitly supplies `Title`, `Content`, `PresenterMode`, and `PresenterPosition`. The runtime fallback values are `Split` and `Right`, but naming them at the call site keeps the intended composition clear.
+Every Presenter declaration explicitly supplies `Title`, `Content`, `PresenterMode`, and `PresenterPosition`. The runtime fallback values are `Split` and `Left`, but naming them at the call site keeps the intended composition clear.
 
 ## Content regions
 
@@ -20,7 +20,7 @@ Every Presenter declaration explicitly supplies `Title`, `Content`, `PresenterMo
 | `Body` | `object?` | `null` | Controls or supporting content arranged with the copy; assign it explicitly with `Presenter.Body`. |
 | `Presentation` | `object?` | `null` | Image, icon group, illustration, preview, or composed visual; the default XAML content property. |
 | `PresenterMode` | `PresenterMode` | `Split` | Explicit composition choice: `Split`, `TopDown`, or `Overlay`. |
-| `PresenterPosition` | `PresenterPosition` | `Right` | Explicit presentation-side choice for `Split`. |
+| `PresenterPosition` | `PresenterPosition` | `Left` | Explicit presentation-side choice for `Split`. |
 
 An absent `Body` collapses with its spacing. The copy-and-body region stays transparent and aligns its contents together to the left. Only the `Presentation` region uses the adaptive light-neutral background and shared surface corner radius. That region fills its allocated space while centering the presented content within it.
 
@@ -32,15 +32,15 @@ When several Presenters are stacked vertically in one section, apply `FlourishPr
 
 | Position | Arrangement |
 | --- | --- |
-| `Right` | Copy and `Body` are on the left; `Presentation` is on the right. This is the standard arrangement and runtime fallback. |
-| `Left` | `Presentation` is on the left; copy and `Body` are on the right. |
+| `Left` | `Presentation` is on the left; copy and `Body` are on the right. This is the standard arrangement and runtime fallback. |
+| `Right` | Copy and `Body` are on the left; `Presentation` is on the right. |
 
 ```xml
 <flourish:Presenter
   Title="Workspace overview"
   Content="See activity and open the complete report."
   PresenterMode="Split"
-  PresenterPosition="Right">
+  PresenterPosition="Left">
   <flourish:Presenter.Body>
     <flourish:Button
       Command="{Binding OpenReportCommand}"
@@ -56,7 +56,7 @@ When several Presenters are stacked vertically in one section, apply `FlourishPr
 
 ## TopDown mode
 
-`TopDown` places the `Presentation` region across the top and the copy-and-body region below it. The lower region keeps `Title`, `Content`, and `Body` aligned together on the left.
+`TopDown` places the `Presentation` region across the top and the copy-and-body region below it. The lower region keeps `Title`, `Content`, and `Body` aligned together on the left. Peer TopDown Presenters may share a multi-column row when every presentation and description remains readable.
 
 ```xml
 <flourish:Presenter
@@ -118,7 +118,7 @@ The direct `UniformGrid` is assigned to `Presentation`. Always use an explicit `
 
 ## HeaderChunk
 
-`HeaderChunk` inherits `Presenter` and uses the same explicit title, content, mode, position, body, and presentation contract. It is a page-level peer of `Chunk`, uses an emphasized background and the HeaderSize title, and appears once at the beginning of a standard content page. Unlike `Presenter`, its default XAML content property is `Body`, so assign `HeaderChunk.Presentation` explicitly.
+`HeaderChunk` inherits `Presenter` and uses the same explicit title, content, mode, position, body, and presentation contract. It is a page-level peer of `Chunk`, uses an emphasized background and the HeaderSize title, and appears once at the beginning of a standard content page. It always occupies a complete row, including in TopDown mode; the TopDown multi-column exception applies only to ordinary Presenter. Its independent Split fallback remains `Right`, so copy stays on the left and Presentation stays on the right. Unlike `Presenter`, its default XAML content property is `Body`, so assign `HeaderChunk.Presentation` explicitly.
 
 ## Related content
 

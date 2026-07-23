@@ -16,6 +16,46 @@
       Title="Presenter"
     />
 
+    <flourish:Chunk
+      Content="Each diagram summarizes a composition. The full-width live examples follow the member table."
+      Title="Variant"
+    >
+      <UniformGrid Columns="3">
+        <flourish:Presenter Margin="0,0,8,0" Content="Places Presentation beside the copy-and-body region." PresenterMode="TopDown" PresenterPosition="Left" Title="Split">
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="180">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
+              <Border Grid.Column="1" Margin="8" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="4,0" Content="Layers the copy-and-body region over Presentation." PresenterMode="TopDown" PresenterPosition="Left" Title="Overlay">
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="180">
+              <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
+              <Border Width="120" Height="64" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,0,0,0" Content="Places Presentation above the copy-and-body region and may share a row with peer TopDown Presenters." PresenterMode="TopDown" PresenterPosition="Left" Title="TopDown">
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="180">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
+              <Border Grid.Row="1" Margin="8" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
     <flourish:Chunk Title="Table">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
@@ -35,10 +75,10 @@
     >
       <StackPanel>
         <flourish:Presenter
-          Content="Presentation defaults to the right. Body shares the copy region and its left alignment."
+          Content="Presentation defaults to the left. Body shares the copy region and stays aligned with the copy on the right."
           PresenterMode="Split"
-          PresenterPosition="Right"
-          Title="Right presentation"
+          PresenterPosition="Left"
+          Title="Left presentation (default)"
         >
           <flourish:Presenter.Body>
             <flourish:Button Content="Explore layout" Variant="Filled" />
@@ -56,11 +96,14 @@
 
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Move Presentation to the left without changing the copy or Body hierarchy."
+          Content="Body remains grouped with the copy while Presentation stays on the default left side."
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Left presentation"
+          Title="Split with Body"
         >
+          <flourish:Presenter.Body>
+            <flourish:Button Content="Open details" Variant="Tonal" />
+          </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <Border MinHeight="180">
               <flourish:FlourishTextBlock
@@ -144,6 +187,10 @@
           Title="Rich presentation"
         />
       </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="&lt;flourish:Presenter Title=&quot;Reports&quot; Content=&quot;Review recent activity.&quot; PresenterMode=&quot;Split&quot; PresenterPosition=&quot;Left&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

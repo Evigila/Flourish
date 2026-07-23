@@ -230,5 +230,14 @@
         <flourish:OutputCard x:Name="ShellFeatureOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
     </flourish:Chunk>
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseTitleBar())&#10;    .ConfigureTitleBar(titleBar =&gt; titleBar&#10;        .SetApplicationTitle(&quot;Flourish Gallery&quot;)&#10;        .SetSearch(&quot;Search&quot;, (_, query) =&gt; Search(query))&#10;        .SetProfile(NameOrder.FirstLast));" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
   </flourish:PageBody>
 </Page>

@@ -1,0 +1,112 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.GridSplitterPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Resize adjacent Grid rows or columns with a Flourish interaction and focus surface."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="FlourishGridSplitter"
+    />
+
+    <flourish:Chunk
+      Content="Both variants use a fixed-height preview so their resize behavior can be compared directly."
+      Title="Variant"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="A general-purpose splitter for application grids."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Standard"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="210">
+              <Grid
+                Width="300"
+                Height="150"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+              >
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" MinWidth="80" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" MinWidth="80" />
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="6" />
+                <flourish:FlourishGridSplitter
+                  Grid.Column="1"
+                  HorizontalAlignment="Center"
+                  ResizeDirection="Columns"
+                />
+                <Border Grid.Column="2" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="6" />
+              </Grid>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="The shell navigation-pane edge with preview resizing."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="NavigationPane"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="210">
+              <Grid
+                Width="300"
+                Height="150"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+              >
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="120" MinWidth="80" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" MinWidth="80" />
+                </Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="6" />
+                <flourish:FlourishGridSplitter Grid.Column="1" Variant="NavigationPane" />
+                <Border Grid.Column="2" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="6" />
+              </Grid>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Grid owns the row and column constraints; the splitter changes only adjacent GridLength values."
+      Title="Layout"
+    >
+      <flourish:Card Title="Resize contract" Content="Set ResizeDirection explicitly for a standard splitter. NavigationPane configures horizontal column resizing, preview feedback, and the shell edge affordance." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishGridSplitter API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishGridSplitter documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

@@ -1,20 +1,23 @@
 using System.Windows.Controls;
-using ArkheideSystem.Gallery.Models;
+using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Gallery.Views;
 
 public partial class ControlLibraryPage : Page
 {
-    public IReadOnlyList<ControlMemberRow> Properties { get; } =
-    [
-        new("Text / Content", "Supplies editable text, labels, or item content."),
-        new("ItemsSource", "Binds collection controls to application-owned items."),
-        new("SelectedItem", "Reads or updates the current selection."),
-        new("IsEnabled", "Includes the control in keyboard and pointer interaction."),
-    ];
+    private readonly INavigationService navigation;
 
-    public ControlLibraryPage()
+    public ControlLibraryPage(INavigationService navigation)
     {
+        this.navigation = navigation;
         InitializeComponent();
+    }
+
+    private void ControlCard_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: string route })
+        {
+            navigation.Navigate(route);
+        }
     }
 }

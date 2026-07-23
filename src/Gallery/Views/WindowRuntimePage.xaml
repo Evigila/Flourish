@@ -143,92 +143,69 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Manage the profile surface."
-      Title="Profile flyout"
-    >
-      <UniformGrid VerticalAlignment="Stretch" Columns="2">
-        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE716;" Content="Enable or disable the shell profile surface." Title="Profile availability">
-            <flourish:ActionCard.Body>
-              <flourish:Button x:Name="ToggleProfileEnabledButton" Click="ToggleProfileEnabled_Click" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE77B;" Content="Open or close the live profile flyout." Title="Profile flyout">
-            <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleProfileFlyout_Click" Content="Toggle flyout" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE713;" Content="Replace the flyout content with the configuration page." Title="Configuration profile page">
-            <flourish:ActionCard.Body>
-              <flourish:Button Click="UseConfigurationProfilePage_Click" Content="Use configuration page" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE72C;" Content="Restore the profile page type configured at startup." Title="Restore profile page">
-            <flourish:ActionCard.Body>
-              <flourish:Button Click="RestoreProfilePage_Click" Content="Restore profile page" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-        </StackPanel>
-        <flourish:OutputCard x:Name="ProfileOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </UniformGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk
       Content="Publish modal and non-modal messages."
       Title="Messages"
     >
-      <StackPanel>
-        <UniformGrid VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ActionCard Icon="&#xE715;" Content="Await a standard modal choice without blocking application logic." Title="Standard message">
-              <flourish:ActionCard.Body>
-                <flourish:Button Click="ShowMessage_Click" Content="Show async message" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-            <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Await a modal message with custom choices." Title="Custom choices">
-              <flourish:ActionCard.Body>
-                <flourish:Button Click="ShowCustomMessage_Click" Content="Show custom choices" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="MessageOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-        <UniformGrid Margin="0,16,0,0" VerticalAlignment="Stretch" Columns="2">
-          <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-            <flourish:ActionCard Icon="&#xE8EC;" Content="Choose the stable identifier used for notification operations." Title="Notification ID">
-              <flourish:ActionCard.Body>
-                <flourish:FlourishTextBox x:Name="NotificationIdBox" Width="240" Text="gallery.runtime.notice" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-            <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE715;" Content="Enter the content published to the shell host." Title="Notification message">
-              <flourish:ActionCard.Body>
-                <flourish:FlourishTextBox x:Name="NotificationMessageBox" Width="240" Text="A runtime notification from the Gallery." />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-            <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Publish a new non-modal notification." Title="Show notification">
-              <flourish:ActionCard.Body>
-                <flourish:Button Click="ShowNotification_Click" Content="Show" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-            <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE70F;" Content="Insert the notification or update its current content." Title="Upsert notification">
-              <flourish:ActionCard.Body>
-                <flourish:Button Click="UpsertNotification_Click" Content="Upsert" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-            <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Dismiss the notification with the selected identifier." Title="Dismiss notification">
-              <flourish:ActionCard.Body>
-                <flourish:Button Click="DismissNotification_Click" Content="Dismiss ID" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-            <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE738;" Content="Dismiss every notification in the shell host." Title="Dismiss all notifications">
-              <flourish:ActionCard.Body>
-                <flourish:Button Click="DismissAllNotifications_Click" Content="Dismiss all" />
-              </flourish:ActionCard.Body>
-            </flourish:ActionCard>
-          </StackPanel>
-          <flourish:OutputCard x:Name="NotificationOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-        </UniformGrid>
-      </StackPanel>
+      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard Icon="&#xE715;" Content="Await a standard modal choice without blocking application logic." Title="Standard message">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ShowMessage_Click" Content="Show async message" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Await a modal message with custom choices." Title="Custom choices">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ShowCustomMessage_Click" Content="Show custom choices" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8EC;" Content="Choose the stable identifier used for notification operations." Title="Notification ID">
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox x:Name="NotificationIdBox" Width="240" Text="gallery.runtime.notice" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE715;" Content="Enter the content published to the shell host." Title="Notification message">
+            <flourish:ActionCard.Body>
+              <flourish:FlourishTextBox x:Name="NotificationMessageBox" Width="240" Text="A runtime notification from the Gallery." />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Publish a new non-modal notification." Title="Show notification">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ShowNotification_Click" Content="Show" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE70F;" Content="Insert the notification or update its current content." Title="Upsert notification">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="UpsertNotification_Click" Content="Upsert" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Dismiss the notification with the selected identifier." Title="Dismiss notification">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="DismissNotification_Click" Content="Dismiss ID" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE738;" Content="Dismiss every notification in the shell host." Title="Dismiss all notifications">
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="DismissAllNotifications_Click" Content="Dismiss all" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard
+          x:Name="MessageActivityOutput"
+          Margin="8,0,0,0"
+          AutomationProperties.Name="Message and notification output"
+          VerticalAlignment="Stretch"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="builder.ConfigureWindow(window =&gt; window&#xA;    .SetWindowSize(1100, 760)&#xA;    .SetWindowPosition(WindowStartupLocation.CenterScreen));&#xA;&#xA;windowService.SetTopmost(true);&#xA;await messageService.ShowAsync(&quot;Operation complete.&quot;, &quot;Reports&quot;);" />
+    </flourish:Chunk>
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>
 </Page>

@@ -1,0 +1,118 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.RadioButtonPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Choose one value from a small, visible, mutually exclusive option set."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="FlourishRadioButton"
+    />
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid
+        x:Name="MemberGrid"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Keep every choice visible, use one GroupName for one decision, and begin with a valid selection."
+      Title="Selection"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="A shared GroupName guarantees that only one option stays checked."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Theme"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="152">
+              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <flourish:FlourishRadioButton
+                  Content="System"
+                  GroupName="ThemeExample"
+                  IsChecked="True"
+                />
+                <flourish:FlourishRadioButton
+                  Margin="0,8,0,0"
+                  Content="Light"
+                  GroupName="ThemeExample"
+                />
+                <flourish:FlourishRadioButton
+                  Margin="0,8,0,0"
+                  Content="Dark"
+                  GroupName="ThemeExample"
+                />
+              </StackPanel>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="A separate GroupName creates another independent decision in the same page."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Density"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="152">
+              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <flourish:FlourishRadioButton
+                  Content="Comfortable"
+                  GroupName="DensityExample"
+                  IsChecked="True"
+                />
+                <flourish:FlourishRadioButton
+                  Margin="0,8,0,0"
+                  Content="Compact"
+                  GroupName="DensityExample"
+                />
+              </StackPanel>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the FlourishRadioButton API reference."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="FlourishRadioButton documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

@@ -84,7 +84,7 @@ Shell 自有的 Profile 浮出层、Popup 和 Dialog 不是导航内容页面，
 | `PresenterMode` | `PresenterMode` | `Split` | `Split`、`TopDown` 或 `Overlay` 组合模式。 |
 | `PresenterPosition` | `PresenterPosition` | `Right` | Split 模式中的展示侧。 |
 
-`Split` 默认将文案与 Body 放在左侧、Presentation 放在右侧；`PresenterPosition="Left"` 会交换两侧。`TopDown` 将 Presentation 放在上方，并把 Title、Content 与 Body 放在下方靠左。`Overlay` 将文案与 Body 叠加在 Presentation 上方。TopDown 与 Overlay 不使用 `PresenterPosition` 的视觉位置，但仍建议显式声明完整展示契约。
+`Split` 默认将文案与 Body 放在左侧、Presentation 放在右侧；`PresenterPosition="Left"` 会交换两侧。`TopDown` 将 Presentation 放在上方，并把 Title、Content 与 Body 放在下方靠左。`Overlay` 将文案与 Body 叠加在 Presentation 上方。HeaderChunk 在任何模式下都必须全宽独占一行，包括 TopDown；普通 Presenter 的 TopDown 分列例外不适用于 HeaderChunk。TopDown 与 Overlay 不使用 `PresenterPosition` 的视觉位置，但仍建议显式声明完整展示契约。
 
 ## 页面结构
 
