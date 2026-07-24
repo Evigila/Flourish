@@ -99,7 +99,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Set Role to select a semantic Flourish typography treatment instead of assigning local font resources. Supply Text through a resource or binding as with a native TextBlock, enable wrapping for localized copy, reserve prominent roles for their documented hierarchy, and keep ordinary body text at its default treatment."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Choose a text role"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

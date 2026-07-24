@@ -13,25 +13,30 @@
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Regions">
-      <UniformGrid Columns="2">
-        <flourish:Card
-          Margin="0,0,8,0"
-          Icon="&#xE8BA;"
-          Title="WPF content"
-          Content="Add receives a region, service-aware element factory, and stable display order."
+    <flourish:Chunk
+      Title="Shell regions"
+      Content="Custom handlers place application-owned WPF elements and actions in predefined Shell regions without changing the Shell template. Use element factories when a view needs dependency injection, command-key helpers for shared dispatch, and callback helpers for local behavior; enable each owning Shell surface separately. This is recommended for profile views, application status, and cross-page actions, and the code below covers every custom-handler API."
+    >
+      <StackPanel>
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            Icon="&#xE8BA;"
+            Title="WPF content"
+            Content="Add and SetProfileContent create application elements when the Shell is composed, with access to registered services."
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            Icon="&#xE756;"
+            Title="Actions"
+            Content="Title-bar and footer helpers support either stable command keys or service-aware callbacks."
+          />
+        </UniformGrid>
+        <flourish:CodeSpace
+          Margin="0,16,0,0"
+          Text="builder&#10;    // Custom content does not enable its owning Shell surface.&#10;    .ConfigureShell(shell =&gt; shell.UseTitleBar().UseStatusBar())&#10;    .ConfigureTitleBar(titleBar =&gt; titleBar.SetProfile())&#10;    .ConfigureCustomHandler(custom =&gt; custom&#10;        .Add(&#10;            FlourishRegion.TitlebarEnd,&#10;            services =&gt; new SyncStatusView(&#10;                services.GetRequiredService&lt;SyncService&gt;()),&#10;            order: 0)&#10;        .SetProfileContent(_ =&gt; new ProfileView())&#10;        .AddTitlebarAction(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;app.refresh&quot;, order: 10)&#10;        .AddTitlebarActionHandler(&#10;            &quot;Sync&quot;, &quot;\uE895&quot;,&#10;            services =&gt; services.GetRequiredService&lt;SyncService&gt;().Start(),&#10;            order: 20)&#10;        .AddFooterCommand(&#10;            FlourishRegion.FooterEnd,&#10;            &quot;Settings&quot;, &quot;\uE713&quot;, &quot;app.settings&quot;)&#10;        .AddFooterCommandHandler(&#10;            FlourishRegion.FooterStart,&#10;            &quot;Help&quot;, &quot;\uE946&quot;,&#10;            services =&gt; services.GetRequiredService&lt;HelpService&gt;().Open()));"
         />
-        <flourish:Card
-          Margin="8,0,0,0"
-          Icon="&#xE756;"
-          Title="Command actions"
-          Content="Dedicated title-bar and footer helpers create buttons backed by command keys or callbacks."
-        />
-      </UniformGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder.ConfigureCustomHandler(custom =&gt; custom&#10;    .AddTitlebarAction(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;app.refresh&quot;)&#10;    .AddFooterCommand(&#10;        FlourishRegion.FooterEnd,&#10;        &quot;Settings&quot;,&#10;        &quot;\uE713&quot;,&#10;        &quot;app.settings&quot;));" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

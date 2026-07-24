@@ -13,16 +13,21 @@
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Page-scoped actions">
-      <flourish:Card
-        Icon="&#xE945;"
-        Title="Toolbar items"
-        Content="Each FlourishToolbarItem supplies display text, a glyph, and a command key. The active page determines which set is visible."
-      />
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseDynamicToolbar())&#10;    .ConfigureDynamicToolbar(toolbar =&gt;&#10;        toolbar.CreateToolbarItems&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;reports.refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;reports.export&quot;)));" />
+    <flourish:Chunk
+      Title="Page actions"
+      Content="The dynamic toolbar changes its commands with the active page, keeping page-specific actions close to their workflow. Enable the surface once, then associate each WPF Page type with FlourishToolbarItem values that provide display text, a glyph, and a stable command key. Use it for actions such as refresh, export, or preview; the code below demonstrates both registration overloads, including the text-only option."
+    >
+      <StackPanel>
+        <flourish:Card
+          Icon="&#xE945;"
+          Title="Toolbar items"
+          Content="Only the items registered for the active page are shown, and their command keys are dispatched through the shared command system."
+        />
+        <flourish:CodeSpace
+          Margin="0,16,0,0"
+          Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseDynamicToolbar())&#10;    .ConfigureDynamicToolbar(toolbar =&gt; toolbar&#10;        // Icons are shown by default.&#10;        .CreateToolbarItems&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;reports.refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;reports.export&quot;))&#10;        // Select the overload with icon: false for text-only actions.&#10;        .CreateToolbarItems&lt;EditorPage&gt;(&#10;            icon: false,&#10;            new FlourishToolbarItem(&quot;Preview&quot;, &quot;\uE8A7&quot;, &quot;editor.preview&quot;)));"
+        />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

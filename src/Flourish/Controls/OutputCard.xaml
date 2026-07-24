@@ -43,6 +43,11 @@
         </controls:ScrollViewer>
       </Border>
     </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter TargetName="OutputViewport" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
   </ControlTemplate>
 
   <Style TargetType="{x:Type controls:OutputCard}">
@@ -59,7 +64,9 @@
     <Setter Property="Template" Value="{StaticResource OutputCardTemplate}" />
     <Style.Triggers>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Opacity" Value="0.62" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

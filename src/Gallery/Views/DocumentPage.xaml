@@ -56,7 +56,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Add Paragraph elements directly to Document. Each Paragraph.Text also supports resources and view-model bindings. Document owns the rounded reading surface, paragraph spacing, and first-line indentation, so it should normally be the only Body of its Chunk; use Card instead for one short passage."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Compose a document"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

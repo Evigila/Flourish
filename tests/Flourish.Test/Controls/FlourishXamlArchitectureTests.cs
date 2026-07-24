@@ -243,6 +243,92 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void DisabledControlSurfaces_UseTheSharedNeutralPalette()
+    {
+        var controlsRoot = Path.Combine(FlourishRoot, "Controls");
+        string[] surfaceControlFiles =
+        [
+            "ActionCard.xaml",
+            "Button.xaml",
+            "Card.xaml",
+            "CardButton.xaml",
+            "CheckBox.xaml",
+            "ComboBox.xaml",
+            "ComboBoxItem.xaml",
+            "DataGrid.xaml",
+            "ListBox.xaml",
+            "ListBoxItem.xaml",
+            "OutputCard.xaml",
+            "PasswordBox.xaml",
+            "Presenter.xaml",
+            "RadioButton.xaml",
+            "SearchBox.xaml",
+            "TextBox.xaml",
+            "WindowCaptionButton.xaml",
+        ];
+        string[] expectedResources =
+        [
+            "FlourishControlDisabledBrush",
+            "FlourishControlStrokeDisabledBrush",
+            "FlourishNeutralForegroundDisabledBrush",
+        ];
+
+        foreach (var fileName in surfaceControlFiles)
+        {
+            var document = LoadXaml(Path.Combine(controlsRoot, fileName));
+            var disabledStates = document
+                .Descendants()
+                .Where(IsDisabledState)
+                .ToArray();
+
+            Assert.NotEmpty(disabledStates);
+            Assert.Contains(
+                disabledStates,
+                state =>
+                {
+                    var values = state
+                        .Descendants()
+                        .Where(element => element.Name.LocalName == "Setter")
+                        .Select(setter => setter.Attribute("Value")?.Value ?? string.Empty)
+                        .ToArray();
+
+                    return expectedResources.All(resource =>
+                        values.Any(value =>
+                            value.Contains(resource, StringComparison.Ordinal)
+                        )
+                    );
+                }
+            );
+        }
+    }
+
+    [Fact]
+    public void DisabledControlStates_DoNotRestoreVariantColorsOrUseOpacity()
+    {
+        var controlsRoot = Path.Combine(FlourishRoot, "Controls");
+        var violations = Directory
+            .EnumerateFiles(controlsRoot, "*.xaml", SearchOption.TopDirectoryOnly)
+            .SelectMany(file =>
+                LoadXaml(file)
+                    .Descendants()
+                    .Where(IsDisabledState)
+                    .SelectMany(state =>
+                        state
+                            .Descendants()
+                            .Where(element => element.Name.LocalName == "Setter")
+                            .Where(setter =>
+                                setter.Attribute("Property")?.Value == "Opacity"
+                                || setter.Attribute("Value")?.Value == "Transparent"
+                            )
+                            .Select(setter => $"{Path.GetFileName(file)}: {setter}")
+                    )
+            )
+            .ToArray();
+
+        Assert.Empty(violations);
+    }
+
+    [Fact]
     public void EveryPublicVisualControl_HasAMatchingDictionaryCodePairAndProjectNesting()
     {
         var controlsRoot = Path.Combine(FlourishRoot, "Controls");
@@ -2488,6 +2574,24 @@ public sealed class FlourishXamlArchitectureTests
     private static bool IsPropertyElement(XElement element)
     {
         return element.Name.LocalName.Contains('.', StringComparison.Ordinal);
+    }
+
+    private static bool IsDisabledState(XElement element)
+    {
+        if (element.Name.LocalName == "Trigger")
+        {
+            return element.Attribute("Property")?.Value == "IsEnabled"
+                && element.Attribute("Value")?.Value == "False";
+        }
+
+        return element.Name.LocalName is "MultiTrigger" or "MultiDataTrigger"
+            && element
+                .Descendants()
+                .Any(condition =>
+                    condition.Name.LocalName == "Condition"
+                    && condition.Attribute("Property")?.Value == "IsEnabled"
+                    && condition.Attribute("Value")?.Value == "False"
+                );
     }
 
     private static bool HasChunkBody(XElement chunk)

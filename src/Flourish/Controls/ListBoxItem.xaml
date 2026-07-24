@@ -80,6 +80,8 @@
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
               <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
             </Trigger>
           </ControlTemplate.Triggers>
@@ -170,6 +172,12 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
       </MultiDataTrigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+      </Trigger>
     </Style.Triggers>
   </Style>
 

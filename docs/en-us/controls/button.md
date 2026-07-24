@@ -55,6 +55,8 @@ The Flourish button family keeps the command, click, keyboard, focus, and automa
 
 An action group should normally have only one `Filled` button. Use `Danger` for destructive intent. Let the containing layout control determine placement rather than using `Variant` to select structural dimensions.
 
+When `IsEnabled` is `false`, every Button variant uses the shared disabled gray background, border, and foreground. The disabled state suppresses Filled, Danger, and other enabled-state colors so unavailable actions have one consistent treatment.
+
 With `UseTips` active, Button-family hints use the Flourish temporary Overlay surface and Shell-aware placement. Without it, the same hint content uses the native WPF tooltip appearance. Tooltips attached to native WPF and third-party controls remain unchanged.
 
 ## CardButton
@@ -93,6 +95,8 @@ The control still inherits the complete `Button` interaction contract, including
 `WindowCaptionButton` is reserved for window captions and has dedicated caption geometry. Connect the actual window operation through `Command` or `Click`.
 
 Set a close action to `Variant="Danger"` and use `Text` for the other caption actions.
+
+Danger gives an enabled close action warning emphasis. A disabled close action returns to the same shared gray treatment as other disabled controls.
 
 ```xml
 <flourish:WindowCaptionButton

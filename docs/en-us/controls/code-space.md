@@ -27,7 +27,7 @@ The surface shares Document's transparent background, rounded thin low-contrast 
 
 ## Copy action
 
-The upper-right icon button invokes `ApplicationCommands.Copy` for the `CodeSpace`. It copies the complete `Text` value, including leading spaces and line endings, to the system clipboard. The command is disabled when `Text` is empty. Its tooltip uses the shared Tip typography with Normal style and Regular weight rather than inheriting the Bold code presentation. Do not add a second copy button around the control.
+The upper-right icon button invokes `ApplicationCommands.Copy` for the `CodeSpace`. It uses the Elevated variant so the action remains distinct above the blue code text. It copies the complete `Text` value, including leading spaces and line endings, to the system clipboard. The command is disabled when `Text` is empty. Its tooltip uses the shared Tip typography with Normal style and Regular weight rather than inheriting the Bold code presentation. Do not add a second copy button around the control.
 
 ## Related content
 

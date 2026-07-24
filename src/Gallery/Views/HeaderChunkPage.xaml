@@ -106,7 +106,40 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Add the page header"
+          Content="Place exactly one HeaderChunk first in PageBody. Title and Content identify the page, while Split with Right keeps the copy on the left and the illustration on the right—the recommended arrangement. HeaderChunk remains full-width in every mode."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports and their current status.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Place a wide visual above the copy"
+          Content="Choose TopDown when a banner, diagram, or other wide presentation should establish context before the header text. PresenterPosition does not rearrange this vertical mode, and HeaderChunk still occupies a complete row."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Workspace&quot;&#xA;  Content=&quot;Manage the active workspace.&quot;&#xA;  PresenterMode=&quot;TopDown&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/workspace.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Layer copy over a presentation"
+          Content="Use Overlay only when the image or illustration remains an appropriate, readable background in every supported theme. Keep essential contrast in the foreground copy and reserve Body for a small supporting action."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Release ready&quot;&#xA;  Content=&quot;Review the final package before publishing.&quot;&#xA;  PresenterMode=&quot;Overlay&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Body&gt;&#xA;    &lt;flourish:Button Content=&quot;Review release&quot; Variant=&quot;Filled&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Body&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/release.png&quot; Stretch=&quot;UniformToFill&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

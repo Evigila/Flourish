@@ -7,17 +7,18 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Register, dispatch, and inspect commands at runtime."
+      Content="Define application actions independently from their UI, dispatch them asynchronously, and connect keyboard gestures to the same command pipeline. Commands are recommended when menus, toolbars, shortcuts, and background workflows must share one consistent operation."
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Commands &amp; shortcuts"
     />
 
     <flourish:Chunk
-      Content="Register and invoke a command handler."
-      Title="Runtime command registration"
+      Content="Register a keyed handler, provide an optional availability predicate, and dispatch it with a source and parameter. Use this pattern for actions that may be contributed or replaced while the application is running; the code below also shows how the disposable registration controls handler lifetime."
+      Title="Commands"
     >
-      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+      <StackPanel>
+        <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE71B;"
@@ -80,14 +81,17 @@
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard x:Name="CommandOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </UniformGrid>
+        </UniformGrid>
+        <flourish:CodeSpace Text="// Keep the handle so the command can be replaced or removed.&#10;var registration = commandRegistry.Register(&#10;    &quot;reports.refresh&quot;,&#10;    RefreshReportsAsync,&#10;    _ =&gt; reportsCanRefresh,&#10;    new CommandRegistrationOptions&#10;    {&#10;        DuplicatePolicy = CommandDuplicatePolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;var canExecute = commandDispatcher.CanExecute(&#10;    &quot;reports.refresh&quot;, reportId, CommandSource.Application);&#10;var result = await commandDispatcher.ExecuteAsync(&#10;    &quot;reports.refresh&quot;, reportId, CommandSource.Application);&#10;&#10;registration.NotifyCanExecuteChanged();&#10;registration.Dispose();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Bind and invoke a runtime shortcut."
-      Title="Keyboard shortcut"
+      Content="Bind a key gesture to an existing command instead of duplicating its behavior in an input handler. Application-scoped shortcuts suit commands that should work throughout the shell; the code demonstrates conflict handling, explicit dispatch for testing, and disposal when the binding is no longer owned."
+      Title="Shortcuts"
     >
-      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+      <StackPanel>
+        <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE710;"
@@ -120,14 +124,17 @@
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard x:Name="ShortcutOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </UniformGrid>
+        </UniformGrid>
+        <flourish:CodeSpace Text="var gesture = new KeyGesture(&#10;    Key.G, ModifierKeys.Control | ModifierKeys.Shift);&#10;&#10;var shortcut = shortcuts.Register(&#10;    gesture,&#10;    &quot;reports.refresh&quot;,&#10;    reportId,&#10;    new ShortcutRegistrationOptions&#10;    {&#10;        Scope = ShortcutScope.Application,&#10;        ConflictPolicy = ShortcutConflictPolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;// Dispatch explicitly when a test or custom input source resolves the gesture.&#10;var result = await shortcuts.ExecuteAsync(&#10;    gesture, new ShortcutResolutionContext(pageKey: nameof(CommandsPage)));&#10;shortcut.Dispose();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Inspect immutable registry state."
-      Title="Registry snapshots"
+      Content="Read immutable command and shortcut snapshots and subscribe to change notifications without taking ownership of registrations. This is useful for diagnostics, command palettes, and management views; the example code refreshes a view whenever either registry changes."
+      Title="Registry"
     >
-      <flourish:Presenter
+      <StackPanel>
+        <flourish:Presenter
         Content="Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces."
         PresenterMode="Split"
         PresenterPosition="Left"
@@ -139,11 +146,9 @@
             <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
           </StackPanel>
         </flourish:Presenter.Presentation>
-      </flourish:Presenter>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder.ConfigureServices((_, services) =&gt;&#xA;    services.AddCommandParser&lt;ReportCommandParser&gt;());&#xA;&#xA;await commandDispatcher.ExecuteAsync(&quot;reports.refresh&quot;);" />
+        </flourish:Presenter>
+        <flourish:CodeSpace Text="commandRegistry.Changed += (_, _) =&gt; RefreshCommands();&#10;shortcuts.Changed += (_, _) =&gt; RefreshShortcuts();&#10;&#10;var commands = commandRegistry.Registrations;&#10;var bindings = shortcuts.Registrations;" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

@@ -86,7 +86,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Declare explicit containers when a navigation entry needs item-level state. IsGroupHeader creates a non-selectable label, while IsCommandItem marks an entry handled as a command. For data-bound collections, let FlourishListBox generate containers and bind their item-level properties so reusable data and selection stay in the view model."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Navigation states"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="For data-bound Navigation lists, let FlourishListBox generate each container. It maps the item model's IsVisible, IsGroupHeader, IsCommandItem, IsEnabled, and Label properties onto the FlourishListBoxItem container."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Generated containers"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishListBox&#xA;  Appearance=&quot;Navigation&quot;&#xA;  ItemsSource=&quot;{Binding NavigationItems}&quot;&#xA;  SelectedItem=&quot;{Binding ActiveItem, Mode=TwoWay}&quot; /&gt;&#xA;&#xA;public sealed record NavigationItem(&#xA;    string Label,&#xA;    bool IsVisible,&#xA;    bool IsGroupHeader,&#xA;    bool IsCommandItem,&#xA;    bool IsEnabled);" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

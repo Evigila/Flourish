@@ -7,7 +7,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Every page calls Flourish APIs directly. Change configuration, appearance, navigation, shell surfaces, commands, window behavior, and background work without restarting the application."
+      Content="Explore Flourish through focused, interactive examples. Each feature page explains what the API controls, where it fits in a desktop application, and lets you change live Gallery state so that the result is immediately visible."
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Flourish Gallery"
@@ -28,8 +28,8 @@
     </flourish:HeaderChunk>
 
     <flourish:Chunk
-      Content="Open an interactive runtime capability demo."
-      Title="Demos"
+      Content="Choose a feature area to open its interactive guide. Start with Configuration for application data, Appearance and Shell for presentation, or Commands and Background tasks for application behavior; every destination combines practical controls with the code that drives them."
+      Title="Explore"
     >
       <UniformGrid
         x:Name="DemoGrid"

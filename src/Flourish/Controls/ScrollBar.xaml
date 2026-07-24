@@ -38,7 +38,7 @@
               <Setter Property="Background" Value="{DynamicResource FlourishScrollbarThumbPressedBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-              <Setter Property="Background" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

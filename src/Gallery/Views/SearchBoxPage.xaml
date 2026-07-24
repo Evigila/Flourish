@@ -75,7 +75,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Bind Text with PropertyChanged updates when results should react continuously as the query changes. TextChanged is an alternative for lightweight view-owned filtering. Placeholder guides an empty field but does not replace a visible label when the search purpose is ambiguous."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Live query"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishSearchBox&#xA;  Placeholder=&quot;Search controls&quot;&#xA;  MaxLength=&quot;120&quot;&#xA;  Text=&quot;{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Use the normal WPF keyboard contract when search should run only after explicit submission. The KeyDown handler checks Enter and passes the current Text to an application command; prefer a command binding when the same gesture must be shared across several controls."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Submitted query"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

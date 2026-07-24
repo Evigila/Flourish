@@ -96,7 +96,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Set Target to the associated input and mark one character in Content with an underscore. The resulting access key transfers keyboard focus and gives the field a persistent visible name. The same contract works for selectors and other focusable controls; keep each label adjacent to its target and mirror the disabled state when the input is unavailable."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Input association"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

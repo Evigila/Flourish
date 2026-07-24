@@ -137,13 +137,75 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Interaction contract">
-      <flourish:Card
-        Content="Every button type retains focus, keyboard activation, commands, disabled state, and automation behavior."
-      />
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Title="Enabled action"
+          Content="The enabled button accepts pointer and keyboard focus and exposes its icon and visible command label."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160" Padding="16">
+              <flourish:Button
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                AutomationProperties.Name="Save report"
+                Content="Save report"
+                Icon="&#xE74E;"
+                ToolTip="Save report"
+                Variant="Filled"
+              />
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Title="Disabled action"
+          Content="IsEnabled=False preserves the selected variant while communicating that the command is currently unavailable."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160" Padding="16">
+              <flourish:Button
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Publish report"
+                Icon="&#xE789;"
+                IsEnabled="False"
+                Variant="Filled"
+              />
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  Command=&quot;{Binding SaveCommand}&quot;&#xA;  Content=&quot;Save&quot;&#xA;  Icon=&quot;&amp;#xE74E;&quot;&#xA;  Variant=&quot;Filled&quot; /&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Create a command button"
+          Content="Bind Command to application logic and set Content for the visible label. Add Icon when it improves recognition; either region collapses when omitted. Use Filled for a primary action, Tonal or Outlined for supporting actions, Text for low emphasis, and Danger only for destructive work."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  Command=&quot;{Binding SaveCommand}&quot;&#xA;  Content=&quot;Save&quot;&#xA;  Icon=&quot;&amp;#xE74E;&quot;&#xA;  Variant=&quot;Filled&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Make an icon-only action accessible"
+          Content="When Content is omitted, give the icon-only button both AutomationProperties.Name and a matching ToolTip. This keeps the compact Text or Danger action understandable to assistive technology and pointer users."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  AutomationProperties.Name=&quot;Delete report&quot;&#xA;  Command=&quot;{Binding DeleteCommand}&quot;&#xA;  Icon=&quot;&amp;#xE74D;&quot;&#xA;  ToolTip=&quot;Delete report&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

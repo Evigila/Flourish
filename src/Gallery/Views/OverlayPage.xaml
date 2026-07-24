@@ -183,7 +183,40 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:Overlay x:Name=&quot;ProfileOverlay&quot; Variant=&quot;Strong&quot;&gt;&#xA;  &lt;flourish:ActionCard Title=&quot;Profile&quot; Content=&quot;Manage account details.&quot; Variant=&quot;Vertical&quot; /&gt;&#xA;&lt;/flourish:Overlay&gt;&#xA;&#xA;ProfileOverlay.PlacementTarget = trigger;" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Use Strong for a surface that remains open until the host handles an explicit dismissal request. A vertical ActionCard is the standard focused layout, while the surrounding Popup remains responsible for visibility and placement."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Strong overlay"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;Popup x:Name=&quot;ProfilePopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;ProfileOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Strong&quot;&gt;&#xA;    &lt;flourish:ActionCard&#xA;      Title=&quot;Profile&quot;&#xA;      Content=&quot;Manage account details.&quot;&#xA;      Variant=&quot;Vertical&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;ProfilePopup.PlacementTarget = trigger;&#xA;ProfileOverlay.PlacementTarget = trigger;&#xA;ProfilePopup.IsOpen = true;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Use Temporary for hover affordances and short previews. PlacementTarget extends hover tracking across the anchor and overlay; the host opens the Popup when the pointer enters or the trigger is activated."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Temporary overlay"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;Popup x:Name=&quot;PreviewPopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;PreviewOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Temporary&quot;&gt;&#xA;    &lt;TextBlock Text=&quot;Preview details&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;PreviewPopup.PlacementTarget = previewButton;&#xA;PreviewOverlay.PlacementTarget = previewButton;&#xA;PreviewPopup.IsOpen = true;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Overlay requests dismissal but does not own Popup visibility. Close the host in DismissRequested. For Strong, an explicit action can raise the routed event so every closing path shares the same handler."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Handle dismissal"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="private void Close_Click(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfileOverlay.RaiseEvent(new RoutedEventArgs(&#xA;        Overlay.DismissRequestedEvent, ProfileOverlay));&#xA;}&#xA;&#xA;private void Overlay_DismissRequested(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfilePopup.IsOpen = false;&#xA;    e.Handled = true;&#xA;}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

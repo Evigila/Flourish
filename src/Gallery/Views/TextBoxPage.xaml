@@ -77,7 +77,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Bind Text in TwoWay mode when the value belongs to a view model, and choose PropertyChanged only when every edit must update the source. MaxLength limits input at the control boundary. Name the control when code must replace, select, or focus its value through the native TextBox methods."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Bound value"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Handle TextChanged when each edit must trigger view-owned behavior that is not represented by the binding alone, such as a local character counter. The event fires for both user and application changes, so keep its handler lightweight. AcceptsReturn and TextWrapping can independently turn the same control into a bounded multiline editor."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Edit notifications"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishTextBox&#xA;  x:Name=&quot;NotesBox&quot;&#xA;  Height=&quot;96&quot;&#xA;  AcceptsReturn=&quot;True&quot;&#xA;  TextWrapping=&quot;Wrap&quot;&#xA;  TextChanged=&quot;NotesBox_TextChanged&quot; /&gt;&#xA;&#xA;private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)&#xA;{&#xA;    CharacterCount.Text = NotesBox.Text.Length.ToString();&#xA;}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

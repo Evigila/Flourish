@@ -16,12 +16,12 @@ Build every content page as one explicit hierarchy: one page-leading header, sev
 5. Keep every `HeaderChunk` and `Chunk` full-width and on its own row.
 6. Put headings, cards, documents, presenters, actions, and custom layouts inside a chunk region rather than beside chunks at the `PageBody` level.
 7. Give each distinct topic or task its own `Chunk`. Arrange related peer controls within one chunk body only when they share that section topic.
-8. End every Gallery page with exactly one `Chunk Title="Reference"`. Its two peer CardButtons point to the repository and the most relevant canonical documentation; keep them disabled while Gallery does not provide external navigation.
+8. End every Gallery page except About with exactly one `Chunk Title="Reference"`. Its two peer CardButtons point to the repository and the most relevant canonical documentation; keep them disabled while Gallery does not provide external navigation. About is the deliberate compact exception: after its HeaderChunk it contains only one `Project` Chunk with no Content and exactly two disabled CardButtons.
 
 Every `Chunk` has these semantic fields:
 
 - `Title` is required and names the section's subject.
-- `Content` is optional supporting copy. Add it only when the title cannot communicate essential context by itself.
+- `Content` is optional supporting copy. Add it only when the title cannot communicate essential context by itself. It is not restricted to the former Description convention of one short line: use multiple sentences or naturally wrapped lines whenever that makes the explanation easier to read. Choose its length and source formatting by clarity, not by a single-line layout rule.
 - `Body` is required and contains the actual content control or layout tree. It is the default XAML content property.
 
 Empty or `null` optional regions must collapse together with their spacing. Keep the default large gap between chunks and between `HeaderChunk` and the first ordinary chunk.
@@ -95,7 +95,7 @@ Use `CodeSpace` for one exact source-code or command-text value. Assign the comp
 - Keep the built-in transparent background, rounded thin low-contrast border, padding, and outer separation from Chunk copy.
 - Keep the temporary fixed presentation: the effective Large tier, Normal style, Bold weight, Consolas family, and adaptive blue foreground.
 - Treat this presentation as a placeholder for future syntax highlighting. Do not create per-language token colors or a language-selection API yet.
-- Use the built-in upper-right copy action. Do not wrap CodeSpace with a second copy button.
+- Use the built-in upper-right copy action. It uses the Elevated Button variant so the action remains legible above blue code text; do not wrap CodeSpace with a second copy button.
 - Keep the copy tooltip on the shared Tip typography; it remains Normal and Regular instead of inheriting the Bold code presentation.
 - Expect long lines to remain unwrapped and scroll horizontally. The copy action always targets the complete `Text` value and is disabled when it is empty.
 
@@ -128,6 +128,8 @@ The complete visual boundary of a button is interactive.
 
 Do not intentionally create an empty Button or CardButton even though their visual fields are nullable. Give every icon-only Button a visible tooltip and a meaningful `AutomationProperties.Name`. Use one Filled primary action per action group, lower-emphasis variants for supporting actions, and Danger for destructive actions. When only one small region of a card should be interactive, put the control in an ActionCard Body instead of making the whole surface clickable.
 
+All disabled Flourish controls use the same low-emphasis gray treatment as disabled CardButton. Disabled state suppresses the control's normal, Filled, Danger, selected, or accent colors across background, border, text, and icon regions instead of preserving the enabled variant color. A dangerous WindowCaptionButton uses its warning color only while enabled; disabled caption actions use the same shared gray treatment.
+
 ## Preserve DataGrid page scrolling
 
 Use Flourish `DataGrid` directly in a chunk layout. Its internal viewport consumes the mouse wheel while it can scroll in that direction. At the top or bottom boundary, the wheel event continues to the surrounding `PageBody`, so hovering the grid never traps page navigation.
@@ -154,12 +156,22 @@ The Controls parent page is a navigation overview, not a control demonstration. 
 2. `Table`, when public members or named options benefit from a compact reference. Use Flourish `DataGrid` with native WPF columns.
 3. One or more specific example chunks. Use `Example` only when there is one general example.
 4. Topic-specific content chunks such as `Content`, `Alignment`, `Presentation`, `Selection`, or `Dismissal`.
-5. `Usage`, containing one `CodeSpace` with a concrete XAML declaration, C# configuration call, or runtime invocation. Put explanatory prose in an earlier example or topic-specific Chunk, never beside the snippet in Usage.
+5. `Usage`, containing one or more Split Presenters that pair copyable examples with focused guidance. Put each `CodeSpace` in the left Presentation region and explain that usage path through the right-side Title and Content. Leave Presenter Body unset.
 6. `Reference`, always last, with two peer `CardButton` links for the repository and canonical documentation.
 
 Use the exact singular titles `Variant`, `Table`, `Usage`, and `Reference`. Omit inapplicable optional sections instead of inventing content. Usage and Reference are required. A header preview does not replace an example when interaction is part of the control's contract.
 
-On every Gallery page, ordinary `PresenterMode="Split"` examples explicitly use `PresenterPosition="Left"` so Presentation remains on the left and Title, Content, and Body remain together on the right. This Gallery authoring default does not change HeaderChunk: its Split default continues to place copy on the left and Presentation on the right.
+Every control Usage Presenter uses `PresenterMode="Split"` and `PresenterPosition="Left"`, so its CodeSpace appears on the left and its teaching copy appears on the right. The number of Presenters follows the number of genuinely distinct usage paths, never a fixed quota. Keep one Presenter when a representative declaration and its Content can explain the remaining minor properties without ambiguity. Add another Presenter when consumers must use materially different markup, a different layout or state contract, an event handler, CodeBehind, or a separate runtime API—for example, OutputCard declaration and its `WriteLine`/`Clear` calls, or a standard Button and the extra automation contract for an icon-only Button. Do not split examples that differ only by interchangeable sample values or repeat the same concept. Keep every snippet concrete and copyable, assign each CodeSpace through an explicit `Presenter.Presentation` property element, apply `FlourishPresenterPeerMargin` after the first Presenter, and do not put explanatory controls in Presenter Body.
+
+When a control page includes an `Interaction contract` or equivalent state-oriented Chunk, demonstrate observable behavior with live controls instead of a text-only Card whenever the contract can be shown visually. Use Body-free TopDown Presenters in a shared equal-height grid for peer states such as enabled and disabled, selected and unselected, editable and read-only, or normal and constrained. Put the real control state in Presentation and explain the contract through Title and Content below it. Keep prose-only treatment only for behavior that cannot be meaningfully demonstrated without external input or application state.
+
+WindowCaptionButton uses a purpose-specific Interaction contract instead of the generic enabled/disabled comparison. Present minimize, maximize, and restore together with the neutral Text variant, and present close separately with the Danger variant so the destructive window action has clear warning emphasis.
+
+On every Gallery page, ordinary `PresenterMode="Split"` examples explicitly use `PresenterPosition="Left"` so Presentation remains on the left and Title, Content, and Body remain together on the right. The Presenter control page's Split demonstration is the intentional exception: show both Left and Right positions so users can compare copy on the right with copy on the left. This Gallery authoring default does not change HeaderChunk: its Split default continues to place copy on the left and Presentation on the right.
+
+For an API-oriented Gallery page whose topic Chunks teach distinct service or builder families, place one CodeSpace at the bottom of each topic Chunk Body and show the complete relevant public API beside the controls that exercise it. Include both startup configuration and runtime service calls when the topic supports both phases. Omit a centralized Usage Chunk when it would detach those calls from their topics; do not duplicate the same snippet in both places. This exception does not change the centralized Usage requirement for control Gallery pages.
+
+Give API topic Chunks short, familiar industry titles that name the user-facing capability. Avoid lifecycle qualifiers such as `Runtime` when the behavior is already clear from context. Use Chunk Content to explain what the capability does, how consumers use it, the scenarios where it is recommended, and what the accompanying CodeSpace demonstrates. Content may use several sentences or lines when that improves scanning; do not compress a complete explanation into one line merely to resemble a Description field. Keep CodeSpace comments sparse: mark phase boundaries, transaction intent, or non-obvious outcomes, but do not narrate self-explanatory calls line by line.
 
 Keep Table content selective rather than duplicating the generated API reference. Use a public member or option name in the first column and one short functional summary in the second. Use purpose-built controls directly in the chunk body or within a Presenter; do not put arbitrary demonstrations inside a terminal Card.
 
@@ -238,7 +250,7 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 
 - Confirm `PageBody` is the root content container and its direct children are only HeaderChunk or Chunk.
 - Confirm exactly one HeaderChunk is the first direct child and every other page element belongs inside it or a full-width Chunk.
-- Confirm every Chunk has a concise Title and real Body; Content is optional and omitted when redundant.
+- Confirm every Chunk has a concise Title and real Body; Content is optional and omitted when redundant, but may span multiple sentences or lines when readability benefits.
 - Confirm empty optional regions leave no placeholder or spacing.
 - Confirm unspecified typography uses Standard and specialized tiers follow their assigned roles.
 - Confirm Card uses only optional Title, Content, and one Icon, and never receives a general Body.
@@ -259,12 +271,16 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.
 - Confirm card grids use consistent row and column gaps and peer cards have compatible arranged heights.
 - Confirm Gallery control pages follow the applicable Variant, Table, examples, topic-specific content, Usage, and final Reference sequence.
-- Confirm every Gallery page ends with one Reference Chunk containing two disabled CardButtons.
+- Confirm every Gallery page except About ends with one Reference Chunk containing two disabled CardButtons; confirm About contains only its HeaderChunk and one Content-free Project Chunk with two disabled CardButtons.
 - Confirm each Gallery page demonstrates one public control only; keep variants together but split sibling controls into dedicated pages.
 - Confirm each Variant Chunk uses one Body-free TopDown Presenter per variant in a readable grid, except the Split Left WindowCaptionButton group.
 - Confirm the Controls parent has one control-navigation Chunk whose CardButtons cover every registered control route and reuse its icon, followed only by Reference.
-- Confirm every ordinary Split Presenter in Gallery uses PresenterPosition Left; do not apply that rule to HeaderChunk.
-- Confirm every control Usage Chunk contains one CodeSpace and no prose control.
+- Confirm every ordinary Split Presenter in Gallery uses PresenterPosition Left, except the Presenter page's explicit Left/Right comparison; do not apply that rule to HeaderChunk.
+- Confirm every control Usage Chunk contains one or more Split Left Presenters with one CodeSpace each, explanatory Title and Content on the right, and no Body; every additional Presenter must teach a materially different markup, property contract, state, event, or runtime call.
+- Confirm visualizable Interaction contract states use live controls in equal-height Body-free TopDown Presenters rather than text-only Cards.
+- Confirm WindowCaptionButton Interaction compares neutral minimize/maximize/restore actions with one Danger close action instead of using a disabled-state comparison.
+- Confirm API-oriented pages colocate each CodeSpace at the bottom of its topic Chunk and omit detached or duplicate centralized Usage.
+- Confirm API topic titles use concise industry terms, Content covers purpose, usage, recommended scenarios, and code intent, and CodeSpace comments explain only meaningful boundaries or outcomes.
 - Confirm multi-column peers stretch to one row height and Variant Presentation examples share a sufficient minimum height.
 - Confirm navigation and card icons use adaptive semantic foregrounds while ordinary copy remains neutral.
 - Recommend manual checks for light and dark themes, keyboard focus order, enlarged or localized text, collapsed optional regions, Document and CodeSpace surfaces, CodeSpace copying, all Presenter modes, both ActionCard variants, DataGrid boundary scrolling, Overlay dismissal, and output scrolling.

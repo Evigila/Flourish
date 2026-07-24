@@ -13,25 +13,30 @@
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Status content">
-      <UniformGrid Columns="2">
-        <flourish:Card
-          Margin="0,0,8,0"
-          Icon="&#xE930;"
-          Title="Application status"
-          Content="AddStatusItem establishes text and a glyph during startup; runtime services can update it later."
+    <flourish:Chunk
+      Title="Status items"
+      Content="The status bar keeps application state and built-in system details visible without interrupting the current workflow. Enable the persistent surface with UseStatusBar, then add non-interactive text and glyphs or opt into the consolidated network and power indicator with ConfigureStatusBar. This pattern is recommended for synchronization, workspace, connectivity, and power information; the code below covers every status-bar configuration API."
+    >
+      <StackPanel>
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            Icon="&#xE930;"
+            Title="Application status"
+            Content="AddStatusItem registers compact, non-interactive application state in display order."
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            Icon="&#xE968;"
+            Title="System indicators"
+            Content="Network and power details share one consolidated system-status surface."
+          />
+        </UniformGrid>
+        <flourish:CodeSpace
+          Margin="0,16,0,0"
+          Text="// Keep the status bar visible even when no background task is active.&#10;builder&#10;    .ConfigureShell(shell =&gt; shell.UseStatusBar())&#10;    .ConfigureStatusBar(status =&gt; status&#10;        .AddStatusItem(&quot;Ready&quot;, &quot;\uE73E&quot;)&#10;        // Both system details appear in one consolidated indicator.&#10;        .ShowLANConnectionStatus()&#10;        .ShowPowerStatus());"
         />
-        <flourish:Card
-          Margin="8,0,0,0"
-          Icon="&#xE968;"
-          Title="System indicators"
-          Content="LAN connection and power status can share the consolidated system status surface."
-        />
-      </UniformGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseStatusBar())&#10;    .ConfigureStatusBar(status =&gt; status&#10;        .AddStatusItem(&quot;Ready&quot;, &quot;\uE73E&quot;)&#10;        .ShowLANConnectionStatus()&#10;        .ShowPowerStatus());" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

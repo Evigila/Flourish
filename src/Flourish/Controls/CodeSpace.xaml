@@ -41,7 +41,7 @@
           VerticalAlignment="Top"
           Icon="&#xE8C8;"
           ToolTip="Copy code"
-          Variant="Text"
+          Variant="Elevated"
         />
       </Grid>
     </Border>

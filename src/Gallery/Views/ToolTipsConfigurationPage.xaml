@@ -13,16 +13,21 @@
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Tip policy">
-      <flourish:Card
-        Icon="&#xE823;"
-        Title="Shared presentation"
-        Content="UseTips applies the Flourish tooltip host to eligible controls. Empty or whitespace-only tooltip content never opens a surface."
-      />
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder.ConfigureShell(shell =&gt;&#10;    shell.UseTips(delay: 200));&#10;&#10;// XAML&#10;&lt;flourish:Button&#10;  AutomationProperties.Name=&quot;Refresh&quot;&#10;  Content=&quot;Refresh&quot;&#10;  ToolTip=&quot;Reload the current data.&quot; /&gt;" />
+    <flourish:Chunk
+      Title="Tooltip behavior"
+      Content="Tooltips label compact or icon-only Flourish controls without adding permanent visual noise. UseTips selects the Flourish presentation and sets the initial hover delay, while each control continues to provide its own ToolTip content and accessible name. This is recommended for unfamiliar icons and secondary actions; the code below configures the host and shows the corresponding XAML."
+    >
+      <StackPanel>
+        <flourish:Card
+          Icon="&#xE823;"
+          Title="Shared presentation"
+          Content="Empty or whitespace-only tooltip content collapses completely, while native and third-party controls keep their own tooltip presentation."
+        />
+        <flourish:CodeSpace
+          Margin="0,16,0,0"
+          Text="// Delay is measured in milliseconds and must be non-negative.&#10;builder.ConfigureShell(shell =&gt;&#10;    shell.UseTips(delay: 200));&#10;&#10;// Supply a visible hint and an accessible action name.&#10;&lt;flourish:Button&#10;  AutomationProperties.Name=&quot;Refresh&quot;&#10;  Content=&quot;Refresh&quot;&#10;  ToolTip=&quot;Reload the current data.&quot; /&gt;"
+        />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

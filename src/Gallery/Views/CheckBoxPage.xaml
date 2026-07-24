@@ -75,7 +75,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Bind IsChecked in TwoWay mode for an independent Boolean setting. Checked and Unchecked are useful when a transition must trigger immediate view-owned behavior in addition to updating the value; omit the handlers when binding alone is sufficient."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Boolean option"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Set IsThreeState only when null represents a meaningful inherited, mixed, or unknown state. Bind IsChecked to a nullable Boolean and handle Indeterminate only when entering that third state requires an immediate side effect."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Three-state option"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishCheckBox&#xA;  Content=&quot;Use inherited setting&quot;&#xA;  IsThreeState=&quot;True&quot;&#xA;  IsChecked=&quot;{Binding InheritedSetting, Mode=TwoWay}&quot;&#xA;  Indeterminate=&quot;InheritedSetting_Changed&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

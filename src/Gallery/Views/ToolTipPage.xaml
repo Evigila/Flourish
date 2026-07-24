@@ -59,7 +59,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Assign a FlourishToolTip instance when placement, open state, or another ToolTip property needs explicit configuration. This path is appropriate for a reusable tooltip control or richer content that still remains concise and supplemental."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Explicit tooltip"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Use a simple ToolTip string when no control-level configuration is required. Native ToolTipService attached properties on the host tune the initial delay and visible duration without changing the shared Flourish treatment."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Simple tooltip and timing"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  Content=&quot;Refresh&quot;&#xA;  ToolTip=&quot;Refresh the current workspace.&quot;&#xA;  ToolTipService.InitialShowDelay=&quot;400&quot;&#xA;  ToolTipService.ShowDuration=&quot;5000&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

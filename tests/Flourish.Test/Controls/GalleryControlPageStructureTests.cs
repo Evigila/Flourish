@@ -317,6 +317,11 @@ public sealed class GalleryControlPageStructureTests
             )
         )
         {
+            if (Path.GetFileName(path) == "AboutPage.xaml")
+            {
+                continue;
+            }
+
             var page = XDocument.Load(path);
             if (page.Root?.Name.LocalName != "Page")
             {
@@ -372,31 +377,64 @@ public sealed class GalleryControlPageStructureTests
             Assert.All(
                 splitPresenters,
                 presenter =>
+                {
+                    var isRightPositionExample =
+                        Path.GetFileName(path) == "PresenterPage.xaml"
+                        && (string?)presenter.Attribute("Title") == "Right presentation"
+                        && presenter
+                            .Ancestors()
+                            .Any(element =>
+                                element.Name.LocalName == "Chunk"
+                                && (string?)element.Attribute("Title") == "Split"
+                            );
                     Assert.Equal(
-                        "Left",
+                        isRightPositionExample ? "Right" : "Left",
                         (string?)presenter.Attribute("PresenterPosition")
-                    )
+                    );
+                }
             );
         }
     }
 
     [Fact]
-    public void About_RemovesAddressesAndUsesDisabledProjectCardButtons()
+    public void PresenterPage_ShowsBothSplitDirections()
     {
-        var page = LoadPage("AboutPage.xaml");
-        Assert.DoesNotContain(
-            page.Descendants(),
-            element =>
-                element.Name.LocalName == "Chunk"
-                && (string?)element.Attribute("Title") == "Addresses"
-        );
-
-        var project = page
+        var page = LoadPage("PresenterPage.xaml");
+        var splitChunk = page
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "Chunk"
-                && (string?)element.Attribute("Title") == "Project"
+                && (string?)element.Attribute("Title") == "Split"
             );
+        var positions = splitChunk
+            .Descendants()
+            .Where(element =>
+                element.Name.LocalName == "Presenter"
+                && (string?)element.Attribute("PresenterMode") == "Split"
+            )
+            .Select(element => (string?)element.Attribute("PresenterPosition"))
+            .ToArray();
+
+        Assert.Equal(2, positions.Length);
+        Assert.Contains("Left", positions);
+        Assert.Contains("Right", positions);
+    }
+
+    [Fact]
+    public void About_ContainsOnlyAContentFreeProjectChunk()
+    {
+        var page = LoadPage("AboutPage.xaml");
+        var pageBody = Assert.Single(
+            page.Descendants(),
+            element => element.Name.LocalName == "PageBody"
+        );
+        var children = pageBody.Elements().ToArray();
+        Assert.Equal(2, children.Length);
+        Assert.Equal("HeaderChunk", children[0].Name.LocalName);
+        var project = children[1];
+        Assert.Equal("Chunk", project.Name.LocalName);
+        Assert.Equal("Project", (string?)project.Attribute("Title"));
+        Assert.Null((string?)project.Attribute("Content"));
         Assert.DoesNotContain(
             project.Descendants(),
             element => element.Name.LocalName == "Card"
@@ -413,21 +451,14 @@ public sealed class GalleryControlPageStructureTests
     }
 
     [Fact]
-    public void RegisteredDisplayPages_UseOneCodeSpaceOnlyForUsage()
+    public void ControlDisplayPages_TeachUsageWithCodePresenters()
     {
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
-        var excludedPages = new HashSet<string>(StringComparer.Ordinal)
-        {
-            "AboutPage",
-            "ControlLibraryPage",
-            "HomePage",
-        };
         var displayPages = Regex.Matches(
                 program,
-                @"services\.AddNavigable<(?<page>\w+Page)>"
+                @"group\.AddNavigableViewItem<(?<page>\w+Page)>\(childId:\s*1\)"
             )
             .Select(match => match.Groups["page"].Value)
-            .Where(page => !excludedPages.Contains(page))
             .Distinct(StringComparer.Ordinal)
             .ToArray();
 
@@ -442,13 +473,343 @@ public sealed class GalleryControlPageStructureTests
                     && (string?)element.Attribute("Title") == "Usage"
             );
             Assert.Null((string?)usage.Attribute("Content"));
-            var codeSpace = Assert.Single(usage.Elements());
-            Assert.Equal("CodeSpace", codeSpace.Name.LocalName);
-            Assert.False(
-                string.IsNullOrWhiteSpace((string?)codeSpace.Attribute("Text")),
-                $"{pageType} must provide concrete XAML or C# usage."
+            var layout = Assert.Single(usage.Elements());
+            Assert.Equal("StackPanel", layout.Name.LocalName);
+            var presenters = layout
+                .Elements()
+                .Where(element => element.Name.LocalName == "Presenter")
+                .ToArray();
+            Assert.NotEmpty(presenters);
+            Assert.Equal(
+                presenters.Length,
+                usage.Descendants().Count(element => element.Name.LocalName == "CodeSpace")
             );
+
+            for (var index = 0; index < presenters.Length; index++)
+            {
+                var presenter = presenters[index];
+                Assert.Equal("Split", (string?)presenter.Attribute("PresenterMode"));
+                Assert.Equal("Left", (string?)presenter.Attribute("PresenterPosition"));
+                Assert.False(string.IsNullOrWhiteSpace((string?)presenter.Attribute("Title")));
+                Assert.False(string.IsNullOrWhiteSpace((string?)presenter.Attribute("Content")));
+                Assert.DoesNotContain(
+                    presenter.Elements(),
+                    element => element.Name.LocalName == "Presenter.Body"
+                );
+                if (index > 0)
+                {
+                    Assert.Equal(
+                        "{DynamicResource FlourishPresenterPeerMargin}",
+                        (string?)presenter.Attribute("Margin")
+                    );
+                }
+
+                var presentation = Assert.Single(
+                    presenter.Elements(),
+                    element => element.Name.LocalName == "Presenter.Presentation"
+                );
+                var codeSpace = Assert.Single(presentation.Elements());
+                Assert.Equal("CodeSpace", codeSpace.Name.LocalName);
+                Assert.False(
+                    string.IsNullOrWhiteSpace((string?)codeSpace.Attribute("Text")),
+                    $"{pageType} must provide concrete usage."
+                );
+            }
         });
+    }
+
+    [Fact]
+    public void UsageSeparatesMarkupRuntimeAndAccessibilityContracts()
+    {
+        var outputUsage = LoadPage("OutputCardPage.xaml")
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Chunk"
+                && (string?)element.Attribute("Title") == "Usage"
+            );
+        var outputExamples = outputUsage
+            .Descendants()
+            .Where(element => element.Name.LocalName == "CodeSpace")
+            .Select(element => (string?)element.Attribute("Text") ?? string.Empty)
+            .ToArray();
+        Assert.True(outputExamples.Length >= 2);
+        Assert.Contains(outputExamples, code => code.Contains("<flourish:OutputCard", StringComparison.Ordinal));
+        Assert.Contains(
+            outputExamples,
+            code =>
+                code.Contains("WriteLine", StringComparison.Ordinal)
+                && code.Contains("Clear", StringComparison.Ordinal)
+        );
+
+        var buttonUsage = LoadPage("ButtonPage.xaml")
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Chunk"
+                && (string?)element.Attribute("Title") == "Usage"
+            );
+        var buttonExamples = buttonUsage
+            .Descendants()
+            .Where(element => element.Name.LocalName == "CodeSpace")
+            .Select(element => (string?)element.Attribute("Text") ?? string.Empty)
+            .ToArray();
+        Assert.True(buttonExamples.Length >= 2);
+        Assert.Contains(
+            buttonExamples,
+            code =>
+                code.Contains("AutomationProperties.Name", StringComparison.Ordinal)
+                && code.Contains("ToolTip", StringComparison.Ordinal)
+        );
+    }
+
+    [Fact]
+    public void InteractionContracts_UseLiveStatePresenters()
+    {
+        var expectedControls = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["ButtonPage.xaml"] = "Button",
+            ["CardButtonPage.xaml"] = "CardButton",
+        };
+
+        foreach (var expected in expectedControls)
+        {
+            var page = LoadPage(expected.Key);
+            var contract = page
+                .Descendants()
+                .Single(element =>
+                    element.Name.LocalName == "Chunk"
+                    && (string?)element.Attribute("Title") == "Interaction contract"
+                );
+            Assert.DoesNotContain(
+                contract.Descendants(),
+                element => element.Name.LocalName == "Card"
+            );
+
+            var layout = Assert.Single(contract.Elements());
+            Assert.Equal("UniformGrid", layout.Name.LocalName);
+            Assert.True(int.Parse((string?)layout.Attribute("Columns") ?? "0") >= 2);
+            var presenters = layout
+                .Elements()
+                .Where(element => element.Name.LocalName == "Presenter")
+                .ToArray();
+            Assert.True(presenters.Length >= 2);
+            Assert.All(presenters, presenter =>
+            {
+                Assert.Equal("TopDown", (string?)presenter.Attribute("PresenterMode"));
+                Assert.DoesNotContain(
+                    presenter.Elements(),
+                    element => element.Name.LocalName == "Presenter.Body"
+                );
+                var presentation = Assert.Single(
+                    presenter.Elements(),
+                    element => element.Name.LocalName == "Presenter.Presentation"
+                );
+                Assert.Contains(
+                    presentation.DescendantsAndSelf(),
+                    element => element.Name.LocalName == expected.Value
+                );
+            });
+            Assert.Contains(
+                contract.Descendants(),
+                element =>
+                    element.Name.LocalName == expected.Value
+                    && (string?)element.Attribute("IsEnabled") == "False"
+            );
+        }
+    }
+
+    [Fact]
+    public void WindowCaptionInteraction_DistinguishesRoutineAndCloseActions()
+    {
+        var page = LoadPage("WindowCaptionButtonPage.xaml");
+        var contract = page
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Chunk"
+                && (string?)element.Attribute("Title") == "Interaction contract"
+            );
+        var buttons = contract
+            .Descendants()
+            .Where(element => element.Name.LocalName == "WindowCaptionButton")
+            .ToArray();
+
+        Assert.Equal(4, buttons.Length);
+        Assert.Equal(
+            3,
+            buttons.Count(element => (string?)element.Attribute("Variant") == "Text")
+        );
+        var close = Assert.Single(
+            buttons,
+            element => (string?)element.Attribute("Variant") == "Danger"
+        );
+        Assert.Equal("Close", (string?)close.Attribute("AutomationProperties.Name"));
+        Assert.DoesNotContain(
+            buttons,
+            element => element.Attribute("IsEnabled") is not null
+        );
+    }
+
+    [Fact]
+    public void NonControlPages_UseDetailedTopicsAndColocatedCode()
+    {
+        var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
+        var controlPages = Regex.Matches(
+                program,
+                @"group\.AddNavigableViewItem<(?<page>\w+Page)>\(childId:\s*1\)"
+            )
+            .Select(match => match.Groups["page"].Value)
+            .Append("ControlLibraryPage")
+            .ToHashSet(StringComparer.Ordinal);
+        var informationalPages = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "HomePage",
+        };
+        var nonControlPages = Directory.EnumerateFiles(ViewsRoot, "*Page.xaml")
+            .Select(Path.GetFileNameWithoutExtension)
+            .Where(page =>
+                page is not null
+                && page != "AboutPage"
+                && !controlPages.Contains(page)
+            )
+            .Cast<string>()
+            .ToArray();
+
+        Assert.NotEmpty(nonControlPages);
+        Assert.All(nonControlPages, pageType =>
+        {
+            var page = LoadPage($"{pageType}.xaml");
+            var topics = page
+                .Descendants()
+                .Where(element =>
+                    element.Name.LocalName == "Chunk"
+                    && (string?)element.Attribute("Title") != "Reference"
+                )
+                .ToArray();
+
+            Assert.NotEmpty(topics);
+            Assert.DoesNotContain(
+                topics,
+                topic => (string?)topic.Attribute("Title") == "Usage"
+            );
+            Assert.All(topics, topic =>
+            {
+                var title = Assert.IsType<string>((object?)topic.Attribute("Title")?.Value);
+                var content = Assert.IsType<string>((object?)topic.Attribute("Content")?.Value);
+                Assert.DoesNotContain("Runtime", title, StringComparison.OrdinalIgnoreCase);
+                Assert.True(
+                    content.Length >= 200,
+                    $"{pageType}/{title} should explain purpose, usage, recommended scenarios, and code intent."
+                );
+
+                if (informationalPages.Contains(pageType))
+                {
+                    Assert.DoesNotContain(
+                        topic.Descendants(),
+                        element => element.Name.LocalName == "CodeSpace"
+                    );
+                    return;
+                }
+
+                var codeSpace = Assert.Single(
+                    topic.Descendants(),
+                    element => element.Name.LocalName == "CodeSpace"
+                );
+                Assert.False(string.IsNullOrWhiteSpace((string?)codeSpace.Attribute("Text")));
+                Assert.Same(codeSpace.Parent?.Elements().Last(), codeSpace);
+            });
+        });
+    }
+
+    [Fact]
+    public void ConfigurationPage_ColocatesCompleteApiUsageWithEachTopic()
+    {
+        var page = LoadPage("ConfigurationPage.xaml");
+        Assert.DoesNotContain(
+            page.Descendants(),
+            element =>
+                element.Name.LocalName == "Chunk"
+                && (string?)element.Attribute("Title") == "Usage"
+        );
+
+        var expectedApis = new Dictionary<string, string[]>
+        {
+            ["Configuration values"] =
+            [
+                "configuration.Changed",
+                "configuration.Reload",
+                "configuration.Current",
+                "configuration[",
+                "configuration.Get<int>",
+                "configuration.GetSection<ReportOptions>",
+            ],
+            ["App settings"] =
+            [
+                "settings.FilePath",
+                "settings.SetAsync",
+                "settings.MergeAsync",
+                "settings.AppendAsync",
+                "settings.RemoveAsync",
+                "settings.UpdateAsync",
+                "editor.Set",
+                "editor.Merge",
+                "editor.Append",
+                "editor.Remove",
+                "result.Changed",
+                "result.FilePath",
+                "result.ConfigurationReloaded",
+            ],
+            ["Localization"] =
+            [
+                "ConfigureData",
+                "SetLocale",
+                "localization.Changed",
+                "localization.CurrentLocale",
+                "localization.AvailableLocales",
+                "localization.Get",
+                "localization.Format",
+            ],
+            ["Locale files"] =
+            [
+                "AddLocale",
+                "localization.RegisterFile",
+                "registration.Id",
+                "registration.Locale",
+                "registration.FilePath",
+                "localization.ReloadFile",
+                "localization.Unregister",
+            ],
+        };
+
+        foreach (var expected in expectedApis)
+        {
+            var chunk = page
+                .Descendants()
+                .Single(element =>
+                    element.Name.LocalName == "Chunk"
+                    && (string?)element.Attribute("Title") == expected.Key
+                );
+            var body = Assert.Single(chunk.Elements());
+            Assert.Equal("StackPanel", body.Name.LocalName);
+            var codeSpace = Assert.Single(
+                body.Elements(),
+                element => element.Name.LocalName == "CodeSpace"
+            );
+            Assert.Same(body.Elements().Last(), codeSpace);
+            var code = Assert.IsType<string>((object?)codeSpace.Attribute("Text")?.Value);
+            var content = Assert.IsType<string>((object?)chunk.Attribute("Content")?.Value);
+            Assert.DoesNotContain("Runtime", expected.Key, StringComparison.OrdinalIgnoreCase);
+            Assert.True(content.Length >= 200);
+            Assert.Contains("Use", content, StringComparison.Ordinal);
+            Assert.Contains("code below", content, StringComparison.OrdinalIgnoreCase);
+            Assert.InRange(
+                Regex.Matches(code, @"(?m)^// ").Count,
+                low: 1,
+                high: 3
+            );
+            Assert.All(
+                expected.Value,
+                api => Assert.Contains(api, code, StringComparison.Ordinal)
+            );
+        }
     }
 
     [Fact]
@@ -681,7 +1042,7 @@ public sealed class GalleryControlPageStructureTests
                 && (string?)element.Attribute("Title") == "Messages"
             );
         var layout = Assert.Single(
-            messageChunk.Elements(),
+            messageChunk.Descendants(),
             element => element.Name.LocalName == "UniformGrid"
         );
         Assert.Equal("2", (string?)layout.Attribute("Columns"));

@@ -13,16 +13,18 @@
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Contract">
-      <flourish:Card
-        Icon="&#xE77B;"
-        Title="Profile page"
-        Content="The page type is resolved through dependency injection when the profile surface is opened. Enable the profile region through ConfigureTitleBar."
-      />
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder&#10;    .ConfigureTitleBar(titleBar =&gt; titleBar.SetProfile(NameOrder.FirstLast))&#10;    .ConfigureProfile(profile =&gt; profile.SetProfilePage&lt;AccountPage&gt;());" />
+    <flourish:Chunk
+      Title="Profile page"
+      Content="Choose the Page resolved through dependency injection when the title-bar profile surface opens. Use this for account details, preferences, or identity actions that belong in the shell; the code below enables the profile trigger and assigns its hosted page during application composition."
+    >
+      <StackPanel>
+        <flourish:Card
+          Icon="&#xE77B;"
+          Title="Dependency-injected content"
+          Content="Register the page with the service container so its constructor dependencies are available when Flourish opens the profile surface."
+        />
+        <flourish:CodeSpace Text="// Enable the title-bar trigger, then select its hosted page.&#10;builder&#10;    .ConfigureTitleBar(titleBar =&gt;&#10;        titleBar.SetProfile(NameOrder.FirstLast))&#10;    .ConfigureProfile(profile =&gt;&#10;        profile.SetProfilePage&lt;AccountPage&gt;());" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

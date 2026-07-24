@@ -91,7 +91,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Give every option for one decision the same GroupName and start with one valid selection. Bind IsChecked when selection is application state. Use RadioButton only when the complete choice set is small enough to remain visible."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Exclusive choice"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Bind a shared Command when selecting an option must invoke application behavior. CommandParameter carries each option value, avoiding a separate Checked handler for every radio button."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Command selection"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishRadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">
