@@ -503,7 +503,7 @@
                     />
                   </StackPanel>
                 </Grid>
-                <ScrollViewer
+                <control:ScrollViewer
                   x:Name="ApplicationInfoBodyScrollViewer"
                   Grid.Row="1"
                   Margin="0,14,0,0"
@@ -515,7 +515,7 @@
                     x:Name="ApplicationInfoBodyHost"
                     Orientation="Vertical"
                   />
-                </ScrollViewer>
+                </control:ScrollViewer>
               </Grid>
 
             </Grid>

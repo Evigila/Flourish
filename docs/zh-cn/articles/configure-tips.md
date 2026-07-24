@@ -10,12 +10,13 @@ Tooltip 为紧凑或仅含图标的 Flourish 控件与 Shell 区域提供标签�
 ## 配置提示
 
 ```csharp
-builder.ConfigureShell(shell => shell.UseTips(delay: 200));
+builder.ConfigureShell(shell =>
+    shell.UseTips(enabled: true, delay: 200));
 ```
 
 `delay` 参数表示指针悬停后到 Flourish Tooltip 显示前的时间，单位为毫秒。默认值为 `200`，且不能为负数。Flourish 呈现使用临时 [Overlay](../controls/overlay.md)，指针离开提示上下文后会自行关闭。
 
-Flourish 会把这种呈现保持在 Shell 边界内。省略 `UseTips` 时，同一份 Tooltip 内容会使用原生 WPF 的外观、显示时间、定位和打开行为。在运行时禁用 `ToolTips` 功能会执行相同的回退；重新启用或配置该功能会为 Flourish 标题栏、导航栏、工具栏与状态栏控件恢复 Flourish 呈现。
+Flourish 会把这种呈现保持在 Shell 边界内。传入 `enabled: false` 或省略 `UseTips` 时，同一份 Tooltip 内容会使用原生 WPF 的外观、显示时间、定位和打开行为。在运行时禁用 `ToolTips` 功能会执行相同的回退；重新启用或配置该功能会为 Flourish 标题栏、导航栏、工具栏与状态栏控件恢复 Flourish 呈现。
 
 ## 原生与第三方控件
 

@@ -14,9 +14,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 ///          .UseNavigation()
 ///          .UseCenterContent(enabled: true, contentWidth: 1200)
 ///          .UseDynamicToolbar()
-///          .UseTips(200)
+///          .UseTips(enabled: true, delay: 200)
 ///          .UseMotion()
-///          .UseMaterialEffect(MaterialEffect.Mica)
+///          .UseSmoothScroll()
+///          .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
 ///          .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
 ///          .UseStatusBar();
 /// });
@@ -76,12 +77,12 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseDynamicToolbar(bool enabled = true);
 
     /// <summary>
-    /// Switches tooltips owned by Flourish controls to the Flourish presentation and
-    /// configures their initial display delay.
+    /// Enables or disables Flourish tooltips and configures their initial display delay.
     /// </summary>
+    /// <param name="enabled">A value indicating whether Flourish tooltips should be enabled.</param>
     /// <param name="delay">The initial tooltip delay in milliseconds.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseTips(int delay = 200);
+    IFlourishShellBuilder UseTips(bool enabled = true, int delay = 200);
 
     /// <summary>
     /// Enables or disables Flourish motion.
@@ -91,25 +92,43 @@ public interface IFlourishShellBuilder
     IFlourishShellBuilder UseMotion(bool enabled = true);
 
     /// <summary>
-    /// Configures the shell material effect. <see cref="MaterialEffect.None"/> disables the effect.
+    /// Enables or disables the shell material effect and selects the effect to use.
     /// </summary>
+    /// <param name="enabled">A value indicating whether the material effect should be enabled.</param>
     /// <param name="effect">The material effect applied to the shell window.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseMaterialEffect(MaterialEffect effect = MaterialEffect.Mica);
+    IFlourishShellBuilder UseMaterialEffect(
+        bool enabled = true,
+        MaterialEffect effect = MaterialEffect.Mica
+    );
 
     /// <summary>
-    /// Configures the primary, secondary, and accent colors used by Flourish theme resources.
+    /// Enables or disables custom primary, secondary, and accent theme colors.
     /// </summary>
+    /// <param name="enabled">A value indicating whether the custom colors should be enabled.</param>
     /// <param name="colors">The application theme colors.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseThemeColors(FlourishThemeColors colors);
+    IFlourishShellBuilder UseThemeColors(bool enabled, FlourishThemeColors colors);
 
     /// <summary>
-    /// Configures the shared corner radius used by Flourish controls and surfaces.
+    /// Enables or disables a custom shared corner radius for Flourish controls and surfaces.
     /// </summary>
+    /// <param name="enabled">A value indicating whether the custom radius should be enabled.</param>
     /// <param name="radius">A finite, non-negative radius in device-independent pixels.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseCornerRadius(double radius);
+    IFlourishShellBuilder UseCornerRadius(bool enabled, double radius = 6);
+
+    /// <summary>
+    /// Enables or disables smooth mouse-wheel scrolling for Flourish scroll viewers by default.
+    /// </summary>
+    /// <param name="enabled">A value indicating whether smooth scrolling should be enabled.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// A locally assigned
+    /// <see cref="ArkheideSystem.Flourish.Controls.ScrollViewer.IsSmoothScrollingEnabled" />
+    /// value takes precedence over this shell default.
+    /// </remarks>
+    IFlourishShellBuilder UseSmoothScroll(bool enabled = true);
 
     /// <summary>
     /// Configures the global font and its explicit text and icon size scale.

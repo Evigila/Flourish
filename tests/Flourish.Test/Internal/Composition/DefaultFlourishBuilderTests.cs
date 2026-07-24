@@ -47,9 +47,12 @@ public sealed class DefaultFlourishBuilderTests
                     .UseMultiProject()
                     .UseNavigation()
                     .UseCenterContent(enabled: true, contentWidth: 900)
-                    .UseTips(350)
+                    .UseTips(enabled: true, delay: 350)
                     .UseGlobalFont("Arial", 13, 15, 17, 19, 22, 28)
-                    .UseMaterialEffect(MaterialEffect.None)
+                    .UseMaterialEffect(
+                        enabled: false,
+                        effect: MaterialEffect.None
+                    )
                     .UseStatusBar()
             )
             .ConfigureShell(shell => shell.UseStatusBar(enabled: false))

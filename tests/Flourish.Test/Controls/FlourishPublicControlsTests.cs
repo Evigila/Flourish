@@ -323,7 +323,8 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
             Assert.True(scrollViewer.IsSmoothScrollingEnabled);
-            Assert.False(scrollViewer.IsCompact);
+            Assert.Null(typeof(CustomScrollViewer).GetProperty("IsCompact"));
+            Assert.Null(typeof(CustomScrollViewer).GetField("IsCompactProperty"));
             Assert.Equal(string.Empty, search.Placeholder);
             Assert.Equal(FlourishTextRole.Body, text.Role);
         });

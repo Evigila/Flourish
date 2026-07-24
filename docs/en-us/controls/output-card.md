@@ -85,7 +85,7 @@ With automatic height, the output history does not increase `OutputCard`'s desir
 
 For an ActionCard-plus-output layout, place the complete ActionCard column and `OutputCard` in the same auto-sized `Grid` row and leave `OutputCard.VerticalAlignment` as `Stretch`. The ActionCard column then determines the row height. Additional output remains inside the viewport and uses its vertical scrollbar instead of making the ActionCards taller. Do not recalculate `Height` from `Output` or wrap `OutputCard` in another scrolling container.
 
-Long lines do not wrap and use the horizontal scrollbar when needed. The viewport uses compact scrollbars so both axes remain available without adding substantial visual weight.
+Long lines do not wrap and use the horizontal scrollbar when needed. The viewport uses the standard Flourish scrollbars, whose narrow visible thumbs keep both axes available without adding substantial visual weight.
 
 When the pointer is over overflowing output, the inner viewport consumes the mouse wheel while it can move in that direction. At the top or bottom boundary, outward wheel input continues to the containing page instead of trapping scrolling inside the card.
 

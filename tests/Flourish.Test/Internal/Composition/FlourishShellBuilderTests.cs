@@ -15,6 +15,7 @@ public sealed class FlourishShellBuilderTests
         Assert.False(options.IsCenterContentEnabled);
         Assert.Equal(0, options.CenterContentWidth);
         Assert.False(options.IsMultiProjectEnabled);
+        Assert.True(options.IsSmoothScrollingEnabled);
     }
 
     [Fact]
@@ -33,11 +34,15 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, sut.UseNavigation());
         Assert.Same(sut, sut.UseCenterContent(enabled: true, contentWidth: 1080));
         Assert.Same(sut, sut.UseDynamicToolbar());
-        Assert.Same(sut, sut.UseTips(350));
+        Assert.Same(sut, sut.UseTips(enabled: true, delay: 350));
         Assert.Same(sut, sut.UseMotion());
-        Assert.Same(sut, sut.UseMaterialEffect(MaterialEffect.Mica));
-        Assert.Same(sut, sut.UseThemeColors(themeColors));
-        Assert.Same(sut, sut.UseCornerRadius(5));
+        Assert.Same(sut, sut.UseSmoothScroll());
+        Assert.Same(
+            sut,
+            sut.UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
+        );
+        Assert.Same(sut, sut.UseThemeColors(enabled: true, colors: themeColors));
+        Assert.Same(sut, sut.UseCornerRadius(enabled: true, radius: 5));
         Assert.Same(sut, sut.UseGlobalFont("Arial", 13, 15, 17, 19, 22, 28));
         Assert.Same(
             sut,
@@ -55,6 +60,7 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal(350, options.Tips.InitialShowDelayMilliseconds);
         Assert.Equal(5, options.Tips.SpawnableMargin);
         Assert.True(options.Motion.IsEnabled);
+        Assert.True(options.IsSmoothScrollingEnabled);
         Assert.True(options.IsMaterialEffectEnabled);
         Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
         Assert.Equal(themeColors, options.ThemeColors);
@@ -102,6 +108,11 @@ public sealed class FlourishShellBuilderTests
             IsNavigationPanelEnabled = true,
             IsCenterContentEnabled = true,
             IsDynamicToolbarEnabled = true,
+            IsSmoothScrollingEnabled = true,
+            IsTipsEnabled = true,
+            IsMaterialEffectEnabled = true,
+            ThemeColors = new FlourishThemeColors(Colors.Red, Colors.Green, Colors.Blue),
+            CornerRadius = 8,
             IsStatusBarEnabled = true,
         };
         options.Motion.IsEnabled = true;
@@ -112,7 +123,18 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, sut.UseNavigation(false));
         Assert.Same(sut, sut.UseCenterContent(enabled: false, contentWidth: 1200));
         Assert.Same(sut, sut.UseDynamicToolbar(false));
+        Assert.Same(sut, sut.UseTips(false));
         Assert.Same(sut, sut.UseMotion(false));
+        Assert.Same(sut, sut.UseSmoothScroll(false));
+        Assert.Same(sut, sut.UseMaterialEffect(false));
+        Assert.Same(
+            sut,
+            sut.UseThemeColors(
+                enabled: false,
+                colors: new FlourishThemeColors(Colors.Red, Colors.Green, Colors.Blue)
+            )
+        );
+        Assert.Same(sut, sut.UseCornerRadius(false));
         Assert.Same(sut, sut.UseStatusBar(false));
 
         Assert.False(options.IsTitlebarEnabled);
@@ -120,7 +142,12 @@ public sealed class FlourishShellBuilderTests
         Assert.False(options.IsNavigationPanelEnabled);
         Assert.False(options.IsCenterContentEnabled);
         Assert.False(options.IsDynamicToolbarEnabled);
+        Assert.False(options.IsTipsEnabled);
         Assert.False(options.Motion.IsEnabled);
+        Assert.False(options.IsSmoothScrollingEnabled);
+        Assert.False(options.IsMaterialEffectEnabled);
+        Assert.Null(options.ThemeColors);
+        Assert.Null(options.CornerRadius);
         Assert.False(options.IsStatusBarEnabled);
     }
 
@@ -134,7 +161,10 @@ public sealed class FlourishShellBuilderTests
         };
         var sut = new FlourishShellBuilder(options);
 
-        var result = sut.UseMaterialEffect(MaterialEffect.None);
+        var result = sut.UseMaterialEffect(
+            enabled: true,
+            effect: MaterialEffect.None
+        );
 
         Assert.Same(sut, result);
         Assert.False(options.IsMaterialEffectEnabled);
@@ -146,7 +176,9 @@ public sealed class FlourishShellBuilderTests
     {
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => sut.UseTips(-1));
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            sut.UseTips(enabled: true, delay: -1)
+        );
 
         Assert.Equal("delay", exception.ParamName);
     }
@@ -157,7 +189,10 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.UseMaterialEffect((MaterialEffect)int.MaxValue)
+            sut.UseMaterialEffect(
+                enabled: true,
+                effect: (MaterialEffect)int.MaxValue
+            )
         );
 
         Assert.Equal("effect", exception.ParamName);
@@ -169,7 +204,7 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            sut.UseThemeColors(null!)
+            sut.UseThemeColors(enabled: true, colors: null!)
         );
 
         Assert.Equal("colors", exception.ParamName);
@@ -201,7 +236,7 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.UseCornerRadius(radius)
+            sut.UseCornerRadius(enabled: true, radius: radius)
         );
 
         Assert.Equal("radius", exception.ParamName);
@@ -213,8 +248,29 @@ public sealed class FlourishShellBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishShellBuilder(options);
 
-        Assert.Same(sut, sut.UseCornerRadius(0));
+        Assert.Same(sut, sut.UseCornerRadius(enabled: true, radius: 0));
         Assert.Equal(0, options.CornerRadius);
+    }
+
+    [Fact]
+    public void UseMethods_ExceptGlobalFont_StartWithEnabledParameter()
+    {
+        var useMethods = typeof(IFlourishShellBuilder)
+            .GetMethods()
+            .Where(method =>
+                method.Name.StartsWith("Use", StringComparison.Ordinal)
+                && method.Name != nameof(IFlourishShellBuilder.UseGlobalFont)
+            );
+
+        Assert.All(
+            useMethods,
+            method =>
+            {
+                var firstParameter = Assert.Single(method.GetParameters().Take(1));
+                Assert.Equal(typeof(bool), firstParameter.ParameterType);
+                Assert.Equal("enabled", firstParameter.Name);
+            }
+        );
     }
 
     [Theory]

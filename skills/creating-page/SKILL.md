@@ -130,6 +130,12 @@ Do not intentionally create an empty Button or CardButton even though their visu
 
 All disabled Flourish controls use the same low-emphasis gray treatment as disabled CardButton. Disabled state suppresses the control's normal, Filled, Danger, selected, or accent colors across background, border, text, and icon regions instead of preserving the enabled variant color. A dangerous WindowCaptionButton uses its warning color only while enabled; disabled caption actions use the same shared gray treatment.
 
+## Use the standard scrolling contract
+
+Use the standard Flourish `ScrollViewer` and `ScrollBar` appearance for every viewport. Do not select, document, or recreate a compact scrollbar variant. The standard template already keeps the visible thumb narrow while retaining a larger transparent interaction area, and uses the scrollbar-specific small corner radius at both ends.
+
+Set `IsSmoothScrollingEnabled` directly when an application-owned `ScrollViewer` needs behavior that differs from the application policy. Use `ConfigureShell(shell => shell.UseSmoothScroll(enabled))` to choose the default for built-in Shell, navigation, and page scrolling surfaces that page XAML cannot reach.
+
 ## Preserve DataGrid page scrolling
 
 Use Flourish `DataGrid` directly in a chunk layout. Its internal viewport consumes the mouse wheel while it can scroll in that direction. At the top or bottom boundary, the wheel event continues to the surrounding `PageBody`, so hovering the grid never traps page navigation.
@@ -266,6 +272,7 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm vertically stacked Presenters use `FlourishPresenterPeerMargin` after the first item.
 - Confirm each ActionCard has at most one Body control; Horizontal centers the row and Vertical left-aligns the complete stack.
 - Confirm CardButton is used only when the whole card is interactive; use ActionCard when interaction belongs to one contained control.
+- Confirm ScrollViewer and ScrollBar use the standard appearance, and use `UseSmoothScroll` rather than template access to configure built-in scrolling surfaces.
 - Confirm DataGrid scrolls internally before handing the wheel to PageBody at both vertical boundaries.
 - Confirm Overlay normally hosts a vertical ActionCard and custom content remains a deliberate, accessible layout.
 - Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.

@@ -10,12 +10,13 @@ Tooltips provide labels for compact or icon-only Flourish controls and Shell sur
 ## Configure tooltips
 
 ```csharp
-builder.ConfigureShell(shell => shell.UseTips(delay: 200));
+builder.ConfigureShell(shell =>
+    shell.UseTips(enabled: true, delay: 200));
 ```
 
 The `delay` argument is the time in milliseconds between pointer hover and the Flourish tooltip appearing. It defaults to `200` and must be non-negative. The Flourish presentation uses a temporary [Overlay](../controls/overlay.md) and closes when the pointer leaves the tooltip context.
 
-Flourish keeps this presentation within the shell boundary. Omit `UseTips` to present the same tooltip content with the native WPF appearance, timing, placement, and opening behavior. Disabling the `ToolTips` feature at runtime performs the same fallback; enabling or configuring it restores the Flourish presentation across Flourish title-bar, navigation, toolbar, and status controls.
+Flourish keeps this presentation within the shell boundary. Pass `enabled: false`, or omit `UseTips`, to present the same tooltip content with the native WPF appearance, timing, placement, and opening behavior. Disabling the `ToolTips` feature at runtime performs the same fallback; enabling or configuring it restores the Flourish presentation across Flourish title-bar, navigation, toolbar, and status controls.
 
 ## Native and third-party controls
 

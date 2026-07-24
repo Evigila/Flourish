@@ -14,11 +14,12 @@ builder.ConfigureShell(shell =>
         .UseTitleBar()
         .UseMultiProject()
         .UseNavigation()
-        .UseCenterContent(true, 1200)
+        .UseCenterContent(enabled: true, contentWidth: 1200)
         .UseDynamicToolbar()
-        .UseTips(delay: 200)
+        .UseTips(enabled: true, delay: 200)
         .UseMotion()
-        .UseMaterialEffect(MaterialEffect.Mica)
+        .UseSmoothScroll(enabled: true)
+        .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
         .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
         .UseStatusBar();
 });
@@ -39,6 +40,7 @@ builder.ConfigureNavigation(navigation =>
 | `UseDynamicToolbar` | Enables page-specific toolbar content. | [Dynamic toolbar](dynamic-toolbar.md) |
 | `UseTips` | Switches tooltips owned by Flourish controls and Shell surfaces from native WPF presentation to the Flourish presentation and sets its initial delay. | [Tooltips](configure-tips.md) |
 | `UseMotion` | Enables configured transitions and animations. | [Motion](configure-motion.md) |
+| `UseSmoothScroll` | Selects smooth or immediate mouse-wheel scrolling for built-in Flourish viewports. | [ScrollViewer and ScrollBar](../controls/scroll-viewer.md) |
 | `UseMaterialEffect` | Selects and enables the window material; `None` disables it. | [Material effects](configure-material-effect.md) |
 | `UseThemeColors` | Sets the primary, secondary, and accent colors. | [Themes](configure-themes.md) |
 | `UseCornerRadius` | Sets the shared control and surface corner radius. | [Themes](configure-themes.md) |
@@ -75,7 +77,7 @@ If `UseCenterContent` is omitted, or is called with `enabled: false`, navigated 
 
 ## Disable a feature
 
-`UseTitleBar`, `UseMultiProject`, `UseNavigation`, `UseDynamicToolbar`, `UseMotion`, and `UseStatusBar` accept an optional `enabled` value. `UseCenterContent` requires both `enabled` and `contentWidth`; pass `false` with the configured width when a shared builder setup must keep centered page content disabled.
+Except for `UseGlobalFont`, every `Use...` method in the Shell family places `enabled` first. This keeps shared composition code consistent whether a feature has additional options or not. `UseCenterContent`, `UseTips`, `UseMaterialEffect`, `UseThemeColors`, and `UseCornerRadius` place their detailed settings after that switch.
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -83,8 +85,11 @@ builder.ConfigureShell(shell =>
     shell
         .UseNavigation(showNavigation)
         .UseMultiProject(useProjects)
-        .UseCenterContent(useCenteredPages, 1200)
+        .UseCenterContent(enabled: useCenteredPages, contentWidth: 1200)
+        .UseTips(enabled: useFlourishTips, delay: 200)
         .UseMotion(!useStaticInterface)
+        .UseSmoothScroll(useSmoothScrolling)
+        .UseMaterialEffect(useMaterial, MaterialEffect.Mica)
         .UseStatusBar(showStatusBar);
 });
 
@@ -93,7 +98,7 @@ builder.ConfigureNavigation(navigation =>
         group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
-Omit `UseTips` to present Flourish-owned tooltip content with the native WPF appearance and default behavior. Tooltips attached to native WPF and third-party controls remain unchanged. Omit `UseGlobalFont` to retain its default behavior. Use `MaterialEffect.None` when shared configuration must explicitly disable the material.
+Passing `false` to `UseTips` presents Flourish-owned tooltip content with the native WPF appearance and default behavior; tooltips attached to native WPF and third-party controls remain unchanged. `UseSmoothScroll(false)` selects immediate native mouse-wheel scrolling for built-in Flourish viewports. Pass `false` to `UseMaterialEffect`, `UseThemeColors`, or `UseCornerRadius` when shared configuration must explicitly restore the theme-defined behavior. Omit `UseGlobalFont` to retain its defaults.
 
 ## Related features
 

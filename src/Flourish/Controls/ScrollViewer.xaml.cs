@@ -34,14 +34,6 @@ public class ScrollViewer : WpfScrollViewer
     private long _lastFrameTimestamp;
     private long _lastWheelTimestamp;
 
-    /// <summary>Identifies the <see cref="IsCompact" /> dependency property.</summary>
-    public static readonly DependencyProperty IsCompactProperty = DependencyProperty.Register(
-        nameof(IsCompact),
-        typeof(bool),
-        typeof(ScrollViewer),
-        new FrameworkPropertyMetadata(false)
-    );
-
     /// <summary>
     /// Identifies the <see cref="IsSmoothScrollingEnabled" /> dependency property.
     /// </summary>
@@ -69,13 +61,6 @@ public class ScrollViewer : WpfScrollViewer
     public ScrollViewer()
     {
         Unloaded += OnUnloaded;
-    }
-
-    /// <summary>Gets or sets whether the viewer uses compact scroll bars.</summary>
-    public bool IsCompact
-    {
-        get => (bool)GetValue(IsCompactProperty);
-        set => SetValue(IsCompactProperty, value);
     }
 
     /// <summary>

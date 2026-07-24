@@ -31,16 +31,16 @@ using System.Windows.Media;
 
 builder.ConfigureShell(shell =>
     shell
-        .UseThemeColors(new FlourishThemeColors(
+        .UseThemeColors(enabled: true, colors: new FlourishThemeColors(
             primary: Color.FromRgb(15, 108, 189),
             secondary: Color.FromRgb(92, 46, 145),
             accent: Color.FromRgb(216, 59, 1)))
-        .UseCornerRadius(5));
+        .UseCornerRadius(enabled: true, radius: 5));
 ```
 
-三种颜色必须完全不透明。Flourish 会根据有效的亮色或暗色主题派生语义交互、表面和前景资源，并在主题变化后重新计算。
+三种颜色必须完全不透明。Flourish 会根据有效的亮色或暗色主题派生语义交互、表面和前景资源，并在主题变化后重新计算。传入 `enabled: false` 可以恢复主题定义的配色，同时让共用 builder 保持统一的调用形态。
 
-`UseCornerRadius` 接受以设备无关像素表示的有限非负值。`0` 会生成直角的共用几何形状；省略该方法时，控件和表面使用主题定义的圆角。
+`UseCornerRadius` 接受以设备无关像素表示的有限非负值。`0` 会生成直角的共用几何形状；省略该方法或将 `enabled` 设为 `false` 时，控件和表面使用主题定义的圆角。
 
 应用配色后，应在亮色和暗色主题下验证结果，并保持文字对比度。
 

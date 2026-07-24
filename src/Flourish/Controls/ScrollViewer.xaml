@@ -90,7 +90,7 @@
           Grid.Column="1"
           Maximum="{TemplateBinding ScrollableHeight}"
           Orientation="Vertical"
-          Width="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Width="{DynamicResource FlourishScrollBarWidth}"
           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportHeight}"
           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
@@ -101,27 +101,13 @@
           Grid.Column="0"
           Maximum="{TemplateBinding ScrollableWidth}"
           Orientation="Horizontal"
-          Height="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Height="{DynamicResource FlourishScrollBarWidth}"
           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportWidth}"
           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
         />
       </Grid>
     </Border>
-    <ControlTemplate.Triggers>
-      <Trigger Property="IsCompact" Value="True">
-        <Setter
-          TargetName="PART_VerticalScrollBar"
-          Property="Width"
-          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
-        />
-        <Setter
-          TargetName="PART_HorizontalScrollBar"
-          Property="Height"
-          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
-        />
-      </Trigger>
-    </ControlTemplate.Triggers>
   </ControlTemplate>
 
   <!-- Logical scrolling stays directly connected to IScrollInfo so item
@@ -166,7 +152,7 @@
           Grid.Column="1"
           Maximum="{TemplateBinding ScrollableHeight}"
           Orientation="Vertical"
-          Width="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Width="{DynamicResource FlourishScrollBarWidth}"
           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportHeight}"
           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
@@ -177,27 +163,13 @@
           Grid.Column="0"
           Maximum="{TemplateBinding ScrollableWidth}"
           Orientation="Horizontal"
-          Height="{DynamicResource FlourishSlenderScrollBarWidth}"
+          Height="{DynamicResource FlourishScrollBarWidth}"
           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportWidth}"
           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
         />
       </Grid>
     </Border>
-    <ControlTemplate.Triggers>
-      <Trigger Property="IsCompact" Value="True">
-        <Setter
-          TargetName="PART_VerticalScrollBar"
-          Property="Width"
-          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
-        />
-        <Setter
-          TargetName="PART_HorizontalScrollBar"
-          Property="Height"
-          Value="{DynamicResource FlourishCompactSlenderScrollBarWidth}"
-        />
-      </Trigger>
-    </ControlTemplate.Triggers>
   </ControlTemplate>
 
   <Style TargetType="{x:Type controls:ScrollViewer}">
@@ -208,6 +180,10 @@
     <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter
+      Property="IsSmoothScrollingEnabled"
+      Value="{DynamicResource FlourishSmoothScrollingEnabled}"
+    />
     <Setter Property="Template" Value="{StaticResource FlourishPhysicalScrollViewerTemplate}" />
     <Style.Triggers>
       <Trigger Property="CanContentScroll" Value="True">

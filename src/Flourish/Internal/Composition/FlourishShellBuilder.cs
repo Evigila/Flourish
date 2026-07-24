@@ -41,7 +41,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
-    public IFlourishShellBuilder UseTips(int delay = 200)
+    public IFlourishShellBuilder UseTips(bool enabled = true, int delay = 200)
     {
         if (delay < 0)
         {
@@ -54,7 +54,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
 
         options.Tips.InitialShowDelayMilliseconds = delay;
         options.Tips.SpawnableMargin = 5;
-        options.IsTipsEnabled = true;
+        options.IsTipsEnabled = enabled;
         return this;
     }
 
@@ -65,25 +65,36 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
     }
 
     public IFlourishShellBuilder UseMaterialEffect(
+        bool enabled = true,
         MaterialEffect effect = MaterialEffect.Mica
     )
     {
         ValidateEnum(effect, nameof(effect));
         options.MaterialEffect = effect;
-        options.IsMaterialEffectEnabled = effect != MaterialEffect.None;
+        options.IsMaterialEffectEnabled = enabled && effect != MaterialEffect.None;
         return this;
     }
 
-    public IFlourishShellBuilder UseThemeColors(FlourishThemeColors colors)
+    public IFlourishShellBuilder UseThemeColors(
+        bool enabled,
+        FlourishThemeColors colors
+    )
     {
-        options.ThemeColors = colors ?? throw new ArgumentNullException(nameof(colors));
+        ArgumentNullException.ThrowIfNull(colors);
+        options.ThemeColors = enabled ? colors : null;
         return this;
     }
 
-    public IFlourishShellBuilder UseCornerRadius(double radius)
+    public IFlourishShellBuilder UseCornerRadius(bool enabled, double radius = 6)
     {
         ValidateNonNegativeFinite(radius, nameof(radius));
-        options.CornerRadius = radius;
+        options.CornerRadius = enabled ? radius : null;
+        return this;
+    }
+
+    public IFlourishShellBuilder UseSmoothScroll(bool enabled = true)
+    {
+        options.IsSmoothScrollingEnabled = enabled;
         return this;
     }
 

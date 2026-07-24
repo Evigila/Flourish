@@ -376,8 +376,8 @@ public sealed class FlourishShellNavigationLayoutTests
 
         Assert.Equal(8, outerInset);
         Assert.Equal(outerInset, titlebarSpacer);
-        Assert.Equal(new Thickness(outerInset, 0, outerInset, 0), leftPadding);
-        Assert.Equal(new Thickness(outerInset, 0, outerInset, 0), rightPadding);
+        Assert.Equal(new Thickness(outerInset, 0, 3, 0), leftPadding);
+        Assert.Equal(new Thickness(3, 0, outerInset, 0), rightPadding);
         Assert.Equal(new Thickness(4, 0, 4, 0), customRegionMargin);
         Assert.Equal(new Thickness(12, 3, 12, 3), statusBarPadding);
         Assert.Equal(
@@ -593,27 +593,27 @@ public sealed class FlourishShellNavigationLayoutTests
                 Assert.Equal(titlebarGeometry.Height, parentLayout.ContainerBounds.Height, 3);
                 Assert.Equal(parentLayout.ContainerBounds.Size, parentLayout.HoverSize);
                 Assert.Equal(childLayout.ContainerBounds.Size, childLayout.HoverSize);
-                Assert.Equal(5, scrollBarBounds.Width, 3);
+                Assert.Equal(10, scrollBarBounds.Width, 3);
                 if (isRightPlaced)
                 {
                     Assert.True(
                         scrollBarBounds.Right <= parentLayout.ContainerBounds.Left + 0.5,
-                        $"Compact scrollbar {scrollBarBounds} overlaps right-placed parent item {parentLayout.ContainerBounds}."
+                        $"Standard scrollbar {scrollBarBounds} overlaps right-placed parent item {parentLayout.ContainerBounds}."
                     );
                     Assert.True(
                         scrollBarBounds.Right <= childLayout.ContainerBounds.Left + 0.5,
-                        $"Compact scrollbar {scrollBarBounds} overlaps right-placed child item {childLayout.ContainerBounds}."
+                        $"Standard scrollbar {scrollBarBounds} overlaps right-placed child item {childLayout.ContainerBounds}."
                     );
                 }
                 else
                 {
                     Assert.True(
                         parentLayout.ContainerBounds.Right <= scrollBarBounds.Left + 0.5,
-                        $"Collapsed parent item {parentLayout.ContainerBounds} overlaps compact scrollbar {scrollBarBounds}."
+                        $"Collapsed parent item {parentLayout.ContainerBounds} overlaps standard scrollbar {scrollBarBounds}."
                     );
                     Assert.True(
                         childLayout.ContainerBounds.Right <= scrollBarBounds.Left + 0.5,
-                        $"Collapsed child item {childLayout.ContainerBounds} overlaps compact scrollbar {scrollBarBounds}."
+                        $"Collapsed child item {childLayout.ContainerBounds} overlaps standard scrollbar {scrollBarBounds}."
                     );
                 }
 
@@ -1000,10 +1000,10 @@ public sealed class FlourishShellNavigationLayoutTests
         var layout = XDocument.Load(LayoutXamlPath);
         var shell = XDocument.Load(ShellXamlPath);
         var titlebarGeometry = GetTitlebarLeadingButtonGeometry();
-        var compactScrollBarWidth = GetDoubleResource(
+        var scrollBarWidth = GetDoubleResource(
             layout,
             keyName,
-            "FlourishCompactScrollBarWidth"
+            "FlourishScrollBarWidth"
         );
         var paneBorder = shell
             .Descendants()
@@ -1033,8 +1033,7 @@ public sealed class FlourishShellNavigationLayoutTests
         );
 
         Assert.Equal(64, NavigationPanelDimensions.MinimumCollapsedWidth);
-        Assert.Equal(leftPadding.Left, leftPadding.Right);
-        Assert.Equal(rightPadding.Left, rightPadding.Right);
+        Assert.Equal(leftPadding.Right, rightPadding.Left);
         Assert.Equal(titlebarGeometry.Left, leftPadding.Left + itemMargin.Left);
         Assert.Equal(
             titlebarGeometry.Left,
@@ -1045,7 +1044,7 @@ public sealed class FlourishShellNavigationLayoutTests
             titlebarGeometry.Left
                 + titlebarGeometry.Width
                 + leftPadding.Right
-                + compactScrollBarWidth
+                + scrollBarWidth
                 + dividerWidth
         );
     }
@@ -1169,7 +1168,7 @@ public sealed class FlourishShellNavigationLayoutTests
                     : parentLayout.ContainerBounds.Left;
 
                 Assert.Equal(Visibility.Visible, verticalScrollBar.Visibility);
-                Assert.Equal(7, scrollBarBounds.Width, 3);
+                Assert.Equal(10, scrollBarBounds.Width, 3);
                 if (isRightPlaced)
                 {
                     Assert.True(scrollBarBounds.Right <= presenterBounds.Left + 0.5);

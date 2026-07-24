@@ -16,65 +16,6 @@
       Title="ScrollViewer"
     />
 
-    <flourish:Chunk
-      Content="The compact mode changes the scroll-bar footprint while preserving the same viewport behavior."
-      Title="Variant"
-    >
-      <UniformGrid Columns="2">
-        <flourish:Presenter
-          Margin="0,0,8,0"
-          Content="Default scroll bars for an ordinary content viewport."
-          PresenterMode="TopDown"
-          PresenterPosition="Left"
-          Title="Standard"
-        >
-          <flourish:Presenter.Presentation>
-            <Grid MinHeight="210">
-              <flourish:ScrollViewer
-                Width="260"
-                Height="160"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                VerticalScrollBarVisibility="Visible"
-              >
-                <StackPanel>
-                  <flourish:Card Margin="0,0,0,8" Title="First" Content="Scroll through a bounded surface." />
-                  <flourish:Card Margin="0,0,0,8" Title="Second" Content="Wheel input moves the inner viewport first." />
-                  <flourish:Card Title="Third" Content="At the boundary, input may bubble to PageBody." />
-                </StackPanel>
-              </flourish:ScrollViewer>
-            </Grid>
-          </flourish:Presenter.Presentation>
-        </flourish:Presenter>
-        <flourish:Presenter
-          Margin="8,0,0,0"
-          Content="A smaller scroll affordance for space-constrained surfaces."
-          PresenterMode="TopDown"
-          PresenterPosition="Left"
-          Title="Compact"
-        >
-          <flourish:Presenter.Presentation>
-            <Grid MinHeight="210">
-              <flourish:ScrollViewer
-                Width="260"
-                Height="160"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                IsCompact="True"
-                VerticalScrollBarVisibility="Visible"
-              >
-                <StackPanel>
-                  <flourish:Card Margin="0,0,0,8" Title="Compact" Content="The viewport keeps its native content contract." />
-                  <flourish:Card Margin="0,0,0,8" Title="Smooth" Content="Physical scrolling uses render-only interpolation." />
-                  <flourish:Card Title="Boundary" Content="Outward wheel input is left unhandled." />
-                </StackPanel>
-              </flourish:ScrollViewer>
-            </Grid>
-          </flourish:Presenter.Presentation>
-        </flourish:Presenter>
-      </UniformGrid>
-    </flourish:Chunk>
-
     <flourish:Chunk Title="Table">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
@@ -82,6 +23,36 @@
           <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
         </DataGrid.Columns>
       </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="ScrollViewer uses one standard scroll-bar geometry so page content, nested surfaces, and control-owned viewports share the same visual weight."
+      Title="Standard scrollbar"
+    >
+      <flourish:Presenter
+        Content="The standard scroll bar preserves a usable pointer target while keeping its visible thumb light. Wheel input moves the deepest viewport first and bubbles to the page at a boundary."
+        PresenterMode="TopDown"
+        PresenterPosition="Left"
+        Title="Standard"
+      >
+        <flourish:Presenter.Presentation>
+          <Grid MinHeight="210">
+            <flourish:ScrollViewer
+              Width="260"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              VerticalScrollBarVisibility="Visible"
+            >
+              <StackPanel>
+                <flourish:Card Margin="0,0,0,8" Title="First" Content="Scroll through a bounded surface." />
+                <flourish:Card Margin="0,0,0,8" Title="Second" Content="Wheel input moves the inner viewport first." />
+                <flourish:Card Title="Third" Content="At the boundary, input may bubble to PageBody." />
+              </StackPanel>
+            </flourish:ScrollViewer>
+          </Grid>
+        </flourish:Presenter.Presentation>
+      </flourish:Presenter>
     </flourish:Chunk>
 
     <flourish:Chunk
@@ -94,13 +65,13 @@
     <flourish:Chunk Title="Usage">
       <StackPanel>
         <flourish:Presenter
-          Content="Choose scroll-bar visibility with the native WPF properties. IsCompact reduces the scroll affordance, while IsSmoothScrollingEnabled animates wheel movement; keep standard mode for ordinary page content. Normal wheel input scrolls internally and bubbles at boundaries."
+          Content="Choose scroll-bar visibility with the native WPF properties and use IsSmoothScrollingEnabled to animate wheel movement. ScrollViewer always applies the standard Flourish scroll-bar geometry. Normal wheel input scrolls internally and bubbles at boundaries."
           PresenterMode="Split"
           PresenterPosition="Left"
           Title="Configure the viewport"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:ScrollViewer&#xA;  x:Name=&quot;ContentViewport&quot;&#xA;  IsCompact=&quot;False&quot;&#xA;  IsSmoothScrollingEnabled=&quot;True&quot;&#xA;  VerticalScrollBarVisibility=&quot;Auto&quot;&gt;&#xA;  &lt;StackPanel&gt;&#xA;    &lt;!-- Scrollable content --&gt;&#xA;  &lt;/StackPanel&gt;&#xA;&lt;/flourish:ScrollViewer&gt;" />
+            <flourish:CodeSpace Text="&lt;flourish:ScrollViewer&#xA;  x:Name=&quot;ContentViewport&quot;&#xA;  IsSmoothScrollingEnabled=&quot;True&quot;&#xA;  VerticalScrollBarVisibility=&quot;Auto&quot;&gt;&#xA;  &lt;StackPanel&gt;&#xA;    &lt;!-- Scrollable content --&gt;&#xA;  &lt;/StackPanel&gt;&#xA;&lt;/flourish:ScrollViewer&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter

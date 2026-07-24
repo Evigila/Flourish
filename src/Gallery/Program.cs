@@ -78,6 +78,7 @@ internal static class Program
                     .UseMaterialEffect() // Use windows DWM material effect for background
                     .UseMotion() // Use flourish style motion for interactions
                     .UseNavigation() // Able to use navigation panel and its functionality
+                    .UseSmoothScroll() // Use smooth scrolling with global scrollviewer
                     .UseStatusBar() // Able to use status bar and its functionality
                     .UseTips() // Use flourish style tooltips instead of WPF one
                     .UseTitleBar(); // Use flourish style titlebar instead of WPF one

@@ -1988,7 +1988,6 @@ public sealed class FlourishControlStylesTests
                 );
                 Assert.True(viewport.ClipToBounds);
                 Assert.Equal(new Thickness(12, 8, 12, 8), scrollViewer.Padding);
-                Assert.True(scrollViewer.IsCompact);
                 Assert.False(scrollViewer.Focusable);
                 Assert.Equal(
                     ScrollBarVisibility.Auto,

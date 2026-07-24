@@ -28,7 +28,7 @@
             x:Name="ThumbChrome"
             Margin="2"
             Background="{TemplateBinding Background}"
-            CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+            CornerRadius="{DynamicResource FlourishScrollBarThumbCornerRadius}"
           />
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">

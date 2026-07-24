@@ -1,11 +1,11 @@
 ---
-title: ScrollViewer
-description: Host overflowing page content with smooth pixel scrolling and a slender Flourish scroll bar.
+title: ScrollViewer and ScrollBar
+description: Host overflowing content with smooth pixel scrolling and the standard Flourish scroll bar.
 ---
 
-# ScrollViewer
+# ScrollViewer and ScrollBar
 
-`ScrollViewer` hosts content that can exceed the available viewport. It uses a slender rounded thumb and smooths mouse-wheel input without requiring a layout pass for every animation frame.
+`ScrollViewer` hosts content that can exceed the available viewport. Its horizontal and vertical `ScrollBar` parts use the single standard Flourish appearance, with a narrow rounded thumb and a larger transparent interaction area. Mouse-wheel input can be smoothed without requiring a layout pass for every animation frame.
 
 Use the Flourish XML namespace to distinguish this control from the WPF type with the same name:
 
@@ -24,6 +24,15 @@ Use the Flourish XML namespace to distinguish this control from the WPF type wit
 `IsSmoothScrollingEnabled` is `true` by default. During mouse-wheel scrolling, the control advances the visible content with a render transform and synchronizes the logical offset at a lower rate. The logical offset remains authoritative for the scroll bar, keyboard navigation, thumb dragging, and programmatic scrolling.
 
 Set `IsSmoothScrollingEnabled="False"` when immediate native pixel scrolling is required.
+
+Applications can apply the same policy to Flourish-owned Shell, navigation, and page scrolling surfaces during composition:
+
+```csharp
+builder.ConfigureShell(shell =>
+    shell.UseSmoothScroll(enabled: true));
+```
+
+`UseSmoothScroll` supplies the default for Flourish scrolling surfaces that are created by the built-in templates and cannot be reached from application XAML. Set it to `false` when the complete Shell should use immediate native scrolling. An explicit `IsSmoothScrollingEnabled` value on an application-owned `ScrollViewer` remains the appropriate choice when only one viewport needs different behavior.
 
 ## Nested viewports
 
@@ -50,7 +59,7 @@ Do not wrap a virtualized item control in another `ScrollViewer`; let the item c
 
 ## Scroll bar appearance
 
-The visible thumb is narrower than its transparent interaction area, so the bar keeps a light visual profile without making pointer dragging unnecessarily precise. Set `IsCompact="True"` when the viewport needs the most compact variant.
+Flourish uses one standard `ScrollBar` appearance for page, Shell, navigation, and control-owned viewports. The visible thumb is narrower than its transparent interaction area, so the bar keeps a light visual profile without making pointer dragging unnecessarily precise. Its small corner radius rounds the ends without making the short cross-axis profile appear pointed or capsule-shaped. There is no compact appearance variant to select.
 
 ## Related features
 

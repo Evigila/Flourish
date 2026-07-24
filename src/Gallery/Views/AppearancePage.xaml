@@ -7,7 +7,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Change visual resources and shell effects at runtime."
+      Content="Configure shared Shell appearance and explore visual resources that can also change at runtime."
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Appearance"
@@ -285,6 +285,33 @@
       <flourish:CodeSpace Text="// Request the backdrop, then match native chrome to the theme.&#10;material.SetEffect(MaterialEffect.Mica);&#10;material.SetDarkMode(theme.IsDark);&#10;&#10;var supported = material.IsSupported(MaterialEffect.Mica);" />
       </StackPanel>
     </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. Use this application-wide option when the built-in scrolling templates are not accessible from page XAML; it is applied during startup, while an explicit IsSmoothScrollingEnabled value can still override the default on an application-owned ScrollViewer."
+      Title="Smooth scrolling"
+    >
+      <StackPanel>
+        <flourish:ActionCard
+          Content="The Gallery enables the application-wide policy during Shell composition."
+          Icon="&#xE7C2;"
+          Title="Shell scrolling"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:FlourishCheckBox
+              Content="Enabled at startup"
+              Focusable="False"
+              IsChecked="True"
+              IsHitTestVisible="False"
+              VerticalAlignment="Center"
+            />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:CodeSpace
+          Text="// Apply the default to built-in Flourish scrolling surfaces.&#10;builder.ConfigureShell(shell =&gt;&#10;    shell.UseSmoothScroll(enabled: true));&#10;&#10;// Pass false when the complete Shell should use native scrolling."
+        />
+      </StackPanel>
+    </flourish:Chunk>
+
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">
         <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
