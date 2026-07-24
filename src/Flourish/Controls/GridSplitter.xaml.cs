@@ -13,7 +13,9 @@ public enum FlourishGridSplitterVariant
     NavigationPane,
 }
 
-/// <summary>A Flourish-styled grid splitter.</summary>
+/// <summary>
+/// A Flourish-styled grid splitter that resizes its target live behind a thin indicator.
+/// </summary>
 public class FlourishGridSplitter : WpfGridSplitter
 {
     /// <summary>Identifies the <see cref="Variant" /> dependency property.</summary>
@@ -27,6 +29,14 @@ public class FlourishGridSplitter : WpfGridSplitter
 
     static FlourishGridSplitter()
     {
+        ShowsPreviewProperty.OverrideMetadata(
+            typeof(FlourishGridSplitter),
+            new FrameworkPropertyMetadata(
+                false,
+                null,
+                static (_, _) => false
+            )
+        );
         DefaultStyleKeyProperty.OverrideMetadata(
             typeof(FlourishGridSplitter),
             new FrameworkPropertyMetadata(typeof(FlourishGridSplitter))

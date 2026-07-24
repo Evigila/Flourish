@@ -376,8 +376,8 @@ public sealed class FlourishShellNavigationLayoutTests
 
         Assert.Equal(8, outerInset);
         Assert.Equal(outerInset, titlebarSpacer);
-        Assert.Equal(new Thickness(outerInset, 0, 3, 0), leftPadding);
-        Assert.Equal(new Thickness(3, 0, outerInset, 0), rightPadding);
+        Assert.Equal(new Thickness(outerInset, 0, 0, 0), leftPadding);
+        Assert.Equal(new Thickness(0, 0, outerInset, 0), rightPadding);
         Assert.Equal(new Thickness(4, 0, 4, 0), customRegionMargin);
         Assert.Equal(new Thickness(12, 3, 12, 3), statusBarPadding);
         Assert.Equal(
@@ -1039,13 +1039,15 @@ public sealed class FlourishShellNavigationLayoutTests
             titlebarGeometry.Left,
             rightPadding.Right + itemMargin.Left
         );
-        Assert.Equal(
-            NavigationPanelDimensions.MinimumCollapsedWidth,
+        var requiredVisibleWidth =
             titlebarGeometry.Left
-                + titlebarGeometry.Width
-                + leftPadding.Right
-                + scrollBarWidth
-                + dividerWidth
+            + titlebarGeometry.Width
+            + leftPadding.Right
+            + scrollBarWidth
+            + dividerWidth;
+        Assert.True(
+            NavigationPanelDimensions.MinimumCollapsedWidth >= requiredVisibleWidth,
+            $"The collapsed pane width must contain its icon, scrollbar, and divider; required {requiredVisibleWidth}."
         );
     }
 
@@ -1172,10 +1174,21 @@ public sealed class FlourishShellNavigationLayoutTests
                 if (isRightPlaced)
                 {
                     Assert.True(scrollBarBounds.Right <= presenterBounds.Left + 0.5);
+                    Assert.Equal(
+                        navigationHost.BorderThickness.Left,
+                        scrollBarBounds.Left,
+                        3
+                    );
                 }
                 else
                 {
                     Assert.True(presenterBounds.Right <= scrollBarBounds.Left + 0.5);
+                    Assert.Equal(
+                        navigationHost.ActualWidth
+                            - navigationHost.BorderThickness.Right,
+                        scrollBarBounds.Right,
+                        3
+                    );
                 }
 
                 Assert.Equal(12, outerGap, 3);
@@ -1188,6 +1201,85 @@ public sealed class FlourishShellNavigationLayoutTests
                     childLayout.ItemLayoutBounds.Left
                         > parentLayout.ItemLayoutBounds.Left,
                     $"Child indent was mirrored: parent {parentLayout.ItemLayoutBounds}, child {childLayout.ItemLayoutBounds}."
+                );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ExpandedNavigation_ScrollbarMeetsSplitterWithoutLosingItsHitTarget()
+    {
+        RunInSta(() =>
+        {
+            var resources = LoadResourceDictionary(GenericThemeSource);
+            var listBox = new FlourishListBox
+            {
+                Appearance = FlourishListBoxAppearance.Navigation,
+                ItemsSource = Enumerable.Range(0, 20).Select(_ => new NavigationLayoutItem(new Thickness())),
+                ItemTemplate = LoadNavigationItemTemplate(),
+            };
+            var navigationHost = new Border
+            {
+                BorderThickness = new Thickness(0, 0, 1, 0),
+                Padding = (Thickness)resources["FlourishNavigationPaneLeftPadding"],
+                Child = listBox,
+            };
+            var splitter = new FlourishGridSplitter
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Variant = FlourishGridSplitterVariant.NavigationPane,
+            };
+            var layout = new Grid { Width = 280, Height = 96 };
+            layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(220) });
+            layout.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
+            Grid.SetColumn(navigationHost, 0);
+            Grid.SetColumn(splitter, 0);
+            Panel.SetZIndex(splitter, 20);
+            layout.Children.Add(navigationHost);
+            layout.Children.Add(splitter);
+
+            var window = new Window
+            {
+                Width = 300,
+                Height = 180,
+                Left = -10000,
+                Top = -10000,
+                ShowActivated = false,
+                ShowInTaskbar = false,
+                Content = layout,
+            };
+            window.Resources.MergedDictionaries.Add(resources);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var scrollBar = Assert.IsType<FlourishScrollBar>(
+                    FindVisualDescendant(listBox, "PART_VerticalScrollBar")
+                );
+                var scrollBarBounds = GetBounds(scrollBar, layout);
+                var splitterBounds = GetBounds(splitter, layout);
+
+                Assert.Equal(Visibility.Visible, scrollBar.Visibility);
+                Assert.Equal(
+                    navigationHost.ActualWidth - navigationHost.BorderThickness.Right,
+                    scrollBarBounds.Right,
+                    3
+                );
+                Assert.True(
+                    splitterBounds.Left <= scrollBarBounds.Right + 0.5,
+                    $"A gap remains between scrollbar {scrollBarBounds} and splitter {splitterBounds}."
+                );
+                Assert.True(
+                    splitterBounds.Left - scrollBarBounds.Left >= scrollBarBounds.Width / 2,
+                    $"The splitter hit target obscures too much of the scrollbar: scrollbar {scrollBarBounds}, splitter {splitterBounds}."
                 );
             }
             finally

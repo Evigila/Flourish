@@ -19,6 +19,8 @@ items:
   href: button.md
 - name: DataGrid
   href: data-grid.md
+- name: GridSplitter
+  href: grid-splitter.md
 - name: Overlay
   href: overlay.md
 - name: ScrollViewer

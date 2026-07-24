@@ -7,10 +7,9 @@ public partial class GridSplitterPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Variant", "Chooses Standard or NavigationPane behavior."),
+        new("Variant", "Chooses the Standard or navigation-pane layout role."),
         new("ResizeDirection", "Chooses whether adjacent rows or columns are resized."),
         new("ResizeBehavior", "Chooses which neighboring definitions change."),
-        new("ShowsPreview", "Shows a preview indicator while dragging when enabled."),
     ];
 
     public string UsageCode { get; } =
