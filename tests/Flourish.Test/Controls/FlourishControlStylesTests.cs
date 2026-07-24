@@ -2294,6 +2294,14 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(4, splitter.Height);
                 Assert.Equal(HorizontalAlignment.Stretch, splitter.HorizontalAlignment);
                 Assert.Equal(Cursors.SizeNS, splitter.Cursor);
+                Assert.False(splitter.ShowsPreview);
+
+                splitter.ApplyTemplate();
+                var indicator = Assert.IsType<Border>(
+                    splitter.Template.FindName("SplitterIndicator", splitter)
+                );
+                Assert.Equal(2, indicator.Height);
+                Assert.Equal(VerticalAlignment.Center, indicator.VerticalAlignment);
             }
             finally
             {
@@ -2303,45 +2311,35 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
-    public void GridSplitter_NavigationPaneProvidesAVisibleDragPreview()
+    public void GridSplitter_NavigationPaneUsesAThinLiveResizeIndicator()
     {
         RunInSta(() =>
         {
-            var host = new StackPanel();
             var splitter = new FlourishGridSplitter
             {
                 Height = 80,
+                ShowsPreview = true,
                 Variant = FlourishGridSplitterVariant.NavigationPane,
             };
-            host.Children.Add(splitter);
-            var window = CreateWindow(host);
+            var window = CreateWindow(splitter);
 
             try
             {
                 window.Show();
                 window.UpdateLayout();
+                splitter.ApplyTemplate();
 
-                Assert.True(splitter.ShowsPreview);
-                var previewStyle = Assert.IsType<Style>(splitter.PreviewStyle);
-                Assert.Equal(typeof(WpfControl), previewStyle.TargetType);
-
-                var preview = new WpfControl
-                {
-                    Width = splitter.ActualWidth,
-                    Height = splitter.ActualHeight,
-                    Style = previewStyle,
-                };
-                host.Children.Add(preview);
-                window.UpdateLayout();
-                preview.ApplyTemplate();
-
+                Assert.False(splitter.ShowsPreview);
+                Assert.Equal(true, splitter.ReadLocalValue(GridSplitter.ShowsPreviewProperty));
+                Assert.Null(splitter.PreviewStyle);
+                Assert.Equal(4, splitter.Width);
                 var indicator = Assert.IsType<Border>(
-                    preview.Template.FindName("PreviewIndicator", preview)
+                    splitter.Template.FindName("SplitterIndicator", splitter)
                 );
                 Assert.NotNull(indicator.Background);
-                Assert.True(indicator.Opacity > 0);
-                Assert.True(indicator.ActualWidth > 0);
-                Assert.True(indicator.ActualHeight > 0);
+                Assert.Equal(2, indicator.Width);
+                Assert.Equal(HorizontalAlignment.Center, indicator.HorizontalAlignment);
+                Assert.Equal(1, indicator.CornerRadius.TopLeft);
             }
             finally
             {

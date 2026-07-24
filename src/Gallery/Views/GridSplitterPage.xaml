@@ -17,13 +17,13 @@
     />
 
     <flourish:Chunk
-      Content="Both variants use a fixed-height preview so their resize behavior can be compared directly."
+      Content="Both layout roles use the same 4 DIP interaction surface, centered 2 DIP highlight, and immediate resizing. NavigationPane changes only shell-edge alignment and column-resize defaults."
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="A general-purpose splitter for application grids."
+          Content="The general-purpose role for rows or columns in an application Grid."
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Standard"
@@ -54,7 +54,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="The shell navigation-pane edge with preview resizing."
+          Content="The shell-edge role with horizontal column-resize defaults and the same geometry as Standard."
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="NavigationPane"
@@ -92,10 +92,10 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Grid owns the row and column constraints; the splitter changes only adjacent GridLength values."
+      Content="Grid owns row and column constraints. Dragging the splitter updates adjacent GridLength values continuously, while the thin visible highlight stays centered inside the interaction surface."
       Title="Layout"
     >
-      <flourish:Card Title="Resize contract" Content="Set ResizeDirection explicitly for a standard splitter. NavigationPane configures horizontal column resizing, preview feedback, and the shell edge affordance." />
+      <flourish:Card Title="Resize contract" Content="Set ResizeDirection explicitly for a standard splitter. NavigationPane configures horizontal column resizing and the shell-edge affordance without changing the live-resize interaction." />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
@@ -112,7 +112,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Choose NavigationPane only for the divider at a shell navigation edge. The variant supplies horizontal column resizing, preview feedback, and the pane-specific affordance, while the surrounding Grid continues to define minimum and available widths."
+          Content="Choose NavigationPane only for the divider at a shell navigation edge. The variant supplies horizontal column resizing, edge alignment, cursor, and layer defaults while retaining the same geometry and thin live-resize highlight as Standard. The surrounding Grid continues to define minimum and available widths."
           PresenterMode="Split"
           PresenterPosition="Left"
           Title="Navigation pane"

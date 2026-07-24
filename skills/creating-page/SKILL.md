@@ -142,6 +142,15 @@ Use Flourish `DataGrid` directly in a chunk layout. Its internal viewport consum
 
 Do not wrap DataGrid in another wheel-handling ScrollViewer or add a preview-wheel handler that marks every event handled. When changing its template or hosting layout, manually verify both internal scrolling and boundary handoff in each direction.
 
+## Resize Grid regions
+
+Use `FlourishGridSplitter` between adjacent Grid rows or columns. Flourish GridSplitters always update the affected definitions continuously while dragging and use the same thin centered highlight for hover, keyboard focus, and drag feedback. Do not enable or document the inherited WPF preview-resize mode.
+
+- Use `Variant="Standard"` for application-owned Grid layouts. Set `ResizeDirection` and `ResizeBehavior` explicitly so the axis and affected definitions remain clear.
+- Use `Variant="NavigationPane"` only at the Shell navigation edge. It supplies horizontal resizing, shell-edge alignment, cursor, and layer defaults without changing the Standard interaction-surface or highlight geometry.
+- Keep minimum sizes on the surrounding row or column definitions. The splitter owns interaction feedback, not the content constraints.
+- Do not use negative ScrollBar margins to conceal layout gaps beside a splitter. Align the viewport and splitter columns directly; a transparent splitter hit target may overlap the pane edge without shifting or clipping the visible ScrollBar.
+
 ## Compose Overlays
 
 Use `Overlay` as the floating-layer container, not as a replacement for page structure.
@@ -274,6 +283,7 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm CardButton is used only when the whole card is interactive; use ActionCard when interaction belongs to one contained control.
 - Confirm ScrollViewer and ScrollBar use the standard appearance, and use `UseSmoothScroll` rather than template access to configure built-in scrolling surfaces.
 - Confirm DataGrid scrolls internally before handing the wheel to PageBody at both vertical boundaries.
+- Confirm every FlourishGridSplitter uses live resizing and a thin centered highlight; use NavigationPane only for shell-edge placement and never re-enable the WPF preview-resize mode.
 - Confirm Overlay normally hosts a vertical ActionCard and custom content remains a deliberate, accessible layout.
 - Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.
 - Confirm card grids use consistent row and column gaps and peer cards have compatible arranged heights.
