@@ -9,7 +9,9 @@ description: Select the Windows material used by the Flourish shell window.
 
 ```csharp
 builder.ConfigureShell(shell =>
-    shell.UseMaterialEffect(MaterialEffect.Mica));
+    shell.UseMaterialEffect(
+        enabled: true,
+        effect: MaterialEffect.Mica));
 ```
 
 ## Select a material
@@ -19,7 +21,7 @@ builder.ConfigureShell(shell =>
 | `MaterialEffect.Mica` | Uses Windows Mica when the platform supports it. |
 | `MaterialEffect.None` | Uses an opaque shell background without a system material. |
 
-`MaterialEffect.Mica` is the default argument. Pass `MaterialEffect.None`, or omit `UseMaterialEffect`, when the shell should not use a system material.
+`MaterialEffect.Mica` is the default `effect`. Pass `enabled: false` when shared composition code should explicitly disable the material. Omitting `UseMaterialEffect` also leaves the material disabled, and `MaterialEffect.None` remains available when the selected value itself represents an opaque shell background.
 
 On a platform that does not support the selected material, the shell remains usable without that effect. Application state and content distinctions should not depend on material availability.
 

@@ -109,7 +109,7 @@ public sealed class FlourishInputStylesTests
     }
 
     [Fact]
-    public void ScrollViewer_DefaultStyleUsesRenderTransformAndSlenderRoundedThumb()
+    public void ScrollViewer_DefaultStyleUsesOneStandardBarAndSmallRoundedThumb()
     {
         RunInSta(() =>
         {
@@ -148,9 +148,85 @@ public sealed class FlourishInputStylesTests
                 Assert.Equal(Matrix.Identity, presenter.RenderTransform.Value);
                 Assert.Equal(Matrix.Identity, content.RenderTransform.Value);
                 Assert.False(transform.IsFrozen);
-                Assert.Equal(7, scrollBar.ActualWidth);
+                Assert.Equal(10, scrollBar.ActualWidth);
                 Assert.Equal(new Thickness(2), thumbChrome.Margin);
-                Assert.True(thumbChrome.CornerRadius.TopLeft > 0);
+                Assert.Equal(new CornerRadius(2), thumbChrome.CornerRadius);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_ShellSmoothScrollingResourceSuppliesAnOverridableDefault()
+    {
+        RunInSta(() =>
+        {
+            var inheritedViewer = new CustomScrollViewer();
+            var locallyEnabledViewer = new CustomScrollViewer
+            {
+                IsSmoothScrollingEnabled = true,
+            };
+            var panel = new StackPanel
+            {
+                Children = { inheritedViewer, locallyEnabledViewer },
+            };
+            var window = CreateWindow(panel);
+            window.Resources["FlourishSmoothScrollingEnabled"] = false;
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                Assert.False(inheritedViewer.IsSmoothScrollingEnabled);
+                Assert.True(locallyEnabledViewer.IsSmoothScrollingEnabled);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ScrollViewer_HorizontalBarUsesTheSameStandardGeometry()
+    {
+        RunInSta(() =>
+        {
+            var scrollViewer = new CustomScrollViewer
+            {
+                Width = 120,
+                Height = 80,
+                Content = new Border { Width = 600, Height = 40 },
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            };
+            var window = CreateWindow(scrollViewer);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var scrollBar = Assert.IsType<FlourishScrollBar>(
+                    scrollViewer.Template.FindName("PART_HorizontalScrollBar", scrollViewer)
+                );
+                scrollBar.ApplyTemplate();
+                var track = Assert.IsType<Track>(
+                    scrollBar.Template.FindName("PART_Track", scrollBar)
+                );
+                var thumbChrome = Assert.IsType<Border>(
+                    track.Thumb.Template.FindName("ThumbChrome", track.Thumb)
+                );
+
+                Assert.Equal(10, scrollBar.ActualHeight);
+                Assert.Equal(Orientation.Horizontal, scrollBar.Orientation);
+                Assert.Equal(new CornerRadius(2), thumbChrome.CornerRadius);
+                Assert.Equal(18, track.Thumb.MinWidth);
+                Assert.Equal(0, track.Thumb.MinHeight);
             }
             finally
             {

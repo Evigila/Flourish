@@ -85,7 +85,7 @@ private void ClearOutput_Click(object sender, RoutedEventArgs e) =>
 
 对于 ActionCard 加输出的布局，应将完整 ActionCard 列与 `OutputCard` 放在同一个自动高度 `Grid` 行中，并保持 `OutputCard.VerticalAlignment="Stretch"`。此时由 ActionCard 列决定行高，新增输出留在内部视口中并使用纵向滚动条，不会迫使 ActionCard 变高。不要根据 `Output` 重新计算 `Height`，也不要在 `OutputCard` 外再嵌套滚动容器。
 
-长行不会换行，并会在需要时使用横向滚动条。视口使用紧凑滚动条，使两个方向的滚动能力不会增加过多视觉重量。
+长行不会换行，并会在需要时使用横向滚动条。视口使用标准 Flourish 滚动条；其较窄的可见滑块使两个方向的滚动能力不会增加过多视觉重量。
 
 当鼠标位于超出视口范围的输出上时，只要内部视口在滚轮方向上仍可移动，它就会优先响应滚轮。到达顶部或底部边界后，继续向外滚动的输入会交给所属页面，不会被卡片内部截留。
 

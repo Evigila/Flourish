@@ -25,7 +25,7 @@
         />
         <flourish:CodeSpace
           Margin="0,16,0,0"
-          Text="// Delay is measured in milliseconds and must be non-negative.&#10;builder.ConfigureShell(shell =&gt;&#10;    shell.UseTips(delay: 200));&#10;&#10;// Supply a visible hint and an accessible action name.&#10;&lt;flourish:Button&#10;  AutomationProperties.Name=&quot;Refresh&quot;&#10;  Content=&quot;Refresh&quot;&#10;  ToolTip=&quot;Reload the current data.&quot; /&gt;"
+          Text="// Delay is measured in milliseconds and must be non-negative.&#10;builder.ConfigureShell(shell =&gt;&#10;    shell.UseTips(enabled: true, delay: 200));&#10;&#10;// Supply a visible hint and an accessible action name.&#10;&lt;flourish:Button&#10;  AutomationProperties.Name=&quot;Refresh&quot;&#10;  Content=&quot;Refresh&quot;&#10;  ToolTip=&quot;Reload the current data.&quot; /&gt;"
         />
       </StackPanel>
     </flourish:Chunk>

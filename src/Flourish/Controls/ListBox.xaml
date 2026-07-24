@@ -35,7 +35,6 @@
               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
               HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
               Padding="{TemplateBinding Padding}"
-              IsCompact="{TemplateBinding IsCompact}"
               VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
             >
               <ItemsPresenter

@@ -1,5 +1,6 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Themes;
 using ArkheideSystem.Flourish.Views.Windows;
@@ -90,8 +91,11 @@ internal sealed class FlourishRuntime(IHost host) : IFlourish
         return mainWindow;
     }
 
-    private static void EnsureApplicationResources(Application application)
+    private void EnsureApplicationResources(Application application)
     {
         FlourishThemeResources.EnsureMerged(application.Resources);
+        application.Resources["FlourishSmoothScrollingEnabled"] = host.Services
+            .GetRequiredService<FlourishShellOptions>()
+            .IsSmoothScrollingEnabled;
     }
 }

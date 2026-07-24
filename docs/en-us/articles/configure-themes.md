@@ -31,16 +31,16 @@ using System.Windows.Media;
 
 builder.ConfigureShell(shell =>
     shell
-        .UseThemeColors(new FlourishThemeColors(
+        .UseThemeColors(enabled: true, colors: new FlourishThemeColors(
             primary: Color.FromRgb(15, 108, 189),
             secondary: Color.FromRgb(92, 46, 145),
             accent: Color.FromRgb(216, 59, 1)))
-        .UseCornerRadius(5));
+        .UseCornerRadius(enabled: true, radius: 5));
 ```
 
-All three colors must be fully opaque. Flourish derives the semantic interaction, surface, and foreground resources for the effective light or dark theme and recalculates them after a theme change.
+All three colors must be fully opaque. Flourish derives the semantic interaction, surface, and foreground resources for the effective light or dark theme and recalculates them after a theme change. Pass `enabled: false` to restore the theme-defined colors while retaining a common builder call shape.
 
-`UseCornerRadius` accepts a finite, non-negative value in device-independent pixels. A value of `0` produces square shared geometry. When the method is omitted, controls and surfaces use their theme-defined radii.
+`UseCornerRadius` accepts a finite, non-negative value in device-independent pixels. A value of `0` produces square shared geometry. When the method is omitted, or when `enabled` is `false`, controls and surfaces use their theme-defined radii.
 
 Verify application colors in both light and dark themes and preserve readable text contrast.
 

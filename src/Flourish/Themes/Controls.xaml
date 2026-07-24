@@ -36,6 +36,7 @@
 
   <!-- Runtime services may override these public interaction defaults. -->
   <sys:Boolean x:Key="FlourishHoverRevealEnabled">True</sys:Boolean>
+  <sys:Boolean x:Key="FlourishSmoothScrollingEnabled">True</sys:Boolean>
   <sys:TimeSpan x:Key="FlourishHoverRevealDuration">0:0:0.140</sys:TimeSpan>
   <sys:Boolean x:Key="FlourishToolTipsEnabled">False</sys:Boolean>
   <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">200</sys:Int32>
@@ -48,6 +49,7 @@
   <sys:Double x:Key="FlourishButtonMinWidth">72</sys:Double>
   <sys:Double x:Key="FlourishButtonIconOnlySize">32</sys:Double>
   <CornerRadius x:Key="FlourishControlCornerRadius">6</CornerRadius>
+  <CornerRadius x:Key="FlourishScrollBarThumbCornerRadius">2</CornerRadius>
   <CornerRadius x:Key="FlourishSurfaceCornerRadius">8</CornerRadius>
   <CornerRadius x:Key="FlourishOverlayCornerRadius">10</CornerRadius>
   <CornerRadius x:Key="FlourishDialogCornerRadius">12</CornerRadius>

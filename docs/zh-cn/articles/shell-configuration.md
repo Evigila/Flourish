@@ -14,11 +14,12 @@ builder.ConfigureShell(shell =>
         .UseTitleBar()
         .UseMultiProject()
         .UseNavigation()
-        .UseCenterContent(true, 1200)
+        .UseCenterContent(enabled: true, contentWidth: 1200)
         .UseDynamicToolbar()
-        .UseTips(delay: 200)
+        .UseTips(enabled: true, delay: 200)
         .UseMotion()
-        .UseMaterialEffect(MaterialEffect.Mica)
+        .UseSmoothScroll(enabled: true)
+        .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
         .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
         .UseStatusBar();
 });
@@ -39,6 +40,7 @@ builder.ConfigureNavigation(navigation =>
 | `UseDynamicToolbar` | 启用页面专属工具栏内容。 | [动态工具栏](dynamic-toolbar.md) |
 | `UseTips` | 将 Flourish 控件与 Shell 区域自有的 Tooltip 从原生 WPF 呈现切换为 Flourish 呈现，并设置首次显示延迟。 | [提示浮层](configure-tips.md) |
 | `UseMotion` | 启用已配置的过渡和动画。 | [动效](configure-motion.md) |
+| `UseSmoothScroll` | 为 Flourish 内置视口选择平滑或即时的鼠标滚轮行为。 | [ScrollViewer 与 ScrollBar](../controls/scroll-viewer.md) |
 | `UseMaterialEffect` | 选择并启用窗口材质；`None` 会禁用材质。 | [材质特效](configure-material-effect.md) |
 | `UseThemeColors` | 设置主要色、辅助色和强调色。 | [主题](configure-themes.md) |
 | `UseCornerRadius` | 设置控件与表面共用的圆角。 | [主题](configure-themes.md) |
@@ -75,7 +77,7 @@ builder.ConfigureNavigation(navigation =>
 
 ## 禁用功能
 
-`UseTitleBar`、`UseMultiProject`、`UseNavigation`、`UseDynamicToolbar`、`UseMotion` 和 `UseStatusBar` 接受可选的 `enabled` 值。`UseCenterContent` 要求同时传入 `enabled` 与 `contentWidth`；共用 builder 设置需要禁用页面内容居中时，传入 `false` 和已配置的宽度。
+除 `UseGlobalFont` 外，Shell API 族的每个 `Use...` 方法都把 `enabled` 放在第一位。这样，无论功能是否还有其他选项，共用组合代码都使用一致的开关顺序。`UseCenterContent`、`UseTips`、`UseMaterialEffect`、`UseThemeColors` 和 `UseCornerRadius` 会把详细设置放在该开关之后。
 
 ```csharp
 builder.ConfigureShell(shell =>
@@ -83,8 +85,11 @@ builder.ConfigureShell(shell =>
     shell
         .UseNavigation(showNavigation)
         .UseMultiProject(useProjects)
-        .UseCenterContent(useCenteredPages, 1200)
+        .UseCenterContent(enabled: useCenteredPages, contentWidth: 1200)
+        .UseTips(enabled: useFlourishTips, delay: 200)
         .UseMotion(!useStaticInterface)
+        .UseSmoothScroll(useSmoothScrolling)
+        .UseMaterialEffect(useMaterial, MaterialEffect.Mica)
         .UseStatusBar(showStatusBar);
 });
 
@@ -93,7 +98,7 @@ builder.ConfigureNavigation(navigation =>
         group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
-省略 `UseTips` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。省略 `UseGlobalFont` 时保留其默认行为。共用配置需要显式禁用材质时，使用 `MaterialEffect.None`。
+向 `UseTips` 传入 `false` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。`UseSmoothScroll(false)` 会让 Flourish 内置视口使用即时的原生鼠标滚轮行为。共用配置需要恢复主题定义的行为时，可向 `UseMaterialEffect`、`UseThemeColors` 或 `UseCornerRadius` 传入 `false`。省略 `UseGlobalFont` 时保留其默认值。
 
 ## 相关功能
 

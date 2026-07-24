@@ -80,6 +80,8 @@ internal sealed class FlourishShellOptions
 
     public FlourishMotionOptions Motion { get; } = new();
 
+    public bool IsSmoothScrollingEnabled { get; set; } = true;
+
     public FlourishTipOptions Tips { get; } = new();
 
     public FlourishProfileOptions Profile { get; } = new();

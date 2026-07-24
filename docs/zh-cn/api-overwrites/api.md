@@ -894,10 +894,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseTips(System.Int32)
-summary: 将 Flourish 控件与 Shell 区域自有的工具提示切换为 Flourish 呈现并设置首次显示延迟；提示间距使用内置默认值，原生与第三方控件不受影响。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseTips(System.Boolean,System.Int32)
+summary: 启用或禁用 Flourish 自有工具提示的 Flourish 呈现，并设置首次显示延迟；原生与第三方控件不受影响。
 syntax:
   parameters:
+  - id: enabled
+    description: 指示是否启用 Flourish 工具提示呈现；禁用时回退为原生 WPF 呈现。
   - id: delay
     description: 工具提示的初始显示延迟（毫秒）。
   return:
@@ -916,10 +918,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseMaterialEffect(ArkheideSystem.Flourish.Abstract.MaterialEffect)
-summary: 设置 Shell 窗口的系统材质效果；`None` 禁用材质，其他值启用对应效果。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseMaterialEffect(System.Boolean,ArkheideSystem.Flourish.Abstract.MaterialEffect)
+summary: 启用或禁用 Shell 窗口的系统材质效果，并选择启用时使用的材质。
 syntax:
   parameters:
+  - id: enabled
+    description: 指示是否启用材质效果。
   - id: effect
     description: 应用于 Shell 窗口的材质效果。
   return:
@@ -927,10 +931,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseThemeColors(ArkheideSystem.Flourish.Abstract.FlourishThemeColors)
-summary: 设置 Flourish 主题资源使用的主要、辅助和强调颜色。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseThemeColors(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishThemeColors)
+summary: 启用或禁用自定义 Flourish 主题颜色，并设置启用时使用的主要、辅助和强调颜色。
 syntax:
   parameters:
+  - id: enabled
+    description: 指示是否启用自定义主题颜色；禁用时使用主题定义的颜色。
   - id: colors
     description: 应用的主题颜色配置；三种颜色必须完全不透明。
   return:
@@ -938,12 +944,25 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseCornerRadius(System.Double)
-summary: 设置 Flourish 控件与 Shell 区域共用的圆角半径。
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseCornerRadius(System.Boolean,System.Double)
+summary: 启用或禁用自定义共用圆角，并设置启用时 Flourish 控件与 Shell 区域使用的圆角半径。
 syntax:
   parameters:
+  - id: enabled
+    description: 指示是否启用自定义共用圆角；禁用时使用主题定义的圆角。
   - id: radius
     description: 以设备无关像素为单位的有限非负半径；`0` 表示直角。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.IFlourishShellBuilder.UseSmoothScroll(System.Boolean)
+summary: 启用或禁用 Flourish 内置滚动区域默认使用的平滑鼠标滚轮行为。
+syntax:
+  parameters:
+  - id: enabled
+    description: 指示 Flourish 内置 ScrollViewer 是否默认启用平滑滚动；控件上的显式本地值具有更高优先级。
   return:
     description: 用于链式配置的当前 builder。
 ---

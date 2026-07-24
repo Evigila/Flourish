@@ -29,7 +29,6 @@
           Padding="{DynamicResource FlourishOutputViewportPadding}"
           Focusable="False"
           HorizontalScrollBarVisibility="Auto"
-          IsCompact="True"
           VerticalScrollBarVisibility="Auto"
         >
           <controls:FlourishTextBlock

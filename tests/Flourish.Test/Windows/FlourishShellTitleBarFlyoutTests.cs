@@ -256,6 +256,10 @@ public sealed class FlourishShellTitleBarFlyoutTests
 
         Assert.Contains("case FlourishRegion.TitlebarApplicationInfo:", routing);
         Assert.Contains("SetPanelContent(ApplicationInfoBodyHost, elements);", routing);
+        Assert.Equal(
+            "clr-namespace:ArkheideSystem.Flourish.Controls",
+            bodyScroller.Name.NamespaceName
+        );
         Assert.Equal("Auto", (string?)bodyScroller.Attribute("VerticalScrollBarVisibility"));
         Assert.Equal(
             "Disabled",
