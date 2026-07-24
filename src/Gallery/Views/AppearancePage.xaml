@@ -14,9 +14,10 @@
     />
 
     <flourish:Chunk
-      Content="Switch the active color theme."
+      Content="Select the application color theme and switch among the supported modes without restarting the shell. Use this for a user-facing appearance preference or a theme preview; the code below shows direct selection, cycling, and the state-change event used to refresh dependent UI."
       Title="Theme"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -50,12 +51,15 @@
           VerticalAlignment="Stretch"
         />
       </Grid>
+      <flourish:CodeSpace Text="// Apply a specific theme or cycle through the supported modes.&#10;theme.SetTheme(FlourishTheme.Dark);&#10;theme.ToggleTheme();&#10;&#10;// Refresh theme-dependent UI after a change.&#10;theme.ThemeChanged += (_, _) =&gt; RefreshAppearance();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Update application-wide typography resources."
+      Content="Change the application-wide text scale, text family, and icon family through IFontService. Use this when typography is configurable for every page; the code below includes all defined font sizes and the separate icon font assignment."
       Title="Typography"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -144,12 +148,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="FontOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
+      <flourish:CodeSpace Text="// Apply the complete application typography scale.&#10;font.SetFont(&#10;    &quot;Segoe UI Variable&quot;,&#10;    smallFontSize: 12,&#10;    standardFontSize: 14,&#10;    iconFontSize: 14,&#10;    largeFontSize: 16,&#10;    extraLargeFontSize: 24,&#10;    headerSizeFontSize: 32);&#10;font.SetIconFontFamily(&quot;Segoe Fluent Icons&quot;);" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Override typography for this page only."
+      Content="Override selected typography resources for one Page type while all omitted values continue to inherit the application defaults. Use this for a page with distinct reading or presentation needs; the code below demonstrates adding and clearing a typed page override."
       Title="Page typography"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -238,12 +245,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="PageFontOverrideOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
+      <flourish:CodeSpace Text="// Null size values keep the application-wide defaults.&#10;font.SetOverrideFont&lt;AppearancePage&gt;(&#10;    fontFamily: &quot;Georgia&quot;,&#10;    smallFontSize: null,&#10;    standardFontSize: 16,&#10;    iconFontSize: null,&#10;    largeFontSize: null,&#10;    extraLargeFontSize: null,&#10;    headerSizeFontSize: null);&#10;&#10;// Remove the typed override when the page should inherit again.&#10;font.ClearOverrideFont&lt;AppearancePage&gt;();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Configure the shell window backdrop."
+      Content="Choose the native material behind the shell and coordinate its immersive dark-mode flag with the active theme. Use this for Windows-integrated appearance where the requested effect may depend on platform support; the code below sets both material properties directly."
       Title="Window material"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -272,10 +282,8 @@
         </StackPanel>
         <flourish:OutputCard x:Name="MaterialOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder.ConfigureShell(shell =&gt; shell&#xA;    .UseGlobalFont()&#xA;    .UseMaterialEffect(MaterialEffect.Mica));&#xA;&#xA;themeService.SetTheme(Theme.Dark);&#xA;fontService.SetFont(&quot;Segoe UI Variable&quot;);" />
+      <flourish:CodeSpace Text="// Request the backdrop, then match native chrome to the theme.&#10;material.SetEffect(MaterialEffect.Mica);&#10;material.SetDarkMode(theme.IsDark);&#10;&#10;var supported = material.IsSupported(MaterialEffect.Mica);" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

@@ -58,7 +58,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Bind ItemsSource and use native WPF DataGrid columns. Disable automatic columns when visible fields and order are part of the design, and use IsReadOnly for reference or result tables. Native selection properties can bind an active row to another view; Flourish also hands the mouse wheel to PageBody when the grid reaches its scroll boundary."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Define columns"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

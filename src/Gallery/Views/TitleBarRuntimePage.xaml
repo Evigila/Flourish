@@ -14,9 +14,10 @@
     />
 
     <flourish:Chunk
-      Content="Update application metadata and logo information."
+      Content="Set the application title, subtitle, logo, fallback text, and unnamed-project label shown by the shell. Configure stable defaults during startup and use ITitleBarService when identity must follow the active workspace; the code below demonstrates both approaches."
       Title="Application identity"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -75,12 +76,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="IdentityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
+      <flourish:CodeSpace Text="// Configure stable identity fields when composing the application.&#10;builder.ConfigureTitleBar(titleBar =&gt; titleBar&#10;    .SetApplicationTitle(&quot;Flourish Gallery&quot;)&#10;    .SetApplicationSubTitle(&quot;Component reference&quot;)&#10;    .SetLogo(&quot;Assets/AppLogo.png&quot;)&#10;    .SetUnnamedProjectPlaceholder(&quot;Untitled&quot;));&#10;&#10;// Update identity atomically when the active context changes.&#10;titleBar.SetApplicationIdentity(&quot;Flourish Gallery&quot;, &quot;Reports&quot;);&#10;titleBar.SetLogo(null, fallbackText: &quot;FG&quot;);" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Toggle individual title-bar elements."
+      Content="Show or hide individual title-bar elements and choose when breadcrumbs are visible. Use these focused settings when a workflow needs to simplify chrome without disabling the whole title bar; the code below applies an element switch and breadcrumb policy."
       Title="Element visibility"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -125,12 +129,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="ElementOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
+      <flourish:CodeSpace Text="// Change one surface without rebuilding the title bar.&#10;titleBar.SetElementVisible(TitleBarElement.Search, visible: true);&#10;titleBar.SetBreadcrumbMode(BreadcrumbShowOption.Auto);" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Bind and exercise asynchronous search."
-      Title="Runtime search binding"
+      Content="Control title-bar search text, visibility, focus, placeholder, and asynchronous query handling through ITitleBarSearchService. Use a disposable subscription for page- or feature-scoped search behavior; the code below registers a cancellable handler and updates the visible search state."
+      Title="Search"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -189,12 +196,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="SearchOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
+      <flourish:CodeSpace Text="// Dispose the subscription when its owning page or feature unloads.&#10;using var subscription = search.Subscribe(async (query, cancellationToken) =&gt;&#10;{&#10;    await FindMatchesAsync(query.Text, cancellationToken);&#10;});&#10;&#10;search.SetPlaceholder(&quot;Search reports&quot;);&#10;search.SetText(&quot;quarterly&quot;);&#10;search.SetVisible(true);&#10;search.Focus();&#10;search.Clear();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Toggle complete shell capabilities."
-      Title="High-level shell features"
+      Content="Enable or disable complete shell surfaces through IShellFeatureService. Use feature switches when an application mode should remove an entire capability rather than merely hide one title-bar element; the code below changes a feature and observes subsequent state changes."
+      Title="Shell features"
     >
+      <StackPanel>
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
@@ -229,9 +239,8 @@
         </StackPanel>
         <flourish:OutputCard x:Name="ShellFeatureOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-    </flourish:Chunk>
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseTitleBar())&#10;    .ConfigureTitleBar(titleBar =&gt; titleBar&#10;        .SetApplicationTitle(&quot;Flourish Gallery&quot;)&#10;        .SetSearch(&quot;Search&quot;, (_, query) =&gt; Search(query))&#10;        .SetProfile(NameOrder.FirstLast));" />
+      <flourish:CodeSpace Text="// Feature switches apply to the complete shell surface.&#10;shellFeatures.SetEnabled(ShellFeature.TitleBar, enabled: true);&#10;shellFeatures.Changed += (_, change) =&gt;&#10;{&#10;    var changedFeature = change.Feature;&#10;    var currentState = change.State;&#10;};" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

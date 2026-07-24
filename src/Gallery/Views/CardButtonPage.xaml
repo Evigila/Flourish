@@ -76,11 +76,62 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Interaction contract">
-      <flourish:Card Content="The complete CardButton surface supports focus, keyboard activation, commands, disabled state, pointer feedback, and automation." />
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Title="Enabled card action"
+          Content="The complete surface is one focusable action, so its icon, title, and supporting copy share the same pointer and keyboard target."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="220" Padding="16">
+              <flourish:CardButton
+                AutomationProperties.Name="Open reports"
+                Content="Review generated reports."
+                Icon="&#xE8A5;"
+                Title="Reports"
+                ToolTip="Open reports"
+                Variant="Elevated"
+              />
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Title="Disabled card action"
+          Content="A disabled CardButton keeps the complete card unavailable and presents the disabled treatment across every visual region."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="220" Padding="16">
+              <flourish:CardButton
+                Content="Available after validation."
+                Icon="&#xE73E;"
+                IsEnabled="False"
+                Title="Publish report"
+                Variant="Elevated"
+              />
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:CardButton&#xA;  Command=&quot;{Binding OpenReportsCommand}&quot;&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  Icon=&quot;&amp;#xE8A5;&quot;&#xA;  Variant=&quot;Elevated&quot; /&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Make the whole card interactive"
+          Content="Use CardButton when Title, Content, and Icon describe one destination or command and the complete surface should respond to pointer, keyboard, and command activation. Each visual property is optional and collapses when omitted. Choose Standard for neutral navigation, Tonal for gentle emphasis, Filled for the principal action, or Elevated for surface separation; use ActionCard when only an embedded control should be interactive."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:CardButton&#xA;  Command=&quot;{Binding OpenReportsCommand}&quot;&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  Icon=&quot;&amp;#xE8A5;&quot;&#xA;  Variant=&quot;Elevated&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

@@ -100,7 +100,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:ActionCard Title=&quot;Theme&quot; Content=&quot;Choose the application theme.&quot; Icon=&quot;&amp;#xE790;&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishComboBox ItemsSource=&quot;{Binding Themes}&quot; SelectedItem=&quot;{Binding Theme}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Create an actionable setting"
+          Content="Horizontal is the default Variant: Icon appears first, Title and Content form the middle copy group, and the single interactive Body is aligned on the right. Prefer this compact structure for settings arranged in a list."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Theme&quot;&#xA;  Content=&quot;Choose the application theme.&quot;&#xA;  Icon=&quot;&amp;#xE790;&quot;&#xA;  Variant=&quot;Horizontal&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishComboBox&#xA;      ItemsSource=&quot;{Binding Themes}&quot;&#xA;      SelectedItem=&quot;{Binding Theme}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Stack a larger action vertically"
+          Content="Set Variant to Vertical when the action needs a card-shaped layout with Body below the copy. Body still accepts one interactive control and remains aligned with the Icon, Title, and Content."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Workspace name&quot;&#xA;  Content=&quot;Change the name shown in navigation.&quot;&#xA;  Icon=&quot;&amp;#xE8AC;&quot;&#xA;  Variant=&quot;Vertical&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishTextBox&#xA;      Width=&quot;220&quot;&#xA;      Text=&quot;{Binding WorkspaceName}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

@@ -81,6 +81,8 @@
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
         <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
@@ -120,6 +122,12 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
         <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishWindowCaptionCloseHoverBrush}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

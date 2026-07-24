@@ -96,10 +96,10 @@
 
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Body remains grouped with the copy while Presentation stays on the default left side."
+          Content="PresenterPosition Right moves Presentation to the right while Title, Content, and Body remain grouped and left-aligned on the left."
           PresenterMode="Split"
-          PresenterPosition="Left"
-          Title="Split with Body"
+          PresenterPosition="Right"
+          Title="Right presentation"
         >
           <flourish:Presenter.Body>
             <flourish:Button Content="Open details" Variant="Tonal" />
@@ -190,7 +190,51 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:Presenter Title=&quot;Reports&quot; Content=&quot;Review recent activity.&quot; PresenterMode=&quot;Split&quot; PresenterPosition=&quot;Left&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Arrange a split presentation"
+          Content="Split is the standard full-width arrangement. Left places Presentation on the left and the Title and Content copy group on the right; Right reverses those regions. Omit PresenterPosition to use Left."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review recent activity.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Left&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Add an action beside the copy"
+          Content="Assign a supporting control through Presenter.Body. Body stays in the same copy-side region as Title and Content and follows their left alignment instead of joining Presentation."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review recent activity.&quot;&#xA;  PresenterMode=&quot;Split&quot;&gt;&#xA;  &lt;flourish:Presenter.Body&gt;&#xA;    &lt;flourish:Button Content=&quot;Open reports&quot; Variant=&quot;Filled&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Body&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Place a wide presentation above the copy"
+          Content="TopDown is the only Presenter mode intended for multi-column placement. It puts Presentation first, followed by a left-aligned Title, Content, and Body group."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Release timeline&quot;&#xA;  Content=&quot;Review milestones before publishing.&quot;&#xA;  PresenterMode=&quot;TopDown&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/timeline.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Layer copy over a visual"
+          Content="Overlay fills the surface with Presentation and draws the copy-side content above it. Use it only when foreground text and controls remain legible over the visual in every theme."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Featured workspace&quot;&#xA;  Content=&quot;Open the workspace summary.&quot;&#xA;  PresenterMode=&quot;Overlay&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/workspace.png&quot; Stretch=&quot;UniformToFill&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

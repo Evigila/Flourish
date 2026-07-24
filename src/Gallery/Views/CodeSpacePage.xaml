@@ -37,7 +37,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Assign the complete source snippet through Text. Encode line breaks as character entities for inline XAML, or bind Text for longer and generated examples. Updating a binding replaces both the displayed and copied value, while an empty value disables the built-in copy action."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Inline source text"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

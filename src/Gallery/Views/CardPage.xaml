@@ -162,7 +162,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:Card&#xA;  Title=&quot;Build complete&quot;&#xA;  Content=&quot;All projects compiled successfully.&quot;&#xA;  Icon=&quot;&amp;#xE73E;&quot;&#xA;  Variant=&quot;Tonal&quot; /&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Present a concise message"
+          Content="Use Card for one optional Title, one paragraph of Content, and at most one Icon; omitted regions collapse. Choose Standard, Tonal, Filled, or Elevated according to surface emphasis, and set IconPosition to Left, Top, Right, or Bottom. Card is terminal display content—use Presenter for composed visuals and Document for multiple paragraphs."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Card&#xA;  Title=&quot;Build complete&quot;&#xA;  Content=&quot;All projects compiled successfully.&quot;&#xA;  Icon=&quot;&amp;#xE73E;&quot;&#xA;  Variant=&quot;Tonal&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

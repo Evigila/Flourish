@@ -79,7 +79,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Bind ItemsSource to application data and SelectedItem in TwoWay mode when selection belongs to the view model. DisplayMemberPath selects the label for non-string items. Handle SelectionChanged only when added or removed selections must trigger immediate view-owned work beyond the binding update."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Bound collection"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Declare FlourishComboBoxItem children for a short fixed list whose entries need individual content, enabled state, or tooltips. Use SelectedIndex for a simple initial choice; for application data, prefer the collection-binding pattern above."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Declared choices"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishComboBox SelectedIndex=&quot;0&quot;&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;System&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Light&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Dark&quot; /&gt;&#xA;&lt;/flourish:FlourishComboBox&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

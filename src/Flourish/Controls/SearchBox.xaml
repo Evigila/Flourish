@@ -36,6 +36,7 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
               <TextBlock
+                x:Name="SearchIcon"
                 Width="16"
                 VerticalAlignment="Center"
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
@@ -94,6 +95,8 @@
               <Setter Property="CaretBrush" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
               <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
               <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter TargetName="SearchIcon" Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter TargetName="PlaceholderText" Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

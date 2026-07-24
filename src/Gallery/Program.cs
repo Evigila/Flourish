@@ -22,7 +22,7 @@ internal static class Program
 
                     services.AddNavigable<HomePage>("Overview", "\uE80F"); // Using AddNavigable instead of AddSingleton or other
                     services.AddNavigable<AboutPage>("About", "\uE946");
-                    services.AddNavigable<ConfigurationPage>("Data", "\uE8A5");
+                    services.AddNavigable<ConfigurationPage>("Configuration", "\uE713");
                     services.AddNavigable<AppearancePage>("Appearance", "\uE790");
                     services.AddNavigable<TitleBarRuntimePage>("Title bar", "\uE8A4");
                     services.AddNavigable<ProjectRuntimePage>("Projects", "\uE8F9");

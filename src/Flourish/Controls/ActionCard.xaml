@@ -163,7 +163,10 @@
         <Setter TargetName="CopyHost" Property="Visibility" Value="Collapsed" />
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Opacity" Value="0.62" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>

@@ -87,7 +87,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Use Standard for ordinary selectable collections. Bind ItemsSource and SelectedItem as with native WPF ListBox, using a two-way selection binding to synchronize the active view-model item. Choose Navigation when entries represent destinations or commands, and define group-header or command semantics through FlourishListBoxItem."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Standard list"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Use Navigation when entries represent destinations or commands. Explicit FlourishListBoxItem containers can mark group headings and command entries; IsCompact collapses navigation geometry without changing selection semantics."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Navigation list"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:FlourishListBox&#xA;  Appearance=&quot;Navigation&quot;&#xA;  IsCompact=&quot;False&quot;&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Workspace&quot;&#xA;    IsGroupHeader=&quot;True&quot; /&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Refresh&quot;&#xA;    IsCommandItem=&quot;True&quot; /&gt;&#xA;&lt;/flourish:FlourishListBox&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

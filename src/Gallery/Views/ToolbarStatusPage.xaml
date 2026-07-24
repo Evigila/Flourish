@@ -7,17 +7,18 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Edit toolbar, status, and custom shell regions at runtime."
+      Content="Manage command surfaces, status feedback, and custom shell content through service-backed APIs. These features are useful when the visible shell must respond to the active page or workflow without rebuilding the window layout."
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Toolbar, status and shell regions"
+      Title="Shell surfaces"
     />
 
     <flourish:Chunk
-      Content="Manage this page's toolbar actions."
-      Title="Dynamic toolbar"
+      Content="Add page-scoped toolbar actions, update their enabled and visible states, change presentation and order, or remove them when the owning workflow ends. Use toolbar items for frequently accessed commands tied to a page; the code below demonstrates registration and the complete item-management lifecycle."
+      Title="Toolbar"
     >
-      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+      <StackPanel>
+        <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE710;" Content="Add the Gallery runtime action or refresh its registration." Title="Toolbar action">
             <flourish:ActionCard.Body>
@@ -51,14 +52,17 @@
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard x:Name="ToolbarOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </UniformGrid>
+        </UniformGrid>
+        <flourish:CodeSpace Text="var item = new FlourishToolbarItem(&#10;    &quot;Run report&quot;, &quot;\uE768&quot;, &quot;reports.run&quot;)&#10;{&#10;    Id = &quot;reports.toolbar.run&quot;,&#10;};&#10;&#10;toolbar.SetEnabled(true);&#10;toolbar.Upsert(item, typeof(ToolbarStatusPage));&#10;toolbar.SetItemEnabled(item.Id, true, typeof(ToolbarStatusPage));&#10;toolbar.SetItemVisible(item.Id, true, typeof(ToolbarStatusPage));&#10;toolbar.SetIconOnly(typeof(ToolbarStatusPage), false);&#10;toolbar.Move(item.Id, 0, typeof(ToolbarStatusPage));&#10;toolbar.Remove(item.Id, typeof(ToolbarStatusPage));" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Manage status items and indicators."
+      Content="Publish persistent or timed status messages, control their visibility and order, and configure built-in shell indicators. Use persistent items for ongoing application state and timed items for short confirmation messages; the code lists the item, indicator, and whole-surface APIs used by this section."
       Title="Status bar"
     >
-      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+      <StackPanel>
+        <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE8D2;" Content="Set the content used by persistent and timed status items." Title="Status text">
             <flourish:ActionCard.Body>
@@ -107,14 +111,17 @@
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard x:Name="StatusOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </UniformGrid>
+        </UniformGrid>
+        <flourish:CodeSpace Text="status.SetEnabled(true);&#10;status.Upsert(new FlourishStatusItem(&#10;    &quot;sync.status&quot;, &quot;Synchronization ready&quot;, &quot;\uE946&quot;));&#10;&#10;// Timed messages remove themselves after the requested duration.&#10;status.Show(&quot;sync.complete&quot;, &quot;Synchronization complete&quot;,&#10;    &quot;\uE823&quot;, TimeSpan.FromSeconds(4));&#10;&#10;status.SetItemVisible(&quot;sync.status&quot;, true);&#10;status.Move(&quot;sync.status&quot;, 0);&#10;status.SetLanStatusEnabled(true);&#10;status.SetPowerStatusEnabled(true);&#10;status.Remove(&quot;sync.status&quot;);" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Manage content in a custom shell region."
-      Title="Custom shell region"
+      Content="Place custom WPF content into a named shell region, then adjust its availability and order through a stable registration identifier. Regions are recommended for product-specific chrome that does not fit the standard toolbar or status bar; the code shows the complete add, update, reorder, and removal flow."
+      Title="Shell regions"
     >
-      <UniformGrid VerticalAlignment="Stretch" Columns="2">
+      <StackPanel>
+        <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE710;" Content="Register the demo WPF element in ContentHeader." Title="Header content">
             <flourish:ActionCard.Body>
@@ -138,7 +145,9 @@
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard x:Name="RegionOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
-      </UniformGrid>
+        </UniformGrid>
+        <flourish:CodeSpace Text="regions.Upsert(&#10;    &quot;reports.header&quot;,&#10;    FlourishRegion.ContentHeader,&#10;    _ =&gt; CreateReportHeader(),&#10;    order: 50);&#10;&#10;regions.SetEnabled(&quot;reports.header&quot;, true);&#10;regions.SetOrder(&quot;reports.header&quot;, 90);&#10;var entries = regions.Current.Entries;&#10;regions.Remove(&quot;reports.header&quot;);" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

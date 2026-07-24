@@ -40,7 +40,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Paragraph is a normalized text item and must be a direct child of Document. Add one item per semantic paragraph; Document supplies indentation and spacing without literal leading spaces. Text is a dependency property and accepts localized resources or view-model bindings while preserving the prescribed Large reading typography."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Declare paragraphs"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

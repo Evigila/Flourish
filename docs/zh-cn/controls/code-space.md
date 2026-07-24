@@ -27,7 +27,7 @@ description: 使用 CodeSpace 以固定代码样式呈现精确文本，并提�
 
 ## 复制操作
 
-右上角图标按钮会对 `CodeSpace` 调用 `ApplicationCommands.Copy`。它将完整 `Text` 值（包括前导空格和换行）复制到系统剪贴板。`Text` 为空时命令会禁用。其 ToolTip 使用共享 Tip 字体规范中的 Normal 字形和 Regular 字重，不继承代码区域的 Bold 样式。不要在控件外再添加第二个复制按钮。
+右上角图标按钮会对 `CodeSpace` 调用 `ApplicationCommands.Copy`。它使用 Elevated 变体，使操作按钮在蓝色代码文字上方仍保持清晰区分。它将完整 `Text` 值（包括前导空格和换行）复制到系统剪贴板。`Text` 为空时命令会禁用。其 ToolTip 使用共享 Tip 字体规范中的 Normal 字形和 Regular 字重，不继承代码区域的 Bold 样式。不要在控件外再添加第二个复制按钮。
 
 ## 相关内容
 

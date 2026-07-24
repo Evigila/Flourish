@@ -90,7 +90,29 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:OutputCard x:Name=&quot;BuildOutput&quot; /&gt;&#xA;&#xA;BuildOutput.WriteLine(&quot;Build started.&quot;);&#xA;BuildOutput.WriteLine(&quot;Build completed.&quot;);&#xA;BuildOutput.Clear();" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Declare the output surface"
+          Content="Give OutputCard a name when code-behind will write to it. It intentionally has no Title, Content, Icon, or Body; place explanatory copy on the surrounding Chunk and reserve this compact scrolling surface for raw output."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:Chunk&#xA;  Title=&quot;Build output&quot;&#xA;  Content=&quot;Messages are appended as the build progresses.&quot;&gt;&#xA;  &lt;flourish:OutputCard&#xA;    x:Name=&quot;BuildOutput&quot;&#xA;    AutomationProperties.Name=&quot;Build output&quot; /&gt;&#xA;&lt;/flourish:Chunk&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="Append and clear messages"
+          Content="Call WriteLine for each observable result so existing history remains available. Use Clear only when the workflow deliberately begins a new output session; overflow remains accessible in the control's scrolling viewport."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="BuildOutput.WriteLine(&quot;Build started.&quot;);&#xA;BuildOutput.WriteLine(&quot;Project Flourish compiled.&quot;);&#xA;BuildOutput.WriteLine(&quot;Build completed.&quot;);&#xA;&#xA;// Begin a deliberately new output session.&#xA;BuildOutput.Clear();" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

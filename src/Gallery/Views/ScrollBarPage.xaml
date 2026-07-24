@@ -83,7 +83,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="A custom viewport binds its offset, scrollable range, and visible extent to FlourishScrollBar. Keep Value two-way so pointer and keyboard changes immediately update the viewport, and set Orientation to Horizontal with the corresponding width bindings for a horizontal surface. Prefer ScrollViewer for ordinary application content because it creates and coordinates these bars automatically."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Bind a custom viewport"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

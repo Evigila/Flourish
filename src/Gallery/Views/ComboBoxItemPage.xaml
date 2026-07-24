@@ -84,7 +84,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Content="Add explicit item containers inside a FlourishComboBox when each fixed option needs local configuration. Content supplies the displayed value, while IsEnabled and ToolTip communicate temporary availability. For dynamic data, bind ItemsSource on the parent and let it generate containers; reserve explicit declarations for small static sets or per-item presentation that shared styles cannot express."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Item configuration"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

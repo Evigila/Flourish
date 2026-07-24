@@ -58,6 +58,8 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 
 `Standard` 是同一枚举中供 `CardButton` 使用的默认卡片表面。常规 `Button` 应从上述六种操作变体中选择。一组操作通常只应有一个 `Filled` 按钮。
 
+`IsEnabled` 为 `false` 时，所有 Button 变体都会使用统一的淡灰禁用背景、边框与前景。禁用状态会覆盖 Filled、Danger 等启用状态颜色，使不可用操作保持一致。
+
 仅图标按钮应同时设置可见的 `ToolTip` 和能够说明操作意图的 `AutomationProperties.Name`。启用 `UseTips` 后，Flourish 按钮提示使用统一的 Temporary Overlay 表面；未启用时，同一提示内容使用原生 WPF Tooltip 行为。
 
 ## CardButton
@@ -89,6 +91,8 @@ CardButton 图标在中性表面使用自适应主色前景，在 Filled 表面�
 ## WindowCaptionButton
 
 `WindowCaptionButton` 只用于窗口标题栏。它使用标题栏专用几何呈现 `Icon`，并通过 `Command` 或 `Click` 连接实际窗口操作。关闭操作使用 `Variant="Danger"`，其他标题栏操作使用 `Text`。
+
+Danger 只为启用状态的关闭操作提供警示强调；关闭操作被禁用后，会与其他禁用控件一样恢复统一的淡灰视觉。
 
 ```xml
 <flourish:WindowCaptionButton

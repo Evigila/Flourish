@@ -14,9 +14,10 @@
     />
 
     <flourish:Chunk
-      Content="Control the live shell window."
+      Content="Resize, position, activate, show, hide, minimize, maximize, and restore the active shell through IWindowService. Use these commands for workspace modes or window-management actions after startup; the code below demonstrates the principal state and visibility operations."
       Title="Shell window"
     >
+      <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE740;" Content="Resize the live shell to the Gallery demonstration size." Title="Window size">
@@ -62,12 +63,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="WindowOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
+      <flourish:CodeSpace Text="// Update live window state through the injected service.&#10;window.SetSize(1100, 760);&#10;window.CenterOnScreen();&#10;window.SetTopmost(true);&#10;window.SetShownInTaskbar(true);&#10;&#10;window.Minimize();&#10;window.Maximize();&#10;window.Restore();&#10;window.Hide();&#10;window.Show();&#10;window.Activate();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Manage the notification-area tray icon."
-      Title="Notification-area tray"
+      Content="Enable the Windows notification-area icon, set its tooltip, and move the shell into or out of the tray through ITrayService. Use this for long-running desktop tools that must remain available without occupying the taskbar; the code below covers configuration and the minimize/restore flow."
+      Title="Tray"
     >
+      <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE7E8;" Content="Set the text shown for the notification-area icon." Title="Tray tooltip">
@@ -99,12 +103,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="TrayOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
+      <flourish:CodeSpace Text="// Enable the tray before attempting to minimize into it.&#10;tray.SetEnabled(true);&#10;tray.SetToolTip(&quot;Flourish Gallery&quot;);&#10;&#10;if (tray.MinimizeToTray())&#10;{&#10;    tray.Restore();&#10;}" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Configure close policy and guards."
+      Content="Choose the shell close policy and register ordered asynchronous guards that may cancel a close request. Use guards for unsaved changes or in-progress operations, keep their registration lease for the owning scope, and dispose it when no longer needed; the code below shows registration, evaluation, and a policy-aware close request."
       Title="Close behavior"
     >
+      <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE8BB;" Content="Choose the shell's default close policy; changes apply immediately." Title="Close policy">
@@ -140,12 +147,15 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CloseOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
+      <flourish:CodeSpace Text="// Keep and dispose this lease with the guarded workflow.&#10;close.SetBehavior(WindowCloseBehavior.Close);&#10;using var guard = close.RegisterGuard(&#10;    &quot;editor.unsaved&quot;,&#10;    (_, _) =&gt; ValueTask.FromResult(WindowCloseDecision.Cancel),&#10;    order: 100);&#10;&#10;var allowed = await close.CanCloseAsync(&#10;    WindowCloseRequestReason.Application);&#10;var handled = await close.RequestCloseAsync();" />
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Publish modal and non-modal messages."
+      Content="Await modal choices through IMessageService and publish non-modal, replaceable notifications through INotificationService. Use dialogs when a workflow must wait for a decision and notifications for transient status that should not block interaction; the code below demonstrates both message options and the complete notification lifecycle."
       Title="Messages"
     >
+      <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard Icon="&#xE715;" Content="Await a standard modal choice without blocking application logic." Title="Standard message">
@@ -196,10 +206,8 @@
           VerticalAlignment="Stretch"
         />
       </UniformGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder.ConfigureWindow(window =&gt; window&#xA;    .SetWindowSize(1100, 760)&#xA;    .SetWindowPosition(WindowStartupLocation.CenterScreen));&#xA;&#xA;windowService.SetTopmost(true);&#xA;await messageService.ShowAsync(&quot;Operation complete.&quot;, &quot;Reports&quot;);" />
+      <flourish:CodeSpace Text="// Await a modal decision without blocking the UI thread.&#10;var result = await messages.ShowAsync(&#10;    &quot;Operation complete.&quot;,&#10;    &quot;Reports&quot;,&#10;    MessageBoxButton.OKCancel,&#10;    MessageBoxImage.Information);&#10;&#10;// Use a stable ID when later updates or dismissal are required.&#10;var notice = new FlourishNotification(&#10;    &quot;reports.complete&quot;,&#10;    &quot;Reports&quot;,&#10;    &quot;Export finished.&quot;,&#10;    FlourishNotificationSeverity.Success);&#10;var handle = notifications.Upsert(notice);&#10;notifications.Dismiss(handle.Id);&#10;notifications.DismissAll();" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">

@@ -86,6 +86,8 @@
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
               <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
             </Trigger>
           </ControlTemplate.Triggers>

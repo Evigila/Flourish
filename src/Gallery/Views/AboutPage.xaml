@@ -8,7 +8,7 @@
   <flourish:PageBody>
     <flourish:HeaderChunk
       Title="About Flourish"
-      Content="A WPF application framework for building consistent Windows desktop shells, navigation, surfaces, and controls."
+      Content="Flourish is a WPF application framework for building consistent Windows desktop shells, navigation, surfaces, and controls. It brings application composition and reusable visual contracts together so teams can focus on product workflows instead of repeatedly rebuilding shell infrastructure."
       PresenterMode="Split"
       PresenterPosition="Right"
     />
@@ -32,11 +32,5 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
-      <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Review the project license in the source repository." Icon="&#xE8A5;" IsEnabled="False" Title="License" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Browse the generated public API reference." Icon="&#xE946;" IsEnabled="False" Title="API reference" ToolTip="External navigation is not available in Gallery." />
-      </UniformGrid>
-    </flourish:Chunk>
   </flourish:PageBody>
 </Page>

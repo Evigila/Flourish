@@ -60,11 +60,79 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Interaction contract">
-      <flourish:Card Content="Provide an automation name and ToolTip for each icon-only action, and bind the action to the corresponding window command." />
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Title="Window controls"
+          Content="Minimize, maximize, and restore change the window state without discarding work. Use the neutral Text variant so these routine caption actions remain visually quiet."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160" Padding="16">
+              <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+              >
+                <flourish:WindowCaptionButton
+                  AutomationProperties.Name="Minimize"
+                  Icon="&#xE921;"
+                  ToolTip="Minimize"
+                  Variant="Text"
+                />
+                <flourish:WindowCaptionButton
+                  AutomationProperties.Name="Maximize"
+                  Icon="&#xE922;"
+                  ToolTip="Maximize"
+                  Variant="Text"
+                />
+                <flourish:WindowCaptionButton
+                  AutomationProperties.Name="Restore"
+                  Icon="&#xE923;"
+                  ToolTip="Restore"
+                  Variant="Text"
+                />
+              </StackPanel>
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Title="Close action"
+          Content="Closing can end the current session or discard unsaved work. Use the Danger variant to give this destructive caption action distinct warning feedback."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <Border MinHeight="160" Padding="16">
+              <flourish:WindowCaptionButton
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                AutomationProperties.Name="Close"
+                Icon="&#xE8BB;"
+                ToolTip="Close"
+                Variant="Danger"
+              />
+            </Border>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="&lt;flourish:WindowCaptionButton&#xA;  AutomationProperties.Name=&quot;Close&quot;&#xA;  Command=&quot;{x:Static SystemCommands.CloseWindowCommand}&quot;&#xA;  Icon=&quot;&amp;#xE8BB;&quot;&#xA;  ToolTip=&quot;Close&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Bind caption commands"
+          Content="Use WindowCaptionButton only in the title bar and bind it to a SystemCommands minimize, maximize, restore, or close command. Icon-only actions need matching ToolTip and AutomationProperties.Name values, and Danger supplies the expected close-button feedback. Keep the caption group at the title-bar edge and ordinary toolbar commands outside it so Windows corner hit targets remain intact."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:WindowCaptionButton&#xA;  AutomationProperties.Name=&quot;Close&quot;&#xA;  Command=&quot;{x:Static SystemCommands.CloseWindowCommand}&quot;&#xA;  Icon=&quot;&amp;#xE8BB;&quot;&#xA;  ToolTip=&quot;Close&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

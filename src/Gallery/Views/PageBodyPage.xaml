@@ -37,7 +37,18 @@
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+      <StackPanel>
+        <flourish:Presenter
+          Title="Create the page root"
+          Content="Replace the page-level ScrollViewer and margin StackPanel with one PageBody. It owns standard margins, disables horizontal page scrolling, and enables vertical scrolling. Add one leading HeaderChunk followed by full-width Chunk siblings; scroll-aware controls such as DataGrid should remain inside a Chunk so they can hand the mouse wheel back to PageBody at their boundaries."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Reference">

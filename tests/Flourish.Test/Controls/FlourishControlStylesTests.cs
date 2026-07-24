@@ -1152,6 +1152,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal("\uE8C8", copyButton.Icon);
                 Assert.Equal(HorizontalAlignment.Right, copyButton.HorizontalAlignment);
                 Assert.Equal(VerticalAlignment.Top, copyButton.VerticalAlignment);
+                Assert.Equal(ButtonVariant.Elevated, copyButton.Variant);
                 Assert.Equal("Copy code", AutomationProperties.GetName(copyButton));
                 Assert.Equal("Copy code", copyButton.ToolTip);
 
@@ -1617,6 +1618,68 @@ public sealed class FlourishControlStylesTests
                     AssertTemplatePart<FlourishTextBlock>(aligned, "TitleHost")
                         .TextAlignment
                 );
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DisabledButtons_UseTheDisabledSurfaceForEveryVariant()
+    {
+        RunInSta(() =>
+        {
+            var buttons = Enum
+                .GetValues<ButtonVariant>()
+                .Select(variant => new FlourishButton
+                {
+                    Content = variant.ToString(),
+                    IsEnabled = false,
+                    Variant = variant,
+                })
+                .ToArray();
+            var panel = new StackPanel();
+            foreach (var button in buttons)
+            {
+                panel.Children.Add(button);
+            }
+
+            var window = CreateWindow(panel);
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var button in buttons)
+                {
+                    button.ApplyTemplate();
+                    Assert.Same(
+                        button.TryFindResource("FlourishControlDisabledBrush"),
+                        button.Background
+                    );
+                    Assert.Same(
+                        button.TryFindResource("FlourishControlStrokeDisabledBrush"),
+                        button.BorderBrush
+                    );
+                    Assert.Same(
+                        button.TryFindResource("FlourishNeutralForegroundDisabledBrush"),
+                        button.Foreground
+                    );
+                    Assert.Equal(
+                        Visibility.Collapsed,
+                        AssertTemplatePart<Border>(button, "ShadowChrome").Visibility
+                    );
+                    Assert.Equal(
+                        Visibility.Collapsed,
+                        AssertTemplatePart<Border>(button, "HoverChrome").Visibility
+                    );
+                    Assert.Equal(
+                        Visibility.Collapsed,
+                        AssertTemplatePart<Border>(button, "PressedChrome").Visibility
+                    );
+                }
             }
             finally
             {

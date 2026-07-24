@@ -141,7 +141,11 @@
         <Setter TargetName="IconHost" Property="Margin" Value="0" />
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Opacity" Value="0.62" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter TargetName="ShadowChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -165,6 +169,11 @@
       <Trigger Property="Variant" Value="Filled">
         <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

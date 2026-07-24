@@ -13,25 +13,30 @@
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Motion families">
-      <UniformGrid Columns="2">
-        <flourish:Card
-          Margin="0,0,8,0"
-          Icon="&#xE768;"
-          Title="Transitions"
-          Content="Choose page-entry and navigation-panel transition types with optional explicit durations."
+    <flourish:Chunk
+      Title="Animations"
+      Content="Motion communicates page changes, navigation-panel state, and hover affordances while preserving the final layout. Enable motion at the Shell level, then choose each transition and its optional duration through ConfigureMotion. Use restrained timings where movement clarifies state, and keep the operating-system reduced-motion preference enabled; the code below covers every motion setting."
+    >
+      <StackPanel>
+        <UniformGrid Columns="2">
+          <flourish:Card
+            Margin="0,0,8,0"
+            Icon="&#xE768;"
+            Title="Transitions"
+            Content="Select page-entry and navigation-panel transition types with independent optional durations."
+          />
+          <flourish:Card
+            Margin="8,0,0,0"
+            Icon="&#xE7C8;"
+            Title="Interaction"
+            Content="Enable hover reveal while allowing accessibility preferences to disable motion."
+          />
+        </UniformGrid>
+        <flourish:CodeSpace
+          Margin="0,16,0,0"
+          Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseMotion())&#10;    .ConfigureMotion(motion =&gt; motion&#10;        // Durations are optional; Flourish supplies defaults when omitted.&#10;        .EnablePageTransition(&#10;            FlourishPageTransition.Fade,&#10;            TimeSpan.FromMilliseconds(180))&#10;        .EnableNavigationPanelTransition(&#10;            FlourishNavigationPanelTransition.Resize,&#10;            TimeSpan.FromMilliseconds(180))&#10;        .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))&#10;        // Preserve the user's operating-system accessibility preference.&#10;        .RespectSystemReducedMotion());"
         />
-        <flourish:Card
-          Margin="8,0,0,0"
-          Icon="&#xE7C8;"
-          Title="Interaction"
-          Content="Enable hover reveal and keep the system reduced-motion preference authoritative."
-        />
-      </UniformGrid>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Usage">
-      <flourish:CodeSpace Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseMotion())&#10;    .ConfigureMotion(motion =&gt; motion&#10;        .EnablePageTransition(FlourishPageTransition.Fade)&#10;        .EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize)&#10;        .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(140))&#10;        .RespectSystemReducedMotion());" />
+      </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">
