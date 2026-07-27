@@ -8,7 +8,7 @@ description: 选择 Flourish Shell 窗口使用的 Windows 材质。
 `UseMaterialEffect` 为 Shell 窗口选择背景材质。
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell.UseMaterialEffect(
         enabled: true,
         effect: MaterialEffect.Mica));

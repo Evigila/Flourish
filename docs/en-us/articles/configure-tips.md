@@ -10,7 +10,7 @@ Tooltips provide labels for compact or icon-only Flourish controls and Shell sur
 ## Configure tooltips
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell.UseTips(enabled: true, delay: 200));
 ```
 

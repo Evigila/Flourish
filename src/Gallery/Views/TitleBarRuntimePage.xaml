@@ -76,7 +76,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="IdentityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Configure stable identity fields when composing the application.&#10;builder.ConfigureTitleBar(titleBar =&gt; titleBar&#10;    .SetApplicationTitle(&quot;Flourish Gallery&quot;)&#10;    .SetApplicationSubTitle(&quot;Component reference&quot;)&#10;    .SetLogo(&quot;Assets/AppLogo.png&quot;)&#10;    .SetUnnamedProjectPlaceholder(&quot;Untitled&quot;));&#10;&#10;// Update identity atomically when the active context changes.&#10;titleBar.SetApplicationIdentity(&quot;Flourish Gallery&quot;, &quot;Reports&quot;);&#10;titleBar.SetLogo(null, fallbackText: &quot;FG&quot;);" />
+      <flourish:CodeSpace Text="// Configure stable identity fields when composing the application.&#10;builder.ConfigTitleBar(titleBar =&gt; titleBar&#10;    .InitApplicationTitle(&quot;Flourish Gallery&quot;)&#10;    .InitApplicationSubTitle(&quot;Component reference&quot;)&#10;    .UseLogo(logoPath: &quot;Assets/AppLogo.png&quot;)&#10;    .InitUnnamedProjectPlaceholder(&quot;Untitled&quot;));&#10;&#10;// Update identity atomically when the active context changes.&#10;titleBar.SetApplicationIdentity(&quot;Flourish Gallery&quot;, &quot;Reports&quot;);&#10;titleBar.SetLogo(null, fallbackText: &quot;FG&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 

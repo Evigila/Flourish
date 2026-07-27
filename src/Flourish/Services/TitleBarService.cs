@@ -32,6 +32,11 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
         }
     }
 
+    public void SetEnabled(bool enabled)
+    {
+        Update(() => options.IsTitlebarEnabled = enabled);
+    }
+
     public void SetApplicationTitle(string title)
     {
         title = ValidateRequired(title, nameof(title));
@@ -204,7 +209,10 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
             options.IsTitlebarThemeToggleEnabled,
             options.IsTitlebarProfileEnabled,
             options.BreadcrumbShowOption
-        );
+        )
+        {
+            IsEnabled = options.IsTitlebarEnabled,
+        };
     }
 
     private static string ValidateRequired(string value, string parameterName)

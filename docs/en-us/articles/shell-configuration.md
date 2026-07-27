@@ -5,10 +5,10 @@ description: Enable Flourish Shell features and configure shared appearance opti
 
 # Shell configuration
 
-`ConfigureShell` enables the main Shell surfaces and applies options shared across those surfaces. Feature-specific builders configure the content and behavior of title bar, navigation, toolbar, motion, and status features.
+`ConfigShell` enables the main Shell surfaces and applies options shared across those surfaces. Feature-specific builders configure the content and behavior of title bar, navigation, toolbar, motion, and status features.
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
 {
     shell
         .UseTitleBar()
@@ -20,13 +20,13 @@ builder.ConfigureShell(shell =>
         .UseMotion()
         .UseSmoothScroll(enabled: true)
         .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
-        .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
         .UseStatusBar();
 });
 
-builder.ConfigureNavigation(navigation =>
-    navigation.SetGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
+builder.ConfigNavigation(navigation =>
+    navigation.InitGroup(null, groupId: 0, group =>
+        group.InitNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 ## Feature switches and shared options
@@ -44,10 +44,10 @@ builder.ConfigureNavigation(navigation =>
 | `UseMaterialEffect` | Selects and enables the window material; `None` disables it. | [Material effects](configure-material-effect.md) |
 | `UseThemeColors` | Sets the primary, secondary, and accent colors. | [Themes](configure-themes.md) |
 | `UseCornerRadius` | Sets the shared control and surface corner radius. | [Themes](configure-themes.md) |
-| `UseGlobalFont` | Sets the global text family and explicit Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes. | [Typography](configure-font.md) |
+| `InitGlobalFont` | Sets the global text family and explicit Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes. | [Typography](configure-font.md) |
 | `UseStatusBar` | Enables the persistent status bar. | [Status bar](status-bar.md) |
 
-[Window](configure-window.md) does not require a Shell feature switch and is configured through `ConfigureWindow`.
+[Window](configure-window.md) does not require a Shell feature switch and is configured through `ConfigWindow`.
 
 ## Prerequisites and priority
 
@@ -75,12 +75,22 @@ The page's root scroll viewer remains full width. Its vertical scroll bar stays 
 
 If `UseCenterContent` is omitted, or is called with `enabled: false`, navigated page content stretches across the available width without a maximum-width constraint.
 
-## Disable a feature
-
-Except for `UseGlobalFont`, every `Use...` method in the Shell family places `enabled` first. This keeps shared composition code consistent whether a feature has additional options or not. `UseCenterContent`, `UseTips`, `UseMaterialEffect`, `UseThemeColors`, and `UseCornerRadius` place their detailed settings after that switch.
+Use `IContentLayoutService` to change the same layout after startup:
 
 ```csharp
-builder.ConfigureShell(shell =>
+contentLayout.SetCenterContent(enabled: true, contentWidth: 1080);
+contentLayout.Changed += OnContentLayoutChanged;
+```
+
+The change updates the active page and aligned Shell regions. Pages reached by later
+navigation read the same service state.
+
+## Disable a feature
+
+Except for `InitGlobalFont`, every `Use...` method in the Shell family places `enabled` first. This keeps shared composition code consistent whether a feature has additional options or not. `UseCenterContent`, `UseTips`, `UseMaterialEffect`, `UseThemeColors`, and `UseCornerRadius` place their detailed settings after that switch.
+
+```csharp
+builder.ConfigShell(shell =>
 {
     shell
         .UseNavigation(showNavigation)
@@ -93,12 +103,12 @@ builder.ConfigureShell(shell =>
         .UseStatusBar(showStatusBar);
 });
 
-builder.ConfigureNavigation(navigation =>
-    navigation.SetGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
+builder.ConfigNavigation(navigation =>
+    navigation.InitGroup(null, groupId: 0, group =>
+        group.InitNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
-Passing `false` to `UseTips` presents Flourish-owned tooltip content with the native WPF appearance and default behavior; tooltips attached to native WPF and third-party controls remain unchanged. `UseSmoothScroll(false)` selects immediate native mouse-wheel scrolling for built-in Flourish viewports. Pass `false` to `UseMaterialEffect`, `UseThemeColors`, or `UseCornerRadius` when shared configuration must explicitly restore the theme-defined behavior. Omit `UseGlobalFont` to retain its defaults.
+Passing `false` to `UseTips` presents Flourish-owned tooltip content with the native WPF appearance and default behavior; tooltips attached to native WPF and third-party controls remain unchanged. `UseSmoothScroll(false)` selects immediate native mouse-wheel scrolling for built-in Flourish viewports. Pass `false` to `UseMaterialEffect`, `UseThemeColors`, or `UseCornerRadius` when shared configuration must explicitly restore the theme-defined behavior. Omit `InitGlobalFont` to retain its defaults.
 
 ## Related features
 

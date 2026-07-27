@@ -46,6 +46,7 @@ internal partial class FlourishShellWindow : Window
     private readonly FontService fontService;
     private readonly MaterialEffectService materialEffectService;
     private readonly ThemeService themeService;
+    private readonly ContentLayoutService contentLayoutService;
     private readonly FlourishMotionService motionService;
     private readonly TitleBarService titleBarService;
     private readonly ProjectService projectService;
@@ -54,7 +55,6 @@ internal partial class FlourishShellWindow : Window
     private readonly WindowService windowService;
     private readonly WindowCloseService windowCloseService;
     private readonly ProfileFlyoutService profileFlyoutService;
-    private readonly ShellFeatureService shellFeatureService;
     private readonly WindowFrameFixService windowFrameFixService;
     private readonly IProfileService profileService;
     private readonly FlourishLocalizationService localizationService;
@@ -261,6 +261,7 @@ internal partial class FlourishShellWindow : Window
         FontService fontService,
         MaterialEffectService materialEffectService,
         ThemeService themeService,
+        ContentLayoutService contentLayoutService,
         FlourishMotionService motionService,
         TitleBarService titleBarService,
         ProjectService projectService,
@@ -269,7 +270,6 @@ internal partial class FlourishShellWindow : Window
         WindowService windowService,
         WindowCloseService windowCloseService,
         ProfileFlyoutService profileFlyoutService,
-        ShellFeatureService shellFeatureService,
         WindowFrameFixService windowFrameFixService,
         IProfileService profileService,
         FlourishLocalizationService localizationService,
@@ -310,6 +310,7 @@ internal partial class FlourishShellWindow : Window
         this.fontService = fontService;
         this.materialEffectService = materialEffectService;
         this.themeService = themeService;
+        this.contentLayoutService = contentLayoutService;
         this.motionService = motionService;
         this.titleBarService = titleBarService;
         appliedTitleBarVersion = titleBarService.CurrentVersion;
@@ -320,7 +321,6 @@ internal partial class FlourishShellWindow : Window
         this.windowService = windowService;
         this.windowCloseService = windowCloseService;
         this.profileFlyoutService = profileFlyoutService;
-        this.shellFeatureService = shellFeatureService;
         this.windowFrameFixService = windowFrameFixService;
         this.profileService = profileService;
         this.localizationService = localizationService;
@@ -377,7 +377,7 @@ internal partial class FlourishShellWindow : Window
             TitleBarSearchService_StateChanged;
         notificationService.NotificationsChanged += NotificationService_NotificationsChanged;
         profileFlyoutService.Changed += ProfileFlyoutService_Changed;
-        shellFeatureService.Changed += ShellFeatureService_Changed;
+        contentLayoutService.Changed += ContentLayoutService_Changed;
         localizationService.Changed += LocalizationService_Changed;
         fontService.Changed += FontService_Changed;
         motionService.Changed += MotionService_Changed;
@@ -414,11 +414,11 @@ internal partial class FlourishShellWindow : Window
         Titlebar.ConfigureVisibility(
             options.IsTitlebarSearchEnabled,
             IsBreadcrumbFeatureEnabled(),
-            options.IsTitlebarNavigationToggleEnabled && options.IsNavigationPanelEnabled,
+            options.IsTitlebarNavigationToggleEnabled && navigationPanelService.Current.IsEnabled,
             options.IsTitlebarLogoEnabled,
             options.IsTitlebarTitleEnabled || options.IsMultiProjectEnabled,
             options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
-            options.IsProfileEnabled && options.IsTitlebarProfileEnabled
+            profileFlyoutService.Current.IsEnabled && options.IsTitlebarProfileEnabled
         );
         UpdateStatusBarVisibility();
         ApplyContentLayoutOptions();
@@ -426,7 +426,7 @@ internal partial class FlourishShellWindow : Window
             SystemStatusButton,
             localizationService.Get(FlourishLocaleKeys.SystemStatusTitle)
         );
-        NavigationPaneBorder.Visibility = options.IsNavigationPanelEnabled
+        NavigationPaneBorder.Visibility = navigationPanelService.Current.IsEnabled
             ? Visibility.Visible
             : Visibility.Collapsed;
         BreadcrumbHost.Visibility = IsBreadcrumbFeatureEnabled()
@@ -438,7 +438,7 @@ internal partial class FlourishShellWindow : Window
         ApplyNavigationPanelPlacement();
         isPaneOpen = navigationPanelService.Current.IsOpen;
         ApplyNavigationPaneState();
-        windowFrameFixService.Attach(this, options.IsTitlebarEnabled);
+        windowFrameFixService.Attach(this, titleBarService.Current.IsEnabled);
         materialEffectService.Attach(
             this,
             options.IsMaterialEffectEnabled ? options.MaterialEffect : MaterialEffect.None,
@@ -452,7 +452,7 @@ internal partial class FlourishShellWindow : Window
     private void ConfigureProfileSurface()
     {
         var state = profileFlyoutService.Current;
-        if (options.IsTitlebarEnabled && state.IsEnabled && options.IsTitlebarProfileEnabled)
+        if (titleBarService.Current.IsEnabled && state.IsEnabled && options.IsTitlebarProfileEnabled)
         {
             Titlebar.SetProfile(profileService.CurrentProfile);
             if (!isProfileServiceSubscribed)
@@ -505,7 +505,7 @@ internal partial class FlourishShellWindow : Window
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
     {
         Loaded -= ShellWindow_Loaded;
-        if (!options.IsProfileEnabled)
+        if (!profileFlyoutService.Current.IsEnabled)
         {
             return;
         }
@@ -535,7 +535,7 @@ internal partial class FlourishShellWindow : Window
     private void ApplyProfileFlyoutState(FlourishProfileFlyoutState state)
     {
         ProfileOverlay.Visibility = Visibility.Collapsed;
-        if (!state.IsEnabled || !options.IsTitlebarEnabled || !options.IsTitlebarProfileEnabled)
+        if (!state.IsEnabled || !titleBarService.Current.IsEnabled || !options.IsTitlebarProfileEnabled)
         {
             profileFlyoutService.SynchronizeVisibility(false);
             return;
@@ -606,7 +606,7 @@ internal partial class FlourishShellWindow : Window
 
     private void ApplyTitleBarFeatureState(bool refreshFrame = false)
     {
-        var useCustomFrame = options.IsTitlebarEnabled;
+        var useCustomFrame = titleBarService.Current.IsEnabled;
         var frameMode = useCustomFrame
             ? FlourishShellWindowFrameMode.Custom
             : FlourishShellWindowFrameMode.Native;
@@ -642,7 +642,7 @@ internal partial class FlourishShellWindow : Window
 
         Titlebar.SetMaximized(WindowState == WindowState.Maximized);
         EnsureTitleBarFlyoutIsAvailable();
-        if (!options.IsTitlebarEnabled || !titleBarSearchService.Current.FocusRequested)
+        if (!titleBarService.Current.IsEnabled || !titleBarSearchService.Current.FocusRequested)
         {
             return;
         }
@@ -650,7 +650,7 @@ internal partial class FlourishShellWindow : Window
         Dispatcher.BeginInvoke(
             new Action(() =>
             {
-                if (options.IsTitlebarEnabled && titleBarSearchService.Current.FocusRequested)
+                if (titleBarService.Current.IsEnabled && titleBarSearchService.Current.FocusRequested)
                 {
                     Titlebar.FocusSearchBox();
                     titleBarSearchService.AcknowledgeFocusRequest();
@@ -709,8 +709,8 @@ internal partial class FlourishShellWindow : Window
     private void Titlebar_ProfileToggleRequested(object? sender, EventArgs e)
     {
         if (
-            !options.IsTitlebarEnabled
-            || !options.IsProfileEnabled
+            !titleBarService.Current.IsEnabled
+            || !profileFlyoutService.Current.IsEnabled
             || !options.IsTitlebarProfileEnabled
         )
         {
@@ -988,7 +988,7 @@ internal partial class FlourishShellWindow : Window
         }
 
         var titleState = titleBarService.Current;
-        var isAvailable = options.IsTitlebarEnabled
+        var isAvailable = titleBarService.Current.IsEnabled
             && (
                 titleBarFlyoutKind switch
                 {
@@ -1004,7 +1004,7 @@ internal partial class FlourishShellWindow : Window
 
     private void OpenApplicationInfoFlyout(bool focusFlyout)
     {
-        if (!options.IsTitlebarEnabled || !titleBarService.Current.IsLogoVisible)
+        if (!titleBarService.Current.IsEnabled || !titleBarService.Current.IsLogoVisible)
         {
             return;
         }
@@ -2603,7 +2603,7 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateNavigationPaneSplitterState()
     {
-        var isSplitterEnabled = options.IsNavigationPanelEnabled && isPaneOpen;
+        var isSplitterEnabled = navigationPanelService.Current.IsEnabled && isPaneOpen;
         NavigationPaneSplitter.IsEnabled = isSplitterEnabled;
         NavigationPaneSplitter.Visibility = isSplitterEnabled
             ? Visibility.Visible
@@ -2612,7 +2612,7 @@ internal partial class FlourishShellWindow : Window
 
     private void ApplyNavigationPaneState(bool animate = false)
     {
-        var isNavigationVisible = options.IsNavigationPanelEnabled;
+        var isNavigationVisible = navigationPanelService.Current.IsEnabled;
         var isOpen = isNavigationVisible && isPaneOpen;
         var paneWidth =
             !isNavigationVisible ? 0
@@ -2647,7 +2647,7 @@ internal partial class FlourishShellWindow : Window
                 NavigationPaneTransitionHost,
                 ContentAreaGrid,
                 options.NavigationPanelDirection,
-                options.IsCenterContentEnabled
+                contentLayoutService.Current.IsCenterContentEnabled
                     ? GetCenteredContentTransitionHosts()
                     : null
             ),
@@ -2687,7 +2687,7 @@ internal partial class FlourishShellWindow : Window
 
     private void NavigationPaneSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
     {
-        if (!options.IsNavigationPanelEnabled || !isPaneOpen)
+        if (!navigationPanelService.Current.IsEnabled || !isPaneOpen)
         {
             return;
         }
@@ -2726,7 +2726,7 @@ internal partial class FlourishShellWindow : Window
 
     private void BuildToolbarItems(Type? pageType = null, bool force = false)
     {
-        if (!options.IsDynamicToolbarEnabled)
+        if (!toolbarService.Current.IsEnabled)
         {
             ToolbarItemsHost.Children.Clear();
             ToolbarHostBorder.Visibility = Visibility.Collapsed;
@@ -3236,7 +3236,7 @@ internal partial class FlourishShellWindow : Window
                 options.IsTitlebarLogoEnabled,
                 options.IsTitlebarTitleEnabled || projectService.Current.IsMultiProjectEnabled,
                 options.IsTitlebarThemeToggleEnabled && options.IsThemeEnabled,
-                options.IsProfileEnabled && options.IsTitlebarProfileEnabled
+                profileFlyoutService.Current.IsEnabled && options.IsTitlebarProfileEnabled
             );
         });
     }
@@ -3372,9 +3372,16 @@ internal partial class FlourishShellWindow : Window
 
             appliedTitleBarVersion = e.Version;
             var current = e.State;
+            var enabledChanged = appliedTitleBarState?.IsEnabled != current.IsEnabled;
             ApplyTitleBarStateChanges(current);
+            if (enabledChanged)
+            {
+                ApplyTitleBarFeatureState(refreshFrame: true);
+                ConfigureProfileSurface();
+            }
+
             var shouldSubscribeToProfile =
-                options.IsTitlebarEnabled
+                current.IsEnabled
                 && profileFlyoutService.Current.IsEnabled
                 && current.IsProfileVisible;
             if (shouldSubscribeToProfile != isProfileServiceSubscribed)
@@ -3403,11 +3410,11 @@ internal partial class FlourishShellWindow : Window
                 titleState.IsSearchVisible,
                 titleState.IsBreadcrumbVisible
                     && titleState.BreadcrumbMode != BreadcrumbShowOption.Hidden,
-                titleState.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
+                titleState.IsNavigationToggleVisible && navigationPanelService.Current.IsEnabled,
                 titleState.IsLogoVisible,
                 titleState.IsTitleVisible || projectState.IsMultiProjectEnabled,
                 titleState.IsThemeToggleVisible && options.IsThemeEnabled,
-                titleState.IsProfileVisible && options.IsProfileEnabled
+                titleState.IsProfileVisible && profileFlyoutService.Current.IsEnabled
             );
             EnsureTitleBarFlyoutIsAvailable();
 
@@ -3431,11 +3438,11 @@ internal partial class FlourishShellWindow : Window
         Titlebar.ConfigureVisibility(
             state.IsSearchVisible,
             state.IsBreadcrumbVisible && state.BreadcrumbMode != BreadcrumbShowOption.Hidden,
-            state.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
+            state.IsNavigationToggleVisible && navigationPanelService.Current.IsEnabled,
             state.IsLogoVisible,
             state.IsTitleVisible || projectState.IsMultiProjectEnabled,
             state.IsThemeToggleVisible && options.IsThemeEnabled,
-            state.IsProfileVisible && options.IsProfileEnabled
+            state.IsProfileVisible && profileFlyoutService.Current.IsEnabled
         );
         EnsureTitleBarFlyoutIsAvailable();
         UpdateTitlebarBreadcrumbNavigation();
@@ -3512,11 +3519,11 @@ internal partial class FlourishShellWindow : Window
                 current.IsSearchVisible,
                 current.IsBreadcrumbVisible
                     && current.BreadcrumbMode != BreadcrumbShowOption.Hidden,
-                current.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
+                current.IsNavigationToggleVisible && navigationPanelService.Current.IsEnabled,
                 current.IsLogoVisible,
                 current.IsTitleVisible || projectState.IsMultiProjectEnabled,
                 current.IsThemeToggleVisible && options.IsThemeEnabled,
-                current.IsProfileVisible && options.IsProfileEnabled
+                current.IsProfileVisible && profileFlyoutService.Current.IsEnabled
             );
             EnsureTitleBarFlyoutIsAvailable();
         }
@@ -3644,13 +3651,13 @@ internal partial class FlourishShellWindow : Window
                 current.IsVisible,
                 titleState.IsBreadcrumbVisible
                     && titleState.BreadcrumbMode != BreadcrumbShowOption.Hidden,
-                titleState.IsNavigationToggleVisible && options.IsNavigationPanelEnabled,
+                titleState.IsNavigationToggleVisible && navigationPanelService.Current.IsEnabled,
                 titleState.IsLogoVisible,
                 titleState.IsTitleVisible || projectService.Current.IsMultiProjectEnabled,
                 titleState.IsThemeToggleVisible && options.IsThemeEnabled,
-                titleState.IsProfileVisible && options.IsProfileEnabled
+                titleState.IsProfileVisible && profileFlyoutService.Current.IsEnabled
             );
-            if (current.FocusRequested && options.IsTitlebarEnabled)
+            if (current.FocusRequested && titleBarService.Current.IsEnabled)
             {
                 Titlebar.FocusSearchBox();
                 titleBarSearchService.AcknowledgeFocusRequest();
@@ -3726,35 +3733,6 @@ internal partial class FlourishShellWindow : Window
     )
     {
         DispatchRuntimeChange(ConfigureProfileSurface);
-    }
-
-    private void ShellFeatureService_Changed(object? sender, FlourishShellFeatureChangedEventArgs e)
-    {
-        DispatchRuntimeChange(() =>
-        {
-            switch (e.Feature)
-            {
-                case ShellFeature.TitleBar:
-                    ApplyTitleBarState(titleBarService.Current);
-                    ConfigureProfileSurface();
-                    ApplyTitleBarFeatureState(refreshFrame: true);
-                    break;
-                case ShellFeature.Navigation:
-                    ApplyNavigationPanelRuntimeState(animate: false);
-                    ApplyTitleBarState(titleBarService.Current);
-                    break;
-                case ShellFeature.DynamicToolbar:
-                    BuildToolbarItems(navigationService.CurrentSourcePageType, force: true);
-                    break;
-                case ShellFeature.StatusContent:
-                    UpdateStatusBarVisibility();
-                    break;
-                case ShellFeature.Profile:
-                    ConfigureProfileSurface();
-                    ApplyTitleBarState(titleBarService.Current);
-                    break;
-            }
-        });
     }
 
     private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
@@ -3962,7 +3940,7 @@ internal partial class FlourishShellWindow : Window
     private void UpdateRuntimeSurfaceVisibility()
     {
         ToolbarHostBorder.Visibility =
-            options.IsDynamicToolbarEnabled
+            toolbarService.Current.IsEnabled
             && (
                 ToolbarItemsHost.Children.Count > 0
                 || ToolbarStartRegionHost.Children.Count > 0
@@ -4047,7 +4025,7 @@ internal partial class FlourishShellWindow : Window
 
     private void Titlebar_NavigationToggleRequested(object? sender, EventArgs e)
     {
-        if (!options.IsNavigationPanelEnabled)
+        if (!navigationPanelService.Current.IsEnabled)
         {
             return;
         }
@@ -4170,7 +4148,7 @@ internal partial class FlourishShellWindow : Window
     {
         CenteredPageContentLayout.Apply(
             e.Page,
-            options.IsCenterContentEnabled ? options.CenterContentWidth : null
+            GetCenteredContentWidth()
         );
 
         fontService.ApplyToPage(e.Page, e.SourcePageType);
@@ -4187,9 +4165,7 @@ internal partial class FlourishShellWindow : Window
 
     private void ApplyContentLayoutOptions()
     {
-        var maximumWidth = options.IsCenterContentEnabled
-            ? options.CenterContentWidth
-            : double.PositiveInfinity;
+        var maximumWidth = GetCenteredContentWidth() ?? double.PositiveInfinity;
 
         foreach (
             var host in new FrameworkElement[]
@@ -4204,6 +4180,34 @@ internal partial class FlourishShellWindow : Window
             host.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             host.MaxWidth = maximumWidth;
         }
+    }
+
+    private double? GetCenteredContentWidth()
+    {
+        var layout = contentLayoutService.Current;
+        return layout.IsCenterContentEnabled ? layout.ContentWidth : null;
+    }
+
+    private void ContentLayoutService_Changed(
+        object? sender,
+        FlourishContentLayoutChangedEventArgs e
+    )
+    {
+        DispatchRuntimeChange(() =>
+        {
+            StopNavigationPaneAnimations();
+            ApplyContentLayoutOptions();
+            if (RootFrame.Content is WpfPage page)
+            {
+                CenteredPageContentLayout.Apply(
+                    page,
+                    e.Current.IsCenterContentEnabled ? e.Current.ContentWidth : null
+                );
+            }
+
+            WorkAreaGrid.InvalidateMeasure();
+            WorkAreaGrid.InvalidateArrange();
+        });
     }
 
     private void UpdateBreadcrumb(Type sourcePageType)
@@ -4371,7 +4375,7 @@ internal partial class FlourishShellWindow : Window
 
     private void UpdateTitlebarBreadcrumbNavigation()
     {
-        if (!options.IsTitlebarEnabled)
+        if (!titleBarService.Current.IsEnabled)
         {
             return;
         }
@@ -4660,7 +4664,7 @@ internal partial class FlourishShellWindow : Window
             TitleBarSearchService_StateChanged;
         notificationService.NotificationsChanged -= NotificationService_NotificationsChanged;
         profileFlyoutService.Changed -= ProfileFlyoutService_Changed;
-        shellFeatureService.Changed -= ShellFeatureService_Changed;
+        contentLayoutService.Changed -= ContentLayoutService_Changed;
         localizationService.Changed -= LocalizationService_Changed;
         fontService.Changed -= FontService_Changed;
         motionService.Changed -= MotionService_Changed;
@@ -4710,7 +4714,7 @@ internal partial class FlourishShellWindow : Window
     private void MainWindow_StateChanged(object? sender, EventArgs e)
     {
         shellWindowFrame.UpdateWindowState();
-        windowFrameFixService.RefreshFrame(this, options.IsTitlebarEnabled);
+        windowFrameFixService.RefreshFrame(this, titleBarService.Current.IsEnabled);
         Titlebar.SetMaximized(WindowState == WindowState.Maximized);
     }
 

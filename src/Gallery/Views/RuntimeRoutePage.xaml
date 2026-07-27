@@ -19,7 +19,7 @@
     >
       <StackPanel>
         <flourish:Presenter
-        Content="This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running."
+        Content="This page was not present in ConfigNavigation; its route and menu entry were registered while Gallery was already running."
         PresenterMode="Split"
         PresenterPosition="Left"
         Title="Route instance"

@@ -165,7 +165,7 @@
           </flourish:ActionCard>
           <flourish:OutputCard x:Name="LocaleOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Select the initial language during application composition.&#10;builder.ConfigureData(data =&gt; data.SetLocale(&quot;EN&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.CurrentLocale;&#10;var available = localization.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
+        <flourish:CodeSpace Text="// Select the initial language during application composition.&#10;builder.ConfigData(data =&gt; data.InitLocale(&quot;EN&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.CurrentLocale;&#10;var available = localization.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -222,7 +222,7 @@
           </StackPanel>
           <flourish:OutputCard x:Name="LocaleFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Load a custom locale during application composition.&#10;builder.ConfigureData(data =&gt;&#10;    data.AddLocale(&quot;Locales/lang_ES.json&quot;));&#10;&#10;// Keep the registration handle for inspection, reload, and removal.&#10;var registration = localization.RegisterFile(&quot;Locales/lang_ES.json&quot;);&#10;var id = registration.Id;&#10;var locale = registration.Locale;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
+        <flourish:CodeSpace Text="// Load a custom locale during application composition.&#10;builder.ConfigData(data =&gt;&#10;    data.InitLocaleFile(&quot;Locales/lang_ES.json&quot;));&#10;&#10;// Keep the registration handle for inspection, reload, and removal.&#10;var registration = localization.RegisterFile(&quot;Locales/lang_ES.json&quot;);&#10;var id = registration.Id;&#10;var locale = registration.Locale;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
       </StackPanel>
     </flourish:Chunk>
 

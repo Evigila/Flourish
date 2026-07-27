@@ -230,7 +230,7 @@ public sealed class RuntimeAppearanceServiceTests
         var changes = new List<FlourishToolTipChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
-        sut.Configure(450, 8);
+        sut.SetSettings(450, 8);
         sut.SetEnabled(false);
 
         Assert.False(sut.Current.IsEnabled);
@@ -250,7 +250,7 @@ public sealed class RuntimeAppearanceServiceTests
     {
         IToolTipService sut = new FlourishToolTipService(new FlourishShellOptions());
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => sut.Configure(delay, margin));
+        Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetSettings(delay, margin));
     }
 
     [Fact]

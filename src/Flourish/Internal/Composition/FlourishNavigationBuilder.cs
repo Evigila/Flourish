@@ -5,32 +5,36 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
 internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
-    : IFlourishNavigationBuilder
+    : FlourishBuilderMutationGuard,
+        IFlourishNavigationBuilder
 {
     private const int FixedItemsGroupId = int.MaxValue;
 
-    public IFlourishNavigationBuilder SetDirection(
+    public IFlourishNavigationBuilder InitDirection(
         NavigationPanelDirection direction = NavigationPanelDirection.Left
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(direction, nameof(direction));
         options.NavigationPanelDirection = direction;
         return this;
     }
 
-    public IFlourishNavigationBuilder SetInitiallyOpen(bool enabled = true)
+    public IFlourishNavigationBuilder InitInitiallyOpen(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsNavigationPanelInitiallyOpen = enabled;
         return this;
     }
 
-    public IFlourishNavigationBuilder SetPanelWidth(
+    public IFlourishNavigationBuilder InitPanelWidth(
         double openWidth = 250,
         double closedWidth = 64,
         double maxWidth = 520,
         double minWidth = 180
     )
     {
+        ThrowIfFrozen();
         ValidatePositiveFinite(openWidth, nameof(openWidth));
         NavigationPanelDimensions.ValidateCollapsedWidth(
             closedWidth,
@@ -73,12 +77,13 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder SetGroup(
+    public IFlourishNavigationBuilder InitGroup(
         string? displayName = null,
         int groupId = 0,
         Action<IFlourishNavigationGroupBuilder>? configureGroup = null
     )
     {
+        ThrowIfFrozen();
         if (groupId != 0 && string.IsNullOrWhiteSpace(displayName))
         {
             throw new ArgumentException(
@@ -96,18 +101,34 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
 
         var group = new FlourishNavigationGroup(groupId, displayName);
         options.NavigationGroups.Add(group);
-        configureGroup?.Invoke(new FlourishNavigationGroupBuilder(group.Items, groupId, false));
+        if (configureGroup is not null)
+        {
+            var groupBuilder = new FlourishNavigationGroupBuilder(
+                group.Items,
+                groupId,
+                false
+            );
+            try
+            {
+                configureGroup(groupBuilder);
+            }
+            finally
+            {
+                groupBuilder.Freeze();
+            }
+        }
 
         return this;
     }
 
-    public IFlourishNavigationBuilder AddFixedNavigableViewItem<TPage>(
+    public IFlourishNavigationBuilder InitFixedNavigableViewItem<TPage>(
         bool isInitial = false,
         int parentId = 0,
         int childId = 0
     )
         where TPage : Page
     {
+        ThrowIfFrozen();
         AddPageItem(
             options.FixedNavigationItemDefinitions,
             FixedItemsGroupId,
@@ -120,7 +141,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder AddFixedNavigableItem(
+    public IFlourishNavigationBuilder InitFixedNavigableItem(
         string displayName,
         string? iconGlyph,
         string? commandKey,
@@ -128,6 +149,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         int childId = 0
     )
     {
+        ThrowIfFrozen();
         AddCommandItem(
             options.FixedNavigationItemDefinitions,
             FixedItemsGroupId,
@@ -230,15 +252,16 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         List<FlourishNavigationItem> items,
         int groupId,
         bool isFixed
-    ) : IFlourishNavigationGroupBuilder
+    ) : FlourishBuilderMutationGuard, IFlourishNavigationGroupBuilder
     {
-        public IFlourishNavigationGroupBuilder AddNavigableViewItem<TPage>(
+        public IFlourishNavigationGroupBuilder InitNavigableViewItem<TPage>(
             bool isInitial = false,
             int parentId = 0,
             int childId = 0
         )
             where TPage : Page
         {
+            ThrowIfFrozen();
             AddPageItem(
                 items,
                 groupId,
@@ -251,7 +274,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
             return this;
         }
 
-        public IFlourishNavigationGroupBuilder AddNavigableItem(
+        public IFlourishNavigationGroupBuilder InitNavigableItem(
             string displayName,
             string? iconGlyph,
             string? commandKey,
@@ -259,6 +282,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
             int childId = 0
         )
         {
+            ThrowIfFrozen();
             AddCommandItem(
                 items,
                 groupId,

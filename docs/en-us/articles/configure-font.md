@@ -5,16 +5,16 @@ description: Configure the font family and six Flourish font-size tiers, with St
 
 # Typography
 
-Use `UseGlobalFont` inside `ConfigureShell` to set the font family and six size tiers for shell surfaces, navigated application pages, and the Profile page.
+Use `InitGlobalFont` inside `ConfigShell` to set the font family and six size tiers for shell surfaces, navigated application pages, and the Profile page.
 
 ## Configure shell typography
 
 ```csharp
-builder.ConfigureShell(shell =>
-    shell.UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
+builder.ConfigShell(shell =>
+    shell.InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
 ```
 
-The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `UseGlobalFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
+The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `InitGlobalFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
 
 ## Size tier roles
 
@@ -43,13 +43,13 @@ Pages displayed in the main content frame or Profile inherit the configured glob
 
 ## Override one page
 
-Use `SetOverrideFont<TPage>` when one page needs a different text family or size scale. Pass `null` for any tier that should continue following its global value.
+Use `InitOverrideFont<TPage>` when one page needs a different initial text family or size scale. Pass `null` for any tier that should continue following its global value.
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell
-        .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
-        .SetOverrideFont<CodeEditorPage>(
+        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,
             null,
@@ -58,7 +58,7 @@ builder.ConfigureShell(shell =>
             null,
             null));
 
-shell.SetOverrideFont<PresentationPage>(
+shell.InitOverrideFont<PresentationPage>(
     "Aptos Display",
     14,
     16,

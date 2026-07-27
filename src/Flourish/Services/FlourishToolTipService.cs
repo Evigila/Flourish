@@ -87,7 +87,7 @@ internal sealed class FlourishToolTipService(FlourishShellOptions options) : ITo
         });
     }
 
-    public void Configure(int initialShowDelayMilliseconds, double spawnableMargin = 5)
+    public void SetSettings(int initialShowDelayMilliseconds, double spawnableMargin = 5)
     {
         if (initialShowDelayMilliseconds < 0)
         {

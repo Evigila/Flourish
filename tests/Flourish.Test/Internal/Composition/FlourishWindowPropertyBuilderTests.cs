@@ -12,15 +12,15 @@ public sealed class FlourishWindowPropertyBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishWindowPropertyBuilder(options);
 
-        Assert.Same(sut, sut.SetWindowSize(1440, 900));
-        Assert.Same(sut, sut.SetWindowMinSize(640, 480));
-        Assert.Same(sut, sut.SetWindowMaxSize(2560, 1440));
-        Assert.Same(sut, sut.SetManualWindowPosition(-120, 45));
-        Assert.Same(sut, sut.SetWindowState(WindowState.Maximized));
-        Assert.Same(sut, sut.SetWindowResizeMode(ResizeMode.NoResize));
+        Assert.Same(sut, sut.InitWindowSize(1440, 900));
+        Assert.Same(sut, sut.InitWindowMinSize(640, 480));
+        Assert.Same(sut, sut.InitWindowMaxSize(2560, 1440));
+        Assert.Same(sut, sut.InitManualWindowPosition(-120, 45));
+        Assert.Same(sut, sut.InitWindowState(WindowState.Maximized));
+        Assert.Same(sut, sut.InitWindowResizeMode(ResizeMode.NoResize));
         Assert.Same(sut, sut.UseTopmost());
-        Assert.Same(sut, sut.ShowInTaskbar(false));
-        Assert.Same(sut, sut.SetTrayExit());
+        Assert.Same(sut, sut.InitShownInTaskbar(false));
+        Assert.Same(sut, sut.UseTrayExit());
 
         Assert.Equal(1440, options.WindowWidth);
         Assert.Equal(900, options.WindowHeight);
@@ -44,7 +44,7 @@ public sealed class FlourishWindowPropertyBuilderTests
         var options = new FlourishShellOptions { IsTrayExitEnabled = true };
         var sut = new FlourishWindowPropertyBuilder(options);
 
-        var result = sut.SetTrayExit(false);
+        var result = sut.UseTrayExit(false);
 
         Assert.Same(sut, result);
         Assert.False(options.IsTrayExitEnabled);
@@ -56,7 +56,7 @@ public sealed class FlourishWindowPropertyBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishWindowPropertyBuilder(options);
 
-        var result = sut.SetWindowMaxSize();
+        var result = sut.InitWindowMaxSize();
 
         Assert.Same(sut, result);
         Assert.Equal(double.PositiveInfinity, options.WindowMaxWidth);
@@ -68,9 +68,9 @@ public sealed class FlourishWindowPropertyBuilderTests
     {
         var options = new FlourishShellOptions();
         var sut = new FlourishWindowPropertyBuilder(options);
-        sut.SetManualWindowPosition(15, 25);
+        sut.InitManualWindowPosition(15, 25);
 
-        var result = sut.SetWindowPosition(WindowStartupLocation.CenterOwner);
+        var result = sut.InitWindowPosition(WindowStartupLocation.CenterOwner);
 
         Assert.Same(sut, result);
         Assert.Equal(WindowStartupLocation.CenterOwner, options.WindowStartupLocation);
@@ -84,7 +84,7 @@ public sealed class FlourishWindowPropertyBuilderTests
         var options = new FlourishShellOptions { WindowLeft = 15, WindowTop = 25 };
         var sut = new FlourishWindowPropertyBuilder(options);
 
-        sut.SetWindowPosition(WindowStartupLocation.Manual);
+        sut.InitWindowPosition(WindowStartupLocation.Manual);
 
         Assert.Equal(WindowStartupLocation.Manual, options.WindowStartupLocation);
         Assert.Equal(15, options.WindowLeft);
@@ -111,11 +111,11 @@ public sealed class FlourishWindowPropertyBuilderTests
         {
             if (parameterName == "width")
             {
-                sut.SetWindowSize(value, 720);
+                sut.InitWindowSize(value, 720);
             }
             else
             {
-                sut.SetWindowSize(1100, value);
+                sut.InitWindowSize(1100, value);
             }
         });
 
@@ -138,11 +138,11 @@ public sealed class FlourishWindowPropertyBuilderTests
         {
             if (parameterName == "minWidth")
             {
-                sut.SetWindowMinSize(value, 560);
+                sut.InitWindowMinSize(value, 560);
             }
             else
             {
-                sut.SetWindowMinSize(820, value);
+                sut.InitWindowMinSize(820, value);
             }
         });
 
@@ -165,11 +165,11 @@ public sealed class FlourishWindowPropertyBuilderTests
         {
             if (parameterName == "maxWidth")
             {
-                sut.SetWindowMaxSize(value, 1080);
+                sut.InitWindowMaxSize(value, 1080);
             }
             else
             {
-                sut.SetWindowMaxSize(1920, value);
+                sut.InitWindowMaxSize(1920, value);
             }
         });
 
@@ -194,11 +194,11 @@ public sealed class FlourishWindowPropertyBuilderTests
         {
             if (parameterName == "minWidth")
             {
-                sut.SetWindowMinSize(1001, 600);
+                sut.InitWindowMinSize(1001, 600);
             }
             else
             {
-                sut.SetWindowMinSize(900, 701);
+                sut.InitWindowMinSize(900, 701);
             }
         });
 
@@ -223,11 +223,11 @@ public sealed class FlourishWindowPropertyBuilderTests
         {
             if (parameterName == "maxWidth")
             {
-                sut.SetWindowMaxSize(799, 900);
+                sut.InitWindowMaxSize(799, 900);
             }
             else
             {
-                sut.SetWindowMaxSize(1000, 599);
+                sut.InitWindowMaxSize(1000, 599);
             }
         });
 
@@ -250,11 +250,11 @@ public sealed class FlourishWindowPropertyBuilderTests
         {
             if (parameterName == "left")
             {
-                sut.SetManualWindowPosition(value, 0);
+                sut.InitManualWindowPosition(value, 0);
             }
             else
             {
-                sut.SetManualWindowPosition(0, value);
+                sut.InitManualWindowPosition(0, value);
             }
         });
 
@@ -267,7 +267,7 @@ public sealed class FlourishWindowPropertyBuilderTests
         var sut = new FlourishWindowPropertyBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetWindowState((WindowState)int.MaxValue)
+            sut.InitWindowState((WindowState)int.MaxValue)
         );
 
         Assert.Equal("windowState", exception.ParamName);
@@ -279,7 +279,7 @@ public sealed class FlourishWindowPropertyBuilderTests
         var sut = new FlourishWindowPropertyBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetWindowResizeMode((ResizeMode)int.MaxValue)
+            sut.InitWindowResizeMode((ResizeMode)int.MaxValue)
         );
 
         Assert.Equal("resizeMode", exception.ParamName);

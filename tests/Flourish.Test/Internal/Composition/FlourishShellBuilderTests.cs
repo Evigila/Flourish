@@ -43,10 +43,10 @@ public sealed class FlourishShellBuilderTests
         );
         Assert.Same(sut, sut.UseThemeColors(enabled: true, colors: themeColors));
         Assert.Same(sut, sut.UseCornerRadius(enabled: true, radius: 5));
-        Assert.Same(sut, sut.UseGlobalFont("Arial", 13, 15, 17, 19, 22, 28));
+        Assert.Same(sut, sut.InitGlobalFont("Arial", 13, 15, 17, 19, 22, 28));
         Assert.Same(
             sut,
-            sut.SetOverrideFont<OverrideFontPage>("Consolas", 14, 16, 18, 20, 24, 30)
+            sut.InitOverrideFont<OverrideFontPage>("Consolas", 14, 16, 18, 20, 24, 30)
         );
         Assert.Same(sut, sut.UseStatusBar());
 
@@ -259,7 +259,7 @@ public sealed class FlourishShellBuilderTests
             .GetMethods()
             .Where(method =>
                 method.Name.StartsWith("Use", StringComparison.Ordinal)
-                && method.Name != nameof(IFlourishShellBuilder.UseGlobalFont)
+                && method.Name != nameof(IFlourishShellBuilder.InitGlobalFont)
             );
 
         Assert.All(
@@ -303,7 +303,7 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.UseGlobalFont(fontFamily!, 12, 14, 16, 16, 24, 32)
+            sut.InitGlobalFont(fontFamily!, 12, 14, 16, 16, 24, 32)
         );
 
         Assert.Equal("fontFamily", exception.ParamName);
@@ -324,37 +324,37 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal(
             "smallFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.UseGlobalFont("Segoe UI", size, 14, 16, 18, 20, 24)
+                sut.InitGlobalFont("Segoe UI", size, 14, 16, 18, 20, 24)
             ).ParamName
         );
         Assert.Equal(
             "standardFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.UseGlobalFont("Segoe UI", 12, size, 16, 18, 20, 24)
+                sut.InitGlobalFont("Segoe UI", 12, size, 16, 18, 20, 24)
             ).ParamName
         );
         Assert.Equal(
             "iconFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.UseGlobalFont("Segoe UI", 12, 14, size, 18, 20, 24)
+                sut.InitGlobalFont("Segoe UI", 12, 14, size, 18, 20, 24)
             ).ParamName
         );
         Assert.Equal(
             "largeFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.UseGlobalFont("Segoe UI", 12, 14, 16, size, 20, 24)
+                sut.InitGlobalFont("Segoe UI", 12, 14, 16, size, 20, 24)
             ).ParamName
         );
         Assert.Equal(
             "extraLargeFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.UseGlobalFont("Segoe UI", 12, 14, 16, 18, size, 24)
+                sut.InitGlobalFont("Segoe UI", 12, 14, 16, 18, size, 24)
             ).ParamName
         );
         Assert.Equal(
             "headerSizeFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.UseGlobalFont("Segoe UI", 12, 14, 16, 18, 20, size)
+                sut.InitGlobalFont("Segoe UI", 12, 14, 16, 18, 20, size)
             ).ParamName
         );
     }
@@ -365,7 +365,7 @@ public sealed class FlourishShellBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishShellBuilder(options);
 
-        sut.UseGlobalFont("Segoe UI", 30, 14, 16, 16, 12, 10);
+        sut.InitGlobalFont("Segoe UI", 30, 14, 16, 16, 12, 10);
 
         Assert.Equal(30, options.FontSizeSmall);
         Assert.Equal(14, options.FontSizeStandard);
@@ -386,7 +386,7 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.SetOverrideFont<OverrideFontPage>(fontFamily!, null, null, null, null, null, null)
+            sut.InitOverrideFont<OverrideFontPage>(fontFamily!, null, null, null, null, null, null)
         );
 
         Assert.Equal("fontFamily", exception.ParamName);
@@ -407,37 +407,37 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal(
             "smallFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.SetOverrideFont<OverrideFontPage>("Consolas", size, null, null, null, null, null)
+                sut.InitOverrideFont<OverrideFontPage>("Consolas", size, null, null, null, null, null)
             ).ParamName
         );
         Assert.Equal(
             "standardFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.SetOverrideFont<OverrideFontPage>("Consolas", null, size, null, null, null, null)
+                sut.InitOverrideFont<OverrideFontPage>("Consolas", null, size, null, null, null, null)
             ).ParamName
         );
         Assert.Equal(
             "iconFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.SetOverrideFont<OverrideFontPage>("Consolas", null, null, size, null, null, null)
+                sut.InitOverrideFont<OverrideFontPage>("Consolas", null, null, size, null, null, null)
             ).ParamName
         );
         Assert.Equal(
             "largeFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.SetOverrideFont<OverrideFontPage>("Consolas", null, null, null, size, null, null)
+                sut.InitOverrideFont<OverrideFontPage>("Consolas", null, null, null, size, null, null)
             ).ParamName
         );
         Assert.Equal(
             "extraLargeFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.SetOverrideFont<OverrideFontPage>("Consolas", null, null, null, null, size, null)
+                sut.InitOverrideFont<OverrideFontPage>("Consolas", null, null, null, null, size, null)
             ).ParamName
         );
         Assert.Equal(
             "headerSizeFontSize",
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                sut.SetOverrideFont<OverrideFontPage>("Consolas", null, null, null, null, null, size)
+                sut.InitOverrideFont<OverrideFontPage>("Consolas", null, null, null, null, null, size)
             ).ParamName
         );
     }
@@ -448,7 +448,7 @@ public sealed class FlourishShellBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishShellBuilder(options);
 
-        sut.SetOverrideFont<OverrideFontPage>(
+        sut.InitOverrideFont<OverrideFontPage>(
             "Consolas",
             30,
             14,
@@ -470,7 +470,7 @@ public sealed class FlourishShellBuilderTests
         var sut = new FlourishShellBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.SetOverrideFont<AbstractOverrideFontPage>("Consolas", null, null, null, null, null, null)
+            sut.InitOverrideFont<AbstractOverrideFontPage>("Consolas", null, null, null, null, null, null)
         );
 
         Assert.Equal("TPage", exception.ParamName);

@@ -10,7 +10,7 @@ Tooltip 为紧凑或仅含图标的 Flourish 控件与 Shell 区域提供标签�
 ## 配置提示
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell.UseTips(enabled: true, delay: 200));
 ```
 

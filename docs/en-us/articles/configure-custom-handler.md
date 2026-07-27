@@ -5,20 +5,20 @@ description: Insert application-provided WPF elements and commands into predefin
 
 # Custom shell content
 
-Flourish exposes extension regions in the title bar, the logo information surface, navigation panel, dynamic toolbar, content frame, and status bar. Use `ConfigureCustomHandler` to place application-provided WPF elements or commands in these regions.
+Flourish exposes extension regions in the title bar, the logo information surface, navigation panel, dynamic toolbar, content frame, and status bar. Use `ConfigCustomHandler` to place application-provided WPF elements or commands in these regions.
 
 ## Add custom content and commands
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar().UseStatusBar())
-    .ConfigureTitleBar(titleBar => titleBar.SetProfile())
-    .ConfigureCustomHandler(custom =>
+    .ConfigShell(shell => shell.UseTitleBar().UseStatusBar())
+    .ConfigTitleBar(titleBar => titleBar.UseProfile())
+    .ConfigCustomHandler(custom =>
     {
         custom
-            .SetProfileContent(_ => new Button { Content = "Foo Bar" })
-            .AddTitlebarAction("Sync", "\uE895", "sync.run")
-            .AddFooterCommand(
+            .InitProfileContent(_ => new Button { Content = "Foo Bar" })
+            .InitTitleBarAction("Sync", "\uE895", "sync.run")
+            .InitFooterCommand(
                 FlourishRegion.FooterEnd,
                 "Help",
                 "\uE946",
@@ -28,23 +28,23 @@ builder
 
 ## Surface prerequisites
 
-Custom content does not enable its owning surface. Enable title bar regions with `UseTitleBar()`, navigation regions with `UseNavigation()`, toolbar regions with `UseDynamicToolbar()`, and footer regions with `UseStatusBar()` in [Shell configuration](shell-configuration.md). `SetProfileContent` also requires `SetProfile()` in [Title bar](configure-title-bar.md).
+Custom content does not enable its owning surface. Enable title bar regions with `UseTitleBar()`, navigation regions with `UseNavigation()`, toolbar regions with `UseDynamicToolbar()`, and footer regions with `UseStatusBar()` in [Shell configuration](shell-configuration.md). `InitProfileContent` also requires `UseProfile()` in [Title bar](configure-title-bar.md).
 
-The `FlourishRegion.TitlebarApplicationInfo` region is rendered as the Body of the logo information surface. Configure a logo with `SetLogo()` before adding this content. The Body is application-defined and can present dynamic details, but it does not participate in project creation, saving, activation, deletion, or close handling. Those Shell entry points are coordinated by `IProjectBehavior`; see [Projects](projects.md).
+The `FlourishRegion.TitlebarApplicationInfo` region is rendered as the Body of the logo information surface. Configure a logo with `UseLogo()` before adding this content. The Body is application-defined and can present dynamic details, but it does not participate in project creation, saving, activation, deletion, or close handling. Those Shell entry points are coordinated by `IProjectBehavior`; see [Projects](projects.md).
 
 ## Element factories
 
 Element factories receive `IServiceProvider`, so they can resolve application services when needed. Use the same factory form even when an element has no dependencies. Element factories must return elements without an existing WPF parent.
 
 ```csharp
-builder.ConfigureCustomHandler(custom =>
+builder.ConfigCustomHandler(custom =>
 {
     custom
-        .Add(
+        .InitRegionContent(
             FlourishRegion.TitlebarEnd,
             services => new SyncStatusView(
                 services.GetRequiredService<SyncService>()))
-        .Add(
+        .InitRegionContent(
             FlourishRegion.TitlebarApplicationInfo,
             services => new ApplicationDetailsView(
                 services.GetRequiredService<ApplicationDetailsService>()));

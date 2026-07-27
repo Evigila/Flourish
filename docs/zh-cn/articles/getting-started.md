@@ -7,7 +7,7 @@ description: 使用 Flourish 构建并运行一个基本 WPF 应用。
 
 基本的 Flourish 应用需要注册一个 WPF 页面、启用导航、构建 `IFlourish` 运行时并显示 Shell。
 
-Flourish 内置文案默认使用英文。如需中文，请在 `Build()` 前调用 `builder.ConfigureData(data => data.SetLocale("CN"))`。[应用数据](configure-data.md)说明内置语言和自定义语言。
+Flourish 内置文案默认使用英文。如需中文，请在 `Build()` 前调用 `builder.ConfigData(data => data.InitLocale("CN"))`。[应用数据](configure-data.md)说明内置语言和自定义语言。
 
 ## 引用控件与主题资源
 
@@ -38,6 +38,7 @@ Flourish Shell 作为主窗口时，不要在 `App.xaml` 中设置 `StartupUri`�
 ```csharp
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Foobar;
@@ -55,18 +56,18 @@ public partial class App : Application
 
         flourish = FlourishBuilder
             .CreateDefaultBuilder(e.Args)
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
             {
                 services.AddSingleton(this);
                 services.AddNavigable<HomePage>("首页", "\uE80F");
             })
-            .ConfigureShell(shell =>
+            .ConfigShell(shell =>
                 shell.UseTitleBar().UseNavigation())
-            .ConfigureTitleBar(titleBar =>
-                titleBar.SetApplicationTitle("Foobar").SetNavToggle())
-            .ConfigureNavigation(navigation =>
-                navigation.SetGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<HomePage>(isInitial: true)))
+            .ConfigTitleBar(titleBar =>
+                titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
+            .ConfigNavigation(navigation =>
+                navigation.InitGroup(null, groupId: 0, group =>
+                    group.InitNavigableViewItem<HomePage>(isInitial: true)))
             .Build();
 
         flourish.Start();
@@ -96,18 +97,18 @@ public partial class App : Application
 ```csharp
 return FlourishBuilder
     .CreateDefaultBuilder(args)
-    .ConfigureServices((_, services) =>
+    .ConfigServices((_, services) =>
     {
         services.AddSingleton<App>();
         services.AddNavigable<HomePage>("首页", "\uE80F");
     })
-    .ConfigureShell(shell =>
+    .ConfigShell(shell =>
         shell.UseTitleBar().UseNavigation())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetApplicationTitle("Foobar").SetNavToggle())
-    .ConfigureNavigation(navigation =>
-        navigation.SetGroup(null, groupId: 0, group =>
-            group.AddNavigableViewItem<HomePage>(isInitial: true)))
+    .ConfigTitleBar(titleBar =>
+        titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
+    .ConfigNavigation(navigation =>
+        navigation.InitGroup(null, groupId: 0, group =>
+            group.InitNavigableViewItem<HomePage>(isInitial: true)))
     .Run<App>();
 ```
 

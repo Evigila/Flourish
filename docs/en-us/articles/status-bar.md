@@ -5,21 +5,21 @@ description: Configure custom status items, background-task indicators, and cons
 
 # Status bar
 
-The status bar is the compact Shell surface for active background work, application-defined status items, and built-in system details. Enable its persistent surface through [Shell configuration](shell-configuration.md), then use `ConfigureStatusBar` for optional custom and system items.
+The status bar is the compact Shell surface for active background work, application-defined status items, and built-in system details. Enable its persistent surface through [Shell configuration](shell-configuration.md), then use `ConfigStatusBar` for optional custom and system items.
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseStatusBar())
-    .ConfigureStatusBar(statusBar =>
+    .ConfigShell(shell => shell.UseStatusBar())
+    .ConfigStatusBar(statusBar =>
     {
         statusBar
-            .AddStatusItem("Online", "\uE774")
-            .ShowLANConnectionStatus()
-            .ShowPowerStatus();
+            .InitStatusItem("Online", "\uE774")
+            .UseLanConnectionStatus()
+            .UsePowerStatus();
     });
 ```
 
-Use `AddStatusItem` for non-interactive text-and-icon state. Use a [custom footer region](configure-custom-handler.md) for interactive controls or application-defined WPF content.
+Use `InitStatusItem` for non-interactive text-and-icon state. Use a [custom footer region](configure-custom-handler.md) for interactive controls or application-defined WPF content.
 
 ## Background-task indicators
 
@@ -37,23 +37,23 @@ Active work temporarily shows the status bar even when `UseStatusBar()` was omit
 
 ## Custom status items
 
-`AddStatusItem` adds a compact, non-interactive item with Small display text and an icon glyph. Items appear in registration order before the system-status icon.
+`InitStatusItem` adds a compact, non-interactive item with Small display text and an icon glyph. Items appear in registration order before the system-status icon.
 
 ```csharp
-statusBar.AddStatusItem("Online", "\uE774");
-statusBar.AddStatusItem("Synced", "\uE73E");
+statusBar.InitStatusItem("Online", "\uE774");
+statusBar.InitStatusItem("Synced", "\uE73E");
 ```
 
 Use custom items for application-specific state such as account state, workspace name, synchronization state, or current mode. The supplied text is application content and is not translated automatically.
 
 ## Consolidated network and power status
 
-`ShowLANConnectionStatus` and `ShowPowerStatus` enable rows in one consolidated system-status icon on the right side of the status bar. Configuring either helper displays that single icon; configuring both does not create two separate icons.
+`UseLanConnectionStatus` and `UsePowerStatus` enable rows in one consolidated system-status icon on the right side of the status bar. Configuring either helper displays that single icon; configuring both does not create two separate icons.
 
 ```csharp
 statusBar
-    .ShowLANConnectionStatus()
-    .ShowPowerStatus();
+    .UseLanConnectionStatus()
+    .UsePowerStatus();
 ```
 
 Hover or click the icon to open its temporary [Overlay](../controls/overlay.md). It closes after the pointer leaves both the icon and surface. The network row reads current network availability when the overlay opens. The power row reports AC, battery, or unknown power source and includes the battery percentage when Windows supplies a valid value. These are current snapshots taken when the surface opens, not a continuous connectivity or battery monitor.
@@ -65,9 +65,9 @@ Built-in labels follow the locale selected through [Application data](configure-
 Use [Custom shell content](configure-custom-handler.md) for application-provided controls and command buttons. `FooterStart` is placed after built-in background-task indicators; `FooterEnd` is placed after the custom and system status area.
 
 ```csharp
-builder.ConfigureCustomHandler(custom =>
+builder.ConfigCustomHandler(custom =>
 {
-    custom.AddFooterCommand(
+    custom.InitFooterCommand(
         FlourishRegion.FooterEnd,
         "Sync",
         "\uE895",

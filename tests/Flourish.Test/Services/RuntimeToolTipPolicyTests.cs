@@ -68,7 +68,7 @@ public sealed class RuntimeToolTipPolicyTests
             Assert.Equal(200, ToolTipService.GetInitialShowDelay(firstButton));
             Assert.Equal(200, ToolTipService.GetInitialShowDelay(secondButton));
 
-            sut.Configure(450, 8);
+            sut.SetSettings(450, 8);
 
             Assert.Equal(450, ToolTipService.GetInitialShowDelay(firstButton));
             Assert.Equal(450, ToolTipService.GetInitialShowDelay(secondButton));
@@ -218,7 +218,7 @@ public sealed class RuntimeToolTipPolicyTests
 
             using var operationPosted = new ManualResetEventSlim();
             dispatcher.Hooks.OperationPosted += OnOperationPosted;
-            var mutation = Task.Run(() => sut.Configure(480, 9));
+            var mutation = Task.Run(() => sut.SetSettings(480, 9));
             Assert.True(
                 operationPosted.Wait(TimeSpan.FromSeconds(5)),
                 "The tooltip mutation did not post to the attached dispatcher."
@@ -263,7 +263,7 @@ public sealed class RuntimeToolTipPolicyTests
             sut.Changed += (_, _) => eventCount++;
 
             sut.SetEnabled(true);
-            sut.Configure(200, 5);
+            sut.SetSettings(200, 5);
 
             Assert.Equal(0, eventCount);
             Assert.Same(delay, resources[DelayKey]);

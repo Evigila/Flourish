@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 
@@ -12,17 +13,26 @@ public partial class AppearancePage : Page
     private readonly IThemeService theme;
     private readonly IFontService font;
     private readonly IMaterialEffectService material;
+    private readonly IScrollService scroll;
+    private readonly IAppearanceService appearance;
+    private readonly IContentLayoutService contentLayout;
     private bool isRefreshing;
 
     public AppearancePage(
         IThemeService theme,
         IFontService font,
-        IMaterialEffectService material
+        IMaterialEffectService material,
+        IScrollService scroll,
+        IAppearanceService appearance,
+        IContentLayoutService contentLayout
     )
     {
         this.theme = theme;
         this.font = font;
         this.material = material;
+        this.scroll = scroll;
+        this.appearance = appearance;
+        this.contentLayout = contentLayout;
         InitializeComponent();
 
         ThemeBox.ItemsSource = Enum.GetValues<FlourishTheme>();
@@ -39,6 +49,9 @@ public partial class AppearancePage : Page
         theme.ThemeChanged += RuntimeState_Changed;
         font.Changed += RuntimeState_Changed;
         material.Changed += RuntimeState_Changed;
+        scroll.Changed += RuntimeState_Changed;
+        appearance.Changed += RuntimeState_Changed;
+        contentLayout.Changed += RuntimeState_Changed;
         RefreshAll();
     }
 
@@ -47,6 +60,9 @@ public partial class AppearancePage : Page
         theme.ThemeChanged -= RuntimeState_Changed;
         font.Changed -= RuntimeState_Changed;
         material.Changed -= RuntimeState_Changed;
+        scroll.Changed -= RuntimeState_Changed;
+        appearance.Changed -= RuntimeState_Changed;
+        contentLayout.Changed -= RuntimeState_Changed;
     }
 
     private void RuntimeState_Changed(object? sender, EventArgs e)
@@ -192,6 +208,91 @@ public partial class AppearancePage : Page
         }
     }
 
+    private void SmoothScrollingBox_Changed(object sender, RoutedEventArgs e)
+    {
+        if (CanApplyImmediately)
+        {
+            scroll.SetSmoothScrollingEnabled(SmoothScrollingBox.IsChecked == true);
+        }
+    }
+
+    private void Palette_Click(object sender, RoutedEventArgs e)
+    {
+        Execute(
+            () =>
+                appearance.SetThemeColors(
+                    new FlourishThemeColors(
+                        Color.FromRgb(0x3B, 0x82, 0xF6),
+                        Color.FromRgb(0x8B, 0x5C, 0xF6),
+                        Color.FromRgb(0x06, 0xB6, 0xD4)
+                    )
+                ),
+            AppearanceOutput,
+            FormatAppearanceOutput
+        );
+    }
+
+    private void ClearAppearance_Click(object sender, RoutedEventArgs e)
+    {
+        Execute(
+            () => appearance.SetAppearance(colors: null, cornerRadius: null),
+            AppearanceOutput,
+            FormatAppearanceOutput
+        );
+    }
+
+    private void CornerRadiusBox_LostFocus(object sender, RoutedEventArgs e) =>
+        CommitCornerRadius();
+
+    private void CornerRadiusBox_KeyDown(object sender, KeyEventArgs e) =>
+        CommitOnEnter(e, CommitCornerRadius);
+
+    private void CommitCornerRadius()
+    {
+        if (!CanApplyImmediately)
+        {
+            return;
+        }
+
+        Execute(
+            () =>
+                appearance.SetCornerRadius(
+                    ParseNullableDouble(CornerRadiusBox.Text, "corner radius")
+                ),
+            AppearanceOutput,
+            FormatAppearanceOutput
+        );
+    }
+
+    private void ContentLayout_Changed(object sender, RoutedEventArgs e) =>
+        CommitContentLayout();
+
+    private void ContentWidthBox_LostFocus(object sender, RoutedEventArgs e) =>
+        CommitContentLayout();
+
+    private void ContentWidthBox_KeyDown(object sender, KeyEventArgs e) =>
+        CommitOnEnter(e, CommitContentLayout);
+
+    private void CommitContentLayout()
+    {
+        if (!CanApplyImmediately)
+        {
+            return;
+        }
+
+        try
+        {
+            contentLayout.SetCenterContent(
+                CenterContentBox.IsChecked == true,
+                ParseDouble(ContentWidthBox.Text, "content width")
+            );
+        }
+        catch
+        {
+            RefreshAll();
+        }
+    }
+
     private bool CanApplyImmediately => IsLoaded && !isRefreshing;
 
     private static void CommitOnEnter(KeyEventArgs e, Action commit)
@@ -295,6 +396,19 @@ public partial class AppearancePage : Page
 
             MaterialBox.SelectedItem = material.CurrentEffect;
             MaterialDarkModeBox.IsChecked = material.IsDarkMode;
+            SmoothScrollingBox.IsChecked =
+                scroll.GetCurrent().IsSmoothScrollingEnabled;
+            var appearanceState = appearance.Current;
+            CornerRadiusBox.Text = appearanceState.CornerRadius?.ToString(
+                "0.##",
+                CultureInfo.CurrentCulture
+            ) ?? string.Empty;
+            var layoutState = contentLayout.Current;
+            CenterContentBox.IsChecked = layoutState.IsCenterContentEnabled;
+            ContentWidthBox.Text = layoutState.ContentWidth.ToString(
+                "0.##",
+                CultureInfo.CurrentCulture
+            );
         }
         finally
         {
@@ -320,6 +434,12 @@ public partial class AppearancePage : Page
 
     private string FormatMaterialOutput() =>
         $"Window material updated: requested {material.CurrentEffect}; supported {material.IsSupported(material.CurrentEffect)}; applied {material.IsApplied}; dark mode {material.IsDarkMode}.";
+
+    private string FormatAppearanceOutput()
+    {
+        var current = appearance.Current;
+        return $"Appearance updated: palette {(current.ThemeColors is null ? "standard" : "custom")}; corner radius {(current.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture) ?? "standard")}.";
+    }
 
     private static double ParseDouble(string text, string name)
     {

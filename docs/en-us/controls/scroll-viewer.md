@@ -25,14 +25,23 @@ Use the Flourish XML namespace to distinguish this control from the WPF type wit
 
 Set `IsSmoothScrollingEnabled="False"` when immediate native pixel scrolling is required.
 
-Applications can apply the same policy to Flourish-owned Shell, navigation, and page scrolling surfaces during composition:
+Applications can initialize the same policy for Flourish-owned Shell, navigation, and page scrolling surfaces during composition:
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell.UseSmoothScroll(enabled: true));
 ```
 
-`UseSmoothScroll` supplies the default for Flourish scrolling surfaces that are created by the built-in templates and cannot be reached from application XAML. Set it to `false` when the complete Shell should use immediate native scrolling. An explicit `IsSmoothScrollingEnabled` value on an application-owned `ScrollViewer` remains the appropriate choice when only one viewport needs different behavior.
+`UseSmoothScroll` supplies the startup state for Flourish scrolling surfaces that are created by the built-in templates and cannot be reached from application XAML. Change the active application through `IScrollService`:
+
+```csharp
+scrollService.SetSmoothScrollingEnabled(false);
+
+FlourishScrollSettings current = scrollService.GetCurrent();
+scrollService.Changed += OnScrollSettingsChanged;
+```
+
+The service updates existing viewports immediately through the shared dynamic resource. An explicit `IsSmoothScrollingEnabled` value on an application-owned `ScrollViewer` has local precedence and remains appropriate when only one viewport needs different behavior.
 
 ## Nested viewports
 

@@ -250,6 +250,102 @@
     </flourish:Chunk>
 
     <flourish:Chunk
+      Content="Apply shared palette and corner-radius overrides without replacing the active light or dark theme. Use these settings for live appearance editors and previews; passing null restores the standard theme resources."
+      Title="Appearance overrides"
+    >
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,8,0">
+            <flourish:ActionCard
+              Content="Apply a sample primary, secondary, and accent palette."
+              Icon="&#xE790;"
+              Title="Color palette"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="Palette_Click" Content="Preview palette" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Content="Set one shared radius or leave the field empty to restore the standard hierarchy."
+              Icon="&#xE809;"
+              Title="Corner radius"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:FlourishTextBox
+                  x:Name="CornerRadiusBox"
+                  Width="120"
+                  KeyDown="CornerRadiusBox_KeyDown"
+                  LostFocus="CornerRadiusBox_LostFocus"
+                />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Content="Remove both Flourish-owned overrides."
+              Icon="&#xE777;"
+              Title="Standard appearance"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="ClearAppearance_Click" Content="Restore defaults" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+          </StackPanel>
+          <flourish:OutputCard
+            x:Name="AppearanceOutput"
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            VerticalAlignment="Stretch"
+          />
+        </Grid>
+        <flourish:CodeSpace Text="// Apply or clear individual overrides.&#10;appearance.SetThemeColors(new FlourishThemeColors(primary, secondary, accent));&#10;appearance.SetCornerRadius(8);&#10;&#10;// Update both values atomically; null restores standard resources.&#10;appearance.SetAppearance(colors: null, cornerRadius: null);&#10;appearance.Changed += OnAppearanceChanged;" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="Center page content within a shared maximum width and update both the active page and pages reached later through navigation. Use this for reading-focused or wide-screen layouts where long lines should remain comfortable to scan. The switch changes whether centering is active, the width field defines the shared limit, and the code demonstrates an atomic update plus state observation."
+      Title="Content layout"
+    >
+      <StackPanel>
+        <flourish:ActionCard
+          Content="Enable or disable the centered page layout."
+          Icon="&#xE8A7;"
+          Title="Centered content"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:FlourishCheckBox
+              x:Name="CenterContentBox"
+              Checked="ContentLayout_Changed"
+              Content="Center content"
+              Unchecked="ContentLayout_Changed"
+              VerticalAlignment="Center"
+            />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:ActionCard
+          Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          Content="Set the positive maximum width used by centered pages."
+          Icon="&#xE8A7;"
+          Title="Content width"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:FlourishTextBox
+              x:Name="ContentWidthBox"
+              Width="120"
+              KeyDown="ContentWidthBox_KeyDown"
+              LostFocus="ContentWidthBox_LostFocus"
+            />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:CodeSpace Text="// Change layout as one state transition.&#10;contentLayout.SetCenterContent(enabled: true, contentWidth: 1200);&#10;var current = contentLayout.Current;&#10;contentLayout.Changed += OnContentLayoutChanged;" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
       Content="Choose the native material behind the shell and coordinate its immersive dark-mode flag with the active theme. Use this for Windows-integrated appearance where the requested effect may depend on platform support; the code below sets both material properties directly."
       Title="Window material"
     >
@@ -287,27 +383,27 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. Use this application-wide option when the built-in scrolling templates are not accessible from page XAML; it is applied during startup, while an explicit IsSmoothScrollingEnabled value can still override the default on an application-owned ScrollViewer."
+      Content="Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. UseSmoothScroll sets the startup state, while IScrollService updates the active application immediately. An explicit IsSmoothScrollingEnabled value still overrides the application policy on an application-owned ScrollViewer."
       Title="Smooth scrolling"
     >
       <StackPanel>
         <flourish:ActionCard
-          Content="The Gallery enables the application-wide policy during Shell composition."
+          Content="The setting updates existing Flourish viewports through the shared dynamic resource."
           Icon="&#xE7C2;"
           Title="Shell scrolling"
         >
           <flourish:ActionCard.Body>
             <flourish:FlourishCheckBox
-              Content="Enabled at startup"
-              Focusable="False"
-              IsChecked="True"
-              IsHitTestVisible="False"
+              x:Name="SmoothScrollingBox"
+              Checked="SmoothScrollingBox_Changed"
+              Content="Enable smooth scrolling"
+              Unchecked="SmoothScrollingBox_Changed"
               VerticalAlignment="Center"
             />
           </flourish:ActionCard.Body>
         </flourish:ActionCard>
         <flourish:CodeSpace
-          Text="// Apply the default to built-in Flourish scrolling surfaces.&#10;builder.ConfigureShell(shell =&gt;&#10;    shell.UseSmoothScroll(enabled: true));&#10;&#10;// Pass false when the complete Shell should use native scrolling."
+          Text="// Initialize the default for built-in Flourish scrolling surfaces.&#10;builder.ConfigShell(shell =&gt;&#10;    shell.UseSmoothScroll(enabled: true));&#10;&#10;// Change the active application and observe later changes.&#10;scroll.SetSmoothScrollingEnabled(false);&#10;var current = scroll.GetCurrent();&#10;scroll.Changed += OnScrollSettingsChanged;"
         />
       </StackPanel>
     </flourish:Chunk>

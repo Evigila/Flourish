@@ -5,7 +5,7 @@ description: 配置主题选择、应用配色、共用圆角和偏好持久化�
 
 # 主题
 
-Flourish 提供跟随系统、亮色和暗色主题。`SetThemeToggle` 会启用主题选择、显示标题栏入口，并指定 Host 配置中没有已保存偏好时使用的回退模式。
+Flourish 提供跟随系统、亮色和暗色主题。`UseThemeToggle` 会启用主题选择、显示标题栏入口，并指定 Host 配置中没有已保存偏好时使用的回退模式。
 
 ## 配置主题选择
 
@@ -13,23 +13,23 @@ Flourish 提供跟随系统、亮色和暗色主题。`SetThemeToggle` 会启用
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetThemeToggle(FlourishTheme.System));
+    .ConfigShell(shell => shell.UseTitleBar())
+    .ConfigTitleBar(titleBar =>
+        titleBar.UseThemeToggle(mode: FlourishTheme.System));
 ```
 
 省略参数时使用 `FlourishTheme.System`。只有 Host 配置中不存在 `Flourish:Preferences:Theme` 时，回退值才会生效。[应用数据](configure-data.md)说明对应的 `appsettings.json` 设置。
 
-不调用 `SetThemeToggle` 时，标题栏主题入口保持隐藏，Shell 以亮色主题初始化。应用仍可通过 `IThemeService` 在运行时更改主题。
+不调用 `UseThemeToggle` 时，标题栏主题入口保持隐藏，Shell 以亮色主题初始化。应用仍可通过 `IThemeService` 在运行时更改主题。
 
 ## 配置应用配色与圆角
 
-通过 `ConfigureShell` 设置主要色、辅助色、强调色与共用圆角：
+通过 `ConfigShell` 设置主要色、辅助色、强调色与共用圆角：
 
 ```csharp
 using System.Windows.Media;
 
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell
         .UseThemeColors(enabled: true, colors: new FlourishThemeColors(
             primary: Color.FromRgb(15, 108, 189),
@@ -44,6 +44,19 @@ builder.ConfigureShell(shell =>
 
 应用配色后，应在亮色和暗色主题下验证结果，并保持文字对比度。
 
+需要在启动后修改这些值时，使用 `IAppearanceService`：
+
+```csharp
+appearance.SetThemeColors(new FlourishThemeColors(primary, secondary, accent));
+appearance.SetCornerRadius(8);
+
+// 原子修改两项；传入 null 可恢复标准资源。
+appearance.SetAppearance(colors: null, cornerRadius: null);
+```
+
+运行时覆盖位于 Flourish 自有的资源层中。清除覆盖后会重新显露标准亮色或暗色资源，
+并保留应用自己定义的资源项。
+
 ## 主题模式与偏好
 
 `FlourishTheme.System` 跟随 Windows 应用主题，`Light` 与 `Dark` 使用固定主题，直到用户选择其他模式。
@@ -57,6 +70,6 @@ Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。
 - [控件库](control-library.md)说明显式 Flourish 控件与主题资源加载。
 - [标题栏](configure-title-bar.md)配置主题入口。
 - [应用数据](configure-data.md)说明 Host 配置与主题偏好键。
-- [运行时 API](runtime-apis.md)说明应用运行期间通过 `IThemeService` 更改主题。
+- [运行时 API](runtime-apis.md)说明应用运行期间通过 `IThemeService` 与 `IAppearanceService` 更改主题和外观。
 - [材质特效](configure-material-effect.md)配置与当前主题配合使用的窗口材质。
 - [排版](configure-font.md)配置主题资源使用的字体。

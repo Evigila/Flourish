@@ -7,7 +7,7 @@ description: Build and run a basic WPF application with Flourish.
 
 A basic Flourish application registers a WPF page, enables navigation, builds an `IFlourish` runtime, and displays the shell.
 
-Built-in Flourish text uses the English locale by default. To use Chinese, call `builder.ConfigureData(data => data.SetLocale("CN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locales.
+Built-in Flourish text uses the English locale by default. To use Chinese, call `builder.ConfigData(data => data.InitLocale("CN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locales.
 
 ## Reference the controls and theme
 
@@ -38,6 +38,7 @@ The application can own the Flourish runtime from `App.xaml.cs`. Start the Host,
 ```csharp
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Foobar;
@@ -55,18 +56,18 @@ public partial class App : Application
 
         flourish = FlourishBuilder
             .CreateDefaultBuilder(e.Args)
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
             {
                 services.AddSingleton(this);
                 services.AddNavigable<HomePage>("Home", "\uE80F");
             })
-            .ConfigureShell(shell =>
+            .ConfigShell(shell =>
                 shell.UseTitleBar().UseNavigation())
-            .ConfigureTitleBar(titleBar =>
-                titleBar.SetApplicationTitle("Foobar").SetNavToggle())
-            .ConfigureNavigation(navigation =>
-                navigation.SetGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<HomePage>(isInitial: true)))
+            .ConfigTitleBar(titleBar =>
+                titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
+            .ConfigNavigation(navigation =>
+                navigation.InitGroup(null, groupId: 0, group =>
+                    group.InitNavigableViewItem<HomePage>(isInitial: true)))
             .Build();
 
         flourish.Start();
@@ -96,18 +97,18 @@ A custom entry point or bootstrapper can build the same configuration and use th
 ```csharp
 return FlourishBuilder
     .CreateDefaultBuilder(args)
-    .ConfigureServices((_, services) =>
+    .ConfigServices((_, services) =>
     {
         services.AddSingleton<App>();
         services.AddNavigable<HomePage>("Home", "\uE80F");
     })
-    .ConfigureShell(shell =>
+    .ConfigShell(shell =>
         shell.UseTitleBar().UseNavigation())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetApplicationTitle("Foobar").SetNavToggle())
-    .ConfigureNavigation(navigation =>
-        navigation.SetGroup(null, groupId: 0, group =>
-            group.AddNavigableViewItem<HomePage>(isInitial: true)))
+    .ConfigTitleBar(titleBar =>
+        titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
+    .ConfigNavigation(navigation =>
+        navigation.InitGroup(null, groupId: 0, group =>
+            group.InitNavigableViewItem<HomePage>(isInitial: true)))
     .Run<App>();
 ```
 

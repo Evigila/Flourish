@@ -5,12 +5,12 @@ description: Register application services, navigable pages, and replaceable Flo
 
 # Dependency injection
 
-Flourish uses the `IServiceCollection` from its .NET Generic Host. Register application services, WPF pages, and replaceable Flourish services through `ConfigureServices`.
+Flourish uses the `IServiceCollection` from its .NET Generic Host. Register application services, WPF pages, and replaceable Flourish services through `ConfigServices`.
 
 ## Register services
 
 ```csharp
-builder.ConfigureServices((context, services) =>
+builder.ConfigServices((context, services) =>
 {
     services.AddSingleton<App>();
     services.AddSingleton<ReportExporter>();
@@ -29,13 +29,13 @@ The callback receives `HostBuilderContext`, so registrations can use the active 
 
 `AddNavigable<TPage>` registers a `System.Windows.Controls.Page` and its navigation metadata. Flourish generates the case-sensitive navigation key from the class name by removing one trailing `Page` suffix: `SettingsPage` becomes `Settings`, while `Page1` remains `Page1`.
 
-Page registration does not create a visible navigation item. Use `ConfigureNavigation` to place each page in a group or the fixed area. [Navigation](navigation.md) explains visible positions and initial-page selection.
+Page registration does not create a visible navigation item. Use `ConfigNavigation` to place each page in a group or the fixed area. [Navigation](navigation.md) explains visible positions and initial-page selection.
 
 View models can navigate with the generated key, for example `navigation.Navigate("Settings")`, without referencing the WPF page type. `Build()` rejects duplicate generated keys.
 
 ## Supply command dependencies
 
-Register the application services used by command handlers through `ConfigureServices`. Implement `ICommandParser` to define command-key mappings that should remain active for the complete Host lifetime, then add it with `AddCommandParser<TParser>`. Flourish registers and removes those mappings with the Host. Use `ICommandRegistry` directly for handlers with a shorter or dynamic lifetime. [Command dispatch](commands.md) explains both registration models, availability, and results.
+Register the application services used by command handlers through `ConfigServices`. Implement `ICommandParser` to define command-key mappings that should remain active for the complete Host lifetime, then add it with `AddCommandParser<TParser>`. Flourish registers and removes those mappings with the Host. Use `ICommandRegistry` directly for handlers with a shorter or dynamic lifetime. [Command dispatch](commands.md) explains both registration models, availability, and results.
 
 ## Replace profile services
 
@@ -46,7 +46,7 @@ Register `IProfileAuthService` to provide application authentication while retai
 Register one singleton `IProjectBehavior` when the application owns project dialogs or file lifecycle. Flourish provides its `.txt` placeholder-file behavior only when the application has not registered this interface.
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 

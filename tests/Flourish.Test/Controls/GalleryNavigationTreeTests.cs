@@ -25,12 +25,12 @@ public sealed class GalleryNavigationTreeTests
             StringComparison.Ordinal
         );
         Assert.Contains(
-            ".AddFixedNavigableViewItem<AboutPage>()",
+            ".InitFixedNavigableViewItem<AboutPage>()",
             source,
             StringComparison.Ordinal
         );
         Assert.DoesNotContain(
-            "group.AddNavigableViewItem<AboutPage>()",
+            "group.InitNavigableViewItem<AboutPage>()",
             source,
             StringComparison.Ordinal
         );
@@ -45,7 +45,7 @@ public sealed class GalleryNavigationTreeTests
         Assert.Contains("\"Actions\",", source, StringComparison.Ordinal);
         Assert.DoesNotContain("\"Surfaces\"", source, StringComparison.Ordinal);
         Assert.False(
-            Regex.IsMatch(source, @"\.SetGroup\(\s*""Commands"""),
+            Regex.IsMatch(source, @"\.InitGroup\(\s*""Commands"""),
             "The interactive command nodes belong to Actions, not a second Commands group."
         );
 
@@ -75,7 +75,7 @@ public sealed class GalleryNavigationTreeTests
                 StringComparison.Ordinal
             );
             Assert.Contains(
-                $"group.AddNavigableViewItem<{page}>()",
+                $"group.InitNavigableViewItem<{page}>()",
                 source,
                 StringComparison.Ordinal
             );
@@ -90,14 +90,14 @@ public sealed class GalleryNavigationTreeTests
                 StringComparison.Ordinal
             );
             Assert.DoesNotContain(
-                $"group.AddNavigableViewItem<{page}>()",
+                $"group.InitNavigableViewItem<{page}>()",
                 source,
                 StringComparison.Ordinal
             );
         }
 
         Assert.DoesNotContain(
-            "group.AddNavigableViewItem<ToolbarStatusPage>()",
+            "group.InitNavigableViewItem<ToolbarStatusPage>()",
             source,
             StringComparison.Ordinal
         );

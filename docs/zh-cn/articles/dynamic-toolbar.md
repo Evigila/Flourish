@@ -10,12 +10,12 @@ description: 配置按页面变化的工具栏项，并连接到命令调度。
 配置分两步：
 
 1. 在 [Shell 配置](shell-configuration.md)中启用工具栏区域。
-2. 使用 `ConfigureDynamicToolbar` 注册页面对应的工具栏项。
+2. 使用 `ConfigDynamicToolbar` 注册页面对应的工具栏项。
 
 ## 启用工具栏区域
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
 {
     shell.UseDynamicToolbar();
 });
@@ -28,12 +28,12 @@ builder.ConfigureShell(shell =>
 
 ## 为页面注册工具栏项
 
-使用 `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` 将工具栏项与 WPF 页面类型关联。
+使用 `IFlourishDynamicToolbarBuilder.InitToolbarItems<TPage>` 将工具栏项与 WPF 页面类型关联。
 
 ```csharp
-builder.ConfigureDynamicToolbar(toolbar =>
+builder.ConfigDynamicToolbar(toolbar =>
 {
-    toolbar.CreateToolbarItems<ReportsPage>(
+    toolbar.InitToolbarItems<ReportsPage>(
         new FlourishToolbarItem("刷新", "\uE72C", "reports.refresh"),
         new FlourishToolbarItem("导出", "\uE898", "reports.export"));
 });
@@ -44,7 +44,7 @@ builder.ConfigureDynamicToolbar(toolbar =>
 带 `icon: false` 的重载可以创建纯文本工具栏项。
 
 ```csharp
-toolbar.CreateToolbarItems<EditorPage>(
+toolbar.InitToolbarItems<EditorPage>(
     icon: false,
     new FlourishToolbarItem("预览", "\uE8A7", "editor.preview"));
 ```

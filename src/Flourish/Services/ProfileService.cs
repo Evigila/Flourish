@@ -8,8 +8,7 @@ internal sealed class ProfileService : IProfileService
     private readonly IProfileAuthService authService;
     private readonly ProfileSecretStore secretStore;
     private readonly FlourishLocalizationService localizationService;
-    private readonly ProfileUser defaultProfile;
-    private readonly NameOrder nameOrder;
+    private ProfileUser defaultProfile;
     private readonly SemaphoreSlim gate = new(1, 1);
     private StoredProfileCredentials? currentCredentials;
     private bool isInitialized;
@@ -24,13 +23,13 @@ internal sealed class ProfileService : IProfileService
         this.authService = authService;
         this.secretStore = secretStore;
         this.localizationService = localizationService;
-        nameOrder = options.NameOrder;
+        NameOrder = options.NameOrder;
         defaultProfile = new ProfileUser(
             string.IsNullOrWhiteSpace(options.DefaultFirstName)
                 ? localizationService.Get(FlourishLocaleKeys.ProfileDefaultName)
                 : options.DefaultFirstName,
             options.DefaultLastName,
-            nameOrder,
+            NameOrder,
             options.DefaultImagePath
         );
         CurrentProfile = defaultProfile;
@@ -40,6 +39,8 @@ internal sealed class ProfileService : IProfileService
 
     public ProfileLoginState LoginState { get; private set; } =
         ProfileLoginState.SignedOut;
+
+    public NameOrder NameOrder { get; private set; }
 
     public event EventHandler<ProfileChangedEventArgs>? ProfileChanged;
 
@@ -77,7 +78,7 @@ internal sealed class ProfileService : IProfileService
                 storedName.FirstName,
                 storedName.LastName,
                 stored.Password,
-                nameOrder,
+                NameOrder,
                 stored.ImagePath
             );
             var result = await authService
@@ -100,7 +101,7 @@ internal sealed class ProfileService : IProfileService
             CurrentProfile = new ProfileUser(
                 storedName.FirstName,
                 storedName.LastName,
-                nameOrder,
+                NameOrder,
                 stored.ImagePath
             );
             LoginState = ProfileLoginState.SignedInRemembered;
@@ -125,7 +126,7 @@ internal sealed class ProfileService : IProfileService
             request.FirstName?.Trim() ?? string.Empty,
             request.LastName?.Trim() ?? string.Empty,
             request.Password ?? string.Empty,
-            nameOrder,
+            NameOrder,
             string.IsNullOrWhiteSpace(request.ImagePath) ? null : request.ImagePath.Trim()
         );
         if (string.IsNullOrWhiteSpace(normalizedRequest.DisplayName))
@@ -143,13 +144,6 @@ internal sealed class ProfileService : IProfileService
             return result;
         }
 
-        var authenticatedProfile = new ProfileUser(
-            normalizedRequest.FirstName,
-            normalizedRequest.LastName,
-            nameOrder,
-            normalizedRequest.ImagePath
-        );
-
         ProfileChangedEventArgs changed;
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -164,7 +158,12 @@ internal sealed class ProfileService : IProfileService
 
             isInitialized = true;
             currentCredentials = stored;
-            CurrentProfile = authenticatedProfile;
+            CurrentProfile = new ProfileUser(
+                normalizedRequest.FirstName,
+                normalizedRequest.LastName,
+                NameOrder,
+                normalizedRequest.ImagePath
+            );
             LoginState = ProfileLoginState.SignedIn;
             changed = CreateChangedEventArgs();
         }
@@ -232,6 +231,40 @@ internal sealed class ProfileService : IProfileService
         RaiseProfileChanged(changed);
     }
 
+    public async Task SetNameOrderAsync(
+        NameOrder nameOrder,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (!Enum.IsDefined(nameOrder))
+        {
+            throw new ArgumentOutOfRangeException(nameof(nameOrder), nameOrder, null);
+        }
+
+        ProfileChangedEventArgs? changed = null;
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            if (NameOrder == nameOrder)
+            {
+                return;
+            }
+
+            NameOrder = nameOrder;
+            defaultProfile = WithNameOrder(defaultProfile, nameOrder);
+            CurrentProfile = LoginState == ProfileLoginState.SignedOut
+                ? defaultProfile
+                : WithNameOrder(CurrentProfile, nameOrder);
+            changed = CreateChangedEventArgs();
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        RaiseProfileChanged(changed);
+    }
+
     public async Task SignOutAsync(CancellationToken cancellationToken = default)
     {
         ProfileUser signedInProfile;
@@ -282,6 +315,16 @@ internal sealed class ProfileService : IProfileService
     private ProfileChangedEventArgs CreateChangedEventArgs()
     {
         return new ProfileChangedEventArgs(CurrentProfile, LoginState);
+    }
+
+    private static ProfileUser WithNameOrder(ProfileUser profile, NameOrder nameOrder)
+    {
+        return new ProfileUser(
+            profile.FirstName,
+            profile.LastName,
+            nameOrder,
+            profile.ImagePath
+        );
     }
 
     private void RaiseProfileChanged(ProfileChangedEventArgs? changed)

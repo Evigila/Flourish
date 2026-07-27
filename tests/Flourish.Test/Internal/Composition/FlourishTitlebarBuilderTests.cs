@@ -34,22 +34,22 @@ public sealed class FlourishTitlebarBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishTitlebarBuilder(options);
 
-        Assert.Same(sut, sut.SetBreadcrumbButton(BreadcrumbShowOption.Always));
-        Assert.Same(sut, sut.SetNavToggle());
+        Assert.Same(sut, sut.UseBreadcrumb(option: BreadcrumbShowOption.Always));
+        Assert.Same(sut, sut.UseNavigationToggle());
         Assert.Same(
             sut,
-            sut.SetLogo(
-                "Assets/logo.png",
+            sut.UseLogo(
+                logoPath: "Assets/logo.png",
                 showApplicationTitle: false,
                 showApplicationSubTitle: false,
                 showProjectTitle: true
             )
         );
-        Assert.Same(sut, sut.SetApplicationTitle("Foobar"));
-        Assert.Same(sut, sut.SetApplicationSubTitle("Workspace"));
-        Assert.Same(sut, sut.SetUnnamedProjectPlaceholder("Untitled workspace"));
-        Assert.Same(sut, sut.SetProfile(NameOrder.LastFirst));
-        Assert.Same(sut, sut.SetThemeToggle(FlourishTheme.Dark));
+        Assert.Same(sut, sut.InitApplicationTitle("Foobar"));
+        Assert.Same(sut, sut.InitApplicationSubTitle("Workspace"));
+        Assert.Same(sut, sut.InitUnnamedProjectPlaceholder("Untitled workspace"));
+        Assert.Same(sut, sut.UseProfile(nameOrder: NameOrder.LastFirst));
+        Assert.Same(sut, sut.UseThemeToggle(mode: FlourishTheme.Dark));
 
         Assert.True(options.IsBreadcrumbEnabled);
         Assert.Equal(BreadcrumbShowOption.Always, options.BreadcrumbShowOption);
@@ -80,9 +80,9 @@ public sealed class FlourishTitlebarBuilderTests
         string? receivedText = null;
         var serviceProvider = new EmptyServiceProvider();
 
-        var result = sut.SetSearch(
-            "Search pages",
-            (services, text) =>
+        var result = sut.UseSearch(
+            placeholder: "Search pages",
+            handler: (services, text) =>
             {
                 receivedServices = services;
                 receivedText = text;
@@ -103,8 +103,8 @@ public sealed class FlourishTitlebarBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishTitlebarBuilder(options);
 
-        var result = sut.SetLogo(
-            "pack://application:,,,/Flourish;component/Assets/favicon.ico"
+        var result = sut.UseLogo(
+            logoPath: "pack://application:,,,/Flourish;component/Assets/favicon.ico"
         );
 
         Assert.Same(sut, result);
@@ -121,7 +121,7 @@ public sealed class FlourishTitlebarBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishTitlebarBuilder(options);
 
-        var result = sut.SetLogo();
+        var result = sut.UseLogo();
 
         Assert.Same(sut, result);
         Assert.True(options.IsTitlebarLogoEnabled);
@@ -145,7 +145,7 @@ public sealed class FlourishTitlebarBuilderTests
         };
         var serviceProvider = new EmptyServiceProvider();
 
-        var result = sut.SetSearch("Search", handler);
+        var result = sut.UseSearch(placeholder: "Search", handler: handler);
         options.TitlebarSearchTextChanged!(serviceProvider, "query");
 
         Assert.Same(sut, result);
@@ -166,27 +166,29 @@ public sealed class FlourishTitlebarBuilderTests
         Assert.Equal(
             "title",
             Assert
-                .Throws<ArgumentException>(() => sut.SetApplicationTitle(value!))
+                .Throws<ArgumentException>(() => sut.InitApplicationTitle(value!))
                 .ParamName
         );
         Assert.Equal(
             "subTitle",
             Assert
-                .Throws<ArgumentException>(() => sut.SetApplicationSubTitle(value!))
+                .Throws<ArgumentException>(() => sut.InitApplicationSubTitle(value!))
                 .ParamName
         );
         Assert.Equal(
             "placeholder",
             Assert
                 .Throws<ArgumentException>(() =>
-                    sut.SetUnnamedProjectPlaceholder(value!)
+                    sut.InitUnnamedProjectPlaceholder(value!)
                 )
                 .ParamName
         );
         Assert.Equal(
             "placeholder",
             Assert
-                .Throws<ArgumentException>(() => sut.SetSearch(value!, (_, _) => { }))
+                .Throws<ArgumentException>(() =>
+                    sut.UseSearch(placeholder: value!, handler: (_, _) => { })
+                )
                 .ParamName
         );
     }
@@ -200,26 +202,21 @@ public sealed class FlourishTitlebarBuilderTests
 
         Assert.Equal(
             "logoPath",
-            Assert.Throws<ArgumentException>(() => sut.SetLogo(value)).ParamName
+            Assert
+                .Throws<ArgumentException>(() => sut.UseLogo(logoPath: value))
+                .ParamName
         );
     }
 
     [Fact]
-    public void SetSearch_WithNullHandler_ThrowsArgumentNullException()
+    public void UseSearch_WithoutHandler_StillEnablesRuntimeSearchSurface()
     {
-        var sut = new FlourishTitlebarBuilder(new FlourishShellOptions());
+        var options = new FlourishShellOptions();
+        var sut = new FlourishTitlebarBuilder(options);
 
-        Assert.Equal(
-            "handler",
-            Assert
-                .Throws<ArgumentNullException>(() =>
-                    sut.SetSearch(
-                        "Search",
-                        (Action<IServiceProvider, string>)null!
-                    )
-                )
-                .ParamName
-        );
+        Assert.Same(sut, sut.UseSearch(placeholder: "Search"));
+        Assert.True(options.IsTitlebarSearchEnabled);
+        Assert.Null(options.TitlebarSearchTextChanged);
     }
 
     [Fact]
@@ -231,7 +228,7 @@ public sealed class FlourishTitlebarBuilderTests
             "option",
             Assert
                 .Throws<ArgumentOutOfRangeException>(() =>
-                    sut.SetBreadcrumbButton((BreadcrumbShowOption)int.MaxValue)
+                    sut.UseBreadcrumb(option: (BreadcrumbShowOption)int.MaxValue)
                 )
                 .ParamName
         );
@@ -239,7 +236,7 @@ public sealed class FlourishTitlebarBuilderTests
             "nameOrder",
             Assert
                 .Throws<ArgumentOutOfRangeException>(() =>
-                    sut.SetProfile((NameOrder)int.MaxValue)
+                    sut.UseProfile(nameOrder: (NameOrder)int.MaxValue)
                 )
                 .ParamName
         );
@@ -247,7 +244,7 @@ public sealed class FlourishTitlebarBuilderTests
             "mode",
             Assert
                 .Throws<ArgumentOutOfRangeException>(() =>
-                    sut.SetThemeToggle((FlourishTheme)int.MaxValue)
+                    sut.UseThemeToggle(mode: (FlourishTheme)int.MaxValue)
                 )
                 .ParamName
         );

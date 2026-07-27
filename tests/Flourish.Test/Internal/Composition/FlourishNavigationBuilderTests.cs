@@ -13,7 +13,7 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        var result = sut.SetInitiallyOpen();
+        var result = sut.InitInitiallyOpen();
 
         Assert.Same(sut, result);
         Assert.True(options.IsNavigationPanelInitiallyOpen);
@@ -25,7 +25,7 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        var result = sut.SetPanelWidth(
+        var result = sut.InitPanelWidth(
             openWidth: 280,
             closedWidth: 64,
             maxWidth: 500,
@@ -45,10 +45,10 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.SetPanelWidth();
+        sut.InitPanelWidth();
 
         var closedWidthParameter = typeof(IFlourishNavigationBuilder)
-            .GetMethod(nameof(IFlourishNavigationBuilder.SetPanelWidth))!
+            .GetMethod(nameof(IFlourishNavigationBuilder.InitPanelWidth))!
             .GetParameters()
             .Single(parameter => parameter.Name == "closedWidth");
 
@@ -67,7 +67,7 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.SetPanelWidth(280, closedWidth, 500, 180);
+        sut.InitPanelWidth(280, closedWidth, 500, 180);
 
         Assert.Equal(closedWidth, options.ClosedPaneWidth);
     }
@@ -84,7 +84,7 @@ public sealed class FlourishNavigationBuilderTests
         var before = options.ClosedPaneWidth;
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(280, closedWidth, 500, 180)
+            sut.InitPanelWidth(280, closedWidth, 500, 180)
         );
 
         Assert.Equal("closedWidth", exception.ParamName);
@@ -98,7 +98,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth: 200, closedWidth: 201, maxWidth: 400, minWidth: 100)
+            sut.InitPanelWidth(openWidth: 200, closedWidth: 201, maxWidth: 400, minWidth: 100)
         );
 
         Assert.Equal("closedWidth", exception.ParamName);
@@ -110,7 +110,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth: 200, closedWidth: 64, maxWidth: 180, minWidth: 220)
+            sut.InitPanelWidth(openWidth: 200, closedWidth: 64, maxWidth: 180, minWidth: 220)
         );
 
         Assert.Equal("minWidth", exception.ParamName);
@@ -126,7 +126,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth, closedWidth: 64, maxWidth: 400, minWidth: 100)
+            sut.InitPanelWidth(openWidth, closedWidth: 64, maxWidth: 400, minWidth: 100)
         );
 
         Assert.Equal("openWidth", exception.ParamName);
@@ -138,7 +138,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(double.NaN)
+            sut.InitPanelWidth(double.NaN)
         );
 
         Assert.Equal("openWidth", exception.ParamName);
@@ -150,7 +150,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth: 0, closedWidth: 0, maxWidth: 400, minWidth: 100)
+            sut.InitPanelWidth(openWidth: 0, closedWidth: 0, maxWidth: 400, minWidth: 100)
         );
 
         Assert.Equal("openWidth", exception.ParamName);
@@ -162,7 +162,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetPanelWidth(openWidth: 200, closedWidth: -1, maxWidth: 400, minWidth: 100)
+            sut.InitPanelWidth(openWidth: 200, closedWidth: -1, maxWidth: 400, minWidth: 100)
         );
 
         Assert.Equal("closedWidth", exception.ParamName);
@@ -177,7 +177,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.SetGroup(displayName, groupId: 1)
+            sut.InitGroup(displayName, groupId: 1)
         );
 
         Assert.Equal("displayName", exception.ParamName);
@@ -187,10 +187,10 @@ public sealed class FlourishNavigationBuilderTests
     public void SetGroup_WithDuplicateGroupId_ThrowsInvalidOperationException()
     {
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
-        sut.SetGroup("First", groupId: 1);
+        sut.InitGroup("First", groupId: 1);
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.SetGroup("Second", groupId: 1)
+            sut.InitGroup("Second", groupId: 1)
         );
 
         Assert.Contains("group ID 1", exception.Message);
@@ -202,10 +202,10 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.SetGroup("Main", groupId: 1, group =>
+        sut.InitGroup("Main", groupId: 1, group =>
         {
-            group.AddNavigableViewItem<TestPage>(isInitial: true);
-            group.AddNavigableItem("Refresh", "R", "gallery.refresh");
+            group.InitNavigableViewItem<TestPage>(isInitial: true);
+            group.InitNavigableItem("Refresh", "R", "gallery.refresh");
         });
 
         var navigationGroup = Assert.Single(options.NavigationGroups);
@@ -224,8 +224,8 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.SetGroup(null, groupId: 0, group =>
-                group.AddNavigableItem("Invalid", null, null, parentId: 1, childId: 1)
+            sut.InitGroup(null, groupId: 0, group =>
+                group.InitNavigableItem("Invalid", null, null, parentId: 1, childId: 1)
             )
         );
 
@@ -238,10 +238,10 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.SetGroup(null, groupId: 0, group =>
+            sut.InitGroup(null, groupId: 0, group =>
             {
-                group.AddNavigableItem("First", null, null, parentId: 7);
-                group.AddNavigableItem("Second", null, null, parentId: 7);
+                group.InitNavigableItem("First", null, null, parentId: 7);
+                group.InitNavigableItem("Second", null, null, parentId: 7);
             })
         );
 
@@ -254,8 +254,8 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.AddFixedNavigableViewItem<TestPage>(isInitial: true, parentId: 7);
-        sut.AddFixedNavigableItem(
+        sut.InitFixedNavigableViewItem<TestPage>(isInitial: true, parentId: 7);
+        sut.InitFixedNavigableItem(
             "Refresh",
             "R",
             "app.refresh",
@@ -295,7 +295,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.AddFixedNavigableItem(displayName!, null, "command")
+            sut.InitFixedNavigableItem(displayName!, null, "command")
         );
 
         Assert.Equal("displayName", exception.ParamName);

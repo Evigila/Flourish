@@ -57,7 +57,7 @@ internal sealed class ReportCommands(ReportService reports)
 Register the parser and its dependencies during service configuration. The application does not need to resolve the parser or implement `IDisposable`:
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
 {
     services.AddSingleton<ReportService>();
     services.AddCommandParser<ReportCommands>();
@@ -113,7 +113,7 @@ The dispatcher captures handler exceptions in `CommandResult` and reports cancel
 Toolbar, navigation, title-bar, status-bar, notification, and shortcut APIs accept the same command keys. For example:
 
 ```csharp
-toolbar.CreateToolbarItems<ReportsPage>(
+toolbar.InitToolbarItems<ReportsPage>(
     new FlourishToolbarItem("Export", "\uE898", "reports.export"));
 ```
 

@@ -4,93 +4,107 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
 internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
-    : IFlourishTitlebarBuilder
+    : FlourishBuilderMutationGuard,
+        IFlourishTitlebarBuilder
 {
-    public IFlourishTitlebarBuilder SetSearch(
-        string placeholder,
-        Action<IServiceProvider, string> handler
+    public IFlourishTitlebarBuilder UseSearch(
+        bool enabled = true,
+        string placeholder = "Search",
+        Action<IServiceProvider, string>? handler = null
     )
     {
-        ArgumentNullException.ThrowIfNull(handler);
+        ThrowIfFrozen();
         options.SearchPlaceholder = ValidateNotBlank(placeholder, nameof(placeholder));
         options.TitlebarSearchTextChanged = handler;
-        options.IsTitlebarSearchEnabled = true;
+        options.IsTitlebarSearchEnabled = enabled;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetBreadcrumbButton(
+    public IFlourishTitlebarBuilder UseBreadcrumb(
+        bool enabled = true,
         BreadcrumbShowOption option = BreadcrumbShowOption.Auto
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(option, nameof(option));
         options.BreadcrumbShowOption = option;
-        options.IsBreadcrumbEnabled = true;
+        options.IsBreadcrumbEnabled = enabled;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetNavToggle()
+    public IFlourishTitlebarBuilder UseNavigationToggle(bool enabled = true)
     {
-        options.IsTitlebarNavigationToggleEnabled = true;
+        ThrowIfFrozen();
+        options.IsTitlebarNavigationToggleEnabled = enabled;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetLogo(
+    public IFlourishTitlebarBuilder UseLogo(
+        bool enabled = true,
         string? logoPath = null,
         bool showApplicationTitle = true,
         bool showApplicationSubTitle = true,
         bool showProjectTitle = false
     )
     {
+        ThrowIfFrozen();
         options.LogoPath = logoPath is null
             ? null
             : ValidateNotBlank(logoPath, nameof(logoPath));
-        options.IsTitlebarLogoEnabled = true;
+        options.IsTitlebarLogoEnabled = enabled;
         options.ShowApplicationTitleInLogoFlyout = showApplicationTitle;
         options.ShowApplicationSubtitleInLogoFlyout = showApplicationSubTitle;
         options.ShowProjectTitleInLogoFlyout = showProjectTitle;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetApplicationTitle(string title = "MyApp")
+    public IFlourishTitlebarBuilder InitApplicationTitle(string title = "MyApp")
     {
+        ThrowIfFrozen();
         options.ApplicationTitle = ValidateNotBlank(title, nameof(title));
         options.IsTitlebarTitleEnabled = true;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetApplicationSubTitle(string subTitle = "MyApp")
+    public IFlourishTitlebarBuilder InitApplicationSubTitle(string subTitle = "MyApp")
     {
+        ThrowIfFrozen();
         options.ApplicationSubtitle = ValidateNotBlank(subTitle, nameof(subTitle));
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetUnnamedProjectPlaceholder(
+    public IFlourishTitlebarBuilder InitUnnamedProjectPlaceholder(
         string placeholder = "Unnamed project"
     )
     {
+        ThrowIfFrozen();
         options.UnnamedProjectPlaceholder = ValidateNotBlank(placeholder, nameof(placeholder));
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetProfile(
+    public IFlourishTitlebarBuilder UseProfile(
+        bool enabled = true,
         NameOrder nameOrder = NameOrder.FirstLast
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(nameOrder, nameof(nameOrder));
         options.Profile.NameOrder = nameOrder;
-        options.IsProfileEnabled = true;
-        options.IsTitlebarProfileEnabled = true;
+        options.IsProfileEnabled = enabled;
+        options.IsTitlebarProfileEnabled = enabled;
         return this;
     }
 
-    public IFlourishTitlebarBuilder SetThemeToggle(
+    public IFlourishTitlebarBuilder UseThemeToggle(
+        bool enabled = true,
         FlourishTheme mode = FlourishTheme.System
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(mode, nameof(mode));
         options.DefaultTheme = mode;
-        options.IsThemeEnabled = true;
-        options.IsTitlebarThemeToggleEnabled = true;
+        options.IsThemeEnabled = enabled;
+        options.IsTitlebarThemeToggleEnabled = enabled;
         return this;
     }
 

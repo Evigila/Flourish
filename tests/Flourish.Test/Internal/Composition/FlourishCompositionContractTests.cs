@@ -73,29 +73,31 @@ public sealed class FlourishCompositionContractTests
     {
         using var flourish = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureData(data => data.SetLocale("CN"))
-            .ConfigureTitleBar(titleBar =>
+            .ConfigData(data => data.InitLocale("CN"))
+            .ConfigTitleBar(titleBar =>
                 titleBar
-                    .SetApplicationTitle("Configured")
-                    .SetThemeToggle(FlourishTheme.Dark)
+                    .InitApplicationTitle("Configured")
+                    .UseThemeToggle(mode: FlourishTheme.Dark)
             )
-            .ConfigureNavigation(navigation =>
+            .ConfigNavigation(navigation =>
                 navigation
-                    .SetDirection(NavigationPanelDirection.Right)
-                    .SetInitiallyOpen(false)
-                    .SetPanelWidth(300, 64, 600, 200)
+                    .InitDirection(NavigationPanelDirection.Right)
+                    .InitInitiallyOpen(false)
+                    .InitPanelWidth(300, 64, 600, 200)
             )
-            .ConfigureMotion(motion =>
+            .ConfigMotion(motion =>
                 motion
-                    .EnableHoverRevealAnimation(TimeSpan.FromMilliseconds(250))
-                    .RespectSystemReducedMotion(false)
+                    .UseHoverRevealAnimation(
+                        duration: TimeSpan.FromMilliseconds(250)
+                    )
+                    .UseSystemReducedMotion(false)
             )
-            .ConfigureWindow(window =>
+            .ConfigWindow(window =>
                 window
-                    .SetWindowSize(1400, 800)
-                    .SetWindowMinSize(900, 600)
+                    .InitWindowSize(1400, 800)
+                    .InitWindowMinSize(900, 600)
                     .UseTopmost(false)
-                    .SetTrayExit(false)
+                    .UseTrayExit(false)
             )
             .Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
@@ -124,7 +126,7 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureData(data => data.SetLocale("EN"));
+            .ConfigData(data => data.InitLocale("EN"));
 
         using var flourish = builder.Build();
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
@@ -161,6 +163,18 @@ public sealed class FlourishCompositionContractTests
         Assert.Same(
             flourish.GetRequiredService<FlourishToolTipService>(),
             flourish.GetRequiredService<IToolTipService>()
+        );
+        Assert.Same(
+            flourish.GetRequiredService<ScrollService>(),
+            flourish.GetRequiredService<IScrollService>()
+        );
+        Assert.Same(
+            flourish.GetRequiredService<AppearanceService>(),
+            flourish.GetRequiredService<IAppearanceService>()
+        );
+        Assert.Same(
+            flourish.GetRequiredService<ContentLayoutService>(),
+            flourish.GetRequiredService<IContentLayoutService>()
         );
         Assert.Same(
             flourish.GetRequiredService<FlourishMotionService>(),
@@ -210,7 +224,7 @@ public sealed class FlourishCompositionContractTests
         var customBehavior = new TestProjectBehavior();
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
                 services.AddSingleton<IProjectBehavior>(customBehavior)
             );
 
@@ -224,8 +238,8 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureStatusBar(statusBar =>
-                statusBar.ShowLANConnectionStatus().ShowPowerStatus()
+            .ConfigStatusBar(statusBar =>
+                statusBar.UseLanConnectionStatus().UsePowerStatus()
             );
 
         using var flourish = builder.Build();
@@ -243,7 +257,7 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
             {
                 services.AddNavigable<HomePage>("Home", "H");
                 services.AddNavigable<HomePage>("Start", "S");
@@ -259,17 +273,17 @@ public sealed class FlourishCompositionContractTests
     public void Build_WithMultipleInitialPages_ThrowsInvalidOperationException()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
             {
                 services.AddNavigable<HomePage>("Home", "H");
                 services.AddNavigable<SettingsPage>("Settings", "S");
             })
-            .ConfigureNavigation(navigation =>
+            .ConfigNavigation(navigation =>
             {
-                navigation.SetGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<HomePage>(isInitial: true)
+                navigation.InitGroup(null, groupId: 0, group =>
+                    group.InitNavigableViewItem<HomePage>(isInitial: true)
                 );
-                navigation.AddFixedNavigableViewItem<SettingsPage>(isInitial: true);
+                navigation.InitFixedNavigableViewItem<SettingsPage>(isInitial: true);
             });
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
@@ -281,18 +295,18 @@ public sealed class FlourishCompositionContractTests
     public void Build_OrdersGroupsAndCreatesHeaders()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
             {
                 services.AddNavigable<HomePage>("Home", "H");
                 services.AddNavigable<SettingsPage>("Settings", "S");
             })
-            .ConfigureNavigation(navigation =>
+            .ConfigNavigation(navigation =>
             {
-                navigation.SetGroup("Second", groupId: 2, group =>
-                    group.AddNavigableViewItem<SettingsPage>()
+                navigation.InitGroup("Second", groupId: 2, group =>
+                    group.InitNavigableViewItem<SettingsPage>()
                 );
-                navigation.SetGroup("First", groupId: 1, group =>
-                    group.AddNavigableViewItem<HomePage>()
+                navigation.InitGroup("First", groupId: 1, group =>
+                    group.InitNavigableViewItem<HomePage>()
                 );
             });
 
@@ -320,7 +334,7 @@ public sealed class FlourishCompositionContractTests
     {
         return FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureShell(shell => shell.UseNavigation());
+            .ConfigShell(shell => shell.UseNavigation());
     }
 
     private static void AssertSingletonAdapter<TConcrete, TContract>(IFlourish flourish)

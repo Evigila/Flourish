@@ -7,10 +7,17 @@ description: Inspect and change Flourish configuration, shell surfaces, projects
 
 Flourish uses two complementary configuration layers:
 
-- `IFlourishBuilder` and its `Configure...` callbacks define the initial application graph and startup state. Use them to register pages and services, select defaults, and validate the application before the shell opens.
+- `IFlourishBuilder` and its `Config...` callbacks define the initial application graph and startup state. Use them to register pages and services, select defaults, and validate the application before the shell opens.
 - Runtime services change the live application after `Build()`. Resolve them through dependency injection, preferably by constructor injection into a page, view model, or application service.
 
 All runtime services below are registered as singletons. A builder remains the right place for deterministic startup defaults; a runtime service is the right place for user preferences, plug-ins, feature switches, and state that changes during a session.
+
+Public APIs are grouped by responsibility:
+
+- `ArkheideSystem.Flourish.Abstract.Builder` contains the one-shot startup builders and service-registration extensions.
+- `ArkheideSystem.Flourish.Abstract.Essential` contains runtime operations that perform application work, including navigation, commands, projects, localization, and background tasks.
+- `ArkheideSystem.Flourish.Abstract.Runtime` contains live UI and shell configuration services.
+- `ArkheideSystem.Flourish.Abstract` contains shared models and the `IFlourish` lifetime contract.
 
 ## State, events, and lifetimes
 
@@ -52,8 +59,11 @@ public async ValueTask SaveEndpointAsync(
 | --- | --- |
 | `IShellFeatureService` | Enable or disable `TitleBar`, `Navigation`, `DynamicToolbar`, `StatusContent`, `ToolTips`, `Motion`, or `Profile` with `SetEnabled`. |
 | `IThemeService` | Select and persist `System`, `Light`, or `Dark` with `SetTheme`, or cycle with `ToggleTheme`; inspect `EffectiveTheme` and `IsDark`. |
+| `IAppearanceService` | Set or clear shared theme-color and corner-radius overrides, apply both atomically, and observe `Changed`. Clearing an override reveals the standard theme resources without removing application-owned resources. |
+| `IContentLayoutService` | Enable or disable centered page content and atomically set its maximum width. The active page and subsequently navigated pages use the same state. |
 | `IFontService` | Atomically change the global family and independent positive, finite Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes with `SetFont`; change the icon family; inspect, set, and clear page-specific overrides through `PageOverrides`, `SetOverrideFont`, and `ClearOverrideFont`. |
-| `IToolTipService` | Switch Flourish-owned tooltips between native WPF and Flourish presentation, and change the Flourish initial delay and spawn margin with `Configure`; native and third-party controls are outside its scope. |
+| `IToolTipService` | Switch Flourish-owned tooltips between native WPF and Flourish presentation, and change the Flourish initial delay and spawn margin with `SetSettings`; native and third-party controls are outside its scope. |
+| `IScrollService` | Read the active application-wide scrolling settings with `GetCurrent`, change smooth scrolling with `SetSmoothScrollingEnabled`, and observe `Changed`. A local `ScrollViewer.IsSmoothScrollingEnabled` value takes precedence. |
 | `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
 | `IMaterialEffectService` | Test support and apply a `MaterialEffect`, or change immersive dark mode. |
 
@@ -61,6 +71,11 @@ public async ValueTask SaveEndpointAsync(
 Windows title bar. Disabling the feature restores the native title bar without changing
 the requested material effect; enabling it again restores the Flourish title bar and
 reapplies that material request to the custom frame.
+
+`IShellFeatureService` is an aggregate facade. Each domain service remains the authoritative
+state owner: navigation belongs to `INavigationPanelService`, toolbar enablement to
+`IToolbarService`, status content to `IStatusBarService`, and profile enablement to
+`IProfileFlyoutService`. Direct domain changes are reflected by `IShellFeatureService.Changed`.
 
 ## Title bar, projects, and search
 
@@ -207,7 +222,7 @@ Call `NotifyCanExecuteChanged(commandKey)` when external state changes an availa
 | `ITrayService` | Enable notification-area behavior, change its tooltip, minimize to tray, restore, or request exit. |
 | `IWindowCloseService` | Select `Prompt`, `Close`, or `MinimizeToTray`; register ordered asynchronous close guards; evaluate or request a close. |
 | `IProfileFlyoutService` | Enable, show, hide, or toggle the profile flyout and replace its WPF `Page` content. |
-| `IProfileService` | Inspect profile/login state, initialize remembered login, sign in, change remember-login behavior, or sign out. |
+| `IProfileService` | Inspect profile/login state, change the global `NameOrder` without signing out, initialize remembered login, sign in, change remember-login behavior, or sign out. |
 | `IMessageService` | Show standard or custom-choice modal messages synchronously or with `ShowAsync`; async cancellation only applies before the dialog opens. |
 | `INotificationService` | `Show` or `Upsert` non-modal notifications, inspect active notifications, dismiss one/all, and optionally dispatch a command when activated. |
 

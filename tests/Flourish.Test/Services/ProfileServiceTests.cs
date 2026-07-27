@@ -10,6 +10,112 @@ namespace ArkheideSystem.Flourish.Test.Services;
 public sealed class ProfileServiceTests
 {
     [Fact]
+    public async Task SetNameOrderAsync_UpdatesSignedOutDefaultProfileAndRaisesChange()
+    {
+        var localization = new FlourishLocalizationService(new FlourishDataOptions());
+        var sut = new ProfileService(
+            new SimpleProfileAuthService(localization),
+            new ProfileSecretStore(new ConfigurationBuilder().Build()),
+            new FlourishProfileOptions
+            {
+                DefaultFirstName = "Ada",
+                DefaultLastName = "Lovelace",
+                NameOrder = NameOrder.FirstLast,
+            },
+            localization
+        );
+        ProfileChangedEventArgs? change = null;
+        sut.ProfileChanged += (_, eventArgs) => change = eventArgs;
+
+        await sut.SetNameOrderAsync(NameOrder.LastFirst);
+
+        Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
+        Assert.Equal(ProfileLoginState.SignedOut, sut.LoginState);
+        Assert.Equal("Lovelace Ada", sut.CurrentProfile.DisplayName);
+        Assert.Equal("LA", sut.CurrentProfile.Initials);
+        Assert.NotNull(change);
+        Assert.Same(sut.CurrentProfile, change.Profile);
+        Assert.Equal(ProfileLoginState.SignedOut, change.LoginState);
+    }
+
+    [Fact]
+    public async Task SetNameOrderAsync_UpdatesSignedInProfileWithoutChangingSessionData()
+    {
+        var localization = new FlourishLocalizationService(new FlourishDataOptions());
+        var sut = new ProfileService(
+            new SimpleProfileAuthService(localization),
+            new ProfileSecretStore(new ConfigurationBuilder().Build()),
+            new FlourishProfileOptions(),
+            localization
+        );
+        await sut.SignInAsync(
+            new ProfileSignInRequest(
+                "Ada",
+                "Lovelace",
+                "secret",
+                NameOrder.FirstLast,
+                "avatar.png"
+            )
+        );
+        var changes = new List<ProfileChangedEventArgs>();
+        sut.ProfileChanged += (_, eventArgs) => changes.Add(eventArgs);
+
+        await sut.SetNameOrderAsync(NameOrder.LastFirst);
+
+        Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
+        Assert.Equal(ProfileLoginState.SignedIn, sut.LoginState);
+        Assert.Equal("Ada", sut.CurrentProfile.FirstName);
+        Assert.Equal("Lovelace", sut.CurrentProfile.LastName);
+        Assert.Equal("avatar.png", sut.CurrentProfile.ImagePath);
+        Assert.Equal("Lovelace Ada", sut.CurrentProfile.DisplayName);
+        var change = Assert.Single(changes);
+        Assert.Same(sut.CurrentProfile, change.Profile);
+        Assert.Equal(ProfileLoginState.SignedIn, change.LoginState);
+
+        await sut.SetRememberLoginAsync(rememberLogin: false);
+        Assert.Equal(ProfileLoginState.SignedIn, sut.LoginState);
+    }
+
+    [Fact]
+    public async Task SetNameOrderAsync_WithCurrentValue_DoesNotRaiseChange()
+    {
+        var localization = new FlourishLocalizationService(new FlourishDataOptions());
+        var sut = new ProfileService(
+            new SimpleProfileAuthService(localization),
+            new ProfileSecretStore(new ConfigurationBuilder().Build()),
+            new FlourishProfileOptions { NameOrder = NameOrder.LastFirst },
+            localization
+        );
+        var changeCount = 0;
+        sut.ProfileChanged += (_, _) => changeCount++;
+
+        await sut.SetNameOrderAsync(NameOrder.LastFirst);
+
+        Assert.Equal(0, changeCount);
+        Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
+    }
+
+    [Fact]
+    public async Task SetNameOrderAsync_WithUnknownValue_PreservesCurrentState()
+    {
+        var localization = new FlourishLocalizationService(new FlourishDataOptions());
+        var sut = new ProfileService(
+            new SimpleProfileAuthService(localization),
+            new ProfileSecretStore(new ConfigurationBuilder().Build()),
+            new FlourishProfileOptions(),
+            localization
+        );
+        var originalProfile = sut.CurrentProfile;
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+            sut.SetNameOrderAsync((NameOrder)42)
+        );
+
+        Assert.Equal(NameOrder.FirstLast, sut.NameOrder);
+        Assert.Same(originalProfile, sut.CurrentProfile);
+    }
+
+    [Fact]
     public async Task SignInWithoutUserSecrets_RemainsInMemoryAndRememberFailsTransactionally()
     {
         var localization = new FlourishLocalizationService(new FlourishDataOptions());

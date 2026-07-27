@@ -41,7 +41,7 @@ public sealed class GalleryControlPageStructureTests
 
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
         Assert.Contains("AddNavigable<HeaderChunkPage>(\"HeaderChunk\"", program);
-        Assert.Contains("AddNavigableViewItem<HeaderChunkPage>(childId: 1)", program);
+        Assert.Contains("InitNavigableViewItem<HeaderChunkPage>(childId: 1)", program);
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public sealed class GalleryControlPageStructureTests
             "AddNavigable<WindowCaptionButtonPage>(\"WindowCaptionButton\"",
             program
         );
-        Assert.Contains("AddNavigableViewItem<CardButtonPage>(childId: 1)", program);
-        Assert.Contains("AddNavigableViewItem<WindowCaptionButtonPage>(childId: 1)", program);
+        Assert.Contains("InitNavigableViewItem<CardButtonPage>(childId: 1)", program);
+        Assert.Contains("InitNavigableViewItem<WindowCaptionButtonPage>(childId: 1)", program);
     }
 
     [Fact]
@@ -155,8 +155,8 @@ public sealed class GalleryControlPageStructureTests
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
         Assert.Contains("AddNavigable<ActionCardPage>(\"ActionCard\"", program);
         Assert.Contains("AddNavigable<OutputCardPage>(\"OutputCard\"", program);
-        Assert.Contains("AddNavigableViewItem<ActionCardPage>(childId: 1)", program);
-        Assert.Contains("AddNavigableViewItem<OutputCardPage>(childId: 1)", program);
+        Assert.Contains("InitNavigableViewItem<ActionCardPage>(childId: 1)", program);
+        Assert.Contains("InitNavigableViewItem<OutputCardPage>(childId: 1)", program);
     }
 
     [Fact]
@@ -196,7 +196,7 @@ public sealed class GalleryControlPageStructureTests
                     )
             );
             Assert.Contains($"AddNavigable<{pageType}Page>(\"{pageType}\"", program);
-            Assert.Contains($"AddNavigableViewItem<{pageType}Page>(childId: 1)", program);
+            Assert.Contains($"InitNavigableViewItem<{pageType}Page>(childId: 1)", program);
         }
 
         var paragraphPage = LoadPage("ParagraphPage.xaml");
@@ -248,7 +248,7 @@ public sealed class GalleryControlPageStructureTests
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
         var childPageTypes = Regex.Matches(
                 program,
-                @"AddNavigableViewItem<(?<page>\w+Page)>\(childId: 1\)"
+                @"InitNavigableViewItem<(?<page>\w+Page)>\(childId: 1\)"
             )
             .Select(match => match.Groups["page"].Value)
             .ToHashSet(StringComparer.Ordinal);
@@ -456,7 +456,7 @@ public sealed class GalleryControlPageStructureTests
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
         var displayPages = Regex.Matches(
                 program,
-                @"group\.AddNavigableViewItem<(?<page>\w+Page)>\(childId:\s*1\)"
+                @"group\.InitNavigableViewItem<(?<page>\w+Page)>\(childId:\s*1\)"
             )
             .Select(match => match.Groups["page"].Value)
             .Distinct(StringComparer.Ordinal)
@@ -654,7 +654,7 @@ public sealed class GalleryControlPageStructureTests
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
         var controlPages = Regex.Matches(
                 program,
-                @"group\.AddNavigableViewItem<(?<page>\w+Page)>\(childId:\s*1\)"
+                @"group\.InitNavigableViewItem<(?<page>\w+Page)>\(childId:\s*1\)"
             )
             .Select(match => match.Groups["page"].Value)
             .Append("ControlLibraryPage")
@@ -759,8 +759,8 @@ public sealed class GalleryControlPageStructureTests
             ],
             ["Localization"] =
             [
-                "ConfigureData",
-                "SetLocale",
+                "ConfigData",
+                "InitLocale",
                 "localization.Changed",
                 "localization.CurrentLocale",
                 "localization.AvailableLocales",
@@ -769,7 +769,7 @@ public sealed class GalleryControlPageStructureTests
             ],
             ["Locale files"] =
             [
-                "AddLocale",
+                "InitLocaleFile",
                 "localization.RegisterFile",
                 "registration.Id",
                 "registration.Locale",

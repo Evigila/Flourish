@@ -11,7 +11,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
-internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
+internal sealed class DefaultFlourishBuilder(string[] args)
+    : FlourishBuilderMutationGuard,
+        IFlourishBuilder
 {
     private readonly IHostBuilder hostBuilder = CreateHostBuilder(args);
     private readonly FlourishShellOptions shellOptions = new();
@@ -29,94 +31,105 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
     private readonly List<Action<IFlourishWindowPropertyBuilder>> windowConfigurations = [];
     private readonly List<Action<IFlourishStatusBarBuilder>> statusBarConfigurations = [];
 
-    public IFlourishBuilder ConfigureData(Action<IFlourishDataBuilder> configureData)
+    public IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData)
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureData);
         dataConfigurations.Add(configureData);
         return this;
     }
 
-    public IFlourishBuilder ConfigureServices(
+    public IFlourishBuilder ConfigServices(
         Action<HostBuilderContext, IServiceCollection> configureServices
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureServices);
         serviceConfigurations.Add(configureServices);
         return this;
     }
 
-    public IFlourishBuilder ConfigureShell(Action<IFlourishShellBuilder> configureShell)
+    public IFlourishBuilder ConfigShell(Action<IFlourishShellBuilder> configureShell)
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureShell);
         shellConfigurations.Add(configureShell);
         return this;
     }
 
-    public IFlourishBuilder ConfigureProfile(
+    public IFlourishBuilder ConfigProfile(
         Action<IFlourishProfileBuilder> configureProfile
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureProfile);
         profileConfigurations.Add(configureProfile);
         return this;
     }
 
-    public IFlourishBuilder ConfigureTitleBar(
+    public IFlourishBuilder ConfigTitleBar(
         Action<IFlourishTitlebarBuilder> configureTitleBar
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureTitleBar);
         titleBarConfigurations.Add(configureTitleBar);
         return this;
     }
 
-    public IFlourishBuilder ConfigureNavigation(
+    public IFlourishBuilder ConfigNavigation(
         Action<IFlourishNavigationBuilder> configureNavigation
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureNavigation);
         navigationConfigurations.Add(configureNavigation);
         return this;
     }
 
-    public IFlourishBuilder ConfigureCustomHandler(
+    public IFlourishBuilder ConfigCustomHandler(
         Action<IFlourishCustomHandlerBuilder> configureCustomHandler
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureCustomHandler);
         customHandlerConfigurations.Add(configureCustomHandler);
         return this;
     }
 
-    public IFlourishBuilder ConfigureDynamicToolbar(
+    public IFlourishBuilder ConfigDynamicToolbar(
         Action<IFlourishDynamicToolbarBuilder> configureToolbar
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureToolbar);
         toolbarConfigurations.Add(configureToolbar);
         return this;
     }
 
-    public IFlourishBuilder ConfigureMotion(Action<IFlourishMotionBuilder> configureMotion)
+    public IFlourishBuilder ConfigMotion(Action<IFlourishMotionBuilder> configureMotion)
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureMotion);
         motionConfigurations.Add(configureMotion);
         return this;
     }
 
-    public IFlourishBuilder ConfigureWindow(
+    public IFlourishBuilder ConfigWindow(
         Action<IFlourishWindowPropertyBuilder> configureWindow
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureWindow);
         windowConfigurations.Add(configureWindow);
         return this;
     }
 
-    public IFlourishBuilder ConfigureStatusBar(
+    public IFlourishBuilder ConfigStatusBar(
         Action<IFlourishStatusBarBuilder> configureStatusBar
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureStatusBar);
         statusBarConfigurations.Add(configureStatusBar);
         return this;
@@ -124,6 +137,13 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
 
     public IFlourish Build()
     {
+        if (!TryFreeze())
+        {
+            throw new InvalidOperationException(
+                "The Flourish builder can only build one application runtime."
+            );
+        }
+
         var compositionRoot = new FlourishCompositionRoot(
             shellOptions,
             dataOptions,
@@ -140,7 +160,7 @@ internal sealed class DefaultFlourishBuilder(string[] args) : IFlourishBuilder
             statusBarConfigurations
         );
 
-        hostBuilder.ConfigureServices(compositionRoot.ConfigureServices);
+        hostBuilder.ConfigureServices(compositionRoot.ConfigServices);
         return new FlourishRuntime(hostBuilder.Build());
     }
 

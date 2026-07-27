@@ -5,14 +5,14 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，通过 [Shell 配置](shell-configuration.md)启用导航区域，再使用 `ConfigureNavigation` 把页面和命令项放入明确的位置。
+在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，通过 [Shell 配置](shell-configuration.md)启用导航区域，再使用 `ConfigNavigation` 把页面和命令项放入明确的位置。
 
 ## 注册页面
 
 `AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录导航使用的显示名称、图标字形和缓存模式。注册后页面可供导航使用；若要在面板中显示它，还需添加对应的 ViewItem。
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
 {
     services.AddNavigable<HomePage>(
         displayName: "首页",
@@ -26,7 +26,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-页面类型必须派生自 `System.Windows.Controls.Page`。Flourish 从简单类名生成导航键，并移除一个末尾、区分大小写的 `Page` 后缀：`SettingsPage` 生成 `Settings`，`ReportPagePage` 生成 `ReportPage`，`Page1` 仍生成 `Page1`。显示名称不会影响 key。这里设置的显示名称和图标会被 `AddNavigableViewItem` 复用，因此 ViewItem 不会再次要求传入这些值。
+页面类型必须派生自 `System.Windows.Controls.Page`。Flourish 从简单类名生成导航键，并移除一个末尾、区分大小写的 `Page` 后缀：`SettingsPage` 生成 `Settings`，`ReportPagePage` 生成 `ReportPage`，`Page1` 仍生成 `Page1`。显示名称不会影响 key。这里设置的显示名称和图标会被 `InitNavigableViewItem` 复用，因此 ViewItem 不会再次要求传入这些值。
 
 标准 Shell 使用随主题变化的主色前景呈现导航图标，同时让标签保持中性色，从而在浅色与深色主题中提供一致的视觉强调。
 
@@ -42,28 +42,28 @@ services.AddNavigable<EditorPage>(
 
 ## 配置分组
 
-使用 `ConfigureNavigation` 定义可见导航模型。`SetGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 `ConfigNavigation` 定义可见导航模型。`InitGroup` 创建可滚动的分组，`InitNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
 {
     shell.UseNavigation();
 })
-.ConfigureNavigation(navigation =>
+.ConfigNavigation(navigation =>
 {
     navigation
-        .SetDirection(NavigationPanelDirection.Left)
-        .SetInitiallyOpen()
-        .SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
-        .SetGroup("导航", groupId: 0, group =>
+        .InitDirection(NavigationPanelDirection.Left)
+        .InitInitiallyOpen()
+        .InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
+        .InitGroup("导航", groupId: 0, group =>
         {
-            group.AddNavigableViewItem<HomePage>(isInitial: true);
-            group.AddNavigableViewItem<ReportsPage>();
+            group.InitNavigableViewItem<HomePage>(isInitial: true);
+            group.InitNavigableViewItem<ReportsPage>();
         });
 
-    navigation.SetGroup("工具", groupId: 1, group =>
+    navigation.InitGroup("工具", groupId: 1, group =>
     {
-        group.AddNavigableViewItem<EditorPage>();
+        group.InitNavigableViewItem<EditorPage>();
     });
 });
 ```
@@ -76,36 +76,36 @@ builder.ConfigureShell(shell =>
 - 非 0 号组必须提供 `displayName`。
 
 ```csharp
-nav.SetGroup(groupId: 0, configureGroup: group =>
+nav.InitGroup(groupId: 0, configureGroup: group =>
 {
-    group.AddNavigableViewItem<HomePage>(isInitial: true);
+    group.InitNavigableViewItem<HomePage>(isInitial: true);
 });
 
-nav.SetGroup("管理", groupId: 10, group =>
+nav.InitGroup("管理", groupId: 10, group =>
 {
-    group.AddNavigableViewItem<SettingsPage>();
+    group.InitNavigableViewItem<SettingsPage>();
 });
 ```
 
 ## 调整导航栏宽度
 
-使用 `SetPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
+使用 `InitPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
 
 ```csharp
-nav.SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
+nav.InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
 ```
 
 默认展开宽度为 `220`，折叠宽度为 `64`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `64`。可调整范围默认为 `160` 到 `420`。用户调整大小时，会在该范围内更新展开宽度。
 
 ## 添加命令项
 
-`AddNavigableItem` 添加的是按钮类型导航项。它不会跳转页面，而是通过 `ICommandDispatcher` 调度 `commandKey`。
+`InitNavigableItem` 添加的是按钮类型导航项。它不会跳转页面，而是通过 `ICommandDispatcher` 调度 `commandKey`。
 
 ```csharp
-nav.SetGroup("命令", groupId: 2, group =>
+nav.InitGroup("命令", groupId: 2, group =>
 {
-    group.AddNavigableItem("刷新", "\uE72C", "reports.refresh");
-    group.AddNavigableItem("导出", "\uE898", "reports.export");
+    group.InitNavigableItem("刷新", "\uE72C", "reports.refresh");
+    group.InitNavigableItem("导出", "\uE898", "reports.export");
 });
 ```
 
@@ -116,16 +116,16 @@ nav.SetGroup("命令", groupId: 2, group =>
 固定项显示在导航栏底部区域，不受上半部分滚动视角影响，适合放置设置、关于、用户资料或其他持久操作。
 
 ```csharp
-builder.ConfigureNavigation(navigation =>
+builder.ConfigNavigation(navigation =>
 {
-    navigation.SetGroup("导航", groupId: 0, group =>
+    navigation.InitGroup("导航", groupId: 0, group =>
     {
-        group.AddNavigableViewItem<HomePage>(isInitial: true);
-        group.AddNavigableViewItem<ReportsPage>();
+        group.InitNavigableViewItem<HomePage>(isInitial: true);
+        group.InitNavigableViewItem<ReportsPage>();
     });
 
-    navigation.AddFixedNavigableViewItem<SettingsPage>();
-    navigation.AddFixedNavigableItem("帮助", "\uE946", "help.open");
+    navigation.InitFixedNavigableViewItem<SettingsPage>();
+    navigation.InitFixedNavigableItem("帮助", "\uE946", "help.open");
 });
 ```
 
@@ -133,18 +133,18 @@ builder.ConfigureNavigation(navigation =>
 
 ## 构建一层树
 
-导航项默认是扁平结构。要构建一层父子关系，可以在 `AddNavigableViewItem` 和 `AddNavigableItem` 上设置 `parentId` 或 `childId`。
+导航项默认是扁平结构。要构建一层父子关系，可以在 `InitNavigableViewItem` 和 `InitNavigableItem` 上设置 `parentId` 或 `childId`。
 
 ```csharp
-nav.SetGroup("树", groupId: 3, group =>
+nav.InitGroup("树", groupId: 3, group =>
 {
-    group.AddNavigableViewItem<TreeParentPage>(parentId: 1);
-    group.AddNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
-    group.AddNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
+    group.InitNavigableViewItem<TreeParentPage>(parentId: 1);
+    group.InitNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
+    group.InitNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
 
-    group.AddNavigableItem("页面", "\uE8A5", null, parentId: 2);
-    group.AddNavigableViewItem<Page1>(childId: 2);
-    group.AddNavigableViewItem<Page2>(childId: 2);
+    group.InitNavigableItem("页面", "\uE8A5", null, parentId: 2);
+    group.InitNavigableViewItem<Page1>(childId: 2);
+    group.InitNavigableViewItem<Page2>(childId: 2);
 });
 ```
 
@@ -168,15 +168,15 @@ nav.SetGroup("树", groupId: 3, group =>
 Flourish 会在构建阶段校验导航模型，让错误配置尽早失败。
 
 ```csharp
-nav.SetGroup("One", groupId: 1, group =>
+nav.InitGroup("One", groupId: 1, group =>
 {
-    group.AddNavigableViewItem<HomePage>();
+    group.InitNavigableViewItem<HomePage>();
 });
 
-nav.SetGroup("Two", groupId: 2, group =>
+nav.InitGroup("Two", groupId: 2, group =>
 {
     // 这里会报错，因为 HomePage 已经显示在 group 1 中。
-    group.AddNavigableViewItem<HomePage>();
+    group.InitNavigableViewItem<HomePage>();
 });
 ```
 

@@ -3,15 +3,19 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
-internal sealed class FlourishMotionBuilder(FlourishMotionOptions options) : IFlourishMotionBuilder
+internal sealed class FlourishMotionBuilder(FlourishMotionOptions options)
+    : FlourishBuilderMutationGuard,
+        IFlourishMotionBuilder
 {
-    public IFlourishMotionBuilder EnablePageTransition(
+    public IFlourishMotionBuilder UsePageTransition(
+        bool enabled = true,
         FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom,
         TimeSpan? duration = null
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(transition, nameof(transition));
-        options.PageTransition = transition;
+        options.PageTransition = enabled ? transition : FlourishPageTransition.None;
         if (duration is { } value)
         {
             options.PageTransitionDuration = ValidateDuration(value, nameof(duration));
@@ -20,13 +24,17 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options) : IFl
         return this;
     }
 
-    public IFlourishMotionBuilder EnableNavigationPanelTransition(
+    public IFlourishMotionBuilder UseNavigationPanelTransition(
+        bool enabled = true,
         FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize,
         TimeSpan? duration = null
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(transition, nameof(transition));
-        options.NavigationPanelTransition = transition;
+        options.NavigationPanelTransition = enabled
+            ? transition
+            : FlourishNavigationPanelTransition.None;
         if (duration is { } value)
         {
             options.NavigationPanelTransitionDuration = ValidateDuration(value, nameof(duration));
@@ -35,9 +43,13 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options) : IFl
         return this;
     }
 
-    public IFlourishMotionBuilder EnableHoverRevealAnimation(TimeSpan? duration = null)
+    public IFlourishMotionBuilder UseHoverRevealAnimation(
+        bool enabled = true,
+        TimeSpan? duration = null
+    )
     {
-        options.IsHoverRevealEnabled = true;
+        ThrowIfFrozen();
+        options.IsHoverRevealEnabled = enabled;
         if (duration is { } value)
         {
             options.HoverRevealAnimationDuration = ValidateDuration(value, nameof(duration));
@@ -46,8 +58,9 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options) : IFl
         return this;
     }
 
-    public IFlourishMotionBuilder RespectSystemReducedMotion(bool enabled = true)
+    public IFlourishMotionBuilder UseSystemReducedMotion(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.RespectSystemReducedMotion = enabled;
         return this;
     }

@@ -3,16 +3,20 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
-internal sealed class FlourishDataBuilder(FlourishDataOptions options) : IFlourishDataBuilder
+internal sealed class FlourishDataBuilder(FlourishDataOptions options)
+    : FlourishBuilderMutationGuard,
+        IFlourishDataBuilder
 {
-    public IFlourishDataBuilder SetLocale(string locale = "EN")
+    public IFlourishDataBuilder InitLocale(string locale = "EN")
     {
+        ThrowIfFrozen();
         options.Locale = ValidateNotBlank(locale, nameof(locale)).Trim();
         return this;
     }
 
-    public IFlourishDataBuilder AddLocale(string path)
+    public IFlourishDataBuilder InitLocaleFile(string path)
     {
+        ThrowIfFrozen();
         options.LocalePaths.Add(ValidateNotBlank(path, nameof(path)).Trim());
         return this;
     }

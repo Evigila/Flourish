@@ -12,16 +12,16 @@ public sealed class CommandKeyApiContractTests
         [
             Assert.Single(typeof(FlourishToolbarItem).GetConstructors()),
             GetMethod<IFlourishCustomHandlerBuilder>(
-                nameof(IFlourishCustomHandlerBuilder.AddTitlebarAction)
+                nameof(IFlourishCustomHandlerBuilder.InitTitleBarAction)
             ),
             GetMethod<IFlourishCustomHandlerBuilder>(
-                nameof(IFlourishCustomHandlerBuilder.AddFooterCommand)
+                nameof(IFlourishCustomHandlerBuilder.InitFooterCommand)
             ),
             GetMethod<IFlourishNavigationBuilder>(
-                nameof(IFlourishNavigationBuilder.AddFixedNavigableItem)
+                nameof(IFlourishNavigationBuilder.InitFixedNavigableItem)
             ),
             GetMethod<IFlourishNavigationGroupBuilder>(
-                nameof(IFlourishNavigationGroupBuilder.AddNavigableItem)
+                nameof(IFlourishNavigationGroupBuilder.InitNavigableItem)
             ),
         ];
 

@@ -5,28 +5,28 @@ description: 配置 Flourish 本地化、共享 Generic Host 配置与相邻的�
 
 # 应用数据
 
-`ConfigureData` 用于配置 Flourish 内置界面的语言和自定义翻译文件。即使没有调用 `ConfigureData` 或 `SetLocale`，Flourish 也会使用内置英文（`EN`），因此内置界面始终具有可用文案。偏好与受保护的 Profile 凭据使用 .NET Generic Host 管理的配置；项目元数据则单独存储在相邻目录文件中。
+`ConfigData` 用于配置 Flourish 内置界面的语言和自定义翻译文件。即使没有调用 `ConfigData` 或 `InitLocale`，Flourish 也会使用内置英文（`EN`），因此内置界面始终具有可用文案。偏好与受保护的 Profile 凭据使用 .NET Generic Host 管理的配置；项目元数据则单独存储在相邻目录文件中。
 
 ## 选择内置语言
 
 Flourish 内置 `CN` 和 `EN`。语言标识不区分大小写，并会在构建应用时归一化。
 
 ```csharp
-builder.ConfigureData(data => data.SetLocale("EN"));
+builder.ConfigData(data => data.InitLocale("EN"));
 ```
 
-省略 `ConfigureData` 时，Flourish 默认使用 `EN`。只有在选择其他内置或自定义语言时才需要调用 `SetLocale(locale)`。应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
+省略 `ConfigData` 时，Flourish 默认使用 `EN`。只有在选择其他内置或自定义语言时才需要调用 `InitLocale(locale)`。应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
 
 ## 添加自定义语言
 
-`AddLocale(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `lang_<locale>.json` 格式；语言部分可以包含字母、数字、连字符和下划线。
+`InitLocaleFile(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `lang_<locale>.json` 格式；语言部分可以包含字母、数字、连字符和下划线。
 
 ```csharp
-builder.ConfigureData(data =>
+builder.ConfigData(data =>
 {
     data
-        .SetLocale("EN")
-        .AddLocale("Locales/lang_EN.json");
+        .InitLocale("EN")
+        .InitLocaleFile("Locales/lang_EN.json");
 });
 ```
 
@@ -41,7 +41,7 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 }
 ```
 
-为同一语言多次调用 `AddLocale` 时，Flourish 会按注册顺序合并文件，后添加的文件会覆盖先添加文件中的同名键。每次查找按以下优先级返回文本：
+为同一语言多次调用 `InitLocaleFile` 时，Flourish 会按注册顺序合并文件，后添加的文件会覆盖先添加文件中的同名键。每次查找按以下优先级返回文本：
 
 1. 选中语言的自定义值。
 2. 选中语言的内置值。
