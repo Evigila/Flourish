@@ -17,17 +17,20 @@ public sealed class FlourishMotionBuilderTests
 
         Assert.Same(
             sut,
-            sut.EnablePageTransition(FlourishPageTransition.Fade, pageDuration)
+            sut.UsePageTransition(
+                transition: FlourishPageTransition.Fade,
+                duration: pageDuration
+            )
         );
         Assert.Same(
             sut,
-            sut.EnableNavigationPanelTransition(
-                FlourishNavigationPanelTransition.None,
-                navigationDuration
+            sut.UseNavigationPanelTransition(
+                transition: FlourishNavigationPanelTransition.None,
+                duration: navigationDuration
             )
         );
-        Assert.Same(sut, sut.EnableHoverRevealAnimation(hoverDuration));
-        Assert.Same(sut, sut.RespectSystemReducedMotion(false));
+        Assert.Same(sut, sut.UseHoverRevealAnimation(duration: hoverDuration));
+        Assert.Same(sut, sut.UseSystemReducedMotion(false));
 
         Assert.Equal(FlourishPageTransition.Fade, options.PageTransition);
         Assert.Equal(pageDuration, options.PageTransitionDuration);
@@ -52,9 +55,11 @@ public sealed class FlourishMotionBuilderTests
         };
         var sut = new FlourishMotionBuilder(options);
 
-        sut.EnablePageTransition(FlourishPageTransition.None);
-        sut.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
-        sut.EnableHoverRevealAnimation();
+        sut.UsePageTransition(transition: FlourishPageTransition.None);
+        sut.UseNavigationPanelTransition(
+            transition: FlourishNavigationPanelTransition.Resize
+        );
+        sut.UseHoverRevealAnimation();
 
         Assert.Equal(TimeSpan.FromMilliseconds(11), options.PageTransitionDuration);
         Assert.Equal(TimeSpan.FromMilliseconds(12), options.NavigationPanelTransitionDuration);
@@ -81,13 +86,13 @@ public sealed class FlourishMotionBuilderTests
             switch (animation)
             {
                 case "page":
-                    sut.EnablePageTransition(duration: duration);
+                    sut.UsePageTransition(duration: duration);
                     break;
                 case "navigation":
-                    sut.EnableNavigationPanelTransition(duration: duration);
+                    sut.UseNavigationPanelTransition(duration: duration);
                     break;
                 case "hover":
-                    sut.EnableHoverRevealAnimation(duration);
+                    sut.UseHoverRevealAnimation(duration: duration);
                     break;
             }
         });
@@ -101,7 +106,7 @@ public sealed class FlourishMotionBuilderTests
         var sut = new FlourishMotionBuilder(new FlourishMotionOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.EnablePageTransition((FlourishPageTransition)int.MaxValue)
+            sut.UsePageTransition(transition: (FlourishPageTransition)int.MaxValue)
         );
 
         Assert.Equal("transition", exception.ParamName);
@@ -113,8 +118,8 @@ public sealed class FlourishMotionBuilderTests
         var sut = new FlourishMotionBuilder(new FlourishMotionOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.EnableNavigationPanelTransition(
-                (FlourishNavigationPanelTransition)int.MaxValue
+            sut.UseNavigationPanelTransition(
+                transition: (FlourishNavigationPanelTransition)int.MaxValue
             )
         );
 

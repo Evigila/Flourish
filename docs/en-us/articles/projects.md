@@ -15,13 +15,13 @@ Enable the title bar and project mode, then configure the text used to display a
 
 ```csharp
 builder
-    .ConfigureShell(shell =>
+    .ConfigShell(shell =>
         shell.UseTitleBar().UseMultiProject())
-    .ConfigureTitleBar(titleBar =>
+    .ConfigTitleBar(titleBar =>
         titleBar
-            .SetApplicationTitle("Foobar")
-            .SetUnnamedProjectPlaceholder("Unnamed project")
-            .SetLogo(showProjectTitle: true));
+            .InitApplicationTitle("Foobar")
+            .InitUnnamedProjectPlaceholder("Unnamed project")
+            .UseLogo(showProjectTitle: true));
 ```
 
 `UseMultiProject()` defaults to `true` when called and is omitted by default. Without project mode, the title selector displays and lists only the application title; Flourish does not expose project-title, project-save, or project-close semantics. With project mode, the selector displays the active project name, or the unnamed-project placeholder for an unpersisted or missing selection, and lists every project plus **New project**.
@@ -90,10 +90,10 @@ The placeholder files do not contain application data. An application that needs
 
 ## Replace project behavior
 
-Register one singleton `IProjectBehavior` through `ConfigureServices`. Flourish supplies its default only when no application registration exists.
+Register one singleton `IProjectBehavior` through `ConfigServices`. Flourish supplies its default only when no application registration exists.
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 

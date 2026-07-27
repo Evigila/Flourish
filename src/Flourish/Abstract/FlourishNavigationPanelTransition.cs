@@ -6,9 +6,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <example>
 /// <code><![CDATA[
 /// builder
-///     .ConfigureShell(shell => shell.UseMotion())
-///     .ConfigureMotion(motion =>
-///         motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize));
+///     .ConfigShell(shell => shell.UseMotion())
+///     .ConfigMotion(motion =>
+///         motion.UseNavigationPanelTransition(
+///             transition: FlourishNavigationPanelTransition.Resize));
 /// ]]></code>
 /// </example>
 public enum FlourishNavigationPanelTransition
@@ -18,7 +19,8 @@ public enum FlourishNavigationPanelTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.None);
+    /// motion.UseNavigationPanelTransition(
+    ///     transition: FlourishNavigationPanelTransition.None);
     /// ]]></code>
     /// </example>
     None,
@@ -29,7 +31,8 @@ public enum FlourishNavigationPanelTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.EnableNavigationPanelTransition(FlourishNavigationPanelTransition.Resize);
+    /// motion.UseNavigationPanelTransition(
+    ///     transition: FlourishNavigationPanelTransition.Resize);
     /// ]]></code>
     /// </example>
     Resize,

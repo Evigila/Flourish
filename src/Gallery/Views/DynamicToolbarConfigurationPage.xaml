@@ -25,7 +25,7 @@
         />
         <flourish:CodeSpace
           Margin="0,16,0,0"
-          Text="builder&#10;    .ConfigureShell(shell =&gt; shell.UseDynamicToolbar())&#10;    .ConfigureDynamicToolbar(toolbar =&gt; toolbar&#10;        // Icons are shown by default.&#10;        .CreateToolbarItems&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;reports.refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;reports.export&quot;))&#10;        // Select the overload with icon: false for text-only actions.&#10;        .CreateToolbarItems&lt;EditorPage&gt;(&#10;            icon: false,&#10;            new FlourishToolbarItem(&quot;Preview&quot;, &quot;\uE8A7&quot;, &quot;editor.preview&quot;)));"
+          Text="builder&#10;    .ConfigShell(shell =&gt; shell.UseDynamicToolbar())&#10;    .ConfigDynamicToolbar(toolbar =&gt; toolbar&#10;        // Icons are shown by default.&#10;        .InitToolbarItems&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;reports.refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;reports.export&quot;))&#10;        // Select the overload with icon: false for text-only actions.&#10;        .InitToolbarItems&lt;EditorPage&gt;(&#10;            icon: false,&#10;            new FlourishToolbarItem(&quot;Preview&quot;, &quot;\uE8A7&quot;, &quot;editor.preview&quot;)));"
         />
       </StackPanel>
     </flourish:Chunk>

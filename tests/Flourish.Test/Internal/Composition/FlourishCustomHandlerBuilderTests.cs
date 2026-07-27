@@ -15,17 +15,20 @@ public sealed class FlourishCustomHandlerBuilderTests
         Assert.Equal(6, methods.Length);
         Assert.Equal(
             [
-                "Add",
-                "AddFooterCommand",
-                "AddFooterCommandHandler",
-                "AddTitlebarAction",
-                "AddTitlebarActionHandler",
-                "SetProfileContent",
+                "InitFooterCommand",
+                "InitFooterCommandHandler",
+                "InitProfileContent",
+                "InitRegionContent",
+                "InitTitleBarAction",
+                "InitTitleBarActionHandler",
             ],
             methods.Select(method => method.Name).Order()
         );
 
-        var add = Assert.Single(methods, method => method.Name == "Add");
+        var add = Assert.Single(
+            methods,
+            method => method.Name == "InitRegionContent"
+        );
         Assert.Equal(
             [
                 typeof(FlourishRegion),
@@ -37,7 +40,7 @@ public sealed class FlourishCustomHandlerBuilderTests
 
         var setProfileContent = Assert.Single(
             methods,
-            method => method.Name == "SetProfileContent"
+            method => method.Name == "InitProfileContent"
         );
         Assert.Equal(
             typeof(Func<IServiceProvider, FrameworkElement>),
@@ -45,7 +48,7 @@ public sealed class FlourishCustomHandlerBuilderTests
         );
 
         Assert.All(
-            methods.Where(method => method.Name.StartsWith("AddFooterCommand", StringComparison.Ordinal)),
+            methods.Where(method => method.Name.StartsWith("InitFooterCommand", StringComparison.Ordinal)),
             method =>
                 Assert.Equal(
                     typeof(FlourishRegion),
@@ -61,17 +64,17 @@ public sealed class FlourishCustomHandlerBuilderTests
         IFlourishCustomHandlerBuilder builder = new FlourishCustomHandlerBuilder(options);
 
         builder
-            .Add(FlourishRegion.FooterStart, _ => null!, order: 3)
-            .SetProfileContent(_ => null!)
-            .SetProfileContent(_ => null!)
-            .AddFooterCommand(
+            .InitRegionContent(FlourishRegion.FooterStart, _ => null!, order: 3)
+            .InitProfileContent(_ => null!)
+            .InitProfileContent(_ => null!)
+            .InitFooterCommand(
                 FlourishRegion.FooterEnd,
                 "Help",
                 "H",
                 "app.help",
                 order: 5
             )
-            .AddFooterCommandHandler(
+            .InitFooterCommandHandler(
                 FlourishRegion.FooterStart,
                 "Refresh",
                 "R",
@@ -116,10 +119,10 @@ public sealed class FlourishCustomHandlerBuilderTests
         );
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            builder.AddFooterCommand(region, "Help", "H", "app.help")
+            builder.InitFooterCommand(region, "Help", "H", "app.help")
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            builder.AddFooterCommandHandler(region, "Help", "H", _ => { })
+            builder.InitFooterCommandHandler(region, "Help", "H", _ => { })
         );
     }
 }

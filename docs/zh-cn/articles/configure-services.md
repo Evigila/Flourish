@@ -5,12 +5,12 @@ description: 注册应用服务、可导航页面和可替换的 Flourish 服务
 
 # 依赖注入
 
-Flourish 使用其 .NET Generic Host 中的 `IServiceCollection`。通过 `ConfigureServices` 注册应用服务、WPF 页面和可替换的 Flourish 服务。
+Flourish 使用其 .NET Generic Host 中的 `IServiceCollection`。通过 `ConfigServices` 注册应用服务、WPF 页面和可替换的 Flourish 服务。
 
 ## 注册服务
 
 ```csharp
-builder.ConfigureServices((context, services) =>
+builder.ConfigServices((context, services) =>
 {
     services.AddSingleton<App>();
     services.AddSingleton<ReportExporter>();
@@ -29,13 +29,13 @@ builder.ConfigureServices((context, services) =>
 
 `AddNavigable<TPage>` 注册 `System.Windows.Controls.Page` 及其导航元数据。Flourish 从类名生成区分大小写的导航键，并移除一个末尾 `Page` 后缀：`SettingsPage` 生成 `Settings`，`Page1` 仍生成 `Page1`。
 
-注册页面不会创建可见导航项。使用 `ConfigureNavigation` 将每个页面放入分组或固定区域。[导航](navigation.md)说明可见位置和初始页面选择。
+注册页面不会创建可见导航项。使用 `ConfigNavigation` 将每个页面放入分组或固定区域。[导航](navigation.md)说明可见位置和初始页面选择。
 
 ViewModel 可以使用生成的键导航，例如 `navigation.Navigate("Settings")`，无需引用 WPF 页面类型。`Build()` 会拒绝重复的生成键。
 
 ## 提供命令依赖项
 
-通过 `ConfigureServices` 注册命令处理程序依赖的应用服务。需要在整个 Host 生命周期内保持有效的命令映射应实现 `ICommandParser`，并通过 `AddCommandParser<TParser>` 添加；Flourish 会随 Host 注册和移除这些映射。生命周期较短或需要动态变化的处理程序仍直接使用 `ICommandRegistry`。[命令调度](commands.md)说明两种注册方式、可用性与结果。
+通过 `ConfigServices` 注册命令处理程序依赖的应用服务。需要在整个 Host 生命周期内保持有效的命令映射应实现 `ICommandParser`，并通过 `AddCommandParser<TParser>` 添加；Flourish 会随 Host 注册和移除这些映射。生命周期较短或需要动态变化的处理程序仍直接使用 `ICommandRegistry`。[命令调度](commands.md)说明两种注册方式、可用性与结果。
 
 ## 替换 Profile 服务
 
@@ -46,7 +46,7 @@ ViewModel 可以使用生成的键导航，例如 `navigation.Navigate("Settings
 应用自行管理项目对话框或文件生命周期时，注册一个单例 `IProjectBehavior`。只有应用没有注册该接口时，Flourish 才会提供默认的 `.txt` 占位文件行为。
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 

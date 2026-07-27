@@ -57,7 +57,7 @@ internal sealed class ReportCommands(ReportService reports)
 在服务配置中注册解析器及其依赖项。应用无需主动解析该解析器，也无需实现 `IDisposable`：
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
 {
     services.AddSingleton<ReportService>();
     services.AddCommandParser<ReportCommands>();
@@ -113,7 +113,7 @@ if (result.Status == CommandExecutionStatus.Failed)
 工具栏、导航、标题栏、状态栏、通知和快捷键 API 使用同一套命令键。例如：
 
 ```csharp
-toolbar.CreateToolbarItems<ReportsPage>(
+toolbar.InitToolbarItems<ReportsPage>(
     new FlourishToolbarItem("导出", "\uE898", "reports.export"));
 ```
 

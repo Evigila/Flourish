@@ -10,12 +10,12 @@ The dynamic toolbar is a shell surface whose items change with the active page. 
 There are two steps:
 
 1. Enable the toolbar surface in [Shell configuration](shell-configuration.md).
-2. Register page-specific toolbar items with `ConfigureDynamicToolbar`.
+2. Register page-specific toolbar items with `ConfigDynamicToolbar`.
 
 ## Enable the surface
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
 {
     shell.UseDynamicToolbar();
 });
@@ -24,16 +24,16 @@ builder.ConfigureShell(shell =>
 `UseDynamicToolbar(false)` keeps the surface disabled even if items are registered.
 
 > [!NOTE]
-> Enabling the dynamic toolbar only creates the shell surface. A page shows toolbar buttons after matching items are registered with `ConfigureDynamicToolbar`.
+> Enabling the dynamic toolbar only creates the shell surface. A page shows toolbar buttons after matching items are registered with `ConfigDynamicToolbar`.
 
 ## Register items for a page
 
-Use `IFlourishDynamicToolbarBuilder.CreateToolbarItems<TPage>` to associate toolbar items with a WPF page type.
+Use `IFlourishDynamicToolbarBuilder.InitToolbarItems<TPage>` to associate toolbar items with a WPF page type.
 
 ```csharp
-builder.ConfigureDynamicToolbar(toolbar =>
+builder.ConfigDynamicToolbar(toolbar =>
 {
-    toolbar.CreateToolbarItems<ReportsPage>(
+    toolbar.InitToolbarItems<ReportsPage>(
         new FlourishToolbarItem("Refresh", "\uE72C", "reports.refresh"),
         new FlourishToolbarItem("Export", "\uE898", "reports.export"));
 });
@@ -44,7 +44,7 @@ builder.ConfigureDynamicToolbar(toolbar =>
 The overload with `icon: false` keeps text-only toolbar items.
 
 ```csharp
-toolbar.CreateToolbarItems<EditorPage>(
+toolbar.InitToolbarItems<EditorPage>(
     icon: false,
     new FlourishToolbarItem("Preview", "\uE8A7", "editor.preview"));
 ```

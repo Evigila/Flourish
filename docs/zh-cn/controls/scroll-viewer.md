@@ -25,14 +25,23 @@ description: 使用平滑像素滚动与标准 Flourish 滚动条承载超出视
 
 需要立即执行 WPF 原生像素滚动时，设置 `IsSmoothScrollingEnabled="False"`。
 
-应用还可以在组合阶段为 Flourish 自有的 Shell、导航与页面滚动区域应用同一策略：
+应用还可以在组合阶段为 Flourish 自有的 Shell、导航与页面滚动区域初始化同一策略：
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell.UseSmoothScroll(enabled: true));
 ```
 
-`UseSmoothScroll` 为内置模板创建、因而无法从应用 XAML 直接访问的 Flourish 滚动区域提供默认值。完整 Shell 需要立即使用原生滚动时，将其设为 `false`。如果只有某一个由应用持有的 `ScrollViewer` 需要不同的行为，仍应在该控件上显式设置 `IsSmoothScrollingEnabled`。
+`UseSmoothScroll` 为内置模板创建、因而无法从应用 XAML 直接访问的 Flourish 滚动区域提供启动状态。运行时通过 `IScrollService` 修改当前应用：
+
+```csharp
+scrollService.SetSmoothScrollingEnabled(false);
+
+FlourishScrollSettings current = scrollService.GetCurrent();
+scrollService.Changed += OnScrollSettingsChanged;
+```
+
+服务通过共享动态资源立即更新现有视口。应用自有 `ScrollViewer` 上显式设置的 `IsSmoothScrollingEnabled` 具有局部优先级，适合只改变单个视口的行为。
 
 ## 嵌套视口
 

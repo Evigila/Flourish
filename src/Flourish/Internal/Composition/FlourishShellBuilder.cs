@@ -4,22 +4,27 @@ using System.Windows.Controls;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
-internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlourishShellBuilder
+internal sealed class FlourishShellBuilder(FlourishShellOptions options)
+    : FlourishBuilderMutationGuard,
+        IFlourishShellBuilder
 {
     public IFlourishShellBuilder UseTitleBar(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsTitlebarEnabled = enabled;
         return this;
     }
 
     public IFlourishShellBuilder UseMultiProject(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsMultiProjectEnabled = enabled;
         return this;
     }
 
     public IFlourishShellBuilder UseNavigation(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsNavigationPanelEnabled = enabled;
         return this;
     }
@@ -29,6 +34,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         double contentWidth
     )
     {
+        ThrowIfFrozen();
         ValidatePositiveFinite(contentWidth, nameof(contentWidth));
         options.IsCenterContentEnabled = enabled;
         options.CenterContentWidth = contentWidth;
@@ -37,12 +43,14 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
 
     public IFlourishShellBuilder UseDynamicToolbar(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsDynamicToolbarEnabled = enabled;
         return this;
     }
 
     public IFlourishShellBuilder UseTips(bool enabled = true, int delay = 200)
     {
+        ThrowIfFrozen();
         if (delay < 0)
         {
             throw new ArgumentOutOfRangeException(
@@ -60,6 +68,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
 
     public IFlourishShellBuilder UseMotion(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.Motion.IsEnabled = enabled;
         return this;
     }
@@ -69,6 +78,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         MaterialEffect effect = MaterialEffect.Mica
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(effect, nameof(effect));
         options.MaterialEffect = effect;
         options.IsMaterialEffectEnabled = enabled && effect != MaterialEffect.None;
@@ -80,6 +90,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         FlourishThemeColors colors
     )
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(colors);
         options.ThemeColors = enabled ? colors : null;
         return this;
@@ -87,6 +98,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
 
     public IFlourishShellBuilder UseCornerRadius(bool enabled, double radius = 6)
     {
+        ThrowIfFrozen();
         ValidateNonNegativeFinite(radius, nameof(radius));
         options.CornerRadius = enabled ? radius : null;
         return this;
@@ -94,11 +106,12 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
 
     public IFlourishShellBuilder UseSmoothScroll(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsSmoothScrollingEnabled = enabled;
         return this;
     }
 
-    public IFlourishShellBuilder UseGlobalFont(
+    public IFlourishShellBuilder InitGlobalFont(
         string fontFamily = "Microsoft Yahei",
         double smallFontSize = 12,
         double standardFontSize = 14,
@@ -108,6 +121,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         double headerSizeFontSize = 32
     )
     {
+        ThrowIfFrozen();
         fontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
         ValidateFontScale(
             smallFontSize,
@@ -127,7 +141,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
         return this;
     }
 
-    public IFlourishShellBuilder SetOverrideFont<TPage>(
+    public IFlourishShellBuilder InitOverrideFont<TPage>(
         string fontFamily,
         double? smallFontSize,
         double? standardFontSize,
@@ -138,6 +152,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
     )
         where TPage : Page
     {
+        ThrowIfFrozen();
         ValidatePageType(typeof(TPage), nameof(TPage));
         fontFamily = ValidateNotBlank(fontFamily, nameof(fontFamily));
         ValidateNullableSize(smallFontSize, nameof(smallFontSize));
@@ -170,6 +185,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options) : IFlou
 
     public IFlourishShellBuilder UseStatusBar(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsStatusBarEnabled = enabled;
         return this;
     }

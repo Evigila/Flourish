@@ -94,8 +94,6 @@ internal sealed class FlourishRuntime(IHost host) : IFlourish
     private void EnsureApplicationResources(Application application)
     {
         FlourishThemeResources.EnsureMerged(application.Resources);
-        application.Resources["FlourishSmoothScrollingEnabled"] = host.Services
-            .GetRequiredService<FlourishShellOptions>()
-            .IsSmoothScrollingEnabled;
+        host.Services.GetRequiredService<ScrollService>().Attach(application);
     }
 }

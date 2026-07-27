@@ -14,7 +14,7 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(options);
         var items = new[] { new FlourishToolbarItem("Open", "O", "open") };
 
-        var result = sut.CreateToolbarItems<FirstPage>(items);
+        var result = sut.InitToolbarItems<FirstPage>(items);
 
         Assert.Same(sut, result);
         Assert.Equal(items, options.DynamicToolbarItems[typeof(FirstPage)]);
@@ -28,7 +28,7 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(options);
         var items = new[] { new FlourishToolbarItem("Save", "S", "save") };
 
-        var result = sut.CreateToolbarItems<FirstPage>(false, items);
+        var result = sut.InitToolbarItems<FirstPage>(false, items);
 
         Assert.Same(sut, result);
         Assert.Equal(items, options.DynamicToolbarItems[typeof(FirstPage)]);
@@ -42,7 +42,7 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(options);
         var items = new[] { new FlourishToolbarItem("Refresh", "R") };
 
-        sut.CreateToolbarItems<SecondPage>(items);
+        sut.InitToolbarItems<SecondPage>(items);
 
         Assert.Equal(items, options.DynamicToolbarItems[typeof(SecondPage)]);
         Assert.True(options.DynamicToolbarIconModes[typeof(SecondPage)]);
@@ -55,9 +55,9 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(options);
         var firstItems = new[] { new FlourishToolbarItem("First", "1") };
         var replacementItems = new[] { new FlourishToolbarItem("Second", "2") };
-        sut.CreateToolbarItems<FirstPage>(false, firstItems);
+        sut.InitToolbarItems<FirstPage>(false, firstItems);
 
-        sut.CreateToolbarItems<FirstPage>(true, replacementItems);
+        sut.InitToolbarItems<FirstPage>(true, replacementItems);
 
         Assert.Equal(replacementItems, options.DynamicToolbarItems[typeof(FirstPage)]);
         Assert.True(options.DynamicToolbarIconModes[typeof(FirstPage)]);
@@ -71,7 +71,7 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            sut.CreateToolbarItems<FirstPage>(null!)
+            sut.InitToolbarItems<FirstPage>(null!)
         );
 
         Assert.Equal("items", exception.ParamName);
@@ -83,7 +83,7 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.CreateToolbarItems<FirstPage>(
+            sut.InitToolbarItems<FirstPage>(
                 new FlourishToolbarItem("Valid", "V"),
                 null!
             )

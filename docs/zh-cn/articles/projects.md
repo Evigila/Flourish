@@ -15,13 +15,13 @@ description: 管理项目标识、目录持久化、标题栏选择与可替换�
 
 ```csharp
 builder
-    .ConfigureShell(shell =>
+    .ConfigShell(shell =>
         shell.UseTitleBar().UseMultiProject())
-    .ConfigureTitleBar(titleBar =>
+    .ConfigTitleBar(titleBar =>
         titleBar
-            .SetApplicationTitle("Foobar")
-            .SetUnnamedProjectPlaceholder("未命名项目")
-            .SetLogo(showProjectTitle: true));
+            .InitApplicationTitle("Foobar")
+            .InitUnnamedProjectPlaceholder("未命名项目")
+            .UseLogo(showProjectTitle: true));
 ```
 
 调用 `UseMultiProject()` 时默认启用；省略该调用时则默认禁用。未启用项目模式时，标题选择器只显示并列出应用标题，Flourish 不公开项目标题、项目保存或项目关闭语义。启用项目模式后，选择器显示活动项目名称；活动项目未持久化或没有活动选择时显示未命名项目占位文本，下拉框中包含全部项目以及“新建项目”。
@@ -90,10 +90,10 @@ Flourish 从 `projects.json` 加载有序目录与活动项目 ID。该文件位
 
 ## 替换项目行为
 
-通过 `ConfigureServices` 注册一个单例 `IProjectBehavior`。只有应用没有注册该接口时，Flourish 才会提供默认实现。
+通过 `ConfigServices` 注册一个单例 `IProjectBehavior`。只有应用没有注册该接口时，Flourish 才会提供默认实现。
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 

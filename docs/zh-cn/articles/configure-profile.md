@@ -5,16 +5,16 @@ description: 配置用户资料、登录状态、已记住的凭据和自定义�
 
 # 用户资料（Profile）
 
-Profile 从标题栏提供账户入口。调用 `SetProfile` 可显示入口并使用内置 Profile 页面。
+Profile 从标题栏提供账户入口。调用 `UseProfile` 可显示入口并使用内置 Profile 页面。
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetProfile(NameOrder.FirstLast));
+    .ConfigShell(shell => shell.UseTitleBar())
+    .ConfigTitleBar(titleBar =>
+        titleBar.UseProfile(nameOrder: NameOrder.FirstLast));
 ```
 
-调用不带参数的 `SetProfile()` 时使用 `NameOrder.FirstLast`。登录前，内置页面显示已本地化的 `Profile.DefaultName` 文本。
+调用不带参数的 `UseProfile()` 时使用 `NameOrder.FirstLast`。登录前，内置页面显示已本地化的 `Profile.DefaultName` 文本。
 
 ## 名称与首字母
 
@@ -26,6 +26,16 @@ builder
 | `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
 名与姓至少填写一项。`ProfileUser.FirstName`、`LastName`、`NameOrder`、`DisplayName` 和 `Initials` 提供格式化后的结果。
+
+`UseProfile` 用于设置启动时顺序。运行期间通过 `IProfileService` 修改全局顺序：
+
+```csharp
+await profile.SetNameOrderAsync(NameOrder.LastFirst);
+var currentOrder = profile.NameOrder;
+```
+
+服务会重建未登录占位 Profile 或当前活动 Profile，并触发 `ProfileChanged`。登录状态、
+凭据、姓名与图片路径保持不变。
 
 内置页面的标签、状态文本、文件选择器筛选文本和验证消息使用[应用数据](configure-data.md)中选择的语言。应用提供的 Profile 页面自行管理文本。
 
@@ -73,7 +83,7 @@ Profile 使用强 [Overlay](../controls/overlay.md)，因此不会随指针移�
 通过[依赖注入](configure-services.md)注册 `IProfileAuthService`，可以替换认证逻辑，同时保留内置 Profile 状态和记住登录行为。
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
 {
     services.AddSingleton<IProfileAuthService, FoobarProfileAuthService>();
 });
@@ -89,23 +99,23 @@ services.AddSingleton<IProfileService, FoobarProfileService>();
 
 ## 承载自定义页面
 
-使用 `ConfigureProfile` 可以替换 Profile 界面承载的内容。自定义页面从依赖注入容器解析；标题栏仍需调用 `SetProfile` 才会显示入口。
+使用 `ConfigProfile` 可以替换 Profile 界面承载的内容。自定义页面从依赖注入容器解析；标题栏仍需调用 `UseProfile` 才会显示入口。
 
 ```csharp
 builder
-    .ConfigureServices((_, services) =>
+    .ConfigServices((_, services) =>
         services.AddTransient<FoobarProfilePage>())
-    .ConfigureShell(shell => shell.UseTitleBar())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetProfile(NameOrder.FirstLast))
-    .ConfigureProfile(profile =>
-        profile.SetProfilePage<FoobarProfilePage>());
+    .ConfigShell(shell => shell.UseTitleBar())
+    .ConfigTitleBar(titleBar =>
+        titleBar.UseProfile(nameOrder: NameOrder.FirstLast))
+    .ConfigProfile(profile =>
+        profile.InitProfilePage<FoobarProfilePage>());
 ```
 
-省略 `ConfigureProfile` 时，`SetProfile` 使用内置页面。
+省略 `ConfigProfile` 时，`UseProfile` 使用内置页面。
 
 ## 相关功能
 
 - [Shell 配置](shell-configuration.md)启用标题栏。
-- [标题栏](configure-title-bar.md)显示 Profile 入口并选择名称顺序。
+- [标题栏](configure-title-bar.md)显示 Profile 入口并选择启动时名称顺序。
 - [依赖注入](configure-services.md)注册自定义 Profile 服务和页面。

@@ -22,16 +22,83 @@ public sealed class DefaultFlourishBuilderTests
     {
         var builder = FlourishBuilder.CreateDefaultBuilder([]);
 
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureData(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureServices(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureShell(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureTitleBar(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureNavigation(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureCustomHandler(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureDynamicToolbar(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureMotion(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureWindow(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigureStatusBar(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigData(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigServices(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigShell(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigTitleBar(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigNavigation(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigCustomHandler(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigDynamicToolbar(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigMotion(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigWindow(null!));
+        Assert.Throws<ArgumentNullException>(() => builder.ConfigStatusBar(null!));
+    }
+
+    [Fact]
+    public void Build_FreezesTopLevelBuilderAndCanOnlyRunOnce()
+    {
+        var builder = FlourishBuilder.CreateDefaultBuilder([]);
+
+        using var flourish = builder.Build();
+
+        Assert.Throws<InvalidOperationException>(() => builder.ConfigShell(_ => { }));
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+    }
+
+    [Fact]
+    public void Build_FreezesCapturedStartupBuildersAfterTheirCallbacksComplete()
+    {
+        IFlourishDataBuilder? data = null;
+        IFlourishShellBuilder? shell = null;
+        IFlourishProfileBuilder? profile = null;
+        IFlourishTitlebarBuilder? titleBar = null;
+        IFlourishNavigationBuilder? navigation = null;
+        IFlourishNavigationGroupBuilder? navigationGroup = null;
+        IFlourishCustomHandlerBuilder? customHandler = null;
+        IFlourishDynamicToolbarBuilder? toolbar = null;
+        IFlourishMotionBuilder? motion = null;
+        IFlourishWindowPropertyBuilder? window = null;
+        IFlourishStatusBarBuilder? statusBar = null;
+
+        var builder = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigData(value => data = value)
+            .ConfigShell(value => shell = value)
+            .ConfigProfile(value => profile = value)
+            .ConfigTitleBar(value => titleBar = value)
+            .ConfigNavigation(value =>
+            {
+                navigation = value;
+                value.InitGroup(configureGroup: group => navigationGroup = group);
+            })
+            .ConfigCustomHandler(value => customHandler = value)
+            .ConfigDynamicToolbar(value => toolbar = value)
+            .ConfigMotion(value => motion = value)
+            .ConfigWindow(value => window = value)
+            .ConfigStatusBar(value => statusBar = value);
+
+        using var flourish = builder.Build();
+
+        Assert.Throws<InvalidOperationException>(() => data!.InitLocale());
+        Assert.Throws<InvalidOperationException>(() => shell!.UseTitleBar());
+        Assert.Throws<InvalidOperationException>(() => profile!.InitProfilePage<TestPage>());
+        Assert.Throws<InvalidOperationException>(() => titleBar!.InitApplicationTitle());
+        Assert.Throws<InvalidOperationException>(() => navigation!.InitInitiallyOpen());
+        Assert.Throws<InvalidOperationException>(() =>
+            navigationGroup!.InitNavigableItem("Late item", null, null)
+        );
+        Assert.Throws<InvalidOperationException>(() =>
+            customHandler!.InitRegionContent(
+                FlourishRegion.TitlebarEnd,
+                _ => new Border()
+            )
+        );
+        Assert.Throws<InvalidOperationException>(() =>
+            toolbar!.InitToolbarItems<TestPage>()
+        );
+        Assert.Throws<InvalidOperationException>(() => motion!.UsePageTransition());
+        Assert.Throws<InvalidOperationException>(() => window!.UseTopmost());
+        Assert.Throws<InvalidOperationException>(() => statusBar!.UsePowerStatus());
     }
 
     [Fact]
@@ -40,46 +107,46 @@ public sealed class DefaultFlourishBuilderTests
         var marker = new object();
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureData(data => data.SetLocale("CN"))
-            .ConfigureServices((_, services) => services.AddSingleton(marker))
-            .ConfigureShell(shell =>
+            .ConfigData(data => data.InitLocale("CN"))
+            .ConfigServices((_, services) => services.AddSingleton(marker))
+            .ConfigShell(shell =>
                 shell
                     .UseMultiProject()
                     .UseNavigation()
                     .UseCenterContent(enabled: true, contentWidth: 900)
                     .UseTips(enabled: true, delay: 350)
-                    .UseGlobalFont("Arial", 13, 15, 17, 19, 22, 28)
+                    .InitGlobalFont("Arial", 13, 15, 17, 19, 22, 28)
                     .UseMaterialEffect(
                         enabled: false,
                         effect: MaterialEffect.None
                     )
                     .UseStatusBar()
             )
-            .ConfigureShell(shell => shell.UseStatusBar(enabled: false))
-            .ConfigureTitleBar(titlebar =>
+            .ConfigShell(shell => shell.UseStatusBar(enabled: false))
+            .ConfigTitleBar(titlebar =>
                 titlebar
-                    .SetLogo(
+                    .UseLogo(
                         showApplicationTitle: false,
                         showApplicationSubTitle: true,
                         showProjectTitle: true
                     )
-                    .SetApplicationTitle("Test Shell")
-                    .SetApplicationSubTitle("Test workspace")
-                    .SetUnnamedProjectPlaceholder("Untitled project")
-                    .SetProfile(NameOrder.LastFirst)
-                    .SetThemeToggle(FlourishTheme.Dark)
+                    .InitApplicationTitle("Test Shell")
+                    .InitApplicationSubTitle("Test workspace")
+                    .InitUnnamedProjectPlaceholder("Untitled project")
+                    .UseProfile(nameOrder: NameOrder.LastFirst)
+                    .UseThemeToggle(mode: FlourishTheme.Dark)
             )
-            .ConfigureCustomHandler(custom =>
-                custom.Add(FlourishRegion.TitlebarStart, _ => null!)
+            .ConfigCustomHandler(custom =>
+                custom.InitRegionContent(FlourishRegion.TitlebarStart, _ => null!)
             )
-            .ConfigureDynamicToolbar(toolbar =>
-                toolbar.CreateToolbarItems<TestPage>(
+            .ConfigDynamicToolbar(toolbar =>
+                toolbar.InitToolbarItems<TestPage>(
                     new FlourishToolbarItem("Refresh", "R", "test.refresh")
                 )
             )
-            .ConfigureMotion(motion => motion.RespectSystemReducedMotion(enabled: false))
-            .ConfigureWindow(window => window.UseTopmost())
-            .ConfigureStatusBar(statusBar => statusBar.AddStatusItem("Ready", "R"));
+            .ConfigMotion(motion => motion.UseSystemReducedMotion(enabled: false))
+            .ConfigWindow(window => window.UseTopmost())
+            .ConfigStatusBar(statusBar => statusBar.InitStatusItem("Ready", "R"));
 
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
@@ -156,7 +223,7 @@ public sealed class DefaultFlourishBuilderTests
     {
         using var flourish = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
             {
                 services.AddSingleton<TestHostedService>();
                 services.AddSingleton<IHostedService>(provider =>
@@ -199,7 +266,7 @@ public sealed class DefaultFlourishBuilderTests
     {
         using var flourish = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigureServices((_, services) =>
+            .ConfigServices((_, services) =>
                 services.AddCommandParser<TestCommandParser>()
             )
             .Build();

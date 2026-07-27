@@ -11,7 +11,7 @@ public sealed class FlourishStatusBarBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishStatusBarBuilder(options);
 
-        Assert.Same(sut, sut.AddStatusItem("Online", "N"));
+        Assert.Same(sut, sut.InitStatusItem("Online", "N"));
 
         var item = Assert.Single(options.StatusItems);
         Assert.Equal("Online", item.Text);
@@ -24,8 +24,8 @@ public sealed class FlourishStatusBarBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishStatusBarBuilder(options);
 
-        var lanResult = sut.ShowLANConnectionStatus();
-        var powerResult = sut.ShowPowerStatus();
+        var lanResult = sut.UseLanConnectionStatus();
+        var powerResult = sut.UsePowerStatus();
 
         Assert.Same(sut, lanResult);
         Assert.Same(sut, powerResult);

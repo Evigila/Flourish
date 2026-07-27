@@ -12,7 +12,7 @@ public sealed class FlourishNavigationEnumValidationTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        var result = sut.SetDirection(NavigationPanelDirection.Right);
+        var result = sut.InitDirection(NavigationPanelDirection.Right);
 
         Assert.Same(sut, result);
         Assert.Equal(NavigationPanelDirection.Right, options.NavigationPanelDirection);
@@ -24,7 +24,7 @@ public sealed class FlourishNavigationEnumValidationTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetDirection((NavigationPanelDirection)int.MaxValue)
+            sut.InitDirection((NavigationPanelDirection)int.MaxValue)
         );
 
         Assert.Equal("direction", exception.ParamName);

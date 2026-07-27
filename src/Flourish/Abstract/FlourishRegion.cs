@@ -5,7 +5,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <remarks>
 /// Region content is configured during application composition with
-/// <see cref="IFlourishBuilder.ConfigureCustomHandler(System.Action{ArkheideSystem.Flourish.Abstract.IFlourishCustomHandlerBuilder})" />.
+/// <see cref="Builder.IFlourishBuilder.ConfigCustomHandler(System.Action{Builder.IFlourishCustomHandlerBuilder})" />.
 /// </remarks>
 public enum FlourishRegion
 {

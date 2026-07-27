@@ -5,28 +5,28 @@ description: Configure localization, shared Generic Host configuration, and the 
 
 # Application data
 
-`ConfigureData` controls Flourish built-in interface language and custom locale files. Localization is always available: when `ConfigureData` or `SetLocale` is omitted, Flourish uses the built-in English (`EN`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata is stored separately in an adjacent catalog.
+`ConfigData` controls Flourish built-in interface language and custom locale files. Localization is always available: when `ConfigData` or `InitLocale` is omitted, Flourish uses the built-in English (`EN`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata is stored separately in an adjacent catalog.
 
 ## Select a built-in locale
 
 Flourish includes `CN` and `EN`. Locale identifiers are case-insensitive and normalized when the application is built.
 
 ```csharp
-builder.ConfigureData(data => data.SetLocale("EN"));
+builder.ConfigData(data => data.InitLocale("EN"));
 ```
 
-Flourish uses `EN` when `ConfigureData` is omitted. Call `SetLocale(locale)` only when selecting another built-in or custom locale. Application-provided text such as titles, search placeholders, navigation labels, custom status-item labels, dialog messages, and custom option text is not translated automatically.
+Flourish uses `EN` when `ConfigData` is omitted. Call `InitLocale(locale)` only when selecting another built-in or custom locale. Application-provided text such as titles, search placeholders, navigation labels, custom status-item labels, dialog messages, and custom option text is not translated automatically.
 
 ## Add a custom locale
 
-`AddLocale(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `lang_<locale>.json`; the locale segment may contain letters, digits, hyphens, and underscores.
+`InitLocaleFile(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `lang_<locale>.json`; the locale segment may contain letters, digits, hyphens, and underscores.
 
 ```csharp
-builder.ConfigureData(data =>
+builder.ConfigData(data =>
 {
     data
-        .SetLocale("EN")
-        .AddLocale("Locales/lang_EN.json");
+        .InitLocale("EN")
+        .InitLocaleFile("Locales/lang_EN.json");
 });
 ```
 
@@ -41,7 +41,7 @@ Locale files are flat JSON objects. They may contain only the keys they need to 
 }
 ```
 
-Calling `AddLocale` more than once for the same locale merges the files in registration order. A later file replaces earlier values for the same key. For each lookup, Flourish uses this priority:
+Calling `InitLocaleFile` more than once for the same locale merges the files in registration order. A later file replaces earlier values for the same key. For each lookup, Flourish uses this priority:
 
 1. Custom value for the selected locale.
 2. Built-in value for the selected locale.

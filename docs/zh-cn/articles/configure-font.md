@@ -5,16 +5,16 @@ description: 配置字体系列和 Flourish 六种字号层级；未显式选择
 
 # 排版
 
-在 `ConfigureShell` 中调用 `UseGlobalFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列与六种字号层级。
+在 `ConfigShell` 中调用 `InitGlobalFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列与六种字号层级。
 
 ## 配置全局字体
 
 ```csharp
-builder.ConfigureShell(shell =>
-    shell.UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
+builder.ConfigShell(shell =>
+    shell.InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
 ```
 
-七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `UseGlobalFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
+七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `InitGlobalFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
 
 ## 字号层级角色
 
@@ -43,13 +43,13 @@ Icon 是默认图标字号。由于 Segoe MDL2 的不同字形拥有不同的天
 
 ## 覆盖单个页面
 
-`SetOverrideFont<TPage>` 可以覆盖指定页面的字体系列或字号。某一档传入 `null` 时，该档继续跟随全局值。
+`InitOverrideFont<TPage>` 可以初始化指定页面的字体系列或字号。某一档传入 `null` 时，该档继续跟随全局值。
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
     shell
-        .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
-        .SetOverrideFont<CodeEditorPage>(
+        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,
             null,
@@ -58,7 +58,7 @@ builder.ConfigureShell(shell =>
             null,
             null));
 
-shell.SetOverrideFont<PresentationPage>(
+shell.InitOverrideFont<PresentationPage>(
     "Microsoft YaHei UI",
     14,
     16,

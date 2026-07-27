@@ -5,23 +5,23 @@ description: 配置 Flourish Shell 窗口的尺寸、位置和 WPF 窗口行为�
 
 # 窗口
 
-每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、置顶行为、任务栏可见性和托盘关闭流程。
+每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、置顶行为、任务栏可见性和托盘关闭流程。
 
 ## 配置窗口
 
 ```csharp
-builder.ConfigureWindow(window =>
+builder.ConfigWindow(window =>
 {
     window
-        .SetWindowSize(1280, 720)
-        .SetWindowMinSize(960, 540)
-        .SetWindowMaxSize(1920, 1080)
-        .SetWindowPosition(WindowStartupLocation.CenterScreen)
-        .SetWindowState(WindowState.Normal)
-        .SetWindowResizeMode(ResizeMode.CanResize)
+        .InitWindowSize(1280, 720)
+        .InitWindowMinSize(960, 540)
+        .InitWindowMaxSize(1920, 1080)
+        .InitWindowPosition(WindowStartupLocation.CenterScreen)
+        .InitWindowState(WindowState.Normal)
+        .InitWindowResizeMode(ResizeMode.CanResize)
         .UseTopmost(false)
-        .ShowInTaskbar(true)
-        .SetTrayExit();
+        .InitShownInTaskbar(true)
+        .UseTrayExit();
 });
 ```
 
@@ -29,17 +29,17 @@ builder.ConfigureWindow(window =>
 
 ## 尺寸与位置
 
-初始尺寸和最小尺寸必须是有限正数。最大尺寸可以是正数或 `double.PositiveInfinity`，且不能小于最小尺寸。`SetManualWindowPosition` 会将启动位置设为 `Manual` 并保存指定坐标。
+初始尺寸和最小尺寸必须是有限正数。最大尺寸可以是正数或 `double.PositiveInfinity`，且不能小于最小尺寸。`InitManualWindowPosition` 会将启动位置设为 `Manual` 并保存指定坐标。
 
 ```csharp
-window.SetManualWindowPosition(left: 120, top: 80);
+window.InitManualWindowPosition(left: 120, top: 80);
 ```
 
 使用 `WindowStartupLocation` 或手动坐标可明确指定启动位置。
 
 ## 窗口行为
 
-`SetWindowResizeMode` 控制自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `ShowInTaskbar` 对应标准 WPF 窗口行为。
+`InitWindowResizeMode` 控制自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `InitShownInTaskbar` 对应标准 WPF 窗口行为。
 
 自定义窗口最大化时，标题栏按钮会延伸至屏幕边缘，因此可以从右上角直接执行关闭命令。还原窗口后，可缩放边缘也会恢复。
 
@@ -55,10 +55,10 @@ Shell 根窗口默认启用设备像素对齐和布局取整，并保持 WPF 默
 
 ## 托盘关闭行为
 
-`SetTrayExit(true)` 会将关闭命令改为最小化到托盘操作。点击标题栏关闭按钮会立即在 Windows 通知区域中隐藏窗口；由于应用并未关闭，因此不会打开关闭确认或项目保存对话框。双击托盘图标或选择“显示”会恢复窗口；选择“退出”会启动实际关闭流程，包括项目关闭守卫。
+`UseTrayExit(true)` 会将关闭命令改为最小化到托盘操作。点击标题栏关闭按钮会立即在 Windows 通知区域中隐藏窗口；由于应用并未关闭，因此不会打开关闭确认或项目保存对话框。双击托盘图标或选择“显示”会恢复窗口；选择“退出”会启动实际关闭流程，包括项目关闭守卫。
 
 ```csharp
-builder.ConfigureWindow(window => window.SetTrayExit());
+builder.ConfigWindow(window => window.UseTrayExit());
 ```
 
 托盘关闭行为禁用时，标题栏关闭按钮会使用正常的关闭确认与项目守卫流程。共享配置需要按条件启用托盘行为时，可以传入 `false`。

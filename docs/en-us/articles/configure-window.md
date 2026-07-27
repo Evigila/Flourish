@@ -5,23 +5,23 @@ description: Set the Flourish shell window size, position, and WPF window behavi
 
 # Window
 
-Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, taskbar visibility, topmost behavior, and close-to-tray behavior.
+Every Flourish shell has a WPF window. Use `ConfigWindow` to choose its initial dimensions, placement, state, taskbar visibility, topmost behavior, and close-to-tray behavior.
 
 ## Configure the window
 
 ```csharp
-builder.ConfigureWindow(window =>
+builder.ConfigWindow(window =>
 {
     window
-        .SetWindowSize(1280, 720)
-        .SetWindowMinSize(960, 540)
-        .SetWindowMaxSize(1920, 1080)
-        .SetWindowPosition(WindowStartupLocation.CenterScreen)
-        .SetWindowState(WindowState.Normal)
-        .SetWindowResizeMode(ResizeMode.CanResize)
+        .InitWindowSize(1280, 720)
+        .InitWindowMinSize(960, 540)
+        .InitWindowMaxSize(1920, 1080)
+        .InitWindowPosition(WindowStartupLocation.CenterScreen)
+        .InitWindowState(WindowState.Normal)
+        .InitWindowResizeMode(ResizeMode.CanResize)
         .UseTopmost(false)
-        .ShowInTaskbar(true)
-        .SetTrayExit();
+        .InitShownInTaskbar(true)
+        .UseTrayExit();
 });
 ```
 
@@ -29,17 +29,17 @@ Window configuration does not depend on the feature switches in [Shell configura
 
 ## Sizing and placement
 
-Initial and minimum dimensions must be finite positive values. Maximum dimensions accept positive values or `double.PositiveInfinity`, and the minimum cannot exceed the maximum. `SetManualWindowPosition` switches the startup location to `Manual` and stores the requested coordinates.
+Initial and minimum dimensions must be finite positive values. Maximum dimensions accept positive values or `double.PositiveInfinity`, and the minimum cannot exceed the maximum. `InitManualWindowPosition` switches the startup location to `Manual` and stores the requested coordinates.
 
 ```csharp
-window.SetManualWindowPosition(left: 120, top: 80);
+window.InitManualWindowPosition(left: 120, top: 80);
 ```
 
 Use either a `WindowStartupLocation` or manual coordinates to make startup placement explicit.
 
 ## Window behavior
 
-`SetWindowResizeMode` controls whether the custom title bar maximize command is available. `ShowInTaskbar` and `UseTopmost` map to normal WPF window behavior.
+`InitWindowResizeMode` controls whether the custom title bar maximize command is available. `InitShownInTaskbar` and `UseTopmost` map to normal WPF window behavior.
 
 When the custom window is maximized, its caption buttons extend to the screen edges so the close command remains available from the upper-right corner. Restoring the window also restores its resizable edge.
 
@@ -55,10 +55,10 @@ This guard applies to the title-bar close command, a direct window close, applic
 
 ## Close to the notification area
 
-`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation or project-save dialogs because the application is not closing. Double-clicking the tray icon or selecting Show restores the window; selecting Exit starts the actual close flow, including the project close guard.
+`UseTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation or project-save dialogs because the application is not closing. Double-clicking the tray icon or selecting Show restores the window; selecting Exit starts the actual close flow, including the project close guard.
 
 ```csharp
-builder.ConfigureWindow(window => window.SetTrayExit());
+builder.ConfigWindow(window => window.UseTrayExit());
 ```
 
 When tray exit is disabled, the title bar close button uses the normal close-confirmation and project-guard flow. Passing `false` is useful when a shared configuration enables tray behavior conditionally.

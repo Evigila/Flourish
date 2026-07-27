@@ -151,7 +151,7 @@ public sealed class FlourishProfileBuilderTests
         var options = new FlourishProfileOptions();
         var sut = new FlourishProfileBuilder(options);
 
-        var result = sut.SetProfilePage<TestProfilePage>();
+        var result = sut.InitProfilePage<TestProfilePage>();
 
         Assert.Same(sut, result);
         Assert.Equal(typeof(TestProfilePage), options.PageType);

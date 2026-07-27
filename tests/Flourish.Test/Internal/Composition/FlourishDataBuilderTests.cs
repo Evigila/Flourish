@@ -11,8 +11,8 @@ public sealed class FlourishDataBuilderTests
         var options = new FlourishDataOptions();
         var sut = new FlourishDataBuilder(options);
 
-        Assert.Same(sut, sut.SetLocale(" EN "));
-        Assert.Same(sut, sut.AddLocale(" Locales/lang_EN.json "));
+        Assert.Same(sut, sut.InitLocale(" EN "));
+        Assert.Same(sut, sut.InitLocaleFile(" Locales/lang_EN.json "));
 
         Assert.Equal("EN", options.Locale);
         Assert.Equal(["Locales/lang_EN.json"], options.LocalePaths);
@@ -38,10 +38,10 @@ public sealed class FlourishDataBuilderTests
             switch (parameterName)
             {
                 case "locale":
-                    sut.SetLocale(value!);
+                    sut.InitLocale(value!);
                     break;
                 case "localePath":
-                    sut.AddLocale(value!);
+                    sut.InitLocaleFile(value!);
                     break;
             }
         });

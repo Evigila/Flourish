@@ -38,6 +38,9 @@ public sealed record FlourishTitleBarState(
     BreadcrumbShowOption BreadcrumbMode
 )
 {
+    /// <summary>Gets whether the complete title bar surface is enabled.</summary>
+    public bool IsEnabled { get; init; }
+
     /// <summary>Creates a title bar snapshot using the legacy application identity shape.</summary>
     [Obsolete("Use the constructor that includes project and logo information settings.")]
     public FlourishTitleBarState(

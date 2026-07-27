@@ -5,16 +5,16 @@ description: Configure profile identity, sign-in state, remembered credentials, 
 
 # Profile
 
-The profile surface provides account access from the title bar. Call `SetProfile` to display the profile trigger and use the built-in profile page.
+The profile surface provides account access from the title bar. Call `UseProfile` to display the profile trigger and use the built-in profile page.
 
 ```csharp
 builder
-    .ConfigureShell(shell => shell.UseTitleBar())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetProfile(NameOrder.FirstLast));
+    .ConfigShell(shell => shell.UseTitleBar())
+    .ConfigTitleBar(titleBar =>
+        titleBar.UseProfile(nameOrder: NameOrder.FirstLast));
 ```
 
-Calling `SetProfile()` without an argument uses `NameOrder.FirstLast`. Before sign-in, the built-in page displays the localized `Profile.DefaultName` value.
+Calling `UseProfile()` without an argument uses `NameOrder.FirstLast`. Before sign-in, the built-in page displays the localized `Profile.DefaultName` value.
 
 ## Names and initials
 
@@ -26,6 +26,17 @@ The built-in sign-in form collects first and last names separately. `NameOrder` 
 | `NameOrder.LastFirst` | `Bar Foo` | `BF` |
 
 At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, `DisplayName`, and `Initials` expose the formatted result.
+
+`UseProfile` defines the startup order. Change the global order at runtime through
+`IProfileService`:
+
+```csharp
+await profile.SetNameOrderAsync(NameOrder.LastFirst);
+var currentOrder = profile.NameOrder;
+```
+
+The service rebuilds the signed-out placeholder or active profile and raises
+`ProfileChanged`. The login state, credentials, names, and image path remain unchanged.
 
 Labels, status text, file-picker filters, and validation messages on the built-in page follow the locale selected through [Application data](configure-data.md). An application-provided profile page manages its own text.
 
@@ -73,7 +84,7 @@ Without a User Secrets provider, ordinary sign-in remains available, but enablin
 Register `IProfileAuthService` through [Dependency injection](configure-services.md) to replace authentication while retaining the built-in profile state and remembered-login behavior.
 
 ```csharp
-builder.ConfigureServices((_, services) =>
+builder.ConfigServices((_, services) =>
 {
     services.AddSingleton<IProfileAuthService, FoobarProfileAuthService>();
 });
@@ -89,23 +100,23 @@ Flourish supplies its default implementations only when the application has not 
 
 ## Host a custom page
 
-Use `ConfigureProfile` to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; the title bar still requires `SetProfile` to display the trigger.
+Use `ConfigProfile` to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; the title bar still requires `UseProfile` to display the trigger.
 
 ```csharp
 builder
-    .ConfigureServices((_, services) =>
+    .ConfigServices((_, services) =>
         services.AddTransient<FoobarProfilePage>())
-    .ConfigureShell(shell => shell.UseTitleBar())
-    .ConfigureTitleBar(titleBar =>
-        titleBar.SetProfile(NameOrder.FirstLast))
-    .ConfigureProfile(profile =>
-        profile.SetProfilePage<FoobarProfilePage>());
+    .ConfigShell(shell => shell.UseTitleBar())
+    .ConfigTitleBar(titleBar =>
+        titleBar.UseProfile(nameOrder: NameOrder.FirstLast))
+    .ConfigProfile(profile =>
+        profile.InitProfilePage<FoobarProfilePage>());
 ```
 
-When `ConfigureProfile` is omitted, `SetProfile` uses the built-in page.
+When `ConfigProfile` is omitted, `UseProfile` uses the built-in page.
 
 ## Related features
 
 - [Shell configuration](shell-configuration.md) enables the title bar.
-- [Title bar](configure-title-bar.md) displays the profile trigger and selects name order.
+- [Title bar](configure-title-bar.md) displays the profile trigger and selects the startup name order.
 - [Dependency injection](configure-services.md) registers custom profile services and pages.

@@ -14,9 +14,16 @@ namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class ThemeService(
     FlourishShellOptions shellOptions,
-    AppPreferenceService preferenceService
+    AppPreferenceService preferenceService,
+    AppearanceService appearanceService
 ) : IThemeService
 {
+    internal ThemeService(
+        FlourishShellOptions shellOptions,
+        AppPreferenceService preferenceService
+    )
+        : this(shellOptions, preferenceService, new AppearanceService(shellOptions)) { }
+
     private const int WmSettingChange = 0x001A;
     private const int WmThemeChanged = 0x031A;
     private const string LightThemeSource = "/Flourish;component/Themes/Colors/Colors.Light.xaml";
@@ -81,7 +88,7 @@ internal sealed class ThemeService(
         }
 
         ApplyApplicationResources(application, EffectiveTheme);
-        ApplyStyleOverrides(application.Resources, shellOptions, EffectiveTheme);
+        appearanceService.Attach(application, EffectiveTheme);
     }
 
     public void Attach(Window window)
@@ -254,7 +261,7 @@ internal sealed class ThemeService(
             if (application is not null && changed)
             {
                 ApplyApplicationResources(application, effective);
-                ApplyStyleOverrides(application.Resources, shellOptions, effective);
+                appearanceService.Reapply(effective);
             }
 
             // Persistence may proceed once the runtime resources have been applied.
@@ -349,18 +356,35 @@ internal sealed class ThemeService(
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(options);
 
-        if (options.ThemeColors is { } colors)
+        ApplyStyleOverrides(
+            resources,
+            options.ThemeColors,
+            options.CornerRadius,
+            effectiveTheme
+        );
+    }
+
+    internal static void ApplyStyleOverrides(
+        ResourceDictionary resources,
+        FlourishThemeColors? themeColors,
+        double? cornerRadius,
+        FlourishTheme effectiveTheme = FlourishTheme.Light
+    )
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+
+        if (themeColors is { } colors)
         {
             ApplyColorOverrides(resources, colors, effectiveTheme);
         }
 
-        if (options.CornerRadius is { } radius)
+        if (cornerRadius is { } radius)
         {
-            var cornerRadius = new CornerRadius(radius);
-            SetResource(resources, "FlourishControlCornerRadius", cornerRadius);
-            SetResource(resources, "FlourishSurfaceCornerRadius", cornerRadius);
-            SetResource(resources, "FlourishOverlayCornerRadius", cornerRadius);
-            SetResource(resources, "FlourishDialogCornerRadius", cornerRadius);
+            var sharedCornerRadius = new CornerRadius(radius);
+            SetResource(resources, "FlourishControlCornerRadius", sharedCornerRadius);
+            SetResource(resources, "FlourishSurfaceCornerRadius", sharedCornerRadius);
+            SetResource(resources, "FlourishOverlayCornerRadius", sharedCornerRadius);
+            SetResource(resources, "FlourishDialogCornerRadius", sharedCornerRadius);
             SetResource(
                 resources,
                 "FlourishDialogFooterCornerRadius",

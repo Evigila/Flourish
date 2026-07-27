@@ -129,7 +129,7 @@ public sealed class FlourishShellProfileFlyoutTests
     {
         var method = GetSourceSection(
             "private void ProfileFlyoutService_Changed(",
-            "private void ShellFeatureService_Changed("
+            "private void LocalizationService_Changed("
         );
 
         Assert.Contains("DispatchRuntimeChange(ConfigureProfileSurface);", method);

@@ -5,10 +5,12 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
 internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options)
-    : IFlourishWindowPropertyBuilder
+    : FlourishBuilderMutationGuard,
+        IFlourishWindowPropertyBuilder
 {
-    public IFlourishWindowPropertyBuilder SetWindowSize(double width = 1536, double height = 864)
+    public IFlourishWindowPropertyBuilder InitWindowSize(double width = 1536, double height = 864)
     {
+        ThrowIfFrozen();
         ValidatePositiveFinite(width, nameof(width));
         ValidatePositiveFinite(height, nameof(height));
 
@@ -17,11 +19,12 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetWindowMinSize(
+    public IFlourishWindowPropertyBuilder InitWindowMinSize(
         double minWidth = 1280,
         double minHeight = 720
     )
     {
+        ThrowIfFrozen();
         ValidatePositiveFinite(minWidth, nameof(minWidth));
         ValidatePositiveFinite(minHeight, nameof(minHeight));
         EnsureMinDoesNotExceedMax(minWidth, options.WindowMaxWidth, nameof(minWidth));
@@ -32,11 +35,12 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetWindowMaxSize(
+    public IFlourishWindowPropertyBuilder InitWindowMaxSize(
         double maxWidth = double.PositiveInfinity,
         double maxHeight = double.PositiveInfinity
     )
     {
+        ThrowIfFrozen();
         ValidatePositiveSize(maxWidth, nameof(maxWidth));
         ValidatePositiveSize(maxHeight, nameof(maxHeight));
         EnsureMaxIsNotBelowMin(maxWidth, options.WindowMinWidth, nameof(maxWidth));
@@ -47,10 +51,11 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetWindowPosition(
+    public IFlourishWindowPropertyBuilder InitWindowPosition(
         WindowStartupLocation startupLocation = WindowStartupLocation.CenterScreen
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(startupLocation, nameof(startupLocation));
         options.WindowStartupLocation = startupLocation;
         if (startupLocation != WindowStartupLocation.Manual)
@@ -62,8 +67,9 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetManualWindowPosition(double left = 0, double top = 0)
+    public IFlourishWindowPropertyBuilder InitManualWindowPosition(double left = 0, double top = 0)
     {
+        ThrowIfFrozen();
         ValidateFinite(left, nameof(left));
         ValidateFinite(top, nameof(top));
 
@@ -73,19 +79,21 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetWindowState(
+    public IFlourishWindowPropertyBuilder InitWindowState(
         WindowState windowState = WindowState.Normal
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(windowState, nameof(windowState));
         options.WindowState = windowState;
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetWindowResizeMode(
+    public IFlourishWindowPropertyBuilder InitWindowResizeMode(
         ResizeMode resizeMode = ResizeMode.CanResize
     )
     {
+        ThrowIfFrozen();
         ValidateEnum(resizeMode, nameof(resizeMode));
         options.WindowResizeMode = resizeMode;
         return this;
@@ -93,18 +101,21 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
 
     public IFlourishWindowPropertyBuilder UseTopmost(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.WindowTopmost = enabled;
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder ShowInTaskbar(bool enabled = true)
+    public IFlourishWindowPropertyBuilder InitShownInTaskbar(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.WindowShowInTaskbar = enabled;
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder SetTrayExit(bool enabled = true)
+    public IFlourishWindowPropertyBuilder UseTrayExit(bool enabled = true)
     {
+        ThrowIfFrozen();
         options.IsTrayExitEnabled = enabled;
         return this;
     }

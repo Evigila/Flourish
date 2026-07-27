@@ -5,22 +5,25 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
 internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options)
-    : IFlourishDynamicToolbarBuilder
+    : FlourishBuilderMutationGuard,
+        IFlourishDynamicToolbarBuilder
 {
-    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
+    public IFlourishDynamicToolbarBuilder InitToolbarItems<TPage>(
         params FlourishToolbarItem[] items
     )
         where TPage : Page
     {
-        return CreateToolbarItems<TPage>(true, items);
+        ThrowIfFrozen();
+        return InitToolbarItems<TPage>(true, items);
     }
 
-    public IFlourishDynamicToolbarBuilder CreateToolbarItems<TPage>(
+    public IFlourishDynamicToolbarBuilder InitToolbarItems<TPage>(
         bool icon,
         params FlourishToolbarItem[] items
     )
         where TPage : Page
     {
+        ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(items);
         if (items.Any(item => item is null))
         {

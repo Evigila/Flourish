@@ -7,10 +7,17 @@ description: 在应用运行期间读取和修改 Flourish 配置、Shell 界面
 
 Flourish 提供两层互补的配置方式：
 
-- `IFlourishBuilder` 及其 `Configure...` 回调用于定义应用的初始对象图和启动状态。页面与服务注册、默认值选择以及启动前校验仍应放在 Builder 期完成。
+- `IFlourishBuilder` 及其 `Config...` 回调用于定义应用的初始对象图和启动状态。页面与服务注册、默认值选择以及启动前校验仍应放在 Builder 期完成。
 - 运行时服务用于在 `Build()` 之后修改正在运行的应用。请通过依赖注入获取这些服务，通常应将其注入 Page、ViewModel 或应用服务的构造函数。
 
 下列运行时服务均以单例注册。Builder 负责确定且可复现的启动默认值；运行时服务则适合用户偏好、插件、功能开关以及会在会话期间变化的状态。
+
+公开 API 按职责分为以下命名空间：
+
+- `ArkheideSystem.Flourish.Abstract.Builder` 放置一次性启动 Builder 和服务注册扩展。
+- `ArkheideSystem.Flourish.Abstract.Essential` 放置执行业务操作的运行时契约，包括导航、命令、项目、本地化与后台任务。
+- `ArkheideSystem.Flourish.Abstract.Runtime` 放置实时 UI 与 Shell 配置服务。
+- `ArkheideSystem.Flourish.Abstract` 放置共享模型及 `IFlourish` 生命周期契约。
 
 ## 状态、事件与生命周期
 
@@ -52,14 +59,22 @@ public async ValueTask SaveEndpointAsync(
 | --- | --- |
 | `IShellFeatureService` | 通过 `SetEnabled` 启用或禁用 `TitleBar`、`Navigation`、`DynamicToolbar`、`StatusContent`、`ToolTips`、`Motion` 或 `Profile`。 |
 | `IThemeService` | 使用 `SetTheme` 选择并持久化 `System`、`Light` 或 `Dark`，或通过 `ToggleTheme` 循环切换；可读取 `EffectiveTheme` 和 `IsDark`。 |
+| `IAppearanceService` | 设置或清除共享主题颜色与圆角覆盖，可原子修改两项并监听 `Changed`。清除覆盖会重新显露标准主题资源，不会删除应用自有资源。 |
+| `IContentLayoutService` | 启用或禁用居中页面内容，并原子设置最大宽度。当前页面和之后导航到的页面使用同一状态。 |
 | `IFontService` | 通过 `SetFont` 原子修改全局字体及彼此独立、仅要求有限正数的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号；可独立修改图标字体，并通过 `PageOverrides`、`SetOverrideFont` 与 `ClearOverrideFont` 查看、设置和清除页面字体覆盖。 |
-| `IToolTipService` | 在原生 WPF 与 Flourish 呈现之间切换 Flourish 自有 Tooltip，并通过 `Configure` 修改 Flourish 呈现的首次显示延迟和生成边距；原生与第三方控件不受其控制。 |
+| `IToolTipService` | 在原生 WPF 与 Flourish 呈现之间切换 Flourish 自有 Tooltip，并通过 `SetSettings` 修改 Flourish 呈现的首次显示延迟和生成边距；原生与第三方控件不受其控制。 |
+| `IScrollService` | 通过 `GetCurrent` 读取应用级滚动状态、通过 `SetSmoothScrollingEnabled` 修改平滑滚动并监听 `Changed`。本地设置的 `ScrollViewer.IsSmoothScrollingEnabled` 优先。 |
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
 | `IMaterialEffectService` | 检查并应用 `MaterialEffect`，或修改沉浸式深色模式。 |
 
 `ShellFeature.TitleBar` 用于在 Flourish 自定义标题栏与 Windows 原生标题栏之间切换。
 禁用后会恢复原生标题栏，但不会改变请求的材质效果；重新启用后会恢复 Flourish 标题栏，
 并将该材质请求重新应用到自定义窗口框架。
+
+`IShellFeatureService` 是聚合门面，各领域服务仍是唯一状态源：导航由
+`INavigationPanelService` 管理，工具栏由 `IToolbarService` 管理，状态内容由
+`IStatusBarService` 管理，Profile 启用状态由 `IProfileFlyoutService` 管理。
+直接调用领域服务产生的变化也会反映到 `IShellFeatureService.Changed`。
 
 ## 标题栏、项目与搜索
 
@@ -206,7 +221,7 @@ public sealed class RefreshBindings : IDisposable
 | `ITrayService` | 启用通知区域行为，修改 Tooltip，最小化到托盘、还原或请求退出。 |
 | `IWindowCloseService` | 选择 `Prompt`、`Close` 或 `MinimizeToTray`；注册有序异步关闭守卫；检查或发起关闭请求。 |
 | `IProfileFlyoutService` | 启用、显示、隐藏或切换 Profile Flyout，并替换其中的 WPF `Page` 内容。 |
-| `IProfileService` | 读取 Profile/登录状态，初始化已记住的登录，登录，修改“记住登录”状态或退出登录。 |
+| `IProfileService` | 读取 Profile/登录状态，在不退出登录的情况下修改全局 `NameOrder`，初始化已记住的登录，登录，修改“记住登录”状态或退出登录。 |
 | `IMessageService` | 同步或通过 `ShowAsync` 显示标准/自定义选项模态消息；异步取消只在对话框打开前有效。 |
 | `INotificationService` | `Show` 或 `Upsert` 非模态通知，读取活动通知，关闭单项/全部通知，并可在激活通知时派发命令。 |
 

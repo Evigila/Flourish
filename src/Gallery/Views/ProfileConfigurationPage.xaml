@@ -23,9 +23,52 @@
           Title="Dependency-injected content"
           Content="Register the page with the service container so its constructor dependencies are available when Flourish opens the profile surface."
         />
-        <flourish:CodeSpace Text="// Enable the title-bar trigger, then select its hosted page.&#10;builder&#10;    .ConfigureTitleBar(titleBar =&gt;&#10;        titleBar.SetProfile(NameOrder.FirstLast))&#10;    .ConfigureProfile(profile =&gt;&#10;        profile.SetProfilePage&lt;AccountPage&gt;());" />
+        <flourish:CodeSpace Text="// Enable the title-bar trigger, then select its hosted page.&#10;builder&#10;    .ConfigTitleBar(titleBar =&gt;&#10;        titleBar.UseProfile(nameOrder: NameOrder.FirstLast))&#10;    .ConfigProfile(profile =&gt;&#10;        profile.InitProfilePage&lt;AccountPage&gt;());" />
       </StackPanel>
     </flourish:Chunk>
+
+    <flourish:Chunk
+      Title="Name order"
+      Content="Change the application-wide display order used by the signed-out placeholder and the active profile. Use this for locale preferences or account settings; the service keeps the current login and credentials unchanged while rebuilding the visible profile."
+    >
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,8,0">
+            <flourish:ActionCard
+              Icon="&#xE8D2;"
+              Title="First name first"
+              Content="Display the given name before the family name."
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="FirstLast_Click" Content="First Last" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+            <flourish:ActionCard
+              Margin="{DynamicResource FlourishActionCardPeerMargin}"
+              Icon="&#xE8D2;"
+              Title="Last name first"
+              Content="Display the family name before the given name."
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Click="LastFirst_Click" Content="Last First" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+          </StackPanel>
+          <flourish:OutputCard
+            x:Name="ProfileOutput"
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            VerticalAlignment="Stretch"
+          />
+        </Grid>
+        <flourish:CodeSpace Text="// Change the global profile presentation without signing out.&#10;await profile.SetNameOrderAsync(NameOrder.LastFirst);&#10;var order = profile.NameOrder;&#10;profile.ProfileChanged += OnProfileChanged;" />
+      </StackPanel>
+    </flourish:Chunk>
+
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">
         <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />

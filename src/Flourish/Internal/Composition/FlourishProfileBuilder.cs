@@ -5,11 +5,13 @@ using ArkheideSystem.Flourish.Internal.Configuration;
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
 internal sealed class FlourishProfileBuilder(FlourishProfileOptions options)
-    : IFlourishProfileBuilder
+    : FlourishBuilderMutationGuard,
+        IFlourishProfileBuilder
 {
-    public IFlourishProfileBuilder SetProfilePage<TPage>()
+    public IFlourishProfileBuilder InitProfilePage<TPage>()
         where TPage : Page
     {
+        ThrowIfFrozen();
         options.PageType = typeof(TPage);
         return this;
     }

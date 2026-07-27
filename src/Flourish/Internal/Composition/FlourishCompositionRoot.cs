@@ -1,6 +1,7 @@
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Views.Page;
 using ArkheideSystem.Flourish.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -51,7 +52,7 @@ internal sealed class FlourishCompositionRoot(
         statusBarConfigurations;
     private FlourishLocalizationService? localizationService;
 
-    public void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+    public void ConfigServices(HostBuilderContext context, IServiceCollection services)
     {
         // Hosted services stop in reverse registration order. Register the settings
         // writer first so every producer can finish queuing its final update before
@@ -75,110 +76,146 @@ internal sealed class FlourishCompositionRoot(
     private void ApplyFlourishConfigurations()
     {
         var dataBuilder = new FlourishDataBuilder(dataOptions);
-        ApplyDataDefaults(dataBuilder);
-        foreach (var configureData in dataConfigurations)
-        {
-            configureData(dataBuilder);
-        }
+        ApplyAndFreeze(
+            dataBuilder,
+            (IFlourishDataBuilder)dataBuilder,
+            ApplyDataDefaults,
+            dataConfigurations
+        );
 
         localizationService = new FlourishLocalizationService(dataOptions);
 
         var shellBuilder = new FlourishShellBuilder(shellOptions);
-        foreach (var configureShell in shellConfigurations)
-        {
-            configureShell(shellBuilder);
-        }
+        ApplyAndFreeze(
+            shellBuilder,
+            (IFlourishShellBuilder)shellBuilder,
+            defaults: null,
+            shellConfigurations
+        );
 
+        shellOptions.Profile.PageType = typeof(FlourishProfilePage);
         var profileBuilder = new FlourishProfileBuilder(shellOptions.Profile);
-        foreach (var configureProfile in profileConfigurations)
-        {
-            configureProfile(profileBuilder);
-        }
+        ApplyAndFreeze(
+            profileBuilder,
+            (IFlourishProfileBuilder)profileBuilder,
+            defaults: null,
+            profileConfigurations
+        );
 
         var titleBarBuilder = new FlourishTitlebarBuilder(shellOptions);
-        ApplyTitleBarDefaults(titleBarBuilder);
-        foreach (var configureTitleBar in titleBarConfigurations)
-        {
-            configureTitleBar(titleBarBuilder);
-        }
+        ApplyAndFreeze(
+            titleBarBuilder,
+            (IFlourishTitlebarBuilder)titleBarBuilder,
+            ApplyTitleBarDefaults,
+            titleBarConfigurations
+        );
 
         var navigationBuilder = new FlourishNavigationBuilder(shellOptions);
-        ApplyNavigationDefaults(navigationBuilder);
-        foreach (var configureNavigation in navigationConfigurations)
-        {
-            configureNavigation(navigationBuilder);
-        }
+        ApplyAndFreeze(
+            navigationBuilder,
+            (IFlourishNavigationBuilder)navigationBuilder,
+            ApplyNavigationDefaults,
+            navigationConfigurations
+        );
 
         var customHandlerBuilder = new FlourishCustomHandlerBuilder(shellOptions);
-        foreach (var configureCustomHandler in customHandlerConfigurations)
-        {
-            configureCustomHandler(customHandlerBuilder);
-        }
+        ApplyAndFreeze(
+            customHandlerBuilder,
+            (IFlourishCustomHandlerBuilder)customHandlerBuilder,
+            defaults: null,
+            customHandlerConfigurations
+        );
 
         var toolbarBuilder = new FlourishDynamicToolbarBuilder(shellOptions);
-        foreach (var configureToolbar in toolbarConfigurations)
-        {
-            configureToolbar(toolbarBuilder);
-        }
+        ApplyAndFreeze(
+            toolbarBuilder,
+            (IFlourishDynamicToolbarBuilder)toolbarBuilder,
+            defaults: null,
+            toolbarConfigurations
+        );
 
         var motionBuilder = new FlourishMotionBuilder(shellOptions.Motion);
-        ApplyMotionDefaults(motionBuilder);
-        foreach (var configureMotion in motionConfigurations)
-        {
-            configureMotion(motionBuilder);
-        }
+        ApplyAndFreeze(
+            motionBuilder,
+            (IFlourishMotionBuilder)motionBuilder,
+            ApplyMotionDefaults,
+            motionConfigurations
+        );
 
         var windowBuilder = new FlourishWindowPropertyBuilder(shellOptions);
-        ApplyWindowDefaults(windowBuilder);
-        foreach (var configureWindow in windowConfigurations)
-        {
-            configureWindow(windowBuilder);
-        }
+        ApplyAndFreeze(
+            windowBuilder,
+            (IFlourishWindowPropertyBuilder)windowBuilder,
+            ApplyWindowDefaults,
+            windowConfigurations
+        );
 
         var statusBarBuilder = new FlourishStatusBarBuilder(shellOptions);
-        ApplyStatusBarDefaults(statusBarBuilder);
-        foreach (var configureStatusBar in statusBarConfigurations)
+        ApplyAndFreeze(
+            statusBarBuilder,
+            (IFlourishStatusBarBuilder)statusBarBuilder,
+            ApplyStatusBarDefaults,
+            statusBarConfigurations
+        );
+    }
+
+    private static void ApplyAndFreeze<TBuilder>(
+        FlourishBuilderMutationGuard mutationGuard,
+        TBuilder builder,
+        Action<TBuilder>? defaults,
+        IReadOnlyList<Action<TBuilder>> configurations
+    )
+    {
+        try
         {
-            configureStatusBar(statusBarBuilder);
+            defaults?.Invoke(builder);
+            foreach (var configure in configurations)
+            {
+                configure(builder);
+            }
+        }
+        finally
+        {
+            mutationGuard.Freeze();
         }
     }
 
     private static void ApplyDataDefaults(IFlourishDataBuilder builder) =>
-        builder.SetLocale();
+        builder.InitLocale();
 
     private static void ApplyTitleBarDefaults(IFlourishTitlebarBuilder builder) =>
         builder
-            .SetBreadcrumbButton()
-            .SetNavToggle()
-            .SetLogo()
-            .SetApplicationTitle()
-            .SetApplicationSubTitle()
-            .SetUnnamedProjectPlaceholder()
-            .SetProfile()
-            .SetThemeToggle();
+            .UseBreadcrumb()
+            .UseNavigationToggle()
+            .UseLogo()
+            .InitApplicationTitle()
+            .InitApplicationSubTitle()
+            .InitUnnamedProjectPlaceholder()
+            .UseProfile()
+            .UseThemeToggle();
 
     private static void ApplyNavigationDefaults(IFlourishNavigationBuilder builder) =>
-        builder.SetDirection().SetInitiallyOpen().SetPanelWidth();
+        builder.InitDirection().InitInitiallyOpen().InitPanelWidth();
 
     private static void ApplyMotionDefaults(IFlourishMotionBuilder builder) =>
         builder
-            .EnablePageTransition()
-            .EnableNavigationPanelTransition()
-            .EnableHoverRevealAnimation()
-            .RespectSystemReducedMotion();
+            .UsePageTransition()
+            .UseNavigationPanelTransition()
+            .UseHoverRevealAnimation()
+            .UseSystemReducedMotion();
 
     private static void ApplyWindowDefaults(IFlourishWindowPropertyBuilder builder) =>
         builder
-            .SetWindowSize()
-            .SetWindowMinSize()
-            .SetWindowMaxSize()
-            .SetWindowPosition()
-            .SetWindowState()
-            .SetWindowResizeMode()
-            .ShowInTaskbar();
+            .InitWindowSize()
+            .InitWindowMinSize()
+            .InitWindowMaxSize()
+            .InitWindowPosition()
+            .InitWindowState()
+            .InitWindowResizeMode()
+            .InitShownInTaskbar();
 
     private static void ApplyStatusBarDefaults(IFlourishStatusBarBuilder builder) =>
-        builder.AddStatusItem().ShowLANConnectionStatus().ShowPowerStatus();
+        builder.InitStatusItem().UseLanConnectionStatus().UsePowerStatus();
 
     private void ApplyServiceCollectionRegistrations(IServiceCollection services)
     {
@@ -580,6 +617,14 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<IMaterialEffectService>(provider =>
             provider.GetRequiredService<MaterialEffectService>()
         );
+        services.AddSingleton<AppearanceService>();
+        services.AddSingleton<IAppearanceService>(provider =>
+            provider.GetRequiredService<AppearanceService>()
+        );
+        services.AddSingleton<ContentLayoutService>();
+        services.AddSingleton<IContentLayoutService>(provider =>
+            provider.GetRequiredService<ContentLayoutService>()
+        );
         services.AddSingleton<AppPreferenceService>();
         services.AddSingleton<IAppSettingsStore>(provider =>
             provider.GetRequiredService<AppPreferenceService>()
@@ -598,6 +643,10 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<FlourishToolTipService>();
         services.AddSingleton<IToolTipService>(provider =>
             provider.GetRequiredService<FlourishToolTipService>()
+        );
+        services.AddSingleton<ScrollService>();
+        services.AddSingleton<IScrollService>(provider =>
+            provider.GetRequiredService<ScrollService>()
         );
         services.AddSingleton<TitleBarService>();
         services.AddSingleton<ITitleBarService>(provider =>

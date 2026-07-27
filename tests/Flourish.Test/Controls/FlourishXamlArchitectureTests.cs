@@ -76,12 +76,24 @@ public sealed class FlourishXamlArchitectureTests
         string[] requiredDirectories =
         [
             "Abstract",
+            "Abstract/Builder",
+            "Abstract/Essential",
+            "Abstract/Runtime",
             "Assets",
             "Controls",
             "Internal",
             "Internal/Composition",
             "Internal/Configuration",
             "Internal/Imaging",
+            "Internal/Layout",
+            "Internal/Localization",
+            "Internal/Model",
+            "Internal/Model/Navigation",
+            "Internal/Model/Profile",
+            "Internal/Model/Shell",
+            "Internal/Navigation",
+            "Internal/Validation",
+            "Internal/Windows",
             "Services",
             "Themes",
             "Themes/Colors",
@@ -95,6 +107,7 @@ public sealed class FlourishXamlArchitectureTests
             "Configuration",
             "Styles",
             "Windows",
+            "Controls/Behaviors",
             "Controls/Styles",
         ];
 
@@ -1763,7 +1776,7 @@ public sealed class FlourishXamlArchitectureTests
 
         var builderGlobalFont = Assert.Single(
             typeof(IFlourishShellBuilder).GetMethods(),
-            method => method.Name == nameof(IFlourishShellBuilder.UseGlobalFont)
+            method => method.Name == nameof(IFlourishShellBuilder.InitGlobalFont)
         );
         AssertOptionalParameterContract(
             builderGlobalFont,
@@ -1780,7 +1793,7 @@ public sealed class FlourishXamlArchitectureTests
 
         var builderPageOverride = Assert.Single(
             typeof(IFlourishShellBuilder).GetMethods(),
-            method => method.Name == nameof(IFlourishShellBuilder.SetOverrideFont)
+            method => method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
         );
         Assert.True(builderPageOverride.IsGenericMethodDefinition);
         AssertParameterContract(builderPageOverride, nullableScaleTypes, explicitScaleNames);
@@ -1832,7 +1845,8 @@ public sealed class FlourishXamlArchitectureTests
             )
             .Where(method =>
                 method.Name
-                    is nameof(IFlourishShellBuilder.UseGlobalFont)
+                    is nameof(IFlourishShellBuilder.InitGlobalFont)
+                        or nameof(IFlourishShellBuilder.InitOverrideFont)
                         or nameof(IFontService.SetFont)
                         or nameof(IFontService.SetOverrideFont)
             )
@@ -1841,7 +1855,7 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal(
             2,
             fontAssemblyApiMethods.Count(method =>
-                method.Name == nameof(IFlourishShellBuilder.UseGlobalFont)
+                method.Name == nameof(IFlourishShellBuilder.InitGlobalFont)
             )
         );
         Assert.Equal(
@@ -1849,14 +1863,20 @@ public sealed class FlourishXamlArchitectureTests
             fontAssemblyApiMethods.Count(method => method.Name == nameof(IFontService.SetFont))
         );
         Assert.Equal(
-            6,
+            2,
+            fontAssemblyApiMethods.Count(method =>
+                method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
+            )
+        );
+        Assert.Equal(
+            4,
             fontAssemblyApiMethods.Count(method =>
                 method.Name == nameof(IFontService.SetOverrideFont)
             )
         );
         Assert.All(
             fontAssemblyApiMethods.Where(method =>
-                method.Name == nameof(IFlourishShellBuilder.UseGlobalFont)
+                method.Name == nameof(IFlourishShellBuilder.InitGlobalFont)
             ),
             method =>
                 AssertOptionalParameterContract(
@@ -1864,6 +1884,17 @@ public sealed class FlourishXamlArchitectureTests
                     explicitScaleTypes,
                     explicitScaleNames,
                     ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d]
+                )
+        );
+        Assert.All(
+            fontAssemblyApiMethods.Where(method =>
+                method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
+            ),
+            method =>
+                AssertParameterContract(
+                    method,
+                    nullableScaleTypes,
+                    explicitScaleNames
                 )
         );
         Assert.All(

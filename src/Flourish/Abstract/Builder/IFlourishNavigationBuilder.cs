@@ -1,0 +1,148 @@
+using System.Windows.Controls;
+
+namespace ArkheideSystem.Flourish.Abstract.Builder;
+
+/// <summary>
+/// Configures the visible navigation panel and navigation model.
+/// </summary>
+/// <example>
+/// <code><![CDATA[
+/// builder.ConfigNavigation(navigation =>
+/// {
+///     navigation.InitDirection()
+///         .InitInitiallyOpen()
+///         .InitPanelWidth(openWidth: 260, closedWidth: 64)
+///         .InitGroup("Navigation", groupId: 0, group =>
+///     {
+///         group.InitNavigableViewItem<HomePage>(isInitial: true);
+///         group.InitNavigableItem("Refresh", "\uE72C", "navigation.refresh");
+///     });
+/// });
+/// ]]></code>
+/// </example>
+public interface IFlourishNavigationBuilder
+{
+    /// <summary>
+    /// Sets the side of the shell where the navigation panel is displayed.
+    /// </summary>
+    /// <param name="direction">The navigation panel direction.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishNavigationBuilder InitDirection(
+        NavigationPanelDirection direction = NavigationPanelDirection.Left
+    );
+
+    /// <summary>
+    /// Sets whether the navigation panel is open when the shell is first displayed.
+    /// </summary>
+    /// <param name="enabled">A value indicating whether the navigation panel should start open.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishNavigationBuilder InitInitiallyOpen(bool enabled = true);
+
+    /// <summary>
+    /// Sets the navigation panel width and the resize range used by the splitter.
+    /// </summary>
+    /// <param name="openWidth">The width used by the open navigation panel.</param>
+    /// <param name="closedWidth">
+    /// The width used by the collapsed navigation panel. Use 0 to hide the collapsed
+    /// panel completely; any visible collapsed panel must be at least 64 device-independent pixels wide.
+    /// </param>
+    /// <param name="maxWidth">The maximum open navigation panel width.</param>
+    /// <param name="minWidth">The minimum open navigation panel width.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// The open width is also updated when users resize the panel with the splitter.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A dimension is non-finite or outside its supported range; <paramref name="closedWidth" />
+    /// is non-zero and less than 64; the closed width exceeds the open width; or the open
+    /// width is outside the supplied minimum and maximum range.
+    /// </exception>
+    IFlourishNavigationBuilder InitPanelWidth(
+        double openWidth = 250,
+        double closedWidth = 64,
+        double maxWidth = 520,
+        double minWidth = 180
+    );
+
+    /// <summary>
+    /// Adds and configures a scrollable navigation group.
+    /// </summary>
+    /// <param name="displayName">The group heading. Required when <paramref name="groupId" /> is not 0.</param>
+    /// <param name="groupId">The unique group ID. Lower IDs are displayed first. The default value is 0.</param>
+    /// <param name="configureGroup">The group item configuration callback.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// Group IDs cannot be repeated. Group 0 may omit its display name; non-zero groups must provide
+    /// one. Groups are displayed in ascending <paramref name="groupId" /> order.
+    /// </remarks>
+    /// <example>
+    /// <code><![CDATA[
+    /// navigation.InitGroup("Navigation", groupId: 0, group =>
+    /// {
+    ///     group.InitNavigableViewItem<HomePage>(isInitial: true);
+    ///     group.InitNavigableViewItem<ReportsPage>();
+    /// });
+    ///
+    /// navigation.InitGroup("Tools", groupId: 1, group =>
+    /// {
+    ///     group.InitNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    /// });
+    /// ]]></code>
+    /// </example>
+    IFlourishNavigationBuilder InitGroup(
+        string? displayName = null,
+        int groupId = 0,
+        Action<IFlourishNavigationGroupBuilder>? configureGroup = null
+    );
+
+    /// <summary>
+    /// Adds a fixed WPF page navigation item to the bottom of the navigation panel.
+    /// </summary>
+    /// <typeparam name="TPage">The registered page type to display.</typeparam>
+    /// <param name="isInitial">A value indicating whether this page is the first page shown by the shell.</param>
+    /// <param name="parentId">The optional parent node ID. Must be 0 when <paramref name="childId" /> is non-zero.</param>
+    /// <param name="childId">The optional parent ID that this child follows. Must be 0 when <paramref name="parentId" /> is non-zero.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// The page must already be registered with <c>AddNavigable</c>. Fixed items are displayed in the
+    /// bottom section of the navigation panel and are not affected by the scrollable group area.
+    /// </remarks>
+    /// <example>
+    /// <code><![CDATA[
+    /// navigation.InitFixedNavigableViewItem<SettingsPage>();
+    /// ]]></code>
+    /// </example>
+    IFlourishNavigationBuilder InitFixedNavigableViewItem<TPage>(
+        bool isInitial = false,
+        int parentId = 0,
+        int childId = 0
+    )
+        where TPage : Page;
+
+    /// <summary>
+    /// Adds a fixed command item to the bottom of the navigation panel.
+    /// </summary>
+    /// <param name="displayName">The text displayed by the fixed command item.</param>
+    /// <param name="iconGlyph">The icon glyph displayed with the item, or <see langword="null" /> to omit it.</param>
+    /// <param name="commandKey">The command key dispatched through <see cref="ICommandDispatcher" />, or <see langword="null" /> for an item that only groups children.</param>
+    /// <param name="parentId">The optional parent node ID. Must be 0 when <paramref name="childId" /> is non-zero.</param>
+    /// <param name="childId">The optional parent ID that this child follows. Must be 0 when <paramref name="parentId" /> is non-zero.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// Command items dispatch through <see cref="ICommandDispatcher" /> instead of navigating to a page. If a
+    /// command item is also a parent node, clicking it toggles its children and does not execute the
+    /// command key, so parent command items commonly pass <c>null</c> for <paramref name="commandKey" />.
+    /// </remarks>
+    /// <example>
+    /// <code><![CDATA[
+    /// navigation.InitFixedNavigableItem("Help", "\uE946", "help.open");
+    /// ]]></code>
+    /// </example>
+    IFlourishNavigationBuilder InitFixedNavigableItem(
+        string displayName,
+        string? iconGlyph,
+        string? commandKey,
+        int parentId = 0,
+        int childId = 0
+    );
+}

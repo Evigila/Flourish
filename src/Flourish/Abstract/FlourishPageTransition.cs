@@ -6,9 +6,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// <example>
 /// <code><![CDATA[
 /// builder
-///     .ConfigureShell(shell => shell.UseMotion())
-///     .ConfigureMotion(motion =>
-///         motion.EnablePageTransition(FlourishPageTransition.EntranceFromBottom));
+///     .ConfigShell(shell => shell.UseMotion())
+///     .ConfigMotion(motion =>
+///         motion.UsePageTransition(
+///             transition: FlourishPageTransition.EntranceFromBottom));
 /// ]]></code>
 /// </example>
 public enum FlourishPageTransition
@@ -18,7 +19,7 @@ public enum FlourishPageTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.EnablePageTransition(FlourishPageTransition.None);
+    /// motion.UsePageTransition(transition: FlourishPageTransition.None);
     /// ]]></code>
     /// </example>
     None,
@@ -28,7 +29,7 @@ public enum FlourishPageTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.EnablePageTransition(FlourishPageTransition.Fade);
+    /// motion.UsePageTransition(transition: FlourishPageTransition.Fade);
     /// ]]></code>
     /// </example>
     Fade,
@@ -38,7 +39,8 @@ public enum FlourishPageTransition
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// motion.EnablePageTransition(FlourishPageTransition.EntranceFromBottom);
+    /// motion.UsePageTransition(
+    ///     transition: FlourishPageTransition.EntranceFromBottom);
     /// ]]></code>
     /// </example>
     EntranceFromBottom,

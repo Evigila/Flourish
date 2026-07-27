@@ -1,6 +1,6 @@
 apiRules:
 - include:
-    uidRegex: ^ArkheideSystem\.Flourish\.Abstract
+    uidRegex: ^ArkheideSystem\.Flourish\.Abstract($|\.)
 - include:
     uidRegex: ^ArkheideSystem\.Flourish\.Controls
 - include:

@@ -246,7 +246,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RequestOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Enable project-aware window chrome during application composition.&#10;builder.ConfigureShell(shell =&gt; shell.UseMultiProject());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
+        <flourish:CodeSpace Text="// Enable project-aware window chrome during application composition.&#10;builder.ConfigShell(shell =&gt; shell.UseMultiProject());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

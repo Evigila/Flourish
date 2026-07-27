@@ -5,10 +5,10 @@ description: 启用 Flourish Shell 功能并配置共享外观选项。
 
 # Shell 配置
 
-`ConfigureShell` 用于启用主要 Shell 区域，并应用这些区域共用的选项。标题栏、导航、工具栏、动效与状态栏的内容和行为由对应功能 builder 配置。
+`ConfigShell` 用于启用主要 Shell 区域，并应用这些区域共用的选项。标题栏、导航、工具栏、动效与状态栏的内容和行为由对应功能 builder 配置。
 
 ```csharp
-builder.ConfigureShell(shell =>
+builder.ConfigShell(shell =>
 {
     shell
         .UseTitleBar()
@@ -20,13 +20,13 @@ builder.ConfigureShell(shell =>
         .UseMotion()
         .UseSmoothScroll(enabled: true)
         .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
-        .UseGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
         .UseStatusBar();
 });
 
-builder.ConfigureNavigation(navigation =>
-    navigation.SetGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
+builder.ConfigNavigation(navigation =>
+    navigation.InitGroup(null, groupId: 0, group =>
+        group.InitNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 ## 功能开关与共享选项
@@ -44,10 +44,10 @@ builder.ConfigureNavigation(navigation =>
 | `UseMaterialEffect` | 选择并启用窗口材质；`None` 会禁用材质。 | [材质特效](configure-material-effect.md) |
 | `UseThemeColors` | 设置主要色、辅助色和强调色。 | [主题](configure-themes.md) |
 | `UseCornerRadius` | 设置控件与表面共用的圆角。 | [主题](configure-themes.md) |
-| `UseGlobalFont` | 设置全局字体及显式的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号。 | [排版](configure-font.md) |
+| `InitGlobalFont` | 设置全局字体及显式的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号。 | [排版](configure-font.md) |
 | `UseStatusBar` | 启用常驻状态栏。 | [状态栏](status-bar.md) |
 
-[窗口](configure-window.md)不需要 Shell 功能开关，通过 `ConfigureWindow` 直接配置。
+[窗口](configure-window.md)不需要 Shell 功能开关，通过 `ConfigWindow` 直接配置。
 
 ## 前置条件与优先级
 
@@ -75,12 +75,21 @@ builder.ConfigureNavigation(navigation =>
 
 未调用 `UseCenterContent`，或将其 `enabled` 参数设为 `false` 时，导航页面内容不受最大宽度限制，会铺满全部可用宽度。
 
-## 禁用功能
-
-除 `UseGlobalFont` 外，Shell API 族的每个 `Use...` 方法都把 `enabled` 放在第一位。这样，无论功能是否还有其他选项，共用组合代码都使用一致的开关顺序。`UseCenterContent`、`UseTips`、`UseMaterialEffect`、`UseThemeColors` 和 `UseCornerRadius` 会把详细设置放在该开关之后。
+启动后需要修改同一布局时，使用 `IContentLayoutService`：
 
 ```csharp
-builder.ConfigureShell(shell =>
+contentLayout.SetCenterContent(enabled: true, contentWidth: 1080);
+contentLayout.Changed += OnContentLayoutChanged;
+```
+
+修改会立即更新当前页面及对齐的 Shell 区域。之后导航到的页面会读取同一服务状态。
+
+## 禁用功能
+
+除 `InitGlobalFont` 外，Shell API 族的每个 `Use...` 方法都把 `enabled` 放在第一位。这样，无论功能是否还有其他选项，共用组合代码都使用一致的开关顺序。`UseCenterContent`、`UseTips`、`UseMaterialEffect`、`UseThemeColors` 和 `UseCornerRadius` 会把详细设置放在该开关之后。
+
+```csharp
+builder.ConfigShell(shell =>
 {
     shell
         .UseNavigation(showNavigation)
@@ -93,12 +102,12 @@ builder.ConfigureShell(shell =>
         .UseStatusBar(showStatusBar);
 });
 
-builder.ConfigureNavigation(navigation =>
-    navigation.SetGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
+builder.ConfigNavigation(navigation =>
+    navigation.InitGroup(null, groupId: 0, group =>
+        group.InitNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
-向 `UseTips` 传入 `false` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。`UseSmoothScroll(false)` 会让 Flourish 内置视口使用即时的原生鼠标滚轮行为。共用配置需要恢复主题定义的行为时，可向 `UseMaterialEffect`、`UseThemeColors` 或 `UseCornerRadius` 传入 `false`。省略 `UseGlobalFont` 时保留其默认值。
+向 `UseTips` 传入 `false` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。`UseSmoothScroll(false)` 会让 Flourish 内置视口使用即时的原生鼠标滚轮行为。共用配置需要恢复主题定义的行为时，可向 `UseMaterialEffect`、`UseThemeColors` 或 `UseCornerRadius` 传入 `false`。省略 `InitGlobalFont` 时保留其默认值。
 
 ## 相关功能
 
