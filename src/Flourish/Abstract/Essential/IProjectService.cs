@@ -5,7 +5,9 @@ namespace ArkheideSystem.Flourish.Abstract.Essential;
 /// </summary>
 /// <remarks>
 /// The production service stores projects whose local storage files exist, plus their active project
-/// ID, in projects.json beside appsettings.json. Unpersisted projects remain process-local, and stale
+/// ID, in the file selected by
+/// <see cref="Builder.IFlourishDataBuilder.InitProjectCatalogFilePath(string)" />. Unpersisted
+/// projects remain process-local, and stale
 /// mappings are removed when the catalog is loaded. Catalog mutations are written through an atomic
 /// file replacement. Project-file creation, saving, activation policy, deletion, and close checks are
 /// coordinated separately by <see cref="IProjectBehavior" />, which applications can replace through

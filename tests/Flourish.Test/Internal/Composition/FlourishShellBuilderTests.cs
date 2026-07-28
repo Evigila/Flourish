@@ -16,6 +16,24 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal(0, options.CenterContentWidth);
         Assert.False(options.IsMultiProjectEnabled);
         Assert.True(options.IsSmoothScrollingEnabled);
+        Assert.True(options.UsePersistedTheme);
+        Assert.True(options.UsePersistedWindowSize);
+        Assert.True(options.UsePersistedWindowPosition);
+        Assert.True(options.UsePersistedWindowState);
+        Assert.True(options.UsePersistedWindowTopmost);
+        Assert.True(options.UsePersistedTrayExit);
+        Assert.True(options.UsePersistedNavigationDirection);
+        Assert.True(options.UsePersistedNavigationOpenState);
+        Assert.True(options.UsePersistedNavigationWidth);
+        Assert.True(options.UsePersistedLastNavigation);
+        Assert.True(options.UsePersistedMotion);
+        Assert.True(options.UsePersistedSmoothScroll);
+        Assert.True(options.UsePersistedFont);
+        Assert.True(options.UsePersistedContentLayout);
+        Assert.True(options.UsePersistedMaterialEffect);
+        Assert.True(options.UsePersistedThemeColors);
+        Assert.True(options.UsePersistedCornerRadius);
+        Assert.True(options.UsePersistedNameOrder);
     }
 
     [Fact]
@@ -82,6 +100,34 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal(24, pageOverride.Value.ExtraLargeFontSize);
         Assert.Equal(30, pageOverride.Value.HeaderSizeFontSize);
         Assert.True(options.IsStatusBarEnabled);
+    }
+
+    [Fact]
+    public void PreferenceAwareMethods_EnableTheirIndependentPolicies()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishShellBuilder(options);
+        var colors = new FlourishThemeColors(
+            Color.FromRgb(1, 2, 3),
+            Color.FromRgb(4, 5, 6),
+            Color.FromRgb(7, 8, 9)
+        );
+
+        sut.UseCenterContent(true, 1000, true)
+            .UseMotion(true, true)
+            .UseMaterialEffect(true, MaterialEffect.Mica, true)
+            .UseThemeColors(true, colors, true)
+            .UseCornerRadius(true, 6, true)
+            .UseSmoothScroll(true, true)
+            .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32, true);
+
+        Assert.True(options.UsePersistedContentLayout);
+        Assert.True(options.UsePersistedMotion);
+        Assert.True(options.UsePersistedMaterialEffect);
+        Assert.True(options.UsePersistedThemeColors);
+        Assert.True(options.UsePersistedCornerRadius);
+        Assert.True(options.UsePersistedSmoothScroll);
+        Assert.True(options.UsePersistedFont);
     }
 
     [Fact]

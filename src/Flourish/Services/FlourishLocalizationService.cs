@@ -8,7 +8,7 @@ namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class FlourishLocalizationService : IFlourishLocalization
 {
-    private const string DefaultLocale = "EN";
+    internal const string DefaultLocale = "en-US";
     private const string EmbeddedResourcePrefix = "ArkheideSystem.Flourish.Assets.lang_";
 
     private readonly IReadOnlyDictionary<
@@ -33,8 +33,8 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
             StringComparer.OrdinalIgnoreCase
         )
         {
-            ["CN"] = LoadEmbeddedLocale("CN"),
-            ["EN"] = LoadEmbeddedLocale("EN"),
+            ["zh-CN"] = LoadEmbeddedLocale("zh-CN"),
+            ["en-US"] = LoadEmbeddedLocale("en-US"),
         };
 
         foreach (var path in options.LocalePaths)
@@ -376,26 +376,75 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
 
     private static string NormalizeLocale(string? locale)
     {
-        return string.IsNullOrWhiteSpace(locale) ? DefaultLocale : locale.Trim().ToUpperInvariant();
+        return string.IsNullOrWhiteSpace(locale) ? DefaultLocale : NormalizeRuntimeLocale(locale);
+    }
+
+    internal static bool TryNormalizeLocale(string? locale, out string normalizedLocale)
+    {
+        normalizedLocale = DefaultLocale;
+        if (string.IsNullOrWhiteSpace(locale))
+        {
+            return false;
+        }
+
+        try
+        {
+            normalizedLocale = NormalizeRuntimeLocale(locale);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
     }
 
     private static string NormalizeRuntimeLocale(string locale)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(locale);
-        var normalized = locale.Trim().ToUpperInvariant();
+        var normalized = locale.Trim().Replace('_', '-');
         if (
             normalized.Any(character =>
-                !char.IsLetterOrDigit(character) && character is not '-' and not '_'
+                !char.IsLetterOrDigit(character) && character is not '-'
             )
+            || normalized.Split('-').Any(string.IsNullOrEmpty)
         )
         {
             throw new ArgumentException(
-                "A locale can only contain letters, digits, '-' and '_'.",
+                "A locale must contain non-empty letter or digit subtags separated by '-' or '_'.",
                 nameof(locale)
             );
         }
 
-        return normalized;
+        try
+        {
+            return CultureInfo.GetCultureInfo(normalized).Name;
+        }
+        catch (CultureNotFoundException)
+        {
+            return CanonicalizeCustomLocale(normalized);
+        }
+    }
+
+    private static string CanonicalizeCustomLocale(string locale)
+    {
+        var subtags = locale.Split('-');
+        for (var index = 0; index < subtags.Length; index++)
+        {
+            var subtag = subtags[index];
+            subtags[index] = index switch
+            {
+                0 => subtag.ToLowerInvariant(),
+                _ when subtag.Length == 4 && subtag.All(char.IsLetter) =>
+                    char.ToUpperInvariant(subtag[0]) + subtag[1..].ToLowerInvariant(),
+                _ when
+                    (subtag.Length == 2 && subtag.All(char.IsLetter))
+                    || (subtag.Length == 3 && subtag.All(char.IsDigit)) =>
+                    subtag.ToUpperInvariant(),
+                _ => subtag.ToLowerInvariant(),
+            };
+        }
+
+        return string.Join('-', subtags);
     }
 
     private static string? TryGet<TDictionary>(

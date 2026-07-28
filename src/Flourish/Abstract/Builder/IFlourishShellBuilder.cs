@@ -38,7 +38,7 @@ public interface IFlourishShellBuilder
     /// <param name="enabled">A value indicating whether the title selector should expose every registered project and the new-project action.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// Project metadata is restored from and written to <c>projects.json</c>. The built-in
+    /// Project metadata is restored from and written to the configured project catalog. The built-in
     /// <see cref="IProjectBehavior" /> supplies save prompts and placeholder <c>.txt</c> files;
     /// applications can replace that behavior for their own project lifecycle. Selecting a project
     /// changes the active shell identity but does not load application-owned project content. When
@@ -66,8 +66,13 @@ public interface IFlourishShellBuilder
     /// <param name="contentWidth">
     /// The finite, positive maximum width of navigated page content in device-independent pixels.
     /// </param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseCenterContent(bool enabled = true, double contentWidth = 1200);
+    IFlourishShellBuilder UseCenterContent(
+        bool enabled = true,
+        double contentWidth = 1200,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Enables or disables the dynamic toolbar surface.
@@ -88,18 +93,24 @@ public interface IFlourishShellBuilder
     /// Enables or disables Flourish motion.
     /// </summary>
     /// <param name="enabled">A value indicating whether motion should be enabled.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseMotion(bool enabled = true);
+    IFlourishShellBuilder UseMotion(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Enables or disables the shell material effect and selects the effect to use.
     /// </summary>
     /// <param name="enabled">A value indicating whether the material effect should be enabled.</param>
     /// <param name="effect">The material effect applied to the shell window.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishShellBuilder UseMaterialEffect(
         bool enabled = true,
-        MaterialEffect effect = MaterialEffect.Mica
+        MaterialEffect effect = MaterialEffect.Mica,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
@@ -107,28 +118,42 @@ public interface IFlourishShellBuilder
     /// </summary>
     /// <param name="enabled">A value indicating whether the custom colors should be enabled.</param>
     /// <param name="colors">The application theme colors.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseThemeColors(bool enabled, FlourishThemeColors colors);
+    IFlourishShellBuilder UseThemeColors(
+        bool enabled,
+        FlourishThemeColors colors,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Enables or disables a custom shared corner radius for Flourish controls and surfaces.
     /// </summary>
     /// <param name="enabled">A value indicating whether the custom radius should be enabled.</param>
     /// <param name="radius">A finite, non-negative radius in device-independent pixels.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishShellBuilder UseCornerRadius(bool enabled, double radius = 6);
+    IFlourishShellBuilder UseCornerRadius(
+        bool enabled,
+        double radius = 6,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Enables or disables smooth mouse-wheel scrolling for Flourish scroll viewers by default.
     /// </summary>
     /// <param name="enabled">A value indicating whether smooth scrolling should be enabled.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// A locally assigned
     /// <see cref="ArkheideSystem.Flourish.Controls.ScrollViewer.IsSmoothScrollingEnabled" />
     /// value takes precedence over this shell default.
     /// </remarks>
-    IFlourishShellBuilder UseSmoothScroll(bool enabled = true);
+    IFlourishShellBuilder UseSmoothScroll(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Configures the global font and its explicit text and icon size scale.
@@ -140,6 +165,7 @@ public interface IFlourishShellBuilder
     /// <param name="largeFontSize">The large font size.</param>
     /// <param name="extraLargeFontSize">The extra-large font size.</param>
     /// <param name="headerSizeFontSize">The header-size font size.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishShellBuilder InitGlobalFont(
         string fontFamily = "Microsoft Yahei",
@@ -148,7 +174,8 @@ public interface IFlourishShellBuilder
         double iconFontSize = 16,
         double largeFontSize = 16,
         double extraLargeFontSize = 24,
-        double headerSizeFontSize = 32
+        double headerSizeFontSize = 32,
+        bool usePersistedPreference = true
     );
 
     /// <summary>

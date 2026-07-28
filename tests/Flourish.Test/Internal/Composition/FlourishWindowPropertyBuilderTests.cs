@@ -51,6 +51,25 @@ public sealed class FlourishWindowPropertyBuilderTests
     }
 
     [Fact]
+    public void PreferenceAwareMethods_EnableTheirIndependentPolicies()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishWindowPropertyBuilder(options);
+
+        sut.InitWindowSize(1280, 720, true)
+            .InitManualWindowPosition(20, 30, true)
+            .InitWindowState(WindowState.Normal, true)
+            .UseTopmost(false, true)
+            .UseTrayExit(true, true);
+
+        Assert.True(options.UsePersistedWindowSize);
+        Assert.True(options.UsePersistedWindowPosition);
+        Assert.True(options.UsePersistedWindowState);
+        Assert.True(options.UsePersistedWindowTopmost);
+        Assert.True(options.UsePersistedTrayExit);
+    }
+
+    [Fact]
     public void SetWindowMaxSize_WithPositiveInfinity_UpdatesOptions()
     {
         var options = new FlourishShellOptions();

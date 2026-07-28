@@ -40,7 +40,8 @@ return flourish.Run<App>();
 
 | 功能 | Builder 方法 | 作用 |
 | --- | --- | --- |
-| [应用数据](configure-data.md) | `ConfigData` | 配置本地化，并说明共享的 Host 配置。 |
+| [应用数据](configure-data.md) | `ConfigData` | 配置本地化以及可写的设置文件和项目目录文件路径。 |
+| [应用配置](configure-data.md) | `ConfigAppConfiguration` | 添加 JSON 文件或其他 Microsoft 配置 provider。 |
 | [依赖注入](configure-services.md) | `ConfigServices` | 注册应用服务、页面和可替换的 Flourish 服务。 |
 | [Shell 配置](shell-configuration.md) | `ConfigShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
 | [用户资料（Profile）](configure-profile.md) | `ConfigProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |
@@ -59,6 +60,8 @@ return flourish.Run<App>();
 | [状态栏](status-bar.md) | `ConfigStatusBar` | 配置自定义状态项和合并的系统状态入口。 |
 
 Builder 入口可以在 `Build()` 前调用多次。同一入口的重复回调会按注册顺序应用；重复设置同一选项时使用最后一次配置的值。
+
+`ConfigData` 回调会在 Host 构建之前执行，因此选定的设置文件会参与最终的 `IConfiguration`，并可在 `ConfigServices` 中读取。随后，`ConfigAppConfiguration` 回调通过标准 Microsoft 配置 builder 添加应用自己的配置源。
 
 `Build()` 会消费并冻结 Builder。再次调用 `Build()`、继续添加 `Config...` 回调，
 或在回调结束后调用此前捕获的嵌套 Builder，都会抛出 `InvalidOperationException`。

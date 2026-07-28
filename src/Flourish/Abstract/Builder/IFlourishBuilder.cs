@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -25,11 +26,36 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigData(data =>
     /// {
-    ///     data.InitLocale("EN");
+    ///     data.InitLocale("en-US");
     /// });
     /// ]]></code>
     /// </example>
     IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData);
+
+    /// <summary>
+    /// Adds application configuration sources to the underlying .NET Host.
+    /// </summary>
+    /// <param name="configure">
+    /// A callback that receives the Host context and Microsoft configuration builder.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// The callback runs after the default Host and Flourish configuration sources are registered.
+    /// Sources added by the callback therefore have higher priority. JSON files other than
+    /// <c>appsettings.json</c> and <c>appsettings.{Environment}.json</c> must be added explicitly.
+    /// </remarks>
+    /// <example>
+    /// <code><![CDATA[
+    /// builder.ConfigAppConfiguration((_, configuration) =>
+    ///     configuration.AddJsonFile(
+    ///         "appsettings.User.json",
+    ///         optional: true,
+    ///         reloadOnChange: true));
+    /// ]]></code>
+    /// </example>
+    IFlourishBuilder ConfigAppConfiguration(
+        Action<HostBuilderContext, IConfigurationBuilder> configure
+    );
 
     /// <summary>
     /// Adds service registrations to the underlying .NET host builder.

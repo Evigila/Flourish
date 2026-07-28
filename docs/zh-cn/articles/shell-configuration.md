@@ -109,6 +109,8 @@ builder.ConfigNavigation(navigation =>
 
 向 `UseTips` 传入 `false` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。`UseSmoothScroll(false)` 会让 Flourish 内置视口使用即时的原生鼠标滚轮行为。共用配置需要恢复主题定义的行为时，可向 `UseMaterialEffect`、`UseThemeColors` 或 `UseCornerRadius` 传入 `false`。省略 `InitGlobalFont` 时保留其默认值。
 
+`UseCenterContent`、`UseMotion`、`UseSmoothScroll`、`UseMaterialEffect`、`UseThemeColors`、`UseCornerRadius` 与 `InitGlobalFont` 默认持久化面向用户的值。只有代码必须保持某个值始终优先时，才传入 `usePersistedPreference: false`。`UseNavigation`、`UseTitleBar`、`UseStatusBar` 等能力开关仍由代码拥有，永远不会从设置文件恢复。
+
 ## 相关功能
 
 - [窗口](configure-window.md)配置尺寸、位置和关闭行为。

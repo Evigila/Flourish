@@ -250,18 +250,54 @@ syntax:
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigAppConfiguration(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.Configuration.IConfigurationBuilder})
+summary: 向底层 .NET Host 添加应用配置源。
+remarks: 回调在默认 Host 与 Flourish 配置源注册后执行，因此新增来源具有更高优先级。除基础文件和当前环境文件以外的 JSON 文件必须显式添加。
+syntax:
+  parameters:
+  - id: configure
+    description: 接收 Host 上下文与 Microsoft 配置 builder 的回调。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder
 summary: 配置 Flourish 使用的本地化资源。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitLocale(System.String)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitLocale(System.String,System.Boolean)
 summary: 选择 Flourish 内置界面文案使用的语言。
-remarks: 即使省略 ConfigData 和 InitLocale，Flourish 也会使用内置 EN 语言。内置语言标识为 CN 和 EN，标识不区分大小写。
+remarks: 即使省略 ConfigData 和 InitLocale，Flourish 也会使用内置 en-US 语言。内置语言标识为 en-US 和 zh-CN，标识不区分大小写并以规范的 BCP 47 形式返回。
 syntax:
   parameters:
   - id: locale
-    description: 语言标识；默认为 EN。
+    description: 语言标识；默认为 en-US。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitAppSettingsFilePath(System.String)
+summary: 选择 Flourish 通过 IConfiguration 读取并由 IAppSettingsStore 写入的 JSON 文件。
+remarks: 默认文件是应用根目录下的 `appsettings.Flourish.json`。相对路径以 `AppContext.BaseDirectory` 为基准。所选文件不是基础 `appsettings.json` 时，会插入该基础配置源之前，并保留宿主应用的全部 appsettings 配置源。
+syntax:
+  parameters:
+  - id: path
+    description: 绝对路径，或相对于应用目录的 `.json` 路径。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitProjectCatalogFilePath(System.String)
+summary: 选择 Flourish 项目元数据目录使用的 JSON 文件。
+remarks: 此路径仅保存项目身份与映射，不控制应用拥有的项目内容文件位置。
+syntax:
+  parameters:
+  - id: path
+    description: 绝对路径，或相对于应用目录的 `.json` 路径。
   return:
     description: 用于链式配置的当前 builder。
 ---
@@ -270,9 +306,9 @@ syntax:
 uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitLocaleFile(System.String)
 summary: 添加可扩展或覆盖内置翻译的自定义语言文件。
 remarks: |
-  文件在 `Build()` 应用配置时读取，必须是使用 UTF-8 编码的非空扁平 JSON 对象，并命名为 `lang_<locale>.json`。键和值必须是非空字符串，键不能重复。语言部分可以包含字母、数字、连字符和下划线。
+  文件在 `Build()` 应用配置时读取，必须是使用 UTF-8 编码的非空扁平 JSON 对象，并命名为 `lang_<locale>.json`。键和值必须是非空字符串，键不能重复。语言部分可以包含字母、数字、连字符和下划线；下划线会转换为连字符，分隔符两侧都必须有非空子标识。
 
-  同一语言的多个文件按注册顺序合并，后添加文件中的同名键优先。查找顺序为：选中语言的自定义值、选中语言的内置值、自定义 `EN`、内置 `EN`，最后返回键本身。
+  同一语言的多个文件按注册顺序合并，后添加文件中的同名键优先。查找顺序为：选中语言的自定义值、选中语言的内置值、自定义 `en-US`、内置 `en-US`，最后返回键本身。
 
   文件不存在时抛出 `FileNotFoundException`；文件名无效时抛出 `ArgumentException`；文件不可读或 JSON 无效时抛出 `InvalidDataException`。
 
@@ -283,7 +319,7 @@ remarks: |
   }
   ```
 
-  | 键 | EN | CN |
+  | 键 | en-US | zh-CN |
   | --- | --- | --- |
   | `TitleBar.Back` | Back | 返回 |
   | `TitleBar.Forward` | Forward | 前进 |
@@ -613,7 +649,7 @@ summary: 配置 Flourish Shell 的动效和动画行为。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UsePageTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishPageTransition,System.Nullable{System.TimeSpan})
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UsePageTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishPageTransition,System.Nullable{System.TimeSpan},System.Boolean)
 summary: 启用页面进入内容框架时使用的过渡效果。
 syntax:
   parameters:
@@ -626,7 +662,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseNavigationPanelTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishNavigationPanelTransition,System.Nullable{System.TimeSpan})
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseNavigationPanelTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishNavigationPanelTransition,System.Nullable{System.TimeSpan},System.Boolean)
 summary: 启用导航面板打开或关闭时使用的过渡效果。
 syntax:
   parameters:
@@ -639,7 +675,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseHoverRevealAnimation(System.Boolean,System.Nullable{System.TimeSpan})
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseHoverRevealAnimation(System.Boolean,System.Nullable{System.TimeSpan},System.Boolean)
 summary: 启用悬停揭示动画。
 syntax:
   parameters:
@@ -650,7 +686,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseSystemReducedMotion(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseSystemReducedMotion(System.Boolean,System.Boolean)
 summary: 控制 Flourish 是否遵循操作系统的减少动态效果偏好。
 syntax:
   parameters:
@@ -666,7 +702,7 @@ summary: 配置 Flourish 导航栏展示和可见导航模型。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitDirection(ArkheideSystem.Flourish.Abstract.NavigationPanelDirection)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitDirection(ArkheideSystem.Flourish.Abstract.NavigationPanelDirection,System.Boolean)
 summary: 设置导航面板显示在 Shell 的哪一侧。
 syntax:
   parameters:
@@ -677,7 +713,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitInitiallyOpen(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitInitiallyOpen(System.Boolean,System.Boolean)
 summary: 设置 Shell 首次显示时导航面板是否打开。
 syntax:
   parameters:
@@ -688,7 +724,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitPanelWidth(System.Double,System.Double,System.Double,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitPanelWidth(System.Double,System.Double,System.Double,System.Double,System.Boolean)
 summary: 设置导航栏宽度和 splitter 调整范围。
 syntax:
   parameters:
@@ -870,7 +906,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseCenterContent(System.Boolean,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseCenterContent(System.Boolean,System.Double,System.Boolean)
 summary: 配置导航页面内容及对齐的 Shell 内容区域是否在宽视口和导航栏过渡期间按最大宽度居中显示。
 syntax:
   parameters:
@@ -907,7 +943,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMotion(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMotion(System.Boolean,System.Boolean)
 summary: 启用或禁用 Flourish 动效。
 syntax:
   parameters:
@@ -918,7 +954,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMaterialEffect(System.Boolean,ArkheideSystem.Flourish.Abstract.MaterialEffect)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMaterialEffect(System.Boolean,ArkheideSystem.Flourish.Abstract.MaterialEffect,System.Boolean)
 summary: 启用或禁用 Shell 窗口的系统材质效果，并选择启用时使用的材质。
 syntax:
   parameters:
@@ -931,7 +967,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseThemeColors(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishThemeColors)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseThemeColors(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishThemeColors,System.Boolean)
 summary: 启用或禁用自定义 Flourish 主题颜色，并设置启用时使用的主要、辅助和强调颜色。
 syntax:
   parameters:
@@ -944,7 +980,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseCornerRadius(System.Boolean,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseCornerRadius(System.Boolean,System.Double,System.Boolean)
 summary: 启用或禁用自定义共用圆角，并设置启用时 Flourish 控件与 Shell 区域使用的圆角半径。
 syntax:
   parameters:
@@ -957,7 +993,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseSmoothScroll(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseSmoothScroll(System.Boolean,System.Boolean)
 summary: 启用或禁用 Flourish 内置滚动区域默认使用的平滑鼠标滚轮行为。
 syntax:
   parameters:
@@ -968,7 +1004,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.InitGlobalFont(System.String,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.InitGlobalFont(System.String,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean)
 summary: 设置 Flourish Shell UI 使用的全局字体与 Small、Standard、Icon、Large、ExtraLarge 和 HeaderSize 六种字号。
 syntax:
   parameters:
@@ -1123,7 +1159,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseProfile(System.Boolean,ArkheideSystem.Flourish.Abstract.NameOrder)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseProfile(System.Boolean,ArkheideSystem.Flourish.Abstract.NameOrder,System.Boolean)
 summary: 使用内置默认资料设置名称顺序，并显示 Profile 入口。
 syntax:
   parameters:
@@ -1134,7 +1170,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseThemeToggle(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishTheme)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseThemeToggle(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishTheme,System.Boolean)
 summary: 设置尚无已保存偏好时使用的主题，并显示主题切换按钮。
 syntax:
   parameters:
@@ -1150,7 +1186,7 @@ summary: 配置 Flourish Shell 窗口。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowSize(System.Double,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowSize(System.Double,System.Double,System.Boolean)
 summary: 设置 Shell 窗口初始尺寸。
 syntax:
   parameters:
@@ -1189,7 +1225,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowPosition(System.Windows.WindowStartupLocation)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowPosition(System.Windows.WindowStartupLocation,System.Boolean)
 summary: 设置 Shell 窗口启动位置。
 syntax:
   parameters:
@@ -1200,7 +1236,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitManualWindowPosition(System.Double,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitManualWindowPosition(System.Double,System.Double,System.Boolean)
 summary: 设置 Shell 窗口的手动位置。
 syntax:
   parameters:
@@ -1213,7 +1249,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowState(System.Windows.WindowState)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowState(System.Windows.WindowState,System.Boolean)
 summary: 设置 Shell 窗口初始状态。
 syntax:
   parameters:
@@ -1235,7 +1271,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.UseTopmost(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.UseTopmost(System.Boolean,System.Boolean)
 summary: 设置 Shell 窗口是否保持在其他窗口上方。
 syntax:
   parameters:
@@ -1257,7 +1293,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.UseTrayExit(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.UseTrayExit(System.Boolean,System.Boolean)
 summary: 设置标题栏关闭按钮是否将 Shell 窗口隐藏到 Windows 通知区域。
 remarks: 启用后，关闭按钮不会显示退出确认；可以通过通知区域菜单恢复窗口或退出应用。禁用后，关闭按钮使用常规退出确认流程。
 syntax:
@@ -2043,7 +2079,7 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService
-summary: 管理 Flourish Shell 显示的项目目录，并将有序元数据与活动项目 ID 持久化到 appsettings 相邻的 projects.json。
+summary: 管理 Flourish Shell 显示的项目目录，并将有序元数据与活动项目 ID 持久化到所选项目目录文件。
 ---
 
 ---

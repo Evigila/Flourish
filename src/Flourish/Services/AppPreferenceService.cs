@@ -14,11 +14,11 @@ namespace ArkheideSystem.Flourish.Services;
 
 internal sealed class AppPreferenceService(
     IConfiguration configuration,
-    IHostEnvironment hostEnvironment,
+    FlourishDataOptions dataOptions,
     ILogger<AppPreferenceService> logger
 ) : IAppSettingsStore, IHostedService, IDisposable
 {
-    private const string AppSettingsFileName = "appsettings.json";
+    private const string AppSettingsFileName = "appsettings.Flourish.json";
     private const string ThemeConfigurationKey = "Flourish:Preferences:Theme";
     private static readonly TimeSpan ThemeWriteCoalescingDelay = TimeSpan.FromMilliseconds(50);
     private static readonly JsonSerializerOptions SerializerOptions = new()
@@ -32,8 +32,8 @@ internal sealed class AppPreferenceService(
     )
         ?.Providers.OfType<FlourishAppSettingsConfigurationProvider>()
         .FirstOrDefault();
-    private readonly IHostEnvironment hostEnvironment =
-        hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+    private readonly FlourishDataOptions dataOptions =
+        dataOptions ?? throw new ArgumentNullException(nameof(dataOptions));
     private readonly ILogger<AppPreferenceService> logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly AsyncLocal<bool> isEditorActive = new();
@@ -45,9 +45,21 @@ internal sealed class AppPreferenceService(
     private bool isDisposed;
 
     internal AppPreferenceService(IConfiguration configuration, IHostEnvironment hostEnvironment)
-        : this(configuration, hostEnvironment, NullLogger<AppPreferenceService>.Instance) { }
+        : this(
+            configuration,
+            new FlourishDataOptions
+            {
+                AppSettingsFilePath = Path.Combine(
+                    hostEnvironment.ContentRootPath,
+                    AppSettingsFileName
+                ),
+            },
+            NullLogger<AppPreferenceService>.Instance
+        ) { }
 
-    public string FilePath => Path.Combine(hostEnvironment.ContentRootPath, AppSettingsFileName);
+    public string FilePath => dataOptions.AppSettingsFilePath;
+
+    private string ManagedFileName => Path.GetFileName(FilePath);
 
     public FlourishTheme? ReadTheme()
     {
@@ -428,13 +440,13 @@ internal sealed class AppPreferenceService(
                 .ConfigureAwait(false);
             return node as JsonObject
                 ?? throw new InvalidDataException(
-                    $"{AppSettingsFileName} must contain a JSON object."
+                    $"{ManagedFileName} must contain a JSON object."
                 );
         }
         catch (JsonException error)
         {
             throw new InvalidDataException(
-                $"{AppSettingsFileName} contains invalid JSON and was not changed.",
+                $"{ManagedFileName} contains invalid JSON and was not changed.",
                 error
             );
         }
@@ -448,12 +460,12 @@ internal sealed class AppPreferenceService(
         var directory =
             Path.GetDirectoryName(FilePath)
             ?? throw new InvalidOperationException(
-                $"{AppSettingsFileName} has no parent directory."
+                $"{ManagedFileName} has no parent directory."
             );
         Directory.CreateDirectory(directory);
         var temporaryPath = Path.Combine(
             directory,
-            $".{AppSettingsFileName}.{Guid.NewGuid():N}.tmp"
+            $".{ManagedFileName}.{Guid.NewGuid():N}.tmp"
         );
         var content = Encoding.UTF8.GetBytes(root.ToJsonString(SerializerOptions));
 
@@ -610,7 +622,7 @@ internal sealed class AppPreferenceService(
                 target =
                     parent[existingName] as JsonObject
                     ?? throw new InvalidDataException(
-                        $"The {AppSettingsFileName} value '{path}' must be a JSON object."
+                        $"The settings value '{path}' must be a JSON object."
                     );
             }
 
@@ -635,7 +647,7 @@ internal sealed class AppPreferenceService(
                 target =
                     parent[existingName] as JsonArray
                     ?? throw new InvalidDataException(
-                        $"The {AppSettingsFileName} value '{path}' must be a JSON array."
+                        $"The settings value '{path}' must be a JSON array."
                     );
             }
 
@@ -691,7 +703,7 @@ internal sealed class AppPreferenceService(
                 current =
                     current[existingName] as JsonObject
                     ?? throw new InvalidDataException(
-                        $"The {AppSettingsFileName} value '{string.Join(':', segments[..(index + 1)])}' must be a JSON object."
+                        $"The settings value '{string.Join(':', segments[..(index + 1)])}' must be a JSON object."
                     );
             }
 

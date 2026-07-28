@@ -1752,6 +1752,7 @@ public sealed class FlourishXamlArchitectureTests
             typeof(double),
             typeof(double),
             typeof(double),
+            typeof(bool),
         ];
         string[] explicitScaleNames =
         [
@@ -1762,7 +1763,10 @@ public sealed class FlourishXamlArchitectureTests
             "largeFontSize",
             "extraLargeFontSize",
             "headerSizeFontSize",
+            "usePersistedPreference",
         ];
+        Type[] runtimeScaleTypes = explicitScaleTypes[..^1];
+        string[] runtimeScaleNames = explicitScaleNames[..^1];
         Type[] nullableScaleTypes =
         [
             typeof(string),
@@ -1782,14 +1786,14 @@ public sealed class FlourishXamlArchitectureTests
             builderGlobalFont,
             explicitScaleTypes,
             explicitScaleNames,
-            ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d]
+            ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d, true]
         );
 
         var serviceSetFont = Assert.Single(
             typeof(IFontService).GetMethods(),
             method => method.Name == nameof(IFontService.SetFont)
         );
-        AssertParameterContract(serviceSetFont, explicitScaleTypes, explicitScaleNames);
+        AssertParameterContract(serviceSetFont, runtimeScaleTypes, runtimeScaleNames);
 
         var builderPageOverride = Assert.Single(
             typeof(IFlourishShellBuilder).GetMethods(),
@@ -1883,7 +1887,7 @@ public sealed class FlourishXamlArchitectureTests
                     method,
                     explicitScaleTypes,
                     explicitScaleNames,
-                    ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d]
+                    ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d, true]
                 )
         );
         Assert.All(

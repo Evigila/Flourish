@@ -18,7 +18,7 @@ builder
         titleBar.UseThemeToggle(mode: FlourishTheme.System));
 ```
 
-省略参数时使用 `FlourishTheme.System`。只有 Host 配置中不存在 `Flourish:Preferences:Theme` 时，回退值才会生效。[应用数据](configure-data.md)说明对应的 `appsettings.json` 设置。
+省略参数时使用 `FlourishTheme.System`。主题持久化默认启用，因此只有 Host 配置中不存在有效的 `Flourish:Preferences:Theme` 时回退值才会生效。如果代码必须始终决定启动主题，且运行时选择不应更新存储值，请传入 `usePersistedPreference: false`。[应用数据](configure-data.md)说明对应的设置文件。
 
 不调用 `UseThemeToggle` 时，标题栏主题入口保持隐藏，Shell 以亮色主题初始化。应用仍可通过 `IThemeService` 在运行时更改主题。
 
@@ -57,13 +57,15 @@ appearance.SetAppearance(colors: null, cornerRadius: null);
 运行时覆盖位于 Flourish 自有的资源层中。清除覆盖后会重新显露标准亮色或暗色资源，
 并保留应用自己定义的资源项。
 
+主题配色与圆角默认使用相同的持久化策略。每个完整的已保存组合优先，并会写回后续 `IAppearanceService` 变更；对应方法显式传入 `usePersistedPreference: false` 时除外。
+
 ## 主题模式与偏好
 
 `FlourishTheme.System` 跟随 Windows 应用主题，`Light` 与 `Dark` 使用固定主题，直到用户选择其他模式。
 
-Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。用户通过标题栏选择主题时，只写入 Host 内容根目录中的基础 `appsettings.json`；环境专用 appsettings、User Secrets、环境变量或命令行值仍可能在后续启动时优先。
+Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。用户通过标题栏选择主题时，会写入 `InitAppSettingsFilePath` 选择的文件；Host appsettings、User Secrets、环境变量或命令行值仍可能在后续启动时优先。
 
-内容根目录必须可写。写入偏好时会重新序列化完整 JSON 对象，因此文件会被重新格式化，注释也会被移除。
+所选目录必须可写。写入偏好时会重新序列化完整 JSON 对象，因此文件会被重新格式化，注释也会被移除。
 
 ## 相关功能
 

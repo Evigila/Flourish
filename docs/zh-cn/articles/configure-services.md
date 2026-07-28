@@ -52,7 +52,7 @@ builder.ConfigServices((_, services) =>
 
 启用多项目模式时，Shell 会调用替换实现中的五个异步布尔操作：`CreateProjectAsync`、`SaveActiveProjectAsync`、`ActivateProjectAsync`、`DeleteProjectAsync` 与 `CanCloseAsync`。返回 `false` 可取消对应的 Shell 操作。标题选择、右键删除、Ctrl+S 和项目关闭守卫都会使用该服务。未启用项目模式时，这些 Shell 入口保持停用，由应用管理单项目保存行为。
 
-替换 `IProjectBehavior` 只会改变对话框和项目文件处理，不会替换项目目录。替换实现应通过 `IProjectService` 发布元数据与活动选择变更；Flourish 仍会将每次目录变更原子写入 `IAppSettingsStore.FilePath` 相邻的 `projects.json`。完整生命周期契约参见[项目](projects.md)。
+替换 `IProjectBehavior` 只会改变对话框和项目文件处理，不会替换项目目录。替换实现应通过 `IProjectService` 发布元数据与活动选择变更；Flourish 仍会将每次目录变更原子写入 `InitProjectCatalogFilePath` 选择的路径。完整生命周期契约参见[项目](projects.md)。
 
 ## 相关功能
 

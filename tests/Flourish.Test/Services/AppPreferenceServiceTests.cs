@@ -85,7 +85,7 @@ public sealed class AppPreferenceServiceTests
         Assert.True(File.Exists(sut.FilePath));
         Assert.Equal(FlourishTheme.Dark, sut.ReadTheme());
         Assert.Empty(
-            Directory.EnumerateFiles(directory.Path, ".appsettings.json.*.tmp")
+            Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
         );
 
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
@@ -204,7 +204,7 @@ public sealed class AppPreferenceServiceTests
         Assert.True(Enum.TryParse<FlourishTheme>(persistedTheme, out var parsedTheme));
         Assert.Contains(parsedTheme, themes);
         Assert.Empty(
-            Directory.EnumerateFiles(directory.Path, ".appsettings.json.*.tmp")
+            Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
         );
     }
 
@@ -239,7 +239,7 @@ public sealed class AppPreferenceServiceTests
         Assert.True(result.ConfigurationReloaded);
         Assert.Equal(sut.FilePath, result.FilePath);
         Assert.Empty(
-            Directory.EnumerateFiles(directory.Path, ".appsettings.json.*.tmp")
+            Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
         );
         using var document = JsonDocument.Parse(File.ReadAllText(result.FilePath));
         var feature = document.RootElement.GetProperty("Feature");
@@ -411,7 +411,7 @@ public sealed class AppPreferenceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadOnChange = false,
                     WatchForChanges = false,
@@ -454,7 +454,7 @@ public sealed class AppPreferenceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadOnChange = false,
                     WatchForChanges = false,
@@ -729,7 +729,7 @@ public sealed class AppPreferenceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadDelay = 20,
                     ReloadOnChange = false,
@@ -764,7 +764,7 @@ public sealed class AppPreferenceServiceTests
 
         File.Move(
             replacementPath,
-            Path.Combine(directory.Path, "appsettings.json"),
+            Path.Combine(directory.Path, "appsettings.Flourish.json"),
             overwrite: true
         );
 
@@ -785,7 +785,7 @@ public sealed class AppPreferenceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadDelay = 20,
                     ReloadOnChange = false,
@@ -837,7 +837,7 @@ public sealed class AppPreferenceServiceTests
         );
         var source = new FlourishAppSettingsConfigurationSource
         {
-            Path = "appsettings.json",
+            Path = "appsettings.Flourish.json",
             Optional = true,
             ReloadDelay = 20,
             ReloadOnChange = false,
@@ -934,7 +934,7 @@ public sealed class AppPreferenceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadOnChange = false,
                     WatchForChanges = false,
@@ -945,7 +945,10 @@ public sealed class AppPreferenceServiceTests
 
     private static void WriteAppSettings(string directoryPath, string json)
     {
-        File.WriteAllText(Path.Combine(directoryPath, "appsettings.json"), json);
+        File.WriteAllText(
+            Path.Combine(directoryPath, "appsettings.Flourish.json"),
+            json
+        );
     }
 
     private static void ReplaceAppSettings(
@@ -958,7 +961,7 @@ public sealed class AppPreferenceServiceTests
         File.WriteAllText(temporaryPath, json);
         File.Move(
             temporaryPath,
-            Path.Combine(directoryPath, "appsettings.json"),
+            Path.Combine(directoryPath, "appsettings.Flourish.json"),
             overwrite: true
         );
     }

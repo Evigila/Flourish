@@ -84,7 +84,8 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
 
     public IFlourishTitlebarBuilder UseProfile(
         bool enabled = true,
-        NameOrder nameOrder = NameOrder.FirstLast
+        NameOrder nameOrder = NameOrder.FirstLast,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -92,12 +93,14 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
         options.Profile.NameOrder = nameOrder;
         options.IsProfileEnabled = enabled;
         options.IsTitlebarProfileEnabled = enabled;
+        options.UsePersistedNameOrder = usePersistedPreference;
         return this;
     }
 
     public IFlourishTitlebarBuilder UseThemeToggle(
         bool enabled = true,
-        FlourishTheme mode = FlourishTheme.System
+        FlourishTheme mode = FlourishTheme.System,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -105,6 +108,7 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
         options.DefaultTheme = mode;
         options.IsThemeEnabled = enabled;
         options.IsTitlebarThemeToggleEnabled = enabled;
+        options.UsePersistedTheme = usePersistedPreference;
         return this;
     }
 

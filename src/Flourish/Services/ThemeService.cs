@@ -80,7 +80,9 @@ internal sealed class ThemeService(
             }
 
             initialTheme = shellOptions.IsThemeEnabled
-                ? preferenceService.ReadTheme() ?? shellOptions.DefaultTheme
+                ? shellOptions.UsePersistedTheme
+                    ? preferenceService.ReadTheme() ?? shellOptions.DefaultTheme
+                    : shellOptions.DefaultTheme
                 : FlourishTheme.Light;
             currentTheme = initialTheme;
             effectiveTheme = ResolveTheme(initialTheme);
@@ -156,7 +158,10 @@ internal sealed class ThemeService(
         lock (gate)
         {
             requestedThemeChanged = currentTheme != theme;
-            preferenceService.QueueThemeSave(theme, runtimeApplied.Task);
+            if (shellOptions.UsePersistedTheme)
+            {
+                preferenceService.QueueThemeSave(theme, runtimeApplied.Task);
+            }
             shellOptions.IsThemeEnabled = true;
             currentTheme = theme;
             windows = attachedWindows.ToArray();

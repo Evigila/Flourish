@@ -26,6 +26,19 @@ builder
     });
 ```
 
+Shell 总动效开关与每一种动效类别默认独立持久化。只有代码回退值必须始终优先，且后续运行时变更不应写回时，才将 `usePersistedPreference` 设为 `false`。
+
+```csharp
+builder
+    .ConfigShell(shell => shell.UseMotion())
+    .ConfigMotion(motion => motion
+        .UsePageTransition(transition: FlourishPageTransition.Fade)
+        .UseNavigationPanelTransition(
+            transition: FlourishNavigationPanelTransition.Resize)
+        .UseHoverRevealAnimation()
+        .UseSystemReducedMotion());
+```
+
 ## 过渡与时长
 
 每一种过渡或动画都可以设置独立的可选时长。省略时长时，Flourish 使用对应动画的默认时长。

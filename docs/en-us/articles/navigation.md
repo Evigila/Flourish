@@ -40,6 +40,16 @@ services.AddNavigable<EditorPage>(
 
 Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the user navigates away. Use `Disabled` for pages that should be recreated when revisited after navigating away.
 
+Direction, initial open state, user-adjusted open width, and the last successfully navigated route are persisted by default. Flourish restores the last route only while it remains registered. Passing `usePersistedPreference: false` to a method keeps its configured fallback and stops updating that stored value without deleting it.
+
+```csharp
+navigation
+    .InitDirection(NavigationPanelDirection.Left)
+    .InitInitiallyOpen()
+    .InitPanelWidth(260, 64, 480, 180)
+    .UseLastNavigation();
+```
+
 ## Configure groups
 
 Use `ConfigNavigation` to define the visible navigation model. `InitGroup` creates a scrollable group, and `InitNavigableViewItem<TPage>` places a registered page in that group.

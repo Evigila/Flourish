@@ -12,7 +12,6 @@ namespace ArkheideSystem.Flourish.Internal.Composition;
 internal sealed class FlourishCompositionRoot(
     FlourishShellOptions shellOptions,
     FlourishDataOptions dataOptions,
-    IReadOnlyList<Action<IFlourishDataBuilder>> dataConfigurations,
     IReadOnlyList<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations,
     IReadOnlyList<Action<IFlourishShellBuilder>> shellConfigurations,
     IReadOnlyList<Action<IFlourishProfileBuilder>> profileConfigurations,
@@ -27,8 +26,6 @@ internal sealed class FlourishCompositionRoot(
 {
     private readonly FlourishShellOptions shellOptions = shellOptions;
     private readonly FlourishDataOptions dataOptions = dataOptions;
-    private readonly IReadOnlyList<Action<IFlourishDataBuilder>> dataConfigurations =
-        dataConfigurations;
     private readonly IReadOnlyList<
         Action<HostBuilderContext, IServiceCollection>
     > serviceConfigurations = serviceConfigurations;
@@ -70,21 +67,13 @@ internal sealed class FlourishCompositionRoot(
 
         ApplyFlourishConfigurations();
         ApplyServiceCollectionRegistrations(services);
+        FlourishPreferenceConfiguration.Apply(context.Configuration, dataOptions, shellOptions);
+        localizationService = new FlourishLocalizationService(dataOptions);
         RegisterCoreServices(services);
     }
 
     private void ApplyFlourishConfigurations()
     {
-        var dataBuilder = new FlourishDataBuilder(dataOptions);
-        ApplyAndFreeze(
-            dataBuilder,
-            (IFlourishDataBuilder)dataBuilder,
-            ApplyDataDefaults,
-            dataConfigurations
-        );
-
-        localizationService = new FlourishLocalizationService(dataOptions);
-
         var shellBuilder = new FlourishShellBuilder(shellOptions);
         ApplyAndFreeze(
             shellBuilder,
@@ -179,9 +168,6 @@ internal sealed class FlourishCompositionRoot(
             mutationGuard.Freeze();
         }
     }
-
-    private static void ApplyDataDefaults(IFlourishDataBuilder builder) =>
-        builder.InitLocale();
 
     private static void ApplyTitleBarDefaults(IFlourishTitlebarBuilder builder) =>
         builder
@@ -628,6 +614,10 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<AppPreferenceService>();
         services.AddSingleton<IAppSettingsStore>(provider =>
             provider.GetRequiredService<AppPreferenceService>()
+        );
+        services.AddSingleton<FlourishPreferencePersistenceService>();
+        services.AddSingleton<IHostedService>(provider =>
+            provider.GetRequiredService<FlourishPreferencePersistenceService>()
         );
         services.AddSingleton<ProfileSecretStore>();
         services.TryAddSingleton<IProfileAuthService, SimpleProfileAuthService>();

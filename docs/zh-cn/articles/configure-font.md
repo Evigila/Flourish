@@ -14,6 +14,8 @@ builder.ConfigShell(shell =>
     shell.InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
 ```
 
+全局文本字体族、图标字体族与完整的六档字号默认作为同一偏好组恢复和更新。需要代码配置的全局比例始终优先时，传入 `usePersistedPreference: false`。页面专属覆盖仍由应用拥有，不会持久化。
+
 七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `InitGlobalFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
 
 ## 字号层级角色

@@ -26,6 +26,19 @@ builder
     });
 ```
 
+The shell-wide motion switch and each motion category are persisted independently by default. Set `usePersistedPreference: false` only when the configured fallback must always win and later runtime changes must not be written back.
+
+```csharp
+builder
+    .ConfigShell(shell => shell.UseMotion())
+    .ConfigMotion(motion => motion
+        .UsePageTransition(transition: FlourishPageTransition.Fade)
+        .UseNavigationPanelTransition(
+            transition: FlourishNavigationPanelTransition.Resize)
+        .UseHoverRevealAnimation()
+        .UseSystemReducedMotion());
+```
+
 ## Transitions and durations
 
 Each transition or animation accepts its own optional duration. If no duration is supplied, Flourish uses that animation's default timing.

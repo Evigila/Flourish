@@ -37,6 +37,17 @@ window.InitManualWindowPosition(left: 120, top: 80);
 
 Use either a `WindowStartupLocation` or manual coordinates to make startup placement explicit.
 
+Size, startup/manual position, state, topmost, and tray-exit preferences are restored and updated by default. Pass `usePersistedPreference: false` on the corresponding method when its configured value must always win. Size and position are restored as complete pairs, `Minimized` is never restored, and an off-screen saved position is moved into the reachable virtual desktop.
+
+```csharp
+window
+    .InitWindowSize(1280, 720)
+    .InitManualWindowPosition(120, 80)
+    .InitWindowState(WindowState.Normal)
+    .UseTopmost(false)
+    .UseTrayExit();
+```
+
 ## Window behavior
 
 `InitWindowResizeMode` controls whether the custom title bar maximize command is available. `InitShownInTaskbar` and `UseTopmost` map to normal WPF window behavior.

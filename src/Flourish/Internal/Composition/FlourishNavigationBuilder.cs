@@ -11,19 +11,25 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
     private const int FixedItemsGroupId = int.MaxValue;
 
     public IFlourishNavigationBuilder InitDirection(
-        NavigationPanelDirection direction = NavigationPanelDirection.Left
+        NavigationPanelDirection direction = NavigationPanelDirection.Left,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ValidateEnum(direction, nameof(direction));
         options.NavigationPanelDirection = direction;
+        options.UsePersistedNavigationDirection = usePersistedPreference;
         return this;
     }
 
-    public IFlourishNavigationBuilder InitInitiallyOpen(bool enabled = true)
+    public IFlourishNavigationBuilder InitInitiallyOpen(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         options.IsNavigationPanelInitiallyOpen = enabled;
+        options.UsePersistedNavigationOpenState = usePersistedPreference;
         return this;
     }
 
@@ -31,7 +37,8 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         double openWidth = 250,
         double closedWidth = 64,
         double maxWidth = 520,
-        double minWidth = 180
+        double minWidth = 180,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -74,6 +81,16 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         options.ClosedPaneWidth = closedWidth;
         options.NavigationPaneMinWidth = minWidth;
         options.NavigationPaneMaxWidth = maxWidth;
+        options.UsePersistedNavigationWidth = usePersistedPreference;
+        return this;
+    }
+
+    public IFlourishNavigationBuilder UseLastNavigation(
+        bool usePersistedPreference = true
+    )
+    {
+        ThrowIfFrozen();
+        options.UsePersistedLastNavigation = usePersistedPreference;
         return this;
     }
 

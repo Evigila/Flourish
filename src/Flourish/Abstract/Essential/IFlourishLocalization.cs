@@ -6,7 +6,7 @@ namespace ArkheideSystem.Flourish.Abstract.Essential;
 public interface IFlourishLocalization
 {
     /// <summary>
-    /// Gets the currently selected normalized locale.
+    /// Gets the currently selected locale in canonical form.
     /// </summary>
     string CurrentLocale { get; }
 

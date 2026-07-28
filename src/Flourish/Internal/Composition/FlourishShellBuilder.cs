@@ -30,14 +30,16 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
     }
 
     public IFlourishShellBuilder UseCenterContent(
-        bool enabled,
-        double contentWidth
+        bool enabled = true,
+        double contentWidth = 1200,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ValidatePositiveFinite(contentWidth, nameof(contentWidth));
         options.IsCenterContentEnabled = enabled;
         options.CenterContentWidth = contentWidth;
+        options.UsePersistedContentLayout = usePersistedPreference;
         return this;
     }
 
@@ -66,48 +68,65 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishShellBuilder UseMotion(bool enabled = true)
+    public IFlourishShellBuilder UseMotion(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         options.Motion.IsEnabled = enabled;
+        options.UsePersistedMotion = usePersistedPreference;
         return this;
     }
 
     public IFlourishShellBuilder UseMaterialEffect(
         bool enabled = true,
-        MaterialEffect effect = MaterialEffect.Mica
+        MaterialEffect effect = MaterialEffect.Mica,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ValidateEnum(effect, nameof(effect));
         options.MaterialEffect = effect;
         options.IsMaterialEffectEnabled = enabled && effect != MaterialEffect.None;
+        options.UsePersistedMaterialEffect = usePersistedPreference;
         return this;
     }
 
     public IFlourishShellBuilder UseThemeColors(
         bool enabled,
-        FlourishThemeColors colors
+        FlourishThemeColors colors,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(colors);
         options.ThemeColors = enabled ? colors : null;
+        options.UsePersistedThemeColors = usePersistedPreference;
         return this;
     }
 
-    public IFlourishShellBuilder UseCornerRadius(bool enabled, double radius = 6)
+    public IFlourishShellBuilder UseCornerRadius(
+        bool enabled,
+        double radius = 6,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         ValidateNonNegativeFinite(radius, nameof(radius));
         options.CornerRadius = enabled ? radius : null;
+        options.UsePersistedCornerRadius = usePersistedPreference;
         return this;
     }
 
-    public IFlourishShellBuilder UseSmoothScroll(bool enabled = true)
+    public IFlourishShellBuilder UseSmoothScroll(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         options.IsSmoothScrollingEnabled = enabled;
+        options.UsePersistedSmoothScroll = usePersistedPreference;
         return this;
     }
 
@@ -118,7 +137,8 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
         double iconFontSize = 16,
         double largeFontSize = 16,
         double extraLargeFontSize = 24,
-        double headerSizeFontSize = 32
+        double headerSizeFontSize = 32,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -138,6 +158,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
         options.FontSizeLarge = largeFontSize;
         options.FontSizeExtraLarge = extraLargeFontSize;
         options.FontSizeHeaderSize = headerSizeFontSize;
+        options.UsePersistedFont = usePersistedPreference;
         return this;
     }
 

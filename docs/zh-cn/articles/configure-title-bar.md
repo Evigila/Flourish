@@ -43,7 +43,7 @@ builder
 | `UseBreadcrumb(option)` | 按所选行为显示后退和前进导航。 |
 | `UseNavigationToggle()` | 显示导航栏切换按钮。 |
 | `UseProfile(nameOrder)` | 显示 Profile 入口并选择名称顺序。 |
-| `UseThemeToggle(mode)` | 显示主题控件并选择启动回退主题。 |
+| `UseThemeToggle(mode)` | 显示主题控件、选择启动回退主题，并默认持久化用户选择。 |
 
 内置 Tooltip 与主题文字使用[应用数据](configure-data.md)中选择的语言。应用与项目名称由应用提供，不会自动翻译。
 
@@ -117,6 +117,8 @@ builder.ConfigTitleBar(titleBar =>
 `UseProfile` 显示 Profile 入口，并选择名称和首字母的顺序。[用户资料（Profile）](configure-profile.md)说明登录行为与自定义页面。
 
 `UseThemeToggle` 显示主题切换按钮，并选择 Host 配置中没有已保存偏好时使用的主题。[主题](configure-themes.md)说明跟随系统与偏好持久化。
+
+`UseThemeToggle` 与 `UseProfile` 默认持久化主题和 Profile 姓名顺序。传入 `usePersistedPreference: false` 会让启动参数始终优先，但不会删除旧的存储值。
 
 ## 窗口命令
 

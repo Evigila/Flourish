@@ -36,7 +36,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="contentFactory">A factory that creates the profile content when the shell is created.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// Call <see cref="IFlourishTitlebarBuilder.UseProfile(bool, NameOrder)" /> to enable the title bar profile region.
+    /// Call <see cref="IFlourishTitlebarBuilder.UseProfile(bool, NameOrder, bool)" /> to enable the title bar profile region.
     /// </remarks>
     IFlourishCustomHandlerBuilder InitProfileContent(
         Func<IServiceProvider, FrameworkElement> contentFactory

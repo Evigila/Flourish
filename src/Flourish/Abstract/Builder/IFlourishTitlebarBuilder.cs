@@ -101,10 +101,12 @@ public interface IFlourishTitlebarBuilder
     /// </summary>
     /// <param name="enabled">A value indicating whether the profile trigger should be enabled initially.</param>
     /// <param name="nameOrder">The order used to display profile names and initials.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishTitlebarBuilder UseProfile(
         bool enabled = true,
-        NameOrder nameOrder = NameOrder.FirstLast
+        NameOrder nameOrder = NameOrder.FirstLast,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
@@ -112,9 +114,11 @@ public interface IFlourishTitlebarBuilder
     /// </summary>
     /// <param name="enabled">A value indicating whether the theme toggle should be enabled initially.</param>
     /// <param name="mode">The theme used when no saved preference is available.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishTitlebarBuilder UseThemeToggle(
         bool enabled = true,
-        FlourishTheme mode = FlourishTheme.System
+        FlourishTheme mode = FlourishTheme.System,
+        bool usePersistedPreference = true
     );
 }

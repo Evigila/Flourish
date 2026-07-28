@@ -339,7 +339,7 @@ public sealed class RuntimeAppearanceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadOnChange = false,
                     WatchForChanges = false,
@@ -395,7 +395,7 @@ public sealed class RuntimeAppearanceServiceTests
             .Add(
                 new FlourishAppSettingsConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = "appsettings.Flourish.json",
                     Optional = true,
                     ReloadOnChange = false,
                     WatchForChanges = false,

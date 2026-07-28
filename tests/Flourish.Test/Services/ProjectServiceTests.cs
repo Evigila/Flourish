@@ -308,7 +308,10 @@ public sealed class ProjectServiceTests
             UnnamedProjectPlaceholder = "Configured unnamed project",
         };
         var store = new ProjectCatalogStore(
-            new TestAppSettingsStore(Path.Combine(directory.Path, "appsettings.json"))
+            new FlourishDataOptions
+            {
+                ProjectCatalogFilePath = Path.Combine(directory.Path, "projects.json"),
+            }
         );
 
         var first = new ProjectService(options, store);
@@ -335,7 +338,10 @@ public sealed class ProjectServiceTests
         using var directory = new TemporaryDirectory();
         var options = new FlourishShellOptions();
         var store = new ProjectCatalogStore(
-            new TestAppSettingsStore(Path.Combine(directory.Path, "appsettings.json"))
+            new FlourishDataOptions
+            {
+                ProjectCatalogFilePath = Path.Combine(directory.Path, "projects.json"),
+            }
         );
         var first = new ProjectService(options, store);
         var unnamed = Assert.Single(first.Current.Projects);
@@ -367,7 +373,10 @@ public sealed class ProjectServiceTests
         using var directory = new TemporaryDirectory();
         var options = new FlourishShellOptions();
         var store = new ProjectCatalogStore(
-            new TestAppSettingsStore(Path.Combine(directory.Path, "appsettings.json"))
+            new FlourishDataOptions
+            {
+                ProjectCatalogFilePath = Path.Combine(directory.Path, "projects.json"),
+            }
         );
         var existingPath = Path.Combine(directory.Path, "Existing.txt");
         File.WriteAllText(existingPath, string.Empty);

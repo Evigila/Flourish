@@ -38,6 +38,8 @@ var currentOrder = profile.NameOrder;
 The service rebuilds the signed-out placeholder or active profile and raises
 `ProfileChanged`. The login state, credentials, names, and image path remain unchanged.
 
+The user's last name-order choice takes precedence and later changes are written back by default. Pass `usePersistedPreference: false` when the configured order must always win. This persists only `NameOrder`; credentials remain in User Secrets.
+
 Labels, status text, file-picker filters, and validation messages on the built-in page follow the locale selected through [Application data](configure-data.md). An application-provided profile page manages its own text.
 
 ## Interaction behavior

@@ -15,6 +15,12 @@ internal static class Program
     {
         flourish = FlourishBuilder
             .CreateDefaultBuilder(args) //Create default builder as hosting
+            .ConfigData( // Configure data as hosting
+                (data) =>
+                {
+                    data.InitLocale("en-US"); // Set default locale for application
+                }
+            )
             .ConfigServices( // Configure services as hosting
                 (_, services) =>
                 {
@@ -30,10 +36,16 @@ internal static class Program
                     services.AddNavigable<NavigationRuntimePage>("Navigation", "\uE700");
                     services.AddNavigable<ProfileConfigurationPage>("Profile", "\uE77B");
                     services.AddNavigable<StatusBarConfigurationPage>("Status bar", "\uE930");
-                    services.AddNavigable<DynamicToolbarConfigurationPage>("Dynamic toolbar", "\uE945");
+                    services.AddNavigable<DynamicToolbarConfigurationPage>(
+                        "Dynamic toolbar",
+                        "\uE945"
+                    );
                     services.AddNavigable<ToolTipsConfigurationPage>("ToolTips", "\uE823");
                     services.AddNavigable<MotionConfigurationPage>("Motion", "\uE768");
-                    services.AddNavigable<CustomHandlerConfigurationPage>("Custom handler", "\uE8BA");
+                    services.AddNavigable<CustomHandlerConfigurationPage>(
+                        "Custom handler",
+                        "\uE8BA"
+                    );
                     services.AddNavigable<CommandsPage>("Commands", "\uE756");
                     services.AddNavigable<WindowRuntimePage>("Window", "\uE737");
                     services.AddNavigable<BackgroundTasksPage>("Background", "\uF5EF");
@@ -86,10 +98,7 @@ internal static class Program
             })
             .ConfigTitleBar(t => t.InitApplicationSubTitle("ABC"))
             .ConfigTitleBar(titlebar =>
-                titlebar.UseSearch(
-                    placeholder: "Type here to search",
-                    handler: (_, _) => { }
-                )
+                titlebar.UseSearch(placeholder: "Type here to search", handler: (_, _) => { })
             ) // search handler TODO
             .ConfigNavigation(nav => // configure navigation panel and its functionality, once UseNavigation is called and enabled (by default)
             {
