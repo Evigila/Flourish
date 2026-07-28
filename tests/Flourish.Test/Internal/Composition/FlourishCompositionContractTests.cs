@@ -15,7 +15,7 @@ public sealed class FlourishCompositionContractTests
 
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
 
-        Assert.Equal("EN", localization.CurrentLocale);
+        Assert.Equal("en-US", localization.CurrentLocale);
         Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
@@ -73,7 +73,7 @@ public sealed class FlourishCompositionContractTests
     {
         using var flourish = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigData(data => data.InitLocale("CN"))
+            .ConfigData(data => data.InitLocale("zh-CN"))
             .ConfigTitleBar(titleBar =>
                 titleBar
                     .InitApplicationTitle("Configured")
@@ -103,7 +103,7 @@ public sealed class FlourishCompositionContractTests
         var options = flourish.GetRequiredService<FlourishShellOptions>();
         var data = flourish.GetRequiredService<FlourishDataOptions>();
 
-        Assert.Equal("CN", data.Locale);
+        Assert.Equal("zh-CN", data.Locale);
         Assert.Equal("Configured", options.ApplicationTitle);
         Assert.Equal(FlourishTheme.Dark, options.DefaultTheme);
         Assert.Equal(NavigationPanelDirection.Right, options.NavigationPanelDirection);
@@ -126,12 +126,12 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigData(data => data.InitLocale("EN"));
+            .ConfigData(data => data.InitLocale("en-US"));
 
         using var flourish = builder.Build();
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
 
-        Assert.Equal("EN", localization.CurrentLocale);
+        Assert.Equal("en-US", localization.CurrentLocale);
         Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 

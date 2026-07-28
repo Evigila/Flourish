@@ -27,6 +27,8 @@ builder.ConfigShell(shell =>
 
 材质应用于 Shell 窗口。内置页面宿主保持透明，使 Mica 可以连续显示在内容区域中；页面仍可在设计需要时添加局部背景。
 
+运行时材质选择默认从所选 Flourish 设置文件恢复并写回。需要代码配置的材质始终优先时，传入 `usePersistedPreference: false`。已保存组合缺失、无效或不完整时，会完整保留代码参数。
+
 ## 相关功能
 
 - [窗口](configure-window.md)配置承载材质的窗口。

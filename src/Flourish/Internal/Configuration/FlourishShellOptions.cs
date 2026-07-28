@@ -165,4 +165,40 @@ internal sealed class FlourishShellOptions
     public List<FlourishStatusItem> StatusItems { get; } = [];
 
     public List<FlourishRegionContent> RegionContents { get; } = [];
+
+    public bool UsePersistedTheme { get; set; } = true;
+
+    public bool UsePersistedWindowSize { get; set; } = true;
+
+    public bool UsePersistedWindowPosition { get; set; } = true;
+
+    public bool UsePersistedWindowState { get; set; } = true;
+
+    public bool UsePersistedWindowTopmost { get; set; } = true;
+
+    public bool UsePersistedTrayExit { get; set; } = true;
+
+    public bool UsePersistedNavigationDirection { get; set; } = true;
+
+    public bool UsePersistedNavigationOpenState { get; set; } = true;
+
+    public bool UsePersistedNavigationWidth { get; set; } = true;
+
+    public bool UsePersistedLastNavigation { get; set; } = true;
+
+    public bool UsePersistedMotion { get; set; } = true;
+
+    public bool UsePersistedSmoothScroll { get; set; } = true;
+
+    public bool UsePersistedFont { get; set; } = true;
+
+    public bool UsePersistedContentLayout { get; set; } = true;
+
+    public bool UsePersistedMaterialEffect { get; set; } = true;
+
+    public bool UsePersistedThemeColors { get; set; } = true;
+
+    public bool UsePersistedCornerRadius { get; set; } = true;
+
+    public bool UsePersistedNameOrder { get; set; } = true;
 }

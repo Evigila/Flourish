@@ -20,13 +20,18 @@ public interface IFlourishWindowPropertyBuilder
     /// </summary>
     /// <param name="width">The initial window width.</param>
     /// <param name="height">The initial window height.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
     /// window.InitWindowSize(1536, 864);
     /// ]]></code>
     /// </example>
-    IFlourishWindowPropertyBuilder InitWindowSize(double width = 1536, double height = 864);
+    IFlourishWindowPropertyBuilder InitWindowSize(
+        double width = 1536,
+        double height = 864,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Sets the minimum shell window size.
@@ -61,6 +66,7 @@ public interface IFlourishWindowPropertyBuilder
     /// Sets the shell window startup position.
     /// </summary>
     /// <param name="startupLocation">The WPF startup location used by the shell window.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
@@ -68,7 +74,8 @@ public interface IFlourishWindowPropertyBuilder
     /// ]]></code>
     /// </example>
     IFlourishWindowPropertyBuilder InitWindowPosition(
-        WindowStartupLocation startupLocation = WindowStartupLocation.CenterScreen
+        WindowStartupLocation startupLocation = WindowStartupLocation.CenterScreen,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
@@ -76,25 +83,34 @@ public interface IFlourishWindowPropertyBuilder
     /// </summary>
     /// <param name="left">The left coordinate of the shell window.</param>
     /// <param name="top">The top coordinate of the shell window.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
     /// window.InitManualWindowPosition(left: 40, top: 40);
     /// ]]></code>
     /// </example>
-    IFlourishWindowPropertyBuilder InitManualWindowPosition(double left = 0, double top = 0);
+    IFlourishWindowPropertyBuilder InitManualWindowPosition(
+        double left = 0,
+        double top = 0,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Sets the initial shell window state.
     /// </summary>
     /// <param name="windowState">The initial WPF window state.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
     /// window.InitWindowState(WindowState.Maximized);
     /// ]]></code>
     /// </example>
-    IFlourishWindowPropertyBuilder InitWindowState(WindowState windowState = WindowState.Normal);
+    IFlourishWindowPropertyBuilder InitWindowState(
+        WindowState windowState = WindowState.Normal,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Sets the shell window resize mode.
@@ -112,13 +128,17 @@ public interface IFlourishWindowPropertyBuilder
     /// Sets whether the shell window should stay above other windows.
     /// </summary>
     /// <param name="enabled">A value indicating whether topmost behavior should be enabled.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
     /// window.UseTopmost(false);
     /// ]]></code>
     /// </example>
-    IFlourishWindowPropertyBuilder UseTopmost(bool enabled = true);
+    IFlourishWindowPropertyBuilder UseTopmost(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Sets whether the shell window is shown in the Windows taskbar.
@@ -136,11 +156,15 @@ public interface IFlourishWindowPropertyBuilder
     /// Sets whether the title bar close button hides the shell window in the notification area.
     /// </summary>
     /// <param name="enabled">A value indicating whether closing to the notification area should be enabled.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// When enabled, the close button hides the window without showing the exit confirmation.
     /// Use the notification-area menu to restore the window or exit the application. When
     /// disabled, the close button uses the normal exit confirmation flow.
     /// </remarks>
-    IFlourishWindowPropertyBuilder UseTrayExit(bool enabled = true);
+    IFlourishWindowPropertyBuilder UseTrayExit(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    );
 }

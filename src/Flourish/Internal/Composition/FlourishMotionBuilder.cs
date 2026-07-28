@@ -10,7 +10,8 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options)
     public IFlourishMotionBuilder UsePageTransition(
         bool enabled = true,
         FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom,
-        TimeSpan? duration = null
+        TimeSpan? duration = null,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -21,13 +22,15 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options)
             options.PageTransitionDuration = ValidateDuration(value, nameof(duration));
         }
 
+        options.UsePersistedPageTransition = usePersistedPreference;
         return this;
     }
 
     public IFlourishMotionBuilder UseNavigationPanelTransition(
         bool enabled = true,
         FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize,
-        TimeSpan? duration = null
+        TimeSpan? duration = null,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -40,12 +43,14 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options)
             options.NavigationPanelTransitionDuration = ValidateDuration(value, nameof(duration));
         }
 
+        options.UsePersistedNavigationPanelTransition = usePersistedPreference;
         return this;
     }
 
     public IFlourishMotionBuilder UseHoverRevealAnimation(
         bool enabled = true,
-        TimeSpan? duration = null
+        TimeSpan? duration = null,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
@@ -55,13 +60,18 @@ internal sealed class FlourishMotionBuilder(FlourishMotionOptions options)
             options.HoverRevealAnimationDuration = ValidateDuration(value, nameof(duration));
         }
 
+        options.UsePersistedHoverReveal = usePersistedPreference;
         return this;
     }
 
-    public IFlourishMotionBuilder UseSystemReducedMotion(bool enabled = true)
+    public IFlourishMotionBuilder UseSystemReducedMotion(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         options.RespectSystemReducedMotion = enabled;
+        options.UsePersistedReducedMotion = usePersistedPreference;
         return this;
     }
 

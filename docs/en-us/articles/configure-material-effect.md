@@ -27,6 +27,8 @@ On a platform that does not support the selected material, the shell remains usa
 
 Material is applied to the shell window. The built-in page host remains transparent so Mica continues through the content area. Pages can still add local backgrounds when their design requires one.
 
+The runtime material selection is restored from and written to the selected Flourish settings file by default. Pass `usePersistedPreference: false` to keep the configured material authoritative. A missing, invalid, or incomplete saved group leaves the configured arguments intact.
+
 ## Related features
 
 - [Window](configure-window.md) configures the window that receives the material.

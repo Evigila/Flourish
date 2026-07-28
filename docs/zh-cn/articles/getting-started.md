@@ -7,7 +7,7 @@ description: 使用 Flourish 构建并运行一个基本 WPF 应用。
 
 基本的 Flourish 应用需要注册一个 WPF 页面、启用导航、构建 `IFlourish` 运行时并显示 Shell。
 
-Flourish 内置文案默认使用英文。如需中文，请在 `Build()` 前调用 `builder.ConfigData(data => data.InitLocale("CN"))`。[应用数据](configure-data.md)说明内置语言和自定义语言。
+Flourish 内置文案默认使用 `en-US`。如需简体中文，请在 `Build()` 前调用 `builder.ConfigData(data => data.InitLocale("zh-CN"))`。[应用数据](configure-data.md)说明内置语言和自定义语言。
 
 ## 引用控件与主题资源
 

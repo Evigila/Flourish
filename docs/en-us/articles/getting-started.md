@@ -7,7 +7,7 @@ description: Build and run a basic WPF application with Flourish.
 
 A basic Flourish application registers a WPF page, enables navigation, builds an `IFlourish` runtime, and displays the shell.
 
-Built-in Flourish text uses the English locale by default. To use Chinese, call `builder.ConfigData(data => data.InitLocale("CN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locales.
+Built-in Flourish text uses the `en-US` locale by default. To use Simplified Chinese, call `builder.ConfigData(data => data.InitLocale("zh-CN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locales.
 
 ## Reference the controls and theme
 

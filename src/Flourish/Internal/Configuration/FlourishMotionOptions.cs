@@ -22,4 +22,12 @@ internal sealed class FlourishMotionOptions
     public TimeSpan HoverRevealAnimationDuration { get; set; } = TimeSpan.FromMilliseconds(140);
 
     public bool RespectSystemReducedMotion { get; set; } = true;
+
+    public bool UsePersistedPageTransition { get; set; } = true;
+
+    public bool UsePersistedNavigationPanelTransition { get; set; } = true;
+
+    public bool UsePersistedHoverReveal { get; set; } = true;
+
+    public bool UsePersistedReducedMotion { get; set; } = true;
 }

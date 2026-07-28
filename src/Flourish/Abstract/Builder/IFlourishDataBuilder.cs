@@ -7,8 +7,8 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// <code><![CDATA[
 /// builder.ConfigData(data =>
 /// {
-///     data.InitLocale("EN")
-///         .InitLocaleFile("Locales/lang_EN.json");
+///     data.InitLocale("en-US")
+///         .InitLocaleFile("Locales/lang_en-US.json");
 /// });
 /// ]]></code>
 /// </example>
@@ -18,14 +18,21 @@ public interface IFlourishDataBuilder
     /// Sets the locale used by Flourish built-in interface text.
     /// </summary>
     /// <param name="locale">The locale identifier.</param>
-    /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// Flourish uses the built-in English locale when this method and
     /// <see cref="IFlourishBuilder.ConfigData(Action{IFlourishDataBuilder})" /> are omitted.
-    /// Built-in locale identifiers are <c>CN</c> and <c>EN</c>. Identifiers are
-    /// case-insensitive and are normalized when the application is built.
+    /// Built-in locale identifiers are <c>en-US</c> and <c>zh-CN</c>. Identifiers are
+    /// case-insensitive and are returned in canonical BCP 47 form.
     /// </remarks>
-    IFlourishDataBuilder InitLocale(string locale = "EN");
+    /// <param name="usePersistedPreference">
+    /// Whether a valid effective Host configuration value should override the fallback and
+    /// subsequent runtime locale changes should be persisted.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishDataBuilder InitLocale(
+        string locale = "en-US",
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Adds a custom locale file that can extend or override built-in translations.
@@ -37,12 +44,13 @@ public interface IFlourishDataBuilder
     /// The file is read while <see cref="IFlourishBuilder.Build" /> applies configuration. It
     /// must be a UTF-8, non-empty, flat JSON object named <c>lang_&lt;locale&gt;.json</c>.
     /// Keys and values must be non-empty strings, and keys cannot be repeated. The locale segment
-    /// may contain letters, digits, hyphens, and underscores.
+    /// may contain letters, digits, hyphens, and underscores. Underscores are normalized to
+    /// hyphens, and locale identifiers are returned in canonical form.
     /// </para>
     /// <para>
     /// Files registered for the same locale are merged in registration order; a later file
     /// replaces earlier values for matching keys. Lookup priority is: custom selected locale,
-    /// built-in selected locale, custom <c>EN</c>, built-in <c>EN</c>, then the key itself.
+    /// built-in selected locale, custom <c>en-US</c>, built-in <c>en-US</c>, then the key itself.
     /// A missing file throws <see cref="System.IO.FileNotFoundException" />. Invalid file names throw
     /// <see cref="ArgumentException" />. Unreadable files and invalid locale JSON throw
     /// <see cref="System.IO.InvalidDataException" />.
@@ -128,5 +136,36 @@ public interface IFlourishDataBuilder
     /// </list>
     /// </remarks>
     IFlourishDataBuilder InitLocaleFile(string path);
+
+    /// <summary>
+    /// Selects the JSON file Flourish reads from and writes through <see cref="IAppSettingsStore" />.
+    /// </summary>
+    /// <param name="path">
+    /// An absolute path, or a path relative to <see cref="AppContext.BaseDirectory" />.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// The default file is <c>appsettings.Flourish.json</c> in
+    /// <see cref="AppContext.BaseDirectory" />.
+    /// When this path differs from the Host's base <c>appsettings.json</c>, the selected file is
+    /// added as a lower-priority Flourish configuration source and the Host appsettings sources
+    /// remain available to the application.
+    /// </remarks>
+    IFlourishDataBuilder InitAppSettingsFilePath(
+        string path = "appsettings.Flourish.json"
+    );
+
+    /// <summary>
+    /// Selects the JSON file used for the Flourish project metadata catalog.
+    /// </summary>
+    /// <param name="path">
+    /// An absolute path, or a path relative to <see cref="AppContext.BaseDirectory" />.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// This path stores project identities and mappings. It does not select the location of
+    /// application-owned project content files.
+    /// </remarks>
+    IFlourishDataBuilder InitProjectCatalogFilePath(string path = "projects.json");
 
 }

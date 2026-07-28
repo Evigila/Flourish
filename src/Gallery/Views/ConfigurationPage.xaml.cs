@@ -26,7 +26,7 @@ public partial class ConfigurationPage : Page
         this.localization = localization;
         InitializeComponent();
         LocaleBox.ItemsSource = availableLocales;
-        LocaleFilePathBox.Text = Path.Combine(AppContext.BaseDirectory, "lang_ES.json");
+        LocaleFilePathBox.Text = Path.Combine(AppContext.BaseDirectory, "lang_es-ES.json");
 
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;

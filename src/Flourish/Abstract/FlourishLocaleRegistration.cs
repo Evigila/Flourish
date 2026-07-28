@@ -18,7 +18,7 @@ public sealed class FlourishLocaleRegistration
     public Guid Id { get; }
 
     /// <summary>
-    /// Gets the normalized locale supplied by this registration.
+    /// Gets the registered locale in canonical form.
     /// </summary>
     public string Locale { get; }
 

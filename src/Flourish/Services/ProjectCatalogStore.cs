@@ -1,6 +1,7 @@
 using System.IO;
 using System.Text.Json;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
 
@@ -13,7 +14,6 @@ internal interface IProjectCatalogStore
 
 internal sealed class ProjectCatalogStore : IProjectCatalogStore
 {
-    private const string CatalogFileName = "projects.json";
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -24,16 +24,15 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
     private readonly Lock gate = new();
     private ProjectCatalog? lastPersistedCatalog;
 
-    public ProjectCatalogStore(IAppSettingsStore appSettingsStore)
+    public ProjectCatalogStore(FlourishDataOptions dataOptions)
     {
-        ArgumentNullException.ThrowIfNull(appSettingsStore);
-        var appSettingsPath = Path.GetFullPath(appSettingsStore.FilePath);
-        var directory = Path.GetDirectoryName(appSettingsPath)
-            ?? throw new InvalidOperationException("appsettings.json has no parent directory.");
-        filePath = Path.Combine(directory, CatalogFileName);
+        ArgumentNullException.ThrowIfNull(dataOptions);
+        filePath = Path.GetFullPath(dataOptions.ProjectCatalogFilePath);
     }
 
     internal string FilePath => filePath;
+
+    private string ManagedFileName => Path.GetFileName(filePath);
 
     public ProjectCatalog Load()
     {
@@ -64,7 +63,7 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
             );
             if (document is null)
             {
-                throw new InvalidDataException($"{CatalogFileName} is empty.");
+                throw new InvalidDataException($"{ManagedFileName} is empty.");
             }
 
             var catalog = new ProjectCatalog(document.Projects ?? [], document.ActiveProjectId);
@@ -78,7 +77,7 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
         catch (JsonException error)
         {
             throw new InvalidDataException(
-                $"{CatalogFileName} contains invalid JSON and could not be loaded.",
+                $"{ManagedFileName} contains invalid JSON and could not be loaded.",
                 error
             );
         }
@@ -102,11 +101,11 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
     private void SaveCore(ProjectCatalog catalog)
     {
         var directory = Path.GetDirectoryName(filePath)
-            ?? throw new InvalidOperationException($"{CatalogFileName} has no parent directory.");
+            ?? throw new InvalidOperationException($"{ManagedFileName} has no parent directory.");
         Directory.CreateDirectory(directory);
         var temporaryPath = Path.Combine(
             directory,
-            $".{CatalogFileName}.{Guid.NewGuid():N}.tmp"
+            $".{ManagedFileName}.{Guid.NewGuid():N}.tmp"
         );
         var document = new ProjectCatalogDocument(
             [.. catalog.Projects],

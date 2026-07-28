@@ -61,7 +61,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Persist appsettings.json changes through atomic writes that reload host configuration. Use the single-operation methods for one preference and UpdateAsync when related edits must commit together; this is recommended for user or administrator settings that must remain consistent on disk. The code below covers the managed file path, set, merge, append, remove, batch editing, and update results."
+      Content="Persist the selected Flourish appsettings file through atomic writes that reload host configuration. Use the single-operation methods for one preference and UpdateAsync when related edits must commit together; this is recommended for user or administrator settings that must remain consistent on disk. The code below covers the managed file path, set, merge, append, remove, batch editing, and update results."
       Title="App settings"
     >
       <StackPanel>
@@ -124,7 +124,7 @@
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
             Title="Remove value"
-            Content="Remove the selected key from appsettings.json."
+            Content="Remove the selected key from the managed settings file."
           >
             <flourish:ActionCard.Body>
               <flourish:Button Click="RemoveValue_Click" Content="Remove" />
@@ -165,7 +165,7 @@
           </flourish:ActionCard>
           <flourish:OutputCard x:Name="LocaleOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Select the initial language during application composition.&#10;builder.ConfigData(data =&gt; data.InitLocale(&quot;EN&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.CurrentLocale;&#10;var available = localization.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
+        <flourish:CodeSpace Text="// Select the initial language during application composition.&#10;builder.ConfigData(data =&gt; data.InitLocale(&quot;en-US&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;zh-CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.CurrentLocale;&#10;var available = localization.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 

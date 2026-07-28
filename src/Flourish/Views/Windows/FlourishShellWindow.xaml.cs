@@ -597,11 +597,30 @@ internal partial class FlourishShellWindow : Window
             Top = top;
         }
 
+        if (
+            options.UsePersistedWindowPosition
+            && WindowStartupLocation == WindowStartupLocation.Manual
+        )
+        {
+            KeepPersistedWindowReachable();
+        }
+
         WindowState = options.WindowState;
         ApplyTitleBarFeatureState();
         Titlebar.SetMaximizeEnabled(
             ResizeMode is ResizeMode.CanResize or ResizeMode.CanResizeWithGrip
         );
+    }
+
+    private void KeepPersistedWindowReachable()
+    {
+        const double reachableEdge = 64;
+        var virtualLeft = SystemParameters.VirtualScreenLeft;
+        var virtualTop = SystemParameters.VirtualScreenTop;
+        var virtualRight = virtualLeft + SystemParameters.VirtualScreenWidth;
+        var virtualBottom = virtualTop + SystemParameters.VirtualScreenHeight;
+        Left = Math.Clamp(Left, virtualLeft - Width + reachableEdge, virtualRight - reachableEdge);
+        Top = Math.Clamp(Top, virtualTop, virtualBottom - reachableEdge);
     }
 
     private void ApplyTitleBarFeatureState(bool refreshFrame = false)

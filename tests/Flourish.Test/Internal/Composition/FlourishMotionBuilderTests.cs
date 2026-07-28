@@ -66,6 +66,28 @@ public sealed class FlourishMotionBuilderTests
         Assert.Equal(TimeSpan.FromMilliseconds(13), options.HoverRevealAnimationDuration);
     }
 
+    [Fact]
+    public void PreferenceAwareMethods_EnableTheirIndependentPolicies()
+    {
+        var options = new FlourishMotionOptions();
+        var sut = new FlourishMotionBuilder(options);
+
+        sut.UsePageTransition(true, FlourishPageTransition.Fade, null, true)
+            .UseNavigationPanelTransition(
+                true,
+                FlourishNavigationPanelTransition.Resize,
+                null,
+                true
+            )
+            .UseHoverRevealAnimation(true, null, true)
+            .UseSystemReducedMotion(true, true);
+
+        Assert.True(options.UsePersistedPageTransition);
+        Assert.True(options.UsePersistedNavigationPanelTransition);
+        Assert.True(options.UsePersistedHoverReveal);
+        Assert.True(options.UsePersistedReducedMotion);
+    }
+
     [Theory]
     [InlineData("page", 0)]
     [InlineData("page", -1)]

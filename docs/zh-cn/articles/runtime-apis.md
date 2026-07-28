@@ -33,7 +33,7 @@ Flourish 提供两层互补的配置方式：
 | `IAppSettingsStore` | 原子执行 `SetAsync`、`RemoveAsync`、`MergeAsync`、`AppendAsync`，或在一次 `UpdateAsync` 事务中完成多项编辑。文件发生变化后会重载 Host 配置。 |
 | `IFlourishLocalization` | 读取、格式化本地化键，运行时调用 `SetLocale`，以及注册、重载或注销 `lang_<locale>.json` 文件。 |
 
-`IAppSettingsStore` 会写入基础 `appsettings.json`。`IProjectService` 会另外将项目目录持久化到 `IAppSettingsStore.FilePath` 相邻的 `projects.json`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
+`IAppSettingsStore` 会写入 `InitAppSettingsFilePath` 选择的文件，默认是应用根目录下的 `appsettings.Flourish.json`。`IProjectService` 会另外将项目目录持久化到独立选择的 `InitProjectCatalogFilePath`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
@@ -49,7 +49,7 @@ public async ValueTask SaveEndpointAsync(
         editor.Append("Api:RecentEndpoints", endpoint);
     }, cancellationToken);
 
-    localization.SetLocale("CN");
+    localization.SetLocale("zh-CN");
 }
 ```
 

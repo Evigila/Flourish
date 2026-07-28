@@ -40,6 +40,16 @@ services.AddNavigable<EditorPage>(
 
 需要在离开页面后保留局部状态时，使用 `FlourishPageCacheMode.Enabled`。希望离开后再次进入页面时重新创建实例，则使用 `Disabled`。
 
+方向、初始开合状态、用户调整后的展开宽度与最后一次成功导航的路由默认都会持久化；只有该路由仍已注册时才会恢复它。为某个方法传入 `usePersistedPreference: false` 会保留代码回退值并停止更新对应存储值，但不会删除它。
+
+```csharp
+navigation
+    .InitDirection(NavigationPanelDirection.Left)
+    .InitInitiallyOpen()
+    .InitPanelWidth(260, 64, 480, 180)
+    .UseLastNavigation();
+```
+
 ## 配置分组
 
 使用 `ConfigNavigation` 定义可见导航模型。`InitGroup` 创建可滚动的分组，`InitNavigableViewItem<TPage>` 将已注册页面放入该分组。

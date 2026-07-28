@@ -18,7 +18,7 @@ builder
         titleBar.UseThemeToggle(mode: FlourishTheme.System));
 ```
 
-Omitting the argument uses `FlourishTheme.System`. The fallback applies only when `Flourish:Preferences:Theme` is absent from Host configuration. [Application data](configure-data.md) explains the corresponding `appsettings.json` setting.
+Omitting the argument uses `FlourishTheme.System`. Theme persistence is enabled by default, so the fallback applies only when `Flourish:Preferences:Theme` is absent or invalid. Pass `usePersistedPreference: false` when code must always choose the startup theme and runtime selections must not update it. [Application data](configure-data.md) explains the corresponding settings file.
 
 If `UseThemeToggle` is not called, the title bar control remains hidden and the shell initializes with the light theme. The application can still change the theme at runtime through `IThemeService`.
 
@@ -57,13 +57,15 @@ appearance.SetAppearance(colors: null, cornerRadius: null);
 Runtime overrides are held in a Flourish-owned resource layer. Clearing them reveals the
 standard light or dark resources and preserves application-owned resource entries.
 
+Theme colors and corner radius use the same default persistence policy. Each complete saved group takes precedence and subsequent `IAppearanceService` changes are written back unless that method explicitly passes `usePersistedPreference: false`.
+
 ## Theme modes and preferences
 
 `FlourishTheme.System` follows the Windows application theme. `Light` and `Dark` select a fixed theme until the user chooses another mode.
 
-Flourish reads `Flourish:Preferences:Theme` with the complete Host configuration precedence. A selection made through the title bar writes only the base `appsettings.json` in the Host content root. Environment-specific appsettings, User Secrets, environment variables, or command-line values can take priority on a later launch.
+Flourish reads `Flourish:Preferences:Theme` with the complete Host configuration precedence. A selection made through the title bar writes the file selected by `InitAppSettingsFilePath`. Host appsettings, User Secrets, environment variables, or command-line values can take priority on a later launch.
 
-The content root must be writable. Writing the preference serializes the complete JSON object again, which reformats the file and removes comments.
+The selected directory must be writable. Writing the preference serializes the complete JSON object again, which reformats the file and removes comments.
 
 ## Related features
 

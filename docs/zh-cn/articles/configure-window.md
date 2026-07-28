@@ -37,6 +37,17 @@ window.InitManualWindowPosition(left: 120, top: 80);
 
 使用 `WindowStartupLocation` 或手动坐标可明确指定启动位置。
 
+尺寸、启动/手动位置、状态、置顶与托盘退出偏好默认会恢复并更新。某个方法的代码值必须始终优先时，为它传入 `usePersistedPreference: false`。尺寸和位置按完整组合恢复，Flourish 永远不会恢复 `Minimized`，并会把完全移出屏幕的已保存位置移入可触达的虚拟桌面区域。
+
+```csharp
+window
+    .InitWindowSize(1280, 720)
+    .InitManualWindowPosition(120, 80)
+    .InitWindowState(WindowState.Normal)
+    .UseTopmost(false)
+    .UseTrayExit();
+```
+
 ## 窗口行为
 
 `InitWindowResizeMode` 控制自定义标题栏中的最大化命令是否可用。`UseTopmost` 和 `InitShownInTaskbar` 对应标准 WPF 窗口行为。

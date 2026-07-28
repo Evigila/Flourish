@@ -1,12 +1,13 @@
 namespace ArkheideSystem.Flourish.Abstract.Essential;
 
 /// <summary>
-/// Provides transactional, atomic updates to the host appsettings.json file.
+/// Provides transactional, atomic updates to the JSON file selected by
+/// <see cref="Builder.IFlourishDataBuilder.InitAppSettingsFilePath(string)" />.
 /// </summary>
 public interface IAppSettingsStore
 {
     /// <summary>
-    /// Gets the absolute path of the managed appsettings.json file.
+    /// Gets the absolute path of the managed JSON settings file.
     /// </summary>
     string FilePath { get; }
 

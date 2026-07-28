@@ -8,7 +8,11 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
     : FlourishBuilderMutationGuard,
         IFlourishWindowPropertyBuilder
 {
-    public IFlourishWindowPropertyBuilder InitWindowSize(double width = 1536, double height = 864)
+    public IFlourishWindowPropertyBuilder InitWindowSize(
+        double width = 1536,
+        double height = 864,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         ValidatePositiveFinite(width, nameof(width));
@@ -16,6 +20,7 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
 
         options.WindowWidth = width;
         options.WindowHeight = height;
+        options.UsePersistedWindowSize = usePersistedPreference;
         return this;
     }
 
@@ -52,12 +57,14 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
     }
 
     public IFlourishWindowPropertyBuilder InitWindowPosition(
-        WindowStartupLocation startupLocation = WindowStartupLocation.CenterScreen
+        WindowStartupLocation startupLocation = WindowStartupLocation.CenterScreen,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ValidateEnum(startupLocation, nameof(startupLocation));
         options.WindowStartupLocation = startupLocation;
+        options.UsePersistedWindowPosition = usePersistedPreference;
         if (startupLocation != WindowStartupLocation.Manual)
         {
             options.WindowLeft = null;
@@ -67,7 +74,11 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder InitManualWindowPosition(double left = 0, double top = 0)
+    public IFlourishWindowPropertyBuilder InitManualWindowPosition(
+        double left = 0,
+        double top = 0,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         ValidateFinite(left, nameof(left));
@@ -76,16 +87,19 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         options.WindowLeft = left;
         options.WindowTop = top;
         options.WindowStartupLocation = WindowStartupLocation.Manual;
+        options.UsePersistedWindowPosition = usePersistedPreference;
         return this;
     }
 
     public IFlourishWindowPropertyBuilder InitWindowState(
-        WindowState windowState = WindowState.Normal
+        WindowState windowState = WindowState.Normal,
+        bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ValidateEnum(windowState, nameof(windowState));
         options.WindowState = windowState;
+        options.UsePersistedWindowState = usePersistedPreference;
         return this;
     }
 
@@ -99,10 +113,14 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder UseTopmost(bool enabled = true)
+    public IFlourishWindowPropertyBuilder UseTopmost(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         options.WindowTopmost = enabled;
+        options.UsePersistedWindowTopmost = usePersistedPreference;
         return this;
     }
 
@@ -113,10 +131,14 @@ internal sealed class FlourishWindowPropertyBuilder(FlourishShellOptions options
         return this;
     }
 
-    public IFlourishWindowPropertyBuilder UseTrayExit(bool enabled = true)
+    public IFlourishWindowPropertyBuilder UseTrayExit(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    )
     {
         ThrowIfFrozen();
         options.IsTrayExitEnabled = enabled;
+        options.UsePersistedTrayExit = usePersistedPreference;
         return this;
     }
 

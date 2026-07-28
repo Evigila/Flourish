@@ -33,7 +33,7 @@ Registration and presentation APIs use disposable leases. Keep the returned obje
 | `IAppSettingsStore` | Atomically `SetAsync`, `RemoveAsync`, `MergeAsync`, `AppendAsync`, or apply several edits in one `UpdateAsync` transaction. A changed file reloads Host configuration. |
 | `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `lang_<locale>.json` files while running. |
 
-`IAppSettingsStore` writes the base `appsettings.json`. `IProjectService` separately persists its catalog to `projects.json` beside `IAppSettingsStore.FilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
+`IAppSettingsStore` writes the file selected by `InitAppSettingsFilePath`, which defaults to application-root `appsettings.Flourish.json`. `IProjectService` separately persists its catalog to the independently selected `InitProjectCatalogFilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
@@ -49,7 +49,7 @@ public async ValueTask SaveEndpointAsync(
         editor.Append("Api:RecentEndpoints", endpoint);
     }, cancellationToken);
 
-    localization.SetLocale("CN");
+    localization.SetLocale("zh-CN");
 }
 ```
 

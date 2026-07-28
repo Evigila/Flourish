@@ -26,17 +26,23 @@ public interface IFlourishNavigationBuilder
     /// Sets the side of the shell where the navigation panel is displayed.
     /// </summary>
     /// <param name="direction">The navigation panel direction.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishNavigationBuilder InitDirection(
-        NavigationPanelDirection direction = NavigationPanelDirection.Left
+        NavigationPanelDirection direction = NavigationPanelDirection.Left,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
     /// Sets whether the navigation panel is open when the shell is first displayed.
     /// </summary>
     /// <param name="enabled">A value indicating whether the navigation panel should start open.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishNavigationBuilder InitInitiallyOpen(bool enabled = true);
+    IFlourishNavigationBuilder InitInitiallyOpen(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    );
 
     /// <summary>
     /// Sets the navigation panel width and the resize range used by the splitter.
@@ -48,6 +54,7 @@ public interface IFlourishNavigationBuilder
     /// </param>
     /// <param name="maxWidth">The maximum open navigation panel width.</param>
     /// <param name="minWidth">The minimum open navigation panel width.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// The open width is also updated when users resize the panel with the splitter.
@@ -61,8 +68,14 @@ public interface IFlourishNavigationBuilder
         double openWidth = 250,
         double closedWidth = 64,
         double maxWidth = 520,
-        double minWidth = 180
+        double minWidth = 180,
+        bool usePersistedPreference = true
     );
+
+    /// <summary>
+    /// Enables or disables restoring and updating the last successfully navigated page.
+    /// </summary>
+    IFlourishNavigationBuilder UseLastNavigation(bool usePersistedPreference = true);
 
     /// <summary>
     /// Adds and configures a scrollable navigation group.

@@ -50,7 +50,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 
 `StoragePath == null` 表示项目尚未持久化。未命名项目占位文本只用于显示；不要通过比较项目名称与占位文本来判断持久化状态。项目名称不要求唯一，占位文本也可以修改或本地化。
 
-Flourish 从 `projects.json` 加载有序目录与活动项目 ID。该文件位于 `IAppSettingsStore.FilePath` 所在目录，通常与基础 `appsettings.json` 相邻。每次通过 `IProjectService` 修改目录时，Flourish 都会原子重写该文件。写入失败时会回滚内存变更，并且不会发布变更事件。
+Flourish 从 `InitProjectCatalogFilePath` 选择的文件加载有序目录与活动项目 ID，默认路径是应用根目录下的 `projects.json`，且独立于可写设置文件。每次通过 `IProjectService` 修改目录时，Flourish 都会原子重写该文件。写入失败时会回滚内存变更，并且不会发布变更事件。
 
 目录持久化属于 `IProjectService`；即使应用替换 `IProjectBehavior`，该行为也会继续生效。目录只保存元数据；`IProjectService` 不会读取或写入项目所表示的路径。
 

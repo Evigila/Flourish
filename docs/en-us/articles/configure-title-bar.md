@@ -43,7 +43,7 @@ builder
 | `UseBreadcrumb(option)` | Displays back and forward navigation according to the selected behavior. |
 | `UseNavigationToggle()` | Displays the navigation panel toggle. |
 | `UseProfile(nameOrder)` | Displays the profile trigger and selects the name order. |
-| `UseThemeToggle(mode)` | Displays the theme control and selects its startup fallback mode. |
+| `UseThemeToggle(mode)` | Displays the theme control, selects its startup fallback mode, and persists user selections by default. |
 
 Built-in tooltips and theme labels follow the locale selected through [Application data](configure-data.md). Application and project names are application-provided text and are not translated automatically.
 
@@ -117,6 +117,8 @@ Omitting the argument uses `Auto`.
 `UseProfile` displays the profile trigger and selects the order used for names and initials. [Profile](configure-profile.md) explains login behavior and custom profile pages.
 
 `UseThemeToggle` displays the theme toggle and selects the theme used when Host configuration does not contain a saved preference. [Themes](configure-themes.md) explains system following and preference persistence.
+
+`UseThemeToggle` and `UseProfile` persist the theme and profile name order by default. Passing `usePersistedPreference: false` makes the supplied startup value authoritative without removing an older stored value.
 
 ## Window commands
 

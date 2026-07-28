@@ -23,6 +23,9 @@ public sealed class DefaultFlourishBuilderTests
         var builder = FlourishBuilder.CreateDefaultBuilder([]);
 
         Assert.Throws<ArgumentNullException>(() => builder.ConfigData(null!));
+        Assert.Throws<ArgumentNullException>(() =>
+            builder.ConfigAppConfiguration(null!)
+        );
         Assert.Throws<ArgumentNullException>(() => builder.ConfigServices(null!));
         Assert.Throws<ArgumentNullException>(() => builder.ConfigShell(null!));
         Assert.Throws<ArgumentNullException>(() => builder.ConfigTitleBar(null!));
@@ -42,7 +45,37 @@ public sealed class DefaultFlourishBuilderTests
         using var flourish = builder.Build();
 
         Assert.Throws<InvalidOperationException>(() => builder.ConfigShell(_ => { }));
+        Assert.Throws<InvalidOperationException>(() =>
+            builder.ConfigAppConfiguration((_, _) => { })
+        );
         Assert.Throws<InvalidOperationException>(() => builder.Build());
+    }
+
+    [Fact]
+    public void Build_AppliesAdditionalApplicationConfigurationAfterDefaults()
+    {
+        HostBuilderContext? capturedContext = null;
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigAppConfiguration((context, configuration) =>
+            {
+                capturedContext = context;
+                configuration.AddInMemoryCollection(
+                    new Dictionary<string, string?>
+                    {
+                        ["Flourish:Test:AdditionalConfiguration"] = "configured",
+                    }
+                );
+            })
+            .Build();
+
+        var configuration = flourish.GetRequiredService<IConfiguration>();
+
+        Assert.NotNull(capturedContext);
+        Assert.Equal(
+            "configured",
+            configuration["Flourish:Test:AdditionalConfiguration"]
+        );
     }
 
     [Fact]
@@ -107,7 +140,7 @@ public sealed class DefaultFlourishBuilderTests
         var marker = new object();
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigData(data => data.InitLocale("CN"))
+            .ConfigData(data => data.InitLocale("zh-CN"))
             .ConfigServices((_, services) => services.AddSingleton(marker))
             .ConfigShell(shell =>
                 shell
@@ -154,7 +187,7 @@ public sealed class DefaultFlourishBuilderTests
         var projects = flourish.GetRequiredService<IProjectService>();
 
         Assert.Same(marker, flourish.GetRequiredService<object>());
-        Assert.Equal("CN", dataOptions.Locale);
+        Assert.Equal("zh-CN", dataOptions.Locale);
         Assert.True(options.IsMultiProjectEnabled);
         Assert.True(projects.Current.IsMultiProjectEnabled);
         Assert.Equal(0, projects.Current.Version);
@@ -216,6 +249,52 @@ public sealed class DefaultFlourishBuilderTests
             Path.TrimEndingDirectorySeparator(Path.GetFullPath(AppContext.BaseDirectory)),
             Path.TrimEndingDirectorySeparator(Path.GetFullPath(environment.ContentRootPath))
         );
+    }
+
+    [Fact]
+    public void Build_CustomStoragePathsDriveConfigurationAndStoresIndependently()
+    {
+        using var directory = new TemporaryDirectory();
+        var appSettingsPath = Path.Combine(
+            directory.Path,
+            "appsettings.Flourish.json"
+        );
+        var projectCatalogPath = Path.Combine(directory.Path, "catalog", "projects.json");
+        File.WriteAllText(
+            appSettingsPath,
+            """{"Flourish":{"Preferences":{"Locale":"zh-CN"}}}"""
+        );
+
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigData(data => data
+                .InitAppSettingsFilePath(appSettingsPath)
+                .InitProjectCatalogFilePath(projectCatalogPath))
+            .Build();
+
+        var data = flourish.GetRequiredService<FlourishDataOptions>();
+        var configuration = flourish.GetRequiredService<IConfiguration>();
+        var settings = flourish.GetRequiredService<IAppSettingsStore>();
+        var catalog = flourish.GetRequiredService<ProjectCatalogStore>();
+
+        Assert.Equal("zh-CN", data.Locale);
+        Assert.Equal("zh-CN", configuration["Flourish:Preferences:Locale"]);
+        Assert.Equal(Path.GetFullPath(appSettingsPath), settings.FilePath);
+        Assert.Equal(Path.GetFullPath(projectCatalogPath), catalog.FilePath);
+    }
+
+    [Fact]
+    public void Build_WhenStoragePathsAreTheSame_ThrowsInvalidOperationException()
+    {
+        var builder = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigData(data =>
+            {
+                data.InitAppSettingsFilePath("Data/shared.json");
+                data.InitProjectCatalogFilePath("Data/shared.json");
+            });
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
     }
 
     [Fact]
@@ -331,8 +410,15 @@ public sealed class DefaultFlourishBuilderTests
         configuration.Sources.Add(environmentAppSettings);
         configuration.Sources.Add(higherPrioritySource);
 
-        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(configuration);
-        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(configuration);
+        var appSettingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(
+            configuration,
+            appSettingsPath
+        );
+        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(
+            configuration,
+            appSettingsPath
+        );
 
         Assert.Equal(3, configuration.Sources.Count);
         var replacement = Assert.IsType<FlourishAppSettingsConfigurationSource>(
@@ -345,6 +431,40 @@ public sealed class DefaultFlourishBuilderTests
         Assert.True(replacement.WatchForChanges);
         Assert.Same(environmentAppSettings, configuration.Sources[1]);
         Assert.Same(higherPrioritySource, configuration.Sources[2]);
+    }
+
+    [Fact]
+    public void UseTargetedAppSettingsProvider_CustomFilePreservesHostSourcesAndPrecedence()
+    {
+        using var directory = new TemporaryDirectory();
+        var baseAppSettings = new JsonConfigurationSource
+        {
+            Path = "appsettings.json",
+            Optional = true,
+        };
+        var environmentAppSettings = new JsonConfigurationSource
+        {
+            Path = "appsettings.Development.json",
+            Optional = true,
+        };
+        var higherPrioritySource = new MemoryConfigurationSource();
+        var configuration = new ConfigurationBuilder();
+        configuration.Sources.Add(baseAppSettings);
+        configuration.Sources.Add(environmentAppSettings);
+        configuration.Sources.Add(higherPrioritySource);
+
+        DefaultFlourishBuilder.UseTargetedAppSettingsProvider(
+            configuration,
+            Path.Combine(directory.Path, "appsettings.Flourish.json")
+        );
+
+        Assert.Equal(4, configuration.Sources.Count);
+        Assert.IsType<FlourishAppSettingsConfigurationSource>(
+            configuration.Sources[0]
+        );
+        Assert.Same(baseAppSettings, configuration.Sources[1]);
+        Assert.Same(environmentAppSettings, configuration.Sources[2]);
+        Assert.Same(higherPrioritySource, configuration.Sources[3]);
     }
 
     private static Assembly CreateAssemblyWithUserSecretsId()
@@ -384,6 +504,28 @@ public sealed class DefaultFlourishBuilderTests
         public void RegisterCommands(ICommandRegistrar commands)
         {
             commands.Register("test.hosted", static () => { });
+        }
+    }
+
+    private sealed class TemporaryDirectory : IDisposable
+    {
+        public TemporaryDirectory()
+        {
+            Path = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                $"flourish-builder-{Guid.NewGuid():N}"
+            );
+            Directory.CreateDirectory(Path);
+        }
+
+        public string Path { get; }
+
+        public void Dispose()
+        {
+            if (Directory.Exists(Path))
+            {
+                Directory.Delete(Path, recursive: true);
+            }
         }
     }
 }

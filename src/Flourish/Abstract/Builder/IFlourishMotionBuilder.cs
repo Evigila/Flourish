@@ -21,6 +21,7 @@ public interface IFlourishMotionBuilder
     /// <param name="enabled">A value indicating whether this transition should be enabled initially.</param>
     /// <param name="transition">The page transition to use.</param>
     /// <param name="duration">The duration used by the page transition.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
@@ -30,7 +31,8 @@ public interface IFlourishMotionBuilder
     IFlourishMotionBuilder UsePageTransition(
         bool enabled = true,
         FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom,
-        TimeSpan? duration = null
+        TimeSpan? duration = null,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
@@ -39,6 +41,7 @@ public interface IFlourishMotionBuilder
     /// <param name="enabled">A value indicating whether this transition should be enabled initially.</param>
     /// <param name="transition">The navigation panel transition to use.</param>
     /// <param name="duration">The duration used by the navigation panel transition.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
@@ -49,7 +52,8 @@ public interface IFlourishMotionBuilder
     IFlourishMotionBuilder UseNavigationPanelTransition(
         bool enabled = true,
         FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize,
-        TimeSpan? duration = null
+        TimeSpan? duration = null,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
@@ -57,6 +61,7 @@ public interface IFlourishMotionBuilder
     /// </summary>
     /// <param name="enabled">A value indicating whether hover reveal animation should be enabled initially.</param>
     /// <param name="duration">The duration used by hover reveal animations.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
@@ -65,18 +70,23 @@ public interface IFlourishMotionBuilder
     /// </example>
     IFlourishMotionBuilder UseHoverRevealAnimation(
         bool enabled = true,
-        TimeSpan? duration = null
+        TimeSpan? duration = null,
+        bool usePersistedPreference = true
     );
 
     /// <summary>
     /// Controls whether Flourish should respect the operating system reduced-motion preference.
     /// </summary>
     /// <param name="enabled">A value indicating whether reduced-motion preferences should be respected.</param>
+    /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
     /// motion.UseSystemReducedMotion();
     /// ]]></code>
     /// </example>
-    IFlourishMotionBuilder UseSystemReducedMotion(bool enabled = true);
+    IFlourishMotionBuilder UseSystemReducedMotion(
+        bool enabled = true,
+        bool usePersistedPreference = true
+    );
 }

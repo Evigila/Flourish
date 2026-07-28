@@ -72,6 +72,19 @@ public sealed class FlourishTitlebarBuilderTests
     }
 
     [Fact]
+    public void PreferenceAwareMethods_ControlThemeAndNameOrderPolicies()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishTitlebarBuilder(options);
+
+        sut.UseProfile(true, NameOrder.LastFirst, true)
+            .UseThemeToggle(true, FlourishTheme.Dark, false);
+
+        Assert.True(options.UsePersistedNameOrder);
+        Assert.False(options.UsePersistedTheme);
+    }
+
+    [Fact]
     public void SetSearch_ConfiguresSearchAndForwardsServicesAndText()
     {
         var options = new FlourishShellOptions();

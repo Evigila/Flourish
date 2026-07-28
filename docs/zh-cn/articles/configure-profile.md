@@ -39,6 +39,8 @@ var currentOrder = profile.NameOrder;
 
 内置页面的标签、状态文本、文件选择器筛选文本和验证消息使用[应用数据](configure-data.md)中选择的语言。应用提供的 Profile 页面自行管理文本。
 
+用户最后选择的姓名顺序默认优先，后续变更也会写回。需要代码配置的顺序始终优先时，传入 `usePersistedPreference: false`。这里只持久化 `NameOrder`；凭据仍保存在 User Secrets 中。
+
 ## 交互行为
 
 Profile 使用强 [Overlay](../controls/overlay.md)，因此不会随指针移动而关闭。再次使用 Profile 入口、点击 Profile 卡片外部或按 <kbd>Esc</kbd> 可关闭界面。打开 Windows 原生文件选择器不会关闭 Profile；选择或取消图片后会返回同一登录表单。

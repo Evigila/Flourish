@@ -11,14 +11,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
-internal sealed class DefaultFlourishBuilder(string[] args)
+internal sealed class DefaultFlourishBuilder
     : FlourishBuilderMutationGuard,
         IFlourishBuilder
 {
-    private readonly IHostBuilder hostBuilder = CreateHostBuilder(args);
     private readonly FlourishShellOptions shellOptions = new();
     private readonly FlourishDataOptions dataOptions = new();
+    private readonly IHostBuilder hostBuilder;
     private readonly List<Action<IFlourishDataBuilder>> dataConfigurations = [];
+    private readonly List<Action<HostBuilderContext, IConfigurationBuilder>>
+        appConfigurationConfigurations = [];
     private readonly List<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations =
     [];
     private readonly List<Action<IFlourishShellBuilder>> shellConfigurations = [];
@@ -31,11 +33,31 @@ internal sealed class DefaultFlourishBuilder(string[] args)
     private readonly List<Action<IFlourishWindowPropertyBuilder>> windowConfigurations = [];
     private readonly List<Action<IFlourishStatusBarBuilder>> statusBarConfigurations = [];
 
+    public DefaultFlourishBuilder(string[] args)
+    {
+        ArgumentNullException.ThrowIfNull(args);
+        hostBuilder = CreateHostBuilder(
+            args,
+            dataOptions,
+            appConfigurationConfigurations
+        );
+    }
+
     public IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData)
     {
         ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configureData);
         dataConfigurations.Add(configureData);
+        return this;
+    }
+
+    public IFlourishBuilder ConfigAppConfiguration(
+        Action<HostBuilderContext, IConfigurationBuilder> configure
+    )
+    {
+        ThrowIfFrozen();
+        ArgumentNullException.ThrowIfNull(configure);
+        appConfigurationConfigurations.Add(configure);
         return this;
     }
 
@@ -144,10 +166,12 @@ internal sealed class DefaultFlourishBuilder(string[] args)
             );
         }
 
+        ApplyDataConfigurations();
+        ValidateStoragePaths();
+
         var compositionRoot = new FlourishCompositionRoot(
             shellOptions,
             dataOptions,
-            dataConfigurations,
             serviceConfigurations,
             shellConfigurations,
             profileConfigurations,
@@ -164,53 +188,118 @@ internal sealed class DefaultFlourishBuilder(string[] args)
         return new FlourishRuntime(hostBuilder.Build());
     }
 
-    private static IHostBuilder CreateHostBuilder(string[] args)
+    private void ApplyDataConfigurations()
+    {
+        var dataBuilder = new FlourishDataBuilder(dataOptions);
+        try
+        {
+            dataBuilder.InitLocale();
+            foreach (var configure in dataConfigurations)
+            {
+                configure(dataBuilder);
+            }
+        }
+        finally
+        {
+            dataBuilder.Freeze();
+        }
+    }
+
+    private void ValidateStoragePaths()
+    {
+        if (
+            string.Equals(
+                dataOptions.AppSettingsFilePath,
+                dataOptions.ProjectCatalogFilePath,
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            throw new InvalidOperationException(
+                "The appsettings file and project catalog must use different paths."
+            );
+        }
+    }
+
+    private static IHostBuilder CreateHostBuilder(
+        string[] args,
+        FlourishDataOptions dataOptions,
+        IReadOnlyList<Action<HostBuilderContext, IConfigurationBuilder>>
+            appConfigurationConfigurations
+    )
     {
         var builder = Host.CreateDefaultBuilder(args).UseContentRoot(AppContext.BaseDirectory);
-        builder.ConfigureAppConfiguration((_, configuration) =>
+        builder.ConfigureAppConfiguration((context, configuration) =>
         {
-            UseTargetedAppSettingsProvider(configuration);
+            UseTargetedAppSettingsProvider(configuration, dataOptions.AppSettingsFilePath);
             AddEntryAssemblyUserSecrets(configuration);
+            foreach (var configure in appConfigurationConfigurations)
+            {
+                configure(context, configuration);
+            }
         });
         return builder;
     }
 
     internal static void UseTargetedAppSettingsProvider(
-        IConfigurationBuilder configuration
+        IConfigurationBuilder configuration,
+        string appSettingsFilePath
     )
     {
         ArgumentNullException.ThrowIfNull(configuration);
-        for (var index = 0; index < configuration.Sources.Count; index++)
+        ArgumentException.ThrowIfNullOrWhiteSpace(appSettingsFilePath);
+        var targetPath = Path.GetFullPath(appSettingsFilePath, AppContext.BaseDirectory);
+        if (
+            configuration.Sources.OfType<FlourishAppSettingsConfigurationSource>().Any()
+        )
         {
-            if (configuration.Sources[index] is FlourishAppSettingsConfigurationSource)
-            {
-                return;
-            }
+            return;
+        }
 
-            if (
-                configuration.Sources[index] is not JsonConfigurationSource source
-                || !string.Equals(
-                    source.Path?.Replace('\\', '/'),
+        var baseSourceEntry = configuration.Sources
+            .Select((source, index) => (source, index))
+            .FirstOrDefault(item =>
+                item.source is JsonConfigurationSource json
+                && string.Equals(
+                    json.Path?.Replace('\\', '/'),
                     "appsettings.json",
                     StringComparison.OrdinalIgnoreCase
                 )
-            )
-            {
-                continue;
-            }
-
-            configuration.Sources[index] = new FlourishAppSettingsConfigurationSource
-            {
-                FileProvider = source.FileProvider,
-                Path = source.Path!,
-                Optional = source.Optional,
-                ReloadDelay = source.ReloadDelay,
-                ReloadOnChange = false,
-                WatchForChanges = source.ReloadOnChange,
-                OnLoadException = source.OnLoadException,
-            };
+            );
+        var defaultPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "appsettings.json")
+        );
+        if (
+            baseSourceEntry.source is JsonConfigurationSource baseSource
+            && string.Equals(targetPath, defaultPath, StringComparison.OrdinalIgnoreCase)
+        )
+        {
+            configuration.Sources[baseSourceEntry.index] =
+                new FlourishAppSettingsConfigurationSource
+                {
+                    FileProvider = baseSource.FileProvider,
+                    Path = baseSource.Path!,
+                    Optional = baseSource.Optional,
+                    ReloadDelay = baseSource.ReloadDelay,
+                    ReloadOnChange = false,
+                    WatchForChanges = baseSource.ReloadOnChange,
+                    OnLoadException = baseSource.OnLoadException,
+                };
             return;
         }
+
+        var flourishSource = new FlourishAppSettingsConfigurationSource
+        {
+            Path = targetPath,
+            Optional = true,
+            ReloadDelay = 250,
+            ReloadOnChange = false,
+            WatchForChanges = true,
+        };
+        flourishSource.ResolveFileProvider();
+        var insertionIndex =
+            baseSourceEntry.source is null ? 0 : baseSourceEntry.index;
+        configuration.Sources.Insert(insertionIndex, flourishSource);
     }
 
     internal static void AddEntryAssemblyUserSecrets(

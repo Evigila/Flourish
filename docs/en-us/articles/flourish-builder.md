@@ -40,7 +40,8 @@ The public builder separates hosting, application services, feature switches, an
 
 | Feature | Builder method | Purpose |
 | --- | --- | --- |
-| [Application data](configure-data.md) | `ConfigData` | Configures localization and explains the shared Host configuration. |
+| [Application data](configure-data.md) | `ConfigData` | Configures localization and the writable settings and project-catalog paths. |
+| [Application configuration](configure-data.md) | `ConfigAppConfiguration` | Adds JSON files or other Microsoft configuration providers. |
 | [Dependency injection](configure-services.md) | `ConfigServices` | Registers application and replaceable Flourish services. |
 | [Shell configuration](shell-configuration.md) | `ConfigShell` | Configures shell surfaces, tooltips, typography, and material effects. |
 | [Profile](configure-profile.md) | `ConfigProfile` | Selects a custom page for the profile enabled by the title bar. |
@@ -59,6 +60,8 @@ The public builder separates hosting, application services, feature switches, an
 | [Status bar](status-bar.md) | `ConfigStatusBar` | Configures custom status items and the consolidated system-status entry. |
 
 Builder entry points can be called multiple times before `Build()`. Repeated callbacks for the same entry point are applied in registration order; repeated setting methods use the last configured value.
+
+`ConfigData` callbacks run before the Host is built so the selected settings file participates in the final `IConfiguration` that is available to `ConfigServices`. `ConfigAppConfiguration` callbacks then add application-owned sources through the standard Microsoft configuration builder.
 
 `Build()` consumes and freezes the builder. Calling `Build()` again, adding another `Config...`
 callback, or invoking a captured nested builder after its callback has ended throws

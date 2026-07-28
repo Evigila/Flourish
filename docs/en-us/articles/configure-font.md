@@ -14,6 +14,8 @@ builder.ConfigShell(shell =>
     shell.InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
 ```
 
+The global text family, icon family, and complete six-size scale are restored and updated as one preference group by default. Pass `usePersistedPreference: false` to keep the configured global scale authoritative. Page-specific overrides remain application-owned and are not persisted.
+
 The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `InitGlobalFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
 
 ## Size tier roles

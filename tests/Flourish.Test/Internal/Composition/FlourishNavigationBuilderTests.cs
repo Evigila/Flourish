@@ -20,6 +20,23 @@ public sealed class FlourishNavigationBuilderTests
     }
 
     [Fact]
+    public void PreferenceAwareMethods_EnableTheirIndependentPolicies()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishNavigationBuilder(options);
+
+        sut.InitDirection(NavigationPanelDirection.Right, true)
+            .InitInitiallyOpen(false, true)
+            .InitPanelWidth(280, 64, 500, 180, true)
+            .UseLastNavigation();
+
+        Assert.True(options.UsePersistedNavigationDirection);
+        Assert.True(options.UsePersistedNavigationOpenState);
+        Assert.True(options.UsePersistedNavigationWidth);
+        Assert.True(options.UsePersistedLastNavigation);
+    }
+
+    [Fact]
     public void SetPanelWidth_WithValidValues_UpdatesOptions()
     {
         var options = new FlourishShellOptions();
