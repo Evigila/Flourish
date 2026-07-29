@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <StartupObject>ArkheideSystem.Gallery.Program</StartupObject>
-    <Platforms>x86;x64;ARM64</Platforms>
+    <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
     <UserSecretsId>ArkheideSystem.Flourish.Gallery</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
