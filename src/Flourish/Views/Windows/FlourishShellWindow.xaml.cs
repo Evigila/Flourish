@@ -28,8 +28,7 @@ internal partial class FlourishShellWindow : Window
     private const string ProjectSaveCommandKey = "flourish.project.save";
     private const int BuiltInProjectBehaviorPriority = -1000;
 
-    private readonly INavigationService navigationService;
-    private readonly IFrameNavigationService frameNavigationService;
+    private readonly NavigationService navigationService;
     private readonly NavigationPanelService navigationPanelService;
     private readonly NavigationMenuService navigationMenuService;
     private readonly FlourishToolbarService toolbarService;
@@ -244,8 +243,7 @@ internal partial class FlourishShellWindow : Window
     );
 
     public FlourishShellWindow(
-        INavigationService navigationService,
-        IFrameNavigationService frameNavigationService,
+        NavigationService navigationService,
         NavigationPanelService navigationPanelService,
         NavigationMenuService navigationMenuService,
         FlourishToolbarService toolbarService,
@@ -287,7 +285,6 @@ internal partial class FlourishShellWindow : Window
         backgroundTaskRefreshTimer.Tick += BackgroundTaskRefreshTimer_Tick;
 
         this.navigationService = navigationService;
-        this.frameNavigationService = frameNavigationService;
         this.navigationPanelService = navigationPanelService;
         this.navigationMenuService = navigationMenuService;
         this.toolbarService = toolbarService;
@@ -393,7 +390,7 @@ internal partial class FlourishShellWindow : Window
         Closed += ShellWindow_Closed;
         Loaded += ShellWindow_Loaded;
         PreviewKeyDown += ShellWindow_PreviewKeyDown;
-        frameNavigationService.Initialize(RootFrame);
+        navigationService.Init(RootFrame);
         navigationService.Navigated += RootFrame_Navigated;
 
         NavigateToInitialPage();

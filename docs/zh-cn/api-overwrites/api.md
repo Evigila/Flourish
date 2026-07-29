@@ -1203,6 +1203,17 @@ syntax:
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.InitProfilePage``1
+summary: 设置由 DI 解析并承载在 Profile 弹层中的 WPF 页面。
+syntax:
+  typeParameters:
+  - id: TPage
+    description: 由依赖注入解析的 WPF 页面类型。
+  return:
+    description: 用于链式配置的当前 builder。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseThemeToggle(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishTheme,System.Boolean)
 summary: 设置尚无已保存偏好时使用的主题，并显示主题切换按钮。
 syntax:
@@ -1468,34 +1479,6 @@ uid: ArkheideSystem.Flourish.Abstract.NavigationPanelDirection.Right
 summary: 在 Shell 右侧显示导航面板。
 ---
 
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigProfile(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishProfileBuilder})
-summary: 配置 Profile 弹层承载的页面。
-syntax:
-  parameters:
-  - id: configureProfile
-    description: 接收 Profile builder 的配置回调。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishProfileBuilder
-summary: 配置由 UseProfile 启用的 Profile 弹层所承载的页面。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishProfileBuilder.InitProfilePage``1
-summary: 设置由 DI 解析并承载在 Profile 弹层中的 WPF 页面。
-syntax:
-  typeParameters:
-  - id: TPage
-    description: 由依赖注入解析的 WPF 页面类型。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
 uid: ArkheideSystem.Flourish.Abstract.NameOrder
 summary: 指定 Profile first name 与 last name 的显示顺序。
 ---

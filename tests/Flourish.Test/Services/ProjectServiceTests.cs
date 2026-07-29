@@ -427,6 +427,35 @@ public sealed class ProjectServiceTests
         Assert.Equal(existing.Id, repaired.ActiveProjectId);
     }
 
+    [Fact]
+    public void PersistentMutation_WhenCatalogSaveFails_RollsBackWithoutPublishingChange()
+    {
+        using var directory = new TemporaryDirectory();
+        var existingPath = Path.Combine(directory.Path, "Existing.txt");
+        var addedPath = Path.Combine(directory.Path, "Added.txt");
+        File.WriteAllText(existingPath, string.Empty);
+        File.WriteAllText(addedPath, string.Empty);
+        var existing = new FlourishProject("existing", "Existing", existingPath);
+        var store = new ThrowingProjectCatalogStore(
+            new ProjectCatalog([existing], existing.Id)
+        );
+        var sut = new ProjectService(new FlourishShellOptions(), store);
+        var before = sut.Current;
+        var changedCount = 0;
+        sut.Changed += (_, _) => changedCount++;
+
+        Assert.Throws<IOException>(() =>
+            sut.AppendProject(new FlourishProject("added", "Added", addedPath))
+        );
+
+        var after = sut.Current;
+        Assert.Equal(before.Version, after.Version);
+        Assert.Equal(before.Projects, after.Projects);
+        Assert.Equal(before.ActiveProject, after.ActiveProject);
+        Assert.Null(sut.GetProject("added"));
+        Assert.Equal(0, changedCount);
+    }
+
     private sealed class TestAppSettingsStore(string filePath) : IFlourishSettingsStore
     {
         public string FilePath { get; } = filePath;
@@ -468,5 +497,14 @@ public sealed class ProjectServiceTests
         public ProjectCatalog Load() => catalog;
 
         public void Save(ProjectCatalog catalog) => SavedCatalogs.Add(catalog);
+    }
+
+    private sealed class ThrowingProjectCatalogStore(ProjectCatalog catalog)
+        : IProjectCatalogStore
+    {
+        public ProjectCatalog Load() => catalog;
+
+        public void Save(ProjectCatalog catalog) =>
+            throw new IOException("Catalog save failed.");
     }
 }

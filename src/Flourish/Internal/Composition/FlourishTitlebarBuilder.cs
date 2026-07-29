@@ -1,3 +1,4 @@
+using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
@@ -94,6 +95,14 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
         options.IsProfileEnabled = enabled;
         options.IsTitlebarProfileEnabled = enabled;
         options.UsePersistedNameOrder = usePersistedPreference;
+        return this;
+    }
+
+    public IFlourishTitlebarBuilder InitProfilePage<TPage>()
+        where TPage : Page
+    {
+        ThrowIfFrozen();
+        options.Profile.PageType = typeof(TPage);
         return this;
     }
 

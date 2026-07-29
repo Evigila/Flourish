@@ -1,7 +1,4 @@
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Composition;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using System.Windows.Controls;
 
 namespace ArkheideSystem.Flourish.Test.Abstract;
 
@@ -141,21 +138,4 @@ public sealed class ProfileAuthenticationResultTests
     {
         Assert.Empty(typeof(ProfileAuthenticationResult).GetConstructors());
     }
-}
-
-public sealed class FlourishProfileBuilderTests
-{
-    [Fact]
-    public void SetProfilePage_WithPageType_UpdatesOptionsAndReturnsBuilder()
-    {
-        var options = new FlourishProfileOptions();
-        var sut = new FlourishProfileBuilder(options);
-
-        var result = sut.InitProfilePage<TestProfilePage>();
-
-        Assert.Same(sut, result);
-        Assert.Equal(typeof(TestProfilePage), options.PageType);
-    }
-
-    private sealed class TestProfilePage : Page { }
 }

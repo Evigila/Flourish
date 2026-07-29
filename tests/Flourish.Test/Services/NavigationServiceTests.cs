@@ -324,7 +324,7 @@ public sealed class NavigationServiceTests
             new PageHistoryService(),
             new NavigationRouteRegistry(options)
         );
-        sut.Initialize(host);
+        sut.Init(host);
         using var secondStarted = new ManualResetEventSlim();
 
         var firstNavigation = Task.Run(() => sut.Navigate(HomeKey));
@@ -414,7 +414,7 @@ public sealed class NavigationServiceTests
         );
         if (initialize)
         {
-            sut.Initialize(contentHost.Object);
+            sut.Init(contentHost.Object);
         }
 
         return new NavigationFixture(sut, pageProvider, contentHost, history);

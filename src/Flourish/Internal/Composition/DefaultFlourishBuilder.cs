@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,6 @@ internal sealed class DefaultFlourishBuilder
     private readonly List<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations =
     [];
     private readonly List<Action<IFlourishShellBuilder>> shellConfigurations = [];
-    private readonly List<Action<IFlourishProfileBuilder>> profileConfigurations = [];
     private readonly List<Action<IFlourishTitlebarBuilder>> titleBarConfigurations = [];
     private readonly List<Action<IFlourishNavigationBuilder>> navigationConfigurations = [];
     private readonly List<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations = [];
@@ -45,117 +45,57 @@ internal sealed class DefaultFlourishBuilder
         );
     }
 
-    public IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData)
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureData);
-        dataConfigurations.Add(configureData);
-        return this;
-    }
+    public IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData) =>
+        RegisterConfiguration(configureData, dataConfigurations);
 
     public IFlourishBuilder ConfigConfiguration(
         Action<HostBuilderContext, IFlourishConfigurationBuilder> configure
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configure);
-        configurationConfigurations.Add(configure);
-        return this;
-    }
+    ) => RegisterConfiguration(configure, configurationConfigurations);
 
     public IFlourishBuilder ConfigServices(
         Action<HostBuilderContext, IServiceCollection> configureServices
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureServices);
-        serviceConfigurations.Add(configureServices);
-        return this;
-    }
+    ) => RegisterConfiguration(configureServices, serviceConfigurations);
 
-    public IFlourishBuilder ConfigShell(Action<IFlourishShellBuilder> configureShell)
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureShell);
-        shellConfigurations.Add(configureShell);
-        return this;
-    }
-
-    public IFlourishBuilder ConfigProfile(
-        Action<IFlourishProfileBuilder> configureProfile
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureProfile);
-        profileConfigurations.Add(configureProfile);
-        return this;
-    }
+    public IFlourishBuilder ConfigShell(Action<IFlourishShellBuilder> configureShell) =>
+        RegisterConfiguration(configureShell, shellConfigurations);
 
     public IFlourishBuilder ConfigTitleBar(
         Action<IFlourishTitlebarBuilder> configureTitleBar
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureTitleBar);
-        titleBarConfigurations.Add(configureTitleBar);
-        return this;
-    }
+    ) => RegisterConfiguration(configureTitleBar, titleBarConfigurations);
 
     public IFlourishBuilder ConfigNavigation(
         Action<IFlourishNavigationBuilder> configureNavigation
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureNavigation);
-        navigationConfigurations.Add(configureNavigation);
-        return this;
-    }
+    ) => RegisterConfiguration(configureNavigation, navigationConfigurations);
 
     public IFlourishBuilder ConfigCustomHandler(
         Action<IFlourishCustomHandlerBuilder> configureCustomHandler
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureCustomHandler);
-        customHandlerConfigurations.Add(configureCustomHandler);
-        return this;
-    }
+    ) => RegisterConfiguration(configureCustomHandler, customHandlerConfigurations);
 
     public IFlourishBuilder ConfigDynamicToolbar(
         Action<IFlourishDynamicToolbarBuilder> configureToolbar
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureToolbar);
-        toolbarConfigurations.Add(configureToolbar);
-        return this;
-    }
+    ) => RegisterConfiguration(configureToolbar, toolbarConfigurations);
 
-    public IFlourishBuilder ConfigMotion(Action<IFlourishMotionBuilder> configureMotion)
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureMotion);
-        motionConfigurations.Add(configureMotion);
-        return this;
-    }
+    public IFlourishBuilder ConfigMotion(Action<IFlourishMotionBuilder> configureMotion) =>
+        RegisterConfiguration(configureMotion, motionConfigurations);
 
     public IFlourishBuilder ConfigWindow(
         Action<IFlourishWindowPropertyBuilder> configureWindow
-    )
-    {
-        ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureWindow);
-        windowConfigurations.Add(configureWindow);
-        return this;
-    }
+    ) => RegisterConfiguration(configureWindow, windowConfigurations);
 
     public IFlourishBuilder ConfigStatusBar(
         Action<IFlourishStatusBarBuilder> configureStatusBar
+    ) => RegisterConfiguration(configureStatusBar, statusBarConfigurations);
+
+    private IFlourishBuilder RegisterConfiguration<TDelegate>(
+        TDelegate configure,
+        ICollection<TDelegate> configurations,
+        [CallerArgumentExpression(nameof(configure))] string? parameterName = null
     )
+        where TDelegate : Delegate
     {
         ThrowIfFrozen();
-        ArgumentNullException.ThrowIfNull(configureStatusBar);
-        statusBarConfigurations.Add(configureStatusBar);
+        ArgumentNullException.ThrowIfNull(configure, parameterName);
+        configurations.Add(configure);
         return this;
     }
 
@@ -176,7 +116,6 @@ internal sealed class DefaultFlourishBuilder
             dataOptions,
             serviceConfigurations,
             shellConfigurations,
-            profileConfigurations,
             titleBarConfigurations,
             navigationConfigurations,
             customHandlerConfigurations,

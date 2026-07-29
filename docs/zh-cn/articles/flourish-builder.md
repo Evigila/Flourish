@@ -44,7 +44,7 @@ return flourish.Run<App>();
 | [应用配置](configure-data.md) | `ConfigConfiguration` | 按受控优先级注册 JSON 文件或标准 Microsoft 配置源。 |
 | [依赖注入](configure-services.md) | `ConfigServices` | 注册应用服务、页面和可替换的 Flourish 服务。 |
 | [Shell 配置](shell-configuration.md) | `ConfigShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
-| [用户资料（Profile）](configure-profile.md) | `ConfigProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |
+| [用户资料（Profile）](configure-profile.md) | `ConfigTitleBar` | 启用 Profile，并可配置名称顺序和承载页面。 |
 | [标题栏](configure-title-bar.md) | `ConfigTitleBar` | 配置标题栏内容和行为。 |
 | [项目](projects.md) | `ConfigShell`、`IProjectService`、`IProjectBehavior` | 启用项目感知的标题显示、持久化元数据目录并提供可替换的生命周期。 |
 | [导航](navigation.md) | `ConfigNavigation` | 配置导航栏展示、页面位置、命令项、分组和固定项。 |

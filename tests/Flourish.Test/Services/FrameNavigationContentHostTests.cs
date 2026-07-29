@@ -71,7 +71,7 @@ public sealed class FrameNavigationContentHostTests
                 new PageHistoryService(maximumEntries: 2),
                 new NavigationRouteRegistry(options)
             );
-            sut.Initialize(frame);
+            sut.Init(frame);
             window.Show();
 
             try

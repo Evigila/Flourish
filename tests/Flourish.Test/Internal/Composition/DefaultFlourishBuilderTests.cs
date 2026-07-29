@@ -24,19 +24,56 @@ public sealed class DefaultFlourishBuilderTests
     {
         var builder = FlourishBuilder.CreateDefaultBuilder([]);
 
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigData(null!));
-        Assert.Throws<ArgumentNullException>(() =>
-            builder.ConfigConfiguration(null!)
+        Assert.Equal(
+            "configureData",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigData(null!)).ParamName
         );
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigServices(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigShell(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigTitleBar(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigNavigation(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigCustomHandler(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigDynamicToolbar(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigMotion(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigWindow(null!));
-        Assert.Throws<ArgumentNullException>(() => builder.ConfigStatusBar(null!));
+        Assert.Equal(
+            "configure",
+            Assert
+                .Throws<ArgumentNullException>(() => builder.ConfigConfiguration(null!))
+                .ParamName
+        );
+        Assert.Equal(
+            "configureServices",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigServices(null!)).ParamName
+        );
+        Assert.Equal(
+            "configureShell",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigShell(null!)).ParamName
+        );
+        Assert.Equal(
+            "configureTitleBar",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigTitleBar(null!)).ParamName
+        );
+        Assert.Equal(
+            "configureNavigation",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigNavigation(null!)).ParamName
+        );
+        Assert.Equal(
+            "configureCustomHandler",
+            Assert
+                .Throws<ArgumentNullException>(() => builder.ConfigCustomHandler(null!))
+                .ParamName
+        );
+        Assert.Equal(
+            "configureToolbar",
+            Assert
+                .Throws<ArgumentNullException>(() => builder.ConfigDynamicToolbar(null!))
+                .ParamName
+        );
+        Assert.Equal(
+            "configureMotion",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigMotion(null!)).ParamName
+        );
+        Assert.Equal(
+            "configureWindow",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigWindow(null!)).ParamName
+        );
+        Assert.Equal(
+            "configureStatusBar",
+            Assert.Throws<ArgumentNullException>(() => builder.ConfigStatusBar(null!)).ParamName
+        );
     }
 
     [Fact]
@@ -47,6 +84,7 @@ public sealed class DefaultFlourishBuilderTests
         using var flourish = builder.Build();
 
         Assert.Throws<InvalidOperationException>(() => builder.ConfigShell(_ => { }));
+        Assert.Throws<InvalidOperationException>(() => builder.ConfigData(null!));
         Assert.Throws<InvalidOperationException>(() =>
             builder.ConfigConfiguration((_, _) => { })
         );
@@ -203,7 +241,6 @@ public sealed class DefaultFlourishBuilderTests
         IFlourishDataBuilder? data = null;
         IFlourishConfigurationBuilder? applicationConfiguration = null;
         IFlourishShellBuilder? shell = null;
-        IFlourishProfileBuilder? profile = null;
         IFlourishTitlebarBuilder? titleBar = null;
         IFlourishNavigationBuilder? navigation = null;
         IFlourishNavigationGroupBuilder? navigationGroup = null;
@@ -218,7 +255,6 @@ public sealed class DefaultFlourishBuilderTests
             .ConfigData(value => data = value)
             .ConfigConfiguration((_, value) => applicationConfiguration = value)
             .ConfigShell(value => shell = value)
-            .ConfigProfile(value => profile = value)
             .ConfigTitleBar(value => titleBar = value)
             .ConfigNavigation(value =>
             {
@@ -240,8 +276,8 @@ public sealed class DefaultFlourishBuilderTests
             )
         );
         Assert.Throws<InvalidOperationException>(() => shell!.UseTitleBar());
-        Assert.Throws<InvalidOperationException>(() => profile!.InitProfilePage<TestPage>());
         Assert.Throws<InvalidOperationException>(() => titleBar!.InitApplicationTitle());
+        Assert.Throws<InvalidOperationException>(() => titleBar!.InitProfilePage<TestPage>());
         Assert.Throws<InvalidOperationException>(() => navigation!.InitInitiallyOpen());
         Assert.Throws<InvalidOperationException>(() =>
             navigationGroup!.AddNavigableItem("Late item", null, null)

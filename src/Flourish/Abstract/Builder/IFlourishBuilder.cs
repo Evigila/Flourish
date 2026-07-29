@@ -88,13 +88,6 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigShell(Action<IFlourishShellBuilder> configureShell);
 
     /// <summary>
-    /// Configures the page hosted by the profile flyout.
-    /// </summary>
-    /// <param name="configureProfile">A callback that receives the profile builder.</param>
-    /// <returns>The current builder for chained configuration.</returns>
-    IFlourishBuilder ConfigProfile(Action<IFlourishProfileBuilder> configureProfile);
-
-    /// <summary>
     /// Configures the title bar displayed when it is enabled through <see cref="ConfigShell" />.
     /// </summary>
     /// <param name="configureTitleBar">A callback that receives the title bar builder.</param>

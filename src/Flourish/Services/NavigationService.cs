@@ -4,7 +4,7 @@ using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class NavigationService : INavigationService, IFrameNavigationService
+internal sealed class NavigationService : INavigationService
 {
     private readonly INavigationPageProvider pageProvider;
     private readonly PageHistoryService pageHistoryService;
@@ -106,7 +106,7 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
 
     public IReadOnlyCollection<string> Routes => routeRegistry.Current.Routes.Keys.ToArray();
 
-    public void Initialize(Frame contentFrame)
+    internal void Init(Frame contentFrame)
     {
         ArgumentNullException.ThrowIfNull(contentFrame);
         lock (navigationGate)
@@ -116,7 +116,7 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
         }
     }
 
-    internal void Initialize(INavigationContentHost contentHost)
+    internal void Init(INavigationContentHost contentHost)
     {
         ArgumentNullException.ThrowIfNull(contentHost);
         lock (navigationGate)

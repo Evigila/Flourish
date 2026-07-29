@@ -44,7 +44,7 @@ The public builder separates hosting, application services, feature switches, an
 | [Application configuration](configure-data.md) | `ConfigConfiguration` | Registers JSON files or standard Microsoft configuration sources at a controlled priority. |
 | [Dependency injection](configure-services.md) | `ConfigServices` | Registers application and replaceable Flourish services. |
 | [Shell configuration](shell-configuration.md) | `ConfigShell` | Configures shell surfaces, tooltips, typography, and material effects. |
-| [Profile](configure-profile.md) | `ConfigProfile` | Selects a custom page for the profile enabled by the title bar. |
+| [Profile](configure-profile.md) | `ConfigTitleBar` | Enables the profile and optionally selects its custom page. |
 | [Title bar](configure-title-bar.md) | `ConfigTitleBar` | Configures title bar content and behavior. |
 | [Projects](projects.md) | `ConfigShell`, `IProjectService`, `IProjectBehavior` | Enables project-aware title display, persists its metadata catalog, and provides a replaceable lifecycle. |
 | [Navigation](navigation.md) | `ConfigNavigation` | Configures the navigation panel and visible model. |

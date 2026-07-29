@@ -1,3 +1,5 @@
+using System.Windows.Controls;
+
 namespace ArkheideSystem.Flourish.Abstract.Builder;
 
 /// <summary>
@@ -108,6 +110,14 @@ public interface IFlourishTitlebarBuilder
         NameOrder nameOrder = NameOrder.FirstLast,
         bool usePersistedPreference = true
     );
+
+    /// <summary>
+    /// Sets the page hosted inside the profile flyout.
+    /// </summary>
+    /// <typeparam name="TPage">The WPF page type resolved through dependency injection.</typeparam>
+    /// <returns>The current builder for chained configuration.</returns>
+    IFlourishTitlebarBuilder InitProfilePage<TPage>()
+        where TPage : Page;
 
     /// <summary>
     /// Configures and displays the theme toggle.

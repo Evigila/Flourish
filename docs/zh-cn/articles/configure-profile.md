@@ -101,7 +101,7 @@ services.AddSingleton<IProfileService, FoobarProfileService>();
 
 ## 承载自定义页面
 
-使用 `ConfigProfile` 可以替换 Profile 界面承载的内容。自定义页面从依赖注入容器解析；标题栏仍需调用 `UseProfile` 才会显示入口。
+在标题栏配置中使用 `InitProfilePage` 可以替换 Profile 界面承载的内容。自定义页面从依赖注入容器解析；在同一配置中调用 `UseProfile` 才会显示入口。
 
 ```csharp
 builder
@@ -109,12 +109,12 @@ builder
         services.AddTransient<FoobarProfilePage>())
     .ConfigShell(shell => shell.UseTitleBar())
     .ConfigTitleBar(titleBar =>
-        titleBar.UseProfile(nameOrder: NameOrder.FirstLast))
-    .ConfigProfile(profile =>
-        profile.InitProfilePage<FoobarProfilePage>());
+        titleBar
+            .UseProfile(nameOrder: NameOrder.FirstLast)
+            .InitProfilePage<FoobarProfilePage>());
 ```
 
-省略 `ConfigProfile` 时，`UseProfile` 使用内置页面。
+省略 `InitProfilePage` 时，`UseProfile` 使用内置页面。
 
 ## 相关功能
 

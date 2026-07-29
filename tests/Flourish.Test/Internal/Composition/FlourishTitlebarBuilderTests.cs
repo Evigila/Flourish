@@ -1,3 +1,4 @@
+using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
@@ -6,6 +7,18 @@ namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
 public sealed class FlourishTitlebarBuilderTests
 {
+    [Fact]
+    public void InitProfilePage_WithPageType_UpdatesOptionsAndReturnsBuilder()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new FlourishTitlebarBuilder(options);
+
+        var result = sut.InitProfilePage<TestProfilePage>();
+
+        Assert.Same(sut, result);
+        Assert.Equal(typeof(TestProfilePage), options.Profile.PageType);
+    }
+
     [Fact]
     public void Options_ExposeDefaultValuesButElementsRemainDisabledUntilDefaultsAreApplied()
     {
@@ -267,4 +280,6 @@ public sealed class FlourishTitlebarBuilderTests
     {
         public object? GetService(Type serviceType) => null;
     }
+
+    private sealed class TestProfilePage : Page { }
 }

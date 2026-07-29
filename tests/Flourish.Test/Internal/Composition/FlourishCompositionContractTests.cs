@@ -203,6 +203,7 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<CommandDispatcher, ICommandDispatcher>(flourish);
         AssertSingletonAdapter<ShortcutService, IShortcutService>(flourish);
         AssertSingletonAdapter<TitleBarService, ITitleBarService>(flourish);
+        AssertSingletonAdapter<ProjectCatalogStore, IProjectCatalogStore>(flourish);
         AssertSingletonAdapter<ProjectService, IProjectService>(flourish);
         Assert.IsType<DefaultProjectBehavior>(
             flourish.GetRequiredService<IProjectBehavior>()
@@ -214,7 +215,6 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<NavigationRouteRegistry, INavigationRouteRegistry>(flourish);
         AssertSingletonAdapter<PageCacheService, IPageCacheService>(flourish);
         AssertSingletonAdapter<NavigationService, INavigationService>(flourish);
-        AssertSingletonAdapter<NavigationService, IFrameNavigationService>(flourish);
     }
 
     [Fact]

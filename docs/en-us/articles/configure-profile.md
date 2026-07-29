@@ -102,7 +102,7 @@ Flourish supplies its default implementations only when the application has not 
 
 ## Host a custom page
 
-Use `ConfigProfile` to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; the title bar still requires `UseProfile` to display the trigger.
+Use `InitProfilePage` in the title bar configuration to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; call `UseProfile` in the same configuration to display the trigger.
 
 ```csharp
 builder
@@ -110,12 +110,12 @@ builder
         services.AddTransient<FoobarProfilePage>())
     .ConfigShell(shell => shell.UseTitleBar())
     .ConfigTitleBar(titleBar =>
-        titleBar.UseProfile(nameOrder: NameOrder.FirstLast))
-    .ConfigProfile(profile =>
-        profile.InitProfilePage<FoobarProfilePage>());
+        titleBar
+            .UseProfile(nameOrder: NameOrder.FirstLast)
+            .InitProfilePage<FoobarProfilePage>());
 ```
 
-When `ConfigProfile` is omitted, `UseProfile` uses the built-in page.
+When `InitProfilePage` is omitted, `UseProfile` uses the built-in page.
 
 ## Related features
 
