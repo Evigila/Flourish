@@ -31,12 +31,6 @@ public enum TitleBarElement
     Title,
 
     /// <summary>
-    /// The application subtitle in the logo information surface. It is not shown directly in the title bar.
-    /// </summary>
-    [Obsolete("Application subtitles are displayed in the logo information surface.")]
-    Subtitle,
-
-    /// <summary>
     /// The light/dark theme toggle.
     /// </summary>
     ThemeToggle,

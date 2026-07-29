@@ -64,7 +64,7 @@ public async ValueTask SaveEndpointAsync(
 | `IThemeService` | Select and persist `System`, `Light`, or `Dark` with `SetTheme`, or cycle with `ToggleTheme`; inspect `EffectiveTheme` and `IsDark`. |
 | `IAppearanceService` | Set or clear shared theme-color and corner-radius overrides, apply both atomically, and observe `Changed`. Clearing an override reveals the standard theme resources without removing application-owned resources. |
 | `IContentLayoutService` | Enable or disable centered page content and atomically set its maximum width. The active page and subsequently navigated pages use the same state. |
-| `IFontService` | Atomically change the global family and independent positive, finite Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes with `SetFont`; change the icon family; inspect, set, and clear page-specific overrides through `PageOverrides`, `SetOverrideFont`, and `ClearOverrideFont`. |
+| `IFontService` | Atomically change the global family and independent positive, finite Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes with `SetFont`; change the icon family; inspect, set, and remove page-specific overrides through `PageOverrides`, `SetOverrideFont`, and `RemoveOverrideFont`. |
 | `IToolTipService` | Switch Flourish-owned tooltips between native WPF and Flourish presentation, and change the Flourish initial delay and spawn margin with `SetSettings`; native and third-party controls are outside its scope. |
 | `IScrollService` | Read the active application-wide scrolling settings with `GetCurrent`, change smooth scrolling with `SetSmoothScrollingEnabled`, and observe `Changed`. A local `ScrollViewer.IsSmoothScrollingEnabled` value takes precedence. |
 | `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
@@ -120,13 +120,13 @@ public sealed class SearchModule(
 | --- | --- |
 | `INavigationService` | Navigate by case-sensitive route key or page type, navigate asynchronously, inspect the current route/parameter, and control back/forward history. |
 | `INavigationPanelService` | Enable, move, size, open, close, or toggle the navigation panel. |
-| `INavigationMenuService` | Atomically edit groups, fixed items, page/command items, order, labels, visibility, enabled state, and tree expansion through `Update`. |
-| `INavigationRouteRegistry` | `Register` or `Upsert` a route, remove it, and change its `FlourishPageCacheMode`. |
+| `INavigationMenuService` | Atomically edit groups, fixed items, page/command items, order, labels, visibility, enabled state, and tree expansion through `Set`. |
+| `INavigationRouteRegistry` | `Append` or `Set` a route, `Get` or remove it, and change its `FlourishPageCacheMode`. |
 | `IPageCacheService` | Change cache mode by page type, inspect cached page types, evict one page, or clear all cached instances. |
 
 Register the route before exposing a menu item that targets it. Remove the menu item before disposing the route lease.
 
-`AppendGroup`, `AppendItem`, and `AppendFixedItem` always add to the end of their target collection. Use the corresponding `InsertGroup`, `InsertItem`, or `InsertFixedItem` method when a specific zero-based position is required.
+`AppendGroup`, `AppendItem`, and `AppendFixedItem` always add to the end of their target collection. Use `SetGroupIndex`, `SetItemIndex`, or `SetFixedItemIndex` when a specific zero-based position is required.
 
 ```csharp
 public sealed class DiagnosticsModule : IDisposable
@@ -140,12 +140,12 @@ public sealed class DiagnosticsModule : IDisposable
         INavigationService navigation)
     {
         this.menu = menu;
-        route = routes.Register(new FlourishNavigationRoute(
+        route = routes.Append(new FlourishNavigationRoute(
             "runtime.diagnostics",
             typeof(DiagnosticsPage),
             FlourishPageCacheMode.Enabled));
 
-        menu.Update(editor =>
+        menu.Set(editor =>
         {
             editor.AppendGroup("runtime", "Runtime");
             editor.AppendItem("runtime", FlourishNavigationMenuItem.Page(
@@ -157,7 +157,7 @@ public sealed class DiagnosticsModule : IDisposable
 
     public void Dispose()
     {
-        menu.Update(editor =>
+        menu.Set(editor =>
         {
             editor.RemoveItem("runtime.diagnostics.item");
             editor.RemoveGroup("runtime");
@@ -171,9 +171,9 @@ public sealed class DiagnosticsModule : IDisposable
 
 | Service | Runtime use |
 | --- | --- |
-| `IToolbarService` | Enable the surface; replace default or page-specific definitions; add, upsert, move, show, enable, remove, or clear `FlourishToolbarItem` values; change page `IconOnly` mode. |
-| `IStatusBarService` | Enable custom content and built-in LAN/power indicators; add, update, move, show, hide, remove, or clear `FlourishStatusItem` values. `Show` can create a timed item and returns a disposable handle. |
-| `IShellRegionService` | Add or upsert WPF content factories in a `FlourishRegion`, then enable, reorder, remove, or clear registrations. |
+| `IToolbarService` | Enable the surface; use `SetDefault` or `Set` for complete definitions; `Append`, `SetItem`, `SetOrder`, or `Remove` individual `FlourishToolbarItem` values; change item state and page `IconOnly` mode with `Set` operations. |
+| `IStatusBarService` | Enable custom content and built-in LAN/power indicators; `Append`, `SetItem`, `SetOrder`, or `Remove` `FlourishStatusItem` values. `Show` can create a timed item and returns a disposable handle. |
+| `IShellRegionService` | Use `Append` or `Set` for WPF content factories in a `FlourishRegion`, then enable, reorder, or remove registrations with `Set` and `Remove` operations. |
 
 Toolbar and navigation command items are dispatched through `ICommandDispatcher`.
 

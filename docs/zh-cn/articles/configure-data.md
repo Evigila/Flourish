@@ -19,14 +19,14 @@ builder.ConfigData(data => data.InitLocale("en-US"));
 
 ## 添加自定义语言
 
-`InitLocaleFile(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `lang_<locale>.json` 格式；语言部分可以包含字母、数字、连字符和下划线，并且分隔符两侧都必须有非空子标识。文件名中的标识使用与 `InitLocale` 相同的规范化规则。
+`AddLocaleFile(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `lang_<locale>.json` 格式；语言部分可以包含字母、数字、连字符和下划线，并且分隔符两侧都必须有非空子标识。文件名中的标识使用与 `InitLocale` 相同的规范化规则。
 
 ```csharp
 builder.ConfigData(data =>
 {
     data
         .InitLocale("en-US")
-        .InitLocaleFile("Locales/lang_en-US.json");
+        .AddLocaleFile("Locales/lang_en-US.json");
 });
 ```
 
@@ -41,7 +41,7 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 }
 ```
 
-为同一语言多次调用 `InitLocaleFile` 时，Flourish 会按注册顺序合并文件，后添加的文件会覆盖先添加文件中的同名键。每次查找按以下优先级返回文本：
+为同一语言多次调用 `AddLocaleFile` 时，Flourish 会按注册顺序合并文件，后添加的文件会覆盖先添加文件中的同名键。每次查找按以下优先级返回文本：
 
 1. 选中语言的自定义值。
 2. 选中语言的内置值。

@@ -12,7 +12,7 @@ public sealed class FontServicePageTests
     [Fact]
     public void ApplyToPage_GlobalResourcesBridgeTheFrameInheritanceBoundary()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var service = new FontService(new FlourishShellOptions());
             var text = new TextBlock();
@@ -32,7 +32,7 @@ public sealed class FontServicePageTests
     [Fact]
     public void ApplyToPage_OverrideUpdatesInheritedAndResourceBasedTextButPreservesExplicitFont()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var service = new FontService(new FlourishShellOptions());
             var inheritedText = new TextBlock();
@@ -67,7 +67,7 @@ public sealed class FontServicePageTests
     [Fact]
     public void ApplyToPage_OverrideWithoutSizeFollowsGlobalAndRestoresOriginalResources()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var service = new FontService(new FlourishShellOptions());
             var page = new FontPage();
@@ -93,7 +93,7 @@ public sealed class FontServicePageTests
             Assert.False(page.Resources.Contains("FlourishFontSizeLarge"));
             Assert.False(page.Resources.Contains("FlourishFontSizeExtraLarge"));
 
-            Assert.True(service.ClearOverrideFont<FontPage>());
+            Assert.True(service.RemoveOverrideFont<FontPage>());
             service.ApplyToPage(page);
             Assert.Same(originalFamily, page.Resources["FlourishFontFamily"]);
             Assert.Equal("Times New Roman", page.FontFamily.Source);
@@ -104,7 +104,7 @@ public sealed class FontServicePageTests
     [Fact]
     public void ApplyToPage_PartialOverrideKeepsExplicitTierAndRefreshesFollowingTiers()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var service = new FontService(new FlourishShellOptions());
             var resources = new ResourceDictionary();
@@ -137,7 +137,7 @@ public sealed class FontServicePageTests
     [Fact]
     public void ApplyToPage_UsesConfiguredTypeForFactoryReturnedDerivedPage()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var service = new FontService(new FlourishShellOptions());
             var page = new DerivedFontPage();
@@ -152,30 +152,6 @@ public sealed class FontServicePageTests
             Assert.Equal(23d, page.Resources["FlourishFontSizeLarge"]);
             Assert.Equal(27d, page.Resources["FlourishFontSizeExtraLarge"]);
         });
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 
     private class FontPage : Page { }

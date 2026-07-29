@@ -29,7 +29,7 @@ internal sealed class TrayIconService(
     private string toolTipText = "Flourish";
     private FlourishTrayState? lastPublishedState;
 
-    public event EventHandler<FlourishTrayStateChangedEventArgs>? StateChanged;
+    public event EventHandler<FlourishTrayStateChangedEventArgs>? Changed;
 
     public FlourishTrayState Current
     {
@@ -485,6 +485,6 @@ internal sealed class TrayIconService(
             lastPublishedState = state;
         }
 
-        StateChanged?.Invoke(this, new FlourishTrayStateChangedEventArgs(state));
+        Changed?.Invoke(this, new FlourishTrayStateChangedEventArgs(state));
     }
 }

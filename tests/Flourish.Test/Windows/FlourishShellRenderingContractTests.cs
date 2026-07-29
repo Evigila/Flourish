@@ -7,7 +7,7 @@ public sealed class FlourishShellRenderingContractTests
 {
     private const string XamlNamespace =
         "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string ShellXamlPath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -149,21 +149,5 @@ public sealed class FlourishShellRenderingContractTests
         Assert.True(start >= 0, $"Could not find method marker '{startMarker}'.");
         Assert.True(end > start, $"Could not find method marker '{endMarker}'.");
         return source[start..end];
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Could not find the Flourish repository root.");
     }
 }

@@ -44,7 +44,7 @@ public sealed class FrameNavigationContentHostTests
     [Fact]
     public void Navigation_UsesOnlyTheBoundedFlourishHistory()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var frame = new Frame
             {
@@ -82,20 +82,20 @@ public sealed class FrameNavigationContentHostTests
                 NavigateAndAssert(sut, frame, HomeKey, 3, typeof(HomePage));
 
                 Assert.True(sut.GoBack());
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 AssertNavigationState(sut, frame, GalleryKey, 2, typeof(GalleryPage));
 
                 Assert.True(sut.GoBack());
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 AssertNavigationState(sut, frame, SettingsKey, 1, typeof(SettingsPage));
                 Assert.False(sut.GoBack());
 
                 Assert.True(sut.GoForward());
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 AssertNavigationState(sut, frame, GalleryKey, 2, typeof(GalleryPage));
 
                 Assert.True(sut.GoForward());
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 AssertNavigationState(sut, frame, HomeKey, 3, typeof(HomePage));
                 Assert.False(sut.GoForward());
             }
@@ -115,7 +115,7 @@ public sealed class FrameNavigationContentHostTests
     )
     {
         Assert.True(service.Navigate(navigationKey, parameter));
-        PumpDispatcher();
+        DispatcherTest.DrainApplicationIdle();
         AssertNavigationState(service, frame, navigationKey, parameter, expectedPageType);
     }
 
@@ -147,14 +147,6 @@ public sealed class FrameNavigationContentHostTests
         );
     }
 
-    private static void PumpDispatcher()
-    {
-        Dispatcher.CurrentDispatcher.Invoke(
-            DispatcherPriority.ApplicationIdle,
-            new Action(() => { })
-        );
-    }
-
     private static string GetShellXamlPath()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
@@ -177,30 +169,6 @@ public sealed class FrameNavigationContentHostTests
         }
 
         throw new DirectoryNotFoundException("Could not locate the repository root.");
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 
     private sealed class TestPageProvider : INavigationPageProvider

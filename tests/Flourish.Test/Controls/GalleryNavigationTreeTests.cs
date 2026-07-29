@@ -6,7 +6,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 
 public sealed class GalleryNavigationTreeTests
 {
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string ProgramPath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -105,28 +105,6 @@ public sealed class GalleryNavigationTreeTests
             "services.AddNavigable<ToolbarStatusPage>",
             source,
             StringComparison.Ordinal
-        );
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Gallery"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException(
-            $"Could not locate the Flourish repository above {AppContext.BaseDirectory}."
         );
     }
 }

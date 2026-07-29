@@ -15,29 +15,25 @@ public interface IToolbarService
     void SetEnabled(bool enabled);
 
     /// <summary>Replaces the default toolbar used when no page-specific toolbar exists.</summary>
-    void ReplaceDefault(IEnumerable<FlourishToolbarItem> items);
+    void SetDefault(IEnumerable<FlourishToolbarItem> items);
 
     /// <summary>Replaces the toolbar for a page type.</summary>
-    void Replace(Type pageType, IEnumerable<FlourishToolbarItem> items, bool iconOnly = true);
-
-    /// <summary>Replaces the toolbar for a page type.</summary>
-    void Replace<TPage>(IEnumerable<FlourishToolbarItem> items, bool iconOnly = true)
-        where TPage : Page;
+    void Set(Type pageType, IEnumerable<FlourishToolbarItem> items, bool iconOnly = true);
 
     /// <summary>Adds an item to the selected toolbar.</summary>
-    void Add(FlourishToolbarItem item, Type? pageType = null, int? index = null);
+    void Append(FlourishToolbarItem item, Type? pageType = null, int? index = null);
 
     /// <summary>Adds or replaces an item by stable ID.</summary>
-    void Upsert(FlourishToolbarItem item, Type? pageType = null, int? index = null);
+    void SetItem(FlourishToolbarItem item, Type? pageType = null, int? index = null);
 
     /// <summary>Removes an item by stable ID.</summary>
     bool Remove(string id, Type? pageType = null);
 
     /// <summary>Removes all items from the selected toolbar.</summary>
-    void Clear(Type? pageType = null);
+    void RemoveAll(Type? pageType = null);
 
     /// <summary>Moves an item to a zero-based index.</summary>
-    void Move(string id, int newIndex, Type? pageType = null);
+    void SetOrder(string id, int newIndex, Type? pageType = null);
 
     /// <summary>Enables or disables an item.</summary>
     void SetItemEnabled(string id, bool enabled, Type? pageType = null);

@@ -89,7 +89,7 @@
             Content="Add or replace a project only when its local file exists."
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="UpsertProject_Click" Content="Add or replace" />
+              <flourish:Button Click="SetProject_Click" Content="Add or replace" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -105,7 +105,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CollectionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AppendProject(project);&#10;projects.UpsertProject(project);&#10;&#10;if (projects.TryGetProject(&quot;gallery&quot;, out var registered))&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
+        <flourish:CodeSpace Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AppendProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
       </StackPanel>
     </flourish:Chunk>
 

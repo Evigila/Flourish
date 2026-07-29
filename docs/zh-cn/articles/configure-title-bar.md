@@ -79,7 +79,7 @@ titleBar.UseLogo(
 
 ```csharp
 builder.ConfigCustomHandler(custom =>
-    custom.InitRegionContent(
+    custom.AddRegionContent(
         FlourishRegion.TitlebarApplicationInfo,
         services => new ApplicationSummaryView()));
 ```

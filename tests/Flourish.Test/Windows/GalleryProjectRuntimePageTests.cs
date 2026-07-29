@@ -4,7 +4,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 
 public sealed class GalleryProjectRuntimePageTests
 {
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string ProjectPageXaml = File.ReadAllText(
         Path.Combine(RepositoryRoot, "src", "Gallery", "Views", "ProjectRuntimePage.xaml")
     );
@@ -81,24 +81,5 @@ public sealed class GalleryProjectRuntimePageTests
         Assert.Contains("string.IsNullOrWhiteSpace(value)", ProjectPageCode);
         Assert.Contains("File.Exists(storagePath)", ProjectPageCode);
         Assert.DoesNotContain("NullIfWhiteSpace(StoragePathBox.Text)", ProjectPageCode);
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (
-                Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Gallery"))
-            )
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the repository root.");
     }
 }

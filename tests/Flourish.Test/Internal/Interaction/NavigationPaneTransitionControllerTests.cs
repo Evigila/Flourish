@@ -47,7 +47,7 @@ public sealed class NavigationPaneTransitionControllerTests
         double targetWidth
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(direction, committedWidth);
             var sut = new NavigationPaneTransitionController();
@@ -124,7 +124,7 @@ public sealed class NavigationPaneTransitionControllerTests
         double workWidth
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = CenteredTransitionFixture.Create(
                 direction,
@@ -243,7 +243,7 @@ public sealed class NavigationPaneTransitionControllerTests
         double targetWidth
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const double workWidth = 1000;
             var workArea = new Grid { Width = workWidth, Height = 400 };
@@ -415,7 +415,7 @@ public sealed class NavigationPaneTransitionControllerTests
         double workWidth
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = CenteredTransitionFixture.Create(direction, 220, workWidth);
             var sut = new NavigationPaneTransitionController();
@@ -500,7 +500,7 @@ public sealed class NavigationPaneTransitionControllerTests
         double workWidth
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = CenteredTransitionFixture.Create(
                 NavigationPanelDirection.Right,
@@ -570,7 +570,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void Completion_InvokesCallbackOnceAndRestoresPresentationState()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var sut = new NavigationPaneTransitionController();
@@ -633,7 +633,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void Reverse_ContinuesFromCurrentWidthAndDoesNotRunSupersededCallback()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var sut = new NavigationPaneTransitionController();
@@ -706,7 +706,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void MotionService_ReverseToCommittedWidthKeepsTheControllerActiveUntilItReturns()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var controller = new NavigationPaneTransitionController();
@@ -767,7 +767,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void Cancel_DropsCallbackAndRestoresPresentationState()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Right, 220);
             var sut = new NavigationPaneTransitionController();
@@ -829,7 +829,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [InlineData(true)]
     public void End_RestoresNonDefaultContentTransformAndOrigin(bool complete)
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var originalTransform = new RotateTransform(7);
             var originalOrigin = new Point(0.25, 0.75);
@@ -890,7 +890,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void Start_WhenTemporaryPresentationInstallationFails_RestoresPresentationState()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var originalTransform = new SkewTransform(4, 2);
             var originalOrigin = new Point(0.4, 0.6);
@@ -941,7 +941,7 @@ public sealed class NavigationPaneTransitionControllerTests
         bool systemAnimationsEnabled
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var controller = new NavigationPaneTransitionController();
@@ -974,7 +974,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void SeekingRenderClocksDoesNotRemeasureOrRearrangeContent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var sut = new NavigationPaneTransitionController();
@@ -1012,7 +1012,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void SeekingCappedCenteredContentClocks_UsesTransformCompensationWithoutLayout()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = CenteredTransitionFixture.Create(
                 NavigationPanelDirection.Left,
@@ -1073,7 +1073,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void SeekingCrossThresholdCenteredContentClocks_UsesTransformCompensationWithoutLayout()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = CenteredTransitionFixture.Create(
                 NavigationPanelDirection.Left,
@@ -1135,7 +1135,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Fact]
     public void ProductionSource_DoesNotAnimateLayoutWidths()
     {
-        var flourishRoot = Path.Combine(FindRepositoryRoot(), "src", "Flourish");
+        var flourishRoot = Path.Combine(TestPaths.RepositoryRoot, "src", "Flourish");
         var source = string.Join(
             Environment.NewLine,
             Directory.EnumerateFiles(flourishRoot, "*.cs", SearchOption.AllDirectories)
@@ -1245,50 +1245,6 @@ public sealed class NavigationPaneTransitionControllerTests
             fixture.OriginalContentTransformOriginLocalValue,
             fixture.Content.ReadLocalValue(UIElement.RenderTransformOriginProperty)
         );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the Flourish repository root.");
     }
 
     private sealed class LinearEase : EasingFunctionBase

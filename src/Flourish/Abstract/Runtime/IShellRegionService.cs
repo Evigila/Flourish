@@ -12,7 +12,7 @@ public interface IShellRegionService
     FlourishShellRegionSnapshot Current { get; }
 
     /// <summary>Adds a registration and returns a handle that removes it when disposed.</summary>
-    IShellRegionRegistration Add(
+    IShellRegionRegistration Append(
         string id,
         FlourishRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
@@ -20,7 +20,7 @@ public interface IShellRegionService
     );
 
     /// <summary>Adds or replaces a registration by stable ID.</summary>
-    IShellRegionRegistration Upsert(
+    IShellRegionRegistration Set(
         string id,
         FlourishRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
@@ -37,7 +37,7 @@ public interface IShellRegionService
     bool Remove(string id);
 
     /// <summary>Removes all registrations in a region.</summary>
-    void Clear(FlourishRegion region);
+    void RemoveAll(FlourishRegion region);
 }
 
 /// <summary>Controls the lifetime of a runtime shell region registration.</summary>

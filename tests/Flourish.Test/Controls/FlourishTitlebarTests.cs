@@ -116,7 +116,7 @@ public sealed class FlourishTitlebarTests
     [Fact]
     public void LocalizedToolTips_KeepTheirOpenWrapperWhenTitleBarStateRefreshes()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var sut = new FlourishTitlebar();
             var localization = new FlourishLocalizationService(new FlourishDataOptions());
@@ -139,7 +139,7 @@ public sealed class FlourishTitlebarTests
     [Fact]
     public void SearchText_ProgrammaticUpdatesDoNotPublishOrResetAnUnchangedSelection()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var sut = new FlourishTitlebar();
             var queries = new List<string>();
@@ -159,29 +159,5 @@ public sealed class FlourishTitlebarTests
             Assert.Equal(2, searchBox.SelectionLength);
             Assert.Equal(["typed"], queries);
         });
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

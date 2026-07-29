@@ -53,7 +53,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="ToolbarOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
-        <flourish:CodeSpace Text="var item = new FlourishToolbarItem(&#10;    &quot;Run report&quot;, &quot;\uE768&quot;, &quot;reports.run&quot;)&#10;{&#10;    Id = &quot;reports.toolbar.run&quot;,&#10;};&#10;&#10;toolbar.SetEnabled(true);&#10;toolbar.Upsert(item, typeof(ToolbarStatusPage));&#10;toolbar.SetItemEnabled(item.Id, true, typeof(ToolbarStatusPage));&#10;toolbar.SetItemVisible(item.Id, true, typeof(ToolbarStatusPage));&#10;toolbar.SetIconOnly(typeof(ToolbarStatusPage), false);&#10;toolbar.Move(item.Id, 0, typeof(ToolbarStatusPage));&#10;toolbar.Remove(item.Id, typeof(ToolbarStatusPage));" />
+        <flourish:CodeSpace Text="var item = new FlourishToolbarItem(&#10;    &quot;Run report&quot;, &quot;\uE768&quot;, &quot;reports.run&quot;)&#10;{&#10;    Id = &quot;reports.toolbar.run&quot;,&#10;};&#10;&#10;toolbar.SetEnabled(true);&#10;toolbar.SetItem(item, typeof(ToolbarStatusPage));&#10;toolbar.SetItemEnabled(item.Id, true, typeof(ToolbarStatusPage));&#10;toolbar.SetItemVisible(item.Id, true, typeof(ToolbarStatusPage));&#10;toolbar.SetIconOnly(typeof(ToolbarStatusPage), false);&#10;toolbar.SetOrder(item.Id, 0, typeof(ToolbarStatusPage));&#10;toolbar.Remove(item.Id, typeof(ToolbarStatusPage));" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -112,7 +112,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="StatusOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
-        <flourish:CodeSpace Text="status.SetEnabled(true);&#10;status.Upsert(new FlourishStatusItem(&#10;    &quot;sync.status&quot;, &quot;Synchronization ready&quot;, &quot;\uE946&quot;));&#10;&#10;// Timed messages remove themselves after the requested duration.&#10;status.Show(&quot;sync.complete&quot;, &quot;Synchronization complete&quot;,&#10;    &quot;\uE823&quot;, TimeSpan.FromSeconds(4));&#10;&#10;status.SetItemVisible(&quot;sync.status&quot;, true);&#10;status.Move(&quot;sync.status&quot;, 0);&#10;status.SetLanStatusEnabled(true);&#10;status.SetPowerStatusEnabled(true);&#10;status.Remove(&quot;sync.status&quot;);" />
+        <flourish:CodeSpace Text="status.SetEnabled(true);&#10;status.SetItem(new FlourishStatusItem(&#10;    &quot;sync.status&quot;, &quot;Synchronization ready&quot;, &quot;\uE946&quot;));&#10;&#10;// Timed messages remove themselves after the requested duration.&#10;status.Show(&quot;sync.complete&quot;, &quot;Synchronization complete&quot;,&#10;    &quot;\uE823&quot;, TimeSpan.FromSeconds(4));&#10;&#10;status.SetItemVisible(&quot;sync.status&quot;, true);&#10;status.SetOrder(&quot;sync.status&quot;, 0);&#10;status.SetLanStatusEnabled(true);&#10;status.SetPowerStatusEnabled(true);&#10;status.Remove(&quot;sync.status&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -146,7 +146,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RegionOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
-        <flourish:CodeSpace Text="regions.Upsert(&#10;    &quot;reports.header&quot;,&#10;    FlourishRegion.ContentHeader,&#10;    _ =&gt; CreateReportHeader(),&#10;    order: 50);&#10;&#10;regions.SetEnabled(&quot;reports.header&quot;, true);&#10;regions.SetOrder(&quot;reports.header&quot;, 90);&#10;var entries = regions.Current.Entries;&#10;regions.Remove(&quot;reports.header&quot;);" />
+        <flourish:CodeSpace Text="regions.Set(&#10;    &quot;reports.header&quot;,&#10;    FlourishRegion.ContentHeader,&#10;    _ =&gt; CreateReportHeader(),&#10;    order: 50);&#10;&#10;regions.SetEnabled(&quot;reports.header&quot;, true);&#10;regions.SetOrder(&quot;reports.header&quot;, 90);&#10;var entries = regions.Current.Entries;&#10;regions.Remove(&quot;reports.header&quot;);" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

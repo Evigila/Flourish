@@ -17,8 +17,8 @@ builder
     {
         custom
             .InitProfileContent(_ => new Button { Content = "Foo Bar" })
-            .InitTitleBarAction("同步", "\uE895", "sync.run")
-            .InitFooterCommand(
+            .AddTitleBarAction("同步", "\uE895", "sync.run")
+            .AddFooterCommand(
                 FlourishRegion.FooterEnd,
                 "帮助",
                 "\uE946",
@@ -40,11 +40,11 @@ builder
 builder.ConfigCustomHandler(custom =>
 {
     custom
-        .InitRegionContent(
+        .AddRegionContent(
             FlourishRegion.TitlebarEnd,
             services => new SyncStatusView(
                 services.GetRequiredService<SyncService>()))
-        .InitRegionContent(
+        .AddRegionContent(
             FlourishRegion.TitlebarApplicationInfo,
             services => new ApplicationDetailsView(
                 services.GetRequiredService<ApplicationDetailsService>()));

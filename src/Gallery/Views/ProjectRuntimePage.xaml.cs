@@ -69,12 +69,12 @@ public partial class ProjectRuntimePage : Page
         RefreshState();
     }
 
-    private void UpsertProject_Click(object sender, RoutedEventArgs e)
+    private void SetProject_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             var project = ReadProjectInput();
-            projects.UpsertProject(project);
+            projects.SetProject(project);
             CollectionOutput.WriteLine($"Added or replaced project '{project.Id}'.");
         }
         catch (Exception error)
@@ -89,10 +89,7 @@ public partial class ProjectRuntimePage : Page
     {
         try
         {
-            if (
-                projects.TryGetProject(ProjectIdBox.Text, out var project)
-                && project is not null
-            )
+            if (projects.GetProject(ProjectIdBox.Text) is { } project)
             {
                 CollectionOutput.WriteLine(
                     $"Found '{project.Name}' [{project.Id}] at {project.StoragePath ?? "<no storage path>"}."

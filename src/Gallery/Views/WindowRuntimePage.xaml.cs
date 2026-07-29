@@ -43,16 +43,16 @@ public partial class WindowRuntimePage : Page
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
         Page_Unloaded(sender, e);
-        window.StateChanged += RuntimeState_Changed;
-        tray.StateChanged += RuntimeState_Changed;
+        window.Changed += RuntimeState_Changed;
+        tray.Changed += RuntimeState_Changed;
         notifications.NotificationsChanged += RuntimeState_Changed;
         RefreshAll();
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        window.StateChanged -= RuntimeState_Changed;
-        tray.StateChanged -= RuntimeState_Changed;
+        window.Changed -= RuntimeState_Changed;
+        tray.Changed -= RuntimeState_Changed;
         notifications.NotificationsChanged -= RuntimeState_Changed;
         closeGuard?.Dispose();
         closeGuard = null;

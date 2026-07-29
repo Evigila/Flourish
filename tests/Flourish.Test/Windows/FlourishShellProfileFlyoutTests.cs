@@ -9,7 +9,7 @@ public sealed class FlourishShellProfileFlyoutTests
 {
     private static readonly string ShellSource = File.ReadAllText(
         Path.Combine(
-            FindRepositoryRoot(),
+            TestPaths.RepositoryRoot,
             "src",
             "Flourish",
             "Views",
@@ -216,28 +216,6 @@ public sealed class FlourishShellProfileFlyoutTests
         }
 
         return count;
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException(
-            $"Could not locate the Flourish repository above {AppContext.BaseDirectory}."
-        );
     }
 
     private sealed class FirstProfilePage : Page;

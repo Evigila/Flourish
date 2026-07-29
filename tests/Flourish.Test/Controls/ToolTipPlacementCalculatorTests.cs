@@ -147,7 +147,7 @@ public sealed class ToolTipPlacementCalculatorTests
     [Fact]
     public void ResolveRegion_PreservesStatusUpperAndNavigationPrecedence()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             Assert.Equal(
                 ToolTipPlacementRegion.StatusBar,
@@ -191,29 +191,5 @@ public sealed class ToolTipPlacementCalculatorTests
         root.Arrange(new Rect(0, 0, 300, 200));
 
         return FlourishToolTipPlacement.ResolveRegion(target, root);
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

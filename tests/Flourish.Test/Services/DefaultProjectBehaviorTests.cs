@@ -194,7 +194,8 @@ public sealed class DefaultProjectBehaviorTests
         Assert.True(File.Exists(savedPath));
         Assert.Equal("second", activationRequest?.Project.Id);
         Assert.Equal("second", projects.Current.ActiveProject?.Id);
-        Assert.True(projects.TryGetProject("first", out var saved));
+        var saved = projects.GetProject("first");
+        Assert.NotNull(saved);
         Assert.Equal(Path.GetFullPath(savedPath), saved?.StoragePath);
     }
 
@@ -497,28 +498,6 @@ public sealed class DefaultProjectBehaviorTests
             }
 
             throw new IOException("catalog persistence failed");
-        }
-    }
-
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                $"flourish-project-behavior-{Guid.NewGuid():N}"
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(Path))
-            {
-                Directory.Delete(Path, recursive: true);
-            }
         }
     }
 }

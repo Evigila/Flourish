@@ -135,7 +135,7 @@ internal sealed class NavigationService : INavigationService, IFrameNavigationSe
 
     public bool CanNavigate(string navigationKey)
     {
-        return routeRegistry.Contains(navigationKey);
+        return routeRegistry.Get(navigationKey) is not null;
     }
 
     public bool Navigate<TPage>(object? parameter = null, bool addToBackStack = true)

@@ -20,7 +20,7 @@ public sealed class CenteredPageContentLayoutTests
     [Fact]
     public void Apply_WithoutWidthLimit_KeepsScrollableContentUnconstrained()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var scrollViewer = new WpfScrollViewer { Content = new Grid() };
             var page = new Page { Content = scrollViewer };
@@ -38,7 +38,7 @@ public sealed class CenteredPageContentLayoutTests
     [Fact]
     public void Apply_WithRootScrollViewer_LimitsOnlyTheScrollableContent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border { Height = 900 };
             var scrollViewer = new CustomScrollViewer
@@ -65,7 +65,7 @@ public sealed class CenteredPageContentLayoutTests
     [Fact]
     public void Apply_WhenCalledAgain_ReusesTheCenteredPresenter()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var scrollViewer = new WpfScrollViewer { Content = new Grid() };
             var page = new Page { Content = scrollViewer };
@@ -84,7 +84,7 @@ public sealed class CenteredPageContentLayoutTests
     [Fact]
     public void Apply_WithWideViewport_CentersContentAndLeavesScrollbarAtViewportEdge()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border { Height = 900 };
             var scrollViewer = new CustomScrollViewer
@@ -116,7 +116,7 @@ public sealed class CenteredPageContentLayoutTests
 
             try
             {
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 var presenter = Assert.IsType<CenteredPageContentPresenter>(
                     scrollViewer.Content
                 );
@@ -148,7 +148,7 @@ public sealed class CenteredPageContentLayoutTests
     [Fact]
     public void Apply_WithNarrowViewport_UsesTheAvailableContentWidth()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var scrollViewer = new CustomScrollViewer
             {
@@ -179,7 +179,7 @@ public sealed class CenteredPageContentLayoutTests
 
             try
             {
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 var presenter = Assert.IsType<CenteredPageContentPresenter>(
                     scrollViewer.Content
                 );
@@ -200,7 +200,7 @@ public sealed class CenteredPageContentLayoutTests
     [Fact]
     public void Apply_WithRootScrollViewer_HonorsPresenterRenderScale()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border
             {
@@ -236,13 +236,13 @@ public sealed class CenteredPageContentLayoutTests
 
             try
             {
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 var presenter = Assert.IsType<CenteredPageContentPresenter>(
                     scrollViewer.Content
                 );
                 presenter.RenderTransformOrigin = new Point(0.5, 0);
                 presenter.RenderTransform = new ScaleTransform(0.5, 1);
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
 
                 var pixelWidth = (int)Math.Ceiling(scrollViewer.ActualWidth);
                 var bitmap = new RenderTargetBitmap(
@@ -310,35 +310,4 @@ public sealed class CenteredPageContentLayoutTests
         );
     }
 
-    private static void PumpDispatcher()
-    {
-        Dispatcher.CurrentDispatcher.Invoke(
-            DispatcherPriority.ApplicationIdle,
-            new Action(() => { })
-        );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
 }

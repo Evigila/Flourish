@@ -18,7 +18,7 @@ public sealed class PageTransitionControllerTests
     private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(200);
     private static readonly XNamespace Xaml =
         "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
 
     [Theory]
     [InlineData(FlourishPageTransition.Fade)]
@@ -27,7 +27,7 @@ public sealed class PageTransitionControllerTests
         FlourishPageTransition transition
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create();
             var sut = new PageTransitionController();
@@ -104,7 +104,7 @@ public sealed class PageTransitionControllerTests
     [Fact]
     public void Cancel_DropsTheCallbackAndRestoresOriginalPresentation()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(
                 withOriginalOpacity: true,
@@ -145,7 +145,7 @@ public sealed class PageTransitionControllerTests
     [Fact]
     public void ConsecutiveNavigation_DropsTheStaleRunAndCompletesOnlyTheLatestRun()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create();
             var sut = new PageTransitionController();
@@ -195,7 +195,7 @@ public sealed class PageTransitionControllerTests
     [Fact]
     public void InvalidTransition_CancelsTheActiveRunAndRestoresPresentation()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(withOriginalCache: true);
             var sut = new PageTransitionController();
@@ -230,7 +230,7 @@ public sealed class PageTransitionControllerTests
     [Fact]
     public void Start_WhenInstallingTheTemporaryTransformThrows_RestoresPresentation()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var presenter = new ThrowOncePresenter();
             var fixture = TransitionFixture.Create(
@@ -261,7 +261,7 @@ public sealed class PageTransitionControllerTests
     [Fact]
     public void Completion_PreservesExistingBindings()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var source = new TransitionBindingSource
             {
@@ -366,7 +366,7 @@ public sealed class PageTransitionControllerTests
         bool systemAnimationsEnabled
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create(withOriginalCache: true);
             var controller = new PageTransitionController();
@@ -401,7 +401,7 @@ public sealed class PageTransitionControllerTests
         FlourishPageTransition transition
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create();
             var options = new FlourishShellOptions();
@@ -478,52 +478,6 @@ public sealed class PageTransitionControllerTests
     private static void AssertClose(double expected, double actual)
     {
         Assert.InRange(actual, expected - 0.0001, expected + 0.0001);
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException(
-            $"Could not locate the Flourish repository above {AppContext.BaseDirectory}."
-        );
     }
 
     private sealed class LinearEase : EasingFunctionBase

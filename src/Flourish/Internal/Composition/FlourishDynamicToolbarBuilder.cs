@@ -9,16 +9,7 @@ internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options
         IFlourishDynamicToolbarBuilder
 {
     public IFlourishDynamicToolbarBuilder InitToolbarItems<TPage>(
-        params FlourishToolbarItem[] items
-    )
-        where TPage : Page
-    {
-        ThrowIfFrozen();
-        return InitToolbarItems<TPage>(true, items);
-    }
-
-    public IFlourishDynamicToolbarBuilder InitToolbarItems<TPage>(
-        bool icon,
+        bool iconOnly,
         params FlourishToolbarItem[] items
     )
         where TPage : Page
@@ -31,7 +22,7 @@ internal sealed class FlourishDynamicToolbarBuilder(FlourishShellOptions options
         }
 
         options.DynamicToolbarItems[typeof(TPage)] = items.ToArray();
-        options.DynamicToolbarIconModes[typeof(TPage)] = icon;
+        options.DynamicToolbarIconModes[typeof(TPage)] = iconOnly;
         return this;
     }
 }

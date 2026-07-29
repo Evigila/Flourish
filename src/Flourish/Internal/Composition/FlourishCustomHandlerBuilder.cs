@@ -8,7 +8,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
     : FlourishBuilderMutationGuard,
         IFlourishCustomHandlerBuilder
 {
-    public IFlourishCustomHandlerBuilder InitRegionContent(
+    public IFlourishCustomHandlerBuilder AddRegionContent(
         FlourishRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
@@ -35,7 +35,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishCustomHandlerBuilder InitTitleBarAction(
+    public IFlourishCustomHandlerBuilder AddTitleBarAction(
         string displayName,
         string iconGlyph,
         string? commandKey,
@@ -44,7 +44,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
     {
         ThrowIfFrozen();
         displayName = ValidateNotBlank(displayName, nameof(displayName));
-        return InitRegionContent(
+        return AddRegionContent(
             FlourishRegion.TitlebarEnd,
             services => FlourishRegionElementFactory.CreateTitlebarActionButton(
                 services,
@@ -57,7 +57,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         );
     }
 
-    public IFlourishCustomHandlerBuilder InitTitleBarActionHandler(
+    public IFlourishCustomHandlerBuilder AddTitleBarActionHandler(
         string displayName,
         string iconGlyph,
         Action<IServiceProvider> action,
@@ -67,7 +67,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         ThrowIfFrozen();
         displayName = ValidateNotBlank(displayName, nameof(displayName));
         ArgumentNullException.ThrowIfNull(action);
-        return InitRegionContent(
+        return AddRegionContent(
             FlourishRegion.TitlebarEnd,
             services => FlourishRegionElementFactory.CreateTitlebarActionButton(
                 services,
@@ -80,7 +80,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         );
     }
 
-    public IFlourishCustomHandlerBuilder InitFooterCommand(
+    public IFlourishCustomHandlerBuilder AddFooterCommand(
         FlourishRegion region,
         string displayText,
         string iconGlyph,
@@ -91,7 +91,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         ThrowIfFrozen();
         ValidateFooterRegion(region, nameof(region));
         displayText = ValidateNotBlank(displayText, nameof(displayText));
-        return InitRegionContent(
+        return AddRegionContent(
             region,
             services => FlourishRegionElementFactory.CreateFooterCommandButton(
                 services,
@@ -104,7 +104,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         );
     }
 
-    public IFlourishCustomHandlerBuilder InitFooterCommandHandler(
+    public IFlourishCustomHandlerBuilder AddFooterCommandHandler(
         FlourishRegion region,
         string displayText,
         string iconGlyph,
@@ -116,7 +116,7 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         ValidateFooterRegion(region, nameof(region));
         displayText = ValidateNotBlank(displayText, nameof(displayText));
         ArgumentNullException.ThrowIfNull(action);
-        return InitRegionContent(
+        return AddRegionContent(
             region,
             services => FlourishRegionElementFactory.CreateFooterCommandButton(
                 services,

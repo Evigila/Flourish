@@ -387,7 +387,7 @@ internal partial class FlourishShellWindow : Window
         RefreshBackgroundTaskStatus(backgroundTaskService.ActiveTasks);
         AttachTitlebarEvents();
 
-        themeService.ThemeChanged += ThemeService_ThemeChanged;
+        themeService.Changed += ThemeService_ThemeChanged;
         StateChanged += MainWindow_StateChanged;
         Closing += ShellWindow_Closing;
         Closed += ShellWindow_Closed;
@@ -4714,7 +4714,7 @@ internal partial class FlourishShellWindow : Window
             profileService.ProfileChanged -= ProfileService_ProfileChanged;
             isProfileServiceSubscribed = false;
         }
-        themeService.ThemeChanged -= ThemeService_ThemeChanged;
+        themeService.Changed -= ThemeService_ThemeChanged;
         themeService.Detach(this);
         materialEffectService.Detach(this);
         pageTransition.Cancel();

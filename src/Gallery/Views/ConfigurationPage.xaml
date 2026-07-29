@@ -222,7 +222,7 @@
           </StackPanel>
           <flourish:OutputCard x:Name="LocaleFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Load a custom locale during application composition.&#10;builder.ConfigData(data =&gt;&#10;    data.InitLocaleFile(&quot;Locales/lang_ES.json&quot;));&#10;&#10;// Keep the registration handle for inspection, reload, and removal.&#10;var registration = localization.RegisterFile(&quot;Locales/lang_ES.json&quot;);&#10;var id = registration.Id;&#10;var locale = registration.Locale;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
+        <flourish:CodeSpace Text="// Load a custom locale during application composition.&#10;builder.ConfigData(data =&gt;&#10;    data.AddLocaleFile(&quot;Locales/lang_ES.json&quot;));&#10;&#10;// Keep the registration handle for inspection, reload, and removal.&#10;var registration = localization.RegisterFile(&quot;Locales/lang_ES.json&quot;);&#10;var id = registration.Id;&#10;var locale = registration.Locale;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
       </StackPanel>
     </flourish:Chunk>
 

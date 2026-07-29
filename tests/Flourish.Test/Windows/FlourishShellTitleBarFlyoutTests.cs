@@ -6,7 +6,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 public sealed class FlourishShellTitleBarFlyoutTests
 {
     private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string TitleBarXamlPath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -304,22 +304,5 @@ public sealed class FlourishShellTitleBarFlyoutTests
         Assert.True(start >= 0, $"Could not find source marker: {startMarker}");
         Assert.True(end > start, $"Could not find source marker: {endMarker}");
         return ShellCode[start..end];
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "Flourish.slnx")))
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the Flourish repository root.");
     }
 }

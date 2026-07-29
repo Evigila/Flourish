@@ -19,7 +19,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void Animator_ResetAndStaticRevealPreserveExplicitVisualStates()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string templateXaml =
                 """
@@ -100,7 +100,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void PointerPressAndCaptureLoss_ClearRevealClocksWithoutLeavingStaleState()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Press" };
             var window = CreateWindow(LoadResourceDictionary(), button);
@@ -158,7 +158,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void DisabledBehavior_ClearsClocksAndDoesNotAnimatePointerEvents()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Disabled motion" };
             HoverReveal.SetAnimationDuration(button, TimeSpan.FromMinutes(1));
@@ -199,7 +199,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void DisabledControl_DoesNotResolvePartsOrStartAnimationClocks()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Disabled control" };
             HoverReveal.SetAnimationDuration(button, TimeSpan.FromMinutes(1));
@@ -238,7 +238,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void RuntimeMotionResource_UpdatesParticipantsWithoutAWindowPolicyValue()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Runtime policy" };
             var unrelatedElement = new Border();
@@ -291,7 +291,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void CustomTemplate_DisabledMotionPreservesTheBehaviorFallback()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new WpfButton { Template = CreateHoverTemplate() };
             HoverReveal.SetIsParticipant(button, true);
@@ -324,7 +324,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void FlourishControl_LocalTemplateOverrideUsesBehaviorManagedInteractionByDefault()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton
             {
@@ -363,7 +363,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void Animator_ReusesCachedPartsUntilTheTemplateChanges()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new WpfButton { Template = CreateHoverTemplate() };
             var window = CreateWindow(new ResourceDictionary(), button);
@@ -406,7 +406,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void Participant_DoesNotResolveTemplatePartsUntilTheFirstHover()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Lazy hover" };
             var window = CreateWindow(LoadResourceDictionary(), button);
@@ -434,7 +434,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void Animator_InvalidatesTheCacheWhenTheSameTemplateIsReapplied()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var template = CreateHoverTemplate();
             var button = new WpfButton { Template = template };
@@ -467,7 +467,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void Animator_NegativeCacheIsReplacedWhenAValidTemplateIsApplied()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new WpfButton { Template = CreateHoverTemplate(includeParts: false) };
             var window = CreateWindow(new ResourceDictionary(), button);
@@ -499,7 +499,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void ParticipantLifecycle_DetachesPointerWorkWhileUnloadedOrDisabled()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new WpfButton { Template = CreateHoverTemplate() };
             HoverReveal.SetIsParticipant(button, true);
@@ -553,7 +553,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void NavigationItem_HoverRevealStartsHiddenAndResetsAfterPointerLeaves()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary();
             var item = new FlourishListBoxItem
@@ -610,7 +610,7 @@ public sealed class HoverRevealVisualTests
     [Fact]
     public void ButtonTemplates_UseKeyboardFocusVisualWithoutTemplateFocusChrome()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary();
             FlourishButton[] buttons =
@@ -762,30 +762,6 @@ public sealed class HoverRevealVisualTests
             DispatcherPriority.Render,
             new Action(() => { })
         );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 
     private sealed class NavigationItemState

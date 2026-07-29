@@ -8,7 +8,7 @@ public sealed class GalleryControlPageStructureTests
 {
     private static readonly XNamespace XamlNamespace =
         "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string ViewsRoot = Path.Combine(
         RepositoryRoot,
         "src",
@@ -769,7 +769,7 @@ public sealed class GalleryControlPageStructureTests
             ],
             ["Locale files"] =
             [
-                "InitLocaleFile",
+                "AddLocaleFile",
                 "localization.RegisterFile",
                 "registration.Id",
                 "registration.Locale",
@@ -1079,23 +1079,4 @@ public sealed class GalleryControlPageStructureTests
 
     private static XDocument LoadPage(string fileName) =>
         XDocument.Load(Path.Combine(ViewsRoot, fileName));
-
-    private static string FindRepositoryRoot()
-    {
-        var current = new DirectoryInfo(AppContext.BaseDirectory);
-        while (current is not null)
-        {
-            if (
-                Directory.Exists(Path.Combine(current.FullName, "src", "Flourish"))
-                && Directory.Exists(Path.Combine(current.FullName, "src", "Gallery"))
-            )
-            {
-                return current.FullName;
-            }
-
-            current = current.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the Flourish repository root.");
-    }
 }

@@ -41,7 +41,7 @@ internal sealed class ThemeService(
     private FlourishTheme effectiveTheme = FlourishTheme.Light;
     private bool isInitialized;
 
-    public event EventHandler<FlourishThemeChangedEventArgs>? ThemeChanged;
+    public event EventHandler<FlourishThemeChangedEventArgs>? Changed;
 
     public FlourishTheme CurrentTheme
     {
@@ -270,13 +270,13 @@ internal sealed class ThemeService(
             }
 
             // Persistence may proceed once the runtime resources have been applied.
-            // Release it before user callbacks: a ThemeChanged handler is allowed to
+            // Release it before user callbacks: a Changed handler is allowed to
             // synchronously persist another setting without waiting behind this theme.
             onApplied?.Invoke();
 
             if (notify && (changed || forceNotify))
             {
-                ThemeChanged?.Invoke(this, new FlourishThemeChangedEventArgs(requested, effective));
+                Changed?.Invoke(this, new FlourishThemeChangedEventArgs(requested, effective));
             }
         }
 

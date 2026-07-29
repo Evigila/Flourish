@@ -26,7 +26,7 @@ public interface IThemeService
     /// <remarks>
     /// After WPF is initialized, the event is raised on the application dispatcher.
     /// </remarks>
-    event EventHandler<FlourishThemeChangedEventArgs>? ThemeChanged;
+    event EventHandler<FlourishThemeChangedEventArgs>? Changed;
 
     /// <summary>
     /// Selects the next System, Light, or Dark theme mode.

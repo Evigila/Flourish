@@ -21,7 +21,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ContentBodyMargin_UsesOneSharedThirtyTwoPixelGutter()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(
                 "/Flourish;component/Themes/Layout.xaml"
@@ -37,7 +37,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ComboBoxItem_DefaultStyleUsesStableAlignmentWithoutAncestorBindings()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var item = new FlourishComboBoxItem { Content = "Choice" };
             var comboBox = new FlourishComboBox { Items = { item } };
@@ -75,7 +75,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_DefaultStyleStretchesPageContentAcrossTheViewport()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border();
             var scrollViewer = new CustomScrollViewer
@@ -111,7 +111,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_DefaultStyleUsesOneStandardBarAndSmallRoundedThumb()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
@@ -162,7 +162,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_ShellSmoothScrollingResourceSuppliesAnOverridableDefault()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var inheritedViewer = new CustomScrollViewer();
             var locallyEnabledViewer = new CustomScrollViewer
@@ -194,7 +194,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_HorizontalBarUsesTheSameStandardGeometry()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var scrollViewer = new CustomScrollViewer
             {
@@ -238,7 +238,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_MouseWheelUsesMutableTransformAndUnloadsSafely()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
@@ -311,7 +311,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_MissingSmoothHostFallsBackToNativeWheelScrolling()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var scrollViewer = new CustomScrollViewer
             {
@@ -367,7 +367,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void OutputCard_OverflowViewportConsumesWheelBeforeAncestorAndReleasesItAtBoundary()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var outputCard = new OutputCard
             {
@@ -465,7 +465,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_TemplateCreatesIndependentMutableTransforms()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var firstContent = new Border { Height = 240 };
             var secondContent = new Border { Height = 240 };
@@ -512,7 +512,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_MouseWheelAnimationCompletesAndStopsRendering()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
@@ -568,7 +568,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_SmoothTransformPreservesAndRestoresContentTransform()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var originalTransform = new ScaleTransform(1.05, 0.95);
             var content = new Border
@@ -608,7 +608,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_SwitchingToLogicalScrollingStopsPhysicalAnimation()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border { Height = 600 };
             var scrollViewer = new CustomScrollViewer
@@ -685,7 +685,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_PhysicalTemplateSupportsDataTemplatedContent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var contentTemplate = Assert.IsType<DataTemplate>(
                 XamlReader.Parse(
@@ -730,7 +730,7 @@ public sealed class FlourishInputStylesTests
     [Fact]
     public void ScrollViewer_SmoothScrollingKeepsBothViewportEdgesCovered()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var content = new Border
             {
@@ -921,29 +921,5 @@ public sealed class FlourishInputStylesTests
             BindingFlags.Instance | BindingFlags.NonPublic
         );
         return Assert.IsType<bool>(field?.GetValue(scrollViewer));
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

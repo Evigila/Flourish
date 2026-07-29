@@ -64,7 +64,7 @@ public sealed class FlourishLocalizationServiceTests
     public void Get_CustomSelectedLocale_OverridesBuiltInAndFallsBackToBuiltInSelectedLocale()
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale(
+        var path = directory.WriteText(
             "lang_en-US.json",
             """
             {
@@ -85,7 +85,7 @@ public sealed class FlourishLocalizationServiceTests
     public void Get_UnknownLocale_FallsBackToCustomEnglishBeforeBuiltInEnglish()
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale(
+        var path = directory.WriteText(
             "lang_en-US.json",
             """
             {
@@ -106,7 +106,7 @@ public sealed class FlourishLocalizationServiceTests
     public void Get_BuiltInSelectedLocale_IsUsedBeforeCustomEnglishFallback()
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale(
+        var path = directory.WriteText(
             "lang_en-US.json",
             """
             {
@@ -126,7 +126,7 @@ public sealed class FlourishLocalizationServiceTests
     public void Get_CustomUnknownSelectedLocale_IsUsedBeforeEnglishFallback()
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale(
+        var path = directory.WriteText(
             "lang_fr-FR.json",
             """
             {
@@ -148,7 +148,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var firstDirectory = new TemporaryDirectory();
         using var secondDirectory = new TemporaryDirectory();
-        var firstPath = firstDirectory.WriteLocale(
+        var firstPath = firstDirectory.WriteText(
             "lang_en-US.json",
             """
             {
@@ -157,7 +157,7 @@ public sealed class FlourishLocalizationServiceTests
             }
             """
         );
-        var secondPath = secondDirectory.WriteLocale(
+        var secondPath = secondDirectory.WriteText(
             "lang_en-US.json",
             """
             {
@@ -238,7 +238,7 @@ public sealed class FlourishLocalizationServiceTests
     )
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale(fileName, "{ \"Tray.Show\": \"Show\" }");
+        var path = directory.WriteText(fileName, "{ \"Tray.Show\": \"Show\" }");
         var options = new FlourishDataOptions();
         options.LocalePaths.Add(path);
 
@@ -263,7 +263,7 @@ public sealed class FlourishLocalizationServiceTests
     )
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale("lang_en-US.json", json);
+        var path = directory.WriteText("lang_en-US.json", json);
         var options = new FlourishDataOptions();
         options.LocalePaths.Add(path);
 
@@ -309,7 +309,7 @@ public sealed class FlourishLocalizationServiceTests
     public void RuntimeLocaleFile_CanBeRegisteredReloadedAndUnregistered()
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteLocale(
+        var path = directory.WriteText(
             "lang_fr-FR.json",
             """
             {
@@ -326,7 +326,7 @@ public sealed class FlourishLocalizationServiceTests
         Assert.Contains("fr-FR", sut.AvailableLocales);
         Assert.Equal("Afficher", sut.Get(FlourishLocaleKeys.TrayShow));
 
-        directory.WriteLocale(
+        directory.WriteText(
             "lang_fr-FR.json",
             """
             {
@@ -357,11 +357,11 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var firstDirectory = new TemporaryDirectory();
         using var secondDirectory = new TemporaryDirectory();
-        var first = firstDirectory.WriteLocale(
+        var first = firstDirectory.WriteText(
             "lang_fr-FR.json",
             "{ \"Tray.Show\": \"First\" }"
         );
-        var second = secondDirectory.WriteLocale(
+        var second = secondDirectory.WriteText(
             "lang_fr-FR.json",
             "{ \"Tray.Show\": \"Second\" }"
         );
@@ -374,35 +374,5 @@ public sealed class FlourishLocalizationServiceTests
         sut.Unregister(overrideRegistration);
 
         Assert.Equal("First", sut.Get(FlourishLocaleKeys.TrayShow));
-    }
-
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                "Flourish.Test",
-                Guid.NewGuid().ToString("N")
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public string WriteLocale(string fileName, string json)
-        {
-            var path = System.IO.Path.Combine(Path, fileName);
-            File.WriteAllText(path, json, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-            return path;
-        }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(Path))
-            {
-                Directory.Delete(Path, recursive: true);
-            }
-        }
     }
 }

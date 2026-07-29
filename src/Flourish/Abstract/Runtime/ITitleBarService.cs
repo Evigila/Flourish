@@ -46,24 +46,6 @@ public interface ITitleBarService
         bool showProjectTitle = false
     );
 
-    /// <summary>Sets and shows the application title.</summary>
-    /// <param name="title">The non-empty application title.</param>
-    /// <exception cref="ArgumentException"><paramref name="title" /> is empty or whitespace.</exception>
-    [Obsolete("Use SetApplicationTitle.")]
-    void SetTitle(string title);
-
-    /// <summary>Sets the application subtitle.</summary>
-    /// <param name="subtitle">The subtitle, or <see langword="null" /> to clear it.</param>
-    [Obsolete("Use SetApplicationSubTitle.")]
-    void SetSubtitle(string? subtitle);
-
-    /// <summary>Changes the application title and subtitle atomically.</summary>
-    /// <param name="title">The non-empty application title.</param>
-    /// <param name="subtitle">The subtitle, or <see langword="null" /> to clear it.</param>
-    /// <exception cref="ArgumentException"><paramref name="title" /> is empty or whitespace.</exception>
-    [Obsolete("Use SetApplicationIdentity.")]
-    void SetIdentity(string title, string? subtitle = null);
-
     /// <summary>Sets the placeholder displayed by the title bar search box.</summary>
     /// <param name="placeholder">The non-empty search placeholder.</param>
     /// <exception cref="ArgumentException"><paramref name="placeholder" /> is empty or whitespace.</exception>
@@ -74,8 +56,7 @@ public interface ITitleBarService
     /// <param name="visible"><see langword="true" /> to show the element; otherwise, <see langword="false" />.</param>
     /// <remarks>
     /// Multi-project mode keeps the title selector visible because it represents the active project or
-    /// unnamed-project placeholder. The obsolete <see cref="TitleBarElement.Subtitle" /> value changes
-    /// subtitle visibility inside the logo information surface.
+    /// unnamed-project placeholder.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="element" /> is not defined.</exception>
     void SetElementVisible(TitleBarElement element, bool visible);

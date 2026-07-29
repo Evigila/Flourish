@@ -43,7 +43,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         );
     }
 
-    public void ReplaceDefault(IEnumerable<FlourishToolbarItem> items)
+    public void SetDefault(IEnumerable<FlourishToolbarItem> items)
     {
         var replacement = ValidateItems(items);
         Mutate(
@@ -64,7 +64,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         );
     }
 
-    public void Replace(Type pageType, IEnumerable<FlourishToolbarItem> items, bool iconOnly = true)
+    public void Set(Type pageType, IEnumerable<FlourishToolbarItem> items, bool iconOnly = true)
     {
         ValidatePageType(pageType);
         var replacement = ValidateItems(items);
@@ -91,13 +91,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         );
     }
 
-    public void Replace<TPage>(IEnumerable<FlourishToolbarItem> items, bool iconOnly = true)
-        where TPage : Page
-    {
-        Replace(typeof(TPage), items, iconOnly);
-    }
-
-    public void Add(FlourishToolbarItem item, Type? pageType = null, int? index = null)
+    public void Append(FlourishToolbarItem item, Type? pageType = null, int? index = null)
     {
         ValidatePageTypeIfPresent(pageType);
         ValidateItem(item);
@@ -122,7 +116,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         );
     }
 
-    public void Upsert(FlourishToolbarItem item, Type? pageType = null, int? index = null)
+    public void SetItem(FlourishToolbarItem item, Type? pageType = null, int? index = null)
     {
         ValidatePageTypeIfPresent(pageType);
         ValidateItem(item);
@@ -185,7 +179,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         return removed;
     }
 
-    public void Clear(Type? pageType = null)
+    public void RemoveAll(Type? pageType = null)
     {
         ValidatePageTypeIfPresent(pageType);
         Mutate(
@@ -207,7 +201,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
         );
     }
 
-    public void Move(string id, int newIndex, Type? pageType = null)
+    public void SetOrder(string id, int newIndex, Type? pageType = null)
     {
         id = ValidateId(id, nameof(id));
         ValidatePageTypeIfPresent(pageType);

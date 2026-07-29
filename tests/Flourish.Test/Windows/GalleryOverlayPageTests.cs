@@ -6,7 +6,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 public sealed class GalleryOverlayPageTests
 {
     private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string OverlayPageXamlPath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -129,24 +129,5 @@ public sealed class GalleryOverlayPageTests
             document.Descendants(),
             element => (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == name
         );
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (
-                Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Gallery"))
-            )
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the repository root.");
     }
 }

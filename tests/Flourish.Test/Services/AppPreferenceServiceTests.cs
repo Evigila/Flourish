@@ -1148,29 +1148,6 @@ public sealed class AppPreferenceServiceTests
         );
     }
 
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                "Flourish.Test",
-                Guid.NewGuid().ToString("N")
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(Path))
-            {
-                Directory.Delete(Path, recursive: true);
-            }
-        }
-    }
-
     private sealed class CountingConfigurationSource : IConfigurationSource
     {
         public CountingConfigurationProvider Provider { get; } = new();

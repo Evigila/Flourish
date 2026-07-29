@@ -247,7 +247,7 @@ public sealed class DefaultFlourishBuilderTests
             navigationGroup!.AddNavigableItem("Late item", null, null)
         );
         Assert.Throws<InvalidOperationException>(() =>
-            customHandler!.InitRegionContent(
+            customHandler!.AddRegionContent(
                 FlourishRegion.TitlebarEnd,
                 _ => new Border()
             )
@@ -296,7 +296,7 @@ public sealed class DefaultFlourishBuilderTests
                     .UseThemeToggle(mode: FlourishTheme.Dark)
             )
             .ConfigCustomHandler(custom =>
-                custom.InitRegionContent(FlourishRegion.TitlebarStart, _ => null!)
+                custom.AddRegionContent(FlourishRegion.TitlebarStart, _ => null!)
             )
             .ConfigDynamicToolbar(toolbar =>
                 toolbar.InitToolbarItems<TestPage>(
@@ -305,7 +305,7 @@ public sealed class DefaultFlourishBuilderTests
             )
             .ConfigMotion(motion => motion.UseSystemReducedMotion(enabled: false))
             .ConfigWindow(window => window.UseTopmost())
-            .ConfigStatusBar(statusBar => statusBar.InitStatusItem("Ready", "R"));
+            .ConfigStatusBar(statusBar => statusBar.AddStatusItem("Ready", "R"));
 
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
@@ -671,28 +671,6 @@ public sealed class DefaultFlourishBuilderTests
         public void RegisterCommands(ICommandRegistrar commands)
         {
             commands.Register("test.hosted", static () => { });
-        }
-    }
-
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                $"flourish-builder-{Guid.NewGuid():N}"
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(Path))
-            {
-                Directory.Delete(Path, recursive: true);
-            }
         }
     }
 }

@@ -17,8 +17,8 @@ builder
     {
         custom
             .InitProfileContent(_ => new Button { Content = "Foo Bar" })
-            .InitTitleBarAction("Sync", "\uE895", "sync.run")
-            .InitFooterCommand(
+            .AddTitleBarAction("Sync", "\uE895", "sync.run")
+            .AddFooterCommand(
                 FlourishRegion.FooterEnd,
                 "Help",
                 "\uE946",
@@ -40,11 +40,11 @@ Element factories receive `IServiceProvider`, so they can resolve application se
 builder.ConfigCustomHandler(custom =>
 {
     custom
-        .InitRegionContent(
+        .AddRegionContent(
             FlourishRegion.TitlebarEnd,
             services => new SyncStatusView(
                 services.GetRequiredService<SyncService>()))
-        .InitRegionContent(
+        .AddRegionContent(
             FlourishRegion.TitlebarApplicationInfo,
             services => new ApplicationDetailsView(
                 services.GetRequiredService<ApplicationDetailsService>()));

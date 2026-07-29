@@ -41,7 +41,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
                 "报表",
                 @"C:\Work\Reports.txt"));
 
-        projects.UpsertProject(
+        projects.SetProject(
             new FlourishProject("samples", "示例"),
             activate: false);
     }
@@ -63,11 +63,11 @@ Flourish 从 `InitProjectCatalogFilePath` 选择的文件加载有序目录与�
 | 操作 | 行为 |
 | --- | --- |
 | `AppendProject(project, activate)` | 追加唯一的项目元数据，并可将其设为活动项目。 |
-| `UpsertProject(project, activate)` | 按 ID 添加或替换项目元数据。 |
+| `SetProject(project, activate)` | 按 ID 添加或替换项目元数据。 |
 | `SetProjectMetadata(id, name, storagePath)` | 修改现有项目的名称与可选路径。 |
 | `SetActiveProject(id)` | 只修改活动 Shell 标识；传入 `null` 可清除选择。 |
 | `RemoveProject(id)` | 只移除目录项；移除活动项目时会清除选择。 |
-| `TryGetProject(id, out project)` | 查询一个已注册项目。 |
+| `GetProject(id)` | 返回一个已注册项目；ID 未注册时返回 `null`。 |
 | `SetMultiProjectEnabled(enabled)` | 在运行时修改标题栏的项目模式。 |
 
 元数据、活动选择或项目模式发生变化后会触发 `Changed`。事件会说明变更类型、受影响的项目以及活动项目是否发生变化。直接调用 `SetActiveProject` 和 `RemoveProject` 不会运行生命周期对话框，也不会操作项目文件；用户操作需要这些行为时，应使用 `IProjectBehavior`。

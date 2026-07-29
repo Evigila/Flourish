@@ -19,7 +19,7 @@ internal sealed class FlourishDataBuilder(FlourishDataOptions options)
         return this;
     }
 
-    public IFlourishDataBuilder InitLocaleFile(string path)
+    public IFlourishDataBuilder AddLocaleFile(string path)
     {
         ThrowIfFrozen();
         options.LocalePaths.Add(ValidateNotBlank(path, nameof(path)).Trim());

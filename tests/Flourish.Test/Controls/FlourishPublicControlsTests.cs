@@ -100,7 +100,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_LoadTheSingleGenericThemeEntryPoint()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             _ = Application.LoadComponent(new Uri(GenericThemeSource, UriKind.Relative));
             var resources = new FlourishThemeResources();
@@ -112,7 +112,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_EnsureMergedIsIdempotent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
 
@@ -127,7 +127,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_EnsureMergedAddsCanonicalAfterUnrelatedGraph()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
             var wrapper = new ResourceDictionary();
@@ -145,7 +145,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_EnsureMergedDoesNotAddToExistingDuplicates()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
             var first = new FlourishThemeResources();
@@ -165,7 +165,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_EnsureMergedRecognizesTheRootByType()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new FlourishThemeResources();
             var originalMergedDictionaries = resources.MergedDictionaries.ToArray();
@@ -183,7 +183,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_EnsureMergedRecognizesNestedCanonicalType()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var root = new ResourceDictionary();
             var outerWrapper = new ResourceDictionary();
@@ -206,7 +206,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CanonicalThemeResources_FindInGraphVisitsSharedDictionariesOnce()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var root = new ResourceDictionary();
             var left = new ResourceDictionary();
@@ -239,7 +239,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void PublicVisualControls_UseTheirOwnDefaultStyleKeys()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             foreach (var controlType in GetPublicFlourishControlTypes())
             {
@@ -254,7 +254,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void SemanticControlProperties_ExposeStableDefaults()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton();
             var windowCaptionButton = new WindowCaptionButton();
@@ -365,7 +365,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void ButtonFamily_AddedDependencyPropertiesRoundTrip()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var icon = new Border();
             var iconButton = new FlourishButton
@@ -404,7 +404,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CardFamily_ExposesVariantsAndDependencyPropertiesRoundTrip()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var card = new Card
             {
@@ -461,7 +461,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void OutputCard_ExposesAppendOnlyHistoryWithoutCardCopyOrBodyProperties()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var outputCard = new OutputCard();
 
@@ -502,7 +502,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void Overlay_ExposesTemporaryAndStrongDismissalVariants()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var target = new Border();
             var overlay = new Overlay
@@ -523,7 +523,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void Overlay_TemporaryRequestsDismissalButStrongDoesNot()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var target = new Border();
             var overlay = new Overlay { PlacementTarget = target };
@@ -555,7 +555,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void OutputCard_CoalescesDependencyPropertyRefreshWhileKeepingOutputImmediatelyReadable()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var outputCard = new OutputCard();
             var outputDescriptor = DependencyPropertyDescriptor.FromProperty(
@@ -602,7 +602,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void OutputCard_ClearInvalidatesAnOlderQueuedRefresh()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var outputCard = new OutputCard();
 
@@ -637,7 +637,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CardIcons_AcceptOnlyOneTextGlyphAndCannotHostImagesOrComposedContent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var card = new Card { Icon = "\uE8A5" };
             var actionCard = new ActionCard { Icon = "\uE790" };
@@ -660,7 +660,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void ActionCard_OwnsBodyLogicalContentBeforeAndAfterReplacement()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dataContext = new object();
             var firstAction = new FlourishButton();
@@ -697,7 +697,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void ChunkFamily_DependencyPropertiesRoundTripAndChunkOwnsImplicitContent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var chunkBody = new Border();
             var heroBody = new StackPanel();
@@ -745,7 +745,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void ChunkFamily_OwnsLogicalContentBeforeAndAfterReplacement()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dataContext = new object();
             var firstBody = new Border();
@@ -798,7 +798,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void PresenterDocumentParagraphAndCodeSpace_ExposeTheirContentContracts()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             Assert.Equal(
                 nameof(Presenter.Presentation),
@@ -846,7 +846,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void CodeSpace_ExplicitXamlTextPreservesWhitespace()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string xaml = """
                 <flourish:CodeSpace
@@ -864,7 +864,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void Presenter_ImplicitXamlContentTargetsPresentation()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string xaml = """
                 <flourish:Presenter
@@ -890,7 +890,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void ToolTipPolicy_WrapsSimpleContentAndRestoresItWhenDisabled()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var explicitToolTip = new FlourishToolTip { Content = "Explicit" };
             var nativeToolTip = new ToolTip { Content = "Native" };
@@ -936,7 +936,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void SemanticEnumProperties_RejectUndefinedValues()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton();
 
@@ -988,7 +988,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void HoverReveal_AttachedPropertiesExposeStableDefaultsAndRoundTrip()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var element = new Border();
             var duration = TimeSpan.FromMilliseconds(215);
@@ -1023,7 +1023,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void HoverReveal_MotionPolicyCoercesTheEffectiveStateWithoutInheriting()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var parent = new Grid();
             var child = new Border();
@@ -1047,7 +1047,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void HoverReveal_PolicyInheritsWithoutOptingDescendantsIntoTheBehavior()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var parent = new Grid();
             var child = new WpfButton();
@@ -1126,29 +1126,5 @@ public sealed class FlourishPublicControlsTests
         );
 
         return Assert.IsAssignableFrom<PropertyInfo>(property).GetValue(element);
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

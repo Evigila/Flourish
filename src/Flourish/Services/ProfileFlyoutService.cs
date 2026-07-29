@@ -66,9 +66,6 @@ internal sealed class ProfileFlyoutService(
         });
     }
 
-    public void SetContentPage<TPage>()
-        where TPage : Page => SetContentPage(typeof(TPage));
-
     public void SetContentPage(Type pageType)
     {
         ArgumentNullException.ThrowIfNull(pageType);

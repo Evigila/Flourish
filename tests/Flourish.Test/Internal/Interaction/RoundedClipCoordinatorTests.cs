@@ -12,7 +12,7 @@ public sealed class RoundedClipCoordinatorTests
     [Fact]
     public void Create_UsesFrozenRectangleGeometryForUniformCorners()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var clip = Assert.IsType<RectangleGeometry>(
                 RoundedClipGeometry.Create(new Size(100, 40), new CornerRadius(8))
@@ -28,7 +28,7 @@ public sealed class RoundedClipCoordinatorTests
     [Fact]
     public void Create_PreservesAsymmetricCornersAndScalesOversizedUniformRadius()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var asymmetric = Assert.IsType<StreamGeometry>(
                 RoundedClipGeometry.Create(
@@ -52,7 +52,7 @@ public sealed class RoundedClipCoordinatorTests
     [Fact]
     public void Coordinator_CoalescesSizeAndCornerChangesAndDetachesCleanly()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var clipHost = new Grid();
             var surface = new Border
@@ -87,7 +87,7 @@ public sealed class RoundedClipCoordinatorTests
                 window.UpdateLayout();
 
                 Assert.Equal(initialBuildCount, coordinator.GeometryBuildCount);
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 Assert.Equal(initialBuildCount + 1, coordinator.GeometryBuildCount);
                 var resized = Assert.IsType<RectangleGeometry>(clipHost.Clip);
                 Assert.Equal(clipHost.RenderSize.Width, resized.Rect.Width, precision: 3);
@@ -96,7 +96,7 @@ public sealed class RoundedClipCoordinatorTests
                 surface.CornerRadius = new CornerRadius(10);
 
                 Assert.Equal(initialBuildCount + 1, coordinator.GeometryBuildCount);
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 Assert.Equal(initialBuildCount + 2, coordinator.GeometryBuildCount);
                 Assert.Equal(
                     10,
@@ -105,7 +105,7 @@ public sealed class RoundedClipCoordinatorTests
 
                 coordinator.Detach();
                 surface.CornerRadius = new CornerRadius(12);
-                PumpDispatcher();
+                DispatcherTest.DrainApplicationIdle();
                 Assert.Equal(initialBuildCount + 2, coordinator.GeometryBuildCount);
             }
             finally
@@ -116,35 +116,4 @@ public sealed class RoundedClipCoordinatorTests
         });
     }
 
-    private static void PumpDispatcher()
-    {
-        Dispatcher.CurrentDispatcher.Invoke(
-            DispatcherPriority.ApplicationIdle,
-            static () => { }
-        );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
 }

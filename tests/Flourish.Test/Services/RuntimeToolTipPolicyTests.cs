@@ -23,7 +23,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void Attach_PublishesOnlyApplicationPolicyResourcesAndSameScopeIsStable()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var options = new FlourishShellOptions { IsTipsEnabled = true };
             options.Tips.InitialShowDelayMilliseconds = 240;
@@ -49,7 +49,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void ExistingButtonsInTwoWindowsFollowTheSharedDynamicDelayResource()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var options = new FlourishShellOptions { IsTipsEnabled = true };
             options.Tips.InitialShowDelayMilliseconds = 200;
@@ -95,7 +95,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void EnabledPolicy_WrapsOnlyFlourishOwnersAndRuntimeDisableRestoresNativeDefaults()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var options = new FlourishShellOptions { IsTipsEnabled = true };
             options.Tips.InitialShowDelayMilliseconds = 240;
@@ -159,7 +159,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void UnconfiguredPolicy_LeavesFlourishAndNativeOwnersOnNativeTooltipBehavior()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var rawContent = new object();
             var flourishOwner = new FlourishButton { ToolTip = rawContent };
@@ -190,7 +190,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void BackgroundMutationUpdatesResourcesBeforeChangedOnTheAttachedDispatcher()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
             var dispatcherThreadId = Environment.CurrentManagedThreadId;
@@ -229,7 +229,7 @@ public sealed class RuntimeToolTipPolicyTests
             Assert.Equal(5d, resources[MarginKey]);
             Assert.Equal(200, sut.Current.InitialShowDelayMilliseconds);
 
-            PumpDispatcherUntil(dispatcher, mutation);
+            DispatcherTest.Wait(dispatcher, mutation);
 
             var changed = Assert.Single(events);
             Assert.Equal(dispatcherThreadId, changed.ThreadId);
@@ -249,7 +249,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void EquivalentRuntimeMutationsRaiseNoEventsOrResourceReplacements()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var options = new FlourishShellOptions { IsTipsEnabled = true };
             options.Tips.InitialShowDelayMilliseconds = 200;
@@ -274,7 +274,7 @@ public sealed class RuntimeToolTipPolicyTests
     [Fact]
     public void SourceContractsUseOneApplicationPolicyAndNoButtonLocalDelay()
     {
-        var flourishRoot = Path.Combine(FindRepositoryRoot(), "src", "Flourish");
+        var flourishRoot = Path.Combine(TestPaths.RepositoryRoot, "src", "Flourish");
         var serviceSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Services", "FlourishToolTipService.cs")
         );
@@ -357,64 +357,4 @@ public sealed class RuntimeToolTipPolicyTests
         return window;
     }
 
-    private static void PumpDispatcherUntil(Dispatcher dispatcher, Task task)
-    {
-        var frame = new DispatcherFrame();
-        _ = task.ContinueWith(
-            _ =>
-                dispatcher.BeginInvoke(
-                    DispatcherPriority.Send,
-                    new Action(() => frame.Continue = false)
-                ),
-            CancellationToken.None,
-            TaskContinuationOptions.ExecuteSynchronously,
-            TaskScheduler.Default
-        );
-        Dispatcher.PushFrame(frame);
-        task.GetAwaiter().GetResult();
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the Flourish repository root.");
-    }
 }

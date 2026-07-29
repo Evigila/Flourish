@@ -16,7 +16,7 @@ public sealed class FlourishXamlArchitectureTests
         "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
     private const string XamlNamespace =
         "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string FlourishRoot = Path.Combine(
         RepositoryRoot,
         "src",
@@ -2782,28 +2782,5 @@ public sealed class FlourishXamlArchitectureTests
         return relative != ".."
             && !relative.StartsWith($"..{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
             && !Path.IsPathRooted(relative);
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Gallery"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException(
-            $"Could not locate the Flourish repository above {AppContext.BaseDirectory}."
-        );
     }
 }

@@ -51,23 +51,4 @@ public sealed class FlourishConfigurationBuilderTests
         Assert.Same(sut, result);
         Assert.Same(source, Assert.Single(sut.Sources));
     }
-
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                $"flourish-configuration-builder-{Guid.NewGuid():N}"
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void Dispose()
-        {
-            Directory.Delete(Path, recursive: true);
-        }
-    }
 }

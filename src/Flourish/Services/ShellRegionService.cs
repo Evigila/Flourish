@@ -30,7 +30,7 @@ internal sealed class ShellRegionService : IShellRegionService
         }
     }
 
-    public IShellRegionRegistration Add(
+    public IShellRegionRegistration Append(
         string id,
         FlourishRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
@@ -63,7 +63,7 @@ internal sealed class ShellRegionService : IShellRegionService
         return new Registration(this, id, region, lease);
     }
 
-    public IShellRegionRegistration Upsert(
+    public IShellRegionRegistration Set(
         string id,
         FlourishRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
@@ -204,7 +204,7 @@ internal sealed class ShellRegionService : IShellRegionService
         return RemoveCore(id, lease: null);
     }
 
-    public void Clear(FlourishRegion region)
+    public void RemoveAll(FlourishRegion region)
     {
         ValidateRegion(region);
         Mutate(

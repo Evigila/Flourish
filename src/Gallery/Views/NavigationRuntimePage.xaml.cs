@@ -131,7 +131,7 @@ public partial class NavigationRuntimePage : Page
     {
         try
         {
-            routes.Upsert(
+            routes.Set(
                 new FlourishNavigationRoute(
                     RuntimeRouteKey,
                     typeof(RuntimeRoutePage),
@@ -144,14 +144,14 @@ public partial class NavigationRuntimePage : Page
             );
 
             var hasGroup = menu.Current.Groups.Any(group => group.Id == RuntimeGroupId);
-            menu.Update(editor =>
+            menu.Set(editor =>
             {
                 if (!hasGroup)
                 {
                     editor.AppendGroup(RuntimeGroupId, "Added at runtime");
                 }
 
-                editor.UpsertItem(
+                editor.SetItem(
                     RuntimeGroupId,
                     FlourishNavigationMenuItem.Page(
                         RuntimeItemId,
@@ -192,13 +192,13 @@ public partial class NavigationRuntimePage : Page
             return;
         }
 
-        menu.Update(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
+        menu.Set(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
         RouteOutput.WriteLine($"Demo navigation item {(!item.IsEnabled ? "enabled" : "disabled")}.");
     }
 
     private void RemoveRoute_Click(object sender, RoutedEventArgs e)
     {
-        menu.Update(editor =>
+        menu.Set(editor =>
         {
             editor.RemoveItem(RuntimeItemId);
             if (menu.Current.Groups.Any(group => group.Id == RuntimeGroupId))
@@ -237,7 +237,7 @@ public partial class NavigationRuntimePage : Page
     {
         try
         {
-            if (!routes.Contains(RuntimeRouteKey))
+            if (routes.Get(RuntimeRouteKey) is null)
             {
                 InstallRoute_Click(this, new RoutedEventArgs());
             }

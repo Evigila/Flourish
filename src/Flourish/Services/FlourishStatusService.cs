@@ -74,7 +74,7 @@ internal sealed class FlourishStatusService : IStatusBarService
         );
     }
 
-    public void Add(FlourishStatusItem item, int? index = null)
+    public void Append(FlourishStatusItem item, int? index = null)
     {
         ValidateItem(item);
         Mutate(
@@ -97,7 +97,7 @@ internal sealed class FlourishStatusService : IStatusBarService
         );
     }
 
-    public void Upsert(FlourishStatusItem item, int? index = null)
+    public void SetItem(FlourishStatusItem item, int? index = null)
     {
         ValidateItem(item);
         Mutate(
@@ -119,12 +119,12 @@ internal sealed class FlourishStatusService : IStatusBarService
         );
     }
 
-    public void UpdateText(string id, string text)
+    public void SetItemText(string id, string text)
     {
-        UpdateText(id, text, lease: null);
+        SetItemText(id, text, lease: null);
     }
 
-    private void UpdateText(string id, string text, Guid? lease)
+    private void SetItemText(string id, string text, Guid? lease)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -134,12 +134,12 @@ internal sealed class FlourishStatusService : IStatusBarService
         UpdateItem(id, item => item with { Text = text }, lease);
     }
 
-    public void UpdateIcon(string id, string iconGlyph)
+    public void SetItemIcon(string id, string iconGlyph)
     {
-        UpdateIcon(id, iconGlyph, lease: null);
+        SetItemIcon(id, iconGlyph, lease: null);
     }
 
-    private void UpdateIcon(string id, string iconGlyph, Guid? lease)
+    private void SetItemIcon(string id, string iconGlyph, Guid? lease)
     {
         ArgumentNullException.ThrowIfNull(iconGlyph);
         UpdateItem(id, item => item with { IconGlyph = iconGlyph }, lease);
@@ -150,7 +150,7 @@ internal sealed class FlourishStatusService : IStatusBarService
         UpdateItem(id, item => item with { IsVisible = visible });
     }
 
-    public void Move(string id, int newIndex)
+    public void SetOrder(string id, int newIndex)
     {
         id = ValidateId(id, nameof(id));
         Mutate(
@@ -188,7 +188,7 @@ internal sealed class FlourishStatusService : IStatusBarService
         return RemoveCore(id, lease: null);
     }
 
-    public void Clear()
+    public void RemoveAll()
     {
         Mutate(
             () =>
@@ -480,14 +480,14 @@ internal sealed class FlourishStatusService : IStatusBarService
 
         public string Id { get; } = id;
 
-        public void UpdateText(string text)
+        public void SetText(string text)
         {
-            owner?.UpdateText(Id, text, lease);
+            owner?.SetItemText(Id, text, lease);
         }
 
-        public void UpdateIcon(string iconGlyph)
+        public void SetIcon(string iconGlyph)
         {
-            owner?.UpdateIcon(Id, iconGlyph, lease);
+            owner?.SetItemIcon(Id, iconGlyph, lease);
         }
 
         public void Dispose()

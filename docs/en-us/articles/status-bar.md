@@ -13,13 +13,13 @@ builder
     .ConfigStatusBar(statusBar =>
     {
         statusBar
-            .InitStatusItem("Online", "\uE774")
+            .AddStatusItem("Online", "\uE774")
             .UseLanConnectionStatus()
             .UsePowerStatus();
     });
 ```
 
-Use `InitStatusItem` for non-interactive text-and-icon state. Use a [custom footer region](configure-custom-handler.md) for interactive controls or application-defined WPF content.
+Use `AddStatusItem` for non-interactive text-and-icon state. Use a [custom footer region](configure-custom-handler.md) for interactive controls or application-defined WPF content.
 
 ## Background-task indicators
 
@@ -37,11 +37,11 @@ Active work temporarily shows the status bar even when `UseStatusBar()` was omit
 
 ## Custom status items
 
-`InitStatusItem` adds a compact, non-interactive item with Small display text and an icon glyph. Items appear in registration order before the system-status icon.
+`AddStatusItem` adds a compact, non-interactive item with Small display text and an icon glyph. Items appear in registration order before the system-status icon.
 
 ```csharp
-statusBar.InitStatusItem("Online", "\uE774");
-statusBar.InitStatusItem("Synced", "\uE73E");
+statusBar.AddStatusItem("Online", "\uE774");
+statusBar.AddStatusItem("Synced", "\uE73E");
 ```
 
 Use custom items for application-specific state such as account state, workspace name, synchronization state, or current mode. The supplied text is application content and is not translated automatically.
@@ -67,7 +67,7 @@ Use [Custom shell content](configure-custom-handler.md) for application-provided
 ```csharp
 builder.ConfigCustomHandler(custom =>
 {
-    custom.InitFooterCommand(
+    custom.AddFooterCommand(
         FlourishRegion.FooterEnd,
         "Sync",
         "\uE895",

@@ -14,7 +14,7 @@ public sealed class RuntimeWindowServiceTests
         var options = new FlourishShellOptions();
         IWindowService sut = new WindowService(options);
         var states = new List<FlourishWindowState>();
-        sut.StateChanged += (_, args) => states.Add(args.State);
+        sut.Changed += (_, args) => states.Add(args.State);
 
         sut.SetBounds(new Rect(40, 60, 1000, 700));
         sut.SetMinimumSize(400, 300);
@@ -39,7 +39,7 @@ public sealed class RuntimeWindowServiceTests
     {
         var sut = new WindowService(new FlourishShellOptions());
         var changes = 0;
-        sut.StateChanged += (_, _) => changes++;
+        sut.Changed += (_, _) => changes++;
 
         sut.SetTopmost(true);
         sut.SetTopmost(true);

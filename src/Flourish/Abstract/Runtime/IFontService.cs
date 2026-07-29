@@ -87,28 +87,6 @@ public interface IFontService
     void SetIconFontFamily(string fontFamily);
 
     /// <summary>
-    /// Sets or replaces the font and explicit text and icon size override for a page type.
-    /// </summary>
-    /// <typeparam name="TPage">The WPF page type that receives the override.</typeparam>
-    /// <param name="fontFamily">The page-specific font family name.</param>
-    /// <param name="smallFontSize">The page-specific small size, or <see langword="null"/> to follow the global size.</param>
-    /// <param name="standardFontSize">The page-specific standard size, or <see langword="null"/> to follow the global size.</param>
-    /// <param name="iconFontSize">The page-specific icon size, or <see langword="null"/> to follow the global size.</param>
-    /// <param name="largeFontSize">The page-specific large size, or <see langword="null"/> to follow the global size.</param>
-    /// <param name="extraLargeFontSize">The page-specific extra-large size, or <see langword="null"/> to follow the global size.</param>
-    /// <param name="headerSizeFontSize">The page-specific header size, or <see langword="null"/> to follow the global size.</param>
-    void SetOverrideFont<TPage>(
-        string fontFamily,
-        double? smallFontSize,
-        double? standardFontSize,
-        double? iconFontSize,
-        double? largeFontSize,
-        double? extraLargeFontSize,
-        double? headerSizeFontSize
-    )
-        where TPage : Page;
-
-    /// <summary>
     /// Sets or replaces the font and explicit text and icon size override for a page type selected at runtime.
     /// </summary>
     /// <param name="pageType">The closed, concrete WPF page type that receives the override.</param>
@@ -130,17 +108,8 @@ public interface IFontService
         double? headerSizeFontSize
     );
 
-    /// <summary>
-    /// Removes the font override from a page type so it follows the global font again.
-    /// </summary>
-    /// <typeparam name="TPage">The WPF page type whose override is removed.</typeparam>
-    /// <returns><see langword="true"/> when an override was removed; otherwise, <see langword="false"/>.</returns>
-    bool ClearOverrideFont<TPage>() where TPage : Page;
-
-    /// <summary>
-    /// Removes the font override from a page type selected at runtime.
-    /// </summary>
+    /// <summary>Removes the font override from a page type selected at runtime.</summary>
     /// <param name="pageType">The closed, concrete WPF page type whose override is removed.</param>
     /// <returns><see langword="true"/> when an override was removed; otherwise, <see langword="false"/>.</returns>
-    bool ClearOverrideFont(Type pageType);
+    bool RemoveOverrideFont(Type pageType);
 }

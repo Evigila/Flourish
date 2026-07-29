@@ -9,7 +9,7 @@ namespace ArkheideSystem.Flourish.Test.Services;
 
 public sealed class RuntimeMotionPolicyTests
 {
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string FlourishRoot = Path.Combine(
         RepositoryRoot,
         "src",
@@ -19,7 +19,7 @@ public sealed class RuntimeMotionPolicyTests
     [Fact]
     public void MotionService_AttachedDictionaryTracksTheRuntimePolicyWithoutAnApplication()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var duration = TimeSpan.FromMilliseconds(96);
             var options = new FlourishShellOptions();
@@ -133,52 +133,6 @@ public sealed class RuntimeMotionPolicyTests
             "HoverReveal.SetAnimationDuration",
             source,
             StringComparison.Ordinal
-        );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException(
-            $"Could not locate the Flourish repository above {AppContext.BaseDirectory}."
         );
     }
 }

@@ -33,7 +33,7 @@
           </StackPanel>
         </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:CodeSpace Text="routes.Upsert(new FlourishNavigationRoute(&#10;    &quot;ReportPreview&quot;,&#10;    typeof(RuntimeRoutePage),&#10;    FlourishPageCacheMode.Enabled,&#10;    provider =&gt; new RuntimeRoutePage(&#10;        provider.GetRequiredService&lt;INavigationService&gt;())));&#10;&#10;// The parameter is available to the page through navigation state.&#10;navigation.Navigate(&quot;ReportPreview&quot;, reportId);" />
+        <flourish:CodeSpace Text="routes.Set(new FlourishNavigationRoute(&#10;    &quot;ReportPreview&quot;,&#10;    typeof(RuntimeRoutePage),&#10;    FlourishPageCacheMode.Enabled,&#10;    provider =&gt; new RuntimeRoutePage(&#10;        provider.GetRequiredService&lt;INavigationService&gt;())));&#10;&#10;// The parameter is available to the page through navigation state.&#10;navigation.Navigate(&quot;ReportPreview&quot;, reportId);" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

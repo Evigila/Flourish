@@ -140,7 +140,7 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigCustomHandler(custom =>
     /// {
-    ///     custom.Add(
+    ///     custom.AddRegionContent(
     ///         FlourishRegion.TitlebarEnd,
     ///         services => new Button { Content = "Account" });
     /// });
@@ -192,7 +192,7 @@ public interface IFlourishBuilder
     /// builder.ConfigStatusBar(statusBar =>
     /// {
     ///     statusBar
-    ///         .InitStatusItem("Ready", "\uE73E")
+    ///         .AddStatusItem("Ready", "\uE73E")
     ///         .UseLanConnectionStatus()
     ///         .UsePowerStatus();
     /// });

@@ -19,28 +19,28 @@ public interface IStatusBarService
     void SetPowerStatusEnabled(bool enabled);
 
     /// <summary>Adds a status item.</summary>
-    void Add(FlourishStatusItem item, int? index = null);
+    void Append(FlourishStatusItem item, int? index = null);
 
     /// <summary>Adds or replaces a status item by stable ID.</summary>
-    void Upsert(FlourishStatusItem item, int? index = null);
+    void SetItem(FlourishStatusItem item, int? index = null);
 
     /// <summary>Updates the text of a status item.</summary>
-    void UpdateText(string id, string text);
+    void SetItemText(string id, string text);
 
     /// <summary>Updates the icon of a status item.</summary>
-    void UpdateIcon(string id, string iconGlyph);
+    void SetItemIcon(string id, string iconGlyph);
 
     /// <summary>Shows or hides a status item.</summary>
     void SetItemVisible(string id, bool visible);
 
     /// <summary>Moves a status item to a zero-based index.</summary>
-    void Move(string id, int newIndex);
+    void SetOrder(string id, int newIndex);
 
     /// <summary>Removes a status item.</summary>
     bool Remove(string id);
 
     /// <summary>Removes all application-provided status items.</summary>
-    void Clear();
+    void RemoveAll();
 
     /// <summary>
     /// Adds or replaces a status item and returns a handle that removes it when disposed.
@@ -60,10 +60,10 @@ public interface IStatusBarItemHandle : IDisposable
     string Id { get; }
 
     /// <summary>Updates the item's text.</summary>
-    void UpdateText(string text);
+    void SetText(string text);
 
     /// <summary>Updates the item's icon glyph.</summary>
-    void UpdateIcon(string iconGlyph);
+    void SetIcon(string iconGlyph);
 }
 
 /// <summary>Describes a status item.</summary>

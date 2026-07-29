@@ -77,7 +77,7 @@ public sealed class NavigationRuntimeSurfaceTests
         var eventCount = 0;
         sut.Changed += (_, _) => eventCount++;
 
-        sut.Update(editor =>
+        sut.Set(editor =>
         {
             editor.RemoveItem("Home");
             editor.RemoveGroup("group:0");
@@ -121,8 +121,8 @@ public sealed class NavigationRuntimeSurfaceTests
         var changes = 0;
         sut.Changed += (_, _) => changes++;
 
-        sut.Update(_ => { });
-        sut.Update(editor =>
+        sut.Set(_ => { });
+        sut.Set(editor =>
         {
             editor.AppendGroup("temporary");
             editor.RemoveGroup("temporary");
@@ -141,15 +141,15 @@ public sealed class NavigationRuntimeSurfaceTests
             new NavigationRouteRegistry(options)
         );
 
-        sut.Update(editor =>
+        sut.Set(editor =>
         {
             editor.AppendGroup("last");
-            editor.InsertGroup("first", index: 0);
+            editor.SetGroupIndex("first", index: 0);
             editor.AppendItem(
                 "first",
                 FlourishNavigationMenuItem.Command("last-item", "Last")
             );
-            editor.InsertItem(
+            editor.SetItemIndex(
                 "first",
                 FlourishNavigationMenuItem.Command("first-item", "First"),
                 index: 0
@@ -157,7 +157,7 @@ public sealed class NavigationRuntimeSurfaceTests
             editor.AppendFixedItem(
                 FlourishNavigationMenuItem.Command("last-fixed", "Last fixed")
             );
-            editor.InsertFixedItem(
+            editor.SetFixedItemIndex(
                 FlourishNavigationMenuItem.Command("first-fixed", "First fixed"),
                 index: 0
             );
@@ -182,7 +182,7 @@ public sealed class NavigationRuntimeSurfaceTests
         var before = sut.Current;
 
         Assert.Throws<InvalidOperationException>(() =>
-            sut.Update(editor =>
+            sut.Set(editor =>
             {
                 editor.AppendGroup("runtime");
                 editor.AppendItem(
@@ -349,7 +349,7 @@ public sealed class NavigationRuntimeSurfaceTests
             )
             {
                 reentered = true;
-                replacement = routes.Register(
+                replacement = routes.Append(
                     new FlourishNavigationRoute("Home", typeof(ReplacementHomePage))
                 );
             }
@@ -358,7 +358,7 @@ public sealed class NavigationRuntimeSurfaceTests
 
         Assert.True(routes.Remove("Home"));
 
-        Assert.True(routes.Contains("Home"));
+        Assert.NotNull(routes.Get("Home"));
         var item = Assert.Single(Assert.Single(menu.Current.Groups).Items);
         Assert.Equal("home-menu", item.Id);
         Assert.Equal(

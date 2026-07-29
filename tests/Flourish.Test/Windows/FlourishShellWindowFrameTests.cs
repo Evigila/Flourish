@@ -16,7 +16,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void Apply_TogglesCustomAndNativeFramesWithoutRecreatingTheWindow()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             var shellBorder = new Border();
@@ -59,7 +59,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void Apply_NativeFrameCanBeTheInitialMode()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             var shellBorder = new Border { BorderThickness = new Thickness(7) };
@@ -87,7 +87,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void MaterialEffect_RemainsIndependentAcrossFrameAndEffectChanges()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             var shellBorder = new Border();
@@ -153,7 +153,7 @@ public sealed class FlourishShellWindowFrameTests
     public void MaterialEffect_DwmCompositionChangeReappliesWithoutChangingRuntimeState()
     {
         const int wmDwmCompositionChanged = 0x031E;
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var originalBackground = new SolidColorBrush(Color.FromRgb(20, 40, 60));
             var replacementBackground = new SolidColorBrush(Color.FromRgb(180, 120, 40));
@@ -196,7 +196,7 @@ public sealed class FlourishShellWindowFrameTests
     public void MaterialEffect_ResourceBackedBackgroundRestoresTheCurrentThemeValue()
     {
         const string backgroundResourceKey = "FlourishShellBackgroundBrush";
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var initialBackground = new SolidColorBrush(Color.FromRgb(20, 40, 60));
             var currentThemeBackground = new SolidColorBrush(Color.FromRgb(180, 120, 40));
@@ -235,7 +235,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void WindowFrameFixService_AttachIsIdempotentAndTracksOneWindow()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var first = new Window { ShowInTaskbar = false };
             var second = new Window { ShowInTaskbar = false };
@@ -264,7 +264,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void UpdateWindowState_RemovesCustomEdgeMetricsWhenMaximizedAndRestoresThem()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             var shellBorder = new Border();
@@ -291,7 +291,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void Apply_CustomFrameStartsWithoutBorderWhenWindowIsAlreadyMaximized()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             var shellBorder = new Border();
@@ -310,7 +310,7 @@ public sealed class FlourishShellWindowFrameTests
     public void WindowFrameFixService_CustomFramePreservesWpfTrackSizeConstraints()
     {
         const int wmGetMinMaxInfo = 0x0024;
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             window.MinWidth = 1280;
@@ -355,7 +355,7 @@ public sealed class FlourishShellWindowFrameTests
     [Fact]
     public void ApplyFrameTransition_DoesNotShowAHiddenWindow()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = CreateTestWindow();
             var shellBorder = new Border();
@@ -452,30 +452,6 @@ public sealed class FlourishShellWindowFrameTests
             ShowInTaskbar = false,
             WindowStartupLocation = WindowStartupLocation.Manual,
         };
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

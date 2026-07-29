@@ -51,7 +51,7 @@
           VerticalAlignment="Stretch"
         />
       </Grid>
-      <flourish:CodeSpace Text="// Apply a specific theme or cycle through the supported modes.&#10;theme.SetTheme(FlourishTheme.Dark);&#10;theme.ToggleTheme();&#10;&#10;// Refresh theme-dependent UI after a change.&#10;theme.ThemeChanged += (_, _) =&gt; RefreshAppearance();" />
+      <flourish:CodeSpace Text="// Apply a specific theme or cycle through the supported modes.&#10;theme.SetTheme(FlourishTheme.Dark);&#10;theme.ToggleTheme();&#10;&#10;// Refresh theme-dependent UI after a change.&#10;theme.Changed += (_, _) =&gt; RefreshAppearance();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -245,7 +245,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="PageFontOverrideOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Null size values keep the application-wide defaults.&#10;font.SetOverrideFont&lt;AppearancePage&gt;(&#10;    fontFamily: &quot;Georgia&quot;,&#10;    smallFontSize: null,&#10;    standardFontSize: 16,&#10;    iconFontSize: null,&#10;    largeFontSize: null,&#10;    extraLargeFontSize: null,&#10;    headerSizeFontSize: null);&#10;&#10;// Remove the typed override when the page should inherit again.&#10;font.ClearOverrideFont&lt;AppearancePage&gt;();" />
+      <flourish:CodeSpace Text="// Null size values keep the application-wide defaults.&#10;font.SetOverrideFont&lt;AppearancePage&gt;(&#10;    fontFamily: &quot;Georgia&quot;,&#10;    smallFontSize: null,&#10;    standardFontSize: 16,&#10;    iconFontSize: null,&#10;    largeFontSize: null,&#10;    extraLargeFontSize: null,&#10;    headerSizeFontSize: null);&#10;&#10;// Remove the typed override when the page should inherit again.&#10;font.RemoveOverrideFont&lt;AppearancePage&gt;();" />
       </StackPanel>
     </flourish:Chunk>
 

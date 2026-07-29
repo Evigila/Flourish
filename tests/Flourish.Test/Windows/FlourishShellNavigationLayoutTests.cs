@@ -18,7 +18,7 @@ public sealed class FlourishShellNavigationLayoutTests
         "/Flourish;component/Themes/Generic.xaml";
     private const string XamlNamespace =
         "http://schemas.microsoft.com/winfx/2006/xaml";
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string ShellXamlPath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -265,7 +265,7 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void NavigationGroupHeader_ResolvesSmallMetricsAndReplacesTheItemLayoutAtRuntime()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var item = new NavigationLayoutItem(
                 new Thickness(),
@@ -493,7 +493,7 @@ public sealed class FlourishShellNavigationLayoutTests
         double paneWidth
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var titlebarGeometry = GetTitlebarLeadingButtonGeometry();
             var resources = LoadResourceDictionary(GenericThemeSource);
@@ -940,7 +940,7 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void BreadcrumbFeatureRefresh_DoesNotMakeAnEmptyHostConsumeLeadingSpace()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var window = new Window
             {
@@ -1096,7 +1096,7 @@ public sealed class FlourishShellNavigationLayoutTests
         FlowDirection flowDirection
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
             var itemTemplate = LoadNavigationItemTemplate();
@@ -1213,7 +1213,7 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void ExpandedNavigation_ScrollbarMeetsSplitterWithoutLosingItsHitTarget()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
             var listBox = new FlourishListBox
@@ -1296,7 +1296,7 @@ public sealed class FlourishShellNavigationLayoutTests
         FlowDirection flowDirection
     )
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
             var isRightPlaced = flowDirection == FlowDirection.RightToLeft;
@@ -1705,52 +1705,6 @@ public sealed class FlourishShellNavigationLayoutTests
     {
         return Assert.IsType<ResourceDictionary>(
             Application.LoadComponent(new Uri(source, UriKind.Relative))
-        );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException(
-            $"Could not locate the Flourish repository above {AppContext.BaseDirectory}."
         );
     }
 

@@ -383,7 +383,7 @@ public sealed class NavigationServiceTests
         INavigationRouteRegistration replacement;
         try
         {
-            replacement = routes.Register(
+            replacement = routes.Append(
                 new FlourishNavigationRoute(HomeKey, typeof(HomePage))
             );
         }

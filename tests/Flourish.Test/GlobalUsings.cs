@@ -10,3 +10,4 @@ global using ArkheideSystem.Flourish.Internal.Model.Shell;
 global using ArkheideSystem.Flourish.Internal.Navigation;
 global using ArkheideSystem.Flourish.Internal.Validation;
 global using ArkheideSystem.Flourish.Internal.Windows;
+global using ArkheideSystem.Flourish.Test.Infrastructure;

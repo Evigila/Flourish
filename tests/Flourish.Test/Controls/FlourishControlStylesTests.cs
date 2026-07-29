@@ -69,13 +69,13 @@ public sealed class FlourishControlStylesTests
     [MemberData(nameof(CanonicalResourceDictionaries))]
     public void CanonicalResourceDictionary_Loads(string source)
     {
-        RunInSta(() => Assert.IsType<ResourceDictionary>(LoadResourceDictionary(source)));
+        StaTest.Run(() => Assert.IsType<ResourceDictionary>(LoadResourceDictionary(source)));
     }
 
     [Fact]
     public void GenericTheme_ProvidesAnExactDefaultStyleForEveryFlourishControl()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
 
@@ -90,7 +90,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void TextRoles_ResolveCanonicalSizeLineHeightBottomSpaceAndWeightMetrics()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var textBlocks = Enum.GetValues<FlourishTextRole>()
                 .Select(role => new FlourishTextBlock { Role = role, Text = role.ToString() })
@@ -152,7 +152,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void IconGlyphHosts_ResolveTheDedicatedIconFamilyAndSizeAtRuntime()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var iconText = new FlourishTextBlock
             {
@@ -208,7 +208,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void CardPresenterChunkAndHeaderChunk_TitleHostsUseTheirExplicitHeadingTiers()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             WpfControl[] controls =
             [
@@ -259,7 +259,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void GenericTheme_DoesNotOverrideUnrelatedNativeWpfControlStyles()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
             Type[] nativeTypes =
@@ -295,7 +295,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void GenericTheme_StylesOnlyFlourishToolTipsWithTheTemporaryOverlayTemplate()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
             var flourishStyle = Assert.IsType<Style>(
@@ -348,7 +348,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void LightAndDarkPalettes_HaveMatchingResourceKeysAndValueTypes()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var light = LoadResourceDictionary(
                 "/Flourish;component/Themes/Colors/Colors.Light.xaml"
@@ -379,7 +379,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void FlourishControlTemplates_InstantiateAndExposeRequiredParts()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Action" };
             var textBox = new FlourishTextBox { Text = "Text" };
@@ -506,7 +506,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void HeaderChunk_PresenterModesArrangePresentationAndCopyAndNullPresentationUsesFullWidth()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var expectations = new[]
             {
@@ -719,7 +719,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void Presenter_UsesFullWidthSplitTopDownAndOverlayLayoutsAndCollapsesAbsentRegions()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var splitRight = new Presenter
             {
@@ -1031,7 +1031,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void Document_RendersItsSubtleSurfaceAndParagraphUsesNormalizedLargeText()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var document = new FlourishDocument
             {
@@ -1098,7 +1098,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void CodeSpace_UsesTheFixedCodeStyleAndCopiesItsExactText()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string code = "public static void Main()\r\n{\r\n    Run();\r\n}";
             string? copiedText = null;
@@ -1175,7 +1175,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void Document_UsesFourFontMeasuredSpacesAndStandardParagraphGaps()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var bindingSource = new System.Windows.Controls.TextBlock
             {
@@ -1250,7 +1250,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void ButtonFamily_UsesCompactIconOnlyGeometryAndKeepsCaptionGeometrySpecialized()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var button = new FlourishButton { Content = "Action" };
             var icon = new FlourishButton { Icon = "Icon" };
@@ -1361,7 +1361,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void ButtonVariants_ApplyFlourishSurfacesAndBackgroundOnlyElevatedShadow()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var elevated = new FlourishButton
             {
@@ -1441,7 +1441,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void ButtonDangerVariant_UsesRedHoverRevealAndAllowsLocalOverride()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var outlined = new FlourishButton { Content = "Outlined" };
             var danger = new FlourishButton
@@ -1516,7 +1516,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void CardVariants_UseUnifiedSurfacesAndAllowFilledBackgroundOverride()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var standard = new Card { Title = "Standard", Content = "Description" };
             var elevated = new Card
@@ -1629,7 +1629,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void DisabledButtons_UseTheDisabledSurfaceForEveryVariant()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var buttons = Enum
                 .GetValues<ButtonVariant>()
@@ -1691,7 +1691,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void DisabledCardButtons_UseTheDisabledSurfaceForEveryVariant()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var cards = new[]
             {
@@ -1758,7 +1758,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void Card_OptionalCopyRegionsCollapseWithoutLeavingSpacing()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var titleOnly = new Card { Title = "Title" };
             var textOnly = new Card { Content = "Main text" };
@@ -1805,7 +1805,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void ActionCard_ProvidesHorizontalAndVerticalLayoutsAndCollapsesEmptyRegions()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string iconContent = "\uE790";
             var actionContent = new FlourishComboBox
@@ -1932,7 +1932,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void OutputCard_UsesCompactScrollableCaptionViewportInsideCardPadding()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var outputCard = new OutputCard
             {
@@ -2031,7 +2031,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void OutputCard_HistoryDoesNotDriveAnAutoSizedPeerRowHeight()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var listColumn = new StackPanel();
             for (var index = 0; index < 3; index++)
@@ -2095,7 +2095,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void Card_ArrangesOneIconAtAnyDockAndCollapsesAbsentIcons()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var cards = Enum.GetValues<Dock>()
                 .Select(position =>
@@ -2166,7 +2166,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void NavigationListBox_PreservesAnExplicitItemContainerContract()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var toolTip = new FlourishToolTip { Content = "Explicit item" };
             var item = new FlourishListBoxItem
@@ -2203,7 +2203,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void NavigationListBoxItem_FollowsTheSharedToolTipDelayPolicy()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var item = new FlourishListBoxItem { Content = "Item" };
             var listBox = new FlourishListBox
@@ -2243,7 +2243,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void PasswordBox_OuterFocusAndPublicFocusMethodReachTheEditor()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var passwordBox = new FlourishPasswordBox();
             var window = CreateWindow(passwordBox);
@@ -2277,7 +2277,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void GridSplitter_RowsDirectionUsesHorizontalGeometry()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var splitter = new FlourishGridSplitter
             {
@@ -2313,7 +2313,7 @@ public sealed class FlourishControlStylesTests
     [Fact]
     public void GridSplitter_NavigationPaneUsesAThinLiveResizeIndicator()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var splitter = new FlourishGridSplitter
             {
@@ -2475,29 +2475,5 @@ public sealed class FlourishControlStylesTests
     private static string FormatKeys(IEnumerable<object> keys)
     {
         return string.Join(", ", keys.Select(key => key.ToString()).Order());
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

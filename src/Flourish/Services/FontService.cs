@@ -289,29 +289,6 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         );
     }
 
-    public void SetOverrideFont<TPage>(
-        string fontFamily,
-        double? smallFontSize,
-        double? standardFontSize,
-        double? iconFontSize,
-        double? largeFontSize,
-        double? extraLargeFontSize,
-        double? headerSizeFontSize
-    )
-        where TPage : Page
-    {
-        SetOverrideFont(
-            typeof(TPage),
-            fontFamily,
-            smallFontSize,
-            standardFontSize,
-            iconFontSize,
-            largeFontSize,
-            extraLargeFontSize,
-            headerSizeFontSize
-        );
-    }
-
     public void SetOverrideFont(
         Type pageType,
         string fontFamily,
@@ -372,13 +349,7 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         );
     }
 
-    public bool ClearOverrideFont<TPage>()
-        where TPage : Page
-    {
-        return ClearOverrideFont(typeof(TPage));
-    }
-
-    public bool ClearOverrideFont(Type pageType)
+    public bool RemoveOverrideFont(Type pageType)
     {
         ValidatePageType(pageType, nameof(pageType));
         var removed = false;

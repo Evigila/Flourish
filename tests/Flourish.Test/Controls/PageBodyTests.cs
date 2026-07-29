@@ -14,7 +14,7 @@ public sealed class PageBodyTests
     [Fact]
     public void Constructor_UsesAStackPanelForPageElements()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var first = new HeaderChunk();
             var second = new Chunk();
@@ -35,7 +35,7 @@ public sealed class PageBodyTests
     [Fact]
     public void ImplicitXamlContent_AcceptsHeaderAndChunks()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string xaml = """
                 <flourish:PageBody
@@ -59,7 +59,7 @@ public sealed class PageBodyTests
     [Fact]
     public void Children_RejectUnsupportedElementsAndInvalidHeaderPlacement()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var body = new PageBody();
 
@@ -80,7 +80,7 @@ public sealed class PageBodyTests
     [Fact]
     public void CenteredLayout_WrapsThePanelAndPreservesTheChildrenCollection()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var initialChild = new HeaderChunk();
             var addedAfterLayout = new Chunk();
@@ -112,7 +112,7 @@ public sealed class PageBodyTests
     [Fact]
     public void PageMargin_TracksTheDynamicResource()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var body = new PageBody();
             var panel = Assert.IsType<StackPanel>(body.Content);
@@ -124,29 +124,5 @@ public sealed class PageBodyTests
 
             Assert.Equal(new Thickness(0, 0, 0, 48), panel.Margin);
         });
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? exception = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception caught)
-            {
-                exception = caught;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (exception is not null)
-        {
-            ExceptionDispatchInfo.Capture(exception).Throw();
-        }
     }
 }

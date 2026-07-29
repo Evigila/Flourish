@@ -9,7 +9,7 @@ public sealed class ToolbarCommandButtonIndexTests
     [Fact]
     public void Refresh_WithCommandKeyOnlyQueriesAndUpdatesMatchingButtons()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = new RecordingCommandDispatcher();
             dispatcher.SetAvailability("save", true);
@@ -34,7 +34,7 @@ public sealed class ToolbarCommandButtonIndexTests
     [Fact]
     public void Refresh_WithoutCommandKeyUpdatesAllTrackedCommands()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = new RecordingCommandDispatcher();
             dispatcher.SetAvailability("save", true);
@@ -60,7 +60,7 @@ public sealed class ToolbarCommandButtonIndexTests
     [Fact]
     public void Track_StaticDisabledItemNeverQueriesOrEnablesItsCommand()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = new RecordingCommandDispatcher();
             dispatcher.SetAvailability("save", true);
@@ -82,7 +82,7 @@ public sealed class ToolbarCommandButtonIndexTests
     [Fact]
     public void Clear_StopsPreviouslyTrackedButtonsFromRefreshing()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = new RecordingCommandDispatcher();
             dispatcher.SetAvailability("save", true);
@@ -99,30 +99,6 @@ public sealed class ToolbarCommandButtonIndexTests
             Assert.True(button.IsEnabled);
             Assert.Equal(0, dispatcher.GetCalls("save"));
         });
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 
     private sealed class RecordingCommandDispatcher : ICommandDispatcher

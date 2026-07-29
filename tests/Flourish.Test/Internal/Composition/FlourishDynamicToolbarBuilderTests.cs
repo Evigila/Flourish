@@ -8,6 +8,26 @@ namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 public sealed class FlourishDynamicToolbarBuilderTests
 {
     [Fact]
+    public void PublicContract_ExposesOneCoreMethodAndOneDefaultExtension()
+    {
+        var core = Assert.Single(
+            typeof(IFlourishDynamicToolbarBuilder).GetMethods(),
+            method => method.Name == "InitToolbarItems"
+        );
+        Assert.Equal("iconOnly", core.GetParameters()[0].Name);
+        Assert.Equal(typeof(bool), core.GetParameters()[0].ParameterType);
+
+        var convenience = Assert.Single(
+            typeof(FlourishDynamicToolbarBuilderExtensions).GetMethods(),
+            method => method.Name == "InitToolbarItems"
+        );
+        Assert.Equal(
+            typeof(IFlourishDynamicToolbarBuilder),
+            convenience.GetParameters()[0].ParameterType
+        );
+    }
+
+    [Fact]
     public void CreateToolbarItems_WithGenericPage_UsesIconModeByDefault()
     {
         var options = new FlourishShellOptions();

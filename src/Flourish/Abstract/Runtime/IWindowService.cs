@@ -15,7 +15,7 @@ public interface IWindowService
     /// <summary>
     /// Occurs synchronously after a requested window change or an observed native window state change.
     /// </summary>
-    event EventHandler<FlourishWindowStateChangedEventArgs>? StateChanged;
+    event EventHandler<FlourishWindowStateChangedEventArgs>? Changed;
 
     /// <summary>
     /// Sets the shell window position and size in device-independent pixels.

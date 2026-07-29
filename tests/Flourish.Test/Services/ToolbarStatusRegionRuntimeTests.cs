@@ -16,7 +16,7 @@ public sealed class ToolbarStatusRegionRuntimeTests
         sut.Changed += (_, args) => change = args;
         var save = new FlourishToolbarItem("Save", "S", "save") { Id = "save" };
 
-        sut.Add(save, typeof(EditorPage));
+        sut.Append(save, typeof(EditorPage));
         sut.SetItemEnabled("save", false, typeof(EditorPage));
         sut.SetItemVisible("save", false, typeof(EditorPage));
 
@@ -36,9 +36,9 @@ public sealed class ToolbarStatusRegionRuntimeTests
         var changes = 0;
         sut.Changed += (_, _) => changes++;
 
-        sut.Replace<EditorPage>([item]);
-        sut.Replace<EditorPage>([item]);
-        sut.Upsert(item, typeof(EditorPage));
+        sut.Set<EditorPage>([item]);
+        sut.Set<EditorPage>([item]);
+        sut.SetItem(item, typeof(EditorPage));
 
         Assert.Equal(1, changes);
         Assert.Equal(1, sut.Current.Version);
@@ -52,13 +52,13 @@ public sealed class ToolbarStatusRegionRuntimeTests
         var oldHandle = sut.Show("sync", "Syncing", "S");
         var newHandle = sut.Show("sync", "Complete", "C");
 
-        oldHandle.UpdateText("Stale");
-        oldHandle.UpdateIcon("X");
+        oldHandle.SetText("Stale");
+        oldHandle.SetIcon("X");
         oldHandle.Dispose();
 
         Assert.Equal("Complete", Assert.Single(sut.Current.Items).Text);
         Assert.Equal("C", Assert.Single(sut.Current.Items).IconGlyph);
-        newHandle.UpdateText("Done");
+        newHandle.SetText("Done");
         Assert.Equal("Done", Assert.Single(sut.Current.Items).Text);
         newHandle.Dispose();
         Assert.Empty(sut.Current.Items);
@@ -69,12 +69,12 @@ public sealed class ToolbarStatusRegionRuntimeTests
     {
         var options = new FlourishShellOptions();
         var sut = new ShellRegionService(options);
-        var oldHandle = sut.Add(
+        var oldHandle = sut.Append(
             "runtime",
             FlourishRegion.ToolbarStart,
             _ => new Border()
         );
-        var replacement = sut.Upsert(
+        var replacement = sut.Set(
             "runtime",
             FlourishRegion.FooterEnd,
             _ => new TextBlock(),

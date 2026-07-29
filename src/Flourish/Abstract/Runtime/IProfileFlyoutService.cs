@@ -43,12 +43,6 @@ public interface IProfileFlyoutService
     /// <summary>
     /// Changes the page displayed in the profile flyout.
     /// </summary>
-    /// <typeparam name="TPage">The closed, concrete WPF page type to display.</typeparam>
-    void SetContentPage<TPage>() where TPage : Page;
-
-    /// <summary>
-    /// Changes the page displayed in the profile flyout.
-    /// </summary>
     /// <param name="pageType">A closed, concrete type derived from <see cref="Page"/>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="pageType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="pageType"/> is not a closed, concrete <see cref="Page"/> type.</exception>

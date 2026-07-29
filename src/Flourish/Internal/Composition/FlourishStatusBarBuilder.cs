@@ -7,7 +7,7 @@ internal sealed class FlourishStatusBarBuilder(FlourishShellOptions options)
     : FlourishBuilderMutationGuard,
         IFlourishStatusBarBuilder
 {
-    public IFlourishStatusBarBuilder InitStatusItem(
+    public IFlourishStatusBarBuilder AddStatusItem(
         string displayText = "OK",
         string iconGlyph = "\uE930"
     )

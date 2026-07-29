@@ -7,7 +7,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 
 public sealed class FlourishShellWindowShortcutTests
 {
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
     private static readonly string ShellCodePath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -79,7 +79,7 @@ public sealed class FlourishShellWindowShortcutTests
     [Fact]
     public void IsTextInputTarget_RecognizesCommonEditableControls()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             Assert.True(FlourishShellWindow.IsTextInputTarget(new TextBox()));
             Assert.True(FlourishShellWindow.IsTextInputTarget(new RichTextBox()));
@@ -93,7 +93,7 @@ public sealed class FlourishShellWindowShortcutTests
     [Fact]
     public void IsTextInputTarget_RejectsNonEditableControls()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             Assert.False(FlourishShellWindow.IsTextInputTarget(new Button()));
             Assert.False(
@@ -150,48 +150,5 @@ public sealed class FlourishShellWindowShortcutTests
         );
         Assert.True(resolveIndex >= 0 && resolveIndex < handledIndex);
         Assert.True(handledIndex < executeIndex);
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (
-                Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-                && Directory.Exists(Path.Combine(directory.FullName, "tests", "Flourish.Test"))
-            )
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the Flourish repository root.");
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

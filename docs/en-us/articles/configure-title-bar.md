@@ -79,7 +79,7 @@ The three display arguments default to `true`, `true`, and `false`. Clicking or 
 
 ```csharp
 builder.ConfigCustomHandler(custom =>
-    custom.InitRegionContent(
+    custom.AddRegionContent(
         FlourishRegion.TitlebarApplicationInfo,
         services => new ApplicationSummaryView()));
 ```

@@ -156,7 +156,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         var observedExit = false;
-        sut.StateChanged += (_, args) =>
+        sut.Changed += (_, args) =>
         {
             observedExit |= args.State.IsExitRequested;
             if (observedExit && !args.State.IsExitRequested)
@@ -179,7 +179,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         close.SetBehavior(WindowCloseBehavior.MinimizeToTray);
         using var sut = CreateTrayService(options, close);
         var states = new List<FlourishTrayState>();
-        sut.StateChanged += (_, args) => states.Add(args.State);
+        sut.Changed += (_, args) => states.Add(args.State);
 
         ((ITrayService)sut).SetEnabled(false);
 

@@ -46,7 +46,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void Attach_PopulatesOnlyTheFourteenTypographyKeysAndSameScopeReattachIsStable()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
             var sut = new FontService(new FlourishShellOptions());
@@ -78,7 +78,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void SetFont_WithFamilyOnlyChange_ReplacesOnlyTheTextFamilyResource()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var before = CaptureResources(resources);
@@ -104,7 +104,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void SetFont_WithScaleOnlyChangeReplacesAllExplicitSizeResources()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var before = CaptureResources(resources);
@@ -130,7 +130,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void SetIconFontFamily_ReplacesOnlyTheIconFamilyResource()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var before = CaptureResources(resources);
@@ -148,7 +148,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void SetFont_ReplacesTextFamilyAndSizeResourcesButNotIconFamily()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var before = CaptureResources(resources);
@@ -172,7 +172,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void EquivalentMutationsDoNotRaiseChanged()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, _) = CreateAttachedService();
             var events = new List<FlourishFontChangedEventArgs>();
@@ -195,8 +195,8 @@ public sealed class FontServicePropagationTests
             sut.SetOverrideFont<TestPage>("Arial", 15, 18, 20, 21, 24, 30);
             Assert.Single(events);
 
-            Assert.True(sut.ClearOverrideFont<TestPage>());
-            Assert.False(sut.ClearOverrideFont<TestPage>());
+            Assert.True(sut.RemoveOverrideFont<TestPage>());
+            Assert.False(sut.RemoveOverrideFont<TestPage>());
             Assert.Equal(2, events.Count);
         });
     }
@@ -204,7 +204,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void Changed_IdentifiesGlobalIconAndAffectedPageOverrideScopes()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, _) = CreateAttachedService();
             var events = new List<FlourishFontChangedEventArgs>();
@@ -222,7 +222,7 @@ public sealed class FontServicePropagationTests
             sut.SetFont("Times New Roman", 14, 19, 21, 24, 28, 34);
             sut.SetIconFontFamily("Arial");
             sut.SetOverrideFont<TestPage>("Arial", 15, 18, 20, 21, 24, 30);
-            sut.ClearOverrideFont<TestPage>();
+            sut.RemoveOverrideFont<TestPage>();
 
             Assert.Equal(
                 [
@@ -251,7 +251,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void BackgroundMutationsAreSerializedOnTheAttachedDispatcherWithConsistentSnapshots()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
             var dispatcherThreadId = Environment.CurrentManagedThreadId;
@@ -385,7 +385,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void QueuedAttachAndDetachedSetterPublishConsistentStateAcrossTheDispatcherBoundary()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
             var dispatcherThreadId = Environment.CurrentManagedThreadId;
@@ -440,7 +440,7 @@ public sealed class FontServicePropagationTests
             Assert.Equal(22d, sut.LargeFontSize);
             Assert.Equal(25d, sut.ExtraLargeFontSize);
 
-            PumpDispatcherUntil(dispatcher, attachTask);
+            DispatcherTest.Wait(dispatcher, attachTask);
 
             Assert.Equal(
                 "Arial",
@@ -482,7 +482,7 @@ public sealed class FontServicePropagationTests
             );
             Assert.Equal(18d, resources["FlourishFontSizeStandard"]);
 
-            PumpDispatcherUntil(dispatcher, attachedSetter);
+            DispatcherTest.Wait(dispatcher, attachedSetter);
 
             Assert.Equal(2, events.Count);
             var attachedEvent = events[^1];
@@ -521,7 +521,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void RootDynamicResourcesUpdatePlainInheritedTextWithoutWindowResourceShadows()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var window = new Window();
@@ -565,7 +565,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void AttachedGlobalScaleUpdatesExistingChunkAndHeaderTitleHostsAtDistinctTiers()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
             resources.MergedDictionaries.Add(new FlourishThemeResources());
@@ -620,7 +620,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void IconDynamicResourceUpdatesAnExistingTextBlockWithoutRecreation()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var window = new Window();
@@ -666,7 +666,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void ApplyToPage_IsIdempotentForTheSameEffectiveSignature()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var page = CreatePageWithResources(resources);
@@ -685,7 +685,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void FamilyOnlyPageOverrideKeepsItsFamilyAndFollowsGlobalScaleWithoutReapply()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var page = CreatePageWithResources(resources);
@@ -710,7 +710,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void FixedPageOverrideRemainsStableAcrossGlobalTextAndIconChanges()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var page = CreatePageWithResources(resources);
@@ -738,7 +738,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void ClearPageOverrideRestoresOriginalResourcesAndThenBecomesIdempotent()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var (sut, resources) = CreateAttachedService();
             var page = CreatePageWithResources(resources);
@@ -752,7 +752,7 @@ public sealed class FontServicePropagationTests
             sut.SetOverrideFont<TestPage>("Arial", 14, 18, 20, 22, 25, 31);
             Assert.True(sut.ApplyToPage(page));
 
-            Assert.True(sut.ClearOverrideFont<TestPage>());
+            Assert.True(sut.RemoveOverrideFont<TestPage>());
             Assert.True(sut.ApplyToPage(page));
 
             Assert.Same(originalFamily, page.Resources[TextFamilyKey]);
@@ -769,7 +769,7 @@ public sealed class FontServicePropagationTests
     [Fact]
     public void SourceContractsUseOneApplicationScopeAndFilterPageOverrideRefreshes()
     {
-        var flourishRoot = Path.Combine(FindRepositoryRoot(), "src", "Flourish");
+        var flourishRoot = Path.Combine(TestPaths.RepositoryRoot, "src", "Flourish");
         var fontSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Services", "FontService.cs")
         );
@@ -915,67 +915,6 @@ public sealed class FontServicePropagationTests
         }
 
         return count;
-    }
-
-    private static void PumpDispatcherUntil(Dispatcher dispatcher, Task task)
-    {
-        var frame = new DispatcherFrame();
-        _ = task.ContinueWith(
-            _ =>
-                dispatcher.BeginInvoke(
-                    DispatcherPriority.Send,
-                    new Action(() => frame.Continue = false)
-                ),
-            CancellationToken.None,
-            TaskContinuationOptions.ExecuteSynchronously,
-            TaskScheduler.Default
-        );
-        Dispatcher.PushFrame(frame);
-        task.GetAwaiter().GetResult();
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        for (
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            directory is not null;
-            directory = directory.Parent
-        )
-        {
-            if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
-                && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
-            )
-            {
-                return directory.FullName;
-            }
-        }
-
-        throw new DirectoryNotFoundException("Could not locate the Flourish repository root.");
     }
 
     private sealed class TestPage : Page { }

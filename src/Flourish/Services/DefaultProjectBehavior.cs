@@ -115,7 +115,7 @@ internal sealed class DefaultProjectBehavior(
         await operationGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            if (!projectService.TryGetProject(projectId, out _))
+            if (projectService.GetProject(projectId) is null)
             {
                 return false;
             }
@@ -136,7 +136,7 @@ internal sealed class DefaultProjectBehavior(
                 return false;
             }
 
-            if (!projectService.TryGetProject(projectId, out _))
+            if (projectService.GetProject(projectId) is null)
             {
                 return false;
             }
@@ -164,7 +164,8 @@ internal sealed class DefaultProjectBehavior(
         await operationGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            if (!projectService.TryGetProject(projectId, out var project) || project is null)
+            var project = projectService.GetProject(projectId);
+            if (project is null)
             {
                 return false;
             }
@@ -190,7 +191,8 @@ internal sealed class DefaultProjectBehavior(
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            if (!projectService.TryGetProject(projectId, out project) || project is null)
+            project = projectService.GetProject(projectId);
+            if (project is null)
             {
                 return false;
             }
@@ -222,7 +224,7 @@ internal sealed class DefaultProjectBehavior(
             }
             catch
             {
-                if (projectService.TryGetProject(projectId, out _))
+                if (projectService.GetProject(projectId) is not null)
                 {
                     RestoreIsolatedFile(isolatedFilePath, project.StoragePath);
                 }

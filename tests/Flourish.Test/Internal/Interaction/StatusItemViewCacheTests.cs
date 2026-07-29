@@ -12,7 +12,7 @@ public sealed class StatusItemViewCacheTests
     [Fact]
     public void RepeatedUpdatesReuseViewsAndResourceBindings()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var host = new StackPanel();
             var sut = new StatusItemViewCache(host);
@@ -63,7 +63,7 @@ public sealed class StatusItemViewCacheTests
     [Fact]
     public void VisibilityMoveRemoveAndResetPreserveOnlyCurrentViews()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var host = new StackPanel();
             var sut = new StatusItemViewCache(host);
@@ -137,7 +137,7 @@ public sealed class StatusItemViewCacheTests
     [Fact]
     public void StaleEventsAreIgnoredAndVersionGapsReconcileTheSnapshot()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var host = new StackPanel();
             var sut = new StatusItemViewCache(host);
@@ -203,29 +203,5 @@ public sealed class StatusItemViewCacheTests
     private static FlourishTextBlock GetLabel(UIElement root)
     {
         return Assert.IsType<FlourishTextBlock>(Assert.IsType<StackPanel>(root).Children[1]);
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            ExceptionDispatchInfo.Capture(error).Throw();
-        }
     }
 }

@@ -13,7 +13,7 @@ public interface ITrayService
     /// <summary>
     /// Occurs synchronously after notification-area state changes.
     /// </summary>
-    event EventHandler<FlourishTrayStateChangedEventArgs>? StateChanged;
+    event EventHandler<FlourishTrayStateChangedEventArgs>? Changed;
 
     /// <summary>
     /// Enables or disables notification-area behavior at runtime.

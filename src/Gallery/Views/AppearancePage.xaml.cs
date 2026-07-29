@@ -46,7 +46,7 @@ public partial class AppearancePage : Page
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
         Page_Unloaded(sender, e);
-        theme.ThemeChanged += RuntimeState_Changed;
+        theme.Changed += RuntimeState_Changed;
         font.Changed += RuntimeState_Changed;
         material.Changed += RuntimeState_Changed;
         scroll.Changed += RuntimeState_Changed;
@@ -57,7 +57,7 @@ public partial class AppearancePage : Page
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        theme.ThemeChanged -= RuntimeState_Changed;
+        theme.Changed -= RuntimeState_Changed;
         font.Changed -= RuntimeState_Changed;
         material.Changed -= RuntimeState_Changed;
         scroll.Changed -= RuntimeState_Changed;
@@ -180,7 +180,7 @@ public partial class AppearancePage : Page
     private void ClearPageFontOverride_Click(object sender, RoutedEventArgs e)
     {
         Execute(
-            () => font.ClearOverrideFont<AppearancePage>(),
+            () => font.RemoveOverrideFont<AppearancePage>(),
             PageFontOverrideOutput,
             () => "AppearancePage typography override cleared."
         );

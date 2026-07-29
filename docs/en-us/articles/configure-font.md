@@ -101,7 +101,7 @@ fontService.SetOverrideFont(
 IReadOnlyDictionary<Type, FlourishPageFontOverride> overrides =
     fontService.PageOverrides;
 
-fontService.ClearOverrideFont<CodeEditorPage>();
+fontService.RemoveOverrideFont<CodeEditorPage>();
 ```
 
 Clearing an override immediately returns the active page to the latest global font. A `null` override tier continues to follow later global changes.

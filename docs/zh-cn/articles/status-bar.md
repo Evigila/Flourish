@@ -13,13 +13,13 @@ builder
     .ConfigStatusBar(statusBar =>
     {
         statusBar
-            .InitStatusItem("在线", "\uE774")
+            .AddStatusItem("在线", "\uE774")
             .UseLanConnectionStatus()
             .UsePowerStatus();
     });
 ```
 
-非交互式文本和图标状态使用 `InitStatusItem`；交互控件或应用定义的 WPF 内容使用[自定义 Footer 区域](configure-custom-handler.md)。
+非交互式文本和图标状态使用 `AddStatusItem`；交互控件或应用定义的 WPF 内容使用[自定义 Footer 区域](configure-custom-handler.md)。
 
 ## 后台任务指示器
 
@@ -37,11 +37,11 @@ Shell 从 `FlourishBackgroundTaskMetadata` 读取任务名称、描述和图标�
 
 ## 自定义状态项
 
-`InitStatusItem` 添加一个包含 Small 显示文本和图标字形的紧凑非交互状态项。多个项目按注册顺序排列在系统状态图标之前。
+`AddStatusItem` 添加一个包含 Small 显示文本和图标字形的紧凑非交互状态项。多个项目按注册顺序排列在系统状态图标之前。
 
 ```csharp
-statusBar.InitStatusItem("在线", "\uE774");
-statusBar.InitStatusItem("已同步", "\uE73E");
+statusBar.AddStatusItem("在线", "\uE774");
+statusBar.AddStatusItem("已同步", "\uE73E");
 ```
 
 自定义项适合表示账号、工作区、同步状态或当前模式。传入的文本属于应用内容，不会自动翻译。
@@ -67,7 +67,7 @@ statusBar
 ```csharp
 builder.ConfigCustomHandler(custom =>
 {
-    custom.InitFooterCommand(
+    custom.AddFooterCommand(
         FlourishRegion.FooterEnd,
         "同步",
         "\uE895",

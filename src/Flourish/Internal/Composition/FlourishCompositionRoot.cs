@@ -201,7 +201,7 @@ internal sealed class FlourishCompositionRoot(
             .InitShownInTaskbar();
 
     private static void ApplyStatusBarDefaults(IFlourishStatusBarBuilder builder) =>
-        builder.InitStatusItem().UseLanConnectionStatus().UsePowerStatus();
+        builder.AddStatusItem().UseLanConnectionStatus().UsePowerStatus();
 
     private void ApplyServiceCollectionRegistrations(IServiceCollection services)
     {

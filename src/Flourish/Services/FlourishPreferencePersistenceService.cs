@@ -63,7 +63,7 @@ internal sealed class FlourishPreferencePersistenceService(
     private void Subscribe()
     {
         localization.Changed += PreferenceChanged;
-        window.StateChanged += Window_StateChanged;
+        window.Changed += Window_StateChanged;
         navigationPanel.Changed += PreferenceChanged;
         navigation.Navigated += PreferenceChanged;
         motion.Changed += PreferenceChanged;
@@ -72,14 +72,14 @@ internal sealed class FlourishPreferencePersistenceService(
         contentLayout.Changed += PreferenceChanged;
         material.Changed += PreferenceChanged;
         appearance.Changed += PreferenceChanged;
-        tray.StateChanged += PreferenceChanged;
+        tray.Changed += PreferenceChanged;
         profile.ProfileChanged += PreferenceChanged;
     }
 
     private void Unsubscribe()
     {
         localization.Changed -= PreferenceChanged;
-        window.StateChanged -= Window_StateChanged;
+        window.Changed -= Window_StateChanged;
         navigationPanel.Changed -= PreferenceChanged;
         navigation.Navigated -= PreferenceChanged;
         motion.Changed -= PreferenceChanged;
@@ -88,7 +88,7 @@ internal sealed class FlourishPreferencePersistenceService(
         contentLayout.Changed -= PreferenceChanged;
         material.Changed -= PreferenceChanged;
         appearance.Changed -= PreferenceChanged;
-        tray.StateChanged -= PreferenceChanged;
+        tray.Changed -= PreferenceChanged;
         profile.ProfileChanged -= PreferenceChanged;
     }
 

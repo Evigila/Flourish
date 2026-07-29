@@ -41,7 +41,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
                 "Reports",
                 @"C:\Work\Reports.txt"));
 
-        projects.UpsertProject(
+        projects.SetProject(
             new FlourishProject("samples", "Samples", @"C:\Work\Samples.txt"),
             activate: false);
     }
@@ -63,11 +63,11 @@ When no persisted catalog entries exist, Flourish creates and activates one proc
 | Operation | Behavior |
 | --- | --- |
 | `AppendProject(project, activate)` | Appends unique metadata and optionally makes it active. |
-| `UpsertProject(project, activate)` | Adds or replaces metadata by ID. |
+| `SetProject(project, activate)` | Adds or replaces metadata by ID. |
 | `SetProjectMetadata(id, name, storagePath)` | Changes the name and optional path of an existing project. |
 | `SetActiveProject(id)` | Changes only the active Shell identity; pass `null` to clear it. |
 | `RemoveProject(id)` | Removes only the catalog entry. Removing the active project clears the selection. |
-| `TryGetProject(id, out project)` | Queries one registered project. |
+| `GetProject(id)` | Returns one registered project, or `null` when the ID is unknown. |
 | `SetMultiProjectEnabled(enabled)` | Changes project-aware title-bar behavior at runtime. |
 
 Observe `Changed` after metadata, active selection, or mode changes. The event identifies the mutation, affected project, and whether the active project changed. Direct `SetActiveProject` and `RemoveProject` calls do not run lifecycle prompts or touch project files; use `IProjectBehavior` when the user operation requires those behaviors.

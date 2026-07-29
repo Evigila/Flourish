@@ -128,8 +128,8 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.Equal(21, current.LargeFontSize);
         Assert.Equal(24, current.ExtraLargeFontSize);
         Assert.Equal(30, current.HeaderSizeFontSize);
-        Assert.True(sut.ClearOverrideFont<RuntimeFontPage>());
-        Assert.False(sut.ClearOverrideFont(typeof(RuntimeFontPage)));
+        Assert.True(sut.RemoveOverrideFont<RuntimeFontPage>());
+        Assert.False(sut.RemoveOverrideFont(typeof(RuntimeFontPage)));
         Assert.Equal(3, changes);
         Assert.Empty(sut.PageOverrides);
     }
@@ -352,7 +352,7 @@ public sealed class RuntimeAppearanceServiceTests
         var options = new FlourishShellOptions();
         IThemeService sut = new ThemeService(options, preferences);
         FlourishThemeChangedEventArgs? change = null;
-        sut.ThemeChanged += (_, args) => change = args;
+        sut.Changed += (_, args) => change = args;
         using var updateEntered = new ManualResetEventSlim();
         using var releaseUpdate = new ManualResetEventSlim();
         var blockingUpdate = preferences
@@ -406,7 +406,7 @@ public sealed class RuntimeAppearanceServiceTests
         environment.SetupGet(value => value.ContentRootPath).Returns(directory.Path);
         using var preferences = new AppPreferenceService(configuration, environment.Object);
         IThemeService sut = new ThemeService(new FlourishShellOptions(), preferences);
-        sut.ThemeChanged += (_, _) =>
+        sut.Changed += (_, _) =>
             preferences
                 .SetAsync("Flourish:Feature:FromThemeChanged", true)
                 .AsTask()
@@ -428,7 +428,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ThemeService_StyleOverridesPopulateApplicationScopeSemanticResources()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var colors = new FlourishThemeColors(
                 Color.FromRgb(0x12, 0x34, 0x56),
@@ -503,7 +503,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ThemeService_StyleOverridesDeriveReadableForegroundsForEachTheme()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var colors = new FlourishThemeColors(
                 Color.FromRgb(0x0F, 0x6C, 0xBD),
@@ -568,7 +568,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ThemeService_CustomRevealIntensityPreservesInteractionContrast()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var primaryColors = new[]
             {
@@ -658,7 +658,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ThemeService_StyleOverridesWithoutExplicitConfigurationPreserveHostResources()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
             var hostBrush = new SolidColorBrush(Color.FromRgb(0x12, 0x34, 0x56));
@@ -677,7 +677,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ThemeService_PaletteSwitchRemainsInsideTheGenericThemeRoot()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string paletteHostSource =
                 "/Flourish;component/Themes/Colors/Colors.xaml";
@@ -756,7 +756,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ThemeService_PaletteSwitchPreservesNestedThemeAndWrapperOverrides()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             const string lightSource =
                 "/Flourish;component/Themes/Colors/Colors.Light.xaml";
@@ -933,53 +933,6 @@ public sealed class RuntimeAppearanceServiceTests
             resources.MergedDictionaries,
             dictionary => paletteSources.Contains(dictionary.Source?.OriginalString)
         );
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-        }
-    }
-
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                "Flourish.Test",
-                Guid.NewGuid().ToString("N")
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(Path))
-            {
-                Directory.Delete(Path, recursive: true);
-            }
-        }
     }
 
     private sealed class RuntimeFontPage : System.Windows.Controls.Page { }

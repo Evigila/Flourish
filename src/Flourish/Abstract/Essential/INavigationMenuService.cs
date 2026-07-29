@@ -15,7 +15,7 @@ public interface INavigationMenuService
     /// Applies one or more changes atomically. If validation fails, no changes are committed.
     /// </summary>
     /// <param name="update">The editing callback.</param>
-    void Update(Action<INavigationMenuEditor> update);
+    void Set(Action<INavigationMenuEditor> update);
 }
 
 /// <summary>Edits the navigation menu within a transaction.</summary>
@@ -25,13 +25,13 @@ public interface INavigationMenuEditor
     void AppendGroup(string id, string? title = null);
 
     /// <summary>Inserts a navigation group at a zero-based index.</summary>
-    void InsertGroup(string id, int index, string? title = null);
+    void SetGroupIndex(string id, int index, string? title = null);
 
     /// <summary>Removes a group and all items it contains.</summary>
     bool RemoveGroup(string id);
 
     /// <summary>Moves a group to a zero-based index.</summary>
-    void MoveGroup(string id, int newIndex);
+    void SetGroupOrder(string id, int newIndex);
 
     /// <summary>Changes a group's visible title.</summary>
     void SetGroupTitle(string id, string? title);
@@ -40,16 +40,16 @@ public interface INavigationMenuEditor
     void AppendItem(string groupId, FlourishNavigationMenuItem item);
 
     /// <summary>Inserts an item at a zero-based index in a scrollable navigation group.</summary>
-    void InsertItem(string groupId, FlourishNavigationMenuItem item, int index);
+    void SetItemIndex(string groupId, FlourishNavigationMenuItem item, int index);
 
     /// <summary>Appends an item to the end of the fixed bottom section.</summary>
     void AppendFixedItem(FlourishNavigationMenuItem item);
 
     /// <summary>Inserts an item at a zero-based index in the fixed bottom section.</summary>
-    void InsertFixedItem(FlourishNavigationMenuItem item, int index);
+    void SetFixedItemIndex(FlourishNavigationMenuItem item, int index);
 
     /// <summary>Adds the item or replaces the existing item with the same stable ID.</summary>
-    void UpsertItem(
+    void SetItem(
         string? groupId,
         FlourishNavigationMenuItem item,
         bool isFixed = false,
@@ -60,10 +60,10 @@ public interface INavigationMenuEditor
     bool RemoveItem(string id);
 
     /// <summary>Moves an item to another group or to the fixed section.</summary>
-    void MoveItem(string id, string? targetGroupId, int newIndex, bool isFixed = false);
+    void SetItemPosition(string id, string? targetGroupId, int newIndex, bool isFixed = false);
 
     /// <summary>Replaces an item using a transformation callback.</summary>
-    void UpdateItem(
+    void SetItem(
         string id,
         Func<FlourishNavigationMenuItem, FlourishNavigationMenuItem> update
     );

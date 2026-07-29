@@ -47,7 +47,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
         }
     }
 
-    public INavigationRouteRegistration Register(FlourishNavigationRoute route)
+    public INavigationRouteRegistration Append(FlourishNavigationRoute route)
     {
         ValidateRoute(route);
         var lease = Guid.NewGuid();
@@ -81,7 +81,7 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
         return new Registration(this, route.NavigationKey, lease);
     }
 
-    public INavigationRouteRegistration Upsert(FlourishNavigationRoute route)
+    public INavigationRouteRegistration Set(FlourishNavigationRoute route)
     {
         ValidateRoute(route);
         var lease = Guid.NewGuid();
@@ -162,12 +162,12 @@ internal sealed class NavigationRouteRegistry : INavigationRouteRegistry
         );
     }
 
-    public bool Contains(string navigationKey)
+    public FlourishNavigationRoute? Get(string navigationKey)
     {
         navigationKey = ValidateKey(navigationKey, nameof(navigationKey));
         lock (gate)
         {
-            return routes.ContainsKey(navigationKey);
+            return routes.GetValueOrDefault(navigationKey);
         }
     }
 

@@ -19,14 +19,14 @@ Flourish uses `en-US` when `ConfigData` is omitted. Persistence is enabled by de
 
 ## Add a custom locale
 
-`InitLocaleFile(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `lang_<locale>.json`; the locale segment may contain letters, digits, hyphens, and underscores. Each separator must have a non-empty subtag on both sides. File-name identifiers use the same canonicalization as `InitLocale`.
+`AddLocaleFile(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `lang_<locale>.json`; the locale segment may contain letters, digits, hyphens, and underscores. Each separator must have a non-empty subtag on both sides. File-name identifiers use the same canonicalization as `InitLocale`.
 
 ```csharp
 builder.ConfigData(data =>
 {
     data
         .InitLocale("en-US")
-        .InitLocaleFile("Locales/lang_en-US.json");
+        .AddLocaleFile("Locales/lang_en-US.json");
 });
 ```
 
@@ -41,7 +41,7 @@ Locale files are flat JSON objects. They may contain only the keys they need to 
 }
 ```
 
-Calling `InitLocaleFile` more than once for the same locale merges the files in registration order. A later file replaces earlier values for the same key. For each lookup, Flourish uses this priority:
+Calling `AddLocaleFile` more than once for the same locale merges the files in registration order. A later file replaces earlier values for the same key. For each lookup, Flourish uses this priority:
 
 1. Custom value for the selected locale.
 2. Built-in value for the selected locale.

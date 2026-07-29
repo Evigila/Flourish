@@ -9,7 +9,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// <code><![CDATA[
 /// builder.ConfigCustomHandler(custom =>
 /// {
-///     custom.InitRegionContent(
+///     custom.AddRegionContent(
 ///         FlourishRegion.TitlebarEnd,
 ///         services => new Button { Content = "Account" });
 /// });
@@ -24,7 +24,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="contentFactory">A factory that creates the WPF element when the shell is created.</param>
     /// <param name="order">The display order inside the region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishCustomHandlerBuilder InitRegionContent(
+    IFlourishCustomHandlerBuilder AddRegionContent(
         FlourishRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
@@ -50,7 +50,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" /> when the action is clicked.</param>
     /// <param name="order">The display order among title bar end-region content. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishCustomHandlerBuilder InitTitleBarAction(
+    IFlourishCustomHandlerBuilder AddTitleBarAction(
         string displayName,
         string iconGlyph,
         string? commandKey,
@@ -65,7 +65,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="action">The callback invoked when the action is clicked.</param>
     /// <param name="order">The display order among title bar end-region content. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishCustomHandlerBuilder InitTitleBarActionHandler(
+    IFlourishCustomHandlerBuilder AddTitleBarActionHandler(
         string displayName,
         string iconGlyph,
         Action<IServiceProvider> action,
@@ -81,7 +81,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" /> when clicked.</param>
     /// <param name="order">The display order in the footer region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishCustomHandlerBuilder InitFooterCommand(
+    IFlourishCustomHandlerBuilder AddFooterCommand(
         FlourishRegion region,
         string displayText,
         string iconGlyph,
@@ -98,7 +98,7 @@ public interface IFlourishCustomHandlerBuilder
     /// <param name="action">The callback invoked when the command is clicked.</param>
     /// <param name="order">The display order in the footer region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishCustomHandlerBuilder InitFooterCommandHandler(
+    IFlourishCustomHandlerBuilder AddFooterCommandHandler(
         FlourishRegion region,
         string displayText,
         string iconGlyph,

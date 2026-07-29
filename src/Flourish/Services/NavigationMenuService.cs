@@ -48,7 +48,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
         }
     }
 
-    public void Update(Action<INavigationMenuEditor> update)
+    public void Set(Action<INavigationMenuEditor> update)
     {
         ArgumentNullException.ThrowIfNull(update);
         FlourishNavigationMenuSnapshot previous;
@@ -687,7 +687,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             InsertGroupCore(id, title, index: null);
         }
 
-        public void InsertGroup(string id, int index, string? title = null)
+        public void SetGroupIndex(string id, int index, string? title = null)
         {
             InsertGroupCore(id, title, index);
         }
@@ -721,7 +721,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             return true;
         }
 
-        public void MoveGroup(string id, int newIndex)
+        public void SetGroupOrder(string id, int newIndex)
         {
             var oldIndex = RequireGroupIndex(id);
             ValidateMoveIndex(newIndex, groups.Count, nameof(newIndex));
@@ -745,7 +745,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             InsertItemCore(groupId, item, index: null);
         }
 
-        public void InsertItem(
+        public void SetItemIndex(
             string groupId,
             FlourishNavigationMenuItem item,
             int index
@@ -770,7 +770,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             InsertFixedItemCore(item, index: null);
         }
 
-        public void InsertFixedItem(FlourishNavigationMenuItem item, int index)
+        public void SetFixedItemIndex(FlourishNavigationMenuItem item, int index)
         {
             InsertFixedItemCore(item, index);
         }
@@ -785,7 +785,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             Insert(fixedItems, item, index);
         }
 
-        public void UpsertItem(
+        public void SetItem(
             string? groupId,
             FlourishNavigationMenuItem item,
             bool isFixed = false,
@@ -818,7 +818,12 @@ internal sealed class NavigationMenuService : INavigationMenuService
             return true;
         }
 
-        public void MoveItem(string id, string? targetGroupId, int newIndex, bool isFixed = false)
+        public void SetItemPosition(
+            string id,
+            string? targetGroupId,
+            int newIndex,
+            bool isFixed = false
+        )
         {
             if (!TryFindItem(groups, fixedItems, id, out var location))
             {
@@ -841,7 +846,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             target.InsertRange(newIndex, moving);
         }
 
-        public void UpdateItem(
+        public void SetItem(
             string id,
             Func<FlourishNavigationMenuItem, FlourishNavigationMenuItem> update
         )
@@ -867,17 +872,17 @@ internal sealed class NavigationMenuService : INavigationMenuService
 
         public void SetItemVisible(string id, bool visible)
         {
-            UpdateItem(id, item => item with { IsVisible = visible });
+            SetItem(id, item => item with { IsVisible = visible });
         }
 
         public void SetItemEnabled(string id, bool enabled)
         {
-            UpdateItem(id, item => item with { IsEnabled = enabled });
+            SetItem(id, item => item with { IsEnabled = enabled });
         }
 
         public void SetItemExpanded(string id, bool expanded)
         {
-            UpdateItem(id, item => item with { IsExpanded = expanded });
+            SetItem(id, item => item with { IsExpanded = expanded });
         }
 
         private List<FlourishNavigationMenuItem> GetTarget(string? groupId, bool isFixed)

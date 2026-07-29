@@ -17,7 +17,7 @@ public sealed class FlourishDataGridTests
     [Fact]
     public void DataGrid_PreservesNativeContractAndExposesReadOnlyCounts()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var grid = new FlourishDataGrid();
 
@@ -34,7 +34,7 @@ public sealed class FlourishDataGridTests
     [Fact]
     public void DataGrid_CountsTrackNativeItemsAndColumns()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var rows = new ObservableCollection<MemberRow>
             {
@@ -63,7 +63,7 @@ public sealed class FlourishDataGridTests
     [Fact]
     public void DataGrid_AutoGeneratesColumnsAndUsesRegularTypography()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var grid = new FlourishDataGrid
             {
@@ -102,7 +102,7 @@ public sealed class FlourishDataGridTests
     [Fact]
     public void DataGrid_WheelBubblesToThePageWhenItsRowsDoNotNeedScrolling()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var grid = CreateGrid(3);
             var pageContent = new StackPanel();
@@ -150,7 +150,7 @@ public sealed class FlourishDataGridTests
     [Fact]
     public void DataGrid_WheelScrollsRowsFirstAndThenBubblesAtTheBoundary()
     {
-        RunInSta(() =>
+        StaTest.Run(() =>
         {
             var grid = CreateGrid(40);
             grid.Height = 140;
@@ -324,30 +324,6 @@ public sealed class FlourishDataGridTests
             {
                 yield return descendant;
             }
-        }
-    }
-
-    private static void RunInSta(Action action)
-    {
-        Exception? error = null;
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception exception)
-            {
-                error = exception;
-            }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
         }
     }
 

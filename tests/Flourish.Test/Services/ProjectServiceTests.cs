@@ -89,7 +89,7 @@ public sealed class ProjectServiceTests
     }
 
     [Fact]
-    public void UpsertProject_UpdatesInPlaceActivatesOnRequestAndSuppressesNoOps()
+    public void SetProject_UpdatesInPlaceActivatesOnRequestAndSuppressesNoOps()
     {
         IProjectService sut = new ProjectService(new FlourishShellOptions());
         var changes = new List<FlourishProjectsChangedEventArgs>();
@@ -97,14 +97,14 @@ public sealed class ProjectServiceTests
         var original = new FlourishProject("alpha", "Alpha");
         var updated = new FlourishProject("alpha", "Renamed", @"C:\Work\Alpha");
 
-        sut.UpsertProject(original, activate: false);
-        sut.UpsertProject(original, activate: false);
-        sut.UpsertProject(updated, activate: false);
-        sut.UpsertProject(updated);
-        sut.UpsertProject(updated);
+        sut.SetProject(original, activate: false);
+        sut.SetProject(original, activate: false);
+        sut.SetProject(updated, activate: false);
+        sut.SetProject(updated);
+        sut.SetProject(updated);
         var activeUpdate = updated with { Name = "Active rename" };
-        sut.UpsertProject(activeUpdate, activate: false);
-        sut.UpsertProject(activeUpdate, activate: false);
+        sut.SetProject(activeUpdate, activate: false);
+        sut.SetProject(activeUpdate, activate: false);
 
         var project = Assert.Single(sut.Current.Projects);
         Assert.Equal(activeUpdate, project);
@@ -183,11 +183,12 @@ public sealed class ProjectServiceTests
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
-        Assert.True(sut.TryGetProject("second", out var second));
+        var second = sut.GetProject("second");
+        Assert.NotNull(second);
         Assert.Equal("Second", second?.Name);
         Assert.True(sut.RemoveProject("second"));
         Assert.False(sut.RemoveProject("second"));
-        Assert.False(sut.TryGetProject("second", out _));
+        Assert.Null(sut.GetProject("second"));
         Assert.True(sut.RemoveProject("first"));
 
         Assert.Empty(sut.Current.Projects);
@@ -294,7 +295,7 @@ public sealed class ProjectServiceTests
         Assert.Equal(
             "projectId",
             Assert
-                .Throws<ArgumentException>(() => sut.TryGetProject(" ", out _))
+                .Throws<ArgumentException>(() => sut.GetProject(" "))
                 .ParamName
         );
     }
@@ -396,8 +397,8 @@ public sealed class ProjectServiceTests
         Assert.Equal(initial.Id, remaining.Id);
         Assert.Equal(Path.GetFullPath(existingPath), Path.GetFullPath(remaining.StoragePath!));
         Assert.Equal(remaining, reloaded.Current.ActiveProject);
-        Assert.False(reloaded.TryGetProject("missing", out _));
-        Assert.False(reloaded.TryGetProject("unmapped", out _));
+        Assert.Null(reloaded.GetProject("missing"));
+        Assert.Null(reloaded.GetProject("unmapped"));
     }
 
     [Fact]
@@ -467,27 +468,5 @@ public sealed class ProjectServiceTests
         public ProjectCatalog Load() => catalog;
 
         public void Save(ProjectCatalog catalog) => SavedCatalogs.Add(catalog);
-    }
-
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        public TemporaryDirectory()
-        {
-            Path = System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                $"flourish-project-service-{Guid.NewGuid():N}"
-            );
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(Path))
-            {
-                Directory.Delete(Path, recursive: true);
-            }
-        }
     }
 }

@@ -8,7 +8,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// builder.ConfigData(data =>
 /// {
 ///     data.InitLocale("en-US")
-///         .InitLocaleFile("Locales/lang_en-US.json");
+///         .AddLocaleFile("Locales/lang_en-US.json");
 /// });
 /// ]]></code>
 /// </example>
@@ -135,7 +135,7 @@ public interface IFlourishDataBuilder
     /// <item><term><c>Status.Disconnected</c></term><description>Disconnected / 未连接</description></item>
     /// </list>
     /// </remarks>
-    IFlourishDataBuilder InitLocaleFile(string path);
+    IFlourishDataBuilder AddLocaleFile(string path);
 
     /// <summary>
     /// Selects the JSON file that supplies the <c>Flourish</c> configuration section and receives

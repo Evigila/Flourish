@@ -101,7 +101,7 @@ fontService.SetOverrideFont(
 IReadOnlyDictionary<Type, FlourishPageFontOverride> overrides =
     fontService.PageOverrides;
 
-fontService.ClearOverrideFont<CodeEditorPage>();
+fontService.RemoveOverrideFont<CodeEditorPage>();
 ```
 
 清除覆盖后，当前页面会立即返回最新的全局字体。页面覆盖中的 `null` 档位会继续跟随后续全局变化。

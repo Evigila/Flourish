@@ -94,7 +94,7 @@ internal sealed class ProjectService : IProjectService
         );
     }
 
-    public void UpsertProject(FlourishProject project, bool activate = true)
+    public void SetProject(FlourishProject project, bool activate = true)
     {
         project = NormalizeProject(project);
         FlourishProjectSnapshot snapshot;
@@ -335,12 +335,12 @@ internal sealed class ProjectService : IProjectService
         return true;
     }
 
-    public bool TryGetProject(string projectId, out FlourishProject? project)
+    public FlourishProject? GetProject(string projectId)
     {
         projectId = ValidateRequired(projectId, nameof(projectId));
         lock (gate)
         {
-            return projects.TryGetValue(projectId, out project);
+            return projects.GetValueOrDefault(projectId);
         }
     }
 

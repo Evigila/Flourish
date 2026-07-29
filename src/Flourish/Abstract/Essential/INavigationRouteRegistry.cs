@@ -14,10 +14,10 @@ public interface INavigationRouteRegistry
     FlourishNavigationRouteSnapshot Current { get; }
 
     /// <summary>Adds a route and returns a handle that removes it when disposed.</summary>
-    INavigationRouteRegistration Register(FlourishNavigationRoute route);
+    INavigationRouteRegistration Append(FlourishNavigationRoute route);
 
     /// <summary>Adds a route or replaces the route with the same navigation key.</summary>
-    INavigationRouteRegistration Upsert(FlourishNavigationRoute route);
+    INavigationRouteRegistration Set(FlourishNavigationRoute route);
 
     /// <summary>Removes a route by its case-sensitive navigation key.</summary>
     bool Remove(string navigationKey);
@@ -25,8 +25,8 @@ public interface INavigationRouteRegistry
     /// <summary>Changes a route's page cache mode.</summary>
     void SetCacheMode(string navigationKey, FlourishPageCacheMode cacheMode);
 
-    /// <summary>Gets whether a case-sensitive navigation key is registered.</summary>
-    bool Contains(string navigationKey);
+    /// <summary>Gets a route by its case-sensitive navigation key, or <see langword="null" /> when it is not registered.</summary>
+    FlourishNavigationRoute? Get(string navigationKey);
 }
 
 /// <summary>Controls the lifetime of a runtime navigation route.</summary>

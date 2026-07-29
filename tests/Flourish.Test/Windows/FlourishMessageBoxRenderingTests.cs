@@ -6,7 +6,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 public sealed class FlourishMessageBoxRenderingTests
 {
     private static readonly string MessageBoxXamlPath = Path.Combine(
-        FindRepositoryRoot(),
+        TestPaths.RepositoryRoot,
         "src",
         "Flourish",
         "Views",
@@ -48,21 +48,5 @@ public sealed class FlourishMessageBoxRenderingTests
                 StringComparison.Ordinal
             ) == true
         );
-    }
-
-    private static string FindRepositoryRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "Flourish.slnx")))
-            {
-                return directory.FullName;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Unable to locate the Flourish repository root.");
     }
 }

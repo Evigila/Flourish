@@ -15,7 +15,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     {
         var options = new FlourishShellOptions();
         var sut = new NavigationRouteRegistry(options);
-        var registration = sut.Register(
+        var registration = sut.Append(
             new FlourishNavigationRoute(
                 "Reports",
                 typeof(ReportsPage),
@@ -23,7 +23,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
             )
         );
 
-        Assert.True(sut.Contains("Reports"));
+        Assert.NotNull(sut.Get("Reports"));
         Assert.True(sut.TryGet(typeof(ReportsPage), out var indexedRoute));
         Assert.Equal("Reports", indexedRoute.NavigationKey);
         Assert.Equal(
@@ -34,7 +34,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
 
         registration.Dispose();
 
-        Assert.False(sut.Contains("Reports"));
+        Assert.Null(sut.Get("Reports"));
         Assert.False(sut.TryGet(typeof(ReportsPage), out _));
         Assert.Empty(sut.Current.Routes);
     }
@@ -63,9 +63,9 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     public void RouteRegistry_UpsertChangingPageTypeClearsOldMapping()
     {
         var sut = new NavigationRouteRegistry(new FlourishShellOptions());
-        sut.Register(new FlourishNavigationRoute("Reports", typeof(ReportsPage)));
+        sut.Append(new FlourishNavigationRoute("Reports", typeof(ReportsPage)));
 
-        sut.Upsert(new FlourishNavigationRoute("Reports", typeof(AnalyticsPage)));
+        sut.Set(new FlourishNavigationRoute("Reports", typeof(AnalyticsPage)));
 
         Assert.False(sut.TryGet(typeof(ReportsPage), out _));
         Assert.True(sut.TryGet(typeof(AnalyticsPage), out var replacement));
@@ -76,19 +76,19 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     public void RouteRegistry_DuplicatePageTypeFailureDoesNotMutateIndexesOrVersion()
     {
         var sut = new NavigationRouteRegistry(new FlourishShellOptions());
-        sut.Register(new FlourishNavigationRoute("Reports", typeof(ReportsPage)));
-        sut.Register(new FlourishNavigationRoute("Analytics", typeof(AnalyticsPage)));
+        sut.Append(new FlourishNavigationRoute("Reports", typeof(ReportsPage)));
+        sut.Append(new FlourishNavigationRoute("Analytics", typeof(AnalyticsPage)));
         var version = sut.Current.Version;
 
         Assert.Throws<InvalidOperationException>(() =>
-            sut.Register(new FlourishNavigationRoute("Duplicate", typeof(ReportsPage)))
+            sut.Append(new FlourishNavigationRoute("Duplicate", typeof(ReportsPage)))
         );
         Assert.Throws<InvalidOperationException>(() =>
-            sut.Upsert(new FlourishNavigationRoute("Analytics", typeof(ReportsPage)))
+            sut.Set(new FlourishNavigationRoute("Analytics", typeof(ReportsPage)))
         );
 
         Assert.Equal(version, sut.Current.Version);
-        Assert.False(sut.Contains("Duplicate"));
+        Assert.Null(sut.Get("Duplicate"));
         Assert.True(sut.TryGet(typeof(ReportsPage), out var reports));
         Assert.Equal("Reports", reports.NavigationKey);
         Assert.True(sut.TryGet(typeof(AnalyticsPage), out var analytics));
@@ -99,10 +99,10 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     public void RouteRegistry_StaleRegistrationCannotRemoveUpsertedPageTypeMapping()
     {
         var sut = new NavigationRouteRegistry(new FlourishShellOptions());
-        var oldRegistration = sut.Register(
+        var oldRegistration = sut.Append(
             new FlourishNavigationRoute("Reports", typeof(ReportsPage))
         );
-        var replacement = sut.Upsert(
+        var replacement = sut.Set(
             new FlourishNavigationRoute(
                 "Reports",
                 typeof(AnalyticsPage),
@@ -112,12 +112,12 @@ public sealed class NavigationRouteAndCacheRuntimeTests
 
         oldRegistration.Dispose();
 
-        Assert.True(sut.Contains("Reports"));
+        Assert.NotNull(sut.Get("Reports"));
         Assert.False(sut.TryGet(typeof(ReportsPage), out _));
         Assert.True(sut.TryGet(typeof(AnalyticsPage), out var indexedReplacement));
         Assert.Equal(FlourishPageCacheMode.Enabled, indexedReplacement.CacheMode);
         replacement.Dispose();
-        Assert.False(sut.Contains("Reports"));
+        Assert.Null(sut.Get("Reports"));
         Assert.False(sut.TryGet(typeof(AnalyticsPage), out _));
     }
 
@@ -132,7 +132,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
 
         Assert.True(sut.Remove("Reports"));
 
-        Assert.False(sut.Contains("Reports"));
+        Assert.Null(sut.Get("Reports"));
         Assert.False(sut.TryGet(typeof(ReportsPage), out _));
         Assert.Empty(sut.Current.Routes);
     }
@@ -175,7 +175,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         var options = new FlourishShellOptions();
         var routes = new NavigationRouteRegistry(provider, options);
         var page = CreatePage();
-        routes.Register(
+        routes.Append(
             new FlourishNavigationRoute(
                 "Reports",
                 typeof(ReportsPage),

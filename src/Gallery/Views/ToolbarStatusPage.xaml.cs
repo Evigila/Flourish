@@ -61,14 +61,14 @@ public partial class ToolbarStatusPage : Page
             () =>
             {
                 toolbar.SetEnabled(true);
-                toolbar.Upsert(
+                toolbar.SetItem(
                     new FlourishToolbarItem("Run live command", "\uE768", ToolbarCommandKey)
                     {
                         Id = ToolbarItemId,
                     },
                     typeof(ToolbarStatusPage)
                 );
-                toolbar.Upsert(
+                toolbar.SetItem(
                     new FlourishToolbarItem("Companion", "\uE8EF", ToolbarCommandKey)
                     {
                         Id = CompanionToolbarItemId,
@@ -145,7 +145,7 @@ public partial class ToolbarStatusPage : Page
                 .index;
             var targetIndex = currentIndex == 0 ? items.Count - 1 : 0;
             Execute(
-                () => toolbar.Move(
+                () => toolbar.SetOrder(
                     ToolbarItemId,
                     targetIndex,
                     typeof(ToolbarStatusPage)
@@ -189,7 +189,7 @@ public partial class ToolbarStatusPage : Page
             Dispatcher.Invoke(() => ToolbarOutput.WriteLine(message));
         }
 
-        status.Upsert(new FlourishStatusItem(StatusItemId, message, "\uE930"));
+        status.SetItem(new FlourishStatusItem(StatusItemId, message, "\uE930"));
         return ValueTask.FromResult(CommandResult.HandledWith(message));
     }
 
@@ -198,7 +198,7 @@ public partial class ToolbarStatusPage : Page
             () =>
             {
                 status.SetEnabled(true);
-                status.Upsert(
+                status.SetItem(
                     new FlourishStatusItem(StatusItemId, StatusTextBox.Text, "\uE946")
                 );
             },
@@ -257,7 +257,7 @@ public partial class ToolbarStatusPage : Page
         {
             var targetIndex = currentIndex == 0 ? items.Count - 1 : 0;
             Execute(
-                () => status.Move(StatusItemId, targetIndex),
+                () => status.SetOrder(StatusItemId, targetIndex),
                 StatusOutput,
                 $"Moved the persistent status item to index {targetIndex}."
             );
@@ -301,7 +301,7 @@ public partial class ToolbarStatusPage : Page
     private void AddRegion_Click(object sender, RoutedEventArgs e)
     {
         Execute(
-            () => regions.Upsert(
+            () => regions.Set(
                 RegionId,
                 FlourishRegion.ContentHeader,
                 static _ => CreateRegionContent(),

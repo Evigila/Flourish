@@ -94,16 +94,6 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
         });
     }
 
-    [Obsolete("Use SetApplicationTitle.")]
-    public void SetTitle(string title) => SetApplicationTitle(title);
-
-    [Obsolete("Use SetApplicationSubTitle.")]
-    public void SetSubtitle(string? subtitle) => SetApplicationSubTitle(subtitle);
-
-    [Obsolete("Use SetApplicationIdentity.")]
-    public void SetIdentity(string title, string? subtitle = null) =>
-        SetApplicationIdentity(title, subtitle);
-
     public void SetSearchPlaceholder(string placeholder)
     {
         placeholder = ValidateRequired(placeholder, nameof(placeholder));
@@ -140,11 +130,6 @@ internal sealed class TitleBarService(FlourishShellOptions options) : ITitleBarS
                 case TitleBarElement.Title:
                     options.IsTitlebarTitleEnabled = visible;
                     break;
-#pragma warning disable CS0618
-                case TitleBarElement.Subtitle:
-                    options.ShowApplicationSubtitleInLogoFlyout = visible;
-                    break;
-#pragma warning restore CS0618
                 case TitleBarElement.ThemeToggle:
                     options.IsTitlebarThemeToggleEnabled = visible;
                     break;

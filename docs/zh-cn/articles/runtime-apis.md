@@ -64,7 +64,7 @@ public async ValueTask SaveEndpointAsync(
 | `IThemeService` | 使用 `SetTheme` 选择并持久化 `System`、`Light` 或 `Dark`，或通过 `ToggleTheme` 循环切换；可读取 `EffectiveTheme` 和 `IsDark`。 |
 | `IAppearanceService` | 设置或清除共享主题颜色与圆角覆盖，可原子修改两项并监听 `Changed`。清除覆盖会重新显露标准主题资源，不会删除应用自有资源。 |
 | `IContentLayoutService` | 启用或禁用居中页面内容，并原子设置最大宽度。当前页面和之后导航到的页面使用同一状态。 |
-| `IFontService` | 通过 `SetFont` 原子修改全局字体及彼此独立、仅要求有限正数的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号；可独立修改图标字体，并通过 `PageOverrides`、`SetOverrideFont` 与 `ClearOverrideFont` 查看、设置和清除页面字体覆盖。 |
+| `IFontService` | 通过 `SetFont` 原子修改全局字体及彼此独立、仅要求有限正数的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号；可独立修改图标字体，并通过 `PageOverrides`、`SetOverrideFont` 与 `RemoveOverrideFont` 查看、设置和移除页面字体覆盖。 |
 | `IToolTipService` | 在原生 WPF 与 Flourish 呈现之间切换 Flourish 自有 Tooltip，并通过 `SetSettings` 修改 Flourish 呈现的首次显示延迟和生成边距；原生与第三方控件不受其控制。 |
 | `IScrollService` | 通过 `GetCurrent` 读取应用级滚动状态、通过 `SetSmoothScrollingEnabled` 修改平滑滚动并监听 `Changed`。本地设置的 `ScrollViewer.IsSmoothScrollingEnabled` 优先。 |
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
@@ -119,13 +119,13 @@ public sealed class SearchModule(
 | --- | --- |
 | `INavigationService` | 按区分大小写的路由键或页面类型导航，执行异步导航，读取当前路由/参数，并控制后退和前进历史。 |
 | `INavigationPanelService` | 启用、移动、调整导航面板尺寸，以及打开、关闭或切换面板。 |
-| `INavigationMenuService` | 通过一次 `Update` 事务原子修改分组、固定项、页面/命令项、顺序、文字、可见性、启用状态与树展开状态。 |
-| `INavigationRouteRegistry` | `Register` 或 `Upsert` 路由，移除路由，并修改其 `FlourishPageCacheMode`。 |
+| `INavigationMenuService` | 通过一次 `Set` 事务原子修改分组、固定项、页面/命令项、顺序、文字、可见性、启用状态与树展开状态。 |
+| `INavigationRouteRegistry` | 使用 `Append` 或 `Set` 注册路由，通过 `Get` 查询或移除路由，并修改其 `FlourishPageCacheMode`。 |
 | `IPageCacheService` | 按页面类型修改缓存模式，读取已缓存页面类型，逐页驱逐或清空全部缓存实例。 |
 
 应先注册路由，再公开指向该路由的菜单项。释放路由租约之前，应先移除对应菜单项。
 
-`AppendGroup`、`AppendItem` 与 `AppendFixedItem` 始终追加到目标集合末尾；需要指定从零开始的位置时，使用对应的 `InsertGroup`、`InsertItem` 或 `InsertFixedItem`。
+`AppendGroup`、`AppendItem` 与 `AppendFixedItem` 始终追加到目标集合末尾；需要指定从零开始的位置时，使用 `SetGroupIndex`、`SetItemIndex` 或 `SetFixedItemIndex`。
 
 ```csharp
 public sealed class DiagnosticsModule : IDisposable
@@ -139,12 +139,12 @@ public sealed class DiagnosticsModule : IDisposable
         INavigationService navigation)
     {
         this.menu = menu;
-        route = routes.Register(new FlourishNavigationRoute(
+        route = routes.Append(new FlourishNavigationRoute(
             "runtime.diagnostics",
             typeof(DiagnosticsPage),
             FlourishPageCacheMode.Enabled));
 
-        menu.Update(editor =>
+        menu.Set(editor =>
         {
             editor.AppendGroup("runtime", "运行时");
             editor.AppendItem("runtime", FlourishNavigationMenuItem.Page(
@@ -156,7 +156,7 @@ public sealed class DiagnosticsModule : IDisposable
 
     public void Dispose()
     {
-        menu.Update(editor =>
+        menu.Set(editor =>
         {
             editor.RemoveItem("runtime.diagnostics.item");
             editor.RemoveGroup("runtime");
@@ -170,9 +170,9 @@ public sealed class DiagnosticsModule : IDisposable
 
 | 服务 | 运行时用途 |
 | --- | --- |
-| `IToolbarService` | 启用工具栏；替换默认或页面专属定义；添加、覆盖、移动、显示、启用、移除或清空 `FlourishToolbarItem`；修改页面的 `IconOnly` 模式。 |
-| `IStatusBarService` | 启用自定义内容和内置 LAN/电源指示；添加、更新、移动、显示、隐藏、移除或清空 `FlourishStatusItem`。`Show` 可创建定时项目并返回可释放句柄。 |
-| `IShellRegionService` | 向 `FlourishRegion` 添加或覆盖 WPF 内容工厂，并启用、重排、移除或清空注册项。 |
+| `IToolbarService` | 启用工具栏；通过 `SetDefault` 或 `Set` 设置完整定义；使用 `Append`、`SetItem`、`SetOrder` 或 `Remove` 修改单个 `FlourishToolbarItem`；通过其他 `Set` 操作修改项目状态和页面 `IconOnly` 模式。 |
+| `IStatusBarService` | 启用自定义内容和内置 LAN/电源指示；使用 `Append`、`SetItem`、`SetOrder` 或 `Remove` 修改 `FlourishStatusItem`。`Show` 可创建定时项目并返回可释放句柄。 |
+| `IShellRegionService` | 使用 `Append` 或 `Set` 向 `FlourishRegion` 注册 WPF 内容工厂，并通过 `Set` 与 `Remove` 操作修改状态、顺序或移除注册项。 |
 
 工具栏和导航中的命令项通过 `ICommandDispatcher` 调度。
 

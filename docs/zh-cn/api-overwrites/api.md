@@ -336,7 +336,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitLocaleFile(System.String)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.AddLocaleFile(System.String)
 summary: 添加可扩展或覆盖内置翻译的自定义语言文件。
 remarks: |
   文件在 `Build()` 应用配置时读取，必须是使用 UTF-8 编码的非空扁平 JSON 对象，并命名为 `lang_<locale>.json`。键和值必须是非空字符串，键不能重复。语言部分可以包含字母、数字、连字符和下划线；下划线会转换为连字符，分隔符两侧都必须有非空子标识。
@@ -543,7 +543,7 @@ summary: 配置显示在预定义 Shell 区域中的自定义 WPF 内容。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.Add(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.Func{System.IServiceProvider,System.Windows.FrameworkElement},System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddRegionContent(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.Func{System.IServiceProvider,System.Windows.FrameworkElement},System.Int32)
 summary: 向 Shell 区域添加自定义内容。
 syntax:
   parameters:
@@ -570,7 +570,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.InitTitleBarAction(System.String,System.String,System.String,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddTitleBarAction(System.String,System.String,System.String,System.Int32)
 summary: 向标题栏末尾添加命令按钮。
 syntax:
   parameters:
@@ -587,7 +587,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.InitTitleBarActionHandler(System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddTitleBarActionHandler(System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
 summary: 向标题栏末尾添加回调按钮。
 syntax:
   parameters:
@@ -604,7 +604,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.InitFooterCommand(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.String,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddFooterCommand(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.String,System.Int32)
 summary: 向指定 Shell Footer 区域添加命令按钮。
 syntax:
   parameters:
@@ -623,7 +623,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.InitFooterCommandHandler(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddFooterCommandHandler(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
 summary: 向指定 Shell Footer 区域添加回调按钮。
 syntax:
   parameters:
@@ -1076,7 +1076,7 @@ summary: 配置 Flourish Shell 状态栏。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder.InitStatusItem(System.String,System.String)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder.AddStatusItem(System.String,System.String)
 summary: 添加包含显示文本和图标字形的状态栏项目。
 syntax:
   parameters:
@@ -2182,7 +2182,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.UpsertProject(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.SetProject(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean)
 summary: 添加项目，或按区分大小写的 ID 替换已有项目元数据。
 syntax:
   parameters:
@@ -2226,7 +2226,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.TryGetProject(System.String,ArkheideSystem.Flourish.Abstract.Essential.FlourishProject@)
+uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.GetProject(System.String)
 summary: 按区分大小写的 ID 查询项目元数据。
 syntax:
   parameters:
@@ -2468,11 +2468,6 @@ summary: Logo 信息视图中位于标识元数据下方的应用自定义 Body 
 ---
 uid: ArkheideSystem.Flourish.Abstract.TitleBarElement.Title
 summary: 应用或活动项目标题选择器。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.TitleBarElement.Subtitle
-summary: Logo 信息视图中的应用副标题；不再直接显示于标题栏。
 ---
 
 ---

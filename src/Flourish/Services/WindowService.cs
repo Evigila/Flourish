@@ -11,7 +11,7 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
     private FlourishWindowState? lastPublishedState;
     private int ownerChangeSuppression;
 
-    public event EventHandler<FlourishWindowStateChangedEventArgs>? StateChanged;
+    public event EventHandler<FlourishWindowStateChangedEventArgs>? Changed;
 
     public FlourishWindowState Current
     {
@@ -367,7 +367,7 @@ internal sealed class WindowService(FlourishShellOptions options) : IWindowServi
             lastPublishedState = state;
         }
 
-        StateChanged?.Invoke(this, new FlourishWindowStateChangedEventArgs(state));
+        Changed?.Invoke(this, new FlourishWindowStateChangedEventArgs(state));
     }
 
     private static FlourishWindowState ReadOwnerThreadSafe(Window window)
