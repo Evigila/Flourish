@@ -21,10 +21,10 @@ public sealed class NavigationCompositionTests
             })
             .ConfigNavigation(navigation =>
             {
-                navigation.InitGroup(null, groupId: 0, group =>
+                navigation.AddGroup(null, groupId: 0, group =>
                 {
-                    group.InitNavigableViewItem<HomePage>(isInitial: true, parentId: 10);
-                    group.InitNavigableViewItem<SettingsPage>(childId: 10);
+                    group.AddNavigableViewItem<HomePage>(isInitial: true, parentId: 10);
+                    group.AddNavigableViewItem<SettingsPage>(childId: 10);
                 });
             });
 
@@ -92,8 +92,8 @@ public sealed class NavigationCompositionTests
     public void Build_WithUnregisteredPageType_ThrowsInvalidOperationException()
     {
         var builder = CreateNavigationBuilder().ConfigNavigation(navigation =>
-            navigation.InitGroup(null, groupId: 0, group =>
-                group.InitNavigableViewItem<UnregisteredPage>()
+            navigation.AddGroup(null, groupId: 0, group =>
+                group.AddNavigableViewItem<UnregisteredPage>()
             )
         );
 
@@ -112,10 +112,10 @@ public sealed class NavigationCompositionTests
             )
             .ConfigNavigation(navigation =>
             {
-                navigation.InitGroup(null, groupId: 0, group =>
-                    group.InitNavigableViewItem<HomePage>()
+                navigation.AddGroup(null, groupId: 0, group =>
+                    group.AddNavigableViewItem<HomePage>()
                 );
-                navigation.InitFixedNavigableViewItem<HomePage>();
+                navigation.AddFixedNavigableViewItem<HomePage>();
             });
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
@@ -130,8 +130,8 @@ public sealed class NavigationCompositionTests
     public void Build_WithOrphanedChild_ThrowsInvalidOperationException()
     {
         var builder = CreateNavigationBuilder().ConfigNavigation(navigation =>
-            navigation.InitGroup(null, groupId: 0, group =>
-                group.InitNavigableItem("Orphan", null, "orphan.command", childId: 42)
+            navigation.AddGroup(null, groupId: 0, group =>
+                group.AddNavigableItem("Orphan", null, "orphan.command", childId: 42)
             )
         );
 
@@ -163,8 +163,8 @@ public sealed class NavigationCompositionTests
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
             .ConfigNavigation(navigation =>
-                navigation.InitGroup(null, groupId: 0, group =>
-                    group.InitNavigableViewItem<UnregisteredPage>()
+                navigation.AddGroup(null, groupId: 0, group =>
+                    group.AddNavigableViewItem<UnregisteredPage>()
                 )
             );
 

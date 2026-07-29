@@ -25,8 +25,8 @@ builder.ConfigShell(shell =>
 });
 
 builder.ConfigNavigation(navigation =>
-    navigation.InitGroup(null, groupId: 0, group =>
-        group.InitNavigableViewItem<HomePage>(isInitial: true)));
+    navigation.AddGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 ## Feature switches and shared options
@@ -104,8 +104,8 @@ builder.ConfigShell(shell =>
 });
 
 builder.ConfigNavigation(navigation =>
-    navigation.InitGroup(null, groupId: 0, group =>
-        group.InitNavigableViewItem<HomePage>(isInitial: true)));
+    navigation.AddGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 Passing `false` to `UseTips` presents Flourish-owned tooltip content with the native WPF appearance and default behavior; tooltips attached to native WPF and third-party controls remain unchanged. `UseSmoothScroll(false)` selects immediate native mouse-wheel scrolling for built-in Flourish viewports. Pass `false` to `UseMaterialEffect`, `UseThemeColors`, or `UseCornerRadius` when shared configuration must explicitly restore the theme-defined behavior. Omit `InitGlobalFont` to retain its defaults.

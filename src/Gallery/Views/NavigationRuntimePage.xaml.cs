@@ -148,7 +148,7 @@ public partial class NavigationRuntimePage : Page
             {
                 if (!hasGroup)
                 {
-                    editor.AddGroup(RuntimeGroupId, "Added at runtime");
+                    editor.AppendGroup(RuntimeGroupId, "Added at runtime");
                 }
 
                 editor.UpsertItem(

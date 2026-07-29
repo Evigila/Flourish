@@ -143,6 +143,74 @@ public sealed class AppPreferenceServiceTests
     }
 
     [Fact]
+    public void DedicatedProvider_LoadsOnlyTheStructuralFlourishSection()
+    {
+        using var directory = new TemporaryDirectory();
+        WriteAppSettings(
+            directory.Path,
+            """
+            {
+              "Logging": {
+                "LogLevel": {
+                  "Default": "Information"
+                }
+              },
+              "Flourish:Injected": "outside",
+              "Flourish": {
+                "Feature": {
+                  "Value": "inside"
+                }
+              }
+            }
+            """
+        );
+        var configuration = CreateConfiguration(directory.Path);
+        using var configurationDisposal = (IDisposable)configuration;
+
+        Assert.Equal("inside", configuration["Flourish:Feature:Value"]);
+        Assert.Null(configuration["Logging:LogLevel:Default"]);
+        Assert.Null(configuration["Flourish:Injected"]);
+    }
+
+    [Fact]
+    public void SharedProvider_LoadsTheCompleteBaseAppSettingsDocument()
+    {
+        using var directory = new TemporaryDirectory();
+        WriteAppSettings(
+            directory.Path,
+            """
+            {
+              "Logging": {
+                "LogLevel": {
+                  "Default": "Information"
+                }
+              },
+              "Flourish": {
+                "Feature": {
+                  "Value": "inside"
+                }
+              }
+            }
+            """
+        );
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(directory.Path)
+            .Add(
+                new FlourishAppSettingsConfigurationSource
+                {
+                    Path = "appsettings.Flourish.json",
+                    Optional = false,
+                    LoadOnlyFlourishSection = false,
+                }
+            )
+            .Build();
+        using var configurationDisposal = (IDisposable)configuration;
+
+        Assert.Equal("Information", configuration["Logging:LogLevel:Default"]);
+        Assert.Equal("inside", configuration["Flourish:Feature:Value"]);
+    }
+
+    [Fact]
     public async Task SaveTheme_WhenAppSettingsContainsInvalidJson_DoesNotOverwriteFile()
     {
         using var directory = new TemporaryDirectory();
@@ -160,7 +228,7 @@ public sealed class AppPreferenceServiceTests
     }
 
     [Fact]
-    public async Task SaveTheme_WhenFlourishSectionIsNotAnObject_DoesNotOverwriteFile()
+    public void DedicatedProvider_WhenFlourishSectionIsNotAnObject_RejectsTheFile()
     {
         using var directory = new TemporaryDirectory();
         const string originalJson = """
@@ -169,15 +237,38 @@ public sealed class AppPreferenceServiceTests
             }
             """;
         WriteAppSettings(directory.Path, originalJson);
-        using var sut = CreateService(directory.Path);
-
-        sut.SaveTheme(FlourishTheme.Light);
-        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
-            sut.FlushThemeSavesAsync().AsTask()
+        var exception = Assert.Throws<FormatException>(() =>
+            CreateConfiguration(directory.Path)
         );
 
         Assert.Contains("Flourish", exception.Message);
-        Assert.Equal(originalJson, File.ReadAllText(sut.FilePath));
+        Assert.Equal(
+            originalJson,
+            File.ReadAllText(
+                Path.Combine(directory.Path, "appsettings.Flourish.json")
+            )
+        );
+    }
+
+    [Fact]
+    public void DedicatedProvider_WhenFlourishRootIsDuplicated_RejectsTheFile()
+    {
+        using var directory = new TemporaryDirectory();
+        WriteAppSettings(
+            directory.Path,
+            """
+            {
+              "Flourish": {},
+              "flourish": {}
+            }
+            """
+        );
+
+        var exception = Assert.Throws<FormatException>(() =>
+            CreateConfiguration(directory.Path)
+        );
+
+        Assert.Contains("more than one", exception.Message);
     }
 
     [Fact]
@@ -216,10 +307,12 @@ public sealed class AppPreferenceServiceTests
             directory.Path,
             """
             {
-              "Feature": {
-                "Existing": 1,
-                "Items": ["first"],
-                "RemoveMe": true
+              "Flourish": {
+                "Feature": {
+                  "Existing": 1,
+                  "Items": ["first"],
+                  "RemoveMe": true
+                }
               }
             }
             """
@@ -228,11 +321,11 @@ public sealed class AppPreferenceServiceTests
 
         var result = await sut.UpdateAsync(editor =>
         {
-            editor.Set("Feature:Enabled", true);
-            editor.Set<object?>("Feature:NullValue", null);
-            editor.Merge("Feature", new { Existing = 2, Added = "value" });
-            editor.Append("Feature:Items", "second");
-            editor.Remove("Feature:RemoveMe");
+            editor.Set("Flourish:Feature:Enabled", true);
+            editor.Set<object?>("Flourish:Feature:NullValue", null);
+            editor.Merge("Flourish:Feature", new { Existing = 2, Added = "value" });
+            editor.Append("Flourish:Feature:Items", "second");
+            editor.Remove("Flourish:Feature:RemoveMe");
         });
 
         Assert.True(result.Changed);
@@ -242,7 +335,9 @@ public sealed class AppPreferenceServiceTests
             Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
         );
         using var document = JsonDocument.Parse(File.ReadAllText(result.FilePath));
-        var feature = document.RootElement.GetProperty("Feature");
+        var feature = document.RootElement
+            .GetProperty("Flourish")
+            .GetProperty("Feature");
         Assert.True(feature.GetProperty("Enabled").GetBoolean());
         Assert.Equal(JsonValueKind.Null, feature.GetProperty("NullValue").ValueKind);
         Assert.Equal(2, feature.GetProperty("Existing").GetInt32());
@@ -258,13 +353,78 @@ public sealed class AppPreferenceServiceTests
         Assert.False(feature.TryGetProperty("RemoveMe", out _));
     }
 
+    [Theory]
+    [InlineData("Logging:LogLevel:Default")]
+    [InlineData("Flourish")]
+    [InlineData("Flourish::Feature")]
+    [InlineData("FlourishExtra:Feature")]
+    public async Task SettingsOperations_RejectPathsOutsideAFlourishChild(
+        string path
+    )
+    {
+        using var directory = new TemporaryDirectory();
+        using var sut = CreateService(directory.Path);
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            sut.SetAsync(path, true).AsTask()
+        );
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            sut.RemoveAsync(path).AsTask()
+        );
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            sut.MergeAsync(path, new { Enabled = true }).AsTask()
+        );
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            sut.AppendAsync(path, "value").AsTask()
+        );
+
+        Assert.False(File.Exists(sut.FilePath));
+    }
+
+    [Fact]
+    public async Task SetAsync_NormalizesANewFlourishRootToCanonicalCasing()
+    {
+        using var directory = new TemporaryDirectory();
+        using var sut = CreateService(directory.Path);
+
+        var result = await sut.SetAsync("flourish:Feature:Value", true);
+
+        Assert.True(result.Changed);
+        using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
+        Assert.True(
+            document.RootElement
+                .GetProperty("Flourish")
+                .GetProperty("Feature")
+                .GetProperty("Value")
+                .GetBoolean()
+        );
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WhenALaterEditLeavesFlourish_DoesNotWriteEarlierEdits()
+    {
+        using var directory = new TemporaryDirectory();
+        using var sut = CreateService(directory.Path);
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            sut.UpdateAsync(editor =>
+                {
+                    editor.Set("Flourish:Feature:Allowed", true);
+                    editor.Set("Logging:Forbidden", true);
+                })
+                .AsTask()
+        );
+
+        Assert.False(File.Exists(sut.FilePath));
+    }
+
     [Fact]
     public async Task UpdateAsync_WhenTransactionDoesNotChangeAnything_DoesNotCreateFile()
     {
         using var directory = new TemporaryDirectory();
         using var sut = CreateService(directory.Path);
 
-        var result = await sut.RemoveAsync("Missing:Value");
+        var result = await sut.RemoveAsync("Flourish:Missing:Value");
 
         Assert.False(result.Changed);
         Assert.False(result.ConfigurationReloaded);
@@ -275,12 +435,12 @@ public sealed class AppPreferenceServiceTests
     public async Task MergeAsync_WhenTargetIsNotAnObject_PreservesOriginalFile()
     {
         using var directory = new TemporaryDirectory();
-        const string originalJson = "{ \"Feature\": 1 }";
+        const string originalJson = "{ \"Flourish\": { \"Feature\": 1 } }";
         WriteAppSettings(directory.Path, originalJson);
         using var sut = CreateService(directory.Path);
 
         await Assert.ThrowsAsync<InvalidDataException>(async () =>
-            await sut.MergeAsync("Feature", new { Enabled = true })
+            await sut.MergeAsync("Flourish:Feature", new { Enabled = true })
         );
 
         Assert.Equal(originalJson, File.ReadAllText(sut.FilePath));
@@ -291,17 +451,17 @@ public sealed class AppPreferenceServiceTests
     {
         using var directory = new TemporaryDirectory();
         using var sut = CreateService(directory.Path);
-        IAppSettingsEditor? capturedEditor = null;
+        IFlourishSettingsEditor? capturedEditor = null;
 
         await sut.UpdateAsync(editor =>
         {
             capturedEditor = editor;
-            editor.Set("Feature:Value", 1);
+            editor.Set("Flourish:Feature:Value", 1);
         });
 
         Assert.NotNull(capturedEditor);
         Assert.Throws<ObjectDisposedException>(() =>
-            capturedEditor.Set("Feature:Value", 2)
+            capturedEditor.Set("Flourish:Feature:Value", 2)
         );
     }
 
@@ -317,11 +477,11 @@ public sealed class AppPreferenceServiceTests
             {
                 firstEntered.Set();
                 releaseFirst.Wait();
-                editor.Set("Feature:First", true);
-                editor.Set("Feature:Shared", "first");
+                editor.Set("Flourish:Feature:First", true);
+                editor.Set("Flourish:Feature:Shared", "first");
             })
             .AsTask();
-        Task<AppSettingsUpdateResult>? second = null;
+        Task<FlourishSettingsUpdateResult>? second = null;
 
         try
         {
@@ -329,8 +489,8 @@ public sealed class AppPreferenceServiceTests
             second = sut
                 .UpdateAsync(editor =>
                 {
-                    editor.Set("Feature:Second", true);
-                    editor.Set("Feature:Shared", "second");
+                    editor.Set("Flourish:Feature:Second", true);
+                    editor.Set("Flourish:Feature:Shared", "second");
                 })
                 .AsTask();
             Assert.False(first.IsCompleted);
@@ -344,7 +504,9 @@ public sealed class AppPreferenceServiceTests
         await Task.WhenAll(first, second!);
 
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
-        var feature = document.RootElement.GetProperty("Feature");
+        var feature = document.RootElement
+            .GetProperty("Flourish")
+            .GetProperty("Feature");
         Assert.True(feature.GetProperty("First").GetBoolean());
         Assert.True(feature.GetProperty("Second").GetBoolean());
         Assert.Equal("second", feature.GetProperty("Shared").GetString());
@@ -362,12 +524,12 @@ public sealed class AppPreferenceServiceTests
             {
                 firstEntered.Set();
                 releaseFirst.Wait();
-                editor.Set("Feature:First", true);
+                editor.Set("Flourish:Feature:First", true);
             })
             .AsTask();
         using var cancellation = new CancellationTokenSource();
         var editorInvoked = false;
-        Task<AppSettingsUpdateResult>? canceled = null;
+        Task<FlourishSettingsUpdateResult>? canceled = null;
 
         try
         {
@@ -377,7 +539,7 @@ public sealed class AppPreferenceServiceTests
                     editor =>
                     {
                         editorInvoked = true;
-                        editor.Set("Feature:Canceled", true);
+                        editor.Set("Flourish:Feature:Canceled", true);
                     },
                     cancellation.Token
                 )
@@ -391,12 +553,14 @@ public sealed class AppPreferenceServiceTests
 
         await first;
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => canceled!);
-        var final = await sut.SetAsync("Feature:Final", true);
+        var final = await sut.SetAsync("Flourish:Feature:Final", true);
 
         Assert.True(final.Changed);
         Assert.False(editorInvoked);
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
-        var feature = document.RootElement.GetProperty("Feature");
+        var feature = document.RootElement
+            .GetProperty("Flourish")
+            .GetProperty("Feature");
         Assert.False(feature.TryGetProperty("Canceled", out _));
         Assert.True(feature.GetProperty("Final").GetBoolean());
     }
@@ -432,14 +596,14 @@ public sealed class AppPreferenceServiceTests
         runtimeConfiguration.Changed += (_, _) =>
         {
             changeCount++;
-            valueObservedByEvent = runtimeConfiguration["Feature:Value"];
+            valueObservedByEvent = runtimeConfiguration["Flourish:Feature:Value"];
         };
 
-        var result = await sut.SetAsync("Feature:Value", "updated");
+        var result = await sut.SetAsync("Flourish:Feature:Value", "updated");
 
         Assert.True(result.ConfigurationReloaded);
-        Assert.Equal("updated", configuration["Feature:Value"]);
-        Assert.Equal("updated", runtimeConfiguration.Current["Feature:Value"]);
+        Assert.Equal("updated", configuration["Flourish:Feature:Value"]);
+        Assert.Equal("updated", runtimeConfiguration.Current["Flourish:Feature:Value"]);
         Assert.Equal("updated", valueObservedByEvent);
         Assert.Equal(1, changeCount);
         Assert.Equal(1, unrelatedSource.Provider.LoadCount);
@@ -463,7 +627,7 @@ public sealed class AppPreferenceServiceTests
             .AddInMemoryCollection(
                 new Dictionary<string, string?>
                 {
-                    ["Feature:Value"] = "higher-priority",
+                    ["Flourish:Feature:Value"] = "higher-priority",
                 }
             )
             .Build();
@@ -475,14 +639,18 @@ public sealed class AppPreferenceServiceTests
             hostEnvironment.Object
         );
 
-        var result = await sut.SetAsync("Feature:Value", "base-value");
+        var result = await sut.SetAsync("Flourish:Feature:Value", "base-value");
 
         Assert.True(result.ConfigurationReloaded);
-        Assert.Equal("higher-priority", configuration["Feature:Value"]);
+        Assert.Equal("higher-priority", configuration["Flourish:Feature:Value"]);
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "base-value",
-            document.RootElement.GetProperty("Feature").GetProperty("Value").GetString()
+            document.RootElement
+                .GetProperty("Flourish")
+                .GetProperty("Feature")
+                .GetProperty("Value")
+                .GetString()
         );
     }
 
@@ -494,10 +662,10 @@ public sealed class AppPreferenceServiceTests
 
         var error = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await sut.UpdateAsync(_ =>
-                sut.SetAsync("Nested:Value", true).GetAwaiter().GetResult()
+                sut.SetAsync("Flourish:Nested:Value", true).GetAwaiter().GetResult()
             )
         );
-        var recovery = await sut.SetAsync("Feature:Recovered", true);
+        var recovery = await sut.SetAsync("Flourish:Feature:Recovered", true);
 
         Assert.Contains("cannot start another transaction", error.Message);
         Assert.True(recovery.Changed);
@@ -511,7 +679,7 @@ public sealed class AppPreferenceServiceTests
 
         var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             sut.UpdateAsync(_ =>
-                    Task.Run(() => sut.SetAsync("Nested:Value", true).AsTask())
+                    Task.Run(() => sut.SetAsync("Flourish:Nested:Value", true).AsTask())
                         .WaitAsync(TimeSpan.FromSeconds(1))
                         .GetAwaiter()
                         .GetResult()
@@ -530,13 +698,13 @@ public sealed class AppPreferenceServiceTests
         using var sut = CreateService(directory.Path);
 
         var beforeRestart = await sut
-            .SetAsync("Feature:BeforeRestart", true)
+            .SetAsync("Flourish:Feature:BeforeRestart", true)
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
         await sut.StopAsync(CancellationToken.None);
         await sut.StartAsync(CancellationToken.None);
         var afterRestart = await sut
-            .SetAsync("Feature:AfterRestart", true)
+            .SetAsync("Flourish:Feature:AfterRestart", true)
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -545,12 +713,14 @@ public sealed class AppPreferenceServiceTests
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.True(
             document.RootElement
+                .GetProperty("Flourish")
                 .GetProperty("Feature")
                 .GetProperty("BeforeRestart")
                 .GetBoolean()
         );
         Assert.True(
             document.RootElement
+                .GetProperty("Flourish")
                 .GetProperty("Feature")
                 .GetProperty("AfterRestart")
                 .GetBoolean()
@@ -581,7 +751,7 @@ public sealed class AppPreferenceServiceTests
             }
 
             reentrantError = Record.Exception(() =>
-                sut.SetAsync("Feature:Nested", true)
+                sut.SetAsync("Flourish:Feature:Nested", true)
                     .AsTask()
                     .WaitAsync(TimeSpan.FromSeconds(1))
                     .GetAwaiter()
@@ -590,14 +760,14 @@ public sealed class AppPreferenceServiceTests
         };
 
         var result = await sut
-            .SetAsync("Feature:Value", "updated")
+            .SetAsync("Flourish:Feature:Value", "updated")
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.True(result.Changed);
         var error = Assert.IsType<InvalidOperationException>(reentrantError);
         Assert.Contains("cannot start another transaction", error.Message);
-        Assert.Null(configuration["Feature:Nested"]);
+        Assert.Null(configuration["Flourish:Feature:Nested"]);
     }
 
     [Fact]
@@ -718,8 +888,10 @@ public sealed class AppPreferenceServiceTests
             directory.Path,
             """
             {
-              "Feature": {
-                "Value": "before"
+              "Flourish": {
+                "Feature": {
+                  "Value": "before"
+                }
               }
             }
             """
@@ -747,7 +919,7 @@ public sealed class AppPreferenceServiceTests
             () =>
             {
                 Interlocked.Increment(ref changeCount);
-                completion.TrySetResult(configuration["Feature:Value"]);
+                completion.TrySetResult(configuration["Flourish:Feature:Value"]);
             }
         );
         var replacementPath = Path.Combine(directory.Path, ".external-appsettings.tmp");
@@ -755,8 +927,10 @@ public sealed class AppPreferenceServiceTests
             replacementPath,
             """
             {
-              "Feature": {
-                "Value": "after"
+              "Flourish": {
+                "Feature": {
+                  "Value": "after"
+                }
               }
             }
             """
@@ -772,7 +946,7 @@ public sealed class AppPreferenceServiceTests
             "after",
             await completion.Task.WaitAsync(TimeSpan.FromSeconds(5))
         );
-        Assert.Equal("after", configuration["Feature:Value"]);
+        Assert.Equal("after", configuration["Flourish:Feature:Value"]);
         Assert.True(Volatile.Read(ref changeCount) >= 1);
     }
 
@@ -807,14 +981,14 @@ public sealed class AppPreferenceServiceTests
             () => Interlocked.Increment(ref changeCount)
         );
 
-        var result = await sut.SetAsync("Feature:Value", "updated");
+        var result = await sut.SetAsync("Flourish:Feature:Value", "updated");
         var provider = Assert.Single(
             configuration.Providers.OfType<FlourishAppSettingsConfigurationProvider>()
         );
         Assert.True(provider.Apply(File.ReadAllBytes(sut.FilePath)));
 
         Assert.True(result.ConfigurationReloaded);
-        Assert.Equal("updated", configuration["Feature:Value"]);
+        Assert.Equal("updated", configuration["Flourish:Feature:Value"]);
         Assert.Equal(1, Volatile.Read(ref changeCount));
     }
 
@@ -826,8 +1000,10 @@ public sealed class AppPreferenceServiceTests
             directory.Path,
             """
             {
-              "Feature": {
-                "Value": "before"
+              "Flourish": {
+                "Feature": {
+                  "Value": "before"
+                }
               }
             }
             """
@@ -858,21 +1034,23 @@ public sealed class AppPreferenceServiceTests
 
         var error = await loadError.Task.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.IsType<FormatException>(error);
-        Assert.Equal("before", configuration["Feature:Value"]);
+        Assert.Equal("before", configuration["Flourish:Feature:Value"]);
 
         var recovered = new TaskCompletionSource<string?>(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         using var subscription = ChangeToken.OnChange(
             configuration.GetReloadToken,
-            () => recovered.TrySetResult(configuration["Feature:Value"])
+            () => recovered.TrySetResult(configuration["Flourish:Feature:Value"])
         );
         ReplaceAppSettings(
             directory.Path,
             """
             {
-              "Feature": {
-                "Value": "after"
+              "Flourish": {
+                "Feature": {
+                  "Value": "after"
+                }
               }
             }
             """,
@@ -898,16 +1076,20 @@ public sealed class AppPreferenceServiceTests
         const string staleContent =
             """
             {
-              "Feature": {
-                "Value": "stale"
+              "Flourish": {
+                "Feature": {
+                  "Value": "stale"
+                }
               }
             }
             """;
         const string newerContent =
             """
             {
-              "Feature": {
-                "Value": "newer"
+              "Flourish": {
+                "Feature": {
+                  "Value": "newer"
+                }
               }
             }
             """;
@@ -915,7 +1097,7 @@ public sealed class AppPreferenceServiceTests
 
         Assert.True(provider.Apply(Encoding.UTF8.GetBytes(staleContent)));
 
-        Assert.Equal("newer", configuration["Feature:Value"]);
+        Assert.Equal("newer", configuration["Flourish:Feature:Value"]);
     }
 
     private static AppPreferenceService CreateService(string contentRootPath)

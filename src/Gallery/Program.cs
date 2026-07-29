@@ -85,7 +85,7 @@ internal static class Program
             .ConfigShell(shell => // Enable functionality at top level
             {
                 shell
-                    .InitGlobalFont() // Set uniform global font family and sizes
+                    .InitGlobalFont() // Init uniform global font family and sizes
                     .UseCenterContent() // Use centered width restricted content
                     .UseDynamicToolbar() // Able to create toolbar items dynamically
                     .UseMaterialEffect() // Use windows DWM material effect for background
@@ -102,92 +102,92 @@ internal static class Program
             ) // search handler TODO
             .ConfigNavigation(nav => // configure navigation panel and its functionality, once UseNavigation is called and enabled (by default)
             {
-                nav.InitGroup( // Create basic essential structure for navigation tree
+                nav.AddGroup( // Create basic essential structure for navigation tree
                         null, // The group with ID 0 can create without name, using null instead of String.Empty
                         0, // Unique ID for group, should not repeat
                         group =>
                         {
-                            group.InitNavigableViewItem<HomePage>(true); // [isInitial:true] defines the page shown at launch
+                            group.AddNavigableViewItem<HomePage>(true); // [isInitial:true] defines the page shown at launch
                         }
                     )
-                    .InitGroup( // Create second one
+                    .AddGroup( // Create second one
                         "Configuration", // The non ID 0 group must have its name
                         1, // Unique ID, sorting and affect navigation tree order
                         group =>
                         {
-                            group.InitNavigableViewItem<ConfigurationPage>();
-                            group.InitNavigableViewItem<ProjectRuntimePage>();
-                            group.InitNavigableViewItem<CommandsPage>();
-                            group.InitNavigableViewItem<BackgroundTasksPage>();
+                            group.AddNavigableViewItem<ConfigurationPage>();
+                            group.AddNavigableViewItem<ProjectRuntimePage>();
+                            group.AddNavigableViewItem<CommandsPage>();
+                            group.AddNavigableViewItem<BackgroundTasksPage>();
                         }
                     )
-                    .InitGroup(
+                    .AddGroup(
                         "Shell",
                         2,
                         group =>
                         {
-                            group.InitNavigableViewItem<AppearancePage>();
-                            group.InitNavigableViewItem<TitleBarRuntimePage>();
-                            group.InitNavigableViewItem<NavigationRuntimePage>();
-                            group.InitNavigableViewItem<ProfileConfigurationPage>();
-                            group.InitNavigableViewItem<WindowRuntimePage>();
-                            group.InitNavigableViewItem<StatusBarConfigurationPage>();
-                            group.InitNavigableViewItem<DynamicToolbarConfigurationPage>();
-                            group.InitNavigableViewItem<ToolTipsConfigurationPage>();
-                            group.InitNavigableViewItem<MotionConfigurationPage>();
-                            group.InitNavigableViewItem<CustomHandlerConfigurationPage>();
+                            group.AddNavigableViewItem<AppearancePage>();
+                            group.AddNavigableViewItem<TitleBarRuntimePage>();
+                            group.AddNavigableViewItem<NavigationRuntimePage>();
+                            group.AddNavigableViewItem<ProfileConfigurationPage>();
+                            group.AddNavigableViewItem<WindowRuntimePage>();
+                            group.AddNavigableViewItem<StatusBarConfigurationPage>();
+                            group.AddNavigableViewItem<DynamicToolbarConfigurationPage>();
+                            group.AddNavigableViewItem<ToolTipsConfigurationPage>();
+                            group.AddNavigableViewItem<MotionConfigurationPage>();
+                            group.AddNavigableViewItem<CustomHandlerConfigurationPage>();
                         }
                     )
-                    .InitGroup(
+                    .AddGroup(
                         "Controls",
                         3,
                         group =>
                         {
-                            group.InitNavigableViewItem<ControlLibraryPage>(parentId: 1); // Using parentID to start define parent-child tree structure, can only have one tabbed layer
-                            group.InitNavigableViewItem<ChunkPage>(childId: 1); // Using childID to define which parent navnode this page should be under located
-                            group.InitNavigableViewItem<HeaderChunkPage>(childId: 1);
-                            group.InitNavigableViewItem<ButtonPage>(childId: 1);
-                            group.InitNavigableViewItem<CardButtonPage>(childId: 1);
-                            group.InitNavigableViewItem<WindowCaptionButtonPage>(childId: 1);
-                            group.InitNavigableViewItem<CardPage>(childId: 1);
-                            group.InitNavigableViewItem<ActionCardPage>(childId: 1);
-                            group.InitNavigableViewItem<OutputCardPage>(childId: 1);
-                            group.InitNavigableViewItem<PresenterPage>(childId: 1);
-                            group.InitNavigableViewItem<PageBodyPage>(childId: 1);
-                            group.InitNavigableViewItem<DocumentPage>(childId: 1);
-                            group.InitNavigableViewItem<ParagraphPage>(childId: 1);
-                            group.InitNavigableViewItem<CodeSpacePage>(childId: 1);
-                            group.InitNavigableViewItem<DataGridPage>(childId: 1);
-                            group.InitNavigableViewItem<OverlayPage>(childId: 1);
-                            group.InitNavigableViewItem<TextBlockPage>(childId: 1);
-                            group.InitNavigableViewItem<ListBoxPage>(childId: 1);
-                            group.InitNavigableViewItem<ListBoxItemPage>(childId: 1);
-                            group.InitNavigableViewItem<ScrollViewerPage>(childId: 1);
-                            group.InitNavigableViewItem<ScrollBarPage>(childId: 1);
-                            group.InitNavigableViewItem<GridSplitterPage>(childId: 1);
-                            group.InitNavigableViewItem<ToolTipPage>(childId: 1);
-                            group.InitNavigableViewItem<TextBoxPage>(childId: 1);
-                            group.InitNavigableViewItem<PasswordBoxPage>(childId: 1);
-                            group.InitNavigableViewItem<SearchBoxPage>(childId: 1);
-                            group.InitNavigableViewItem<CheckBoxPage>(childId: 1);
-                            group.InitNavigableViewItem<RadioButtonPage>(childId: 1);
-                            group.InitNavigableViewItem<ComboBoxPage>(childId: 1);
-                            group.InitNavigableViewItem<ComboBoxItemPage>(childId: 1);
-                            group.InitNavigableViewItem<LabelPage>(childId: 1);
+                            group.AddNavigableViewItem<ControlLibraryPage>(parentId: 1); // Using parentID to start define parent-child tree structure, can only have one tabbed layer
+                            group.AddNavigableViewItem<ChunkPage>(childId: 1); // Using childID to define which parent navnode this page should be under located
+                            group.AddNavigableViewItem<HeaderChunkPage>(childId: 1);
+                            group.AddNavigableViewItem<ButtonPage>(childId: 1);
+                            group.AddNavigableViewItem<CardButtonPage>(childId: 1);
+                            group.AddNavigableViewItem<WindowCaptionButtonPage>(childId: 1);
+                            group.AddNavigableViewItem<CardPage>(childId: 1);
+                            group.AddNavigableViewItem<ActionCardPage>(childId: 1);
+                            group.AddNavigableViewItem<OutputCardPage>(childId: 1);
+                            group.AddNavigableViewItem<PresenterPage>(childId: 1);
+                            group.AddNavigableViewItem<PageBodyPage>(childId: 1);
+                            group.AddNavigableViewItem<DocumentPage>(childId: 1);
+                            group.AddNavigableViewItem<ParagraphPage>(childId: 1);
+                            group.AddNavigableViewItem<CodeSpacePage>(childId: 1);
+                            group.AddNavigableViewItem<DataGridPage>(childId: 1);
+                            group.AddNavigableViewItem<OverlayPage>(childId: 1);
+                            group.AddNavigableViewItem<TextBlockPage>(childId: 1);
+                            group.AddNavigableViewItem<ListBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<ListBoxItemPage>(childId: 1);
+                            group.AddNavigableViewItem<ScrollViewerPage>(childId: 1);
+                            group.AddNavigableViewItem<ScrollBarPage>(childId: 1);
+                            group.AddNavigableViewItem<GridSplitterPage>(childId: 1);
+                            group.AddNavigableViewItem<ToolTipPage>(childId: 1);
+                            group.AddNavigableViewItem<TextBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<PasswordBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<SearchBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<CheckBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<RadioButtonPage>(childId: 1);
+                            group.AddNavigableViewItem<ComboBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<ComboBoxItemPage>(childId: 1);
+                            group.AddNavigableViewItem<LabelPage>(childId: 1);
                         }
                     )
-                    .InitGroup(
+                    .AddGroup(
                         "Actions",
                         4,
                         group =>
                         {
-                            group.InitNavigableItem("Message", "\uE8F2", "demo.hello"); // Using InitNavigableItem instead of InitNavigableViewItem if this nav node is NOT a page at same time
-                            // When InitNavigableItem is not a parent nav node, its commandkey will be parsed.
+                            group.AddNavigableItem("Message", "\uE8F2", "demo.hello"); // Using AddNavigableItem instead of AddNavigableViewItem if this nav node is NOT a page at same time
+                            // When AddNavigableItem is not a parent nav node, its commandkey will be parsed.
                             // It means when it uses parentID, its commandkey will not be parsed anymore, should use null instead of set commandkey string at this case
-                            group.InitNavigableItem("Task", "\uE895", "demo.background");
+                            group.AddNavigableItem("Task", "\uE895", "demo.background");
                         }
                     )
-                    .InitFixedNavigableViewItem<AboutPage>();
+                    .AddFixedNavigableViewItem<AboutPage>();
             })
             .ConfigDynamicToolbar(toolbar =>
             {

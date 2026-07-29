@@ -77,7 +77,7 @@
             Content="Choose the appsettings key to edit."
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="WriteKeyBox" Width="220" Text="Gallery:Runtime:Message" />
+              <flourish:FlourishTextBox x:Name="WriteKeyBox" Width="220" Text="Flourish:Gallery:Runtime:Message" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -133,7 +133,7 @@
           </StackPanel>
           <flourish:OutputCard x:Name="WriteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Single-operation helpers each commit atomically.&#10;var filePath = settings.FilePath;&#10;await settings.SetAsync(&quot;Gallery:Theme&quot;, &quot;Dark&quot;);&#10;await settings.MergeAsync(&quot;Reports&quot;, new { PageSize = 50 });&#10;await settings.AppendAsync(&quot;Reports:Formats&quot;, &quot;PDF&quot;);&#10;await settings.RemoveAsync(&quot;Reports:Legacy&quot;);&#10;&#10;// Batch related edits into one write and one reload.&#10;var result = await settings.UpdateAsync(editor =&gt;&#10;{&#10;    editor.Set(&quot;Gallery:Theme&quot;, &quot;Light&quot;);&#10;    editor.Merge(&quot;Reports&quot;, new { PageSize = 100 });&#10;    editor.Append(&quot;Reports:Formats&quot;, &quot;CSV&quot;);&#10;    editor.Remove(&quot;Reports:Legacy&quot;);&#10;});&#10;&#10;// Inspect the transaction outcome.&#10;var changed = result.Changed;&#10;var savedPath = result.FilePath;&#10;var reloaded = result.ConfigurationReloaded;" />
+        <flourish:CodeSpace Text="// Every managed path belongs to the Flourish top-level section.&#10;var filePath = settings.FilePath;&#10;await settings.SetAsync(&quot;Flourish:Gallery:Theme&quot;, &quot;Dark&quot;);&#10;await settings.MergeAsync(&quot;Flourish:Gallery:Reports&quot;, new { PageSize = 50 });&#10;await settings.AppendAsync(&quot;Flourish:Gallery:Reports:Formats&quot;, &quot;PDF&quot;);&#10;await settings.RemoveAsync(&quot;Flourish:Gallery:Reports:Legacy&quot;);&#10;&#10;// Batch related edits into one write and one reload.&#10;var result = await settings.UpdateAsync(editor =&gt;&#10;{&#10;    editor.Set(&quot;Flourish:Gallery:Theme&quot;, &quot;Light&quot;);&#10;    editor.Merge(&quot;Flourish:Gallery:Reports&quot;, new { PageSize = 100 });&#10;    editor.Append(&quot;Flourish:Gallery:Reports:Formats&quot;, &quot;CSV&quot;);&#10;    editor.Remove(&quot;Flourish:Gallery:Reports:Legacy&quot;);&#10;});&#10;&#10;// Inspect the transaction outcome.&#10;var changed = result.Changed;&#10;var savedPath = result.FilePath;&#10;var reloaded = result.ConfigurationReloaded;" />
       </StackPanel>
     </flourish:Chunk>
 

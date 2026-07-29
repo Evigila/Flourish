@@ -3,6 +3,8 @@ using System.Reflection;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.CommandLine;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +21,8 @@ internal sealed class DefaultFlourishBuilder
     private readonly FlourishDataOptions dataOptions = new();
     private readonly IHostBuilder hostBuilder;
     private readonly List<Action<IFlourishDataBuilder>> dataConfigurations = [];
-    private readonly List<Action<HostBuilderContext, IConfigurationBuilder>>
-        appConfigurationConfigurations = [];
+    private readonly List<Action<HostBuilderContext, IFlourishConfigurationBuilder>>
+        configurationConfigurations = [];
     private readonly List<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations =
     [];
     private readonly List<Action<IFlourishShellBuilder>> shellConfigurations = [];
@@ -39,7 +41,7 @@ internal sealed class DefaultFlourishBuilder
         hostBuilder = CreateHostBuilder(
             args,
             dataOptions,
-            appConfigurationConfigurations
+            configurationConfigurations
         );
     }
 
@@ -51,13 +53,13 @@ internal sealed class DefaultFlourishBuilder
         return this;
     }
 
-    public IFlourishBuilder ConfigAppConfiguration(
-        Action<HostBuilderContext, IConfigurationBuilder> configure
+    public IFlourishBuilder ConfigConfiguration(
+        Action<HostBuilderContext, IFlourishConfigurationBuilder> configure
     )
     {
         ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(configure);
-        appConfigurationConfigurations.Add(configure);
+        configurationConfigurations.Add(configure);
         return this;
     }
 
@@ -224,8 +226,8 @@ internal sealed class DefaultFlourishBuilder
     private static IHostBuilder CreateHostBuilder(
         string[] args,
         FlourishDataOptions dataOptions,
-        IReadOnlyList<Action<HostBuilderContext, IConfigurationBuilder>>
-            appConfigurationConfigurations
+        IReadOnlyList<Action<HostBuilderContext, IFlourishConfigurationBuilder>>
+            configurationConfigurations
     )
     {
         var builder = Host.CreateDefaultBuilder(args).UseContentRoot(AppContext.BaseDirectory);
@@ -233,12 +235,52 @@ internal sealed class DefaultFlourishBuilder
         {
             UseTargetedAppSettingsProvider(configuration, dataOptions.AppSettingsFilePath);
             AddEntryAssemblyUserSecrets(configuration);
-            foreach (var configure in appConfigurationConfigurations)
+            var applicationSources = new List<IConfigurationSource>();
+            foreach (var configure in configurationConfigurations)
             {
-                configure(context, configuration);
+                var configurationBuilder = new FlourishConfigurationBuilder();
+                try
+                {
+                    configure(context, configurationBuilder);
+                }
+                finally
+                {
+                    configurationBuilder.Freeze();
+                }
+
+                applicationSources.AddRange(configurationBuilder.Sources);
             }
+
+            InsertApplicationConfigurationSources(
+                configuration,
+                applicationSources
+            );
         });
         return builder;
+    }
+
+    internal static void InsertApplicationConfigurationSources(
+        IConfigurationBuilder configuration,
+        IReadOnlyList<IConfigurationSource> sources
+    )
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(sources);
+
+        var insertionIndex = configuration.Sources
+            .Select((source, index) => (source, index))
+            .Where(item =>
+                item.source is EnvironmentVariablesConfigurationSource
+                or CommandLineConfigurationSource
+            )
+            .Select(item => item.index)
+            .DefaultIfEmpty(configuration.Sources.Count)
+            .First();
+
+        foreach (var source in sources)
+        {
+            configuration.Sources.Insert(insertionIndex++, source);
+        }
     }
 
     internal static void UseTargetedAppSettingsProvider(
@@ -283,6 +325,7 @@ internal sealed class DefaultFlourishBuilder
                     ReloadDelay = baseSource.ReloadDelay,
                     ReloadOnChange = false,
                     WatchForChanges = baseSource.ReloadOnChange,
+                    LoadOnlyFlourishSection = false,
                     OnLoadException = baseSource.OnLoadException,
                 };
             return;

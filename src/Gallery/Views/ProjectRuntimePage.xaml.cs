@@ -53,12 +53,12 @@ public partial class ProjectRuntimePage : Page
     private void TitleBar_Changed(object? sender, FlourishTitleBarChangedEventArgs e) =>
         Dispatcher.BeginInvoke(RefreshState);
 
-    private void AddProject_Click(object sender, RoutedEventArgs e)
+    private void AppendProject_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             var project = ReadProjectInput();
-            projects.AddProject(project);
+            projects.AppendProject(project);
             CollectionOutput.WriteLine($"Added project '{project.Id}'.");
         }
         catch (Exception error)

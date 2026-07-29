@@ -30,23 +30,27 @@ Registration and presentation APIs use disposable leases. Keep the returned obje
 | Service | Runtime use |
 | --- | --- |
 | `IFlourishConfiguration` | Read `Current`, the string indexer, `Get<T>`, or `GetSection<T>` from the effective Host configuration; call `Reload()` and observe `Changed`. |
-| `IAppSettingsStore` | Atomically `SetAsync`, `RemoveAsync`, `MergeAsync`, `AppendAsync`, or apply several edits in one `UpdateAsync` transaction. A changed file reloads Host configuration. |
+| `IFlourishSettingsStore` | Atomically update values owned by the `Flourish` top-level section. Every path must start with `Flourish:`; a changed file reloads Host configuration. |
 | `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `lang_<locale>.json` files while running. |
 
-`IAppSettingsStore` writes the file selected by `InitAppSettingsFilePath`, which defaults to application-root `appsettings.Flourish.json`. `IProjectService` separately persists its catalog to the independently selected `InitProjectCatalogFilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
+`IFlourishSettingsStore` writes the file selected by `InitAppSettingsFilePath`, which defaults to application-root `appsettings.Flourish.json`. It cannot modify `Logging`, `ConnectionStrings`, or another application-owned top-level section. `IProjectService` separately persists its catalog to the independently selected `InitProjectCatalogFilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
-    IAppSettingsStore settings,
+    IFlourishSettingsStore settings,
     IFlourishLocalization localization,
     string endpoint,
     CancellationToken cancellationToken)
 {
     await settings.UpdateAsync(editor =>
     {
-        editor.Set("Api:BaseUrl", endpoint);
-        editor.Merge("FeatureFlags", new { ReportsEnabled = true });
-        editor.Append("Api:RecentEndpoints", endpoint);
+        editor.Set("Flourish:Extensions:Foobar:Api:BaseUrl", endpoint);
+        editor.Merge(
+            "Flourish:Extensions:Foobar:FeatureFlags",
+            new { ReportsEnabled = true });
+        editor.Append(
+            "Flourish:Extensions:Foobar:Api:RecentEndpoints",
+            endpoint);
     }, cancellationToken);
 
     localization.SetLocale("zh-CN");
@@ -125,6 +129,8 @@ public sealed class SearchModule(
 
 Register the route before exposing a menu item that targets it. Remove the menu item before disposing the route lease.
 
+`AppendGroup`, `AppendItem`, and `AppendFixedItem` always add to the end of their target collection. Use the corresponding `InsertGroup`, `InsertItem`, or `InsertFixedItem` method when a specific zero-based position is required.
+
 ```csharp
 public sealed class DiagnosticsModule : IDisposable
 {
@@ -144,8 +150,8 @@ public sealed class DiagnosticsModule : IDisposable
 
         menu.Update(editor =>
         {
-            editor.AddGroup("runtime", "Runtime");
-            editor.AddItem("runtime", FlourishNavigationMenuItem.Page(
+            editor.AppendGroup("runtime", "Runtime");
+            editor.AppendItem("runtime", FlourishNavigationMenuItem.Page(
                 "runtime.diagnostics.item", "runtime.diagnostics", "Diagnostics", "\uE9D2"));
         });
 
@@ -231,14 +237,14 @@ Close guards and notifications return disposable leases. A notification handle c
 
 ## Background tasks
 
-`IBackgroundTaskService.AddTask` queues bounded asynchronous work at runtime. Each task receives cooperative cancellation and progress reporting through `FlourishBackgroundTaskContext`; the returned handle exposes `Cancel`, `Snapshot`, and a `Completion` task whose result captures success, cancellation, or failure.
+`IBackgroundTaskService.QueueTask` queues bounded asynchronous work at runtime. Each task receives cooperative cancellation and progress reporting through `FlourishBackgroundTaskContext`; the returned handle exposes `Cancel`, `Snapshot`, and a `Completion` task whose result captures success, cancellation, or failure.
 
 ```csharp
 public FlourishBackgroundTaskHandle StartExport(
     IBackgroundTaskService tasks,
     IReportExporter exporter)
 {
-    return tasks.AddTask(
+    return tasks.QueueTask(
         new FlourishBackgroundTaskMetadata("Export report", "Writing files", "\uE74E"),
         async context =>
         {

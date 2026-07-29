@@ -5,7 +5,7 @@ description: 使用元信息、取消、进度、结果和状态栏集成运行�
 
 # 后台任务
 
-Flourish 将 `IBackgroundTaskService` 注册为单例运行时服务，并随 Generic Host 一同启动。应用通过依赖注入解析该服务，使用 `AddTask` 提交工作；需要取消任务或读取最终结果时，应保留返回的 handle。
+Flourish 将 `IBackgroundTaskService` 注册为单例运行时服务，并随 Generic Host 一同启动。应用通过依赖注入解析该服务，使用 `QueueTask` 提交工作；需要取消任务或读取最终结果时，应保留返回的 handle。
 
 ```csharp
 public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
@@ -17,7 +17,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
             description: "将当前报表写入磁盘。",
             iconGlyph: "\uE74E");
 
-        return backgroundTasks.AddTask(metadata, async context =>
+        return backgroundTasks.QueueTask(metadata, async context =>
         {
             for (var step = 1; step <= 10; step++)
             {
@@ -29,7 +29,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 }
 ```
 
-`AddTask` 会立即返回，其委托在 WPF UI 线程之外运行。任务委托不能直接访问 WPF 控件；确有需要时，应通过对应的 `Dispatcher` 切回 UI 线程。
+`QueueTask` 会立即返回，其委托在 WPF UI 线程之外运行。任务委托不能直接访问 WPF 控件；确有需要时，应通过对应的 `Dispatcher` 切回 UI 线程。
 
 ## 元信息与状态栏集成
 
@@ -93,7 +93,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 ```csharp
 public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
 {
-    var handle = backgroundTasks.AddTask<int>(
+    var handle = backgroundTasks.QueueTask<int>(
         new FlourishBackgroundTaskMetadata(
             "统计文件",
             "统计所选工作区中的文件数量。",

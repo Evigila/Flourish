@@ -12,12 +12,12 @@ public partial class ConfigurationPage : Page
 
     private readonly ObservableCollection<string> availableLocales = [];
     private readonly IFlourishConfiguration configuration;
-    private readonly IAppSettingsStore settings;
+    private readonly IFlourishSettingsStore settings;
     private readonly IFlourishLocalization localization;
     private bool isRefreshingLocale;
     public ConfigurationPage(
         IFlourishConfiguration configuration,
-        IAppSettingsStore settings,
+        IFlourishSettingsStore settings,
         IFlourishLocalization localization
     )
     {
@@ -216,7 +216,7 @@ public partial class ConfigurationPage : Page
 
     private async Task ExecuteSettingUpdateAsync(
         string operation,
-        Func<Task<AppSettingsUpdateResult>> update
+        Func<Task<FlourishSettingsUpdateResult>> update
     )
     {
         try

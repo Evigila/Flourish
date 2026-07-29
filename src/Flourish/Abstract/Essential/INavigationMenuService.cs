@@ -21,8 +21,11 @@ public interface INavigationMenuService
 /// <summary>Edits the navigation menu within a transaction.</summary>
 public interface INavigationMenuEditor
 {
-    /// <summary>Adds a navigation group.</summary>
-    void AddGroup(string id, string? title = null, int? index = null);
+    /// <summary>Appends a navigation group to the end of the menu.</summary>
+    void AppendGroup(string id, string? title = null);
+
+    /// <summary>Inserts a navigation group at a zero-based index.</summary>
+    void InsertGroup(string id, int index, string? title = null);
 
     /// <summary>Removes a group and all items it contains.</summary>
     bool RemoveGroup(string id);
@@ -33,11 +36,17 @@ public interface INavigationMenuEditor
     /// <summary>Changes a group's visible title.</summary>
     void SetGroupTitle(string id, string? title);
 
-    /// <summary>Adds an item to a scrollable navigation group.</summary>
-    void AddItem(string groupId, FlourishNavigationMenuItem item, int? index = null);
+    /// <summary>Appends an item to the end of a scrollable navigation group.</summary>
+    void AppendItem(string groupId, FlourishNavigationMenuItem item);
 
-    /// <summary>Adds an item to the fixed bottom section.</summary>
-    void AddFixedItem(FlourishNavigationMenuItem item, int? index = null);
+    /// <summary>Inserts an item at a zero-based index in a scrollable navigation group.</summary>
+    void InsertItem(string groupId, FlourishNavigationMenuItem item, int index);
+
+    /// <summary>Appends an item to the end of the fixed bottom section.</summary>
+    void AppendFixedItem(FlourishNavigationMenuItem item);
+
+    /// <summary>Inserts an item at a zero-based index in the fixed bottom section.</summary>
+    void InsertFixedItem(FlourishNavigationMenuItem item, int index);
 
     /// <summary>Adds the item or replaces the existing item with the same stable ID.</summary>
     void UpsertItem(

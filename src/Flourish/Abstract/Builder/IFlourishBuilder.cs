@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -33,28 +32,28 @@ public interface IFlourishBuilder
     IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData);
 
     /// <summary>
-    /// Adds application configuration sources to the underlying .NET Host.
+    /// Registers application-owned configuration sources in the .NET Host pipeline.
     /// </summary>
     /// <param name="configure">
-    /// A callback that receives the Host context and Microsoft configuration builder.
+    /// A callback that receives the Host context and Flourish configuration source builder.
     /// </param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
-    /// The callback runs after the default Host and Flourish configuration sources are registered.
-    /// Sources added by the callback therefore have higher priority. JSON files other than
-    /// <c>appsettings.json</c> and <c>appsettings.{Environment}.json</c> must be added explicitly.
+    /// Sources are inserted after Host appsettings and User Secrets, and before environment
+    /// variables and command-line arguments. Flourish retains control of provider ordering while
+    /// the final configuration remains the standard Microsoft <c>IConfiguration</c>.
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// builder.ConfigAppConfiguration((_, configuration) =>
-    ///     configuration.AddJsonFile(
+    /// builder.ConfigConfiguration((_, configuration) =>
+    ///     configuration.UseConfigurationFile(
     ///         "appsettings.User.json",
     ///         optional: true,
     ///         reloadOnChange: true));
     /// ]]></code>
     /// </example>
-    IFlourishBuilder ConfigAppConfiguration(
-        Action<HostBuilderContext, IConfigurationBuilder> configure
+    IFlourishBuilder ConfigConfiguration(
+        Action<HostBuilderContext, IFlourishConfigurationBuilder> configure
     );
 
     /// <summary>
@@ -123,9 +122,9 @@ public interface IFlourishBuilder
     /// <code><![CDATA[
     /// builder.ConfigNavigation(navigation =>
     /// {
-    ///     navigation.InitGroup("Navigation", groupId: 0, group =>
+    ///     navigation.AddGroup("Navigation", groupId: 0, group =>
     ///     {
-    ///         group.InitNavigableViewItem<HomePage>(isInitial: true);
+    ///         group.AddNavigableViewItem<HomePage>(isInitial: true);
     ///     });
     /// });
     /// ]]></code>

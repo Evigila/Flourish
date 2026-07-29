@@ -132,8 +132,11 @@ The built-in locale files define the following keys. `{0}` is a format placehold
 
 The writable Flourish preference source defaults to
 `appsettings.Flourish.json`. It is registered explicitly before the Host's base
-appsettings sources and is created on the first preference write. Do not copy a
-seed file over it during every build or deployment.
+appsettings sources and is created on the first preference write. This dedicated
+source publishes only the structural top-level `Flourish` object; another
+top-level property in that file does not enter Host configuration through the
+Flourish provider. Do not copy a seed file over it during every build or
+deployment.
 
 Use Builder parameters for normal fallback values. Place a value in the
 application's base `appsettings.json` only when application policy must override
@@ -159,21 +162,28 @@ The application can copy its own base file to the output in the normal way:
 </ItemGroup>
 ```
 
-The configuration key is `Flourish:Preferences:Theme`. Reads follow the complete Host precedence: `appsettings.Flourish.json`, `appsettings.json`, `appsettings.{Environment}.json`, User Secrets, environment variables, and command-line arguments. Later sources override earlier sources. `Host.CreateDefaultBuilder` automatically loads only the base and current-environment appsettings files; another name such as `appsettings.User.json` must be registered by application code.
+The configuration key is `Flourish:Preferences:Theme`. Reads follow the complete Host precedence: `appsettings.Flourish.json`, `appsettings.json`, `appsettings.{Environment}.json`, User Secrets, application-registered sources, environment variables, and command-line arguments. Later sources override earlier sources. `Host.CreateDefaultBuilder` automatically loads only the base and current-environment appsettings files; another name such as `appsettings.User.json` must be registered by application code.
 
-Use `ConfigAppConfiguration` to add that file or another Microsoft configuration provider:
+Use `ConfigConfiguration` to register that file:
 
 ```csharp
-builder.ConfigAppConfiguration((_, configuration) =>
-    configuration.AddJsonFile(
+builder.ConfigConfiguration((_, configuration) =>
+    configuration.UseConfigurationFile(
         "appsettings.User.json",
         optional: true,
         reloadOnChange: true));
 ```
 
-These callbacks run after the default Host and Flourish sources are registered, so sources they add have higher priority. Register them in the intended override order.
+`UseConfigurationFile` registers a JSON source. `AddConfigurationSource` accepts a standard Microsoft `IConfigurationSource` when another provider type is required. Flourish does not expose the Host's mutable `IConfigurationBuilder`; it inserts registered sources after appsettings and User Secrets but before environment variables and command-line arguments. Registration order is preserved, so a later application source overrides an earlier one without overriding environment or command-line policy.
 
-Flourish preserves unrelated settings when it writes the selected file, but serializes the complete JSON object again. This reformats the document and removes comments. The selected directory must be writable, and an existing file must contain valid JSON with an object at its root.
+`IFlourishSettingsStore` accepts only descendant paths that start with `Flourish:`.
+It cannot create, replace, or remove another top-level section. Flourish
+preserves the values of unrelated sections already present in the selected file,
+but serializes the complete JSON object again. This can reformat the document
+and removes comments, so the dedicated default file is preferable when another
+process also manages application settings. The selected directory must be
+writable, and an existing file must contain valid JSON with an object at its
+root. Its `Flourish` property, when present, must be an object.
 
 ## User preferences
 
@@ -209,13 +219,13 @@ builder.ConfigData(data => data
     .InitProjectCatalogFilePath("Data/projects.json"));
 ```
 
-Relative paths are resolved against `AppContext.BaseDirectory`; absolute paths are accepted. When the selected settings file differs from the base `appsettings.json`, Flourish adds it before that base source and leaves all Host appsettings sources available to the application. User Secrets, environment variables, and command-line providers keep their normal higher priority. Selecting the base `appsettings.json` explicitly makes Flourish write that shared file instead. Both paths must identify different `.json` files, and parent directories are created on the first write.
+Relative paths are resolved against `AppContext.BaseDirectory`; absolute paths are accepted. When the selected settings file differs from the base `appsettings.json`, Flourish adds a section-limited provider before that base source and leaves all Host appsettings sources available to the application. User Secrets, environment variables, and command-line providers keep their normal higher priority. Selecting the base `appsettings.json` explicitly keeps its normal full-document Host provider behavior, while Flourish writes only descendant paths under its `Flourish` section. Both paths must identify different `.json` files, and parent directories are created on the first write.
 
-Use `IAppSettingsStore.RemoveAsync` to reset one stored preference. Passing `usePersistedPreference: false` only ignores and stops updating that value; it does not silently erase an existing user choice.
+Use `IFlourishSettingsStore.RemoveAsync` with a full `Flourish:` path to reset one stored preference. Passing `usePersistedPreference: false` only ignores and stops updating that value; it does not silently erase an existing user choice.
 
 ## Project catalog
 
-`IProjectService` stores ordered project mappings whose local files exist, plus the active persisted project ID, in the file selected by `InitProjectCatalogFilePath`; the default is application-root `projects.json`. The catalog path is independent of `IAppSettingsStore.FilePath`, is not a Host configuration source, and does not participate in configuration precedence.
+`IProjectService` stores ordered project mappings whose local files exist, plus the active persisted project ID, in the file selected by `InitProjectCatalogFilePath`; the default is application-root `projects.json`. The catalog path is independent of `IFlourishSettingsStore.FilePath`, is not a Host configuration source, and does not participate in configuration precedence.
 
 Flourish loads this catalog when the project service starts, removes entries whose mapped files no longer exist, and writes valid catalog mutations atomically. Registering a replacement `IProjectBehavior` changes project dialogs and file lifecycle only; it does not disable catalog persistence. The directory must be writable. See [Projects](projects.md) for process-local unpersisted projects and lifecycle behavior.
 

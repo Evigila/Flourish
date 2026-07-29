@@ -194,7 +194,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.InitGroup(displayName, groupId: 1)
+            sut.AddGroup(displayName, groupId: 1)
         );
 
         Assert.Equal("displayName", exception.ParamName);
@@ -204,10 +204,10 @@ public sealed class FlourishNavigationBuilderTests
     public void SetGroup_WithDuplicateGroupId_ThrowsInvalidOperationException()
     {
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
-        sut.InitGroup("First", groupId: 1);
+        sut.AddGroup("First", groupId: 1);
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.InitGroup("Second", groupId: 1)
+            sut.AddGroup("Second", groupId: 1)
         );
 
         Assert.Contains("group ID 1", exception.Message);
@@ -219,10 +219,10 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.InitGroup("Main", groupId: 1, group =>
+        sut.AddGroup("Main", groupId: 1, group =>
         {
-            group.InitNavigableViewItem<TestPage>(isInitial: true);
-            group.InitNavigableItem("Refresh", "R", "gallery.refresh");
+            group.AddNavigableViewItem<TestPage>(isInitial: true);
+            group.AddNavigableItem("Refresh", "R", "gallery.refresh");
         });
 
         var navigationGroup = Assert.Single(options.NavigationGroups);
@@ -241,8 +241,8 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.InitGroup(null, groupId: 0, group =>
-                group.InitNavigableItem("Invalid", null, null, parentId: 1, childId: 1)
+            sut.AddGroup(null, groupId: 0, group =>
+                group.AddNavigableItem("Invalid", null, null, parentId: 1, childId: 1)
             )
         );
 
@@ -255,10 +255,10 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.InitGroup(null, groupId: 0, group =>
+            sut.AddGroup(null, groupId: 0, group =>
             {
-                group.InitNavigableItem("First", null, null, parentId: 7);
-                group.InitNavigableItem("Second", null, null, parentId: 7);
+                group.AddNavigableItem("First", null, null, parentId: 7);
+                group.AddNavigableItem("Second", null, null, parentId: 7);
             })
         );
 
@@ -271,8 +271,8 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.InitFixedNavigableViewItem<TestPage>(isInitial: true, parentId: 7);
-        sut.InitFixedNavigableItem(
+        sut.AddFixedNavigableViewItem<TestPage>(isInitial: true, parentId: 7);
+        sut.AddFixedNavigableItem(
             "Refresh",
             "R",
             "app.refresh",
@@ -312,7 +312,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.InitFixedNavigableItem(displayName!, null, "command")
+            sut.AddFixedNavigableItem(displayName!, null, "command")
         );
 
         Assert.Equal("displayName", exception.ParamName);

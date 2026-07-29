@@ -250,15 +250,48 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigAppConfiguration(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.Configuration.IConfigurationBuilder})
-summary: 向底层 .NET Host 添加应用配置源。
-remarks: 回调在默认 Host 与 Flourish 配置源注册后执行，因此新增来源具有更高优先级。除基础文件和当前环境文件以外的 JSON 文件必须显式添加。
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigConfiguration(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder})
+summary: 向 .NET Host 管线注册应用配置源。
+remarks: Flourish 将来源插入 appsettings 与 User Secrets 之后、环境变量与命令行之前，并保持标准 Microsoft IConfiguration。
 syntax:
   parameters:
   - id: configure
-    description: 接收 Host 上下文与 Microsoft 配置 builder 的回调。
+    description: 接收 Host 上下文与 Flourish 配置源 builder 的回调。
   return:
     description: 用于链式配置的当前 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder
+summary: 按受控优先级注册应用拥有的配置源。
+remarks: 注册顺序会被保留，后注册的应用源覆盖先注册的应用源；环境变量和命令行仍具有更高优先级。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder.UseConfigurationFile(System.String,System.Boolean,System.Boolean)
+summary: 注册 JSON 配置文件。
+syntax:
+  parameters:
+  - id: path
+    description: 配置文件路径；相对路径以 AppContext.BaseDirectory 为基准。
+  - id: optional
+    description: 是否允许文件不存在。
+  - id: reloadOnChange
+    description: 文件变化时是否重新加载有效配置。
+  return:
+    description: 用于链式注册的当前配置 builder。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder.AddConfigurationSource(Microsoft.Extensions.Configuration.IConfigurationSource)
+summary: 注册标准 Microsoft 配置源。
+remarks: Flourish 决定该来源在 Host 管线中的位置，不会公开底层 IConfigurationBuilder。
+syntax:
+  parameters:
+  - id: source
+    description: 要注册的配置源。
+  return:
+    description: 用于链式注册的当前配置 builder。
 ---
 
 ---
@@ -280,8 +313,8 @@ syntax:
 
 ---
 uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitAppSettingsFilePath(System.String)
-summary: 选择 Flourish 通过 IConfiguration 读取并由 IAppSettingsStore 写入的 JSON 文件。
-remarks: 默认文件是应用根目录下的 `appsettings.Flourish.json`。相对路径以 `AppContext.BaseDirectory` 为基准。所选文件不是基础 `appsettings.json` 时，会插入该基础配置源之前，并保留宿主应用的全部 appsettings 配置源。
+summary: 选择提供 `Flourish` 配置节并接收 IFlourishSettingsStore 更新的 JSON 文件。
+remarks: 默认文件是应用根目录下的 `appsettings.Flourish.json`。相对路径以 `AppContext.BaseDirectory` 为基准。所选文件不是基础 `appsettings.json` 时，只会把结构上的顶级 `Flourish` 对象发布为低优先级配置，并保留宿主应用的全部 appsettings 配置源。其他顶级节会保留，但不归 Flourish 读取或写入。
 syntax:
   parameters:
   - id: path
@@ -741,7 +774,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitGroup(System.String,System.Int32,System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder})
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.AddGroup(System.String,System.Int32,System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder})
 summary: 添加并配置一个可滚动导航分组。
 syntax:
   parameters:
@@ -756,7 +789,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitFixedNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.AddFixedNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
 summary: 在导航栏底部固定区域添加一个已注册页面导航项。
 syntax:
   typeParameters:
@@ -774,7 +807,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitFixedNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.AddFixedNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
 summary: 在导航栏底部固定区域添加一个按钮类型命令项。
 syntax:
   parameters:
@@ -798,7 +831,7 @@ summary: 配置 Flourish 导航分组中显示的导航项。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder.InitNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder.AddNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
 summary: 将一个已注册 WPF 页面添加到当前导航分组。
 syntax:
   typeParameters:
@@ -816,7 +849,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder.InitNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder.AddNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
 summary: 将一个按钮类型命令项添加到当前导航分组。
 syntax:
   parameters:
@@ -1371,6 +1404,41 @@ summary: 清空导航后退栈。
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor
+summary: 在一个事务中编辑运行时导航菜单。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.AppendGroup(System.String,System.String)
+summary: 将导航分组追加到菜单末尾。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.InsertGroup(System.String,System.Int32,System.String)
+summary: 将导航分组插入从零开始的指定位置。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.AppendItem(System.String,ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem)
+summary: 将导航项追加到可滚动分组末尾。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.InsertItem(System.String,ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem,System.Int32)
+summary: 将导航项插入可滚动分组中从零开始的指定位置。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.AppendFixedItem(ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem)
+summary: 将导航项追加到固定区域末尾。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.InsertFixedItem(ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem,System.Int32)
+summary: 将导航项插入固定区域中从零开始的指定位置。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.MaterialEffect
 summary: 指定应用到 Flourish Shell 窗口的系统材质效果。
 ---
@@ -1730,7 +1798,7 @@ summary: 当活动任务集合、任务状态或任务进度发生变化时触�
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.AddTask(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask})
+uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.QueueTask(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask})
 summary: 提交一个没有返回值的异步后台任务。
 syntax:
   parameters:
@@ -1743,7 +1811,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.AddTask``1(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask{``0}})
+uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.QueueTask``1(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask{``0}})
 summary: 提交一个产生返回值的异步后台任务。
 syntax:
   parameters:
@@ -2103,12 +2171,12 @@ summary: 获取当前项目显示状态的只读快照。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.AddProject(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean)
-summary: 添加项目标识，并可选将其设为活动项目。
+uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.AppendProject(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean)
+summary: 将项目标识追加到项目目录，并可选将其设为活动项目。
 syntax:
   parameters:
   - id: project
-    description: 要添加的项目显示元数据。
+    description: 要追加的项目显示元数据。
   - id: activate
     description: 是否将新项目设为活动项目。
 ---
@@ -2441,4 +2509,16 @@ summary: 描述当前应用级 Flourish 滚动设置。
 ---
 uid: ArkheideSystem.Flourish.Abstract.Runtime.FlourishScrollChangedEventArgs
 summary: 提供变更前后的应用级滚动设置快照。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.IFlourishSettingsStore
+summary: 对所选 JSON 文件中的 `Flourish` 顶级节执行事务性原子更新。
+remarks: 每个设置路径都必须以 `Flourish:` 开头并指向其后代值。其他顶级节不归该服务所有，会在写入时保留。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.Essential.IFlourishSettingsEditor
+summary: 在一次内存事务中编辑 `Flourish` 配置节。
+remarks: 每个路径都必须以 `Flourish:` 开头并指向其后代值。
 ---

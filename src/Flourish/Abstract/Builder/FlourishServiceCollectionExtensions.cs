@@ -63,8 +63,8 @@ public static class FlourishServiceCollectionExtensions
     /// </summary>
     /// <remarks>
     /// This method records the page display name, icon glyph, and cache mode. Use
-    /// <see cref="IFlourishNavigationGroupBuilder.InitNavigableViewItem{TPage}" /> or
-    /// <see cref="IFlourishNavigationBuilder.InitFixedNavigableViewItem{TPage}" /> inside
+    /// <see cref="IFlourishNavigationGroupBuilder.AddNavigableViewItem{TPage}" /> or
+    /// <see cref="IFlourishNavigationBuilder.AddFixedNavigableViewItem{TPage}" /> inside
     /// <c>ConfigNavigation</c> to place each page that should be visible. The navigation
     /// key is the page class name with one trailing, case-sensitive <c>Page</c> suffix removed;
     /// for example, <c>SettingsPage</c> becomes <c>Settings</c>. Flourish validates key uniqueness

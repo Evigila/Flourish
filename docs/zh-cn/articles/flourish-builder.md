@@ -41,7 +41,7 @@ return flourish.Run<App>();
 | 功能 | Builder 方法 | 作用 |
 | --- | --- | --- |
 | [应用数据](configure-data.md) | `ConfigData` | 配置本地化以及可写的设置文件和项目目录文件路径。 |
-| [应用配置](configure-data.md) | `ConfigAppConfiguration` | 添加 JSON 文件或其他 Microsoft 配置 provider。 |
+| [应用配置](configure-data.md) | `ConfigConfiguration` | 按受控优先级注册 JSON 文件或标准 Microsoft 配置源。 |
 | [依赖注入](configure-services.md) | `ConfigServices` | 注册应用服务、页面和可替换的 Flourish 服务。 |
 | [Shell 配置](shell-configuration.md) | `ConfigShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
 | [用户资料（Profile）](configure-profile.md) | `ConfigProfile` | 配置 Profile 承载页面；入口与名称顺序由标题栏配置。 |
@@ -61,7 +61,7 @@ return flourish.Run<App>();
 
 Builder 入口可以在 `Build()` 前调用多次。同一入口的重复回调会按注册顺序应用；重复设置同一选项时使用最后一次配置的值。
 
-`ConfigData` 回调会在 Host 构建之前执行，因此选定的设置文件会参与最终的 `IConfiguration`，并可在 `ConfigServices` 中读取。随后，`ConfigAppConfiguration` 回调通过标准 Microsoft 配置 builder 添加应用自己的配置源。
+`ConfigData` 回调会在 Host 构建之前执行，因此选定的设置文件会参与最终的 `IConfiguration`，并可在 `ConfigServices` 中读取。随后，`ConfigConfiguration` 回调通过 `IFlourishConfigurationBuilder` 注册应用配置源；Flourish 会把它们放在环境变量与命令行之前，而不会公开 Host 的可变配置源集合。
 
 `Build()` 会消费并冻结 Builder。再次调用 `Build()`、继续添加 `Config...` 回调，
 或在回调结束后调用此前捕获的嵌套 Builder，都会抛出 `InvalidOperationException`。
@@ -99,8 +99,8 @@ services.AddNavigable<HomePage>(
 
 ```csharp
 builder.ConfigNavigation(navigation =>
-    navigation.InitGroup(null, groupId: 0, group =>
-        group.InitNavigableViewItem<HomePage>(isInitial: true)));
+    navigation.AddGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 [导航](navigation.md)说明生成键、页面元数据、缓存行为、分组、固定项、校验和运行时字符串导航。

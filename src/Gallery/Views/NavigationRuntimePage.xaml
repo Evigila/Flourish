@@ -153,7 +153,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RouteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Register the destination before publishing its menu item.&#10;routes.Upsert(new FlourishNavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    FlourishPageCacheMode.Enabled));&#10;&#10;menu.Update(editor =&gt;&#10;{&#10;    editor.AddGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.UpsertItem(&quot;reports&quot;, FlourishNavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;menu.Update(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;routes.Remove(&quot;Reports&quot;);" />
+      <flourish:CodeSpace Text="// Register the destination before publishing its menu item.&#10;routes.Upsert(new FlourishNavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    FlourishPageCacheMode.Enabled));&#10;&#10;menu.Update(editor =&gt;&#10;{&#10;    editor.AppendGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.UpsertItem(&quot;reports&quot;, FlourishNavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;menu.Update(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;routes.Remove(&quot;Reports&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 

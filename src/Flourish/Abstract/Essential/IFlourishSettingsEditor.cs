@@ -1,9 +1,12 @@
 namespace ArkheideSystem.Flourish.Abstract.Essential;
 
 /// <summary>
-/// Edits one in-memory appsettings transaction.
+/// Edits the <c>Flourish</c> section in one in-memory appsettings transaction.
 /// </summary>
-public interface IAppSettingsEditor
+/// <remarks>
+/// Every path must start with <c>Flourish:</c> and identify a child value.
+/// </remarks>
+public interface IFlourishSettingsEditor
 {
     /// <summary>
     /// Replaces the value at a colon-delimited path.

@@ -682,7 +682,17 @@ internal sealed class NavigationMenuService : INavigationMenuService
         List<FlourishNavigationMenuItem> fixedItems
     ) : INavigationMenuEditor
     {
-        public void AddGroup(string id, string? title = null, int? index = null)
+        public void AppendGroup(string id, string? title = null)
+        {
+            InsertGroupCore(id, title, index: null);
+        }
+
+        public void InsertGroup(string id, int index, string? title = null)
+        {
+            InsertGroupCore(id, title, index);
+        }
+
+        private void InsertGroupCore(string id, string? title, int? index)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -730,14 +740,45 @@ internal sealed class NavigationMenuService : INavigationMenuService
             groups[RequireGroupIndex(id)].Title = title;
         }
 
-        public void AddItem(string groupId, FlourishNavigationMenuItem item, int? index = null)
+        public void AppendItem(string groupId, FlourishNavigationMenuItem item)
+        {
+            InsertItemCore(groupId, item, index: null);
+        }
+
+        public void InsertItem(
+            string groupId,
+            FlourishNavigationMenuItem item,
+            int index
+        )
+        {
+            InsertItemCore(groupId, item, index);
+        }
+
+        private void InsertItemCore(
+            string groupId,
+            FlourishNavigationMenuItem item,
+            int? index
+        )
         {
             ArgumentNullException.ThrowIfNull(item);
             EnsureItemIdAvailable(item.Id);
             Insert(groups[RequireGroupIndex(groupId)].Items, item, index);
         }
 
-        public void AddFixedItem(FlourishNavigationMenuItem item, int? index = null)
+        public void AppendFixedItem(FlourishNavigationMenuItem item)
+        {
+            InsertFixedItemCore(item, index: null);
+        }
+
+        public void InsertFixedItem(FlourishNavigationMenuItem item, int index)
+        {
+            InsertFixedItemCore(item, index);
+        }
+
+        private void InsertFixedItemCore(
+            FlourishNavigationMenuItem item,
+            int? index
+        )
         {
             ArgumentNullException.ThrowIfNull(item);
             EnsureItemIdAvailable(item.Id);

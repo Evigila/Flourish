@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Services;
 internal sealed class FlourishPreferencePersistenceService(
     FlourishDataOptions dataOptions,
     FlourishShellOptions shellOptions,
-    IAppSettingsStore appSettings,
+    IFlourishSettingsStore appSettings,
     IFlourishLocalization localization,
     IWindowService window,
     INavigationPanelService navigationPanel,
@@ -129,7 +129,7 @@ internal sealed class FlourishPreferencePersistenceService(
         }
     }
 
-    private ValueTask<AppSettingsUpdateResult> PersistCurrentAsync()
+    private ValueTask<FlourishSettingsUpdateResult> PersistCurrentAsync()
     {
         var panel = navigationPanel.Current;
         var currentMotion = motion.Current;

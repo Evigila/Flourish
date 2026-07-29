@@ -41,7 +41,7 @@ The public builder separates hosting, application services, feature switches, an
 | Feature | Builder method | Purpose |
 | --- | --- | --- |
 | [Application data](configure-data.md) | `ConfigData` | Configures localization and the writable settings and project-catalog paths. |
-| [Application configuration](configure-data.md) | `ConfigAppConfiguration` | Adds JSON files or other Microsoft configuration providers. |
+| [Application configuration](configure-data.md) | `ConfigConfiguration` | Registers JSON files or standard Microsoft configuration sources at a controlled priority. |
 | [Dependency injection](configure-services.md) | `ConfigServices` | Registers application and replaceable Flourish services. |
 | [Shell configuration](shell-configuration.md) | `ConfigShell` | Configures shell surfaces, tooltips, typography, and material effects. |
 | [Profile](configure-profile.md) | `ConfigProfile` | Selects a custom page for the profile enabled by the title bar. |
@@ -61,7 +61,7 @@ The public builder separates hosting, application services, feature switches, an
 
 Builder entry points can be called multiple times before `Build()`. Repeated callbacks for the same entry point are applied in registration order; repeated setting methods use the last configured value.
 
-`ConfigData` callbacks run before the Host is built so the selected settings file participates in the final `IConfiguration` that is available to `ConfigServices`. `ConfigAppConfiguration` callbacks then add application-owned sources through the standard Microsoft configuration builder.
+`ConfigData` callbacks run before the Host is built so the selected settings file participates in the final `IConfiguration` that is available to `ConfigServices`. `ConfigConfiguration` callbacks register application-owned sources through `IFlourishConfigurationBuilder`; Flourish places them before environment variables and command-line arguments without exposing the mutable Host source collection.
 
 `Build()` consumes and freezes the builder. Calling `Build()` again, adding another `Config...`
 callback, or invoking a captured nested builder after its callback has ended throws
@@ -100,8 +100,8 @@ Registering a page makes it available to navigation but does not add a visible i
 
 ```csharp
 builder.ConfigNavigation(navigation =>
-    navigation.InitGroup(null, groupId: 0, group =>
-        group.InitNavigableViewItem<HomePage>(isInitial: true)));
+    navigation.AddGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 [Navigation](navigation.md) explains generated keys, page metadata, cache behavior, groups, fixed items, validation, and runtime string navigation.

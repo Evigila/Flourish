@@ -131,8 +131,9 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 `FlourishBuilder.CreateDefaultBuilder(args)` 使用标准 Generic Host 配置管线。Flourish 从应用通过 `HostBuilderContext.Configuration` 和依赖注入获得的同一个 `IConfiguration` 中读取设置。
 
 Flourish 的可写偏好配置源默认为 `appsettings.Flourish.json`。它会在 Host
-基础 appsettings 配置源之前显式注册，并在首次写入偏好时创建。不要在每次构建或
-部署时用种子文件覆盖它。
+基础 appsettings 配置源之前显式注册，并在首次写入偏好时创建。该专用配置源只发布
+JSON 结构中真正位于顶级的 `Flourish` 对象；文件中的其他顶级属性不会通过 Flourish
+Provider 进入 Host 配置。不要在每次构建或部署时用种子文件覆盖它。
 
 普通回退值应通过 Builder 参数配置。只有应用策略必须覆盖已持久化的用户偏好时，
 才在应用的基础 `appsettings.json` 中设置对应值：
@@ -157,21 +158,21 @@ Flourish 的可写偏好配置源默认为 `appsettings.Flourish.json`。它会�
 </ItemGroup>
 ```
 
-配置键为 `Flourish:Preferences:Theme`。读取遵循完整的 Host 优先级：`appsettings.Flourish.json`、`appsettings.json`、`appsettings.{Environment}.json`、User Secrets、环境变量、命令行参数；越靠后的来源优先级越高。`Host.CreateDefaultBuilder` 只会自动加载基础文件和当前环境文件；`appsettings.User.json` 等其他名称必须由应用代码显式注册。
+配置键为 `Flourish:Preferences:Theme`。读取遵循完整的 Host 优先级：`appsettings.Flourish.json`、`appsettings.json`、`appsettings.{Environment}.json`、User Secrets、应用注册的配置源、环境变量、命令行参数；越靠后的来源优先级越高。`Host.CreateDefaultBuilder` 只会自动加载基础文件和当前环境文件；`appsettings.User.json` 等其他名称必须由应用代码显式注册。
 
-通过 `ConfigAppConfiguration` 添加该文件或其他 Microsoft 配置 provider：
+通过 `ConfigConfiguration` 注册该文件：
 
 ```csharp
-builder.ConfigAppConfiguration((_, configuration) =>
-    configuration.AddJsonFile(
+builder.ConfigConfiguration((_, configuration) =>
+    configuration.UseConfigurationFile(
         "appsettings.User.json",
         optional: true,
         reloadOnChange: true));
 ```
 
-这些回调在默认 Host 与 Flourish 配置源注册完成后执行，因此其新增来源具有更高优先级。请按照预期覆盖顺序注册来源。
+`UseConfigurationFile` 用于注册 JSON 配置源；其他 provider 类型可以通过 `AddConfigurationSource` 传入标准 Microsoft `IConfigurationSource`。Flourish 不会公开 Host 可变的 `IConfigurationBuilder`，而是把这些来源统一插入 appsettings 与 User Secrets 之后、环境变量与命令行之前。注册顺序会被保留，因此后注册的应用源可以覆盖先注册的应用源，但不会覆盖环境变量或命令行策略。
 
-Flourish 写入所选文件时会保留无关设置，但会重新序列化整个 JSON 对象，因此文档会被重新格式化，注释也会被移除。所选目录必须可写；已有文件必须是根节点为对象的有效 JSON。
+`IFlourishSettingsStore` 只接受以 `Flourish:` 开头的后代路径，不能创建、替换或删除其他顶级节。Flourish 会保留所选文件中已有无关节的值，但会重新序列化整个 JSON 对象，因此文档可能被重新格式化，注释也会被移除。若另一个进程也会管理应用配置，建议使用默认的独立文件。所选目录必须可写；已有文件必须是根节点为对象的有效 JSON，其中已有的 `Flourish` 属性必须是对象。
 
 ## 用户偏好
 
@@ -207,13 +208,13 @@ builder.ConfigData(data => data
     .InitProjectCatalogFilePath("Data/projects.json"));
 ```
 
-相对路径以 `AppContext.BaseDirectory` 为基准，也可以传入绝对路径。所选设置文件与基础 `appsettings.json` 不同时，Flourish 会把它插入该基础配置源之前，并保留应用的全部 Host appsettings 配置源；User Secrets、环境变量与命令行仍保持正常的更高优先级。显式选择基础 `appsettings.json` 时，Flourish 会改为写入该共享文件。两个路径必须指向不同的 `.json` 文件，首次写入时会创建父目录。
+相对路径以 `AppContext.BaseDirectory` 为基准，也可以传入绝对路径。所选设置文件与基础 `appsettings.json` 不同时，Flourish 会把仅发布 `Flourish` 节的 Provider 插入该基础配置源之前，并保留应用的全部 Host appsettings 配置源；User Secrets、环境变量与命令行仍保持正常的更高优先级。显式选择基础 `appsettings.json` 时，该文件仍保持正常的完整 Host Provider 行为，但 Flourish 只能写入其 `Flourish` 节下的后代路径。两个路径必须指向不同的 `.json` 文件，首次写入时会创建父目录。
 
-需要重置某个已保存偏好时，使用 `IAppSettingsStore.RemoveAsync`。传入 `usePersistedPreference: false` 只表示忽略并停止更新该值，不会隐式删除已有用户选择。
+需要重置某个已保存偏好时，使用 `IFlourishSettingsStore.RemoveAsync` 并传入完整的 `Flourish:` 路径。传入 `usePersistedPreference: false` 只表示忽略并停止更新该值，不会隐式删除已有用户选择。
 
 ## 项目目录
 
-`IProjectService` 将有序项目元数据与活动项目 ID 存储在 `InitProjectCatalogFilePath` 选择的文件中，默认是应用根目录下的 `projects.json`。该路径独立于 `IAppSettingsStore.FilePath`，不是 Host 配置源，也不参与配置优先级。
+`IProjectService` 将有序项目元数据与活动项目 ID 存储在 `InitProjectCatalogFilePath` 选择的文件中，默认是应用根目录下的 `projects.json`。该路径独立于 `IFlourishSettingsStore.FilePath`，不是 Host 配置源，也不参与配置优先级。
 
 项目服务启动时会加载该目录，并在每次目录变更时执行原子写入。注册替换的 `IProjectBehavior` 只会改变项目对话框与文件生命周期，不会禁用目录持久化。目录必须可写。未持久化项目与生命周期行为参见[项目](projects.md)。
 

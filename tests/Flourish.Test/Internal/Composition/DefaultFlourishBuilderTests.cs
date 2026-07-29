@@ -7,6 +7,8 @@ using ArkheideSystem.Flourish.Internal.Composition;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.CommandLine;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -24,7 +26,7 @@ public sealed class DefaultFlourishBuilderTests
 
         Assert.Throws<ArgumentNullException>(() => builder.ConfigData(null!));
         Assert.Throws<ArgumentNullException>(() =>
-            builder.ConfigAppConfiguration(null!)
+            builder.ConfigConfiguration(null!)
         );
         Assert.Throws<ArgumentNullException>(() => builder.ConfigServices(null!));
         Assert.Throws<ArgumentNullException>(() => builder.ConfigShell(null!));
@@ -46,24 +48,30 @@ public sealed class DefaultFlourishBuilderTests
 
         Assert.Throws<InvalidOperationException>(() => builder.ConfigShell(_ => { }));
         Assert.Throws<InvalidOperationException>(() =>
-            builder.ConfigAppConfiguration((_, _) => { })
+            builder.ConfigConfiguration((_, _) => { })
         );
         Assert.Throws<InvalidOperationException>(() => builder.Build());
     }
 
     [Fact]
-    public void Build_AppliesAdditionalApplicationConfigurationAfterDefaults()
+    public void Build_AppliesRegisteredApplicationConfigurationSource()
     {
         HostBuilderContext? capturedContext = null;
         using var flourish = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigAppConfiguration((context, configuration) =>
+            .ConfigConfiguration((context, configuration) =>
             {
                 capturedContext = context;
-                configuration.AddInMemoryCollection(
-                    new Dictionary<string, string?>
+                configuration.AddConfigurationSource(
+                    new MemoryConfigurationSource
                     {
-                        ["Flourish:Test:AdditionalConfiguration"] = "configured",
+                        InitialData =
+                        [
+                            KeyValuePair.Create<string, string?>(
+                                "Flourish:Test:AdditionalConfiguration",
+                                "configured"
+                            ),
+                        ],
                     }
                 );
             })
@@ -79,9 +87,121 @@ public sealed class DefaultFlourishBuilderTests
     }
 
     [Fact]
+    public void Build_UsesRegisteredConfigurationFile()
+    {
+        using var directory = new TemporaryDirectory();
+        var path = Path.Combine(directory.Path, "appsettings.User.json");
+        File.WriteAllText(
+            path,
+            """{"Application":{"DisplayName":"Foobar"}}"""
+        );
+
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigConfiguration((_, configuration) =>
+                configuration.UseConfigurationFile(
+                    path,
+                    optional: false,
+                    reloadOnChange: false
+                )
+            )
+            .Build();
+
+        Assert.Equal(
+            "Foobar",
+            flourish.GetRequiredService<IConfiguration>()["Application:DisplayName"]
+        );
+    }
+
+    [Fact]
+    public void Build_CommandLineOverridesRegisteredApplicationSource()
+    {
+        const string key = "Application:Priority";
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([$"--{key}=command-line"])
+            .ConfigConfiguration((_, configuration) =>
+                configuration.AddConfigurationSource(
+                    new MemoryConfigurationSource
+                    {
+                        InitialData =
+                        [
+                            KeyValuePair.Create<string, string?>(key, "registered"),
+                        ],
+                    }
+                )
+            )
+            .Build();
+
+        Assert.Equal(
+            "command-line",
+            flourish.GetRequiredService<IConfiguration>()[key]
+        );
+    }
+
+    [Fact]
+    public void Build_RegisteredApplicationSourcesPreserveRegistrationOrder()
+    {
+        const string key = "Application:RegistrationOrder";
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigConfiguration((_, configuration) =>
+                configuration.AddConfigurationSource(
+                    new MemoryConfigurationSource
+                    {
+                        InitialData =
+                        [
+                            KeyValuePair.Create<string, string?>(key, "first"),
+                        ],
+                    }
+                )
+            )
+            .ConfigConfiguration((_, configuration) =>
+                configuration.AddConfigurationSource(
+                    new MemoryConfigurationSource
+                    {
+                        InitialData =
+                        [
+                            KeyValuePair.Create<string, string?>(key, "second"),
+                        ],
+                    }
+                )
+            )
+            .Build();
+
+        Assert.Equal(
+            "second",
+            flourish.GetRequiredService<IConfiguration>()[key]
+        );
+    }
+
+    [Fact]
+    public void Build_FreezesEachConfigurationBuilderWhenItsCallbackCompletes()
+    {
+        IFlourishConfigurationBuilder? captured = null;
+        var secondCallbackObservedFrozenBuilder = false;
+
+        using var flourish = FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigConfiguration((_, configuration) => captured = configuration)
+            .ConfigConfiguration((_, _) =>
+            {
+                Assert.Throws<InvalidOperationException>(() =>
+                    captured!.AddConfigurationSource(
+                        new MemoryConfigurationSource()
+                    )
+                );
+                secondCallbackObservedFrozenBuilder = true;
+            })
+            .Build();
+
+        Assert.True(secondCallbackObservedFrozenBuilder);
+    }
+
+    [Fact]
     public void Build_FreezesCapturedStartupBuildersAfterTheirCallbacksComplete()
     {
         IFlourishDataBuilder? data = null;
+        IFlourishConfigurationBuilder? applicationConfiguration = null;
         IFlourishShellBuilder? shell = null;
         IFlourishProfileBuilder? profile = null;
         IFlourishTitlebarBuilder? titleBar = null;
@@ -96,13 +216,14 @@ public sealed class DefaultFlourishBuilderTests
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
             .ConfigData(value => data = value)
+            .ConfigConfiguration((_, value) => applicationConfiguration = value)
             .ConfigShell(value => shell = value)
             .ConfigProfile(value => profile = value)
             .ConfigTitleBar(value => titleBar = value)
             .ConfigNavigation(value =>
             {
                 navigation = value;
-                value.InitGroup(configureGroup: group => navigationGroup = group);
+                value.AddGroup(configureGroup: group => navigationGroup = group);
             })
             .ConfigCustomHandler(value => customHandler = value)
             .ConfigDynamicToolbar(value => toolbar = value)
@@ -113,12 +234,17 @@ public sealed class DefaultFlourishBuilderTests
         using var flourish = builder.Build();
 
         Assert.Throws<InvalidOperationException>(() => data!.InitLocale());
+        Assert.Throws<InvalidOperationException>(() =>
+            applicationConfiguration!.AddConfigurationSource(
+                new MemoryConfigurationSource()
+            )
+        );
         Assert.Throws<InvalidOperationException>(() => shell!.UseTitleBar());
         Assert.Throws<InvalidOperationException>(() => profile!.InitProfilePage<TestPage>());
         Assert.Throws<InvalidOperationException>(() => titleBar!.InitApplicationTitle());
         Assert.Throws<InvalidOperationException>(() => navigation!.InitInitiallyOpen());
         Assert.Throws<InvalidOperationException>(() =>
-            navigationGroup!.InitNavigableItem("Late item", null, null)
+            navigationGroup!.AddNavigableItem("Late item", null, null)
         );
         Assert.Throws<InvalidOperationException>(() =>
             customHandler!.InitRegionContent(
@@ -274,7 +400,7 @@ public sealed class DefaultFlourishBuilderTests
 
         var data = flourish.GetRequiredService<FlourishDataOptions>();
         var configuration = flourish.GetRequiredService<IConfiguration>();
-        var settings = flourish.GetRequiredService<IAppSettingsStore>();
+        var settings = flourish.GetRequiredService<IFlourishSettingsStore>();
         var catalog = flourish.GetRequiredService<ProjectCatalogStore>();
 
         Assert.Equal("zh-CN", data.Locale);
@@ -429,6 +555,7 @@ public sealed class DefaultFlourishBuilderTests
         Assert.Equal(baseAppSettings.ReloadDelay, replacement.ReloadDelay);
         Assert.False(replacement.ReloadOnChange);
         Assert.True(replacement.WatchForChanges);
+        Assert.False(replacement.LoadOnlyFlourishSection);
         Assert.Same(environmentAppSettings, configuration.Sources[1]);
         Assert.Same(higherPrioritySource, configuration.Sources[2]);
     }
@@ -459,12 +586,52 @@ public sealed class DefaultFlourishBuilderTests
         );
 
         Assert.Equal(4, configuration.Sources.Count);
-        Assert.IsType<FlourishAppSettingsConfigurationSource>(
+        var flourishSource = Assert.IsType<FlourishAppSettingsConfigurationSource>(
             configuration.Sources[0]
         );
+        Assert.True(flourishSource.LoadOnlyFlourishSection);
         Assert.Same(baseAppSettings, configuration.Sources[1]);
         Assert.Same(environmentAppSettings, configuration.Sources[2]);
         Assert.Same(higherPrioritySource, configuration.Sources[3]);
+    }
+
+    [Fact]
+    public void InsertApplicationConfigurationSources_InsertsBeforeEnvironmentAndCommandLine()
+    {
+        var baseAppSettings = new JsonConfigurationSource
+        {
+            Path = "appsettings.json",
+            Optional = true,
+        };
+        var userSecrets = new JsonConfigurationSource
+        {
+            Path = "secrets.json",
+            Optional = true,
+        };
+        var environment = new EnvironmentVariablesConfigurationSource();
+        var commandLine = new CommandLineConfigurationSource { Args = [] };
+        var first = new MemoryConfigurationSource();
+        var second = new MemoryConfigurationSource();
+        var configuration = new ConfigurationBuilder();
+        configuration.Sources.Add(baseAppSettings);
+        configuration.Sources.Add(userSecrets);
+        configuration.Sources.Add(environment);
+        configuration.Sources.Add(commandLine);
+
+        DefaultFlourishBuilder.InsertApplicationConfigurationSources(
+            configuration,
+            [first, second]
+        );
+
+        Assert.Collection(
+            configuration.Sources,
+            source => Assert.Same(baseAppSettings, source),
+            source => Assert.Same(userSecrets, source),
+            source => Assert.Same(first, source),
+            source => Assert.Same(second, source),
+            source => Assert.Same(environment, source),
+            source => Assert.Same(commandLine, source)
+        );
     }
 
     private static Assembly CreateAssemblyWithUserSecretsId()

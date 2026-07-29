@@ -21,14 +21,14 @@ public sealed class ProjectServiceTests
     }
 
     [Fact]
-    public void AddProject_NormalizesMetadataPreservesOrderAndPublishesChanges()
+    public void AppendProject_NormalizesMetadataPreservesOrderAndPublishesChanges()
     {
         IProjectService sut = new ProjectService(new FlourishShellOptions());
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
-        sut.AddProject(new FlourishProject(" first ", " First ", @" C:\Work\First "));
-        sut.AddProject(
+        sut.AppendProject(new FlourishProject(" first ", " First ", @" C:\Work\First "));
+        sut.AppendProject(
             new FlourishProject("second", "Second", "   "),
             activate: false
         );
@@ -68,15 +68,15 @@ public sealed class ProjectServiceTests
     }
 
     [Fact]
-    public void AddProject_UsesCaseSensitiveIdsAndRejectsExactDuplicates()
+    public void AppendProject_UsesCaseSensitiveIdsAndRejectsExactDuplicates()
     {
         IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AddProject(new FlourishProject("project", "Lowercase"));
+        sut.AppendProject(new FlourishProject("project", "Lowercase"));
 
         Assert.Throws<InvalidOperationException>(() =>
-            sut.AddProject(new FlourishProject("project", "Duplicate"))
+            sut.AppendProject(new FlourishProject("project", "Duplicate"))
         );
-        sut.AddProject(
+        sut.AppendProject(
             new FlourishProject("PROJECT", "Uppercase"),
             activate: false
         );
@@ -133,7 +133,7 @@ public sealed class ProjectServiceTests
     public void SetProjectMetadata_UpdatesActiveProjectAndSuppressesEquivalentValues()
     {
         IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AddProject(new FlourishProject("alpha", "Alpha", @"C:\Work\Alpha"));
+        sut.AppendProject(new FlourishProject("alpha", "Alpha", @"C:\Work\Alpha"));
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -156,8 +156,8 @@ public sealed class ProjectServiceTests
     public void SetActiveProject_SwitchesClearsAndSuppressesNoOps()
     {
         IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AddProject(new FlourishProject("first", "First"));
-        sut.AddProject(new FlourishProject("second", "Second"), activate: false);
+        sut.AppendProject(new FlourishProject("first", "First"));
+        sut.AppendProject(new FlourishProject("second", "Second"), activate: false);
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -178,8 +178,8 @@ public sealed class ProjectServiceTests
     public void RemoveProject_UpdatesLookupAndClearsTheActiveProject()
     {
         IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AddProject(new FlourishProject("first", "First"));
-        sut.AddProject(new FlourishProject("second", "Second"), activate: false);
+        sut.AppendProject(new FlourishProject("first", "First"));
+        sut.AppendProject(new FlourishProject("second", "Second"), activate: false);
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -236,8 +236,8 @@ public sealed class ProjectServiceTests
     public void TitleBarRequests_RaiseIntentEventsWithoutMutatingProjectState()
     {
         var sut = new ProjectService(new FlourishShellOptions());
-        sut.AddProject(new FlourishProject("first", "First"));
-        sut.AddProject(new FlourishProject("second", "Second"), activate: false);
+        sut.AppendProject(new FlourishProject("first", "First"));
+        sut.AppendProject(new FlourishProject("second", "Second"), activate: false);
         var changedCount = 0;
         FlourishNewProjectRequestedEventArgs? newProjectRequest = null;
         FlourishProjectActivationRequestedEventArgs? activationRequest = null;
@@ -269,13 +269,13 @@ public sealed class ProjectServiceTests
 
         Assert.Equal(
             "project",
-            Assert.Throws<ArgumentNullException>(() => sut.AddProject(null!)).ParamName
+            Assert.Throws<ArgumentNullException>(() => sut.AppendProject(null!)).ParamName
         );
         Assert.Equal(
             "Id",
             Assert
                 .Throws<ArgumentException>(() =>
-                    sut.AddProject(new FlourishProject(" ", "Name"))
+                    sut.AppendProject(new FlourishProject(" ", "Name"))
                 )
                 .ParamName
         );
@@ -283,7 +283,7 @@ public sealed class ProjectServiceTests
             "Name",
             Assert
                 .Throws<ArgumentException>(() =>
-                    sut.AddProject(new FlourishProject("id", " "))
+                    sut.AppendProject(new FlourishProject("id", " "))
                 )
                 .ParamName
         );
@@ -350,7 +350,7 @@ public sealed class ProjectServiceTests
         File.WriteAllText(firstPath, string.Empty);
         File.WriteAllText(secondPath, string.Empty);
         first.SetProjectMetadata(unnamed.Id, "First", firstPath);
-        first.AddProject(
+        first.AppendProject(
             new FlourishProject("second", "Second", secondPath),
             activate: false
         );
@@ -384,11 +384,11 @@ public sealed class ProjectServiceTests
         var first = new ProjectService(options, store);
         var initial = Assert.Single(first.Current.Projects);
         first.SetProjectMetadata(initial.Id, "Existing", existingPath);
-        first.AddProject(
+        first.AppendProject(
             new FlourishProject("missing", "Missing", missingPath),
             activate: false
         );
-        first.AddProject(new FlourishProject("unmapped", "Unmapped"));
+        first.AppendProject(new FlourishProject("unmapped", "Unmapped"));
 
         var reloaded = new ProjectService(options, store);
 
@@ -426,33 +426,33 @@ public sealed class ProjectServiceTests
         Assert.Equal(existing.Id, repaired.ActiveProjectId);
     }
 
-    private sealed class TestAppSettingsStore(string filePath) : IAppSettingsStore
+    private sealed class TestAppSettingsStore(string filePath) : IFlourishSettingsStore
     {
         public string FilePath { get; } = filePath;
 
-        public ValueTask<AppSettingsUpdateResult> UpdateAsync(
-            Action<IAppSettingsEditor> update,
+        public ValueTask<FlourishSettingsUpdateResult> UpdateAsync(
+            Action<IFlourishSettingsEditor> update,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public ValueTask<AppSettingsUpdateResult> SetAsync<T>(
+        public ValueTask<FlourishSettingsUpdateResult> SetAsync<T>(
             string path,
             T value,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public ValueTask<AppSettingsUpdateResult> RemoveAsync(
+        public ValueTask<FlourishSettingsUpdateResult> RemoveAsync(
             string path,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public ValueTask<AppSettingsUpdateResult> MergeAsync<T>(
+        public ValueTask<FlourishSettingsUpdateResult> MergeAsync<T>(
             string path,
             T value,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public ValueTask<AppSettingsUpdateResult> AppendAsync<T>(
+        public ValueTask<FlourishSettingsUpdateResult> AppendAsync<T>(
             string path,
             T value,
             CancellationToken cancellationToken = default

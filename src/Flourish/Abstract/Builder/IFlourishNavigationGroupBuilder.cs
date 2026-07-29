@@ -7,10 +7,10 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// navigation.InitGroup("Navigation", groupId: 0, group =>
+/// navigation.AddGroup("Navigation", groupId: 0, group =>
 /// {
-///     group.InitNavigableViewItem<HomePage>(isInitial: true);
-///     group.InitNavigableItem("Refresh", "\uE72C", "navigation.refresh");
+///     group.AddNavigableViewItem<HomePage>(isInitial: true);
+///     group.AddNavigableItem("Refresh", "\uE72C", "navigation.refresh");
 /// });
 /// ]]></code>
 /// </example>
@@ -30,11 +30,11 @@ public interface IFlourishNavigationGroupBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// group.InitNavigableViewItem<HomePage>(isInitial: true);
-    /// group.InitNavigableViewItem<ReportsPage>();
+    /// group.AddNavigableViewItem<HomePage>(isInitial: true);
+    /// group.AddNavigableViewItem<ReportsPage>();
     /// ]]></code>
     /// </example>
-    IFlourishNavigationGroupBuilder InitNavigableViewItem<TPage>(
+    IFlourishNavigationGroupBuilder AddNavigableViewItem<TPage>(
         bool isInitial = false,
         int parentId = 0,
         int childId = 0
@@ -57,11 +57,11 @@ public interface IFlourishNavigationGroupBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// group.InitNavigableItem("Refresh", "\uE72C", "reports.refresh");
-    /// group.InitNavigableItem("Export", "\uE898", "reports.export");
+    /// group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    /// group.AddNavigableItem("Export", "\uE898", "reports.export");
     /// ]]></code>
     /// </example>
-    IFlourishNavigationGroupBuilder InitNavigableItem(
+    IFlourishNavigationGroupBuilder AddNavigableItem(
         string displayName,
         string? iconGlyph,
         string? commandKey,

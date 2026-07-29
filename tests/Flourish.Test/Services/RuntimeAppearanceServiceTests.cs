@@ -360,7 +360,7 @@ public sealed class RuntimeAppearanceServiceTests
             {
                 updateEntered.Set();
                 releaseUpdate.Wait();
-                editor.Set("Test:Blocker", "completed");
+                editor.Set("Flourish:Test:Blocker", "completed");
             })
             .AsTask();
         try
@@ -408,7 +408,7 @@ public sealed class RuntimeAppearanceServiceTests
         IThemeService sut = new ThemeService(new FlourishShellOptions(), preferences);
         sut.ThemeChanged += (_, _) =>
             preferences
-                .SetAsync("Feature:FromThemeChanged", true)
+                .SetAsync("Flourish:Feature:FromThemeChanged", true)
                 .AsTask()
                 .WaitAsync(TimeSpan.FromSeconds(1))
                 .GetAwaiter()
@@ -421,7 +421,7 @@ public sealed class RuntimeAppearanceServiceTests
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.Equal("True", configuration["Feature:FromThemeChanged"]);
+        Assert.Equal("True", configuration["Flourish:Feature:FromThemeChanged"]);
         Assert.Equal(FlourishTheme.Dark, preferences.ReadTheme());
     }
 

@@ -35,7 +35,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 {
     public void Register()
     {
-        projects.AddProject(
+        projects.AppendProject(
             new FlourishProject(
                 "reports",
                 "Reports",
@@ -62,7 +62,7 @@ When no persisted catalog entries exist, Flourish creates and activates one proc
 
 | Operation | Behavior |
 | --- | --- |
-| `AddProject(project, activate)` | Adds unique metadata and optionally makes it active. |
+| `AppendProject(project, activate)` | Appends unique metadata and optionally makes it active. |
 | `UpsertProject(project, activate)` | Adds or replaces metadata by ID. |
 | `SetProjectMetadata(id, name, storagePath)` | Changes the name and optional path of an existing project. |
 | `SetActiveProject(id)` | Changes only the active Shell identity; pass `null` to clear it. |

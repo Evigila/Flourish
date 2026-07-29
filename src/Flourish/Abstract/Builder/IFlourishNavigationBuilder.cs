@@ -12,10 +12,10 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 ///     navigation.InitDirection()
 ///         .InitInitiallyOpen()
 ///         .InitPanelWidth(openWidth: 260, closedWidth: 64)
-///         .InitGroup("Navigation", groupId: 0, group =>
+///         .AddGroup("Navigation", groupId: 0, group =>
 ///     {
-///         group.InitNavigableViewItem<HomePage>(isInitial: true);
-///         group.InitNavigableItem("Refresh", "\uE72C", "navigation.refresh");
+///         group.AddNavigableViewItem<HomePage>(isInitial: true);
+///         group.AddNavigableItem("Refresh", "\uE72C", "navigation.refresh");
 ///     });
 /// });
 /// ]]></code>
@@ -90,19 +90,19 @@ public interface IFlourishNavigationBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// navigation.InitGroup("Navigation", groupId: 0, group =>
+    /// navigation.AddGroup("Navigation", groupId: 0, group =>
     /// {
-    ///     group.InitNavigableViewItem<HomePage>(isInitial: true);
-    ///     group.InitNavigableViewItem<ReportsPage>();
+    ///     group.AddNavigableViewItem<HomePage>(isInitial: true);
+    ///     group.AddNavigableViewItem<ReportsPage>();
     /// });
     ///
-    /// navigation.InitGroup("Tools", groupId: 1, group =>
+    /// navigation.AddGroup("Tools", groupId: 1, group =>
     /// {
-    ///     group.InitNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    ///     group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
     /// });
     /// ]]></code>
     /// </example>
-    IFlourishNavigationBuilder InitGroup(
+    IFlourishNavigationBuilder AddGroup(
         string? displayName = null,
         int groupId = 0,
         Action<IFlourishNavigationGroupBuilder>? configureGroup = null
@@ -122,10 +122,10 @@ public interface IFlourishNavigationBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// navigation.InitFixedNavigableViewItem<SettingsPage>();
+    /// navigation.AddFixedNavigableViewItem<SettingsPage>();
     /// ]]></code>
     /// </example>
-    IFlourishNavigationBuilder InitFixedNavigableViewItem<TPage>(
+    IFlourishNavigationBuilder AddFixedNavigableViewItem<TPage>(
         bool isInitial = false,
         int parentId = 0,
         int childId = 0
@@ -148,10 +148,10 @@ public interface IFlourishNavigationBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// navigation.InitFixedNavigableItem("Help", "\uE946", "help.open");
+    /// navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
     /// ]]></code>
     /// </example>
-    IFlourishNavigationBuilder InitFixedNavigableItem(
+    IFlourishNavigationBuilder AddFixedNavigableItem(
         string displayName,
         string? iconGlyph,
         string? commandKey,

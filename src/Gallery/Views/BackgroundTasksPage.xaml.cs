@@ -61,7 +61,7 @@ public partial class BackgroundTasksPage : Page
         try
         {
             var sequence = Interlocked.Increment(ref taskSequence);
-            var handle = backgroundTasks.AddTask(
+            var handle = backgroundTasks.QueueTask(
                 new FlourishBackgroundTaskMetadata(
                     $"Result task {sequence}",
                     "Calculates a value and returns it through the typed handle.",
@@ -157,7 +157,7 @@ public partial class BackgroundTasksPage : Page
     private string AddProgressTask(string name, int delayMilliseconds)
     {
         var sequence = Interlocked.Increment(ref taskSequence);
-        var handle = backgroundTasks.AddTask(
+        var handle = backgroundTasks.QueueTask(
             new FlourishBackgroundTaskMetadata(
                 $"{name} {sequence}",
                 "Reports progress and observes cooperative cancellation.",

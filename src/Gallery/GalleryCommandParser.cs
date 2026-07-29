@@ -19,7 +19,7 @@ internal sealed class GalleryCommandParser(
         commands.Register(
             "demo.background",
             () =>
-                backgroundTasks.AddTask(
+                backgroundTasks.QueueTask(
                     new FlourishBackgroundTaskMetadata(
                         "Gallery background task",
                         "A cancellable ten-second task that reports progress.",

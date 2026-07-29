@@ -26,7 +26,7 @@ public interface IBackgroundTaskService
     /// <param name="metadata">The metadata displayed while the task is active.</param>
     /// <param name="task">The asynchronous task delegate.</param>
     /// <returns>A handle used to cancel the task and await its captured outcome.</returns>
-    FlourishBackgroundTaskHandle AddTask(
+    FlourishBackgroundTaskHandle QueueTask(
         FlourishBackgroundTaskMetadata metadata,
         Func<FlourishBackgroundTaskContext, ValueTask> task
     );
@@ -38,7 +38,7 @@ public interface IBackgroundTaskService
     /// <param name="metadata">The metadata displayed while the task is active.</param>
     /// <param name="task">The asynchronous task delegate.</param>
     /// <returns>A handle used to cancel the task and await its captured outcome and value.</returns>
-    FlourishBackgroundTaskHandle<TResult> AddTask<TResult>(
+    FlourishBackgroundTaskHandle<TResult> QueueTask<TResult>(
         FlourishBackgroundTaskMetadata metadata,
         Func<FlourishBackgroundTaskContext, ValueTask<TResult>> task
     );

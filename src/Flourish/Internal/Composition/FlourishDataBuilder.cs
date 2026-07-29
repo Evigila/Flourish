@@ -42,13 +42,18 @@ internal sealed class FlourishDataBuilder(FlourishDataOptions options)
         return this;
     }
 
-    private static string ResolveFilePath(string path, string parameterName)
+    internal static string ResolveFilePath(string path, string parameterName)
     {
         var value = ValidateNotBlank(path, parameterName).Trim();
         var fullPath = Path.GetFullPath(value, AppContext.BaseDirectory);
         if (string.IsNullOrWhiteSpace(Path.GetFileName(fullPath)))
         {
             throw new ArgumentException("A file path must include a file name.", parameterName);
+        }
+
+        if (Directory.Exists(fullPath))
+        {
+            throw new ArgumentException("A file path cannot identify a directory.", parameterName);
         }
 
         if (!string.Equals(Path.GetExtension(fullPath), ".json", StringComparison.OrdinalIgnoreCase))

@@ -66,8 +66,8 @@ public partial class App : Application
             .ConfigTitleBar(titleBar =>
                 titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
             .ConfigNavigation(navigation =>
-                navigation.InitGroup(null, groupId: 0, group =>
-                    group.InitNavigableViewItem<HomePage>(isInitial: true)))
+                navigation.AddGroup(null, groupId: 0, group =>
+                    group.AddNavigableViewItem<HomePage>(isInitial: true)))
             .Build();
 
         flourish.Start();
@@ -107,8 +107,8 @@ return FlourishBuilder
     .ConfigTitleBar(titleBar =>
         titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
     .ConfigNavigation(navigation =>
-        navigation.InitGroup(null, groupId: 0, group =>
-            group.InitNavigableViewItem<HomePage>(isInitial: true)))
+        navigation.AddGroup(null, groupId: 0, group =>
+            group.AddNavigableViewItem<HomePage>(isInitial: true)))
     .Run<App>();
 ```
 

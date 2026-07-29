@@ -64,7 +64,7 @@ internal sealed class DefaultProjectBehavior(
                     GetProjectName(storagePath),
                     storagePath
                 );
-                projectService.AddProject(project);
+                projectService.AppendProject(project);
                 return true;
             }
             catch

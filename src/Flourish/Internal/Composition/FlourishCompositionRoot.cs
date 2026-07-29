@@ -612,7 +612,7 @@ internal sealed class FlourishCompositionRoot(
             provider.GetRequiredService<ContentLayoutService>()
         );
         services.AddSingleton<AppPreferenceService>();
-        services.AddSingleton<IAppSettingsStore>(provider =>
+        services.AddSingleton<IFlourishSettingsStore>(provider =>
             provider.GetRequiredService<AppPreferenceService>()
         );
         services.AddSingleton<FlourishPreferencePersistenceService>();

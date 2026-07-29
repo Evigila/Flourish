@@ -102,14 +102,14 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
 
     public event EventHandler<FlourishBackgroundTasksChangedEventArgs>? TasksChanged;
 
-    public FlourishBackgroundTaskHandle AddTask(
+    public FlourishBackgroundTaskHandle QueueTask(
         FlourishBackgroundTaskMetadata metadata,
         Func<FlourishBackgroundTaskContext, ValueTask> task
     )
     {
         ArgumentNullException.ThrowIfNull(task);
 
-        var operation = AddTaskCore(metadata, ExecuteAsync);
+        var operation = QueueTaskCore(metadata, ExecuteAsync);
         return new FlourishBackgroundTaskHandle(
             operation.Id,
             ConvertCompletionAsync(operation.Completion.Task),
@@ -124,14 +124,14 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
         }
     }
 
-    public FlourishBackgroundTaskHandle<TResult> AddTask<TResult>(
+    public FlourishBackgroundTaskHandle<TResult> QueueTask<TResult>(
         FlourishBackgroundTaskMetadata metadata,
         Func<FlourishBackgroundTaskContext, ValueTask<TResult>> task
     )
     {
         ArgumentNullException.ThrowIfNull(task);
 
-        var operation = AddTaskCore(metadata, ExecuteAsync);
+        var operation = QueueTaskCore(metadata, ExecuteAsync);
         return new FlourishBackgroundTaskHandle<TResult>(
             operation.Id,
             ConvertCompletionAsync<TResult>(operation.Completion.Task),
@@ -261,7 +261,7 @@ internal sealed class FlourishBackgroundTaskService : IBackgroundTaskService, IH
             : currentStopTask;
     }
 
-    private BackgroundOperation AddTaskCore(
+    private BackgroundOperation QueueTaskCore(
         FlourishBackgroundTaskMetadata metadata,
         Func<FlourishBackgroundTaskContext, ValueTask<object?>> task
     )

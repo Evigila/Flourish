@@ -81,12 +81,12 @@ public sealed class NavigationRuntimeSurfaceTests
         {
             editor.RemoveItem("Home");
             editor.RemoveGroup("group:0");
-            editor.AddGroup("runtime", "Runtime APIs");
-            editor.AddItem(
+            editor.AppendGroup("runtime", "Runtime APIs");
+            editor.AppendItem(
                 "runtime",
                 FlourishNavigationMenuItem.Page("home-demo", "Home", "Home", "H")
             );
-            editor.AddItem(
+            editor.AppendItem(
                 "runtime",
                 FlourishNavigationMenuItem.Command(
                     "runtime-command",
@@ -124,12 +124,54 @@ public sealed class NavigationRuntimeSurfaceTests
         sut.Update(_ => { });
         sut.Update(editor =>
         {
-            editor.AddGroup("temporary");
+            editor.AppendGroup("temporary");
             editor.RemoveGroup("temporary");
         });
 
         Assert.Equal(0, changes);
         Assert.Equal(0, sut.Current.Version);
+    }
+
+    [Fact]
+    public void NavigationMenu_AppendAndInsertHaveDistinctOrderingSemantics()
+    {
+        var options = new FlourishShellOptions();
+        var sut = new NavigationMenuService(
+            options,
+            new NavigationRouteRegistry(options)
+        );
+
+        sut.Update(editor =>
+        {
+            editor.AppendGroup("last");
+            editor.InsertGroup("first", index: 0);
+            editor.AppendItem(
+                "first",
+                FlourishNavigationMenuItem.Command("last-item", "Last")
+            );
+            editor.InsertItem(
+                "first",
+                FlourishNavigationMenuItem.Command("first-item", "First"),
+                index: 0
+            );
+            editor.AppendFixedItem(
+                FlourishNavigationMenuItem.Command("last-fixed", "Last fixed")
+            );
+            editor.InsertFixedItem(
+                FlourishNavigationMenuItem.Command("first-fixed", "First fixed"),
+                index: 0
+            );
+        });
+
+        Assert.Equal(["first", "last"], sut.Current.Groups.Select(group => group.Id));
+        Assert.Equal(
+            ["first-item", "last-item"],
+            sut.Current.Groups[0].Items.Select(item => item.Id)
+        );
+        Assert.Equal(
+            ["first-fixed", "last-fixed"],
+            sut.Current.FixedItems.Select(item => item.Id)
+        );
     }
 
     [Fact]
@@ -142,8 +184,8 @@ public sealed class NavigationRuntimeSurfaceTests
         Assert.Throws<InvalidOperationException>(() =>
             sut.Update(editor =>
             {
-                editor.AddGroup("runtime");
-                editor.AddItem(
+                editor.AppendGroup("runtime");
+                editor.AppendItem(
                     "runtime",
                     FlourishNavigationMenuItem.Page(
                         "missing",

@@ -5,7 +5,7 @@ description: Run bounded asynchronous work with metadata, cancellation, progress
 
 # Background tasks
 
-Flourish registers `IBackgroundTaskService` as a singleton runtime service and starts it with the Generic Host. Resolve it through dependency injection, submit work with `AddTask`, and keep the returned handle when the caller needs to cancel the work or observe its final outcome.
+Flourish registers `IBackgroundTaskService` as a singleton runtime service and starts it with the Generic Host. Resolve it through dependency injection, submit work with `QueueTask`, and keep the returned handle when the caller needs to cancel the work or observe its final outcome.
 
 ```csharp
 public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
@@ -17,7 +17,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
             description: "Writes the current report to disk.",
             iconGlyph: "\uE74E");
 
-        return backgroundTasks.AddTask(metadata, async context =>
+        return backgroundTasks.QueueTask(metadata, async context =>
         {
             for (var step = 1; step <= 10; step++)
             {
@@ -29,7 +29,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 }
 ```
 
-`AddTask` returns immediately, and its delegate runs outside the WPF UI thread. Do not access WPF controls from the delegate; marshal UI work to the appropriate `Dispatcher` when necessary.
+`QueueTask` returns immediately, and its delegate runs outside the WPF UI thread. Do not access WPF controls from the delegate; marshal UI work to the appropriate `Dispatcher` when necessary.
 
 ## Metadata and status-bar integration
 
@@ -93,7 +93,7 @@ The generic overload also carries the successful return value:
 ```csharp
 public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
 {
-    var handle = backgroundTasks.AddTask<int>(
+    var handle = backgroundTasks.QueueTask<int>(
         new FlourishBackgroundTaskMetadata(
             "Count files",
             "Counts files in the selected workspace.",

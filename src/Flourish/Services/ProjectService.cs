@@ -49,7 +49,7 @@ internal sealed class ProjectService : IProjectService
         }
     }
 
-    public void AddProject(FlourishProject project, bool activate = true)
+    public void AppendProject(FlourishProject project, bool activate = true)
     {
         project = NormalizeProject(project);
         FlourishProjectSnapshot snapshot;

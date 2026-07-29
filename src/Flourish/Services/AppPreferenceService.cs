@@ -16,7 +16,7 @@ internal sealed class AppPreferenceService(
     IConfiguration configuration,
     FlourishDataOptions dataOptions,
     ILogger<AppPreferenceService> logger
-) : IAppSettingsStore, IHostedService, IDisposable
+) : IFlourishSettingsStore, IHostedService, IDisposable
 {
     private const string AppSettingsFileName = "appsettings.Flourish.json";
     private const string ThemeConfigurationKey = "Flourish:Preferences:Theme";
@@ -111,8 +111,8 @@ internal sealed class AppPreferenceService(
         await completion.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public ValueTask<AppSettingsUpdateResult> UpdateAsync(
-        Action<IAppSettingsEditor> update,
+    public ValueTask<FlourishSettingsUpdateResult> UpdateAsync(
+        Action<IFlourishSettingsEditor> update,
         CancellationToken cancellationToken = default
     )
     {
@@ -125,7 +125,7 @@ internal sealed class AppPreferenceService(
             );
         }
 
-        var completion = new TaskCompletionSource<AppSettingsUpdateResult>(
+        var completion = new TaskCompletionSource<FlourishSettingsUpdateResult>(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         lock (lifecycleGate)
@@ -134,10 +134,10 @@ internal sealed class AppPreferenceService(
             EnqueueCore(new UpdatePreferenceWorkItem(update, cancellationToken, completion));
         }
 
-        return new ValueTask<AppSettingsUpdateResult>(completion.Task);
+        return new ValueTask<FlourishSettingsUpdateResult>(completion.Task);
     }
 
-    public ValueTask<AppSettingsUpdateResult> SetAsync<T>(
+    public ValueTask<FlourishSettingsUpdateResult> SetAsync<T>(
         string path,
         T value,
         CancellationToken cancellationToken = default
@@ -146,7 +146,7 @@ internal sealed class AppPreferenceService(
         return UpdateAsync(editor => editor.Set(path, value), cancellationToken);
     }
 
-    public ValueTask<AppSettingsUpdateResult> RemoveAsync(
+    public ValueTask<FlourishSettingsUpdateResult> RemoveAsync(
         string path,
         CancellationToken cancellationToken = default
     )
@@ -154,7 +154,7 @@ internal sealed class AppPreferenceService(
         return UpdateAsync(editor => editor.Remove(path), cancellationToken);
     }
 
-    public ValueTask<AppSettingsUpdateResult> MergeAsync<T>(
+    public ValueTask<FlourishSettingsUpdateResult> MergeAsync<T>(
         string path,
         T value,
         CancellationToken cancellationToken = default
@@ -163,7 +163,7 @@ internal sealed class AppPreferenceService(
         return UpdateAsync(editor => editor.Merge(path, value), cancellationToken);
     }
 
-    public ValueTask<AppSettingsUpdateResult> AppendAsync<T>(
+    public ValueTask<FlourishSettingsUpdateResult> AppendAsync<T>(
         string path,
         T value,
         CancellationToken cancellationToken = default
@@ -370,8 +370,8 @@ internal sealed class AppPreferenceService(
         }
     }
 
-    private async ValueTask<AppSettingsUpdateResult> ExecuteUpdateAsync(
-        Action<IAppSettingsEditor> update,
+    private async ValueTask<FlourishSettingsUpdateResult> ExecuteUpdateAsync(
+        Action<IFlourishSettingsEditor> update,
         CancellationToken cancellationToken
     )
     {
@@ -393,14 +393,14 @@ internal sealed class AppPreferenceService(
 
             if (!editor.IsChanged)
             {
-                return new AppSettingsUpdateResult(FilePath, false, false);
+                return new FlourishSettingsUpdateResult(FilePath, false, false);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
             var content = await WriteAppSettingsAsync(root, cancellationToken)
                 .ConfigureAwait(false);
             var reloaded = ReloadConfiguration(content);
-            return new AppSettingsUpdateResult(FilePath, true, reloaded);
+            return new FlourishSettingsUpdateResult(FilePath, true, reloaded);
         }
         finally
         {
@@ -544,9 +544,9 @@ internal sealed class AppPreferenceService(
     private abstract record PreferenceWorkItem;
 
     private sealed record UpdatePreferenceWorkItem(
-        Action<IAppSettingsEditor> Update,
+        Action<IFlourishSettingsEditor> Update,
         CancellationToken CancellationToken,
-        TaskCompletionSource<AppSettingsUpdateResult> Completion
+        TaskCompletionSource<FlourishSettingsUpdateResult> Completion
     ) : PreferenceWorkItem;
 
     private sealed record ThemePreferenceWorkItem(FlourishTheme Theme, Task<bool> RuntimeApplied)
@@ -555,7 +555,7 @@ internal sealed class AppPreferenceService(
     private sealed record FlushThemePreferenceWorkItem(TaskCompletionSource<bool> Completion)
         : PreferenceWorkItem;
 
-    private sealed class AppSettingsEditor(JsonObject root) : IAppSettingsEditor
+    private sealed class AppSettingsEditor(JsonObject root) : IFlourishSettingsEditor
     {
         private bool isActive = true;
 
@@ -682,6 +682,19 @@ internal sealed class AppPreferenceService(
                 );
             }
 
+            if (
+                !FlourishConfigurationPath.IsOwnedDescendant(
+                    string.Join(':', segments)
+                )
+            )
+            {
+                throw new ArgumentException(
+                    "An appsettings path must start with 'Flourish:' and identify a child value.",
+                    nameof(path)
+                );
+            }
+
+            segments[0] = FlourishConfigurationPath.Root;
             return segments;
         }
 

@@ -150,7 +150,7 @@ public sealed class FlourishCompositionContractTests
         );
         Assert.Same(
             flourish.GetRequiredService<AppPreferenceService>(),
-            flourish.GetRequiredService<IAppSettingsStore>()
+            flourish.GetRequiredService<IFlourishSettingsStore>()
         );
         Assert.Same(
             flourish.GetRequiredService<ThemeService>(),
@@ -280,10 +280,10 @@ public sealed class FlourishCompositionContractTests
             })
             .ConfigNavigation(navigation =>
             {
-                navigation.InitGroup(null, groupId: 0, group =>
-                    group.InitNavigableViewItem<HomePage>(isInitial: true)
+                navigation.AddGroup(null, groupId: 0, group =>
+                    group.AddNavigableViewItem<HomePage>(isInitial: true)
                 );
-                navigation.InitFixedNavigableViewItem<SettingsPage>(isInitial: true);
+                navigation.AddFixedNavigableViewItem<SettingsPage>(isInitial: true);
             });
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
@@ -302,11 +302,11 @@ public sealed class FlourishCompositionContractTests
             })
             .ConfigNavigation(navigation =>
             {
-                navigation.InitGroup("Second", groupId: 2, group =>
-                    group.InitNavigableViewItem<SettingsPage>()
+                navigation.AddGroup("Second", groupId: 2, group =>
+                    group.AddNavigableViewItem<SettingsPage>()
                 );
-                navigation.InitGroup("First", groupId: 1, group =>
-                    group.InitNavigableViewItem<HomePage>()
+                navigation.AddGroup("First", groupId: 1, group =>
+                    group.AddNavigableViewItem<HomePage>()
                 );
             });
 

@@ -25,8 +25,8 @@ builder.ConfigShell(shell =>
 });
 
 builder.ConfigNavigation(navigation =>
-    navigation.InitGroup(null, groupId: 0, group =>
-        group.InitNavigableViewItem<HomePage>(isInitial: true)));
+    navigation.AddGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 ## 功能开关与共享选项
@@ -103,8 +103,8 @@ builder.ConfigShell(shell =>
 });
 
 builder.ConfigNavigation(navigation =>
-    navigation.InitGroup(null, groupId: 0, group =>
-        group.InitNavigableViewItem<HomePage>(isInitial: true)));
+    navigation.AddGroup(null, groupId: 0, group =>
+        group.AddNavigableViewItem<HomePage>(isInitial: true)));
 ```
 
 向 `UseTips` 传入 `false` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。`UseSmoothScroll(false)` 会让 Flourish 内置视口使用即时的原生鼠标滚轮行为。共用配置需要恢复主题定义的行为时，可向 `UseMaterialEffect`、`UseThemeColors` 或 `UseCornerRadius` 传入 `false`。省略 `InitGlobalFont` 时保留其默认值。

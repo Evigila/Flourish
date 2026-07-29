@@ -36,7 +36,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var releaseFirst = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        var first = service.AddTask(
+        var first = service.QueueTask(
             new FlourishBackgroundTaskMetadata("First burst"),
             async _ =>
             {
@@ -56,7 +56,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var secondStarted = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        var second = service.AddTask(
+        var second = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Second burst"),
             _ =>
             {
@@ -81,7 +81,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var started = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Stop worker"),
             async context =>
             {
@@ -105,7 +105,7 @@ public sealed class FlourishBackgroundTaskServiceTests
     }
 
     [Fact]
-    public async Task AddTask_RunsAtMostThreeTasksAndLeavesFourthQueued()
+    public async Task QueueTask_RunsAtMostThreeTasksAndLeavesFourthQueued()
     {
         var service = new FlourishBackgroundTaskService();
         await service.StartAsync(CancellationToken.None);
@@ -119,7 +119,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var handles = Enumerable
             .Range(1, 4)
             .Select(index =>
-                service.AddTask(
+                service.QueueTask(
                     new FlourishBackgroundTaskMetadata($"Task {index}"),
                     async _ =>
                     {
@@ -162,7 +162,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         var secondInvoked = false;
-        var first = service.AddTask(
+        var first = service.QueueTask(
             new FlourishBackgroundTaskMetadata("First"),
             async _ =>
             {
@@ -171,7 +171,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             }
         );
         await firstStarted.Task.WaitAsync(Timeout);
-        var second = service.AddTask(
+        var second = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Second"),
             _ =>
             {
@@ -202,7 +202,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         var finish = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Cancelable"),
             async context =>
             {
@@ -236,7 +236,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var service = new FlourishBackgroundTaskService();
         await service.StartAsync(CancellationToken.None);
         var expected = new InvalidOperationException("Expected failure");
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Fail"),
             _ => ValueTask.FromException(expected)
         );
@@ -257,7 +257,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var service = new FlourishBackgroundTaskService(logger, maxConcurrency: 1);
         await service.StartAsync(CancellationToken.None);
         var expected = new InvalidOperationException("Logged failure");
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Import catalog"),
             _ => ValueTask.FromException(expected)
         );
@@ -279,7 +279,7 @@ public sealed class FlourishBackgroundTaskServiceTests
     {
         var service = new FlourishBackgroundTaskService();
         await service.StartAsync(CancellationToken.None);
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Return value"),
             _ => ValueTask.FromResult(42)
         );
@@ -305,7 +305,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             }
         };
         await service.StartAsync(CancellationToken.None);
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Progress"),
             context =>
             {
@@ -351,7 +351,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             }
         };
         await service.StartAsync(CancellationToken.None);
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Repeated progress"),
             context =>
             {
@@ -420,7 +420,7 @@ public sealed class FlourishBackgroundTaskServiceTests
                 cancellingObserved.TrySetResult();
             }
         };
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Reentrant cancellation"),
             async _ => await finish.Task
         );
@@ -443,7 +443,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
         await service.StartAsync(CancellationToken.None);
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var running = service.AddTask(
+        var running = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Running"),
             async context =>
             {
@@ -456,7 +456,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         );
         await started.Task.WaitAsync(Timeout);
         var queuedInvoked = false;
-        var queued = service.AddTask(
+        var queued = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Queued"),
             _ =>
             {
@@ -472,7 +472,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         Assert.False(queuedInvoked);
         Assert.Empty(service.ActiveTasks);
         Assert.Throws<InvalidOperationException>(() =>
-            service.AddTask(
+            service.QueueTask(
                 new FlourishBackgroundTaskMetadata("Rejected"),
                 _ => ValueTask.CompletedTask
             )
@@ -491,7 +491,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var releaseCallback = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        var handle = service.AddTask(
+        var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Slow cancellation callback"),
             async context =>
             {

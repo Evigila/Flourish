@@ -138,7 +138,8 @@ public interface IFlourishDataBuilder
     IFlourishDataBuilder InitLocaleFile(string path);
 
     /// <summary>
-    /// Selects the JSON file Flourish reads from and writes through <see cref="IAppSettingsStore" />.
+    /// Selects the JSON file that supplies the <c>Flourish</c> configuration section and receives
+    /// updates through <see cref="IFlourishSettingsStore" />.
     /// </summary>
     /// <param name="path">
     /// An absolute path, or a path relative to <see cref="AppContext.BaseDirectory" />.
@@ -147,6 +148,8 @@ public interface IFlourishDataBuilder
     /// <remarks>
     /// The default file is <c>appsettings.Flourish.json</c> in
     /// <see cref="AppContext.BaseDirectory" />.
+    /// Flourish loads and writes only the <c>Flourish</c> top-level section. Other sections are
+    /// preserved unchanged and remain outside the framework-owned configuration source.
     /// When this path differs from the Host's base <c>appsettings.json</c>, the selected file is
     /// added as a lower-priority Flourish configuration source and the Host appsettings sources
     /// remain available to the application.

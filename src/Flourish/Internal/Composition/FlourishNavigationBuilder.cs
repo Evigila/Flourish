@@ -94,7 +94,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder InitGroup(
+    public IFlourishNavigationBuilder AddGroup(
         string? displayName = null,
         int groupId = 0,
         Action<IFlourishNavigationGroupBuilder>? configureGroup = null
@@ -138,7 +138,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder InitFixedNavigableViewItem<TPage>(
+    public IFlourishNavigationBuilder AddFixedNavigableViewItem<TPage>(
         bool isInitial = false,
         int parentId = 0,
         int childId = 0
@@ -158,7 +158,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder InitFixedNavigableItem(
+    public IFlourishNavigationBuilder AddFixedNavigableItem(
         string displayName,
         string? iconGlyph,
         string? commandKey,
@@ -271,7 +271,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         bool isFixed
     ) : FlourishBuilderMutationGuard, IFlourishNavigationGroupBuilder
     {
-        public IFlourishNavigationGroupBuilder InitNavigableViewItem<TPage>(
+        public IFlourishNavigationGroupBuilder AddNavigableViewItem<TPage>(
             bool isInitial = false,
             int parentId = 0,
             int childId = 0
@@ -291,7 +291,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
             return this;
         }
 
-        public IFlourishNavigationGroupBuilder InitNavigableItem(
+        public IFlourishNavigationGroupBuilder AddNavigableItem(
             string displayName,
             string? iconGlyph,
             string? commandKey,

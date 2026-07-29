@@ -42,7 +42,7 @@ public sealed class DefaultProjectBehaviorTests
         var selectedPath = Path.Combine(directory.Path, "Saved draft.txt");
         var dialog = new RecordingSaveFileDialog(selectedPath);
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("draft", "Draft"));
+        projects.AppendProject(new FlourishProject("draft", "Draft"));
         var sut = CreateBehavior(projects, dialog, new Mock<IMessageService>().Object);
 
         var result = await sut.SaveActiveProjectAsync();
@@ -61,7 +61,7 @@ public sealed class DefaultProjectBehaviorTests
         var storagePath = Path.Combine(directory.Path, "Existing.txt");
         await File.WriteAllTextAsync(storagePath, "application-owned content");
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("existing", "Existing", storagePath));
+        projects.AppendProject(new FlourishProject("existing", "Existing", storagePath));
         var dialog = new RecordingSaveFileDialog();
         var sut = CreateBehavior(projects, dialog, new Mock<IMessageService>().Object);
 
@@ -80,7 +80,7 @@ public sealed class DefaultProjectBehaviorTests
         var replacementPath = Path.Combine(directory.Path, "Replacement.txt");
         await File.WriteAllTextAsync(deletedPath, "application-owned content");
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("deleted", "Deleted", deletedPath));
+        projects.AppendProject(new FlourishProject("deleted", "Deleted", deletedPath));
         File.Delete(deletedPath);
         var dialog = new RecordingSaveFileDialog(replacementPath);
         var sut = CreateBehavior(projects, dialog, new Mock<IMessageService>().Object);
@@ -123,7 +123,7 @@ public sealed class DefaultProjectBehaviorTests
     public async Task CreateProjectAsync_WhenCurrentProjectSaveIsCanceled_DoesNotOpenCreateDialog()
     {
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("draft", "Draft"));
+        projects.AppendProject(new FlourishProject("draft", "Draft"));
         var dialog = new RecordingSaveFileDialog();
         IReadOnlyList<FlourishMessageOption>? choices = null;
         var messages = CreateCustomPromptMessageService(
@@ -146,8 +146,8 @@ public sealed class DefaultProjectBehaviorTests
     public async Task ActivateProjectAsync_WhenUnsavedSaveIsCanceled_LeavesActiveProject()
     {
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("first", "First"));
-        projects.AddProject(
+        projects.AppendProject(new FlourishProject("first", "First"));
+        projects.AppendProject(
             new FlourishProject("second", "Second", "second.external"),
             activate: false
         );
@@ -176,8 +176,8 @@ public sealed class DefaultProjectBehaviorTests
     {
         using var directory = new TemporaryDirectory();
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("first", "First"));
-        projects.AddProject(
+        projects.AppendProject(new FlourishProject("first", "First"));
+        projects.AppendProject(
             new FlourishProject("second", "Second", "second.external"),
             activate: false
         );
@@ -205,8 +205,8 @@ public sealed class DefaultProjectBehaviorTests
         var managedPath = Path.Combine(directory.Path, "Managed.txt");
         await File.WriteAllTextAsync(managedPath, "placeholder");
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("first", "First", managedPath));
-        projects.AddProject(
+        projects.AppendProject(new FlourishProject("first", "First", managedPath));
+        projects.AppendProject(
             new FlourishProject("second", "Second", "second.external"),
             activate: false
         );
@@ -234,7 +234,7 @@ public sealed class DefaultProjectBehaviorTests
         var projects = new ProjectService(
             new FlourishShellOptions { UnnamedProjectPlaceholder = "Untitled" }
         );
-        projects.AddProject(new FlourishProject("only", "Only", externalPath));
+        projects.AppendProject(new FlourishProject("only", "Only", externalPath));
         var messages = CreateStandardMessageService(MessageBoxResult.Yes);
         var sut = CreateBehavior(
             projects,
@@ -259,8 +259,8 @@ public sealed class DefaultProjectBehaviorTests
         var sharedPath = Path.Combine(directory.Path, "Shared.txt");
         await File.WriteAllTextAsync(sharedPath, "shared content");
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("first", "First", sharedPath));
-        projects.AddProject(
+        projects.AppendProject(new FlourishProject("first", "First", sharedPath));
+        projects.AppendProject(
             new FlourishProject("second", "Second", sharedPath),
             activate: false
         );
@@ -332,7 +332,7 @@ public sealed class DefaultProjectBehaviorTests
     public async Task CanCloseAsync_WhenUnsavedSaveIsCanceled_ReturnsFalse()
     {
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("draft", "Draft"));
+        projects.AppendProject(new FlourishProject("draft", "Draft"));
         IReadOnlyList<FlourishMessageOption>? choices = null;
         var messages = CreateCustomPromptMessageService(
             "cancel",
@@ -363,7 +363,7 @@ public sealed class DefaultProjectBehaviorTests
     public async Task CanCloseAsync_WhenDontSaveIsSelected_AllowsCloseWithoutPersistingProject()
     {
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("draft", "Draft"));
+        projects.AppendProject(new FlourishProject("draft", "Draft"));
         var dialog = new RecordingSaveFileDialog();
         var messages = CreateCustomPromptMessageService("dont-save");
         var sut = CreateBehavior(projects, dialog, messages.Object);
@@ -382,7 +382,7 @@ public sealed class DefaultProjectBehaviorTests
         using var directory = new TemporaryDirectory();
         var storagePath = Path.Combine(directory.Path, "Saved before close.txt");
         var projects = new ProjectService(new FlourishShellOptions());
-        projects.AddProject(new FlourishProject("draft", "Draft"));
+        projects.AppendProject(new FlourishProject("draft", "Draft"));
         var dialog = new RecordingSaveFileDialog(storagePath);
         var messages = CreateCustomPromptMessageService("save");
         var sut = CreateBehavior(projects, dialog, messages.Object);

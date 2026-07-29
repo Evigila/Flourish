@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Primitives;
@@ -7,6 +8,8 @@ namespace ArkheideSystem.Flourish.Internal.Configuration;
 
 internal sealed class FlourishAppSettingsConfigurationSource : JsonConfigurationSource
 {
+    public bool LoadOnlyFlourishSection { get; init; } = true;
+
     public bool WatchForChanges { get; init; }
 
     public override IConfigurationProvider Build(IConfigurationBuilder builder)
@@ -52,6 +55,78 @@ internal sealed class FlourishAppSettingsConfigurationProvider
             base.Load();
             lastContentHash = null;
         }
+    }
+
+    public override void Load(Stream stream)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        if (!source.LoadOnlyFlourishSection)
+        {
+            base.Load(stream);
+            return;
+        }
+
+        using var document = JsonDocument.Parse(
+            stream,
+            new JsonDocumentOptions
+            {
+                AllowTrailingCommas = true,
+                CommentHandling = JsonCommentHandling.Skip,
+            }
+        );
+        if (document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new FormatException("A JSON configuration file must contain an object.");
+        }
+
+        JsonElement? flourishSection = null;
+        foreach (var property in document.RootElement.EnumerateObject())
+        {
+            if (
+                !string.Equals(
+                    property.Name,
+                    FlourishConfigurationPath.Root,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            {
+                continue;
+            }
+
+            if (flourishSection is not null)
+            {
+                throw new FormatException(
+                    "A JSON configuration file cannot contain more than one 'Flourish' section."
+                );
+            }
+
+            if (property.Value.ValueKind != JsonValueKind.Object)
+            {
+                throw new FormatException(
+                    "The 'Flourish' configuration section must contain an object."
+                );
+            }
+
+            flourishSection = property.Value;
+        }
+
+        if (flourishSection is null)
+        {
+            Data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+            return;
+        }
+
+        using var buffer = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(buffer))
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName(FlourishConfigurationPath.Root);
+            flourishSection.Value.WriteTo(writer);
+            writer.WriteEndObject();
+        }
+
+        buffer.Position = 0;
+        base.Load(buffer);
     }
 
     internal bool Apply(byte[] utf8Json)
@@ -100,7 +175,7 @@ internal sealed class FlourishAppSettingsConfigurationProvider
 
             var previous = new Dictionary<string, string?>(Data, StringComparer.OrdinalIgnoreCase);
             using var stream = new MemoryStream(utf8Json, writable: false);
-            base.Load(stream);
+            Load(stream);
             lastContentHash = contentHash;
             var changed = !ConfigurationDataMatches(previous, Data);
             if (changed)

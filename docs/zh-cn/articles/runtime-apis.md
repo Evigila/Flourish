@@ -30,23 +30,27 @@ Flourish 提供两层互补的配置方式：
 | 服务 | 运行时用途 |
 | --- | --- |
 | `IFlourishConfiguration` | 通过 `Current`、字符串索引器、`Get<T>` 或 `GetSection<T>` 读取 Host 的最终有效配置；可调用 `Reload()` 并监听 `Changed`。 |
-| `IAppSettingsStore` | 原子执行 `SetAsync`、`RemoveAsync`、`MergeAsync`、`AppendAsync`，或在一次 `UpdateAsync` 事务中完成多项编辑。文件发生变化后会重载 Host 配置。 |
+| `IFlourishSettingsStore` | 原子更新 `Flourish` 顶级节拥有的值。每个路径都必须以 `Flourish:` 开头；文件发生变化后会重载 Host 配置。 |
 | `IFlourishLocalization` | 读取、格式化本地化键，运行时调用 `SetLocale`，以及注册、重载或注销 `lang_<locale>.json` 文件。 |
 
-`IAppSettingsStore` 会写入 `InitAppSettingsFilePath` 选择的文件，默认是应用根目录下的 `appsettings.Flourish.json`。`IProjectService` 会另外将项目目录持久化到独立选择的 `InitProjectCatalogFilePath`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
+`IFlourishSettingsStore` 会写入 `InitAppSettingsFilePath` 选择的文件，默认是应用根目录下的 `appsettings.Flourish.json`。它不能修改 `Logging`、`ConnectionStrings` 或其他由应用拥有的顶级节。`IProjectService` 会另外将项目目录持久化到独立选择的 `InitProjectCatalogFilePath`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
-    IAppSettingsStore settings,
+    IFlourishSettingsStore settings,
     IFlourishLocalization localization,
     string endpoint,
     CancellationToken cancellationToken)
 {
     await settings.UpdateAsync(editor =>
     {
-        editor.Set("Api:BaseUrl", endpoint);
-        editor.Merge("FeatureFlags", new { ReportsEnabled = true });
-        editor.Append("Api:RecentEndpoints", endpoint);
+        editor.Set("Flourish:Extensions:Foobar:Api:BaseUrl", endpoint);
+        editor.Merge(
+            "Flourish:Extensions:Foobar:FeatureFlags",
+            new { ReportsEnabled = true });
+        editor.Append(
+            "Flourish:Extensions:Foobar:Api:RecentEndpoints",
+            endpoint);
     }, cancellationToken);
 
     localization.SetLocale("zh-CN");
@@ -124,6 +128,8 @@ public sealed class SearchModule(
 
 应先注册路由，再公开指向该路由的菜单项。释放路由租约之前，应先移除对应菜单项。
 
+`AppendGroup`、`AppendItem` 与 `AppendFixedItem` 始终追加到目标集合末尾；需要指定从零开始的位置时，使用对应的 `InsertGroup`、`InsertItem` 或 `InsertFixedItem`。
+
 ```csharp
 public sealed class DiagnosticsModule : IDisposable
 {
@@ -143,8 +149,8 @@ public sealed class DiagnosticsModule : IDisposable
 
         menu.Update(editor =>
         {
-            editor.AddGroup("runtime", "运行时");
-            editor.AddItem("runtime", FlourishNavigationMenuItem.Page(
+            editor.AppendGroup("runtime", "运行时");
+            editor.AppendItem("runtime", FlourishNavigationMenuItem.Page(
                 "runtime.diagnostics.item", "runtime.diagnostics", "诊断", "\uE9D2"));
         });
 
@@ -230,14 +236,14 @@ public sealed class RefreshBindings : IDisposable
 
 ## 后台任务
 
-`IBackgroundTaskService.AddTask` 可在运行时将异步工作加入有界队列。任务通过 `FlourishBackgroundTaskContext` 获得协作式取消和进度上报能力；返回句柄提供 `Cancel`、`Snapshot`，以及通过结果对象捕获成功、取消或失败的 `Completion` Task。
+`IBackgroundTaskService.QueueTask` 可在运行时将异步工作加入有界队列。任务通过 `FlourishBackgroundTaskContext` 获得协作式取消和进度上报能力；返回句柄提供 `Cancel`、`Snapshot`，以及通过结果对象捕获成功、取消或失败的 `Completion` Task。
 
 ```csharp
 public FlourishBackgroundTaskHandle StartExport(
     IBackgroundTaskService tasks,
     IReportExporter exporter)
 {
-    return tasks.AddTask(
+    return tasks.QueueTask(
         new FlourishBackgroundTaskMetadata("导出报告", "正在写入文件", "\uE74E"),
         async context =>
         {

@@ -1,9 +1,9 @@
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
-/// Reports the outcome of an appsettings transaction.
+/// Reports the outcome of a Flourish settings transaction.
 /// </summary>
-public sealed record AppSettingsUpdateResult(
+public sealed record FlourishSettingsUpdateResult(
     string FilePath,
     bool Changed,
     bool ConfigurationReloaded

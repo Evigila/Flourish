@@ -27,13 +27,13 @@ public interface IProjectService
     /// <summary>Gets an immutable snapshot of the current project display state.</summary>
     FlourishProjectSnapshot Current { get; }
 
-    /// <summary>Adds a project identity.</summary>
-    /// <param name="project">The project metadata to add.</param>
-    /// <param name="activate">Whether the added project becomes active.</param>
+    /// <summary>Appends a project identity to the project catalog.</summary>
+    /// <param name="project">The project metadata to append.</param>
+    /// <param name="activate">Whether the appended project becomes active.</param>
     /// <exception cref="ArgumentNullException"><paramref name="project" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The project ID or name is empty or whitespace.</exception>
     /// <exception cref="InvalidOperationException">A project with the same case-sensitive ID already exists.</exception>
-    void AddProject(FlourishProject project, bool activate = true);
+    void AppendProject(FlourishProject project, bool activate = true);
 
     /// <summary>Adds a project or replaces the project with the same case-sensitive ID.</summary>
     /// <param name="project">The project metadata to add or replace.</param>

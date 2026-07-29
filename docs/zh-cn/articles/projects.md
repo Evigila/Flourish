@@ -35,7 +35,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 {
     public void Register()
     {
-        projects.AddProject(
+        projects.AppendProject(
             new FlourishProject(
                 "reports",
                 "报表",
@@ -62,7 +62,7 @@ Flourish 从 `InitProjectCatalogFilePath` 选择的文件加载有序目录与�
 
 | 操作 | 行为 |
 | --- | --- |
-| `AddProject(project, activate)` | 添加唯一的项目元数据，并可将其设为活动项目。 |
+| `AppendProject(project, activate)` | 追加唯一的项目元数据，并可将其设为活动项目。 |
 | `UpsertProject(project, activate)` | 按 ID 添加或替换项目元数据。 |
 | `SetProjectMetadata(id, name, storagePath)` | 修改现有项目的名称与可选路径。 |
 | `SetActiveProject(id)` | 只修改活动 Shell 标识；传入 `null` 可清除选择。 |

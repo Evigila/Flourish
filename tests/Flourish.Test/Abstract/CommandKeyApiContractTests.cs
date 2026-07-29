@@ -18,10 +18,10 @@ public sealed class CommandKeyApiContractTests
                 nameof(IFlourishCustomHandlerBuilder.InitFooterCommand)
             ),
             GetMethod<IFlourishNavigationBuilder>(
-                nameof(IFlourishNavigationBuilder.InitFixedNavigableItem)
+                nameof(IFlourishNavigationBuilder.AddFixedNavigableItem)
             ),
             GetMethod<IFlourishNavigationGroupBuilder>(
-                nameof(IFlourishNavigationGroupBuilder.InitNavigableItem)
+                nameof(IFlourishNavigationGroupBuilder.AddNavigableItem)
             ),
         ];
 

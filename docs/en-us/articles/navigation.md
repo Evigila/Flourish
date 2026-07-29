@@ -26,7 +26,7 @@ builder.ConfigServices((_, services) =>
 });
 ```
 
-Pages must derive from `System.Windows.Controls.Page`. Flourish generates the navigation key from the simple class name by removing one trailing, case-sensitive `Page` suffix: `SettingsPage` becomes `Settings`, `ReportPagePage` becomes `ReportPage`, and `Page1` remains `Page1`. Display names do not affect keys. The display name and icon set here are reused by `InitNavigableViewItem`, so view items do not ask for those values again.
+Pages must derive from `System.Windows.Controls.Page`. Flourish generates the navigation key from the simple class name by removing one trailing, case-sensitive `Page` suffix: `SettingsPage` becomes `Settings`, `ReportPagePage` becomes `ReportPage`, and `Page1` remains `Page1`. Display names do not affect keys. The display name and icon set here are reused by `AddNavigableViewItem`, so view items do not ask for those values again.
 
 The standard shell renders navigation icon glyphs with the adaptive primary foreground while keeping labels neutral, providing a consistent visual accent in light and dark themes.
 
@@ -52,7 +52,7 @@ navigation
 
 ## Configure groups
 
-Use `ConfigNavigation` to define the visible navigation model. `InitGroup` creates a scrollable group, and `InitNavigableViewItem<TPage>` places a registered page in that group.
+Use `ConfigNavigation` to define the visible navigation model. `AddGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
 builder.ConfigShell(shell =>
@@ -65,15 +65,15 @@ builder.ConfigShell(shell =>
         .InitDirection(NavigationPanelDirection.Left)
         .InitInitiallyOpen()
         .InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
-        .InitGroup("Navigation", groupId: 0, group =>
+        .AddGroup("Navigation", groupId: 0, group =>
         {
-            group.InitNavigableViewItem<HomePage>(isInitial: true);
-            group.InitNavigableViewItem<ReportsPage>();
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+            group.AddNavigableViewItem<ReportsPage>();
         });
 
-    navigation.InitGroup("Tools", groupId: 1, group =>
+    navigation.AddGroup("Tools", groupId: 1, group =>
     {
-        group.InitNavigableViewItem<EditorPage>();
+        group.AddNavigableViewItem<EditorPage>();
     });
 });
 ```
@@ -86,14 +86,14 @@ Group rules:
 - Non-zero groups must provide `displayName`.
 
 ```csharp
-nav.InitGroup(groupId: 0, configureGroup: group =>
+nav.AddGroup(groupId: 0, configureGroup: group =>
 {
-    group.InitNavigableViewItem<HomePage>(isInitial: true);
+    group.AddNavigableViewItem<HomePage>(isInitial: true);
 });
 
-nav.InitGroup("Admin", groupId: 10, group =>
+nav.AddGroup("Admin", groupId: 10, group =>
 {
-    group.InitNavigableViewItem<SettingsPage>();
+    group.AddNavigableViewItem<SettingsPage>();
 });
 ```
 
@@ -109,13 +109,13 @@ The default widths are `220` expanded and `64` collapsed. Set `closedWidth` to `
 
 ## Add command items
 
-`InitNavigableItem` adds a button-like navigation item. It does not navigate to a page. Instead, it dispatches `commandKey` through `ICommandDispatcher`.
+`AddNavigableItem` adds a button-like navigation item. It does not navigate to a page. Instead, it dispatches `commandKey` through `ICommandDispatcher`.
 
 ```csharp
-nav.InitGroup("Commands", groupId: 2, group =>
+nav.AddGroup("Commands", groupId: 2, group =>
 {
-    group.InitNavigableItem("Refresh", "\uE72C", "reports.refresh");
-    group.InitNavigableItem("Export", "\uE898", "reports.export");
+    group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    group.AddNavigableItem("Export", "\uE898", "reports.export");
 });
 ```
 
@@ -128,14 +128,14 @@ Fixed items are displayed in the bottom section of the navigation panel. They ar
 ```csharp
 builder.ConfigNavigation(navigation =>
 {
-    navigation.InitGroup("Navigation", groupId: 0, group =>
+    navigation.AddGroup("Navigation", groupId: 0, group =>
     {
-        group.InitNavigableViewItem<HomePage>(isInitial: true);
-        group.InitNavigableViewItem<ReportsPage>();
+        group.AddNavigableViewItem<HomePage>(isInitial: true);
+        group.AddNavigableViewItem<ReportsPage>();
     });
 
-    navigation.InitFixedNavigableViewItem<SettingsPage>();
-    navigation.InitFixedNavigableItem("Help", "\uE946", "help.open");
+    navigation.AddFixedNavigableViewItem<SettingsPage>();
+    navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
 });
 ```
 
@@ -143,18 +143,18 @@ Fixed view items still require the page to be registered with `AddNavigable`. Fi
 
 ## Build one-level trees
 
-Navigation items are flat by default. To create a one-level parent-child tree, set either `parentId` or `childId` on `InitNavigableViewItem` and `InitNavigableItem`.
+Navigation items are flat by default. To create a one-level parent-child tree, set either `parentId` or `childId` on `AddNavigableViewItem` and `AddNavigableItem`.
 
 ```csharp
-nav.InitGroup("Tree", groupId: 3, group =>
+nav.AddGroup("Tree", groupId: 3, group =>
 {
-    group.InitNavigableViewItem<TreeParentPage>(parentId: 1);
-    group.InitNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
-    group.InitNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
+    group.AddNavigableViewItem<TreeParentPage>(parentId: 1);
+    group.AddNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
+    group.AddNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
 
-    group.InitNavigableItem("Pages", "\uE8A5", null, parentId: 2);
-    group.InitNavigableViewItem<Page1>(childId: 2);
-    group.InitNavigableViewItem<Page2>(childId: 2);
+    group.AddNavigableItem("Pages", "\uE8A5", null, parentId: 2);
+    group.AddNavigableViewItem<Page1>(childId: 2);
+    group.AddNavigableViewItem<Page2>(childId: 2);
 });
 ```
 
@@ -178,15 +178,15 @@ When a page child is selected, Flourish expands and highlights its parent. Child
 Flourish validates the navigation model during build so invalid configuration fails early.
 
 ```csharp
-nav.InitGroup("One", groupId: 1, group =>
+nav.AddGroup("One", groupId: 1, group =>
 {
-    group.InitNavigableViewItem<HomePage>();
+    group.AddNavigableViewItem<HomePage>();
 });
 
-nav.InitGroup("Two", groupId: 2, group =>
+nav.AddGroup("Two", groupId: 2, group =>
 {
     // This throws because HomePage is already displayed in group 1.
-    group.InitNavigableViewItem<HomePage>();
+    group.AddNavigableViewItem<HomePage>();
 });
 ```
 

@@ -26,7 +26,7 @@ builder.ConfigServices((_, services) =>
 });
 ```
 
-页面类型必须派生自 `System.Windows.Controls.Page`。Flourish 从简单类名生成导航键，并移除一个末尾、区分大小写的 `Page` 后缀：`SettingsPage` 生成 `Settings`，`ReportPagePage` 生成 `ReportPage`，`Page1` 仍生成 `Page1`。显示名称不会影响 key。这里设置的显示名称和图标会被 `InitNavigableViewItem` 复用，因此 ViewItem 不会再次要求传入这些值。
+页面类型必须派生自 `System.Windows.Controls.Page`。Flourish 从简单类名生成导航键，并移除一个末尾、区分大小写的 `Page` 后缀：`SettingsPage` 生成 `Settings`，`ReportPagePage` 生成 `ReportPage`，`Page1` 仍生成 `Page1`。显示名称不会影响 key。这里设置的显示名称和图标会被 `AddNavigableViewItem` 复用，因此 ViewItem 不会再次要求传入这些值。
 
 标准 Shell 使用随主题变化的主色前景呈现导航图标，同时让标签保持中性色，从而在浅色与深色主题中提供一致的视觉强调。
 
@@ -52,7 +52,7 @@ navigation
 
 ## 配置分组
 
-使用 `ConfigNavigation` 定义可见导航模型。`InitGroup` 创建可滚动的分组，`InitNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 `ConfigNavigation` 定义可见导航模型。`AddGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
 builder.ConfigShell(shell =>
@@ -65,15 +65,15 @@ builder.ConfigShell(shell =>
         .InitDirection(NavigationPanelDirection.Left)
         .InitInitiallyOpen()
         .InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
-        .InitGroup("导航", groupId: 0, group =>
+        .AddGroup("导航", groupId: 0, group =>
         {
-            group.InitNavigableViewItem<HomePage>(isInitial: true);
-            group.InitNavigableViewItem<ReportsPage>();
+            group.AddNavigableViewItem<HomePage>(isInitial: true);
+            group.AddNavigableViewItem<ReportsPage>();
         });
 
-    navigation.InitGroup("工具", groupId: 1, group =>
+    navigation.AddGroup("工具", groupId: 1, group =>
     {
-        group.InitNavigableViewItem<EditorPage>();
+        group.AddNavigableViewItem<EditorPage>();
     });
 });
 ```
@@ -86,14 +86,14 @@ builder.ConfigShell(shell =>
 - 非 0 号组必须提供 `displayName`。
 
 ```csharp
-nav.InitGroup(groupId: 0, configureGroup: group =>
+nav.AddGroup(groupId: 0, configureGroup: group =>
 {
-    group.InitNavigableViewItem<HomePage>(isInitial: true);
+    group.AddNavigableViewItem<HomePage>(isInitial: true);
 });
 
-nav.InitGroup("管理", groupId: 10, group =>
+nav.AddGroup("管理", groupId: 10, group =>
 {
-    group.InitNavigableViewItem<SettingsPage>();
+    group.AddNavigableViewItem<SettingsPage>();
 });
 ```
 
@@ -109,13 +109,13 @@ nav.InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180
 
 ## 添加命令项
 
-`InitNavigableItem` 添加的是按钮类型导航项。它不会跳转页面，而是通过 `ICommandDispatcher` 调度 `commandKey`。
+`AddNavigableItem` 添加的是按钮类型导航项。它不会跳转页面，而是通过 `ICommandDispatcher` 调度 `commandKey`。
 
 ```csharp
-nav.InitGroup("命令", groupId: 2, group =>
+nav.AddGroup("命令", groupId: 2, group =>
 {
-    group.InitNavigableItem("刷新", "\uE72C", "reports.refresh");
-    group.InitNavigableItem("导出", "\uE898", "reports.export");
+    group.AddNavigableItem("刷新", "\uE72C", "reports.refresh");
+    group.AddNavigableItem("导出", "\uE898", "reports.export");
 });
 ```
 
@@ -128,14 +128,14 @@ nav.InitGroup("命令", groupId: 2, group =>
 ```csharp
 builder.ConfigNavigation(navigation =>
 {
-    navigation.InitGroup("导航", groupId: 0, group =>
+    navigation.AddGroup("导航", groupId: 0, group =>
     {
-        group.InitNavigableViewItem<HomePage>(isInitial: true);
-        group.InitNavigableViewItem<ReportsPage>();
+        group.AddNavigableViewItem<HomePage>(isInitial: true);
+        group.AddNavigableViewItem<ReportsPage>();
     });
 
-    navigation.InitFixedNavigableViewItem<SettingsPage>();
-    navigation.InitFixedNavigableItem("帮助", "\uE946", "help.open");
+    navigation.AddFixedNavigableViewItem<SettingsPage>();
+    navigation.AddFixedNavigableItem("帮助", "\uE946", "help.open");
 });
 ```
 
@@ -143,18 +143,18 @@ builder.ConfigNavigation(navigation =>
 
 ## 构建一层树
 
-导航项默认是扁平结构。要构建一层父子关系，可以在 `InitNavigableViewItem` 和 `InitNavigableItem` 上设置 `parentId` 或 `childId`。
+导航项默认是扁平结构。要构建一层父子关系，可以在 `AddNavigableViewItem` 和 `AddNavigableItem` 上设置 `parentId` 或 `childId`。
 
 ```csharp
-nav.InitGroup("树", groupId: 3, group =>
+nav.AddGroup("树", groupId: 3, group =>
 {
-    group.InitNavigableViewItem<TreeParentPage>(parentId: 1);
-    group.InitNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
-    group.InitNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
+    group.AddNavigableViewItem<TreeParentPage>(parentId: 1);
+    group.AddNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
+    group.AddNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
 
-    group.InitNavigableItem("页面", "\uE8A5", null, parentId: 2);
-    group.InitNavigableViewItem<Page1>(childId: 2);
-    group.InitNavigableViewItem<Page2>(childId: 2);
+    group.AddNavigableItem("页面", "\uE8A5", null, parentId: 2);
+    group.AddNavigableViewItem<Page1>(childId: 2);
+    group.AddNavigableViewItem<Page2>(childId: 2);
 });
 ```
 
@@ -178,15 +178,15 @@ nav.InitGroup("树", groupId: 3, group =>
 Flourish 会在构建阶段校验导航模型，让错误配置尽早失败。
 
 ```csharp
-nav.InitGroup("One", groupId: 1, group =>
+nav.AddGroup("One", groupId: 1, group =>
 {
-    group.InitNavigableViewItem<HomePage>();
+    group.AddNavigableViewItem<HomePage>();
 });
 
-nav.InitGroup("Two", groupId: 2, group =>
+nav.AddGroup("Two", groupId: 2, group =>
 {
     // 这里会报错，因为 HomePage 已经显示在 group 1 中。
-    group.InitNavigableViewItem<HomePage>();
+    group.AddNavigableViewItem<HomePage>();
 });
 ```
 
