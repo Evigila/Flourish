@@ -10,19 +10,16 @@ public partial class TitleBarRuntimePage : Page
 {
     private readonly ITitleBarService titleBar;
     private readonly ITitleBarSearchService search;
-    private readonly IShellFeatureService shellFeatures;
     private IDisposable? searchSubscription;
     private bool isRefreshing;
 
     public TitleBarRuntimePage(
         ITitleBarService titleBar,
-        ITitleBarSearchService search,
-        IShellFeatureService shellFeatures
+        ITitleBarSearchService search
     )
     {
         this.titleBar = titleBar;
         this.search = search;
-        this.shellFeatures = shellFeatures;
         InitializeComponent();
 
         TitleBarElementBox.ItemsSource = new TitleBarElement[]
@@ -36,9 +33,7 @@ public partial class TitleBarRuntimePage : Page
             TitleBarElement.Profile,
         };
         BreadcrumbModeBox.ItemsSource = Enum.GetValues<BreadcrumbShowOption>();
-        ShellFeatureBox.ItemsSource = Enum.GetValues<ShellFeature>();
         TitleBarElementBox.SelectedItem = TitleBarElement.Search;
-        ShellFeatureBox.SelectedItem = ShellFeature.TitleBar;
 
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
@@ -50,7 +45,6 @@ public partial class TitleBarRuntimePage : Page
         Page_Unloaded(sender, e);
         titleBar.Changed += TitleBar_Changed;
         search.StateChanged += Search_StateChanged;
-        shellFeatures.Changed += ShellFeatures_Changed;
         searchSubscription = search.Subscribe(HandleSearchQueryAsync);
         RefreshState();
     }
@@ -59,7 +53,6 @@ public partial class TitleBarRuntimePage : Page
     {
         titleBar.Changed -= TitleBar_Changed;
         search.StateChanged -= Search_StateChanged;
-        shellFeatures.Changed -= ShellFeatures_Changed;
         searchSubscription?.Dispose();
         searchSubscription = null;
     }
@@ -72,11 +65,6 @@ public partial class TitleBarRuntimePage : Page
     private void Search_StateChanged(object? sender, FlourishTitleBarSearchStateChangedEventArgs e)
     {
         Dispatcher.BeginInvoke(RefreshSearchState);
-    }
-
-    private void ShellFeatures_Changed(object? sender, FlourishShellFeatureChangedEventArgs e)
-    {
-        Dispatcher.BeginInvoke(RefreshShellFeatureState);
     }
 
     private async ValueTask HandleSearchQueryAsync(
@@ -276,28 +264,16 @@ public partial class TitleBarRuntimePage : Page
         );
     }
 
-    private void ShellFeatureBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        RefreshShellFeatureState();
-    }
-
-    private void ApplyShellFeature_Click(object sender, RoutedEventArgs e)
-    {
-        if (ShellFeatureBox.SelectedItem is ShellFeature feature)
-        {
-            Execute(
-                () => shellFeatures.SetEnabled(feature, ShellFeatureEnabledBox.IsChecked == true),
-                ShellFeatureOutput,
-                $"{feature} {(ShellFeatureEnabledBox.IsChecked == true ? "enabled" : "disabled")}."
-            );
-        }
-    }
-
-    private void ShellFeatureEnabledBox_Changed(object sender, RoutedEventArgs e)
+    private void TitleBarEnabledBox_Changed(object sender, RoutedEventArgs e)
     {
         if (CanApplyImmediately)
         {
-            ApplyShellFeature_Click(sender, new RoutedEventArgs());
+            var enabled = TitleBarEnabledBox.IsChecked == true;
+            Execute(
+                () => titleBar.SetEnabled(enabled),
+                TitleBarAvailabilityOutput,
+                $"Title bar {(enabled ? "enabled" : "disabled")}."
+            );
         }
     }
 
@@ -340,9 +316,9 @@ public partial class TitleBarRuntimePage : Page
             LogoFallbackBox.Text = current.LogoFallbackText;
             UnnamedProjectBox.Text = current.UnnamedProjectPlaceholder;
             BreadcrumbModeBox.SelectedItem = current.BreadcrumbMode;
+            TitleBarEnabledBox.IsChecked = current.IsEnabled;
             RefreshSelectedElementState();
             RefreshSearchState();
-            RefreshShellFeatureState();
         }
         finally
         {
@@ -370,23 +346,6 @@ public partial class TitleBarRuntimePage : Page
                     titleBar.Current,
                     element
                 );
-            }
-            finally
-            {
-                isRefreshing = wasRefreshing;
-            }
-        }
-    }
-
-    private void RefreshShellFeatureState()
-    {
-        if (ShellFeatureBox.SelectedItem is ShellFeature feature)
-        {
-            var wasRefreshing = isRefreshing;
-            isRefreshing = true;
-            try
-            {
-                ShellFeatureEnabledBox.IsChecked = shellFeatures.Current.IsEnabled(feature);
             }
             finally
             {

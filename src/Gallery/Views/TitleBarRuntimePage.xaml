@@ -201,8 +201,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Enable or disable complete shell surfaces through IShellFeatureService. Use feature switches when an application mode should remove an entire capability rather than merely hide one title-bar element; the code below changes a feature and observes subsequent state changes."
-      Title="Shell features"
+      Content="Use ITitleBarService when an application mode should switch the complete Flourish title bar on or off, rather than hide one title-bar element. SetEnabled updates the authoritative title-bar state and Changed keeps the checkbox synchronized. Configure navigation, toolbar, status, tooltips, motion, and profile availability through their own domain services."
+      Title="Title bar availability"
     >
       <StackPanel>
       <Grid>
@@ -212,34 +212,24 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
-            Icon="&#xE713;"
-            Title="Shell feature"
-            Content="Choose the complete shell surface to configure."
-          >
-            <flourish:ActionCard.Body>
-              <flourish:FlourishComboBox x:Name="ShellFeatureBox" Width="220" SelectionChanged="ShellFeatureBox_SelectionChanged" />
-            </flourish:ActionCard.Body>
-          </flourish:ActionCard>
-          <flourish:ActionCard
-            Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74E;"
-            Title="Feature availability"
-            Content="Enable or disable the selected shell surface."
+            Title="Title bar"
+            Content="Enable or disable the complete title-bar surface."
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishCheckBox
-                x:Name="ShellFeatureEnabledBox"
+                x:Name="TitleBarEnabledBox"
                 VerticalAlignment="Center"
-                Checked="ShellFeatureEnabledBox_Changed"
+                Checked="TitleBarEnabledBox_Changed"
                 Content="Enabled"
-                Unchecked="ShellFeatureEnabledBox_Changed"
+                Unchecked="TitleBarEnabledBox_Changed"
               />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
-        <flourish:OutputCard x:Name="ShellFeatureOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+        <flourish:OutputCard x:Name="TitleBarAvailabilityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Feature switches apply to the complete shell surface.&#10;shellFeatures.SetEnabled(ShellFeature.TitleBar, enabled: true);&#10;shellFeatures.Changed += (_, change) =&gt;&#10;{&#10;    var changedFeature = change.Feature;&#10;    var currentState = change.State;&#10;};" />
+      <flourish:CodeSpace Text="// Each domain service owns its availability state.&#10;titleBar.SetEnabled(true);&#10;var isEnabled = titleBar.Current.IsEnabled;" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

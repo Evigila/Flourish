@@ -61,7 +61,6 @@ public async ValueTask SaveEndpointAsync(
 
 | 服务 | 运行时用途 |
 | --- | --- |
-| `IShellFeatureService` | 通过 `SetEnabled` 启用或禁用 `TitleBar`、`Navigation`、`DynamicToolbar`、`StatusContent`、`ToolTips`、`Motion` 或 `Profile`。 |
 | `IThemeService` | 使用 `SetTheme` 选择并持久化 `System`、`Light` 或 `Dark`，或通过 `ToggleTheme` 循环切换；可读取 `EffectiveTheme` 和 `IsDark`。 |
 | `IAppearanceService` | 设置或清除共享主题颜色与圆角覆盖，可原子修改两项并监听 `Changed`。清除覆盖会重新显露标准主题资源，不会删除应用自有资源。 |
 | `IContentLayoutService` | 启用或禁用居中页面内容，并原子设置最大宽度。当前页面和之后导航到的页面使用同一状态。 |
@@ -71,14 +70,12 @@ public async ValueTask SaveEndpointAsync(
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
 | `IMaterialEffectService` | 检查并应用 `MaterialEffect`，或修改沉浸式深色模式。 |
 
-`ShellFeature.TitleBar` 用于在 Flourish 自定义标题栏与 Windows 原生标题栏之间切换。
-禁用后会恢复原生标题栏，但不会改变请求的材质效果；重新启用后会恢复 Flourish 标题栏，
-并将该材质请求重新应用到自定义窗口框架。
-
-`IShellFeatureService` 是聚合门面，各领域服务仍是唯一状态源：导航由
-`INavigationPanelService` 管理，工具栏由 `IToolbarService` 管理，状态内容由
-`IStatusBarService` 管理，Profile 启用状态由 `IProfileFlyoutService` 管理。
-直接调用领域服务产生的变化也会反映到 `IShellFeatureService.Changed`。
+每个 Shell 界面都通过其权威领域服务启用。例如，`ITitleBarService.SetEnabled`
+用于在 Flourish 自定义标题栏与 Windows 原生标题栏之间切换，而
+`INavigationPanelService`、`IToolbarService`、`IStatusBarService`、
+`IToolTipService`、`IMotionService` 与 `IProfileFlyoutService` 分别提供自己的
+`SetEnabled` 操作。禁用标题栏会恢复原生标题栏，但不会改变请求的材质效果；
+重新启用后会恢复 Flourish 标题栏，并将该材质请求重新应用到自定义窗口框架。
 
 ## 标题栏、项目与搜索
 

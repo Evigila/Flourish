@@ -61,7 +61,6 @@ public async ValueTask SaveEndpointAsync(
 
 | Service | Runtime use |
 | --- | --- |
-| `IShellFeatureService` | Enable or disable `TitleBar`, `Navigation`, `DynamicToolbar`, `StatusContent`, `ToolTips`, `Motion`, or `Profile` with `SetEnabled`. |
 | `IThemeService` | Select and persist `System`, `Light`, or `Dark` with `SetTheme`, or cycle with `ToggleTheme`; inspect `EffectiveTheme` and `IsDark`. |
 | `IAppearanceService` | Set or clear shared theme-color and corner-radius overrides, apply both atomically, and observe `Changed`. Clearing an override reveals the standard theme resources without removing application-owned resources. |
 | `IContentLayoutService` | Enable or disable centered page content and atomically set its maximum width. The active page and subsequently navigated pages use the same state. |
@@ -71,15 +70,13 @@ public async ValueTask SaveEndpointAsync(
 | `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
 | `IMaterialEffectService` | Test support and apply a `MaterialEffect`, or change immersive dark mode. |
 
-`ShellFeature.TitleBar` switches between the Flourish custom title bar and the native
-Windows title bar. Disabling the feature restores the native title bar without changing
-the requested material effect; enabling it again restores the Flourish title bar and
-reapplies that material request to the custom frame.
-
-`IShellFeatureService` is an aggregate facade. Each domain service remains the authoritative
-state owner: navigation belongs to `INavigationPanelService`, toolbar enablement to
-`IToolbarService`, status content to `IStatusBarService`, and profile enablement to
-`IProfileFlyoutService`. Direct domain changes are reflected by `IShellFeatureService.Changed`.
+Each shell surface is enabled through its authoritative domain service. For example,
+`ITitleBarService.SetEnabled` switches between the Flourish custom title bar and the native
+Windows title bar, while `INavigationPanelService`, `IToolbarService`, `IStatusBarService`,
+`IToolTipService`, `IMotionService`, and `IProfileFlyoutService` expose their own
+`SetEnabled` operations. Disabling the title bar restores the native title bar without
+changing the requested material effect; enabling it again restores the Flourish title bar
+and reapplies that material request to the custom frame.
 
 ## Title bar, projects, and search
 

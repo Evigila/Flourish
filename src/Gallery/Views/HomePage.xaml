@@ -62,7 +62,7 @@
           Margin="6"
           AutomationProperties.Name="Title bar and search"
           Click="DemoCard_Click"
-          Content="Identity, element visibility, shell features, and search handlers."
+          Content="Identity, element visibility, title-bar availability, and search handlers."
           Icon="&#xE8A4;"
           Tag="TitleBarRuntime"
           Title="Title bar &amp; search"

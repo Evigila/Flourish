@@ -281,9 +281,6 @@ public sealed class RuntimeToolTipPolicyTests
         var shellSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Views", "Windows", "FlourishShellWindow.xaml.cs")
         );
-        var featureSource = File.ReadAllText(
-            Path.Combine(flourishRoot, "Services", "ShellFeatureService.cs")
-        );
         var runtimeSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Internal", "Composition", "FlourishRuntime.cs")
         );
@@ -301,17 +298,6 @@ public sealed class RuntimeToolTipPolicyTests
             shellSource,
             StringComparison.Ordinal
         );
-        Assert.Contains(
-            "toolTipService.SetEnabled(enabled)",
-            featureSource,
-            StringComparison.Ordinal
-        );
-        Assert.DoesNotContain(
-            "options.IsTipsEnabled = enabled",
-            featureSource,
-            StringComparison.Ordinal
-        );
-
         var toolTipAttachIndex = runtimeSource.IndexOf(
             "GetRequiredService<FlourishToolTipService>().Attach(application)",
             StringComparison.Ordinal

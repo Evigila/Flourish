@@ -66,6 +66,31 @@ public sealed class RuntimeShellStateServiceTests
     }
 
     [Fact]
+    public void TitleBarService_SetEnabledSuppressesNoOpsAndPreservesMaterialRequest()
+    {
+        var options = new FlourishShellOptions
+        {
+            IsTitlebarEnabled = true,
+            IsMaterialEffectEnabled = true,
+            MaterialEffect = MaterialEffect.Mica,
+        };
+        ITitleBarService sut = new TitleBarService(options);
+        var changes = new List<FlourishTitleBarChangedEventArgs>();
+        sut.Changed += (_, args) => changes.Add(args);
+
+        sut.SetEnabled(false);
+        sut.SetEnabled(false);
+        sut.SetEnabled(true);
+        sut.SetEnabled(true);
+
+        Assert.True(sut.Current.IsEnabled);
+        Assert.Equal(2, changes.Count);
+        Assert.Equal([1L, 2L], changes.Select(change => change.Version));
+        Assert.True(options.IsMaterialEffectEnabled);
+        Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
+    }
+
+    [Fact]
     public void TitleBarService_MultiProjectModeMakesTheTitleButtonVisible()
     {
         var options = new FlourishShellOptions { IsMultiProjectEnabled = true };
@@ -310,206 +335,6 @@ public sealed class RuntimeShellStateServiceTests
         sut.SetEnabled(false);
         Assert.Throws<InvalidOperationException>(sut.Show);
     }
-
-    [Fact]
-    public void ShellFeatureService_MapsEveryFeatureAndSuppressesNoOpEvents()
-    {
-        var options = new FlourishShellOptions();
-        var services = CreateShellFeatureServices(options);
-        IShellFeatureService sut = services.Features;
-        var changes = new List<FlourishShellFeatureChangedEventArgs>();
-        sut.Changed += (_, args) => changes.Add(args);
-
-        foreach (var feature in Enum.GetValues<ShellFeature>())
-        {
-            sut.SetEnabled(feature, true);
-            sut.SetEnabled(feature, true);
-            Assert.True(sut.Current.IsEnabled(feature));
-        }
-
-        Assert.Equal(Enum.GetValues<ShellFeature>().Length, changes.Count);
-        Assert.Equal(changes.Count, sut.Current.Version);
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetEnabled((ShellFeature)int.MaxValue, true)
-        );
-    }
-
-    [Fact]
-    public void ShellFeatureService_TitleBarAndNavigationCanBeDisabledAndRestoredRepeatedly()
-    {
-        var options = new FlourishShellOptions
-        {
-            IsTitlebarEnabled = true,
-            IsNavigationPanelEnabled = true,
-            IsNavigationPanelInitiallyOpen = true,
-            IsMaterialEffectEnabled = true,
-            MaterialEffect = MaterialEffect.Mica,
-        };
-        var services = CreateShellFeatureServices(options);
-        IShellFeatureService sut = services.Features;
-        var changes = new List<FlourishShellFeatureChangedEventArgs>();
-        sut.Changed += (_, args) => changes.Add(args);
-
-        foreach (var feature in new[] { ShellFeature.TitleBar, ShellFeature.Navigation })
-        {
-            sut.SetEnabled(feature, false);
-            sut.SetEnabled(feature, false);
-            sut.SetEnabled(feature, true);
-            sut.SetEnabled(feature, true);
-        }
-
-        Assert.True(sut.Current.IsTitleBarEnabled);
-        Assert.True(sut.Current.IsNavigationEnabled);
-        Assert.True(options.IsNavigationPanelInitiallyOpen);
-        Assert.True(options.IsMaterialEffectEnabled);
-        Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
-        Assert.Equal(
-            new[]
-            {
-                (ShellFeature.TitleBar, false, 1L),
-                (ShellFeature.TitleBar, true, 2L),
-                (ShellFeature.Navigation, false, 3L),
-                (ShellFeature.Navigation, true, 4L),
-            },
-            changes.Select(change =>
-                (change.Feature, change.State.IsEnabled(change.Feature), change.State.Version)
-            )
-        );
-    }
-
-    [Fact]
-    public void ShellFeatureService_AndMotionServicePublishOneSynchronizedEventPerChange()
-    {
-        var options = new FlourishShellOptions();
-        var services = CreateShellFeatureServices(options);
-        var motion = services.Motion;
-        IShellFeatureService sut = services.Features;
-        var motionChanges = new List<FlourishMotionChangedEventArgs>();
-        var featureChanges = new List<FlourishShellFeatureChangedEventArgs>();
-        motion.Changed += (_, args) => motionChanges.Add(args);
-        sut.Changed += (_, args) => featureChanges.Add(args);
-
-        sut.SetEnabled(ShellFeature.Motion, true);
-        sut.SetEnabled(ShellFeature.Motion, true);
-        motion.SetEnabled(false);
-        motion.SetEnabled(false);
-
-        Assert.False(motion.Current.IsEnabled);
-        Assert.False(sut.Current.IsMotionEnabled);
-        Assert.Equal(2, motionChanges.Count);
-        Assert.Equal(
-            new[]
-            {
-                (ShellFeature.Motion, true, 1L),
-                (ShellFeature.Motion, false, 2L),
-            },
-            featureChanges.Select(change =>
-                (change.Feature, change.State.IsMotionEnabled, change.State.Version)
-            )
-        );
-    }
-
-    [Fact]
-    public void ShellFeatureService_AndToolTipServicePublishOneSynchronizedEventPerEnablementChange()
-    {
-        var options = new FlourishShellOptions();
-        var services = CreateShellFeatureServices(options);
-        var toolTips = services.ToolTips;
-        IShellFeatureService sut = services.Features;
-        var toolTipChanges = new List<FlourishToolTipChangedEventArgs>();
-        var featureChanges = new List<FlourishShellFeatureChangedEventArgs>();
-        toolTips.Changed += (_, args) => toolTipChanges.Add(args);
-        sut.Changed += (_, args) => featureChanges.Add(args);
-
-        sut.SetEnabled(ShellFeature.ToolTips, true);
-        sut.SetEnabled(ShellFeature.ToolTips, true);
-        toolTips.SetEnabled(false);
-        toolTips.SetEnabled(false);
-        toolTips.SetSettings(420, 7);
-
-        Assert.True(toolTips.Current.IsEnabled);
-        Assert.True(sut.Current.AreToolTipsEnabled);
-        Assert.Equal(3, toolTipChanges.Count);
-        Assert.Equal(
-            new[]
-            {
-                (ShellFeature.ToolTips, true, 1L),
-                (ShellFeature.ToolTips, false, 2L),
-                (ShellFeature.ToolTips, true, 3L),
-            },
-            featureChanges.Select(change =>
-                (change.Feature, change.State.AreToolTipsEnabled, change.State.Version)
-            )
-        );
-    }
-
-    [Fact]
-    public void ShellFeatureService_ObservesEveryDirectDomainEnablementChange()
-    {
-        var options = new FlourishShellOptions();
-        var services = CreateShellFeatureServices(options);
-        var changes = new List<FlourishShellFeatureChangedEventArgs>();
-        services.Features.Changed += (_, args) => changes.Add(args);
-
-        services.TitleBar.SetEnabled(true);
-        services.Navigation.SetEnabled(true);
-        services.Toolbar.SetEnabled(true);
-        services.StatusBar.SetEnabled(true);
-        services.ToolTips.SetEnabled(true);
-        services.Motion.SetEnabled(true);
-        services.Profile.SetEnabled(true);
-
-        Assert.All(
-            Enum.GetValues<ShellFeature>(),
-            feature => Assert.True(services.Features.Current.IsEnabled(feature))
-        );
-        Assert.Equal(Enum.GetValues<ShellFeature>(), changes.Select(change => change.Feature));
-        Assert.Equal(7, services.Features.Current.Version);
-    }
-
-    private static ShellFeatureServices CreateShellFeatureServices(
-        FlourishShellOptions options
-    )
-    {
-        var titleBar = new TitleBarService(options);
-        var navigation = new NavigationPanelService(options);
-        var toolbar = new FlourishToolbarService(options);
-        var statusBar = new FlourishStatusService(options);
-        var toolTips = new FlourishToolTipService(options);
-        var motion = new FlourishMotionService(options);
-        var profile = new ProfileFlyoutService(options, options.Profile);
-        var features = new ShellFeatureService(
-            titleBar,
-            navigation,
-            toolbar,
-            statusBar,
-            toolTips,
-            motion,
-            profile
-        );
-
-        return new ShellFeatureServices(
-            features,
-            titleBar,
-            navigation,
-            toolbar,
-            statusBar,
-            toolTips,
-            motion,
-            profile
-        );
-    }
-
-    private sealed record ShellFeatureServices(
-        ShellFeatureService Features,
-        TitleBarService TitleBar,
-        NavigationPanelService Navigation,
-        FlourishToolbarService Toolbar,
-        FlourishStatusService StatusBar,
-        FlourishToolTipService ToolTips,
-        FlourishMotionService Motion,
-        ProfileFlyoutService Profile
-    );
 
     private sealed class TestProfilePage : Page;
 

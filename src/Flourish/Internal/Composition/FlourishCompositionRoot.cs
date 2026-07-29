@@ -668,10 +668,6 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton<IProfileFlyoutService>(provider =>
             provider.GetRequiredService<ProfileFlyoutService>()
         );
-        services.AddSingleton<ShellFeatureService>();
-        services.AddSingleton<IShellFeatureService>(provider =>
-            provider.GetRequiredService<ShellFeatureService>()
-        );
         services.AddSingleton<WindowFrameFixService>();
         services.AddSingleton<NavigationRouteRegistry>();
         services.AddSingleton<INavigationRouteRegistry>(provider =>

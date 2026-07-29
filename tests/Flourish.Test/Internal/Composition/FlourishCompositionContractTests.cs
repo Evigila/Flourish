@@ -211,7 +211,6 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<WindowService, IWindowService>(flourish);
         AssertSingletonAdapter<WindowCloseService, IWindowCloseService>(flourish);
         AssertSingletonAdapter<ProfileFlyoutService, IProfileFlyoutService>(flourish);
-        AssertSingletonAdapter<ShellFeatureService, IShellFeatureService>(flourish);
         AssertSingletonAdapter<NavigationRouteRegistry, INavigationRouteRegistry>(flourish);
         AssertSingletonAdapter<PageCacheService, IPageCacheService>(flourish);
         AssertSingletonAdapter<NavigationService, INavigationService>(flourish);
