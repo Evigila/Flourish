@@ -1,5 +1,14 @@
 using System.IO;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Xml.Linq;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Views.Page;
+using Moq;
+using Shape = System.Windows.Shapes.Shape;
+using WpfPath = System.Windows.Shapes.Path;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -35,6 +44,13 @@ public sealed class FlourishProfilePageRenderingTests
             uploadButton.Elements(),
             element => element.Name.LocalName == "Button.Icon"
         );
+        Assert.Equal(
+            "{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}",
+            (string?)uploadButton
+                .Descendants()
+                .Single(element => element.Name.LocalName == "Path")
+                .Attribute("Stroke")
+        );
         Assert.DoesNotContain(
             document.Descendants(),
             element =>
@@ -43,6 +59,39 @@ public sealed class FlourishProfilePageRenderingTests
                     or "SelectedImagePreview"
                     or "ImageSelectedText"
         );
+    }
+
+    [Fact]
+    public void UploadImageIcon_ResolvesItsButtonSourceWhenThePageIsCreated()
+    {
+        StaTest.Run(() =>
+        {
+            var profileService = new Mock<IProfileService>();
+            profileService
+                .SetupGet(service => service.CurrentProfile)
+                .Returns(new ProfileUser("User", "", NameOrder.FirstLast));
+            profileService
+                .SetupGet(service => service.LoginState)
+                .Returns(ProfileLoginState.SignedOut);
+            profileService.SetupGet(service => service.NameOrder).Returns(NameOrder.FirstLast);
+
+            var page = new FlourishProfilePage(
+                profileService.Object,
+                new FlourishLocalizationService(new FlourishDataOptions())
+            );
+            var uploadButton = Assert.IsType<ArkheideSystem.Flourish.Controls.Button>(
+                page.FindName("UploadImageButton")
+            );
+            var iconHost = Assert.IsType<Viewbox>(uploadButton.Icon);
+            var icon = Assert.IsType<WpfPath>(iconHost.Child);
+            var binding = Assert.IsType<BindingExpression>(
+                BindingOperations.GetBindingExpression(icon, Shape.StrokeProperty)
+            );
+
+            Assert.Same(RelativeSource.Self, binding.ParentBinding.RelativeSource);
+            Assert.Equal(BindingStatus.Active, binding.Status);
+            Assert.False(binding.HasError);
+        });
     }
 
     [Fact]

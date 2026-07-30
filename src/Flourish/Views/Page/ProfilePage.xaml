@@ -112,7 +112,7 @@
               <Path
                 Data="M 3,16 L 3,20 L 21,20 L 21,16 M 12,3 L 12,16 M 7,8 L 12,3 L 17,8"
                 Fill="Transparent"
-                Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type flourish:Button}}}"
+                Stroke="{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}"
                 StrokeEndLineCap="Round"
                 StrokeLineJoin="Round"
                 StrokeStartLineCap="Round"

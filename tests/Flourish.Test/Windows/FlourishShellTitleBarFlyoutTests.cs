@@ -123,6 +123,18 @@ public sealed class FlourishShellTitleBarFlyoutTests
     }
 
     [Fact]
+    public void ThemeToggleIcon_BindsDirectlyToItsButtonAcrossFlyoutTreeChanges()
+    {
+        var document = XDocument.Load(TitleBarXamlPath);
+        var icon = FindNamedElement(document, "ThemeToggleButtonIcon");
+
+        Assert.Equal(
+            "{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}",
+            (string?)icon.Attribute("Stroke")
+        );
+    }
+
+    [Fact]
     public void ProjectSurface_IsTheLargeTitleComboBoxAndDoesNotUseAnIndependentView()
     {
         var titleDocument = XDocument.Load(TitleBarXamlPath);
