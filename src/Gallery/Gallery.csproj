@@ -10,7 +10,7 @@
     <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
     <UserSecretsId>ArkheideSystem.Flourish.Gallery</UserSecretsId>
   </PropertyGroup>
-  <ItemGroup>
+  <!-- <ItemGroup>
     <Compile Remove="Models\**" />
     <Compile Remove="ViewModels\**" />
     <EmbeddedResource Remove="Models\**" />
@@ -19,7 +19,7 @@
     <None Remove="ViewModels\**" />
     <Page Remove="Models\**" />
     <Page Remove="ViewModels\**" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />

@@ -1,0 +1,38 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.ProfileOverlay"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  x:ClassModifier="internal"
+  Visibility="Collapsed"
+>
+  <Canvas
+    x:Name="OverlayCanvas"
+    Background="Transparent"
+    ClipToBounds="True"
+    PreviewMouseLeftButtonDown="OverlayCanvas_PreviewMouseLeftButtonDown"
+  >
+    <control:Overlay
+      x:Name="ProfileCard"
+      Width="304"
+      Padding="0"
+      SizeChanged="ProfileCard_SizeChanged"
+      Variant="Strong"
+    >
+      <Frame
+        x:Name="ProfileFrame"
+        Background="Transparent"
+        BorderBrush="{x:Null}"
+        BorderThickness="0"
+        ClipToBounds="True"
+        Focusable="False"
+        FocusVisualStyle="{x:Null}"
+        JournalOwnership="UsesParentJournal"
+        NavigationUIVisibility="Hidden"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+        SizeChanged="ProfileFrame_SizeChanged"
+      />
+    </control:Overlay>
+  </Canvas>
+</UserControl>

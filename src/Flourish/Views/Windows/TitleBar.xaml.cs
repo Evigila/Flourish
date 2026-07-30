@@ -219,6 +219,12 @@ internal partial class FlourishTitlebar : UserControl
         ProfileButton.ToolTip = GetToolTipContent(profile.DisplayName);
     }
 
+    internal void SetProfileAvailability(bool enabled)
+    {
+        isProfileEnabled = enabled;
+        UpdateProfileRegionVisibility();
+    }
+
     public Rect GetProfileButtonBounds(UIElement relativeTo)
     {
         ArgumentNullException.ThrowIfNull(relativeTo);
@@ -256,6 +262,11 @@ internal partial class FlourishTitlebar : UserControl
         ThemeToggleButton.Visibility = ToVisibility(enableThemeToggle);
         isProfileEnabled = enableProfile;
         UpdateProfileRegionVisibility();
+    }
+
+    internal void SetNavigationToggleVisibility(bool isVisible)
+    {
+        NavigationToggleButton.Visibility = ToVisibility(isVisible);
     }
 
     public void SetRegionContent(FlourishRegion region, IReadOnlyList<FrameworkElement> elements)

@@ -111,6 +111,30 @@
     <Compile Update="Views\Windows\TitleBar.xaml.cs">
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Windows\FlourishNavigationPane.xaml.cs">
+      <DependentUpon>FlourishNavigationPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\FlourishNotificationHost.xaml.cs">
+      <DependentUpon>FlourishNotificationHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\FlourishShellContentHost.xaml.cs">
+      <DependentUpon>FlourishShellContentHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\FlourishToolbar.xaml.cs">
+      <DependentUpon>FlourishToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\FlourishStatusBar.xaml.cs">
+      <DependentUpon>FlourishStatusBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\ApplicationInfoOverlay.xaml.cs">
+      <DependentUpon>ApplicationInfoOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\ProfileOverlay.xaml.cs">
+      <DependentUpon>ProfileOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Windows\StatusOverlay.xaml.cs">
+      <DependentUpon>StatusOverlay.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Windows\FlourishShellWindow.xaml.cs">
       <DependentUpon>FlourishShellWindow.xaml</DependentUpon>
     </Compile>

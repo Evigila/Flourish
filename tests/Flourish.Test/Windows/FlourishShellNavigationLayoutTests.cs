@@ -35,6 +35,30 @@ public sealed class FlourishShellNavigationLayoutTests
         "Windows",
         "TitleBar.xaml"
     );
+    private static readonly string StatusBarXamlPath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Views",
+        "Windows",
+        "FlourishStatusBar.xaml"
+    );
+    private static readonly string ContentHostXamlPath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Views",
+        "Windows",
+        "FlourishShellContentHost.xaml"
+    );
+    private static readonly string NavigationPaneXamlPath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Views",
+        "Windows",
+        "FlourishNavigationPane.xaml"
+    );
     private static readonly string ShellCodePath = Path.Combine(
         RepositoryRoot,
         "src",
@@ -42,6 +66,38 @@ public sealed class FlourishShellNavigationLayoutTests
         "Views",
         "Windows",
         "FlourishShellWindow.xaml.cs"
+    );
+    private static readonly string ToolbarControllerCodePath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Internal",
+        "Interaction",
+        "ShellToolbarController.cs"
+    );
+    private static readonly string NavigationControllerCodePath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Internal",
+        "Interaction",
+        "ShellNavigationController.cs"
+    );
+    private static readonly string StatusControllerCodePath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Views",
+        "Windows",
+        "ShellStatusSurfaceController.cs"
+    );
+    private static readonly string StatusBarCodePath = Path.ChangeExtension(
+        StatusBarXamlPath,
+        ".xaml.cs"
+    );
+    private static readonly string NavigationPaneCodePath = Path.ChangeExtension(
+        NavigationPaneXamlPath,
+        ".xaml.cs"
     );
     private static readonly string StatusItemViewCachePath = Path.Combine(
         RepositoryRoot,
@@ -91,8 +147,8 @@ public sealed class FlourishShellNavigationLayoutTests
     public void ShellNavigation_UsesExplicitFlourishControlState()
     {
         var nameName = XName.Get("Name", XamlNamespace);
-        var shell = XDocument.Load(ShellXamlPath);
-        var navigationLists = shell
+        var navigationPane = XDocument.Load(NavigationPaneXamlPath);
+        var navigationLists = navigationPane
             .Descendants()
             .Where(element => element.Name.LocalName == "FlourishListBox")
             .Where(element =>
@@ -112,15 +168,15 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.Contains("IsCompact", compactBinding, StringComparison.Ordinal);
         Assert.DoesNotContain("Tag", compactBinding, StringComparison.Ordinal);
 
-        var shellCode = File.ReadAllText(ShellCodePath);
+        var navigationPaneCode = File.ReadAllText(NavigationPaneCodePath);
         Assert.Contains(
-            "NavigationItemsHost.IsCompact = !isOpen;",
-            shellCode,
+            "NavigationItemsHost.IsCompact = compact;",
+            navigationPaneCode,
             StringComparison.Ordinal
         );
         Assert.Contains(
-            "FixedNavigationItemsHost.IsCompact = !isOpen;",
-            shellCode,
+            "FixedNavigationItemsHost.IsCompact = compact;",
+            navigationPaneCode,
             StringComparison.Ordinal
         );
     }
@@ -128,47 +184,47 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void RuntimeNavigationAndToolbarChanges_KeepInvalidationTargeted()
     {
-        var shellCode = File.ReadAllText(ShellCodePath);
-        var navigationChangedStart = shellCode.IndexOf(
-            "private void NavigationMenuService_Changed(",
+        var navigationCode = File.ReadAllText(NavigationControllerCodePath);
+        var toolbarCode = File.ReadAllText(ToolbarControllerCodePath);
+        var navigationChangedStart = navigationCode.IndexOf(
+            "private void MenuService_Changed(",
             StringComparison.Ordinal
         );
-        var toolbarChangedStart = shellCode.IndexOf(
-            "private void ToolbarService_Changed(",
+        var navigationChangedEnd = navigationCode.IndexOf(
+            "private void ApplyPanelView(",
             navigationChangedStart,
             StringComparison.Ordinal
         );
-        var clearCacheStart = shellCode.IndexOf(
-            "private void ClearToolbarButtonCache()",
+        var toolbarChangedStart = toolbarCode.IndexOf(
+            "private void Service_Changed(",
             StringComparison.Ordinal
         );
-        var nextMethodStart = shellCode.IndexOf(
-            "private void UpdateRuntimeSurfaceVisibility(",
-            clearCacheStart,
+        var clearCacheStart = toolbarCode.IndexOf(
+            "private void ClearButtonCache()",
             StringComparison.Ordinal
         );
 
         Assert.True(navigationChangedStart >= 0);
-        Assert.True(toolbarChangedStart > navigationChangedStart);
+        Assert.True(navigationChangedEnd > navigationChangedStart);
+        Assert.True(toolbarChangedStart >= 0);
         Assert.True(clearCacheStart >= 0);
-        Assert.True(nextMethodStart > clearCacheStart);
 
-        var navigationChangedMethod = shellCode[
-            navigationChangedStart..toolbarChangedStart
+        var navigationChangedMethod = navigationCode[
+            navigationChangedStart..navigationChangedEnd
         ];
-        var clearCacheMethod = shellCode[clearCacheStart..nextMethodStart];
+        var clearCacheMethod = toolbarCode[clearCacheStart..];
 
         Assert.DoesNotContain(
-            "ClearToolbarButtonCache();",
+            "ClearButtonCache();",
             navigationChangedMethod,
             StringComparison.Ordinal
         );
-        Assert.DoesNotContain("BuildToolbarItems(", navigationChangedMethod, StringComparison.Ordinal);
-        var toolbarChangedMethod = shellCode[toolbarChangedStart..clearCacheStart];
-        Assert.Contains("InvalidateToolbarButtonCache(e.PageType, e.Current);", toolbarChangedMethod);
-        Assert.Contains("e.PageType == currentPageType", toolbarChangedMethod);
+        Assert.DoesNotContain("toolbarController.SetPage(", navigationChangedMethod, StringComparison.Ordinal);
+        var toolbarChangedMethod = toolbarCode[toolbarChangedStart..clearCacheStart];
+        Assert.Contains("InvalidateButtonCache(e.PageType, e.Current);", toolbarChangedMethod);
+        Assert.Contains("e.PageType == activePageType", toolbarChangedMethod);
         Assert.Contains(
-            "button.Click -= ToolbarButton_Click;",
+            "button.Click -= Button_Click;",
             clearCacheMethod,
             StringComparison.Ordinal
         );
@@ -177,39 +233,31 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void CommandAvailabilityChanges_UpdateIndexedButtonsWithoutRebuildingControls()
     {
-        var shellCode = File.ReadAllText(ShellCodePath);
-        var handlersStart = shellCode.IndexOf(
+        var toolbarCode = File.ReadAllText(ToolbarControllerCodePath);
+        var handlersStart = toolbarCode.IndexOf(
             "private void CommandRegistry_Changed(",
             StringComparison.Ordinal
         );
-        var refreshStart = shellCode.IndexOf(
-            "private void RefreshCommandAvailability(",
+        var dispatchStart = toolbarCode.IndexOf(
+            "private void Dispatch(",
             handlersStart,
-            StringComparison.Ordinal
-        );
-        var dispatchStart = shellCode.IndexOf(
-            "private void DispatchRuntimeChange(",
-            refreshStart,
             StringComparison.Ordinal
         );
 
         Assert.True(handlersStart >= 0);
-        Assert.True(refreshStart > handlersStart);
-        Assert.True(dispatchStart > refreshStart);
+        Assert.True(dispatchStart > handlersStart);
 
-        var handlers = shellCode[handlersStart..refreshStart];
-        var refresh = shellCode[refreshStart..dispatchStart];
+        var handlers = toolbarCode[handlersStart..dispatchStart];
         Assert.Equal(
             2,
             handlers.Split(
-                "RefreshCommandAvailability(e.CommandKey)",
+                "commandButtons.Refresh(e.CommandKey)",
                 StringSplitOptions.None
             ).Length - 1
         );
-        Assert.Contains("toolbarCommandButtons.Refresh(commandKey);", refresh);
-        Assert.DoesNotContain("ClearToolbarButtonCache", refresh, StringComparison.Ordinal);
-        Assert.DoesNotContain("BuildToolbarItems", refresh, StringComparison.Ordinal);
-        Assert.DoesNotContain("Items.Refresh", refresh, StringComparison.Ordinal);
+        Assert.DoesNotContain("ClearButtonCache", handlers, StringComparison.Ordinal);
+        Assert.DoesNotContain("Build(", handlers, StringComparison.Ordinal);
+        Assert.DoesNotContain("Items.Refresh", handlers, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -244,8 +292,8 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void NavigationGroupHeader_DeclaresTheSmallTypographyTier()
     {
-        var shell = XDocument.Load(ShellXamlPath);
-        var groupHeader = FindNamedElement(shell, "NavigationGroupHeader");
+        var navigationPane = XDocument.Load(NavigationPaneXamlPath);
+        var groupHeader = FindNamedElement(navigationPane, "NavigationGroupHeader");
 
         Assert.Equal(
             "{DynamicResource FlourishFontSizeSmall}",
@@ -398,16 +446,30 @@ public sealed class FlourishShellNavigationLayoutTests
     public void ShellChromeInsets_AreAppliedWithoutMovingContentOrCaptionEdges()
     {
         var shell = XDocument.Load(ShellXamlPath);
-        var navigationPane = FindNamedElement(shell, "NavigationPaneBorder");
-        var navigationHeader = FindNamedElement(shell, "NavigationHeaderRegionHost");
-        var navigationFooter = FindNamedElement(shell, "NavigationFooterRegionHost");
-        var transitionHost = FindNamedElement(shell, "NavigationPaneTransitionHost");
-        var contentArea = FindNamedElement(shell, "ContentAreaGrid");
-        var contentHeader = FindNamedElement(shell, "ContentHeaderRegionHost");
-        var toolbarLayout = FindNamedElement(shell, "ToolbarLayoutHost");
-        var breadcrumbLayout = FindNamedElement(shell, "BreadcrumbLayoutHost");
-        var contentFooter = FindNamedElement(shell, "ContentFooterRegionHost");
-        var statusBar = FindNamedElement(shell, "StatusBarBorder");
+        var contentHostDocument = XDocument.Load(ContentHostXamlPath);
+        var navigationPaneDocument = XDocument.Load(NavigationPaneXamlPath);
+        var navigationPane = FindNamedElement(navigationPaneDocument, "NavigationPaneBorder");
+        var navigationHeader = FindNamedElement(
+            navigationPaneDocument,
+            "NavigationHeaderRegionHost"
+        );
+        var navigationFooter = FindNamedElement(
+            navigationPaneDocument,
+            "NavigationFooterRegionHost"
+        );
+        var transitionHost = FindNamedElement(
+            navigationPaneDocument,
+            "NavigationPaneTransitionHost"
+        );
+        var contentArea = FindNamedElement(contentHostDocument, "ContentAreaGrid");
+        var contentHeader = FindNamedElement(contentHostDocument, "ContentHeaderRegionHost");
+        var toolbarLayout = FindNamedElement(contentHostDocument, "ToolbarView");
+        var breadcrumbLayout = FindNamedElement(contentHostDocument, "BreadcrumbLayoutHost");
+        var contentFooter = FindNamedElement(contentHostDocument, "ContentFooterRegionHost");
+        var statusBar = FindNamedElement(
+            XDocument.Load(StatusBarXamlPath),
+            "StatusBarBorder"
+        );
 
         Assert.Equal(
             "{DynamicResource FlourishNavigationPaneLeftPadding}",
@@ -437,12 +499,14 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.Null(transitionHost.Attribute("Margin"));
 
         var shellCode = File.ReadAllText(ShellCodePath);
+        var navigationControllerCode = File.ReadAllText(NavigationControllerCodePath);
+        var navigationPaneCode = File.ReadAllText(NavigationPaneCodePath);
         var placementStart = shellCode.IndexOf(
-            "private void ApplyNavigationPanelPlacement()",
+            "private void ApplyNavigationPanelPlacement(NavigationPanelDirection direction)",
             StringComparison.Ordinal
         );
         var nextMethodStart = shellCode.IndexOf(
-            "private ColumnDefinition GetNavigationPaneColumn()",
+            "private ColumnDefinition GetNavigationPaneColumn(NavigationPanelDirection direction)",
             placementStart,
             StringComparison.Ordinal
         );
@@ -450,35 +514,30 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.True(placementStart >= 0);
         Assert.True(nextMethodStart > placementStart);
         var placementMethod = shellCode[placementStart..nextMethodStart];
-        Assert.Contains("Border.PaddingProperty", placementMethod, StringComparison.Ordinal);
+        Assert.Contains("Grid.SetColumn(NavigationPane,", placementMethod, StringComparison.Ordinal);
+        Assert.Contains(
+            "pane.SetDirection(state.Direction);",
+            navigationControllerCode,
+            StringComparison.Ordinal
+        );
         Assert.Contains(
             "\"FlourishNavigationPaneLeftPadding\"",
-            placementMethod,
+            navigationPaneCode,
             StringComparison.Ordinal
         );
         Assert.Contains(
             "\"FlourishNavigationPaneRightPadding\"",
-            placementMethod,
+            navigationPaneCode,
             StringComparison.Ordinal
         );
         Assert.Contains(
-            "NavigationItemsHost.FlowDirection = System.Windows.FlowDirection.RightToLeft;",
-            placementMethod,
+            "NavigationItemsHost.FlowDirection = flowDirection;",
+            navigationPaneCode,
             StringComparison.Ordinal
         );
         Assert.Contains(
-            "FixedNavigationItemsHost.FlowDirection = System.Windows.FlowDirection.RightToLeft;",
-            placementMethod,
-            StringComparison.Ordinal
-        );
-        Assert.Contains(
-            "NavigationItemsHost.FlowDirection = System.Windows.FlowDirection.LeftToRight;",
-            placementMethod,
-            StringComparison.Ordinal
-        );
-        Assert.Contains(
-            "FixedNavigationItemsHost.FlowDirection = System.Windows.FlowDirection.LeftToRight;",
-            placementMethod,
+            "FixedNavigationItemsHost.FlowDirection = flowDirection;",
+            navigationPaneCode,
             StringComparison.Ordinal
         );
     }
@@ -664,7 +723,8 @@ public sealed class FlourishShellNavigationLayoutTests
     public void ShellIconContextsUseDedicatedSizesAndCenterStatusHosts()
     {
         var titlebar = XDocument.Load(TitlebarXamlPath);
-        var shell = XDocument.Load(ShellXamlPath);
+        var navigationPane = XDocument.Load(NavigationPaneXamlPath);
+        var statusBar = XDocument.Load(StatusBarXamlPath);
 
         foreach (var name in new[] { "BackButton", "ForwardButton", "NavigationToggleButton" })
         {
@@ -679,17 +739,17 @@ public sealed class FlourishShellNavigationLayoutTests
             "FlourishIconFontSizeWindowCaption"
         );
         AssertIconTypography(
-            FindNamedElement(shell, "NavigationItemIcon"),
+            FindNamedElement(navigationPane, "NavigationItemIcon"),
             "FlourishIconFontSizeNavigation"
         );
         AssertIconTypography(
-            FindNamedElement(shell, "NavigationItemExpander"),
+            FindNamedElement(navigationPane, "NavigationItemExpander"),
             "FlourishIconFontSizeNavigation"
         );
 
-        var queueButton = FindNamedElement(shell, "BackgroundTaskQueueButton");
+        var queueButton = FindNamedElement(statusBar, "BackgroundTaskQueueButton");
         Assert.Equal("Center", (string?)queueButton.Attribute("VerticalAlignment"));
-        var queueCount = FindNamedElement(shell, "BackgroundTaskQueueCountText");
+        var queueCount = FindNamedElement(statusBar, "BackgroundTaskQueueCountText");
         Assert.Equal("Status", (string?)queueCount.Attribute("Role"));
         Assert.Null(queueCount.Attribute("FontFamily"));
         Assert.DoesNotContain(
@@ -699,7 +759,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 || ((string?)element.Attribute("Margin"))?.Contains('-') == true
         );
 
-        var systemButton = FindNamedElement(shell, "SystemStatusButton");
+        var systemButton = FindNamedElement(statusBar, "SystemStatusButton");
         Assert.Equal("Center", (string?)systemButton.Attribute("VerticalAlignment"));
         AssertIconTypography(
             systemButton.Descendants().Single(element =>
@@ -732,7 +792,7 @@ public sealed class FlourishShellNavigationLayoutTests
         );
         AssertIconTypography(searchIcon, "FlourishIconFontSizeTitlebarSearch");
 
-        var shellSource = File.ReadAllText(ShellCodePath);
+        var statusControllerSource = File.ReadAllText(StatusControllerCodePath);
         var statusItemSource = File.ReadAllText(StatusItemViewCachePath);
         foreach (
             var expectedCall in new[]
@@ -743,7 +803,7 @@ public sealed class FlourishShellNavigationLayoutTests
             }
         )
         {
-            Assert.Contains(expectedCall, shellSource, StringComparison.Ordinal);
+            Assert.Contains(expectedCall, statusControllerSource, StringComparison.Ordinal);
         }
 
         AssertSourceBlockCentersVertically(
@@ -753,7 +813,7 @@ public sealed class FlourishShellNavigationLayoutTests
         );
         Assert.Contains("\"FlourishIconFontSizeStatusBar\"", statusItemSource);
         AssertSourceBlockCentersVertically(
-            shellSource,
+            statusControllerSource,
             "var button = new Button",
             "button.Click"
         );
@@ -762,9 +822,9 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void StatusBarConfiguredLabelsUseSmallTextAndQueuedTasksUseAPlainCount()
     {
-        var shell = XDocument.Load(ShellXamlPath);
-        var queueButton = FindNamedElement(shell, "BackgroundTaskQueueButton");
-        var queueCount = FindNamedElement(shell, "BackgroundTaskQueueCountText");
+        var statusBar = XDocument.Load(StatusBarXamlPath);
+        var queueButton = FindNamedElement(statusBar, "BackgroundTaskQueueButton");
+        var queueCount = FindNamedElement(statusBar, "BackgroundTaskQueueCountText");
 
         Assert.Equal("Collapsed", (string?)queueButton.Attribute("Visibility"));
         Assert.Equal("Center", (string?)queueCount.Attribute("HorizontalAlignment"));
@@ -780,7 +840,7 @@ public sealed class FlourishShellNavigationLayoutTests
                 || ((string?)element.Attribute("Margin"))?.Contains('-') == true
         );
 
-        var shellSource = File.ReadAllText(ShellCodePath);
+        var statusControllerSource = File.ReadAllText(StatusControllerCodePath);
         var statusItemsBlock = File.ReadAllText(StatusItemViewCachePath);
         Assert.Contains(
             "\"FlourishFontSizeSmall\"",
@@ -789,22 +849,23 @@ public sealed class FlourishShellNavigationLayoutTests
         );
 
         var backgroundTasksBlock = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private void RefreshBackgroundTaskStatus(",
             "private BackgroundTaskIconView CreateBackgroundTaskIconView("
         );
+        var statusBarSource = File.ReadAllText(StatusBarCodePath);
         Assert.Contains(
-            "queuedTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed",
-            backgroundTasksBlock,
+            "count > 0 ? Visibility.Visible : Visibility.Collapsed",
+            statusBarSource,
             StringComparison.Ordinal
         );
         Assert.Contains(
-            "BackgroundTaskQueueCountText.Text = queuedTaskCount.ToString();",
-            backgroundTasksBlock,
+            "BackgroundTaskQueueCountText.Text = count.ToString();",
+            statusBarSource,
             StringComparison.Ordinal
         );
         Assert.Contains(
-            "AutomationProperties.SetName(",
+            "statusBar.SetQueueState(",
             backgroundTasksBlock,
             StringComparison.Ordinal
         );
@@ -818,11 +879,11 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void StatusRuntimeChangesUseVersionedSnapshotsWithoutRebuildingThePanel()
     {
-        var shellSource = File.ReadAllText(ShellCodePath);
+        var statusControllerSource = File.ReadAllText(StatusControllerCodePath);
         var handler = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private void StatusService_Changed(",
-            "private void ShellRegionService_Changed("
+            "private void BackgroundTaskService_TasksChanged("
         );
         var cacheSource = File.ReadAllText(StatusItemViewCachePath);
 
@@ -831,7 +892,11 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.Contains("statusItemViews.Apply(change)", handler, StringComparison.Ordinal);
         Assert.Contains("statusBarSnapshot = change.Current", handler, StringComparison.Ordinal);
         Assert.DoesNotContain("statusService.Current", handler, StringComparison.Ordinal);
-        Assert.DoesNotContain("statusService.StatusItems", shellSource, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "statusService.StatusItems",
+            statusControllerSource,
+            StringComparison.Ordinal
+        );
         Assert.DoesNotContain("host.Children.Clear()", cacheSource, StringComparison.Ordinal);
         Assert.Contains("snapshot.Version <= appliedVersion", cacheSource, StringComparison.Ordinal);
         Assert.Contains("snapshot.Version != appliedVersion + 1", cacheSource, StringComparison.Ordinal);
@@ -840,9 +905,9 @@ public sealed class FlourishShellNavigationLayoutTests
     [Fact]
     public void BackgroundTaskRefreshHotPath_ReusesImmutableSnapshotsAndAvoidsLinqCopies()
     {
-        var shellSource = File.ReadAllText(ShellCodePath);
+        var statusControllerSource = File.ReadAllText(StatusControllerCodePath);
         var changedHandler = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private void BackgroundTaskService_TasksChanged(",
             "private void BackgroundTaskRefreshTimer_Tick("
         );
@@ -854,7 +919,7 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.DoesNotContain("ToArray(", changedHandler, StringComparison.Ordinal);
 
         var timerTick = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private void BackgroundTaskRefreshTimer_Tick(",
             "private void StartBackgroundTaskRefreshTimer("
         );
@@ -867,7 +932,7 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.DoesNotContain("ToArray(", timerTick, StringComparison.Ordinal);
 
         var refresh = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private void RefreshBackgroundTaskStatus(",
             "private BackgroundTaskIconView CreateBackgroundTaskIconView("
         );
@@ -889,7 +954,7 @@ public sealed class FlourishShellNavigationLayoutTests
         }
 
         var flyoutRefresh = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private void BuildBackgroundTaskFlyoutContent()",
             "private BackgroundTaskRowView CreateBackgroundTaskRowView("
         );
@@ -898,9 +963,9 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.DoesNotContain("ToArray(", flyoutRefresh, StringComparison.Ordinal);
 
         var staleRemoval = GetSourceBlock(
-            shellSource,
+            statusControllerSource,
             "private static void RemoveStaleBackgroundTaskViews<TView>(",
-            "private BackgroundTaskRowView CreateBackgroundTaskRowView("
+            "internal sealed class StatusSurfaceOpenRequestedEventArgs("
         );
         Assert.Contains("List<Guid>? staleIds = null;", staleRemoval, StringComparison.Ordinal);
         Assert.Contains("staleIds ??= []", staleRemoval, StringComparison.Ordinal);
@@ -912,7 +977,7 @@ public sealed class FlourishShellNavigationLayoutTests
     public void TitlebarAndStatusIconHosts_ClearTheCommonButtonMinimumGeometry()
     {
         var titlebar = XDocument.Load(TitlebarXamlPath);
-        var shell = XDocument.Load(ShellXamlPath);
+        var statusBar = XDocument.Load(StatusBarXamlPath);
 
         foreach (
             var name in new[]
@@ -933,8 +998,8 @@ public sealed class FlourishShellNavigationLayoutTests
         }
 
         AssertCompactIconOnlyButton(titlebar, "ProfileButton", "34", "32");
-        AssertCompactIconOnlyButton(shell, "BackgroundTaskQueueButton", "26", "22");
-        AssertCompactIconOnlyButton(shell, "SystemStatusButton", "26", "22");
+        AssertCompactIconOnlyButton(statusBar, "BackgroundTaskQueueButton", "26", "22");
+        AssertCompactIconOnlyButton(statusBar, "SystemStatusButton", "26", "22");
     }
 
     [Fact]
@@ -998,14 +1063,14 @@ public sealed class FlourishShellNavigationLayoutTests
         var keyName = XName.Get("Key", XamlNamespace);
         var nameName = XName.Get("Name", XamlNamespace);
         var layout = XDocument.Load(LayoutXamlPath);
-        var shell = XDocument.Load(ShellXamlPath);
+        var navigationPane = XDocument.Load(NavigationPaneXamlPath);
         var titlebarGeometry = GetTitlebarLeadingButtonGeometry();
         var scrollBarWidth = GetDoubleResource(
             layout,
             keyName,
             "FlourishScrollBarWidth"
         );
-        var paneBorder = shell
+        var paneBorder = navigationPane
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "Border"
@@ -1435,7 +1500,7 @@ public sealed class FlourishShellNavigationLayoutTests
 
     private static XElement GetCollapsedNavigationTrigger()
     {
-        var document = XDocument.Load(ShellXamlPath);
+        var document = XDocument.Load(NavigationPaneXamlPath);
         var trigger = document
             .Descendants()
             .Where(element => element.Name.LocalName == "DataTrigger")
@@ -1566,7 +1631,7 @@ public sealed class FlourishShellNavigationLayoutTests
 
     private static DataTemplate LoadNavigationItemTemplate()
     {
-        var document = XDocument.Load(ShellXamlPath);
+        var document = XDocument.Load(NavigationPaneXamlPath);
         var keyName = XName.Get("Key", XamlNamespace);
         var source = document
             .Descendants()

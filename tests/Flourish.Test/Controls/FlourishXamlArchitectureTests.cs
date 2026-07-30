@@ -2385,7 +2385,7 @@ public sealed class FlourishXamlArchitectureTests
     public void ShellApplicationLogoFallback_UsesTheStandardFontSize()
     {
         var shell = LoadXaml(
-            Path.Combine(FlourishRoot, "Views", "Windows", "FlourishShellWindow.xaml")
+            Path.Combine(FlourishRoot, "Views", "Windows", "ApplicationInfoOverlay.xaml")
         );
         var fallback = shell
             .Descendants()
@@ -2503,7 +2503,7 @@ public sealed class FlourishXamlArchitectureTests
 
         (string File, string ElementName)[] namedHeadings =
         [
-            ("Views/Windows/FlourishShellWindow.xaml", "NavigationGroupHeader"),
+            ("Views/Windows/FlourishNavigationPane.xaml", "NavigationGroupHeader"),
             ("Views/Windows/TitleBar.xaml", "TitleComboBox"),
             ("Views/Windows/FlourishMessageBoxWindow.xaml", "CaptionText"),
             ("Views/Page/ProfilePage.xaml", "DisplayNameText"),

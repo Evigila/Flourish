@@ -1,0 +1,112 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.FlourishStatusBar"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  x:ClassModifier="internal"
+>
+  <Border
+    x:Name="StatusBarBorder"
+    Padding="{DynamicResource FlourishStatusBarPadding}"
+    Background="{DynamicResource FlourishNeutralBackground2Brush}"
+    BorderBrush="{DynamicResource FlourishDividerBrush}"
+    BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
+    PreviewMouseLeftButtonDown="StatusBarBorder_PreviewMouseLeftButtonDown"
+  >
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <StackPanel
+        x:Name="BackgroundTaskItemsHost"
+        Grid.Column="0"
+        AutomationProperties.LiveSetting="Polite"
+        VerticalAlignment="Center"
+        Orientation="Horizontal"
+      />
+
+      <control:Button
+        x:Name="BackgroundTaskQueueButton"
+        Grid.Column="1"
+        Variant="Text"
+        Width="26"
+        Height="22"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="0"
+        VerticalAlignment="Center"
+        Click="BackgroundTaskQueueButton_Click"
+        MouseEnter="BackgroundTaskQueueButton_MouseEnter"
+        Visibility="Collapsed"
+      >
+        <control:Button.Icon>
+          <control:FlourishTextBlock
+            x:Name="BackgroundTaskQueueCountText"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Padding="0"
+            Role="Status"
+            TextAlignment="Center"
+          />
+        </control:Button.Icon>
+      </control:Button>
+
+      <StackPanel
+        x:Name="FooterStartRegionHost"
+        Grid.Column="2"
+        VerticalAlignment="Center"
+        Orientation="Horizontal"
+        Visibility="Collapsed"
+      />
+
+      <StackPanel
+        x:Name="StatusItemsHost"
+        Grid.Column="4"
+        VerticalAlignment="Center"
+        Orientation="Horizontal"
+      />
+
+      <control:Button
+        x:Name="SystemStatusButton"
+        Grid.Column="5"
+        Variant="Text"
+        Width="26"
+        Height="22"
+        MinWidth="0"
+        MinHeight="0"
+        Padding="0"
+        VerticalAlignment="Center"
+        Click="SystemStatusButton_Click"
+        MouseEnter="SystemStatusButton_MouseEnter"
+        Visibility="Collapsed"
+      >
+        <control:Button.Icon>
+          <control:FlourishTextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontFamily="{DynamicResource FlourishIconFontFamily}"
+            FontSize="{DynamicResource FlourishIconFontSizeStatusBar}"
+            LineHeight="{DynamicResource FlourishIconFontSizeStatusBar}"
+            Role="Icon"
+            Text="&#xE950;"
+          />
+        </control:Button.Icon>
+      </control:Button>
+
+      <StackPanel
+        x:Name="FooterEndRegionHost"
+        Grid.Column="6"
+        VerticalAlignment="Center"
+        Orientation="Horizontal"
+        Visibility="Collapsed"
+      />
+    </Grid>
+  </Border>
+</UserControl>

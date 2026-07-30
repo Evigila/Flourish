@@ -1,0 +1,162 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.FlourishNavigationPane"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  x:ClassModifier="internal"
+  mc:Ignorable="d"
+>
+  <UserControl.Resources>
+    <DataTemplate x:Key="FlourishNavigationItemTemplate">
+      <Grid x:Name="NavigationTemplateRoot">
+        <control:FlourishTextBlock
+          x:Name="NavigationGroupHeader"
+          Padding="{DynamicResource FlourishTypographyBottomSpaceSmall}"
+          FontSize="{DynamicResource FlourishFontSizeSmall}"
+          FontWeight="Bold"
+          Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
+          LineHeight="{DynamicResource FlourishLineHeightSmall}"
+          Opacity="0.72"
+          Text="{Binding Label}"
+          Visibility="Collapsed"
+        />
+
+        <Grid x:Name="NavigationItemLayout" Margin="{Binding IndentMargin}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="16" />
+          </Grid.ColumnDefinitions>
+          <control:FlourishTextBlock
+            x:Name="NavigationItemIcon"
+            Width="20"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontFamily="{DynamicResource FlourishIconFontFamily}"
+            FontSize="{DynamicResource FlourishIconFontSizeNavigation}"
+            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+            LineHeight="{DynamicResource FlourishIconFontSizeNavigation}"
+            Role="Icon"
+            Text="{Binding IconGlyph}"
+            TextAlignment="Center"
+          />
+          <control:FlourishTextBlock
+            x:Name="NavigationItemLabel"
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            VerticalAlignment="Center"
+            Text="{Binding Label}"
+          />
+          <control:FlourishTextBlock
+            x:Name="NavigationItemExpander"
+            Grid.Column="2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            FontFamily="{DynamicResource FlourishIconFontFamily}"
+            FontSize="{DynamicResource FlourishIconFontSizeNavigation}"
+            LineHeight="{DynamicResource FlourishIconFontSizeNavigation}"
+            Role="Icon"
+            Text="{Binding ExpandGlyph}"
+          />
+        </Grid>
+      </Grid>
+      <DataTemplate.Triggers>
+        <DataTrigger Binding="{Binding IsGroupHeader}" Value="True">
+          <Setter TargetName="NavigationGroupHeader" Property="Visibility" Value="Visible" />
+          <Setter TargetName="NavigationItemLayout" Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding IsActiveChildParent}" Value="True">
+          <Setter
+            TargetName="NavigationItemLabel"
+            Property="Foreground"
+            Value="{DynamicResource FlourishPrimaryForegroundBrush}"
+          />
+        </DataTrigger>
+        <DataTrigger
+          Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type control:FlourishListBox}}}"
+          Value="True"
+        >
+          <Setter TargetName="NavigationGroupHeader" Property="Visibility" Value="Collapsed" />
+          <Setter TargetName="NavigationItemLabel" Property="Visibility" Value="Collapsed" />
+          <Setter TargetName="NavigationItemExpander" Property="Visibility" Value="Collapsed" />
+          <Setter TargetName="NavigationItemLayout" Property="Margin" Value="0" />
+          <Setter TargetName="NavigationItemLayout" Property="HorizontalAlignment" Value="Center" />
+          <Setter TargetName="NavigationItemLayout" Property="Width" Value="20" />
+        </DataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <Grid x:Name="NavigationPaneTransitionHost">
+    <Border
+      x:Name="NavigationPaneBorder"
+      Padding="{DynamicResource FlourishNavigationPaneLeftPadding}"
+      Background="Transparent"
+      BorderBrush="{DynamicResource FlourishDividerBrush}"
+      BorderThickness="0,0,1,0"
+    >
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel
+          x:Name="NavigationHeaderRegionHost"
+          Grid.Row="0"
+          Margin="{DynamicResource FlourishNavigationCustomRegionMargin}"
+          Orientation="Vertical"
+          Visibility="Collapsed"
+        />
+        <control:FlourishListBox
+          x:Name="NavigationItemsHost"
+          Grid.Row="1"
+          Appearance="Navigation"
+          ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
+          ScrollViewer.CanContentScroll="True"
+          PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
+          PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
+          SelectionChanged="NavigationItemsHost_SelectionChanged"
+          VirtualizingStackPanel.IsVirtualizing="True"
+          VirtualizingStackPanel.VirtualizationMode="Recycling"
+        >
+          <control:FlourishListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </control:FlourishListBox.ItemsPanel>
+        </control:FlourishListBox>
+
+        <Border
+          x:Name="FixedNavigationItemsBorder"
+          Grid.Row="2"
+          Padding="0,6,0,6"
+          BorderBrush="{DynamicResource FlourishDividerBrush}"
+          BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
+          Visibility="Collapsed"
+        >
+          <control:FlourishListBox
+            x:Name="FixedNavigationItemsHost"
+            Appearance="Navigation"
+            ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
+            PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
+            PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            SelectionChanged="NavigationItemsHost_SelectionChanged"
+          />
+        </Border>
+        <StackPanel
+          x:Name="NavigationFooterRegionHost"
+          Grid.Row="3"
+          Margin="{DynamicResource FlourishNavigationCustomRegionMargin}"
+          Orientation="Vertical"
+          Visibility="Collapsed"
+        />
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

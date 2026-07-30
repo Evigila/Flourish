@@ -23,6 +23,17 @@ public sealed class FlourishShellTitleBarFlyoutTests
         "Windows",
         "FlourishShellWindow.xaml"
     );
+    private static readonly string ApplicationInfoXamlPath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Views",
+        "Windows",
+        "ApplicationInfoOverlay.xaml"
+    );
+    private static readonly string ApplicationInfoCode = File.ReadAllText(
+        Path.ChangeExtension(ApplicationInfoXamlPath, ".xaml.cs")
+    );
     private static readonly string ShellCode = File.ReadAllText(
         Path.Combine(
             RepositoryRoot,
@@ -31,6 +42,26 @@ public sealed class FlourishShellTitleBarFlyoutTests
             "Views",
             "Windows",
             "FlourishShellWindow.xaml.cs"
+        )
+    );
+    private static readonly string TitleBarControllerCode = File.ReadAllText(
+        Path.Combine(
+            RepositoryRoot,
+            "src",
+            "Flourish",
+            "Views",
+            "Windows",
+            "ShellTitleBarController.cs"
+        )
+    );
+    private static readonly string ProjectSelectorCode = File.ReadAllText(
+        Path.Combine(
+            RepositoryRoot,
+            "src",
+            "Flourish",
+            "Views",
+            "Windows",
+            "ProjectSelectorController.cs"
         )
     );
 
@@ -55,8 +86,8 @@ public sealed class FlourishShellTitleBarFlyoutTests
             (string?)title.Attribute("SelectionChanged")
         );
         Assert.Contains(
-            "Titlebar.TitleSelectionChanged += ProjectComboBox_SelectionChanged;",
-            ShellCode
+            "titlebar.TitleSelectionChanged += Titlebar_TitleSelectionChanged;",
+            ProjectSelectorCode
         );
         Assert.DoesNotContain(
             document.Descendants(),
@@ -68,9 +99,12 @@ public sealed class FlourishShellTitleBarFlyoutTests
     public void BrandLogos_PreserveTransparentArtworkWithoutCroppingOrTint()
     {
         var titleDocument = XDocument.Load(TitleBarXamlPath);
-        var shellDocument = XDocument.Load(ShellXamlPath);
+        var applicationInfoDocument = XDocument.Load(ApplicationInfoXamlPath);
         var titleLogo = FindNamedElement(titleDocument, "LogoImage");
-        var overlayLogo = FindNamedElement(shellDocument, "ApplicationInfoLogoImage");
+        var overlayLogo = FindNamedElement(
+            applicationInfoDocument,
+            "ApplicationInfoLogoImage"
+        );
 
         Assert.Equal("Uniform", (string?)titleLogo.Attribute("Stretch"));
         Assert.Equal("Uniform", (string?)overlayLogo.Attribute("Stretch"));
@@ -112,14 +146,19 @@ public sealed class FlourishShellTitleBarFlyoutTests
     public void TitleBarFlyout_IsWindowBoundedAndKeepsItsTriggersAboveTheOverlay()
     {
         var document = XDocument.Load(ShellXamlPath);
+        var overlayDocument = XDocument.Load(ApplicationInfoXamlPath);
         var titleBar = FindNamedElement(document, "Titlebar");
-        var overlay = FindNamedElement(document, "TitleBarFlyoutOverlay");
-        var card = FindNamedElement(document, "TitleBarFlyoutCard");
+        var overlay = FindNamedElement(document, "ApplicationInfoOverlay");
+        var overlayCanvas = FindNamedElement(overlayDocument, "OverlayCanvas");
+        var card = FindNamedElement(overlayDocument, "TitleBarFlyoutCard");
 
         Assert.Equal("3", GetAttribute(overlay, "Grid.RowSpan"));
-        Assert.Equal("Transparent", (string?)overlay.Attribute("Background"));
-        Assert.Equal("Collapsed", (string?)overlay.Attribute("Visibility"));
-        Assert.Equal("True", (string?)overlay.Attribute("ClipToBounds"));
+        Assert.Equal("Transparent", (string?)overlayCanvas.Attribute("Background"));
+        Assert.Equal(
+            "Collapsed",
+            (string?)overlayDocument.Root!.Attribute("Visibility")
+        );
+        Assert.Equal("True", (string?)overlayCanvas.Attribute("ClipToBounds"));
         Assert.True(
             int.Parse(GetAttribute(titleBar, "Panel.ZIndex")!)
                 > int.Parse(GetAttribute(overlay, "Panel.ZIndex")!)
@@ -131,28 +170,31 @@ public sealed class FlourishShellTitleBarFlyoutTests
     public void ProjectSelector_RoutesLifecycleOperationsThroughReplaceableBehavior()
     {
         var itemFactory = GetMethod(
-            "private FlourishComboBoxItem CreateProjectComboBoxItem(",
-            "private FlourishComboBoxItem CreateProjectPlaceholderComboBoxItem("
+            ProjectSelectorCode,
+            "private FlourishComboBoxItem CreateProjectItem(",
+            "private FlourishComboBoxItem CreateProjectPlaceholderItem("
         );
         var selection = GetMethod(
-            "private async void ProjectComboBox_SelectionChanged(",
+            ProjectSelectorCode,
+            "private async void Titlebar_TitleSelectionChanged(",
             "private async void ProjectDeleteMenuItem_Click("
         );
         var deletion = GetMethod(
+            ProjectSelectorCode,
             "private async void ProjectDeleteMenuItem_Click(",
-            "private async Task<bool> ExecuteProjectBehaviorAsync("
+            "private async Task<bool> ExecuteBehaviorAsync("
         );
 
         Assert.Contains("projectBehavior.ActivateProjectAsync(projectId, token)", selection);
         Assert.Contains("projectBehavior.CreateProjectAsync", selection);
         Assert.Contains("projectBehavior.DeleteProjectAsync(projectId, token)", deletion);
-        Assert.Contains("new System.Windows.Controls.ContextMenu", itemFactory);
+        Assert.Contains("new WpfContextMenu", itemFactory);
         Assert.Contains("FlourishLocaleKeys.ProjectDelete", itemFactory);
-        Assert.Contains("suppressProjectSelectionChanged", selection);
-        Assert.Contains("ProjectComboBox.IsDropDownOpen = false;", selection);
-        Assert.DoesNotContain("BuildTitleSelectorItems();", selection, StringComparison.Ordinal);
-        Assert.Contains("ProjectService_Changed", ShellCode);
-        Assert.Contains("FlourishFontSizeStandard", ShellCode);
+        Assert.Contains("suppressSelectionChanged", selection);
+        Assert.Contains("selector.IsDropDownOpen = false;", selection);
+        Assert.DoesNotContain("BuildItems(", selection, StringComparison.Ordinal);
+        Assert.Contains("ProjectService_Changed", ProjectSelectorCode);
+        Assert.Contains("FlourishFontSizeStandard", ProjectSelectorCode);
         Assert.DoesNotContain("SetActiveProject", selection, StringComparison.Ordinal);
         Assert.DoesNotContain("RemoveProject", deletion, StringComparison.Ordinal);
     }
@@ -161,17 +203,18 @@ public sealed class FlourishShellTitleBarFlyoutTests
     public void ProjectSelector_UsesApplicationOnlyOrAllProjectsWithNewProjectAction()
     {
         var build = GetMethod(
-            "private void BuildTitleSelectorItems(",
-            "private static FlourishComboBoxItem CreateApplicationTitleComboBoxItem("
+            ProjectSelectorCode,
+            "private void BuildItems(",
+            "private void UpdateProjectItem("
         );
 
         Assert.Contains("projectState.IsMultiProjectEnabled", build);
         Assert.Contains("foreach (var project in projectState.Projects)", build);
-        Assert.Contains("CreateNewProjectComboBoxItem()", build);
-        Assert.Contains("CreateApplicationTitleComboBoxItem(titleState.ApplicationTitle)", build);
-        Assert.Contains("projectSelectorItemsById", build);
-        Assert.Contains("SynchronizeItems(ProjectComboBox, desiredItems);", build);
-        Assert.DoesNotContain("ProjectComboBox.Items.Clear();", build, StringComparison.Ordinal);
+        Assert.Contains("CreateNewProjectItem()", build);
+        Assert.Contains("CreateApplicationTitleItem()", build);
+        Assert.Contains("projectItemsById", build);
+        Assert.Contains("SynchronizeItems(selector, desiredItems);", build);
+        Assert.DoesNotContain("selector.Items.Clear();", build, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -181,9 +224,11 @@ public sealed class FlourishShellTitleBarFlyoutTests
         Assert.Contains("ConflictPolicy = ShortcutConflictPolicy.Append", ShellCode);
         Assert.Contains("Priority = BuiltInProjectBehaviorPriority", ShellCode);
         Assert.Contains("AllowWhenTextInputFocused = true", ShellCode);
-        Assert.Contains("projectBehavior.SaveActiveProjectAsync", ShellCode);
-        Assert.Contains("projectBehavior.CanCloseAsync", ShellCode);
-        Assert.Contains("!projectService.Current.IsMultiProjectEnabled", ShellCode);
+        Assert.Contains("projectSelectorController.SaveAsync", ShellCode);
+        Assert.Contains("projectSelectorController.CheckCloseAsync", ShellCode);
+        Assert.Contains("projectBehavior.SaveActiveProjectAsync", ProjectSelectorCode);
+        Assert.Contains("projectBehavior.CanCloseAsync", ProjectSelectorCode);
+        Assert.Contains("!projectService.Current.IsMultiProjectEnabled", ProjectSelectorCode);
         Assert.Contains("context.Reason != WindowCloseRequestReason.Tray", ShellCode);
         Assert.Contains("windowCloseService.Behavior == WindowCloseBehavior.MinimizeToTray", ShellCode);
     }
@@ -209,9 +254,11 @@ public sealed class FlourishShellTitleBarFlyoutTests
         Assert.Contains("WindowBackgroundTasksKeepRunning", backgroundTaskPrompt);
         Assert.Contains("WindowBackgroundTasksStopAndExit", backgroundTaskPrompt);
         Assert.Contains("MessageBoxImage.Warning", backgroundTaskPrompt);
-        Assert.Contains("backgroundTaskService.ActiveTasks", cancellation);
-        Assert.Contains("backgroundTaskService.CancelTask(task.Id);", cancellation);
-        Assert.Contains("var activeTaskCount = backgroundTaskService.ActiveTasks.Count;", closeRequest);
+        Assert.Contains("statusSurfaceController.CancelActiveTasks();", cancellation);
+        Assert.Contains(
+            "var activeTaskCount = statusSurfaceController.ActiveTaskCount;",
+            closeRequest
+        );
         Assert.Contains("if (activeTaskCount > 0)", closeRequest);
         Assert.Contains("ConfirmBackgroundTasksCloseRequestAsync", closeRequest);
         Assert.Contains("CancelActiveBackgroundTasks();", closeRequest);
@@ -222,40 +269,43 @@ public sealed class FlourishShellTitleBarFlyoutTests
     public void DisplayedTitle_UsesProjectOrPlaceholderOnlyInMultiProjectMode()
     {
         var method = GetMethod(
-            "private string GetDisplayedTitle()",
-            "private void OpenApplicationInfoFlyout("
+            ProjectSelectorCode,
+            "internal string GetDisplayedTitle(",
+            "internal async ValueTask<CommandResult> SaveAsync("
         );
 
         Assert.Contains("projectState.IsMultiProjectEnabled", method);
-        Assert.Contains("GetProjectDisplayTitle(activeProject, titleState)", method);
-        Assert.Contains("titleState.UnnamedProjectPlaceholder", method);
-        Assert.Contains("titleState.ApplicationTitle", method);
+        Assert.Contains("GetProjectDisplayTitle(activeProject, state)", method);
+        Assert.Contains("state.UnnamedProjectPlaceholder", method);
+        Assert.Contains("state.ApplicationTitle", method);
     }
 
     [Fact]
     public void LogoInformation_ExposesProjectTitleOnlyInMultiProjectMode()
     {
-        var method = GetMethod(
-            "private void BuildApplicationInfoFlyoutContent()",
-            "private void BuildTitleSelectorItems("
+        Assert.Contains("projectState.IsMultiProjectEnabled", ApplicationInfoCode);
+        Assert.Contains(
+            "projectState.ActiveProject is { } activeProject",
+            ApplicationInfoCode
         );
-
-        Assert.Contains("projectState.IsMultiProjectEnabled", method);
-        Assert.Contains("projectState.ActiveProject is { } activeProject", method);
     }
 
     [Fact]
     public void LogoInformationBody_UsesTheApplicationInfoShellRegion()
     {
-        var document = XDocument.Load(ShellXamlPath);
+        var document = XDocument.Load(ApplicationInfoXamlPath);
         var bodyScroller = FindNamedElement(document, "ApplicationInfoBodyScrollViewer");
         var routing = GetMethod(
             "private void SetRegionContent(",
-            "private static void SetPanelContent("
+            "private void StopNavigationPaneAnimations("
         );
 
         Assert.Contains("case FlourishRegion.TitlebarApplicationInfo:", routing);
-        Assert.Contains("SetPanelContent(ApplicationInfoBodyHost, elements);", routing);
+        Assert.Contains(
+            "titleBarController.SetApplicationInfoBody(elements);",
+            routing
+        );
+        Assert.Contains("applicationInfo.SetBody(elements);", TitleBarControllerCode);
         Assert.Equal(
             "clr-namespace:ArkheideSystem.Flourish.Controls",
             bodyScroller.Name.NamespaceName
@@ -265,21 +315,39 @@ public sealed class FlourishShellTitleBarFlyoutTests
             "Disabled",
             (string?)bodyScroller.Attribute("HorizontalScrollBarVisibility")
         );
-        Assert.Contains("CloseTitleBarFlyout();", ShellCode);
-        Assert.Contains("TitleBarFlyoutOverlay.Visibility == Visibility.Visible", ShellCode);
+        Assert.Contains("CloseApplicationInfo();", TitleBarControllerCode);
+        Assert.Contains("applicationInfo.IsOpen", TitleBarControllerCode);
+        var shellDocument = XDocument.Load(ShellXamlPath);
+        var applicationInfo = FindNamedElement(shellDocument, "ApplicationInfoOverlay");
+        Assert.Null(applicationInfo.Attribute("DismissRequested"));
+        Assert.Null(applicationInfo.Attribute("PlacementInvalidated"));
+    }
+
+    [Fact]
+    public void TitleBarController_OwnsVersionedStateSearchLogoAndFlyoutLifetime()
+    {
+        Assert.Contains("e.Version <= appliedVersion", TitleBarControllerCode);
+        Assert.Contains("logoCoordinator.IsCurrent(result)", TitleBarControllerCode);
+        Assert.Contains("searchService.AcknowledgeFocusRequest();", TitleBarControllerCode);
+        Assert.Contains("if (!openedWithFocus)", TitleBarControllerCode);
+        Assert.Contains("applicationInfo.FocusContent();", TitleBarControllerCode);
+        Assert.Contains("Math.Clamp(desiredLeft", TitleBarControllerCode);
+        Assert.Contains("if (isDisposed || !applicationInfo.IsOpen)", TitleBarControllerCode);
+        Assert.Contains("logoCoordinator.Dispose();", TitleBarControllerCode);
     }
 
     [Fact]
     public void ProjectChanges_UseVersionedEventSnapshotsAndRejectOutOfOrderUpdates()
     {
         var method = GetMethod(
+            ProjectSelectorCode,
             "private void ProjectService_Changed(",
-            "private void ApplyTitleBarState("
+            "private void LocalizationService_Changed("
         );
 
-        Assert.Contains("var projectState = e.Current;", method);
-        Assert.Contains("projectState.Version <= appliedProjectVersion", method);
-        Assert.Contains("RefreshTitleSelector(titleState, projectState);", method);
+        Assert.Contains("e.Current.Version <= appliedProjectVersion", method);
+        Assert.Contains("appliedProjectVersion = e.Current.Version;", method);
+        Assert.Contains("Refresh(e.Current);", method);
     }
 
     private static XElement FindNamedElement(XDocument document, string name)
@@ -299,10 +367,19 @@ public sealed class FlourishShellTitleBarFlyoutTests
 
     private static string GetMethod(string startMarker, string endMarker)
     {
-        var start = ShellCode.IndexOf(startMarker, StringComparison.Ordinal);
-        var end = ShellCode.IndexOf(endMarker, start + startMarker.Length, StringComparison.Ordinal);
+        return GetMethod(ShellCode, startMarker, endMarker);
+    }
+
+    private static string GetMethod(
+        string source,
+        string startMarker,
+        string endMarker
+    )
+    {
+        var start = source.IndexOf(startMarker, StringComparison.Ordinal);
+        var end = source.IndexOf(endMarker, start + startMarker.Length, StringComparison.Ordinal);
         Assert.True(start >= 0, $"Could not find source marker: {startMarker}");
         Assert.True(end > start, $"Could not find source marker: {endMarker}");
-        return ShellCode[start..end];
+        return source[start..end];
     }
 }

@@ -1,0 +1,15 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.FlourishNotificationHost"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  x:ClassModifier="internal"
+>
+  <StackPanel
+    x:Name="ItemHost"
+    Width="360"
+    Margin="0,52,16,0"
+    HorizontalAlignment="Right"
+    VerticalAlignment="Top"
+    AutomationProperties.LiveSetting="Polite"
+  />
+</UserControl>

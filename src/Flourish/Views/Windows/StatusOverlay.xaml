@@ -1,0 +1,56 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.StatusOverlay"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  x:ClassModifier="internal"
+  Visibility="Collapsed"
+>
+  <Canvas
+    x:Name="OverlayCanvas"
+    Background="Transparent"
+    ClipToBounds="True"
+    PreviewMouseLeftButtonDown="OverlayCanvas_PreviewMouseLeftButtonDown"
+  >
+    <control:Overlay
+      x:Name="StatusFlyoutCard"
+      Width="360"
+      MaxHeight="480"
+      AutomationProperties.LiveSetting="Polite"
+      DismissRequested="StatusFlyoutCard_DismissRequested"
+      Focusable="True"
+      KeyboardNavigation.TabNavigation="Cycle"
+      Padding="14,12"
+      SizeChanged="StatusFlyoutCard_SizeChanged"
+    >
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <control:FlourishTextBlock
+          x:Name="StatusFlyoutTitle"
+          Margin="0,0,0,10"
+          Focusable="True"
+          Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+          Role="CardTitle"
+        />
+        <ItemsControl
+          x:Name="StatusFlyoutContentHost"
+          Grid.Row="1"
+          Focusable="False"
+          ScrollViewer.CanContentScroll="True"
+          Template="{StaticResource FlourishVirtualizingItemsControlTemplate}"
+          VirtualizingPanel.IsVirtualizing="True"
+          VirtualizingPanel.VirtualizationMode="Recycling"
+        >
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Grid>
+    </control:Overlay>
+  </Canvas>
+</UserControl>

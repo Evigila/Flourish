@@ -24,16 +24,30 @@ public sealed class FlourishShellRenderingContractTests
         "Windows",
         "FlourishShellWindow.xaml.cs"
     );
+    private static readonly string NotificationControllerCodePath = Path.Combine(
+        RepositoryRoot,
+        "src",
+        "Flourish",
+        "Views",
+        "Windows",
+        "ShellNotificationController.cs"
+    );
+    private static string ViewPath(string fileName) =>
+        Path.Combine(RepositoryRoot, "src", "Flourish", "Views", "Windows", fileName);
 
     [Fact]
     public void ShellFloatingSurfaces_UseTheSharedOverlayControl()
     {
-        var document = XDocument.Load(ShellXamlPath);
-
         foreach (
-            var cardName in new[] { "ProfileCard", "StatusFlyoutCard", "TitleBarFlyoutCard" }
+            var (fileName, cardName) in new[]
+            {
+                ("ApplicationInfoOverlay.xaml", "TitleBarFlyoutCard"),
+                ("ProfileOverlay.xaml", "ProfileCard"),
+                ("StatusOverlay.xaml", "StatusFlyoutCard"),
+            }
         )
         {
+            var document = XDocument.Load(ViewPath(fileName));
             var card = FindNamedElement(document, cardName);
 
             Assert.DoesNotContain(
@@ -43,12 +57,33 @@ public sealed class FlourishShellRenderingContractTests
             Assert.Equal("Overlay", card.Name.LocalName);
         }
 
-        Assert.Equal("Temporary", (string?)FindNamedElement(document, "TitleBarFlyoutCard").Attribute("Variant"));
-        Assert.Equal("Strong", (string?)FindNamedElement(document, "ProfileCard").Attribute("Variant"));
-        Assert.Equal("StatusFlyoutCard_DismissRequested", (string?)FindNamedElement(document, "StatusFlyoutCard").Attribute("DismissRequested"));
+        Assert.Equal(
+            "Temporary",
+            (string?)
+                FindNamedElement(
+                    XDocument.Load(ViewPath("ApplicationInfoOverlay.xaml")),
+                    "TitleBarFlyoutCard"
+                ).Attribute("Variant")
+        );
+        Assert.Equal(
+            "Strong",
+            (string?)
+                FindNamedElement(
+                    XDocument.Load(ViewPath("ProfileOverlay.xaml")),
+                    "ProfileCard"
+                ).Attribute("Variant")
+        );
+        Assert.Equal(
+            "StatusFlyoutCard_DismissRequested",
+            (string?)
+                FindNamedElement(
+                    XDocument.Load(ViewPath("StatusOverlay.xaml")),
+                    "StatusFlyoutCard"
+                ).Attribute("DismissRequested")
+        );
 
         var buildNotifications = GetMethod(
-            File.ReadAllText(ShellCodePath),
+            File.ReadAllText(NotificationControllerCodePath),
             "private void BuildNotifications(",
             "private async void NotificationAction_Click("
         );
@@ -65,32 +100,36 @@ public sealed class FlourishShellRenderingContractTests
             buildNotifications,
             StringComparison.Ordinal
         );
-        Assert.Contains("notificationViewsById", buildNotifications, StringComparison.Ordinal);
+        Assert.Contains("viewsById", buildNotifications, StringComparison.Ordinal);
         Assert.Contains(
-            "SynchronizePanelChildren(NotificationItemsHost, desiredViews)",
+            "SynchronizePanelChildren(host.Items, desiredViews)",
             buildNotifications,
             StringComparison.Ordinal
         );
         Assert.DoesNotContain(
-            "NotificationItemsHost.Children.Clear()",
+            "host.Items.Children.Clear()",
             buildNotifications,
             StringComparison.Ordinal
         );
 
         var changedHandler = GetMethod(
-            File.ReadAllText(ShellCodePath),
+            File.ReadAllText(NotificationControllerCodePath),
             "private void NotificationService_NotificationsChanged(",
-            "private void ProfileFlyoutService_Changed("
+            "private void FlushPendingNotifications("
         );
         Assert.Contains("pendingNotifications = e.Notifications", changedHandler);
-        Assert.Contains("e.Version <= pendingNotificationVersion", changedHandler);
+        Assert.Contains("e.Version <= pendingVersion", changedHandler);
         Assert.DoesNotContain("notificationService.ActiveNotifications", changedHandler);
+        var shellCode = File.ReadAllText(ShellCodePath);
+        Assert.Contains("notificationController = new ShellNotificationController(", shellCode);
+        Assert.Contains("notificationController.Dispose();", shellCode);
+        Assert.DoesNotContain("private void BuildNotifications(", shellCode);
     }
 
     [Fact]
     public void StatusFlyoutItems_UseARecyclingVirtualizingPanel()
     {
-        var document = XDocument.Load(ShellXamlPath);
+        var document = XDocument.Load(ViewPath("StatusOverlay.xaml"));
         var host = FindNamedElement(document, "StatusFlyoutContentHost");
         var card = FindNamedElement(document, "StatusFlyoutCard");
 
@@ -114,15 +153,15 @@ public sealed class FlourishShellRenderingContractTests
             element => element.Name.LocalName == "VirtualizingStackPanel"
         );
 
-        var shellCode = File.ReadAllText(ShellCodePath);
+        var statusOverlayCode = File.ReadAllText(ViewPath("StatusOverlay.xaml.cs"));
         Assert.Contains(
-            "SynchronizeItems(StatusFlyoutContentHost, desiredRows);",
-            shellCode,
+            "internal void SetItems(",
+            statusOverlayCode,
             StringComparison.Ordinal
         );
         Assert.DoesNotContain(
             "StatusFlyoutContentHost.Children",
-            shellCode,
+            statusOverlayCode,
             StringComparison.Ordinal
         );
     }

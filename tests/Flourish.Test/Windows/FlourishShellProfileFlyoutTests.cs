@@ -17,16 +17,37 @@ public sealed class FlourishShellProfileFlyoutTests
             "FlourishShellWindow.xaml.cs"
         )
     );
+    private static readonly string ProfileOverlaySource = File.ReadAllText(
+        Path.Combine(
+            TestPaths.RepositoryRoot,
+            "src",
+            "Flourish",
+            "Views",
+            "Windows",
+            "ProfileOverlay.xaml.cs"
+        )
+    );
+    private static readonly string ProfileControllerSource = File.ReadAllText(
+        Path.Combine(
+            TestPaths.RepositoryRoot,
+            "src",
+            "Flourish",
+            "Views",
+            "Windows",
+            "ShellProfileController.cs"
+        )
+    );
 
     [Fact]
-    public void ConfigureProfileSurface_KeepsProfileChromeReadyWithoutMaterializingContent()
+    public void ConfigureSurface_KeepsProfileChromeReadyWithoutMaterializingContent()
     {
         var method = GetSourceSection(
-            "private void ConfigureProfileSurface()",
+            ProfileControllerSource,
+            "private void ConfigureSurface(",
             "private void EnsureProfileContent("
         );
 
-        Assert.Contains("Titlebar.SetProfile(profileService.CurrentProfile);", method);
+        Assert.Contains("titlebar.SetProfile(profileService.CurrentProfile);", method);
         Assert.Contains(
             "profileService.ProfileChanged += ProfileService_ProfileChanged;",
             method
@@ -35,37 +56,41 @@ public sealed class FlourishShellProfileFlyoutTests
             "profileService.ProfileChanged -= ProfileService_ProfileChanged;",
             method
         );
-        Assert.Contains("isProfileServiceSubscribed = false;", method);
-        Assert.Contains("ApplyProfileFlyoutState(state);", method);
+        Assert.Contains("isProfileServiceSubscribed = enabled;", method);
+        Assert.Contains("ApplyFlyoutState(current, isAvailable);", method);
         Assert.DoesNotContain("GetServiceOrCreateInstance", method, StringComparison.Ordinal);
-        Assert.DoesNotContain("ProfileFrame.Navigate", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("overlay.SetContent", method, StringComparison.Ordinal);
     }
 
     [Fact]
     public void EnsureProfileContent_TracksTheConfiguredTypeOnlyAfterSuccessfulNavigation()
     {
         var method = GetSourceSection(
+            ProfileControllerSource,
             "private void EnsureProfileContent(",
-            "private async void ShellWindow_Loaded("
+            "private void ApplyFlyoutState("
         );
         var factoryIndex = method.IndexOf(
             "ActivatorUtilities.GetServiceOrCreateInstance",
             StringComparison.Ordinal
         );
         var navigationIndex = method.IndexOf(
+            "overlay.SetContent(page, state.ContentPageType)",
+            StringComparison.Ordinal
+        );
+        var componentNavigationIndex = ProfileOverlaySource.IndexOf(
             "ProfileFrame.Navigate(page)",
             StringComparison.Ordinal
         );
-        var assignmentIndex = method.LastIndexOf(
-            "materializedProfileConfiguredPageType = state.ContentPageType;",
+        var assignmentIndex = ProfileOverlaySource.LastIndexOf(
+            "materializedContentType = contentType;",
             StringComparison.Ordinal
         );
 
         Assert.Contains(
-            "materializedProfileConfiguredPageType == state.ContentPageType",
+            "overlay.HasMaterializedContent(state.ContentPageType)",
             method
         );
-        Assert.Contains("ProfileFrame.Content is WpfPage", method);
         Assert.Contains(
             "fontService.ApplyToPage(page, state.ContentPageType);",
             method
@@ -76,7 +101,7 @@ public sealed class FlourishShellProfileFlyoutTests
             "The profile page must be created before it is navigated."
         );
         Assert.True(
-            assignmentIndex > navigationIndex,
+            assignmentIndex > componentNavigationIndex,
             "The configured type must only be committed after navigation succeeds."
         );
         Assert.DoesNotContain(
@@ -87,25 +112,26 @@ public sealed class FlourishShellProfileFlyoutTests
     }
 
     [Fact]
-    public void ApplyProfileFlyoutState_MaterializesOnlyVisibleContentAndRollsBackFailures()
+    public void ApplyFlyoutState_MaterializesOnlyVisibleContentAndRollsBackFailures()
     {
         var method = GetSourceSection(
-            "private void ApplyProfileFlyoutState(",
-            "private void ApplyWindowOptions()"
+            ProfileControllerSource,
+            "private void ApplyFlyoutState(",
+            "private void ProfileService_ProfileChanged("
         );
         var hiddenGuardIndex = method.IndexOf("if (!state.IsVisible)", StringComparison.Ordinal);
         var ensureIndex = method.IndexOf("EnsureProfileContent(state);", StringComparison.Ordinal);
         var visibleIndex = method.IndexOf(
-            "ProfileOverlay.Visibility = Visibility.Visible;",
+            "overlay.Open();",
             StringComparison.Ordinal
         );
 
         Assert.StartsWith(
-            "private void ApplyProfileFlyoutState(",
+            "private void ApplyFlyoutState(",
             method.TrimStart(),
             StringComparison.Ordinal
         );
-        Assert.Contains("ProfileOverlay.Visibility = Visibility.Collapsed;", method);
+        Assert.Contains("overlay.Close();", method);
         Assert.True(hiddenGuardIndex >= 0, "The hidden state is not handled explicitly.");
         Assert.True(
             ensureIndex > hiddenGuardIndex,
@@ -117,7 +143,7 @@ public sealed class FlourishShellProfileFlyoutTests
         );
         Assert.Contains("catch", method, StringComparison.Ordinal);
         Assert.Contains(
-            "profileFlyoutService.SynchronizeVisibility(false);",
+            "flyoutService.SynchronizeVisibility(false);",
             method
         );
         Assert.Contains("flourish.profile.content.error", method);
@@ -128,21 +154,23 @@ public sealed class FlourishShellProfileFlyoutTests
     public void ProfileFlyoutRuntimeChanges_UseTheSingleLazyConfigurationPath()
     {
         var method = GetSourceSection(
-            "private void ProfileFlyoutService_Changed(",
-            "private void LocalizationService_Changed("
+            ProfileControllerSource,
+            "private void FlyoutService_Changed(",
+            "private void TitleBarService_Changed("
         );
 
-        Assert.Contains("DispatchRuntimeChange(ConfigureProfileSurface);", method);
-        Assert.DoesNotContain("ApplyProfileFlyoutState", method, StringComparison.Ordinal);
-        Assert.Equal(1, CountOccurrences(ShellSource, "EnsureProfileContent(state)"));
+        Assert.Contains("DispatchIfActive(() => ConfigureSurface(e.State));", method);
+        Assert.DoesNotContain("ApplyFlyoutState", method, StringComparison.Ordinal);
+        Assert.Equal(1, CountOccurrences(ProfileControllerSource, "EnsureProfileContent(state)"));
     }
 
     [Fact]
     public void RuntimeDispatch_RechecksWindowLifetimeWhenQueuedWorkActuallyExecutes()
     {
         var method = GetSourceSection(
+            ShellSource,
             "private void DispatchRuntimeChange(Action action)",
-            "private void ClearToolbarButtonCache()"
+            "private void UpdateRuntimeSurfaceVisibility()"
         );
 
         Assert.Contains("void ExecuteIfActive()", method);
@@ -155,16 +183,25 @@ public sealed class FlourishShellProfileFlyoutTests
     public void TitleBarProfileVisibility_ReconfiguresTheProfileSubscription()
     {
         var method = GetSourceSection(
+            ProfileControllerSource,
             "private void TitleBarService_Changed(",
-            "private void ApplyTitleBarState("
+            "private void FontService_Changed("
         );
 
-        Assert.Contains("current.IsProfileVisible", method);
-        Assert.Contains(
-            "shouldSubscribeToProfile != isProfileServiceSubscribed",
-            method
-        );
-        Assert.Contains("ConfigureProfileSurface();", method);
+        Assert.Contains("DispatchIfActive(() => ConfigureSurface());", method);
+        Assert.Contains("IsProfileVisible: true", ProfileControllerSource);
+        Assert.Contains("SetProfileSubscription(isAvailable);", ProfileControllerSource);
+    }
+
+    [Fact]
+    public void ShellWindow_DelegatesProfileOwnershipToTheController()
+    {
+        Assert.Contains("new ShellProfileController(", ShellSource);
+        Assert.Contains("profileController.InitializeAsync()", ShellSource);
+        Assert.Contains("profileController.Hide();", ShellSource);
+        Assert.Contains("profileController.Dispose();", ShellSource);
+        Assert.DoesNotContain("ConfigureProfileSurface", ShellSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ProfileFlyoutService_Changed", ShellSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -191,10 +228,14 @@ public sealed class FlourishShellProfileFlyoutTests
         Assert.Equal(typeof(SecondProfilePage), sut.Current.ContentPageType);
     }
 
-    private static string GetSourceSection(string startMarker, string endMarker)
+    private static string GetSourceSection(
+        string source,
+        string startMarker,
+        string endMarker
+    )
     {
-        var start = ShellSource.IndexOf(startMarker, StringComparison.Ordinal);
-        var end = ShellSource.IndexOf(
+        var start = source.IndexOf(startMarker, StringComparison.Ordinal);
+        var end = source.IndexOf(
             endMarker,
             start + startMarker.Length,
             StringComparison.Ordinal
@@ -202,7 +243,7 @@ public sealed class FlourishShellProfileFlyoutTests
 
         Assert.True(start >= 0, $"Could not find source marker: {startMarker}");
         Assert.True(end > start, $"Could not find source marker: {endMarker}");
-        return ShellSource[start..end];
+        return source[start..end];
     }
 
     private static int CountOccurrences(string source, string value)

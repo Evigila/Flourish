@@ -20,87 +20,6 @@
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d"
 >
-  <Window.Resources>
-    <DataTemplate x:Key="FlourishNavigationItemTemplate">
-      <Grid x:Name="NavigationTemplateRoot">
-        <control:FlourishTextBlock
-          x:Name="NavigationGroupHeader"
-          FontSize="{DynamicResource FlourishFontSizeSmall}"
-          LineHeight="{DynamicResource FlourishLineHeightSmall}"
-          Padding="{DynamicResource FlourishTypographyBottomSpaceSmall}"
-          FontWeight="Bold"
-          Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
-          Opacity="0.72"
-          Text="{Binding Label}"
-          Visibility="Collapsed"
-        />
-
-        <Grid x:Name="NavigationItemLayout" Margin="{Binding IndentMargin}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="16" />
-          </Grid.ColumnDefinitions>
-          <control:FlourishTextBlock
-            x:Name="NavigationItemIcon"
-            Width="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontFamily="{DynamicResource FlourishIconFontFamily}"
-            FontSize="{DynamicResource FlourishIconFontSizeNavigation}"
-            LineHeight="{DynamicResource FlourishIconFontSizeNavigation}"
-            Role="Icon"
-            Text="{Binding IconGlyph}"
-            TextAlignment="Center"
-            Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-          />
-          <control:FlourishTextBlock
-            x:Name="NavigationItemLabel"
-            Grid.Column="1"
-            Margin="8,0,0,0"
-            VerticalAlignment="Center"
-            Text="{Binding Label}"
-          />
-          <control:FlourishTextBlock
-            x:Name="NavigationItemExpander"
-            Grid.Column="2"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            FontFamily="{DynamicResource FlourishIconFontFamily}"
-            FontSize="{DynamicResource FlourishIconFontSizeNavigation}"
-            LineHeight="{DynamicResource FlourishIconFontSizeNavigation}"
-            Role="Icon"
-            Text="{Binding ExpandGlyph}"
-          />
-        </Grid>
-      </Grid>
-      <DataTemplate.Triggers>
-        <DataTrigger Binding="{Binding IsGroupHeader}" Value="True">
-          <Setter TargetName="NavigationGroupHeader" Property="Visibility" Value="Visible" />
-          <Setter TargetName="NavigationItemLayout" Property="Visibility" Value="Collapsed" />
-        </DataTrigger>
-        <DataTrigger Binding="{Binding IsActiveChildParent}" Value="True">
-          <Setter
-            TargetName="NavigationItemLabel"
-            Property="Foreground"
-            Value="{DynamicResource FlourishPrimaryForegroundBrush}"
-          />
-        </DataTrigger>
-        <DataTrigger
-          Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type control:FlourishListBox}}}"
-          Value="True"
-        >
-          <Setter TargetName="NavigationGroupHeader" Property="Visibility" Value="Collapsed" />
-          <Setter TargetName="NavigationItemLabel" Property="Visibility" Value="Collapsed" />
-          <Setter TargetName="NavigationItemExpander" Property="Visibility" Value="Collapsed" />
-          <Setter TargetName="NavigationItemLayout" Property="Margin" Value="0" />
-          <Setter TargetName="NavigationItemLayout" Property="HorizontalAlignment" Value="Center" />
-          <Setter TargetName="NavigationItemLayout" Property="Width" Value="20" />
-        </DataTrigger>
-      </DataTemplate.Triggers>
-    </DataTemplate>
-  </Window.Resources>
-
   <Border
     x:Name="ShellBorder"
     BorderBrush="{DynamicResource FlourishDividerBrush}"
@@ -128,179 +47,16 @@
             <ColumnDefinition x:Name="ContentColumn" Width="*" />
           </Grid.ColumnDefinitions>
 
-          <Grid
-            x:Name="NavigationPaneTransitionHost"
+          <view:FlourishNavigationPane
+            x:Name="NavigationPane"
             Grid.Column="0"
             Panel.ZIndex="10"
-          >
-            <Border
-              x:Name="NavigationPaneBorder"
-              Background="Transparent"
-              BorderBrush="{DynamicResource FlourishDividerBrush}"
-              BorderThickness="0,0,1,0"
-              Padding="{DynamicResource FlourishNavigationPaneLeftPadding}"
-            >
-              <Grid>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <StackPanel
-                  x:Name="NavigationHeaderRegionHost"
-                  Grid.Row="0"
-                  Margin="{DynamicResource FlourishNavigationCustomRegionMargin}"
-                  Orientation="Vertical"
-                  Visibility="Collapsed"
-                />
-                <control:FlourishListBox
-                  x:Name="NavigationItemsHost"
-                  Grid.Row="1"
-                  Appearance="Navigation"
-                  ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
-                  ItemsSource="{Binding}"
-                  ScrollViewer.CanContentScroll="True"
-                  PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
-                  PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
-                  SelectionChanged="NavigationItemsHost_SelectionChanged"
-                  VirtualizingStackPanel.IsVirtualizing="True"
-                  VirtualizingStackPanel.VirtualizationMode="Recycling"
-                >
-                  <control:FlourishListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <VirtualizingStackPanel />
-                    </ItemsPanelTemplate>
-                  </control:FlourishListBox.ItemsPanel>
-                </control:FlourishListBox>
+          />
 
-                <Border
-                  x:Name="FixedNavigationItemsBorder"
-                  Grid.Row="2"
-                  Padding="0,6,0,6"
-                  BorderBrush="{DynamicResource FlourishDividerBrush}"
-                  BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
-                  Visibility="Collapsed"
-                >
-                  <control:FlourishListBox
-                    x:Name="FixedNavigationItemsHost"
-                    Appearance="Navigation"
-                    ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
-                    ItemsSource="{Binding}"
-                    PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
-                    PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"
-                    SelectionChanged="NavigationItemsHost_SelectionChanged"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                  />
-                </Border>
-                <StackPanel
-                  x:Name="NavigationFooterRegionHost"
-                  Grid.Row="3"
-                  Margin="{DynamicResource FlourishNavigationCustomRegionMargin}"
-                  Orientation="Vertical"
-                  Visibility="Collapsed"
-                />
-              </Grid>
-            </Border>
-          </Grid>
-
-          <Grid
-            x:Name="ContentAreaGrid"
+          <view:FlourishShellContentHost
+            x:Name="ContentHost"
             Grid.Column="1"
-          >
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="*" />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <StackPanel
-              x:Name="ContentHeaderRegionHost"
-              Grid.Row="0"
-              Margin="{DynamicResource FlourishContentBodyMargin}"
-              Orientation="Vertical"
-              Visibility="Collapsed"
-            />
-
-            <Grid
-              x:Name="ToolbarLayoutHost"
-              Grid.Row="1"
-              Margin="{DynamicResource FlourishContentBodyMargin}"
-            >
-              <Border
-                x:Name="ToolbarHostBorder"
-                Margin="0,0,0,4"
-                Padding="2"
-                Background="{DynamicResource FlourishCardBackgroundBrush}"
-                BorderBrush="{DynamicResource FlourishSurfaceStrokeBrush}"
-                BorderThickness="{DynamicResource FlourishSurfaceBorderThickness}"
-                CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
-              >
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                  </Grid.ColumnDefinitions>
-                  <StackPanel
-                    x:Name="ToolbarStartRegionHost"
-                    Grid.Column="0"
-                    Orientation="Horizontal"
-                    Visibility="Collapsed"
-                  />
-                  <StackPanel x:Name="ToolbarItemsHost" Grid.Column="1" Orientation="Horizontal" />
-                  <StackPanel
-                    x:Name="ToolbarEndRegionHost"
-                    Grid.Column="2"
-                    Orientation="Horizontal"
-                    Visibility="Collapsed"
-                  />
-                </Grid>
-              </Border>
-            </Grid>
-
-            <Grid
-              x:Name="BreadcrumbLayoutHost"
-              Grid.Row="2"
-              Margin="{DynamicResource FlourishContentBodyMargin}"
-            >
-              <Border x:Name="BreadcrumbHost" Margin="0,0,0,8" Background="Transparent">
-                <control:FlourishTextBlock
-                  x:Name="BreadcrumbText"
-                  VerticalAlignment="Center"
-                  FontSize="{DynamicResource FlourishFontSizeStandard}"
-                  Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
-                />
-              </Border>
-            </Grid>
-
-            <Grid
-              x:Name="ContentFrameHost"
-              Grid.Row="3"
-              ClipToBounds="True"
-            >
-              <Grid x:Name="PageTransitionContentHost">
-                <Frame
-                  x:Name="RootFrame"
-                  Focusable="False"
-                  JournalOwnership="UsesParentJournal"
-                  NavigationUIVisibility="Hidden"
-                />
-              </Grid>
-              <Grid x:Name="ContentOverlayRegionHost" Panel.ZIndex="10" Visibility="Collapsed" />
-            </Grid>
-
-            <StackPanel
-              x:Name="ContentFooterRegionHost"
-              Grid.Row="4"
-              Margin="{DynamicResource FlourishContentBodyMargin}"
-              Orientation="Vertical"
-              Visibility="Collapsed"
-            />
-          </Grid>
+          />
 
           <control:FlourishGridSplitter
             x:Name="NavigationPaneSplitter"
@@ -314,297 +70,35 @@
         </Grid>
       </Border>
 
-      <Border
-        x:Name="StatusBarBorder"
+      <view:FlourishStatusBar
+        x:Name="StatusBar"
         Grid.Row="2"
         Panel.ZIndex="120"
-        Padding="{DynamicResource FlourishStatusBarPadding}"
-        Background="{DynamicResource FlourishNeutralBackground2Brush}"
-        BorderBrush="{DynamicResource FlourishDividerBrush}"
-        BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
-        PreviewMouseLeftButtonDown="StatusBarBorder_PreviewMouseLeftButtonDown"
-      >
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-
-          <StackPanel
-            x:Name="BackgroundTaskItemsHost"
-            Grid.Column="0"
-            AutomationProperties.LiveSetting="Polite"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-          />
-
-          <control:Button
-            x:Name="BackgroundTaskQueueButton"
-            Grid.Column="1"
-            Variant="Text"
-            Width="26"
-            Height="22"
-            MinWidth="0"
-            MinHeight="0"
-            Padding="0"
-            VerticalAlignment="Center"
-            Click="BackgroundTaskQueueButton_Click"
-            MouseEnter="BackgroundTaskQueueButton_MouseEnter"
-            Visibility="Collapsed"
-          >
-            <control:Button.Icon>
-              <control:FlourishTextBlock
-                x:Name="BackgroundTaskQueueCountText"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Padding="0"
-                Role="Status"
-                TextAlignment="Center"
-              />
-            </control:Button.Icon>
-          </control:Button>
-
-          <StackPanel
-            x:Name="FooterStartRegionHost"
-            Grid.Column="2"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Visibility="Collapsed"
-          />
-
-          <StackPanel
-            x:Name="StatusItemsHost"
-            Grid.Column="4"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-          />
-
-          <control:Button
-            x:Name="SystemStatusButton"
-            Grid.Column="5"
-            Variant="Text"
-            Width="26"
-            Height="22"
-            MinWidth="0"
-            MinHeight="0"
-            Padding="0"
-            VerticalAlignment="Center"
-            Click="SystemStatusButton_Click"
-            MouseEnter="SystemStatusButton_MouseEnter"
-            Visibility="Collapsed"
-          >
-            <control:Button.Icon>
-              <control:FlourishTextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontFamily="{DynamicResource FlourishIconFontFamily}"
-                FontSize="{DynamicResource FlourishIconFontSizeStatusBar}"
-                LineHeight="{DynamicResource FlourishIconFontSizeStatusBar}"
-                Role="Icon"
-                Text="&#xE950;"
-              />
-            </control:Button.Icon>
-          </control:Button>
-
-          <StackPanel
-            x:Name="FooterEndRegionHost"
-            Grid.Column="6"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Visibility="Collapsed"
-          />
-        </Grid>
-      </Border>
-
-      <StackPanel
-        x:Name="NotificationItemsHost"
-        Grid.RowSpan="3"
-        Width="360"
-        Margin="0,52,16,0"
-        HorizontalAlignment="Right"
-        VerticalAlignment="Top"
-        Panel.ZIndex="200"
-        AutomationProperties.LiveSetting="Polite"
       />
 
-      <Canvas
-        x:Name="TitleBarFlyoutOverlay"
+      <view:FlourishNotificationHost
+        x:Name="NotificationHost"
+        Grid.RowSpan="3"
+        Panel.ZIndex="200"
+      />
+
+      <view:ApplicationInfoOverlay
+        x:Name="ApplicationInfoOverlay"
         Grid.RowSpan="3"
         Panel.ZIndex="145"
-        Background="Transparent"
-        ClipToBounds="True"
-        PreviewMouseLeftButtonDown="TitleBarFlyoutOverlay_PreviewMouseLeftButtonDown"
-        Visibility="Collapsed"
-      >
-        <control:Overlay
-          x:Name="TitleBarFlyoutCard"
-          Width="340"
-          MaxHeight="520"
-          AutomationProperties.LiveSetting="Polite"
-          DismissRequested="TitleBarFlyoutCard_DismissRequested"
-          Focusable="True"
-          KeyboardNavigation.TabNavigation="Cycle"
-          Variant="Temporary"
-          SizeChanged="TitleBarFlyoutCard_SizeChanged"
-        >
-            <Grid>
-              <Grid x:Name="ApplicationInfoContent" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="72" />
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <Border
-                    Width="64"
-                    Height="64"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    ClipToBounds="True"
-                    CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
-                  >
-                    <Grid>
-                      <Image x:Name="ApplicationInfoLogoImage" Stretch="Uniform" />
-                      <control:FlourishTextBlock
-                        x:Name="ApplicationInfoLogoFallback"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="{DynamicResource FlourishFontSizeStandard}"
-                        Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
-                      />
-                    </Grid>
-                  </Border>
-                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <control:FlourishTextBlock
-                      x:Name="ApplicationInfoTitle"
-                      FontWeight="Bold"
-                      Role="CardTitle"
-                      TextWrapping="Wrap"
-                    />
-                    <control:FlourishTextBlock
-                      x:Name="ApplicationInfoSubTitle"
-                      Margin="0,3,0,0"
-                      Role="Description"
-                      TextWrapping="Wrap"
-                    />
-                    <control:FlourishTextBlock
-                      x:Name="ApplicationInfoProjectTitle"
-                      Margin="0,8,0,0"
-                      Role="Status"
-                      TextWrapping="Wrap"
-                    />
-                  </StackPanel>
-                </Grid>
-                <control:ScrollViewer
-                  x:Name="ApplicationInfoBodyScrollViewer"
-                  Grid.Row="1"
-                  Margin="0,14,0,0"
-                  HorizontalScrollBarVisibility="Disabled"
-                  VerticalScrollBarVisibility="Auto"
-                  Visibility="Collapsed"
-                >
-                  <StackPanel
-                    x:Name="ApplicationInfoBodyHost"
-                    Orientation="Vertical"
-                  />
-                </control:ScrollViewer>
-              </Grid>
+        />
 
-            </Grid>
-        </control:Overlay>
-      </Canvas>
-
-      <Canvas
+      <view:ProfileOverlay
         x:Name="ProfileOverlay"
         Grid.RowSpan="3"
         Panel.ZIndex="130"
-        Background="Transparent"
-        ClipToBounds="True"
-        PreviewMouseLeftButtonDown="ProfileOverlay_PreviewMouseLeftButtonDown"
-        Visibility="Collapsed"
-      >
-        <control:Overlay
-          x:Name="ProfileCard"
-          Width="304"
-          Padding="0"
-          SizeChanged="ProfileCard_SizeChanged"
-          Variant="Strong"
-        >
-            <Frame
-              x:Name="ProfileFrame"
-              Background="Transparent"
-              BorderBrush="{x:Null}"
-              BorderThickness="0"
-              ClipToBounds="True"
-              Focusable="False"
-              FocusVisualStyle="{x:Null}"
-              JournalOwnership="UsesParentJournal"
-              NavigationUIVisibility="Hidden"
-              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-              ScrollViewer.VerticalScrollBarVisibility="Disabled"
-              SizeChanged="ProfileFrame_SizeChanged"
-            />
-        </control:Overlay>
-      </Canvas>
+      />
 
-      <Canvas
-        x:Name="StatusFlyoutOverlay"
+      <view:StatusOverlay
+        x:Name="StatusOverlay"
         Grid.RowSpan="3"
         Panel.ZIndex="110"
-        Background="Transparent"
-        ClipToBounds="True"
-        PreviewMouseLeftButtonDown="StatusFlyoutOverlay_PreviewMouseLeftButtonDown"
-        Visibility="Collapsed"
-      >
-        <control:Overlay
-          x:Name="StatusFlyoutCard"
-          Width="360"
-          MaxHeight="480"
-          AutomationProperties.LiveSetting="Polite"
-          DismissRequested="StatusFlyoutCard_DismissRequested"
-          Focusable="True"
-          KeyboardNavigation.TabNavigation="Cycle"
-          Padding="14,12"
-          SizeChanged="StatusFlyoutCard_SizeChanged"
-        >
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-              </Grid.RowDefinitions>
-              <control:FlourishTextBlock
-                x:Name="StatusFlyoutTitle"
-                Margin="0,0,0,10"
-                Focusable="True"
-                Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
-                Role="CardTitle"
-              />
-              <ItemsControl
-                x:Name="StatusFlyoutContentHost"
-                Grid.Row="1"
-                Focusable="False"
-                ScrollViewer.CanContentScroll="True"
-                Template="{StaticResource FlourishVirtualizingItemsControlTemplate}"
-                VirtualizingPanel.IsVirtualizing="True"
-                VirtualizingPanel.VirtualizationMode="Recycling"
-              >
-                <ItemsControl.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                  </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-              </ItemsControl>
-            </Grid>
-        </control:Overlay>
-      </Canvas>
+      />
     </Grid>
   </Border>
 </Window>

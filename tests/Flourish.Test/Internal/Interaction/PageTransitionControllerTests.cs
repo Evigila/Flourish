@@ -327,7 +327,7 @@ public sealed class PageTransitionControllerTests
                 "Flourish",
                 "Views",
                 "Windows",
-                "FlourishShellWindow.xaml"
+                "FlourishShellContentHost.xaml"
             )
         );
         var host = FindNamedElement(document, "ContentFrameHost");

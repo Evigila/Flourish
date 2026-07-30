@@ -943,17 +943,17 @@ public sealed class GalleryControlPageStructureTests
         var onPrimary = "{DynamicResource FlourishForegroundOnPrimaryBrush}";
         var disabled = "{DynamicResource FlourishNeutralForegroundDisabledBrush}";
 
-        var shell = XDocument.Load(
+        var navigationPane = XDocument.Load(
             Path.Combine(
                 RepositoryRoot,
                 "src",
                 "Flourish",
                 "Views",
                 "Windows",
-                "FlourishShellWindow.xaml"
+                "FlourishNavigationPane.xaml"
             )
         );
-        var navigationIcon = shell
+        var navigationIcon = navigationPane
             .Descendants()
             .Single(element =>
                 (string?)element.Attribute(XamlNamespace + "Name") == "NavigationItemIcon"

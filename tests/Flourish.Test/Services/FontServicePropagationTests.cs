@@ -776,6 +776,35 @@ public sealed class FontServicePropagationTests
         var shellSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Views", "Windows", "FlourishShellWindow.xaml.cs")
         );
+        var notificationSource = File.ReadAllText(
+            Path.Combine(
+                flourishRoot,
+                "Views",
+                "Windows",
+                "ShellNotificationController.cs"
+            )
+        );
+        var statusSurfaceSource = File.ReadAllText(
+            Path.Combine(
+                flourishRoot,
+                "Views",
+                "Windows",
+                "ShellStatusSurfaceController.cs"
+            )
+        );
+        var profileSource = File.ReadAllText(
+            Path.Combine(
+                flourishRoot,
+                "Views",
+                "Windows",
+                "ShellProfileController.cs"
+            )
+        );
+        var shellSurfaceSources = string.Concat(
+            shellSource,
+            notificationSource,
+            statusSurfaceSource
+        );
         var statusItemSource = File.ReadAllText(
             Path.Combine(
                 flourishRoot,
@@ -795,11 +824,11 @@ public sealed class FontServicePropagationTests
         Assert.DoesNotContain("window.FontFamily =", fontSource, StringComparison.Ordinal);
         Assert.DoesNotContain("window.FontSize =", fontSource, StringComparison.Ordinal);
         Assert.DoesNotContain("iconFontFamily", shellSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("new FontFamily", shellSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("new FontFamily", shellSurfaceSources, StringComparison.Ordinal);
         Assert.DoesNotContain("new FontFamily", statusItemSource, StringComparison.Ordinal);
         Assert.Contains(
             "textBlock.SetResourceReference(TextBlock.FontFamilyProperty, \"FlourishIconFontFamily\")",
-            shellSource,
+            shellSurfaceSources,
             StringComparison.Ordinal
         );
         Assert.Contains(
@@ -807,7 +836,7 @@ public sealed class FontServicePropagationTests
             statusItemSource,
             StringComparison.Ordinal
         );
-        Assert.Equal(5, CountOccurrences(shellSource, "BindIconTypography(icon"));
+        Assert.Equal(6, CountOccurrences(shellSurfaceSources, "BindIconTypography(icon"));
 
         var root = Assert.IsType<XElement>(shellXaml.Root);
         Assert.Equal(
@@ -848,7 +877,22 @@ public sealed class FontServicePropagationTests
         );
         Assert.Contains("affectedPageType is null", handler, StringComparison.Ordinal);
         Assert.Contains("== affectedPageType", handler, StringComparison.Ordinal);
-        Assert.Equal(2, CountOccurrences(handler, "fontService.ApplyToPage("));
+        var profileHandlerStart = profileSource.IndexOf(
+            "private void FontService_Changed",
+            StringComparison.Ordinal
+        );
+        var profileHandlerEnd = profileSource.IndexOf(
+            "private void Titlebar_ProfileToggleRequested",
+            profileHandlerStart,
+            StringComparison.Ordinal
+        );
+        Assert.True(profileHandlerStart >= 0 && profileHandlerEnd > profileHandlerStart);
+        var profileHandler = profileSource[profileHandlerStart..profileHandlerEnd];
+        Assert.Equal(
+            2,
+            CountOccurrences(handler, "fontService.ApplyToPage(")
+                + CountOccurrences(profileHandler, "fontService.ApplyToPage(")
+        );
     }
 
     private static (FontService Service, ResourceDictionary Resources) CreateAttachedService()

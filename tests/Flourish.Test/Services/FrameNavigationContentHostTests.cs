@@ -20,10 +20,11 @@ public sealed class FrameNavigationContentHostTests
     [Fact]
     public void ShellFrames_UseTheParentJournalPolicy()
     {
-        var document = XDocument.Load(GetShellXamlPath());
+        var windowsViewRoot = Path.GetDirectoryName(GetShellXamlPath())!;
         var name = XName.Get("Name", XamlNamespace);
-        var frames = document
-            .Descendants()
+        var frames = new[] { "FlourishShellContentHost.xaml", "ProfileOverlay.xaml" }
+            .Select(file => XDocument.Load(Path.Combine(windowsViewRoot, file)))
+            .SelectMany(document => document.Descendants())
             .Where(element => element.Name.LocalName == "Frame")
             .Where(element =>
                 (string?)element.Attribute(name) is "RootFrame" or "ProfileFrame"

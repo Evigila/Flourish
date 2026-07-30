@@ -1,0 +1,71 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.FlourishShellContentHost"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  xmlns:view="clr-namespace:ArkheideSystem.Flourish.Views.Windows"
+  x:ClassModifier="internal"
+>
+  <Grid x:Name="ContentAreaGrid">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <StackPanel
+      x:Name="ContentHeaderRegionHost"
+      Grid.Row="0"
+      Margin="{DynamicResource FlourishContentBodyMargin}"
+      Orientation="Vertical"
+      Visibility="Collapsed"
+    />
+
+    <view:FlourishToolbar
+      x:Name="ToolbarView"
+      Grid.Row="1"
+      Margin="{DynamicResource FlourishContentBodyMargin}"
+    />
+
+    <Grid
+      x:Name="BreadcrumbLayoutHost"
+      Grid.Row="2"
+      Margin="{DynamicResource FlourishContentBodyMargin}"
+    >
+      <Border x:Name="BreadcrumbHost" Margin="0,0,0,8" Background="Transparent">
+        <control:FlourishTextBlock
+          x:Name="BreadcrumbText"
+          VerticalAlignment="Center"
+          FontSize="{DynamicResource FlourishFontSizeStandard}"
+          Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
+        />
+      </Border>
+    </Grid>
+
+    <Grid
+      x:Name="ContentFrameHost"
+      Grid.Row="3"
+      ClipToBounds="True"
+    >
+      <Grid x:Name="PageTransitionContentHost">
+        <Frame
+          x:Name="RootFrame"
+          Focusable="False"
+          JournalOwnership="UsesParentJournal"
+          NavigationUIVisibility="Hidden"
+        />
+      </Grid>
+      <Grid x:Name="ContentOverlayRegionHost" Panel.ZIndex="10" Visibility="Collapsed" />
+    </Grid>
+
+    <StackPanel
+      x:Name="ContentFooterRegionHost"
+      Grid.Row="4"
+      Margin="{DynamicResource FlourishContentBodyMargin}"
+      Orientation="Vertical"
+      Visibility="Collapsed"
+    />
+  </Grid>
+</UserControl>

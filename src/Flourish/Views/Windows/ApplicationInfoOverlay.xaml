@@ -1,0 +1,89 @@
+<UserControl
+  x:Class="ArkheideSystem.Flourish.Views.Windows.ApplicationInfoOverlay"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  x:ClassModifier="internal"
+  Visibility="Collapsed"
+>
+  <Canvas
+    x:Name="OverlayCanvas"
+    Background="Transparent"
+    ClipToBounds="True"
+    PreviewMouseLeftButtonDown="OverlayCanvas_PreviewMouseLeftButtonDown"
+  >
+    <control:Overlay
+      x:Name="TitleBarFlyoutCard"
+      Width="340"
+      MaxHeight="520"
+      AutomationProperties.LiveSetting="Polite"
+      DismissRequested="TitleBarFlyoutCard_DismissRequested"
+      Focusable="True"
+      KeyboardNavigation.TabNavigation="Cycle"
+      Variant="Temporary"
+      SizeChanged="TitleBarFlyoutCard_SizeChanged"
+    >
+      <Grid x:Name="ApplicationInfoContent">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="72" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Border
+            Width="64"
+            Height="64"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ClipToBounds="True"
+            CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
+          >
+            <Grid>
+              <Image x:Name="ApplicationInfoLogoImage" Stretch="Uniform" />
+              <control:FlourishTextBlock
+                x:Name="ApplicationInfoLogoFallback"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="{DynamicResource FlourishFontSizeStandard}"
+                Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+              />
+            </Grid>
+          </Border>
+          <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <control:FlourishTextBlock
+              x:Name="ApplicationInfoTitle"
+              FontWeight="Bold"
+              Role="CardTitle"
+              TextWrapping="Wrap"
+            />
+            <control:FlourishTextBlock
+              x:Name="ApplicationInfoSubTitle"
+              Margin="0,3,0,0"
+              Role="Description"
+              TextWrapping="Wrap"
+            />
+            <control:FlourishTextBlock
+              x:Name="ApplicationInfoProjectTitle"
+              Margin="0,8,0,0"
+              Role="Status"
+              TextWrapping="Wrap"
+            />
+          </StackPanel>
+        </Grid>
+        <control:ScrollViewer
+          x:Name="ApplicationInfoBodyScrollViewer"
+          Grid.Row="1"
+          Margin="0,14,0,0"
+          HorizontalScrollBarVisibility="Disabled"
+          VerticalScrollBarVisibility="Auto"
+          Visibility="Collapsed"
+        >
+          <StackPanel x:Name="ApplicationInfoBodyHost" Orientation="Vertical" />
+        </control:ScrollViewer>
+      </Grid>
+    </control:Overlay>
+  </Canvas>
+</UserControl>
