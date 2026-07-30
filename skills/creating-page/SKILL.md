@@ -75,7 +75,7 @@ Use `ActionCard` for one independent setting or local action. Its optional `Icon
 
 - `Variant="Horizontal"` is the default. It places Icon on the left, vertically stacked Title and Content in the middle, and Body on the right. The row is vertically centered.
 - `Variant="Vertical"` stacks Icon, Title, Content, and Body from top to bottom. Every region is left-aligned, including the Body at the bottom.
-- Keep Title and Content concise. Use the Body for one `FlourishComboBox`, `FlourishCheckBox`, `FlourishTextBox`, `FlourishRadioButton`, or Button as appropriate.
+- Keep Title and Content concise. Use the Body for one `FlourishComboBox`, `CheckBox`, `FlourishTextBox`, `FlourishRadioButton`, or Button as appropriate.
 - Apply selections, toggles, and edits immediately. Do not add a separate Apply action unless the workflow itself requires transactional confirmation.
 - Stack related ActionCards in their own column and use `FlourishActionCardPeerMargin` only between consecutive cards.
 

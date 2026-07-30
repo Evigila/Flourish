@@ -31,9 +31,6 @@
             />
           </Grid>
           <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
-            </Trigger>
             <Trigger Property="IsPressed" Value="True">
               <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
             </Trigger>
@@ -94,6 +91,13 @@
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
+    <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
+    <Setter
+      Property="controls:HoverReveal.IsMotionEnabled"
+      Value="{DynamicResource FlourishHoverRevealEnabled}"
+    />
+    <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
+    <Setter Property="controls:HoverReveal.TemplateHandlesInteraction" Value="True" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="MaxDropDownHeight" Value="320" />
@@ -114,6 +118,20 @@
               BorderThickness="{TemplateBinding BorderThickness}"
               CornerRadius="{DynamicResource FlourishControlCornerRadius}"
             />
+            <Border
+              x:Name="HoverChrome"
+              Grid.ColumnSpan="2"
+              Background="{Binding Path=(controls:HoverReveal.OverrideColor), RelativeSource={RelativeSource TemplatedParent}}"
+              BorderThickness="0"
+              CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+              IsHitTestVisible="False"
+              Opacity="0"
+              RenderTransformOrigin="0.5,0.5"
+            >
+              <Border.RenderTransform>
+                <ScaleTransform x:Name="HoverRevealScale" ScaleX="0" ScaleY="0" />
+              </Border.RenderTransform>
+            </Border>
             <ContentPresenter
               x:Name="SelectionContentSite"
               Grid.Column="0"
@@ -183,10 +201,16 @@
             </Popup>
           </Grid>
           <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlHoverBrush}" />
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeHoverBrush}" />
-            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsMouseOver" Value="True" />
+                <Condition Property="controls:HoverReveal.IsEnabled" Value="False" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HoverChrome" Property="Opacity" Value="1" />
+              <Setter TargetName="HoverChrome" Property="RenderTransform">
+                <Setter.Value><ScaleTransform ScaleX="1" ScaleY="1" /></Setter.Value>
+              </Setter>
+            </MultiTrigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
               <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
             </Trigger>
@@ -204,6 +228,7 @@
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
               <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
               <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <summary>
 /// Describes the visual variant of a <see cref="Card" />.
 /// </summary>
-public enum Variant
+public enum CardVariant
 {
     /// <summary>A content surface separated from its background by elevation.</summary>
     Elevated,
@@ -33,9 +33,9 @@ public class Card : WpfControl
     /// <summary>Identifies the <see cref="Variant" /> dependency property.</summary>
     public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(
         nameof(Variant),
-        typeof(Variant),
+        typeof(CardVariant),
         typeof(Card),
-        new FrameworkPropertyMetadata(Variant.Standard),
+        new FrameworkPropertyMetadata(CardVariant.Standard),
         IsVariantValid
     );
 
@@ -106,9 +106,9 @@ public class Card : WpfControl
     }
 
     /// <summary>Gets or sets the visual variant of the card.</summary>
-    public Variant Variant
+    public CardVariant Variant
     {
-        get => (Variant)GetValue(VariantProperty);
+        get => (CardVariant)GetValue(VariantProperty);
         set => SetValue(VariantProperty, value);
     }
 
@@ -158,7 +158,7 @@ public class Card : WpfControl
 
     private static bool IsVariantValid(object value)
     {
-        return value is Variant variant && Enum.IsDefined(variant);
+        return value is CardVariant variant && Enum.IsDefined(variant);
     }
 
     private static bool IsIconValid(object? value)

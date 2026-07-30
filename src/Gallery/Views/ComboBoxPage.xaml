@@ -30,7 +30,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Declare a short static list in XAML or bind ItemsSource to application-owned data."
+      Content="Declare a short static list in XAML or bind ItemsSource to application-owned data. The closed selector uses HoverReveal for pointer feedback."
       Title="Selection"
     >
       <UniformGrid Columns="2">

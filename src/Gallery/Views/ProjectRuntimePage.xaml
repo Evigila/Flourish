@@ -194,7 +194,7 @@
             Content="Enable the project-aware title selector and dropdown."
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox
+              <flourish:CheckBox
                 x:Name="MultiProjectEnabledBox"
                 VerticalAlignment="Center"
                 Checked="MultiProjectEnabledBox_Changed"

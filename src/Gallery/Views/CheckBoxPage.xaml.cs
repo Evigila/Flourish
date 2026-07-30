@@ -10,7 +10,12 @@ public partial class CheckBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("IsChecked", "Gets or sets true, false, or null when three-state behavior is enabled."),
+            new("Variant", "Chooses the Horizontal or Vertical fixed layout."),
+            new("Icon", "Supplies optional icon content rendered only by the Vertical layout."),
+            new(
+                "IsChecked",
+                "Gets or sets true, false, or null when three-state behavior is enabled."
+            ),
             new("IsThreeState", "Allows the control to enter the indeterminate state."),
             new("Content", "Supplies the visible option label."),
             new("Checked", "Reports a transition to the checked state."),
@@ -21,15 +26,15 @@ public partial class CheckBoxPage : Page
 
     public string UsageCode { get; } =
         """
-        <flourish:FlourishCheckBox
-          Content="Enable notifications"
-          IsChecked="{Binding NotificationsEnabled, Mode=TwoWay}"
-          Checked="Notifications_Changed"
-          Unchecked="Notifications_Changed" />
+            <flourish:CheckBox
+              Content="Enable notifications"
+              IsChecked="{Binding NotificationsEnabled, Mode=TwoWay}"
+              Checked="Notifications_Changed"
+              Unchecked="Notifications_Changed" />
 
-        private void Notifications_Changed(object sender, RoutedEventArgs e)
-        {
-            SavePreferences();
-        }
-        """;
+            private void Notifications_Changed(object sender, RoutedEventArgs e)
+            {
+                SavePreferences();
+            }
+            """;
 }

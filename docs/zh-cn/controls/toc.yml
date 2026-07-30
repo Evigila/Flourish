@@ -17,6 +17,8 @@ items:
   href: output-card.md
 - name: Button
   href: button.md
+- name: CheckBox
+  href: check-box.md
 - name: DataGrid
   href: data-grid.md
 - name: GridSplitter

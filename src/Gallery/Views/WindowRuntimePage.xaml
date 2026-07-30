@@ -121,7 +121,7 @@
           </flourish:ActionCard>
           <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE73E;" Content="Choose the decision returned by the demo guard." Title="Guard decision">
             <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox x:Name="CloseGuardAllowsBox" VerticalAlignment="Center" Click="CloseGuardAllowsBox_Click" Content="Guard allows close" IsChecked="True" />
+              <flourish:CheckBox x:Name="CloseGuardAllowsBox" VerticalAlignment="Center" Click="CloseGuardAllowsBox_Click" Content="Guard allows close" IsChecked="True" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE72E;" Content="Install the disposable close guard for this page." Title="Register guard">

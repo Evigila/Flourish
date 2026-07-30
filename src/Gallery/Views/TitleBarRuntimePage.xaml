@@ -107,7 +107,7 @@
           Content="Show or hide the selected title-bar element."
         >
           <flourish:ActionCard.Body>
-            <flourish:FlourishCheckBox
+            <flourish:CheckBox
               x:Name="TitleBarElementVisibleBox"
               VerticalAlignment="Center"
               Checked="TitleBarElementVisibleBox_Changed"
@@ -217,7 +217,7 @@
             Content="Enable or disable the complete title-bar surface."
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox
+              <flourish:CheckBox
                 x:Name="TitleBarEnabledBox"
                 VerticalAlignment="Center"
                 Checked="TitleBarEnabledBox_Changed"

@@ -10,11 +10,58 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Represent an independent Boolean or optional three-state preference."
+      Content="Represent a Boolean or optional three-state preference with a compact row or an icon-led card."
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishCheckBox"
+      Title="CheckBox"
     />
+
+    <flourish:Chunk
+      Content="Horizontal is the default for standard settings. Vertical adds an optional icon and uses a card-shaped layout."
+      Title="Variant"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="Places the state indicator before the content. An unchecked option keeps an empty circular indicator."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Horizontal"
+        >
+          <flourish:Presenter.Presentation>
+            <StackPanel MinHeight="152" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <flourish:CheckBox Content="Enable notifications" />
+              <flourish:CheckBox Margin="0,8,0,0" Content="Synchronize automatically" IsChecked="True" />
+            </StackPanel>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="Places the icon above the content and the selected indicator at the upper right. The indicator is hidden while unchecked."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Vertical"
+        >
+          <flourish:Presenter.Presentation>
+            <UniformGrid MinHeight="152" Columns="2">
+              <flourish:CheckBox
+                Margin="0,0,6,0"
+                Content="Local workspace"
+                Icon="&#xE8B7;"
+                Variant="Vertical"
+              />
+              <flourish:CheckBox
+                Margin="6,0,0,0"
+                Content="Cloud workspace"
+                Icon="&#xE753;"
+                IsChecked="True"
+                Variant="Vertical"
+              />
+            </UniformGrid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
 
     <flourish:Chunk Title="Table">
       <flourish:DataGrid
@@ -30,41 +77,49 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose two-state behavior for ordinary preferences and three-state behavior only when null has a clear meaning."
+      Content="Use two-state behavior for ordinary preferences and enable the third state only when null has a clear meaning."
       Title="Selection"
     >
-      <UniformGrid Columns="2">
+      <UniformGrid Columns="3">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Checked and Unchecked map directly to true and false."
+          Content="False uses an empty circular indicator."
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Boolean"
+          Title="Unchecked"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="136">
-              <flourish:FlourishCheckBox
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Content="Enable notifications"
-                IsChecked="True"
-              />
+            <Grid MinHeight="120">
+              <flourish:CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Content="Not selected" />
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0"
+          Content="True uses a check mark and highlights the content and boundary."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Checked"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="120">
+              <flourish:CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Content="Selected" IsChecked="True" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Indeterminate represents an inherited or mixed value."
+          Content="Null replaces the check mark with a horizontal line."
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Three state"
+          Title="Indeterminate"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="136">
-              <flourish:FlourishCheckBox
+            <Grid MinHeight="120">
+              <flourish:CheckBox
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Content="Use inherited setting"
+                Content="Inherited"
                 IsChecked="{x:Null}"
                 IsThreeState="True"
               />
@@ -77,10 +132,10 @@
     <flourish:Chunk Title="Usage">
       <StackPanel>
         <flourish:Presenter
-          Content="Bind IsChecked in TwoWay mode for an independent Boolean setting. Checked and Unchecked are useful when a transition must trigger immediate view-owned behavior in addition to updating the value; omit the handlers when binding alone is sufficient."
+          Content="Horizontal is the default. Bind IsChecked in TwoWay mode for a standard setting and enable IsThreeState only when null represents inherited, mixed, or unknown state."
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Boolean option"
+          Title="Standard option"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -88,13 +143,13 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Set IsThreeState only when null represents a meaningful inherited, mixed, or unknown state. Bind IsChecked to a nullable Boolean and handle Indeterminate only when entering that third state requires an immediate side effect."
+          Content="Choose Vertical for a card-shaped selection. Icon accepts arbitrary content but is rendered only by the Vertical layout."
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Three-state option"
+          Title="Icon-led option"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:FlourishCheckBox&#xA;  Content=&quot;Use inherited setting&quot;&#xA;  IsThreeState=&quot;True&quot;&#xA;  IsChecked=&quot;{Binding InheritedSetting, Mode=TwoWay}&quot;&#xA;  Indeterminate=&quot;InheritedSetting_Changed&quot; /&gt;" />
+            <flourish:CodeSpace Text="&lt;flourish:CheckBox&#xA;  Content=&quot;Cloud workspace&quot;&#xA;  Icon=&quot;&amp;#xE753;&quot;&#xA;  IsChecked=&quot;{Binding UsesCloudWorkspace, Mode=TwoWay}&quot;&#xA;  Variant=&quot;Vertical&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
@@ -112,10 +167,10 @@
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the FlourishCheckBox API reference."
+          Content="Read the CheckBox API and layout contract."
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="FlourishCheckBox documentation"
+          Title="CheckBox documentation"
           ToolTip="External navigation is not available in Gallery."
         />
       </UniformGrid>

@@ -1162,7 +1162,6 @@ public sealed class FlourishXamlArchitectureTests
             "FlourishTextBox",
             "FlourishPasswordBox",
             "FlourishSearchBox",
-            "FlourishCheckBox",
             "FlourishRadioButton",
             "FlourishComboBox",
             "TextBox",

@@ -551,6 +551,60 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
+    public void ComboBox_HoverRevealStartsHiddenAndResetsAfterPointerLeaves()
+    {
+        StaTest.Run(() =>
+        {
+            var resources = LoadResourceDictionary();
+            var comboBox = new FlourishComboBox
+            {
+                ItemsSource = new[] { "System", "Light", "Dark" },
+                SelectedIndex = 0,
+            };
+            HoverReveal.SetAnimationDuration(comboBox, TimeSpan.Zero);
+            var window = CreateWindow(resources, comboBox);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                comboBox.ApplyTemplate();
+
+                var hoverChrome = AssertTemplatePart<Border>(
+                    comboBox,
+                    "HoverChrome"
+                );
+                var revealScale = AssertTemplatePart<ScaleTransform>(
+                    comboBox,
+                    "HoverRevealScale"
+                );
+
+                Assert.Equal(0, hoverChrome.Opacity);
+                Assert.Equal(0, revealScale.ScaleX);
+                Assert.Equal(0, revealScale.ScaleY);
+
+                RaiseMouseEvent(comboBox, Mouse.MouseEnterEvent);
+                FlushDispatcher();
+
+                Assert.Equal(1, hoverChrome.Opacity);
+                Assert.Equal(1, revealScale.ScaleX);
+                Assert.Equal(1, revealScale.ScaleY);
+
+                RaiseMouseEvent(comboBox, Mouse.MouseLeaveEvent);
+                FlushDispatcher();
+
+                Assert.Equal(0, hoverChrome.Opacity);
+                Assert.Equal(0, revealScale.ScaleX);
+                Assert.Equal(0, revealScale.ScaleY);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void NavigationItem_HoverRevealStartsHiddenAndResetsAfterPointerLeaves()
     {
         StaTest.Run(() =>

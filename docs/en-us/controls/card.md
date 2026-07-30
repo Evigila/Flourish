@@ -34,7 +34,7 @@ Use [Document](document.md) when the content contains several paragraphs. Use [P
 | `Content` | `string?` | `""` | Optional single paragraph of supporting text. |
 | `Icon` | `string?` | `null` | Optional single icon-font glyph. |
 | `IconPosition` | `Dock` | `Left` | Places the icon at `Left`, `Top`, `Right`, or `Bottom`. |
-| `Variant` | `Variant` | `Standard` | Selects the surface treatment. |
+| `Variant` | `CardVariant` | `Standard` | Selects the surface treatment. |
 | `ContentHorizontalAlignment` | `HorizontalAlignment` | `Stretch` | Aligns the card composition horizontally. |
 | `ContentVerticalAlignment` | `VerticalAlignment` | `Stretch` | Aligns the card composition vertically. |
 
@@ -115,4 +115,4 @@ As with `Card`, empty `Title`, `Content`, and `Icon` regions collapse with their
 - [Presenter](presenter.md) presents images, icon groups, and composed visuals.
 - [OutputCard](output-card.md) presents scrolling operation history.
 - [Button](button.md) explains when the complete surface should be interactive.
-- The [Variant API](xref:ArkheideSystem.Flourish.Controls.Variant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant), and [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard) list all members.
+- The [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant), and [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard) list all members.

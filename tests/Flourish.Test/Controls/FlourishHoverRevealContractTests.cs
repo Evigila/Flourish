@@ -48,7 +48,13 @@ public sealed class FlourishHoverRevealContractTests
         var templates = FindParticipatingTemplates();
 
         Assert.Equal(
-            new[] { "Button.xaml", "ComboBoxItem.xaml", "ListBoxItem.xaml" },
+            new[]
+            {
+                "Button.xaml",
+                "ComboBox.xaml",
+                "ComboBoxItem.xaml",
+                "ListBoxItem.xaml",
+            },
             templates.Select(template => Path.GetFileName(template.File)).Order()
         );
 
@@ -103,6 +109,36 @@ public sealed class FlourishHoverRevealContractTests
         }
 
         AssertNoViolations(violations);
+    }
+
+    [Fact]
+    public void ComboBox_ReplacesStaticMouseOverColorChangesWithReveal()
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "ComboBox.xaml")
+        );
+        var mouseOverTriggers = document
+            .Descendants()
+            .Where(element =>
+                element.Name.LocalName == "Trigger"
+                && (string?)element.Attribute("Property") == "IsMouseOver"
+                && (string?)element.Attribute("Value") == "True"
+            )
+            .ToArray();
+
+        Assert.Empty(mouseOverTriggers);
+        Assert.DoesNotContain(
+            document.Descendants(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("TargetName") is "Chrome" or "Arrow"
+                && element
+                    .Ancestors()
+                    .Any(ancestor =>
+                        ancestor.Name.LocalName is "Trigger" or "MultiTrigger"
+                        && GetConditions(ancestor).Contains(("IsMouseOver", "True"))
+                    )
+        );
     }
 
     [Fact]

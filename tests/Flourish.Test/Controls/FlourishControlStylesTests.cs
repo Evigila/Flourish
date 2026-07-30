@@ -10,11 +10,14 @@ using System.Windows.Media.Effects;
 using ArkheideSystem.Flourish.Controls;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
 using FlourishDocument = ArkheideSystem.Flourish.Controls.Document;
 using FlourishParagraph = ArkheideSystem.Flourish.Controls.Paragraph;
 using WpfBinding = System.Windows.Data.Binding;
 using WpfButton = System.Windows.Controls.Button;
+using WpfCheckBox = System.Windows.Controls.CheckBox;
 using WpfControl = System.Windows.Controls.Control;
+using WpfPath = System.Windows.Shapes.Path;
 using WpfScrollViewer = System.Windows.Controls.ScrollViewer;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -267,7 +270,7 @@ public sealed class FlourishControlStylesTests
                 typeof(WpfButton),
                 typeof(RepeatButton),
                 typeof(ToggleButton),
-                typeof(CheckBox),
+                typeof(WpfCheckBox),
                 typeof(RadioButton),
                 typeof(TextBox),
                 typeof(PasswordBox),
@@ -340,6 +343,129 @@ public sealed class FlourishControlStylesTests
             finally
             {
                 flourishToolTip.IsOpen = false;
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void CheckBoxVariants_ReflowOneContentHostAndExposeTheExpectedStateIndicators()
+    {
+        StaTest.Run(() =>
+        {
+            var horizontal = new FlourishCheckBox
+            {
+                Content = "Horizontal",
+                Icon = new Border(),
+            };
+            var verticalUnchecked = new FlourishCheckBox
+            {
+                Content = "Vertical unchecked",
+                Icon = "\uE8B7",
+                Variant = CheckBoxVariant.Vertical,
+            };
+            var verticalChecked = new FlourishCheckBox
+            {
+                Content = "Vertical checked",
+                Icon = "\uE753",
+                IsChecked = true,
+                Variant = CheckBoxVariant.Vertical,
+            };
+            var verticalIndeterminate = new FlourishCheckBox
+            {
+                Content = "Vertical inherited",
+                Icon = "\uE713",
+                IsChecked = null,
+                IsThreeState = true,
+                Variant = CheckBoxVariant.Vertical,
+            };
+            FlourishCheckBox[] checkBoxes =
+            [
+                horizontal,
+                verticalUnchecked,
+                verticalChecked,
+                verticalIndeterminate,
+            ];
+            var panel = new StackPanel();
+            foreach (var checkBox in checkBoxes)
+            {
+                panel.Children.Add(checkBox);
+            }
+
+            var window = CreateWindow(panel);
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var checkBox in checkBoxes)
+                {
+                    checkBox.ApplyTemplate();
+                }
+
+                var horizontalIcon = AssertTemplatePart<ContentPresenter>(
+                    horizontal,
+                    "IconHost"
+                );
+                var horizontalIndicator = AssertTemplatePart<Border>(
+                    horizontal,
+                    "IndicatorChrome"
+                );
+                var horizontalContent = AssertTemplatePart<ContentPresenter>(
+                    horizontal,
+                    "ContentHost"
+                );
+                Assert.Equal(Visibility.Collapsed, horizontalIcon.Visibility);
+                Assert.Equal(Visibility.Visible, horizontalIndicator.Visibility);
+                Assert.Equal(0, Grid.GetRow(horizontalContent));
+                Assert.Equal(1, Grid.GetColumn(horizontalContent));
+
+                var uncheckedIcon = AssertTemplatePart<ContentPresenter>(
+                    verticalUnchecked,
+                    "IconHost"
+                );
+                var uncheckedIndicator = AssertTemplatePart<Border>(
+                    verticalUnchecked,
+                    "IndicatorChrome"
+                );
+                var uncheckedContent = AssertTemplatePart<ContentPresenter>(
+                    verticalUnchecked,
+                    "ContentHost"
+                );
+                Assert.Equal(Visibility.Visible, uncheckedIcon.Visibility);
+                Assert.Equal(Visibility.Collapsed, uncheckedIndicator.Visibility);
+                Assert.Equal(1, Grid.GetRow(uncheckedContent));
+                Assert.Equal(0, Grid.GetColumn(uncheckedContent));
+                Assert.Equal(2, Grid.GetColumnSpan(uncheckedContent));
+
+                Assert.Equal(
+                    Visibility.Visible,
+                    AssertTemplatePart<Border>(
+                        verticalChecked,
+                        "IndicatorChrome"
+                    ).Visibility
+                );
+                Assert.Equal(
+                    Visibility.Visible,
+                    AssertTemplatePart<WpfPath>(verticalChecked, "CheckMark").Visibility
+                );
+                Assert.Equal(
+                    Visibility.Visible,
+                    AssertTemplatePart<Border>(
+                        verticalIndeterminate,
+                        "IndeterminateMark"
+                    ).Visibility
+                );
+                Assert.Equal(
+                    Visibility.Collapsed,
+                    AssertTemplatePart<WpfPath>(
+                        verticalIndeterminate,
+                        "CheckMark"
+                    ).Visibility
+                );
+            }
+            finally
+            {
                 window.Close();
             }
         });
@@ -477,6 +603,10 @@ public sealed class FlourishControlStylesTests
                 AssertTemplatePart<WpfScrollViewer>(textBox, "PART_ContentHost");
                 AssertTemplatePart<WpfScrollViewer>(searchBox, "PART_ContentHost");
                 AssertTemplatePart<Popup>(comboBox, "PART_Popup");
+                AssertTemplatePart<Border>(comboBox, "HoverChrome");
+                AssertTemplatePart<ScaleTransform>(comboBox, "HoverRevealScale");
+                Assert.True(HoverReveal.GetIsParticipant(comboBox));
+                Assert.True(HoverReveal.GetTemplateHandlesInteraction(comboBox));
                 AssertTemplatePart<Track>(scrollBar, "PART_Track");
 
                 var editor = AssertTemplatePart<PasswordBox>(
@@ -1521,15 +1651,15 @@ public sealed class FlourishControlStylesTests
             var standard = new Card { Title = "Standard", Content = "Description" };
             var elevated = new Card
             {
-                Variant = Variant.Elevated,
+                Variant = CardVariant.Elevated,
                 Title = "Elevated",
             };
-            var tonal = new Card { Variant = Variant.Tonal, Title = "Tonal" };
-            var filled = new Card { Variant = Variant.Filled, Title = "Filled" };
+            var tonal = new Card { Variant = CardVariant.Tonal, Title = "Tonal" };
+            var filled = new Card { Variant = CardVariant.Filled, Title = "Filled" };
             var customBrush = new SolidColorBrush(Colors.MediumPurple);
             var customFilled = new Card
             {
-                Variant = Variant.Filled,
+                Variant = CardVariant.Filled,
                 Background = customBrush,
                 Title = "Custom",
             };

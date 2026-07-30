@@ -16,6 +16,7 @@ public partial class ComboBoxPage : Page
             new("SelectedIndex", "Gets or sets the selected zero-based index."),
             new("DisplayMemberPath", "Selects the property displayed for each data item."),
             new("SelectionChanged", "Reports added and removed selections."),
+            new("HoverReveal.IsEnabled", "Controls pointer-reveal feedback on the closed selector."),
         };
     }
 

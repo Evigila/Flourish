@@ -9,6 +9,7 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Themes;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
 using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -26,7 +27,8 @@ public sealed class FlourishPublicControlsTests
         [
             typeof(FlourishThemeResources),
             typeof(ButtonVariant),
-            typeof(Variant),
+            typeof(CardVariant),
+            typeof(CheckBoxVariant),
             typeof(OverlayVariant),
             typeof(PresenterMode),
             typeof(PresenterPosition),
@@ -269,6 +271,7 @@ public sealed class FlourishPublicControlsTests
             var actionCard = new ActionCard();
             var outputCard = new OutputCard();
             var overlay = new Overlay();
+            var checkBox = new FlourishCheckBox();
             var gridSplitter = new FlourishGridSplitter();
             var listBox = new FlourishListBox();
             var scrollViewer = new CustomScrollViewer();
@@ -305,7 +308,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(string.Empty, paragraph.Text);
             Assert.IsAssignableFrom<FlourishTextBlock>(paragraph);
             Assert.Equal(string.Empty, codeSpace.Text);
-            Assert.Equal(Variant.Standard, card.Variant);
+            Assert.Equal(CardVariant.Standard, card.Variant);
             Assert.Equal(string.Empty, card.Title);
             Assert.Equal(string.Empty, card.Content);
             Assert.Null(card.Icon);
@@ -319,6 +322,8 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(string.Empty, outputCard.Output);
             Assert.Equal(OverlayVariant.Temporary, overlay.Variant);
             Assert.Null(overlay.PlacementTarget);
+            Assert.Equal(CheckBoxVariant.Horizontal, checkBox.Variant);
+            Assert.Null(checkBox.Icon);
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
             Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
@@ -327,6 +332,34 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(typeof(CustomScrollViewer).GetField("IsCompactProperty"));
             Assert.Equal(string.Empty, search.Placeholder);
             Assert.Equal(FlourishTextRole.Body, text.Role);
+        });
+    }
+
+    [Fact]
+    public void CheckBox_ExposesTwoLayoutsAndRetiresThePrefixedType()
+    {
+        StaTest.Run(() =>
+        {
+            var icon = new Border();
+            var checkBox = new FlourishCheckBox
+            {
+                Content = "Cloud workspace",
+                Icon = icon,
+                IsChecked = true,
+                Variant = CheckBoxVariant.Vertical,
+            };
+
+            Assert.Equal(
+                new[] { "Horizontal", "Vertical" },
+                Enum.GetNames<CheckBoxVariant>()
+            );
+            Assert.Same(icon, checkBox.Icon);
+            Assert.Equal(CheckBoxVariant.Vertical, checkBox.Variant);
+            Assert.True(checkBox.IsChecked);
+            Assert.Null(
+                typeof(FlourishCheckBox)
+                    .Assembly.GetType("ArkheideSystem.Flourish.Controls.FlourishCheckBox")
+            );
         });
     }
 
@@ -408,7 +441,7 @@ public sealed class FlourishPublicControlsTests
         {
             var card = new Card
             {
-                Variant = Variant.Filled,
+                Variant = CardVariant.Filled,
                 Title = "Title",
                 Content = "Supporting text",
                 Icon = "\uE8A5",
@@ -426,9 +459,9 @@ public sealed class FlourishPublicControlsTests
 
             Assert.Equal(
                 new[] { "Elevated", "Standard", "Tonal", "Filled" },
-                Enum.GetNames<Variant>()
+                Enum.GetNames<CardVariant>()
             );
-            Assert.Equal(Variant.Filled, card.Variant);
+            Assert.Equal(CardVariant.Filled, card.Variant);
             Assert.Equal("Title", card.Title);
             Assert.Equal("Supporting text", card.Content);
             Assert.Equal(HorizontalAlignment.Right, card.ContentHorizontalAlignment);
@@ -959,7 +992,7 @@ public sealed class FlourishPublicControlsTests
                 new CardButton().IconPosition = (Dock)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
-                new Card().Variant = (Variant)(-1)
+                new Card().Variant = (CardVariant)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
                 new Card().ContentHorizontalAlignment = (HorizontalAlignment)(-1)
@@ -972,6 +1005,9 @@ public sealed class FlourishPublicControlsTests
             );
             Assert.Throws<ArgumentException>(() =>
                 new ActionCard().Variant = (ActionCardVariant)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new FlourishCheckBox().Variant = (CheckBoxVariant)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
                 new FlourishGridSplitter().Variant = (FlourishGridSplitterVariant)(-1)

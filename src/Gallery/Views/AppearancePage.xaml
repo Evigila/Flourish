@@ -317,7 +317,7 @@
           Title="Centered content"
         >
           <flourish:ActionCard.Body>
-            <flourish:FlourishCheckBox
+            <flourish:CheckBox
               x:Name="CenterContentBox"
               Checked="ContentLayout_Changed"
               Content="Center content"
@@ -372,7 +372,7 @@
             Content="Request dark native window chrome."
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="Immersive dark mode" Unchecked="MaterialDarkModeBox_Changed" />
+              <flourish:CheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="Immersive dark mode" Unchecked="MaterialDarkModeBox_Changed" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -393,7 +393,7 @@
           Title="Shell scrolling"
         >
           <flourish:ActionCard.Body>
-            <flourish:FlourishCheckBox
+            <flourish:CheckBox
               x:Name="SmoothScrollingBox"
               Checked="SmoothScrollingBox_Changed"
               Content="Enable smooth scrolling"

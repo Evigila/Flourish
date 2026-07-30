@@ -34,7 +34,7 @@ description: 使用 Card、ActionCard 和 OutputCard 构建职责清晰的信息
 | `Content` | `string?` | `""` | 可选的单段正文。 |
 | `Icon` | `string?` | `null` | 可选的单个图标字体字形。 |
 | `IconPosition` | `Dock` | `Left` | 将图标放在 `Left`、`Top`、`Right` 或 `Bottom`。 |
-| `Variant` | `Variant` | `Standard` | 选择卡片表面样式。 |
+| `Variant` | `CardVariant` | `Standard` | 选择卡片表面样式。 |
 | `ContentHorizontalAlignment` | `HorizontalAlignment` | `Stretch` | 对齐图标与文案组合。 |
 | `ContentVerticalAlignment` | `VerticalAlignment` | `Stretch` | 纵向对齐图标与文案组合。 |
 
@@ -114,4 +114,4 @@ Card 与 ActionCard 的图标使用随主题变化的主色前景，与中性文
 - [Presenter](presenter.md) 呈现图片、图标组和组合视觉内容。
 - [OutputCard](output-card.md) 呈现可滚动的操作历史。
 - [Button](button.md) 说明何时应让整个表面具备交互性。
-- [Variant API](xref:ArkheideSystem.Flourish.Controls.Variant)、[Card API](xref:ArkheideSystem.Flourish.Controls.Card)、[ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant) 和 [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard) 列出全部成员。
+- [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant)、[Card API](xref:ArkheideSystem.Flourish.Controls.Card)、[ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant) 和 [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard) 列出全部成员。

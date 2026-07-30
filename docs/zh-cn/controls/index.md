@@ -21,6 +21,7 @@ Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体
 | [Card](card.md) | 简洁 Card 信息和具有 Horizontal、Vertical 结构的 ActionCard。 |
 | [OutputCard](output-card.md) | 在滚动视口中显示 Small 字号的输出、日志、进度、结果和错误。 |
 | [Button](button.md) | 文字、图标、整卡和窗口标题栏操作。 |
+| [CheckBox](check-box.md) | 紧凑布尔值或三态选择，以及带图标的卡片式选择。 |
 | [DataGrid](data-grid.md) | 表格数据呈现、交互与页面滚轮协作。 |
 | [GridSplitter](grid-splitter.md) | 实时调整相邻 Grid 行或列的尺寸。 |
 | [Overlay](overlay.md) | Temporary、Strong 浮层以及 Vertical ActionCard 浮窗内容。 |

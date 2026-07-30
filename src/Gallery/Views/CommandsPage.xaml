@@ -46,7 +46,7 @@
             Content="Choose whether the registered handler can execute."
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishCheckBox x:Name="CommandEnabledBox" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
+              <flourish:CheckBox x:Name="CommandEnabledBox" VerticalAlignment="Center" IsChecked="True" Content="Can execute" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard

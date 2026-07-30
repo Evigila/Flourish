@@ -159,7 +159,7 @@
       </StackPanel>
 
       <StackPanel x:Name="SignedInPanel" Visibility="Collapsed">
-        <flourish:FlourishCheckBox
+        <flourish:CheckBox
           x:Name="RememberLoginCheckBox"
           HorizontalAlignment="Center"
           Checked="RememberLoginCheckBox_Changed"

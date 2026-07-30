@@ -15,6 +15,13 @@ public class FlourishComboBox : WpfComboBox
     }
 
     /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        HoverReveal.NotifyTemplateApplied(this);
+    }
+
+    /// <inheritdoc />
     protected override DependencyObject GetContainerForItemOverride()
     {
         return new FlourishComboBoxItem();
