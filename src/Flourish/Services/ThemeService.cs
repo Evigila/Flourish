@@ -405,14 +405,12 @@ internal sealed class ThemeService(
     )
     {
         var isDark = effectiveTheme == FlourishTheme.Dark;
-        var neutralBackground = isDark ? Color.FromRgb(0x14, 0x14, 0x14) : Colors.White;
-        var controlBackground = isDark ? Color.FromRgb(0x29, 0x29, 0x29) : Colors.White;
-        var neutralForeground = isDark
-            ? Color.FromRgb(0xF8, 0xF8, 0xFA)
-            : Color.FromRgb(0x1B, 0x1B, 0x1F);
+        var neutralBackground = isDark ? Color.FromRgb(0x29, 0x29, 0x29) : Colors.White;
+        var controlBackground = neutralBackground;
+        var neutralForeground = isDark ? Colors.White : Color.FromRgb(0x24, 0x24, 0x24);
         var cardLayer = isDark
-            ? Color.FromArgb(0xF0, 0x2B, 0x2D, 0x31)
-            : Color.FromArgb(0xFA, 0xFF, 0xFF, 0xFF);
+            ? Color.FromRgb(0x33, 0x33, 0x33)
+            : Color.FromRgb(0xFA, 0xFA, 0xFA);
         var cardBackgroundOnNeutral = Composite(cardLayer, neutralBackground);
         var cardBackgroundOnControl = Composite(cardLayer, controlBackground);
         var foregroundTarget = isDark ? Colors.White : Colors.Black;
@@ -427,14 +425,8 @@ internal sealed class ThemeService(
         var primaryPressed = Blend(colors.Primary, Colors.Black, 0.24);
         var primarySurface = CreateSurface(colors.Primary);
         var foregroundOnPrimary = GetContrastingForeground(colors.Primary);
-        var secondaryHover = Blend(colors.Secondary, isDark ? Colors.White : Colors.Black, 0.12);
-        var secondaryPressed = Blend(colors.Secondary, Colors.Black, 0.24);
         var secondarySurface = CreateSurface(colors.Secondary);
-        var foregroundOnSecondary = GetContrastingForeground(colors.Secondary);
-        var accentHover = Blend(colors.Accent, isDark ? Colors.White : Colors.Black, 0.12);
-        var accentPressed = Blend(colors.Accent, Colors.Black, 0.24);
         var accentSurface = CreateSurface(colors.Accent);
-        var foregroundOnAccent = GetContrastingForeground(colors.Accent);
         var selectedBackground = Composite(
             Color.FromArgb(0x2E, colors.Primary.R, colors.Primary.G, colors.Primary.B),
             neutralBackground
@@ -475,7 +467,6 @@ internal sealed class ThemeService(
         SetResource(resources, "FlourishSecondaryColor", colors.Secondary);
         SetResource(resources, "FlourishAccentColor", colors.Accent);
 
-        SetBrush(resources, "FlourishPrimaryBrush", colors.Primary);
         SetBrush(resources, "FlourishPrimaryHoverBrush", primaryHover);
         SetBrush(resources, "FlourishPrimaryPressedBrush", primaryPressed);
         SetBrush(resources, "FlourishPrimarySurfaceBrush", primarySurface);
@@ -485,33 +476,19 @@ internal sealed class ThemeService(
         SetBrush(resources, "FlourishPrimaryBackgroundHoverBrush", primaryHover);
         SetBrush(resources, "FlourishPrimaryBackgroundPressedBrush", primaryPressed);
 
-        SetBrush(resources, "FlourishSecondaryBrush", colors.Secondary);
-        SetBrush(resources, "FlourishSecondaryHoverBrush", secondaryHover);
-        SetBrush(resources, "FlourishSecondaryPressedBrush", secondaryPressed);
         SetBrush(resources, "FlourishSecondarySurfaceBrush", secondarySurface);
-        SetBrush(resources, "FlourishForegroundOnSecondaryBrush", foregroundOnSecondary);
         SetBrush(resources, "FlourishSecondaryForegroundBrush", secondaryForeground);
 
-        SetBrush(resources, "FlourishAccentBrush", colors.Accent);
-        SetBrush(resources, "FlourishAccentHoverBrush", accentHover);
-        SetBrush(resources, "FlourishAccentPressedBrush", accentPressed);
         SetBrush(resources, "FlourishAccentSurfaceBrush", accentSurface);
-        SetBrush(resources, "FlourishForegroundOnAccentBrush", foregroundOnAccent);
         SetBrush(resources, "FlourishAccentForegroundBrush", accentForeground);
         SetHeroBackground(resources, colors);
 
         // Update component roles derived from the configured palette.
-        SetBrush(resources, "FlourishControlStrokeFocusBrush", accentForeground);
-        SetBrush(resources, "FlourishControlSelectedBrush", selectedBackground);
-        SetBrush(resources, "FlourishControlSelectedForegroundBrush", selectedForeground);
+        SetBrush(resources, "FlourishFocusStrokeBrush", primaryForeground);
+        SetBrush(resources, "FlourishSelectionBackgroundBrush", selectedBackground);
+        SetBrush(resources, "FlourishSelectionForegroundBrush", selectedForeground);
         SetBrush(resources, "FlourishHoverRevealBrush", hoverReveal);
         SetBrush(resources, "FlourishPressedRevealBrush", pressedReveal);
-        SetBrush(resources, "FlourishControlSelectedHoverBrush", hoverReveal);
-        SetBrush(resources, "FlourishSelectionBackgroundBrush", selectedBackground);
-        SetBrush(resources, "FlourishProfileBackgroundBrush", secondarySurface);
-        SetBrush(resources, "FlourishProfileForegroundBrush", secondaryForeground);
-        SetBrush(resources, "FlourishMessageBoxInfoIconBackgroundBrush", primarySurface);
-        SetBrush(resources, "FlourishMessageBoxInfoIconForegroundBrush", primaryForeground);
     }
 
     private static void SetBrush(ResourceDictionary resources, string key, Color color)

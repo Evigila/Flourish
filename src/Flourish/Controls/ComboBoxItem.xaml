@@ -78,16 +78,16 @@
               <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishHoverRevealBrush}" />
             </MultiTrigger>
             <Trigger Property="IsSelected" Value="True">
-              <Setter Property="Foreground" Value="{DynamicResource FlourishControlSelectedForegroundBrush}" />
-              <Setter Property="Background" Value="{DynamicResource FlourishControlSelectedBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource FlourishSelectionForegroundBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishSelectionBackgroundBrush}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-              <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-              <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
               <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
             </Trigger>
           </ControlTemplate.Triggers>

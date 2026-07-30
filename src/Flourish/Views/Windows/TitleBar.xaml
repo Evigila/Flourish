@@ -242,7 +242,7 @@
         <controls:Button.Icon>
           <Grid Width="26" Height="26">
             <Border
-              Background="{DynamicResource FlourishProfileBackgroundBrush}"
+              Background="{DynamicResource FlourishPrimarySurfaceBrush}"
               CornerRadius="13"
             />
             <Ellipse x:Name="ProfileAvatarImage" Visibility="Collapsed" />
@@ -252,7 +252,7 @@
               VerticalAlignment="Center"
               FontSize="{DynamicResource FlourishFontSizeStandard}"
               FontWeight="Regular"
-              Foreground="{DynamicResource FlourishProfileForegroundBrush}"
+              Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
             />
           </Grid>
         </controls:Button.Icon>

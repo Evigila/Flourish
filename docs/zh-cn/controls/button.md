@@ -117,6 +117,8 @@ Danger 只为启用状态的关闭操作提供警示强调；关闭操作被禁�
 
 `Danger` 按钮默认使用危险语义的悬停颜色；局部 `OverrideColor` 会覆盖它。
 
+交互颜色保留相互独立的默认、悬停和按下状态。`Filled`、`Tonal` 与 `Danger` 使用适合各自填充表面的反馈色；`Elevated`、`Outlined` 与 `Text` 共享同一种弱化悬停色，并共享另一种更深的按下色。
+
 ## 相关内容
 
 - [Card](card.md)区分非交互 Card、带局部操作的 ActionCard 和整卡交互。

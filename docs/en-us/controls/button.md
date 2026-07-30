@@ -121,6 +121,8 @@ The button family participates in the public `HoverReveal` attached behavior. Pr
 
 `HoverReveal.IsEnabled` defaults to `true` and inherits, `AnimationDuration` defaults to 140 milliseconds and inherits, and `OverrideColor` defaults to `null` and does not inherit. A `Danger` button supplies a danger-semantic hover color by default; a local `OverrideColor` takes precedence.
 
+Interaction colors preserve separate default, hover, and pressed states. `Filled`, `Tonal`, and `Danger` use feedback appropriate to their filled surfaces. `Elevated`, `Outlined`, and `Text` share the same subtle hover treatment and the same deeper pressed treatment.
+
 ## Related content
 
 - [Chunk](chunk.md) explains how to organize actions within page sections.

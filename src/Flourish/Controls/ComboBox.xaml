@@ -83,8 +83,8 @@
     <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
     <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
     <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
-    <Setter Property="Background" Value="{DynamicResource FlourishControlBackgroundBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground1Brush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStroke1Brush}" />
     <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
@@ -121,7 +121,7 @@
             <Border
               x:Name="HoverChrome"
               Grid.ColumnSpan="2"
-              Background="{Binding Path=(controls:HoverReveal.OverrideColor), RelativeSource={RelativeSource TemplatedParent}}"
+              Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
               BorderThickness="0"
               CornerRadius="{DynamicResource FlourishControlCornerRadius}"
               IsHitTestVisible="False"
@@ -182,7 +182,7 @@
                 Margin="0,4,0,0"
                 Padding="2"
                 Background="{DynamicResource FlourishNeutralBackground1Brush}"
-                BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+                BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}"
                 BorderThickness="{DynamicResource FlourishControlBorderThickness}"
                 CornerRadius="{DynamicResource FlourishControlCornerRadius}"
               >
@@ -212,10 +212,10 @@
               </Setter>
             </MultiTrigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
             </Trigger>
             <Trigger Property="IsDropDownOpen" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
             </Trigger>
             <Trigger Property="IsEditable" Value="True">
               <Setter Property="IsTabStop" Value="False" />
@@ -226,8 +226,8 @@
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
               <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
             </Trigger>
           </ControlTemplate.Triggers>

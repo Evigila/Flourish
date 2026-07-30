@@ -306,30 +306,30 @@ internal partial class FlourishMessageBoxWindow : Window
         if (icon == MessageBoxImage.Hand)
         {
             return (
-                "FlourishMessageBoxErrorIconBackgroundBrush",
-                "FlourishMessageBoxErrorIconForegroundBrush"
+                "FlourishDangerBackgroundBrush",
+                "FlourishDangerForegroundBrush"
             );
         }
 
         if (icon == MessageBoxImage.Question)
         {
             return (
-                "FlourishMessageBoxQuestionIconBackgroundBrush",
-                "FlourishMessageBoxQuestionIconForegroundBrush"
+                "FlourishSecondarySurfaceBrush",
+                "FlourishSecondaryForegroundBrush"
             );
         }
 
         if (icon == MessageBoxImage.Exclamation)
         {
             return (
-                "FlourishMessageBoxWarningIconBackgroundBrush",
-                "FlourishMessageBoxWarningIconForegroundBrush"
+                "FlourishWarningBackgroundBrush",
+                "FlourishWarningForegroundBrush"
             );
         }
 
         return (
-            "FlourishMessageBoxInfoIconBackgroundBrush",
-            "FlourishMessageBoxInfoIconForegroundBrush"
+            "FlourishPrimarySurfaceBrush",
+            "FlourishPrimaryForegroundBrush"
         );
     }
 

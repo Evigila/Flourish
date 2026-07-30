@@ -44,7 +44,7 @@
     </Border>
     <ControlTemplate.Triggers>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter TargetName="OutputViewport" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+        <Setter TargetName="OutputViewport" Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
@@ -64,8 +64,8 @@
     <Style.Triggers>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

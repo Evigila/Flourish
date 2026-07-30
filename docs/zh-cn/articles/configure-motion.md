@@ -47,7 +47,7 @@ builder
 
 `UsePageTransition` 控制页面进入内容框架时的呈现方式，`UseNavigationPanelTransition` 控制导航栏展开和折叠时的过渡。
 
-`UseHoverRevealAnimation` 为支持该效果的控件启用悬停动画，包括 Button 家族、选择项容器以及关闭状态的 ComboBox 选择框。
+`UseHoverRevealAnimation` 为支持该效果的控件启用悬停动画，包括 Button 家族、CheckBox 布局、选择项容器以及关闭状态的 ComboBox 选择框。
 
 ## 导航栏过渡期间的行为
 

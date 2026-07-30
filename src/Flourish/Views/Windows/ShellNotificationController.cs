@@ -230,7 +230,7 @@ internal sealed class ShellNotificationController : IDisposable
             Child = layout,
         };
         surface.SetResourceReference(Border.BackgroundProperty, "FlourishCardBackgroundBrush");
-        surface.SetResourceReference(Border.BorderBrushProperty, "FlourishControlStrokeBrush");
+        surface.SetResourceReference(Border.BorderBrushProperty, "FlourishNeutralStroke1Brush");
         surface.SetResourceReference(
             Border.BorderThicknessProperty,
             "FlourishControlBorderThickness"

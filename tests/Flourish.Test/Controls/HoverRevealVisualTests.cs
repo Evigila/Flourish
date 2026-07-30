@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
 using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -582,6 +583,14 @@ public sealed class HoverRevealVisualTests
                 Assert.Equal(0, hoverChrome.Opacity);
                 Assert.Equal(0, revealScale.ScaleX);
                 Assert.Equal(0, revealScale.ScaleY);
+                Assert.True(HoverReveal.GetIsEnabled(comboBox));
+                Assert.True(HoverReveal.GetIsMotionEnabled(comboBox));
+                Assert.True(HoverReveal.GetIsParticipant(comboBox));
+                Assert.Same(
+                    HoverReveal.GetOverrideColor(comboBox),
+                    hoverChrome.Background
+                );
+                Assert.NotNull(hoverChrome.Background);
 
                 RaiseMouseEvent(comboBox, Mouse.MouseEnterEvent);
                 FlushDispatcher();
@@ -591,6 +600,78 @@ public sealed class HoverRevealVisualTests
                 Assert.Equal(1, revealScale.ScaleY);
 
                 RaiseMouseEvent(comboBox, Mouse.MouseLeaveEvent);
+                FlushDispatcher();
+
+                Assert.Equal(0, hoverChrome.Opacity);
+                Assert.Equal(0, revealScale.ScaleX);
+                Assert.Equal(0, revealScale.ScaleY);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(CheckBoxVariant.Horizontal, false)]
+    [InlineData(CheckBoxVariant.Horizontal, true)]
+    [InlineData(CheckBoxVariant.Vertical, false)]
+    [InlineData(CheckBoxVariant.Vertical, true)]
+    public void CheckBox_HoverRevealIsEnabledByDefaultForEveryVariantAndState(
+        CheckBoxVariant variant,
+        bool isChecked
+    )
+    {
+        StaTest.Run(() =>
+        {
+            var resources = LoadResourceDictionary();
+            var checkBox = new FlourishCheckBox
+            {
+                Content = "Selection",
+                Icon = "\uE713",
+                IsChecked = isChecked,
+                Variant = variant,
+            };
+            HoverReveal.SetAnimationDuration(checkBox, TimeSpan.Zero);
+            var window = CreateWindow(resources, checkBox);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                checkBox.ApplyTemplate();
+
+                var hoverChrome = AssertTemplatePart<Border>(
+                    checkBox,
+                    "HoverChrome"
+                );
+                var revealScale = AssertTemplatePart<ScaleTransform>(
+                    checkBox,
+                    "HoverRevealScale"
+                );
+
+                Assert.True(HoverReveal.GetIsEnabled(checkBox));
+                Assert.True(HoverReveal.GetIsMotionEnabled(checkBox));
+                Assert.True(HoverReveal.GetIsParticipant(checkBox));
+                Assert.True(HoverReveal.GetTemplateHandlesInteraction(checkBox));
+                Assert.Same(
+                    HoverReveal.GetOverrideColor(checkBox),
+                    hoverChrome.Background
+                );
+                Assert.NotNull(hoverChrome.Background);
+                Assert.Equal(0, hoverChrome.Opacity);
+                Assert.Equal(0, revealScale.ScaleX);
+                Assert.Equal(0, revealScale.ScaleY);
+
+                RaiseMouseEvent(checkBox, Mouse.MouseEnterEvent);
+                FlushDispatcher();
+
+                Assert.Equal(1, hoverChrome.Opacity);
+                Assert.Equal(1, revealScale.ScaleX);
+                Assert.Equal(1, revealScale.ScaleY);
+
+                RaiseMouseEvent(checkBox, Mouse.MouseLeaveEvent);
                 FlushDispatcher();
 
                 Assert.Equal(0, hoverChrome.Opacity);

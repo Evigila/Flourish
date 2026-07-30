@@ -51,6 +51,13 @@ public class CheckBox : WpfCheckBox
         set => SetValue(IconProperty, value);
     }
 
+    /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        HoverReveal.NotifyTemplateApplied(this);
+    }
+
     /// <summary>Gets or sets the fixed check box layout.</summary>
     public CheckBoxVariant Variant
     {

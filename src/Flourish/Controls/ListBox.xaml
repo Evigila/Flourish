@@ -6,7 +6,7 @@
   <Style TargetType="{x:Type controls:FlourishListBox}">
     <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
     <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground1Brush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStroke1Brush}" />
     <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="Padding" Value="2" />
@@ -45,13 +45,13 @@
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsKeyboardFocused" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
               <Setter TargetName="Chrome" Property="BorderThickness" Value="{DynamicResource FlourishFocusBorderThickness}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -66,8 +66,8 @@
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

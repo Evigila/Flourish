@@ -281,8 +281,8 @@ public sealed class FlourishXamlArchitectureTests
         ];
         string[] expectedResources =
         [
-            "FlourishControlDisabledBrush",
-            "FlourishControlStrokeDisabledBrush",
+            "FlourishNeutralBackgroundDisabledBrush",
+            "FlourishNeutralStrokeDisabledBrush",
             "FlourishNeutralForegroundDisabledBrush",
         ];
 

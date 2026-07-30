@@ -24,8 +24,8 @@
       >
         <flourish:Presenter.Presentation>
           <Border
-            Background="{DynamicResource FlourishControlBackgroundBrush}"
-            BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+            Background="{DynamicResource FlourishNeutralBackground1Brush}"
+            BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}"
             BorderThickness="1"
           >
             <StackPanel Orientation="Horizontal">

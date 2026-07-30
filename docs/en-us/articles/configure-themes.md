@@ -59,6 +59,23 @@ standard light or dark resources and preserves application-owned resource entrie
 
 Theme colors and corner radius use the same default persistence policy. Each complete saved group takes precedence and subsequent `IAppearanceService` changes are written back unless that method explicitly passes `usePersistedPreference: false`.
 
+## Semantic color roles
+
+Flourish uses a compact subset of the Fluent color system. Neutral roles define text,
+surfaces, interaction backgrounds, disabled states, and strokes. Primary, secondary, and
+accent roles provide the application palette, while danger and warning roles communicate
+status.
+
+Controls consume these semantic roles instead of component-specific colors. Standard
+surfaces share one hover and pressed progression, including card-shaped selection controls.
+Selected content uses the shared selection roles, and presentation overlays share one scrim
+and foreground pair. Brand and status variants keep separate interaction colors when their
+meaning or contrast requirements differ.
+
+When authoring a custom template, reference the closest Flourish semantic resource instead
+of assigning a raw color or creating a component-specific hover brush. This keeps the
+template consistent across light, dark, and runtime-customized themes.
+
 ## Theme modes and preferences
 
 `FlourishTheme.System` follows the Windows application theme. `Light` and `Dark` select a fixed theme until the user chooses another mode.

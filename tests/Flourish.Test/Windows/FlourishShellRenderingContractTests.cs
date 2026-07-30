@@ -94,7 +94,7 @@ public sealed class FlourishShellRenderingContractTests
             buildNotifications,
             StringComparison.Ordinal
         );
-        Assert.Contains("FlourishControlStrokeBrush", buildNotifications, StringComparison.Ordinal);
+        Assert.Contains("FlourishNeutralStroke1Brush", buildNotifications, StringComparison.Ordinal);
         Assert.Contains(
             "FlourishControlBorderThickness",
             buildNotifications,

@@ -43,7 +43,7 @@
           Grid.ColumnSpan="2"
           Grid.RowSpan="2"
           Panel.ZIndex="1"
-          Background="{DynamicResource FlourishCardOverlayScrimBrush}"
+          Background="{DynamicResource FlourishOverlayScrimBrush}"
           IsHitTestVisible="False"
           Visibility="Collapsed"
         />
@@ -106,9 +106,9 @@
         <Setter TargetName="CopySurface" Property="Grid.ColumnSpan" Value="2" />
         <Setter TargetName="CopySurface" Property="Grid.Row" Value="0" />
         <Setter TargetName="CopySurface" Property="Grid.RowSpan" Value="2" />
-        <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
-        <Setter TargetName="ContentHost" Property="Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
-        <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishCardOverlayForegroundBrush}" />
+        <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishForegroundOnOverlayBrush}" />
+        <Setter TargetName="ContentHost" Property="Foreground" Value="{DynamicResource FlourishForegroundOnOverlayBrush}" />
+        <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishForegroundOnOverlayBrush}" />
       </Trigger>
       <Trigger Property="PresenterMode" Value="TopDown">
         <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
@@ -200,8 +200,8 @@
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
         <Setter TargetName="TitleHost" Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter TargetName="ContentHost" Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />

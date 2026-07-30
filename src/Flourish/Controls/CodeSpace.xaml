@@ -60,7 +60,7 @@
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeLarge}" />
     <Setter Property="FontStyle" Value="Normal" />
     <Setter Property="FontWeight" Value="Bold" />
-    <Setter Property="Foreground" Value="{DynamicResource FlourishCodeForegroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Template" Value="{StaticResource CodeSpaceTemplate}" />
   </Style>

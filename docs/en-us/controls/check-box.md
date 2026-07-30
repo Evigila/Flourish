@@ -29,6 +29,10 @@ Use `Variant="Vertical"` for a card-shaped selection that benefits from an icon.
 
 `Icon` accepts arbitrary content and is rendered only by the Vertical layout. Text and other foreground-aware icon content inherit the selection foreground. Artwork that supplies its own explicit colors retains those colors.
 
+## Hover feedback
+
+Both layouts participate in the shared `HoverReveal` behavior by default. CheckBox follows the Outlined button interaction colors: hover uses the shared subtle reveal, while pressed uses the shared deeper pressed reveal. These layers are drawn behind the icon, content, and state indicator, so checked and indeterminate highlights remain visible. When hover animation is disabled or Windows requests reduced motion, the control preserves the same feedback without animation. An inherited `HoverReveal.IsEnabled="False"` disables the animation for a subtree while retaining this static fallback.
+
 ## Three-state selections
 
 Set `IsThreeState="True"` only when `null` represents an inherited, mixed, or unknown value. The indeterminate state replaces the check mark with a horizontal line and otherwise uses the same highlighted treatment as the checked state.
@@ -49,4 +53,5 @@ Set `IsThreeState="True"` only when `null` represents an inherited, mixed, or un
 
 - The [CheckBox API](xref:ArkheideSystem.Flourish.Controls.CheckBox) lists inherited and declared members.
 - The [CheckBoxVariant API](xref:ArkheideSystem.Flourish.Controls.CheckBoxVariant) lists the fixed layouts.
+- [Motion](../articles/configure-motion.md) configures hover reveal and reduced-motion behavior.
 - The [WPF CheckBox documentation](https://learn.microsoft.com/dotnet/desktop/wpf/controls/checkbox) explains the native selection model.

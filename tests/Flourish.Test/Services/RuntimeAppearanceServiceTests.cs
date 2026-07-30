@@ -450,21 +450,17 @@ public sealed class RuntimeAppearanceServiceTests
                 Assert.IsType<Color>(resources["FlourishSecondaryColor"])
             );
             Assert.Equal(colors.Accent, Assert.IsType<Color>(resources["FlourishAccentColor"]));
-            AssertDirectBrushColor(resources, "FlourishPrimaryBrush", colors.Primary);
             AssertDirectBrushColor(resources, "FlourishPrimaryForegroundBrush", colors.Primary);
             AssertDirectBrushColor(resources, "FlourishPrimaryBackgroundBrush", colors.Primary);
-            AssertDirectBrushColor(resources, "FlourishSecondaryBrush", colors.Secondary);
             Assert.NotEqual(
                 colors.Secondary,
                 Assert.IsType<SolidColorBrush>(
                     resources["FlourishSecondaryForegroundBrush"]
                 ).Color
             );
-            AssertDirectBrushColor(resources, "FlourishAccentBrush", colors.Accent);
             AssertDirectBrushColor(resources, "FlourishAccentForegroundBrush", colors.Accent);
-            AssertDirectBrushColor(resources, "FlourishControlStrokeFocusBrush", colors.Accent);
+            AssertDirectBrushColor(resources, "FlourishFocusStrokeBrush", colors.Primary);
             AssertDirectBrushColor(resources, "FlourishForegroundOnPrimaryBrush", Colors.White);
-            AssertDirectBrushColor(resources, "FlourishForegroundOnSecondaryBrush", Colors.Black);
 
             var primaryHover = Assert.IsType<SolidColorBrush>(
                 resources["FlourishPrimaryHoverBrush"]
@@ -534,17 +530,6 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Equal(0x66, lightPressedReveal.Color.A);
             Assert.Equal(0x66, darkHoverReveal.Color.A);
             Assert.Equal(0x73, darkPressedReveal.Color.A);
-            AssertDirectBrushColor(
-                light,
-                "FlourishControlSelectedHoverBrush",
-                lightHoverReveal.Color
-            );
-            AssertDirectBrushColor(
-                dark,
-                "FlourishControlSelectedHoverBrush",
-                darkHoverReveal.Color
-            );
-
             AssertDirectBrushColor(light, "FlourishPrimaryForegroundBrush", colors.Primary);
             Assert.NotEqual(
                 colors.Primary,
@@ -559,8 +544,8 @@ public sealed class RuntimeAppearanceServiceTests
             );
             AssertDirectBrushColor(
                 dark,
-                "FlourishControlStrokeFocusBrush",
-                Assert.IsType<SolidColorBrush>(dark["FlourishAccentForegroundBrush"]).Color
+                "FlourishFocusStrokeBrush",
+                Assert.IsType<SolidColorBrush>(dark["FlourishPrimaryForegroundBrush"]).Color
             );
         });
     }
@@ -584,17 +569,15 @@ public sealed class RuntimeAppearanceServiceTests
             {
                 var isDark = theme == FlourishTheme.Dark;
                 var neutralForeground = isDark
-                    ? Color.FromRgb(0xF8, 0xF8, 0xFA)
-                    : Color.FromRgb(0x1B, 0x1B, 0x1F);
+                    ? Colors.White
+                    : Color.FromRgb(0x24, 0x24, 0x24);
                 var neutralBackground = isDark
-                    ? Color.FromRgb(0x14, 0x14, 0x14)
-                    : Colors.White;
-                var controlBackground = isDark
                     ? Color.FromRgb(0x29, 0x29, 0x29)
                     : Colors.White;
+                var controlBackground = neutralBackground;
                 var cardLayer = isDark
-                    ? Color.FromArgb(0xF0, 0x2B, 0x2D, 0x31)
-                    : Color.FromArgb(0xFA, 0xFF, 0xFF, 0xFF);
+                    ? Color.FromRgb(0x33, 0x33, 0x33)
+                    : Color.FromRgb(0xFA, 0xFA, 0xFA);
                 var interactionBackgrounds = isDark
                     ? new[]
                     {
@@ -632,13 +615,13 @@ public sealed class RuntimeAppearanceServiceTests
                     }
 
                     var selectedBackground = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishControlSelectedBrush"]
+                        resources["FlourishSelectionBackgroundBrush"]
                     ).Color;
                     var selectedForeground = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishControlSelectedForegroundBrush"]
+                        resources["FlourishSelectionForegroundBrush"]
                     ).Color;
                     var selectedHover = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishControlSelectedHoverBrush"]
+                        resources["FlourishHoverRevealBrush"]
                     ).Color;
                     AssertOverlayContrast(
                         selectedForeground,
@@ -662,11 +645,11 @@ public sealed class RuntimeAppearanceServiceTests
         {
             var resources = new ResourceDictionary();
             var hostBrush = new SolidColorBrush(Color.FromRgb(0x12, 0x34, 0x56));
-            resources["FlourishPrimaryBrush"] = hostBrush;
+            resources["FlourishPrimaryForegroundBrush"] = hostBrush;
 
             ThemeService.ApplyStyleOverrides(resources, new FlourishShellOptions());
 
-            Assert.Same(hostBrush, resources["FlourishPrimaryBrush"]);
+            Assert.Same(hostBrush, resources["FlourishPrimaryForegroundBrush"]);
             Assert.DoesNotContain(
                 resources.Keys.Cast<object>(),
                 key => Equals(key, "FlourishControlCornerRadius")

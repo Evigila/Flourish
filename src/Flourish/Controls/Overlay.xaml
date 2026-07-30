@@ -28,7 +28,7 @@
   <Style TargetType="{x:Type controls:Overlay}">
     <Setter Property="Padding" Value="{DynamicResource FlourishOverlayPadding}" />
     <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStroke1Brush}" />
     <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
               <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
-              <Border Grid.Column="1" Margin="8" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+              <Border Grid.Column="1" Margin="8" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
@@ -37,7 +37,7 @@
           <flourish:Presenter.Presentation>
             <Grid MinHeight="180">
               <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
-              <Border Width="120" Height="64" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+              <Border Width="120" Height="64" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
@@ -49,7 +49,7 @@
                 <RowDefinition Height="*" />
               </Grid.RowDefinitions>
               <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
-              <Border Grid.Row="1" Margin="8" BorderBrush="{DynamicResource FlourishControlStrokeBrush}" BorderThickness="1" CornerRadius="8" />
+              <Border Grid.Row="1" Margin="8" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>

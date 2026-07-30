@@ -2,110 +2,74 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 >
-  <!-- Flourish semantic tokens, inspired by Fluent color ramps. -->
-  <SolidColorBrush x:Key="FlourishNeutralForeground1Brush" Color="#1B1B1F" />
-  <SolidColorBrush x:Key="FlourishNeutralForeground2Brush" Color="#52525A" />
+  <!-- Neutral aliases selected from the Fluent web light palette. -->
+  <SolidColorBrush x:Key="FlourishNeutralForeground1Brush" Color="#242424" />
+  <SolidColorBrush x:Key="FlourishNeutralForeground2Brush" Color="#424242" />
   <SolidColorBrush x:Key="FlourishNeutralForegroundDisabledBrush" Color="#BDBDBD" />
   <SolidColorBrush x:Key="FlourishNeutralBackground1Brush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#F7F9FC" />
-  <SolidColorBrush x:Key="FlourishNeutralBackground3Brush" Color="#EEF2F6" />
-  <SolidColorBrush x:Key="FlourishShellBackgroundBrush" Color="#E6F5F7FA" />
-  <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#E1E5EA" />
+  <SolidColorBrush x:Key="FlourishNeutralBackground1HoverBrush" Color="#F5F5F5" />
+  <SolidColorBrush x:Key="FlourishNeutralBackground1PressedBrush" Color="#E0E0E0" />
+  <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="FlourishNeutralBackgroundDisabledBrush" Color="#F0F0F0" />
+  <SolidColorBrush x:Key="FlourishShellBackgroundBrush" Color="#E6FAFAFA" />
+  <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#D1D1D1" />
+  <SolidColorBrush x:Key="FlourishNeutralStroke1HoverBrush" Color="#C7C7C7" />
   <SolidColorBrush x:Key="FlourishNeutralStrokeAccessibleBrush" Color="#616161" />
+  <SolidColorBrush x:Key="FlourishNeutralStrokeDisabledBrush" Color="#E0E0E0" />
+  <SolidColorBrush x:Key="FlourishFocusStrokeBrush" Color="#0F6CBD" />
+  <SolidColorBrush x:Key="FlourishSurfaceStrokeBrush" Color="#0D000000" />
+  <SolidColorBrush x:Key="FlourishDividerBrush" Color="#E0E0E0" />
 
-  <SolidColorBrush x:Key="FlourishControlBackgroundBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishControlHoverBrush" Color="#F2F6FA" />
-  <SolidColorBrush x:Key="FlourishControlPressedBrush" Color="#E6EDF4" />
-  <SolidColorBrush x:Key="FlourishControlSelectedBrush" Color="#CFE4FA" />
-  <SolidColorBrush x:Key="FlourishControlSelectedForegroundBrush" Color="#0C3B5E" />
-  <SolidColorBrush x:Key="FlourishHoverRevealBrush" Color="#592886DE" />
-  <SolidColorBrush x:Key="FlourishPressedRevealBrush" Color="#660F6CBD" />
+  <!-- Shared interaction aliases. -->
+  <SolidColorBrush x:Key="FlourishSelectionBackgroundBrush" Color="#CFE4FA" />
+  <SolidColorBrush x:Key="FlourishSelectionForegroundBrush" Color="#0C3B5E" />
+  <SolidColorBrush x:Key="FlourishHoverRevealBrush" Color="#590F6CBD" />
+  <SolidColorBrush x:Key="FlourishPressedRevealBrush" Color="#660E4775" />
   <SolidColorBrush x:Key="FlourishTonalButtonBackgroundBrush" Color="#EBF3FC" />
   <SolidColorBrush x:Key="FlourishTonalButtonForegroundBrush" Color="#115EA3" />
-  <SolidColorBrush x:Key="FlourishTonalButtonHoverBrush" Color="#CFE4FA" />
   <SolidColorBrush x:Key="FlourishTonalButtonPressedBrush" Color="#96C6FA" />
   <SolidColorBrush x:Key="FlourishTonalButtonPressedForegroundBrush" Color="#0A2E4A" />
-  <SolidColorBrush x:Key="FlourishControlSelectedHoverBrush" Color="#592886DE" />
-  <SolidColorBrush x:Key="FlourishControlDisabledBrush" Color="#F0F0F0" />
-  <SolidColorBrush x:Key="FlourishControlStrokeBrush" Color="#DCE1E7" />
-  <SolidColorBrush x:Key="FlourishControlStrokeHoverBrush" Color="#A9B2BC" />
-  <SolidColorBrush x:Key="FlourishControlStrokePressedBrush" Color="#616161" />
-  <SolidColorBrush x:Key="FlourishControlStrokeFocusBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishControlStrokeDisabledBrush" Color="#E9EDF1" />
 
-  <SolidColorBrush x:Key="FlourishSurfaceStrokeBrush" Color="#12000000" />
-  <SolidColorBrush x:Key="FlourishDividerBrush" Color="#22000000" />
-
-  <!-- Primary, secondary and accent are independently overridable public theme roles. -->
+  <!-- Primary, secondary and accent are independently overridable public roles. -->
   <Color x:Key="FlourishPrimaryColor">#0F6CBD</Color>
   <Color x:Key="FlourishSecondaryColor">#5C2E91</Color>
-  <Color x:Key="FlourishAccentColor">#D83B01</Color>
-  <SolidColorBrush x:Key="FlourishPrimaryBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishPrimaryHoverBrush" Color="#115EA3" />
-  <SolidColorBrush x:Key="FlourishPrimaryPressedBrush" Color="#0C3B5E" />
-  <SolidColorBrush x:Key="FlourishPrimarySurfaceBrush" Color="#240F6CBD" />
+  <Color x:Key="FlourishAccentColor">#DA3B01</Color>
   <SolidColorBrush x:Key="FlourishPrimaryForegroundBrush" Color="#0F6CBD" />
+  <SolidColorBrush x:Key="FlourishPrimaryHoverBrush" Color="#115EA3" />
+  <SolidColorBrush x:Key="FlourishPrimaryPressedBrush" Color="#0E4775" />
+  <SolidColorBrush x:Key="FlourishPrimarySurfaceBrush" Color="#240F6CBD" />
   <SolidColorBrush x:Key="FlourishPrimaryBackgroundBrush" Color="#0F6CBD" />
   <SolidColorBrush x:Key="FlourishPrimaryBackgroundHoverBrush" Color="#115EA3" />
   <SolidColorBrush x:Key="FlourishPrimaryBackgroundPressedBrush" Color="#0C3B5E" />
   <SolidColorBrush x:Key="FlourishForegroundOnPrimaryBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishSecondaryBrush" Color="#5C2E91" />
-  <SolidColorBrush x:Key="FlourishSecondaryHoverBrush" Color="#4B2676" />
-  <SolidColorBrush x:Key="FlourishSecondaryPressedBrush" Color="#381C58" />
   <SolidColorBrush x:Key="FlourishSecondaryForegroundBrush" Color="#5C2E91" />
   <SolidColorBrush x:Key="FlourishSecondarySurfaceBrush" Color="#205C2E91" />
-  <SolidColorBrush x:Key="FlourishForegroundOnSecondaryBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishAccentBrush" Color="#D83B01" />
-  <SolidColorBrush x:Key="FlourishAccentHoverBrush" Color="#B83200" />
-  <SolidColorBrush x:Key="FlourishAccentPressedBrush" Color="#8F2700" />
-  <SolidColorBrush x:Key="FlourishAccentForegroundBrush" Color="#C43E00" />
-  <SolidColorBrush x:Key="FlourishAccentSurfaceBrush" Color="#20D83B01" />
-  <SolidColorBrush x:Key="FlourishForegroundOnAccentBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FlourishAccentForegroundBrush" Color="#C43501" />
+  <SolidColorBrush x:Key="FlourishAccentSurfaceBrush" Color="#20DA3B01" />
   <LinearGradientBrush x:Key="FlourishHeroBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
     <GradientStop Offset="0" Color="#2B0F6CBD" />
     <GradientStop Offset="0.68" Color="#245C2E91" />
-    <GradientStop Offset="1" Color="#20D83B01" />
+    <GradientStop Offset="1" Color="#20DA3B01" />
   </LinearGradientBrush>
-  <SolidColorBrush x:Key="FlourishHeaderChunkOverlayScrimBrush" Color="#70000000" />
-  <SolidColorBrush x:Key="FlourishHeaderChunkOverlayForegroundBrush" Color="#FFFFFF" />
 
-  <!-- Semantic feedback roles. -->
+  <!-- Shared overlay and status aliases. -->
+  <SolidColorBrush x:Key="FlourishOverlayScrimBrush" Color="#66000000" />
+  <SolidColorBrush x:Key="FlourishForegroundOnOverlayBrush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishDangerForegroundBrush" Color="#B10E1C" />
   <SolidColorBrush x:Key="FlourishDangerBackgroundBrush" Color="#FDF3F4" />
-  <SolidColorBrush x:Key="FlourishDangerStrokeBrush" Color="#D13438" />
-  <SolidColorBrush x:Key="FlourishDangerHoverRevealBrush" Color="#33D13438" />
-  <SolidColorBrush x:Key="FlourishSelectionBackgroundBrush" Color="#C7E0F4" />
+  <SolidColorBrush x:Key="FlourishDangerStrongBackgroundBrush" Color="#C50F1F" />
+  <SolidColorBrush x:Key="FlourishDangerStrokeBrush" Color="#C50F1F" />
+  <SolidColorBrush x:Key="FlourishDangerHoverRevealBrush" Color="#33C50F1F" />
+  <SolidColorBrush x:Key="FlourishForegroundOnDangerBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FlourishWarningBackgroundBrush" Color="#FFF9F5" />
+  <SolidColorBrush x:Key="FlourishWarningForegroundBrush" Color="#8A3707" />
 
-  <SolidColorBrush x:Key="FlourishScrollbarThumbBrush" Color="#bfbfbf" />
-  <SolidColorBrush x:Key="FlourishScrollbarThumbHoverBrush" Color="#616161" />
+  <!-- Specialized surfaces that cannot be represented by another alias. -->
+  <SolidColorBrush x:Key="FlourishScrollbarThumbBrush" Color="#7A7A7A" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbPressedBrush" Color="#424242" />
-  <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#FAFFFFFF" />
-  <SolidColorBrush x:Key="FlourishCardTonalBackgroundBrush" Color="#FAFAFA" />
-  <SolidColorBrush x:Key="FlourishCardOverlayScrimBrush" Color="#70000000" />
-  <SolidColorBrush x:Key="FlourishCardOverlayForegroundBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishCardHoverBrush" Color="#FFF8FBFE" />
-  <SolidColorBrush x:Key="FlourishCardPressedBrush" Color="#FFEAF1F7" />
-  <SolidColorBrush x:Key="FlourishCardStrokeBrush" Color="#12000000" />
-  <SolidColorBrush x:Key="FlourishOutputViewportBackgroundBrush" Color="#E2E6EA" />
-  <SolidColorBrush x:Key="FlourishOutputViewportForegroundBrush" Color="#0B6B2F" />
-  <SolidColorBrush x:Key="FlourishCodeForegroundBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishShadowBrush" Color="#33000000" />
+  <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="FlourishOutputViewportBackgroundBrush" Color="#E6E6E6" />
+  <SolidColorBrush x:Key="FlourishOutputViewportForegroundBrush" Color="#0E700E" />
   <DropShadowEffect x:Key="FlourishElevation1Effect" BlurRadius="10" Direction="270" Opacity="0.12" ShadowDepth="2" Color="#000000" />
-  <DropShadowEffect x:Key="FlourishElevation2Effect" BlurRadius="18" Direction="270" Opacity="0.18" ShadowDepth="4" Color="#000000" />
-
-  <!-- Component-specific surface and feedback roles. -->
-  <SolidColorBrush x:Key="FlourishWindowCaptionCloseHoverBrush" Color="#C50F1F" />
-  <SolidColorBrush x:Key="FlourishWindowCaptionCloseForegroundBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishProfileBackgroundBrush" Color="#EBF3FC" />
-  <SolidColorBrush x:Key="FlourishProfileForegroundBrush" Color="#0F6CBD" />
-  <SolidColorBrush x:Key="FlourishMessageBoxSurfaceBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FlourishMessageBoxSecondarySurfaceBrush" Color="#FAFAFA" />
-  <SolidColorBrush x:Key="FlourishMessageBoxErrorIconBackgroundBrush" Color="#FDF3F4" />
-  <SolidColorBrush x:Key="FlourishMessageBoxErrorIconForegroundBrush" Color="#B10E1C" />
-  <SolidColorBrush x:Key="FlourishMessageBoxQuestionIconBackgroundBrush" Color="#F7F0FF" />
-  <SolidColorBrush x:Key="FlourishMessageBoxQuestionIconForegroundBrush" Color="#6B2FAD" />
-  <SolidColorBrush x:Key="FlourishMessageBoxWarningIconBackgroundBrush" Color="#FFF9E5" />
-  <SolidColorBrush x:Key="FlourishMessageBoxWarningIconForegroundBrush" Color="#8A3707" />
-  <SolidColorBrush x:Key="FlourishMessageBoxInfoIconBackgroundBrush" Color="#EBF3FC" />
-  <SolidColorBrush x:Key="FlourishMessageBoxInfoIconForegroundBrush" Color="#0F6CBD" />
+  <DropShadowEffect x:Key="FlourishElevation2Effect" BlurRadius="18" Direction="270" Opacity="0.20" ShadowDepth="4" Color="#000000" />
 </ResourceDictionary>

@@ -16,7 +16,7 @@
   WindowStyle="None"
   x:ClassModifier="internal"
   AllowsTransparency="False"
-  Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
+  Background="{DynamicResource FlourishNeutralBackground1Brush}"
   SnapsToDevicePixels="True"
   UseLayoutRounding="True"
   mc:Ignorable="d"
@@ -32,7 +32,7 @@
   </shell:WindowChrome.WindowChrome>
 
   <Border
-    Background="{DynamicResource FlourishMessageBoxSurfaceBrush}"
+    Background="{DynamicResource FlourishNeutralBackground1Brush}"
     CornerRadius="{DynamicResource FlourishDialogCornerRadius}"
     SnapsToDevicePixels="True"
   >
@@ -122,7 +122,7 @@
       <Border
         Grid.Row="2"
         Padding="20,12"
-        Background="{DynamicResource FlourishMessageBoxSecondarySurfaceBrush}"
+        Background="{DynamicResource FlourishNeutralBackground2Brush}"
         BorderBrush="{DynamicResource FlourishDividerBrush}"
         BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
         CornerRadius="{DynamicResource FlourishDialogFooterCornerRadius}"

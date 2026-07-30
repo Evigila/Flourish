@@ -25,8 +25,8 @@
               Width="16"
               Height="16"
               VerticalAlignment="Center"
-              Background="{DynamicResource FlourishControlBackgroundBrush}"
-              BorderBrush="{DynamicResource FlourishControlStrokeBrush}"
+              Background="{DynamicResource FlourishNeutralBackground1Brush}"
+              BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}"
               BorderThickness="{DynamicResource FlourishControlBorderThickness}"
               CornerRadius="8"
             >
@@ -55,12 +55,12 @@
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishControlHoverBrush}" />
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeHoverBrush}" />
+              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishNeutralBackground1HoverBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishNeutralStroke1HoverBrush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishControlPressedBrush}" />
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokePressedBrush}" />
+              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishNeutralBackground1PressedBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeAccessibleBrush}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
               <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
@@ -84,13 +84,13 @@
               <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
             </MultiTrigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeFocusBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
               <Setter Property="Cursor" Value="Arrow" />
-              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+              <Setter TargetName="RadioChrome" Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+              <Setter TargetName="RadioChrome" Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
               <Setter TargetName="SelectionDot" Property="Fill" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>

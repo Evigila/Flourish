@@ -32,13 +32,13 @@
           />
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="{DynamicResource FlourishScrollbarThumbHoverBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishNeutralStrokeAccessibleBrush}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="True">
               <Setter Property="Background" Value="{DynamicResource FlourishScrollbarThumbPressedBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-              <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

@@ -45,7 +45,7 @@
               <Setter TargetName="SplitterIndicator" Property="Opacity" Value="1" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-              <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
+              <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
               <Setter TargetName="SplitterIndicator" Property="Background" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
             </Trigger>
           </ControlTemplate.Triggers>

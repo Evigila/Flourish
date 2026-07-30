@@ -401,6 +401,30 @@ public sealed class FlourishControlStylesTests
                 foreach (var checkBox in checkBoxes)
                 {
                     checkBox.ApplyTemplate();
+                    var hoverChrome = AssertTemplatePart<Border>(
+                        checkBox,
+                        "HoverChrome"
+                    );
+                    var pressedChrome = AssertTemplatePart<Border>(
+                        checkBox,
+                        "PressedChrome"
+                    );
+                    AssertTemplatePart<ScaleTransform>(
+                        checkBox,
+                        "HoverRevealScale"
+                    );
+                    Assert.True(HoverReveal.GetIsEnabled(checkBox));
+                    Assert.True(HoverReveal.GetIsParticipant(checkBox));
+                    Assert.True(HoverReveal.GetTemplateHandlesInteraction(checkBox));
+                    Assert.Same(
+                        checkBox.TryFindResource("FlourishHoverRevealBrush"),
+                        hoverChrome.Background
+                    );
+                    Assert.Same(
+                        checkBox.TryFindResource("FlourishPressedRevealBrush"),
+                        pressedChrome.Background
+                    );
+                    Assert.NotSame(hoverChrome.Background, pressedChrome.Background);
                 }
 
                 var horizontalIcon = AssertTemplatePart<ContentPresenter>(
@@ -437,6 +461,26 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(1, Grid.GetRow(uncheckedContent));
                 Assert.Equal(0, Grid.GetColumn(uncheckedContent));
                 Assert.Equal(2, Grid.GetColumnSpan(uncheckedContent));
+                Assert.Equal(
+                    AssertTemplatePart<Border>(
+                        verticalUnchecked,
+                        "SurfaceChrome"
+                    ).CornerRadius,
+                    AssertTemplatePart<Border>(
+                        verticalUnchecked,
+                        "HoverChrome"
+                    ).CornerRadius
+                );
+                Assert.Equal(
+                    AssertTemplatePart<Border>(
+                        verticalUnchecked,
+                        "SurfaceChrome"
+                    ).CornerRadius,
+                    AssertTemplatePart<Border>(
+                        verticalUnchecked,
+                        "PressedChrome"
+                    ).CornerRadius
+                );
 
                 Assert.Equal(
                     Visibility.Visible,
@@ -1267,7 +1311,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(FontStyles.Normal, textHost.FontStyle);
                 Assert.Equal(FontWeights.Bold, textHost.FontWeight);
                 Assert.Same(
-                    codeSpace.FindResource("FlourishCodeForegroundBrush"),
+                    codeSpace.FindResource("FlourishPrimaryForegroundBrush"),
                     textHost.Foreground
                 );
                 Assert.Equal(code, textHost.Text);
@@ -1529,7 +1573,12 @@ public sealed class FlourishControlStylesTests
             {
                 window.Show();
                 window.UpdateLayout();
-                elevated.ApplyTemplate();
+                foreach (
+                    var button in new[] { elevated, filled, tonal, outlined, textButton }
+                )
+                {
+                    button.ApplyTemplate();
+                }
 
                 Assert.Null(elevated.Effect);
                 var shadowChrome = AssertTemplatePart<Border>(elevated, "ShadowChrome");
@@ -1555,11 +1604,69 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(Colors.Transparent, ((SolidColorBrush)textButton.Background).Color);
                 Assert.Equal(0, textButton.BorderThickness.Left);
 
-                var revealBrush = elevated.TryFindResource("FlourishHoverRevealBrush");
-                foreach (var button in new[] { elevated, filled, tonal, outlined, textButton })
+                var subtleHoverBrush = elevated.TryFindResource(
+                    "FlourishHoverRevealBrush"
+                );
+                var subtlePressedBrush = elevated.TryFindResource(
+                    "FlourishPressedRevealBrush"
+                );
+                Assert.NotSame(subtleHoverBrush, subtlePressedBrush);
+                foreach (var button in new[] { elevated, outlined, textButton })
                 {
-                    Assert.Same(revealBrush, HoverReveal.GetOverrideColor(button));
+                    Assert.Same(
+                        subtleHoverBrush,
+                        HoverReveal.GetOverrideColor(button)
+                    );
+                    Assert.Same(
+                        subtlePressedBrush,
+                        AssertTemplatePart<Border>(
+                            button,
+                            "PressedChrome"
+                        ).Background
+                    );
                 }
+                var filledHoverBrush = elevated.TryFindResource(
+                    "FlourishPrimaryBackgroundHoverBrush"
+                );
+                Assert.Same(
+                    filledHoverBrush,
+                    HoverReveal.GetOverrideColor(filled)
+                );
+                Assert.Same(
+                    subtleHoverBrush,
+                    HoverReveal.GetOverrideColor(tonal)
+                );
+                Assert.Same(
+                    filled.TryFindResource(
+                        "FlourishPrimaryBackgroundPressedBrush"
+                    ),
+                    AssertTemplatePart<Border>(
+                        filled,
+                        "PressedChrome"
+                    ).Background
+                );
+                Assert.NotSame(filled.Background, filledHoverBrush);
+                Assert.NotSame(
+                    filledHoverBrush,
+                    AssertTemplatePart<Border>(
+                        filled,
+                        "PressedChrome"
+                    ).Background
+                );
+                Assert.NotSame(
+                    filled.Background,
+                    AssertTemplatePart<Border>(
+                        filled,
+                        "PressedChrome"
+                    ).Background
+                );
+                Assert.Same(
+                    tonal.TryFindResource("FlourishTonalButtonPressedBrush"),
+                    AssertTemplatePart<Border>(
+                        tonal,
+                        "PressedChrome"
+                    ).Background
+                );
             }
             finally
             {
@@ -1630,6 +1737,15 @@ public sealed class FlourishControlStylesTests
                         is SolidColorBrush dangerHoverBrush
                         ? dangerHoverBrush.Color
                         : throw new InvalidOperationException("Danger hover chrome must use a brush.")
+                );
+                Assert.Same(
+                    danger.TryFindResource(
+                        "FlourishDangerStrongBackgroundBrush"
+                    ),
+                    AssertTemplatePart<Border>(
+                        danger,
+                        "PressedChrome"
+                    ).Background
                 );
                 Assert.Same(
                     localBrush,
@@ -1708,7 +1824,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(Visibility.Visible, elevatedShadow.Visibility);
                 Assert.NotNull(elevatedShadow.Effect);
                 Assert.Same(
-                    tonal.TryFindResource("FlourishCardTonalBackgroundBrush"),
+                    tonal.TryFindResource("FlourishNeutralBackground2Brush"),
                     tonal.Background
                 );
                 Assert.Same(
@@ -1786,11 +1902,11 @@ public sealed class FlourishControlStylesTests
                 {
                     button.ApplyTemplate();
                     Assert.Same(
-                        button.TryFindResource("FlourishControlDisabledBrush"),
+                        button.TryFindResource("FlourishNeutralBackgroundDisabledBrush"),
                         button.Background
                     );
                     Assert.Same(
-                        button.TryFindResource("FlourishControlStrokeDisabledBrush"),
+                        button.TryFindResource("FlourishNeutralStrokeDisabledBrush"),
                         button.BorderBrush
                     );
                     Assert.Same(
@@ -1861,11 +1977,11 @@ public sealed class FlourishControlStylesTests
                 {
                     card.ApplyTemplate();
                     Assert.Same(
-                        card.TryFindResource("FlourishControlDisabledBrush"),
+                        card.TryFindResource("FlourishNeutralBackgroundDisabledBrush"),
                         card.Background
                     );
                     Assert.Same(
-                        card.TryFindResource("FlourishControlStrokeDisabledBrush"),
+                        card.TryFindResource("FlourishNeutralStrokeDisabledBrush"),
                         card.BorderBrush
                     );
                     Assert.Same(

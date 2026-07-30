@@ -142,8 +142,8 @@
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
         <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
         <Setter TargetName="ShadowChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
@@ -164,7 +164,7 @@
     <Setter Property="Template" Value="{StaticResource CardTemplate}" />
     <Style.Triggers>
       <Trigger Property="Variant" Value="Tonal">
-        <Setter Property="Background" Value="{DynamicResource FlourishCardTonalBackgroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground2Brush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Filled">
         <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
@@ -172,8 +172,8 @@
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>

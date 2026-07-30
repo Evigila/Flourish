@@ -64,7 +64,7 @@
           <Condition Property="Variant" Value="Danger" />
           <Condition Property="IsMouseOver" Value="True" />
         </MultiTrigger.Conditions>
-        <Setter Property="Foreground" Value="{DynamicResource FlourishWindowCaptionCloseForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnDangerBrush}" />
       </MultiTrigger>
       <Trigger Property="IsPressed" Value="True">
         <Setter TargetName="HoverChrome" Property="Opacity" Value="0" />
@@ -75,14 +75,14 @@
           <Condition Property="Variant" Value="Danger" />
           <Condition Property="IsPressed" Value="True" />
         </MultiTrigger.Conditions>
-        <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishWindowCaptionCloseHoverBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource FlourishWindowCaptionCloseForegroundBrush}" />
+        <Setter TargetName="PressedChrome" Property="Background" Value="{DynamicResource FlourishDangerStrongBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnDangerBrush}" />
       </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
         <Setter TargetName="HoverChrome" Property="Visibility" Value="Collapsed" />
         <Setter TargetName="PressedChrome" Property="Visibility" Value="Collapsed" />
       </Trigger>
@@ -121,13 +121,13 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
-        <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishWindowCaptionCloseHoverBrush}" />
+        <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishDangerStrongBackgroundBrush}" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
-        <Setter Property="Background" Value="{DynamicResource FlourishControlDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource FlourishControlStrokeDisabledBrush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
       </Trigger>
     </Style.Triggers>
   </Style>
