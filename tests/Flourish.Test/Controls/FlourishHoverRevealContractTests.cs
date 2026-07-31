@@ -117,6 +117,72 @@ public sealed class FlourishHoverRevealContractTests
     }
 
     [Fact]
+    public void BunchedItems_DelegateHoverAndSelectionBackgroundsToTheirOwner()
+    {
+        var itemDocument = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "BunchedListBoxItem.xaml")
+        );
+        var itemStyle = Assert.Single(
+            itemDocument.Descendants(),
+            element =>
+                element.Name.LocalName == "Style"
+                && (string?)element.Attribute("TargetType")
+                    == "{x:Type controls:BunchedListBoxItem}"
+        );
+        var itemTemplate = Assert.Single(
+            itemStyle.Descendants(),
+            element => element.Name.LocalName == "ControlTemplate"
+        );
+
+        Assert.Contains(
+            itemStyle.Elements(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("Property")
+                    == "controls:HoverReveal.IsParticipant"
+                && (string?)element.Attribute("Value") == "False"
+        );
+        Assert.Empty(FindNamedDescendants(itemTemplate, "HoverChrome"));
+        Assert.Empty(FindNamedDescendants(itemTemplate, "HoverRevealScale"));
+        Assert.DoesNotContain(
+            itemTemplate.Descendants(),
+            element =>
+                element.Name.LocalName is "Trigger" or "Condition"
+                && (string?)element.Attribute("Property") == "IsMouseOver"
+        );
+
+        var selectedTrigger = Assert.Single(
+            itemTemplate.Descendants(),
+            element =>
+                element.Name.LocalName == "Trigger"
+                && (string?)element.Attribute("Property") == "IsSelected"
+                && (string?)element.Attribute("Value") == "True"
+        );
+        Assert.Contains(
+            selectedTrigger.Elements(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("Property") == "Foreground"
+                && (string?)element.Attribute("Value")
+                    == "{DynamicResource FlourishSelectionForegroundBrush}"
+        );
+        Assert.DoesNotContain(
+            selectedTrigger.Elements(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("Property") == "Background"
+        );
+
+        var ownerDocument = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "BunchedListBox.xaml")
+        );
+        Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_IndicatorLayer"));
+        Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_SelectionChrome"));
+        Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_HoverChrome"));
+        Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_PressedChrome"));
+    }
+
+    [Fact]
     public void ComboBox_ReplacesStaticMouseOverColorChangesWithReveal()
     {
         var document = LoadXaml(

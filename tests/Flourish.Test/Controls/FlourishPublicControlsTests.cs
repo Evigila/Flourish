@@ -367,6 +367,23 @@ public sealed class FlourishPublicControlsTests
     }
 
     [Fact]
+    public void BunchedListBoxFamily_PreservesTheExistingListBoxContractsWithoutDuplicateApi()
+    {
+        Assert.Equal(typeof(FlourishListBox), typeof(BunchedListBox).BaseType);
+        Assert.Equal(typeof(FlourishListBoxItem), typeof(BunchedListBoxItem).BaseType);
+        Assert.Empty(
+            typeof(BunchedListBox).GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
+        );
+        Assert.Empty(
+            typeof(BunchedListBoxItem).GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
+        );
+    }
+
+    [Fact]
     public void ButtonFamily_ExposesSevenVariantsWithoutRetiredTypes()
     {
         Assert.Equal(

@@ -1,0 +1,110 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
+>
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ListBox.xaml" />
+    <ResourceDictionary Source="BunchedListBoxItem.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <ItemsPanelTemplate x:Key="BunchedListBoxItemsPanel">
+    <VirtualizingStackPanel />
+  </ItemsPanelTemplate>
+
+  <Style
+    TargetType="{x:Type controls:BunchedListBox}"
+    BasedOn="{StaticResource {x:Type controls:FlourishListBox}}"
+  >
+    <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
+    <Setter Property="controls:HoverReveal.IsMotionEnabled" Value="{DynamicResource FlourishHoverRevealEnabled}" />
+    <Setter Property="ItemsPanel" Value="{StaticResource BunchedListBoxItemsPanel}" />
+    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type controls:BunchedListBox}">
+          <Border
+            x:Name="Chrome"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+            SnapsToDevicePixels="True"
+          >
+            <Grid x:Name="PART_InteractionViewport" ClipToBounds="True">
+              <Canvas
+                x:Name="PART_IndicatorLayer"
+                Panel.ZIndex="0"
+                ClipToBounds="True"
+                IsHitTestVisible="False"
+              >
+                <Border
+                  x:Name="PART_SelectionChrome"
+                  Width="0"
+                  Height="0"
+                  Panel.ZIndex="0"
+                  Background="{DynamicResource FlourishSelectionBackgroundBrush}"
+                  CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+                  IsHitTestVisible="False"
+                  Opacity="0"
+                />
+                <Border
+                  x:Name="PART_HoverChrome"
+                  Width="0"
+                  Height="0"
+                  Panel.ZIndex="1"
+                  Background="{TemplateBinding controls:HoverReveal.OverrideColor}"
+                  CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+                  IsHitTestVisible="False"
+                  Opacity="0"
+                />
+                <Border
+                  x:Name="PART_PressedChrome"
+                  Width="0"
+                  Height="0"
+                  Panel.ZIndex="2"
+                  Background="{DynamicResource FlourishPressedRevealBrush}"
+                  CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+                  IsHitTestVisible="False"
+                  Opacity="0"
+                />
+              </Canvas>
+              <controls:ScrollViewer
+                x:Name="PART_ScrollViewer"
+                Panel.ZIndex="3"
+                Background="Transparent"
+                CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
+                Focusable="False"
+                FlowDirection="{TemplateBinding FlowDirection}"
+                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                Padding="{TemplateBinding Padding}"
+                VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+              >
+                <ItemsPresenter
+                  KeyboardNavigation.DirectionalNavigation="Contained"
+                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                />
+              </controls:ScrollViewer>
+            </Grid>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
+              <Setter TargetName="Chrome" Property="BorderThickness" Value="{DynamicResource FlourishFocusBorderThickness}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
+              <Setter TargetName="PART_SelectionChrome" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_HoverChrome" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_PressedChrome" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

@@ -19,6 +19,8 @@ items:
   href: button.md
 - name: CheckBox
   href: check-box.md
+- name: BunchedListBox
+  href: bunched-list-box.md
 - name: DataGrid
   href: data-grid.md
 - name: GridSplitter

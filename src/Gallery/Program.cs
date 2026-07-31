@@ -66,6 +66,8 @@ internal static class Program
                     services.AddNavigable<DataGridPage>("DataGrid", "\uE80A");
                     services.AddNavigable<OverlayPage>("Overlay", "\uE89B");
                     services.AddNavigable<TextBlockPage>("TextBlock", "\uE8D2");
+                    services.AddNavigable<BunchedListBoxPage>("BunchedListBox", "\uE8FD");
+                    services.AddNavigable<BunchedListBoxItemPage>("BunchedListBoxItem", "\uE8FD");
                     services.AddNavigable<ListBoxPage>("ListBox", "\uE8FD");
                     services.AddNavigable<ListBoxItemPage>("ListBoxItem", "\uE8FD");
                     services.AddNavigable<ScrollViewerPage>("ScrollViewer", "\uE896");
@@ -160,6 +162,8 @@ internal static class Program
                             group.AddNavigableViewItem<DataGridPage>(childId: 1);
                             group.AddNavigableViewItem<OverlayPage>(childId: 1);
                             group.AddNavigableViewItem<TextBlockPage>(childId: 1);
+                            group.AddNavigableViewItem<BunchedListBoxPage>(childId: 1);
+                            group.AddNavigableViewItem<BunchedListBoxItemPage>(childId: 1);
                             group.AddNavigableViewItem<ListBoxPage>(childId: 1);
                             group.AddNavigableViewItem<ListBoxItemPage>(childId: 1);
                             group.AddNavigableViewItem<ScrollViewerPage>(childId: 1);

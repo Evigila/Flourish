@@ -47,7 +47,7 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 `UsePageTransition` controls how pages enter the content frame. `UseNavigationPanelTransition` controls how the navigation panel opens and closes.
 
-`UseHoverRevealAnimation` enables hover animation on supported controls, including the Button family, CheckBox layouts, selection-item containers, and the closed ComboBox selector.
+`UseHoverRevealAnimation` enables hover animation on supported controls, including the Button family, CheckBox layouts, selection-item containers, the closed ComboBox selector, and the parent-owned interaction layer of BunchedListBox.
 
 ## Navigation panel behavior during transitions
 

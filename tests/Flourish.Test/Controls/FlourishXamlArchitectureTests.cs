@@ -202,6 +202,9 @@ public sealed class FlourishXamlArchitectureTests
             "ActionCard.xaml",
             "ScrollViewer.xaml",
             "WindowCaptionButton.xaml",
+            "ListBox.xaml",
+            "ListBoxItem.xaml",
+            "BunchedListBoxItem.xaml",
         };
         var expectedSources = Directory
             .EnumerateFiles(controlsRoot, "*.xaml", SearchOption.TopDirectoryOnly)
@@ -241,6 +244,18 @@ public sealed class FlourishXamlArchitectureTests
             ["Button.xaml"],
             GetMergedDictionarySources(
                 LoadXaml(Path.Combine(controlsRoot, "WindowCaptionButton.xaml"))
+            )
+        );
+        Assert.Equal(
+            ["ListBox.xaml", "BunchedListBoxItem.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "BunchedListBox.xaml"))
+            )
+        );
+        Assert.Equal(
+            ["ListBoxItem.xaml"],
+            GetMergedDictionarySources(
+                LoadXaml(Path.Combine(controlsRoot, "BunchedListBoxItem.xaml"))
             )
         );
         Assert.Empty(
@@ -953,6 +968,8 @@ public sealed class FlourishXamlArchitectureTests
             "TextBlockPage.xaml",
             "ListBoxPage.xaml",
             "ListBoxItemPage.xaml",
+            "BunchedListBoxPage.xaml",
+            "BunchedListBoxItemPage.xaml",
             "ScrollViewerPage.xaml",
             "ScrollBarPage.xaml",
             "GridSplitterPage.xaml",

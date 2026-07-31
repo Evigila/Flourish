@@ -22,6 +22,7 @@ Use [PageBody](page-body.md) as the root of every content page. Its direct child
 | [OutputCard](output-card.md) | Small-text output, logs, progress, results, and failures in a scrolling viewport. |
 | [Button](button.md) | Text, icon, whole-card, and window-caption actions. |
 | [CheckBox](check-box.md) | Compact Boolean or three-state selections and icon-led selection cards. |
+| [BunchedListBox](bunched-list-box.md) | Selectable collections whose shared hover, pressed, and selection layer moves continuously between items. |
 | [DataGrid](data-grid.md) | Tabular data whose boundary scrolling continues through the page. |
 | [GridSplitter](grid-splitter.md) | Live resizing between adjacent Grid rows or columns. |
 | [Overlay](overlay.md) | Temporary or strong floating surfaces, commonly composed with a vertical ActionCard. |

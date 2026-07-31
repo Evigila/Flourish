@@ -237,6 +237,8 @@ public sealed class GalleryControlPageStructureTests
             "TextBlock",
             "ListBox",
             "ListBoxItem",
+            "BunchedListBox",
+            "BunchedListBoxItem",
             "ScrollViewer",
             "ScrollBar",
             "GridSplitter",
@@ -333,7 +335,7 @@ public sealed class GalleryControlPageStructureTests
                 StringComparer.Ordinal
             );
 
-        Assert.Equal(30, registeredRoutes.Count);
+        Assert.Equal(32, registeredRoutes.Count);
         Assert.Equal(registeredRoutes.Count, cards.Length);
         var publicControlNames = Directory
             .EnumerateFiles(

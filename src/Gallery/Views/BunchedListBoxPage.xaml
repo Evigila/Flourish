@@ -1,0 +1,123 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Views.BunchedListBoxPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="Keep hover, pressed, and selection feedback continuous while the pointer moves between list items."
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="BunchedListBox"
+    />
+
+    <flourish:Chunk
+      Content="The parent list owns the interaction layer in both appearances; item containers remain visually transparent."
+      Title="Variant"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="A bordered collection for ordinary selection. Move across the unequal rows to see one shared indicator travel between them."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Standard"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="220">
+              <flourish:BunchedListBox
+                Width="260"
+                Height="160"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                SelectedIndex="0"
+              >
+                <flourish:BunchedListBoxItem Content="Design" Padding="12,8" />
+                <flourish:BunchedListBoxItem Content="Build a longer item" Padding="12,14" />
+                <flourish:BunchedListBoxItem Content="Verify" Padding="12,8" />
+              </flourish:BunchedListBox>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="A borderless navigation collection with the same coordinated state layer and inherited item semantics."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Navigation"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid MinHeight="220">
+              <flourish:BunchedListBox
+                Width="260"
+                Height="160"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Appearance="Navigation"
+                SelectedIndex="1"
+              >
+                <flourish:BunchedListBoxItem Content="Workspace" IsGroupHeader="True" />
+                <flourish:BunchedListBoxItem Content="Overview" />
+                <flourish:BunchedListBoxItem Content="Settings" />
+              </flourish:BunchedListBox>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Table">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="A single parent-owned layer renders hover and pressed feedback. Single selection uses one moving indicator; multiple selection keeps one realized indicator per selected item."
+      Title="Shared interaction layer"
+    >
+      <flourish:Card Title="Native list behavior" Content="SelectionMode, keyboard navigation, data binding, scrolling, and UI virtualization continue to use the WPF ListBox implementation." />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Usage">
+      <StackPanel>
+        <flourish:Presenter
+          Content="Bind a data collection exactly as you would for ListBox. Generated containers are BunchedListBoxItem instances, so no per-item hover surface is required."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Data-bound list"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="Use Multiple or Extended when several items can be selected. Only realized containers receive indicators, preserving virtualization for long collections."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Multiple selection"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace Text="&lt;flourish:BunchedListBox&#xA;  ItemsSource=&quot;{Binding Tasks}&quot;&#xA;  SelectionMode=&quot;Extended&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Reference">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the BunchedListBox API reference." Icon="&#xE8A5;" IsEnabled="False" Title="BunchedListBox documentation" ToolTip="External navigation is not available in Gallery." />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

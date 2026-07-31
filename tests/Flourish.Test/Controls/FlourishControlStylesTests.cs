@@ -57,6 +57,8 @@ public sealed class FlourishControlStylesTests
             "/Flourish;component/Controls/Label.xaml",
             "/Flourish;component/Controls/ListBox.xaml",
             "/Flourish;component/Controls/ListBoxItem.xaml",
+            "/Flourish;component/Controls/BunchedListBox.xaml",
+            "/Flourish;component/Controls/BunchedListBoxItem.xaml",
             "/Flourish;component/Controls/PasswordBox.xaml",
             "/Flourish;component/Controls/RadioButton.xaml",
             "/Flourish;component/Controls/ScrollBar.xaml",
