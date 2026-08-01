@@ -148,7 +148,7 @@
             VerticalAlignment="Center"
           >
             <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
-            <flourish:FlourishListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
+            <flourish:ListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
           </StackPanel>
         </flourish:Presenter.Presentation>
         </flourish:Presenter>

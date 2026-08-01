@@ -961,15 +961,12 @@ public sealed class FlourishXamlArchitectureTests
             "PresenterPage.xaml",
             "PageBodyPage.xaml",
             "DocumentPage.xaml",
-            "ParagraphPage.xaml",
             "CodeSpacePage.xaml",
             "DataGridPage.xaml",
             "OverlayPage.xaml",
             "TextBlockPage.xaml",
             "ListBoxPage.xaml",
-            "ListBoxItemPage.xaml",
             "BunchedListBoxPage.xaml",
-            "BunchedListBoxItemPage.xaml",
             "ScrollViewerPage.xaml",
             "ScrollBarPage.xaml",
             "GridSplitterPage.xaml",
@@ -980,7 +977,6 @@ public sealed class FlourishXamlArchitectureTests
             "CheckBoxPage.xaml",
             "RadioButtonPage.xaml",
             "ComboBoxPage.xaml",
-            "ComboBoxItemPage.xaml",
             "LabelPage.xaml",
         ];
 

@@ -92,7 +92,7 @@
           Title="Live tasks"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishListBox
+            <flourish:ListBox
               x:Name="ActiveTaskList"
               Width="480"
               Height="220"
@@ -109,7 +109,7 @@
           Title="Recent outcomes"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishListBox
+            <flourish:ListBox
               x:Name="OutcomeList"
               Width="480"
               Height="220"

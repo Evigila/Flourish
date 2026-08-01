@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
-using ListBox = ArkheideSystem.Flourish.Controls.FlourishListBox;
+using ListBox = ArkheideSystem.Flourish.Controls.BunchedListBox;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPanel = System.Windows.Controls.Panel;
 

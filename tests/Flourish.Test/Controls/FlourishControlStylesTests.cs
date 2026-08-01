@@ -13,9 +13,11 @@ using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
 using FlourishDocument = ArkheideSystem.Flourish.Controls.Document;
 using FlourishParagraph = ArkheideSystem.Flourish.Controls.Paragraph;
+using ListBox = ArkheideSystem.Flourish.Controls.ListBox;
 using WpfBinding = System.Windows.Data.Binding;
 using WpfButton = System.Windows.Controls.Button;
 using WpfCheckBox = System.Windows.Controls.CheckBox;
+using WpfListBox = System.Windows.Controls.ListBox;
 using WpfControl = System.Windows.Controls.Control;
 using WpfPath = System.Windows.Shapes.Path;
 using WpfScrollViewer = System.Windows.Controls.ScrollViewer;
@@ -282,7 +284,7 @@ public sealed class FlourishControlStylesTests
                 typeof(Label),
                 typeof(ComboBox),
                 typeof(ComboBoxItem),
-                typeof(ListBox),
+                typeof(WpfListBox),
                 typeof(ListBoxItem),
                 typeof(GridSplitter),
             ];
@@ -557,7 +559,7 @@ public sealed class FlourishControlStylesTests
             var textBox = new FlourishTextBox { Text = "Text" };
             var passwordBox = new FlourishPasswordBox { Password = "before-template" };
             var comboBox = new FlourishComboBox { ItemsSource = new[] { "One", "Two" } };
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
                 ItemsSource = new[] { "First", "Second" },
             };
@@ -2630,9 +2632,9 @@ public sealed class FlourishControlStylesTests
                 IsEnabled = false,
                 ToolTip = toolTip,
             };
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 Items = { item },
             };
             var window = CreateWindow(listBox);
@@ -2660,9 +2662,9 @@ public sealed class FlourishControlStylesTests
         StaTest.Run(() =>
         {
             var item = new FlourishListBoxItem { Content = "Item" };
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 Items = { item },
             };
             var resources = new ResourceDictionary

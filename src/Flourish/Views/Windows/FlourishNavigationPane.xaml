@@ -46,6 +46,7 @@
             x:Name="NavigationItemLabel"
             Grid.Column="1"
             Margin="8,0,0,0"
+            Padding="0,0,0,2"
             VerticalAlignment="Center"
             Text="{Binding Label}"
           />
@@ -75,7 +76,7 @@
           />
         </DataTrigger>
         <DataTrigger
-          Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type control:FlourishListBox}}}"
+          Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type control:ListBox}}}"
           Value="True"
         >
           <Setter TargetName="NavigationGroupHeader" Property="Visibility" Value="Collapsed" />
@@ -111,10 +112,10 @@
           Orientation="Vertical"
           Visibility="Collapsed"
         />
-        <control:FlourishListBox
+        <control:BunchedListBox
           x:Name="NavigationItemsHost"
           Grid.Row="1"
-          Appearance="Navigation"
+          Appearance="Borderless"
           ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
           ScrollViewer.CanContentScroll="True"
           PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
@@ -123,12 +124,12 @@
           VirtualizingStackPanel.IsVirtualizing="True"
           VirtualizingStackPanel.VirtualizationMode="Recycling"
         >
-          <control:FlourishListBox.ItemsPanel>
+          <control:BunchedListBox.ItemsPanel>
             <ItemsPanelTemplate>
               <VirtualizingStackPanel />
             </ItemsPanelTemplate>
-          </control:FlourishListBox.ItemsPanel>
-        </control:FlourishListBox>
+          </control:BunchedListBox.ItemsPanel>
+        </control:BunchedListBox>
 
         <Border
           x:Name="FixedNavigationItemsBorder"
@@ -138,9 +139,9 @@
           BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
           Visibility="Collapsed"
         >
-          <control:FlourishListBox
+          <control:BunchedListBox
             x:Name="FixedNavigationItemsHost"
-            Appearance="Navigation"
+            Appearance="Borderless"
             ItemTemplate="{StaticResource FlourishNavigationItemTemplate}"
             PreviewKeyDown="NavigationItemsHost_PreviewKeyDown"
             PreviewMouseLeftButtonDown="NavigationItemsHost_PreviewMouseLeftButtonDown"

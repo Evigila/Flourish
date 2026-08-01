@@ -7,7 +7,7 @@ description: 使用一个由父控件管理、可在项目之间连续移动的�
 
 当相邻项目需要表现为一个协调的集合时，推荐使用 `BunchedListBox`。它保留原生 WPF `ListBox` 的选择、键盘、自动化、数据绑定、滚动和虚拟化行为，同时把悬停、按下与选中背景从每个项目容器移到父控件统一管理的显示层。
 
-每个项目确实需要独立交互表面时使用 `FlourishListBox`。需要让指针反馈或单选指示器在项目之间连续移动时使用 `BunchedListBox`。
+每个项目确实需要独立交互表面时使用 `ListBox`。需要让指针反馈或单选指示器在项目之间连续移动时使用 `BunchedListBox`。
 
 ## 绑定集合
 
@@ -19,7 +19,7 @@ description: 使用一个由父控件管理、可在项目之间连续移动的�
   SelectedItem="{Binding SelectedProject, Mode=TwoWay}" />
 ```
 
-控件支持数据模板、项目容器样式、`SelectedValuePath` 及其他继承的集合成员，并继承 `FlourishListBox` 的 `Appearance` 和 `IsCompact` 外观选项。
+控件支持数据模板、项目容器样式、`SelectedValuePath` 及其他继承的集合成员，并继承 `ListBox` 的 `Appearance` 和 `IsCompact` 外观选项。
 
 ## 统一交互层
 
@@ -46,7 +46,7 @@ description: 使用一个由父控件管理、可在项目之间连续移动的�
 通常应让父控件生成 `BunchedListBoxItem`。只有导航项需要 `IsGroupHeader` 或 `IsCommandItem` 等继承的项目级状态时，才直接声明容器。
 
 ```xml
-<flourish:BunchedListBox Appearance="Navigation">
+<flourish:BunchedListBox Appearance="Borderless">
   <flourish:BunchedListBoxItem
     Content="Workspace"
     IsGroupHeader="True" />

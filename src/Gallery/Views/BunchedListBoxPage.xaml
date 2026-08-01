@@ -23,13 +23,12 @@
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="A bordered collection for ordinary selection. Move across the unequal rows to see one shared indicator travel between them."
+          Content="A bordered collection whose equal-height rows share one moving interaction indicator."
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Standard"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="220">
               <flourish:BunchedListBox
                 Width="260"
                 Height="160"
@@ -37,11 +36,10 @@
                 VerticalAlignment="Center"
                 SelectedIndex="0"
               >
-                <flourish:BunchedListBoxItem Content="Design" Padding="12,8" />
-                <flourish:BunchedListBoxItem Content="Build a longer item" Padding="12,14" />
-                <flourish:BunchedListBoxItem Content="Verify" Padding="12,8" />
+                <flourish:BunchedListBoxItem Content="Design" />
+                <flourish:BunchedListBoxItem Content="Build" />
+                <flourish:BunchedListBoxItem Content="Verify" />
               </flourish:BunchedListBox>
-            </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -49,23 +47,21 @@
           Content="A borderless navigation collection with the same coordinated state layer and inherited item semantics."
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Navigation"
+          Title="Borderless"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="220">
               <flourish:BunchedListBox
                 Width="260"
                 Height="160"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Appearance="Navigation"
+                Appearance="Borderless"
                 SelectedIndex="1"
               >
                 <flourish:BunchedListBoxItem Content="Workspace" IsGroupHeader="True" />
                 <flourish:BunchedListBoxItem Content="Overview" />
                 <flourish:BunchedListBoxItem Content="Settings" />
               </flourish:BunchedListBox>
-            </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
@@ -85,6 +81,17 @@
       Title="Shared interaction layer"
     >
       <flourish:Card Title="Native list behavior" Content="SelectionMode, keyboard navigation, data binding, scrolling, and UI virtualization continue to use the WPF ListBox implementation." />
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="BunchedListBoxItem keeps its interaction background transparent so the parent-owned HoverReveal layer remains visible."
+      Title="BunchedListBoxItem"
+    >
+      <UniformGrid Columns="3">
+        <flourish:Card Title="Generated container" Content="Data items are wrapped automatically; explicit containers are only needed for local item state." />
+        <flourish:Card Margin="8,0" Title="Group header" Content="IsGroupHeader excludes the entry from hover and selection feedback." />
+        <flourish:Card Title="Command item" Content="IsCommandItem keeps hover feedback but does not retain the selection background." />
+      </UniformGrid>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Usage">

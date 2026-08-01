@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Views.Windows;
-using NavigationListBox = ArkheideSystem.Flourish.Controls.FlourishListBox;
+using NavigationListBox = ArkheideSystem.Flourish.Controls.BunchedListBox;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 

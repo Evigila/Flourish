@@ -521,6 +521,9 @@ public sealed class FlourishInputStylesTests
                 Height = 120,
                 Content = content,
             };
+            var renderingStates = new List<bool>();
+            scrollViewer.SmoothScrollRenderingChanged += (_, _) =>
+                renderingStates.Add(scrollViewer.IsSmoothScrollRendering);
             var window = CreateWindow(scrollViewer);
 
             try
@@ -549,6 +552,8 @@ public sealed class FlourishInputStylesTests
                 scrollViewer.RaiseEvent(wheel);
 
                 Assert.True(wheel.Handled);
+                Assert.True(scrollViewer.IsSmoothScrollRendering);
+                Assert.Equal([true], renderingStates);
                 PumpDispatcherUntil(
                     () =>
                         scrollViewer.VerticalOffset > 0
@@ -557,6 +562,8 @@ public sealed class FlourishInputStylesTests
                 );
 
                 Assert.Equal(0, transform.Y);
+                Assert.False(scrollViewer.IsSmoothScrollRendering);
+                Assert.Equal([true, false], renderingStates);
             }
             finally
             {

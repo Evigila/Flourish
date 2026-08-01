@@ -15,7 +15,7 @@ namespace ArkheideSystem.Flourish.Controls;
 [TemplatePart(Name = HoverChromePartName, Type = typeof(Border))]
 [TemplatePart(Name = PressedChromePartName, Type = typeof(Border))]
 [TemplatePart(Name = ScrollViewerPartName, Type = typeof(ScrollViewer))]
-public class BunchedListBox : FlourishListBox
+public class BunchedListBox : ListBox
 {
     internal const string InteractionViewportPartName = "PART_InteractionViewport";
     internal const string IndicatorLayerPartName = "PART_IndicatorLayer";

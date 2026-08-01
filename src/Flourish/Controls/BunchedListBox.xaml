@@ -14,9 +14,10 @@
 
   <Style
     TargetType="{x:Type controls:BunchedListBox}"
-    BasedOn="{StaticResource {x:Type controls:FlourishListBox}}"
+    BasedOn="{StaticResource {x:Type controls:ListBox}}"
   >
     <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
+    <Setter Property="controls:HoverReveal.IsEnabled" Value="True" />
     <Setter Property="controls:HoverReveal.IsMotionEnabled" Value="{DynamicResource FlourishHoverRevealEnabled}" />
     <Setter Property="ItemsPanel" Value="{StaticResource BunchedListBoxItemsPanel}" />
     <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />

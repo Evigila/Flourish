@@ -76,6 +76,25 @@
       </UniformGrid>
     </flourish:Chunk>
 
+    <flourish:Chunk
+      Content="FlourishComboBox generates FlourishComboBoxItem containers. Explicit items may set Content, IsEnabled, and ToolTip locally."
+      Title="ComboBoxItem"
+    >
+      <flourish:Presenter
+        Content="A disabled item remains visible while its tooltip explains why the option is unavailable."
+        PresenterMode="Split"
+        PresenterPosition="Left"
+        Title="Unavailable item"
+      >
+        <flourish:Presenter.Presentation>
+          <flourish:FlourishComboBox Width="240" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="0">
+            <flourish:FlourishComboBoxItem Content="Stable channel" />
+            <flourish:FlourishComboBoxItem Content="Preview channel" IsEnabled="False" ToolTip="Preview updates are not configured." />
+          </flourish:FlourishComboBox>
+        </flourish:Presenter.Presentation>
+      </flourish:Presenter>
+    </flourish:Chunk>
+
     <flourish:Chunk Title="Usage">
       <StackPanel>
         <flourish:Presenter

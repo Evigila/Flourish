@@ -13,7 +13,7 @@
       Content="Select items through a Flourish-styled list that generates FlourishListBoxItem containers."
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishListBox"
+      Title="ListBox"
     />
 
     <flourish:Chunk
@@ -29,7 +29,7 @@
           Title="Standard"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishListBox
+            <flourish:ListBox
               Width="240"
               Height="132"
               HorizontalAlignment="Center"
@@ -39,7 +39,7 @@
                 <flourish:FlourishListBoxItem Content="Design" />
                 <flourish:FlourishListBoxItem Content="Build" />
                 <flourish:FlourishListBoxItem Content="Verify" />
-            </flourish:FlourishListBox>
+            </flourish:ListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -47,20 +47,20 @@
           Content="A borderless list for shell navigation items and group labels."
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Navigation"
+          Title="Borderless"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishListBox
+            <flourish:ListBox
               Width="240"
               Height="132"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Appearance="Navigation"
+              Appearance="Borderless"
             >
                 <flourish:FlourishListBoxItem Content="Workspace" IsGroupHeader="True" />
                 <flourish:FlourishListBoxItem Content="Overview" IsSelected="True" />
                 <flourish:FlourishListBoxItem Content="Settings" />
-            </flourish:FlourishListBox>
+            </flourish:ListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
@@ -82,10 +82,21 @@
       <flourish:Card Title="State ownership" Content="Bind SelectedItem or SelectedValue to the view model. IsCompact affects navigation geometry without changing selection state." />
     </flourish:Chunk>
 
+    <flourish:Chunk
+      Content="ListBox generates FlourishListBoxItem containers. Declare one explicitly only when a fixed entry needs item-level state."
+      Title="ListBoxItem"
+    >
+      <UniformGrid Columns="3">
+        <flourish:Card Title="Selectable" Content="Content and IsSelected describe a normal selectable entry." />
+        <flourish:Card Margin="8,0" Title="Group header" Content="IsGroupHeader creates a non-selectable label in a Borderless list." />
+        <flourish:Card Title="Command item" Content="IsCommandItem marks an entry invoked as a command rather than retained as the active destination." />
+      </UniformGrid>
+    </flourish:Chunk>
+
     <flourish:Chunk Title="Usage">
       <StackPanel>
         <flourish:Presenter
-          Content="Use Standard for ordinary selectable collections. Bind ItemsSource and SelectedItem as with native WPF ListBox, using a two-way selection binding to synchronize the active view-model item. Choose Navigation when entries represent destinations or commands, and define group-header or command semantics through FlourishListBoxItem."
+          Content="Use Standard for ordinary selectable collections. Bind ItemsSource and SelectedItem as with native WPF ListBox, using a two-way selection binding to synchronize the active view-model item. Choose Borderless when entries represent destinations or commands, and define group-header or command semantics through FlourishListBoxItem."
           PresenterMode="Split"
           PresenterPosition="Left"
           Title="Standard list"
@@ -96,13 +107,13 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Use Navigation when entries represent destinations or commands. Explicit FlourishListBoxItem containers can mark group headings and command entries; IsCompact collapses navigation geometry without changing selection semantics."
+          Content="Use Borderless when entries represent destinations or commands. Explicit FlourishListBoxItem containers can mark group headings and command entries; IsCompact collapses their geometry without changing selection semantics."
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Navigation list"
+          Title="Borderless list"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:FlourishListBox&#xA;  Appearance=&quot;Navigation&quot;&#xA;  IsCompact=&quot;False&quot;&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Workspace&quot;&#xA;    IsGroupHeader=&quot;True&quot; /&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Refresh&quot;&#xA;    IsCommandItem=&quot;True&quot; /&gt;&#xA;&lt;/flourish:FlourishListBox&gt;" />
+            <flourish:CodeSpace Text="&lt;flourish:ListBox&#xA;  Appearance=&quot;Borderless&quot;&#xA;  IsCompact=&quot;False&quot;&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Workspace&quot;&#xA;    IsGroupHeader=&quot;True&quot; /&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Refresh&quot;&#xA;    IsCommandItem=&quot;True&quot; /&gt;&#xA;&lt;/flourish:ListBox&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
@@ -111,7 +122,7 @@
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">
         <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishListBox API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishListBox documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="8,0,0,0" Content="Read the ListBox API reference." Icon="&#xE8A5;" IsEnabled="False" Title="ListBox documentation" ToolTip="External navigation is not available in Gallery." />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

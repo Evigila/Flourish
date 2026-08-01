@@ -74,10 +74,6 @@
               <Setter Property="Foreground" Value="{DynamicResource FlourishSelectionForegroundBrush}" />
               <Setter Property="Background" Value="{DynamicResource FlourishSelectionBackgroundBrush}" />
             </Trigger>
-            <Trigger Property="IsKeyboardFocusWithin" Value="True">
-              <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
-              <Setter TargetName="Chrome" Property="BorderThickness" Value="{DynamicResource FlourishFocusBorderThickness}" />
-            </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
               <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
@@ -93,8 +89,8 @@
         <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
       </Trigger>
       <DataTrigger
-        Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishListBox}}}"
-        Value="Navigation"
+        Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:ListBox}}}"
+        Value="Borderless"
       >
         <Setter Property="Height" Value="30" />
         <Setter Property="Margin" Value="4,1" />
@@ -117,8 +113,8 @@
             Value="True"
           />
           <Condition
-            Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishListBox}}}"
-            Value="Navigation"
+            Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:ListBox}}}"
+            Value="Borderless"
           />
         </MultiDataTrigger.Conditions>
         <Setter Property="Height" Value="Auto" />
@@ -141,11 +137,11 @@
       <MultiDataTrigger>
         <MultiDataTrigger.Conditions>
           <Condition
-            Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishListBox}}}"
-            Value="Navigation"
+            Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:ListBox}}}"
+            Value="Borderless"
           />
           <Condition
-            Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishListBox}}}"
+            Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type controls:ListBox}}}"
             Value="True"
           />
         </MultiDataTrigger.Conditions>
@@ -163,7 +159,7 @@
             Value="True"
           />
           <Condition
-            Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type controls:FlourishListBox}}}"
+            Binding="{Binding IsCompact, RelativeSource={RelativeSource AncestorType={x:Type controls:ListBox}}}"
             Value="True"
           />
         </MultiDataTrigger.Conditions>

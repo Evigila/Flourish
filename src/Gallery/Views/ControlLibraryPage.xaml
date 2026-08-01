@@ -21,7 +21,6 @@
 
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Presenter page" Click="ControlCard_Click" Content="Advanced text and presentation layouts." Icon="&#xE8BA;" Tag="Presenter" Title="Presenter" />
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Document page" Click="ControlCard_Click" Content="A bordered surface for multiple paragraphs." Icon="&#xE8A5;" Tag="Document" Title="Document" />
-        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Paragraph page" Click="ControlCard_Click" Content="One standardized paragraph inside a Document." Icon="&#xE8D2;" Tag="Paragraph" Title="Paragraph" />
 
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open Card page" Click="ControlCard_Click" Content="Concise display-only content with one optional icon." Icon="&#xE7FB;" Tag="Card" Title="Card" />
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ActionCard page" Click="ControlCard_Click" Content="A fixed setting row or vertical local action." Icon="&#xE7C9;" Tag="ActionCard" Title="ActionCard" />
@@ -47,11 +46,8 @@
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open RadioButton page" Click="ControlCard_Click" Content="One selection within a related option group." Icon="&#xECCA;" Tag="RadioButton" Title="RadioButton" />
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ComboBox page" Click="ControlCard_Click" Content="A compact drop-down selection surface." Icon="&#xE70D;" Tag="ComboBox" Title="ComboBox" />
 
-        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ComboBoxItem page" Click="ControlCard_Click" Content="A standardized selectable ComboBox entry." Icon="&#xE8FD;" Tag="ComboBoxItem" Title="ComboBoxItem" />
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open BunchedListBox page" Click="ControlCard_Click" Content="A list whose parent layer moves interaction feedback between items." Icon="&#xE8FD;" Tag="BunchedListBox" Title="BunchedListBox" />
-        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open BunchedListBoxItem page" Click="ControlCard_Click" Content="A transparent item container coordinated by BunchedListBox." Icon="&#xE8FD;" Tag="BunchedListBoxItem" Title="BunchedListBoxItem" />
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ListBox page" Click="ControlCard_Click" Content="A visible collection with selection behavior." Icon="&#xE8FD;" Tag="ListBox" Title="ListBox" />
-        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ListBoxItem page" Click="ControlCard_Click" Content="A standardized selectable ListBox entry." Icon="&#xE8FD;" Tag="ListBoxItem" Title="ListBoxItem" />
 
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ScrollViewer page" Click="ControlCard_Click" Content="A viewport for content larger than its available space." Icon="&#xE896;" Tag="ScrollViewer" Title="ScrollViewer" />
         <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="Open ScrollBar page" Click="ControlCard_Click" Content="A themed scrollbar for explicit scrolling." Icon="&#xE70E;" Tag="ScrollBar" Title="ScrollBar" />

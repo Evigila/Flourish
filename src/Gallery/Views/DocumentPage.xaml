@@ -40,6 +40,13 @@
       </flourish:Document>
     </flourish:Chunk>
 
+    <flourish:Chunk
+      Content="Paragraph is the document-owned text element. Set Text directly or bind it to content; Document supplies paragraph spacing, first-line indentation, and reading typography."
+      Title="Paragraph"
+    >
+      <flourish:Card Title="Parent relationship" Content="Use Paragraph inside Document rather than as a standalone page-level surface." />
+    </flourish:Chunk>
+
     <flourish:Chunk Title="Card or Document">
       <UniformGrid Columns="2">
         <flourish:Card

@@ -233,12 +233,9 @@ public sealed class GalleryControlPageStructureTests
         string[] pageTypes =
         [
             "PageBody",
-            "Paragraph",
             "TextBlock",
             "ListBox",
-            "ListBoxItem",
             "BunchedListBox",
-            "BunchedListBoxItem",
             "ScrollViewer",
             "ScrollBar",
             "GridSplitter",
@@ -269,16 +266,15 @@ public sealed class GalleryControlPageStructureTests
             Assert.Contains($"AddNavigableViewItem<{pageType}Page>(childId: 1)", program);
         }
 
-        var paragraphPage = LoadPage("ParagraphPage.xaml");
-        Assert.Contains(
-            paragraphPage.Descendants(),
-            element => element.Name.LocalName == "Document"
-        );
         var documentPage = LoadPage("DocumentPage.xaml");
         Assert.Contains(
             documentPage.Descendants(),
             element => element.Name.LocalName == "Paragraph"
         );
+        Assert.Contains(documentPage.Descendants(), element => element.Name.LocalName == "Chunk" && (string?)element.Attribute("Title") == "Paragraph");
+        Assert.Contains(LoadPage("ListBoxPage.xaml").Descendants(), element => element.Name.LocalName == "Chunk" && (string?)element.Attribute("Title") == "ListBoxItem");
+        Assert.Contains(LoadPage("BunchedListBoxPage.xaml").Descendants(), element => element.Name.LocalName == "Chunk" && (string?)element.Attribute("Title") == "BunchedListBoxItem");
+        Assert.Contains(LoadPage("ComboBoxPage.xaml").Descendants(), element => element.Name.LocalName == "Chunk" && (string?)element.Attribute("Title") == "ComboBoxItem");
     }
 
     [Fact]
@@ -335,7 +331,7 @@ public sealed class GalleryControlPageStructureTests
                 StringComparer.Ordinal
             );
 
-        Assert.Equal(32, registeredRoutes.Count);
+        Assert.Equal(28, registeredRoutes.Count);
         Assert.Equal(registeredRoutes.Count, cards.Length);
         var publicControlNames = Directory
             .EnumerateFiles(
@@ -356,6 +352,7 @@ public sealed class GalleryControlPageStructureTests
                     ? name["Flourish".Length..]
                     : name
             )
+            .Where(name => name is not ("Paragraph" or "ListBoxItem" or "BunchedListBoxItem" or "ComboBoxItem"))
             .Order(StringComparer.Ordinal)
             .ToArray();
         Assert.Equal(registeredRoutes.Keys.Order(StringComparer.Ordinal), publicControlNames);

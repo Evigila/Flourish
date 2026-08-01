@@ -10,6 +10,7 @@ using ArkheideSystem.Flourish.Themes;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
+using ListBox = ArkheideSystem.Flourish.Controls.ListBox;
 using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -33,7 +34,7 @@ public sealed class FlourishPublicControlsTests
             typeof(PresenterMode),
             typeof(PresenterPosition),
             typeof(FlourishGridSplitterVariant),
-            typeof(FlourishListBoxAppearance),
+            typeof(ListBoxAppearance),
             typeof(FlourishTextRole),
             typeof(HoverReveal),
             typeof(FlourishToolTipPolicy),
@@ -273,7 +274,7 @@ public sealed class FlourishPublicControlsTests
             var overlay = new Overlay();
             var checkBox = new FlourishCheckBox();
             var gridSplitter = new FlourishGridSplitter();
-            var listBox = new FlourishListBox();
+            var listBox = new ListBox();
             var scrollViewer = new CustomScrollViewer();
             var search = new FlourishSearchBox();
             var text = new FlourishTextBlock();
@@ -327,7 +328,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(CheckBoxVariant.Horizontal, checkBox.Variant);
             Assert.Null(checkBox.Icon);
             Assert.Equal(FlourishGridSplitterVariant.Standard, gridSplitter.Variant);
-            Assert.Equal(FlourishListBoxAppearance.Standard, listBox.Appearance);
+            Assert.Equal(ListBoxAppearance.Standard, listBox.Appearance);
             Assert.False(listBox.IsCompact);
             Assert.True(scrollViewer.IsSmoothScrollingEnabled);
             Assert.Null(typeof(CustomScrollViewer).GetProperty("IsCompact"));
@@ -369,7 +370,7 @@ public sealed class FlourishPublicControlsTests
     [Fact]
     public void BunchedListBoxFamily_PreservesTheExistingListBoxContractsWithoutDuplicateApi()
     {
-        Assert.Equal(typeof(FlourishListBox), typeof(BunchedListBox).BaseType);
+        Assert.Equal(typeof(ListBox), typeof(BunchedListBox).BaseType);
         Assert.Equal(typeof(FlourishListBoxItem), typeof(BunchedListBoxItem).BaseType);
         Assert.Empty(
             typeof(BunchedListBox).GetProperties(
@@ -1050,7 +1051,7 @@ public sealed class FlourishPublicControlsTests
                 new FlourishGridSplitter().Variant = (FlourishGridSplitterVariant)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
-                new FlourishListBox().Appearance = (FlourishListBoxAppearance)(-1)
+                new ListBox().Appearance = (ListBoxAppearance)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
                 new FlourishTextBlock().Role = (FlourishTextRole)(-1)

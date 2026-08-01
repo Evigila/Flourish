@@ -8,6 +8,7 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Views.Windows;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
+using ListBox = ArkheideSystem.Flourish.Controls.ListBox;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
@@ -150,7 +151,7 @@ public sealed class FlourishShellNavigationLayoutTests
         var navigationPane = XDocument.Load(NavigationPaneXamlPath);
         var navigationLists = navigationPane
             .Descendants()
-            .Where(element => element.Name.LocalName == "FlourishListBox")
+            .Where(element => element.Name.LocalName == "BunchedListBox")
             .Where(element =>
                 (string?)element.Attribute(nameName)
                     is "NavigationItemsHost" or "FixedNavigationItemsHost"
@@ -160,11 +161,11 @@ public sealed class FlourishShellNavigationLayoutTests
         Assert.Equal(2, navigationLists.Length);
         Assert.All(
             navigationLists,
-            list => Assert.Equal("Navigation", (string?)list.Attribute("Appearance"))
+            list => Assert.Equal("Borderless", (string?)list.Attribute("Appearance"))
         );
 
         var compactBinding = (string?)GetCollapsedNavigationTrigger().Attribute("Binding");
-        Assert.Contains("FlourishListBox", compactBinding, StringComparison.Ordinal);
+        Assert.Contains("ListBox", compactBinding, StringComparison.Ordinal);
         Assert.Contains("IsCompact", compactBinding, StringComparison.Ordinal);
         Assert.DoesNotContain("Tag", compactBinding, StringComparison.Ordinal);
 
@@ -268,7 +269,7 @@ public sealed class FlourishShellNavigationLayoutTests
             .Descendants()
             .Where(element => element.Name.LocalName == "MultiDataTrigger")
             .Single(element =>
-                HasTriggerCondition(element, "Appearance", "Navigation")
+                HasTriggerCondition(element, "Appearance", "Borderless")
                 && HasTriggerCondition(element, "IsCompact", "True")
             );
         var setters = GetSetterValues(trigger);
@@ -311,6 +312,15 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
+    public void NavigationItemLabel_DeclaresItsLocalOpticalAlignment()
+    {
+        var navigationPane = XDocument.Load(NavigationPaneXamlPath);
+        var label = FindNamedElement(navigationPane, "NavigationItemLabel");
+
+        Assert.Equal("0,0,0,2", (string?)label.Attribute("Padding"));
+    }
+
+    [Fact]
     public void NavigationGroupHeader_ResolvesSmallMetricsAndReplacesTheItemLayoutAtRuntime()
     {
         StaTest.Run(() =>
@@ -319,11 +329,11 @@ public sealed class FlourishShellNavigationLayoutTests
                 new Thickness(),
                 isGroupHeader: true
             );
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
                 Width = 240,
                 Height = 64,
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 ItemTemplate = LoadNavigationItemTemplate(),
                 ItemsSource = new[] { item },
             };
@@ -565,10 +575,10 @@ public sealed class FlourishShellNavigationLayoutTests
             ];
             var parent = new NavigationLayoutItem(new Thickness());
             var child = new NavigationLayoutItem(new Thickness(16, 0, 0, 0));
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
                 Height = 64,
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 FlowDirection = flowDirection,
                 IsCompact = true,
                 ItemTemplate = itemTemplate,
@@ -1173,10 +1183,10 @@ public sealed class FlourishShellNavigationLayoutTests
             ];
             var parent = new NavigationLayoutItem(new Thickness());
             var child = new NavigationLayoutItem(new Thickness(16, 0, 0, 0));
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
                 Height = 64,
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 FlowDirection = flowDirection,
                 IsCompact = false,
                 ItemTemplate = itemTemplate,
@@ -1281,9 +1291,9 @@ public sealed class FlourishShellNavigationLayoutTests
         StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(GenericThemeSource);
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 ItemsSource = Enumerable.Range(0, 20).Select(_ => new NavigationLayoutItem(new Thickness())),
                 ItemTemplate = LoadNavigationItemTemplate(),
             };
@@ -1511,7 +1521,7 @@ public sealed class FlourishShellNavigationLayoutTests
                     StringComparison.Ordinal
                 ) == true
                 && ((string?)element.Attribute("Binding"))?.Contains(
-                    "FlourishListBox",
+                    "ListBox",
                     StringComparison.Ordinal
                 ) == true
             );
@@ -1666,7 +1676,7 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     private static LayoutSnapshot GetLayoutSnapshot(
-        FlourishListBox listBox,
+        ListBox listBox,
         NavigationLayoutItem item,
         Visual? ancestor = null
     )

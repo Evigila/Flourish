@@ -61,15 +61,12 @@ internal static class Program
                     services.AddNavigable<PresenterPage>("Presenter", "\uE8BA");
                     services.AddNavigable<PageBodyPage>("PageBody", "\uE8A7");
                     services.AddNavigable<DocumentPage>("Document", "\uE8A5");
-                    services.AddNavigable<ParagraphPage>("Paragraph", "\uE8D2");
                     services.AddNavigable<CodeSpacePage>("CodeSpace", "\uE943");
                     services.AddNavigable<DataGridPage>("DataGrid", "\uE80A");
                     services.AddNavigable<OverlayPage>("Overlay", "\uE89B");
                     services.AddNavigable<TextBlockPage>("TextBlock", "\uE8D2");
                     services.AddNavigable<BunchedListBoxPage>("BunchedListBox", "\uE8FD");
-                    services.AddNavigable<BunchedListBoxItemPage>("BunchedListBoxItem", "\uE8FD");
                     services.AddNavigable<ListBoxPage>("ListBox", "\uE8FD");
-                    services.AddNavigable<ListBoxItemPage>("ListBoxItem", "\uE8FD");
                     services.AddNavigable<ScrollViewerPage>("ScrollViewer", "\uE896");
                     services.AddNavigable<ScrollBarPage>("ScrollBar", "\uE70E");
                     services.AddNavigable<GridSplitterPage>("GridSplitter", "\uE8A9");
@@ -80,7 +77,6 @@ internal static class Program
                     services.AddNavigable<CheckBoxPage>("CheckBox", "\uE73E");
                     services.AddNavigable<RadioButtonPage>("RadioButton", "\uECCA");
                     services.AddNavigable<ComboBoxPage>("ComboBox", "\uE70D");
-                    services.AddNavigable<ComboBoxItemPage>("ComboBoxItem", "\uE8FD");
                     services.AddNavigable<LabelPage>("Label", "\uE8EC");
                 }
             )
@@ -157,15 +153,12 @@ internal static class Program
                             group.AddNavigableViewItem<PresenterPage>(childId: 1);
                             group.AddNavigableViewItem<PageBodyPage>(childId: 1);
                             group.AddNavigableViewItem<DocumentPage>(childId: 1);
-                            group.AddNavigableViewItem<ParagraphPage>(childId: 1);
                             group.AddNavigableViewItem<CodeSpacePage>(childId: 1);
                             group.AddNavigableViewItem<DataGridPage>(childId: 1);
                             group.AddNavigableViewItem<OverlayPage>(childId: 1);
                             group.AddNavigableViewItem<TextBlockPage>(childId: 1);
                             group.AddNavigableViewItem<BunchedListBoxPage>(childId: 1);
-                            group.AddNavigableViewItem<BunchedListBoxItemPage>(childId: 1);
                             group.AddNavigableViewItem<ListBoxPage>(childId: 1);
-                            group.AddNavigableViewItem<ListBoxItemPage>(childId: 1);
                             group.AddNavigableViewItem<ScrollViewerPage>(childId: 1);
                             group.AddNavigableViewItem<ScrollBarPage>(childId: 1);
                             group.AddNavigableViewItem<GridSplitterPage>(childId: 1);
@@ -176,7 +169,6 @@ internal static class Program
                             group.AddNavigableViewItem<CheckBoxPage>(childId: 1);
                             group.AddNavigableViewItem<RadioButtonPage>(childId: 1);
                             group.AddNavigableViewItem<ComboBoxPage>(childId: 1);
-                            group.AddNavigableViewItem<ComboBoxItemPage>(childId: 1);
                             group.AddNavigableViewItem<LabelPage>(childId: 1);
                         }
                     )

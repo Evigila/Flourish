@@ -7,7 +7,7 @@ description: Present a selectable collection with one parent-owned interaction l
 
 `BunchedListBox` is the recommended list control when adjacent items should feel like one coordinated collection. It preserves the native WPF `ListBox` selection, keyboard, automation, data binding, scrolling, and virtualization behavior, while moving hover, pressed, and selection backgrounds out of each item container and into one parent-owned display layer.
 
-Use `FlourishListBox` when every item deliberately needs an independent interaction surface. Use `BunchedListBox` when pointer feedback or the single-selection indicator should travel continuously from one item to the next.
+Use `ListBox` when every item deliberately needs an independent interaction surface. Use `BunchedListBox` when pointer feedback or the single-selection indicator should travel continuously from one item to the next.
 
 ## Bind a collection
 
@@ -19,7 +19,7 @@ Bind items and selection through the standard `ListBox` members. A data item is 
   SelectedItem="{Binding SelectedProject, Mode=TwoWay}" />
 ```
 
-The control accepts data templates, item container styles, `SelectedValuePath`, and other inherited collection members. It also inherits the `Appearance` and `IsCompact` presentation options from `FlourishListBox`.
+The control accepts data templates, item container styles, `SelectedValuePath`, and other inherited collection members. It also inherits the `Appearance` and `IsCompact` presentation options from `ListBox`.
 
 ## Shared interaction layer
 
@@ -46,7 +46,7 @@ Keyboard selection, Ctrl/Shift selection, `ScrollIntoView`, and selection events
 Usually the parent should generate `BunchedListBoxItem`. Declare a container directly only when a navigation entry needs inherited item-level state such as `IsGroupHeader` or `IsCommandItem`.
 
 ```xml
-<flourish:BunchedListBox Appearance="Navigation">
+<flourish:BunchedListBox Appearance="Borderless">
   <flourish:BunchedListBoxItem
     Content="Workspace"
     IsGroupHeader="True" />

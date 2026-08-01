@@ -8,6 +8,7 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
+using ListBox = ArkheideSystem.Flourish.Controls.ListBox;
 using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -686,7 +687,7 @@ public sealed class HoverRevealVisualTests
     }
 
     [Fact]
-    public void NavigationItem_HoverRevealStartsHiddenAndResetsAfterPointerLeaves()
+    public void ListBox_DisablesItemHoverRevealByDefault()
     {
         StaTest.Run(() =>
         {
@@ -698,9 +699,9 @@ public sealed class HoverRevealVisualTests
             };
             HoverReveal.SetAnimationDuration(item, TimeSpan.Zero);
 
-            var listBox = new FlourishListBox
+            var listBox = new ListBox
             {
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 Items = { item },
             };
             var window = CreateWindow(resources, listBox);
@@ -710,6 +711,9 @@ public sealed class HoverRevealVisualTests
                 window.Show();
                 window.UpdateLayout();
                 item.ApplyTemplate();
+
+                Assert.False(HoverReveal.GetIsEnabled(listBox));
+                Assert.False(HoverReveal.GetIsEnabled(item));
 
                 var hoverChrome = AssertTemplatePart<Border>(item, "HoverChrome");
                 var revealScale = AssertTemplatePart<ScaleTransform>(
@@ -721,19 +725,6 @@ public sealed class HoverRevealVisualTests
                 Assert.Equal(0, revealScale.ScaleX);
                 Assert.Equal(0, revealScale.ScaleY);
 
-                RaiseMouseEvent(item, Mouse.MouseEnterEvent);
-                FlushDispatcher();
-
-                Assert.Equal(1, hoverChrome.Opacity);
-                Assert.Equal(1, revealScale.ScaleX);
-                Assert.Equal(1, revealScale.ScaleY);
-
-                RaiseMouseEvent(item, Mouse.MouseLeaveEvent);
-                FlushDispatcher();
-
-                Assert.Equal(0, hoverChrome.Opacity);
-                Assert.Equal(0, revealScale.ScaleX);
-                Assert.Equal(0, revealScale.ScaleY);
             }
             finally
             {

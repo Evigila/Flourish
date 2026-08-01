@@ -85,6 +85,8 @@ internal sealed class BunchedListBoxInteractionController
 
     internal bool IsAttached => isLoaded && indicatorLayer is not null;
 
+    internal bool IsRenderingAttached => renderingAttached;
+
     internal Rect CurrentHoverBounds =>
         hoverChrome is null ? Rect.Empty : animator.GetCurrentBounds(hoverChrome);
 
@@ -307,12 +309,19 @@ internal sealed class BunchedListBoxInteractionController
         UpdateRenderingSubscription();
     }
 
+    private void ScrollViewer_SmoothScrollRenderingChanged(object? sender, EventArgs e)
+    {
+        UpdateRenderingSubscription();
+        ScheduleRefresh(rehitPointer: true);
+    }
+
     private void OnRendering(object? sender, EventArgs e)
     {
         if (
             !isLoaded
             || scrollViewer is null
             || scrollViewer.CanContentScroll
+            || !scrollViewer.IsSmoothScrollRendering
             || !HasVisibleIndicator
         )
         {
@@ -335,14 +344,31 @@ internal sealed class BunchedListBoxInteractionController
         CancelPendingHoverExit();
         if (target is null)
         {
-            if (deferExit && owner.IsMouseOver)
+            if (deferExit)
             {
                 pendingHoverExit = owner.Dispatcher.BeginInvoke(
-                    DispatcherPriority.Render,
+                    DispatcherPriority.Background,
                     () =>
                     {
                         pendingHoverExit = null;
-                        HideHover(immediate: false);
+                        if (!isLoaded || !owner.IsEnabled || !owner.IsMouseOver)
+                        {
+                            HideHover(immediate: false);
+                            return;
+                        }
+
+                        var point = Mouse.GetPosition(owner);
+                        var resolvedTarget = ResolveTarget(
+                            owner.InputHitTest(point) as DependencyObject
+                        );
+                        if (resolvedTarget is null)
+                        {
+                            HideHover(immediate: false);
+                        }
+                        else
+                        {
+                            RetargetHover(resolvedTarget, deferExit: false);
+                        }
                     }
                 );
             }
@@ -749,6 +775,7 @@ internal sealed class BunchedListBoxInteractionController
         }
 
         scrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
+        scrollViewer.SmoothScrollRenderingChanged += ScrollViewer_SmoothScrollRenderingChanged;
         templateEventsAttached = true;
     }
 
@@ -761,6 +788,7 @@ internal sealed class BunchedListBoxInteractionController
         }
 
         scrollViewer.ScrollChanged -= ScrollViewer_ScrollChanged;
+        scrollViewer.SmoothScrollRenderingChanged -= ScrollViewer_SmoothScrollRenderingChanged;
         templateEventsAttached = false;
     }
 
@@ -789,7 +817,9 @@ internal sealed class BunchedListBoxInteractionController
     private void UpdateRenderingSubscription()
     {
         var shouldAttach =
-            isLoaded && scrollViewer is { CanContentScroll: false } && HasVisibleIndicator;
+            isLoaded
+            && scrollViewer is { CanContentScroll: false, IsSmoothScrollRendering: true }
+            && HasVisibleIndicator;
         if (shouldAttach && !renderingAttached)
         {
             CompositionTarget.Rendering += OnRendering;

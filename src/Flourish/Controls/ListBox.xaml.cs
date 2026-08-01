@@ -6,60 +6,60 @@ using WpfListBox = System.Windows.Controls.ListBox;
 
 namespace ArkheideSystem.Flourish.Controls;
 
-/// <summary>Describes the semantic presentation of a <see cref="FlourishListBox" />.</summary>
-public enum FlourishListBoxAppearance
+/// <summary>Describes the semantic presentation of a <see cref="ListBox" />.</summary>
+public enum ListBoxAppearance
 {
     /// <summary>A bordered general-purpose list.</summary>
     Standard,
 
     /// <summary>A borderless shell navigation list.</summary>
-    Navigation,
+    Borderless,
 }
 
 /// <summary>A Flourish-styled list selector that generates Flourish item containers.</summary>
-public class FlourishListBox : WpfListBox
+public class ListBox : WpfListBox
 {
-    private static readonly DependencyProperty IsNavigationPreparedProperty =
+    private static readonly DependencyProperty IsBorderlessPreparedProperty =
         DependencyProperty.RegisterAttached(
-            "IsNavigationPrepared",
+            "IsBorderlessPrepared",
             typeof(bool),
-            typeof(FlourishListBox),
+            typeof(ListBox),
             new FrameworkPropertyMetadata(false)
         );
 
     /// <summary>Identifies the <see cref="Appearance" /> dependency property.</summary>
     public static readonly DependencyProperty AppearanceProperty = DependencyProperty.Register(
         nameof(Appearance),
-        typeof(FlourishListBoxAppearance),
-        typeof(FlourishListBox),
+        typeof(ListBoxAppearance),
+        typeof(ListBox),
         new FrameworkPropertyMetadata(
-            FlourishListBoxAppearance.Standard,
+            ListBoxAppearance.Standard,
             static (dependencyObject, _) =>
-                ((FlourishListBox)dependencyObject).RefreshContainerPresentation()
+                ((ListBox)dependencyObject).RefreshContainerPresentation()
         ),
-        value => value is FlourishListBoxAppearance appearance && Enum.IsDefined(appearance)
+        value => value is ListBoxAppearance appearance && Enum.IsDefined(appearance)
     );
 
     /// <summary>Identifies the <see cref="IsCompact" /> dependency property.</summary>
     public static readonly DependencyProperty IsCompactProperty = DependencyProperty.Register(
         nameof(IsCompact),
         typeof(bool),
-        typeof(FlourishListBox),
+        typeof(ListBox),
         new FrameworkPropertyMetadata(false)
     );
 
-    static FlourishListBox()
+    static ListBox()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishListBox),
-            new FrameworkPropertyMetadata(typeof(FlourishListBox))
+            typeof(ListBox),
+            new FrameworkPropertyMetadata(typeof(ListBox))
         );
     }
 
     /// <summary>Gets or sets the semantic presentation of the list.</summary>
-    public FlourishListBoxAppearance Appearance
+    public ListBoxAppearance Appearance
     {
-        get => (FlourishListBoxAppearance)GetValue(AppearanceProperty);
+        get => (ListBoxAppearance)GetValue(AppearanceProperty);
         set => SetValue(AppearanceProperty, value);
     }
 
@@ -97,7 +97,7 @@ public class FlourishListBox : WpfListBox
     {
         if (element is FlourishListBoxItem container)
         {
-            ClearNavigationPresentation(container);
+            ClearBorderlessPresentation(container);
         }
 
         base.ClearContainerForItemOverride(element, item);
@@ -119,8 +119,8 @@ public class FlourishListBox : WpfListBox
 
     private void ConfigureContainerPresentation(FlourishListBoxItem container, object item)
     {
-        ClearNavigationPresentation(container);
-        if (Appearance != FlourishListBoxAppearance.Navigation)
+        ClearBorderlessPresentation(container);
+        if (Appearance != ListBoxAppearance.Borderless)
         {
             return;
         }
@@ -139,12 +139,12 @@ public class FlourishListBox : WpfListBox
         Bind(container, IsEnabledProperty, item, "IsEnabled");
 
         Bind(container, ToolTipProperty, item, "Label");
-        container.SetValue(IsNavigationPreparedProperty, true);
+        container.SetValue(IsBorderlessPreparedProperty, true);
     }
 
-    private static void ClearNavigationPresentation(FlourishListBoxItem container)
+    private static void ClearBorderlessPresentation(FlourishListBoxItem container)
     {
-        if (!(bool)container.GetValue(IsNavigationPreparedProperty))
+        if (!(bool)container.GetValue(IsBorderlessPreparedProperty))
         {
             return;
         }
@@ -154,7 +154,7 @@ public class FlourishListBox : WpfListBox
         BindingOperations.ClearBinding(container, FlourishListBoxItem.IsCommandItemProperty);
         BindingOperations.ClearBinding(container, IsEnabledProperty);
         container.ClearValue(ToolTipProperty);
-        container.ClearValue(IsNavigationPreparedProperty);
+        container.ClearValue(IsBorderlessPreparedProperty);
     }
 
     private static void Bind(

@@ -76,6 +76,10 @@ public class ScrollViewer : WpfScrollViewer
         set => SetValue(IsSmoothScrollingEnabledProperty, value);
     }
 
+    internal bool IsSmoothScrollRendering => _isRendering;
+
+    internal event EventHandler? SmoothScrollRenderingChanged;
+
     /// <inheritdoc />
     public override void OnApplyTemplate()
     {
@@ -296,6 +300,7 @@ public class ScrollViewer : WpfScrollViewer
         _logicalSyncElapsed = 0d;
         _lastFrameTimestamp = Stopwatch.GetTimestamp();
         CompositionTarget.Rendering += OnRendering;
+        SmoothScrollRenderingChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnRendering(object? sender, EventArgs eventArgs)
@@ -388,6 +393,7 @@ public class ScrollViewer : WpfScrollViewer
 
     private void StopRendering(bool resetTransform)
     {
+        var wasRendering = _isRendering;
         if (_isRendering)
         {
             CompositionTarget.Rendering -= OnRendering;
@@ -401,6 +407,11 @@ public class ScrollViewer : WpfScrollViewer
         if (resetTransform && _smoothScrollTransform is { IsFrozen: false })
         {
             _smoothScrollTransform.Y = 0d;
+        }
+
+        if (wasRendering)
+        {
+            SmoothScrollRenderingChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 

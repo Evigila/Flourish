@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using FlourishScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 
@@ -38,7 +39,7 @@ public sealed class BunchedListBoxTests
             var state = new NavigationItemState();
             var listBox = new BunchedListBox
             {
-                Appearance = FlourishListBoxAppearance.Navigation,
+                Appearance = ListBoxAppearance.Borderless,
                 Items = { state },
             };
             using var fixture = BunchedListBoxFixture.Show(listBox);
@@ -73,6 +74,7 @@ public sealed class BunchedListBoxTests
             );
 
             Assert.False(layer.IsHitTestVisible);
+            Assert.True(HoverReveal.GetIsEnabled(listBox));
             Assert.True(viewport.ClipToBounds);
             Assert.True(layer.ClipToBounds);
             Assert.Same(
@@ -146,6 +148,84 @@ public sealed class BunchedListBoxTests
                 GetBounds(second, layer),
                 listBox.InteractionController.CurrentHoverBounds
             );
+        });
+    }
+
+    [Fact]
+    public void PointerGap_GivesQueuedInputOneCycleToRetargetWithoutHiding()
+    {
+        StaTest.Run(() =>
+        {
+            var listBox = new BunchedListBox { Items = { "First", "Second" } };
+            HoverReveal.SetAnimationDuration(listBox, TimeSpan.Zero);
+            using var fixture = BunchedListBoxFixture.Show(listBox);
+            var first = Assert.IsType<BunchedListBoxItem>(
+                listBox.ItemContainerGenerator.ContainerFromIndex(0)
+            );
+            var second = Assert.IsType<BunchedListBoxItem>(
+                listBox.ItemContainerGenerator.ContainerFromIndex(1)
+            );
+            var hover = fixture.Part<Border>(BunchedListBox.HoverChromePartName);
+
+            RaiseMouseEvent(first, Mouse.PreviewMouseMoveEvent);
+            RaiseMouseEvent(listBox, Mouse.PreviewMouseMoveEvent);
+
+            Assert.Same(first, listBox.InteractionController.HoverTarget);
+            var inputRan = false;
+            listBox.Dispatcher.BeginInvoke(
+                DispatcherPriority.Input,
+                () =>
+                {
+                    Assert.Same(first, listBox.InteractionController.HoverTarget);
+                    inputRan = true;
+                    RaiseMouseEvent(second, Mouse.PreviewMouseMoveEvent);
+                }
+            );
+            FlushDispatcher();
+
+            Assert.True(inputRan);
+            Assert.Same(second, listBox.InteractionController.HoverTarget);
+            Assert.Equal(1, hover.Opacity);
+        });
+    }
+
+    [Fact]
+    public void PhysicalScrolling_AttachesRenderingOnlyDuringSmoothMotion()
+    {
+        StaTest.Run(() =>
+        {
+            var listBox = new BunchedListBox
+            {
+                Width = 260,
+                Height = 90,
+                ItemsSource = Enumerable.Range(0, 100).Select(index => $"Item {index}"),
+            };
+            System.Windows.Controls.ScrollViewer.SetCanContentScroll(listBox, false);
+            using var fixture = BunchedListBoxFixture.Show(listBox, height: 150);
+            var scrollViewer = fixture.Part<FlourishScrollViewer>(
+                BunchedListBox.ScrollViewerPartName
+            );
+            listBox.SelectedIndex = 0;
+            FlushDispatcher();
+
+            Assert.Equal(1, listBox.InteractionController.SelectionIndicatorCount);
+            Assert.False(scrollViewer.IsSmoothScrollRendering);
+            Assert.False(listBox.InteractionController.IsRenderingAttached);
+
+            var wheel = new MouseWheelEventArgs(
+                Mouse.PrimaryDevice,
+                Environment.TickCount,
+                -Mouse.MouseWheelDeltaForOneLine
+            )
+            {
+                RoutedEvent = Mouse.MouseWheelEvent,
+                Source = scrollViewer,
+            };
+            scrollViewer.RaiseEvent(wheel);
+
+            Assert.True(wheel.Handled);
+            Assert.True(scrollViewer.IsSmoothScrollRendering);
+            Assert.True(listBox.InteractionController.IsRenderingAttached);
         });
     }
 
