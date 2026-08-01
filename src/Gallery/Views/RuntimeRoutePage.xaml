@@ -25,7 +25,12 @@
         Title="Route instance"
       >
         <flourish:Presenter.Presentation>
-          <StackPanel>
+          <StackPanel
+            Width="360"
+            Height="160"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+          >
             <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
             <flourish:FlourishTextBlock x:Name="InstanceText" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
             <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />

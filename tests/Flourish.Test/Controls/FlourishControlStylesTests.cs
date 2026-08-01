@@ -770,6 +770,7 @@ public sealed class FlourishControlStylesTests
                     var clipHost = AssertTemplatePart<Grid>(header, "PART_ClipHost");
                     var roundedClip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
 
+                    Assert.Equal(0, header.PresentationMinHeight);
                     Assert.Equal(expectation.PresenterColumn, Grid.GetColumn(presenter));
                     Assert.Equal(expectation.TextColumn, Grid.GetColumn(text));
                     Assert.Equal(expectation.ColumnSpan, Grid.GetColumnSpan(presenter));
@@ -931,6 +932,7 @@ public sealed class FlourishControlStylesTests
                 Content = "Copy follows the presentation",
                 Body = new FlourishButton { Content = "Action" },
                 Presentation = new Border { Width = 120, Height = 72 },
+                PresentationMinHeight = 180,
                 PresenterMode = PresenterMode.TopDown,
                 PresenterPosition = PresenterPosition.Left,
             };
@@ -1005,6 +1007,7 @@ public sealed class FlourishControlStylesTests
                 );
                 Assert.Equal(PresenterMode.Split, splitRight.PresenterMode);
                 Assert.Equal(PresenterPosition.Right, splitRight.PresenterPosition);
+                Assert.Equal(160, splitRight.PresentationMinHeight);
                 var splitCopy = AssertTemplatePart<Border>(splitRight, "CopySurface");
                 var splitPresentationSurface = AssertTemplatePart<Border>(
                     splitRight,
@@ -1015,33 +1018,41 @@ public sealed class FlourishControlStylesTests
                     "PresentationHost"
                 );
                 Assert.Equal(
-                    HorizontalAlignment.Center,
+                    HorizontalAlignment.Stretch,
                     splitPresentation.HorizontalAlignment
                 );
                 Assert.Equal(
-                    VerticalAlignment.Center,
+                    VerticalAlignment.Stretch,
                     splitPresentation.VerticalAlignment
                 );
                 Assert.Null(splitCopy.Background);
                 Assert.Same(splitRight.Background, splitPresentationSurface.Background);
-                Assert.True(splitPresentationSurface.ActualWidth > splitPresentation.ActualWidth);
-                Assert.True(splitPresentationSurface.ActualHeight > splitPresentation.ActualHeight);
-                var presentationOrigin = splitPresentation
+                Assert.Equal(
+                    splitPresentationSurface.ActualWidth,
+                    splitPresentation.ActualWidth,
+                    3
+                );
+                Assert.Equal(
+                    splitPresentationSurface.ActualHeight,
+                    splitPresentation.ActualHeight,
+                    3
+                );
+                var presentedBorder = Assert.IsType<Border>(splitPresentation.Content);
+                var presentationOrigin = presentedBorder
                     .TransformToAncestor(splitPresentationSurface)
                     .Transform(new Point());
                 Assert.Equal(
-                    (splitPresentationSurface.ActualWidth - splitPresentation.ActualWidth) / 2,
+                    (splitPresentationSurface.ActualWidth - presentedBorder.ActualWidth) / 2,
                     presentationOrigin.X,
                     3
                 );
                 Assert.Equal(
-                    (splitPresentationSurface.ActualHeight - splitPresentation.ActualHeight) / 2,
+                    (splitPresentationSurface.ActualHeight - presentedBorder.ActualHeight) / 2,
                     presentationOrigin.Y,
                     3
                 );
-                var presentedBorder = Assert.IsType<Border>(splitPresentation.Content);
-                Assert.Equal(splitPresentation.ActualWidth, presentedBorder.ActualWidth, 3);
-                Assert.Equal(splitPresentation.ActualHeight, presentedBorder.ActualHeight, 3);
+                Assert.Equal(120, presentedBorder.ActualWidth, 3);
+                Assert.Equal(72, presentedBorder.ActualHeight, 3);
                 var splitBody = AssertTemplatePart<ContentPresenter>(
                     splitRight,
                     "BodyHost"
@@ -1101,6 +1112,23 @@ public sealed class FlourishControlStylesTests
                     presentationRowSpan: 1,
                     copyRowSpan: 1,
                     scrimVisibility: Visibility.Collapsed
+                );
+                var topDownPresentationSurface = AssertTemplatePart<Border>(
+                    topDown,
+                    "PresentationSurface"
+                );
+                var topDownCopySurface = AssertTemplatePart<Border>(topDown, "CopySurface");
+                Assert.Equal(180, topDownPresentationSurface.ActualHeight, 3);
+                var topDownPresentationOrigin = topDownPresentationSurface
+                    .TransformToAncestor(topDown)
+                    .Transform(new Point());
+                var topDownCopyOrigin = topDownCopySurface
+                    .TransformToAncestor(topDown)
+                    .Transform(new Point());
+                Assert.Equal(
+                    topDownPresentationOrigin.Y + topDownPresentationSurface.ActualHeight,
+                    topDownCopyOrigin.Y,
+                    3
                 );
                 Assert.Equal(
                     HorizontalAlignment.Left,
@@ -1286,7 +1314,7 @@ public sealed class FlourishControlStylesTests
                 window.UpdateLayout();
                 codeSpace.ApplyTemplate();
 
-                Assert.Equal(new Thickness(0, 8, 0, 0), codeSpace.Margin);
+                Assert.Equal(new Thickness(), codeSpace.Margin);
                 Assert.Equal(new Thickness(16, 12, 16, 12), codeSpace.Padding);
                 Assert.Null(codeSpace.Background);
                 Assert.Same(
@@ -1824,8 +1852,12 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(Visibility.Visible, elevatedShadow.Visibility);
                 Assert.NotNull(elevatedShadow.Effect);
                 Assert.Same(
-                    tonal.TryFindResource("FlourishNeutralBackground2Brush"),
+                    tonal.TryFindResource("FlourishTonalButtonBackgroundBrush"),
                     tonal.Background
+                );
+                Assert.Same(
+                    tonal.TryFindResource("FlourishTonalButtonForegroundBrush"),
+                    tonal.Foreground
                 );
                 Assert.Same(
                     filled.TryFindResource("FlourishPrimaryBackgroundBrush"),
@@ -1935,6 +1967,59 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void TonalCards_UseTheSameColorContractAsTonalButtons()
+    {
+        StaTest.Run(() =>
+        {
+            var button = new FlourishButton
+            {
+                Content = "Button",
+                Variant = ButtonVariant.Tonal,
+            };
+            var cardButton = new CardButton
+            {
+                Title = "Card button",
+                Variant = ButtonVariant.Tonal,
+            };
+            var card = new Card
+            {
+                Title = "Card",
+                Variant = CardVariant.Tonal,
+            };
+            var standardCard = new Card { Title = "Standard card" };
+            var window = CreateWindow(
+                new StackPanel { Children = { button, cardButton, card, standardCard } }
+            );
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                var tonalBackground = button.TryFindResource(
+                    "FlourishTonalButtonBackgroundBrush"
+                );
+                var tonalForeground = button.TryFindResource(
+                    "FlourishTonalButtonForegroundBrush"
+                );
+                Assert.All(
+                    new WpfControl[] { button, cardButton, card },
+                    control =>
+                    {
+                        Assert.Same(tonalBackground, control.Background);
+                        Assert.Same(tonalForeground, control.Foreground);
+                    }
+                );
+                Assert.NotSame(standardCard.Background, card.Background);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void DisabledCardButtons_UseTheDisabledSurfaceForEveryVariant()
     {
         StaTest.Run(() =>
@@ -1993,6 +2078,127 @@ public sealed class FlourishControlStylesTests
                         AssertTemplatePart<Border>(card, "ShadowChrome").Visibility
                     );
                 }
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void CardButton_TextContentWrapsAndIsLimitedToTheConfiguredLineCount()
+    {
+        StaTest.Run(() =>
+        {
+            const string content =
+                "A long card description that needs several lines when displayed in a narrow card.";
+            var card = new CardButton
+            {
+                Width = 150,
+                ContentMaxLines = 2,
+                Content = content,
+                Icon = "\uE8A5",
+            };
+            var window = CreateWindow(card);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                card.ApplyTemplate();
+                window.UpdateLayout();
+
+                var contentHost = FindVisualTextBlock(card, content);
+                Assert.NotNull(contentHost);
+                Assert.Equal(TextWrapping.Wrap, contentHost.TextWrapping);
+                Assert.Equal(TextTrimming.CharacterEllipsis, contentHost.TextTrimming);
+                Assert.Equal(2, contentHost.MaxLines);
+                Assert.True(
+                    contentHost.ActualHeight
+                        <= (contentHost.LineHeight * card.ContentMaxLines)
+                            + contentHost.Padding.Top
+                            + contentHost.Padding.Bottom
+                            + 0.01
+                );
+
+                var iconHost = Assert.IsType<ContentPresenter>(
+                    FindVisualDescendant<ContentPresenter>(card, "IconHost")
+                );
+                var iconText = Assert.IsType<System.Windows.Controls.TextBlock>(
+                    FindFirstVisualDescendant<System.Windows.Controls.TextBlock>(iconHost)
+                );
+                Assert.IsNotType<FlourishTextBlock>(iconText);
+                Assert.Equal(TextElement.GetFontFamily(iconHost), iconText.FontFamily);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Presenter_CodeSpacePresentationFillsTheAvailablePresentationRegion()
+    {
+        StaTest.Run(() =>
+        {
+            var shortCodeSpace = new CodeSpace { Text = "var usage = new Example();" };
+            var longCodeSpace = new CodeSpace
+            {
+                Text = string.Join(
+                    Environment.NewLine,
+                    Enumerable.Repeat("var usage = new Example();", 20)
+                ),
+            };
+            var shortPresenter = new Presenter
+            {
+                Width = 600,
+                Height = 240,
+                Title = "Usage",
+                Content = "A short example.",
+                Presentation = shortCodeSpace,
+                PresenterPosition = PresenterPosition.Right,
+            };
+            var longPresenter = new Presenter
+            {
+                Width = 600,
+                Height = 240,
+                Title = "Usage",
+                Content = "A longer example.",
+                Presentation = longCodeSpace,
+                PresenterPosition = PresenterPosition.Right,
+            };
+            var window = CreateWindow(
+                new StackPanel { Children = { shortPresenter, longPresenter } }
+            );
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var presenter in new[] { shortPresenter, longPresenter })
+                {
+                    presenter.ApplyTemplate();
+                    var surface = AssertTemplatePart<Border>(
+                        presenter,
+                        "PresentationSurface"
+                    );
+                    var host = AssertTemplatePart<ContentPresenter>(
+                        presenter,
+                        "PresentationHost"
+                    );
+                    var codeSpace = Assert.IsType<CodeSpace>(host.Content);
+
+                    Assert.Equal(surface.ActualWidth, host.ActualWidth, 3);
+                    Assert.Equal(surface.ActualHeight, host.ActualHeight, 3);
+                    Assert.Equal(host.ActualWidth, codeSpace.ActualWidth, 3);
+                    Assert.Equal(host.ActualHeight, codeSpace.ActualHeight, 3);
+                }
+
+                Assert.Equal(shortCodeSpace.ActualWidth, longCodeSpace.ActualWidth, 3);
+                Assert.Equal(shortCodeSpace.ActualHeight, longCodeSpace.ActualHeight, 3);
             }
             finally
             {
@@ -2690,6 +2896,50 @@ public sealed class FlourishControlStylesTests
             }
 
             var descendant = FindVisualDescendant<T>(child, name);
+            if (descendant is not null)
+            {
+                return descendant;
+            }
+        }
+
+        return null;
+    }
+
+    private static FlourishTextBlock? FindVisualTextBlock(
+        DependencyObject root,
+        string text
+    )
+    {
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var child = VisualTreeHelper.GetChild(root, index);
+            if (child is FlourishTextBlock candidate && candidate.Text == text)
+            {
+                return candidate;
+            }
+
+            var descendant = FindVisualTextBlock(child, text);
+            if (descendant is not null)
+            {
+                return descendant;
+            }
+        }
+
+        return null;
+    }
+
+    private static T? FindFirstVisualDescendant<T>(DependencyObject root)
+        where T : DependencyObject
+    {
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var child = VisualTreeHelper.GetChild(root, index);
+            if (child is T candidate)
+            {
+                return candidate;
+            }
+
+            var descendant = FindFirstVisualDescendant<T>(child);
             if (descendant is not null)
             {
                 return descendant;

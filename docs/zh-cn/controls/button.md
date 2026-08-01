@@ -64,7 +64,7 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 
 ## CardButton
 
-`CardButton` 是具有 Card 视觉语言的按钮。它支持可选的 `Title`、`Content` 和 `Icon`，三者为空时各自的区域与间距都会折叠。`IconPosition` 可将图标放在 `Left`、`Top`、`Right` 或 `Bottom`，默认位于上方。
+`CardButton` 是具有 Card 视觉语言的按钮。它支持可选的 `Title`、`Content` 和 `Icon`，三者为空时各自的区域与间距都会折叠。文本 `Content` 会自动换行，默认最多显示三行；可将 `ContentMaxLines` 设置为其他正整数以调整上限，最后一个可见行中溢出的内容会以省略号截断。`IconPosition` 可将图标放在 `Left`、`Top`、`Right` 或 `Bottom`，默认位于上方。
 
 CardButton 图标在中性表面使用自适应主色前景，在 Filled 表面使用主色背景上的对比前景，禁用时使用统一的弱化前景。
 

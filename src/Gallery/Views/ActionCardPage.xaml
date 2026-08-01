@@ -21,38 +21,54 @@
           Margin="0,0,8,0"
           Content="Icon and copy stay on the left while the single interactive Body stays on the right."
           PresenterMode="TopDown"
+          PresentationMinHeight="240"
           PresenterPosition="Left"
           Title="Horizontal"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="240" Padding="16">
-              <flourish:ActionCard Icon="&#xE790;" Content="Choose a theme value." Title="Application theme" Variant="Horizontal">
-                <flourish:ActionCard.Body>
-                  <flourish:FlourishComboBox Width="144" SelectedIndex="0">
-                    <flourish:FlourishComboBoxItem Content="System" />
-                    <flourish:FlourishComboBoxItem Content="Light" />
-                    <flourish:FlourishComboBoxItem Content="Dark" />
-                  </flourish:FlourishComboBox>
-                </flourish:ActionCard.Body>
-              </flourish:ActionCard>
-            </Border>
+            <flourish:ActionCard
+              Width="360"
+              Height="180"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Icon="&#xE790;"
+              Content="Choose a theme value."
+              Title="Application theme"
+              Variant="Horizontal"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:FlourishComboBox Width="144" SelectedIndex="0">
+                  <flourish:FlourishComboBoxItem Content="System" />
+                  <flourish:FlourishComboBoxItem Content="Light" />
+                  <flourish:FlourishComboBoxItem Content="Dark" />
+                </flourish:FlourishComboBox>
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
           Content="Icon, copy, and the single interactive Body form one left-aligned vertical stack."
           PresenterMode="TopDown"
+          PresentationMinHeight="240"
           PresenterPosition="Left"
           Title="Vertical"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="240" Padding="16">
-              <flourish:ActionCard Icon="&#xE946;" Content="Open the detailed configuration." Title="Configuration" Variant="Vertical">
-                <flourish:ActionCard.Body>
-                  <flourish:Button Content="View details" />
-                </flourish:ActionCard.Body>
-              </flourish:ActionCard>
-            </Border>
+            <flourish:ActionCard
+              Width="360"
+              Height="180"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Icon="&#xE946;"
+              Content="Open the detailed configuration."
+              Title="Configuration"
+              Variant="Vertical"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Content="View details" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

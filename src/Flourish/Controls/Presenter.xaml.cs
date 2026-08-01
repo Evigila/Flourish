@@ -50,6 +50,18 @@ public class Presenter : WpfControl
         new FrameworkPropertyMetadata(null, OnLogicalContentChanged)
     );
 
+    /// <summary>
+    /// Identifies the <see cref="PresentationMinHeight" /> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty PresentationMinHeightProperty =
+        DependencyProperty.Register(
+            nameof(PresentationMinHeight),
+            typeof(double),
+            typeof(Presenter),
+            new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure),
+            IsPresentationMinHeightValid
+        );
+
     /// <summary>Identifies the <see cref="PresenterMode" /> dependency property.</summary>
     public static readonly DependencyProperty PresenterModeProperty =
         DependencyProperty.Register(
@@ -117,6 +129,15 @@ public class Presenter : WpfControl
     }
 
     /// <summary>
+    /// Gets or sets the minimum height of the built-in presentation surface.
+    /// </summary>
+    public double PresentationMinHeight
+    {
+        get => (double)GetValue(PresentationMinHeightProperty);
+        set => SetValue(PresentationMinHeightProperty, value);
+    }
+
+    /// <summary>
     /// Gets or sets whether the presentation is split beside, stacked above, or placed behind
     /// the copy. Authors should assign this property explicitly; its runtime fallback is
     /// <see cref="ArkheideSystem.Flourish.Controls.PresenterMode.Split" />.
@@ -148,6 +169,13 @@ public class Presenter : WpfControl
     private static bool IsPresenterPositionValid(object value)
     {
         return value is PresenterPosition position && Enum.IsDefined(position);
+    }
+
+    private static bool IsPresentationMinHeightValid(object value)
+    {
+        return value is double height
+            && double.IsFinite(height)
+            && height >= 0;
     }
 
     private static void OnLogicalContentChanged(

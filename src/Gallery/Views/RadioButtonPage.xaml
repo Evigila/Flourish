@@ -42,8 +42,12 @@
           Title="Theme"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel
+              Width="240"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
                 <flourish:FlourishRadioButton
                   Content="System"
                   GroupName="ThemeExample"
@@ -59,8 +63,7 @@
                   Content="Dark"
                   GroupName="ThemeExample"
                 />
-              </StackPanel>
-            </Grid>
+            </StackPanel>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -71,8 +74,12 @@
           Title="Density"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel
+              Width="240"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
                 <flourish:FlourishRadioButton
                   Content="Comfortable"
                   GroupName="DensityExample"
@@ -83,8 +90,7 @@
                   Content="Compact"
                   GroupName="DensityExample"
                 />
-              </StackPanel>
-            </Grid>
+            </StackPanel>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

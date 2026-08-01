@@ -47,13 +47,18 @@
           Title="Split"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="180">
+            <Grid
+              Width="320"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <Border Margin="8" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
-              <Border Grid.Column="1" Margin="8" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="8" />
+              <Rectangle Margin="8" Stroke="{DynamicResource FlourishNeutralStroke1Brush}" StrokeThickness="1" RadiusX="8" RadiusY="8" />
+              <Rectangle Grid.Column="1" Margin="8" Fill="{DynamicResource FlourishPrimarySurfaceBrush}" RadiusX="8" RadiusY="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
@@ -65,9 +70,14 @@
           Title="Overlay"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="180">
-              <Border Margin="8" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="8" />
-              <Border Width="120" Height="64" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
+            <Grid
+              Width="320"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+              <Rectangle Margin="8" Fill="{DynamicResource FlourishPrimarySurfaceBrush}" RadiusX="8" RadiusY="8" />
+              <Rectangle Width="120" Height="64" Stroke="{DynamicResource FlourishNeutralStroke1Brush}" StrokeThickness="1" RadiusX="8" RadiusY="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
@@ -79,13 +89,18 @@
           Title="TopDown"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="180">
+            <Grid
+              Width="320"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
               <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
               </Grid.RowDefinitions>
-              <Border Margin="8" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="8" />
-              <Border Grid.Row="1" Margin="8" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
+              <Rectangle Margin="8" Fill="{DynamicResource FlourishPrimarySurfaceBrush}" RadiusX="8" RadiusY="8" />
+              <Rectangle Grid.Row="1" Margin="8" Stroke="{DynamicResource FlourishNeutralStroke1Brush}" StrokeThickness="1" RadiusX="8" RadiusY="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>

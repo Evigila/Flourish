@@ -283,6 +283,7 @@ public sealed class FlourishPublicControlsTests
             Assert.IsAssignableFrom<FlourishButton>(windowCaptionButton);
             Assert.Null(cardButton.Icon);
             Assert.Equal(Dock.Top, cardButton.IconPosition);
+            Assert.Equal(3, cardButton.ContentMaxLines);
             Assert.Equal(string.Empty, cardButton.Title);
             Assert.Equal(ButtonVariant.Standard, cardButton.Variant);
             Assert.IsAssignableFrom<FlourishButton>(cardButton);
@@ -302,6 +303,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(presenter.Content);
             Assert.Null(presenter.Body);
             Assert.Null(presenter.Presentation);
+            Assert.Equal(0, presenter.PresentationMinHeight);
             Assert.Equal(PresenterMode.Split, presenter.PresenterMode);
             Assert.Equal(PresenterPosition.Left, presenter.PresenterPosition);
             Assert.Empty(document.Items);
@@ -332,6 +334,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(typeof(CustomScrollViewer).GetField("IsCompactProperty"));
             Assert.Equal(string.Empty, search.Placeholder);
             Assert.Equal(FlourishTextRole.Body, text.Role);
+            Assert.Equal(0, text.MaxLines);
         });
     }
 
@@ -416,6 +419,7 @@ public sealed class FlourishPublicControlsTests
             {
                 Icon = icon,
                 IconPosition = Dock.Right,
+                ContentMaxLines = 4,
                 Title = "Title",
                 Content = "Description",
                 Variant = ButtonVariant.Tonal,
@@ -428,6 +432,7 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(ButtonVariant.Danger, captionButton.Variant);
             Assert.Same(icon, cardButton.Icon);
             Assert.Equal(Dock.Right, cardButton.IconPosition);
+            Assert.Equal(4, cardButton.ContentMaxLines);
             Assert.Equal("Title", cardButton.Title);
             Assert.Equal("Description", cardButton.Content);
             Assert.Equal(ButtonVariant.Tonal, cardButton.Variant);
@@ -986,10 +991,25 @@ public sealed class FlourishPublicControlsTests
                 new Presenter().PresenterPosition = (PresenterPosition)(-1)
             );
             Assert.Throws<ArgumentException>(() =>
+                new Presenter().PresentationMinHeight = -1
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new Presenter().PresentationMinHeight = double.NaN
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new Presenter().PresentationMinHeight = double.PositiveInfinity
+            );
+            Assert.Throws<ArgumentException>(() =>
                 new HeaderChunk().PresenterPosition = (PresenterPosition)2
             );
             Assert.Throws<ArgumentException>(() =>
                 new CardButton().IconPosition = (Dock)(-1)
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new CardButton().ContentMaxLines = 0
+            );
+            Assert.Throws<ArgumentException>(() =>
+                new FlourishTextBlock().MaxLines = -1
             );
             Assert.Throws<ArgumentException>(() =>
                 new Card().Variant = (CardVariant)(-1)

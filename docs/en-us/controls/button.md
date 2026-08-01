@@ -61,7 +61,7 @@ With `UseTips` active, Button-family hints use the Flourish temporary Overlay su
 
 ## CardButton
 
-`CardButton` is an interactive card. Use it when invoking the complete surface is the action. When only one control inside a card should be interactive, use [ActionCard](card.md#actioncard) instead.
+`CardButton` is an interactive card. Use it when invoking the complete surface is the action. Textual `Content` wraps automatically and is limited to three lines by default; set `ContentMaxLines` to another positive line count when the layout needs a different limit. Overflow on the final visible line is shown with an ellipsis. When only one control inside a card should be interactive, use [ActionCard](card.md#actioncard) instead.
 
 Like `Card`, it exposes optional `Title`, `Content`, and `Icon` regions. Each absent region and its spacing collapse completely. `IconPosition` places the icon at `Left`, `Top`, `Right`, or `Bottom`; its default is `Top`.
 

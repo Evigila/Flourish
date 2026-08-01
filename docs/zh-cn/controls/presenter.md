@@ -17,10 +17,11 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 | `Content` | `string?` | `null` | 标题下方的补充文案。 |
 | `Body` | `object?` | `null` | 与 Title、Content 位于同一侧的辅助控件或内容。 |
 | `Presentation` | `object?` | `null` | 图片、图标组、插图、预览或其他组合内容，也是默认 XAML 内容属性。 |
+| `PresentationMinHeight` | `double` | `0` | 内置展示表面的最小高度；Presenter 默认样式提供 160 DIP 的基线。 |
 | `PresenterMode` | `PresenterMode` | `Split` | `Split`、`TopDown` 或 `Overlay` 组合模式。 |
 | `PresenterPosition` | `PresenterPosition` | `Left` | Split 模式中的 Presentation 位置。 |
 
-可选区域为 `null` 或空字符串时，对应区域及相关间距会完全折叠。Title、Content 与 Body 共用同一条左侧对齐线。文案和 Body 一侧保持透明；Presentation 区域使用随主题变化的浅灰色圆角背景并填满分配给它的空间，展示内容在该区域中居中。
+可选区域为 `null` 或空字符串时，对应区域及相关间距会完全折叠。Title、Content 与 Body 共用同一条左侧对齐线。文案和 Body 一侧保持透明；Presentation 区域使用随主题变化的浅灰色圆角背景。该内置表面取代额外的装饰性 Border；当一组 Presenter 需要更高的统一骨架时，为同级实例设置相同的 `PresentationMinHeight`，内容仍可超过该最小值继续增长。固定尺寸的展示内容保持居中；可拉伸内容会填满区域，并自行控制内部对齐。
 
 `Presentation` 是默认 XAML 内容属性。为避免辅助控件进入展示区域，应始终通过显式的 `<flourish:Presenter.Body>` 属性元素设置 Body。
 
@@ -96,7 +97,7 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 
 ## 展示多个元素
 
-Presentation 接受一个 WPF 内容树。请用布局容器包装多个图标或视觉元素：
+Presentation 接受一个 WPF 内容树。对于普通 `Presenter`，除 `CodeSpace` 外，展示根元素应设置明确的宽度和高度并居中，以保持可预测的视觉尺寸；`CodeSpace` 是例外，应拉伸并填满可用展示区域。不要在普通 `Presenter.Presentation` 内额外添加装饰性 `Border`，Presenter 已经提供了展示表面。`HeaderChunk` 是特殊展示容器，继续使用自身全宽、自适应的 Presentation 布局。
 
 ```xml
 <flourish:Presenter
@@ -104,7 +105,12 @@ Presentation 接受一个 WPF 内容树。请用布局容器包装多个图标�
   Content="查看此导出可用的格式。"
   PresenterMode="Split"
   PresenterPosition="Right">
-  <UniformGrid Columns="3">
+  <UniformGrid
+    Width="240"
+    Height="80"
+    Columns="3"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center">
     <flourish:FlourishTextBlock Role="Icon" Text="&#xE8A5;" />
     <flourish:FlourishTextBlock Role="Icon" Text="&#xE7C3;" />
     <flourish:FlourishTextBlock Role="Icon" Text="&#xE8B7;" />

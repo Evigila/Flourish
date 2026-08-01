@@ -1,4 +1,5 @@
 using System.IO;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -66,6 +67,73 @@ public sealed class GalleryControlPageStructureTests
         Assert.DoesNotContain(
             topicChunks.SelectMany(element => element.Descendants()),
             element => element.Name.LocalName is "CardButton" or "WindowCaptionButton"
+        );
+
+        var actionsChunk = Assert.Single(
+            topicChunks,
+            element => (string?)element.Attribute("Title") == "Actions"
+        );
+        var actionPresentations = actionsChunk
+            .Descendants()
+            .Where(element => element.Name.LocalName == "Presenter.Presentation")
+            .ToArray();
+        Assert.Equal(2, actionPresentations.Length);
+        Assert.All(
+            actionPresentations,
+            presentation =>
+            {
+                var fixedSurface = Assert.Single(
+                    presentation.Elements(),
+                    element => element.Name.LocalName == "Grid"
+                );
+                AssertFixedCenteredPresentationRoot(fixedSurface);
+                var actionGroup = Assert.Single(
+                    fixedSurface.Elements(),
+                    element => element.Name.LocalName == "StackPanel"
+                );
+                Assert.Equal("Horizontal", (string?)actionGroup.Attribute("Orientation"));
+                Assert.Equal(
+                    "Center",
+                    (string?)actionGroup.Attribute("HorizontalAlignment")
+                );
+                Assert.Equal(
+                    "Center",
+                    (string?)actionGroup.Attribute("VerticalAlignment")
+                );
+            }
+        );
+
+        var cardButtonPage = LoadPage("CardButtonPage.xaml");
+        var cardButtonVariant = cardButtonPage
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Chunk"
+                && (string?)element.Attribute("Title") == "Variant"
+            );
+        var cardButtonPresenters = cardButtonVariant
+            .Descendants()
+            .Where(element => element.Name.LocalName == "Presenter")
+            .ToArray();
+
+        Assert.Equal(4, cardButtonPresenters.Length);
+        Assert.All(
+            cardButtonPresenters,
+            presenter =>
+            {
+                Assert.Null((string?)presenter.Attribute("Height"));
+                Assert.Equal("220", (string?)presenter.Attribute("PresentationMinHeight"));
+                var presentation = Assert.Single(
+                    presenter.Elements(),
+                    element => element.Name.LocalName == "Presenter.Presentation"
+                );
+                var cardButton = Assert.Single(
+                    presentation.Elements(),
+                    element => element.Name.LocalName == "CardButton"
+                );
+                Assert.Equal("200", (string?)cardButton.Attribute("Width"));
+                Assert.Equal("120", (string?)cardButton.Attribute("Height"));
+                AssertFixedCenteredPresentationRoot(cardButton);
+            }
         );
 
         var program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Gallery", "Program.cs"));
@@ -851,8 +919,6 @@ public sealed class GalleryControlPageStructureTests
                     .ToArray();
                 Assert.NotEmpty(presenters);
                 Assert.Equal(layout.Elements().Count(), presenters.Length);
-                var presentationHeights = new List<double>();
-
                 Assert.All(
                     presenters,
                     presenter =>
@@ -869,28 +935,46 @@ public sealed class GalleryControlPageStructureTests
                             element => element.Name.LocalName == "Presenter.Presentation"
                         );
                         var presentationRoot = Assert.Single(presentation.Elements());
-                        var minHeight = Assert.IsType<XAttribute>(
-                            presentationRoot.Attribute("MinHeight")
-                        );
-                        Assert.True(
-                            double.Parse(
-                                minHeight.Value,
-                                System.Globalization.CultureInfo.InvariantCulture
-                            ) >= 136
-                        );
-                        presentationHeights.Add(
-                            double.Parse(
-                                minHeight.Value,
-                                System.Globalization.CultureInfo.InvariantCulture
-                            )
-                        );
+                        AssertFixedCenteredPresentationRoot(presentationRoot);
                         Assert.DoesNotContain(
                             presenter.Elements(),
                             element => element.Name.LocalName == "Presenter.Body"
                         );
                     }
                 );
-                Assert.Single(presentationHeights.Distinct());
+            }
+        }
+    }
+
+    [Fact]
+    public void Presentations_UseFixedCenteredContentWithoutNestedBordersExceptCodeSpace()
+    {
+        foreach (
+            var path in Directory.EnumerateFiles(
+                ViewsRoot,
+                "*.xaml",
+                SearchOption.AllDirectories
+            )
+        )
+        {
+            var page = XDocument.Load(path);
+            var presentations = page
+                .Descendants()
+                .Where(element => element.Name.LocalName == "Presenter.Presentation");
+
+            foreach (var presentation in presentations)
+            {
+                var presentationRoot = Assert.Single(presentation.Elements());
+                if (presentationRoot.Name.LocalName == "CodeSpace")
+                {
+                    continue;
+                }
+
+                AssertFixedCenteredPresentationRoot(presentationRoot);
+                Assert.DoesNotContain(
+                    presentationRoot.DescendantsAndSelf(),
+                    element => element.Name.LocalName == "Border"
+                );
             }
         }
     }
@@ -911,9 +995,6 @@ public sealed class GalleryControlPageStructureTests
 
             foreach (var layout in multiColumnLayouts)
             {
-                Assert.True(
-                    (string?)layout.Attribute("VerticalAlignment") is null or "Stretch"
-                );
                 Assert.DoesNotContain(
                     layout.Descendants(),
                     element => element.Name.LocalName == "HeaderChunk"
@@ -1079,4 +1160,29 @@ public sealed class GalleryControlPageStructureTests
 
     private static XDocument LoadPage(string fileName) =>
         XDocument.Load(Path.Combine(ViewsRoot, fileName));
+
+    private static void AssertFixedCenteredPresentationRoot(XElement presentationRoot)
+    {
+        Assert.Equal("Center", (string?)presentationRoot.Attribute("HorizontalAlignment"));
+        Assert.Equal("Center", (string?)presentationRoot.Attribute("VerticalAlignment"));
+
+        var width = Assert.IsType<XAttribute>(presentationRoot.Attribute("Width"));
+        var height = Assert.IsType<XAttribute>(presentationRoot.Attribute("Height"));
+        Assert.True(
+            double.TryParse(
+                width.Value,
+                NumberStyles.Float,
+                CultureInfo.InvariantCulture,
+                out var widthValue
+            ) && double.IsFinite(widthValue) && widthValue > 0
+        );
+        Assert.True(
+            double.TryParse(
+                height.Value,
+                NumberStyles.Float,
+                CultureInfo.InvariantCulture,
+                out var heightValue
+            ) && double.IsFinite(heightValue) && heightValue > 0
+        );
+    }
 }

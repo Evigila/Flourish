@@ -18,7 +18,7 @@ public enum CardVariant
     /// <summary>The default content surface.</summary>
     Standard,
 
-    /// <summary>A quiet content surface filled with a neutral tone.</summary>
+    /// <summary>A supporting content surface filled with the primary tonal color.</summary>
     Tonal,
 
     /// <summary>A high-emphasis content surface filled with the primary color.</summary>

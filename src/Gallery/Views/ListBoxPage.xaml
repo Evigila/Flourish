@@ -29,19 +29,17 @@
           Title="Standard"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="190">
-              <flourish:FlourishListBox
-                Width="240"
-                Height="132"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                SelectedIndex="0"
-              >
+            <flourish:FlourishListBox
+              Width="240"
+              Height="132"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              SelectedIndex="0"
+            >
                 <flourish:FlourishListBoxItem Content="Design" />
                 <flourish:FlourishListBoxItem Content="Build" />
                 <flourish:FlourishListBoxItem Content="Verify" />
-              </flourish:FlourishListBox>
-            </Grid>
+            </flourish:FlourishListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -52,19 +50,17 @@
           Title="Navigation"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="190">
-              <flourish:FlourishListBox
-                Width="240"
-                Height="132"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Appearance="Navigation"
-              >
+            <flourish:FlourishListBox
+              Width="240"
+              Height="132"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Appearance="Navigation"
+            >
                 <flourish:FlourishListBoxItem Content="Workspace" IsGroupHeader="True" />
                 <flourish:FlourishListBoxItem Content="Overview" IsSelected="True" />
                 <flourish:FlourishListBoxItem Content="Settings" />
-              </flourish:FlourishListBox>
-            </Grid>
+            </flourish:FlourishListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

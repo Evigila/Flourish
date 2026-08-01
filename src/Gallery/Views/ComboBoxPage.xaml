@@ -42,9 +42,9 @@
           Title="Declared items"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <flourish:FlourishComboBox
+            <flourish:FlourishComboBox
                 Width="240"
+                Height="40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 SelectedIndex="0"
@@ -52,8 +52,7 @@
                 <flourish:FlourishComboBoxItem Content="System" />
                 <flourish:FlourishComboBoxItem Content="Light" />
                 <flourish:FlourishComboBoxItem Content="Dark" />
-              </flourish:FlourishComboBox>
-            </Grid>
+            </flourish:FlourishComboBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -64,15 +63,14 @@
           Title="Generated items"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <flourish:FlourishComboBox
+            <flourish:FlourishComboBox
                 Width="240"
+                Height="40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 ItemsSource="{Binding DensityOptions, ElementName=RootPage}"
                 SelectedIndex="0"
-              />
-            </Grid>
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

@@ -20,22 +20,32 @@
 
     <flourish:Chunk Title="Variant">
       <UniformGrid Columns="2">
-        <flourish:Presenter Margin="0,0,8,0" Content="Dismisses when pointer tracking leaves the surface and its anchor." PresenterMode="TopDown" PresenterPosition="Left" Title="Temporary">
+        <flourish:Presenter Margin="0,0,8,0" Content="Dismisses when pointer tracking leaves the surface and its anchor." PresenterMode="TopDown" PresentationMinHeight="240" PresenterPosition="Left" Title="Temporary">
           <flourish:Presenter.Presentation>
-            <Border MinHeight="240" Padding="16">
-              <flourish:Overlay Variant="Temporary">
-                <flourish:ActionCard Content="Closes after pointer exit." Icon="&#xE823;" Title="Temporary" Variant="Vertical" />
-              </flourish:Overlay>
-            </Border>
+            <flourish:Overlay
+              Width="320"
+              Height="200"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Padding="16"
+              Variant="Temporary"
+            >
+              <flourish:ActionCard Content="Closes after pointer exit." Icon="&#xE823;" Title="Temporary" Variant="Vertical" />
+            </flourish:Overlay>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,0,0,0" Content="Remains open until an explicit dismissal action occurs." PresenterMode="TopDown" PresenterPosition="Left" Title="Strong">
+        <flourish:Presenter Margin="8,0,0,0" Content="Remains open until an explicit dismissal action occurs." PresenterMode="TopDown" PresentationMinHeight="240" PresenterPosition="Left" Title="Strong">
           <flourish:Presenter.Presentation>
-            <Border MinHeight="240" Padding="16">
-              <flourish:Overlay Variant="Strong">
-                <flourish:ActionCard Content="Waits for an explicit action." Icon="&#xE77B;" Title="Strong" Variant="Vertical" />
-              </flourish:Overlay>
-            </Border>
+            <flourish:Overlay
+              Width="320"
+              Height="200"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Padding="16"
+              Variant="Strong"
+            >
+              <flourish:ActionCard Content="Waits for an explicit action." Icon="&#xE77B;" Title="Strong" Variant="Vertical" />
+            </flourish:Overlay>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

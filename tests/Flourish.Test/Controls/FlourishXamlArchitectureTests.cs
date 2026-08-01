@@ -883,8 +883,8 @@ public sealed class FlourishXamlArchitectureTests
         );
         Assert.Equal("0", (string?)copySurface.Attribute("Grid.Column"));
         Assert.Null((string?)copySurface.Attribute("Background"));
-        Assert.Equal("Center", (string?)presentationHost.Attribute("HorizontalAlignment"));
-        Assert.Equal("Center", (string?)presentationHost.Attribute("VerticalAlignment"));
+        Assert.Equal("Stretch", (string?)presentationHost.Attribute("HorizontalAlignment"));
+        Assert.Equal("Stretch", (string?)presentationHost.Attribute("VerticalAlignment"));
 
         var bodyHost = copySurface
             .Descendants()

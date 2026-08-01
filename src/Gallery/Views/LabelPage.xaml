@@ -42,12 +42,12 @@
           Title="Text input"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <StackPanel
-                Width="240"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-              >
+            <StackPanel
+              Width="240"
+              Height="104"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
                 <flourish:FlourishLabel
                   Content="_Display name"
                   Target="{Binding ElementName=DisplayNameBox}"
@@ -57,8 +57,7 @@
                   Margin="0,4,0,0"
                   Text="Flourish user"
                 />
-              </StackPanel>
-            </Grid>
+            </StackPanel>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -69,12 +68,12 @@
           Title="Selection input"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <StackPanel
-                Width="240"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-              >
+            <StackPanel
+              Width="240"
+              Height="104"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
                 <flourish:FlourishLabel
                   Content="_Theme"
                   Target="{Binding ElementName=ThemeBox}"
@@ -88,8 +87,7 @@
                   <flourish:FlourishComboBoxItem Content="Light" />
                   <flourish:FlourishComboBoxItem Content="Dark" />
                 </flourish:FlourishComboBox>
-              </StackPanel>
-            </Grid>
+            </StackPanel>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

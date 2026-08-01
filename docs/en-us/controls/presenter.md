@@ -19,10 +19,11 @@ Every Presenter declaration explicitly supplies `Title`, `Content`, `PresenterMo
 | `Content` | `string?` | `null` | Required supporting copy below the title. |
 | `Body` | `object?` | `null` | Controls or supporting content arranged with the copy; assign it explicitly with `Presenter.Body`. |
 | `Presentation` | `object?` | `null` | Image, icon group, illustration, preview, or composed visual; the default XAML content property. |
+| `PresentationMinHeight` | `double` | `0` | Minimum height of the built-in presentation surface. The default Presenter style supplies a 160 DIP baseline. |
 | `PresenterMode` | `PresenterMode` | `Split` | Explicit composition choice: `Split`, `TopDown`, or `Overlay`. |
 | `PresenterPosition` | `PresenterPosition` | `Left` | Explicit presentation-side choice for `Split`. |
 
-An absent `Body` collapses with its spacing. The copy-and-body region stays transparent and aligns its contents together to the left. Only the `Presentation` region uses the adaptive light-neutral background and shared surface corner radius. That region fills its allocated space while centering the presented content within it.
+An absent `Body` collapses with its spacing. The copy-and-body region stays transparent and aligns its contents together to the left. Only the `Presentation` region uses the adaptive light-neutral background and shared surface corner radius. That built-in surface replaces decorative wrapper borders. Set the same `PresentationMinHeight` on peer Presenters when a group needs a taller shared skeleton; content can still grow beyond that minimum. Fixed-size presentation content remains centered, while stretchable content fills the region and controls its own internal alignment.
 
 When several Presenters are stacked vertically in one section, apply `FlourishPresenterPeerMargin` to each Presenter after the first.
 
@@ -98,7 +99,7 @@ Choose presentation content that keeps overlaid text readable in both light and 
 
 ## Present several elements
 
-`Presentation` accepts one WPF content tree. Wrap several icons or visual elements in a layout container:
+`Presentation` accepts one WPF content tree. Give non-`CodeSpace` presentation roots on a regular `Presenter` an explicit width and height, then center them so they keep a predictable visual footprint. `CodeSpace` is the exception and should stretch to fill the available presentation surface. Do not add a decorative `Border` inside a regular `Presenter.Presentation`; Presenter already supplies that surface. `HeaderChunk` is a specialized presentation container and keeps its own full-width, adaptive presentation layout.
 
 ```xml
 <flourish:Presenter
@@ -106,7 +107,12 @@ Choose presentation content that keeps overlaid text readable in both light and 
   Content="Review the formats available for this export."
   PresenterMode="Split"
   PresenterPosition="Right">
-  <UniformGrid Columns="3">
+  <UniformGrid
+    Width="240"
+    Height="80"
+    Columns="3"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center">
     <flourish:FlourishTextBlock Role="Icon" Text="&#xE8A5;" />
     <flourish:FlourishTextBlock Role="Icon" Text="&#xE7C3;" />
     <flourish:FlourishTextBlock Role="Icon" Text="&#xE8B7;" />

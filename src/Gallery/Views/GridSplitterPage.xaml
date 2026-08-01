@@ -29,26 +29,24 @@
           Title="Standard"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="210">
-              <Grid
-                Width="300"
-                Height="150"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-              >
+            <Grid
+              Width="300"
+              Height="150"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="*" MinWidth="80" />
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" MinWidth="80" />
                 </Grid.ColumnDefinitions>
-                <Border Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="6" />
+              <Grid Background="{DynamicResource FlourishPrimarySurfaceBrush}" />
                 <flourish:FlourishGridSplitter
                   Grid.Column="1"
                   HorizontalAlignment="Center"
                   ResizeDirection="Columns"
                 />
-                <Border Grid.Column="2" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="6" />
-              </Grid>
+              <Grid Grid.Column="2" Background="{DynamicResource FlourishNeutralBackground2Brush}" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
@@ -60,22 +58,20 @@
           Title="NavigationPane"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="210">
-              <Grid
-                Width="300"
-                Height="150"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-              >
+            <Grid
+              Width="300"
+              Height="150"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="120" MinWidth="80" />
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" MinWidth="80" />
                 </Grid.ColumnDefinitions>
-                <Border Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="6" />
+              <Grid Background="{DynamicResource FlourishPrimarySurfaceBrush}" />
                 <flourish:FlourishGridSplitter Grid.Column="1" Variant="NavigationPane" />
-                <Border Grid.Column="2" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="6" />
-              </Grid>
+              <Grid Grid.Column="2" Background="{DynamicResource FlourishNeutralBackground2Brush}" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>

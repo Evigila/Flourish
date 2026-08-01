@@ -42,17 +42,16 @@
           Title="Selectable item"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <flourish:FlourishComboBox
+            <flourish:FlourishComboBox
                 Width="240"
+                Height="40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 SelectedIndex="0"
               >
                 <flourish:FlourishComboBoxItem Content="Standard density" />
                 <flourish:FlourishComboBoxItem Content="Compact density" />
-              </flourish:FlourishComboBox>
-            </Grid>
+            </flourish:FlourishComboBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -63,9 +62,9 @@
           Title="Unavailable item"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="152">
-              <flourish:FlourishComboBox
+            <flourish:FlourishComboBox
                 Width="240"
+                Height="40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 SelectedIndex="0"
@@ -76,8 +75,7 @@
                   IsEnabled="False"
                   ToolTip="Preview updates are not configured."
                 />
-              </flourish:FlourishComboBox>
-            </Grid>
+            </flourish:FlourishComboBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

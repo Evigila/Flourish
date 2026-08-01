@@ -23,33 +23,48 @@
       <UniformGrid Columns="3">
         <flourish:Presenter Margin="0,0,8,0" Content="Places Presentation beside the copy-and-body region." PresenterMode="TopDown" PresenterPosition="Left" Title="Split">
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="180">
+            <Grid
+              Width="320"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
-              <Border Grid.Column="1" Margin="8" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
+              <Rectangle Margin="8" Fill="{DynamicResource FlourishNeutralBackground2Brush}" RadiusX="8" RadiusY="8" />
+              <Rectangle Grid.Column="1" Margin="8" Stroke="{DynamicResource FlourishNeutralStroke1Brush}" StrokeThickness="1" RadiusX="8" RadiusY="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter Margin="4,0" Content="Layers the copy-and-body region over Presentation." PresenterMode="TopDown" PresenterPosition="Left" Title="Overlay">
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="180">
-              <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
-              <Border Width="120" Height="64" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
+            <Grid
+              Width="320"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+              <Rectangle Margin="8" Fill="{DynamicResource FlourishNeutralBackground2Brush}" RadiusX="8" RadiusY="8" />
+              <Rectangle Width="120" Height="64" Stroke="{DynamicResource FlourishNeutralStroke1Brush}" StrokeThickness="1" RadiusX="8" RadiusY="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter Margin="8,0,0,0" Content="Places Presentation above the copy-and-body region and may share a row with peer TopDown Presenters." PresenterMode="TopDown" PresenterPosition="Left" Title="TopDown">
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="180">
+            <Grid
+              Width="320"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
               <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
               </Grid.RowDefinitions>
-              <Border Margin="8" Background="{DynamicResource FlourishNeutralBackground2Brush}" CornerRadius="8" />
-              <Border Grid.Row="1" Margin="8" BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}" BorderThickness="1" CornerRadius="8" />
+              <Rectangle Margin="8" Fill="{DynamicResource FlourishNeutralBackground2Brush}" RadiusX="8" RadiusY="8" />
+              <Rectangle Grid.Row="1" Margin="8" Stroke="{DynamicResource FlourishNeutralStroke1Brush}" StrokeThickness="1" RadiusX="8" RadiusY="8" />
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
@@ -84,13 +99,17 @@
             <flourish:Button Content="Explore layout" Variant="Filled" />
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
-            <Border MinHeight="180">
-              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE8A5;" />
-                <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE7C8;" />
-                <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE790;" />
-              </StackPanel>
-            </Border>
+            <StackPanel
+              Width="280"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Orientation="Horizontal"
+            >
+              <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE8A5;" />
+              <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE7C8;" />
+              <flourish:FlourishTextBlock Margin="8" Role="Icon" Text="&#xE790;" />
+            </StackPanel>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
 
@@ -105,14 +124,15 @@
             <flourish:Button Content="Open details" Variant="Tonal" />
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
-            <Border MinHeight="180">
-              <flourish:FlourishTextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Role="Icon"
-                Text="&#xE950;"
-              />
-            </Border>
+            <flourish:FlourishTextBlock
+              Width="280"
+              Height="160"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Role="Icon"
+              Text="&#xE950;"
+              TextAlignment="Center"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
@@ -132,19 +152,24 @@
           <flourish:Button Content="Overlay action" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
-          <Border MinHeight="240" CornerRadius="12">
-            <Border.Background>
+          <Grid
+            Width="320"
+            Height="220"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+          >
+            <Grid.Background>
               <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Offset="0" Color="#0F6CBD" />
                 <GradientStop Offset="1" Color="#5C2E91" />
               </LinearGradientBrush>
-            </Border.Background>
+            </Grid.Background>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
               <flourish:FlourishTextBlock Margin="12" Foreground="#80FFFFFF" Role="Icon" Text="&#xE8A5;" />
               <flourish:FlourishTextBlock Margin="12" Foreground="#80FFFFFF" Role="Icon" Text="&#xE8B9;" />
               <flourish:FlourishTextBlock Margin="12" Foreground="#80FFFFFF" Role="Icon" Text="&#xE790;" />
             </StackPanel>
-          </Border>
+          </Grid>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>
@@ -163,13 +188,17 @@
           <flourish:Button Content="Continue" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
-          <Border MinHeight="180">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+          <StackPanel
+            Width="280"
+            Height="160"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+          >
               <flourish:FlourishTextBlock Margin="12" Role="Icon" Text="&#xE7C8;" />
               <flourish:FlourishTextBlock Margin="12" Role="Icon" Text="&#xE8A5;" />
               <flourish:FlourishTextBlock Margin="12" Role="Icon" Text="&#xE950;" />
-            </StackPanel>
-          </Border>
+          </StackPanel>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>

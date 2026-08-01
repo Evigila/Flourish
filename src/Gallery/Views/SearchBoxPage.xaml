@@ -42,14 +42,13 @@
           Title="Empty query"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="136">
-              <flourish:FlourishSearchBox
-                Width="260"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Placeholder="Search controls"
-              />
-            </Grid>
+            <flourish:FlourishSearchBox
+              Width="260"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Placeholder="Search controls"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -60,15 +59,14 @@
           Title="Active query"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="136">
-              <flourish:FlourishSearchBox
-                Width="260"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Placeholder="Search controls"
-                Text="Presenter"
-              />
-            </Grid>
+            <flourish:FlourishSearchBox
+              Width="260"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Placeholder="Search controls"
+              Text="Presenter"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

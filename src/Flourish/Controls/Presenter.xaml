@@ -19,8 +19,8 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
+          <RowDefinition x:Name="PresentationRow" Height="*" />
+          <RowDefinition x:Name="CopyRow" Height="*" />
         </Grid.RowDefinitions>
         <Border
           x:Name="PresentationSurface"
@@ -29,11 +29,12 @@
           Background="{TemplateBinding Background}"
           ClipToBounds="True"
           CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
+          MinHeight="{TemplateBinding PresentationMinHeight}"
         >
           <ContentPresenter
             x:Name="PresentationHost"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             Content="{TemplateBinding Presentation}"
             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
           />
@@ -111,6 +112,8 @@
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishForegroundOnOverlayBrush}" />
       </Trigger>
       <Trigger Property="PresenterMode" Value="TopDown">
+        <Setter TargetName="PresentationRow" Property="Height" Value="Auto" />
+        <Setter TargetName="CopyRow" Property="Height" Value="Auto" />
         <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="PresentationSurface" Property="Grid.ColumnSpan" Value="2" />
         <Setter TargetName="PresentationSurface" Property="Grid.Row" Value="0" />
@@ -214,6 +217,7 @@
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="PresentationMinHeight" Value="{DynamicResource FlourishPresenterPresentationMinHeight}" />
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground2Brush}" />
     <Setter Property="BorderBrush" Value="{x:Null}" />

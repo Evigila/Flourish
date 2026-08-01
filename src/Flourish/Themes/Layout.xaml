@@ -58,7 +58,7 @@
   <Thickness x:Key="FlourishDocumentPadding">16,12</Thickness>
   <Thickness x:Key="FlourishDocumentFirstParagraphMargin">0</Thickness>
   <Thickness x:Key="FlourishDocumentParagraphMargin">0,12,0,0</Thickness>
-  <!-- Retained for CodeSpace, whose surface shares the same established geometry. -->
+  <!-- Retained as a compatibility token for consumers that opt into paragraph spacing. -->
   <Thickness x:Key="FlourishParagraphMargin">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishParagraphPadding">16,12</Thickness>
   <Thickness x:Key="FlourishCodeSpaceContentMargin">0,0,40,0</Thickness>
@@ -66,6 +66,7 @@
   <Thickness x:Key="FlourishPresenterContentSpacing">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterBodySpacing">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterPeerMargin">0,16,0,0</Thickness>
+  <sys:Double x:Key="FlourishPresenterPresentationMinHeight">160</sys:Double>
   <Thickness x:Key="FlourishChunkMargin">0,32,0,0</Thickness>
   <Thickness x:Key="FlourishChunkSpacing">0,12,0,0</Thickness>
   <Thickness x:Key="FlourishHeaderChunkMargin">0,32,0,0</Thickness>

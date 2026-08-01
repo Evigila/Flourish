@@ -36,17 +36,17 @@
         Title="Hover help"
       >
         <flourish:Presenter.Presentation>
-          <Grid MinHeight="180">
-            <flourish:Button
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              Content="Hover for help"
-            >
-              <flourish:Button.ToolTip>
-                <flourish:FlourishToolTip Content="This action refreshes the current workspace." />
-              </flourish:Button.ToolTip>
-            </flourish:Button>
-          </Grid>
+          <flourish:Button
+            Width="160"
+            Height="40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Hover for help"
+          >
+            <flourish:Button.ToolTip>
+              <flourish:FlourishToolTip Content="This action refreshes the current workspace." />
+            </flourish:Button.ToolTip>
+          </flourish:Button>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>

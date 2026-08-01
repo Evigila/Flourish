@@ -29,7 +29,7 @@
           Title="Horizontal"
         >
           <flourish:Presenter.Presentation>
-            <StackPanel MinHeight="152" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Width="240" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center">
               <flourish:CheckBox Content="Enable notifications" />
               <flourish:CheckBox Margin="0,8,0,0" Content="Synchronize automatically" IsChecked="True" />
             </StackPanel>
@@ -43,7 +43,7 @@
           Title="Vertical"
         >
           <flourish:Presenter.Presentation>
-            <UniformGrid MinHeight="152" Columns="2">
+            <UniformGrid Width="360" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Columns="2">
               <flourish:CheckBox
                 Margin="0,0,6,0"
                 Content="Local workspace"
@@ -89,9 +89,7 @@
           Title="Unchecked"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="120">
-              <flourish:CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Content="Not selected" />
-            </Grid>
+            <flourish:CheckBox Width="160" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Not selected" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -102,9 +100,7 @@
           Title="Checked"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="120">
-              <flourish:CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Content="Selected" IsChecked="True" />
-            </Grid>
+            <flourish:CheckBox Width="160" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Selected" IsChecked="True" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -115,15 +111,15 @@
           Title="Indeterminate"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="120">
-              <flourish:CheckBox
+            <flourish:CheckBox
+                Width="160"
+                Height="48"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Content="Inherited"
                 IsChecked="{x:Null}"
                 IsThreeState="True"
-              />
-            </Grid>
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

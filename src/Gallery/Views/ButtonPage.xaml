@@ -17,34 +17,112 @@
 
     <flourish:Chunk Title="Variant">
       <UniformGrid Columns="3">
-        <flourish:Presenter Margin="0,0,8,8" Content="Adds elevation to separate an action from its surrounding surface." PresenterMode="TopDown" PresenterPosition="Left" Title="Elevated">
+        <flourish:Presenter
+          Margin="0,0,8,8"
+          Content="Adds elevation to separate an action from its surrounding surface."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Elevated"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Elevated" Variant="Elevated" /></Border>
+            <flourish:Button
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Elevated"
+              Variant="Elevated"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,0,8,8" Content="Expresses the primary action in a group." PresenterMode="TopDown" PresenterPosition="Left" Title="Filled">
+        <flourish:Presenter
+          Margin="8,0,8,8"
+          Content="Expresses the primary action in a group."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Filled"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Filled" Variant="Filled" /></Border>
+            <flourish:Button
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Filled"
+              Variant="Filled"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,0,0,8" Content="Provides a softer filled emphasis for supporting actions." PresenterMode="TopDown" PresenterPosition="Left" Title="Tonal">
+        <flourish:Presenter
+          Margin="8,0,0,8"
+          Content="Provides a softer filled emphasis for supporting actions."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Tonal"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Tonal" Variant="Tonal" /></Border>
+            <flourish:Button
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Tonal"
+              Variant="Tonal"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="0,8,8,0" Content="Uses a boundary for a medium-emphasis secondary action." PresenterMode="TopDown" PresenterPosition="Left" Title="Outlined">
+        <flourish:Presenter
+          Margin="0,8,8,0"
+          Content="Uses a boundary for a medium-emphasis secondary action."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Outlined"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Outlined" Variant="Outlined" /></Border>
+            <flourish:Button
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Outlined"
+              Variant="Outlined"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,8,8,0" Content="Keeps tertiary and toolbar actions visually quiet." PresenterMode="TopDown" PresenterPosition="Left" Title="Text">
+        <flourish:Presenter
+          Margin="8,8,8,0"
+          Content="Keeps tertiary and toolbar actions visually quiet."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Text"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Text" Variant="Text" /></Border>
+            <flourish:Button
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Text"
+              Variant="Text"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,8,0,0" Content="Identifies destructive or difficult-to-reverse intent." PresenterMode="TopDown" PresenterPosition="Left" Title="Danger">
+        <flourish:Presenter
+          Margin="8,8,0,0"
+          Content="Identifies destructive or difficult-to-reverse intent."
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Danger"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160"><flourish:Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Danger" Variant="Danger" /></Border>
+            <flourish:Button
+              Width="120"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Danger"
+              Variant="Danger"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
@@ -61,79 +139,77 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn
-            Binding="{Binding Name}"
-            Header="PROPERTY"
-            Width="220"
-          />
-          <DataGridTextColumn
-            Binding="{Binding Description}"
-            Header="PURPOSE"
-            Width="*"
-          />
+          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Button">
-      <flourish:Presenter
-        Content="Bind Command for reusable actions, or handle Click for local behavior."
-        PresenterMode="Split"
-        PresenterPosition="Left"
-        Title="Standard action"
-      >
-        <flourish:Presenter.Presentation>
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,0" Content="Continue" Variant="Filled" />
-            <flourish:Button Content="Cancel" Variant="Outlined" />
-          </WrapPanel>
-        </flourish:Presenter.Presentation>
-      </flourish:Presenter>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Icon-only Button">
-      <flourish:Presenter
-        Content="Use a ToolTip or automation name when the action has no visible label."
-        PresenterMode="Split"
-        PresenterPosition="Left"
-        Title="Icon actions"
-      >
-        <flourish:Presenter.Presentation>
-          <WrapPanel>
-            <flourish:Button
-              Margin="0,0,8,0"
-              AutomationProperties.Name="Refresh"
-              Icon="&#xE72C;"
-              ToolTip="Refresh"
-              Variant="Text"
-            />
-            <flourish:Button
-              Margin="0,0,8,0"
-              AutomationProperties.Name="Search"
-              Icon="&#xE8D4;"
-              ToolTip="Search"
-              Variant="Text"
-            />
-            <flourish:Button Content="Add item" Icon="&#xE710;" Variant="Filled" />
-          </WrapPanel>
-        </flourish:Presenter.Presentation>
-      </flourish:Presenter>
-    </flourish:Chunk>
-
-    <flourish:Chunk Title="Hover feedback">
-      <flourish:Presenter
-        Content="HoverReveal supplies feedback and can be disabled for a local action."
-        PresenterMode="Split"
-        PresenterPosition="Left"
-        Title="Pointer feedback"
-      >
-        <flourish:Presenter.Presentation>
-          <WrapPanel>
-            <flourish:Button Margin="0,0,8,0" Content="Default reveal" />
-            <flourish:Button flourish:HoverReveal.IsEnabled="False" Content="Static feedback" />
-          </WrapPanel>
-        </flourish:Presenter.Presentation>
-      </flourish:Presenter>
+    <flourish:Chunk Title="Actions">
+      <StackPanel>
+        <flourish:Presenter
+          Margin="0,0,0,16"
+          Content="Bind Command for reusable actions, or handle Click for local behavior."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Standard action"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid
+              Width="240"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+              <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+              >
+                <flourish:Button Margin="0,0,8,0" Content="Continue" Variant="Filled" />
+                <flourish:Button Content="Cancel" Variant="Outlined" />
+              </StackPanel>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Content="Use a ToolTip or automation name when the action has no visible label."
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="Icon actions"
+        >
+          <flourish:Presenter.Presentation>
+            <Grid
+              Width="264"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+              <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+              >
+                <flourish:Button
+                  Margin="0,0,8,0"
+                  AutomationProperties.Name="Refresh"
+                  Icon="&#xE72C;"
+                  ToolTip="Refresh"
+                  Variant="Text"
+                />
+                <flourish:Button
+                  Margin="0,0,8,0"
+                  AutomationProperties.Name="Search"
+                  Icon="&#xE8D4;"
+                  ToolTip="Search"
+                  Variant="Text"
+                />
+                <flourish:Button Content="Add item" Icon="&#xE710;" Variant="Filled" />
+              </StackPanel>
+            </Grid>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Interaction contract">
@@ -146,17 +222,17 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160" Padding="16">
-              <flourish:Button
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                AutomationProperties.Name="Save report"
-                Content="Save report"
-                Icon="&#xE74E;"
-                ToolTip="Save report"
-                Variant="Filled"
-              />
-            </Border>
+            <flourish:Button
+              Width="160"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              AutomationProperties.Name="Save report"
+              Content="Save report"
+              Icon="&#xE74E;"
+              ToolTip="Save report"
+              Variant="Filled"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -167,16 +243,16 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160" Padding="16">
-              <flourish:Button
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Content="Publish report"
-                Icon="&#xE789;"
-                IsEnabled="False"
-                Variant="Filled"
-              />
-            </Border>
+            <flourish:Button
+              Width="160"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Publish report"
+              Icon="&#xE789;"
+              IsEnabled="False"
+              Variant="Filled"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

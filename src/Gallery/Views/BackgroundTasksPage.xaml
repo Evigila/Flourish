@@ -92,7 +92,13 @@
           Title="Live tasks"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishListBox x:Name="ActiveTaskList" MinHeight="220" />
+            <flourish:FlourishListBox
+              x:Name="ActiveTaskList"
+              Width="480"
+              Height="220"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -103,7 +109,13 @@
           Title="Recent outcomes"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishListBox x:Name="OutcomeList" MinHeight="220" />
+            <flourish:FlourishListBox
+              x:Name="OutcomeList"
+              Width="480"
+              Height="220"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:CodeSpace Text="backgroundTasks.TasksChanged += (_, change) =&gt;&#10;    RefreshTaskList(change.Tasks);&#10;&#10;var activeTasks = backgroundTasks.ActiveTasks;&#10;var concurrencyLimit = backgroundTasks.MaxConcurrency;&#10;&#10;var completion = await handle.Completion;&#10;var finalState = completion.Info.State;&#10;var error = completion.Info.Exception;" />

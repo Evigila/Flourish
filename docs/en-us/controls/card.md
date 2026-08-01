@@ -47,7 +47,7 @@ Card and ActionCard icons use the adaptive primary foreground so they remain vis
 | Variant | Use |
 | --- | --- |
 | `Standard` | Ordinary grouped information. This is the default. |
-| `Tonal` | Supporting information with a quiet neutral fill. |
+| `Tonal` | Supporting information using the same primary-tinted surface as a Tonal Button. |
 | `Filled` | Information that needs strong primary-color emphasis. |
 | `Elevated` | Information that needs visual separation from its background. |
 

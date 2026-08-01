@@ -17,24 +17,87 @@
 
     <flourish:Chunk Title="Variant">
       <UniformGrid Columns="2">
-        <flourish:Presenter Margin="0,0,8,8" Content="Uses the neutral interactive card surface." PresenterMode="TopDown" PresenterPosition="Left" Title="Standard">
+        <flourish:Presenter
+          Margin="0,0,8,8"
+          Content="Uses the neutral interactive card surface."
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Standard"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Default card action." Icon="&#xE8A5;" Title="Standard" /></Border>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Default card action."
+              Icon="&#xE8A5;"
+              Title="Standard"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,0,0,8" Content="Adds elevation while the complete surface remains interactive." PresenterMode="TopDown" PresenterPosition="Left" Title="Elevated">
+        <flourish:Presenter
+          Margin="8,0,0,8"
+          Content="Adds elevation while the complete surface remains interactive."
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Elevated"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Raised card action." Icon="&#xE8A5;" Title="Elevated" Variant="Elevated" /></Border>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Raised card action."
+              Icon="&#xE8A5;"
+              Title="Elevated"
+              Variant="Elevated"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="0,8,8,0" Content="Uses primary-color emphasis for a prominent card action." PresenterMode="TopDown" PresenterPosition="Left" Title="Filled">
+        <flourish:Presenter
+          Margin="0,8,8,0"
+          Content="Uses primary-color emphasis for a prominent card action."
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Filled"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Prominent card action." Icon="&#xE8A5;" Title="Filled" Variant="Filled" /></Border>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Prominent card action."
+              Icon="&#xE8A5;"
+              Title="Filled"
+              Variant="Filled"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,8,0,0" Content="Provides a quieter filled card action." PresenterMode="TopDown" PresenterPosition="Left" Title="Tonal">
+        <flourish:Presenter
+          Margin="8,8,0,0"
+          Content="Provides a quieter filled card action."
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Tonal"
+        >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="220" Padding="16"><flourish:CardButton Content="Softer card action." Icon="&#xE8A5;" Title="Tonal" Variant="Tonal" /></Border>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Softer card action."
+              Icon="&#xE8A5;"
+              Title="Tonal"
+              Variant="Tonal"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
@@ -82,19 +145,22 @@
           Title="Enabled card action"
           Content="The complete surface is one focusable action, so its icon, title, and supporting copy share the same pointer and keyboard target."
           PresenterMode="TopDown"
+          PresentationMinHeight="220"
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="220" Padding="16">
-              <flourish:CardButton
-                AutomationProperties.Name="Open reports"
-                Content="Review generated reports."
-                Icon="&#xE8A5;"
-                Title="Reports"
-                ToolTip="Open reports"
-                Variant="Elevated"
-              />
-            </Border>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              AutomationProperties.Name="Open reports"
+              Content="Review generated reports."
+              Icon="&#xE8A5;"
+              Title="Reports"
+              ToolTip="Open reports"
+              Variant="Elevated"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -102,18 +168,21 @@
           Title="Disabled card action"
           Content="A disabled CardButton keeps the complete card unavailable and presents the disabled treatment across every visual region."
           PresenterMode="TopDown"
+          PresentationMinHeight="220"
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="220" Padding="16">
-              <flourish:CardButton
-                Content="Available after validation."
-                Icon="&#xE73E;"
-                IsEnabled="False"
-                Title="Publish report"
-                Variant="Elevated"
-              />
-            </Border>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="Available after validation."
+              Icon="&#xE73E;"
+              IsEnabled="False"
+              Title="Publish report"
+              Variant="Elevated"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

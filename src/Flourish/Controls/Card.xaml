@@ -164,7 +164,8 @@
     <Setter Property="Template" Value="{StaticResource CardTemplate}" />
     <Style.Triggers>
       <Trigger Property="Variant" Value="Tonal">
-        <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackground2Brush}" />
+        <Setter Property="Background" Value="{DynamicResource FlourishTonalButtonBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource FlourishTonalButtonForegroundBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Filled">
         <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />

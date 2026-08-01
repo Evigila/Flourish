@@ -23,17 +23,23 @@
         Title="Caption semantics"
       >
         <flourish:Presenter.Presentation>
-          <Border
+          <Grid
+            Width="320"
+            Height="40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             Background="{DynamicResource FlourishNeutralBackground1Brush}"
-            BorderBrush="{DynamicResource FlourishNeutralStroke1Brush}"
-            BorderThickness="1"
           >
-            <StackPanel Orientation="Horizontal">
+            <StackPanel
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Orientation="Horizontal"
+            >
               <flourish:WindowCaptionButton AutomationProperties.Name="Minimize" Icon="&#xE921;" ToolTip="Minimize" Variant="Text" />
               <flourish:WindowCaptionButton AutomationProperties.Name="Maximize" Icon="&#xE922;" ToolTip="Maximize" Variant="Text" />
               <flourish:WindowCaptionButton AutomationProperties.Name="Close" Icon="&#xE8BB;" ToolTip="Close" Variant="Danger" />
             </StackPanel>
-          </Border>
+          </Grid>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>
@@ -69,7 +75,12 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160" Padding="16">
+            <Grid
+              Width="200"
+              Height="40"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
               <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -94,7 +105,7 @@
                   Variant="Text"
                 />
               </StackPanel>
-            </Border>
+            </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -105,16 +116,16 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <Border MinHeight="160" Padding="16">
-              <flourish:WindowCaptionButton
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                AutomationProperties.Name="Close"
-                Icon="&#xE8BB;"
-                ToolTip="Close"
-                Variant="Danger"
-              />
-            </Border>
+            <flourish:WindowCaptionButton
+              Width="48"
+              Height="32"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              AutomationProperties.Name="Close"
+              Icon="&#xE8BB;"
+              ToolTip="Close"
+              Variant="Danger"
+            />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

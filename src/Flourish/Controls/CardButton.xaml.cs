@@ -6,6 +6,15 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <summary>An interactive card with an icon, title, and descriptive content.</summary>
 public class CardButton : Button
 {
+    /// <summary>Identifies the <see cref="ContentMaxLines" /> dependency property.</summary>
+    public static readonly DependencyProperty ContentMaxLinesProperty = DependencyProperty.Register(
+        nameof(ContentMaxLines),
+        typeof(int),
+        typeof(CardButton),
+        new FrameworkPropertyMetadata(3),
+        value => value is int lines && lines > 0
+    );
+
     /// <summary>Identifies the <see cref="IconPosition" /> dependency property.</summary>
     public static readonly DependencyProperty IconPositionProperty = DependencyProperty.Register(
         nameof(IconPosition),
@@ -40,6 +49,13 @@ public class CardButton : Button
     {
         get => (Dock)GetValue(IconPositionProperty);
         set => SetValue(IconPositionProperty, value);
+    }
+
+    /// <summary>Gets or sets the maximum number of lines used by textual card content.</summary>
+    public int ContentMaxLines
+    {
+        get => (int)GetValue(ContentMaxLinesProperty);
+        set => SetValue(ContentMaxLinesProperty, value);
     }
 
     /// <summary>Gets or sets the card heading.</summary>

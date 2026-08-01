@@ -17,7 +17,11 @@
     />
 
     <flourish:Chunk Title="Table">
-      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+      <flourish:DataGrid
+        ItemsSource="{Binding Properties, ElementName=RootPage}"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
         <DataGrid.Columns>
           <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
           <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
@@ -25,7 +29,7 @@
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Example">
+    <!--<flourish:Chunk Title="Example">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
@@ -39,11 +43,11 @@
           Title="Custom body"
         />
       </UniformGrid>
-    </flourish:Chunk>
+    </flourish:Chunk>-->
 
-    <flourish:Chunk Title="Content">
+    <!--<flourish:Chunk Title="Content">
       <flourish:Card Content="Title names the topic, Content adds optional context, and Body contains the required section content. Empty optional copy collapses with its spacing." />
-    </flourish:Chunk>
+    </flourish:Chunk>-->
 
     <flourish:Chunk Title="Usage">
       <StackPanel>
@@ -62,8 +66,22 @@
 
     <flourish:Chunk Title="Reference">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE8A5;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the Chunk guide." Icon="&#xE946;" IsEnabled="False" Title="Chunk documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="Browse the Flourish source repository."
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="GitHub repository"
+          ToolTip="External navigation is not available in Gallery."
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="Read the Chunk guide."
+          Icon="&#xE946;"
+          IsEnabled="False"
+          Title="Chunk documentation"
+          ToolTip="External navigation is not available in Gallery."
+        />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

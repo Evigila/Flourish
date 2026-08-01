@@ -36,21 +36,19 @@
         Title="Standard"
       >
         <flourish:Presenter.Presentation>
-          <Grid MinHeight="210">
-            <flourish:ScrollViewer
-              Width="260"
-              Height="160"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              VerticalScrollBarVisibility="Visible"
-            >
+          <flourish:ScrollViewer
+            Width="260"
+            Height="160"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalScrollBarVisibility="Visible"
+          >
               <StackPanel>
                 <flourish:Card Margin="0,0,0,8" Title="First" Content="Scroll through a bounded surface." />
                 <flourish:Card Margin="0,0,0,8" Title="Second" Content="Wheel input moves the inner viewport first." />
                 <flourish:Card Title="Third" Content="At the boundary, input may bubble to PageBody." />
               </StackPanel>
-            </flourish:ScrollViewer>
-          </Grid>
+          </flourish:ScrollViewer>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>

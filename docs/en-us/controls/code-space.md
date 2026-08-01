@@ -23,7 +23,7 @@ Assign the complete snippet through `Text`. `CodeSpace` is not a content contain
 
 The code presentation uses the Large typography tier, Normal font style, Bold weight, Consolas family, and an adaptive blue foreground. The size follows global or page-level Large changes. `CodeSpace` does not parse a language or color individual tokens; syntax-aware highlighting is outside this contract.
 
-The surface shares Document's transparent background, rounded thin low-contrast border, padding, and small outer top margin. Preserve the outer margin when the control follows a Chunk title or optional content.
+The surface shares Document's transparent background, rounded thin low-contrast border, and padding. `CodeSpace` does not add an outer margin; its parent layout owns spacing between sections so the control can fill a Presenter presentation region without leaving an inset.
 
 ## Copy action
 

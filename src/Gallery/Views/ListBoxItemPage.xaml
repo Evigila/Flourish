@@ -29,11 +29,14 @@
           Title="Item"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="170">
-              <flourish:FlourishListBox Width="210" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <flourish:FlourishListBoxItem Content="Selected item" IsSelected="True" />
-              </flourish:FlourishListBox>
-            </Grid>
+            <flourish:FlourishListBox
+              Width="210"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+              <flourish:FlourishListBoxItem Content="Selected item" IsSelected="True" />
+            </flourish:FlourishListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -44,11 +47,15 @@
           Title="Group header"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="170">
-              <flourish:FlourishListBox Width="210" HorizontalAlignment="Center" VerticalAlignment="Center" Appearance="Navigation">
-                <flourish:FlourishListBoxItem Content="Workspace" IsGroupHeader="True" />
-              </flourish:FlourishListBox>
-            </Grid>
+            <flourish:FlourishListBox
+              Width="210"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Appearance="Navigation"
+            >
+              <flourish:FlourishListBoxItem Content="Workspace" IsGroupHeader="True" />
+            </flourish:FlourishListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -59,11 +66,15 @@
           Title="Command item"
         >
           <flourish:Presenter.Presentation>
-            <Grid MinHeight="170">
-              <flourish:FlourishListBox Width="210" HorizontalAlignment="Center" VerticalAlignment="Center" Appearance="Navigation">
-                <flourish:FlourishListBoxItem Content="Refresh" IsCommandItem="True" />
-              </flourish:FlourishListBox>
-            </Grid>
+            <flourish:FlourishListBox
+              Width="210"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Appearance="Navigation"
+            >
+              <flourish:FlourishListBoxItem Content="Refresh" IsCommandItem="True" />
+            </flourish:FlourishListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>

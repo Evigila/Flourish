@@ -51,7 +51,7 @@
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
-    <Setter Property="Margin" Value="{DynamicResource FlourishParagraphMargin}" />
+    <Setter Property="Margin" Value="0" />
     <Setter Property="Padding" Value="{DynamicResource FlourishParagraphPadding}" />
     <Setter Property="Background" Value="{x:Null}" />
     <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
