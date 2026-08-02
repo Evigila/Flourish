@@ -76,7 +76,7 @@
           VerticalAlignment="Stretch"
         />
         </UniformGrid>
-        <flourish:CodeSpace Text="var handle = backgroundTasks.QueueTask(&#10;    new FlourishBackgroundTaskMetadata(&#10;        &quot;Refresh reports&quot;, &quot;Downloads the latest report data.&quot;, &quot;\uE895&quot;),&#10;    async context =&gt;&#10;    {&#10;        for (var step = 1; step &lt;= 10; step++)&#10;        {&#10;            await RefreshBatchAsync(step, context.CancellationToken);&#10;            context.ReportProgress(step / 10d);&#10;        }&#10;&#10;        return await LoadReportCountAsync(context.CancellationToken);&#10;    });&#10;&#10;// Completion represents success, failure, or cancellation without faulting.&#10;var result = await handle.Completion;&#10;var count = result.Value;&#10;var cancelRequested = backgroundTasks.CancelTask(handle.Id);" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var handle = backgroundTasks.QueueTask(&#10;    new FlourishBackgroundTaskMetadata(&#10;        &quot;Refresh reports&quot;, &quot;Downloads the latest report data.&quot;, &quot;\uE895&quot;),&#10;    async context =&gt;&#10;    {&#10;        for (var step = 1; step &lt;= 10; step++)&#10;        {&#10;            await RefreshBatchAsync(step, context.CancellationToken);&#10;            context.ReportProgress(step / 10d);&#10;        }&#10;&#10;        return await LoadReportCountAsync(context.CancellationToken);&#10;    });&#10;&#10;// Completion represents success, failure, or cancellation without faulting.&#10;var result = await handle.Completion;&#10;var count = result.Value;&#10;var cancelRequested = backgroundTasks.CancelTask(handle.Id);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -118,7 +118,7 @@
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:CodeSpace Text="backgroundTasks.TasksChanged += (_, change) =&gt;&#10;    RefreshTaskList(change.Tasks);&#10;&#10;var activeTasks = backgroundTasks.ActiveTasks;&#10;var concurrencyLimit = backgroundTasks.MaxConcurrency;&#10;&#10;var completion = await handle.Completion;&#10;var finalState = completion.Info.State;&#10;var error = completion.Info.Exception;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="backgroundTasks.TasksChanged += (_, change) =&gt;&#10;    RefreshTaskList(change.Tasks);&#10;&#10;var activeTasks = backgroundTasks.ActiveTasks;&#10;var concurrencyLimit = backgroundTasks.MaxConcurrency;&#10;&#10;var completion = await handle.Completion;&#10;var finalState = completion.Info.State;&#10;var error = completion.Info.Exception;" />
       </StackPanel>
     </flourish:Chunk>
 

@@ -33,7 +33,7 @@
           />
         </UniformGrid>
         <flourish:CodeSpace
-          Margin="0,16,0,0"
+          Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
           Text="builder&#10;    .ConfigShell(shell =&gt; shell.UseMotion())&#10;    .ConfigMotion(motion =&gt; motion&#10;        // Durations are optional; Flourish supplies defaults when omitted.&#10;        .UsePageTransition(&#10;            transition: FlourishPageTransition.Fade,&#10;            duration: TimeSpan.FromMilliseconds(180))&#10;        .UseNavigationPanelTransition(&#10;            transition: FlourishNavigationPanelTransition.Resize,&#10;            duration: TimeSpan.FromMilliseconds(180))&#10;        .UseHoverRevealAnimation(&#10;            duration: TimeSpan.FromMilliseconds(140))&#10;        // Preserve the user's operating-system accessibility preference.&#10;        .UseSystemReducedMotion());"
         />
       </StackPanel>

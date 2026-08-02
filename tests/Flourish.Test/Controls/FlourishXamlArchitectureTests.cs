@@ -1271,6 +1271,54 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void GalleryCodeSpacePeers_UseTheSharedSectionSpacingToken()
+    {
+        const string peerMargin = "{DynamicResource FlourishCodeSpacePeerMargin}";
+        var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
+        var violations = new List<string>();
+
+        foreach (
+            var path in Directory.EnumerateFiles(
+                viewsRoot,
+                "*.xaml",
+                SearchOption.AllDirectories
+            )
+        )
+        {
+            var document = LoadXaml(path);
+            foreach (
+                var codeSpace in document.Descendants().Where(element =>
+                    element.Name.LocalName == nameof(CodeSpace)
+                )
+            )
+            {
+                var isStackPanelPeer =
+                    codeSpace.Parent?.Name.LocalName == "StackPanel"
+                    && codeSpace.ElementsBeforeSelf().Any();
+                var margin = (string?)codeSpace.Attribute("Margin");
+
+                if (isStackPanelPeer && margin != peerMargin)
+                {
+                    violations.Add(
+                        $"{FormatViolation(path, codeSpace)} follows another section element without the shared CodeSpace peer margin"
+                    );
+                }
+                else if (!isStackPanelPeer && margin == peerMargin)
+                {
+                    violations.Add(
+                        $"{FormatViolation(path, codeSpace)} applies section peer spacing outside a StackPanel peer position"
+                    );
+                }
+            }
+        }
+
+        AssertNoArchitectureViolations(
+            violations,
+            "Gallery CodeSpace sections must use the shared peer margin only when following another element in a StackPanel."
+        );
+    }
+
+    [Fact]
     public void GalleryActionCards_DoNotAddApplyRows()
     {
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");

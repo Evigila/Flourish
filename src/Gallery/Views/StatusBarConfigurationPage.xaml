@@ -33,7 +33,7 @@
           />
         </UniformGrid>
         <flourish:CodeSpace
-          Margin="0,16,0,0"
+          Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
           Text="// Keep the status bar visible even when no background task is active.&#10;builder&#10;    .ConfigShell(shell =&gt; shell.UseStatusBar())&#10;    .ConfigStatusBar(status =&gt; status&#10;        .AddStatusItem(&quot;Ready&quot;, &quot;\uE73E&quot;)&#10;        // Both system details appear in one consolidated indicator.&#10;        .UseLanConnectionStatus()&#10;        .UsePowerStatus());"
         />
       </StackPanel>

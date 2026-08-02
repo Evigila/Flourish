@@ -6,7 +6,10 @@
   xmlns:view="clr-namespace:ArkheideSystem.Flourish.Views.Windows"
   x:ClassModifier="internal"
 >
-  <Grid x:Name="ContentAreaGrid">
+  <Grid
+    x:Name="ContentAreaGrid"
+    Background="{DynamicResource FlourishContentBackgroundBrush}"
+  >
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />

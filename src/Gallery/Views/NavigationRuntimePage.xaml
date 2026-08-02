@@ -96,7 +96,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="PanelOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Panel changes apply immediately to the active shell.&#10;panel.SetEnabled(true);&#10;panel.SetDirection(NavigationPanelDirection.Left);&#10;panel.SetPanelWidth(&#10;    openWidth: 240,&#10;    closedWidth: 64,&#10;    maxWidth: 480,&#10;    minWidth: 150);&#10;panel.Toggle();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Panel changes apply immediately to the active shell.&#10;panel.SetEnabled(true);&#10;panel.SetDirection(NavigationPanelDirection.Left);&#10;panel.SetPanelWidth(&#10;    openWidth: 240,&#10;    closedWidth: 64,&#10;    maxWidth: 480,&#10;    minWidth: 150);&#10;panel.Toggle();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -153,7 +153,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RouteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Register the destination before publishing its menu item.&#10;routes.Set(new FlourishNavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    FlourishPageCacheMode.Enabled));&#10;&#10;menu.Set(editor =&gt;&#10;{&#10;    editor.AppendGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.SetItem(&quot;reports&quot;, FlourishNavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;menu.Set(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;routes.Remove(&quot;Reports&quot;);" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Register the destination before publishing its menu item.&#10;routes.Set(new FlourishNavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    FlourishPageCacheMode.Enabled));&#10;&#10;menu.Set(editor =&gt;&#10;{&#10;    editor.AppendGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.SetItem(&quot;reports&quot;, FlourishNavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;menu.Set(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;routes.Remove(&quot;Reports&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -210,7 +210,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CacheOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Keep the route policy and active page cache aligned.&#10;routes.SetCacheMode(&quot;Reports&quot;, FlourishPageCacheMode.Enabled);&#10;cache.SetCacheMode(typeof(ReportsPage), FlourishPageCacheMode.Enabled);&#10;&#10;cache.Evict(typeof(ReportsPage));&#10;cache.Clear();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Keep the route policy and active page cache aligned.&#10;routes.SetCacheMode(&quot;Reports&quot;, FlourishPageCacheMode.Enabled);&#10;cache.SetCacheMode(typeof(ReportsPage), FlourishPageCacheMode.Enabled);&#10;&#10;cache.Evict(typeof(ReportsPage));&#10;cache.Clear();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

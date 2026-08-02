@@ -33,7 +33,7 @@
           />
         </UniformGrid>
         <flourish:CodeSpace
-          Margin="0,16,0,0"
+          Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
           Text="builder&#10;    // Custom content does not enable its owning Shell surface.&#10;    .ConfigShell(shell =&gt; shell.UseTitleBar().UseStatusBar())&#10;    .ConfigTitleBar(titleBar =&gt; titleBar.UseProfile())&#10;    .ConfigCustomHandler(custom =&gt; custom&#10;        .AddRegionContent(&#10;            FlourishRegion.TitlebarEnd,&#10;            services =&gt; new SyncStatusView(&#10;                services.GetRequiredService&lt;SyncService&gt;()),&#10;            order: 0)&#10;        .InitProfileContent(_ =&gt; new ProfileView())&#10;        .AddTitleBarAction(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;app.refresh&quot;, order: 10)&#10;        .AddTitleBarActionHandler(&#10;            &quot;Sync&quot;, &quot;\uE895&quot;,&#10;            services =&gt; services.GetRequiredService&lt;SyncService&gt;().Start(),&#10;            order: 20)&#10;        .AddFooterCommand(&#10;            FlourishRegion.FooterEnd,&#10;            &quot;Settings&quot;, &quot;\uE713&quot;, &quot;app.settings&quot;)&#10;        .AddFooterCommandHandler(&#10;            FlourishRegion.FooterStart,&#10;            &quot;Help&quot;, &quot;\uE946&quot;,&#10;            services =&gt; services.GetRequiredService&lt;HelpService&gt;().Open()));"
         />
       </StackPanel>

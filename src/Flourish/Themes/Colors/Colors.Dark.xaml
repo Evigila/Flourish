@@ -65,6 +65,7 @@
   <SolidColorBrush x:Key="FlourishWarningForegroundBrush" Color="#FAA06B" />
 
   <!-- Specialized surfaces that cannot be represented by another alias. -->
+  <SolidColorBrush x:Key="FlourishContentBackgroundBrush" Color="#292929" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbBrush" Color="#999999" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbPressedBrush" Color="#D6D6D6" />
   <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#333333" />

@@ -692,6 +692,7 @@ public sealed class RuntimeAppearanceServiceTests
             card.ApplyTemplate();
 
             AssertPaletteColor(paletteHost, lightPalette, "FlourishShellBackgroundBrush");
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishContentBackgroundBrush");
             AssertPaletteColor(
                 paletteHost,
                 lightPalette,
@@ -706,6 +707,7 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Same(paletteHost, FindDictionary(resources, darkSource));
             Assert.Empty(paletteHost.MergedDictionaries);
             AssertPaletteColor(paletteHost, darkPalette, "FlourishShellBackgroundBrush");
+            AssertPaletteColor(paletteHost, darkPalette, "FlourishContentBackgroundBrush");
             AssertPaletteColor(
                 paletteHost,
                 darkPalette,
@@ -720,6 +722,7 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Same(paletteHost, FindDictionary(resources, lightSource));
             Assert.Empty(paletteHost.MergedDictionaries);
             AssertPaletteColor(paletteHost, lightPalette, "FlourishShellBackgroundBrush");
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishContentBackgroundBrush");
             AssertPaletteColor(
                 paletteHost,
                 lightPalette,

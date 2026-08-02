@@ -23,7 +23,7 @@
           Title="Dependency-injected content"
           Content="Register the page with the service container so its constructor dependencies are available when Flourish opens the profile surface."
         />
-        <flourish:CodeSpace Text="// Enable the title-bar trigger, then select its hosted page.&#10;builder.ConfigTitleBar(titleBar =&gt;&#10;    titleBar&#10;        .UseProfile(nameOrder: NameOrder.FirstLast)&#10;        .InitProfilePage&lt;AccountPage&gt;());" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable the title-bar trigger, then select its hosted page.&#10;builder.ConfigTitleBar(titleBar =&gt;&#10;    titleBar&#10;        .UseProfile(nameOrder: NameOrder.FirstLast)&#10;        .InitProfilePage&lt;AccountPage&gt;());" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -65,7 +65,7 @@
             VerticalAlignment="Stretch"
           />
         </Grid>
-        <flourish:CodeSpace Text="// Change the global profile presentation without signing out.&#10;await profile.SetNameOrderAsync(NameOrder.LastFirst);&#10;var order = profile.NameOrder;&#10;profile.ProfileChanged += OnProfileChanged;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Change the global profile presentation without signing out.&#10;await profile.SetNameOrderAsync(NameOrder.LastFirst);&#10;var order = profile.NameOrder;&#10;profile.ProfileChanged += OnProfileChanged;" />
       </StackPanel>
     </flourish:Chunk>
 

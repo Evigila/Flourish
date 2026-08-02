@@ -61,6 +61,7 @@
   <!-- Retained as a compatibility token for consumers that opt into paragraph spacing. -->
   <Thickness x:Key="FlourishParagraphMargin">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishParagraphPadding">16,12</Thickness>
+  <Thickness x:Key="FlourishCodeSpacePeerMargin">0,16,0,0</Thickness>
   <Thickness x:Key="FlourishCodeSpaceContentMargin">0,0,40,0</Thickness>
   <Thickness x:Key="FlourishPresenterCopyPadding">20</Thickness>
   <Thickness x:Key="FlourishPresenterContentSpacing">0,8,0,0</Thickness>

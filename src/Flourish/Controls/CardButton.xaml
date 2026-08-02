@@ -245,7 +245,7 @@
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
     <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
-    <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="Template" Value="{StaticResource CardButtonTemplate}" />
     <Style.Triggers>
@@ -268,32 +268,32 @@
       <Trigger Property="Variant" Value="Standard">
         <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
-        <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Elevated">
         <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Tonal">
         <Setter Property="Background" Value="{DynamicResource FlourishTonalButtonBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishTonalButtonForegroundBrush}" />
       </Trigger>
       <Trigger Property="Variant" Value="Filled">
         <Setter Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishForegroundOnPrimaryBrush}" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Background" Value="{DynamicResource FlourishNeutralBackgroundDisabledBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FlourishNeutralStrokeDisabledBrush}" />
-        <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
         <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForegroundDisabledBrush}" />
       </Trigger>
     </Style.Triggers>

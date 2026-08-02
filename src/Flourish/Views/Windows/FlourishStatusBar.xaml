@@ -8,7 +8,7 @@
   <Border
     x:Name="StatusBarBorder"
     Padding="{DynamicResource FlourishStatusBarPadding}"
-    Background="{DynamicResource FlourishNeutralBackground2Brush}"
+    Background="{DynamicResource FlourishContentBackgroundBrush}"
     BorderBrush="{DynamicResource FlourishDividerBrush}"
     BorderThickness="{DynamicResource FlourishHorizontalDividerThickness}"
     PreviewMouseLeftButtonDown="StatusBarBorder_PreviewMouseLeftButtonDown"

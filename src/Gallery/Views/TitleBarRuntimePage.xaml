@@ -76,7 +76,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="IdentityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Configure stable identity fields when composing the application.&#10;builder.ConfigTitleBar(titleBar =&gt; titleBar&#10;    .InitApplicationTitle(&quot;Flourish Gallery&quot;)&#10;    .InitApplicationSubTitle(&quot;Component reference&quot;)&#10;    .UseLogo(logoPath: &quot;Assets/AppLogo.png&quot;)&#10;    .InitUnnamedProjectPlaceholder(&quot;Untitled&quot;));&#10;&#10;// Update identity atomically when the active context changes.&#10;titleBar.SetApplicationIdentity(&quot;Flourish Gallery&quot;, &quot;Reports&quot;);&#10;titleBar.SetLogo(null, fallbackText: &quot;FG&quot;);" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Configure stable identity fields when composing the application.&#10;builder.ConfigTitleBar(titleBar =&gt; titleBar&#10;    .InitApplicationTitle(&quot;Flourish Gallery&quot;)&#10;    .InitApplicationSubTitle(&quot;Component reference&quot;)&#10;    .UseLogo(logoPath: &quot;Assets/AppLogo.png&quot;)&#10;    .InitUnnamedProjectPlaceholder(&quot;Untitled&quot;));&#10;&#10;// Update identity atomically when the active context changes.&#10;titleBar.SetApplicationIdentity(&quot;Flourish Gallery&quot;, &quot;Reports&quot;);&#10;titleBar.SetLogo(null, fallbackText: &quot;FG&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -129,7 +129,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="ElementOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Change one surface without rebuilding the title bar.&#10;titleBar.SetElementVisible(TitleBarElement.Search, visible: true);&#10;titleBar.SetBreadcrumbMode(BreadcrumbShowOption.Auto);" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Change one surface without rebuilding the title bar.&#10;titleBar.SetElementVisible(TitleBarElement.Search, visible: true);&#10;titleBar.SetBreadcrumbMode(BreadcrumbShowOption.Auto);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -196,7 +196,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="SearchOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Dispose the subscription when its owning page or feature unloads.&#10;using var subscription = search.Subscribe(async (query, cancellationToken) =&gt;&#10;{&#10;    await FindMatchesAsync(query.Text, cancellationToken);&#10;});&#10;&#10;search.SetPlaceholder(&quot;Search reports&quot;);&#10;search.SetText(&quot;quarterly&quot;);&#10;search.SetVisible(true);&#10;search.Focus();&#10;search.Clear();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Dispose the subscription when its owning page or feature unloads.&#10;using var subscription = search.Subscribe(async (query, cancellationToken) =&gt;&#10;{&#10;    await FindMatchesAsync(query.Text, cancellationToken);&#10;});&#10;&#10;search.SetPlaceholder(&quot;Search reports&quot;);&#10;search.SetText(&quot;quarterly&quot;);&#10;search.SetVisible(true);&#10;search.Focus();&#10;search.Clear();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -229,7 +229,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="TitleBarAvailabilityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Each domain service owns its availability state.&#10;titleBar.SetEnabled(true);&#10;var isEnabled = titleBar.Current.IsEnabled;" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Each domain service owns its availability state.&#10;titleBar.SetEnabled(true);&#10;var isEnabled = titleBar.Current.IsEnabled;" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

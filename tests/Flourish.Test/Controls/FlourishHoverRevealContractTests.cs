@@ -1003,7 +1003,7 @@ public sealed class FlourishHoverRevealContractTests
             LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", "Colors.Dark.xaml"))
         );
 
-        Assert.Equal(57, light.Length);
+        Assert.Equal(58, light.Length);
         Assert.Equal(light, dark);
         Assert.Equal(light.Length, light.Distinct(StringComparer.Ordinal).Count());
         Assert.DoesNotContain(
@@ -1067,6 +1067,58 @@ public sealed class FlourishHoverRevealContractTests
         Assert.Equal(
             stroke1Hover,
             GetBrushColor(document, "FlourishNeutralStroke1HoverBrush")
+        );
+    }
+
+    [Theory]
+    [InlineData("Colors.Light.xaml", "#F7FAFC", "#FDFDFD")]
+    [InlineData("Colors.Dark.xaml", "#292929", "#333333")]
+    public void ContentAndCardSurfaces_KeepTheirThemeSpecificLayering(
+        string fileName,
+        string contentBackground,
+        string cardBackground
+    )
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
+        );
+
+        Assert.Equal(
+            contentBackground,
+            GetBrushColor(document, "FlourishContentBackgroundBrush")
+        );
+        Assert.Equal(
+            cardBackground,
+            GetBrushColor(document, "FlourishCardBackgroundBrush")
+        );
+        Assert.NotEqual(contentBackground, cardBackground);
+    }
+
+    [Fact]
+    public void LightPalette_UsesOneCalibratedUpperSurfaceAndRemovesLegacyGray250()
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Themes", "Colors", "Colors.Light.xaml")
+        );
+
+        Assert.Equal(
+            "#FDFDFD",
+            GetBrushColor(document, "FlourishNeutralBackground2Brush")
+        );
+        Assert.Equal("#FDFDFD", GetBrushColor(document, "FlourishCardBackgroundBrush"));
+        Assert.Equal(
+            "#E6FDFDFD",
+            GetBrushColor(document, "FlourishShellBackgroundBrush")
+        );
+        Assert.DoesNotContain(
+            document.Descendants().Where(element =>
+                element.Name.LocalName == "SolidColorBrush"
+            ),
+            brush =>
+                ((string?)brush.Attribute("Color"))?.EndsWith(
+                    "FAFAFA",
+                    StringComparison.OrdinalIgnoreCase
+                ) == true
         );
     }
 

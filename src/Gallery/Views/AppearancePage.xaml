@@ -51,7 +51,7 @@
           VerticalAlignment="Stretch"
         />
       </Grid>
-      <flourish:CodeSpace Text="// Apply a specific theme or cycle through the supported modes.&#10;theme.SetTheme(FlourishTheme.Dark);&#10;theme.ToggleTheme();&#10;&#10;// Refresh theme-dependent UI after a change.&#10;theme.Changed += (_, _) =&gt; RefreshAppearance();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Apply a specific theme or cycle through the supported modes.&#10;theme.SetTheme(FlourishTheme.Dark);&#10;theme.ToggleTheme();&#10;&#10;// Refresh theme-dependent UI after a change.&#10;theme.Changed += (_, _) =&gt; RefreshAppearance();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -148,7 +148,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="FontOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Apply the complete application typography scale.&#10;font.SetFont(&#10;    &quot;Segoe UI Variable&quot;,&#10;    smallFontSize: 12,&#10;    standardFontSize: 14,&#10;    iconFontSize: 14,&#10;    largeFontSize: 16,&#10;    extraLargeFontSize: 24,&#10;    headerSizeFontSize: 32);&#10;font.SetIconFontFamily(&quot;Segoe Fluent Icons&quot;);" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Apply the complete application typography scale.&#10;font.SetFont(&#10;    &quot;Segoe UI Variable&quot;,&#10;    smallFontSize: 12,&#10;    standardFontSize: 14,&#10;    iconFontSize: 14,&#10;    largeFontSize: 16,&#10;    extraLargeFontSize: 24,&#10;    headerSizeFontSize: 32);&#10;font.SetIconFontFamily(&quot;Segoe Fluent Icons&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -245,7 +245,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="PageFontOverrideOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Null size values keep the application-wide defaults.&#10;font.SetOverrideFont&lt;AppearancePage&gt;(&#10;    fontFamily: &quot;Georgia&quot;,&#10;    smallFontSize: null,&#10;    standardFontSize: 16,&#10;    iconFontSize: null,&#10;    largeFontSize: null,&#10;    extraLargeFontSize: null,&#10;    headerSizeFontSize: null);&#10;&#10;// Remove the typed override when the page should inherit again.&#10;font.RemoveOverrideFont&lt;AppearancePage&gt;();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Null size values keep the application-wide defaults.&#10;font.SetOverrideFont&lt;AppearancePage&gt;(&#10;    fontFamily: &quot;Georgia&quot;,&#10;    smallFontSize: null,&#10;    standardFontSize: 16,&#10;    iconFontSize: null,&#10;    largeFontSize: null,&#10;    extraLargeFontSize: null,&#10;    headerSizeFontSize: null);&#10;&#10;// Remove the typed override when the page should inherit again.&#10;font.RemoveOverrideFont&lt;AppearancePage&gt;();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -302,7 +302,7 @@
             VerticalAlignment="Stretch"
           />
         </Grid>
-        <flourish:CodeSpace Text="// Apply or clear individual overrides.&#10;appearance.SetThemeColors(new FlourishThemeColors(primary, secondary, accent));&#10;appearance.SetCornerRadius(8);&#10;&#10;// Update both values atomically; null restores standard resources.&#10;appearance.SetAppearance(colors: null, cornerRadius: null);&#10;appearance.Changed += OnAppearanceChanged;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Apply or clear individual overrides.&#10;appearance.SetThemeColors(new FlourishThemeColors(primary, secondary, accent));&#10;appearance.SetCornerRadius(8);&#10;&#10;// Update both values atomically; null restores standard resources.&#10;appearance.SetAppearance(colors: null, cornerRadius: null);&#10;appearance.Changed += OnAppearanceChanged;" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -341,7 +341,7 @@
             />
           </flourish:ActionCard.Body>
         </flourish:ActionCard>
-        <flourish:CodeSpace Text="// Change layout as one state transition.&#10;contentLayout.SetCenterContent(enabled: true, contentWidth: 1200);&#10;var current = contentLayout.Current;&#10;contentLayout.Changed += OnContentLayoutChanged;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Change layout as one state transition.&#10;contentLayout.SetCenterContent(enabled: true, contentWidth: 1200);&#10;var current = contentLayout.Current;&#10;contentLayout.Changed += OnContentLayoutChanged;" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -378,7 +378,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="MaterialOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Text="// Request the backdrop, then match native chrome to the theme.&#10;material.SetEffect(MaterialEffect.Mica);&#10;material.SetDarkMode(theme.IsDark);&#10;&#10;var supported = material.IsSupported(MaterialEffect.Mica);" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Request the backdrop, then match native chrome to the theme.&#10;material.SetEffect(MaterialEffect.Mica);&#10;material.SetDarkMode(theme.IsDark);&#10;&#10;var supported = material.IsSupported(MaterialEffect.Mica);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -402,7 +402,7 @@
             />
           </flourish:ActionCard.Body>
         </flourish:ActionCard>
-        <flourish:CodeSpace
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
           Text="// Initialize the default for built-in Flourish scrolling surfaces.&#10;builder.ConfigShell(shell =&gt;&#10;    shell.UseSmoothScroll(enabled: true));&#10;&#10;// Change the active application and observe later changes.&#10;scroll.SetSmoothScrollingEnabled(false);&#10;var current = scroll.GetCurrent();&#10;scroll.Changed += OnScrollSettingsChanged;"
         />
       </StackPanel>

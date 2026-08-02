@@ -175,7 +175,7 @@
     <Setter Property="Padding" Value="{DynamicResource FlourishActionCardPadding}" />
     <Setter Property="Background" Value="{DynamicResource FlourishCardBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource FlourishSurfaceStrokeBrush}" />
-    <Setter Property="BorderThickness" Value="{DynamicResource FlourishSurfaceBorderThickness}" />
+    <Setter Property="BorderThickness" Value="{DynamicResource FlourishControlBorderThickness}" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />

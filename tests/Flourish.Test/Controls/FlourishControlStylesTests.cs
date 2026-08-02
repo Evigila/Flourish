@@ -1842,8 +1842,16 @@ public sealed class FlourishControlStylesTests
                 standard.ApplyTemplate();
                 elevated.ApplyTemplate();
 
-                Assert.Equal(new Thickness(), standard.BorderThickness);
-                Assert.Equal(new Thickness(), elevated.BorderThickness);
+                Assert.All(
+                    new[] { standard, elevated, tonal, filled },
+                    card => Assert.Equal(new Thickness(1), card.BorderThickness)
+                );
+                var standardSurface = AssertTemplatePart<Border>(
+                    standard,
+                    "SurfaceChrome"
+                );
+                Assert.Equal(standard.BorderThickness, standardSurface.BorderThickness);
+                Assert.Same(standard.BorderBrush, standardSurface.BorderBrush);
                 var standardShadow = AssertTemplatePart<Border>(
                     standard,
                     "ShadowChrome"
@@ -2024,6 +2032,50 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void CardButton_CardLikeVariantsUseTheSharedCardOutline()
+    {
+        StaTest.Run(() =>
+        {
+            var cards = new[]
+            {
+                new CardButton { Title = "Standard" },
+                new CardButton { Title = "Elevated", Variant = ButtonVariant.Elevated },
+                new CardButton { Title = "Tonal", Variant = ButtonVariant.Tonal },
+                new CardButton { Title = "Filled", Variant = ButtonVariant.Filled },
+            };
+            var panel = new StackPanel();
+            foreach (var card in cards)
+            {
+                panel.Children.Add(card);
+            }
+
+            var window = CreateWindow(panel);
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+
+                foreach (var card in cards)
+                {
+                    card.ApplyTemplate();
+                    Assert.Equal(new Thickness(1), card.BorderThickness);
+                    Assert.Same(
+                        card.TryFindResource("FlourishSurfaceStrokeBrush"),
+                        card.BorderBrush
+                    );
+                    var chrome = AssertTemplatePart<Border>(card, "Chrome");
+                    Assert.Equal(card.BorderThickness, chrome.BorderThickness);
+                    Assert.Same(card.BorderBrush, chrome.BorderBrush);
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void DisabledCardButtons_UseTheDisabledSurfaceForEveryVariant()
     {
         StaTest.Run(() =>
@@ -2076,6 +2128,11 @@ public sealed class FlourishControlStylesTests
                     Assert.Same(
                         card.TryFindResource("FlourishNeutralForegroundDisabledBrush"),
                         card.Foreground
+                    );
+                    Assert.Equal(new Thickness(1), card.BorderThickness);
+                    Assert.Equal(
+                        card.BorderThickness,
+                        AssertTemplatePart<Border>(card, "Chrome").BorderThickness
                     );
                     Assert.Equal(
                         Visibility.Collapsed,
@@ -2317,6 +2374,13 @@ public sealed class FlourishControlStylesTests
 
                 var surface = AssertTemplatePart<Border>(card, "SurfaceChrome");
                 Assert.Equal(new CornerRadius(8), surface.CornerRadius);
+                Assert.Equal(new Thickness(1), card.BorderThickness);
+                Assert.Equal(card.BorderThickness, surface.BorderThickness);
+                Assert.Same(card.BorderBrush, surface.BorderBrush);
+                var verticalSurface = AssertTemplatePart<Border>(vertical, "SurfaceChrome");
+                Assert.Equal(new Thickness(1), vertical.BorderThickness);
+                Assert.Equal(vertical.BorderThickness, verticalSurface.BorderThickness);
+                Assert.Same(vertical.BorderBrush, verticalSurface.BorderBrush);
 
                 var icon = AssertTemplatePart<ContentPresenter>(
                     card,

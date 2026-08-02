@@ -24,7 +24,7 @@
           Content="Empty or whitespace-only tooltip content collapses completely, while native and third-party controls keep their own tooltip presentation."
         />
         <flourish:CodeSpace
-          Margin="0,16,0,0"
+          Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
           Text="// Delay is measured in milliseconds and must be non-negative.&#10;builder.ConfigShell(shell =&gt;&#10;    shell.UseTips(enabled: true, delay: 200));&#10;&#10;// Supply a visible hint and an accessible action name.&#10;&lt;flourish:Button&#10;  AutomationProperties.Name=&quot;Refresh&quot;&#10;  Content=&quot;Refresh&quot;&#10;  ToolTip=&quot;Reload the current data.&quot; /&gt;"
         />
       </StackPanel>

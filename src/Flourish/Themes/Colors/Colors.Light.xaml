@@ -2,16 +2,16 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 >
-  <!-- Neutral aliases selected from the Fluent web light palette. -->
+  <!-- Neutral aliases follow Fluent roles with application-calibrated surface values. -->
   <SolidColorBrush x:Key="FlourishNeutralForeground1Brush" Color="#242424" />
   <SolidColorBrush x:Key="FlourishNeutralForeground2Brush" Color="#424242" />
   <SolidColorBrush x:Key="FlourishNeutralForegroundDisabledBrush" Color="#BDBDBD" />
   <SolidColorBrush x:Key="FlourishNeutralBackground1Brush" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FlourishNeutralBackground1HoverBrush" Color="#F5F5F5" />
   <SolidColorBrush x:Key="FlourishNeutralBackground1PressedBrush" Color="#E0E0E0" />
-  <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="FlourishNeutralBackground2Brush" Color="#FDFDFD" />
   <SolidColorBrush x:Key="FlourishNeutralBackgroundDisabledBrush" Color="#F0F0F0" />
-  <SolidColorBrush x:Key="FlourishShellBackgroundBrush" Color="#E6FAFAFA" />
+  <SolidColorBrush x:Key="FlourishShellBackgroundBrush" Color="#E6FDFDFD" />
   <SolidColorBrush x:Key="FlourishNeutralStroke1Brush" Color="#D1D1D1" />
   <SolidColorBrush x:Key="FlourishNeutralStroke1HoverBrush" Color="#C7C7C7" />
   <SolidColorBrush x:Key="FlourishNeutralStrokeAccessibleBrush" Color="#616161" />
@@ -65,9 +65,10 @@
   <SolidColorBrush x:Key="FlourishWarningForegroundBrush" Color="#8A3707" />
 
   <!-- Specialized surfaces that cannot be represented by another alias. -->
+  <SolidColorBrush x:Key="FlourishContentBackgroundBrush" Color="#F7FAFC" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbBrush" Color="#7A7A7A" />
   <SolidColorBrush x:Key="FlourishScrollbarThumbPressedBrush" Color="#424242" />
-  <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="FlourishCardBackgroundBrush" Color="#FDFDFD" />
   <SolidColorBrush x:Key="FlourishOutputViewportBackgroundBrush" Color="#E6E6E6" />
   <SolidColorBrush x:Key="FlourishOutputViewportForegroundBrush" Color="#0E700E" />
   <DropShadowEffect x:Key="FlourishElevation1Effect" BlurRadius="10" Direction="270" Opacity="0.12" ShadowDepth="2" Color="#000000" />

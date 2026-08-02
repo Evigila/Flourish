@@ -105,7 +105,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CollectionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AppendProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AppendProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -173,7 +173,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="ActiveProjectOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// The behavior coordinates application-defined activation and deletion workflows.&#10;var activated = await projectBehavior.ActivateProjectAsync(projectId);&#10;var deleted = await projectBehavior.DeleteProjectAsync(projectId);&#10;&#10;projects.SetProjectMetadata(projectId, displayName, storagePath);&#10;projects.SetActiveProject(projectId);&#10;projects.SetActiveProject(null); // Clear the active project." />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// The behavior coordinates application-defined activation and deletion workflows.&#10;var activated = await projectBehavior.ActivateProjectAsync(projectId);&#10;var deleted = await projectBehavior.DeleteProjectAsync(projectId);&#10;&#10;projects.SetProjectMetadata(projectId, displayName, storagePath);&#10;projects.SetActiveProject(projectId);&#10;projects.SetActiveProject(null); // Clear the active project." />
       </StackPanel>
     </flourish:Chunk>
 
@@ -246,7 +246,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RequestOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Text="// Enable project-aware window chrome during application composition.&#10;builder.ConfigShell(shell =&gt; shell.UseMultiProject());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable project-aware window chrome during application composition.&#10;builder.ConfigShell(shell =&gt; shell.UseMultiProject());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

@@ -501,6 +501,14 @@ public sealed class FlourishShellNavigationLayoutTests
             "{DynamicResource FlourishStatusBarPadding}",
             (string?)statusBar.Attribute("Padding")
         );
+        Assert.Equal(
+            "{DynamicResource FlourishContentBackgroundBrush}",
+            (string?)contentArea.Attribute("Background")
+        );
+        Assert.Equal(
+            (string?)statusBar.Attribute("Background"),
+            (string?)contentArea.Attribute("Background")
+        );
         Assert.Null(contentArea.Attribute("Margin"));
         Assert.All(
             new[] { contentHeader, toolbarLayout, breadcrumbLayout, contentFooter },

@@ -63,7 +63,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="WindowOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
-      <flourish:CodeSpace Text="// Update live window state through the injected service.&#10;window.SetSize(1100, 760);&#10;window.CenterOnScreen();&#10;window.SetTopmost(true);&#10;window.SetShownInTaskbar(true);&#10;&#10;window.Minimize();&#10;window.Maximize();&#10;window.Restore();&#10;window.Hide();&#10;window.Show();&#10;window.Activate();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Update live window state through the injected service.&#10;window.SetSize(1100, 760);&#10;window.CenterOnScreen();&#10;window.SetTopmost(true);&#10;window.SetShownInTaskbar(true);&#10;&#10;window.Minimize();&#10;window.Maximize();&#10;window.Restore();&#10;window.Hide();&#10;window.Show();&#10;window.Activate();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -103,7 +103,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="TrayOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
-      <flourish:CodeSpace Text="// Enable the tray before attempting to minimize into it.&#10;tray.SetEnabled(true);&#10;tray.SetToolTip(&quot;Flourish Gallery&quot;);&#10;&#10;if (tray.MinimizeToTray())&#10;{&#10;    tray.Restore();&#10;}" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable the tray before attempting to minimize into it.&#10;tray.SetEnabled(true);&#10;tray.SetToolTip(&quot;Flourish Gallery&quot;);&#10;&#10;if (tray.MinimizeToTray())&#10;{&#10;    tray.Restore();&#10;}" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -147,7 +147,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CloseOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </UniformGrid>
-      <flourish:CodeSpace Text="// Keep and dispose this lease with the guarded workflow.&#10;close.SetBehavior(WindowCloseBehavior.Close);&#10;using var guard = close.RegisterGuard(&#10;    &quot;editor.unsaved&quot;,&#10;    (_, _) =&gt; ValueTask.FromResult(WindowCloseDecision.Cancel),&#10;    order: 100);&#10;&#10;var allowed = await close.CanCloseAsync(&#10;    WindowCloseRequestReason.Application);&#10;var handled = await close.RequestCloseAsync();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Keep and dispose this lease with the guarded workflow.&#10;close.SetBehavior(WindowCloseBehavior.Close);&#10;using var guard = close.RegisterGuard(&#10;    &quot;editor.unsaved&quot;,&#10;    (_, _) =&gt; ValueTask.FromResult(WindowCloseDecision.Cancel),&#10;    order: 100);&#10;&#10;var allowed = await close.CanCloseAsync(&#10;    WindowCloseRequestReason.Application);&#10;var handled = await close.RequestCloseAsync();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -206,7 +206,7 @@
           VerticalAlignment="Stretch"
         />
       </UniformGrid>
-      <flourish:CodeSpace Text="// Await a modal decision without blocking the UI thread.&#10;var result = await messages.ShowAsync(&#10;    &quot;Operation complete.&quot;,&#10;    &quot;Reports&quot;,&#10;    MessageBoxButton.OKCancel,&#10;    MessageBoxImage.Information);&#10;&#10;// Use a stable ID when later updates or dismissal are required.&#10;var notice = new FlourishNotification(&#10;    &quot;reports.complete&quot;,&#10;    &quot;Reports&quot;,&#10;    &quot;Export finished.&quot;,&#10;    FlourishNotificationSeverity.Success);&#10;var handle = notifications.Upsert(notice);&#10;notifications.Dismiss(handle.Id);&#10;notifications.DismissAll();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Await a modal decision without blocking the UI thread.&#10;var result = await messages.ShowAsync(&#10;    &quot;Operation complete.&quot;,&#10;    &quot;Reports&quot;,&#10;    MessageBoxButton.OKCancel,&#10;    MessageBoxImage.Information);&#10;&#10;// Use a stable ID when later updates or dismissal are required.&#10;var notice = new FlourishNotification(&#10;    &quot;reports.complete&quot;,&#10;    &quot;Reports&quot;,&#10;    &quot;Export finished.&quot;,&#10;    FlourishNotificationSeverity.Success);&#10;var handle = notifications.Upsert(notice);&#10;notifications.Dismiss(handle.Id);&#10;notifications.DismissAll();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">

@@ -82,7 +82,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CommandOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
-        <flourish:CodeSpace Text="// Keep the handle so the command can be replaced or removed.&#10;var registration = commandRegistry.Register(&#10;    &quot;reports.refresh&quot;,&#10;    RefreshReportsAsync,&#10;    _ =&gt; reportsCanRefresh,&#10;    new CommandRegistrationOptions&#10;    {&#10;        DuplicatePolicy = CommandDuplicatePolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;var canExecute = commandDispatcher.CanExecute(&#10;    &quot;reports.refresh&quot;, reportId, CommandSource.Application);&#10;var result = await commandDispatcher.ExecuteAsync(&#10;    &quot;reports.refresh&quot;, reportId, CommandSource.Application);&#10;&#10;registration.NotifyCanExecuteChanged();&#10;registration.Dispose();" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Keep the handle so the command can be replaced or removed.&#10;var registration = commandRegistry.Register(&#10;    &quot;reports.refresh&quot;,&#10;    RefreshReportsAsync,&#10;    _ =&gt; reportsCanRefresh,&#10;    new CommandRegistrationOptions&#10;    {&#10;        DuplicatePolicy = CommandDuplicatePolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;var canExecute = commandDispatcher.CanExecute(&#10;    &quot;reports.refresh&quot;, reportId, CommandSource.Application);&#10;var result = await commandDispatcher.ExecuteAsync(&#10;    &quot;reports.refresh&quot;, reportId, CommandSource.Application);&#10;&#10;registration.NotifyCanExecuteChanged();&#10;registration.Dispose();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -125,7 +125,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="ShortcutOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
-        <flourish:CodeSpace Text="var gesture = new KeyGesture(&#10;    Key.G, ModifierKeys.Control | ModifierKeys.Shift);&#10;&#10;var shortcut = shortcuts.Register(&#10;    gesture,&#10;    &quot;reports.refresh&quot;,&#10;    reportId,&#10;    new ShortcutRegistrationOptions&#10;    {&#10;        Scope = ShortcutScope.Application,&#10;        ConflictPolicy = ShortcutConflictPolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;// Dispatch explicitly when a test or custom input source resolves the gesture.&#10;var result = await shortcuts.ExecuteAsync(&#10;    gesture, new ShortcutResolutionContext(pageKey: nameof(CommandsPage)));&#10;shortcut.Dispose();" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var gesture = new KeyGesture(&#10;    Key.G, ModifierKeys.Control | ModifierKeys.Shift);&#10;&#10;var shortcut = shortcuts.Register(&#10;    gesture,&#10;    &quot;reports.refresh&quot;,&#10;    reportId,&#10;    new ShortcutRegistrationOptions&#10;    {&#10;        Scope = ShortcutScope.Application,&#10;        ConflictPolicy = ShortcutConflictPolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;// Dispatch explicitly when a test or custom input source resolves the gesture.&#10;var result = await shortcuts.ExecuteAsync(&#10;    gesture, new ShortcutResolutionContext(pageKey: nameof(CommandsPage)));&#10;shortcut.Dispose();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -152,7 +152,7 @@
           </StackPanel>
         </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:CodeSpace Text="commandRegistry.Changed += (_, _) =&gt; RefreshCommands();&#10;shortcuts.Changed += (_, _) =&gt; RefreshShortcuts();&#10;&#10;var commands = commandRegistry.Registrations;&#10;var bindings = shortcuts.Registrations;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="commandRegistry.Changed += (_, _) =&gt; RefreshCommands();&#10;shortcuts.Changed += (_, _) =&gt; RefreshShortcuts();&#10;&#10;var commands = commandRegistry.Registrations;&#10;var bindings = shortcuts.Registrations;" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="Reference">
