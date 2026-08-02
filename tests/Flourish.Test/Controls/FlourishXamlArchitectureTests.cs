@@ -1753,6 +1753,63 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void ControlRowTextHosts_UseSharedLineBoxesWithoutLocalVerticalOffsets()
+    {
+        var xName = XNamespace.Get(XamlNamespace) + "Name";
+        var controlHosts = new (string File, string Name)[]
+        {
+            ("Button.xaml", "ContentHost"),
+            ("ListBoxItem.xaml", "ContentHost"),
+            ("BunchedListBoxItem.xaml", "ContentHost"),
+            ("ComboBoxItem.xaml", "ContentHost"),
+            ("ComboBox.xaml", "SelectionContentSite"),
+            ("CheckBox.xaml", "ContentHost"),
+            ("RadioButton.xaml", "ContentHost"),
+            ("Label.xaml", "ContentHost"),
+        };
+
+        foreach (var (file, name) in controlHosts)
+        {
+            var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", file));
+            var host = document.Descendants().Single(element =>
+                (string?)element.Attribute(xName) == name
+            );
+
+            Assert.Equal(
+                "{DynamicResource FlourishControlContentPresenterStyle}",
+                (string?)host.Attribute("Style")
+            );
+            Assert.Null(host.Attribute("Padding"));
+            Assert.Null(host.Attribute("RenderTransform"));
+            Assert.DoesNotContain(
+                host.Elements(),
+                element => element.Name.LocalName.EndsWith("RenderTransform", StringComparison.Ordinal)
+            );
+        }
+
+        var navigation = LoadXaml(
+            Path.Combine(FlourishRoot, "Views", "Windows", "FlourishNavigationPane.xaml")
+        );
+        var navigationLabel = navigation.Descendants().Single(element =>
+            (string?)element.Attribute(xName) == "NavigationItemLabel"
+        );
+        Assert.Equal(
+            "{DynamicResource FlourishControlTextBlockStyle}",
+            (string?)navigationLabel.Attribute("Style")
+        );
+        Assert.Null(navigationLabel.Attribute("Padding"));
+
+        var searchBox = LoadXaml(Path.Combine(FlourishRoot, "Controls", "SearchBox.xaml"));
+        foreach (var name in new[] { "SearchIcon", "PlaceholderText" })
+        {
+            var text = searchBox.Descendants().Single(element =>
+                (string?)element.Attribute(xName) == name
+            );
+            Assert.Equal("BlockLineHeight", (string?)text.Attribute("LineStackingStrategy"));
+        }
+    }
+
+    [Fact]
     public void FontApis_ExposeOnlyTheExplicitTextAndIconScaleContract()
     {
         Type[] explicitScaleTypes =
@@ -2273,6 +2330,7 @@ public sealed class FlourishXamlArchitectureTests
                 element.Name.LocalName == "Style"
                 && (string?)element.Attribute("TargetType")
                     == "{x:Type controls:FlourishTextBlock}"
+                && element.Attribute(XName.Get("Key", XamlNamespace)) is null
             );
         static string? SetterValue(XElement owner, string property)
         {

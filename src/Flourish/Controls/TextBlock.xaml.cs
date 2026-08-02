@@ -49,6 +49,16 @@ public enum FlourishTextRole
     Icon,
 }
 
+/// <summary>Describes how a <see cref="FlourishTextBlock" /> participates in layout.</summary>
+public enum FlourishTextLayoutMode
+{
+    /// <summary>Preserves the role-specific spacing used by flowing text.</summary>
+    Flow,
+
+    /// <summary>Uses a spacing-free line box for text centered inside a control.</summary>
+    Control,
+}
+
 /// <summary>
 /// A Flourish-styled text element with a semantic typography role.
 /// </summary>
@@ -90,6 +100,17 @@ public class FlourishTextBlock : TextBlock
         IsRoleValid
     );
 
+    /// <summary>
+    /// Identifies the <see cref="LayoutMode" /> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty LayoutModeProperty = DependencyProperty.Register(
+        nameof(LayoutMode),
+        typeof(FlourishTextLayoutMode),
+        typeof(FlourishTextBlock),
+        new FrameworkPropertyMetadata(FlourishTextLayoutMode.Flow),
+        IsLayoutModeValid
+    );
+
     static FlourishTextBlock()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
@@ -113,6 +134,15 @@ public class FlourishTextBlock : TextBlock
     {
         get => (FlourishTextRole)GetValue(RoleProperty);
         set => SetValue(RoleProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets whether the text uses flowing typography spacing or a control-centered line box.
+    /// </summary>
+    public FlourishTextLayoutMode LayoutMode
+    {
+        get => (FlourishTextLayoutMode)GetValue(LayoutModeProperty);
+        set => SetValue(LayoutModeProperty, value);
     }
 
     /// <summary>Initializes a new instance of the <see cref="FlourishTextBlock" /> class.</summary>
@@ -199,5 +229,10 @@ public class FlourishTextBlock : TextBlock
     private static bool IsRoleValid(object value)
     {
         return value is FlourishTextRole role && Enum.IsDefined(role);
+    }
+
+    private static bool IsLayoutModeValid(object value)
+    {
+        return value is FlourishTextLayoutMode mode && Enum.IsDefined(mode);
     }
 }

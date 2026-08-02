@@ -1020,6 +1020,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private static void BindIconTypography(TextBlock element, string fontSizeResource)
     {
+        element.Role = FlourishTextRole.Icon;
         element.SetResourceReference(
             TextBlock.FontFamilyProperty,
             "FlourishIconFontFamily"

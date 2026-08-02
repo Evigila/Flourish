@@ -17,6 +17,8 @@
     <Setter Property="SelectionBrush" Value="{DynamicResource FlourishSelectionBackgroundBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
+    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightStandard}" />
+    <Setter Property="TextBlock.LineStackingStrategy" Value="BlockLineHeight" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Template">
       <Setter.Value>
@@ -42,6 +44,7 @@
                 FontFamily="{DynamicResource FlourishIconFontFamily}"
                 FontSize="{DynamicResource FlourishIconFontSizeTitlebarSearch}"
                 LineHeight="{DynamicResource FlourishIconFontSizeTitlebarSearch}"
+                LineStackingStrategy="BlockLineHeight"
                 Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 IsHitTestVisible="False"
                 Text="&#xE721;"
@@ -62,6 +65,8 @@
                 VerticalAlignment="Center"
                 Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
                 IsHitTestVisible="False"
+                LineHeight="{DynamicResource FlourishLineHeightStandard}"
+                LineStackingStrategy="BlockLineHeight"
                 Text="{TemplateBinding Placeholder}"
                 TextTrimming="CharacterEllipsis"
                 Visibility="Collapsed"

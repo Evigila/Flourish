@@ -1,6 +1,8 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
+using FlourishTextLayoutMode = ArkheideSystem.Flourish.Controls.FlourishTextLayoutMode;
 using FlourishTextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
+using FlourishTextRole = ArkheideSystem.Flourish.Controls.FlourishTextRole;
 using WpfPanel = System.Windows.Controls.Panel;
 using WpfStackPanel = System.Windows.Controls.StackPanel;
 
@@ -171,6 +173,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
 
         var iconText = new FlourishTextBlock
         {
+            Role = FlourishTextRole.Icon,
             VerticalAlignment = VerticalAlignment.Center,
             TextAlignment = TextAlignment.Center,
             LineStackingStrategy = LineStackingStrategy.BlockLineHeight,
@@ -190,6 +193,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
 
         var labelText = new FlourishTextBlock
         {
+            LayoutMode = FlourishTextLayoutMode.Control,
             Margin = new Thickness(5, 0, 0, 0),
             VerticalAlignment = VerticalAlignment.Center,
             LineStackingStrategy = LineStackingStrategy.BlockLineHeight,

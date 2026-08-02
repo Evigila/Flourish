@@ -57,6 +57,7 @@
         <controls:FlourishTextBlock
           x:Name="CaptionText"
           Margin="16,0,8,0"
+          Style="{DynamicResource FlourishControlTextBlockStyle}"
           VerticalAlignment="Center"
           FontFamily="{DynamicResource FlourishFontFamily}"
           FontSize="{DynamicResource FlourishFontSizeStandard}"

@@ -65,13 +65,12 @@
           <ContentPresenter
             x:Name="IconHost"
             Margin="0,0,0,12"
+            Style="{DynamicResource FlourishIconContentPresenterStyle}"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             DockPanel.Dock="Top"
             Content="{TemplateBinding Icon}"
             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-            TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
-            TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
             TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
           />
           <StackPanel x:Name="CopyHost">

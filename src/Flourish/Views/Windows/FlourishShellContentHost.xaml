@@ -37,6 +37,7 @@
       <Border x:Name="BreadcrumbHost" Margin="0,0,0,8" Background="Transparent">
         <control:FlourishTextBlock
           x:Name="BreadcrumbText"
+          Style="{DynamicResource FlourishControlTextBlockStyle}"
           VerticalAlignment="Center"
           FontSize="{DynamicResource FlourishFontSizeStandard}"
           Foreground="{DynamicResource FlourishNeutralForeground2Brush}"

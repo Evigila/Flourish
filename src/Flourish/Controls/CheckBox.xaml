@@ -51,12 +51,11 @@
 
         <ContentPresenter
           x:Name="IconHost"
+          Style="{DynamicResource FlourishIconContentPresenterStyle}"
           HorizontalAlignment="Left"
           VerticalAlignment="Top"
           Content="{TemplateBinding Icon}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-          TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
-          TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
           TextElement.Foreground="{DynamicResource FlourishNeutralForeground2Brush}"
           Visibility="Collapsed"
         />
@@ -106,6 +105,7 @@
           x:Name="ContentHost"
           Grid.Column="1"
           Margin="10,0,0,0"
+          Style="{DynamicResource FlourishControlContentPresenterStyle}"
           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
           Content="{TemplateBinding Content}"

@@ -24,6 +24,7 @@
       <Ellipse x:Name="AvatarImage" Visibility="Collapsed" />
       <flourish:FlourishTextBlock
         x:Name="AvatarInitials"
+        Style="{DynamicResource FlourishControlTextBlockStyle}"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
         FontSize="{DynamicResource FlourishFontSizeStandard}"

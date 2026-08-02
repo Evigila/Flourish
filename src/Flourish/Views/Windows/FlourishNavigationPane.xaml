@@ -46,7 +46,7 @@
             x:Name="NavigationItemLabel"
             Grid.Column="1"
             Margin="8,0,0,0"
-            Padding="0,0,0,2"
+            Style="{DynamicResource FlourishControlTextBlockStyle}"
             VerticalAlignment="Center"
             Text="{Binding Label}"
           />

@@ -1056,6 +1056,9 @@ public sealed class FlourishPublicControlsTests
             Assert.Throws<ArgumentException>(() =>
                 new FlourishTextBlock().Role = (FlourishTextRole)(-1)
             );
+            Assert.Throws<ArgumentException>(() =>
+                new FlourishTextBlock().LayoutMode = (FlourishTextLayoutMode)(-1)
+            );
         });
     }
 

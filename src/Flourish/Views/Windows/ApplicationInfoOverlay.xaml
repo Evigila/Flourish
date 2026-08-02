@@ -45,6 +45,7 @@
               <Image x:Name="ApplicationInfoLogoImage" Stretch="Uniform" />
               <control:FlourishTextBlock
                 x:Name="ApplicationInfoLogoFallback"
+                Style="{DynamicResource FlourishControlTextBlockStyle}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontSize="{DynamicResource FlourishFontSizeStandard}"

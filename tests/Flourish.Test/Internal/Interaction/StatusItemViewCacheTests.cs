@@ -25,6 +25,9 @@ public sealed class StatusItemViewCacheTests
             var firstLabel = Assert.IsType<FlourishTextBlock>(firstRoot.Children[1]);
             var secondRoot = host.Children[1];
 
+            Assert.Equal(FlourishTextRole.Icon, firstIcon.Role);
+            Assert.Equal(FlourishTextRole.Body, firstLabel.Role);
+
             for (var version = 1; version <= 100; version++)
             {
                 first = first with { Text = $"Update {version}", IconGlyph = version.ToString() };

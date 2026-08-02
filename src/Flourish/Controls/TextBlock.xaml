@@ -75,7 +75,30 @@
         <Setter Property="Padding" Value="{DynamicResource FlourishTypographyBottomSpaceIcon}" />
         <Setter Property="TextAlignment" Value="Center" />
       </Trigger>
+      <Trigger Property="LayoutMode" Value="Control">
+        <Setter Property="Padding" Value="{DynamicResource FlourishTypographyBottomSpaceIcon}" />
+      </Trigger>
     </Style.Triggers>
+  </Style>
+
+  <Style
+    x:Key="FlourishControlTextBlockStyle"
+    TargetType="{x:Type controls:FlourishTextBlock}"
+    BasedOn="{StaticResource {x:Type controls:FlourishTextBlock}}"
+  >
+    <Setter Property="LayoutMode" Value="Control" />
+  </Style>
+
+  <Style x:Key="FlourishControlContentPresenterStyle" TargetType="{x:Type ContentPresenter}">
+    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightStandard}" />
+    <Setter Property="TextBlock.LineStackingStrategy" Value="BlockLineHeight" />
+  </Style>
+
+  <Style x:Key="FlourishIconContentPresenterStyle" TargetType="{x:Type ContentPresenter}">
+    <Setter Property="TextElement.FontFamily" Value="{DynamicResource FlourishIconFontFamily}" />
+    <Setter Property="TextElement.FontSize" Value="{DynamicResource FlourishFontSizeIcon}" />
+    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightIcon}" />
+    <Setter Property="TextBlock.LineStackingStrategy" Value="BlockLineHeight" />
   </Style>
 
 </ResourceDictionary>

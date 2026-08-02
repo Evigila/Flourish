@@ -58,6 +58,8 @@
     <Setter Property="Foreground" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="CaretBrush" Value="{DynamicResource FlourishNeutralForeground1Brush}" />
     <Setter Property="SelectionBrush" Value="{DynamicResource FlourishSelectionBackgroundBrush}" />
+    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightStandard}" />
+    <Setter Property="TextBlock.LineStackingStrategy" Value="BlockLineHeight" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Template">
       <Setter.Value>
@@ -136,6 +138,7 @@
               x:Name="SelectionContentSite"
               Grid.Column="0"
               Margin="{TemplateBinding Padding}"
+              Style="{DynamicResource FlourishControlContentPresenterStyle}"
               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
               Content="{TemplateBinding SelectionBoxItem}"

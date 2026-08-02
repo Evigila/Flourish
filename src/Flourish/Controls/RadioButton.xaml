@@ -44,6 +44,7 @@
               x:Name="ContentHost"
               Grid.Column="1"
               Margin="8,0,0,0"
+              Style="{DynamicResource FlourishControlContentPresenterStyle}"
               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
               Content="{TemplateBinding Content}"

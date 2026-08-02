@@ -51,8 +51,8 @@
             x:Name="BackgroundTaskQueueCountText"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Padding="0"
             Role="Status"
+            Style="{DynamicResource FlourishControlTextBlockStyle}"
             TextAlignment="Center"
           />
         </control:Button.Icon>

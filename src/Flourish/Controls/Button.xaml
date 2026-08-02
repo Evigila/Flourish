@@ -73,15 +73,15 @@
         >
           <ContentPresenter
             x:Name="IconHost"
+            Style="{DynamicResource FlourishIconContentPresenterStyle}"
             VerticalAlignment="Center"
             Content="{TemplateBinding Icon}"
             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-            TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
-            TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
           />
           <ContentPresenter
             x:Name="ContentHost"
             Margin="6,0,0,0"
+            Style="{DynamicResource FlourishControlContentPresenterStyle}"
             VerticalAlignment="Center"
             Content="{TemplateBinding Content}"
             ContentStringFormat="{TemplateBinding ContentStringFormat}"

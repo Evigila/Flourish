@@ -312,12 +312,16 @@ public sealed class FlourishShellNavigationLayoutTests
     }
 
     [Fact]
-    public void NavigationItemLabel_DeclaresItsLocalOpticalAlignment()
+    public void NavigationItemLabel_UsesTheSharedControlTextStyleWithoutALocalOffset()
     {
         var navigationPane = XDocument.Load(NavigationPaneXamlPath);
         var label = FindNamedElement(navigationPane, "NavigationItemLabel");
 
-        Assert.Equal("0,0,0,2", (string?)label.Attribute("Padding"));
+        Assert.Null(label.Attribute("Padding"));
+        Assert.Equal(
+            "{DynamicResource FlourishControlTextBlockStyle}",
+            (string?)label.Attribute("Style")
+        );
     }
 
     [Fact]

@@ -20,6 +20,8 @@
             BorderThickness="{TemplateBinding BorderThickness}"
           >
             <ContentPresenter
+              x:Name="ContentHost"
+              Style="{DynamicResource FlourishControlContentPresenterStyle}"
               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
               Content="{TemplateBinding Content}"

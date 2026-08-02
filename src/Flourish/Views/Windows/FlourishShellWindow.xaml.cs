@@ -1160,6 +1160,7 @@ internal partial class FlourishShellWindow : Window
 
     private static void BindIconTypography(TextBlock textBlock, string? sizeResourceKey = null)
     {
+        textBlock.Role = FlourishTextRole.Icon;
         textBlock.SetResourceReference(TextBlock.FontFamilyProperty, "FlourishIconFontFamily");
         textBlock.TextAlignment = System.Windows.TextAlignment.Center;
         textBlock.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;

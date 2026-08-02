@@ -37,6 +37,7 @@
       />
       <ContentPresenter
         Margin="{TemplateBinding Padding}"
+        Style="{DynamicResource FlourishIconContentPresenterStyle}"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
         Content="{TemplateBinding Icon}"

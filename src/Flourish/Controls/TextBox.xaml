@@ -16,6 +16,8 @@
     <Setter Property="SelectionBrush" Value="{DynamicResource FlourishSelectionBackgroundBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
+    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightStandard}" />
+    <Setter Property="TextBlock.LineStackingStrategy" Value="BlockLineHeight" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />

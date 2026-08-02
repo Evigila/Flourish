@@ -105,12 +105,14 @@ internal static class FlourishRegionElementFactory
         var text = new FlourishTextBlock
         {
             HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+            LayoutMode = FlourishTextLayoutMode.Control,
             VerticalAlignment = VerticalAlignment.Center,
             Text = string.IsNullOrWhiteSpace(iconGlyph) ? fallbackText : iconGlyph,
             TextAlignment = TextAlignment.Center,
         };
         if (!string.IsNullOrWhiteSpace(iconGlyph))
         {
+            text.Role = FlourishTextRole.Icon;
             text.SetResourceReference(FlourishTextBlock.FontFamilyProperty, "FlourishIconFontFamily");
         }
 

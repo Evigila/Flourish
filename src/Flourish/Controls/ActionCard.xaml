@@ -34,12 +34,11 @@
           Grid.Row="0"
           Grid.Column="0"
           Margin="{DynamicResource FlourishActionCardHorizontalIconSpacing}"
+          Style="{DynamicResource FlourishIconContentPresenterStyle}"
           HorizontalAlignment="Left"
           VerticalAlignment="Center"
           Content="{TemplateBinding Icon}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-          TextElement.FontFamily="{DynamicResource FlourishIconFontFamily}"
-          TextElement.FontSize="{DynamicResource FlourishFontSizeIcon}"
           TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
         />
         <StackPanel

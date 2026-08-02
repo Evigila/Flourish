@@ -27,6 +27,7 @@
             <ContentPresenter
               x:Name="ContentHost"
               Margin="{TemplateBinding Padding}"
+              Style="{DynamicResource FlourishControlContentPresenterStyle}"
               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
               Content="{TemplateBinding Content}"
