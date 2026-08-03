@@ -1,7 +1,14 @@
 using System.Collections;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
+using System.Windows.Media;
 using WpfControl = System.Windows.Controls.Control;
+using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
+using WpfPanel = System.Windows.Controls.Panel;
+using WpfSize = System.Windows.Size;
+using WpfVerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace ArkheideSystem.Flourish.Controls;
 
@@ -120,7 +127,9 @@ public class Presenter : WpfControl
 
     /// <summary>
     /// Gets or sets the image, icon group, illustration, or other content being presented. This
-    /// is the default XAML content property.
+    /// is the default XAML content property. Auto-sized surfaces fill the presentation region,
+    /// fixed content remains centered, and natural-size text or grouping panels are centered as
+    /// one visual group.
     /// </summary>
     public object? Presentation
     {
@@ -206,5 +215,150 @@ public class Presenter : WpfControl
         {
             yield return Presentation;
         }
+    }
+}
+
+/// <summary>
+/// Hosts presentation content without changing properties on the consumer-owned content tree.
+/// The host always fills its surface. Auto-sized ordinary content fills an axis, fixed content is
+/// centered, and natural-size grouping/text containers are centered by their desired bounds.
+/// </summary>
+internal sealed class PresenterPresentationHost : FrameworkElement
+{
+    private readonly ContentPresenter contentPresenter;
+
+    public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
+        nameof(Content),
+        typeof(object),
+        typeof(PresenterPresentationHost),
+        new FrameworkPropertyMetadata(
+            null,
+            FrameworkPropertyMetadataOptions.AffectsMeasure
+                | FrameworkPropertyMetadataOptions.AffectsArrange,
+            OnContentChanged
+        )
+    );
+
+    public PresenterPresentationHost()
+    {
+        contentPresenter = new ContentPresenter
+        {
+            HorizontalAlignment = WpfHorizontalAlignment.Stretch,
+            VerticalAlignment = WpfVerticalAlignment.Stretch,
+        };
+        AddVisualChild(contentPresenter);
+    }
+
+    public object? Content
+    {
+        get => GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+
+    protected override int VisualChildrenCount => 1;
+
+    /// <inheritdoc />
+    protected override Visual GetVisualChild(int index)
+    {
+        if (index != 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        return contentPresenter;
+    }
+
+    /// <inheritdoc />
+    protected override WpfSize MeasureOverride(WpfSize availableSize)
+    {
+        contentPresenter.SnapsToDevicePixels = SnapsToDevicePixels;
+        contentPresenter.UseLayoutRounding = UseLayoutRounding;
+        contentPresenter.Measure(availableSize);
+        return contentPresenter.DesiredSize;
+    }
+
+    /// <inheritdoc />
+    protected override WpfSize ArrangeOverride(WpfSize finalSize)
+    {
+        var centerHorizontally = ShouldCenter(Content, horizontal: true);
+        var centerVertically = ShouldCenter(Content, horizontal: false);
+        var contentWidth = centerHorizontally
+            ? Math.Min(contentPresenter.DesiredSize.Width, finalSize.Width)
+            : finalSize.Width;
+        var contentHeight = centerVertically
+            ? Math.Min(contentPresenter.DesiredSize.Height, finalSize.Height)
+            : finalSize.Height;
+        var contentX = centerHorizontally ? (finalSize.Width - contentWidth) / 2 : 0;
+        var contentY = centerVertically ? (finalSize.Height - contentHeight) / 2 : 0;
+
+        contentPresenter.Arrange(
+            new Rect(contentX, contentY, contentWidth, contentHeight)
+        );
+        return finalSize;
+    }
+
+    private static void OnContentChanged(
+        DependencyObject dependencyObject,
+        DependencyPropertyChangedEventArgs eventArgs
+    )
+    {
+        ((PresenterPresentationHost)dependencyObject).contentPresenter.Content =
+            eventArgs.NewValue;
+    }
+
+    private static bool ShouldCenter(object? content, bool horizontal)
+    {
+        if (content is not FrameworkElement element)
+        {
+            return content is not null;
+        }
+
+        var requestedSize = horizontal ? element.Width : element.Height;
+        if (!double.IsNaN(requestedSize))
+        {
+            return true;
+        }
+
+        var alignmentProperty = horizontal
+            ? HorizontalAlignmentProperty
+            : VerticalAlignmentProperty;
+        var localAlignment = element.ReadLocalValue(alignmentProperty);
+        if (localAlignment != DependencyProperty.UnsetValue)
+        {
+            return localAlignment switch
+            {
+                WpfHorizontalAlignment localHorizontalAlignment =>
+                    localHorizontalAlignment != WpfHorizontalAlignment.Stretch,
+                WpfVerticalAlignment localVerticalAlignment =>
+                    localVerticalAlignment != WpfVerticalAlignment.Stretch,
+                _ => false,
+            };
+        }
+
+        var effectiveAlignment = horizontal
+            ? (object)element.HorizontalAlignment
+            : element.VerticalAlignment;
+        if (
+            effectiveAlignment is WpfHorizontalAlignment effectiveHorizontalAlignment
+                && effectiveHorizontalAlignment != WpfHorizontalAlignment.Stretch
+            || effectiveAlignment is WpfVerticalAlignment effectiveVerticalAlignment
+                && effectiveVerticalAlignment != WpfVerticalAlignment.Stretch
+        )
+        {
+            return true;
+        }
+
+        return IsNaturalSizeContent(element);
+    }
+
+    private static bool IsNaturalSizeContent(FrameworkElement element)
+    {
+        if (element is TextBlock or StackPanel or WrapPanel or UniformGrid)
+        {
+            return true;
+        }
+
+        return element is WpfPanel { Background: null } panel
+            && panel.Children.Count > 1;
     }
 }

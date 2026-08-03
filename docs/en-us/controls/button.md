@@ -39,7 +39,7 @@ The Flourish button family keeps the command, click, keyboard, focus, and automa
 </WrapPanel>
 ```
 
-`Icon` accepts an icon glyph or another WPF object. Icon-only buttons use compact square geometry. Give every icon-only action a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action.
+`Icon` accepts an icon glyph or another WPF object. `IconSize` defaults to `22` DIP and can be overridden for compact actions. Icon-only buttons use compact square geometry. Give every icon-only action a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action.
 
 `Button.Variant` selects action emphasis, not size or layout. Its default is `Outlined`.
 

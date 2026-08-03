@@ -201,7 +201,7 @@
           Title="Strong overlay"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;Popup x:Name=&quot;ProfilePopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;ProfileOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Strong&quot;&gt;&#xA;    &lt;flourish:ActionCard&#xA;      Title=&quot;Profile&quot;&#xA;      Content=&quot;Manage account details.&quot;&#xA;      Variant=&quot;Vertical&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;ProfilePopup.PlacementTarget = trigger;&#xA;ProfileOverlay.PlacementTarget = trigger;&#xA;ProfilePopup.IsOpen = true;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;Popup x:Name=&quot;ProfilePopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;ProfileOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Strong&quot;&gt;&#xA;    &lt;flourish:ActionCard&#xA;      Title=&quot;Profile&quot;&#xA;      Content=&quot;Manage account details.&quot;&#xA;      Variant=&quot;Vertical&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;ProfilePopup.PlacementTarget = trigger;&#xA;ProfileOverlay.PlacementTarget = trigger;&#xA;ProfilePopup.IsOpen = true;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -212,7 +212,7 @@
           Title="Temporary overlay"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;Popup x:Name=&quot;PreviewPopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;PreviewOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Temporary&quot;&gt;&#xA;    &lt;TextBlock Text=&quot;Preview details&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;PreviewPopup.PlacementTarget = previewButton;&#xA;PreviewOverlay.PlacementTarget = previewButton;&#xA;PreviewPopup.IsOpen = true;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;Popup x:Name=&quot;PreviewPopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;PreviewOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Temporary&quot;&gt;&#xA;    &lt;TextBlock Text=&quot;Preview details&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;PreviewPopup.PlacementTarget = previewButton;&#xA;PreviewOverlay.PlacementTarget = previewButton;&#xA;PreviewPopup.IsOpen = true;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -223,7 +223,7 @@
           Title="Handle dismissal"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="private void Close_Click(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfileOverlay.RaiseEvent(new RoutedEventArgs(&#xA;        Overlay.DismissRequestedEvent, ProfileOverlay));&#xA;}&#xA;&#xA;private void Overlay_DismissRequested(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfilePopup.IsOpen = false;&#xA;    e.Handled = true;&#xA;}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="private void Close_Click(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfileOverlay.RaiseEvent(new RoutedEventArgs(&#xA;        Overlay.DismissRequestedEvent, ProfileOverlay));&#xA;}&#xA;&#xA;private void Overlay_DismissRequested(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfilePopup.IsOpen = false;&#xA;    e.Handled = true;&#xA;}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

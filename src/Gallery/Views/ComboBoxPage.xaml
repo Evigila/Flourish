@@ -104,7 +104,7 @@
           Title="Bound collection"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -115,7 +115,7 @@
           Title="Declared choices"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:FlourishComboBox SelectedIndex=&quot;0&quot;&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;System&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Light&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Dark&quot; /&gt;&#xA;&lt;/flourish:FlourishComboBox&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishComboBox SelectedIndex=&quot;0&quot;&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;System&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Light&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Dark&quot; /&gt;&#xA;&lt;/flourish:FlourishComboBox&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

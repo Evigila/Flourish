@@ -30,8 +30,6 @@
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBlock
-              Width="280"
-              Height="80"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Role="Body"
@@ -49,8 +47,6 @@
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBlock
-              Width="280"
-              Height="80"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Role="CardTitle"
@@ -68,8 +64,6 @@
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBlock
-              Width="280"
-              Height="80"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Role="Icon"
@@ -110,7 +104,7 @@
           Title="Choose a text role"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

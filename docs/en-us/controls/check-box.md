@@ -9,7 +9,7 @@ description: Present Boolean and optional three-state selections as compact rows
 
 ## Choose a layout
 
-`Variant="Horizontal"` is the default and is suitable for ordinary settings. It places a circular state indicator before the content. An unchecked option displays an empty circle. A checked option displays a check mark and highlights the content, indicator, and control boundary.
+`Variant="Horizontal"` is the default and is suitable for ordinary settings. It places a circular state indicator before the content. An unchecked option displays an empty circle. A checked option replaces that circle with a larger primary-colored check mark and highlights the content and control boundary.
 
 ```xml
 <flourish:CheckBox
@@ -17,7 +17,7 @@ description: Present Boolean and optional three-state selections as compact rows
   IsChecked="{Binding NotificationsEnabled, Mode=TwoWay}" />
 ```
 
-Use `Variant="Vertical"` for a card-shaped selection that benefits from an icon. It places the icon at the upper left, the content below it, and the selected indicator at the upper right. The indicator is hidden while the option is unchecked. When selected, the content, icon foreground, indicator, and boundary use the primary highlight.
+Use `Variant="Vertical"` for a card-shaped selection that benefits from an icon. It places the icon at the upper left, the content below it, and the state indicator at the upper right. The unchecked state keeps an empty circle. When selected, the circle becomes a primary-colored check mark while the content, icon foreground, and boundary use the same highlight.
 
 ```xml
 <flourish:CheckBox
@@ -35,7 +35,7 @@ Both layouts participate in the shared `HoverReveal` behavior by default. CheckB
 
 ## Three-state selections
 
-Set `IsThreeState="True"` only when `null` represents an inherited, mixed, or unknown value. The indeterminate state replaces the check mark with a horizontal line and otherwise uses the same highlighted treatment as the checked state.
+Set `IsThreeState="True"` only when `null` represents an inherited, mixed, or unknown value. The indeterminate state replaces the check mark with a primary-colored rounded-square outline and otherwise uses the same highlighted treatment as the checked state.
 
 ```xml
 <flourish:CheckBox
@@ -46,8 +46,8 @@ Set `IsThreeState="True"` only when `null` represents an inherited, mixed, or un
 
 | Variant | Unchecked | Checked | Indeterminate |
 | --- | --- | --- | --- |
-| Horizontal | Empty circular indicator | Check-mark indicator and highlighted content and boundary | Horizontal-line indicator and highlighted content and boundary |
-| Vertical | Indicator hidden | Upper-right check-mark indicator and highlighted icon, content, and boundary | Upper-right horizontal-line indicator and highlighted icon, content, and boundary |
+| Horizontal | Empty circular indicator | Primary check mark and highlighted content and boundary | Primary rounded-square outline and highlighted content and boundary |
+| Vertical | Upper-right empty circular indicator | Upper-right primary check mark and highlighted icon, content, and boundary | Upper-right primary rounded-square outline and highlighted icon, content, and boundary |
 
 ## Related content
 

@@ -20,7 +20,7 @@ builder.ConfigShell(shell =>
         .UseMotion()
         .UseSmoothScroll(enabled: true)
         .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
-        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
         .UseStatusBar();
 });
 

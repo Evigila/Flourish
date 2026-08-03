@@ -117,7 +117,7 @@ public sealed class FontServicePageTests
             Assert.True(service.ApplyToPage(page));
             Assert.Equal(11d, page.Resources["FlourishFontSizeSmall"]);
             Assert.Equal(14d, page.Resources["FlourishFontSizeStandard"]);
-            Assert.Equal(16d, page.Resources["FlourishFontSizeIcon"]);
+            Assert.Equal(22d, page.Resources["FlourishFontSizeIcon"]);
             Assert.Equal(19d, page.Resources["FlourishFontSizeLarge"]);
             Assert.Equal(24d, page.Resources["FlourishFontSizeExtraLarge"]);
             Assert.Equal(32d, page.Resources["FlourishFontSizeHeaderSize"]);

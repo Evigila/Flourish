@@ -34,11 +34,13 @@
           Grid.Row="0"
           Grid.Column="0"
           Margin="{DynamicResource FlourishActionCardHorizontalIconSpacing}"
+          Width="{DynamicResource FlourishFontSizeIcon}"
           Style="{DynamicResource FlourishIconContentPresenterStyle}"
           HorizontalAlignment="Left"
           VerticalAlignment="Center"
           Content="{TemplateBinding Icon}"
           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+          TextBlock.TextAlignment="Center"
           TextElement.Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
         />
         <StackPanel
@@ -88,6 +90,7 @@
         <Setter TargetName="CopyRow" Property="Height" Value="Auto" />
         <Setter TargetName="BodyRow" Property="Height" Value="Auto" />
         <Setter TargetName="IconHost" Property="Margin" Value="{DynamicResource FlourishActionCardVerticalIconSpacing}" />
+        <Setter TargetName="IconHost" Property="Width" Value="Auto" />
         <Setter TargetName="IconHost" Property="VerticalAlignment" Value="Top" />
         <Setter TargetName="CopyHost" Property="Grid.Row" Value="1" />
         <Setter TargetName="CopyHost" Property="Grid.Column" Value="0" />

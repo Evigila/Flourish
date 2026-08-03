@@ -267,7 +267,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  Command=&quot;{Binding SaveCommand}&quot;&#xA;  Content=&quot;Save&quot;&#xA;  Icon=&quot;&amp;#xE74E;&quot;&#xA;  Variant=&quot;Filled&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Button&#xA;  Command=&quot;{Binding SaveCommand}&quot;&#xA;  Content=&quot;Save&quot;&#xA;  Icon=&quot;&amp;#xE74E;&quot;&#xA;  Variant=&quot;Filled&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -278,7 +278,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  AutomationProperties.Name=&quot;Delete report&quot;&#xA;  Command=&quot;{Binding DeleteCommand}&quot;&#xA;  Icon=&quot;&amp;#xE74D;&quot;&#xA;  ToolTip=&quot;Delete report&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Button&#xA;  AutomationProperties.Name=&quot;Delete report&quot;&#xA;  Command=&quot;{Binding DeleteCommand}&quot;&#xA;  Icon=&quot;&amp;#xE74D;&quot;&#xA;  ToolTip=&quot;Delete report&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

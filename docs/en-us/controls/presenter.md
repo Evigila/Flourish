@@ -99,7 +99,7 @@ Choose presentation content that keeps overlaid text readable in both light and 
 
 ## Present several elements
 
-`Presentation` accepts one WPF content tree. Give non-`CodeSpace` presentation roots on a regular `Presenter` an explicit width and height, then center them so they keep a predictable visual footprint. `CodeSpace` is the exception and should stretch to fill the available presentation surface. Do not add a decorative `Border` inside a regular `Presenter.Presentation`; Presenter already supplies that surface. `HeaderChunk` is a specialized presentation container and keeps its own full-width, adaptive presentation layout.
+`Presentation` accepts one WPF content tree. Its host always fills the complete presentation region. Ordinary auto-sized surfaces stretch across both axes, while text and natural-size grouping panels such as `StackPanel`, `WrapPanel`, and `UniformGrid` are centered by their desired bounds. Explicit dimensions remain centered. Do not give a text element or grouping panel a larger empty width or height merely to create a preview canvas: WPF would still arrange its visible text or children from that inner container's starting edge. A `CodeSpace` intended to fill this region must set `IsExpanded="True"`; its default collapsed state intentionally remains 72 DIP high. `HeaderChunk` uses the same presentation layout contract. Do not add a decorative `Border` inside a regular `Presenter.Presentation`; Presenter already supplies that surface.
 
 ```xml
 <flourish:Presenter
@@ -108,8 +108,6 @@ Choose presentation content that keeps overlaid text readable in both light and 
   PresenterMode="Split"
   PresenterPosition="Right">
   <UniformGrid
-    Width="240"
-    Height="80"
     Columns="3"
     HorizontalAlignment="Center"
     VerticalAlignment="Center">

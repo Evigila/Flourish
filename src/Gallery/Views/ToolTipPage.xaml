@@ -67,7 +67,7 @@
           Title="Explicit tooltip"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -78,7 +78,7 @@
           Title="Simple tooltip and timing"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Button&#xA;  Content=&quot;Refresh&quot;&#xA;  ToolTip=&quot;Refresh the current workspace.&quot;&#xA;  ToolTipService.InitialShowDelay=&quot;400&quot;&#xA;  ToolTipService.ShowDuration=&quot;5000&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Button&#xA;  Content=&quot;Refresh&quot;&#xA;  ToolTip=&quot;Refresh the current workspace.&quot;&#xA;  ToolTipService.InitialShowDelay=&quot;400&quot;&#xA;  ToolTipService.ShowDuration=&quot;5000&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

@@ -29,7 +29,7 @@
           Title="Horizontal"
         >
           <flourish:Presenter.Presentation>
-            <StackPanel Width="240" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
               <flourish:CheckBox Content="Enable notifications" />
               <flourish:CheckBox Margin="0,8,0,0" Content="Synchronize automatically" IsChecked="True" />
             </StackPanel>
@@ -43,7 +43,7 @@
           Title="Vertical"
         >
           <flourish:Presenter.Presentation>
-            <UniformGrid Width="360" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Columns="2">
+            <UniformGrid HorizontalAlignment="Center" VerticalAlignment="Center" Columns="2">
               <flourish:CheckBox
                 Margin="0,0,6,0"
                 Content="Local workspace"
@@ -134,7 +134,7 @@
           Title="Standard option"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -145,7 +145,7 @@
           Title="Icon-led option"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:CheckBox&#xA;  Content=&quot;Cloud workspace&quot;&#xA;  Icon=&quot;&amp;#xE753;&quot;&#xA;  IsChecked=&quot;{Binding UsesCloudWorkspace, Mode=TwoWay}&quot;&#xA;  Variant=&quot;Vertical&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CheckBox&#xA;  Content=&quot;Cloud workspace&quot;&#xA;  Icon=&quot;&amp;#xE753;&quot;&#xA;  IsChecked=&quot;{Binding UsesCloudWorkspace, Mode=TwoWay}&quot;&#xA;  Variant=&quot;Vertical&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

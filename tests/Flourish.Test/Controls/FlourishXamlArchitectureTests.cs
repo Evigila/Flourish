@@ -898,8 +898,13 @@ public sealed class FlourishXamlArchitectureTests
         );
         Assert.Equal("0", (string?)copySurface.Attribute("Grid.Column"));
         Assert.Null((string?)copySurface.Attribute("Background"));
+        Assert.Equal("PresenterPresentationHost", presentationHost.Name.LocalName);
         Assert.Equal("Stretch", (string?)presentationHost.Attribute("HorizontalAlignment"));
         Assert.Equal("Stretch", (string?)presentationHost.Attribute("VerticalAlignment"));
+        Assert.Equal(
+            "{TemplateBinding Presentation}",
+            (string?)presentationHost.Attribute("Content")
+        );
 
         var bodyHost = copySurface
             .Descendants()
@@ -1687,7 +1692,7 @@ public sealed class FlourishXamlArchitectureTests
         );
         Assert.Equal(12d, actualSizes["FlourishFontSizeSmall"]);
         Assert.Equal(14d, actualSizes["FlourishFontSizeStandard"]);
-        Assert.Equal(16d, actualSizes["FlourishFontSizeIcon"]);
+        Assert.Equal(22d, actualSizes["FlourishFontSizeIcon"]);
         Assert.Equal(16d, actualSizes["FlourishFontSizeLarge"]);
         Assert.Equal(24d, actualSizes["FlourishFontSizeExtraLarge"]);
         Assert.Equal(32d, actualSizes["FlourishFontSizeHeaderSize"]);
@@ -1787,11 +1792,11 @@ public sealed class FlourishXamlArchitectureTests
         }
 
         Assert.Equal(
-            16d,
+            22d,
             XmlConvert.ToDouble(resources["FlourishFontSizeIcon"].Value.Trim())
         );
         Assert.Equal(
-            16d,
+            22d,
             XmlConvert.ToDouble(resources["FlourishLineHeightIcon"].Value.Trim())
         );
         Assert.Equal(
@@ -1858,6 +1863,48 @@ public sealed class FlourishXamlArchitectureTests
     }
 
     [Fact]
+    public void CodeSpace_CanCollapseOwnsOnlyTheExpandedCollapseAffordance()
+    {
+        var document = LoadXaml(
+            Path.Combine(FlourishRoot, "Controls", "CodeSpace.xaml")
+        );
+        var collapseTrigger = Assert.Single(
+            document.Descendants(),
+            element =>
+                element.Name.LocalName == "Trigger"
+                && (string?)element.Attribute("Property") == "CanCollapse"
+                && (string?)element.Attribute("Value") == "False"
+        );
+        Assert.Contains(
+            collapseTrigger.Elements(),
+            element =>
+                element.Name.LocalName == "Setter"
+                && (string?)element.Attribute("TargetName") == "PART_CollapseButton"
+                && (string?)element.Attribute("Property") == "Visibility"
+                && (string?)element.Attribute("Value") == "Collapsed"
+        );
+
+        var actions = document
+            .Descendants()
+            .Single(element =>
+                (string?)element.Attribute(XName.Get("Name", XamlNamespace))
+                    == "ExpandedActions"
+            );
+        Assert.Equal(
+            new[] { "PART_CollapseButton", "PART_CopyButton" },
+            actions
+                .Elements()
+                .Select(element =>
+                    (string?)element.Attribute(XName.Get("Name", XamlNamespace))
+                )
+        );
+        Assert.All(
+            actions.Elements(),
+            button => Assert.Equal("16", (string?)button.Attribute("IconSize"))
+        );
+    }
+
+    [Fact]
     public void FontApis_ExposeOnlyTheExplicitTextAndIconScaleContract()
     {
         Type[] explicitScaleTypes =
@@ -1903,7 +1950,7 @@ public sealed class FlourishXamlArchitectureTests
             builderGlobalFont,
             explicitScaleTypes,
             explicitScaleNames,
-            ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d, true]
+            ["Microsoft Yahei", 12d, 14d, 22d, 16d, 24d, 32d, true]
         );
 
         var serviceSetFont = Assert.Single(
@@ -2004,7 +2051,7 @@ public sealed class FlourishXamlArchitectureTests
                     method,
                     explicitScaleTypes,
                     explicitScaleNames,
-                    ["Microsoft Yahei", 12d, 14d, 16d, 16d, 24d, 32d, true]
+                    ["Microsoft Yahei", 12d, 14d, 22d, 16d, 24d, 32d, true]
                 )
         );
         Assert.All(
@@ -2080,6 +2127,7 @@ public sealed class FlourishXamlArchitectureTests
             .Concat(ContextualIconFontSizes.Keys)
             .Select(name => $"{{DynamicResource {name}}}")
             .Append("{TemplateBinding FontSize}")
+            .Append("{TemplateBinding IconSize}")
             .ToHashSet(StringComparer.Ordinal);
         var violations = new List<string>();
 

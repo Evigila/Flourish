@@ -103,7 +103,7 @@
           Title="Data-bound list"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -114,7 +114,7 @@
           Title="Multiple selection"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:BunchedListBox&#xA;  ItemsSource=&quot;{Binding Tasks}&quot;&#xA;  SelectionMode=&quot;Extended&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:BunchedListBox&#xA;  ItemsSource=&quot;{Binding Tasks}&quot;&#xA;  SelectionMode=&quot;Extended&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

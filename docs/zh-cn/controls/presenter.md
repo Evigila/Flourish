@@ -97,7 +97,7 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 
 ## 展示多个元素
 
-Presentation 接受一个 WPF 内容树。对于普通 `Presenter`，除 `CodeSpace` 外，展示根元素应设置明确的宽度和高度并居中，以保持可预测的视觉尺寸；`CodeSpace` 是例外，应拉伸并填满可用展示区域。不要在普通 `Presenter.Presentation` 内额外添加装饰性 `Border`，Presenter 已经提供了展示表面。`HeaderChunk` 是特殊展示容器，继续使用自身全宽、自适应的 Presentation 布局。
+Presentation 接受一个 WPF 内容树，其宿主始终占满完整展示区域。普通自动尺寸表面沿横纵双轴填满；文本以及 `StackPanel`、`WrapPanel`、`UniformGrid` 等自然尺寸分组容器则按期望尺寸整体居中；显式固定尺寸的内容也保持居中。不要为了制造预览画布而给文本或分组容器添加大块空白 Width/Height，因为 WPF 仍会从该内部容器的起始边缘排列可见文字或子项。需要填满展示区域的 `CodeSpace` 必须设置 `IsExpanded="True"`，其默认折叠状态仍保持 72 DIP 高度。`HeaderChunk` 与 Presenter 共享同一套 Presentation 布局契约。不要在普通 `Presenter.Presentation` 内额外添加装饰性 `Border`，Presenter 已经提供了展示表面。
 
 ```xml
 <flourish:Presenter
@@ -106,8 +106,6 @@ Presentation 接受一个 WPF 内容树。对于普通 `Presenter`，除 `CodeSp
   PresenterMode="Split"
   PresenterPosition="Right">
   <UniformGrid
-    Width="240"
-    Height="80"
     Columns="3"
     HorizontalAlignment="Center"
     VerticalAlignment="Center">

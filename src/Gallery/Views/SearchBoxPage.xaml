@@ -81,7 +81,7 @@
           Title="Live query"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:FlourishSearchBox&#xA;  Placeholder=&quot;Search controls&quot;&#xA;  MaxLength=&quot;120&quot;&#xA;  Text=&quot;{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishSearchBox&#xA;  Placeholder=&quot;Search controls&quot;&#xA;  MaxLength=&quot;120&quot;&#xA;  Text=&quot;{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -92,7 +92,7 @@
           Title="Submitted query"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

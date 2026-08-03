@@ -5,7 +5,7 @@ description: Append operation messages to a compact scrolling history that does 
 
 # OutputCard
 
-`OutputCard` displays raw messages, ongoing progress, completed results, and failures in one read-only history. It owns a themed neutral viewport inside the standard card spacing, uses compact text, and scrolls when the history exceeds the arranged height.
+`OutputCard` displays raw messages, ongoing progress, completed results, and failures in one read-only history. Its themed neutral viewport fills the complete surface, uses compact text, and scrolls when the history exceeds the arranged height.
 
 > [!IMPORTANT]
 > `OutputCard` has no `Title`, `Content`, `Icon`, or arbitrary `Body`. Keep explanatory copy in the containing `Chunk` and actions in a purpose-built action control, then append each observable outcome as a message.
@@ -91,7 +91,7 @@ When the pointer is over overflowing output, the inner viewport consumes the mou
 
 ## Viewport and typography
 
-The output viewport uses a darker rounded neutral background and reduced outer spacing so messages occupy more of the card surface. Output uses the compact Small typography tier, the dedicated `FlourishOutputFontFamily` monospaced family (Consolas by default), and a theme-specific green foreground. Set `FontFamily` or `Foreground` on an individual `OutputCard` when a different output treatment is required.
+The output viewport uses a darker rounded neutral background with no outer padding, so it is the complete visible card surface. Output uses the compact Small typography tier, the dedicated `FlourishOutputFontFamily` monospaced family (Consolas by default), and a theme-specific green foreground. Set `FontFamily` or `Foreground` on an individual `OutputCard` when a different output treatment is required.
 
 Give the control an `AutomationProperties.Name` when the surrounding section and action labels do not already identify the output clearly.
 

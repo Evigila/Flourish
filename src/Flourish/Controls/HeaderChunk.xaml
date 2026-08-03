@@ -23,7 +23,7 @@
           <RowDefinition Height="*" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ContentPresenter
+        <controls:PresenterPresentationHost
           x:Name="PresentationHost"
           Grid.Column="1"
           Grid.RowSpan="2"

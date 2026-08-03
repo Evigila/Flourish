@@ -18,7 +18,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 ///          .UseMotion()
 ///          .UseSmoothScroll()
 ///          .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
-///          .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+///          .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
 ///          .UseStatusBar();
 /// });
 /// ]]></code>
@@ -171,7 +171,7 @@ public interface IFlourishShellBuilder
         string fontFamily = "Microsoft Yahei",
         double smallFontSize = 12,
         double standardFontSize = 14,
-        double iconFontSize = 16,
+        double iconFontSize = 22,
         double largeFontSize = 16,
         double extraLargeFontSize = 24,
         double headerSizeFontSize = 32,

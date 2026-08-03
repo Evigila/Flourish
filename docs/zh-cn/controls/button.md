@@ -42,6 +42,7 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
 | `Icon` | `object?` | `null` | 可选图标或其他图标内容。 |
+| `IconSize` | `double` | `22` | 图标尺寸；紧凑操作可局部覆盖。 |
 | `Content` | `object?` | `null` | 继承的可选按钮内容。 |
 | `Variant` | `ButtonVariant` | `Outlined` | 选择操作的视觉强调层级。 |
 

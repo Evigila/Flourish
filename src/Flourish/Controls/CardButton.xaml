@@ -66,6 +66,8 @@
             x:Name="IconHost"
             Margin="0,0,0,12"
             Style="{DynamicResource FlourishIconContentPresenterStyle}"
+            TextElement.FontSize="{TemplateBinding IconSize}"
+            TextBlock.LineHeight="{TemplateBinding IconSize}"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             DockPanel.Dock="Top"

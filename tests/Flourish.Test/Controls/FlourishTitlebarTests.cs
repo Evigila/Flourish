@@ -103,6 +103,10 @@ public sealed class FlourishTitlebarTests
 
         Assert.Equal(2, result.PixelWidth);
         Assert.Equal(2, result.PixelHeight);
+        Assert.Equal(
+            BitmapScalingMode.HighQuality,
+            RenderOptions.GetBitmapScalingMode(result)
+        );
         Assert.True(result.IsFrozen);
     }
 

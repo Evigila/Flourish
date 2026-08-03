@@ -140,7 +140,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:WindowCaptionButton&#xA;  AutomationProperties.Name=&quot;Close&quot;&#xA;  Command=&quot;{x:Static SystemCommands.CloseWindowCommand}&quot;&#xA;  Icon=&quot;&amp;#xE8BB;&quot;&#xA;  ToolTip=&quot;Close&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:WindowCaptionButton&#xA;  AutomationProperties.Name=&quot;Close&quot;&#xA;  Command=&quot;{x:Static SystemCommands.CloseWindowCommand}&quot;&#xA;  Icon=&quot;&amp;#xE8BB;&quot;&#xA;  ToolTip=&quot;Close&quot;&#xA;  Variant=&quot;Danger&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

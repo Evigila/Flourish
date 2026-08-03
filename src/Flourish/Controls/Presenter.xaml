@@ -31,7 +31,7 @@
           CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
           MinHeight="{TemplateBinding PresentationMinHeight}"
         >
-          <ContentPresenter
+          <controls:PresenterPresentationHost
             x:Name="PresentationHost"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -112,7 +112,6 @@
         <Setter TargetName="BodyHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishForegroundOnOverlayBrush}" />
       </Trigger>
       <Trigger Property="PresenterMode" Value="TopDown">
-        <Setter TargetName="PresentationRow" Property="Height" Value="Auto" />
         <Setter TargetName="CopyRow" Property="Height" Value="Auto" />
         <Setter TargetName="PresentationSurface" Property="Grid.Column" Value="0" />
         <Setter TargetName="PresentationSurface" Property="Grid.ColumnSpan" Value="2" />

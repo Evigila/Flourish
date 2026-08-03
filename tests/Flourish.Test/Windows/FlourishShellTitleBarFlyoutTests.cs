@@ -105,9 +105,16 @@ public sealed class FlourishShellTitleBarFlyoutTests
             applicationInfoDocument,
             "ApplicationInfoLogoImage"
         );
+        var profileAvatar = FindNamedElement(titleDocument, "ProfileAvatarImage");
 
         Assert.Equal("Uniform", (string?)titleLogo.Attribute("Stretch"));
         Assert.Equal("Uniform", (string?)overlayLogo.Attribute("Stretch"));
+        Assert.Equal("HighQuality", GetAttribute(titleLogo, "RenderOptions.BitmapScalingMode"));
+        Assert.Equal("HighQuality", GetAttribute(overlayLogo, "RenderOptions.BitmapScalingMode"));
+        Assert.Equal(
+            "HighQuality",
+            GetAttribute(profileAvatar, "RenderOptions.BitmapScalingMode")
+        );
         Assert.Null(
             titleLogo
                 .Ancestors()

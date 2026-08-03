@@ -45,7 +45,7 @@
           Title="Inline source text"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

@@ -139,7 +139,11 @@
             CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
           >
             <Grid>
-              <Image x:Name="LogoImage" Stretch="Uniform" />
+              <Image
+                x:Name="LogoImage"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Stretch="Uniform"
+              />
               <controls:FlourishTextBlock
                 x:Name="LogoFallback"
                 Style="{DynamicResource FlourishControlTextBlockStyle}"
@@ -246,7 +250,11 @@
               Background="{DynamicResource FlourishPrimarySurfaceBrush}"
               CornerRadius="13"
             />
-            <Ellipse x:Name="ProfileAvatarImage" Visibility="Collapsed" />
+            <Ellipse
+              x:Name="ProfileAvatarImage"
+              RenderOptions.BitmapScalingMode="HighQuality"
+              Visibility="Collapsed"
+            />
             <controls:FlourishTextBlock
               x:Name="ProfileInitialsText"
               Style="{DynamicResource FlourishControlTextBlockStyle}"

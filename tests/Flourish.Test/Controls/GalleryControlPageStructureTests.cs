@@ -86,7 +86,7 @@ public sealed class GalleryControlPageStructureTests
                     presentation.Elements(),
                     element => element.Name.LocalName == "Grid"
                 );
-                AssertFixedCenteredPresentationRoot(fixedSurface);
+                AssertCanonicalCenteredPresentationRoot(fixedSurface);
                 var actionGroup = Assert.Single(
                     fixedSurface.Elements(),
                     element => element.Name.LocalName == "StackPanel"
@@ -132,7 +132,7 @@ public sealed class GalleryControlPageStructureTests
                 );
                 Assert.Equal("200", (string?)cardButton.Attribute("Width"));
                 Assert.Equal("120", (string?)cardButton.Attribute("Height"));
-                AssertFixedCenteredPresentationRoot(cardButton);
+                AssertCanonicalCenteredPresentationRoot(cardButton);
             }
         );
 
@@ -581,7 +581,23 @@ public sealed class GalleryControlPageStructureTests
                     string.IsNullOrWhiteSpace((string?)codeSpace.Attribute("Text")),
                     $"{pageType} must provide concrete usage."
                 );
+                Assert.Equal("True", (string?)codeSpace.Attribute("IsExpanded"));
+                Assert.Equal("False", (string?)codeSpace.Attribute("CanCollapse"));
             }
+
+            var usageCodeSpaces = usage
+                .Descendants()
+                .Where(element => element.Name.LocalName == "CodeSpace")
+                .ToHashSet();
+            Assert.DoesNotContain(
+                page.Descendants().Where(element =>
+                    element.Name.LocalName == "CodeSpace"
+                    && !usageCodeSpaces.Contains(element)
+                ),
+                codeSpace =>
+                    codeSpace.Attribute("IsExpanded") is not null
+                    || codeSpace.Attribute("CanCollapse") is not null
+            );
         });
     }
 
@@ -934,7 +950,7 @@ public sealed class GalleryControlPageStructureTests
                             element => element.Name.LocalName == "Presenter.Presentation"
                         );
                         var presentationRoot = Assert.Single(presentation.Elements());
-                        AssertFixedCenteredPresentationRoot(presentationRoot);
+                        AssertCanonicalCenteredPresentationRoot(presentationRoot);
                         Assert.DoesNotContain(
                             presenter.Elements(),
                             element => element.Name.LocalName == "Presenter.Body"
@@ -946,7 +962,7 @@ public sealed class GalleryControlPageStructureTests
     }
 
     [Fact]
-    public void Presentations_UseFixedCenteredContentWithoutNestedBordersExceptCodeSpace()
+    public void Presentations_UseFillOrNaturalCenteredContentWithoutNestedBordersExceptCodeSpace()
     {
         foreach (
             var path in Directory.EnumerateFiles(
@@ -969,7 +985,7 @@ public sealed class GalleryControlPageStructureTests
                     continue;
                 }
 
-                AssertFixedCenteredPresentationRoot(presentationRoot);
+                AssertCanonicalCenteredPresentationRoot(presentationRoot);
                 Assert.DoesNotContain(
                     presentationRoot.DescendantsAndSelf(),
                     element => element.Name.LocalName == "Border"
@@ -1157,31 +1173,59 @@ public sealed class GalleryControlPageStructureTests
         );
     }
 
+    [Fact]
+    public void WindowPositionAction_UsesAGlyphFromTheDefaultIconFont()
+    {
+        var document = LoadPage("WindowRuntimePage.xaml");
+        var actionCard = document
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "ActionCard"
+                && (string?)element.Attribute("Title") == "Window position"
+            );
+
+        Assert.Equal("\uE707", (string?)actionCard.Attribute("Icon"));
+        Assert.DoesNotContain("\uF2D9", document.ToString());
+    }
+
     private static XDocument LoadPage(string fileName) =>
         XDocument.Load(Path.Combine(ViewsRoot, fileName));
 
-    private static void AssertFixedCenteredPresentationRoot(XElement presentationRoot)
+    private static void AssertCanonicalCenteredPresentationRoot(XElement presentationRoot)
     {
-        Assert.Equal("Center", (string?)presentationRoot.Attribute("HorizontalAlignment"));
-        Assert.Equal("Center", (string?)presentationRoot.Attribute("VerticalAlignment"));
+        if (
+            presentationRoot.Name.LocalName
+                is "StackPanel" or "UniformGrid" or "FlourishTextBlock"
+        )
+        {
+            Assert.Equal("Center", (string?)presentationRoot.Attribute("HorizontalAlignment"));
+            Assert.Equal("Center", (string?)presentationRoot.Attribute("VerticalAlignment"));
+            Assert.Null(presentationRoot.Attribute("Width"));
+            Assert.Null(presentationRoot.Attribute("Height"));
+            return;
+        }
 
-        var width = Assert.IsType<XAttribute>(presentationRoot.Attribute("Width"));
-        var height = Assert.IsType<XAttribute>(presentationRoot.Attribute("Height"));
+        AssertOptionalPositiveDimension(presentationRoot, "Width");
+        AssertOptionalPositiveDimension(presentationRoot, "Height");
+    }
+
+    private static void AssertOptionalPositiveDimension(
+        XElement presentationRoot,
+        string attributeName
+    )
+    {
+        if (presentationRoot.Attribute(attributeName) is not { } dimension)
+        {
+            return;
+        }
+
         Assert.True(
             double.TryParse(
-                width.Value,
+                dimension.Value,
                 NumberStyles.Float,
                 CultureInfo.InvariantCulture,
-                out var widthValue
-            ) && double.IsFinite(widthValue) && widthValue > 0
-        );
-        Assert.True(
-            double.TryParse(
-                height.Value,
-                NumberStyles.Float,
-                CultureInfo.InvariantCulture,
-                out var heightValue
-            ) && double.IsFinite(heightValue) && heightValue > 0
+                out var value
+            ) && double.IsFinite(value) && value > 0
         );
     }
 }

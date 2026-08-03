@@ -43,7 +43,7 @@
   <Thickness x:Key="FlourishCardIconSpacingRight">16,0,0,0</Thickness>
   <Thickness x:Key="FlourishCardIconSpacingBottom">0,16,0,0</Thickness>
   <sys:Double x:Key="FlourishOutputCardMinHeight">72</sys:Double>
-  <Thickness x:Key="FlourishOutputCardPadding">12</Thickness>
+  <Thickness x:Key="FlourishOutputCardPadding">0</Thickness>
   <Thickness x:Key="FlourishOutputViewportPadding">12,8</Thickness>
   <sys:Double x:Key="FlourishActionCardMinHeight">72</sys:Double>
   <Thickness x:Key="FlourishActionCardPadding">16,12</Thickness>
@@ -62,7 +62,7 @@
   <Thickness x:Key="FlourishParagraphMargin">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishParagraphPadding">16,12</Thickness>
   <Thickness x:Key="FlourishCodeSpacePeerMargin">0,16,0,0</Thickness>
-  <Thickness x:Key="FlourishCodeSpaceContentMargin">0,0,40,0</Thickness>
+  <Thickness x:Key="FlourishCodeSpaceContentMargin">0,0,76,0</Thickness>
   <Thickness x:Key="FlourishPresenterCopyPadding">20</Thickness>
   <Thickness x:Key="FlourishPresenterContentSpacing">0,8,0,0</Thickness>
   <Thickness x:Key="FlourishPresenterBodySpacing">0,16,0,0</Thickness>

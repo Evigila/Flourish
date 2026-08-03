@@ -127,10 +127,10 @@ internal static class TitleBarVisualAssets
 
         if (right < left || bottom < top)
         {
-            return Freeze(source);
+            return FreezeBitmap(bitmap);
         }
 
-        return Freeze(
+        return FreezeBitmap(
             new CroppedBitmap(
                 bitmap,
                 new Int32Rect(left, top, right - left + 1, bottom - top + 1)
@@ -171,5 +171,11 @@ internal static class TitleBarVisualAssets
         }
 
         return value;
+    }
+
+    private static BitmapSource FreezeBitmap(BitmapSource value)
+    {
+        RenderOptions.SetBitmapScalingMode(value, BitmapScalingMode.HighQuality);
+        return Freeze(value);
     }
 }

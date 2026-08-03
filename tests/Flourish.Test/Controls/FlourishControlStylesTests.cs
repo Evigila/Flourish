@@ -1,6 +1,9 @@
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -122,7 +125,7 @@ public sealed class FlourishControlStylesTests
                             FlourishTextRole.Caption or FlourishTextRole.Status =>
                                 (12d, 14d, 1d, FontWeights.Regular),
                             FlourishTextRole.Icon =>
-                                (16d, 16d, 0d, FontWeights.Regular),
+                                (22d, 22d, 0d, FontWeights.Regular),
                             FlourishTextRole.CardTitle =>
                                 (16d, 20d, 2d, FontWeights.Bold),
                             FlourishTextRole.SectionTitle =>
@@ -182,9 +185,10 @@ public sealed class FlourishControlStylesTests
                 window.UpdateLayout();
 
                 Assert.Equal("Segoe MDL2 Assets", iconText.FontFamily.Source);
-                Assert.Equal(16d, iconText.FontSize);
-                Assert.Equal(16d, iconText.LineHeight);
+                Assert.Equal(22d, iconText.FontSize);
+                Assert.Equal(22d, iconText.LineHeight);
                 Assert.Equal(new Thickness(), iconText.Padding);
+                Assert.Equal(22d, iconButton.IconSize);
 
                 foreach (var (control, partName) in new (WpfControl Control, string PartName)[]
                 {
@@ -202,7 +206,7 @@ public sealed class FlourishControlStylesTests
                         host.GetValue(TextElement.FontSizeProperty)
                     );
                     Assert.Equal("Segoe MDL2 Assets", fontFamily.Source);
-                    Assert.Equal(16d, fontSize);
+                    Assert.Equal(22d, fontSize);
                 }
             }
             finally
@@ -461,7 +465,12 @@ public sealed class FlourishControlStylesTests
                     "ContentHost"
                 );
                 Assert.Equal(Visibility.Visible, uncheckedIcon.Visibility);
-                Assert.Equal(Visibility.Collapsed, uncheckedIndicator.Visibility);
+                Assert.Equal(Visibility.Visible, uncheckedIndicator.Visibility);
+                Assert.Equal(Brushes.Transparent, uncheckedIndicator.Background);
+                Assert.Same(
+                    verticalUnchecked.TryFindResource("FlourishNeutralStroke1Brush"),
+                    uncheckedIndicator.BorderBrush
+                );
                 Assert.Equal(1, Grid.GetRow(uncheckedContent));
                 Assert.Equal(0, Grid.GetColumn(uncheckedContent));
                 Assert.Equal(2, Grid.GetColumnSpan(uncheckedContent));
@@ -497,8 +506,26 @@ public sealed class FlourishControlStylesTests
                     Visibility.Visible,
                     AssertTemplatePart<WpfPath>(verticalChecked, "CheckMark").Visibility
                 );
+                var checkedIndicator = AssertTemplatePart<Border>(
+                    verticalChecked,
+                    "IndicatorChrome"
+                );
+                Assert.Equal(Brushes.Transparent, checkedIndicator.Background);
+                Assert.Equal(Brushes.Transparent, checkedIndicator.BorderBrush);
+                Assert.Same(
+                    verticalChecked.TryFindResource("FlourishPrimaryForegroundBrush"),
+                    AssertTemplatePart<WpfPath>(verticalChecked, "CheckMark").Stroke
+                );
                 Assert.Equal(
-                    Visibility.Visible,
+                    14d,
+                    AssertTemplatePart<WpfPath>(verticalChecked, "CheckMark").Width
+                );
+                Assert.Equal(
+                    11d,
+                    AssertTemplatePart<WpfPath>(verticalChecked, "CheckMark").Height
+                );
+                Assert.Equal(
+                    Visibility.Collapsed,
                     AssertTemplatePart<Border>(
                         verticalIndeterminate,
                         "IndeterminateMark"
@@ -511,6 +538,34 @@ public sealed class FlourishControlStylesTests
                         "CheckMark"
                     ).Visibility
                 );
+                var indeterminateIndicator = AssertTemplatePart<Border>(
+                    verticalIndeterminate,
+                    "IndicatorChrome"
+                );
+                Assert.Equal(Brushes.Transparent, indeterminateIndicator.Background);
+                Assert.Same(
+                    verticalIndeterminate.TryFindResource(
+                        "FlourishPrimaryForegroundBrush"
+                    ),
+                    indeterminateIndicator.BorderBrush
+                );
+                Assert.Equal(new CornerRadius(4), indeterminateIndicator.CornerRadius);
+
+                Assert.True(horizontal.Focus());
+                Assert.True(horizontal.IsKeyboardFocusWithin);
+                horizontal.IsChecked = true;
+                window.UpdateLayout();
+                var horizontalSurface = AssertTemplatePart<Border>(
+                    horizontal,
+                    "SurfaceChrome"
+                );
+                Assert.Same(
+                    horizontal.TryFindResource("FlourishPrimaryForegroundBrush"),
+                    horizontalSurface.BorderBrush
+                );
+                horizontal.IsChecked = false;
+                window.UpdateLayout();
+                Assert.Equal(Brushes.Transparent, horizontalSurface.BorderBrush);
             }
             finally
             {
@@ -764,7 +819,7 @@ public sealed class FlourishControlStylesTests
                     window.UpdateLayout();
                     header.ApplyTemplate();
 
-                    var presenter = AssertTemplatePart<ContentPresenter>(
+                    var presenter = AssertTemplatePart<PresenterPresentationHost>(
                         header,
                         "PresentationHost"
                     );
@@ -873,7 +928,7 @@ public sealed class FlourishControlStylesTests
                 presentationlessWindow.UpdateLayout();
                 presentationlessHeader.ApplyTemplate();
 
-                var presenter = AssertTemplatePart<ContentPresenter>(
+                var presenter = AssertTemplatePart<PresenterPresentationHost>(
                     presentationlessHeader,
                     "PresentationHost"
                 );
@@ -1017,7 +1072,7 @@ public sealed class FlourishControlStylesTests
                     splitRight,
                     "PresentationSurface"
                 );
-                var splitPresentation = AssertTemplatePart<ContentPresenter>(
+                var splitPresentation = AssertTemplatePart<PresenterPresentationHost>(
                     splitRight,
                     "PresentationHost"
                 );
@@ -1144,7 +1199,7 @@ public sealed class FlourishControlStylesTests
                     AssertTemplatePart<FlourishTextBlock>(topDown, "ContentHost")
                         .TextAlignment
                 );
-                var overlayPresentation = AssertTemplatePart<ContentPresenter>(
+                var overlayPresentation = AssertTemplatePart<PresenterPresentationHost>(
                     overlay,
                     "PresentationHost"
                 );
@@ -1156,7 +1211,7 @@ public sealed class FlourishControlStylesTests
                     VerticalAlignment.Stretch,
                     overlayPresentation.VerticalAlignment
                 );
-                var absentPresentation = AssertTemplatePart<ContentPresenter>(
+                var absentPresentation = AssertTemplatePart<PresenterPresentationHost>(
                     overlayWithoutPresentation,
                     "PresentationHost"
                 );
@@ -1220,7 +1275,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(new Thickness(), emptyBody.Margin);
                 Assert.Equal(
                     Visibility.Collapsed,
-                    AssertTemplatePart<ContentPresenter>(empty, "PresentationHost").Visibility
+                    AssertTemplatePart<PresenterPresentationHost>(empty, "PresentationHost").Visibility
                 );
                 Assert.Equal(
                     Visibility.Collapsed,
@@ -1308,7 +1363,7 @@ public sealed class FlourishControlStylesTests
         {
             const string code = "public static void Main()\r\n{\r\n    Run();\r\n}";
             string? copiedText = null;
-            var codeSpace = new CodeSpace { Text = code };
+            var codeSpace = new InteractiveCodeSpace { Text = code };
             codeSpace.ClipboardWriter = value => copiedText = value;
             var window = CreateWindow(codeSpace);
 
@@ -1319,6 +1374,10 @@ public sealed class FlourishControlStylesTests
                 codeSpace.ApplyTemplate();
 
                 Assert.Equal(new Thickness(), codeSpace.Margin);
+                Assert.False(codeSpace.IsExpanded);
+                Assert.Equal(72d, codeSpace.MinHeight);
+                Assert.Equal(72d, codeSpace.Height);
+                Assert.Equal(72d, codeSpace.ActualHeight, precision: 3);
                 Assert.Equal(new Thickness(16, 12, 16, 12), codeSpace.Padding);
                 Assert.Null(codeSpace.Background);
                 Assert.Same(
@@ -1333,6 +1392,34 @@ public sealed class FlourishControlStylesTests
                 Assert.Same(codeSpace.BorderBrush, surface.BorderBrush);
                 Assert.Equal(codeSpace.BorderThickness, surface.BorderThickness);
                 Assert.Equal(new CornerRadius(8), surface.CornerRadius);
+
+                var collapsedLabel = AssertTemplatePart<FlourishTextBlock>(
+                    codeSpace,
+                    "CollapsedLabel"
+                );
+                var codeViewport = AssertTemplatePart<CustomScrollViewer>(
+                    codeSpace,
+                    "CodeViewport"
+                );
+                var expandedActions = AssertTemplatePart<StackPanel>(
+                    codeSpace,
+                    "ExpandedActions"
+                );
+                Assert.Equal("View code", collapsedLabel.Text);
+                Assert.Equal(Visibility.Visible, collapsedLabel.Visibility);
+                Assert.Equal(Visibility.Collapsed, codeViewport.Visibility);
+                Assert.Equal(Visibility.Collapsed, expandedActions.Visibility);
+                Assert.True(CodeSpace.ExpandCommand.CanExecute(null, codeSpace));
+                Assert.False(CodeSpace.CollapseCommand.CanExecute(null, codeSpace));
+
+                codeSpace.RaiseSurfaceClick();
+                window.UpdateLayout();
+                Assert.True(codeSpace.IsExpanded);
+                Assert.True(double.IsNaN(codeSpace.Height));
+                Assert.Equal(Visibility.Collapsed, collapsedLabel.Visibility);
+                Assert.Equal(Visibility.Visible, codeViewport.Visibility);
+                Assert.Equal(Visibility.Visible, expandedActions.Visibility);
+                Assert.True(codeSpace.ActualHeight > 72d);
 
                 var textHost = AssertTemplatePart<System.Windows.Controls.TextBlock>(
                     codeSpace,
@@ -1353,11 +1440,24 @@ public sealed class FlourishControlStylesTests
                     codeSpace,
                     "PART_CopyButton"
                 );
+                var collapseButton = AssertTemplatePart<FlourishButton>(
+                    codeSpace,
+                    "PART_CollapseButton"
+                );
+                Assert.Equal(
+                    new[] { collapseButton, copyButton },
+                    expandedActions.Children.Cast<FlourishButton>()
+                );
+                Assert.Same(CodeSpace.CollapseCommand, collapseButton.Command);
+                Assert.Same(codeSpace, collapseButton.CommandTarget);
+                Assert.Equal("\uE70E", collapseButton.Icon);
+                Assert.Equal(16d, collapseButton.IconSize);
+                Assert.Equal("Collapse code", AutomationProperties.GetName(collapseButton));
+                Assert.Equal("Collapse code", collapseButton.ToolTip);
                 Assert.Same(ApplicationCommands.Copy, copyButton.Command);
                 Assert.Same(codeSpace, copyButton.CommandTarget);
                 Assert.Equal("\uE8C8", copyButton.Icon);
-                Assert.Equal(HorizontalAlignment.Right, copyButton.HorizontalAlignment);
-                Assert.Equal(VerticalAlignment.Top, copyButton.VerticalAlignment);
+                Assert.Equal(16d, copyButton.IconSize);
                 Assert.Equal(ButtonVariant.Elevated, copyButton.Variant);
                 Assert.Equal("Copy code", AutomationProperties.GetName(copyButton));
                 Assert.Equal("Copy code", copyButton.ToolTip);
@@ -1365,6 +1465,52 @@ public sealed class FlourishControlStylesTests
                 Assert.True(ApplicationCommands.Copy.CanExecute(null, codeSpace));
                 ApplicationCommands.Copy.Execute(null, codeSpace);
                 Assert.Equal(code, copiedText);
+                Assert.True(codeSpace.IsCopyConfirmed);
+                window.UpdateLayout();
+                Assert.Equal("\uE73E", copyButton.Icon);
+                Assert.Equal("Copied", AutomationProperties.GetName(copyButton));
+                Assert.Equal("Copied", copyButton.ToolTip);
+                Assert.Equal(TimeSpan.FromMilliseconds(1500), CodeSpace.CopyConfirmationDuration);
+
+                codeSpace.ResetCopyConfirmation();
+                window.UpdateLayout();
+                Assert.False(codeSpace.IsCopyConfirmed);
+                Assert.Equal("\uE8C8", copyButton.Icon);
+                Assert.Equal("Copy code", AutomationProperties.GetName(copyButton));
+                Assert.Equal("Copy code", copyButton.ToolTip);
+
+                codeSpace.ClipboardWriter = _ => throw new ExternalException();
+                ApplicationCommands.Copy.Execute(null, codeSpace);
+                window.UpdateLayout();
+                Assert.False(codeSpace.IsCopyConfirmed);
+                Assert.Equal("\uE8C8", copyButton.Icon);
+
+                copiedText = null;
+                CodeSpace.CollapseCommand.Execute(null, codeSpace);
+                window.UpdateLayout();
+                Assert.False(codeSpace.IsExpanded);
+                Assert.Null(copiedText);
+                Assert.Equal(72d, codeSpace.ActualHeight, precision: 3);
+                Assert.Equal(Visibility.Collapsed, expandedActions.Visibility);
+
+                codeSpace.RaiseKeyboardToggle(Key.Enter);
+                Assert.True(codeSpace.IsExpanded);
+                codeSpace.RaiseKeyboardToggle(Key.Space);
+                Assert.False(codeSpace.IsExpanded);
+
+                var peer = UIElementAutomationPeer.CreatePeerForElement(codeSpace);
+                Assert.NotNull(peer);
+                Assert.Equal("CodeSpace", peer.GetClassName());
+                Assert.Equal(AutomationControlType.Group, peer.GetAutomationControlType());
+                var expandCollapse = Assert.IsAssignableFrom<IExpandCollapseProvider>(
+                    peer.GetPattern(PatternInterface.ExpandCollapse)
+                );
+                Assert.Equal(ExpandCollapseState.Collapsed, expandCollapse.ExpandCollapseState);
+                expandCollapse.Expand();
+                Assert.True(codeSpace.IsExpanded);
+                Assert.Equal(ExpandCollapseState.Expanded, expandCollapse.ExpandCollapseState);
+                expandCollapse.Collapse();
+                Assert.False(codeSpace.IsExpanded);
 
                 codeSpace.Text = string.Empty;
                 CommandManager.InvalidateRequerySuggested();
@@ -2032,6 +2178,73 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void CodeSpace_CanCollapseFalseBlocksUserCollapseButKeepsBoundStateAuthoritative()
+    {
+        StaTest.Run(() =>
+        {
+            var state = new ExpansionStateSource { Value = true };
+            var codeSpace = new InteractiveCodeSpace
+            {
+                CanCollapse = false,
+                Text = "var value = GetValue();",
+            };
+            System.Windows.Data.BindingOperations.SetBinding(
+                codeSpace,
+                CodeSpace.IsExpandedProperty,
+                new WpfBinding(nameof(ExpansionStateSource.Value))
+                {
+                    Source = state,
+                    Mode = System.Windows.Data.BindingMode.TwoWay,
+                }
+            );
+            var window = CreateWindow(codeSpace);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                codeSpace.ApplyTemplate();
+
+                var collapseButton = AssertTemplatePart<FlourishButton>(
+                    codeSpace,
+                    "PART_CollapseButton"
+                );
+                Assert.True(codeSpace.IsExpanded);
+                Assert.False(codeSpace.CanCollapse);
+                Assert.Equal(Visibility.Collapsed, collapseButton.Visibility);
+                Assert.False(CodeSpace.CollapseCommand.CanExecute(null, codeSpace));
+
+                CodeSpace.CollapseCommand.Execute(null, codeSpace);
+                codeSpace.RaiseKeyboardToggle(Key.Space);
+                Assert.True(codeSpace.IsExpanded);
+                Assert.True(state.Value);
+
+                var peer = UIElementAutomationPeer.CreatePeerForElement(codeSpace);
+                Assert.NotNull(peer);
+                var expandCollapse = Assert.IsAssignableFrom<IExpandCollapseProvider>(
+                    peer.GetPattern(PatternInterface.ExpandCollapse)
+                );
+                Assert.Throws<InvalidOperationException>(() => expandCollapse.Collapse());
+                Assert.Equal(ExpandCollapseState.Expanded, expandCollapse.ExpandCollapseState);
+
+                state.Value = false;
+                window.UpdateLayout();
+                Assert.False(codeSpace.IsExpanded);
+                Assert.Equal(72d, codeSpace.ActualHeight, precision: 3);
+
+                codeSpace.RaiseKeyboardToggle(Key.Enter);
+                Assert.True(codeSpace.IsExpanded);
+                Assert.True(state.Value);
+                Assert.Equal(Visibility.Collapsed, collapseButton.Visibility);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void CardButton_CardLikeVariantsUseTheSharedCardOutline()
     {
         StaTest.Run(() =>
@@ -2204,9 +2417,14 @@ public sealed class FlourishControlStylesTests
     {
         StaTest.Run(() =>
         {
-            var shortCodeSpace = new CodeSpace { Text = "var usage = new Example();" };
+            var shortCodeSpace = new CodeSpace
+            {
+                IsExpanded = true,
+                Text = "var usage = new Example();",
+            };
             var longCodeSpace = new CodeSpace
             {
+                IsExpanded = true,
                 Text = string.Join(
                     Environment.NewLine,
                     Enumerable.Repeat("var usage = new Example();", 20)
@@ -2246,7 +2464,7 @@ public sealed class FlourishControlStylesTests
                         presenter,
                         "PresentationSurface"
                     );
-                    var host = AssertTemplatePart<ContentPresenter>(
+                    var host = AssertTemplatePart<PresenterPresentationHost>(
                         presenter,
                         "PresentationHost"
                     );
@@ -2346,8 +2564,16 @@ public sealed class FlourishControlStylesTests
                 Variant = ActionCardVariant.Vertical,
             };
             var empty = new ActionCard { Width = 520, Title = "Presenterless" };
+            var compactGlyph = new ActionCard
+            {
+                Width = 520,
+                Icon = "\uE707",
+                Title = "Window position",
+                Content = "Center the shell on its current display.",
+                Body = new FlourishButton { Content = "Center" },
+            };
             var window = CreateWindow(
-                new StackPanel { Children = { card, vertical, empty } }
+                new StackPanel { Children = { card, compactGlyph, vertical, empty } }
             );
 
             try
@@ -2357,6 +2583,7 @@ public sealed class FlourishControlStylesTests
                 card.ApplyTemplate();
                 vertical.ApplyTemplate();
                 empty.ApplyTemplate();
+                compactGlyph.ApplyTemplate();
 
                 Assert.Equal(ActionCardVariant.Horizontal, card.Variant);
                 Assert.Equal(new Thickness(16, 12, 16, 12), card.Padding);
@@ -2395,8 +2622,23 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(VerticalAlignment.Center, copy.VerticalAlignment);
                 Assert.Equal(VerticalAlignment.Center, action.VerticalAlignment);
                 Assert.Equal(new Thickness(8, 0, 24, 0), icon.Margin);
+                Assert.Equal(22d, icon.Width);
                 Assert.Equal(iconContent, icon.Content);
                 Assert.Same(actionContent, action.Content);
+                var compactIcon = AssertTemplatePart<ContentPresenter>(
+                    compactGlyph,
+                    "IconHost"
+                );
+                var compactCopy = AssertTemplatePart<StackPanel>(
+                    compactGlyph,
+                    "CopyHost"
+                );
+                Assert.Equal(22d, compactIcon.Width);
+                Assert.Equal(
+                    copy.TranslatePoint(new Point(), card).X,
+                    compactCopy.TranslatePoint(new Point(), compactGlyph).X,
+                    precision: 3
+                );
                 var title = AssertTemplatePart<FlourishTextBlock>(card, "TitleHost");
                 var description = AssertTemplatePart<FlourishTextBlock>(
                     card,
@@ -2426,6 +2668,7 @@ public sealed class FlourishControlStylesTests
                 Assert.Equal(HorizontalAlignment.Left, verticalCopy.HorizontalAlignment);
                 Assert.Equal(HorizontalAlignment.Left, verticalBody.HorizontalAlignment);
                 Assert.Equal(new Thickness(0, 0, 0, 16), verticalIcon.Margin);
+                Assert.True(double.IsNaN(verticalIcon.Width));
                 Assert.Equal(new Thickness(0, 16, 0, 0), verticalBody.Margin);
                 Assert.Same(verticalAction, verticalBody.Content);
 
@@ -2477,7 +2720,7 @@ public sealed class FlourishControlStylesTests
                 window.UpdateLayout();
 
                 Assert.Equal(72d, outputCard.MinHeight);
-                Assert.Equal(new Thickness(12), outputCard.Padding);
+                Assert.Equal(new Thickness(), outputCard.Padding);
                 Assert.Equal("Consolas", outputCard.FontFamily.Source);
                 Assert.Same(
                     outputCard.TryFindResource("FlourishCardBackgroundBrush"),
@@ -2501,7 +2744,7 @@ public sealed class FlourishControlStylesTests
 
                 Assert.Equal(new CornerRadius(8), surface.CornerRadius);
                 Assert.Equal(outputCard.Padding, surface.Padding);
-                Assert.Equal(new CornerRadius(6), viewport.CornerRadius);
+                Assert.Equal(new CornerRadius(8), viewport.CornerRadius);
                 Assert.Same(
                     outputCard.TryFindResource("FlourishOutputViewportBackgroundBrush"),
                     viewport.Background
@@ -2950,6 +3193,57 @@ public sealed class FlourishControlStylesTests
         );
 
         return formattedText.WidthIncludingTrailingWhitespace;
+    }
+
+    private sealed class InteractiveCodeSpace : CodeSpace
+    {
+        internal void RaiseSurfaceClick()
+        {
+            var args = new MouseButtonEventArgs(
+                Mouse.PrimaryDevice,
+                Environment.TickCount,
+                MouseButton.Left
+            )
+            {
+                RoutedEvent = Mouse.MouseUpEvent,
+                Source = this,
+            };
+            OnMouseLeftButtonUp(args);
+        }
+
+        internal void RaiseKeyboardToggle(Key key)
+        {
+            var source = PresentationSource.FromVisual(this);
+            Assert.NotNull(source);
+            var args = new System.Windows.Input.KeyEventArgs(
+                Keyboard.PrimaryDevice,
+                source,
+                Environment.TickCount,
+                key
+            )
+            {
+                RoutedEvent = Keyboard.KeyDownEvent,
+                Source = this,
+            };
+            OnKeyDown(args);
+        }
+    }
+
+    private sealed class ExpansionStateSource : DependencyObject
+    {
+        internal static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register(
+                nameof(Value),
+                typeof(bool),
+                typeof(ExpansionStateSource),
+                new PropertyMetadata(false)
+            );
+
+        public bool Value
+        {
+            get => (bool)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
+        }
     }
 
     private static T? FindVisualDescendant<T>(DependencyObject root, string name)

@@ -102,7 +102,7 @@
           Title="Standard list"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -113,7 +113,7 @@
           Title="Borderless list"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:ListBox&#xA;  Appearance=&quot;Borderless&quot;&#xA;  IsCompact=&quot;False&quot;&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Workspace&quot;&#xA;    IsGroupHeader=&quot;True&quot; /&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Refresh&quot;&#xA;    IsCommandItem=&quot;True&quot; /&gt;&#xA;&lt;/flourish:ListBox&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ListBox&#xA;  Appearance=&quot;Borderless&quot;&#xA;  IsCompact=&quot;False&quot;&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Workspace&quot;&#xA;    IsGroupHeader=&quot;True&quot; /&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Refresh&quot;&#xA;    IsCommandItem=&quot;True&quot; /&gt;&#xA;&lt;/flourish:ListBox&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

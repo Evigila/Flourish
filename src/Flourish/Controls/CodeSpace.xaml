@@ -13,11 +13,22 @@
       CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
-      <Grid>
+      <Grid Background="Transparent">
+        <controls:FlourishTextBlock
+          x:Name="CollapsedLabel"
+          Style="{DynamicResource FlourishControlTextBlockStyle}"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Foreground="{DynamicResource FlourishPrimaryForegroundBrush}"
+          Role="CardTitle"
+          Text="View code"
+        />
         <controls:ScrollViewer
+          x:Name="CodeViewport"
           Background="Transparent"
           BorderThickness="0"
           HorizontalScrollBarVisibility="Auto"
+          Visibility="Collapsed"
           VerticalScrollBarVisibility="Auto"
         >
           <TextBlock
@@ -32,22 +43,59 @@
             TextWrapping="NoWrap"
           />
         </controls:ScrollViewer>
-        <controls:Button
-          x:Name="PART_CopyButton"
-          AutomationProperties.Name="Copy code"
-          Command="{x:Static ApplicationCommands.Copy}"
-          CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+        <StackPanel
+          x:Name="ExpandedActions"
           HorizontalAlignment="Right"
+          Orientation="Horizontal"
+          Visibility="Collapsed"
           VerticalAlignment="Top"
-          Icon="&#xE8C8;"
-          ToolTip="Copy code"
-          Variant="Elevated"
-        />
+        >
+          <controls:Button
+            x:Name="PART_CollapseButton"
+            Margin="0,0,4,0"
+            AutomationProperties.Name="Collapse code"
+            Command="{x:Static controls:CodeSpace.CollapseCommand}"
+            CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+            Icon="&#xE70E;"
+            IconSize="16"
+            ToolTip="Collapse code"
+            Variant="Elevated"
+          />
+          <controls:Button
+            x:Name="PART_CopyButton"
+            AutomationProperties.Name="Copy code"
+            Command="{x:Static ApplicationCommands.Copy}"
+            CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+            Icon="&#xE8C8;"
+            IconSize="16"
+            ToolTip="Copy code"
+            Variant="Elevated"
+          />
+        </StackPanel>
       </Grid>
     </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsExpanded" Value="True">
+        <Setter TargetName="CollapsedLabel" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="CodeViewport" Property="Visibility" Value="Visible" />
+        <Setter TargetName="ExpandedActions" Property="Visibility" Value="Visible" />
+        <Setter Property="Cursor" Value="Arrow" />
+      </Trigger>
+      <Trigger Property="IsCopyConfirmed" Value="True">
+        <Setter TargetName="PART_CopyButton" Property="Icon" Value="&#xE73E;" />
+        <Setter TargetName="PART_CopyButton" Property="ToolTip" Value="Copied" />
+        <Setter TargetName="PART_CopyButton" Property="AutomationProperties.Name" Value="Copied" />
+      </Trigger>
+      <Trigger Property="CanCollapse" Value="False">
+        <Setter TargetName="PART_CollapseButton" Property="Visibility" Value="Collapsed" />
+        <Setter TargetName="PART_CollapseButton" Property="Margin" Value="0" />
+      </Trigger>
+    </ControlTemplate.Triggers>
   </ControlTemplate>
 
   <Style TargetType="{x:Type controls:CodeSpace}">
+    <Setter Property="MinHeight" Value="{DynamicResource FlourishActionCardMinHeight}" />
+    <Setter Property="Height" Value="{DynamicResource FlourishActionCardMinHeight}" />
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />
@@ -61,7 +109,14 @@
     <Setter Property="FontStyle" Value="Normal" />
     <Setter Property="FontWeight" Value="Bold" />
     <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Focusable" Value="True" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Template" Value="{StaticResource CodeSpaceTemplate}" />
+    <Style.Triggers>
+      <Trigger Property="IsExpanded" Value="True">
+        <Setter Property="Height" Value="Auto" />
+      </Trigger>
+    </Style.Triggers>
   </Style>
 </ResourceDictionary>

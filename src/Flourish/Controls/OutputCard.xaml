@@ -22,7 +22,7 @@
         x:Name="OutputViewport"
         Background="{DynamicResource FlourishOutputViewportBackgroundBrush}"
         ClipToBounds="True"
-        CornerRadius="{DynamicResource FlourishControlCornerRadius}"
+        CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
       >
         <controls:ScrollViewer
           x:Name="PART_OutputScrollViewer"

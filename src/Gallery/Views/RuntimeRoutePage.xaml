@@ -26,12 +26,10 @@
       >
         <flourish:Presenter.Presentation>
           <StackPanel
-            Width="360"
-            Height="160"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
           >
-            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,22,0,0" Text="PAGE INSTANCE" />
+            <flourish:FlourishTextBlock Role="FieldLabel" Text="PAGE INSTANCE" />
             <flourish:FlourishTextBlock x:Name="InstanceText" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
             <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
             <flourish:FlourishTextBlock x:Name="ParameterText" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />

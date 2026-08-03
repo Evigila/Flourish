@@ -103,7 +103,7 @@
           Title="Standard splitter"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;Grid&gt;&#xA;  &lt;Grid.ColumnDefinitions&gt;&#xA;    &lt;ColumnDefinition Width=&quot;*&quot; MinWidth=&quot;160&quot; /&gt;&#xA;    &lt;ColumnDefinition Width=&quot;Auto&quot; /&gt;&#xA;    &lt;ColumnDefinition Width=&quot;*&quot; MinWidth=&quot;240&quot; /&gt;&#xA;  &lt;/Grid.ColumnDefinitions&gt;&#xA;&#xA;  &lt;local:EditorPane /&gt;&#xA;  &lt;flourish:FlourishGridSplitter&#xA;    Grid.Column=&quot;1&quot;&#xA;    ResizeBehavior=&quot;PreviousAndNext&quot;&#xA;    ResizeDirection=&quot;Columns&quot; /&gt;&#xA;  &lt;local:PreviewPane Grid.Column=&quot;2&quot; /&gt;&#xA;&lt;/Grid&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;Grid&gt;&#xA;  &lt;Grid.ColumnDefinitions&gt;&#xA;    &lt;ColumnDefinition Width=&quot;*&quot; MinWidth=&quot;160&quot; /&gt;&#xA;    &lt;ColumnDefinition Width=&quot;Auto&quot; /&gt;&#xA;    &lt;ColumnDefinition Width=&quot;*&quot; MinWidth=&quot;240&quot; /&gt;&#xA;  &lt;/Grid.ColumnDefinitions&gt;&#xA;&#xA;  &lt;local:EditorPane /&gt;&#xA;  &lt;flourish:FlourishGridSplitter&#xA;    Grid.Column=&quot;1&quot;&#xA;    ResizeBehavior=&quot;PreviousAndNext&quot;&#xA;    ResizeDirection=&quot;Columns&quot; /&gt;&#xA;  &lt;local:PreviewPane Grid.Column=&quot;2&quot; /&gt;&#xA;&lt;/Grid&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -114,7 +114,7 @@
           Title="Navigation pane"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

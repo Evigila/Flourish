@@ -43,8 +43,6 @@
         >
           <flourish:Presenter.Presentation>
             <StackPanel
-              Width="240"
-              Height="104"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
             >
@@ -69,8 +67,6 @@
         >
           <flourish:Presenter.Presentation>
             <StackPanel
-              Width="240"
-              Height="104"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
             >
@@ -102,7 +98,7 @@
           Title="Input association"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

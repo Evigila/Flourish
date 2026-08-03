@@ -82,7 +82,7 @@
           Title="Bound value"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -93,7 +93,7 @@
           Title="Edit notifications"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:FlourishTextBox&#xA;  x:Name=&quot;NotesBox&quot;&#xA;  Height=&quot;96&quot;&#xA;  AcceptsReturn=&quot;True&quot;&#xA;  TextWrapping=&quot;Wrap&quot;&#xA;  TextChanged=&quot;NotesBox_TextChanged&quot; /&gt;&#xA;&#xA;private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)&#xA;{&#xA;    CharacterCount.Text = NotesBox.Text.Length.ToString();&#xA;}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishTextBox&#xA;  x:Name=&quot;NotesBox&quot;&#xA;  Height=&quot;96&quot;&#xA;  AcceptsReturn=&quot;True&quot;&#xA;  TextWrapping=&quot;Wrap&quot;&#xA;  TextChanged=&quot;NotesBox_TextChanged&quot; /&gt;&#xA;&#xA;private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)&#xA;{&#xA;    CharacterCount.Text = NotesBox.Text.Length.ToString();&#xA;}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

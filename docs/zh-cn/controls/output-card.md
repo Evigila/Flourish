@@ -5,7 +5,7 @@ description: 将操作消息追加到紧凑滚动历史中，同时避免输出�
 
 # OutputCard
 
-`OutputCard` 在同一份只读历史中显示原始消息、持续进度、完成结果与失败信息。它在标准卡片间距内提供适配主题的中性视口，使用紧凑文字，并在历史超过布局高度时滚动。
+`OutputCard` 在同一份只读历史中显示原始消息、持续进度、完成结果与失败信息。适配主题的中性视口会铺满整个表面，使用紧凑文字，并在历史超过布局高度时滚动。
 
 > [!IMPORTANT]
 > `OutputCard` 没有 `Title`、`Content`、`Icon` 或任意 `Body`。解释文案应放在所属 `Chunk` 中，操作应放在专用操作控件中，再将每个可观察结果追加为一条消息。
@@ -91,7 +91,7 @@ private void ClearOutput_Click(object sender, RoutedEventArgs e) =>
 
 ## 视口与排版
 
-输出视口使用更深的圆角中性灰色背景，并缩小外层间距，让消息占据更多卡片空间。输出文字使用紧凑的 Small 字号层级、独立的 `FlourishOutputFontFamily` 等宽字体（默认为 Consolas）以及随主题变化的绿色前景。需要不同输出样式时，可以在单个 `OutputCard` 上设置 `FontFamily` 或 `Foreground`。
+输出视口使用更深的圆角中性灰色背景且没有外层 Padding，因此它本身就是完整可见的卡片表面。输出文字使用紧凑的 Small 字号层级、独立的 `FlourishOutputFontFamily` 等宽字体（默认为 Consolas）以及随主题变化的绿色前景。需要不同输出样式时，可以在单个 `OutputCard` 上设置 `FontFamily` 或 `Foreground`。
 
 当周围章节和操作标签仍不足以明确输出含义时，应为控件设置 `AutomationProperties.Name`。
 

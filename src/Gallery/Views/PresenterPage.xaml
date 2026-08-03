@@ -100,8 +100,6 @@
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <StackPanel
-              Width="280"
-              Height="160"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Orientation="Horizontal"
@@ -125,8 +123,6 @@
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBlock
-              Width="280"
-              Height="160"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Role="Icon"
@@ -189,8 +185,6 @@
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
           <StackPanel
-            Width="280"
-            Height="160"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Orientation="Horizontal"
@@ -227,7 +221,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review recent activity.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Left&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Presenter&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review recent activity.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Left&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -238,7 +232,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review recent activity.&quot;&#xA;  PresenterMode=&quot;Split&quot;&gt;&#xA;  &lt;flourish:Presenter.Body&gt;&#xA;    &lt;flourish:Button Content=&quot;Open reports&quot; Variant=&quot;Filled&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Body&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Presenter&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review recent activity.&quot;&#xA;  PresenterMode=&quot;Split&quot;&gt;&#xA;  &lt;flourish:Presenter.Body&gt;&#xA;    &lt;flourish:Button Content=&quot;Open reports&quot; Variant=&quot;Filled&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Body&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -249,7 +243,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Release timeline&quot;&#xA;  Content=&quot;Review milestones before publishing.&quot;&#xA;  PresenterMode=&quot;TopDown&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/timeline.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Presenter&#xA;  Title=&quot;Release timeline&quot;&#xA;  Content=&quot;Review milestones before publishing.&quot;&#xA;  PresenterMode=&quot;TopDown&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/timeline.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -260,7 +254,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Presenter&#xA;  Title=&quot;Featured workspace&quot;&#xA;  Content=&quot;Open the workspace summary.&quot;&#xA;  PresenterMode=&quot;Overlay&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/workspace.png&quot; Stretch=&quot;UniformToFill&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Presenter&#xA;  Title=&quot;Featured workspace&quot;&#xA;  Content=&quot;Open the workspace summary.&quot;&#xA;  PresenterMode=&quot;Overlay&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:Presenter.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/workspace.png&quot; Stretch=&quot;UniformToFill&quot; /&gt;&#xA;  &lt;/flourish:Presenter.Presentation&gt;&#xA;&lt;/flourish:Presenter&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

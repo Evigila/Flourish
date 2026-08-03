@@ -174,7 +174,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Card&#xA;  Title=&quot;Build complete&quot;&#xA;  Content=&quot;All projects compiled successfully.&quot;&#xA;  Icon=&quot;&amp;#xE73E;&quot;&#xA;  Variant=&quot;Tonal&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Card&#xA;  Title=&quot;Build complete&quot;&#xA;  Content=&quot;All projects compiled successfully.&quot;&#xA;  Icon=&quot;&amp;#xE73E;&quot;&#xA;  Variant=&quot;Tonal&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

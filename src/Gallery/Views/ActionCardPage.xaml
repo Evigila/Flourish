@@ -124,7 +124,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Theme&quot;&#xA;  Content=&quot;Choose the application theme.&quot;&#xA;  Icon=&quot;&amp;#xE790;&quot;&#xA;  Variant=&quot;Horizontal&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishComboBox&#xA;      ItemsSource=&quot;{Binding Themes}&quot;&#xA;      SelectedItem=&quot;{Binding Theme}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Theme&quot;&#xA;  Content=&quot;Choose the application theme.&quot;&#xA;  Icon=&quot;&amp;#xE790;&quot;&#xA;  Variant=&quot;Horizontal&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishComboBox&#xA;      ItemsSource=&quot;{Binding Themes}&quot;&#xA;      SelectedItem=&quot;{Binding Theme}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -135,7 +135,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Workspace name&quot;&#xA;  Content=&quot;Change the name shown in navigation.&quot;&#xA;  Icon=&quot;&amp;#xE8AC;&quot;&#xA;  Variant=&quot;Vertical&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishTextBox&#xA;      Width=&quot;220&quot;&#xA;      Text=&quot;{Binding WorkspaceName}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Workspace name&quot;&#xA;  Content=&quot;Change the name shown in navigation.&quot;&#xA;  Icon=&quot;&amp;#xE8AC;&quot;&#xA;  Variant=&quot;Vertical&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:FlourishTextBox&#xA;      Width=&quot;220&quot;&#xA;      Text=&quot;{Binding WorkspaceName}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

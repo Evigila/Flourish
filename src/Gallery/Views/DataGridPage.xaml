@@ -66,7 +66,7 @@
           Title="Define columns"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

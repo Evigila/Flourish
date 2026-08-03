@@ -42,7 +42,11 @@
             CornerRadius="{DynamicResource FlourishOverlayCornerRadius}"
           >
             <Grid>
-              <Image x:Name="ApplicationInfoLogoImage" Stretch="Uniform" />
+              <Image
+                x:Name="ApplicationInfoLogoImage"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Stretch="Uniform"
+              />
               <control:FlourishTextBlock
                 x:Name="ApplicationInfoLogoFallback"
                 Style="{DynamicResource FlourishControlTextBlockStyle}"

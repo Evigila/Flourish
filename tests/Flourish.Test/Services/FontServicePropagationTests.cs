@@ -62,13 +62,13 @@ public sealed class FontServicePropagationTests
             Assert.All(AllKeys, key => Assert.Same(before[key], after[key]));
             Assert.Equal(12d, resources["FlourishFontSizeSmall"]);
             Assert.Equal(14d, resources["FlourishFontSizeStandard"]);
-            Assert.Equal(16d, resources["FlourishFontSizeIcon"]);
+            Assert.Equal(22d, resources["FlourishFontSizeIcon"]);
             Assert.Equal(16d, resources["FlourishFontSizeLarge"]);
             Assert.Equal(24d, resources["FlourishFontSizeExtraLarge"]);
             Assert.Equal(32d, resources["FlourishFontSizeHeaderSize"]);
             Assert.Equal(14d, resources["FlourishLineHeightSmall"]);
             Assert.Equal(16d, resources["FlourishLineHeightStandard"]);
-            Assert.Equal(16d, resources["FlourishLineHeightIcon"]);
+            Assert.Equal(22d, resources["FlourishLineHeightIcon"]);
             Assert.Equal(20d, resources["FlourishLineHeightLarge"]);
             Assert.Equal(29d, resources["FlourishLineHeightExtraLarge"]);
             Assert.Equal(37d, resources["FlourishLineHeightHeaderSize"]);

@@ -71,7 +71,7 @@
           Title="Compose a document"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

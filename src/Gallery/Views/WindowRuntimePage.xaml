@@ -25,7 +25,7 @@
               <flourish:Button Click="SetDemoSize_Click" Content="Set 1100 × 760" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xF2D9;" Content="Center the shell on its current display." Title="Window position">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE707;" Content="Center the shell on its current display." Title="Window position">
             <flourish:ActionCard.Body>
               <flourish:Button Click="CenterWindow_Click" Content="Center" />
             </flourish:ActionCard.Body>

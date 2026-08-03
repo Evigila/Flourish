@@ -43,8 +43,6 @@
         >
           <flourish:Presenter.Presentation>
             <StackPanel
-              Width="240"
-              Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
             >
@@ -75,8 +73,6 @@
         >
           <flourish:Presenter.Presentation>
             <StackPanel
-              Width="240"
-              Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
             >
@@ -105,7 +101,7 @@
           Title="Exclusive choice"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="{Binding UsageCode, ElementName=RootPage}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -116,7 +112,7 @@
           Title="Command selection"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:FlourishRadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishRadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

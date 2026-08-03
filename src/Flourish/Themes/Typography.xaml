@@ -14,7 +14,7 @@
     14
   </sys:Double>
   <sys:Double x:Key="FlourishFontSizeIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    16
+    22
   </sys:Double>
   <sys:Double x:Key="FlourishIconFontSizeNavigation" xmlns:sys="clr-namespace:System;assembly=mscorlib">18</sys:Double>
   <sys:Double x:Key="FlourishIconFontSizeTitlebar" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
@@ -40,7 +40,7 @@
     16
   </sys:Double>
   <sys:Double x:Key="FlourishLineHeightIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    16
+    22
   </sys:Double>
   <sys:Double x:Key="FlourishLineHeightLarge" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     20

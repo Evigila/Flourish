@@ -35,6 +35,15 @@ public enum ButtonVariant
 /// </summary>
 public class Button : WpfButton
 {
+    /// <summary>Identifies the <see cref="IconSize" /> dependency property.</summary>
+    public static readonly DependencyProperty IconSizeProperty = DependencyProperty.Register(
+        nameof(IconSize),
+        typeof(double),
+        typeof(Button),
+        new FrameworkPropertyMetadata(22d),
+        IsIconSizeValid
+    );
+
     /// <summary>Identifies the <see cref="Icon" /> dependency property.</summary>
     public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
         nameof(Icon),
@@ -78,6 +87,13 @@ public class Button : WpfButton
         set => SetValue(IconProperty, value);
     }
 
+    /// <summary>Gets or sets the icon glyph size in device-independent pixels.</summary>
+    public double IconSize
+    {
+        get => (double)GetValue(IconSizeProperty);
+        set => SetValue(IconSizeProperty, value);
+    }
+
     /// <inheritdoc />
     public override void OnApplyTemplate()
     {
@@ -88,5 +104,10 @@ public class Button : WpfButton
     private static bool IsVariantValid(object value)
     {
         return value is ButtonVariant variant && Enum.IsDefined(variant);
+    }
+
+    private static bool IsIconSizeValid(object value)
+    {
+        return value is double size && double.IsFinite(size) && size > 0;
     }
 }

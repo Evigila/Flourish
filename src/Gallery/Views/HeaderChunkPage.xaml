@@ -129,7 +129,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports and their current status.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports and their current status.&quot;&#xA;  PresenterMode=&quot;Split&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/reports.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -140,7 +140,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Workspace&quot;&#xA;  Content=&quot;Manage the active workspace.&quot;&#xA;  PresenterMode=&quot;TopDown&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/workspace.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Workspace&quot;&#xA;  Content=&quot;Manage the active workspace.&quot;&#xA;  PresenterMode=&quot;TopDown&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/workspace.png&quot; Stretch=&quot;Uniform&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -151,7 +151,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Release ready&quot;&#xA;  Content=&quot;Review the final package before publishing.&quot;&#xA;  PresenterMode=&quot;Overlay&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Body&gt;&#xA;    &lt;flourish:Button Content=&quot;Review release&quot; Variant=&quot;Filled&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Body&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/release.png&quot; Stretch=&quot;UniformToFill&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:HeaderChunk&#xA;  Title=&quot;Release ready&quot;&#xA;  Content=&quot;Review the final package before publishing.&quot;&#xA;  PresenterMode=&quot;Overlay&quot;&#xA;  PresenterPosition=&quot;Right&quot;&gt;&#xA;  &lt;flourish:HeaderChunk.Body&gt;&#xA;    &lt;flourish:Button Content=&quot;Review release&quot; Variant=&quot;Filled&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Body&gt;&#xA;  &lt;flourish:HeaderChunk.Presentation&gt;&#xA;    &lt;Image Source=&quot;Assets/release.png&quot; Stretch=&quot;UniformToFill&quot; /&gt;&#xA;  &lt;/flourish:HeaderChunk.Presentation&gt;&#xA;&lt;/flourish:HeaderChunk&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

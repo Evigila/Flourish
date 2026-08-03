@@ -98,7 +98,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:Chunk&#xA;  Title=&quot;Build output&quot;&#xA;  Content=&quot;Messages are appended as the build progresses.&quot;&gt;&#xA;  &lt;flourish:OutputCard&#xA;    x:Name=&quot;BuildOutput&quot;&#xA;    AutomationProperties.Name=&quot;Build output&quot; /&gt;&#xA;&lt;/flourish:Chunk&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Chunk&#xA;  Title=&quot;Build output&quot;&#xA;  Content=&quot;Messages are appended as the build progresses.&quot;&gt;&#xA;  &lt;flourish:OutputCard&#xA;    x:Name=&quot;BuildOutput&quot;&#xA;    AutomationProperties.Name=&quot;Build output&quot; /&gt;&#xA;&lt;/flourish:Chunk&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -109,7 +109,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="BuildOutput.WriteLine(&quot;Build started.&quot;);&#xA;BuildOutput.WriteLine(&quot;Project Flourish compiled.&quot;);&#xA;BuildOutput.WriteLine(&quot;Build completed.&quot;);&#xA;&#xA;// Begin a deliberately new output session.&#xA;BuildOutput.Clear();" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="BuildOutput.WriteLine(&quot;Build started.&quot;);&#xA;BuildOutput.WriteLine(&quot;Project Flourish compiled.&quot;);&#xA;BuildOutput.WriteLine(&quot;Build completed.&quot;);&#xA;&#xA;// Begin a deliberately new output session.&#xA;BuildOutput.Clear();" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

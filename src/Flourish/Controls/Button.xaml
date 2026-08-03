@@ -74,6 +74,8 @@
           <ContentPresenter
             x:Name="IconHost"
             Style="{DynamicResource FlourishIconContentPresenterStyle}"
+            TextElement.FontSize="{TemplateBinding IconSize}"
+            TextBlock.LineHeight="{TemplateBinding IconSize}"
             VerticalAlignment="Center"
             Content="{TemplateBinding Icon}"
             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
@@ -214,6 +216,7 @@
     <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
+    <Setter Property="IconSize" Value="{DynamicResource FlourishFontSizeIcon}" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisualStyle}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />

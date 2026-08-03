@@ -11,7 +11,7 @@ description: 配置字体系列和 Flourish 六种字号层级；未显式选择
 
 ```csharp
 builder.ConfigShell(shell =>
-    shell.InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
+    shell.InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32));
 ```
 
 全局文本字体族、图标字体族与完整的六档字号默认作为同一偏好组恢复和更新。需要代码配置的全局比例始终优先时，传入 `usePersistedPreference: false`。页面专属覆盖仍由应用拥有，不会持久化。
@@ -50,7 +50,7 @@ Icon 是默认图标字号。由于 Segoe MDL2 的不同字形拥有不同的天
 ```csharp
 builder.ConfigShell(shell =>
     shell
-        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
         .InitOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,

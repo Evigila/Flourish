@@ -69,7 +69,7 @@
           Title="Configure the viewport"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:ScrollViewer&#xA;  x:Name=&quot;ContentViewport&quot;&#xA;  IsSmoothScrollingEnabled=&quot;True&quot;&#xA;  VerticalScrollBarVisibility=&quot;Auto&quot;&gt;&#xA;  &lt;StackPanel&gt;&#xA;    &lt;!-- Scrollable content --&gt;&#xA;  &lt;/StackPanel&gt;&#xA;&lt;/flourish:ScrollViewer&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ScrollViewer&#xA;  x:Name=&quot;ContentViewport&quot;&#xA;  IsSmoothScrollingEnabled=&quot;True&quot;&#xA;  VerticalScrollBarVisibility=&quot;Auto&quot;&gt;&#xA;  &lt;StackPanel&gt;&#xA;    &lt;!-- Scrollable content --&gt;&#xA;  &lt;/StackPanel&gt;&#xA;&lt;/flourish:ScrollViewer&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -80,7 +80,7 @@
           Title="Control scrolling"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="// Move to a known section after navigation.&#xA;ContentViewport.ScrollToVerticalOffset(240);&#xA;&#xA;// Or return to the start.&#xA;ContentViewport.ScrollToTop();" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="// Move to a known section after navigation.&#xA;ContentViewport.ScrollToVerticalOffset(240);&#xA;&#xA;// Or return to the start.&#xA;ContentViewport.ScrollToTop();" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

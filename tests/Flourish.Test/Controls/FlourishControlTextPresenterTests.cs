@@ -143,7 +143,7 @@ public sealed class FlourishControlTextPresenterTests
                 );
                 var iconHost = FindTemplatePart<ContentPresenter>(button, "IconHost");
                 Assert.Same(iconStyle, iconHost.Style);
-                Assert.Equal(16, TextBlock.GetLineHeight(iconHost));
+                Assert.Equal(22, TextBlock.GetLineHeight(iconHost));
                 Assert.Equal(
                     LineStackingStrategy.BlockLineHeight,
                     TextBlock.GetLineStackingStrategy(iconHost)

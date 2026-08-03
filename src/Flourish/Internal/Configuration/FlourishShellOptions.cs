@@ -33,7 +33,7 @@ internal sealed class FlourishShellOptions
 
     public double FontSizeStandard { get; set; } = 14;
 
-    public double FontSizeIcon { get; set; } = 16;
+    public double FontSizeIcon { get; set; } = 22;
 
     public double FontSizeLarge { get; set; } = 16;
 

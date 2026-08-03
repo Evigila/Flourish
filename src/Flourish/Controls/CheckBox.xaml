@@ -75,13 +75,13 @@
           <Grid>
             <Path
               x:Name="CheckMark"
-              Width="10"
-              Height="8"
+              Width="14"
+              Height="11"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Data="M 0,4 L 3.25,7.25 L 10,0"
               Stretch="Fill"
-              Stroke="{DynamicResource FlourishForegroundOnPrimaryBrush}"
+              Stroke="{DynamicResource FlourishPrimaryForegroundBrush}"
               StrokeEndLineCap="Round"
               StrokeLineJoin="Round"
               StrokeStartLineCap="Round"
@@ -94,7 +94,7 @@
               Height="2"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Background="{DynamicResource FlourishForegroundOnPrimaryBrush}"
+              Background="{DynamicResource FlourishPrimaryForegroundBrush}"
               CornerRadius="1"
               Visibility="Collapsed"
             />
@@ -149,14 +149,6 @@
 
       <MultiTrigger>
         <MultiTrigger.Conditions>
-          <Condition Property="Variant" Value="Vertical" />
-          <Condition Property="IsChecked" Value="False" />
-        </MultiTrigger.Conditions>
-        <Setter TargetName="IndicatorChrome" Property="Visibility" Value="Collapsed" />
-      </MultiTrigger>
-
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
           <Condition Property="IsMouseOver" Value="True" />
           <Condition Property="controls:HoverReveal.IsEnabled" Value="False" />
         </MultiTrigger.Conditions>
@@ -171,17 +163,15 @@
         <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
         <Setter TargetName="SurfaceChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
         <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
-        <Setter TargetName="IndicatorChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
-        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
+        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="Transparent" />
         <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
       </Trigger>
       <Trigger Property="IsChecked" Value="{x:Null}">
         <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
         <Setter TargetName="SurfaceChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
         <Setter TargetName="IconHost" Property="TextElement.Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
-        <Setter TargetName="IndicatorChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
-        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundBrush}" />
-        <Setter TargetName="IndeterminateMark" Property="Visibility" Value="Visible" />
+        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
+        <Setter TargetName="IndicatorChrome" Property="CornerRadius" Value="4" />
       </Trigger>
 
       <MultiTrigger>
@@ -189,25 +179,19 @@
           <Condition Property="IsChecked" Value="True" />
           <Condition Property="IsPressed" Value="True" />
         </MultiTrigger.Conditions>
-        <Setter TargetName="IndicatorChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
-        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
+        <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource FlourishPrimaryPressedBrush}" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="IsChecked" Value="{x:Null}" />
           <Condition Property="IsPressed" Value="True" />
         </MultiTrigger.Conditions>
-        <Setter TargetName="IndicatorChrome" Property="Background" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
-        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryBackgroundPressedBrush}" />
+        <Setter TargetName="IndicatorChrome" Property="BorderBrush" Value="{DynamicResource FlourishPrimaryPressedBrush}" />
       </MultiTrigger>
 
       <Trigger Property="IsPressed" Value="True">
         <Setter TargetName="HoverChrome" Property="Opacity" Value="0" />
         <Setter TargetName="PressedChrome" Property="Opacity" Value="1" />
-      </Trigger>
-
-      <Trigger Property="IsKeyboardFocusWithin" Value="True">
-        <Setter TargetName="SurfaceChrome" Property="BorderBrush" Value="{DynamicResource FlourishFocusStrokeBrush}" />
       </Trigger>
 
       <Trigger Property="IsEnabled" Value="False">

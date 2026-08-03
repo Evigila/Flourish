@@ -197,7 +197,7 @@
           PresenterPosition="Left"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace Text="&lt;flourish:CardButton&#xA;  Command=&quot;{Binding OpenReportsCommand}&quot;&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  Icon=&quot;&amp;#xE8A5;&quot;&#xA;  Variant=&quot;Elevated&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CardButton&#xA;  Command=&quot;{Binding OpenReportsCommand}&quot;&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  Icon=&quot;&amp;#xE8A5;&quot;&#xA;  Variant=&quot;Elevated&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>

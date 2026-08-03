@@ -11,7 +11,7 @@ Use `InitGlobalFont` inside `ConfigShell` to set the font family and six size ti
 
 ```csharp
 builder.ConfigShell(shell =>
-    shell.InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32));
+    shell.InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32));
 ```
 
 The global text family, icon family, and complete six-size scale are restored and updated as one preference group by default. Pass `usePersistedPreference: false` to keep the configured global scale authoritative. Page-specific overrides remain application-owned and are not persisted.
@@ -50,7 +50,7 @@ Use `InitOverrideFont<TPage>` when one page needs a different initial text famil
 ```csharp
 builder.ConfigShell(shell =>
     shell
-        .InitGlobalFont("Segoe UI", 12, 14, 16, 16, 24, 32)
+        .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
         .InitOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,

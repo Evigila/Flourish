@@ -134,7 +134,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
         string fontFamily = "Microsoft Yahei",
         double smallFontSize = 12,
         double standardFontSize = 14,
-        double iconFontSize = 16,
+        double iconFontSize = 22,
         double largeFontSize = 16,
         double extraLargeFontSize = 24,
         double headerSizeFontSize = 32,

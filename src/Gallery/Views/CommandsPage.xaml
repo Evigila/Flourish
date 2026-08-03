@@ -142,8 +142,6 @@
       >
         <flourish:Presenter.Presentation>
           <StackPanel
-            Width="360"
-            Height="240"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
           >

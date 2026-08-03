@@ -311,6 +311,12 @@ public sealed class FlourishPublicControlsTests
             Assert.Equal(string.Empty, paragraph.Text);
             Assert.IsAssignableFrom<FlourishTextBlock>(paragraph);
             Assert.Equal(string.Empty, codeSpace.Text);
+            Assert.True(codeSpace.CanCollapse);
+            Assert.False(codeSpace.IsExpanded);
+            Assert.False(codeSpace.IsCopyConfirmed);
+            Assert.Equal(false, CodeSpace.IsExpandedProperty.DefaultMetadata.DefaultValue);
+            Assert.IsType<System.Windows.Input.RoutedUICommand>(CodeSpace.ExpandCommand);
+            Assert.IsType<System.Windows.Input.RoutedUICommand>(CodeSpace.CollapseCommand);
             Assert.Equal(CardVariant.Standard, card.Variant);
             Assert.Equal(string.Empty, card.Title);
             Assert.Equal(string.Empty, card.Content);
@@ -871,6 +877,15 @@ public sealed class FlourishPublicControlsTests
             Assert.Null(typeof(CodeSpace).GetCustomAttribute<ContentPropertyAttribute>());
             Assert.Equal(typeof(CodeSpace), CodeSpace.TextProperty.OwnerType);
             Assert.Equal(string.Empty, CodeSpace.TextProperty.DefaultMetadata.DefaultValue);
+            Assert.Equal(typeof(CodeSpace), CodeSpace.IsExpandedProperty.OwnerType);
+            Assert.Equal(typeof(CodeSpace), CodeSpace.CanCollapseProperty.OwnerType);
+            Assert.Equal(true, CodeSpace.CanCollapseProperty.DefaultMetadata.DefaultValue);
+            Assert.Equal(false, CodeSpace.IsExpandedProperty.DefaultMetadata.DefaultValue);
+            Assert.True(
+                Assert.IsType<FrameworkPropertyMetadata>(
+                    CodeSpace.IsExpandedProperty.GetMetadata(typeof(CodeSpace))
+                ).BindsTwoWayByDefault
+            );
 
             var dataContext = new object();
             var firstParagraph = new Paragraph { Text = "First" };
@@ -1002,6 +1017,9 @@ public sealed class FlourishPublicControlsTests
                 Enum.GetNames<PresenterMode>()
             );
             Assert.Throws<ArgumentException>(() => button.Variant = (ButtonVariant)(-1));
+            Assert.Throws<ArgumentException>(() => button.IconSize = 0);
+            Assert.Throws<ArgumentException>(() => button.IconSize = double.NaN);
+            Assert.Throws<ArgumentException>(() => button.IconSize = double.PositiveInfinity);
             Assert.Throws<ArgumentException>(() =>
                 new Presenter().PresenterMode = (PresenterMode)(-1)
             );

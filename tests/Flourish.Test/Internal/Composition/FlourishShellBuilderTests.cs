@@ -138,7 +138,7 @@ public sealed class FlourishShellBuilderTests
         Assert.Equal("Segoe UI", options.FontFamily);
         Assert.Equal(12, options.FontSizeSmall);
         Assert.Equal(14, options.FontSizeStandard);
-        Assert.Equal(16, options.FontSizeIcon);
+        Assert.Equal(22, options.FontSizeIcon);
         Assert.Equal(16, options.FontSizeLarge);
         Assert.Equal(24, options.FontSizeExtraLarge);
         Assert.Equal(32, options.FontSizeHeaderSize);
