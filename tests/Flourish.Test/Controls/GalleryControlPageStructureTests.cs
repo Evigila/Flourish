@@ -86,7 +86,7 @@ public sealed class GalleryControlPageStructureTests
                     presentation.Elements(),
                     element => element.Name.LocalName == "Grid"
                 );
-                AssertCanonicalCenteredPresentationRoot(fixedSurface);
+                AssertCanonicalPresentationRoot(fixedSurface);
                 var actionGroup = Assert.Single(
                     fixedSurface.Elements(),
                     element => element.Name.LocalName == "StackPanel"
@@ -132,7 +132,7 @@ public sealed class GalleryControlPageStructureTests
                 );
                 Assert.Equal("200", (string?)cardButton.Attribute("Width"));
                 Assert.Equal("120", (string?)cardButton.Attribute("Height"));
-                AssertCanonicalCenteredPresentationRoot(cardButton);
+                AssertCanonicalPresentationRoot(cardButton);
             }
         );
 
@@ -602,6 +602,66 @@ public sealed class GalleryControlPageStructureTests
     }
 
     [Fact]
+    public void PresenterFillExamples_DoNotConstrainTheirAutoSizedPresentationRoots()
+    {
+        var commandsPage = LoadPage("CommandsPage.xaml");
+        var registryPresenter = commandsPage
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Presenter"
+                && (string?)element.Attribute("Title") == "Registry state"
+            );
+        var registryRoot = Assert.Single(
+            registryPresenter
+                .Elements()
+                .Single(element => element.Name.LocalName == "Presenter.Presentation")
+                .Elements()
+        );
+
+        Assert.Equal("StackPanel", registryRoot.Name.LocalName);
+        Assert.Null(registryRoot.Attribute("HorizontalAlignment"));
+        Assert.Equal("Center", (string?)registryRoot.Attribute("VerticalAlignment"));
+        Assert.Null(registryRoot.Attribute("Width"));
+        Assert.Null(registryRoot.Attribute("Height"));
+        Assert.Contains(
+            registryRoot.Elements(),
+            element => element.Name.LocalName == "ListBox"
+        );
+
+        var presenterPage = LoadPage("PresenterPage.xaml");
+        var overlayPresenter = presenterPage
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Presenter"
+                && (string?)element.Attribute("PresenterMode") == "Overlay"
+            );
+        var overlayRoot = Assert.Single(
+            overlayPresenter
+                .Elements()
+                .Single(element => element.Name.LocalName == "Presenter.Presentation")
+                .Elements()
+        );
+
+        Assert.Equal("Grid", overlayRoot.Name.LocalName);
+        Assert.Null(overlayRoot.Attribute("HorizontalAlignment"));
+        Assert.Null(overlayRoot.Attribute("VerticalAlignment"));
+        Assert.Null(overlayRoot.Attribute("Width"));
+        Assert.Null(overlayRoot.Attribute("Height"));
+        var centeredOverlayGroup = Assert.Single(
+            overlayRoot.Elements(),
+            element => element.Name.LocalName == "StackPanel"
+        );
+        Assert.Equal(
+            "Center",
+            (string?)centeredOverlayGroup.Attribute("HorizontalAlignment")
+        );
+        Assert.Equal(
+            "Center",
+            (string?)centeredOverlayGroup.Attribute("VerticalAlignment")
+        );
+    }
+
+    [Fact]
     public void UsageSeparatesMarkupRuntimeAndAccessibilityContracts()
     {
         var outputUsage = LoadPage("OutputCardPage.xaml")
@@ -950,7 +1010,7 @@ public sealed class GalleryControlPageStructureTests
                             element => element.Name.LocalName == "Presenter.Presentation"
                         );
                         var presentationRoot = Assert.Single(presentation.Elements());
-                        AssertCanonicalCenteredPresentationRoot(presentationRoot);
+                        AssertCanonicalPresentationRoot(presentationRoot);
                         Assert.DoesNotContain(
                             presenter.Elements(),
                             element => element.Name.LocalName == "Presenter.Body"
@@ -985,7 +1045,7 @@ public sealed class GalleryControlPageStructureTests
                     continue;
                 }
 
-                AssertCanonicalCenteredPresentationRoot(presentationRoot);
+                AssertCanonicalPresentationRoot(presentationRoot);
                 Assert.DoesNotContain(
                     presentationRoot.DescendantsAndSelf(),
                     element => element.Name.LocalName == "Border"
@@ -1191,12 +1251,31 @@ public sealed class GalleryControlPageStructureTests
     private static XDocument LoadPage(string fileName) =>
         XDocument.Load(Path.Combine(ViewsRoot, fileName));
 
-    private static void AssertCanonicalCenteredPresentationRoot(XElement presentationRoot)
+    private static void AssertCanonicalPresentationRoot(XElement presentationRoot)
     {
-        if (
-            presentationRoot.Name.LocalName
-                is "StackPanel" or "UniformGrid" or "FlourishTextBlock"
-        )
+        if (presentationRoot.Name.LocalName == "StackPanel")
+        {
+            var horizontalAlignment = (string?)presentationRoot.Attribute(
+                "HorizontalAlignment"
+            );
+            if ((string?)presentationRoot.Attribute("Orientation") == "Horizontal")
+            {
+                Assert.Equal("Center", horizontalAlignment);
+            }
+            else
+            {
+                Assert.True(horizontalAlignment is null or "Center");
+            }
+            Assert.Equal(
+                "Center",
+                (string?)presentationRoot.Attribute("VerticalAlignment")
+            );
+            Assert.Null(presentationRoot.Attribute("Width"));
+            Assert.Null(presentationRoot.Attribute("Height"));
+            return;
+        }
+
+        if (presentationRoot.Name.LocalName is "UniformGrid" or "FlourishTextBlock")
         {
             Assert.Equal("Center", (string?)presentationRoot.Attribute("HorizontalAlignment"));
             Assert.Equal("Center", (string?)presentationRoot.Attribute("VerticalAlignment"));

@@ -142,7 +142,6 @@
       >
         <flourish:Presenter.Presentation>
           <StackPanel
-            HorizontalAlignment="Center"
             VerticalAlignment="Center"
           >
             <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />

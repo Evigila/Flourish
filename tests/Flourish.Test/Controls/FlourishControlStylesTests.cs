@@ -1290,6 +1290,92 @@ public sealed class FlourishControlStylesTests
     }
 
     [Fact]
+    public void Presenter_OverlayClipsEveryLayerToTheDynamicSurfaceCornerRadius()
+    {
+        StaTest.Run(() =>
+        {
+            var presenter = new Presenter
+            {
+                Width = 480,
+                Height = 260,
+                Title = "Overlay",
+                Content = "Every overlay layer remains inside the rounded surface.",
+                Presentation = new Border { Background = Brushes.CornflowerBlue },
+                PresenterMode = PresenterMode.Overlay,
+                PresenterPosition = PresenterPosition.Left,
+            };
+            var window = CreateWindow(presenter);
+
+            try
+            {
+                window.Show();
+                window.UpdateLayout();
+                presenter.ApplyTemplate();
+
+                var clipHost = AssertTemplatePart<Grid>(presenter, "PART_ClipHost");
+                var presentationSurface = AssertTemplatePart<Border>(
+                    presenter,
+                    "PresentationSurface"
+                );
+                var scrim = AssertTemplatePart<Border>(presenter, "OverlayScrim");
+                var copySurface = AssertTemplatePart<Border>(presenter, "CopySurface");
+                var roundedClip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
+
+                Assert.Same(clipHost, VisualTreeHelper.GetParent(presentationSurface));
+                Assert.Same(clipHost, VisualTreeHelper.GetParent(scrim));
+                Assert.Same(clipHost, VisualTreeHelper.GetParent(copySurface));
+                Assert.True(roundedClip.IsFrozen);
+                Assert.Equal(clipHost.RenderSize.Width, roundedClip.Bounds.Width, 3);
+                Assert.Equal(clipHost.RenderSize.Height, roundedClip.Bounds.Height, 3);
+                Assert.True(
+                    roundedClip.FillContains(
+                        new Point(
+                            clipHost.RenderSize.Width / 2,
+                            clipHost.RenderSize.Height / 2
+                        )
+                    )
+                );
+                Assert.False(roundedClip.FillContains(new Point(1, 1)));
+                Assert.False(
+                    roundedClip.FillContains(
+                        new Point(clipHost.RenderSize.Width - 1, 1)
+                    )
+                );
+                Assert.False(
+                    roundedClip.FillContains(
+                        new Point(1, clipHost.RenderSize.Height - 1)
+                    )
+                );
+                Assert.False(
+                    roundedClip.FillContains(
+                        new Point(
+                            clipHost.RenderSize.Width - 1,
+                            clipHost.RenderSize.Height - 1
+                        )
+                    )
+                );
+
+                presenter.Width = 560;
+                window.UpdateLayout();
+                window.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                    static () => { }
+                );
+
+                var resizedClip = Assert.IsType<RectangleGeometry>(clipHost.Clip);
+                Assert.NotSame(roundedClip, resizedClip);
+                Assert.True(resizedClip.IsFrozen);
+                Assert.Equal(clipHost.RenderSize.Width, resizedClip.Bounds.Width, 3);
+                Assert.Equal(clipHost.RenderSize.Height, resizedClip.Bounds.Height, 3);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void Document_RendersItsSubtleSurfaceAndParagraphUsesNormalizedLargeText()
     {
         StaTest.Run(() =>

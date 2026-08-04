@@ -4,8 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using System.Windows.Media;
+using ArkheideSystem.Flourish.Internal.Interaction;
 using WpfControl = System.Windows.Controls.Control;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
+using WpfOrientation = System.Windows.Controls.Orientation;
 using WpfPanel = System.Windows.Controls.Panel;
 using WpfSize = System.Windows.Size;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
@@ -23,8 +25,15 @@ namespace ArkheideSystem.Flourish.Controls;
 /// may be arranged in columns with peer Presenter controls.
 /// </remarks>
 [ContentProperty(nameof(Presentation))]
+[TemplatePart(Name = PartPresenterSurface, Type = typeof(Border))]
+[TemplatePart(Name = PartClipHost, Type = typeof(FrameworkElement))]
 public class Presenter : WpfControl
 {
+    private const string PartPresenterSurface = "PresenterSurface";
+    private const string PartClipHost = "PART_ClipHost";
+
+    private readonly RoundedClipCoordinator roundedClip = new();
+
     /// <summary>Identifies the <see cref="Title" /> dependency property.</summary>
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title),
@@ -128,8 +137,8 @@ public class Presenter : WpfControl
     /// <summary>
     /// Gets or sets the image, icon group, illustration, or other content being presented. This
     /// is the default XAML content property. Auto-sized surfaces fill the presentation region,
-    /// fixed content remains centered, and natural-size text or grouping panels are centered as
-    /// one visual group.
+    /// fixed content remains centered, and natural-size text or grouping panels remain centered
+    /// on their grouping axes. A vertical StackPanel fills the horizontal cross-axis by default.
     /// </summary>
     public object? Presentation
     {
@@ -169,6 +178,18 @@ public class Presenter : WpfControl
 
     /// <inheritdoc />
     protected override IEnumerator LogicalChildren => EnumerateLogicalChildren();
+
+    /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+        roundedClip.Detach();
+        base.OnApplyTemplate();
+
+        roundedClip.Attach(
+            GetTemplateChild(PartClipHost) as FrameworkElement,
+            GetTemplateChild(PartPresenterSurface) as Border
+        );
+    }
 
     private static bool IsPresenterModeValid(object value)
     {
@@ -221,7 +242,7 @@ public class Presenter : WpfControl
 /// <summary>
 /// Hosts presentation content without changing properties on the consumer-owned content tree.
 /// The host always fills its surface. Auto-sized ordinary content fills an axis, fixed content is
-/// centered, and natural-size grouping/text containers are centered by their desired bounds.
+/// centered, and natural-size grouping/text containers remain centered on their grouping axes.
 /// </summary>
 internal sealed class PresenterPresentationHost : FrameworkElement
 {
@@ -348,14 +369,22 @@ internal sealed class PresenterPresentationHost : FrameworkElement
             return true;
         }
 
-        return IsNaturalSizeContent(element);
+        return UsesNaturalSizeOnAxis(element, horizontal);
     }
 
-    private static bool IsNaturalSizeContent(FrameworkElement element)
+    private static bool UsesNaturalSizeOnAxis(FrameworkElement element, bool horizontal)
     {
-        if (element is TextBlock or StackPanel or WrapPanel or UniformGrid)
+        if (element is TextBlock or WrapPanel or UniformGrid)
         {
             return true;
+        }
+
+        if (element is StackPanel stackPanel)
+        {
+            // A vertical group uses the complete cross-axis so controls such as lists can
+            // stretch, while the group remains centered on its stacking axis. Horizontal
+            // icon/text groups retain natural bounds on both axes to keep their glyphs centered.
+            return !horizontal || stackPanel.Orientation == WpfOrientation.Horizontal;
         }
 
         return element is WpfPanel { Background: null } panel

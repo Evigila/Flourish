@@ -97,7 +97,7 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 
 ## 展示多个元素
 
-Presentation 接受一个 WPF 内容树，其宿主始终占满完整展示区域。普通自动尺寸表面沿横纵双轴填满；文本以及 `StackPanel`、`WrapPanel`、`UniformGrid` 等自然尺寸分组容器则按期望尺寸整体居中；显式固定尺寸的内容也保持居中。不要为了制造预览画布而给文本或分组容器添加大块空白 Width/Height，因为 WPF 仍会从该内部容器的起始边缘排列可见文字或子项。需要填满展示区域的 `CodeSpace` 必须设置 `IsExpanded="True"`，其默认折叠状态仍保持 72 DIP 高度。`HeaderChunk` 与 Presenter 共享同一套 Presentation 布局契约。不要在普通 `Presenter.Presentation` 内额外添加装饰性 `Border`，Presenter 已经提供了展示表面。
+Presentation 接受一个 WPF 内容树，其宿主始终占满完整展示区域。普通自动尺寸表面沿横纵双轴填满。默认的纵向 `StackPanel` 会填满横向交叉轴，使列表类子项能够使用完整宽度，同时整组内容仍按期望高度保持纵向居中；若纵向分组需要保留自然宽度，可显式设置 `HorizontalAlignment="Center"`。文本、横向 `StackPanel` 分组、`WrapPanel` 和 `UniformGrid` 仍按期望尺寸整体居中；显式固定尺寸的内容也保持居中。不要为了制造预览画布而给文本或分组容器添加大块空白 Width/Height，因为 WPF 仍会从该内部容器的起始边缘排列可见文字或子项。需要填满展示区域的 `CodeSpace` 必须设置 `IsExpanded="True"`，其默认折叠状态仍保持 72 DIP 高度。`HeaderChunk` 与 Presenter 共享同一套 Presentation 布局契约。Overlay 内容及其所有叠加层都会被裁剪到共享表面的圆角内。不要在普通 `Presenter.Presentation` 内额外添加装饰性 `Border`，Presenter 已经提供了展示表面。
 
 ```xml
 <flourish:Presenter

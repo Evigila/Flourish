@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Layout;
+using FlourishListBox = ArkheideSystem.Flourish.Controls.ListBox;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -46,6 +47,18 @@ public sealed class PresenterPresentationLayoutTests
                     CreateMarker(56, 36, new Thickness(0, 10, 0, 0)),
                 },
             };
+            var registryList = new FlourishListBox
+            {
+                MinHeight = 48,
+                MaxHeight = 80,
+                Margin = new Thickness(0, 10, 0, 0),
+                Items =
+                {
+                    "Registered command",
+                    "Registered shortcut",
+                },
+            };
+            verticalGroup.Children.Add(registryList);
             var textContent = new FlourishTextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -83,6 +96,11 @@ public sealed class PresenterPresentationLayoutTests
                 AssertCentered(fixedContent, fixedPresenter);
                 AssertVisibleChildrenCentered(horizontalGroup, horizontalPresenter);
                 AssertVisibleChildrenCentered(verticalGroup, verticalPresenter);
+                AssertVerticalGroupFillsCrossAxis(
+                    verticalGroup,
+                    registryList,
+                    verticalPresenter
+                );
                 AssertCentered(textContent, textPresenter);
                 Assert.True(
                     textContent.ActualHeight
@@ -100,6 +118,11 @@ public sealed class PresenterPresentationLayoutTests
                 AssertCentered(fixedContent, fixedPresenter);
                 AssertVisibleChildrenCentered(horizontalGroup, horizontalPresenter);
                 AssertVisibleChildrenCentered(verticalGroup, verticalPresenter);
+                AssertVerticalGroupFillsCrossAxis(
+                    verticalGroup,
+                    registryList,
+                    verticalPresenter
+                );
                 AssertCentered(textContent, textPresenter);
             }
             finally
@@ -252,6 +275,22 @@ public sealed class PresenterPresentationLayoutTests
             group,
             GetTemplatePart<Border>(presenter, "PresentationSurface")
         );
+    }
+
+    private static void AssertVerticalGroupFillsCrossAxis(
+        StackPanel group,
+        FrameworkElement stretchableChild,
+        Presenter presenter
+    )
+    {
+        var surface = GetTemplatePart<Border>(presenter, "PresentationSurface");
+        var groupOrigin = GetOrigin(group, surface);
+
+        Assert.Equal(Orientation.Vertical, group.Orientation);
+        Assert.Equal(0, groupOrigin.X, 3);
+        Assert.Equal(surface.ActualWidth, group.ActualWidth, 3);
+        Assert.Equal(group.ActualWidth, stretchableChild.ActualWidth, 3);
+        AssertClose((surface.ActualHeight - group.ActualHeight) / 2, groupOrigin.Y);
     }
 
     private static void AssertVisibleChildrenCentered(

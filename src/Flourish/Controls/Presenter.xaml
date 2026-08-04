@@ -13,7 +13,7 @@
       CornerRadius="{DynamicResource FlourishSurfaceCornerRadius}"
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
-      <Grid>
+      <Grid x:Name="PART_ClipHost">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />

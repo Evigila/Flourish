@@ -148,12 +148,7 @@
           <flourish:Button Content="Overlay action" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
-          <Grid
-            Width="320"
-            Height="220"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-          >
+          <Grid>
             <Grid.Background>
               <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Offset="0" Color="#0F6CBD" />

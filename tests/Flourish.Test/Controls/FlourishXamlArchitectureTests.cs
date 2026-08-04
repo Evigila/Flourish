@@ -879,6 +879,10 @@ public sealed class FlourishXamlArchitectureTests
                 (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
                     == "PresenterSurface"
             );
+        Assert.Equal(
+            "PART_ClipHost",
+            (string?)layoutGrid.Attribute(XNamespace.Get(XamlNamespace) + "Name")
+        );
         Assert.Equal("True", (string?)presenterSurface.Attribute("ClipToBounds"));
         Assert.Equal(
             "{DynamicResource FlourishSurfaceCornerRadius}",
