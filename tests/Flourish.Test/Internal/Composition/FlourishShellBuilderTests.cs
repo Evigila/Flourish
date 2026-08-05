@@ -34,6 +34,8 @@ public sealed class FlourishShellBuilderTests
         Assert.True(options.UsePersistedThemeColors);
         Assert.True(options.UsePersistedCornerRadius);
         Assert.True(options.UsePersistedNameOrder);
+        Assert.True(options.IsMaterialEffectEnabled);
+        Assert.Equal(MaterialEffect.Auto, options.MaterialEffect);
     }
 
     [Fact]
@@ -215,6 +217,23 @@ public sealed class FlourishShellBuilderTests
         Assert.Same(sut, result);
         Assert.False(options.IsMaterialEffectEnabled);
         Assert.Equal(MaterialEffect.None, options.MaterialEffect);
+    }
+
+    [Fact]
+    public void UseMaterialEffect_WithoutAnExplicitEffectUsesThePlatformDefaultRequest()
+    {
+        var options = new FlourishShellOptions
+        {
+            IsMaterialEffectEnabled = false,
+            MaterialEffect = MaterialEffect.None,
+        };
+        var sut = new FlourishShellBuilder(options);
+
+        var result = sut.UseMaterialEffect();
+
+        Assert.Same(sut, result);
+        Assert.True(options.IsMaterialEffectEnabled);
+        Assert.Equal(MaterialEffect.Auto, options.MaterialEffect);
     }
 
     [Fact]

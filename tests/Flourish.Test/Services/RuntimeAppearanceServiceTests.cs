@@ -301,7 +301,10 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void MaterialEffectService_TracksRequestedRuntimeStateWithoutOwner()
     {
-        IMaterialEffectService sut = new MaterialEffectService();
+        IMaterialEffectService sut = new MaterialEffectService(
+            null,
+            MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22621))
+        );
         var changes = new List<FlourishMaterialEffectChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -318,7 +321,10 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void MaterialEffectService_IgnoresRepeatedRequestedState()
     {
-        IMaterialEffectService sut = new MaterialEffectService();
+        IMaterialEffectService sut = new MaterialEffectService(
+            null,
+            MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22621))
+        );
         var changes = 0;
         sut.Changed += (_, _) => changes++;
 
@@ -328,6 +334,66 @@ public sealed class RuntimeAppearanceServiceTests
         sut.SetDarkMode(true);
 
         Assert.Equal(2, changes);
+    }
+
+    [Fact]
+    public void MaterialEffectService_AutoExposesTheResolvedPlatformEffect()
+    {
+        var options = new FlourishShellOptions
+        {
+            IsMaterialEffectEnabled = true,
+            MaterialEffect = MaterialEffect.Auto,
+        };
+        IMaterialEffectService windows11 = new MaterialEffectService(
+            options,
+            MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22621))
+        );
+        IMaterialEffectService windows10 = new MaterialEffectService(
+            options,
+            MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 19045))
+        );
+        IMaterialEffectService unsupported = new MaterialEffectService(
+            options,
+            default
+        );
+
+        Assert.Equal(MaterialEffect.Auto, windows11.CurrentEffect);
+        Assert.Equal(MaterialEffect.Mica, windows11.EffectiveEffect);
+        Assert.Equal(MaterialEffect.Acrylic, windows10.EffectiveEffect);
+        Assert.Equal(MaterialEffect.None, unsupported.EffectiveEffect);
+    }
+
+    [Fact]
+    public void MaterialEffectService_UnsupportedExplicitRequestThrowsWithoutChangingState()
+    {
+        var options = new FlourishShellOptions
+        {
+            IsMaterialEffectEnabled = true,
+            MaterialEffect = MaterialEffect.Auto,
+        };
+        IMaterialEffectService sut = new MaterialEffectService(
+            options,
+            MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 19045))
+        );
+        var changes = 0;
+        sut.Changed += (_, _) => changes++;
+
+        var exception = Assert.Throws<PlatformNotSupportedException>(() =>
+            sut.SetEffect(MaterialEffect.Mica)
+        );
+
+        Assert.Contains("Windows 11", exception.Message, StringComparison.Ordinal);
+        Assert.Equal(MaterialEffect.Auto, sut.CurrentEffect);
+        Assert.Equal(MaterialEffect.Acrylic, sut.EffectiveEffect);
+        Assert.Equal(MaterialEffect.Auto, options.MaterialEffect);
+        Assert.True(options.IsMaterialEffectEnabled);
+        Assert.Equal(0, changes);
+
+        sut.SetEffect(MaterialEffect.Acrylic);
+
+        Assert.Equal(MaterialEffect.Acrylic, sut.CurrentEffect);
+        Assert.Equal(MaterialEffect.Acrylic, options.MaterialEffect);
+        Assert.Equal(1, changes);
     }
 
     [Fact]

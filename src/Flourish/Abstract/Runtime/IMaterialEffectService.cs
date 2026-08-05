@@ -11,6 +11,12 @@ public interface IMaterialEffectService
     MaterialEffect CurrentEffect { get; }
 
     /// <summary>
+    /// Gets the concrete effect resolved from <see cref="CurrentEffect" /> for the current
+    /// operating system.
+    /// </summary>
+    MaterialEffect EffectiveEffect { get; }
+
+    /// <summary>
     /// Gets whether the requested material effect is currently applied.
     /// </summary>
     bool IsApplied { get; }
@@ -36,6 +42,9 @@ public interface IMaterialEffectService
     /// <summary>
     /// Applies or removes a material effect at runtime.
     /// </summary>
+    /// <exception cref="PlatformNotSupportedException">
+    /// The requested concrete effect is unavailable on the current operating system.
+    /// </exception>
     void SetEffect(MaterialEffect effect);
 
     /// <summary>

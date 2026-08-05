@@ -362,7 +362,11 @@
             Content="Choose the native shell backdrop."
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishComboBox x:Name="MaterialBox" Width="220" SelectionChanged="MaterialBox_SelectionChanged" />
+              <flourish:FlourishComboBox
+                x:Name="MaterialBox"
+                Width="220"
+                SelectionChanged="MaterialBox_SelectionChanged"
+              />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -378,7 +382,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="MaterialOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Request the backdrop, then match native chrome to the theme.&#10;material.SetEffect(MaterialEffect.Mica);&#10;material.SetDarkMode(theme.IsDark);&#10;&#10;var supported = material.IsSupported(MaterialEffect.Mica);" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Auto resolves to Mica on Windows 11, Acrylic on Windows 10,&#10;// and None on unsupported systems.&#10;material.SetEffect(MaterialEffect.Auto);&#10;material.SetDarkMode(theme.IsDark);&#10;&#10;// Concrete effects throw PlatformNotSupportedException when unavailable.&#10;if (material.IsSupported(MaterialEffect.MicaAlt))&#10;    material.SetEffect(MaterialEffect.MicaAlt);" />
       </StackPanel>
     </flourish:Chunk>
 

@@ -662,6 +662,38 @@ public sealed class GalleryControlPageStructureTests
     }
 
     [Fact]
+    public void AppearanceMaterialPickerDocumentsAutoAndDisablesUnsupportedOptions()
+    {
+        var page = LoadPage("AppearancePage.xaml");
+        var materialBox = page
+            .Descendants()
+            .Single(element =>
+                (string?)element.Attribute(XamlNamespace + "Name") == "MaterialBox"
+            );
+
+        Assert.Null(materialBox.Attribute("DisplayMemberPath"));
+        Assert.DoesNotContain(
+            materialBox.Descendants(),
+            element => element.Name.LocalName == "Style"
+        );
+
+        var materialChunk = page
+            .Descendants()
+            .Single(element =>
+                element.Name.LocalName == "Chunk"
+                && (string?)element.Attribute("Title") == "Window material"
+            );
+        var usage = Assert.Single(
+            materialChunk.Descendants(),
+            element => element.Name.LocalName == "CodeSpace"
+        );
+        var code = Assert.IsType<string>((string?)usage.Attribute("Text"));
+        Assert.Contains("MaterialEffect.Auto", code, StringComparison.Ordinal);
+        Assert.Contains("MaterialEffect.MicaAlt", code, StringComparison.Ordinal);
+        Assert.Contains("PlatformNotSupportedException", code, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void UsageSeparatesMarkupRuntimeAndAccessibilityContracts()
     {
         var outputUsage = LoadPage("OutputCardPage.xaml")

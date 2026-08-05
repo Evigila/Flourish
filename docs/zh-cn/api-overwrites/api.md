@@ -1465,6 +1465,21 @@ summary: 在支持时应用 Windows Mica 材质效果。
 ---
 
 ---
+uid: ArkheideSystem.Flourish.Abstract.MaterialEffect.Acrylic
+summary: 在 Windows 11 系统背景或 Windows 10 兼容后端中应用 Acrylic 材质效果。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.MaterialEffect.MicaAlt
+summary: 在支持时应用颜色更强的 Windows Mica Alt 材质效果。
+---
+
+---
+uid: ArkheideSystem.Flourish.Abstract.MaterialEffect.Auto
+summary: 根据操作系统自动选择 Mica、Acrylic 或不启用材质。
+---
+
+---
 uid: ArkheideSystem.Flourish.Abstract.NavigationPanelDirection
 summary: 指定导航面板显示在 Shell 的哪一侧。
 ---

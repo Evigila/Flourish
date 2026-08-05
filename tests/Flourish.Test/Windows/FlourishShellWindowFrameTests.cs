@@ -98,18 +98,18 @@ public sealed class FlourishShellWindowFrameTests
             frame.Apply(FlourishShellWindowFrameMode.Custom);
             window.Show();
             var handle = new WindowInteropHelper(window).Handle;
-            material.Attach(window, MaterialEffect.Mica);
+            material.Attach(window, MaterialEffect.Auto);
 
             try
             {
-                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
-                // Custom + Mica -> Native + Mica.
+                // Custom + platform material -> Native + platform material.
                 frame.Apply(FlourishShellWindowFrameMode.Native);
                 material.Reapply(window);
                 AssertNativeFrame(window, shellBorder, handle, frame.Chrome);
-                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 // Changing the effect while the custom chrome is detached must not leave
@@ -124,17 +124,17 @@ public sealed class FlourishShellWindowFrameTests
                 Assert.Equal(MaterialEffect.None, material.CurrentEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
-                // Exercise the inverse sequence: Native + None -> Native + Mica -> Custom + Mica.
+                // Exercise the inverse sequence through the current platform default.
                 frame.Apply(FlourishShellWindowFrameMode.Native);
                 material.Reapply(window);
-                material.SetEffect(MaterialEffect.Mica);
-                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                material.SetEffect(MaterialEffect.Auto);
+                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 frame.Apply(FlourishShellWindowFrameMode.Custom);
                 material.Reapply(window);
                 AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
-                Assert.Equal(MaterialEffect.Mica, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 material.SetEffect(MaterialEffect.None);
@@ -211,7 +211,7 @@ public sealed class FlourishShellWindowFrameTests
 
             try
             {
-                // Model the local transparent value used while Mica is active, then
+                // Model the local transparent value used while a material is active, then
                 // switch the palette before the effect is disabled.
                 window.Background = replacementBackground;
                 window.Resources[backgroundResourceKey] = currentThemeBackground;

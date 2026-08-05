@@ -19,7 +19,7 @@ builder.ConfigShell(shell =>
         .UseTips(enabled: true, delay: 200)
         .UseMotion()
         .UseSmoothScroll(enabled: true)
-        .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
+        .UseMaterialEffect(enabled: true, effect: MaterialEffect.Auto)
         .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
         .UseStatusBar();
 });
@@ -98,7 +98,7 @@ builder.ConfigShell(shell =>
         .UseTips(enabled: useFlourishTips, delay: 200)
         .UseMotion(!useStaticInterface)
         .UseSmoothScroll(useSmoothScrolling)
-        .UseMaterialEffect(useMaterial, MaterialEffect.Mica)
+        .UseMaterialEffect(useMaterial, MaterialEffect.Auto)
         .UseStatusBar(showStatusBar);
 });
 

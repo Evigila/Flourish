@@ -70,9 +70,9 @@ internal sealed class FlourishShellOptions
 
     public ResizeMode WindowResizeMode { get; set; } = ResizeMode.CanResize;
 
-    public MaterialEffect MaterialEffect { get; set; } = MaterialEffect.Mica;
+    public MaterialEffect MaterialEffect { get; set; } = MaterialEffect.Auto;
 
-    public bool IsMaterialEffectEnabled { get; set; }
+    public bool IsMaterialEffectEnabled { get; set; } = true;
 
     public bool IsThemeEnabled { get; set; }
 

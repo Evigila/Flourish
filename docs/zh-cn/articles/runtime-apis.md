@@ -68,7 +68,7 @@ public async ValueTask SaveEndpointAsync(
 | `IToolTipService` | 在原生 WPF 与 Flourish 呈现之间切换 Flourish 自有 Tooltip，并通过 `SetSettings` 修改 Flourish 呈现的首次显示延迟和生成边距；原生与第三方控件不受其控制。 |
 | `IScrollService` | 通过 `GetCurrent` 读取应用级滚动状态、通过 `SetSmoothScrollingEnabled` 修改平滑滚动并监听 `Changed`。本地设置的 `ScrollViewer.IsSmoothScrollingEnabled` 优先。 |
 | `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
-| `IMaterialEffectService` | 检查并应用 `MaterialEffect`，或修改沉浸式深色模式。 |
+| `IMaterialEffectService` | 查看请求值与实际材质、检查平台支持、应用 `Auto`、Mica、Acrylic、Mica Alt 或 `None`，并修改沉浸式深色模式；显式请求平台不支持的材质会抛出 `PlatformNotSupportedException`。 |
 
 每个 Shell 界面都通过其权威领域服务启用。例如，`ITitleBarService.SetEnabled`
 用于在 Flourish 自定义标题栏与 Windows 原生标题栏之间切换，而

@@ -1,6 +1,7 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Configuration;
@@ -174,6 +175,50 @@ public sealed class FlourishPreferenceConfigurationTests
 
         Assert.Equal("Reports", shell.InitialNavigationKey);
         Assert.Equal(typeof(ReportsPage), shell.InitialNavigationPageType);
+    }
+
+    [Fact]
+    public void Apply_MaterialPreferenceRestoresSupportedConcreteEffect()
+    {
+        var configuration = Build(
+            ("Flourish:Preferences:Appearance:Material:Enabled", "true"),
+            ("Flourish:Preferences:Appearance:Material:Effect", "Acrylic")
+        );
+        var shell = new FlourishShellOptions();
+
+        FlourishPreferenceConfiguration.Apply(
+            configuration,
+            new FlourishDataOptions(),
+            shell,
+            MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 19045))
+        );
+
+        Assert.True(shell.IsMaterialEffectEnabled);
+        Assert.Equal(MaterialEffect.Acrylic, shell.MaterialEffect);
+    }
+
+    [Fact]
+    public void Apply_UnsupportedPersistedMaterialFallsBackToAutoForTheCurrentPlatform()
+    {
+        var configuration = Build(
+            ("Flourish:Preferences:Appearance:Material:Enabled", "true"),
+            ("Flourish:Preferences:Appearance:Material:Effect", "MicaAlt")
+        );
+        var shell = new FlourishShellOptions();
+        var windows10 = MaterialEffectPlatform.FromWindowsVersion(
+            new Version(10, 0, 19045)
+        );
+
+        FlourishPreferenceConfiguration.Apply(
+            configuration,
+            new FlourishDataOptions(),
+            shell,
+            windows10
+        );
+
+        Assert.True(shell.IsMaterialEffectEnabled);
+        Assert.Equal(MaterialEffect.Auto, shell.MaterialEffect);
+        Assert.Equal(MaterialEffect.Acrylic, windows10.Resolve(shell.MaterialEffect));
     }
 
     private static IConfiguration Build(params (string Key, string Value)[] values) =>

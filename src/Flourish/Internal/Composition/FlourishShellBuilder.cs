@@ -81,7 +81,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
 
     public IFlourishShellBuilder UseMaterialEffect(
         bool enabled = true,
-        MaterialEffect effect = MaterialEffect.Mica,
+        MaterialEffect effect = MaterialEffect.Auto,
         bool usePersistedPreference = true
     )
     {

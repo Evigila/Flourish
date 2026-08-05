@@ -86,7 +86,7 @@ internal static class Program
                     .InitGlobalFont() // Init uniform global font family and sizes
                     .UseCenterContent() // Use centered width restricted content
                     .UseDynamicToolbar() // Able to create toolbar items dynamically
-                    .UseMaterialEffect() // Use windows DWM material effect for background
+                    .UseMaterialEffect() // Use the current Windows default material backdrop
                     .UseMotion() // Use flourish style motion for interactions
                     .UseNavigation() // Able to use navigation panel and its functionality
                     .UseSmoothScroll() // Use smooth scrolling with global scrollviewer

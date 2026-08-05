@@ -68,7 +68,7 @@ public async ValueTask SaveEndpointAsync(
 | `IToolTipService` | Switch Flourish-owned tooltips between native WPF and Flourish presentation, and change the Flourish initial delay and spawn margin with `SetSettings`; native and third-party controls are outside its scope. |
 | `IScrollService` | Read the active application-wide scrolling settings with `GetCurrent`, change smooth scrolling with `SetSmoothScrollingEnabled`, and observe `Changed`. A local `ScrollViewer.IsSmoothScrollingEnabled` value takes precedence. |
 | `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
-| `IMaterialEffectService` | Test support and apply a `MaterialEffect`, or change immersive dark mode. |
+| `IMaterialEffectService` | Inspect requested and effective material values, test platform support, apply `Auto`, Mica, Acrylic, Mica Alt, or `None`, and change immersive dark mode. A concrete unsupported request throws `PlatformNotSupportedException`. |
 
 Each shell surface is enabled through its authoritative domain service. For example,
 `ITitleBarService.SetEnabled` switches between the Flourish custom title bar and the native

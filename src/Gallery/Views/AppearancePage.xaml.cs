@@ -16,6 +16,7 @@ public partial class AppearancePage : Page
     private readonly IScrollService scroll;
     private readonly IAppearanceService appearance;
     private readonly IContentLayoutService contentLayout;
+    private readonly IReadOnlyList<FlourishComboBoxItem> materialOptions;
     private bool isRefreshing;
 
     public AppearancePage(
@@ -33,10 +34,18 @@ public partial class AppearancePage : Page
         this.scroll = scroll;
         this.appearance = appearance;
         this.contentLayout = contentLayout;
+        materialOptions =
+        [
+            CreateMaterialOption(MaterialEffect.Auto),
+            CreateMaterialOption(MaterialEffect.None),
+            CreateMaterialOption(MaterialEffect.Mica),
+            CreateMaterialOption(MaterialEffect.Acrylic),
+            CreateMaterialOption(MaterialEffect.MicaAlt),
+        ];
         InitializeComponent();
 
         ThemeBox.ItemsSource = Enum.GetValues<FlourishTheme>();
-        MaterialBox.ItemsSource = Enum.GetValues<MaterialEffect>();
+        MaterialBox.ItemsSource = materialOptions;
 
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
@@ -188,12 +197,22 @@ public partial class AppearancePage : Page
 
     private void MaterialBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (!CanApplyImmediately || MaterialBox.SelectedItem is not MaterialEffect effect)
+        if (
+            !CanApplyImmediately
+            || MaterialBox.SelectedItem is not FlourishComboBoxItem
+            {
+                Tag: MaterialEffect effect,
+            }
+        )
         {
             return;
         }
 
-        Execute(() => material.SetEffect(effect), MaterialOutput, FormatMaterialOutput);
+        Execute(
+            () => material.SetEffect(effect),
+            MaterialOutput,
+            FormatMaterialOutput
+        );
     }
 
     private void MaterialDarkModeBox_Changed(object sender, RoutedEventArgs e)
@@ -394,7 +413,9 @@ public partial class AppearancePage : Page
                 PageOverrideHeaderSizeFontSizeBox.Text = string.Empty;
             }
 
-            MaterialBox.SelectedItem = material.CurrentEffect;
+            MaterialBox.SelectedItem = materialOptions.Single(option =>
+                Equals(option.Tag, material.CurrentEffect)
+            );
             MaterialDarkModeBox.IsChecked = material.IsDarkMode;
             SmoothScrollingBox.IsChecked =
                 scroll.GetCurrent().IsSmoothScrollingEnabled;
@@ -433,7 +454,23 @@ public partial class AppearancePage : Page
     }
 
     private string FormatMaterialOutput() =>
-        $"Window material updated: requested {material.CurrentEffect}; supported {material.IsSupported(material.CurrentEffect)}; applied {material.IsApplied}; dark mode {material.IsDarkMode}.";
+        $"Window material updated: requested {material.CurrentEffect}; effective {material.EffectiveEffect}; supported {material.IsSupported(material.CurrentEffect)}; applied {material.IsApplied}; dark mode {material.IsDarkMode}.";
+
+    private FlourishComboBoxItem CreateMaterialOption(MaterialEffect effect)
+    {
+        var isSupported = material.IsSupported(effect);
+        return new FlourishComboBoxItem
+        {
+            Tag = effect,
+            Content = effect == MaterialEffect.Auto
+                ? "Auto (system default)"
+                : isSupported
+                    ? effect.ToString()
+                    : $"{effect} (unsupported)",
+            IsEnabled = isSupported,
+            ToolTip = isSupported ? null : "This material is unavailable on this Windows version.",
+        };
+    }
 
     private string FormatAppearanceOutput()
     {

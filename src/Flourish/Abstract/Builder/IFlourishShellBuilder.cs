@@ -17,7 +17,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 ///          .UseTips(enabled: true, delay: 200)
 ///          .UseMotion()
 ///          .UseSmoothScroll()
-///          .UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica)
+///          .UseMaterialEffect(enabled: true, effect: MaterialEffect.Auto)
 ///          .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
 ///          .UseStatusBar();
 /// });
@@ -104,12 +104,15 @@ public interface IFlourishShellBuilder
     /// Enables or disables the shell material effect and selects the effect to use.
     /// </summary>
     /// <param name="enabled">A value indicating whether the material effect should be enabled.</param>
-    /// <param name="effect">The material effect applied to the shell window.</param>
+    /// <param name="effect">
+    /// The material effect applied to the shell window. Auto selects Mica on Windows 11,
+    /// Acrylic on Windows 10, and no material on unsupported systems.
+    /// </param>
     /// <param name="usePersistedPreference">Whether the persisted user preference is restored and updated.</param>
     /// <returns>The current builder for chained configuration.</returns>
     IFlourishShellBuilder UseMaterialEffect(
         bool enabled = true,
-        MaterialEffect effect = MaterialEffect.Mica,
+        MaterialEffect effect = MaterialEffect.Auto,
         bool usePersistedPreference = true
     );
 

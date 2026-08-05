@@ -34,7 +34,8 @@ internal static class FlourishPreferenceConfiguration
     public static void Apply(
         IConfiguration configuration,
         FlourishDataOptions data,
-        FlourishShellOptions shell
+        FlourishShellOptions shell,
+        MaterialEffectPlatform? materialPlatform = null
     )
     {
         ArgumentNullException.ThrowIfNull(configuration);
@@ -53,7 +54,11 @@ internal static class FlourishPreferenceConfiguration
         ApplyWindow(configuration, shell);
         ApplyNavigation(configuration, shell);
         ApplyMotion(configuration, shell);
-        ApplyAppearance(configuration, shell);
+        ApplyAppearance(
+            configuration,
+            shell,
+            materialPlatform ?? MaterialEffectPlatform.Current
+        );
         ApplyFontAndLayout(configuration, shell);
 
         if (
@@ -289,7 +294,11 @@ internal static class FlourishPreferenceConfiguration
         }
     }
 
-    private static void ApplyAppearance(IConfiguration configuration, FlourishShellOptions shell)
+    private static void ApplyAppearance(
+        IConfiguration configuration,
+        FlourishShellOptions shell,
+        MaterialEffectPlatform materialPlatform
+    )
     {
         if (
             shell.UsePersistedMaterialEffect
@@ -305,8 +314,12 @@ internal static class FlourishPreferenceConfiguration
             )
         )
         {
-            shell.MaterialEffect = material;
-            shell.IsMaterialEffectEnabled = materialEnabled && material != MaterialEffect.None;
+            shell.MaterialEffect =
+                materialEnabled && !materialPlatform.IsSupported(material)
+                    ? MaterialEffect.Auto
+                    : material;
+            shell.IsMaterialEffectEnabled =
+                materialEnabled && shell.MaterialEffect != MaterialEffect.None;
         }
 
         if (

@@ -10,17 +10,26 @@ using MediaColor = System.Windows.Media.Color;
 
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class MaterialEffectService(FlourishShellOptions? options = null)
-    : IMaterialEffectService
+internal sealed class MaterialEffectService : IMaterialEffectService
 {
     private const int Succeeded = 0;
     private const int DwmwaUseImmersiveDarkMode = 20;
     private const int DwmwaSystemBackdropType = 38;
+    private const int DwmwaLegacyMicaEffect = 1029;
     private const int DwmsbtNone = 1;
     private const int DwmsbtMainWindow = 2;
+    private const int DwmsbtTransientWindow = 3;
+    private const int DwmsbtTabbedWindow = 4;
+    private const int WcaAccentPolicy = 19;
+    private const int AccentDisabled = 0;
+    private const int AccentEnableAcrylicBlurBehind = 4;
     private const int WmDwmCompositionChanged = 0x031E;
+    private const int LightAcrylicTint = unchecked((int)0xCCFCFAF7);
+    private const int DarkAcrylicTint = unchecked((int)0xCC202020);
 
     private readonly Lock stateGate = new();
+    private readonly FlourishShellOptions? options;
+    private readonly MaterialEffectPlatform platform;
     private Window? owner;
     private HwndSource? hwndSource;
     private MediaBrush? originalBackground;
@@ -29,8 +38,25 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     private bool hasOriginalCompositionBackground;
     private bool isSourceInitializationPending;
 
-    public MaterialEffect CurrentEffect { get; private set; } =
-        options is { IsMaterialEffectEnabled: true } ? options.MaterialEffect : MaterialEffect.None;
+    public MaterialEffectService(FlourishShellOptions? options = null)
+        : this(options, MaterialEffectPlatform.Current) { }
+
+    internal MaterialEffectService(
+        FlourishShellOptions? options,
+        MaterialEffectPlatform platform
+    )
+    {
+        this.options = options;
+        this.platform = platform;
+        CurrentEffect = options is not { IsMaterialEffectEnabled: false }
+            ? options?.MaterialEffect ?? MaterialEffect.Auto
+            : MaterialEffect.None;
+        ValidateEffect(CurrentEffect, nameof(options));
+    }
+
+    public MaterialEffect CurrentEffect { get; private set; }
+
+    public MaterialEffect EffectiveEffect => platform.Resolve(CurrentEffect);
 
     public bool IsApplied { get; private set; }
 
@@ -41,17 +67,13 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     public bool IsSupported(MaterialEffect effect)
     {
         ValidateEffect(effect, nameof(effect));
-        return effect switch
-        {
-            MaterialEffect.None => true,
-            MaterialEffect.Mica => IsSystemBackdropSupported(),
-            _ => false,
-        };
+        return platform.IsSupported(effect);
     }
 
     public void SetEffect(MaterialEffect effect)
     {
         ValidateEffect(effect, nameof(effect));
+        EnsureEffectSupported(effect);
         lock (stateGate)
         {
             if (CurrentEffect == effect)
@@ -101,8 +123,18 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
                 attachedOwner,
                 () =>
                 {
-                    var hwnd = new WindowInteropHelper(attachedOwner).Handle;
-                    ApplyDarkMode(hwnd, isDarkMode);
+                    if (
+                        EffectiveEffect == MaterialEffect.Acrylic
+                        && platform.SupportsAccentAcrylic
+                    )
+                    {
+                        ApplyCurrentEffectCore(attachedOwner);
+                    }
+                    else
+                    {
+                        var hwnd = new WindowInteropHelper(attachedOwner).Handle;
+                        ApplyDarkMode(hwnd, isDarkMode);
+                    }
                 }
             );
         }
@@ -114,6 +146,7 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
     {
         ArgumentNullException.ThrowIfNull(window);
         ValidateEffect(effect, nameof(effect));
+        EnsureEffectSupported(effect);
 
         if (owner is not null && owner != window && isSourceInitializationPending)
         {
@@ -245,37 +278,13 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
 
     private void ApplyCurrentEffectCore(Window window)
     {
-        if (CurrentEffect == MaterialEffect.None)
+        var backend = platform.ResolveBackend(CurrentEffect);
+        if (backend == MaterialEffectBackend.None)
         {
             RemoveEffectCore(window);
             return;
         }
 
-        if (!IsSupported(CurrentEffect))
-        {
-            RemoveEffectCore(window);
-            return;
-        }
-
-        switch (CurrentEffect)
-        {
-            case MaterialEffect.Mica:
-                ApplyMicaCore(window);
-                break;
-            case MaterialEffect.None:
-                RemoveEffectCore(window);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(CurrentEffect),
-                    CurrentEffect,
-                    "Unknown material effect."
-                );
-        }
-    }
-
-    private void ApplyMicaCore(Window window)
-    {
         var hwnd = new WindowInteropHelper(window).Handle;
         if (hwnd == IntPtr.Zero)
         {
@@ -286,6 +295,37 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             return;
         }
 
+        ClearNativeEffect(hwnd);
+        PrepareTransparentSurface(window, hwnd);
+
+        var applied = backend switch
+        {
+            MaterialEffectBackend.SystemMica =>
+                ApplySystemBackdrop(hwnd, DwmsbtMainWindow),
+            MaterialEffectBackend.LegacyMica => ApplyLegacyMica(hwnd),
+            MaterialEffectBackend.SystemAcrylic =>
+                ApplySystemBackdrop(hwnd, DwmsbtTransientWindow),
+            MaterialEffectBackend.AccentAcrylic => ApplyAccentAcrylic(hwnd),
+            MaterialEffectBackend.SystemMicaAlt =>
+                ApplySystemBackdrop(hwnd, DwmsbtTabbedWindow),
+            _ => false,
+        };
+
+        if (!applied)
+        {
+            ClearNativeEffect(hwnd);
+            RestoreSurface(window, hwnd);
+        }
+
+        lock (stateGate)
+        {
+            IsApplied = applied;
+        }
+        ApplyDarkMode(hwnd, IsDarkMode);
+    }
+
+    private void PrepareTransparentSurface(Window window, IntPtr hwnd)
+    {
         window.Background = Brushes.Transparent;
         if (HwndSource.FromHwnd(hwnd) is { CompositionTarget: { } compositionTarget })
         {
@@ -297,11 +337,12 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
 
             compositionTarget.BackgroundColor = Colors.Transparent;
         }
+    }
 
+    private static bool ApplySystemBackdrop(IntPtr hwnd, int backdropType)
+    {
         var frameMargins = DwmFrameMargins.ExtendAcrossClientArea;
         var frameExtended = DwmExtendFrameIntoClientArea(hwnd, ref frameMargins) == Succeeded;
-
-        var backdropType = DwmsbtMainWindow;
         var backdropApplied =
             DwmSetWindowAttribute(
                 hwnd,
@@ -309,11 +350,34 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
                 ref backdropType,
                 Marshal.SizeOf<int>()
             ) == Succeeded;
-        lock (stateGate)
-        {
-            IsApplied = frameExtended && backdropApplied;
-        }
-        ApplyDarkMode(hwnd, IsDarkMode);
+        return frameExtended && backdropApplied;
+    }
+
+    private static bool ApplyLegacyMica(IntPtr hwnd)
+    {
+        var frameMargins = DwmFrameMargins.ExtendAcrossClientArea;
+        var frameExtended = DwmExtendFrameIntoClientArea(hwnd, ref frameMargins) == Succeeded;
+        var enabled = 1;
+        var micaApplied =
+            DwmSetWindowAttribute(
+                hwnd,
+                DwmwaLegacyMicaEffect,
+                ref enabled,
+                Marshal.SizeOf<int>()
+            ) == Succeeded;
+        return frameExtended && micaApplied;
+    }
+
+    private bool ApplyAccentAcrylic(IntPtr hwnd)
+    {
+        var frameMargins = DwmFrameMargins.None;
+        var frameReset = DwmExtendFrameIntoClientArea(hwnd, ref frameMargins) == Succeeded;
+        return frameReset
+            && SetAccentPolicy(
+                hwnd,
+                AccentEnableAcrylicBlurBehind,
+                IsDarkMode ? DarkAcrylicTint : LightAcrylicTint
+            );
     }
 
     private void RemoveEffectCore(Window window)
@@ -321,11 +385,24 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         var hwnd = new WindowInteropHelper(window).Handle;
         if (hwnd != IntPtr.Zero)
         {
-            var frameMargins = DwmFrameMargins.None;
-            DwmExtendFrameIntoClientArea(hwnd, ref frameMargins);
+            ClearNativeEffect(hwnd);
         }
 
-        if (hwnd != IntPtr.Zero && IsSystemBackdropSupported())
+        RestoreSurface(window, hwnd);
+
+        lock (stateGate)
+        {
+            IsApplied = false;
+        }
+        ApplyDarkMode(hwnd, IsDarkMode);
+    }
+
+    private void ClearNativeEffect(IntPtr hwnd)
+    {
+        var frameMargins = DwmFrameMargins.None;
+        DwmExtendFrameIntoClientArea(hwnd, ref frameMargins);
+
+        if (platform.SupportsSystemBackdrop)
         {
             var backdropType = DwmsbtNone;
             DwmSetWindowAttribute(
@@ -336,10 +413,29 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
             );
         }
 
+        if (platform.SupportsLegacyMica)
+        {
+            var disabled = 0;
+            DwmSetWindowAttribute(
+                hwnd,
+                DwmwaLegacyMicaEffect,
+                ref disabled,
+                Marshal.SizeOf<int>()
+            );
+        }
+
+        if (platform.SupportsAccentAcrylic)
+        {
+            SetAccentPolicy(hwnd, AccentDisabled, 0);
+        }
+    }
+
+    private void RestoreSurface(Window window, IntPtr hwnd)
+    {
         if (originalBackgroundResourceKey is { } resourceKey)
         {
             // The shell background is a DynamicResource. Restoring the brush instance
-            // captured before Mica would pin the window to the theme that was active at
+            // captured before a material would pin the window to the theme that was active at
             // attach time, so restore the resource expression and resolve today's value.
             window.SetResourceReference(Window.BackgroundProperty, resourceKey);
         }
@@ -355,12 +451,6 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         {
             compositionTarget.BackgroundColor = originalCompositionBackground;
         }
-
-        lock (stateGate)
-        {
-            IsApplied = false;
-        }
-        ApplyDarkMode(hwnd, IsDarkMode);
     }
 
     private void RaiseChanged()
@@ -398,9 +488,9 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         attachedOwner.Dispatcher.Invoke(RaiseCore);
     }
 
-    private static void ApplyDarkMode(IntPtr hwnd, bool isDarkMode)
+    private void ApplyDarkMode(IntPtr hwnd, bool isDarkMode)
     {
-        if (hwnd == IntPtr.Zero || !IsImmersiveDarkModeSupported())
+        if (hwnd == IntPtr.Zero || !platform.IsWindows11OrLater)
         {
             return;
         }
@@ -409,14 +499,16 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, ref darkMode, Marshal.SizeOf<int>());
     }
 
-    private static bool IsSystemBackdropSupported()
+    private void EnsureEffectSupported(MaterialEffect effect)
     {
-        return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621);
-    }
+        if (effect is MaterialEffect.Auto or MaterialEffect.None || IsSupported(effect))
+        {
+            return;
+        }
 
-    private static bool IsImmersiveDarkModeSupported()
-    {
-        return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000);
+        throw new PlatformNotSupportedException(
+            $"Material effect '{effect}' requires {platform.DescribeRequirement(effect)}."
+        );
     }
 
     private static void ValidateEffect(MaterialEffect effect, string parameterName)
@@ -442,6 +534,32 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         window.Dispatcher.Invoke(action);
     }
 
+    private static bool SetAccentPolicy(IntPtr hwnd, int state, int gradientColor)
+    {
+        var policy = new AccentPolicy
+        {
+            AccentState = state,
+            GradientColor = gradientColor,
+        };
+        var policySize = Marshal.SizeOf<AccentPolicy>();
+        var policyPointer = Marshal.AllocHGlobal(policySize);
+        try
+        {
+            Marshal.StructureToPtr(policy, policyPointer, fDeleteOld: false);
+            var data = new WindowCompositionAttributeData
+            {
+                Attribute = WcaAccentPolicy,
+                Data = policyPointer,
+                SizeOfData = policySize,
+            };
+            return SetWindowCompositionAttribute(hwnd, ref data);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(policyPointer);
+        }
+    }
+
     [DllImport("dwmapi.dll", PreserveSig = true)]
     private static extern int DwmExtendFrameIntoClientArea(
         IntPtr hwnd,
@@ -455,6 +573,35 @@ internal sealed class MaterialEffectService(FlourishShellOptions? options = null
         ref int pvAttribute,
         int cbAttribute
     );
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool SetWindowCompositionAttribute(
+        IntPtr hwnd,
+        ref WindowCompositionAttributeData data
+    );
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct AccentPolicy
+    {
+        public int AccentState;
+
+        public int AccentFlags;
+
+        public int GradientColor;
+
+        public int AnimationId;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct WindowCompositionAttributeData
+    {
+        public int Attribute;
+
+        public IntPtr Data;
+
+        public int SizeOfData;
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     private readonly struct DwmFrameMargins
