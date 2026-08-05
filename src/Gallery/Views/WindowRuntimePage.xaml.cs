@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -13,6 +14,7 @@ public partial class WindowRuntimePage : Page
     private readonly IWindowCloseService close;
     private readonly IMessageService messages;
     private readonly INotificationService notifications;
+    private readonly IGalleryLocalization localization;
     private IWindowCloseGuardRegistration? closeGuard;
     private FlourishNotificationHandle? notificationHandle;
     private bool closeGuardAllows = true;
@@ -24,7 +26,8 @@ public partial class WindowRuntimePage : Page
         ITrayService tray,
         IWindowCloseService close,
         IMessageService messages,
-        INotificationService notifications
+        INotificationService notifications,
+        IGalleryLocalization localization
     )
     {
         this.window = window;
@@ -32,6 +35,7 @@ public partial class WindowRuntimePage : Page
         this.close = close;
         this.messages = messages;
         this.notifications = notifications;
+        this.localization = localization;
         InitializeComponent();
 
         CloseBehaviorBox.ItemsSource = Enum.GetValues<WindowCloseBehavior>();
@@ -67,11 +71,15 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => window.SetSize(1100, 760),
             WindowOutput,
-            "Set the shell window size to 1100 × 760."
+            localization.Get("Set the shell window size to 1100 × 760.")
         );
 
     private void CenterWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.CenterOnScreen, WindowOutput, "Centered the shell window on screen.");
+        Execute(
+            window.CenterOnScreen,
+            WindowOutput,
+            localization.Get("Centered the shell window on screen.")
+        );
 
     private void ToggleTopmost_Click(object sender, RoutedEventArgs e)
     {
@@ -79,7 +87,10 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => window.SetTopmost(topmost),
             WindowOutput,
-            $"Shell window topmost mode {(topmost ? "enabled" : "disabled")}."
+            localization.Format(
+                "Shell window topmost mode {0}.",
+                localization.Get(topmost ? "enabled" : "disabled")
+            )
         );
     }
 
@@ -89,18 +100,22 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => window.SetShownInTaskbar(shown),
             WindowOutput,
-            $"Shell window {(shown ? "shown in" : "removed from")} the taskbar."
+            localization.Get(
+                shown
+                    ? "Shell window shown in the taskbar."
+                    : "Shell window removed from the taskbar."
+            )
         );
     }
 
     private void MinimizeWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.Minimize, WindowOutput, "Minimized the shell window.");
+        Execute(window.Minimize, WindowOutput, localization.Get("Minimized the shell window."));
 
     private void MaximizeWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.Maximize, WindowOutput, "Maximized the shell window.");
+        Execute(window.Maximize, WindowOutput, localization.Get("Maximized the shell window."));
 
     private void RestoreWindow_Click(object sender, RoutedEventArgs e) =>
-        Execute(window.Restore, WindowOutput, "Restored the shell window.");
+        Execute(window.Restore, WindowOutput, localization.Get("Restored the shell window."));
 
     private async void HideBriefly_Click(object sender, RoutedEventArgs e)
     {
@@ -110,11 +125,13 @@ public partial class WindowRuntimePage : Page
             await Task.Delay(1000);
             window.Show();
             window.Activate();
-            WindowOutput.WriteLine("Restored the shell window after one second.");
+            WindowOutput.WriteLine(
+                localization.Get("Restored the shell window after one second.")
+            );
         }
         catch (Exception error)
         {
-            WindowOutput.WriteLine($"Error: {error.Message}");
+            WindowOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -124,7 +141,10 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => tray.SetEnabled(enabled),
             TrayOutput,
-            $"Notification-area tray icon {(enabled ? "enabled" : "disabled")}."
+            localization.Format(
+                "Notification-area tray icon {0}.",
+                localization.Get(enabled ? "enabled" : "disabled")
+            )
         );
     }
 
@@ -159,7 +179,7 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => tray.SetToolTip(TrayToolTipBox.Text),
             TrayOutput,
-            $"Tray tooltip set to \"{TrayToolTipBox.Text}\"."
+            localization.Format("Tray tooltip set to \"{0}\".", TrayToolTipBox.Text)
         );
     }
 
@@ -173,11 +193,15 @@ public partial class WindowRuntimePage : Page
                 }
             },
             TrayOutput,
-            "Minimized the shell window to the notification area."
+            localization.Get("Minimized the shell window to the notification area.")
         );
 
     private void RestoreFromTray_Click(object sender, RoutedEventArgs e) =>
-        Execute(tray.Restore, TrayOutput, "Restored the shell window from the notification area.");
+        Execute(
+            tray.Restore,
+            TrayOutput,
+            localization.Get("Restored the shell window from the notification area.")
+        );
 
     private void CloseBehaviorBox_SelectionChanged(
         object sender,
@@ -192,7 +216,7 @@ public partial class WindowRuntimePage : Page
             Execute(
                 () => close.SetBehavior(behavior),
                 CloseOutput,
-                $"Close behavior set to {behavior}."
+                localization.Format("Close behavior set to {0}.", behavior)
             );
         }
     }
@@ -200,9 +224,17 @@ public partial class WindowRuntimePage : Page
     private void CloseGuardAllowsBox_Click(object sender, RoutedEventArgs e)
     {
         closeGuardAllows = CloseGuardAllowsBox.IsChecked == true;
-        CloseOutput.WriteLine(closeGuard is null
-            ? $"The next registered guard will {(closeGuardAllows ? "allow" : "cancel")} close requests."
-            : $"The registered guard will now {(closeGuardAllows ? "allow" : "cancel")} close requests.");
+        CloseOutput.WriteLine(
+            closeGuard is null
+                ? localization.Format(
+                    "The next registered guard will {0} close requests.",
+                    localization.Get(closeGuardAllows ? "allow" : "cancel")
+                )
+                : localization.Format(
+                    "The registered guard will now {0} close requests.",
+                    localization.Get(closeGuardAllows ? "allow" : "cancel")
+                )
+        );
     }
 
     private void RegisterCloseGuard_Click(object sender, RoutedEventArgs e)
@@ -224,7 +256,7 @@ public partial class WindowRuntimePage : Page
                 );
             },
             CloseOutput,
-            "Close guard registered at order 100."
+            localization.Format("Close guard registered at order {0}.", 100)
         );
     }
 
@@ -232,7 +264,7 @@ public partial class WindowRuntimePage : Page
     {
         closeGuard?.Dispose();
         closeGuard = null;
-        CloseOutput.WriteLine("The Gallery close guard was removed.");
+        CloseOutput.WriteLine(localization.Get("The Gallery close guard was removed."));
     }
 
     private async void EvaluateClose_Click(object sender, RoutedEventArgs e)
@@ -240,11 +272,16 @@ public partial class WindowRuntimePage : Page
         try
         {
             var allowed = await close.CanCloseAsync(WindowCloseRequestReason.Application);
-            CloseOutput.WriteLine($"Current guard evaluation: {(allowed ? "allow" : "cancel")}.");
+            CloseOutput.WriteLine(
+                localization.Format(
+                    "Current guard evaluation: {0}.",
+                    localization.Get(allowed ? "allow" : "cancel")
+                )
+            );
         }
         catch (Exception error)
         {
-            CloseOutput.WriteLine($"Error: {error.Message}");
+            CloseOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -253,13 +290,15 @@ public partial class WindowRuntimePage : Page
         try
         {
             var closed = await close.RequestCloseAsync(WindowCloseRequestReason.Application);
-            CloseOutput.WriteLine(closed
-                ? "The close request was accepted."
-                : "The close request was canceled.");
+            CloseOutput.WriteLine(
+                closed
+                    ? localization.Get("The close request was accepted.")
+                    : localization.Get("The close request was canceled.")
+            );
         }
         catch (Exception error)
         {
-            CloseOutput.WriteLine($"Error: {error.Message}");
+            CloseOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -268,16 +307,20 @@ public partial class WindowRuntimePage : Page
         try
         {
             var result = await messages.ShowAsync(
-                "This dialog was opened and awaited through IMessageService.ShowAsync.",
-                "Runtime message",
+                localization.Get(
+                    "This dialog was opened and awaited through IMessageService.ShowAsync."
+                ),
+                localization.Get("Runtime message"),
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Information
             );
-            MessageActivityOutput.WriteLine($"Standard message result: {result}.");
+            MessageActivityOutput.WriteLine(
+                localization.Format("Standard message result: {0}.", result)
+            );
         }
         catch (Exception error)
         {
-            MessageActivityOutput.WriteLine($"Error: {error.Message}");
+            MessageActivityOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -286,12 +329,17 @@ public partial class WindowRuntimePage : Page
         try
         {
             var result = await messages.ShowAsync(
-                "Choose a runtime action. Custom options are returned as domain values.",
-                "Custom runtime choices",
+                localization.Get(
+                    "Choose a runtime action. Custom options are returned as domain values."
+                ),
+                localization.Get("Custom runtime choices"),
                 new[]
                 {
-                    new FlourishMessageOption("later", "Later") { IsCancel = true },
-                    new FlourishMessageOption("apply", "Apply now")
+                    new FlourishMessageOption("later", localization.Get("Later"))
+                    {
+                        IsCancel = true,
+                    },
+                    new FlourishMessageOption("apply", localization.Get("Apply now"))
                     {
                         IsDefault = true,
                         IsPrimary = true,
@@ -299,11 +347,16 @@ public partial class WindowRuntimePage : Page
                 },
                 MessageBoxImage.Question
             );
-            MessageActivityOutput.WriteLine($"Custom message result: {result?.Id ?? "dismissed"}.");
+            MessageActivityOutput.WriteLine(
+                localization.Format(
+                    "Custom message result: {0}.",
+                    result?.Id ?? localization.Get("dismissed")
+                )
+            );
         }
         catch (Exception error)
         {
-            MessageActivityOutput.WriteLine($"Error: {error.Message}");
+            MessageActivityOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -315,7 +368,7 @@ public partial class WindowRuntimePage : Page
                 notificationHandle = notifications.Show(CreateNotification());
             },
             MessageActivityOutput,
-            () => $"Shown notification: {notificationHandle!.Id}."
+            () => localization.Format("Shown notification: {0}.", notificationHandle!.Id)
         );
     }
 
@@ -327,7 +380,7 @@ public partial class WindowRuntimePage : Page
                 notificationHandle = notifications.Upsert(CreateNotification());
             },
             MessageActivityOutput,
-            () => $"Upserted notification: {notificationHandle!.Id}."
+            () => localization.Format("Upserted notification: {0}.", notificationHandle!.Id)
         );
     }
 
@@ -341,8 +394,8 @@ public partial class WindowRuntimePage : Page
             },
             MessageActivityOutput,
             () => dismissed
-                ? "Notification dismissed."
-                : "No active notification matched that ID."
+                ? localization.Get("Notification dismissed.")
+                : localization.Get("No active notification matched that ID.")
         );
     }
 
@@ -350,7 +403,7 @@ public partial class WindowRuntimePage : Page
         Execute(
             notifications.DismissAll,
             MessageActivityOutput,
-            "Dismissed all shell notifications."
+            localization.Get("Dismissed all shell notifications.")
         );
 
     private FlourishNotification CreateNotification()
@@ -363,7 +416,7 @@ public partial class WindowRuntimePage : Page
 
         return new FlourishNotification(
             id,
-            "Runtime Gallery",
+            localization.Get("Runtime Gallery"),
             NotificationMessageBox.Text,
             FlourishNotificationSeverity.Success,
             Duration: TimeSpan.FromSeconds(8)
@@ -383,14 +436,16 @@ public partial class WindowRuntimePage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine($"Error: {error.Message}");
+            output.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
     private void RefreshAll()
     {
         var trayState = tray.Current;
-        ToggleTrayButton.Content = trayState.IsEnabled ? "Disable tray" : "Enable tray";
+        ToggleTrayButton.Content = localization.Get(
+            trayState.IsEnabled ? "Disable tray" : "Enable tray"
+        );
         isRefreshingTrayToolTip = true;
         try
         {

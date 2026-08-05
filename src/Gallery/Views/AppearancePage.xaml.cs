@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -16,6 +17,7 @@ public partial class AppearancePage : Page
     private readonly IScrollService scroll;
     private readonly IAppearanceService appearance;
     private readonly IContentLayoutService contentLayout;
+    private readonly IGalleryLocalization galleryLocalization;
     private readonly IReadOnlyList<FlourishComboBoxItem> materialOptions;
     private bool isRefreshing;
 
@@ -25,7 +27,8 @@ public partial class AppearancePage : Page
         IMaterialEffectService material,
         IScrollService scroll,
         IAppearanceService appearance,
-        IContentLayoutService contentLayout
+        IContentLayoutService contentLayout,
+        IGalleryLocalization galleryLocalization
     )
     {
         this.theme = theme;
@@ -34,6 +37,7 @@ public partial class AppearancePage : Page
         this.scroll = scroll;
         this.appearance = appearance;
         this.contentLayout = contentLayout;
+        this.galleryLocalization = galleryLocalization;
         materialOptions =
         [
             CreateMaterialOption(MaterialEffect.Auto),
@@ -61,6 +65,7 @@ public partial class AppearancePage : Page
         scroll.Changed += RuntimeState_Changed;
         appearance.Changed += RuntimeState_Changed;
         contentLayout.Changed += RuntimeState_Changed;
+        galleryLocalization.Changed += GalleryLocalization_Changed;
         RefreshAll();
     }
 
@@ -72,11 +77,17 @@ public partial class AppearancePage : Page
         scroll.Changed -= RuntimeState_Changed;
         appearance.Changed -= RuntimeState_Changed;
         contentLayout.Changed -= RuntimeState_Changed;
+        galleryLocalization.Changed -= GalleryLocalization_Changed;
     }
 
     private void RuntimeState_Changed(object? sender, EventArgs e)
     {
         Dispatcher.BeginInvoke(RefreshAll);
+    }
+
+    private void GalleryLocalization_Changed(object? sender, EventArgs e)
+    {
+        Dispatcher.BeginInvoke(RefreshMaterialOptionText);
     }
 
     private void ApplyTheme_Click(object sender, RoutedEventArgs e)
@@ -191,7 +202,7 @@ public partial class AppearancePage : Page
         Execute(
             () => font.RemoveOverrideFont<AppearancePage>(),
             PageFontOverrideOutput,
-            () => "AppearancePage typography override cleared."
+            () => galleryLocalization.Get("AppearancePage typography override cleared.")
         );
     }
 
@@ -335,7 +346,7 @@ public partial class AppearancePage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine($"Error: {error.Message}");
+            output.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -438,44 +449,111 @@ public partial class AppearancePage : Page
     }
 
     private string FormatThemeOutput() =>
-        $"Theme updated: requested {theme.CurrentTheme}; effective {theme.EffectiveTheme}; dark {theme.IsDark}.";
+        galleryLocalization.Format(
+            "Theme updated: requested {0}; effective {1}; dark {2}.",
+            theme.CurrentTheme,
+            theme.EffectiveTheme,
+            theme.IsDark
+        );
 
     private string FormatTypographyOutput() =>
-        $"Typography updated: text {font.FontFamily}; {FormatScale(font.SmallFontSize, font.StandardFontSize, font.IconFontSize, font.LargeFontSize, font.ExtraLargeFontSize, font.HeaderSizeFontSize)}; icons {font.IconFontFamily}.";
+        galleryLocalization.Format(
+            "Typography updated: text {0}; {1}; icons {2}.",
+            font.FontFamily,
+            FormatScale(
+                font.SmallFontSize,
+                font.StandardFontSize,
+                font.IconFontSize,
+                font.LargeFontSize,
+                font.ExtraLargeFontSize,
+                font.HeaderSizeFontSize
+            ),
+            font.IconFontFamily
+        );
 
     private string FormatPageTypographyOutput()
     {
         if (!font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
         {
-            return "AppearancePage typography override was not applied.";
+            return galleryLocalization.Get(
+                "AppearancePage typography override was not applied."
+            );
         }
 
-        return $"AppearancePage typography override applied: {pageOverride.FontFamily}; {FormatScale(pageOverride.SmallFontSize ?? font.SmallFontSize, pageOverride.StandardFontSize ?? font.StandardFontSize, pageOverride.IconFontSize ?? font.IconFontSize, pageOverride.LargeFontSize ?? font.LargeFontSize, pageOverride.ExtraLargeFontSize ?? font.ExtraLargeFontSize, pageOverride.HeaderSizeFontSize ?? font.HeaderSizeFontSize)}.";
+        return galleryLocalization.Format(
+            "AppearancePage typography override applied: {0}; {1}.",
+            pageOverride.FontFamily,
+            FormatScale(
+                pageOverride.SmallFontSize ?? font.SmallFontSize,
+                pageOverride.StandardFontSize ?? font.StandardFontSize,
+                pageOverride.IconFontSize ?? font.IconFontSize,
+                pageOverride.LargeFontSize ?? font.LargeFontSize,
+                pageOverride.ExtraLargeFontSize ?? font.ExtraLargeFontSize,
+                pageOverride.HeaderSizeFontSize ?? font.HeaderSizeFontSize
+            )
+        );
     }
 
     private string FormatMaterialOutput() =>
-        $"Window material updated: requested {material.CurrentEffect}; effective {material.EffectiveEffect}; supported {material.IsSupported(material.CurrentEffect)}; applied {material.IsApplied}; dark mode {material.IsDarkMode}.";
+        galleryLocalization.Format(
+            "Window material updated: requested {0}; effective {1}; supported {2}; applied {3}; dark mode {4}.",
+            material.CurrentEffect,
+            material.EffectiveEffect,
+            material.IsSupported(material.CurrentEffect),
+            material.IsApplied,
+            material.IsDarkMode
+        );
 
     private FlourishComboBoxItem CreateMaterialOption(MaterialEffect effect)
     {
         var isSupported = material.IsSupported(effect);
-        return new FlourishComboBoxItem
+        var option = new FlourishComboBoxItem
         {
             Tag = effect,
-            Content = effect == MaterialEffect.Auto
-                ? "Auto (system default)"
-                : isSupported
-                    ? effect.ToString()
-                    : $"{effect} (unsupported)",
             IsEnabled = isSupported,
-            ToolTip = isSupported ? null : "This material is unavailable on this Windows version.",
         };
+        ApplyMaterialOptionText(option, effect, isSupported);
+        return option;
+    }
+
+    private void RefreshMaterialOptionText()
+    {
+        foreach (var option in materialOptions)
+        {
+            if (option.Tag is MaterialEffect effect)
+            {
+                ApplyMaterialOptionText(option, effect, option.IsEnabled);
+            }
+        }
+    }
+
+    private void ApplyMaterialOptionText(
+        FlourishComboBoxItem option,
+        MaterialEffect effect,
+        bool isSupported
+    )
+    {
+        option.Content = effect == MaterialEffect.Auto
+            ? galleryLocalization.Get("Auto (system default)")
+            : isSupported
+                ? effect.ToString()
+                : galleryLocalization.Format("{0} (unsupported)", effect);
+        option.ToolTip = isSupported
+            ? null
+            : galleryLocalization.Get(
+                "This material is unavailable on this Windows version."
+            );
     }
 
     private string FormatAppearanceOutput()
     {
         var current = appearance.Current;
-        return $"Appearance updated: palette {(current.ThemeColors is null ? "standard" : "custom")}; corner radius {(current.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture) ?? "standard")}.";
+        return galleryLocalization.Format(
+            "Appearance updated: palette {0}; corner radius {1}.",
+            galleryLocalization.Get(current.ThemeColors is null ? "standard" : "custom"),
+            current.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture)
+                ?? galleryLocalization.Get("standard")
+        );
     }
 
     private static double ParseDouble(string text, string name)
@@ -493,7 +571,7 @@ public partial class AppearancePage : Page
         return string.IsNullOrWhiteSpace(text) ? null : ParseDouble(text, name);
     }
 
-    private static string FormatScale(
+    private string FormatScale(
         double smallFontSize,
         double standardFontSize,
         double iconFontSize,
@@ -502,7 +580,15 @@ public partial class AppearancePage : Page
         double headerSizeFontSize
     )
     {
-        return $"small {smallFontSize:0.##}, standard {standardFontSize:0.##}, icon {iconFontSize:0.##}, large {largeFontSize:0.##}, extra-large {extraLargeFontSize:0.##}, header {headerSizeFontSize:0.##} DIP";
+        return galleryLocalization.Format(
+            "small {0:0.##}, standard {1:0.##}, icon {2:0.##}, large {3:0.##}, extra-large {4:0.##}, header {5:0.##} DIP",
+            smallFontSize,
+            standardFontSize,
+            iconFontSize,
+            largeFontSize,
+            extraLargeFontSize,
+            headerSizeFontSize
+        );
     }
 
 }

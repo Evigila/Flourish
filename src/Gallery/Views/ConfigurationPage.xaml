@@ -138,7 +138,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose the locale used by Flourish interface text and resolve localized strings with English fallback. Set the initial locale during app setup or switch it later through IFlourishLocalization. Use this for language preferences and in-app language selection; the code below demonstrates change notifications, locale selection, available locales, key lookup, and culture-aware formatting."
+      Content="Choose the application locale. Flourish translates only its built-in interface, while GalleryLocalizationService independently translates this client's pages and shell labels. Use the client-owned service for application copy; both layers observe the same selection and fall back to English when no matching client catalog exists. The code below demonstrates the shared locale signal."
       Title="Localization"
     >
       <StackPanel>

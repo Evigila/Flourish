@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Gallery.Localization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Gallery.Views;
@@ -18,6 +19,7 @@ public partial class NavigationRuntimePage : Page
     private readonly INavigationRouteRegistry routes;
     private readonly INavigationService navigation;
     private readonly IPageCacheService cache;
+    private readonly IGalleryLocalization localization;
     private bool isRefreshing;
 
     public NavigationRuntimePage(
@@ -25,7 +27,8 @@ public partial class NavigationRuntimePage : Page
         INavigationMenuService menu,
         INavigationRouteRegistry routes,
         INavigationService navigation,
-        IPageCacheService cache
+        IPageCacheService cache,
+        IGalleryLocalization localization
     )
     {
         this.panel = panel;
@@ -33,6 +36,7 @@ public partial class NavigationRuntimePage : Page
         this.routes = routes;
         this.navigation = navigation;
         this.cache = cache;
+        this.localization = localization;
         InitializeComponent();
 
         DirectionBox.ItemsSource = Enum.GetValues<NavigationPanelDirection>();
@@ -65,13 +69,23 @@ public partial class NavigationRuntimePage : Page
     private void TogglePanel_Click(object sender, RoutedEventArgs e)
     {
         panel.Toggle();
-        PanelOutput.WriteLine($"Navigation panel {(panel.Current.IsOpen ? "opened" : "closed")}.");
+        PanelOutput.WriteLine(
+            localization.Format(
+                "Navigation panel {0}.",
+                localization.Get(panel.Current.IsOpen ? "opened" : "closed")
+            )
+        );
     }
 
     private void TogglePanelEnabled_Click(object sender, RoutedEventArgs e)
     {
         panel.SetEnabled(!panel.Current.IsEnabled);
-        PanelOutput.WriteLine($"Navigation panel {(panel.Current.IsEnabled ? "enabled" : "disabled")}.");
+        PanelOutput.WriteLine(
+            localization.Format(
+                "Navigation panel {0}.",
+                localization.Get(panel.Current.IsEnabled ? "enabled" : "disabled")
+            )
+        );
     }
 
     private void DirectionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -81,7 +95,9 @@ public partial class NavigationRuntimePage : Page
             && DirectionBox.SelectedItem is NavigationPanelDirection direction)
         {
             panel.SetDirection(direction);
-            PanelOutput.WriteLine($"Navigation panel moved to {direction}.");
+            PanelOutput.WriteLine(
+                localization.Format("Navigation panel moved to {0}.", direction)
+            );
         }
     }
 
@@ -97,12 +113,18 @@ public partial class NavigationRuntimePage : Page
             );
             var state = panel.Current;
             PanelOutput.WriteLine(
-                $"Panel widths set to closed {state.ClosedWidth:0}, open {state.OpenWidth:0}, range {state.MinWidth:0}-{state.MaxWidth:0}."
+                localization.Format(
+                    "Panel widths set to closed {0:0}, open {1:0}, range {2:0}-{3:0}.",
+                    state.ClosedWidth,
+                    state.OpenWidth,
+                    state.MinWidth,
+                    state.MaxWidth
+                )
             );
         }
         catch (Exception error)
         {
-            PanelOutput.WriteLine($"Error: {error.Message}");
+            PanelOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -148,7 +170,7 @@ public partial class NavigationRuntimePage : Page
             {
                 if (!hasGroup)
                 {
-                    editor.AppendGroup(RuntimeGroupId, "Added at runtime");
+                    editor.AppendGroup(RuntimeGroupId, localization.Get("Added at runtime"));
                 }
 
                 editor.SetItem(
@@ -156,16 +178,18 @@ public partial class NavigationRuntimePage : Page
                     FlourishNavigationMenuItem.Page(
                         RuntimeItemId,
                         RuntimeRouteKey,
-                        "Runtime route instance",
+                        localization.Get("Runtime route instance"),
                         "\uE8A7"
                     )
                 );
             });
-            RouteOutput.WriteLine("Installed the demo route and navigation item.");
+            RouteOutput.WriteLine(
+                localization.Get("Installed the demo route and navigation item.")
+            );
         }
         catch (Exception error)
         {
-            RouteOutput.WriteLine($"Error: {error.Message}");
+            RouteOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -174,11 +198,13 @@ public partial class NavigationRuntimePage : Page
         try
         {
             navigation.Navigate(RuntimeRouteKey, DateTimeOffset.Now);
-            RouteOutput.WriteLine($"Navigated to '{RuntimeRouteKey}'.");
+            RouteOutput.WriteLine(
+                localization.Format("Navigated to '{0}'.", RuntimeRouteKey)
+            );
         }
         catch (Exception error)
         {
-            RouteOutput.WriteLine($"Error: {error.Message}");
+            RouteOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -188,12 +214,17 @@ public partial class NavigationRuntimePage : Page
             .FirstOrDefault(candidate => candidate.Id == RuntimeItemId);
         if (item is null)
         {
-            RouteOutput.WriteLine("Install the demo route first.");
+            RouteOutput.WriteLine(localization.Get("Install the demo route first."));
             return;
         }
 
         menu.Set(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
-        RouteOutput.WriteLine($"Demo navigation item {(!item.IsEnabled ? "enabled" : "disabled")}.");
+        RouteOutput.WriteLine(
+            localization.Format(
+                "Demo navigation item {0}.",
+                localization.Get(!item.IsEnabled ? "enabled" : "disabled")
+            )
+        );
     }
 
     private void RemoveRoute_Click(object sender, RoutedEventArgs e)
@@ -208,7 +239,9 @@ public partial class NavigationRuntimePage : Page
         });
         var removed = routes.Remove(RuntimeRouteKey);
         RouteOutput.WriteLine(
-            removed ? "Removed the demo route and navigation item." : "The demo route was already absent."
+            removed
+                ? localization.Get("Removed the demo route and navigation item.")
+                : localization.Get("The demo route was already absent.")
         );
     }
 
@@ -222,15 +255,15 @@ public partial class NavigationRuntimePage : Page
     {
         CacheOutput.WriteLine(
             cache.Evict(typeof(RuntimeRoutePage))
-                ? "Evicted the cached demo page instance."
-                : "No cached demo page instance was present."
+                ? localization.Get("Evicted the cached demo page instance.")
+                : localization.Get("No cached demo page instance was present.")
         );
     }
 
     private void ClearCache_Click(object sender, RoutedEventArgs e)
     {
         cache.Clear();
-        CacheOutput.WriteLine("Cleared all cached page instances.");
+        CacheOutput.WriteLine(localization.Get("Cleared all cached page instances."));
     }
 
     private void SetCacheMode(FlourishPageCacheMode mode)
@@ -244,11 +277,13 @@ public partial class NavigationRuntimePage : Page
 
             routes.SetCacheMode(RuntimeRouteKey, mode);
             cache.SetCacheMode(typeof(RuntimeRoutePage), mode);
-            CacheOutput.WriteLine($"Demo page cache mode set to {mode}.");
+            CacheOutput.WriteLine(
+                localization.Format("Demo page cache mode set to {0}.", mode)
+            );
         }
         catch (Exception error)
         {
-            CacheOutput.WriteLine($"Error: {error.Message}");
+            CacheOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 

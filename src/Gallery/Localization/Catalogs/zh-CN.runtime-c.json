@@ -1,0 +1,14 @@
+{
+  "OutputCard is ready.": "OutputCard 已就绪。",
+  "Each action appends a line instead of replacing history.": "每次操作都会追加一行，而不是替换历史记录。",
+  "The sample operation completed.": "示例操作已完成。",
+  "Burst entry {0} of {1}.": "突发条目 {0}/{1}。",
+  "The history contained {0} characters before this summary.": "生成此摘要前，历史记录包含 {0} 个字符。",
+  "[{0:HH:mm:ss}] Message {1}: {2}": "[{0:HH:mm:ss}] 消息 {1}：{2}",
+  "Ready": "就绪",
+  "Application": "应用",
+  "Running": "运行中",
+  "Archive": "存档",
+  "Paused": "已暂停",
+  "System": "系统"
+}

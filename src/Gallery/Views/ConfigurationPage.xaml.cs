@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -14,16 +15,19 @@ public partial class ConfigurationPage : Page
     private readonly IFlourishConfiguration configuration;
     private readonly IFlourishSettingsStore settings;
     private readonly IFlourishLocalization localization;
+    private readonly IGalleryLocalization galleryLocalization;
     private bool isRefreshingLocale;
     public ConfigurationPage(
         IFlourishConfiguration configuration,
         IFlourishSettingsStore settings,
-        IFlourishLocalization localization
+        IFlourishLocalization localization,
+        IGalleryLocalization galleryLocalization
     )
     {
         this.configuration = configuration;
         this.settings = settings;
         this.localization = localization;
+        this.galleryLocalization = galleryLocalization;
         InitializeComponent();
         LocaleBox.ItemsSource = availableLocales;
         LocaleFilePathBox.Text = Path.Combine(AppContext.BaseDirectory, "lang_es-ES.json");
@@ -52,15 +56,23 @@ public partial class ConfigurationPage : Page
             var key = ReadKeyBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(key))
             {
-                ReadOutput.WriteLine("Enter a configuration path.");
+                ReadOutput.WriteLine(
+                    galleryLocalization.Get("Enter a configuration path.")
+                );
                 return;
             }
 
-            ReadOutput.WriteLine($"Read {key}: {configuration[key] ?? "<null>"}");
+            ReadOutput.WriteLine(
+                galleryLocalization.Format(
+                    "Read {0}: {1}",
+                    key,
+                    configuration[key] ?? "<null>"
+                )
+            );
         }
         catch (Exception error)
         {
-            ReadOutput.WriteLine($"Error: {error.Message}");
+            ReadOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -71,12 +83,17 @@ public partial class ConfigurationPage : Page
             configuration.Reload();
             var snapshot = configuration.Current;
             ReadOutput.WriteLine(
-                $"Reloaded configuration providers. Snapshot v{snapshot.Version} contains {snapshot.Values.Count} values (captured {snapshot.CapturedAt.LocalDateTime:T})."
+                galleryLocalization.Format(
+                    "Reloaded configuration providers. Snapshot v{0} contains {1} values (captured {2:T}).",
+                    snapshot.Version,
+                    snapshot.Values.Count,
+                    snapshot.CapturedAt.LocalDateTime
+                )
             );
         }
         catch (Exception error)
         {
-            ReadOutput.WriteLine($"Error: {error.Message}");
+            ReadOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -137,11 +154,16 @@ public partial class ConfigurationPage : Page
         {
             localization.SetLocale(locale);
             RefreshLocaleState();
-            LocaleOutput.WriteLine($"Locale changed to {localization.CurrentLocale}.");
+            LocaleOutput.WriteLine(
+                galleryLocalization.Format(
+                    "Locale changed to {0}.",
+                    localization.CurrentLocale
+                )
+            );
         }
         catch (Exception error)
         {
-            LocaleOutput.WriteLine($"Error: {error.Message}");
+            LocaleOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -157,13 +179,19 @@ public partial class ConfigurationPage : Page
             localeFileRegistration = localization.RegisterFile(LocaleFilePathBox.Text);
             LocaleFilePathBox.Text = localeFileRegistration.FilePath;
             LocaleFileOutput.WriteLine(
-                $"Registered {localeFileRegistration.Locale} from {localeFileRegistration.FilePath}."
+                galleryLocalization.Format(
+                    "Registered {0} from {1}.",
+                    localeFileRegistration.Locale,
+                    localeFileRegistration.FilePath
+                )
             );
             RefreshLocaleState();
         }
         catch (Exception error)
         {
-            LocaleFileOutput.WriteLine($"Error: {error.Message}");
+            LocaleFileOutput.WriteLine(
+                galleryLocalization.Format("Error: {0}", error.Message)
+            );
         }
     }
 
@@ -171,7 +199,9 @@ public partial class ConfigurationPage : Page
     {
         if (localeFileRegistration is null)
         {
-            LocaleFileOutput.WriteLine("Register a locale file first.");
+            LocaleFileOutput.WriteLine(
+                galleryLocalization.Get("Register a locale file first.")
+            );
             return;
         }
 
@@ -179,12 +209,18 @@ public partial class ConfigurationPage : Page
         {
             localization.ReloadFile(localeFileRegistration);
             LocaleFileOutput.WriteLine(
-                $"Reloaded {localeFileRegistration.Locale} at {DateTime.Now:T}."
+                galleryLocalization.Format(
+                    "Reloaded {0} at {1:T}.",
+                    localeFileRegistration.Locale,
+                    DateTime.Now
+                )
             );
         }
         catch (Exception error)
         {
-            LocaleFileOutput.WriteLine($"Error: {error.Message}");
+            LocaleFileOutput.WriteLine(
+                galleryLocalization.Format("Error: {0}", error.Message)
+            );
         }
     }
 
@@ -192,7 +228,9 @@ public partial class ConfigurationPage : Page
     {
         if (localeFileRegistration is null)
         {
-            LocaleFileOutput.WriteLine("No locale file is registered by this page.");
+            LocaleFileOutput.WriteLine(
+                galleryLocalization.Get("No locale file is registered by this page.")
+            );
             return;
         }
 
@@ -203,14 +241,18 @@ public partial class ConfigurationPage : Page
             localeFileRegistration = null;
             LocaleFileOutput.WriteLine(
                 removed
-                    ? $"Unregistered locale source {locale}."
-                    : "That locale source was already unregistered."
+                    ? galleryLocalization.Format("Unregistered locale source {0}.", locale)
+                    : galleryLocalization.Get(
+                        "That locale source was already unregistered."
+                    )
             );
             RefreshLocaleState();
         }
         catch (Exception error)
         {
-            LocaleFileOutput.WriteLine($"Error: {error.Message}");
+            LocaleFileOutput.WriteLine(
+                galleryLocalization.Format("Error: {0}", error.Message)
+            );
         }
     }
 
@@ -224,13 +266,21 @@ public partial class ConfigurationPage : Page
             var result = await update();
             WriteOutput.WriteLine(
                 result.Changed
-                    ? $"{operation} saved {result.FilePath}. Configuration reloaded: {result.ConfigurationReloaded}."
-                    : $"{operation} completed without changing the document."
+                    ? galleryLocalization.Format(
+                        "{0} saved {1}. Configuration reloaded: {2}.",
+                        galleryLocalization.Get(operation),
+                        result.FilePath,
+                        result.ConfigurationReloaded
+                    )
+                    : galleryLocalization.Format(
+                        "{0} completed without changing the document.",
+                        galleryLocalization.Get(operation)
+                    )
             );
         }
         catch (Exception error)
         {
-            WriteOutput.WriteLine($"Error: {error.Message}");
+            WriteOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 

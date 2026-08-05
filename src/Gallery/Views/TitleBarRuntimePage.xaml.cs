@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -10,16 +11,19 @@ public partial class TitleBarRuntimePage : Page
 {
     private readonly ITitleBarService titleBar;
     private readonly ITitleBarSearchService search;
+    private readonly IGalleryLocalization galleryLocalization;
     private IDisposable? searchSubscription;
     private bool isRefreshing;
 
     public TitleBarRuntimePage(
         ITitleBarService titleBar,
-        ITitleBarSearchService search
+        ITitleBarSearchService search,
+        IGalleryLocalization galleryLocalization
     )
     {
         this.titleBar = titleBar;
         this.search = search;
+        this.galleryLocalization = galleryLocalization;
         InitializeComponent();
 
         TitleBarElementBox.ItemsSource = new TitleBarElement[]
@@ -45,6 +49,7 @@ public partial class TitleBarRuntimePage : Page
         Page_Unloaded(sender, e);
         titleBar.Changed += TitleBar_Changed;
         search.StateChanged += Search_StateChanged;
+        galleryLocalization.Changed += GalleryLocalization_Changed;
         searchSubscription = search.Subscribe(HandleSearchQueryAsync);
         RefreshState();
     }
@@ -53,6 +58,7 @@ public partial class TitleBarRuntimePage : Page
     {
         titleBar.Changed -= TitleBar_Changed;
         search.StateChanged -= Search_StateChanged;
+        galleryLocalization.Changed -= GalleryLocalization_Changed;
         searchSubscription?.Dispose();
         searchSubscription = null;
     }
@@ -67,6 +73,11 @@ public partial class TitleBarRuntimePage : Page
         Dispatcher.BeginInvoke(RefreshSearchState);
     }
 
+    private void GalleryLocalization_Changed(object? sender, EventArgs e)
+    {
+        Dispatcher.BeginInvoke(RefreshSearchState);
+    }
+
     private async ValueTask HandleSearchQueryAsync(
         FlourishTitleBarSearchChangedEventArgs args,
         CancellationToken cancellationToken
@@ -75,9 +86,19 @@ public partial class TitleBarRuntimePage : Page
         await Task.Delay(250, cancellationToken);
         await Dispatcher.InvokeAsync(() =>
         {
-            SearchOutput.WriteLine(string.IsNullOrWhiteSpace(args.Text)
-                ? $"Query #{args.Sequence}: empty query"
-                : $"Query #{args.Sequence}: simulated results for \"{args.Text}\" completed at {DateTime.Now:T}.");
+            SearchOutput.WriteLine(
+                string.IsNullOrWhiteSpace(args.Text)
+                    ? galleryLocalization.Format(
+                        "Query #{0}: empty query",
+                        args.Sequence
+                    )
+                    : galleryLocalization.Format(
+                        "Query #{0}: simulated results for \"{1}\" completed at {2:T}.",
+                        args.Sequence,
+                        args.Text,
+                        DateTime.Now
+                    )
+            );
         });
     }
 
@@ -90,7 +111,7 @@ public partial class TitleBarRuntimePage : Page
                     NullIfWhiteSpace(SubtitleBox.Text)
                 ),
             IdentityOutput,
-            "Application identity updated."
+            galleryLocalization.Get("Application identity updated.")
         );
     }
 
@@ -120,7 +141,7 @@ public partial class TitleBarRuntimePage : Page
                     current.ShowProjectTitle
                 ),
             IdentityOutput,
-            "Title-bar logo settings updated."
+            galleryLocalization.Get("Title-bar logo settings updated.")
         );
     }
 
@@ -149,7 +170,7 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetUnnamedProjectPlaceholder(UnnamedProjectBox.Text),
                 IdentityOutput,
-                "Unnamed project placeholder updated."
+                galleryLocalization.Get("Unnamed project placeholder updated.")
             );
         }
     }
@@ -166,7 +187,11 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetElementVisible(element, TitleBarElementVisibleBox.IsChecked == true),
                 ElementOutput,
-                $"{element} visibility set to {TitleBarElementVisibleBox.IsChecked == true}."
+                galleryLocalization.Format(
+                    "{0} visibility set to {1}.",
+                    element,
+                    TitleBarElementVisibleBox.IsChecked == true
+                )
             );
         }
     }
@@ -186,7 +211,7 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetBreadcrumbMode(mode),
                 ElementOutput,
-                $"Breadcrumb display mode set to {mode}."
+                galleryLocalization.Format("Breadcrumb display mode set to {0}.", mode)
             );
         }
     }
@@ -204,7 +229,10 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             () => search.SetText(SearchTextBox.Text),
             SearchOutput,
-            $"Search text set to \"{SearchTextBox.Text}\"."
+            galleryLocalization.Format(
+                "Search text set to \"{0}\".",
+                SearchTextBox.Text
+            )
         );
     }
 
@@ -223,12 +251,20 @@ public partial class TitleBarRuntimePage : Page
 
     private void FocusSearch_Click(object sender, RoutedEventArgs e)
     {
-        Execute(search.Focus, SearchOutput, "Moved focus to title-bar search.");
+        Execute(
+            search.Focus,
+            SearchOutput,
+            galleryLocalization.Get("Moved focus to title-bar search.")
+        );
     }
 
     private void ClearSearch_Click(object sender, RoutedEventArgs e)
     {
-        Execute(search.Clear, SearchOutput, "Cleared the title-bar search query.");
+        Execute(
+            search.Clear,
+            SearchOutput,
+            galleryLocalization.Get("Cleared the title-bar search query.")
+        );
     }
 
     private void ApplySearchPlaceholder_Click(object sender, RoutedEventArgs e)
@@ -236,7 +272,10 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             () => search.SetPlaceholder(SearchPlaceholderBox.Text),
             SearchOutput,
-            $"Search placeholder set to \"{SearchPlaceholderBox.Text}\"."
+            galleryLocalization.Format(
+                "Search placeholder set to \"{0}\".",
+                SearchPlaceholderBox.Text
+            )
         );
     }
 
@@ -260,7 +299,10 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             () => search.SetVisible(visible),
             SearchOutput,
-            $"Title-bar search {(visible ? "shown" : "hidden")}."
+            galleryLocalization.Format(
+                "Title-bar search {0}.",
+                galleryLocalization.Get(visible ? "shown" : "hidden")
+            )
         );
     }
 
@@ -272,7 +314,10 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetEnabled(enabled),
                 TitleBarAvailabilityOutput,
-                $"Title bar {(enabled ? "enabled" : "disabled")}."
+                galleryLocalization.Format(
+                    "Title bar {0}.",
+                    galleryLocalization.Get(enabled ? "enabled" : "disabled")
+                )
             );
         }
     }
@@ -300,7 +345,7 @@ public partial class TitleBarRuntimePage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine($"Error: {error.Message}");
+            output.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -331,7 +376,9 @@ public partial class TitleBarRuntimePage : Page
         var current = search.Current;
         SearchTextBox.Text = current.Text;
         SearchPlaceholderBox.Text = current.Placeholder;
-        ToggleSearchVisibilityButton.Content = current.IsVisible ? "Hide search" : "Show search";
+        ToggleSearchVisibilityButton.Content = galleryLocalization.Get(
+            current.IsVisible ? "Hide search" : "Show search"
+        );
     }
 
     private void RefreshSelectedElementState()

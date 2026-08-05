@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -11,17 +12,20 @@ public partial class ProjectRuntimePage : Page
     private readonly IProjectService projects;
     private readonly IProjectBehavior projectBehavior;
     private readonly ITitleBarService titleBar;
+    private readonly IGalleryLocalization localization;
     private bool isRefreshing;
 
     public ProjectRuntimePage(
         IProjectService projects,
         IProjectBehavior projectBehavior,
-        ITitleBarService titleBar
+        ITitleBarService titleBar,
+        IGalleryLocalization localization
     )
     {
         this.projects = projects;
         this.projectBehavior = projectBehavior;
         this.titleBar = titleBar;
+        this.localization = localization;
         InitializeComponent();
 
         Loaded += Page_Loaded;
@@ -59,11 +63,11 @@ public partial class ProjectRuntimePage : Page
         {
             var project = ReadProjectInput();
             projects.AppendProject(project);
-            CollectionOutput.WriteLine($"Added project '{project.Id}'.");
+            CollectionOutput.WriteLine(localization.Format("Added project '{0}'.", project.Id));
         }
         catch (Exception error)
         {
-            CollectionOutput.WriteLine($"Error: {error.Message}");
+            CollectionOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -75,11 +79,13 @@ public partial class ProjectRuntimePage : Page
         {
             var project = ReadProjectInput();
             projects.SetProject(project);
-            CollectionOutput.WriteLine($"Added or replaced project '{project.Id}'.");
+            CollectionOutput.WriteLine(
+                localization.Format("Added or replaced project '{0}'.", project.Id)
+            );
         }
         catch (Exception error)
         {
-            CollectionOutput.WriteLine($"Error: {error.Message}");
+            CollectionOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -92,19 +98,27 @@ public partial class ProjectRuntimePage : Page
             if (projects.GetProject(ProjectIdBox.Text) is { } project)
             {
                 CollectionOutput.WriteLine(
-                    $"Found '{project.Name}' [{project.Id}] at {project.StoragePath ?? "<no storage path>"}."
+                    localization.Format(
+                        "Found '{0}' [{1}] at {2}.",
+                        project.Name,
+                        project.Id,
+                        project.StoragePath ?? localization.Get("<no storage path>")
+                    )
                 );
             }
             else
             {
                 CollectionOutput.WriteLine(
-                    $"Project '{ProjectIdBox.Text.Trim()}' was not found."
+                    localization.Format(
+                        "Project '{0}' was not found.",
+                        ProjectIdBox.Text.Trim()
+                    )
                 );
             }
         }
         catch (Exception error)
         {
-            CollectionOutput.WriteLine($"Error: {error.Message}");
+            CollectionOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -126,13 +140,16 @@ public partial class ProjectRuntimePage : Page
             var activated = await projectBehavior.ActivateProjectAsync(project.Id);
             ActiveProjectOutput.WriteLine(
                 activated
-                    ? $"Activated project '{project.Id}'."
-                    : $"Activation of project '{project.Id}' was canceled."
+                    ? localization.Format("Activated project '{0}'.", project.Id)
+                    : localization.Format(
+                        "Activation of project '{0}' was canceled.",
+                        project.Id
+                    )
             );
         }
         catch (Exception error)
         {
-            ActiveProjectOutput.WriteLine($"Error: {error.Message}");
+            ActiveProjectOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -142,7 +159,9 @@ public partial class ProjectRuntimePage : Page
     {
         if (ActiveProjectBox.SelectedItem is not FlourishProject project)
         {
-            ActiveProjectOutput.WriteLine("Select a project before updating its metadata.");
+            ActiveProjectOutput.WriteLine(
+                localization.Get("Select a project before updating its metadata.")
+            );
             RefreshState();
             return;
         }
@@ -154,11 +173,13 @@ public partial class ProjectRuntimePage : Page
                 ProjectNameBox.Text,
                 ReadExistingStoragePath(StoragePathBox.Text)
             );
-            ActiveProjectOutput.WriteLine($"Updated metadata for project '{project.Id}'.");
+            ActiveProjectOutput.WriteLine(
+                localization.Format("Updated metadata for project '{0}'.", project.Id)
+            );
         }
         catch (Exception error)
         {
-            ActiveProjectOutput.WriteLine($"Error: {error.Message}");
+            ActiveProjectOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -169,11 +190,11 @@ public partial class ProjectRuntimePage : Page
         try
         {
             projects.SetActiveProject(null);
-            ActiveProjectOutput.WriteLine("Cleared the active project.");
+            ActiveProjectOutput.WriteLine(localization.Get("Cleared the active project."));
         }
         catch (Exception error)
         {
-            ActiveProjectOutput.WriteLine($"Error: {error.Message}");
+            ActiveProjectOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -183,7 +204,9 @@ public partial class ProjectRuntimePage : Page
     {
         if (ActiveProjectBox.SelectedItem is not FlourishProject project)
         {
-            ActiveProjectOutput.WriteLine("Select a project before deleting it.");
+            ActiveProjectOutput.WriteLine(
+                localization.Get("Select a project before deleting it.")
+            );
             RefreshState();
             return;
         }
@@ -193,13 +216,16 @@ public partial class ProjectRuntimePage : Page
             var deleted = await projectBehavior.DeleteProjectAsync(project.Id);
             ActiveProjectOutput.WriteLine(
                 deleted
-                    ? $"Deleted project '{project.Id}'."
-                    : $"Deletion of project '{project.Id}' was canceled."
+                    ? localization.Format("Deleted project '{0}'.", project.Id)
+                    : localization.Format(
+                        "Deletion of project '{0}' was canceled.",
+                        project.Id
+                    )
             );
         }
         catch (Exception error)
         {
-            ActiveProjectOutput.WriteLine($"Error: {error.Message}");
+            ActiveProjectOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -214,13 +240,15 @@ public partial class ProjectRuntimePage : Page
                 projects.SetMultiProjectEnabled(MultiProjectEnabledBox.IsChecked == true);
                 RequestOutput.WriteLine(
                     MultiProjectEnabledBox.IsChecked == true
-                        ? "Enabled the project-aware title selector."
-                        : "Disabled project-aware title display; project metadata remains registered."
+                        ? localization.Get("Enabled the project-aware title selector.")
+                        : localization.Get(
+                            "Disabled project-aware title display; project metadata remains registered."
+                        )
                 );
             }
             catch (Exception error)
             {
-                RequestOutput.WriteLine($"Error: {error.Message}");
+                RequestOutput.WriteLine(localization.Format("Error: {0}", error.Message));
             }
 
             RefreshState();
@@ -244,12 +272,15 @@ public partial class ProjectRuntimePage : Page
         {
             titleBar.SetUnnamedProjectPlaceholder(UnnamedProjectPlaceholderBox.Text);
             RequestOutput.WriteLine(
-                $"Updated the unnamed-project title to '{titleBar.Current.UnnamedProjectPlaceholder}'."
+                localization.Format(
+                    "Updated the unnamed-project title to '{0}'.",
+                    titleBar.Current.UnnamedProjectPlaceholder
+                )
             );
         }
         catch (Exception error)
         {
-            RequestOutput.WriteLine($"Error: {error.Message}");
+            RequestOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -262,7 +293,9 @@ public partial class ProjectRuntimePage : Page
     {
         Dispatcher.BeginInvoke(() =>
         {
-            RequestOutput.WriteLine("Observed a new-project request from the title selector.");
+            RequestOutput.WriteLine(
+                localization.Get("Observed a new-project request from the title selector.")
+            );
             RefreshState();
         });
     }
@@ -275,7 +308,11 @@ public partial class ProjectRuntimePage : Page
         Dispatcher.BeginInvoke(() =>
         {
             RequestOutput.WriteLine(
-                $"Observed an activation request for '{e.Project.Name}' [{e.Project.Id}]."
+                localization.Format(
+                    "Observed an activation request for '{0}' [{1}].",
+                    e.Project.Name,
+                    e.Project.Id
+                )
             );
             RefreshState();
         });
@@ -287,12 +324,14 @@ public partial class ProjectRuntimePage : Page
         {
             var created = await projectBehavior.CreateProjectAsync();
             RequestOutput.WriteLine(
-                created ? "Created a persisted project." : "Project creation was canceled."
+                created
+                    ? localization.Get("Created a persisted project.")
+                    : localization.Get("Project creation was canceled.")
             );
         }
         catch (Exception error)
         {
-            RequestOutput.WriteLine($"Error: {error.Message}");
+            RequestOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();
@@ -304,12 +343,14 @@ public partial class ProjectRuntimePage : Page
         {
             var saved = await projectBehavior.SaveActiveProjectAsync();
             RequestOutput.WriteLine(
-                saved ? "Saved the active project." : "Project save was canceled."
+                saved
+                    ? localization.Get("Saved the active project.")
+                    : localization.Get("Project save was canceled.")
             );
         }
         catch (Exception error)
         {
-            RequestOutput.WriteLine($"Error: {error.Message}");
+            RequestOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
 
         RefreshState();

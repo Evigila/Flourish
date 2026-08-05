@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Flourish\Flourish.csproj" />
+    <ProjectReference Include="..\..\src\Gallery\Gallery.csproj" />
   </ItemGroup>
 
   <ItemGroup>

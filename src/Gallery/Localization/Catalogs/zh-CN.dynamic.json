@@ -1,0 +1,21 @@
+{
+  "Choose the application locale. Flourish translates only its built-in interface, while GalleryLocalizationService independently translates this client's pages and shell labels. Use the client-owned service for application copy; both layers observe the same selection and fall back to English when no matching client catalog exists. The code below demonstrates the shared locale signal.": "选择应用程序区域设置。Flourish 只翻译框架内置界面，而 GalleryLocalizationService 独立翻译此客户端的页面和 Shell 标签。应用文案应使用客户端自有服务；两层共同观察同一个语言选择，并在没有对应客户端词典时回退到英文。下方代码演示共享的区域设置信号。",
+  "Locale changed to {0}.": "区域设置已切换为 {0}。",
+  "Error: {0}": "错误：{0}",
+  "Registered {0} from {1}.": "已从 {1} 注册 {0}。",
+  "Register a locale file first.": "请先注册区域设置文件。",
+  "Reloaded {0} at {1:T}.": "已于 {1:T} 重新加载 {0}。",
+  "No locale file is registered by this page.": "此页面尚未注册区域设置文件。",
+  "Unregistered locale source {0}.": "已注销区域设置源 {0}。",
+  "That locale source was already unregistered.": "该区域设置源已经注销。",
+  "Enter a configuration path.": "请输入配置路径。",
+  "Read {0}: {1}": "读取 {0}：{1}",
+  "Reloaded configuration providers. Snapshot v{0} contains {1} values (captured {2:T}).": "已重新加载配置提供程序。快照 v{0} 包含 {1} 个值（捕获于 {2:T}）。",
+  "Set": "设置",
+  "Append": "追加",
+  "Merge": "合并",
+  "Remove": "移除",
+  "{0} saved {1}. Configuration reloaded: {2}.": "{0}已保存至 {1}。配置已重新加载：{2}。",
+  "{0} completed without changing the document.": "{0}已完成，文档未发生更改。",
+  "Name order updated: {0}; display name {1}.": "姓名顺序已更新为 {0}；显示名称为 {1}。"
+}

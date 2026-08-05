@@ -1,15 +1,21 @@
 using System.Windows;
 using System.Windows.Controls;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
 public partial class ProfileConfigurationPage : Page
 {
     private readonly IProfileService profile;
+    private readonly IGalleryLocalization localization;
 
-    public ProfileConfigurationPage(IProfileService profile)
+    public ProfileConfigurationPage(
+        IProfileService profile,
+        IGalleryLocalization localization
+    )
     {
         this.profile = profile;
+        this.localization = localization;
         InitializeComponent();
     }
 
@@ -25,12 +31,16 @@ public partial class ProfileConfigurationPage : Page
         {
             await profile.SetNameOrderAsync(order);
             ProfileOutput.WriteLine(
-                $"Name order updated: {profile.NameOrder}; display name {profile.CurrentProfile.DisplayName}."
+                localization.Format(
+                    "Name order updated: {0}; display name {1}.",
+                    profile.NameOrder,
+                    profile.CurrentProfile.DisplayName
+                )
             );
         }
         catch (Exception error)
         {
-            ProfileOutput.WriteLine($"Error: {error.Message}");
+            ProfileOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 }

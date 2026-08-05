@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -18,19 +19,22 @@ public partial class ToolbarStatusPage : Page
     private readonly IStatusBarService status;
     private readonly IShellRegionService regions;
     private readonly ICommandRegistry commands;
+    private readonly IGalleryLocalization galleryLocalization;
     private ICommandRegistration? commandRegistration;
 
     public ToolbarStatusPage(
         IToolbarService toolbar,
         IStatusBarService status,
         IShellRegionService regions,
-        ICommandRegistry commands
+        ICommandRegistry commands,
+        IGalleryLocalization galleryLocalization
     )
     {
         this.toolbar = toolbar;
         this.status = status;
         this.regions = regions;
         this.commands = commands;
+        this.galleryLocalization = galleryLocalization;
         InitializeComponent();
 
         Loaded += Page_Loaded;
@@ -62,14 +66,22 @@ public partial class ToolbarStatusPage : Page
             {
                 toolbar.SetEnabled(true);
                 toolbar.SetItem(
-                    new FlourishToolbarItem("Run live command", "\uE768", ToolbarCommandKey)
+                    new FlourishToolbarItem(
+                        galleryLocalization.Get("Run live command"),
+                        "\uE768",
+                        ToolbarCommandKey
+                    )
                     {
                         Id = ToolbarItemId,
                     },
                     typeof(ToolbarStatusPage)
                 );
                 toolbar.SetItem(
-                    new FlourishToolbarItem("Companion", "\uE8EF", ToolbarCommandKey)
+                    new FlourishToolbarItem(
+                        galleryLocalization.Get("Companion"),
+                        "\uE8EF",
+                        ToolbarCommandKey
+                    )
                     {
                         Id = CompanionToolbarItemId,
                     },
@@ -77,7 +89,7 @@ public partial class ToolbarStatusPage : Page
                 );
             },
             ToolbarOutput,
-            "Added or updated the two runtime toolbar actions."
+            galleryLocalization.Get("Added or updated the two runtime toolbar actions.")
         );
     }
 
@@ -90,12 +102,17 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetItemEnabled(ToolbarItemId, enabled, typeof(ToolbarStatusPage)),
                 ToolbarOutput,
-                $"Runtime toolbar action {(enabled ? "enabled" : "disabled")}."
+                galleryLocalization.Format(
+                    "Runtime toolbar action {0}.",
+                    galleryLocalization.Get(enabled ? "enabled" : "disabled")
+                )
             );
         }
         else
         {
-            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
+            ToolbarOutput.WriteLine(
+                galleryLocalization.Get("Add the runtime toolbar action first.")
+            );
         }
     }
 
@@ -108,12 +125,17 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetItemVisible(ToolbarItemId, visible, typeof(ToolbarStatusPage)),
                 ToolbarOutput,
-                $"Runtime toolbar action {(visible ? "shown" : "hidden")}."
+                galleryLocalization.Format(
+                    "Runtime toolbar action {0}.",
+                    galleryLocalization.Get(visible ? "shown" : "hidden")
+                )
             );
         }
         else
         {
-            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
+            ToolbarOutput.WriteLine(
+                galleryLocalization.Get("Add the runtime toolbar action first.")
+            );
         }
     }
 
@@ -126,12 +148,17 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetIconOnly(typeof(ToolbarStatusPage), iconOnly),
                 ToolbarOutput,
-                $"Toolbar presentation set to {(iconOnly ? "icon only" : "icon and text")}."
+                galleryLocalization.Format(
+                    "Toolbar presentation set to {0}.",
+                    galleryLocalization.Get(iconOnly ? "icon only" : "icon and text")
+                )
             );
         }
         else
         {
-            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
+            ToolbarOutput.WriteLine(
+                galleryLocalization.Get("Add the runtime toolbar action first.")
+            );
         }
     }
 
@@ -151,12 +178,17 @@ public partial class ToolbarStatusPage : Page
                     typeof(ToolbarStatusPage)
                 ),
                 ToolbarOutput,
-                $"Moved the runtime toolbar action to index {targetIndex}."
+                galleryLocalization.Format(
+                    "Moved the runtime toolbar action to index {0}.",
+                    targetIndex
+                )
             );
         }
         else
         {
-            ToolbarOutput.WriteLine("Add the runtime toolbar action first.");
+            ToolbarOutput.WriteLine(
+                galleryLocalization.Get("Add the runtime toolbar action first.")
+            );
         }
     }
 
@@ -169,7 +201,7 @@ public partial class ToolbarStatusPage : Page
                 toolbar.Remove(CompanionToolbarItemId, typeof(ToolbarStatusPage));
             },
             ToolbarOutput,
-            "Removed the runtime toolbar actions."
+            galleryLocalization.Get("Removed the runtime toolbar actions.")
         );
     }
 
@@ -179,7 +211,11 @@ public partial class ToolbarStatusPage : Page
     )
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var message = $"Executed at {DateTimeOffset.Now:HH:mm:ss.fff} from {context.Source}.";
+        var message = galleryLocalization.Format(
+            "Executed at {0:HH:mm:ss.fff} from {1}.",
+            DateTimeOffset.Now,
+            context.Source
+        );
         if (Dispatcher.CheckAccess())
         {
             ToolbarOutput.WriteLine(message);
@@ -203,7 +239,7 @@ public partial class ToolbarStatusPage : Page
                 );
             },
             StatusOutput,
-            "Added or updated the persistent status item."
+            galleryLocalization.Get("Added or updated the persistent status item.")
         );
 
     private void ShowTimedStatus_Click(object sender, RoutedEventArgs e) =>
@@ -219,7 +255,7 @@ public partial class ToolbarStatusPage : Page
                 );
             },
             StatusOutput,
-            "Displayed the timed status item for four seconds."
+            galleryLocalization.Get("Displayed the timed status item for four seconds.")
         );
 
     private void ToggleStatusVisible_Click(object sender, RoutedEventArgs e)
@@ -231,12 +267,17 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => status.SetItemVisible(StatusItemId, visible),
                 StatusOutput,
-                $"Persistent status item {(visible ? "shown" : "hidden")}."
+                galleryLocalization.Format(
+                    "Persistent status item {0}.",
+                    galleryLocalization.Get(visible ? "shown" : "hidden")
+                )
             );
         }
         else
         {
-            StatusOutput.WriteLine("Add the persistent status item first.");
+            StatusOutput.WriteLine(
+                galleryLocalization.Get("Add the persistent status item first.")
+            );
         }
     }
 
@@ -244,7 +285,7 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.Remove(StatusItemId),
             StatusOutput,
-            "Removed the persistent status item."
+            galleryLocalization.Get("Removed the persistent status item.")
         );
 
     private void MoveStatus_Click(object sender, RoutedEventArgs e)
@@ -259,12 +300,17 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => status.SetOrder(StatusItemId, targetIndex),
                 StatusOutput,
-                $"Moved the persistent status item to index {targetIndex}."
+                galleryLocalization.Format(
+                    "Moved the persistent status item to index {0}.",
+                    targetIndex
+                )
             );
         }
         else
         {
-            StatusOutput.WriteLine("Add the persistent status item first.");
+            StatusOutput.WriteLine(
+                galleryLocalization.Get("Add the persistent status item first.")
+            );
         }
     }
 
@@ -274,7 +320,10 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.SetLanStatusEnabled(enabled),
             StatusOutput,
-            $"LAN indicator {(enabled ? "enabled" : "disabled")}."
+            galleryLocalization.Format(
+                "LAN indicator {0}.",
+                galleryLocalization.Get(enabled ? "enabled" : "disabled")
+            )
         );
     }
 
@@ -284,7 +333,10 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.SetPowerStatusEnabled(enabled),
             StatusOutput,
-            $"Power indicator {(enabled ? "enabled" : "disabled")}."
+            galleryLocalization.Format(
+                "Power indicator {0}.",
+                galleryLocalization.Get(enabled ? "enabled" : "disabled")
+            )
         );
     }
 
@@ -294,7 +346,10 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.SetEnabled(enabled),
             StatusOutput,
-            $"Status bar {(enabled ? "enabled" : "disabled")}."
+            galleryLocalization.Format(
+                "Status bar {0}.",
+                galleryLocalization.Get(enabled ? "enabled" : "disabled")
+            )
         );
     }
 
@@ -304,11 +359,13 @@ public partial class ToolbarStatusPage : Page
             () => regions.Set(
                 RegionId,
                 FlourishRegion.ContentHeader,
-                static _ => CreateRegionContent(),
+                _ => CreateRegionContent(),
                 order: 50
             ),
             RegionOutput,
-            "Added or updated the ContentHeader region at order 50."
+            galleryLocalization.Get(
+                "Added or updated the ContentHeader region at order 50."
+            )
         );
     }
 
@@ -321,12 +378,17 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => regions.SetEnabled(RegionId, enabled),
                 RegionOutput,
-                $"ContentHeader region {(enabled ? "enabled" : "disabled")}."
+                galleryLocalization.Format(
+                    "ContentHeader region {0}.",
+                    galleryLocalization.Get(enabled ? "enabled" : "disabled")
+                )
             );
         }
         else
         {
-            RegionOutput.WriteLine("Add the ContentHeader region first.");
+            RegionOutput.WriteLine(
+                galleryLocalization.Get("Add the ContentHeader region first.")
+            );
         }
     }
 
@@ -334,7 +396,7 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => regions.Remove(RegionId),
             RegionOutput,
-            "Removed the ContentHeader region."
+            galleryLocalization.Get("Removed the ContentHeader region.")
         );
 
     private void ReorderRegion_Click(object sender, RoutedEventArgs e)
@@ -346,20 +408,28 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => regions.SetOrder(RegionId, order),
                 RegionOutput,
-                $"Moved the ContentHeader region to order {order}."
+                galleryLocalization.Format(
+                    "Moved the ContentHeader region to order {0}.",
+                    order
+                )
             );
         }
         else
         {
-            RegionOutput.WriteLine("Add the ContentHeader region first.");
+            RegionOutput.WriteLine(
+                galleryLocalization.Get("Add the ContentHeader region first.")
+            );
         }
     }
 
-    private static FrameworkElement CreateRegionContent()
+    private FrameworkElement CreateRegionContent()
     {
         var text = new FlourishTextBlock
         {
-            Text = $"ContentHeader registered at {DateTimeOffset.Now:HH:mm:ss}",
+            Text = galleryLocalization.Format(
+                "ContentHeader registered at {0:HH:mm:ss}",
+                DateTimeOffset.Now
+            ),
             VerticalAlignment = VerticalAlignment.Center,
         };
         text.SetResourceReference(
@@ -396,7 +466,7 @@ public partial class ToolbarStatusPage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine($"Error: {error.Message}");
+            output.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
         }
     }
 }

@@ -1,12 +1,18 @@
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using ArkheideSystem.Gallery.Localization;
 using ArkheideSystem.Gallery.Models;
 
 namespace ArkheideSystem.Gallery.Views;
 
 public partial class ComboBoxPage : Page
 {
-    public ComboBoxPage()
+    private readonly IGalleryLocalization localization;
+
+    public ComboBoxPage(IGalleryLocalization localization)
     {
+        this.localization = localization;
+        RefreshDensityOptions();
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
@@ -18,9 +24,35 @@ public partial class ComboBoxPage : Page
             new("SelectionChanged", "Reports added and removed selections."),
             new("HoverReveal.IsEnabled", "Controls pointer-reveal feedback on the closed selector."),
         };
+        Loaded += Page_Loaded;
+        Unloaded += Page_Unloaded;
     }
 
-    public string[] DensityOptions { get; } = ["Comfortable", "Compact"];
+    public ObservableCollection<string> DensityOptions { get; } = [];
+
+    private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+    {
+        localization.Changed -= Localization_Changed;
+        localization.Changed += Localization_Changed;
+        RefreshDensityOptions();
+    }
+
+    private void Page_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+    {
+        localization.Changed -= Localization_Changed;
+    }
+
+    private void Localization_Changed(object? sender, EventArgs e)
+    {
+        RefreshDensityOptions();
+    }
+
+    private void RefreshDensityOptions()
+    {
+        DensityOptions.Clear();
+        DensityOptions.Add(localization.Get("Comfortable"));
+        DensityOptions.Add(localization.Get("Compact"));
+    }
 
     public string UsageCode { get; } =
         """

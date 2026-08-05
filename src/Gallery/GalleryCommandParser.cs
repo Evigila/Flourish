@@ -1,11 +1,13 @@
 using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery;
 
 internal sealed class GalleryCommandParser(
     IMessageService messages,
-    IBackgroundTaskService backgroundTasks
+    IBackgroundTaskService backgroundTasks,
+    IGalleryLocalization localization
 ) : ICommandParser
 {
     public void RegisterCommands(ICommandRegistrar commands)
@@ -14,15 +16,17 @@ internal sealed class GalleryCommandParser(
         ArgumentNullException.ThrowIfNull(messages);
         ArgumentNullException.ThrowIfNull(backgroundTasks);
 
-        commands.Register("demo.hello", () => ShowCommandOutput(messages, "Hello"));
-        commands.Register("demo.world", () => ShowCommandOutput(messages, "World"));
+        commands.Register("demo.hello", () => ShowCommandOutput("Hello"));
+        commands.Register("demo.world", () => ShowCommandOutput("World"));
         commands.Register(
             "demo.background",
             () =>
                 backgroundTasks.QueueTask(
                     new FlourishBackgroundTaskMetadata(
-                        "Gallery background task",
-                        "A cancellable ten-second task that reports progress.",
+                        localization.Get("Gallery background task"),
+                        localization.Get(
+                            "A cancellable ten-second task that reports progress."
+                        ),
                         "\uE895"
                     ),
                     async context =>
@@ -35,23 +39,23 @@ internal sealed class GalleryCommandParser(
                     }
                 )
         );
-        commands.Register("tree.button1", () => ShowCommandOutput(messages, "Button1"));
-        commands.Register("tree.button2", () => ShowCommandOutput(messages, "Button2"));
-        commands.Register("app.about", () => ShowCommandOutput(messages, "关于"));
+        commands.Register("tree.button1", () => ShowCommandOutput("Button1"));
+        commands.Register("tree.button2", () => ShowCommandOutput("Button2"));
+        commands.Register("app.about", () => ShowCommandOutput("About"));
         commands.Register(
             "titlebar.trace",
-            () => ShowCommandOutput(messages, "Titlebar command invoked")
+            () => ShowCommandOutput("Titlebar command invoked")
         );
         commands.Register(
             "footer.trace",
-            () => ShowCommandOutput(messages, "Footer command invoked")
+            () => ShowCommandOutput("Footer command invoked")
         );
         commands.Register(
             "home.open",
             () =>
                 messages.Show(
-                    "Hello, World!",
-                    "Gallery",
+                    localization.Get("Hello, World!"),
+                    localization.Get("Gallery"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 )
@@ -62,8 +66,13 @@ internal sealed class GalleryCommandParser(
         commands.Register("gallery.import", static () => { });
     }
 
-    private static void ShowCommandOutput(IMessageService messages, string text)
+    private void ShowCommandOutput(string text)
     {
-        messages.Show(text, "Gallery", MessageBoxButton.OK, MessageBoxImage.Information);
+        messages.Show(
+            localization.Get(text),
+            localization.Get("Gallery"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Information
+        );
     }
 }

@@ -2,19 +2,25 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
 public partial class BackgroundTasksPage : Page
 {
     private readonly IBackgroundTaskService backgroundTasks;
+    private readonly IGalleryLocalization localization;
     private readonly ObservableCollection<string> outcomes = [];
     private Guid? lastTaskId;
     private int taskSequence;
 
-    public BackgroundTasksPage(IBackgroundTaskService backgroundTasks)
+    public BackgroundTasksPage(
+        IBackgroundTaskService backgroundTasks,
+        IGalleryLocalization localization
+    )
     {
         this.backgroundTasks = backgroundTasks;
+        this.localization = localization;
         InitializeComponent();
 
         OutcomeList.ItemsSource = outcomes;
@@ -47,8 +53,8 @@ public partial class BackgroundTasksPage : Page
     {
         try
         {
-            var taskName = AddProgressTask("Interactive progress task", 150);
-            ServiceOutput.WriteLine($"Queued {taskName}.");
+            var taskName = AddProgressTask("Interactive progress task {0}", 150);
+            ServiceOutput.WriteLine(localization.Format("Queued {0}.", taskName));
         }
         catch (Exception error)
         {
@@ -63,8 +69,10 @@ public partial class BackgroundTasksPage : Page
             var sequence = Interlocked.Increment(ref taskSequence);
             var handle = backgroundTasks.QueueTask(
                 new FlourishBackgroundTaskMetadata(
-                    $"Result task {sequence}",
-                    "Calculates a value and returns it through the typed handle.",
+                    localization.Format("Result task {0}", sequence),
+                    localization.Get(
+                        "Calculates a value and returns it through the typed handle."
+                    ),
                     "\uE945"
                 ),
                 async context =>
@@ -82,7 +90,9 @@ public partial class BackgroundTasksPage : Page
             );
 
             lastTaskId = handle.Id;
-            ServiceOutput.WriteLine($"Queued typed result task {handle.Id}.");
+            ServiceOutput.WriteLine(
+                localization.Format("Queued typed result task {0}.", handle.Id)
+            );
             _ = ObserveResultTaskAsync(handle);
         }
         catch (Exception error)
@@ -97,11 +107,14 @@ public partial class BackgroundTasksPage : Page
         {
             for (var index = 1; index <= 4; index++)
             {
-                AddProgressTask($"Burst item {index}", 90 + (index * 30));
+                AddProgressTask("Burst item {0}", 90 + (index * 30));
             }
 
             ServiceOutput.WriteLine(
-                $"Queued four tasks. The configured concurrency limit is {backgroundTasks.MaxConcurrency}."
+                localization.Format(
+                    "Queued four tasks. The configured concurrency limit is {0}.",
+                    backgroundTasks.MaxConcurrency
+                )
             );
         }
         catch (Exception error)
@@ -114,7 +127,9 @@ public partial class BackgroundTasksPage : Page
     {
         if (lastTaskId is not Guid id)
         {
-            ServiceOutput.WriteLine("No task has been submitted by this page yet.");
+            ServiceOutput.WriteLine(
+                localization.Get("No task has been submitted by this page yet.")
+            );
             return;
         }
 
@@ -122,8 +137,8 @@ public partial class BackgroundTasksPage : Page
         {
             ServiceOutput.WriteLine(
                 backgroundTasks.CancelTask(id)
-                    ? $"Cancellation requested for {id}."
-                    : $"Task {id} is no longer active."
+                    ? localization.Format("Cancellation requested for {0}.", id)
+                    : localization.Format("Task {0} is no longer active.", id)
             );
         }
         catch (Exception error)
@@ -136,7 +151,7 @@ public partial class BackgroundTasksPage : Page
     {
         if (ActiveTaskList.SelectedItem is not ActiveTaskRow row)
         {
-            ServiceOutput.WriteLine("Select an active task first.");
+            ServiceOutput.WriteLine(localization.Get("Select an active task first."));
             return;
         }
 
@@ -144,8 +159,8 @@ public partial class BackgroundTasksPage : Page
         {
             ServiceOutput.WriteLine(
                 backgroundTasks.CancelTask(row.Id)
-                    ? $"Cancellation requested for {row.Name}."
-                    : $"{row.Name} is no longer active."
+                    ? localization.Format("Cancellation requested for {0}.", row.Name)
+                    : localization.Format("{0} is no longer active.", row.Name)
             );
         }
         catch (Exception error)
@@ -154,13 +169,13 @@ public partial class BackgroundTasksPage : Page
         }
     }
 
-    private string AddProgressTask(string name, int delayMilliseconds)
+    private string AddProgressTask(string nameFormat, int delayMilliseconds)
     {
         var sequence = Interlocked.Increment(ref taskSequence);
         var handle = backgroundTasks.QueueTask(
             new FlourishBackgroundTaskMetadata(
-                $"{name} {sequence}",
-                "Reports progress and observes cooperative cancellation.",
+                localization.Format(nameFormat, sequence),
+                localization.Get("Reports progress and observes cooperative cancellation."),
                 "\uE895"
             ),
             async context =>
@@ -192,7 +207,9 @@ public partial class BackgroundTasksPage : Page
 
     private void AddOutcome(FlourishBackgroundTaskInfo info, object? value)
     {
-        var valueText = value is null ? string.Empty : $"  |  value {value}";
+        var valueText = value is null
+            ? string.Empty
+            : localization.Format("  |  value {0}", value);
         var errorText = info.Exception is null ? string.Empty : $"  |  {info.Exception.Message}";
         outcomes.Insert(0, $"{info.Metadata.Name}  |  {info.State}{valueText}{errorText}");
         while (outcomes.Count > 20)
@@ -203,19 +220,31 @@ public partial class BackgroundTasksPage : Page
 
     private void RefreshActiveTasks(IReadOnlyList<FlourishBackgroundTaskInfo> tasks)
     {
-        ActiveTaskList.ItemsSource = tasks.Select(info => new ActiveTaskRow(info)).ToArray();
+        ActiveTaskList.ItemsSource = tasks
+            .Select(info => new ActiveTaskRow(info, localization))
+            .ToArray();
     }
 
-    private void WriteError(Exception error) => ServiceOutput.WriteLine($"Error: {error.Message}");
+    private void WriteError(Exception error) =>
+        ServiceOutput.WriteLine(localization.Format("Error: {0}", error.Message));
 
-    private sealed record ActiveTaskRow(Guid Id, string Name, FlourishBackgroundTaskState State, double? Progress)
+    private sealed record ActiveTaskRow(
+        Guid Id,
+        string Name,
+        FlourishBackgroundTaskState State,
+        double? Progress,
+        IGalleryLocalization Localization
+    )
     {
-        public ActiveTaskRow(FlourishBackgroundTaskInfo info)
-            : this(info.Id, info.Metadata.Name, info.State, info.Progress) { }
+        public ActiveTaskRow(
+            FlourishBackgroundTaskInfo info,
+            IGalleryLocalization localization
+        )
+            : this(info.Id, info.Metadata.Name, info.State, info.Progress, localization) { }
 
         public override string ToString()
         {
-            var progress = Progress is null ? "waiting" : $"{Progress:P0}";
+            var progress = Progress is null ? Localization.Get("waiting") : $"{Progress:P0}";
             return $"{Name}  |  {State}  |  {progress}";
         }
     }

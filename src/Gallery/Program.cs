@@ -1,6 +1,7 @@
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Abstract.Builder;
 using ArkheideSystem.Gallery.Views;
+using ArkheideSystem.Gallery.Localization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Gallery;
@@ -25,6 +26,11 @@ internal static class Program
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
+                    services.AddSingleton<GalleryLocalizationService>();
+                    services.AddSingleton<IGalleryLocalization>(provider =>
+                        provider.GetRequiredService<GalleryLocalizationService>()
+                    );
+                    services.AddSingleton<GalleryShellLocalizationCoordinator>();
                     services.AddCommandParser<GalleryCommandParser>(); // Mapping command key and its executor
 
                     services.AddNavigable<HomePage>("Overview", "\uE80F"); // Using AddNavigable instead of AddSingleton or other
@@ -94,7 +100,7 @@ internal static class Program
                     .UseTips() // Use flourish style tooltips instead of WPF one
                     .UseTitleBar(); // Use flourish style titlebar instead of WPF one
             })
-            .ConfigTitleBar(t => t.InitApplicationSubTitle("ABC"))
+            .ConfigTitleBar(t => t.InitApplicationSubTitle("Component reference"))
             .ConfigTitleBar(titlebar =>
                 titlebar.UseSearch(placeholder: "Type here to search", handler: (_, _) => { })
             ) // search handler TODO

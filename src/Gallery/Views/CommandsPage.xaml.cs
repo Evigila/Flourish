@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -13,6 +14,7 @@ public partial class CommandsPage : Page
     private readonly ICommandRegistry commandRegistry;
     private readonly ICommandDispatcher commandDispatcher;
     private readonly IShortcutService shortcuts;
+    private readonly IGalleryLocalization localization;
     private ICommandRegistration? commandRegistration;
     private IShortcutRegistration? shortcutRegistration;
     private bool commandEnabled = true;
@@ -21,12 +23,14 @@ public partial class CommandsPage : Page
     public CommandsPage(
         ICommandRegistry commandRegistry,
         ICommandDispatcher commandDispatcher,
-        IShortcutService shortcuts
+        IShortcutService shortcuts,
+        IGalleryLocalization localization
     )
     {
         this.commandRegistry = commandRegistry;
         this.commandDispatcher = commandDispatcher;
         this.shortcuts = shortcuts;
+        this.localization = localization;
         InitializeComponent();
         CommandEnabledBox.Checked += CommandEnabled_Changed;
         CommandEnabledBox.Unchecked += CommandEnabled_Changed;
@@ -75,12 +79,14 @@ public partial class CommandsPage : Page
                     Priority = 100,
                 }
             );
-            CommandOutput.WriteLine($"Registered '{key}' with priority 100.");
+            CommandOutput.WriteLine(
+                localization.Format("Registered '{0}' with priority {1}.", key, 100)
+            );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine($"Error: {error.Message}");
+            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -99,11 +105,11 @@ public partial class CommandsPage : Page
                 CommandParameterBox.Text,
                 CommandSource.Application
             );
-            CommandOutput.WriteLine(FormatResult("Command", result, canExecute));
+            CommandOutput.WriteLine(FormatResult(localization.Get("Command"), result, canExecute));
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine($"Error: {error.Message}");
+            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -111,7 +117,9 @@ public partial class CommandsPage : Page
     {
         if (commandRegistration is null)
         {
-            CommandOutput.WriteLine("This page does not currently own a command registration.");
+            CommandOutput.WriteLine(
+                localization.Get("This page does not currently own a command registration.")
+            );
             return;
         }
 
@@ -119,12 +127,14 @@ public partial class CommandsPage : Page
         {
             commandRegistration.Dispose();
             commandRegistration = null;
-            CommandOutput.WriteLine("The runtime command registration was removed.");
+            CommandOutput.WriteLine(
+                localization.Get("The runtime command registration was removed.")
+            );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine($"Error: {error.Message}");
+            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -136,13 +146,19 @@ public partial class CommandsPage : Page
             commandRegistration?.NotifyCanExecuteChanged();
             CommandOutput.WriteLine(
                 commandRegistration is null
-                    ? $"The next registered handler will be {(commandEnabled ? "enabled" : "disabled")}."
-                    : $"The command is now {(commandEnabled ? "enabled" : "disabled")}."
+                    ? localization.Format(
+                        "The next registered handler will be {0}.",
+                        localization.Get(commandEnabled ? "enabled" : "disabled")
+                    )
+                    : localization.Format(
+                        "The command is now {0}.",
+                        localization.Get(commandEnabled ? "enabled" : "disabled")
+                    )
             );
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine($"Error: {error.Message}");
+            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -163,12 +179,14 @@ public partial class CommandsPage : Page
                     Priority = 100,
                 }
             );
-            ShortcutOutput.WriteLine($"Ctrl+Shift+G now dispatches '{key}'.");
+            ShortcutOutput.WriteLine(
+                localization.Format("Ctrl+Shift+G now dispatches '{0}'.", key)
+            );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            ShortcutOutput.WriteLine($"Error: {error.Message}");
+            ShortcutOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -180,11 +198,11 @@ public partial class CommandsPage : Page
                 DemoGesture,
                 new ShortcutResolutionContext(pageKey: nameof(CommandsPage))
             );
-            ShortcutOutput.WriteLine(FormatResult("Shortcut", result, null));
+            ShortcutOutput.WriteLine(FormatResult(localization.Get("Shortcut"), result, null));
         }
         catch (Exception error)
         {
-            ShortcutOutput.WriteLine($"Error: {error.Message}");
+            ShortcutOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -192,7 +210,9 @@ public partial class CommandsPage : Page
     {
         if (shortcutRegistration is null)
         {
-            ShortcutOutput.WriteLine("This page does not currently own a shortcut registration.");
+            ShortcutOutput.WriteLine(
+                localization.Get("This page does not currently own a shortcut registration.")
+            );
             return;
         }
 
@@ -200,12 +220,14 @@ public partial class CommandsPage : Page
         {
             shortcutRegistration.Dispose();
             shortcutRegistration = null;
-            ShortcutOutput.WriteLine("The Ctrl+Shift+G registration was removed.");
+            ShortcutOutput.WriteLine(
+                localization.Get("The Ctrl+Shift+G registration was removed.")
+            );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            ShortcutOutput.WriteLine($"Error: {error.Message}");
+            ShortcutOutput.WriteLine(localization.Format("Error: {0}", error.Message));
         }
     }
 
@@ -217,20 +239,39 @@ public partial class CommandsPage : Page
         await Task.Delay(180, cancellationToken);
         var count = Interlocked.Increment(ref executionCount);
         return CommandResult.HandledWith(
-            $"Hello, {context.Parameter ?? "runtime"}! Invocation #{count} from {context.Source}."
+            localization.Format(
+                "Hello, {0}! Invocation #{1} from {2}.",
+                context.Parameter ?? localization.Get("runtime"),
+                count,
+                context.Source
+            )
         );
     }
 
     private void RefreshRegistryState()
     {
-        RegistrySummaryText.Text =
-            $"Commands: {commandRegistry.Registrations.Count}  |  Shortcuts: {shortcuts.Registrations.Count}";
+        RegistrySummaryText.Text = localization.Format(
+            "Commands: {0}  |  Shortcuts: {1}",
+            commandRegistry.Registrations.Count,
+            shortcuts.Registrations.Count
+        );
 
         var commandItems = commandRegistry.Registrations.Select(item =>
-            $"Command  |  {item.CommandKey}  |  priority {item.Priority}"
+            localization.Format(
+                "Command  |  {0}  |  priority {1}",
+                item.CommandKey,
+                item.Priority
+            )
         );
         var shortcutItems = shortcuts.Registrations.Select(item =>
-            $"Shortcut  |  {item.Gesture.GetDisplayStringForCulture(System.Globalization.CultureInfo.CurrentCulture)}  |  {item.CommandKey}  |  {item.Scope}"
+            localization.Format(
+                "Shortcut  |  {0}  |  {1}  |  {2}",
+                item.Gesture.GetDisplayStringForCulture(
+                    System.Globalization.CultureInfo.CurrentCulture
+                ),
+                item.CommandKey,
+                item.Scope
+            )
         );
         RegistryList.ItemsSource = commandItems.Concat(shortcutItems).ToArray();
     }
@@ -246,11 +287,24 @@ public partial class CommandsPage : Page
         return key;
     }
 
-    private static string FormatResult(string label, CommandResult result, bool? canExecute)
+    private string FormatResult(string label, CommandResult result, bool? canExecute)
     {
-        var canExecuteText = canExecute is null ? string.Empty : $"  |  Can execute: {canExecute}";
-        var valueText = result.Value is null ? string.Empty : $"  |  Value: {result.Value}";
-        var errorText = result.Exception is null ? string.Empty : $"  |  Error: {result.Exception.Message}";
-        return $"{label} status: {result.Status}{canExecuteText}{valueText}{errorText}";
+        var canExecuteText = canExecute is null
+            ? string.Empty
+            : localization.Format("  |  Can execute: {0}", canExecute);
+        var valueText = result.Value is null
+            ? string.Empty
+            : localization.Format("  |  Value: {0}", result.Value);
+        var errorText = result.Exception is null
+            ? string.Empty
+            : localization.Format("  |  Error: {0}", result.Exception.Message);
+        return localization.Format(
+            "{0} status: {1}{2}{3}{4}",
+            label,
+            result.Status,
+            canExecuteText,
+            valueText,
+            errorText
+        );
     }
 }
