@@ -16,16 +16,22 @@ internal sealed class GalleryCommandParser(
         ArgumentNullException.ThrowIfNull(messages);
         ArgumentNullException.ThrowIfNull(backgroundTasks);
 
-        commands.Register("demo.hello", () => ShowCommandOutput("Hello"));
-        commands.Register("demo.world", () => ShowCommandOutput("World"));
+        commands.Register(
+            "demo.hello",
+            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeHello_185F8DB3)
+        );
+        commands.Register(
+            "demo.world",
+            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeWorld_78AE647D)
+        );
         commands.Register(
             "demo.background",
             () =>
                 backgroundTasks.QueueTask(
                     new FlourishBackgroundTaskMetadata(
-                        localization.Get("Gallery background task"),
+                        localization.Get(GalleryLocaleKeys.RuntimeGalleryBackgroundTask_26C68541),
                         localization.Get(
-                            "A cancellable ten-second task that reports progress."
+                            GalleryLocaleKeys.RuntimeACancellableTenSecondTaskThatReportsProgress_C83A0037
                         ),
                         "\uE895"
                     ),
@@ -39,23 +45,32 @@ internal sealed class GalleryCommandParser(
                     }
                 )
         );
-        commands.Register("tree.button1", () => ShowCommandOutput("Button1"));
-        commands.Register("tree.button2", () => ShowCommandOutput("Button2"));
-        commands.Register("app.about", () => ShowCommandOutput("About"));
+        commands.Register(
+            "tree.button1",
+            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeButton1_BDA4837E)
+        );
+        commands.Register(
+            "tree.button2",
+            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeButton2_9EF26615)
+        );
+        commands.Register(
+            "app.about",
+            () => ShowCommandOutput(GalleryLocaleKeys.ApplicationAbout_4EFCA0D1)
+        );
         commands.Register(
             "titlebar.trace",
-            () => ShowCommandOutput("Titlebar command invoked")
+            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeTitlebarCommandInvoked_5B658D8B)
         );
         commands.Register(
             "footer.trace",
-            () => ShowCommandOutput("Footer command invoked")
+            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeFooterCommandInvoked_750C5860)
         );
         commands.Register(
             "home.open",
             () =>
                 messages.Show(
-                    localization.Get("Hello, World!"),
-                    localization.Get("Gallery"),
+                    localization.Get(GalleryLocaleKeys.RuntimeHelloWorld_DFFD6021),
+                    localization.Get(GalleryLocaleKeys.RuntimeGallery_352CFC74),
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 )
@@ -66,11 +81,11 @@ internal sealed class GalleryCommandParser(
         commands.Register("gallery.import", static () => { });
     }
 
-    private void ShowCommandOutput(string text)
+    private void ShowCommandOutput(string resourceKey)
     {
         messages.Show(
-            localization.Get(text),
-            localization.Get("Gallery"),
+            localization.Get(resourceKey),
+            localization.Get(GalleryLocaleKeys.RuntimeGallery_352CFC74),
             MessageBoxButton.OK,
             MessageBoxImage.Information
         );

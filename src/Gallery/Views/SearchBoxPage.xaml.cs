@@ -10,27 +10,36 @@ public partial class SearchBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Placeholder", "Displays an in-control hint while the query is empty and unfocused."),
-            new("Text", "Gets or sets the current search query."),
-            new("IsReadOnly", "Prevents query edits while preserving selection."),
-            new("MaxLength", "Limits the accepted query length."),
-            new("TextChanged", "Reports each query update."),
-            new("CommandBindings", "Connects keyboard gestures such as Enter to application search."),
+            new(
+                "Placeholder",
+                GalleryLocaleKeys.ControlsDisplaysAnInControlHintWhileTheQueryIsEmptyAndUnfocused_E3A4B8DC
+            ),
+            new("Text", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentSearchQuery_8E559920),
+            new(
+                "IsReadOnly",
+                GalleryLocaleKeys.ControlsPreventsQueryEditsWhilePreservingSelection_3D0FAB32
+            ),
+            new("MaxLength", GalleryLocaleKeys.ControlsLimitsTheAcceptedQueryLength_715D6B09),
+            new("TextChanged", GalleryLocaleKeys.ControlsReportsEachQueryUpdate_4FBCC3DE),
+            new(
+                "CommandBindings",
+                GalleryLocaleKeys.ControlsConnectsKeyboardGesturesSuchAsEnterToApplicationSearch_537F6EA1
+            ),
         };
     }
 
     public string UsageCode { get; } =
         """
-        <flourish:FlourishSearchBox
-          x:Name="ControlSearch"
-          Placeholder="Search controls"
-          Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-          KeyDown="ControlSearch_KeyDown" />
+            <flourish:FlourishSearchBox
+              x:Name="ControlSearch"
+              Placeholder="Search controls"
+              Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+              KeyDown="ControlSearch_KeyDown" />
 
-        private void ControlSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-                SearchCommand.Execute(ControlSearch.Text);
-        }
-        """;
+            private void ControlSearch_KeyDown(object sender, KeyEventArgs e)
+            {
+                if (e.Key == Key.Enter)
+                    SearchCommand.Execute(ControlSearch.Text);
+            }
+            """;
 }

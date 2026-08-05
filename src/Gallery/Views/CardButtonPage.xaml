@@ -9,7 +9,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="A card-shaped action whose complete surface participates in button interaction."
+      Content="Gallery.Controls.ACardShapedActionWhoseCompleteSurfaceParticipatesInButtonInterac_C962A9EF"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="CardButton"
@@ -19,7 +19,7 @@
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,8"
-          Content="Uses the neutral interactive card surface."
+          Content="Gallery.Controls.UsesTheNeutralInteractiveCardSurface_6C73F194"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
@@ -31,7 +31,7 @@
               Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Content="Default card action."
+              Content="Gallery.Controls.DefaultCardAction_96C30CFC"
               Icon="&#xE8A5;"
               Title="Standard"
             />
@@ -39,7 +39,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,8"
-          Content="Adds elevation while the complete surface remains interactive."
+          Content="Gallery.Controls.AddsElevationWhileTheCompleteSurfaceRemainsInteractive_FAFF88DD"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
@@ -51,7 +51,7 @@
               Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Content="Raised card action."
+              Content="Gallery.Controls.RaisedCardAction_7F3D2158"
               Icon="&#xE8A5;"
               Title="Elevated"
               Variant="Elevated"
@@ -60,7 +60,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="0,8,8,0"
-          Content="Uses primary-color emphasis for a prominent card action."
+          Content="Gallery.Controls.UsesPrimaryColorEmphasisForAProminentCardAction_B196B2B8"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
@@ -72,7 +72,7 @@
               Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Content="Prominent card action."
+              Content="Gallery.Controls.ProminentCardAction_724047C7"
               Icon="&#xE8A5;"
               Title="Filled"
               Variant="Filled"
@@ -81,7 +81,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,8,0,0"
-          Content="Provides a quieter filled card action."
+          Content="Gallery.Controls.ProvidesAQuieterFilledCardAction_1D28DB5C"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
@@ -93,7 +93,7 @@
               Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Content="Softer card action."
+              Content="Gallery.Controls.SofterCardAction_68A005B7"
               Icon="&#xE8A5;"
               Title="Tonal"
               Variant="Tonal"
@@ -103,7 +103,7 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="PropertiesGrid"
         AutoGenerateColumns="False"
@@ -114,36 +114,36 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Layout">
+    <flourish:Chunk Title="Gallery.Controls.Layout_A5119091">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="The icon appears above the copy."
+          Content="Gallery.Controls.TheIconAppearsAboveTheCopy_A4683444"
           Icon="&#xE8A5;"
-          Title="Vertical content"
+          Title="Gallery.Controls.VerticalContent_DC438A62"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="The icon appears beside the copy."
+          Content="Gallery.Controls.TheIconAppearsBesideTheCopy_0BA01E02"
           Icon="&#xE946;"
           IconPosition="Left"
-          Title="Horizontal content"
+          Title="Gallery.Controls.HorizontalContent_3AB51649"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Interaction contract">
+    <flourish:Chunk Title="Gallery.Controls.InteractionContract_BCA9C747">
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Title="Enabled card action"
-          Content="The complete surface is one focusable action, so its icon, title, and supporting copy share the same pointer and keyboard target."
+          Title="Gallery.Controls.EnabledCardAction_AC20B24B"
+          Content="Gallery.Controls.TheCompleteSurfaceIsOneFocusableActionSoItsIconTitleAndSupportin_464391EC"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
@@ -154,19 +154,19 @@
               Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              AutomationProperties.Name="Open reports"
-              Content="Review generated reports."
+              AutomationProperties.Name="Gallery.Controls.OpenReports_2324B585"
+              Content="Gallery.Controls.ReviewGeneratedReports_6BF67309"
               Icon="&#xE8A5;"
-              Title="Reports"
-              ToolTip="Open reports"
+              Title="Gallery.Controls.Reports_DACCA3CB"
+              ToolTip="Gallery.Controls.OpenReports_2324B585"
               Variant="Elevated"
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Title="Disabled card action"
-          Content="A disabled CardButton keeps the complete card unavailable and presents the disabled treatment across every visual region."
+          Title="Gallery.Controls.DisabledCardAction_06E56758"
+          Content="Gallery.Controls.ADisabledCardButtonKeepsTheCompleteCardUnavailableAndPresentsThe_5708B614"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
@@ -177,10 +177,10 @@
               Height="120"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Content="Available after validation."
+              Content="Gallery.Controls.AvailableAfterValidation_FDC00A50"
               Icon="&#xE73E;"
               IsEnabled="False"
-              Title="Publish report"
+              Title="Gallery.Controls.PublishReport_C5FE6054"
               Variant="Elevated"
             />
           </flourish:Presenter.Presentation>
@@ -188,11 +188,11 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Make the whole card interactive"
-          Content="Use CardButton when Title, Content, and Icon describe one destination or command and the complete surface should respond to pointer, keyboard, and command activation. Each visual property is optional and collapses when omitted. Choose Standard for neutral navigation, Tonal for gentle emphasis, Filled for the principal action, or Elevated for surface separation; use ActionCard when only an embedded control should be interactive."
+          Title="Gallery.Controls.MakeTheWholeCardInteractive_1674A0C9"
+          Content="Gallery.Controls.UseCardButtonWhenTitleContentAndIconDescribeOneDestinationOrComm_8C1F8836"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -203,25 +203,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="CardButton documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.CardButtonDocumentation_4D293570"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="CardButton documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.CardButtonDocumentation_4D293570"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

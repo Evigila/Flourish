@@ -7,21 +7,21 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="ToolTips"
-      Content="Enable the Flourish tooltip presentation and define its initial display delay."
+      Title="Gallery.Application.ToolTips_53998699"
+      Content="Gallery.Shell.EnableTheFlourishTooltipPresentationAndDefineItsInitialDisplayDe_89D4F34B"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
     <flourish:Chunk
-      Title="Tooltip behavior"
-      Content="Tooltips label compact or icon-only Flourish controls without adding permanent visual noise. UseTips selects the Flourish presentation and sets the initial hover delay, while each control continues to provide its own ToolTip content and accessible name. This is recommended for unfamiliar icons and secondary actions; the code below configures the host and shows the corresponding XAML."
+      Title="Gallery.Shell.TooltipBehavior_F4A58DCF"
+      Content="Gallery.Shell.TooltipsLabelCompactOrIconOnlyFlourishControlsWithoutAddingPerma_7ADF66F8"
     >
       <StackPanel>
         <flourish:Card
           Icon="&#xE823;"
-          Title="Shared presentation"
-          Content="Empty or whitespace-only tooltip content collapses completely, while native and third-party controls keep their own tooltip presentation."
+          Title="Gallery.Shell.SharedPresentation_09447183"
+          Content="Gallery.Shell.EmptyOrWhitespaceOnlyTooltipContentCollapsesCompletelyWhileNativ_4FA3CAAF"
         />
         <flourish:CodeSpace
           Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
@@ -29,10 +29,10 @@
         />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

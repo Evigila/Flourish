@@ -53,8 +53,13 @@ public partial class BackgroundTasksPage : Page
     {
         try
         {
-            var taskName = AddProgressTask("Interactive progress task {0}", 150);
-            ServiceOutput.WriteLine(localization.Format("Queued {0}.", taskName));
+            var taskName = AddProgressTask(
+                GalleryLocaleKeys.RuntimeInteractiveProgressTask0_77FBD62C,
+                150
+            );
+            ServiceOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.RuntimeQueued0_06E215EA, taskName)
+            );
         }
         catch (Exception error)
         {
@@ -69,9 +74,9 @@ public partial class BackgroundTasksPage : Page
             var sequence = Interlocked.Increment(ref taskSequence);
             var handle = backgroundTasks.QueueTask(
                 new FlourishBackgroundTaskMetadata(
-                    localization.Format("Result task {0}", sequence),
+                    localization.Format(GalleryLocaleKeys.RuntimeResultTask0_3715E242, sequence),
                     localization.Get(
-                        "Calculates a value and returns it through the typed handle."
+                        GalleryLocaleKeys.RuntimeCalculatesAValueAndReturnsItThroughTheTypedHandle_CB4074C6
                     ),
                     "\uE945"
                 ),
@@ -91,7 +96,10 @@ public partial class BackgroundTasksPage : Page
 
             lastTaskId = handle.Id;
             ServiceOutput.WriteLine(
-                localization.Format("Queued typed result task {0}.", handle.Id)
+                localization.Format(
+                    GalleryLocaleKeys.RuntimeQueuedTypedResultTask0_0150B8DE,
+                    handle.Id
+                )
             );
             _ = ObserveResultTaskAsync(handle);
         }
@@ -107,12 +115,12 @@ public partial class BackgroundTasksPage : Page
         {
             for (var index = 1; index <= 4; index++)
             {
-                AddProgressTask("Burst item {0}", 90 + (index * 30));
+                AddProgressTask(GalleryLocaleKeys.RuntimeBurstItem0_D1B9E728, 90 + (index * 30));
             }
 
             ServiceOutput.WriteLine(
                 localization.Format(
-                    "Queued four tasks. The configured concurrency limit is {0}.",
+                    GalleryLocaleKeys.RuntimeQueuedFourTasksTheConfiguredConcurrencyLimitIs0_03B406E3,
                     backgroundTasks.MaxConcurrency
                 )
             );
@@ -128,7 +136,9 @@ public partial class BackgroundTasksPage : Page
         if (lastTaskId is not Guid id)
         {
             ServiceOutput.WriteLine(
-                localization.Get("No task has been submitted by this page yet.")
+                localization.Get(
+                    GalleryLocaleKeys.RuntimeNoTaskHasBeenSubmittedByThisPageYet_7BF12FBA
+                )
             );
             return;
         }
@@ -137,8 +147,14 @@ public partial class BackgroundTasksPage : Page
         {
             ServiceOutput.WriteLine(
                 backgroundTasks.CancelTask(id)
-                    ? localization.Format("Cancellation requested for {0}.", id)
-                    : localization.Format("Task {0} is no longer active.", id)
+                    ? localization.Format(
+                        GalleryLocaleKeys.RuntimeCancellationRequestedFor0_E0FD5F68,
+                        id
+                    )
+                    : localization.Format(
+                        GalleryLocaleKeys.RuntimeTask0IsNoLongerActive_FA5562AC,
+                        id
+                    )
             );
         }
         catch (Exception error)
@@ -151,7 +167,9 @@ public partial class BackgroundTasksPage : Page
     {
         if (ActiveTaskList.SelectedItem is not ActiveTaskRow row)
         {
-            ServiceOutput.WriteLine(localization.Get("Select an active task first."));
+            ServiceOutput.WriteLine(
+                localization.Get(GalleryLocaleKeys.RuntimeSelectAnActiveTaskFirst_648362F8)
+            );
             return;
         }
 
@@ -159,8 +177,14 @@ public partial class BackgroundTasksPage : Page
         {
             ServiceOutput.WriteLine(
                 backgroundTasks.CancelTask(row.Id)
-                    ? localization.Format("Cancellation requested for {0}.", row.Name)
-                    : localization.Format("{0} is no longer active.", row.Name)
+                    ? localization.Format(
+                        GalleryLocaleKeys.RuntimeCancellationRequestedFor0_E0FD5F68,
+                        row.Name
+                    )
+                    : localization.Format(
+                        GalleryLocaleKeys.RuntimeText0IsNoLongerActive_471A7907,
+                        row.Name
+                    )
             );
         }
         catch (Exception error)
@@ -169,13 +193,15 @@ public partial class BackgroundTasksPage : Page
         }
     }
 
-    private string AddProgressTask(string nameFormat, int delayMilliseconds)
+    private string AddProgressTask(string nameFormatKey, int delayMilliseconds)
     {
         var sequence = Interlocked.Increment(ref taskSequence);
         var handle = backgroundTasks.QueueTask(
             new FlourishBackgroundTaskMetadata(
-                localization.Format(nameFormat, sequence),
-                localization.Get("Reports progress and observes cooperative cancellation."),
+                localization.Format(nameFormatKey, sequence),
+                localization.Get(
+                    GalleryLocaleKeys.RuntimeReportsProgressAndObservesCooperativeCancellation_11E9A330
+                ),
                 "\uE895"
             ),
             async context =>
@@ -209,7 +235,7 @@ public partial class BackgroundTasksPage : Page
     {
         var valueText = value is null
             ? string.Empty
-            : localization.Format("  |  value {0}", value);
+            : localization.Format(GalleryLocaleKeys.RuntimeValue0_D2183E4C, value);
         var errorText = info.Exception is null ? string.Empty : $"  |  {info.Exception.Message}";
         outcomes.Insert(0, $"{info.Metadata.Name}  |  {info.State}{valueText}{errorText}");
         while (outcomes.Count > 20)
@@ -226,7 +252,9 @@ public partial class BackgroundTasksPage : Page
     }
 
     private void WriteError(Exception error) =>
-        ServiceOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+        ServiceOutput.WriteLine(
+            localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+        );
 
     private sealed record ActiveTaskRow(
         Guid Id,
@@ -236,15 +264,14 @@ public partial class BackgroundTasksPage : Page
         IGalleryLocalization Localization
     )
     {
-        public ActiveTaskRow(
-            FlourishBackgroundTaskInfo info,
-            IGalleryLocalization localization
-        )
+        public ActiveTaskRow(FlourishBackgroundTaskInfo info, IGalleryLocalization localization)
             : this(info.Id, info.Metadata.Name, info.State, info.Progress, localization) { }
 
         public override string ToString()
         {
-            var progress = Progress is null ? Localization.Get("waiting") : $"{Progress:P0}";
+            var progress = Progress is null
+                ? Localization.Get(GalleryLocaleKeys.RuntimeWaiting_80CFA3E7)
+                : $"{Progress:P0}";
             return $"{Name}  |  {State}  |  {progress}";
         }
     }

@@ -7,27 +7,27 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="About Flourish"
-      Content="Flourish is a WPF application framework for building consistent Windows desktop shells, navigation, surfaces, and controls. It brings application composition and reusable visual contracts together so teams can focus on product workflows instead of repeatedly rebuilding shell infrastructure."
+      Title="Gallery.Shell.AboutFlourish_EDBF2761"
+      Content="Gallery.Shell.FlourishIsAWPFApplicationFrameworkForBuildingConsistentWindowsDe_1B74E7A4"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
-    <flourish:Chunk Title="Project">
+    <flourish:Chunk Title="Gallery.Controls.Project_98595978">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="Repository"
-          Content="Source, releases, issues, and contribution history are hosted on GitHub."
+          Title="Gallery.Shell.Repository_13D6FF07"
+          Content="Gallery.Shell.SourceReleasesIssuesAndContributionHistoryAreHostedOnGitHub_11128004"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Documentation"
-          Content="Concepts, guides, control contracts, and generated API references live with the repository."
+          Title="Gallery.Shell.Documentation_C205924D"
+          Content="Gallery.Shell.ConceptsGuidesControlContractsAndGeneratedAPIReferencesLiveWithT_BC19BF41"
         />
       </UniformGrid>
     </flourish:Chunk>

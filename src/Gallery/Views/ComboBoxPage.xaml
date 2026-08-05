@@ -10,36 +10,36 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Choose one value from a compact collection using Flourish item containers."
+      Content="Gallery.Controls.ChooseOneValueFromACompactCollectionUsingFlourishItemContainers_1BCC40CE"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishComboBox"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Declare a short static list in XAML or bind ItemsSource to application-owned data. The closed selector uses HoverReveal for pointer feedback."
-      Title="Selection"
+      Content="Gallery.Controls.DeclareAShortStaticListInXAMLOrBindItemsSourceToApplicationOwned_11F057C7"
+      Title="Gallery.Controls.Selection_CA406707"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Direct items make a concise fixed option list."
+          Content="Gallery.Controls.DirectItemsMakeAConciseFixedOptionList_F140A3D5"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Declared items"
+          Title="Gallery.Controls.DeclaredItems_637C98BD"
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishComboBox
@@ -49,7 +49,7 @@
                 VerticalAlignment="Center"
                 SelectedIndex="0"
               >
-                <flourish:FlourishComboBoxItem Content="System" />
+                <flourish:FlourishComboBoxItem Content="Gallery.Runtime.System_6725E7BB" />
                 <flourish:FlourishComboBoxItem Content="Light" />
                 <flourish:FlourishComboBoxItem Content="Dark" />
             </flourish:FlourishComboBox>
@@ -57,10 +57,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="ItemsSource automatically receives FlourishComboBoxItem containers."
+          Content="Gallery.Controls.ItemsSourceAutomaticallyReceivesFlourishComboBoxItemContainers_8B5CAF1F"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Generated items"
+          Title="Gallery.Controls.GeneratedItems_88FD720E"
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishComboBox
@@ -77,31 +77,31 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="FlourishComboBox generates FlourishComboBoxItem containers. Explicit items may set Content, IsEnabled, and ToolTip locally."
+      Content="Gallery.Controls.FlourishComboBoxGeneratesFlourishComboBoxItemContainersExplicitI_7C64B62F"
       Title="ComboBoxItem"
     >
       <flourish:Presenter
-        Content="A disabled item remains visible while its tooltip explains why the option is unavailable."
+        Content="Gallery.Controls.ADisabledItemRemainsVisibleWhileItsTooltipExplainsWhyTheOptionIs_438D4035"
         PresenterMode="Split"
         PresenterPosition="Left"
-        Title="Unavailable item"
+        Title="Gallery.Controls.UnavailableItem_F920918D"
       >
         <flourish:Presenter.Presentation>
           <flourish:FlourishComboBox Width="240" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="0">
-            <flourish:FlourishComboBoxItem Content="Stable channel" />
-            <flourish:FlourishComboBoxItem Content="Preview channel" IsEnabled="False" ToolTip="Preview updates are not configured." />
+            <flourish:FlourishComboBoxItem Content="Gallery.Controls.StableChannel_D95A55C4" />
+            <flourish:FlourishComboBoxItem Content="Gallery.Controls.PreviewChannel_42D3F713" IsEnabled="False" ToolTip="Gallery.Controls.PreviewUpdatesAreNotConfigured_89C03B8C" />
           </flourish:FlourishComboBox>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Bind ItemsSource to application data and SelectedItem in TwoWay mode when selection belongs to the view model. DisplayMemberPath selects the label for non-string items. Handle SelectionChanged only when added or removed selections must trigger immediate view-owned work beyond the binding update."
+          Content="Gallery.Controls.BindItemsSourceToApplicationDataAndSelectedItemInTwoWayModeWhenS_51BDFE32"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Bound collection"
+          Title="Gallery.Controls.BoundCollection_E687780D"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -109,10 +109,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Declare FlourishComboBoxItem children for a short fixed list whose entries need individual content, enabled state, or tooltips. Use SelectedIndex for a simple initial choice; for application data, prefer the collection-binding pattern above."
+          Content="Gallery.Controls.DeclareFlourishComboBoxItemChildrenForAShortFixedListWhoseEntrie_C333712A"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Declared choices"
+          Title="Gallery.Controls.DeclaredChoices_66BD7A74"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishComboBox SelectedIndex=&quot;0&quot;&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;System&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Light&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Dark&quot; /&gt;&#xA;&lt;/flourish:FlourishComboBox&gt;" />
@@ -121,23 +121,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the FlourishComboBox API reference."
+          Content="Gallery.Controls.ReadTheFlourishComboBoxAPIReference_8F90207E"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="FlourishComboBox documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.FlourishComboBoxDocumentation_C7A61837"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

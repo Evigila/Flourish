@@ -4,10 +4,10 @@ using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Models;
 
-public sealed class ControlMemberRow(string name, string description) : INotifyPropertyChanged
+public sealed class ControlMemberRow(string name, string descriptionKey) : INotifyPropertyChanged
 {
-    private readonly string sourceDescription = description;
-    private string description = description;
+    private readonly string resourceKey = descriptionKey;
+    private string description = descriptionKey;
 
     public string Name { get; } = name;
 
@@ -30,7 +30,7 @@ public sealed class ControlMemberRow(string name, string description) : INotifyP
 
     internal void Apply(IGalleryLocalization localization)
     {
-        Description = localization.Get(sourceDescription);
+        Description = localization.Get(resourceKey);
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

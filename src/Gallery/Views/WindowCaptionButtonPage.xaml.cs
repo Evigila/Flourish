@@ -1,5 +1,5 @@
-using ArkheideSystem.Gallery.Models;
 using System.Windows.Controls;
+using ArkheideSystem.Gallery.Models;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -13,10 +13,13 @@ public partial class WindowCaptionButtonPage : Page
 
     private static readonly ControlMemberRow[] propertyRows =
     [
-        new("Variant", "Uses Text for ordinary caption actions and Danger for close."),
-        new("Icon", "Supplies the caption glyph."),
-        new("Command", "Connects activation to a window-owned action."),
-        new("IsEnabled", "Controls keyboard and pointer activation."),
-        new("ToolTip", "Names the icon-only caption action."),
+        new(
+            "Variant",
+            GalleryLocaleKeys.ControlsUsesTextForOrdinaryCaptionActionsAndDangerForClose_B98A046B
+        ),
+        new("Icon", GalleryLocaleKeys.ControlsSuppliesTheCaptionGlyph_F1AD27EF),
+        new("Command", GalleryLocaleKeys.ControlsConnectsActivationToAWindowOwnedAction_ABB942F5),
+        new("IsEnabled", GalleryLocaleKeys.ControlsControlsKeyboardAndPointerActivation_6A5B63B0),
+        new("ToolTip", GalleryLocaleKeys.ControlsNamesTheIconOnlyCaptionAction_90AA1580),
     ];
 }

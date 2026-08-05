@@ -17,6 +17,7 @@ public partial class ConfigurationPage : Page
     private readonly IFlourishLocalization localization;
     private readonly IGalleryLocalization galleryLocalization;
     private bool isRefreshingLocale;
+
     public ConfigurationPage(
         IFlourishConfiguration configuration,
         IFlourishSettingsStore settings,
@@ -57,14 +58,16 @@ public partial class ConfigurationPage : Page
             if (string.IsNullOrWhiteSpace(key))
             {
                 ReadOutput.WriteLine(
-                    galleryLocalization.Get("Enter a configuration path.")
+                    galleryLocalization.Get(
+                        GalleryLocaleKeys.DynamicEnterAConfigurationPath_7DFDBF45
+                    )
                 );
                 return;
             }
 
             ReadOutput.WriteLine(
                 galleryLocalization.Format(
-                    "Read {0}: {1}",
+                    GalleryLocaleKeys.DynamicRead01_611124DE,
                     key,
                     configuration[key] ?? "<null>"
                 )
@@ -72,7 +75,9 @@ public partial class ConfigurationPage : Page
         }
         catch (Exception error)
         {
-            ReadOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
+            ReadOutput.WriteLine(
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -84,7 +89,7 @@ public partial class ConfigurationPage : Page
             var snapshot = configuration.Current;
             ReadOutput.WriteLine(
                 galleryLocalization.Format(
-                    "Reloaded configuration providers. Snapshot v{0} contains {1} values (captured {2:T}).",
+                    GalleryLocaleKeys.DynamicReloadedConfigurationProvidersSnapshotV0Contains1ValuesCaptured2_75761543,
                     snapshot.Version,
                     snapshot.Values.Count,
                     snapshot.CapturedAt.LocalDateTime
@@ -93,21 +98,25 @@ public partial class ConfigurationPage : Page
         }
         catch (Exception error)
         {
-            ReadOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
+            ReadOutput.WriteLine(
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
     private async void SetValue_Click(object sender, RoutedEventArgs e)
     {
-        await ExecuteSettingUpdateAsync("Set", () =>
-            settings.SetAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
+        await ExecuteSettingUpdateAsync(
+            GalleryLocaleKeys.DynamicSet_B6F6F3AD,
+            () => settings.SetAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
         );
     }
 
     private async void AppendValue_Click(object sender, RoutedEventArgs e)
     {
-        await ExecuteSettingUpdateAsync("Append", () =>
-            settings.AppendAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
+        await ExecuteSettingUpdateAsync(
+            GalleryLocaleKeys.DynamicAppend_FC15CC0A,
+            () => settings.AppendAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
         );
     }
 
@@ -118,24 +127,26 @@ public partial class ConfigurationPage : Page
         var parentPath = separator > 0 ? path[..separator] : path;
         var propertyName = separator > 0 ? path[(separator + 1)..] : "Value";
 
-        await ExecuteSettingUpdateAsync("Merge", () =>
-            settings
-                .MergeAsync(
-                    parentPath,
-                    new Dictionary<string, object?>
-                    {
-                        [propertyName] = WriteValueBox.Text,
-                        ["LastMergedAt"] = DateTimeOffset.Now,
-                    }
-                )
-                .AsTask()
+        await ExecuteSettingUpdateAsync(
+            GalleryLocaleKeys.DynamicMerge_8851AAA7,
+            () =>
+                settings
+                    .MergeAsync(
+                        parentPath,
+                        new Dictionary<string, object?>
+                        {
+                            [propertyName] = WriteValueBox.Text,
+                            ["LastMergedAt"] = DateTimeOffset.Now,
+                        }
+                    )
+                    .AsTask()
         );
     }
 
     private async void RemoveValue_Click(object sender, RoutedEventArgs e)
     {
         await ExecuteSettingUpdateAsync(
-            "Remove",
+            GalleryLocaleKeys.ControlsRemove_C3812FC4,
             () => settings.RemoveAsync(WriteKeyBox.Text).AsTask()
         );
     }
@@ -156,14 +167,16 @@ public partial class ConfigurationPage : Page
             RefreshLocaleState();
             LocaleOutput.WriteLine(
                 galleryLocalization.Format(
-                    "Locale changed to {0}.",
+                    GalleryLocaleKeys.DynamicLocaleChangedTo0_1C2A91ED,
                     localization.CurrentLocale
                 )
             );
         }
         catch (Exception error)
         {
-            LocaleOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
+            LocaleOutput.WriteLine(
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -180,7 +193,7 @@ public partial class ConfigurationPage : Page
             LocaleFilePathBox.Text = localeFileRegistration.FilePath;
             LocaleFileOutput.WriteLine(
                 galleryLocalization.Format(
-                    "Registered {0} from {1}.",
+                    GalleryLocaleKeys.DynamicRegistered0From1_29302AFF,
                     localeFileRegistration.Locale,
                     localeFileRegistration.FilePath
                 )
@@ -190,7 +203,7 @@ public partial class ConfigurationPage : Page
         catch (Exception error)
         {
             LocaleFileOutput.WriteLine(
-                galleryLocalization.Format("Error: {0}", error.Message)
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
             );
         }
     }
@@ -200,7 +213,7 @@ public partial class ConfigurationPage : Page
         if (localeFileRegistration is null)
         {
             LocaleFileOutput.WriteLine(
-                galleryLocalization.Get("Register a locale file first.")
+                galleryLocalization.Get(GalleryLocaleKeys.DynamicRegisterALocaleFileFirst_5BC84B5D)
             );
             return;
         }
@@ -210,7 +223,7 @@ public partial class ConfigurationPage : Page
             localization.ReloadFile(localeFileRegistration);
             LocaleFileOutput.WriteLine(
                 galleryLocalization.Format(
-                    "Reloaded {0} at {1:T}.",
+                    GalleryLocaleKeys.DynamicReloaded0At1T_19E0356E,
                     localeFileRegistration.Locale,
                     DateTime.Now
                 )
@@ -219,7 +232,7 @@ public partial class ConfigurationPage : Page
         catch (Exception error)
         {
             LocaleFileOutput.WriteLine(
-                galleryLocalization.Format("Error: {0}", error.Message)
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
             );
         }
     }
@@ -229,7 +242,9 @@ public partial class ConfigurationPage : Page
         if (localeFileRegistration is null)
         {
             LocaleFileOutput.WriteLine(
-                galleryLocalization.Get("No locale file is registered by this page.")
+                galleryLocalization.Get(
+                    GalleryLocaleKeys.DynamicNoLocaleFileIsRegisteredByThisPage_156204FE
+                )
             );
             return;
         }
@@ -241,9 +256,12 @@ public partial class ConfigurationPage : Page
             localeFileRegistration = null;
             LocaleFileOutput.WriteLine(
                 removed
-                    ? galleryLocalization.Format("Unregistered locale source {0}.", locale)
+                    ? galleryLocalization.Format(
+                        GalleryLocaleKeys.DynamicUnregisteredLocaleSource0_7FAC9B2D,
+                        locale
+                    )
                     : galleryLocalization.Get(
-                        "That locale source was already unregistered."
+                        GalleryLocaleKeys.DynamicThatLocaleSourceWasAlreadyUnregistered_C7896D3D
                     )
             );
             RefreshLocaleState();
@@ -251,13 +269,13 @@ public partial class ConfigurationPage : Page
         catch (Exception error)
         {
             LocaleFileOutput.WriteLine(
-                galleryLocalization.Format("Error: {0}", error.Message)
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
             );
         }
     }
 
     private async Task ExecuteSettingUpdateAsync(
-        string operation,
+        string operationKey,
         Func<Task<FlourishSettingsUpdateResult>> update
     )
     {
@@ -267,20 +285,22 @@ public partial class ConfigurationPage : Page
             WriteOutput.WriteLine(
                 result.Changed
                     ? galleryLocalization.Format(
-                        "{0} saved {1}. Configuration reloaded: {2}.",
-                        galleryLocalization.Get(operation),
+                        GalleryLocaleKeys.DynamicText0Saved1ConfigurationReloaded2_4F6CD457,
+                        galleryLocalization.Get(operationKey),
                         result.FilePath,
                         result.ConfigurationReloaded
                     )
                     : galleryLocalization.Format(
-                        "{0} completed without changing the document.",
-                        galleryLocalization.Get(operation)
+                        GalleryLocaleKeys.DynamicText0CompletedWithoutChangingTheDocument_4AAA1AD3,
+                        galleryLocalization.Get(operationKey)
                     )
             );
         }
         catch (Exception error)
         {
-            WriteOutput.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
+            WriteOutput.WriteLine(
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -317,5 +337,4 @@ public partial class ConfigurationPage : Page
             isRefreshingLocale = false;
         }
     }
-
 }

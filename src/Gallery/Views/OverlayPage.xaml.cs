@@ -10,10 +10,13 @@ public partial class OverlayPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", "Supplies the object displayed by the surface."),
-        new("Variant", "Selects Temporary or Strong dismissal."),
-        new("PlacementTarget", "Identifies the anchor used by Temporary hover tracking."),
-        new("DismissRequested", "Asks the host to close the surface."),
+        new("Content", GalleryLocaleKeys.ControlsSuppliesTheObjectDisplayedByTheSurface_E5269887),
+        new("Variant", GalleryLocaleKeys.ControlsSelectsTemporaryOrStrongDismissal_0C07C90F),
+        new(
+            "PlacementTarget",
+            GalleryLocaleKeys.ControlsIdentifiesTheAnchorUsedByTemporaryHoverTracking_2EA04E33
+        ),
+        new("DismissRequested", GalleryLocaleKeys.ControlsAsksTheHostToCloseTheSurface_829CE551),
     ];
 
     public OverlayPage()
@@ -31,8 +34,7 @@ public partial class OverlayPage : Page
     private void TemporaryTrigger_Click(object sender, RoutedEventArgs e) =>
         TemporaryPopup.IsOpen = true;
 
-    private void StrongTrigger_Click(object sender, RoutedEventArgs e) =>
-        StrongPopup.IsOpen = true;
+    private void StrongTrigger_Click(object sender, RoutedEventArgs e) => StrongPopup.IsOpen = true;
 
     private void StrongPopup_Opened(object? sender, EventArgs e)
     {
@@ -41,9 +43,7 @@ public partial class OverlayPage : Page
 
     private void StrongCloseButton_Click(object sender, RoutedEventArgs e)
     {
-        StrongOverlay.RaiseEvent(
-            new RoutedEventArgs(Overlay.DismissRequestedEvent, StrongOverlay)
-        );
+        StrongOverlay.RaiseEvent(new RoutedEventArgs(Overlay.DismissRequestedEvent, StrongOverlay));
     }
 
     private void Overlay_DismissRequested(object sender, RoutedEventArgs e)

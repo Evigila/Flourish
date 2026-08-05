@@ -7,29 +7,29 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="Profile"
-      Content="Choose the page hosted by the title-bar profile flyout."
+      Title="Gallery.Application.Profile_D696A35B"
+      Content="Gallery.Shell.ChooseThePageHostedByTheTitleBarProfileFlyout_F41ECA04"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
     <flourish:Chunk
-      Title="Profile page"
-      Content="Choose the Page resolved through dependency injection when the title-bar profile surface opens. Use this for account details, preferences, or identity actions that belong in the shell; the code below enables the profile trigger and assigns its hosted page during application composition."
+      Title="Gallery.Shell.ProfilePage_AF8EC386"
+      Content="Gallery.Shell.ChooseThePageResolvedThroughDependencyInjectionWhenTheTitleBarPr_02EBE78E"
     >
       <StackPanel>
         <flourish:Card
           Icon="&#xE77B;"
-          Title="Dependency-injected content"
-          Content="Register the page with the service container so its constructor dependencies are available when Flourish opens the profile surface."
+          Title="Gallery.Shell.DependencyInjectedContent_D8E54D22"
+          Content="Gallery.Shell.RegisterThePageWithTheServiceContainerSoItsConstructorDependenci_25A4551B"
         />
         <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable the title-bar trigger, then select its hosted page.&#10;builder.ConfigTitleBar(titleBar =&gt;&#10;    titleBar&#10;        .UseProfile(nameOrder: NameOrder.FirstLast)&#10;        .InitProfilePage&lt;AccountPage&gt;());" />
       </StackPanel>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Title="Name order"
-      Content="Change the application-wide display order used by the signed-out placeholder and the active profile. Use this for locale preferences or account settings; the service keeps the current login and credentials unchanged while rebuilding the visible profile."
+      Title="Gallery.Shell.NameOrder_15B7537D"
+      Content="Gallery.Shell.ChangeTheApplicationWideDisplayOrderUsedByTheSignedOutPlaceholde_8FFD7F5E"
     >
       <StackPanel>
         <Grid>
@@ -40,21 +40,21 @@
           <StackPanel Grid.Column="0" Margin="0,0,8,0">
             <flourish:ActionCard
               Icon="&#xE8D2;"
-              Title="First name first"
-              Content="Display the given name before the family name."
+              Title="Gallery.Shell.FirstNameFirst_CCA39506"
+              Content="Gallery.Shell.DisplayTheGivenNameBeforeTheFamilyName_1B0BCAFC"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="FirstLast_Click" Content="First Last" />
+                <flourish:Button Click="FirstLast_Click" Content="Gallery.Shell.FirstLast_1F4F7841" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
               Icon="&#xE8D2;"
-              Title="Last name first"
-              Content="Display the family name before the given name."
+              Title="Gallery.Shell.LastNameFirst_034D9C7C"
+              Content="Gallery.Shell.DisplayTheFamilyNameBeforeTheGivenName_4313096A"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="LastFirst_Click" Content="Last First" />
+                <flourish:Button Click="LastFirst_Click" Content="Gallery.Shell.LastFirst_3025E73F" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
           </StackPanel>
@@ -69,10 +69,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

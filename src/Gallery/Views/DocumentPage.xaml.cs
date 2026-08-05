@@ -7,9 +7,15 @@ public partial class DocumentPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Items", "Contains Paragraph elements in reading order."),
-        new("ItemsSource", "Binds an application-owned paragraph collection when needed."),
-        new("Margin", "Adds the standard separation from Chunk title and content copy."),
+        new("Items", GalleryLocaleKeys.ControlsContainsParagraphElementsInReadingOrder_D7EBE677),
+        new(
+            "ItemsSource",
+            GalleryLocaleKeys.ControlsBindsAnApplicationOwnedParagraphCollectionWhenNeeded_39E7CC3C
+        ),
+        new(
+            "Margin",
+            GalleryLocaleKeys.ControlsAddsTheStandardSeparationFromChunkTitleAndContentCopy_F2EFD46C
+        ),
     ];
 
     public DocumentPage()

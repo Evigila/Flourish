@@ -1,7 +1,7 @@
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Abstract.Builder;
-using ArkheideSystem.Gallery.Views;
 using ArkheideSystem.Gallery.Localization;
+using ArkheideSystem.Gallery.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Gallery;
@@ -33,29 +33,74 @@ internal static class Program
                     services.AddSingleton<GalleryShellLocalizationCoordinator>();
                     services.AddCommandParser<GalleryCommandParser>(); // Mapping command key and its executor
 
-                    services.AddNavigable<HomePage>("Overview", "\uE80F"); // Using AddNavigable instead of AddSingleton or other
-                    services.AddNavigable<AboutPage>("About", "\uE946");
-                    services.AddNavigable<ConfigurationPage>("Configuration", "\uE713");
-                    services.AddNavigable<AppearancePage>("Appearance", "\uE790");
-                    services.AddNavigable<TitleBarRuntimePage>("Title bar", "\uE8A4");
-                    services.AddNavigable<ProjectRuntimePage>("Projects", "\uE8F9");
-                    services.AddNavigable<NavigationRuntimePage>("Navigation", "\uE700");
-                    services.AddNavigable<ProfileConfigurationPage>("Profile", "\uE77B");
-                    services.AddNavigable<StatusBarConfigurationPage>("Status bar", "\uE930");
+                    services.AddNavigable<HomePage>(
+                        GalleryLocaleKeys.ApplicationOverview_D4B1EA57,
+                        "\uE80F"
+                    ); // Using AddNavigable instead of AddSingleton or other
+                    services.AddNavigable<AboutPage>(
+                        GalleryLocaleKeys.ApplicationAbout_4EFCA0D1,
+                        "\uE946"
+                    );
+                    services.AddNavigable<ConfigurationPage>(
+                        GalleryLocaleKeys.ApplicationConfiguration_B332C349,
+                        "\uE713"
+                    );
+                    services.AddNavigable<AppearancePage>(
+                        GalleryLocaleKeys.ApplicationAppearance_3907FA7F,
+                        "\uE790"
+                    );
+                    services.AddNavigable<TitleBarRuntimePage>(
+                        GalleryLocaleKeys.ApplicationTitleBar_11BCA4AC,
+                        "\uE8A4"
+                    );
+                    services.AddNavigable<ProjectRuntimePage>(
+                        GalleryLocaleKeys.ApplicationProjects_04E2A972,
+                        "\uE8F9"
+                    );
+                    services.AddNavigable<NavigationRuntimePage>(
+                        GalleryLocaleKeys.ApplicationNavigation_3DB65F8C,
+                        "\uE700"
+                    );
+                    services.AddNavigable<ProfileConfigurationPage>(
+                        GalleryLocaleKeys.ApplicationProfile_D696A35B,
+                        "\uE77B"
+                    );
+                    services.AddNavigable<StatusBarConfigurationPage>(
+                        GalleryLocaleKeys.ApplicationStatusBar_0BC4C2AF,
+                        "\uE930"
+                    );
                     services.AddNavigable<DynamicToolbarConfigurationPage>(
-                        "Dynamic toolbar",
+                        GalleryLocaleKeys.ApplicationDynamicToolbar_2B28D7DF,
                         "\uE945"
                     );
-                    services.AddNavigable<ToolTipsConfigurationPage>("ToolTips", "\uE823");
-                    services.AddNavigable<MotionConfigurationPage>("Motion", "\uE768");
+                    services.AddNavigable<ToolTipsConfigurationPage>(
+                        GalleryLocaleKeys.ApplicationToolTips_53998699,
+                        "\uE823"
+                    );
+                    services.AddNavigable<MotionConfigurationPage>(
+                        GalleryLocaleKeys.ApplicationMotion_8CA34424,
+                        "\uE768"
+                    );
                     services.AddNavigable<CustomHandlerConfigurationPage>(
-                        "Custom handler",
+                        GalleryLocaleKeys.ApplicationCustomHandler_41F3A17B,
                         "\uE8BA"
                     );
-                    services.AddNavigable<CommandsPage>("Commands", "\uE756");
-                    services.AddNavigable<WindowRuntimePage>("Window", "\uE737");
-                    services.AddNavigable<BackgroundTasksPage>("Background", "\uF5EF");
-                    services.AddNavigable<ControlLibraryPage>("Controls", "\uE950");
+                    services.AddNavigable<CommandsPage>(
+                        GalleryLocaleKeys.ApplicationCommands_B269DC4E,
+                        "\uE756"
+                    );
+                    services.AddNavigable<WindowRuntimePage>(
+                        GalleryLocaleKeys.ApplicationWindow_19734A1B,
+                        "\uE737"
+                    );
+                    services.AddNavigable<BackgroundTasksPage>(
+                        GalleryLocaleKeys.ApplicationBackground_EA2B8A87,
+                        "\uF5EF"
+                    );
+                    services.AddNavigable<ControlLibraryPage>(
+                        GalleryLocaleKeys.ApplicationControls_799C2691,
+                        "\uE950"
+                    );
                     services.AddNavigable<HeaderChunkPage>("HeaderChunk", "\uE840");
                     services.AddNavigable<ChunkPage>("Chunk", "\uE81E");
                     services.AddNavigable<ButtonPage>("Button", "\uE815");
@@ -100,9 +145,14 @@ internal static class Program
                     .UseTips() // Use flourish style tooltips instead of WPF one
                     .UseTitleBar(); // Use flourish style titlebar instead of WPF one
             })
-            .ConfigTitleBar(t => t.InitApplicationSubTitle("Component reference"))
+            .ConfigTitleBar(t =>
+                t.InitApplicationSubTitle(GalleryLocaleKeys.ApplicationComponentReference_661E6097)
+            )
             .ConfigTitleBar(titlebar =>
-                titlebar.UseSearch(placeholder: "Type here to search", handler: (_, _) => { })
+                titlebar.UseSearch(
+                    placeholder: GalleryLocaleKeys.ApplicationTypeHereToSearch_85717255,
+                    handler: (_, _) => { }
+                )
             ) // search handler TODO
             .ConfigNavigation(nav => // configure navigation panel and its functionality, once UseNavigation is called and enabled (by default)
             {
@@ -115,7 +165,8 @@ internal static class Program
                         }
                     )
                     .AddGroup( // Create second one
-                        "Configuration", // The non ID 0 group must have its name
+                        // The non ID 0 group must have its name
+                        GalleryLocaleKeys.ApplicationConfiguration_B332C349,
                         1, // Unique ID, sorting and affect navigation tree order
                         group =>
                         {
@@ -126,7 +177,7 @@ internal static class Program
                         }
                     )
                     .AddGroup(
-                        "Shell",
+                        GalleryLocaleKeys.ShellShell_A7332854,
                         2,
                         group =>
                         {
@@ -143,7 +194,7 @@ internal static class Program
                         }
                     )
                     .AddGroup(
-                        "Controls",
+                        GalleryLocaleKeys.ApplicationControls_799C2691,
                         3,
                         group =>
                         {
@@ -179,14 +230,22 @@ internal static class Program
                         }
                     )
                     .AddGroup(
-                        "Actions",
+                        GalleryLocaleKeys.ApplicationActions_FF8059DC,
                         4,
                         group =>
                         {
-                            group.AddNavigableItem("Message", "\uE8F2", "demo.hello"); // Using AddNavigableItem instead of AddNavigableViewItem if this nav node is NOT a page at same time
+                            group.AddNavigableItem(
+                                GalleryLocaleKeys.ApplicationMessage_2F77668A,
+                                "\uE8F2",
+                                "demo.hello"
+                            ); // Using AddNavigableItem instead of AddNavigableViewItem if this nav node is NOT a page at same time
                             // When AddNavigableItem is not a parent nav node, its commandkey will be parsed.
                             // It means when it uses parentID, its commandkey will not be parsed anymore, should use null instead of set commandkey string at this case
-                            group.AddNavigableItem("Task", "\uE895", "demo.background");
+                            group.AddNavigableItem(
+                                GalleryLocaleKeys.ApplicationTask_4BC74B21,
+                                "\uE895",
+                                "demo.background"
+                            );
                         }
                     )
                     .AddFixedNavigableViewItem<AboutPage>();
@@ -194,8 +253,16 @@ internal static class Program
             .ConfigDynamicToolbar(toolbar =>
             {
                 toolbar.InitToolbarItems<HomePage>( //Create toolbar items only for HomePage view
-                    new FlourishToolbarItem("Say hello", "\uE8F2", "demo.hello"),
-                    new FlourishToolbarItem("Queue task", "\uE895", "demo.background")
+                    new FlourishToolbarItem(
+                        GalleryLocaleKeys.ApplicationSayHello_6D995DBA,
+                        "\uE8F2",
+                        "demo.hello"
+                    ),
+                    new FlourishToolbarItem(
+                        GalleryLocaleKeys.ApplicationQueueTask_229EFD6E,
+                        "\uE895",
+                        "demo.background"
+                    )
                 );
             })
             .Build();

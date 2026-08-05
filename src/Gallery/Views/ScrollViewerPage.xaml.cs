@@ -7,10 +7,19 @@ public partial class ScrollViewerPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", "Hosts one scrollable content tree."),
-        new("IsSmoothScrollingEnabled", "Enables render-only mouse-wheel interpolation."),
-        new("CanContentScroll", "Switches between physical and logical scrolling."),
-        new("VerticalScrollBarVisibility", "Controls the vertical scroll-bar policy."),
+        new("Content", GalleryLocaleKeys.ControlsHostsOneScrollableContentTree_F9A46D80),
+        new(
+            "IsSmoothScrollingEnabled",
+            GalleryLocaleKeys.ControlsEnablesRenderOnlyMouseWheelInterpolation_8F88D907
+        ),
+        new(
+            "CanContentScroll",
+            GalleryLocaleKeys.ControlsSwitchesBetweenPhysicalAndLogicalScrolling_577AEBFD
+        ),
+        new(
+            "VerticalScrollBarVisibility",
+            GalleryLocaleKeys.ControlsControlsTheVerticalScrollBarPolicy_87BCE4CC
+        ),
     ];
 
     public string UsageCode { get; } =

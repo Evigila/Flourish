@@ -89,11 +89,11 @@ public partial class TitleBarRuntimePage : Page
             SearchOutput.WriteLine(
                 string.IsNullOrWhiteSpace(args.Text)
                     ? galleryLocalization.Format(
-                        "Query #{0}: empty query",
+                        GalleryLocaleKeys.RuntimeQuery0EmptyQuery_1782FB95,
                         args.Sequence
                     )
                     : galleryLocalization.Format(
-                        "Query #{0}: simulated results for \"{1}\" completed at {2:T}.",
+                        GalleryLocaleKeys.RuntimeQuery0SimulatedResultsFor1CompletedAt2T_DD07B40D,
                         args.Sequence,
                         args.Text,
                         DateTime.Now
@@ -106,12 +106,9 @@ public partial class TitleBarRuntimePage : Page
     {
         Execute(
             () =>
-                titleBar.SetApplicationIdentity(
-                    TitleBox.Text,
-                    NullIfWhiteSpace(SubtitleBox.Text)
-                ),
+                titleBar.SetApplicationIdentity(TitleBox.Text, NullIfWhiteSpace(SubtitleBox.Text)),
             IdentityOutput,
-            galleryLocalization.Get("Application identity updated.")
+            galleryLocalization.Get(GalleryLocaleKeys.RuntimeApplicationIdentityUpdated_965263E3)
         );
     }
 
@@ -141,7 +138,7 @@ public partial class TitleBarRuntimePage : Page
                     current.ShowProjectTitle
                 ),
             IdentityOutput,
-            galleryLocalization.Get("Title-bar logo settings updated.")
+            galleryLocalization.Get(GalleryLocaleKeys.RuntimeTitleBarLogoSettingsUpdated_791EEA02)
         );
     }
 
@@ -170,7 +167,9 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetUnnamedProjectPlaceholder(UnnamedProjectBox.Text),
                 IdentityOutput,
-                galleryLocalization.Get("Unnamed project placeholder updated.")
+                galleryLocalization.Get(
+                    GalleryLocaleKeys.RuntimeUnnamedProjectPlaceholderUpdated_B0D701C1
+                )
             );
         }
     }
@@ -185,10 +184,14 @@ public partial class TitleBarRuntimePage : Page
         if (TitleBarElementBox.SelectedItem is TitleBarElement element)
         {
             Execute(
-                () => titleBar.SetElementVisible(element, TitleBarElementVisibleBox.IsChecked == true),
+                () =>
+                    titleBar.SetElementVisible(
+                        element,
+                        TitleBarElementVisibleBox.IsChecked == true
+                    ),
                 ElementOutput,
                 galleryLocalization.Format(
-                    "{0} visibility set to {1}.",
+                    GalleryLocaleKeys.RuntimeText0VisibilitySetTo1_16423423,
                     element,
                     TitleBarElementVisibleBox.IsChecked == true
                 )
@@ -211,7 +214,10 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetBreadcrumbMode(mode),
                 ElementOutput,
-                galleryLocalization.Format("Breadcrumb display mode set to {0}.", mode)
+                galleryLocalization.Format(
+                    GalleryLocaleKeys.RuntimeBreadcrumbDisplayModeSetTo0_19EF937D,
+                    mode
+                )
             );
         }
     }
@@ -230,7 +236,7 @@ public partial class TitleBarRuntimePage : Page
             () => search.SetText(SearchTextBox.Text),
             SearchOutput,
             galleryLocalization.Format(
-                "Search text set to \"{0}\".",
+                GalleryLocaleKeys.RuntimeSearchTextSetTo0_37DE597D,
                 SearchTextBox.Text
             )
         );
@@ -254,7 +260,7 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             search.Focus,
             SearchOutput,
-            galleryLocalization.Get("Moved focus to title-bar search.")
+            galleryLocalization.Get(GalleryLocaleKeys.RuntimeMovedFocusToTitleBarSearch_935CEC34)
         );
     }
 
@@ -263,7 +269,7 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             search.Clear,
             SearchOutput,
-            galleryLocalization.Get("Cleared the title-bar search query.")
+            galleryLocalization.Get(GalleryLocaleKeys.RuntimeClearedTheTitleBarSearchQuery_36169020)
         );
     }
 
@@ -273,7 +279,7 @@ public partial class TitleBarRuntimePage : Page
             () => search.SetPlaceholder(SearchPlaceholderBox.Text),
             SearchOutput,
             galleryLocalization.Format(
-                "Search placeholder set to \"{0}\".",
+                GalleryLocaleKeys.RuntimeSearchPlaceholderSetTo0_F701246C,
                 SearchPlaceholderBox.Text
             )
         );
@@ -300,8 +306,12 @@ public partial class TitleBarRuntimePage : Page
             () => search.SetVisible(visible),
             SearchOutput,
             galleryLocalization.Format(
-                "Title-bar search {0}.",
-                galleryLocalization.Get(visible ? "shown" : "hidden")
+                GalleryLocaleKeys.RuntimeTitleBarSearch0_262A9ED5,
+                galleryLocalization.Get(
+                    visible
+                        ? GalleryLocaleKeys.RuntimeShown_BAAF5362
+                        : GalleryLocaleKeys.RuntimeHidden_E564B408
+                )
             )
         );
     }
@@ -315,8 +325,12 @@ public partial class TitleBarRuntimePage : Page
                 () => titleBar.SetEnabled(enabled),
                 TitleBarAvailabilityOutput,
                 galleryLocalization.Format(
-                    "Title bar {0}.",
-                    galleryLocalization.Get(enabled ? "enabled" : "disabled")
+                    GalleryLocaleKeys.RuntimeTitleBar0_7ACF611F,
+                    galleryLocalization.Get(
+                        enabled
+                            ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
+                            : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                    )
                 )
             );
         }
@@ -345,7 +359,9 @@ public partial class TitleBarRuntimePage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
+            output.WriteLine(
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -377,7 +393,9 @@ public partial class TitleBarRuntimePage : Page
         SearchTextBox.Text = current.Text;
         SearchPlaceholderBox.Text = current.Placeholder;
         ToggleSearchVisibilityButton.Content = galleryLocalization.Get(
-            current.IsVisible ? "Hide search" : "Show search"
+            current.IsVisible
+                ? GalleryLocaleKeys.RuntimeHideSearch_14BD5CB7
+                : GalleryLocaleKeys.RuntimeShowSearch_96369815
         );
     }
 

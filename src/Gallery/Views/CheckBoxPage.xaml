@@ -10,34 +10,34 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Represent a Boolean or optional three-state preference with a compact row or an icon-led card."
+      Content="Gallery.Controls.RepresentABooleanOrOptionalThreeStatePreferenceWithACompactRowOr_87722721"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="CheckBox"
     />
 
     <flourish:Chunk
-      Content="Horizontal is the default for standard settings. Vertical adds an optional icon and uses a card-shaped layout."
+      Content="Gallery.Controls.HorizontalIsTheDefaultForStandardSettingsVerticalAddsAnOptionalI_8F273260"
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Places the state indicator before the content. An unchecked option keeps an empty circular indicator."
+          Content="Gallery.Controls.PlacesTheStateIndicatorBeforeTheContentAnUncheckedOptionKeepsAnE_7062A2DC"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Horizontal"
         >
           <flourish:Presenter.Presentation>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-              <flourish:CheckBox Content="Enable notifications" />
-              <flourish:CheckBox Margin="0,8,0,0" Content="Synchronize automatically" IsChecked="True" />
+              <flourish:CheckBox Content="Gallery.Controls.EnableNotifications_682BE64A" />
+              <flourish:CheckBox Margin="0,8,0,0" Content="Gallery.Controls.SynchronizeAutomatically_EED48D4F" IsChecked="True" />
             </StackPanel>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Places the icon above the content and the selected indicator at the upper right. The indicator is hidden while unchecked."
+          Content="Gallery.Controls.PlacesTheIconAboveTheContentAndTheSelectedIndicatorAtTheUpperRig_3FC3895A"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Vertical"
@@ -46,13 +46,13 @@
             <UniformGrid HorizontalAlignment="Center" VerticalAlignment="Center" Columns="2">
               <flourish:CheckBox
                 Margin="0,0,6,0"
-                Content="Local workspace"
+                Content="Gallery.Controls.LocalWorkspace_DFBBEC38"
                 Icon="&#xE8B7;"
                 Variant="Vertical"
               />
               <flourish:CheckBox
                 Margin="6,0,0,0"
-                Content="Cloud workspace"
+                Content="Gallery.Controls.CloudWorkspace_35AA5D58"
                 Icon="&#xE753;"
                 IsChecked="True"
                 Variant="Vertical"
@@ -63,49 +63,49 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Use two-state behavior for ordinary preferences and enable the third state only when null has a clear meaning."
-      Title="Selection"
+      Content="Gallery.Controls.UseTwoStateBehaviorForOrdinaryPreferencesAndEnableTheThirdStateO_A570F10E"
+      Title="Gallery.Controls.Selection_CA406707"
     >
       <UniformGrid Columns="3">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="False uses an empty circular indicator."
+          Content="Gallery.Controls.FalseUsesAnEmptyCircularIndicator_6D99409C"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Unchecked"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CheckBox Width="160" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Not selected" />
+            <flourish:CheckBox Width="160" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.NotSelected_DF12AEBA" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0"
-          Content="True uses a check mark and highlights the content and boundary."
+          Content="Gallery.Controls.TrueUsesACheckMarkAndHighlightsTheContentAndBoundary_5528B53D"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Checked"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CheckBox Width="160" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Selected" IsChecked="True" />
+            <flourish:CheckBox Width="160" Height="48" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.Selected_57FD7A0C" IsChecked="True" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Null replaces the check mark with a horizontal line."
+          Content="Gallery.Controls.NullReplacesTheCheckMarkWithAHorizontalLine_4206EED2"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Indeterminate"
@@ -116,7 +116,7 @@
                 Height="48"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Content="Inherited"
+                Content="Gallery.Controls.Inherited_345F2AAB"
                 IsChecked="{x:Null}"
                 IsThreeState="True"
             />
@@ -125,13 +125,13 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Horizontal is the default. Bind IsChecked in TwoWay mode for a standard setting and enable IsThreeState only when null represents inherited, mixed, or unknown state."
+          Content="Gallery.Controls.HorizontalIsTheDefaultBindIsCheckedInTwoWayModeForAStandardSetti_923DEB45"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Standard option"
+          Title="Gallery.Controls.StandardOption_A9E7F4A2"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -139,10 +139,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Choose Vertical for a card-shaped selection. Icon accepts arbitrary content but is rendered only by the Vertical layout."
+          Content="Gallery.Controls.ChooseVerticalForACardShapedSelectionIconAcceptsArbitraryContent_2FA82121"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Icon-led option"
+          Title="Gallery.Controls.IconLedOption_2EF7009E"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CheckBox&#xA;  Content=&quot;Cloud workspace&quot;&#xA;  Icon=&quot;&amp;#xE753;&quot;&#xA;  IsChecked=&quot;{Binding UsesCloudWorkspace, Mode=TwoWay}&quot;&#xA;  Variant=&quot;Vertical&quot; /&gt;" />
@@ -151,23 +151,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the CheckBox API and layout contract."
+          Content="Gallery.Controls.ReadTheCheckBoxAPIAndLayoutContract_6B23CCB9"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="CheckBox documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.CheckBoxDocumentation_67B58CA4"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

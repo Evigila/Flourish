@@ -10,11 +10,14 @@ public partial class ActionCardPage : Page
         InitializeComponent();
         ActionCardMemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Variant", "Chooses the Horizontal or Vertical fixed layout."),
-            new("Title", "Sets the optional heading."),
-            new("Content", "Sets one optional block of supporting copy."),
-            new("Icon", "Sets one optional icon glyph."),
-            new("Body", "Hosts exactly one interactive control."),
+            new(
+                "Variant",
+                GalleryLocaleKeys.ControlsChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
+            ),
+            new("Title", GalleryLocaleKeys.ControlsSetsTheOptionalHeading_209DFEAA),
+            new("Content", GalleryLocaleKeys.ControlsSetsOneOptionalBlockOfSupportingCopy_C07BA241),
+            new("Icon", GalleryLocaleKeys.ControlsSetsOneOptionalIconGlyph_73C296CD),
+            new("Body", GalleryLocaleKeys.ControlsHostsExactlyOneInteractiveControl_DBA310D6),
         };
     }
 }

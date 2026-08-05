@@ -9,7 +9,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="A fixed card layout for one setting or local action with one interactive body."
+      Content="Gallery.Controls.AFixedCardLayoutForOneSettingOrLocalActionWithOneInteractiveBody_EC041C89"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="ActionCard"
@@ -19,7 +19,7 @@
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Icon and copy stay on the left while the single interactive Body stays on the right."
+          Content="Gallery.Controls.IconAndCopyStayOnTheLeftWhileTheSingleInteractiveBodyStaysOnTheR_35D15E78"
           PresenterMode="TopDown"
           PresentationMinHeight="240"
           PresenterPosition="Left"
@@ -32,13 +32,13 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Icon="&#xE790;"
-              Content="Choose a theme value."
-              Title="Application theme"
+              Content="Gallery.Controls.ChooseAThemeValue_3AF1852C"
+              Title="Gallery.Controls.ApplicationTheme_E230A4DB"
               Variant="Horizontal"
             >
               <flourish:ActionCard.Body>
                 <flourish:FlourishComboBox Width="144" SelectedIndex="0">
-                  <flourish:FlourishComboBoxItem Content="System" />
+                  <flourish:FlourishComboBoxItem Content="Gallery.Runtime.System_6725E7BB" />
                   <flourish:FlourishComboBoxItem Content="Light" />
                   <flourish:FlourishComboBoxItem Content="Dark" />
                 </flourish:FlourishComboBox>
@@ -48,7 +48,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Icon, copy, and the single interactive Body form one left-aligned vertical stack."
+          Content="Gallery.Controls.IconCopyAndTheSingleInteractiveBodyFormOneLeftAlignedVerticalSta_AA1E2065"
           PresenterMode="TopDown"
           PresentationMinHeight="240"
           PresenterPosition="Left"
@@ -61,12 +61,12 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Icon="&#xE946;"
-              Content="Open the detailed configuration."
-              Title="Configuration"
+              Content="Gallery.Controls.OpenTheDetailedConfiguration_5C63C5D5"
+              Title="Gallery.Application.Configuration_B332C349"
               Variant="Vertical"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Content="View details" />
+                <flourish:Button Content="Gallery.Controls.ViewDetails_D1BF045B" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
           </flourish:Presenter.Presentation>
@@ -74,7 +74,7 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="ActionCardMemberGrid"
         AutoGenerateColumns="False"
@@ -85,28 +85,28 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="224" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Body controls">
+    <flourish:Chunk Title="Gallery.Controls.BodyControls_B4C6B4D8">
       <StackPanel>
         <flourish:ActionCard
           Icon="&#xE838;"
-          Content="Invoke one local action."
-          Title="Open configuration"
+          Content="Gallery.Controls.InvokeOneLocalAction_E97D66FA"
+          Title="Gallery.Controls.OpenConfiguration_0215A141"
         >
           <flourish:ActionCard.Body>
-            <flourish:Button Content="Open" />
+            <flourish:Button Content="Gallery.Controls.Open_ED077F3D" />
           </flourish:ActionCard.Body>
         </flourish:ActionCard>
         <flourish:ActionCard
           Margin="{DynamicResource FlourishActionCardPeerMargin}"
           Icon="&#xE8D2;"
-          Content="Edit one setting value."
-          Title="Configuration key"
+          Content="Gallery.Controls.EditOneSettingValue_837E41EB"
+          Title="Gallery.Controls.ConfigurationKey_DF69947E"
         >
           <flourish:ActionCard.Body>
             <flourish:FlourishTextBox Width="200" Text="Flourish:Theme" />
@@ -115,11 +115,11 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Create an actionable setting"
-          Content="Horizontal is the default Variant: Icon appears first, Title and Content form the middle copy group, and the single interactive Body is aligned on the right. Prefer this compact structure for settings arranged in a list."
+          Title="Gallery.Controls.CreateAnActionableSetting_B03FC968"
+          Content="Gallery.Controls.HorizontalIsTheDefaultVariantIconAppearsFirstTitleAndContentForm_FD27D0FC"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -129,8 +129,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Stack a larger action vertically"
-          Content="Set Variant to Vertical when the action needs a card-shaped layout with Body below the copy. Body still accepts one interactive control and remains aligned with the Icon, Title, and Content."
+          Title="Gallery.Controls.StackALargerActionVertically_31B0D9B1"
+          Content="Gallery.Controls.SetVariantToVerticalWhenTheActionNeedsACardShapedLayoutWithBodyB_54BE98F4"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -141,25 +141,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="ActionCard documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.ActionCardDocumentation_F9BA6D42"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="ActionCard documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.ActionCardDocumentation_F9BA6D42"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

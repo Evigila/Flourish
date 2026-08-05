@@ -8,8 +8,10 @@ namespace ArkheideSystem.Gallery.Views;
 
 public partial class CommandsPage : Page
 {
-    private static readonly KeyGesture DemoGesture =
-        new(Key.G, ModifierKeys.Control | ModifierKeys.Shift);
+    private static readonly KeyGesture DemoGesture = new(
+        Key.G,
+        ModifierKeys.Control | ModifierKeys.Shift
+    );
 
     private readonly ICommandRegistry commandRegistry;
     private readonly ICommandDispatcher commandDispatcher;
@@ -80,13 +82,19 @@ public partial class CommandsPage : Page
                 }
             );
             CommandOutput.WriteLine(
-                localization.Format("Registered '{0}' with priority {1}.", key, 100)
+                localization.Format(
+                    GalleryLocaleKeys.RuntimeRegistered0WithPriority1_10A41D09,
+                    key,
+                    100
+                )
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            CommandOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -105,11 +113,19 @@ public partial class CommandsPage : Page
                 CommandParameterBox.Text,
                 CommandSource.Application
             );
-            CommandOutput.WriteLine(FormatResult(localization.Get("Command"), result, canExecute));
+            CommandOutput.WriteLine(
+                FormatResult(
+                    localization.Get(GalleryLocaleKeys.RuntimeCommand_71316697),
+                    result,
+                    canExecute
+                )
+            );
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            CommandOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -118,7 +134,9 @@ public partial class CommandsPage : Page
         if (commandRegistration is null)
         {
             CommandOutput.WriteLine(
-                localization.Get("This page does not currently own a command registration.")
+                localization.Get(
+                    GalleryLocaleKeys.RuntimeThisPageDoesNotCurrentlyOwnACommandRegistration_9C294C80
+                )
             );
             return;
         }
@@ -128,13 +146,17 @@ public partial class CommandsPage : Page
             commandRegistration.Dispose();
             commandRegistration = null;
             CommandOutput.WriteLine(
-                localization.Get("The runtime command registration was removed.")
+                localization.Get(
+                    GalleryLocaleKeys.RuntimeTheRuntimeCommandRegistrationWasRemoved_9BF1D72B
+                )
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            CommandOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -147,18 +169,28 @@ public partial class CommandsPage : Page
             CommandOutput.WriteLine(
                 commandRegistration is null
                     ? localization.Format(
-                        "The next registered handler will be {0}.",
-                        localization.Get(commandEnabled ? "enabled" : "disabled")
+                        GalleryLocaleKeys.RuntimeTheNextRegisteredHandlerWillBe0_861E241D,
+                        localization.Get(
+                            commandEnabled
+                                ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
+                                : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                        )
                     )
                     : localization.Format(
-                        "The command is now {0}.",
-                        localization.Get(commandEnabled ? "enabled" : "disabled")
+                        GalleryLocaleKeys.RuntimeTheCommandIsNow0_25507420,
+                        localization.Get(
+                            commandEnabled
+                                ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
+                                : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                        )
                     )
             );
         }
         catch (Exception error)
         {
-            CommandOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            CommandOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -180,13 +212,15 @@ public partial class CommandsPage : Page
                 }
             );
             ShortcutOutput.WriteLine(
-                localization.Format("Ctrl+Shift+G now dispatches '{0}'.", key)
+                localization.Format(GalleryLocaleKeys.RuntimeCtrlShiftGNowDispatches0_2B41B29B, key)
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            ShortcutOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            ShortcutOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -198,11 +232,19 @@ public partial class CommandsPage : Page
                 DemoGesture,
                 new ShortcutResolutionContext(pageKey: nameof(CommandsPage))
             );
-            ShortcutOutput.WriteLine(FormatResult(localization.Get("Shortcut"), result, null));
+            ShortcutOutput.WriteLine(
+                FormatResult(
+                    localization.Get(GalleryLocaleKeys.RuntimeShortcut_5753EA37),
+                    result,
+                    null
+                )
+            );
         }
         catch (Exception error)
         {
-            ShortcutOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            ShortcutOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -211,7 +253,9 @@ public partial class CommandsPage : Page
         if (shortcutRegistration is null)
         {
             ShortcutOutput.WriteLine(
-                localization.Get("This page does not currently own a shortcut registration.")
+                localization.Get(
+                    GalleryLocaleKeys.RuntimeThisPageDoesNotCurrentlyOwnAShortcutRegistration_B41D35DD
+                )
             );
             return;
         }
@@ -221,13 +265,17 @@ public partial class CommandsPage : Page
             shortcutRegistration.Dispose();
             shortcutRegistration = null;
             ShortcutOutput.WriteLine(
-                localization.Get("The Ctrl+Shift+G registration was removed.")
+                localization.Get(
+                    GalleryLocaleKeys.RuntimeTheCtrlShiftGRegistrationWasRemoved_D62E6ACC
+                )
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
-            ShortcutOutput.WriteLine(localization.Format("Error: {0}", error.Message));
+            ShortcutOutput.WriteLine(
+                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -240,8 +288,8 @@ public partial class CommandsPage : Page
         var count = Interlocked.Increment(ref executionCount);
         return CommandResult.HandledWith(
             localization.Format(
-                "Hello, {0}! Invocation #{1} from {2}.",
-                context.Parameter ?? localization.Get("runtime"),
+                GalleryLocaleKeys.RuntimeHello0Invocation1From2_4B6A51EC,
+                context.Parameter ?? localization.Get(GalleryLocaleKeys.RuntimeRuntime_D92C6A81),
                 count,
                 context.Source
             )
@@ -251,21 +299,21 @@ public partial class CommandsPage : Page
     private void RefreshRegistryState()
     {
         RegistrySummaryText.Text = localization.Format(
-            "Commands: {0}  |  Shortcuts: {1}",
+            GalleryLocaleKeys.RuntimeCommands0Shortcuts1_EE620469,
             commandRegistry.Registrations.Count,
             shortcuts.Registrations.Count
         );
 
         var commandItems = commandRegistry.Registrations.Select(item =>
             localization.Format(
-                "Command  |  {0}  |  priority {1}",
+                GalleryLocaleKeys.RuntimeCommand0Priority1_6F653DF7,
                 item.CommandKey,
                 item.Priority
             )
         );
         var shortcutItems = shortcuts.Registrations.Select(item =>
             localization.Format(
-                "Shortcut  |  {0}  |  {1}  |  {2}",
+                GalleryLocaleKeys.RuntimeShortcut012_B5D726B0,
                 item.Gesture.GetDisplayStringForCulture(
                     System.Globalization.CultureInfo.CurrentCulture
                 ),
@@ -291,15 +339,18 @@ public partial class CommandsPage : Page
     {
         var canExecuteText = canExecute is null
             ? string.Empty
-            : localization.Format("  |  Can execute: {0}", canExecute);
+            : localization.Format(GalleryLocaleKeys.RuntimeCanExecute0_43748D6F, canExecute);
         var valueText = result.Value is null
             ? string.Empty
-            : localization.Format("  |  Value: {0}", result.Value);
+            : localization.Format(GalleryLocaleKeys.RuntimeValue0_BF1A56EF, result.Value);
         var errorText = result.Exception is null
             ? string.Empty
-            : localization.Format("  |  Error: {0}", result.Exception.Message);
+            : localization.Format(
+                GalleryLocaleKeys.RuntimeError0_EB96953F,
+                result.Exception.Message
+            );
         return localization.Format(
-            "{0} status: {1}{2}{3}{4}",
+            GalleryLocaleKeys.RuntimeText0Status1234_535E9DA8,
             label,
             result.Status,
             canExecuteText,

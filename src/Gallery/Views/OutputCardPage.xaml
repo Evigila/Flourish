@@ -9,13 +9,13 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="A compact scrollable viewport for append-only logs, progress, results, and failures."
+      Content="Gallery.Controls.ACompactScrollableViewportForAppendOnlyLogsProgressResultsAndFai_AE2F9352"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="OutputCard"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="OutputCardMemberGrid"
         AutoGenerateColumns="False"
@@ -26,8 +26,8 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="MEMBER" Width="224" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.MEMBER_E97AF8C4" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
@@ -42,58 +42,58 @@
         <StackPanel>
           <flourish:ActionCard
             Icon="&#xE8F2;"
-            Content="Append one timestamped message."
-            Title="Append message"
+            Content="Gallery.Controls.AppendOneTimestampedMessage_AEC92E6C"
+            Title="Gallery.Controls.AppendMessage_BE587F41"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AppendMessage_Click" Content="Write line" />
+              <flourish:Button Click="AppendMessage_Click" Content="Gallery.Controls.WriteLine_4C341D2D" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8FD;"
-            Content="Exercise automatic viewport scrolling."
-            Title="Append burst"
+            Content="Gallery.Controls.ExerciseAutomaticViewportScrolling_290CEE20"
+            Title="Gallery.Controls.AppendBurst_0530ED7E"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AppendBurst_Click" Content="Write 24 lines" />
+              <flourish:Button Click="AppendBurst_Click" Content="Gallery.Controls.Write24Lines_52633D14" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE946;"
-            Content="Append a summary of the current Output value."
-            Title="Inspect output"
+            Content="Gallery.Controls.AppendASummaryOfTheCurrentOutputValue_4C54BEB0"
+            Title="Gallery.Controls.InspectOutput_A34E9654"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="InspectOutput_Click" Content="Write summary" />
+              <flourish:Button Click="InspectOutput_Click" Content="Gallery.Controls.WriteSummary_25E3E362" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Content="Reset the message history."
-            Title="Clear history"
+            Content="Gallery.Controls.ResetTheMessageHistory_1C5034C4"
+            Title="Gallery.Controls.ClearHistory_49612149"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ClearHistory_Click" Content="Clear" Variant="Danger" />
+              <flourish:Button Click="ClearHistory_Click" Content="Gallery.Controls.Clear_83B12C22" Variant="Danger" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard
           x:Name="HistoryOutput"
           Grid.Column="2"
-          AutomationProperties.Name="Output history"
+          AutomationProperties.Name="Gallery.Controls.OutputHistory_891D2EE9"
           VerticalAlignment="Stretch"
         />
       </Grid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Declare the output surface"
-          Content="Give OutputCard a name when code-behind will write to it. It intentionally has no Title, Content, Icon, or Body; place explanatory copy on the surrounding Chunk and reserve this compact scrolling surface for raw output."
+          Title="Gallery.Controls.DeclareTheOutputSurface_329F5B5B"
+          Content="Gallery.Controls.GiveOutputCardANameWhenCodeBehindWillWriteToItItIntentionallyHas_2FE99BD0"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -103,8 +103,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Append and clear messages"
-          Content="Call WriteLine for each observable result so existing history remains available. Use Clear only when the workflow deliberately begins a new output session; overflow remains accessible in the control's scrolling viewport."
+          Title="Gallery.Controls.AppendAndClearMessages_B521F75B"
+          Content="Gallery.Controls.CallWriteLineForEachObservableResultSoExistingHistoryRemainsAvai_465D705E"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -115,25 +115,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="OutputCard documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.OutputCardDocumentation_B8CB444A"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="OutputCard documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.OutputCardDocumentation_B8CB444A"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

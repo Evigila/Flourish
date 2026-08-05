@@ -7,8 +7,14 @@ public partial class CodeSpacePage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Text", "Contains the exact code text displayed and copied by the control."),
-        new("ApplicationCommands.Copy", "Copies Text through the built-in upper-right action."),
+        new(
+            "Text",
+            GalleryLocaleKeys.ControlsContainsTheExactCodeTextDisplayedAndCopiedByTheControl_6A5A8805
+        ),
+        new(
+            "ApplicationCommands.Copy",
+            GalleryLocaleKeys.ControlsCopiesTextThroughTheBuiltInUpperRightAction_95EB53A7
+        ),
     ];
 
     public string ExampleCode { get; } =

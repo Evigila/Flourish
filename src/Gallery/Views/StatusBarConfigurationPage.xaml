@@ -7,29 +7,29 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="Status bar"
-      Content="Define persistent status items and optional system indicators shown by the shell."
+      Title="Gallery.Application.StatusBar_0BC4C2AF"
+      Content="Gallery.Shell.DefinePersistentStatusItemsAndOptionalSystemIndicatorsShownByThe_6B2BB27D"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
     <flourish:Chunk
-      Title="Status items"
-      Content="The status bar keeps application state and built-in system details visible without interrupting the current workflow. Enable the persistent surface with UseStatusBar, then add non-interactive text and glyphs or opt into the consolidated network and power indicator with ConfigStatusBar. This pattern is recommended for synchronization, workspace, connectivity, and power information; the code below covers every status-bar configuration API."
+      Title="Gallery.Shell.StatusItems_41C5C2E2"
+      Content="Gallery.Shell.TheStatusBarKeepsApplicationStateAndBuiltInSystemDetailsVisibleW_B3D10F2D"
     >
       <StackPanel>
         <UniformGrid Columns="2">
           <flourish:Card
             Margin="0,0,8,0"
             Icon="&#xE930;"
-            Title="Application status"
-            Content="AddStatusItem registers compact, non-interactive application state in display order."
+            Title="Gallery.Shell.ApplicationStatus_CCDE872D"
+            Content="Gallery.Shell.AddStatusItemRegistersCompactNonInteractiveApplicationStateInDis_ED3FC409"
           />
           <flourish:Card
             Margin="8,0,0,0"
             Icon="&#xE968;"
-            Title="System indicators"
-            Content="Network and power details share one consolidated system-status surface."
+            Title="Gallery.Shell.SystemIndicators_F2F8C292"
+            Content="Gallery.Shell.NetworkAndPowerDetailsShareOneConsolidatedSystemStatusSurface_75B32A78"
           />
         </UniformGrid>
         <flourish:CodeSpace
@@ -38,10 +38,10 @@
         />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

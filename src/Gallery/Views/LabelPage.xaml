@@ -10,36 +10,36 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Name an input and transfer keyboard focus through the native WPF access-key contract."
+      Content="Gallery.Controls.NameAnInputAndTransferKeyboardFocusThroughTheNativeWPFAccessKeyC_75D00937"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishLabel"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Place the label next to its target and mark one character with an underscore for keyboard access."
-      Title="Association"
+      Content="Gallery.Controls.PlaceTheLabelNextToItsTargetAndMarkOneCharacterWithAnUnderscoreF_F97F62FA"
+      Title="Gallery.Controls.Association_C1D43420"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Target sends focus to the related control when the access key is invoked."
+          Content="Gallery.Controls.TargetSendsFocusToTheRelatedControlWhenTheAccessKeyIsInvoked_53FBAFD1"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Text input"
+          Title="Gallery.Controls.TextInput_F9BE71E0"
         >
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -47,7 +47,7 @@
               VerticalAlignment="Center"
             >
                 <flourish:FlourishLabel
-                  Content="_Display name"
+                  Content="Gallery.Controls.DisplayName_AA37B12F"
                   Target="{Binding ElementName=DisplayNameBox}"
                 />
                 <flourish:FlourishTextBox
@@ -60,10 +60,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="The same association works for selectors and other focusable controls."
+          Content="Gallery.Controls.TheSameAssociationWorksForSelectorsAndOtherFocusableControls_546138B7"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Selection input"
+          Title="Gallery.Controls.SelectionInput_F3442002"
         >
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -71,7 +71,7 @@
               VerticalAlignment="Center"
             >
                 <flourish:FlourishLabel
-                  Content="_Theme"
+                  Content="Gallery.Controls.Theme_F52B45AE"
                   Target="{Binding ElementName=ThemeBox}"
                 />
                 <flourish:FlourishComboBox
@@ -79,7 +79,7 @@
                   Margin="0,4,0,0"
                   SelectedIndex="0"
                 >
-                  <flourish:FlourishComboBoxItem Content="System" />
+                  <flourish:FlourishComboBoxItem Content="Gallery.Runtime.System_6725E7BB" />
                   <flourish:FlourishComboBoxItem Content="Light" />
                   <flourish:FlourishComboBoxItem Content="Dark" />
                 </flourish:FlourishComboBox>
@@ -89,13 +89,13 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Set Target to the associated input and mark one character in Content with an underscore. The resulting access key transfers keyboard focus and gives the field a persistent visible name. The same contract works for selectors and other focusable controls; keep each label adjacent to its target and mirror the disabled state when the input is unavailable."
+          Content="Gallery.Controls.SetTargetToTheAssociatedInputAndMarkOneCharacterInContentWithAnU_F2E2D993"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Input association"
+          Title="Gallery.Controls.InputAssociation_1D8FDCED"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -104,23 +104,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the FlourishLabel API reference."
+          Content="Gallery.Controls.ReadTheFlourishLabelAPIReference_2BDAB019"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="FlourishLabel documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.FlourishLabelDocumentation_D7C69726"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

@@ -10,13 +10,22 @@ public partial class CardPage : Page
         InitializeComponent();
         CardMemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Variant", "Chooses Standard, Tonal, Filled, or Elevated."),
-            new("Title", "Sets the optional heading."),
-            new("Content", "Sets one optional block of supporting copy."),
-            new("Icon", "Sets one optional icon glyph."),
-            new("IconPosition", "Places the icon on the left, top, right, or bottom."),
-            new("ContentHorizontalAlignment", "Aligns the title-and-copy group horizontally."),
-            new("ContentVerticalAlignment", "Aligns the title-and-copy group vertically."),
+            new("Variant", GalleryLocaleKeys.ControlsChoosesStandardTonalFilledOrElevated_BAFD3BC6),
+            new("Title", GalleryLocaleKeys.ControlsSetsTheOptionalHeading_209DFEAA),
+            new("Content", GalleryLocaleKeys.ControlsSetsOneOptionalBlockOfSupportingCopy_C07BA241),
+            new("Icon", GalleryLocaleKeys.ControlsSetsOneOptionalIconGlyph_73C296CD),
+            new(
+                "IconPosition",
+                GalleryLocaleKeys.ControlsPlacesTheIconOnTheLeftTopRightOrBottom_05E57661
+            ),
+            new(
+                "ContentHorizontalAlignment",
+                GalleryLocaleKeys.ControlsAlignsTheTitleAndCopyGroupHorizontally_645A8315
+            ),
+            new(
+                "ContentVerticalAlignment",
+                GalleryLocaleKeys.ControlsAlignsTheTitleAndCopyGroupVertically_B79A88BE
+            ),
         };
     }
 }

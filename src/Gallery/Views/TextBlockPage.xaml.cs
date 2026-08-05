@@ -7,9 +7,15 @@ public partial class TextBlockPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Text", "Sets the displayed text."),
-        new("Role", "Selects a semantic FlourishTextRole and its typography resources."),
-        new("TextWrapping", "Uses the native WPF wrapping behavior when content needs multiple lines."),
+        new("Text", GalleryLocaleKeys.ControlsSetsTheDisplayedText_6B2DA7F7),
+        new(
+            "Role",
+            GalleryLocaleKeys.ControlsSelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97
+        ),
+        new(
+            "TextWrapping",
+            GalleryLocaleKeys.ControlsUsesTheNativeWPFWrappingBehaviorWhenContentNeedsMultipleLines_BEEAB3F9
+        ),
     ];
 
     public string UsageCode { get; } =

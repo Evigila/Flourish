@@ -7,15 +7,15 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Edit configuration and localization while the app runs."
+      Content="Gallery.Shell.EditConfigurationAndLocalizationWhileTheAppRuns_15ABD8C0"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Configuration &amp; localization"
+      Title="Gallery.Shell.ConfigurationLocalization_AAF9B9AC"
     />
 
     <flourish:Chunk
-      Content="Read effective values from the active provider chain, bind typed options, inspect immutable snapshots, and reload providers after external changes. Use this for diagnostics, settings screens, and configuration consumed across the application; the code below demonstrates change tracking, reload, raw and typed reads, section binding, and snapshots."
-      Title="Configuration values"
+      Content="Gallery.Shell.ReadEffectiveValuesFromTheActiveProviderChainBindTypedOptionsIns_F81E47A0"
+      Title="Gallery.Shell.ConfigurationValues_39D4360A"
     >
       <StackPanel>
         <Grid>
@@ -26,8 +26,8 @@
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE721;"
-            Title="Configuration key"
-            Content="Choose a value from the active provider chain."
+            Title="Gallery.Controls.ConfigurationKey_DF69947E"
+            Content="Gallery.Shell.ChooseAValueFromTheActiveProviderChain_C11A502F"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="ReadKeyBox" Width="220" Text="Flourish:Preferences:Theme" />
@@ -36,21 +36,21 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE721;"
-            Title="Read merged value"
-            Content="Resolve the selected configuration key."
+            Title="Gallery.Shell.ReadMergedValue_6CE2FF16"
+            Content="Gallery.Shell.ResolveTheSelectedConfigurationKey_5DC7ADC2"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ReadValue_Click" Content="Read value" />
+              <flourish:Button Click="ReadValue_Click" Content="Gallery.Shell.ReadValue_BEAED839" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72C;"
-            Title="Configuration providers"
-            Content="Reload every registered provider."
+            Title="Gallery.Shell.ConfigurationProviders_F8A3093D"
+            Content="Gallery.Shell.ReloadEveryRegisteredProvider_60E47FC2"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="Reload_Click" Content="Reload providers" />
+              <flourish:Button Click="Reload_Click" Content="Gallery.Shell.ReloadProviders_0C783486" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           </StackPanel>
@@ -61,8 +61,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Persist the selected Flourish appsettings file through atomic writes that reload host configuration. Use the single-operation methods for one preference and UpdateAsync when related edits must commit together; this is recommended for user or administrator settings that must remain consistent on disk. The code below covers the managed file path, set, merge, append, remove, batch editing, and update results."
-      Title="App settings"
+      Content="Gallery.Shell.PersistTheSelectedFlourishAppsettingsFileThroughAtomicWritesThat_F7C26977"
+      Title="Gallery.Shell.AppSettings_D43FB8A9"
     >
       <StackPanel>
         <Grid>
@@ -73,8 +73,8 @@
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE71B;"
-            Title="Configuration path"
-            Content="Choose the appsettings key to edit."
+            Title="Gallery.Shell.ConfigurationPath_18B85882"
+            Content="Gallery.Shell.ChooseTheAppsettingsKeyToEdit_BCD25047"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="WriteKeyBox" Width="220" Text="Flourish:Gallery:Runtime:Message" />
@@ -83,8 +83,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE70F;"
-            Title="String value"
-            Content="Provide the value used by write operations."
+            Title="Gallery.Shell.StringValue_A48D9FCC"
+            Content="Gallery.Shell.ProvideTheValueUsedByWriteOperations_FFCF2C72"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="WriteValueBox" Width="220" Text="Hello from runtime" />
@@ -93,41 +93,41 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74E;"
-            Title="Set value"
-            Content="Replace the selected value and save atomically."
+            Title="Gallery.Shell.SetValue_58BF3410"
+            Content="Gallery.Shell.ReplaceTheSelectedValueAndSaveAtomically_AB4487A6"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="SetValue_Click" Content="Set &amp; save" />
+              <flourish:Button Click="SetValue_Click" Content="Gallery.Shell.SetSave_FA0BA9B1" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72D;"
-            Title="Merge value"
-            Content="Merge the value into its parent object."
+            Title="Gallery.Shell.MergeValue_3FED15FE"
+            Content="Gallery.Shell.MergeTheValueIntoItsParentObject_72311D03"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="MergeValue_Click" Content="Merge into parent" />
+              <flourish:Button Click="MergeValue_Click" Content="Gallery.Shell.MergeIntoParent_92C0410E" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE710;"
-            Title="Append value"
-            Content="Append the value to the selected array."
+            Title="Gallery.Shell.AppendValue_C9D4F684"
+            Content="Gallery.Shell.AppendTheValueToTheSelectedArray_2F8836F4"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AppendValue_Click" Content="Append to array" />
+              <flourish:Button Click="AppendValue_Click" Content="Gallery.Shell.AppendToArray_F729D627" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Remove value"
-            Content="Remove the selected key from the managed settings file."
+            Title="Gallery.Shell.RemoveValue_12920E9D"
+            Content="Gallery.Shell.RemoveTheSelectedKeyFromTheManagedSettingsFile_64C8F4C9"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveValue_Click" Content="Remove" />
+              <flourish:Button Click="RemoveValue_Click" Content="Gallery.Controls.Remove_C3812FC4" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           </StackPanel>
@@ -138,8 +138,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose the application locale. Flourish translates only its built-in interface, while GalleryLocalizationService independently translates this client's pages and shell labels. Use the client-owned service for application copy; both layers observe the same selection and fall back to English when no matching client catalog exists. The code below demonstrates the shared locale signal."
-      Title="Localization"
+      Content="Gallery.Dynamic.ChooseTheApplicationLocaleFlourishTranslatesOnlyItsBuiltInInterf_E0E093E0"
+      Title="Gallery.Shell.Localization_031C2D79"
     >
       <StackPanel>
         <Grid>
@@ -152,8 +152,8 @@
             Margin="0,0,8,0"
             VerticalAlignment="Stretch"
             Icon="&#xE774;"
-            Title="Application locale"
-            Content="Choose a built-in or host-registered locale."
+            Title="Gallery.Shell.ApplicationLocale_454E98E6"
+            Content="Gallery.Shell.ChooseABuiltInOrHostRegisteredLocale_90F691AB"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox
@@ -170,8 +170,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Extend or override translations with UTF-8 lang_&lt;locale&gt;.json files. Add files during app setup or register, reload, and remove them through IFlourishLocalization. Use this for product-specific translations, plugins, and externally maintained language packs; the code below demonstrates both registration paths, registration metadata, file reload, and removal."
-      Title="Locale files"
+      Content="Gallery.Shell.ExtendOrOverrideTranslationsWithUTF8LangLocaleJsonFilesAddFilesD_A991B111"
+      Title="Gallery.Shell.LocaleFiles_66483B15"
     >
       <StackPanel>
         <Grid>
@@ -182,8 +182,8 @@
           <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE8A5;"
-            Title="Locale file path"
-            Content="Choose an external lang_&lt;locale&gt;.json source."
+            Title="Gallery.Shell.LocaleFilePath_9B6FF179"
+            Content="Gallery.Shell.ChooseAnExternalLangLocaleJsonSource_A4EE0621"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="LocaleFilePathBox" Width="220" Text="lang_ES.json" />
@@ -192,31 +192,31 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE710;"
-            Title="Register locale file"
-            Content="Register the selected source with localization."
+            Title="Gallery.Shell.RegisterLocaleFile_E5F5A5EA"
+            Content="Gallery.Shell.RegisterTheSelectedSourceWithLocalization_C659B5B7"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RegisterLocaleFile_Click" Content="Register file" />
+              <flourish:Button Click="RegisterLocaleFile_Click" Content="Gallery.Shell.RegisterFile_04EED623" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72C;"
-            Title="Reload locale file"
-            Content="Reload edits from the registered source."
+            Title="Gallery.Shell.ReloadLocaleFile_B942D119"
+            Content="Gallery.Shell.ReloadEditsFromTheRegisteredSource_B9F123C3"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ReloadLocaleFile_Click" Content="Reload file" />
+              <flourish:Button Click="ReloadLocaleFile_Click" Content="Gallery.Shell.ReloadFile_7E2434B6" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Remove locale file"
-            Content="Unregister the current external source."
+            Title="Gallery.Shell.RemoveLocaleFile_8391B6C7"
+            Content="Gallery.Shell.UnregisterTheCurrentExternalSource_84D0CA5A"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="UnregisterLocaleFile_Click" Content="Unregister" />
+              <flourish:Button Click="UnregisterLocaleFile_Click" Content="Gallery.Shell.Unregister_BE01AA28" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           </StackPanel>
@@ -226,10 +226,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

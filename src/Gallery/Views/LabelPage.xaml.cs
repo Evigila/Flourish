@@ -10,26 +10,35 @@ public partial class LabelPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Content", "Supplies text or custom label content."),
-            new("Target", "Identifies the control that receives focus through the access key."),
-            new("Padding", "Controls space around the label content."),
-            new("HorizontalContentAlignment", "Aligns content within the label bounds."),
-            new("IsEnabled", "Reflects whether the associated input is available."),
-            new("ToolTip", "Supplies optional supporting guidance."),
+            new("Content", GalleryLocaleKeys.ControlsSuppliesTextOrCustomLabelContent_2C033448),
+            new(
+                "Target",
+                GalleryLocaleKeys.ControlsIdentifiesTheControlThatReceivesFocusThroughTheAccessKey_808886ED
+            ),
+            new("Padding", GalleryLocaleKeys.ControlsControlsSpaceAroundTheLabelContent_EC85A9CD),
+            new(
+                "HorizontalContentAlignment",
+                GalleryLocaleKeys.ControlsAlignsContentWithinTheLabelBounds_8CD9E783
+            ),
+            new(
+                "IsEnabled",
+                GalleryLocaleKeys.ControlsReflectsWhetherTheAssociatedInputIsAvailable_B36D0858
+            ),
+            new("ToolTip", GalleryLocaleKeys.ControlsSuppliesOptionalSupportingGuidance_77EF85E6),
         };
     }
 
     public string UsageCode { get; } =
         """
-        <StackPanel>
-          <flourish:FlourishLabel
-            Content="_Display name"
-            Target="{Binding ElementName=DisplayNameBox}" />
-          <flourish:FlourishTextBox
-            x:Name="DisplayNameBox"
-            Text="{Binding DisplayName, Mode=TwoWay}" />
-        </StackPanel>
+            <StackPanel>
+              <flourish:FlourishLabel
+                Content="_Display name"
+                Target="{Binding ElementName=DisplayNameBox}" />
+              <flourish:FlourishTextBox
+                x:Name="DisplayNameBox"
+                Text="{Binding DisplayName, Mode=TwoWay}" />
+            </StackPanel>
 
-        // Alt+D moves keyboard focus to DisplayNameBox.
-        """;
+            // Alt+D moves keyboard focus to DisplayNameBox.
+            """;
 }

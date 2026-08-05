@@ -7,15 +7,15 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Configure shared Shell appearance and explore visual resources that can also change at runtime."
+      Content="Gallery.Shell.ConfigureSharedShellAppearanceAndExploreVisualResourcesThatCanAl_47220926"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Appearance"
+      Title="Gallery.Application.Appearance_3907FA7F"
     />
 
     <flourish:Chunk
-      Content="Select the application color theme and switch among the supported modes without restarting the shell. Use this for a user-facing appearance preference or a theme preview; the code below shows direct selection, cycling, and the state-change event used to refresh dependent UI."
-      Title="Theme"
+      Content="Gallery.Shell.SelectTheApplicationColorThemeAndSwitchAmongTheSupportedModesWit_C1EDC9B6"
+      Title="Gallery.Controls.Theme_EFB52E71"
     >
       <StackPanel>
       <Grid>
@@ -26,8 +26,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE713;"
-            Title="Theme"
-            Content="Choose the requested application color mode."
+            Title="Gallery.Controls.Theme_EFB52E71"
+            Content="Gallery.Shell.ChooseTheRequestedApplicationColorMode_D332B194"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox x:Name="ThemeBox" Width="220" SelectionChanged="ThemeBox_SelectionChanged" />
@@ -36,11 +36,11 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72C;"
-            Title="Cycle theme"
-            Content="Move through System, Light, and Dark."
+            Title="Gallery.Shell.CycleTheme_4F08FD02"
+            Content="Gallery.Shell.MoveThroughSystemLightAndDark_79B96D1E"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleTheme_Click" Content="Cycle theme" />
+              <flourish:Button Click="ToggleTheme_Click" Content="Gallery.Shell.CycleTheme_4F08FD02" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -56,8 +56,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Change the application-wide text scale, text family, and icon family through IFontService. Use this when typography is configurable for every page; the code below includes all defined font sizes and the separate icon font assignment."
-      Title="Typography"
+      Content="Gallery.Shell.ChangeTheApplicationWideTextScaleTextFamilyAndIconFamilyThroughI_5981BD80"
+      Title="Gallery.Shell.Typography_CAB94ABA"
     >
       <StackPanel>
       <Grid>
@@ -68,8 +68,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE8D2;"
-            Title="Text font family"
-            Content="Set the application-wide text family."
+            Title="Gallery.Shell.TextFontFamily_BDAD59BB"
+            Content="Gallery.Shell.SetTheApplicationWideTextFamily_51BED724"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="FontFamilyBox" Width="220" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -78,8 +78,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Small text size"
-            Content="Set the small typography tier."
+            Title="Gallery.Shell.SmallTextSize_5BE132C2"
+            Content="Gallery.Shell.SetTheSmallTypographyTier_093845E4"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="SmallFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -88,8 +88,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Standard text size"
-            Content="Set the standard typography tier."
+            Title="Gallery.Shell.StandardTextSize_81229A4D"
+            Content="Gallery.Shell.SetTheStandardTypographyTier_EF1F551B"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="StandardFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -98,8 +98,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Icon size"
-            Content="Set the dedicated icon glyph size."
+            Title="Gallery.Shell.IconSize_A86CAFC7"
+            Content="Gallery.Shell.SetTheDedicatedIconGlyphSize_B55BC458"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="IconFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -108,8 +108,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Large text size"
-            Content="Set the bold large typography tier."
+            Title="Gallery.Shell.LargeTextSize_A13F1B10"
+            Content="Gallery.Shell.SetTheBoldLargeTypographyTier_4BFC7E63"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="LargeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -118,8 +118,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Extra-large text size"
-            Content="Set the bold extra-large typography tier."
+            Title="Gallery.Shell.ExtraLargeTextSize_89659B30"
+            Content="Gallery.Shell.SetTheBoldExtraLargeTypographyTier_3089CFA2"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="ExtraLargeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -128,8 +128,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Header text size"
-            Content="Set the bold page-header typography tier."
+            Title="Gallery.Shell.HeaderTextSize_EE385089"
+            Content="Gallery.Shell.SetTheBoldPageHeaderTypographyTier_50A4EFA0"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="HeaderSizeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -138,8 +138,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8B9;"
-            Title="Icon font family"
-            Content="Set the font used for application glyphs."
+            Title="Gallery.Shell.IconFontFamily_FD125382"
+            Content="Gallery.Shell.SetTheFontUsedForApplicationGlyphs_6FA682DA"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="IconFontFamilyBox" Width="220" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -153,8 +153,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Override selected typography resources for one Page type while all omitted values continue to inherit the application defaults. Use this for a page with distinct reading or presentation needs; the code below demonstrates adding and clearing a typed page override."
-      Title="Page typography"
+      Content="Gallery.Shell.OverrideSelectedTypographyResourcesForOnePageTypeWhileAllOmitted_85813212"
+      Title="Gallery.Shell.PageTypography_68D36EEA"
     >
       <StackPanel>
       <Grid>
@@ -165,8 +165,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE8D2;"
-            Title="Page font family"
-            Content="Override the text family on this page."
+            Title="Gallery.Shell.PageFontFamily_72A09A8C"
+            Content="Gallery.Shell.OverrideTheTextFamilyOnThisPage_79C98EB0"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideFontFamilyBox" Width="220" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" Text="Georgia" />
@@ -175,8 +175,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Page small size"
-            Content="Leave empty to follow the global small size."
+            Title="Gallery.Shell.PageSmallSize_1E6ECE4B"
+            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalSmallSize_EEB46D7D"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideSmallFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -185,8 +185,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Page standard size"
-            Content="Leave empty to follow the global standard size."
+            Title="Gallery.Shell.PageStandardSize_13B6264D"
+            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalStandardSize_AF081960"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideStandardFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -195,8 +195,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Page icon size"
-            Content="Leave empty to follow the global icon size."
+            Title="Gallery.Shell.PageIconSize_68EB6DAA"
+            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalIconSize_7B5D9302"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideIconFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -205,8 +205,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Page large size"
-            Content="Leave empty to follow the global large size."
+            Title="Gallery.Shell.PageLargeSize_D500FA22"
+            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalLargeSize_73A327DA"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideLargeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -215,8 +215,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Page extra-large size"
-            Content="Leave empty to follow the global extra-large size."
+            Title="Gallery.Shell.PageExtraLargeSize_DA2102E4"
+            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalExtraLargeSize_4C968F32"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideExtraLargeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -225,8 +225,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Page header size"
-            Content="Leave empty to follow the global header size."
+            Title="Gallery.Shell.PageHeaderSize_CF98FBE9"
+            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalHeaderSize_01B67D74"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideHeaderSizeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -235,11 +235,11 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72C;"
-            Title="Clear page override"
-            Content="Restore the global application typography."
+            Title="Gallery.Shell.ClearPageOverride_C2236B42"
+            Content="Gallery.Shell.RestoreTheGlobalApplicationTypography_A05C913A"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ClearPageFontOverride_Click" Content="Clear override" />
+              <flourish:Button Click="ClearPageFontOverride_Click" Content="Gallery.Shell.ClearOverride_46FDBF5F" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -250,8 +250,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Apply shared palette and corner-radius overrides without replacing the active light or dark theme. Use these settings for live appearance editors and previews; passing null restores the standard theme resources."
-      Title="Appearance overrides"
+      Content="Gallery.Shell.ApplySharedPaletteAndCornerRadiusOverridesWithoutReplacingTheAct_7D937A92"
+      Title="Gallery.Shell.AppearanceOverrides_014D45A8"
     >
       <StackPanel>
         <Grid>
@@ -261,19 +261,19 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0">
             <flourish:ActionCard
-              Content="Apply a sample primary, secondary, and accent palette."
+              Content="Gallery.Shell.ApplyASamplePrimarySecondaryAndAccentPalette_EB8F8C31"
               Icon="&#xE790;"
-              Title="Color palette"
+              Title="Gallery.Shell.ColorPalette_81A9BE1A"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="Palette_Click" Content="Preview palette" />
+                <flourish:Button Click="Palette_Click" Content="Gallery.Shell.PreviewPalette_B9C6FB33" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
-              Content="Set one shared radius or leave the field empty to restore the standard hierarchy."
+              Content="Gallery.Shell.SetOneSharedRadiusOrLeaveTheFieldEmptyToRestoreTheStandardHierar_79220300"
               Icon="&#xE809;"
-              Title="Corner radius"
+              Title="Gallery.Shell.CornerRadius_76A6D9F3"
             >
               <flourish:ActionCard.Body>
                 <flourish:FlourishTextBox
@@ -286,12 +286,12 @@
             </flourish:ActionCard>
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
-              Content="Remove both Flourish-owned overrides."
+              Content="Gallery.Shell.RemoveBothFlourishOwnedOverrides_E00BA896"
               Icon="&#xE777;"
-              Title="Standard appearance"
+              Title="Gallery.Shell.StandardAppearance_C2FBFFC7"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="ClearAppearance_Click" Content="Restore defaults" />
+                <flourish:Button Click="ClearAppearance_Click" Content="Gallery.Shell.RestoreDefaults_602F8E63" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
           </StackPanel>
@@ -307,20 +307,20 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Center page content within a shared maximum width and update both the active page and pages reached later through navigation. Use this for reading-focused or wide-screen layouts where long lines should remain comfortable to scan. The switch changes whether centering is active, the width field defines the shared limit, and the code demonstrates an atomic update plus state observation."
-      Title="Content layout"
+      Content="Gallery.Shell.CenterPageContentWithinASharedMaximumWidthAndUpdateBothTheActive_4729774F"
+      Title="Gallery.Shell.ContentLayout_D3657AA9"
     >
       <StackPanel>
         <flourish:ActionCard
-          Content="Enable or disable the centered page layout."
+          Content="Gallery.Shell.EnableOrDisableTheCenteredPageLayout_45F80EAF"
           Icon="&#xE8A7;"
-          Title="Centered content"
+          Title="Gallery.Shell.CenteredContent_F26AD2B7"
         >
           <flourish:ActionCard.Body>
             <flourish:CheckBox
               x:Name="CenterContentBox"
               Checked="ContentLayout_Changed"
-              Content="Center content"
+              Content="Gallery.Shell.CenterContent_6043ED7D"
               Unchecked="ContentLayout_Changed"
               VerticalAlignment="Center"
             />
@@ -328,9 +328,9 @@
         </flourish:ActionCard>
         <flourish:ActionCard
           Margin="{DynamicResource FlourishActionCardPeerMargin}"
-          Content="Set the positive maximum width used by centered pages."
+          Content="Gallery.Shell.SetThePositiveMaximumWidthUsedByCenteredPages_D6A2CFCB"
           Icon="&#xE8A7;"
-          Title="Content width"
+          Title="Gallery.Shell.ContentWidth_B8A71D3A"
         >
           <flourish:ActionCard.Body>
             <flourish:FlourishTextBox
@@ -346,8 +346,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose the native material behind the shell and coordinate its immersive dark-mode flag with the active theme. Use this for Windows-integrated appearance where the requested effect may depend on platform support; the code below sets both material properties directly."
-      Title="Window material"
+      Content="Gallery.Shell.ChooseTheNativeMaterialBehindTheShellAndCoordinateItsImmersiveDa_469AEA19"
+      Title="Gallery.Shell.WindowMaterial_053B7771"
     >
       <StackPanel>
       <Grid>
@@ -358,8 +358,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE7F4;"
-            Title="Window material"
-            Content="Choose the native shell backdrop."
+            Title="Gallery.Shell.WindowMaterial_053B7771"
+            Content="Gallery.Shell.ChooseTheNativeShellBackdrop_832D086B"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox
@@ -372,11 +372,11 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE708;"
-            Title="Immersive dark mode"
-            Content="Request dark native window chrome."
+            Title="Gallery.Shell.ImmersiveDarkMode_7E1CB18B"
+            Content="Gallery.Shell.RequestDarkNativeWindowChrome_4E04D64F"
           >
             <flourish:ActionCard.Body>
-              <flourish:CheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="Immersive dark mode" Unchecked="MaterialDarkModeBox_Changed" />
+              <flourish:CheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="Gallery.Shell.ImmersiveDarkMode_7E1CB18B" Unchecked="MaterialDarkModeBox_Changed" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -387,20 +387,20 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. UseSmoothScroll sets the startup state, while IScrollService updates the active application immediately. An explicit IsSmoothScrollingEnabled value still overrides the application policy on an application-owned ScrollViewer."
-      Title="Smooth scrolling"
+      Content="Gallery.Shell.ChooseWhetherFlourishOwnedShellNavigationAndPageViewportsSmoothM_1EA6E35D"
+      Title="Gallery.Shell.SmoothScrolling_F62E8490"
     >
       <StackPanel>
         <flourish:ActionCard
-          Content="The setting updates existing Flourish viewports through the shared dynamic resource."
+          Content="Gallery.Shell.TheSettingUpdatesExistingFlourishViewportsThroughTheSharedDynami_4D207F2C"
           Icon="&#xE7C2;"
-          Title="Shell scrolling"
+          Title="Gallery.Shell.ShellScrolling_A9D6873F"
         >
           <flourish:ActionCard.Body>
             <flourish:CheckBox
               x:Name="SmoothScrollingBox"
               Checked="SmoothScrollingBox_Changed"
-              Content="Enable smooth scrolling"
+              Content="Gallery.Shell.EnableSmoothScrolling_9C57F675"
               Unchecked="SmoothScrollingBox_Changed"
               VerticalAlignment="Center"
             />
@@ -412,10 +412,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

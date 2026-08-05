@@ -7,29 +7,29 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="Motion"
-      Content="Configure page, navigation, and hover transitions while respecting accessibility preferences."
+      Title="Gallery.Application.Motion_8CA34424"
+      Content="Gallery.Shell.ConfigurePageNavigationAndHoverTransitionsWhileRespectingAccessi_97EA8363"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
     <flourish:Chunk
-      Title="Animations"
-      Content="Motion communicates page changes, navigation-panel state, and hover affordances while preserving the final layout. Enable motion at the Shell level, then choose each transition and its optional duration through ConfigMotion. Use restrained timings where movement clarifies state, and keep the operating-system reduced-motion preference enabled; the code below covers every motion setting."
+      Title="Gallery.Shell.Animations_7F7C3306"
+      Content="Gallery.Shell.MotionCommunicatesPageChangesNavigationPanelStateAndHoverAfforda_2E1BDAC0"
     >
       <StackPanel>
         <UniformGrid Columns="2">
           <flourish:Card
             Margin="0,0,8,0"
             Icon="&#xE768;"
-            Title="Transitions"
-            Content="Select page-entry and navigation-panel transition types with independent optional durations."
+            Title="Gallery.Shell.Transitions_700BB6E8"
+            Content="Gallery.Shell.SelectPageEntryAndNavigationPanelTransitionTypesWithIndependentO_F09C0752"
           />
           <flourish:Card
             Margin="8,0,0,0"
             Icon="&#xE7C8;"
-            Title="Interaction"
-            Content="Enable hover reveal while allowing accessibility preferences to disable motion."
+            Title="Gallery.Shell.Interaction_B7D28632"
+            Content="Gallery.Shell.EnableHoverRevealWhileAllowingAccessibilityPreferencesToDisableM_C65C0735"
           />
         </UniformGrid>
         <flourish:CodeSpace
@@ -38,10 +38,10 @@
         />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

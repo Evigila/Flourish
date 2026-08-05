@@ -7,10 +7,16 @@ public partial class ListBoxPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Appearance", "Chooses the Standard or Borderless surface."),
-        new("IsCompact", "Uses collapsed navigation-item geometry when true."),
-        new("ItemsSource", "Supplies data items and generates FlourishListBoxItem containers."),
-        new("SelectedItem", "Gets or sets the current selection."),
+        new("Appearance", GalleryLocaleKeys.ControlsChoosesTheStandardOrBorderlessSurface_B401F34B),
+        new(
+            "IsCompact",
+            GalleryLocaleKeys.ControlsUsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
+        ),
+        new(
+            "ItemsSource",
+            GalleryLocaleKeys.ControlsSuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50
+        ),
+        new("SelectedItem", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentSelection_1F2CA123),
     ];
 
     public string UsageCode { get; } =

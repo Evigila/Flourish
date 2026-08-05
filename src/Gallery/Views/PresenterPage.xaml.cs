@@ -7,12 +7,27 @@ public partial class PresenterPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Title", "Required explicit heading for the presentation."),
-        new("Content", "Required explicit supporting copy below the heading."),
-        new("Body", "Explicitly hosts controls left-aligned with the copy."),
-        new("Presentation", "Default XAML content centered in the rounded Split presentation surface."),
-        new("PresenterMode", "Required explicit Split, Overlay, or TopDown composition."),
-        new("PresenterPosition", "Places Split presentation content on the left or right; other modes ignore it."),
+        new("Title", GalleryLocaleKeys.ControlsRequiredExplicitHeadingForThePresentation_FCE3FE80),
+        new(
+            "Content",
+            GalleryLocaleKeys.ControlsRequiredExplicitSupportingCopyBelowTheHeading_A2E6EA83
+        ),
+        new(
+            "Body",
+            GalleryLocaleKeys.ControlsExplicitlyHostsControlsLeftAlignedWithTheCopy_AD5BD289
+        ),
+        new(
+            "Presentation",
+            GalleryLocaleKeys.ControlsDefaultXAMLContentCenteredInTheRoundedSplitPresentationSurface_5A79E01D
+        ),
+        new(
+            "PresenterMode",
+            GalleryLocaleKeys.ControlsRequiredExplicitSplitOverlayOrTopDownComposition_2E42290A
+        ),
+        new(
+            "PresenterPosition",
+            GalleryLocaleKeys.ControlsPlacesSplitPresentationContentOnTheLeftOrRightOtherModesIgnoreIt_EF642202
+        ),
     ];
 
     public PresenterPage()

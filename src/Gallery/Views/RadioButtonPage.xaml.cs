@@ -10,28 +10,40 @@ public partial class RadioButtonPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("GroupName", "Associates mutually exclusive options across a logical container."),
-            new("IsChecked", "Gets or sets whether this option is selected."),
-            new("Content", "Supplies the visible option label."),
-            new("Checked", "Reports selection of this option."),
-            new("Command", "Invokes application-owned behavior when selected."),
-            new("CommandParameter", "Supplies the selected option value to a command."),
+            new(
+                "GroupName",
+                GalleryLocaleKeys.ControlsAssociatesMutuallyExclusiveOptionsAcrossALogicalContainer_21819671
+            ),
+            new(
+                "IsChecked",
+                GalleryLocaleKeys.ControlsGetsOrSetsWhetherThisOptionIsSelected_2A781960
+            ),
+            new("Content", GalleryLocaleKeys.ControlsSuppliesTheVisibleOptionLabel_2FF959F7),
+            new("Checked", GalleryLocaleKeys.ControlsReportsSelectionOfThisOption_6027BFAA),
+            new(
+                "Command",
+                GalleryLocaleKeys.ControlsInvokesApplicationOwnedBehaviorWhenSelected_DE302977
+            ),
+            new(
+                "CommandParameter",
+                GalleryLocaleKeys.ControlsSuppliesTheSelectedOptionValueToACommand_F7AB29C1
+            ),
         };
     }
 
     public string UsageCode { get; } =
         """
-        <StackPanel>
-          <flourish:FlourishRadioButton
-            Content="Light"
-            GroupName="Theme"
-            IsChecked="{Binding UseLightTheme}" />
-          <flourish:FlourishRadioButton
-            Content="Dark"
-            GroupName="Theme"
-            IsChecked="{Binding UseDarkTheme}" />
-        </StackPanel>
+            <StackPanel>
+              <flourish:FlourishRadioButton
+                Content="Light"
+                GroupName="Theme"
+                IsChecked="{Binding UseLightTheme}" />
+              <flourish:FlourishRadioButton
+                Content="Dark"
+                GroupName="Theme"
+                IsChecked="{Binding UseDarkTheme}" />
+            </StackPanel>
 
-        // GroupName keeps the options mutually exclusive at runtime.
-        """;
+            // GroupName keeps the options mutually exclusive at runtime.
+            """;
 }

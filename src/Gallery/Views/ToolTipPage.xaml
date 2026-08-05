@@ -10,30 +10,30 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Show compact Tip-typography help with Flourish placement and shell-region behavior."
+      Content="Gallery.Controls.ShowCompactTipTypographyHelpWithFlourishPlacementAndShellRegionB_9F8D2209"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishToolTip"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Hover or focus the button. The tooltip owns its Normal, Regular Tip typography instead of inheriting the button's text treatment."
-      Title="Example"
+      Content="Gallery.Controls.HoverOrFocusTheButtonTheTooltipOwnsItsNormalRegularTipTypography_B6AFCD5B"
+      Title="Gallery.Controls.Example_D029F87E"
     >
       <flourish:Presenter
-        Content="Declare FlourishToolTip explicitly when the content needs a control instance. A plain ToolTip string is upgraded by the enabled shell tip policy."
+        Content="Gallery.Controls.DeclareFlourishToolTipExplicitlyWhenTheContentNeedsAControlInsta_6D46B98B"
         PresenterMode="Split"
         PresenterPosition="Left"
-        Title="Hover help"
+        Title="Gallery.Controls.HoverHelp_F1B1A282"
       >
         <flourish:Presenter.Presentation>
           <flourish:Button
@@ -41,10 +41,10 @@
             Height="40"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="Hover for help"
+            Content="Gallery.Controls.HoverForHelp_7C0F22E9"
           >
             <flourish:Button.ToolTip>
-              <flourish:FlourishToolTip Content="This action refreshes the current workspace." />
+              <flourish:FlourishToolTip Content="Gallery.Controls.ThisActionRefreshesTheCurrentWorkspace_FA18A8FA" />
             </flourish:Button.ToolTip>
           </flourish:Button>
         </flourish:Presenter.Presentation>
@@ -52,19 +52,19 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Keep tooltip text short and actionable. Icon-only buttons also need an AutomationProperties.Name."
+      Content="Gallery.Controls.KeepTooltipTextShortAndActionableIconOnlyButtonsAlsoNeedAnAutoma_563B176E"
       Title="Content"
     >
-      <flourish:Card Title="Empty values" Content="Do not create a tooltip for null, empty, or whitespace-only content. The shared policy suppresses empty popup surfaces." />
+      <flourish:Card Title="Gallery.Controls.EmptyValues_204A7F00" Content="Gallery.Controls.DoNotCreateATooltipForNullEmptyOrWhitespaceOnlyContentTheSharedP_62053DDB" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Assign a FlourishToolTip instance when placement, open state, or another ToolTip property needs explicit configuration. This path is appropriate for a reusable tooltip control or richer content that still remains concise and supplemental."
+          Content="Gallery.Controls.AssignAFlourishToolTipInstanceWhenPlacementOpenStateOrAnotherToo_E76B093C"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Explicit tooltip"
+          Title="Gallery.Controls.ExplicitTooltip_DEEAC149"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -72,10 +72,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Use a simple ToolTip string when no control-level configuration is required. Native ToolTipService attached properties on the host tune the initial delay and visible duration without changing the shared Flourish treatment."
+          Content="Gallery.Controls.UseASimpleToolTipStringWhenNoControlLevelConfigurationIsRequired_1D40248C"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Simple tooltip and timing"
+          Title="Gallery.Controls.SimpleTooltipAndTiming_37F431A5"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Button&#xA;  Content=&quot;Refresh&quot;&#xA;  ToolTip=&quot;Refresh the current workspace.&quot;&#xA;  ToolTipService.InitialShowDelay=&quot;400&quot;&#xA;  ToolTipService.ShowDuration=&quot;5000&quot; /&gt;" />
@@ -84,10 +84,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishToolTip API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishToolTip documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheFlourishToolTipAPIReference_54CBAEF9" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.FlourishToolTipDocumentation_0F2F4561" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

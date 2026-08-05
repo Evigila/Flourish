@@ -202,7 +202,10 @@ public partial class AppearancePage : Page
         Execute(
             () => font.RemoveOverrideFont<AppearancePage>(),
             PageFontOverrideOutput,
-            () => galleryLocalization.Get("AppearancePage typography override cleared.")
+            () =>
+                galleryLocalization.Get(
+                    GalleryLocaleKeys.RuntimeAppearancePageTypographyOverrideCleared_812D6991
+                )
         );
     }
 
@@ -210,20 +213,13 @@ public partial class AppearancePage : Page
     {
         if (
             !CanApplyImmediately
-            || MaterialBox.SelectedItem is not FlourishComboBoxItem
-            {
-                Tag: MaterialEffect effect,
-            }
+            || MaterialBox.SelectedItem is not FlourishComboBoxItem { Tag: MaterialEffect effect }
         )
         {
             return;
         }
 
-        Execute(
-            () => material.SetEffect(effect),
-            MaterialOutput,
-            FormatMaterialOutput
-        );
+        Execute(() => material.SetEffect(effect), MaterialOutput, FormatMaterialOutput);
     }
 
     private void MaterialDarkModeBox_Changed(object sender, RoutedEventArgs e)
@@ -294,8 +290,7 @@ public partial class AppearancePage : Page
         );
     }
 
-    private void ContentLayout_Changed(object sender, RoutedEventArgs e) =>
-        CommitContentLayout();
+    private void ContentLayout_Changed(object sender, RoutedEventArgs e) => CommitContentLayout();
 
     private void ContentWidthBox_LostFocus(object sender, RoutedEventArgs e) =>
         CommitContentLayout();
@@ -346,7 +341,9 @@ public partial class AppearancePage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine(galleryLocalization.Format("Error: {0}", error.Message));
+            output.WriteLine(
+                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+            );
         }
     }
 
@@ -358,22 +355,13 @@ public partial class AppearancePage : Page
             ThemeBox.SelectedItem = theme.CurrentTheme;
 
             FontFamilyBox.Text = font.FontFamily;
-            SmallFontSizeBox.Text = font.SmallFontSize.ToString(
-                "0.##",
-                CultureInfo.CurrentCulture
-            );
+            SmallFontSizeBox.Text = font.SmallFontSize.ToString("0.##", CultureInfo.CurrentCulture);
             StandardFontSizeBox.Text = font.StandardFontSize.ToString(
                 "0.##",
                 CultureInfo.CurrentCulture
             );
-            IconFontSizeBox.Text = font.IconFontSize.ToString(
-                "0.##",
-                CultureInfo.CurrentCulture
-            );
-            LargeFontSizeBox.Text = font.LargeFontSize.ToString(
-                "0.##",
-                CultureInfo.CurrentCulture
-            );
+            IconFontSizeBox.Text = font.IconFontSize.ToString("0.##", CultureInfo.CurrentCulture);
+            LargeFontSizeBox.Text = font.LargeFontSize.ToString("0.##", CultureInfo.CurrentCulture);
             ExtraLargeFontSizeBox.Text = font.ExtraLargeFontSize.ToString(
                 "0.##",
                 CultureInfo.CurrentCulture
@@ -387,32 +375,24 @@ public partial class AppearancePage : Page
             if (font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
             {
                 PageOverrideFontFamilyBox.Text = pageOverride.FontFamily;
-                PageOverrideSmallFontSizeBox.Text = pageOverride.SmallFontSize?.ToString(
-                    "0.##",
-                    CultureInfo.CurrentCulture
-                ) ?? string.Empty;
-                PageOverrideStandardFontSizeBox.Text = pageOverride.StandardFontSize?.ToString(
-                    "0.##",
-                    CultureInfo.CurrentCulture
-                ) ?? string.Empty;
-                PageOverrideIconFontSizeBox.Text = pageOverride.IconFontSize?.ToString(
-                    "0.##",
-                    CultureInfo.CurrentCulture
-                ) ?? string.Empty;
-                PageOverrideLargeFontSizeBox.Text = pageOverride.LargeFontSize?.ToString(
-                    "0.##",
-                    CultureInfo.CurrentCulture
-                ) ?? string.Empty;
+                PageOverrideSmallFontSizeBox.Text =
+                    pageOverride.SmallFontSize?.ToString("0.##", CultureInfo.CurrentCulture)
+                    ?? string.Empty;
+                PageOverrideStandardFontSizeBox.Text =
+                    pageOverride.StandardFontSize?.ToString("0.##", CultureInfo.CurrentCulture)
+                    ?? string.Empty;
+                PageOverrideIconFontSizeBox.Text =
+                    pageOverride.IconFontSize?.ToString("0.##", CultureInfo.CurrentCulture)
+                    ?? string.Empty;
+                PageOverrideLargeFontSizeBox.Text =
+                    pageOverride.LargeFontSize?.ToString("0.##", CultureInfo.CurrentCulture)
+                    ?? string.Empty;
                 PageOverrideExtraLargeFontSizeBox.Text =
-                    pageOverride.ExtraLargeFontSize?.ToString(
-                        "0.##",
-                        CultureInfo.CurrentCulture
-                    ) ?? string.Empty;
+                    pageOverride.ExtraLargeFontSize?.ToString("0.##", CultureInfo.CurrentCulture)
+                    ?? string.Empty;
                 PageOverrideHeaderSizeFontSizeBox.Text =
-                    pageOverride.HeaderSizeFontSize?.ToString(
-                        "0.##",
-                        CultureInfo.CurrentCulture
-                    ) ?? string.Empty;
+                    pageOverride.HeaderSizeFontSize?.ToString("0.##", CultureInfo.CurrentCulture)
+                    ?? string.Empty;
             }
             else
             {
@@ -428,13 +408,11 @@ public partial class AppearancePage : Page
                 Equals(option.Tag, material.CurrentEffect)
             );
             MaterialDarkModeBox.IsChecked = material.IsDarkMode;
-            SmoothScrollingBox.IsChecked =
-                scroll.GetCurrent().IsSmoothScrollingEnabled;
+            SmoothScrollingBox.IsChecked = scroll.GetCurrent().IsSmoothScrollingEnabled;
             var appearanceState = appearance.Current;
-            CornerRadiusBox.Text = appearanceState.CornerRadius?.ToString(
-                "0.##",
-                CultureInfo.CurrentCulture
-            ) ?? string.Empty;
+            CornerRadiusBox.Text =
+                appearanceState.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture)
+                ?? string.Empty;
             var layoutState = contentLayout.Current;
             CenterContentBox.IsChecked = layoutState.IsCenterContentEnabled;
             ContentWidthBox.Text = layoutState.ContentWidth.ToString(
@@ -450,7 +428,7 @@ public partial class AppearancePage : Page
 
     private string FormatThemeOutput() =>
         galleryLocalization.Format(
-            "Theme updated: requested {0}; effective {1}; dark {2}.",
+            GalleryLocaleKeys.RuntimeThemeUpdatedRequested0Effective1Dark2_10410DE8,
             theme.CurrentTheme,
             theme.EffectiveTheme,
             theme.IsDark
@@ -458,7 +436,7 @@ public partial class AppearancePage : Page
 
     private string FormatTypographyOutput() =>
         galleryLocalization.Format(
-            "Typography updated: text {0}; {1}; icons {2}.",
+            GalleryLocaleKeys.RuntimeTypographyUpdatedText01Icons2_6EFDFFD3,
             font.FontFamily,
             FormatScale(
                 font.SmallFontSize,
@@ -476,12 +454,12 @@ public partial class AppearancePage : Page
         if (!font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
         {
             return galleryLocalization.Get(
-                "AppearancePage typography override was not applied."
+                GalleryLocaleKeys.RuntimeAppearancePageTypographyOverrideWasNotApplied_E8E937EF
             );
         }
 
         return galleryLocalization.Format(
-            "AppearancePage typography override applied: {0}; {1}.",
+            GalleryLocaleKeys.RuntimeAppearancePageTypographyOverrideApplied01_C79A613D,
             pageOverride.FontFamily,
             FormatScale(
                 pageOverride.SmallFontSize ?? font.SmallFontSize,
@@ -496,7 +474,7 @@ public partial class AppearancePage : Page
 
     private string FormatMaterialOutput() =>
         galleryLocalization.Format(
-            "Window material updated: requested {0}; effective {1}; supported {2}; applied {3}; dark mode {4}.",
+            GalleryLocaleKeys.RuntimeWindowMaterialUpdatedRequested0Effective1Supported2Applied3DarkM_AA9929C6,
             material.CurrentEffect,
             material.EffectiveEffect,
             material.IsSupported(material.CurrentEffect),
@@ -507,11 +485,7 @@ public partial class AppearancePage : Page
     private FlourishComboBoxItem CreateMaterialOption(MaterialEffect effect)
     {
         var isSupported = material.IsSupported(effect);
-        var option = new FlourishComboBoxItem
-        {
-            Tag = effect,
-            IsEnabled = isSupported,
-        };
+        var option = new FlourishComboBoxItem { Tag = effect, IsEnabled = isSupported };
         ApplyMaterialOptionText(option, effect, isSupported);
         return option;
     }
@@ -533,15 +507,18 @@ public partial class AppearancePage : Page
         bool isSupported
     )
     {
-        option.Content = effect == MaterialEffect.Auto
-            ? galleryLocalization.Get("Auto (system default)")
-            : isSupported
-                ? effect.ToString()
-                : galleryLocalization.Format("{0} (unsupported)", effect);
+        option.Content =
+            effect == MaterialEffect.Auto
+                ? galleryLocalization.Get(GalleryLocaleKeys.RuntimeAutoSystemDefault_FAE8027B)
+            : isSupported ? effect.ToString()
+            : galleryLocalization.Format(
+                GalleryLocaleKeys.RuntimeText0Unsupported_2326A1BB,
+                effect
+            );
         option.ToolTip = isSupported
             ? null
             : galleryLocalization.Get(
-                "This material is unavailable on this Windows version."
+                GalleryLocaleKeys.RuntimeThisMaterialIsUnavailableOnThisWindowsVersion_44BE2E27
             );
     }
 
@@ -549,10 +526,14 @@ public partial class AppearancePage : Page
     {
         var current = appearance.Current;
         return galleryLocalization.Format(
-            "Appearance updated: palette {0}; corner radius {1}.",
-            galleryLocalization.Get(current.ThemeColors is null ? "standard" : "custom"),
+            GalleryLocaleKeys.RuntimeAppearanceUpdatedPalette0CornerRadius1_3790C925,
+            galleryLocalization.Get(
+                current.ThemeColors is null
+                    ? GalleryLocaleKeys.RuntimeStandard_FE6D3468
+                    : GalleryLocaleKeys.RuntimeCustom_6CDFD271
+            ),
             current.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture)
-                ?? galleryLocalization.Get("standard")
+                ?? galleryLocalization.Get(GalleryLocaleKeys.RuntimeStandard_FE6D3468)
         );
     }
 
@@ -581,7 +562,7 @@ public partial class AppearancePage : Page
     )
     {
         return galleryLocalization.Format(
-            "small {0:0.##}, standard {1:0.##}, icon {2:0.##}, large {3:0.##}, extra-large {4:0.##}, header {5:0.##} DIP",
+            GalleryLocaleKeys.RuntimeSmall00Standard10Icon20Large30ExtraLarge40Header50DIP_0BEDC756,
             smallFontSize,
             standardFontSize,
             iconFontSize,
@@ -590,5 +571,4 @@ public partial class AppearancePage : Page
             headerSizeFontSize
         );
     }
-
 }

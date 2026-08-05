@@ -16,13 +16,31 @@ public partial class ComboBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("ItemsSource", "Supplies application-owned option data."),
-            new("Items", "Contains options declared directly in XAML or code."),
-            new("SelectedItem", "Gets or sets the selected data item."),
-            new("SelectedIndex", "Gets or sets the selected zero-based index."),
-            new("DisplayMemberPath", "Selects the property displayed for each data item."),
-            new("SelectionChanged", "Reports added and removed selections."),
-            new("HoverReveal.IsEnabled", "Controls pointer-reveal feedback on the closed selector."),
+            new(
+                "ItemsSource",
+                GalleryLocaleKeys.ControlsSuppliesApplicationOwnedOptionData_13C18B8E
+            ),
+            new(
+                "Items",
+                GalleryLocaleKeys.ControlsContainsOptionsDeclaredDirectlyInXAMLOrCode_6FAC0DAA
+            ),
+            new("SelectedItem", GalleryLocaleKeys.ControlsGetsOrSetsTheSelectedDataItem_56379BE7),
+            new(
+                "SelectedIndex",
+                GalleryLocaleKeys.ControlsGetsOrSetsTheSelectedZeroBasedIndex_8AED634D
+            ),
+            new(
+                "DisplayMemberPath",
+                GalleryLocaleKeys.ControlsSelectsThePropertyDisplayedForEachDataItem_0F59DE20
+            ),
+            new(
+                "SelectionChanged",
+                GalleryLocaleKeys.ControlsReportsAddedAndRemovedSelections_CBA4EF2F
+            ),
+            new(
+                "HoverReveal.IsEnabled",
+                GalleryLocaleKeys.ControlsControlsPointerRevealFeedbackOnTheClosedSelector_CF5469E0
+            ),
         };
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
@@ -50,21 +68,21 @@ public partial class ComboBoxPage : Page
     private void RefreshDensityOptions()
     {
         DensityOptions.Clear();
-        DensityOptions.Add(localization.Get("Comfortable"));
-        DensityOptions.Add(localization.Get("Compact"));
+        DensityOptions.Add(localization.Get(GalleryLocaleKeys.ControlsComfortable_459A23A5));
+        DensityOptions.Add(localization.Get(GalleryLocaleKeys.ControlsCompact_99452646));
     }
 
     public string UsageCode { get; } =
         """
-        <flourish:FlourishComboBox
-          ItemsSource="{Binding ThemeOptions}"
-          SelectedItem="{Binding Theme, Mode=TwoWay}"
-          DisplayMemberPath="DisplayName"
-          SelectionChanged="Theme_SelectionChanged" />
+            <flourish:FlourishComboBox
+              ItemsSource="{Binding ThemeOptions}"
+              SelectedItem="{Binding Theme, Mode=TwoWay}"
+              DisplayMemberPath="DisplayName"
+              SelectionChanged="Theme_SelectionChanged" />
 
-        private void Theme_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SavePreferences();
-        }
-        """;
+            private void Theme_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            {
+                SavePreferences();
+            }
+            """;
 }

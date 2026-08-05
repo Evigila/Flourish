@@ -7,14 +7,13 @@ public partial class ChunkPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Title", "Names the section's required topic."),
-        new("Content", "Adds optional supporting context."),
-        new("Body", "Hosts the required section content."),
+        new("Title", GalleryLocaleKeys.ControlsNamesTheSectionSRequiredTopic_350399A3),
+        new("Content", GalleryLocaleKeys.ControlsAddsOptionalSupportingContext_5790F6CE),
+        new("Body", GalleryLocaleKeys.ControlsHostsTheRequiredSectionContent_90A30B71),
     ];
 
     public ChunkPage()
     {
         InitializeComponent();
     }
-
 }

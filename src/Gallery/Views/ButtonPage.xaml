@@ -9,7 +9,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Accessible application actions built on the WPF button contract."
+      Content="Gallery.Controls.AccessibleApplicationActionsBuiltOnTheWPFButtonContract_75B7D1CE"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Button"
@@ -19,7 +19,7 @@
       <UniformGrid Columns="3">
         <flourish:Presenter
           Margin="0,0,8,8"
-          Content="Adds elevation to separate an action from its surrounding surface."
+          Content="Gallery.Controls.AddsElevationToSeparateAnActionFromItsSurroundingSurface_F288FF29"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Elevated"
@@ -37,7 +37,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,8,8"
-          Content="Expresses the primary action in a group."
+          Content="Gallery.Controls.ExpressesThePrimaryActionInAGroup_4B5B0C61"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Filled"
@@ -55,7 +55,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,8"
-          Content="Provides a softer filled emphasis for supporting actions."
+          Content="Gallery.Controls.ProvidesASofterFilledEmphasisForSupportingActions_2012F59F"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Tonal"
@@ -73,7 +73,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="0,8,8,0"
-          Content="Uses a boundary for a medium-emphasis secondary action."
+          Content="Gallery.Controls.UsesABoundaryForAMediumEmphasisSecondaryAction_A85E5E4D"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Outlined"
@@ -91,7 +91,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,8,8,0"
-          Content="Keeps tertiary and toolbar actions visually quiet."
+          Content="Gallery.Controls.KeepsTertiaryAndToolbarActionsVisuallyQuiet_31A020C3"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Text"
@@ -109,7 +109,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,8,0,0"
-          Content="Identifies destructive or difficult-to-reverse intent."
+          Content="Gallery.Controls.IdentifiesDestructiveOrDifficultToReverseIntent_BB95B4E4"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Danger"
@@ -128,7 +128,7 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="PropertiesGrid"
         AutoGenerateColumns="False"
@@ -139,20 +139,20 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Actions">
+    <flourish:Chunk Title="Gallery.Application.Actions_FF8059DC">
       <StackPanel>
         <flourish:Presenter
           Margin="0,0,0,16"
-          Content="Bind Command for reusable actions, or handle Click for local behavior."
+          Content="Gallery.Controls.BindCommandForReusableActionsOrHandleClickForLocalBehavior_7A3EBD47"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Standard action"
+          Title="Gallery.Controls.StandardAction_14371BFD"
         >
           <flourish:Presenter.Presentation>
             <Grid
@@ -166,17 +166,17 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
               >
-                <flourish:Button Margin="0,0,8,0" Content="Continue" Variant="Filled" />
-                <flourish:Button Content="Cancel" Variant="Outlined" />
+                <flourish:Button Margin="0,0,8,0" Content="Gallery.Controls.Continue_31FBEF16" Variant="Filled" />
+                <flourish:Button Content="Gallery.Controls.Cancel_19766ED6" Variant="Outlined" />
               </StackPanel>
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
-          Content="Use a ToolTip or automation name when the action has no visible label."
+          Content="Gallery.Controls.UseAToolTipOrAutomationNameWhenTheActionHasNoVisibleLabel_6A7A962B"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Icon actions"
+          Title="Gallery.Controls.IconActions_EFC5AAF8"
         >
           <flourish:Presenter.Presentation>
             <Grid
@@ -192,19 +192,19 @@
               >
                 <flourish:Button
                   Margin="0,0,8,0"
-                  AutomationProperties.Name="Refresh"
+                  AutomationProperties.Name="Gallery.Controls.Refresh_0E916101"
                   Icon="&#xE72C;"
-                  ToolTip="Refresh"
+                  ToolTip="Gallery.Controls.Refresh_0E916101"
                   Variant="Text"
                 />
                 <flourish:Button
                   Margin="0,0,8,0"
-                  AutomationProperties.Name="Search"
+                  AutomationProperties.Name="Gallery.Controls.Search_49C266BA"
                   Icon="&#xE8D4;"
-                  ToolTip="Search"
+                  ToolTip="Gallery.Controls.Search_49C266BA"
                   Variant="Text"
                 />
-                <flourish:Button Content="Add item" Icon="&#xE710;" Variant="Filled" />
+                <flourish:Button Content="Gallery.Controls.AddItem_D1A0B329" Icon="&#xE710;" Variant="Filled" />
               </StackPanel>
             </Grid>
           </flourish:Presenter.Presentation>
@@ -212,12 +212,12 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Interaction contract">
+    <flourish:Chunk Title="Gallery.Controls.InteractionContract_BCA9C747">
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Title="Enabled action"
-          Content="The enabled button accepts pointer and keyboard focus and exposes its icon and visible command label."
+          Title="Gallery.Controls.EnabledAction_777348D9"
+          Content="Gallery.Controls.TheEnabledButtonAcceptsPointerAndKeyboardFocusAndExposesItsIconA_C0F6CFFC"
           PresenterMode="TopDown"
           PresenterPosition="Left"
         >
@@ -227,18 +227,18 @@
               Height="40"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              AutomationProperties.Name="Save report"
-              Content="Save report"
+              AutomationProperties.Name="Gallery.Controls.SaveReport_8EC314B0"
+              Content="Gallery.Controls.SaveReport_8EC314B0"
               Icon="&#xE74E;"
-              ToolTip="Save report"
+              ToolTip="Gallery.Controls.SaveReport_8EC314B0"
               Variant="Filled"
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Title="Disabled action"
-          Content="IsEnabled=False preserves the selected variant while communicating that the command is currently unavailable."
+          Title="Gallery.Controls.DisabledAction_C934343A"
+          Content="Gallery.Controls.IsEnabledFalsePreservesTheSelectedVariantWhileCommunicatingThatT_C4607D2C"
           PresenterMode="TopDown"
           PresenterPosition="Left"
         >
@@ -248,7 +248,7 @@
               Height="40"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Content="Publish report"
+              Content="Gallery.Controls.PublishReport_C5FE6054"
               Icon="&#xE789;"
               IsEnabled="False"
               Variant="Filled"
@@ -258,11 +258,11 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Create a command button"
-          Content="Bind Command to application logic and set Content for the visible label. Add Icon when it improves recognition; either region collapses when omitted. Use Filled for a primary action, Tonal or Outlined for supporting actions, Text for low emphasis, and Danger only for destructive work."
+          Title="Gallery.Controls.CreateACommandButton_EDA69F41"
+          Content="Gallery.Controls.BindCommandToApplicationLogicAndSetContentForTheVisibleLabelAddI_CCEF3BB4"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -272,8 +272,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Make an icon-only action accessible"
-          Content="When Content is omitted, give the icon-only button both AutomationProperties.Name and a matching ToolTip. This keeps the compact Text or Danger action understandable to assistive technology and pointer users."
+          Title="Gallery.Controls.MakeAnIconOnlyActionAccessible_4FD470AB"
+          Content="Gallery.Controls.WhenContentIsOmittedGiveTheIconOnlyButtonBothAutomationPropertie_DA66544B"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -284,25 +284,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="Button documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.ButtonDocumentation_79064CD6"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Button documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.ButtonDocumentation_79064CD6"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

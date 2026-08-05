@@ -10,17 +10,32 @@ public partial class CheckBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Variant", "Chooses the Horizontal or Vertical fixed layout."),
-            new("Icon", "Supplies optional icon content rendered only by the Vertical layout."),
+            new(
+                "Variant",
+                GalleryLocaleKeys.ControlsChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
+            ),
+            new(
+                "Icon",
+                GalleryLocaleKeys.ControlsSuppliesOptionalIconContentRenderedOnlyByTheVerticalLayout_064A3C53
+            ),
             new(
                 "IsChecked",
-                "Gets or sets true, false, or null when three-state behavior is enabled."
+                GalleryLocaleKeys.ControlsGetsOrSetsTrueFalseOrNullWhenThreeStateBehaviorIsEnabled_1CE68B0F
             ),
-            new("IsThreeState", "Allows the control to enter the indeterminate state."),
-            new("Content", "Supplies the visible option label."),
-            new("Checked", "Reports a transition to the checked state."),
-            new("Unchecked", "Reports a transition to the unchecked state."),
-            new("Indeterminate", "Reports a transition to the null state."),
+            new(
+                "IsThreeState",
+                GalleryLocaleKeys.ControlsAllowsTheControlToEnterTheIndeterminateState_31967F58
+            ),
+            new("Content", GalleryLocaleKeys.ControlsSuppliesTheVisibleOptionLabel_2FF959F7),
+            new("Checked", GalleryLocaleKeys.ControlsReportsATransitionToTheCheckedState_0D8A8B08),
+            new(
+                "Unchecked",
+                GalleryLocaleKeys.ControlsReportsATransitionToTheUncheckedState_ABD97118
+            ),
+            new(
+                "Indeterminate",
+                GalleryLocaleKeys.ControlsReportsATransitionToTheNullState_C6DF7C32
+            ),
         };
     }
 

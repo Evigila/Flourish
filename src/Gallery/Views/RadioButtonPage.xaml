@@ -10,36 +10,36 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Choose one value from a small, visible, mutually exclusive option set."
+      Content="Gallery.Controls.ChooseOneValueFromASmallVisibleMutuallyExclusiveOptionSet_4AA853D5"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishRadioButton"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Keep every choice visible, use one GroupName for one decision, and begin with a valid selection."
-      Title="Selection"
+      Content="Gallery.Controls.KeepEveryChoiceVisibleUseOneGroupNameForOneDecisionAndBeginWithA_55C3AB43"
+      Title="Gallery.Controls.Selection_CA406707"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="A shared GroupName guarantees that only one option stays checked."
+          Content="Gallery.Controls.ASharedGroupNameGuaranteesThatOnlyOneOptionStaysChecked_5AF1D305"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Theme"
+          Title="Gallery.Controls.Theme_EFB52E71"
         >
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -47,7 +47,7 @@
               VerticalAlignment="Center"
             >
                 <flourish:FlourishRadioButton
-                  Content="System"
+                  Content="Gallery.Runtime.System_6725E7BB"
                   GroupName="ThemeExample"
                   IsChecked="True"
                 />
@@ -66,10 +66,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="A separate GroupName creates another independent decision in the same page."
+          Content="Gallery.Controls.ASeparateGroupNameCreatesAnotherIndependentDecisionInTheSamePage_71792381"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Density"
+          Title="Gallery.Controls.Density_77A283D6"
         >
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -77,13 +77,13 @@
               VerticalAlignment="Center"
             >
                 <flourish:FlourishRadioButton
-                  Content="Comfortable"
+                  Content="Gallery.Controls.Comfortable_459A23A5"
                   GroupName="DensityExample"
                   IsChecked="True"
                 />
                 <flourish:FlourishRadioButton
                   Margin="0,8,0,0"
-                  Content="Compact"
+                  Content="Gallery.Controls.Compact_99452646"
                   GroupName="DensityExample"
                 />
             </StackPanel>
@@ -92,13 +92,13 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Give every option for one decision the same GroupName and start with one valid selection. Bind IsChecked when selection is application state. Use RadioButton only when the complete choice set is small enough to remain visible."
+          Content="Gallery.Controls.GiveEveryOptionForOneDecisionTheSameGroupNameAndStartWithOneVali_DA92DB97"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Exclusive choice"
+          Title="Gallery.Controls.ExclusiveChoice_D47F7639"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -106,10 +106,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Bind a shared Command when selecting an option must invoke application behavior. CommandParameter carries each option value, avoiding a separate Checked handler for every radio button."
+          Content="Gallery.Controls.BindASharedCommandWhenSelectingAnOptionMustInvokeApplicationBeha_CBA76246"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Command selection"
+          Title="Gallery.Controls.CommandSelection_133BE884"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishRadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
@@ -118,23 +118,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the FlourishRadioButton API reference."
+          Content="Gallery.Controls.ReadTheFlourishRadioButtonAPIReference_80C2E3F1"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="FlourishRadioButton documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.FlourishRadioButtonDocumentation_83BEED9E"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

@@ -10,39 +10,39 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Present exact code text in a copyable, rounded, lightly outlined code surface."
+      Content="Gallery.Controls.PresentExactCodeTextInACopyableRoundedLightlyOutlinedCodeSurface_710B1793"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="CodeSpace"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="The copy action preserves every newline and indentation character in Text."
-      Title="Example"
+      Content="Gallery.Controls.TheCopyActionPreservesEveryNewlineAndIndentationCharacterInText_0EA3E243"
+      Title="Gallery.Controls.Example_D029F87E"
     >
       <flourish:CodeSpace Text="{Binding ExampleCode, ElementName=RootPage}" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Assign the complete source snippet through Text. Encode line breaks as character entities for inline XAML, or bind Text for longer and generated examples. Updating a binding replaces both the displayed and copied value, while an empty value disables the built-in copy action."
+          Content="Gallery.Controls.AssignTheCompleteSourceSnippetThroughTextEncodeLineBreaksAsChara_72DEEC31"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Inline source text"
+          Title="Gallery.Controls.InlineSourceText_40EC1432"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
@@ -51,23 +51,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the CodeSpace guide."
+          Content="Gallery.Controls.ReadTheCodeSpaceGuide_5B389267"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="CodeSpace documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.CodeSpaceDocumentation_CF4366B6"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

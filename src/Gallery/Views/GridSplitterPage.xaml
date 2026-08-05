@@ -10,20 +10,20 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Resize adjacent Grid rows or columns with a Flourish interaction and focus surface."
+      Content="Gallery.Controls.ResizeAdjacentGridRowsOrColumnsWithAFlourishInteractionAndFocusS_B6594F54"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishGridSplitter"
     />
 
     <flourish:Chunk
-      Content="Both layout roles use the same 4 DIP interaction surface, centered 2 DIP highlight, and immediate resizing. NavigationPane changes only shell-edge alignment and column-resize defaults."
+      Content="Gallery.Controls.BothLayoutRolesUseTheSame4DIPInteractionSurfaceCentered2DIPHighl_FE794693"
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="The general-purpose role for rows or columns in an application Grid."
+          Content="Gallery.Controls.TheGeneralPurposeRoleForRowsOrColumnsInAnApplicationGrid_D607231F"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Standard"
@@ -52,7 +52,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="The shell-edge role with horizontal column-resize defaults and the same geometry as Standard."
+          Content="Gallery.Controls.TheShellEdgeRoleWithHorizontalColumnResizeDefaultsAndTheSameGeom_6A72AE95"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="NavigationPane"
@@ -78,29 +78,29 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Grid owns row and column constraints. Dragging the splitter updates adjacent GridLength values continuously, while the thin visible highlight stays centered inside the interaction surface."
-      Title="Layout"
+      Content="Gallery.Controls.GridOwnsRowAndColumnConstraintsDraggingTheSplitterUpdatesAdjacen_D8EB9697"
+      Title="Gallery.Controls.Layout_A5119091"
     >
-      <flourish:Card Title="Resize contract" Content="Set ResizeDirection explicitly for a standard splitter. NavigationPane configures horizontal column resizing and the shell-edge affordance without changing the live-resize interaction." />
+      <flourish:Card Title="Gallery.Controls.ResizeContract_C80B1EDB" Content="Gallery.Controls.SetResizeDirectionExplicitlyForAStandardSplitterNavigationPaneCo_11E6A483" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Use Standard between ordinary Grid definitions. Place the splitter in an Auto-sized row or column, then set ResizeDirection and ResizeBehavior explicitly so the axis and affected neighbors remain clear. The same pattern supports rows by moving the splitter to an Auto-sized Grid.Row and setting ResizeDirection=&quot;Rows&quot;."
+          Content="Gallery.Controls.UseStandardBetweenOrdinaryGridDefinitionsPlaceTheSplitterInAnAut_D696E7E8"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Standard splitter"
+          Title="Gallery.Controls.StandardSplitter_113A303F"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;Grid&gt;&#xA;  &lt;Grid.ColumnDefinitions&gt;&#xA;    &lt;ColumnDefinition Width=&quot;*&quot; MinWidth=&quot;160&quot; /&gt;&#xA;    &lt;ColumnDefinition Width=&quot;Auto&quot; /&gt;&#xA;    &lt;ColumnDefinition Width=&quot;*&quot; MinWidth=&quot;240&quot; /&gt;&#xA;  &lt;/Grid.ColumnDefinitions&gt;&#xA;&#xA;  &lt;local:EditorPane /&gt;&#xA;  &lt;flourish:FlourishGridSplitter&#xA;    Grid.Column=&quot;1&quot;&#xA;    ResizeBehavior=&quot;PreviousAndNext&quot;&#xA;    ResizeDirection=&quot;Columns&quot; /&gt;&#xA;  &lt;local:PreviewPane Grid.Column=&quot;2&quot; /&gt;&#xA;&lt;/Grid&gt;" />
@@ -108,10 +108,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Choose NavigationPane only for the divider at a shell navigation edge. The variant supplies horizontal column resizing, edge alignment, cursor, and layer defaults while retaining the same geometry and thin live-resize highlight as Standard. The surrounding Grid continues to define minimum and available widths."
+          Content="Gallery.Controls.ChooseNavigationPaneOnlyForTheDividerAtAShellNavigationEdgeTheVa_75ADE1D3"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Navigation pane"
+          Title="Gallery.Controls.NavigationPane_81207563"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -120,10 +120,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishGridSplitter API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishGridSplitter documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheFlourishGridSplitterAPIReference_DEC55185" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.FlourishGridSplitterDocumentation_1825574B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

@@ -11,37 +11,37 @@
   <flourish:PageBody>
     <flourish:HeaderChunk
       x:Name="HeaderPreview"
-      Content="Introduce one page with emphasized copy and presentation."
+      Content="Gallery.Controls.IntroduceOnePageWithEmphasizedCopyAndPresentation_E657CE71"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="HeaderChunk"
     >
       <flourish:HeaderChunk.Body>
         <WrapPanel>
-          <flourish:Button Variant="Filled" Click="SplitRight_Click" Content="Split right" />
-          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="SplitLeft_Click" Content="Split left" />
+          <flourish:Button Variant="Filled" Click="SplitRight_Click" Content="Gallery.Controls.SplitRight_AA9997BB" />
+          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="SplitLeft_Click" Content="Gallery.Controls.SplitLeft_CD600A74" />
           <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="Overlay_Click" Content="Overlay" />
-          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="TopDown_Click" Content="Top down" />
+          <flourish:Button Margin="8,0,0,0" Variant="Tonal" Click="TopDown_Click" Content="Gallery.Controls.TopDown_B2688B24" />
         </WrapPanel>
       </flourish:HeaderChunk.Body>
       <flourish:HeaderChunk.Presentation>
         <Border MinHeight="220" Background="{DynamicResource FlourishPrimarySurfaceBrush}" CornerRadius="12">
           <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <flourish:FlourishTextBlock FontFamily="{DynamicResource FlourishIconFontFamily}" FontSize="{DynamicResource FlourishFontSizeIcon}" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" Role="Icon" Text="&#xE7C8;" />
-            <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Page header" />
+            <flourish:FlourishTextBlock Margin="0,12,0,0" Role="CardTitle" Text="Gallery.Controls.PageHeader_336C1F36" />
           </StackPanel>
         </Border>
       </flourish:HeaderChunk.Presentation>
     </flourish:HeaderChunk>
 
     <flourish:Chunk
-      Content="Each compact diagram identifies the Presentation region; the page-leading preview above renders the actual HeaderChunk."
+      Content="Gallery.Controls.EachCompactDiagramIdentifiesThePresentationRegionThePageLeadingP_E716254E"
       Title="Variant"
     >
       <UniformGrid Columns="3">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Places Presentation beside the copy. Right is the HeaderChunk default."
+          Content="Gallery.Controls.PlacesPresentationBesideTheCopyRightIsTheHeaderChunkDefault_03BDA535"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Split"
@@ -64,7 +64,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="4,0"
-          Content="Layers the header copy and Body over Presentation."
+          Content="Gallery.Controls.LayersTheHeaderCopyAndBodyOverPresentation_47160C98"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Overlay"
@@ -83,7 +83,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Places Presentation above a left-aligned copy and Body region while remaining full-width."
+          Content="Gallery.Controls.PlacesPresentationAboveALeftAlignedCopyAndBodyRegionWhileRemaini_6F58E2FF"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="TopDown"
@@ -107,24 +107,24 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk Title="Presentation">
-      <flourish:Card Content="Presentation hosts the page illustration while Title, Content, and Body remain one copy group. HeaderChunk always owns a complete row, including TopDown mode." />
+      <flourish:Card Content="Gallery.Controls.PresentationHostsThePageIllustrationWhileTitleContentAndBodyRema_7D5935AF" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Add the page header"
-          Content="Place exactly one HeaderChunk first in PageBody. Title and Content identify the page, while Split with Right keeps the copy on the left and the illustration on the right—the recommended arrangement. HeaderChunk remains full-width in every mode."
+          Title="Gallery.Controls.AddThePageHeader_D8878D17"
+          Content="Gallery.Controls.PlaceExactlyOneHeaderChunkFirstInPageBodyTitleAndContentIdentify_6328997D"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -134,8 +134,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Place a wide visual above the copy"
-          Content="Choose TopDown when a banner, diagram, or other wide presentation should establish context before the header text. PresenterPosition does not rearrange this vertical mode, and HeaderChunk still occupies a complete row."
+          Title="Gallery.Controls.PlaceAWideVisualAboveTheCopy_92D40603"
+          Content="Gallery.Controls.ChooseTopDownWhenABannerDiagramOrOtherWidePresentationShouldEsta_B0DC7FB3"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -145,8 +145,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Layer copy over a presentation"
-          Content="Use Overlay only when the image or illustration remains an appropriate, readable background in every supported theme. Keep essential contrast in the foreground copy and reserve Body for a small supporting action."
+          Title="Gallery.Controls.LayerCopyOverAPresentation_AB38BCEE"
+          Content="Gallery.Controls.UseOverlayOnlyWhenTheImageOrIllustrationRemainsAnAppropriateRead_2ABEE85B"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -157,10 +157,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE8A5;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the HeaderChunk guide." Icon="&#xE946;" IsEnabled="False" Title="HeaderChunk documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheHeaderChunkGuide_2CB0923C" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Controls.HeaderChunkDocumentation_00F1735F" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

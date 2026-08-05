@@ -10,26 +10,26 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Group one page topic into a full-width section."
+      Content="Gallery.Controls.GroupOnePageTopicIntoAFullWidthSection_08AD89D7"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Chunk"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <!--<flourish:Chunk Title="Example">
+    <!--<flourish:Chunk Title="Gallery.Controls.Example_D029F87E">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
@@ -49,11 +49,11 @@
       <flourish:Card Content="Title names the topic, Content adds optional context, and Body contains the required section content. Empty optional copy collapses with its spacing." />
     </flourish:Chunk>-->
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Create a page section"
-          Content="Declare Chunk directly under PageBody, give it a concise Title, and place the section's real content inside it. Content is optional supporting copy and may use several sentences when the section needs more context. Use one HeaderChunk first, then add full-width Chunk siblings; do not place layout content directly under PageBody or arrange multiple Chunks on one row."
+          Title="Gallery.Controls.CreateAPageSection_4F196611"
+          Content="Gallery.Controls.DeclareChunkDirectlyUnderPageBodyGiveItAConciseTitleAndPlaceTheS_27E63969"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -64,23 +64,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the Chunk guide."
+          Content="Gallery.Controls.ReadTheChunkGuide_71E29FEB"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="Chunk documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.ChunkDocumentation_FE325A53"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

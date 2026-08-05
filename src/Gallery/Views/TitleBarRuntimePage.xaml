@@ -7,15 +7,15 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Change title-bar identity, features, and search at runtime."
+      Content="Gallery.Shell.ChangeTitleBarIdentityFeaturesAndSearchAtRuntime_1FB4DE21"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Title bar &amp; search"
+      Title="Gallery.Shell.TitleBarSearch_89590FBD"
     />
 
     <flourish:Chunk
-      Content="Set the application title, subtitle, logo, fallback text, and unnamed-project label shown by the shell. Configure stable defaults during startup and use ITitleBarService when identity must follow the active workspace; the code below demonstrates both approaches."
-      Title="Application identity"
+      Content="Gallery.Shell.SetTheApplicationTitleSubtitleLogoFallbackTextAndUnnamedProjectL_FF5B197B"
+      Title="Gallery.Shell.ApplicationIdentity_E9FD20C2"
     >
       <StackPanel>
       <Grid>
@@ -26,8 +26,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE8D2;"
-            Title="Application title"
-            Content="Set the application name used by the title and logo surfaces."
+            Title="Gallery.Shell.ApplicationTitle_F4FE57F0"
+            Content="Gallery.Shell.SetTheApplicationNameUsedByTheTitleAndLogoSurfaces_56A6B884"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="TitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
@@ -36,8 +36,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Application subtitle"
-            Content="Set supporting application text shown in the logo surface."
+            Title="Gallery.Shell.ApplicationSubtitle_FE7B0522"
+            Content="Gallery.Shell.SetSupportingApplicationTextShownInTheLogoSurface_24161E54"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="SubtitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
@@ -46,8 +46,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8B9;"
-            Title="Logo path"
-            Content="Optionally provide an image for the title-bar logo."
+            Title="Gallery.Shell.LogoPath_F51D0186"
+            Content="Gallery.Shell.OptionallyProvideAnImageForTheTitleBarLogo_56145BA4"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="LogoPathBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
@@ -56,8 +56,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Logo fallback text"
-            Content="Provide text to use when an image is unavailable."
+            Title="Gallery.Shell.LogoFallbackText_A2E53199"
+            Content="Gallery.Shell.ProvideTextToUseWhenAnImageIsUnavailable_B4C814C7"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="LogoFallbackBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
@@ -66,8 +66,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Unnamed project"
-            Content="Set the title shown when no project is active."
+            Title="Gallery.Shell.UnnamedProject_EDBA1E38"
+            Content="Gallery.Shell.SetTheTitleShownWhenNoProjectIsActive_46CCE245"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="UnnamedProjectBox" Width="220" KeyDown="UnnamedProjectBox_KeyDown" LostFocus="UnnamedProjectBox_LostFocus" />
@@ -81,8 +81,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Show or hide individual title-bar elements and choose when breadcrumbs are visible. Use these focused settings when a workflow needs to simplify chrome without disabling the whole title bar; the code below applies an element switch and breadcrumb policy."
-      Title="Element visibility"
+      Content="Gallery.Shell.ShowOrHideIndividualTitleBarElementsAndChooseWhenBreadcrumbsAreV_3C80D8A0"
+      Title="Gallery.Shell.ElementVisibility_413A04FE"
     >
       <StackPanel>
       <Grid>
@@ -93,8 +93,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
         <flourish:ActionCard
           Icon="&#xE713;"
-          Title="Title-bar element"
-          Content="Choose the element whose visibility will change."
+          Title="Gallery.Shell.TitleBarElement_495AA820"
+          Content="Gallery.Shell.ChooseTheElementWhoseVisibilityWillChange_B16AA8C7"
         >
           <flourish:ActionCard.Body>
             <flourish:FlourishComboBox x:Name="TitleBarElementBox" Width="220" SelectionChanged="TitleBarElementBox_SelectionChanged" />
@@ -103,15 +103,15 @@
         <flourish:ActionCard
           Margin="{DynamicResource FlourishActionCardPeerMargin}"
           Icon="&#xE7B3;"
-          Title="Element visibility"
-          Content="Show or hide the selected title-bar element."
+          Title="Gallery.Shell.ElementVisibility_413A04FE"
+          Content="Gallery.Shell.ShowOrHideTheSelectedTitleBarElement_2FA93747"
         >
           <flourish:ActionCard.Body>
             <flourish:CheckBox
               x:Name="TitleBarElementVisibleBox"
               VerticalAlignment="Center"
               Checked="TitleBarElementVisibleBox_Changed"
-              Content="Visible"
+              Content="Gallery.Shell.Visible_8411F5AB"
               Unchecked="TitleBarElementVisibleBox_Changed"
             />
           </flourish:ActionCard.Body>
@@ -119,8 +119,8 @@
         <flourish:ActionCard
           Margin="{DynamicResource FlourishActionCardPeerMargin}"
           Icon="&#xE72A;"
-          Title="Breadcrumb display"
-          Content="Choose the breadcrumb visibility policy."
+          Title="Gallery.Shell.BreadcrumbDisplay_7D3097FB"
+          Content="Gallery.Shell.ChooseTheBreadcrumbVisibilityPolicy_CFFDC73C"
         >
           <flourish:ActionCard.Body>
             <flourish:FlourishComboBox x:Name="BreadcrumbModeBox" Width="220" SelectionChanged="BreadcrumbModeBox_SelectionChanged" />
@@ -134,8 +134,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Control title-bar search text, visibility, focus, placeholder, and asynchronous query handling through ITitleBarSearchService. Use a disposable subscription for page- or feature-scoped search behavior; the code below registers a cancellable handler and updates the visible search state."
-      Title="Search"
+      Content="Gallery.Shell.ControlTitleBarSearchTextVisibilityFocusPlaceholderAndAsynchrono_E6F24826"
+      Title="Gallery.Controls.Search_49C266BA"
     >
       <StackPanel>
       <Grid>
@@ -146,8 +146,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE721;"
-            Title="Search query"
-            Content="Set the text shared with the title-bar search box."
+            Title="Gallery.Shell.SearchQuery_9EEF0523"
+            Content="Gallery.Shell.SetTheTextSharedWithTheTitleBarSearchBox_06B8BDCC"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="SearchTextBox" Width="220" KeyDown="SearchTextBox_KeyDown" LostFocus="SearchTextBox_LostFocus" Text="runtime API" />
@@ -156,28 +156,28 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8A7;"
-            Title="Search focus"
-            Content="Move keyboard focus to the title-bar search box."
+            Title="Gallery.Shell.SearchFocus_A8926AED"
+            Content="Gallery.Shell.MoveKeyboardFocusToTheTitleBarSearchBox_696AD4DF"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="FocusSearch_Click" Content="Focus search" />
+              <flourish:Button Click="FocusSearch_Click" Content="Gallery.Shell.FocusSearch_512C8478" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Clear query"
-            Content="Remove the current title-bar search text."
+            Title="Gallery.Shell.ClearQuery_48A1982C"
+            Content="Gallery.Shell.RemoveTheCurrentTitleBarSearchText_16391DC5"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ClearSearch_Click" Content="Clear" />
+              <flourish:Button Click="ClearSearch_Click" Content="Gallery.Controls.Clear_83B12C22" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Search placeholder"
-            Content="Set the hint shown when the search box is empty."
+            Title="Gallery.Shell.SearchPlaceholder_74D10369"
+            Content="Gallery.Shell.SetTheHintShownWhenTheSearchBoxIsEmpty_1B7B9E76"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="SearchPlaceholderBox" Width="220" KeyDown="SearchPlaceholderBox_KeyDown" LostFocus="SearchPlaceholderBox_LostFocus" />
@@ -186,8 +186,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE7B3;"
-            Title="Search visibility"
-            Content="Show or hide the title-bar search feature."
+            Title="Gallery.Shell.SearchVisibility_AE99D472"
+            Content="Gallery.Shell.ShowOrHideTheTitleBarSearchFeature_2BDD2B1A"
           >
             <flourish:ActionCard.Body>
               <flourish:Button x:Name="ToggleSearchVisibilityButton" Click="ToggleSearchVisibility_Click" />
@@ -201,8 +201,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Use ITitleBarService when an application mode should switch the complete Flourish title bar on or off, rather than hide one title-bar element. SetEnabled updates the authoritative title-bar state and Changed keeps the checkbox synchronized. Configure navigation, toolbar, status, tooltips, motion, and profile availability through their own domain services."
-      Title="Title bar availability"
+      Content="Gallery.Shell.UseITitleBarServiceWhenAnApplicationModeShouldSwitchTheCompleteF_0F9CB8CF"
+      Title="Gallery.Shell.TitleBarAvailability_0EBAD517"
     >
       <StackPanel>
       <Grid>
@@ -213,15 +213,15 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE74E;"
-            Title="Title bar"
-            Content="Enable or disable the complete title-bar surface."
+            Title="Gallery.Application.TitleBar_11BCA4AC"
+            Content="Gallery.Shell.EnableOrDisableTheCompleteTitleBarSurface_85810844"
           >
             <flourish:ActionCard.Body>
               <flourish:CheckBox
                 x:Name="TitleBarEnabledBox"
                 VerticalAlignment="Center"
                 Checked="TitleBarEnabledBox_Changed"
-                Content="Enabled"
+                Content="Gallery.Shell.Enabled_92C1CDFD"
                 Unchecked="TitleBarEnabledBox_Changed"
               />
             </flourish:ActionCard.Body>
@@ -232,10 +232,10 @@
       <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Each domain service owns its availability state.&#10;titleBar.SetEnabled(true);&#10;var isEnabled = titleBar.Current.IsEnabled;" />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

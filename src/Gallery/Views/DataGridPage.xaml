@@ -9,61 +9,61 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Present native WPF rows and columns on a Flourish surface."
+      Content="Gallery.Controls.PresentNativeWPFRowsAndColumnsOnAFlourishSurface_982D6DA0"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="DataGrid"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Property" Width="224" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Function" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Function_C8037103" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Example">
+    <flourish:Chunk Title="Gallery.Controls.Example_D029F87E">
       <flourish:DataGrid
         x:Name="ExampleGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Project" Width="2*" />
-          <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="*" />
-          <DataGridTextColumn Binding="{Binding Owner}" Header="Owner" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Project_98595978" Width="2*" />
+          <DataGridTextColumn Binding="{Binding Status}" Header="Gallery.Controls.Status_920E413C" Width="*" />
+          <DataGridTextColumn Binding="{Binding Owner}" Header="Gallery.Controls.Owner_4B1B8AA3" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Counts">
+    <flourish:Chunk Title="Gallery.Controls.Counts_C3EA5BF7">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
           Content="{Binding RowCount, ElementName=ExampleGrid}"
-          Title="Rows"
+          Title="Gallery.Controls.Rows_101F2FF3"
         />
         <flourish:Card
           Margin="8,0,0,0"
           Content="{Binding ColumnCount, ElementName=ExampleGrid}"
-          Title="Columns"
+          Title="Gallery.Controls.Columns_53AADE77"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Bind ItemsSource and use native WPF DataGrid columns. Disable automatic columns when visible fields and order are part of the design, and use IsReadOnly for reference or result tables. Native selection properties can bind an active row to another view; Flourish also hands the mouse wheel to PageBody when the grid reaches its scroll boundary."
+          Content="Gallery.Controls.BindItemsSourceAndUseNativeWPFDataGridColumnsDisableAutomaticCol_F5C4C38E"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Define columns"
+          Title="Gallery.Controls.DefineColumns_BAB293E7"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
@@ -72,25 +72,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="DataGrid documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.DataGridDocumentation_57FFA968"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="DataGrid documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.DataGridDocumentation_57FFA968"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

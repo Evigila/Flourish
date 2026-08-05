@@ -7,29 +7,29 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="Custom handler"
-      Content="Place application-owned WPF content and command actions in predefined shell regions."
+      Title="Gallery.Application.CustomHandler_41F3A17B"
+      Content="Gallery.Shell.PlaceApplicationOwnedWPFContentAndCommandActionsInPredefinedShel_5AB7F196"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
     <flourish:Chunk
-      Title="Shell regions"
-      Content="Custom handlers place application-owned WPF elements and actions in predefined Shell regions without changing the Shell template. Use element factories when a view needs dependency injection, command-key helpers for shared dispatch, and callback helpers for local behavior; enable each owning Shell surface separately. This is recommended for profile views, application status, and cross-page actions, and the code below covers every custom-handler API."
+      Title="Gallery.Controls.ShellRegions_705954E4"
+      Content="Gallery.Shell.CustomHandlersPlaceApplicationOwnedWPFElementsAndActionsInPredef_CC471961"
     >
       <StackPanel>
         <UniformGrid Columns="2">
           <flourish:Card
             Margin="0,0,8,0"
             Icon="&#xE8BA;"
-            Title="WPF content"
-            Content="Add and InitProfileContent create application elements when the Shell is composed, with access to registered services."
+            Title="Gallery.Shell.WPFContent_36B5B905"
+            Content="Gallery.Shell.AddAndInitProfileContentCreateApplicationElementsWhenTheShellIsC_49F55273"
           />
           <flourish:Card
             Margin="8,0,0,0"
             Icon="&#xE756;"
-            Title="Actions"
-            Content="Title-bar and footer helpers support either stable command keys or service-aware callbacks."
+            Title="Gallery.Application.Actions_FF8059DC"
+            Content="Gallery.Shell.TitleBarAndFooterHelpersSupportEitherStableCommandKeysOrServiceA_FECFEA0A"
           />
         </UniformGrid>
         <flourish:CodeSpace
@@ -38,10 +38,10 @@
         />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

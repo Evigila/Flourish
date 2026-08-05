@@ -14,10 +14,10 @@ public sealed class GalleryShellLocalizationCoordinator(
     IToolbarService toolbar
 ) : IDisposable
 {
-    private IReadOnlyDictionary<string, string>? groupTitles;
-    private IReadOnlyDictionary<string, string>? navigationLabels;
-    private IReadOnlyDictionary<string, string>? defaultToolbarLabels;
-    private IReadOnlyDictionary<(Type PageType, string ItemId), string>? pageToolbarLabels;
+    private IReadOnlyDictionary<string, string>? groupTitleKeys;
+    private IReadOnlyDictionary<string, string>? navigationLabelKeys;
+    private IReadOnlyDictionary<string, string>? defaultToolbarLabelKeys;
+    private IReadOnlyDictionary<(Type PageType, string ItemId), string>? pageToolbarLabelKeys;
     private bool isStarted;
 
     public void Start()
@@ -28,7 +28,7 @@ public sealed class GalleryShellLocalizationCoordinator(
         }
 
         isStarted = true;
-        CaptureSources();
+        CaptureResourceKeys();
         localization.Changed += Localization_Changed;
         Apply();
     }
@@ -38,27 +38,27 @@ public sealed class GalleryShellLocalizationCoordinator(
         localization.Changed -= Localization_Changed;
     }
 
-    private void CaptureSources()
+    private void CaptureResourceKeys()
     {
         var menu = navigationMenu.Current;
-        groupTitles = menu.Groups
-            .Where(group => group.Title is not null)
+        groupTitleKeys = menu
+            .Groups.Where(group => group.Title is not null)
             .ToDictionary(group => group.Id, group => group.Title!, StringComparer.Ordinal);
-        navigationLabels = menu.Groups
-            .SelectMany(group => group.Items)
+        navigationLabelKeys = menu
+            .Groups.SelectMany(group => group.Items)
             .Concat(menu.FixedItems)
             .ToDictionary(item => item.Id, item => item.Label, StringComparer.Ordinal);
 
         var toolbarState = toolbar.Current;
-        defaultToolbarLabels = toolbarState.DefaultItems.ToDictionary(
+        defaultToolbarLabelKeys = toolbarState.DefaultItems.ToDictionary(
             item => item.Id,
             item => item.DisplayName,
             StringComparer.Ordinal
         );
-        pageToolbarLabels = toolbarState.Pages
-            .SelectMany(page => page.Value.Items.Select(item =>
-                (Key: (page.Key, item.Id), item.DisplayName)
-            ))
+        pageToolbarLabelKeys = toolbarState
+            .Pages.SelectMany(page =>
+                page.Value.Items.Select(item => (Key: (page.Key, item.Id), item.DisplayName))
+            )
             .ToDictionary(pair => pair.Key, pair => pair.DisplayName);
     }
 
@@ -67,10 +67,10 @@ public sealed class GalleryShellLocalizationCoordinator(
     private void Apply()
     {
         if (
-            groupTitles is null
-            || navigationLabels is null
-            || defaultToolbarLabels is null
-            || pageToolbarLabels is null
+            groupTitleKeys is null
+            || navigationLabelKeys is null
+            || defaultToolbarLabelKeys is null
+            || pageToolbarLabelKeys is null
         )
         {
             return;
@@ -78,28 +78,37 @@ public sealed class GalleryShellLocalizationCoordinator(
 
         navigationMenu.Set(editor =>
         {
-            foreach (var (id, source) in groupTitles)
+            foreach (var (id, resourceKey) in groupTitleKeys)
             {
-                editor.SetGroupTitle(id, localization.Get(source));
+                editor.SetGroupTitle(id, localization.Get(resourceKey));
             }
 
-            foreach (var (id, source) in navigationLabels)
+            foreach (var (id, resourceKey) in navigationLabelKeys)
             {
-                editor.SetItem(id, item => item with { Label = localization.Get(source) });
+                editor.SetItem(id, item => item with { Label = localization.Get(resourceKey) });
             }
         });
 
-        titleBar.SetApplicationSubTitle(localization.Get("Component reference"));
-        titleBar.SetUnnamedProjectPlaceholder(localization.Get("Untitled project"));
-        search.SetPlaceholder(localization.Get("Type here to search"));
+        titleBar.SetApplicationSubTitle(
+            localization.Get(GalleryLocaleKeys.ApplicationComponentReference_661E6097)
+        );
+        titleBar.SetUnnamedProjectPlaceholder(
+            localization.Get(GalleryLocaleKeys.ApplicationUntitledProject_1B5A65C3)
+        );
+        search.SetPlaceholder(
+            localization.Get(GalleryLocaleKeys.ApplicationTypeHereToSearch_85717255)
+        );
 
         var toolbarState = toolbar.Current;
         if (toolbarState.DefaultItems.Count > 0)
         {
             toolbar.SetDefault(
                 toolbarState.DefaultItems.Select(item =>
-                    defaultToolbarLabels.TryGetValue(item.Id, out var source)
-                        ? item with { DisplayName = localization.Get(source) }
+                    defaultToolbarLabelKeys.TryGetValue(item.Id, out var resourceKey)
+                        ? item with
+                        {
+                            DisplayName = localization.Get(resourceKey),
+                        }
                         : item
                 )
             );
@@ -110,8 +119,11 @@ public sealed class GalleryShellLocalizationCoordinator(
             toolbar.Set(
                 pageType,
                 page.Items.Select(item =>
-                    pageToolbarLabels.TryGetValue((pageType, item.Id), out var source)
-                        ? item with { DisplayName = localization.Get(source) }
+                    pageToolbarLabelKeys.TryGetValue((pageType, item.Id), out var resourceKey)
+                        ? item with
+                        {
+                            DisplayName = localization.Get(resourceKey),
+                        }
                         : item
                 ),
                 page.IconOnly

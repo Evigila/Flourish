@@ -7,57 +7,57 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Control window, tray, profile, and notification behavior."
+      Content="Gallery.Shell.ControlWindowTrayProfileAndNotificationBehavior_D7E490DA"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Window, profile &amp; notifications"
+      Title="Gallery.Shell.WindowProfileNotifications_B2B03724"
     />
 
     <flourish:Chunk
-      Content="Resize, position, activate, show, hide, minimize, maximize, and restore the active shell through IWindowService. Use these commands for workspace modes or window-management actions after startup; the code below demonstrates the principal state and visibility operations."
-      Title="Shell window"
+      Content="Gallery.Shell.ResizePositionActivateShowHideMinimizeMaximizeAndRestoreTheActiv_D58415C7"
+      Title="Gallery.Shell.ShellWindow_B9D41737"
     >
       <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE740;" Content="Resize the live shell to the Gallery demonstration size." Title="Window size">
+          <flourish:ActionCard Icon="&#xE740;" Content="Gallery.Shell.ResizeTheLiveShellToTheGalleryDemonstrationSize_BA9D8509" Title="Gallery.Shell.WindowSize_F7D5625A">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="SetDemoSize_Click" Content="Set 1100 × 760" />
+              <flourish:Button Click="SetDemoSize_Click" Content="Gallery.Shell.Set1100760_2FCE795B" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE707;" Content="Center the shell on its current display." Title="Window position">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE707;" Content="Gallery.Shell.CenterTheShellOnItsCurrentDisplay_AB8F3215" Title="Gallery.Shell.WindowPosition_E1FAAB43">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="CenterWindow_Click" Content="Center" />
+              <flourish:Button Click="CenterWindow_Click" Content="Gallery.Shell.Center_D9460674" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE718;" Content="Toggle whether the shell stays above other windows." Title="Topmost">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE718;" Content="Gallery.Shell.ToggleWhetherTheShellStaysAboveOtherWindows_B823BD22" Title="Gallery.Shell.Topmost_73EC388A">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleTopmost_Click" Content="Toggle topmost" />
+              <flourish:Button Click="ToggleTopmost_Click" Content="Gallery.Shell.ToggleTopmost_94BFE3DF" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7C9;" Content="Toggle whether the shell appears in the taskbar." Title="Taskbar visibility">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7C9;" Content="Gallery.Shell.ToggleWhetherTheShellAppearsInTheTaskbar_C9058133" Title="Gallery.Shell.TaskbarVisibility_D8F3CEAD">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleTaskbar_Click" Content="Toggle taskbar" />
+              <flourish:Button Click="ToggleTaskbar_Click" Content="Gallery.Shell.ToggleTaskbar_B6BD8DE0" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE737;" Content="Minimize the live shell window." Title="Minimize window">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE737;" Content="Gallery.Shell.MinimizeTheLiveShellWindow_5BC69EAA" Title="Gallery.Shell.MinimizeWindow_5CD54386">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="MinimizeWindow_Click" Content="Minimize" />
+              <flourish:Button Click="MinimizeWindow_Click" Content="Gallery.Controls.Minimize_D72E311C" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE739;" Content="Maximize the live shell window." Title="Maximize window">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE739;" Content="Gallery.Shell.MaximizeTheLiveShellWindow_2654F007" Title="Gallery.Shell.MaximizeWindow_45D23969">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="MaximizeWindow_Click" Content="Maximize" />
+              <flourish:Button Click="MaximizeWindow_Click" Content="Gallery.Controls.Maximize_FBA6C2C5" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE923;" Content="Restore the live shell to its normal state." Title="Restore window">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE923;" Content="Gallery.Shell.RestoreTheLiveShellToItsNormalState_9BBACD05" Title="Gallery.Shell.RestoreWindow_0251E9D1">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RestoreWindow_Click" Content="Restore" />
+              <flourish:Button Click="RestoreWindow_Click" Content="Gallery.Controls.Restore_A76E13B9" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="Hide the shell briefly, then restore it automatically." Title="Temporary visibility">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="Gallery.Shell.HideTheShellBrieflyThenRestoreItAutomatically_1FAA456F" Title="Gallery.Shell.TemporaryVisibility_6A971927">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="HideBriefly_Click" Content="Hide for 1 second" />
+              <flourish:Button Click="HideBriefly_Click" Content="Gallery.Shell.HideFor1Second_43C6778A" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -68,13 +68,13 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Enable the Windows notification-area icon, set its tooltip, and move the shell into or out of the tray through ITrayService. Use this for long-running desktop tools that must remain available without occupying the taskbar; the code below covers configuration and the minimize/restore flow."
-      Title="Tray"
+      Content="Gallery.Shell.EnableTheWindowsNotificationAreaIconSetItsTooltipAndMoveTheShell_2A0A7F75"
+      Title="Gallery.Shell.Tray_3BA548EF"
     >
       <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE7E8;" Content="Set the text shown for the notification-area icon." Title="Tray tooltip">
+          <flourish:ActionCard Icon="&#xE7E8;" Content="Gallery.Shell.SetTheTextShownForTheNotificationAreaIcon_129CBE63" Title="Gallery.Shell.TrayTooltip_C1D36960">
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox
                 x:Name="TrayToolTipBox"
@@ -85,19 +85,19 @@
               />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7C9;" Content="Enable or disable the notification-area icon." Title="Tray availability">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7C9;" Content="Gallery.Shell.EnableOrDisableTheNotificationAreaIcon_77234FC0" Title="Gallery.Shell.TrayAvailability_BBA40904">
             <flourish:ActionCard.Body>
               <flourish:Button x:Name="ToggleTrayButton" Click="ToggleTray_Click" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7E8;" Content="Hide the shell while leaving it available from the tray." Title="Minimize to tray">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7E8;" Content="Gallery.Shell.HideTheShellWhileLeavingItAvailableFromTheTray_1C1DBEB2" Title="Gallery.Shell.MinimizeToTray_AB8C3AF1">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="MinimizeToTray_Click" Content="Minimize to tray" />
+              <flourish:Button Click="MinimizeToTray_Click" Content="Gallery.Shell.MinimizeToTray_AB8C3AF1" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8F4;" Content="Restore the shell from its notification-area icon." Title="Restore from tray">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8F4;" Content="Gallery.Shell.RestoreTheShellFromItsNotificationAreaIcon_115AD8E3" Title="Gallery.Shell.RestoreFromTray_D7F55FC8">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RestoreFromTray_Click" Content="Restore from tray" />
+              <flourish:Button Click="RestoreFromTray_Click" Content="Gallery.Shell.RestoreFromTray_D7F55FC8" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -108,40 +108,40 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose the shell close policy and register ordered asynchronous guards that may cancel a close request. Use guards for unsaved changes or in-progress operations, keep their registration lease for the owning scope, and dispose it when no longer needed; the code below shows registration, evaluation, and a policy-aware close request."
-      Title="Close behavior"
+      Content="Gallery.Shell.ChooseTheShellClosePolicyAndRegisterOrderedAsynchronousGuardsTha_297C245C"
+      Title="Gallery.Shell.CloseBehavior_6C5B101F"
     >
       <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE8BB;" Content="Choose the shell's default close policy; changes apply immediately." Title="Close policy">
+          <flourish:ActionCard Icon="&#xE8BB;" Content="Gallery.Shell.ChooseTheShellSDefaultClosePolicyChangesApplyImmediately_5FF54018" Title="Gallery.Shell.ClosePolicy_D5F7A16E">
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox x:Name="CloseBehaviorBox" Width="220" SelectionChanged="CloseBehaviorBox_SelectionChanged" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE73E;" Content="Choose the decision returned by the demo guard." Title="Guard decision">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE73E;" Content="Gallery.Shell.ChooseTheDecisionReturnedByTheDemoGuard_6642DC99" Title="Gallery.Shell.GuardDecision_57788FFA">
             <flourish:ActionCard.Body>
-              <flourish:CheckBox x:Name="CloseGuardAllowsBox" VerticalAlignment="Center" Click="CloseGuardAllowsBox_Click" Content="Guard allows close" IsChecked="True" />
+              <flourish:CheckBox x:Name="CloseGuardAllowsBox" VerticalAlignment="Center" Click="CloseGuardAllowsBox_Click" Content="Gallery.Shell.GuardAllowsClose_76E93F89" IsChecked="True" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE72E;" Content="Install the disposable close guard for this page." Title="Register guard">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE72E;" Content="Gallery.Shell.InstallTheDisposableCloseGuardForThisPage_9B653D14" Title="Gallery.Shell.RegisterGuard_D262C6A9">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RegisterCloseGuard_Click" Content="Register guard" />
+              <flourish:Button Click="RegisterCloseGuard_Click" Content="Gallery.Shell.RegisterGuard_D262C6A9" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Dispose the guard registered by this page." Title="Remove guard">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Gallery.Shell.DisposeTheGuardRegisteredByThisPage_A72910B3" Title="Gallery.Shell.RemoveGuard_59162A04">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveCloseGuard_Click" Content="Remove guard" />
+              <flourish:Button Click="RemoveCloseGuard_Click" Content="Gallery.Shell.RemoveGuard_59162A04" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE73E;" Content="Evaluate the active guards without closing the app." Title="Evaluate guards">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE73E;" Content="Gallery.Shell.EvaluateTheActiveGuardsWithoutClosingTheApp_EA85F533" Title="Gallery.Shell.EvaluateGuards_E0CDC222">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="EvaluateClose_Click" Content="Evaluate guards" />
+              <flourish:Button Click="EvaluateClose_Click" Content="Gallery.Shell.EvaluateGuards_E0CDC222" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BB;" Content="Submit a close request through the configured policy." Title="Request app close">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BB;" Content="Gallery.Shell.SubmitACloseRequestThroughTheConfiguredPolicy_F3B86A99" Title="Gallery.Shell.RequestAppClose_DBAEBDC1">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RequestClose_Click" Content="Request app close" />
+              <flourish:Button Click="RequestClose_Click" Content="Gallery.Shell.RequestAppClose_DBAEBDC1" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -152,67 +152,67 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Await modal choices through IMessageService and publish non-modal, replaceable notifications through INotificationService. Use dialogs when a workflow must wait for a decision and notifications for transient status that should not block interaction; the code below demonstrates both message options and the complete notification lifecycle."
-      Title="Messages"
+      Content="Gallery.Shell.AwaitModalChoicesThroughIMessageServiceAndPublishNonModalReplace_FA67AE76"
+      Title="Gallery.Shell.Messages_04D7B483"
     >
       <StackPanel>
       <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE715;" Content="Await a standard modal choice without blocking application logic." Title="Standard message">
+          <flourish:ActionCard Icon="&#xE715;" Content="Gallery.Shell.AwaitAStandardModalChoiceWithoutBlockingApplicationLogic_25C7EC17" Title="Gallery.Shell.StandardMessage_718AEEBB">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ShowMessage_Click" Content="Show async message" />
+              <flourish:Button Click="ShowMessage_Click" Content="Gallery.Shell.ShowAsyncMessage_1F27832C" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Await a modal message with custom choices." Title="Custom choices">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Gallery.Shell.AwaitAModalMessageWithCustomChoices_BD0C10C5" Title="Gallery.Shell.CustomChoices_CBB9E892">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ShowCustomMessage_Click" Content="Show custom choices" />
+              <flourish:Button Click="ShowCustomMessage_Click" Content="Gallery.Shell.ShowCustomChoices_931D4F5B" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8EC;" Content="Choose the stable identifier used for notification operations." Title="Notification ID">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8EC;" Content="Gallery.Shell.ChooseTheStableIdentifierUsedForNotificationOperations_8C1F037A" Title="Gallery.Shell.NotificationID_DB824EBE">
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="NotificationIdBox" Width="240" Text="gallery.runtime.notice" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE715;" Content="Enter the content published to the shell host." Title="Notification message">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE715;" Content="Gallery.Shell.EnterTheContentPublishedToTheShellHost_551F696D" Title="Gallery.Shell.NotificationMessage_4E912926">
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="NotificationMessageBox" Width="240" Text="A runtime notification from the Gallery." />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Publish a new non-modal notification." Title="Show notification">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8BD;" Content="Gallery.Shell.PublishANewNonModalNotification_627CC471" Title="Gallery.Shell.ShowNotification_F5E4A1FD">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ShowNotification_Click" Content="Show" />
+              <flourish:Button Click="ShowNotification_Click" Content="Gallery.Shell.Show_0DF6F1CA" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE70F;" Content="Insert the notification or update its current content." Title="Upsert notification">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE70F;" Content="Gallery.Shell.InsertTheNotificationOrUpdateItsCurrentContent_CCC76F1E" Title="Gallery.Shell.UpsertNotification_BA2129E0">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="UpsertNotification_Click" Content="Upsert" />
+              <flourish:Button Click="UpsertNotification_Click" Content="Gallery.Shell.Upsert_B004EA09" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Dismiss the notification with the selected identifier." Title="Dismiss notification">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Gallery.Shell.DismissTheNotificationWithTheSelectedIdentifier_77102BA1" Title="Gallery.Shell.DismissNotification_B7BB3F34">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="DismissNotification_Click" Content="Dismiss ID" />
+              <flourish:Button Click="DismissNotification_Click" Content="Gallery.Shell.DismissID_F244E0EB" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE738;" Content="Dismiss every notification in the shell host." Title="Dismiss all notifications">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE738;" Content="Gallery.Shell.DismissEveryNotificationInTheShellHost_62C070FF" Title="Gallery.Shell.DismissAllNotifications_C49DC1A6">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="DismissAllNotifications_Click" Content="Dismiss all" />
+              <flourish:Button Click="DismissAllNotifications_Click" Content="Gallery.Shell.DismissAll_97FAC9E5" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
         <flourish:OutputCard
           x:Name="MessageActivityOutput"
           Margin="8,0,0,0"
-          AutomationProperties.Name="Message and notification output"
+          AutomationProperties.Name="Gallery.Shell.MessageAndNotificationOutput_651DB726"
           VerticalAlignment="Stretch"
         />
       </UniformGrid>
       <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Await a modal decision without blocking the UI thread.&#10;var result = await messages.ShowAsync(&#10;    &quot;Operation complete.&quot;,&#10;    &quot;Reports&quot;,&#10;    MessageBoxButton.OKCancel,&#10;    MessageBoxImage.Information);&#10;&#10;// Use a stable ID when later updates or dismissal are required.&#10;var notice = new FlourishNotification(&#10;    &quot;reports.complete&quot;,&#10;    &quot;Reports&quot;,&#10;    &quot;Export finished.&quot;,&#10;    FlourishNotificationSeverity.Success);&#10;var handle = notifications.Upsert(notice);&#10;notifications.Dismiss(handle.Id);&#10;notifications.DismissAll();" />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

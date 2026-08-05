@@ -9,7 +9,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="A dedicated title-bar action with caption geometry and window interaction semantics."
+      Content="Gallery.Controls.ADedicatedTitleBarActionWithCaptionGeometryAndWindowInteractionS_99BF0EA9"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="WindowCaptionButton"
@@ -17,10 +17,10 @@
 
     <flourish:Chunk Title="Variant">
       <flourish:Presenter
-        Content="Use Text for ordinary caption commands and reserve Danger for the close command."
+        Content="Gallery.Controls.UseTextForOrdinaryCaptionCommandsAndReserveDangerForTheCloseComm_CAE8A103"
         PresenterMode="Split"
         PresenterPosition="Left"
-        Title="Caption semantics"
+        Title="Gallery.Controls.CaptionSemantics_6928015C"
       >
         <flourish:Presenter.Presentation>
           <Grid
@@ -35,16 +35,16 @@
               VerticalAlignment="Center"
               Orientation="Horizontal"
             >
-              <flourish:WindowCaptionButton AutomationProperties.Name="Minimize" Icon="&#xE921;" ToolTip="Minimize" Variant="Text" />
-              <flourish:WindowCaptionButton AutomationProperties.Name="Maximize" Icon="&#xE922;" ToolTip="Maximize" Variant="Text" />
-              <flourish:WindowCaptionButton AutomationProperties.Name="Close" Icon="&#xE8BB;" ToolTip="Close" Variant="Danger" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="Gallery.Controls.Minimize_D72E311C" Icon="&#xE921;" ToolTip="Gallery.Controls.Minimize_D72E311C" Variant="Text" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="Gallery.Controls.Maximize_FBA6C2C5" Icon="&#xE922;" ToolTip="Gallery.Controls.Maximize_FBA6C2C5" Variant="Text" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="Gallery.Controls.Close_7D9EB7AC" Icon="&#xE8BB;" ToolTip="Gallery.Controls.Close_7D9EB7AC" Variant="Danger" />
             </StackPanel>
           </Grid>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="PropertiesGrid"
         AutoGenerateColumns="False"
@@ -55,22 +55,22 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Caption geometry">
-      <flourish:Card Content="WindowCaptionButton is sized for the title bar and keeps the caption hit target separate from ordinary application buttons." />
+    <flourish:Chunk Title="Gallery.Controls.CaptionGeometry_F705FE33">
+      <flourish:Card Content="Gallery.Controls.WindowCaptionButtonIsSizedForTheTitleBarAndKeepsTheCaptionHitTar_C277C7B9" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Interaction contract">
+    <flourish:Chunk Title="Gallery.Controls.InteractionContract_BCA9C747">
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Title="Window controls"
-          Content="Minimize, maximize, and restore change the window state without discarding work. Use the neutral Text variant so these routine caption actions remain visually quiet."
+          Title="Gallery.Controls.WindowControls_9CEA69FD"
+          Content="Gallery.Controls.MinimizeMaximizeAndRestoreChangeTheWindowStateWithoutDiscardingW_DF87D21D"
           PresenterMode="TopDown"
           PresenterPosition="Left"
         >
@@ -87,21 +87,21 @@
                 Orientation="Horizontal"
               >
                 <flourish:WindowCaptionButton
-                  AutomationProperties.Name="Minimize"
+                  AutomationProperties.Name="Gallery.Controls.Minimize_D72E311C"
                   Icon="&#xE921;"
-                  ToolTip="Minimize"
+                  ToolTip="Gallery.Controls.Minimize_D72E311C"
                   Variant="Text"
                 />
                 <flourish:WindowCaptionButton
-                  AutomationProperties.Name="Maximize"
+                  AutomationProperties.Name="Gallery.Controls.Maximize_FBA6C2C5"
                   Icon="&#xE922;"
-                  ToolTip="Maximize"
+                  ToolTip="Gallery.Controls.Maximize_FBA6C2C5"
                   Variant="Text"
                 />
                 <flourish:WindowCaptionButton
-                  AutomationProperties.Name="Restore"
+                  AutomationProperties.Name="Gallery.Controls.Restore_A76E13B9"
                   Icon="&#xE923;"
-                  ToolTip="Restore"
+                  ToolTip="Gallery.Controls.Restore_A76E13B9"
                   Variant="Text"
                 />
               </StackPanel>
@@ -110,8 +110,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Title="Close action"
-          Content="Closing can end the current session or discard unsaved work. Use the Danger variant to give this destructive caption action distinct warning feedback."
+          Title="Gallery.Controls.CloseAction_E312EBE7"
+          Content="Gallery.Controls.ClosingCanEndTheCurrentSessionOrDiscardUnsavedWorkUseTheDangerVa_9B7343DB"
           PresenterMode="TopDown"
           PresenterPosition="Left"
         >
@@ -121,9 +121,9 @@
               Height="32"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              AutomationProperties.Name="Close"
+              AutomationProperties.Name="Gallery.Controls.Close_7D9EB7AC"
               Icon="&#xE8BB;"
-              ToolTip="Close"
+              ToolTip="Gallery.Controls.Close_7D9EB7AC"
               Variant="Danger"
             />
           </flourish:Presenter.Presentation>
@@ -131,11 +131,11 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Bind caption commands"
-          Content="Use WindowCaptionButton only in the title bar and bind it to a SystemCommands minimize, maximize, restore, or close command. Icon-only actions need matching ToolTip and AutomationProperties.Name values, and Danger supplies the expected close-button feedback. Keep the caption group at the title-bar edge and ordinary toolbar commands outside it so Windows corner hit targets remain intact."
+          Title="Gallery.Controls.BindCaptionCommands_DC880523"
+          Content="Gallery.Controls.UseWindowCaptionButtonOnlyInTheTitleBarAndBindItToASystemCommand_5E0921E9"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -146,25 +146,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="WindowCaptionButton documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.WindowCaptionButtonDocumentation_0D35F729"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="WindowCaptionButton documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.WindowCaptionButtonDocumentation_0D35F729"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

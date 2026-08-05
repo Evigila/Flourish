@@ -10,65 +10,65 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Present several normalized Paragraph elements as one rounded, lightly outlined, full-width reading surface."
+      Content="Gallery.Controls.PresentSeveralNormalizedParagraphElementsAsOneRoundedLightlyOutl_B6318E05"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Document"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Each Paragraph item receives the standard indentation, spacing, and Large reading size."
-      Title="Example"
+      Content="Gallery.Controls.EachParagraphItemReceivesTheStandardIndentationSpacingAndLargeRe_3CEF698D"
+      Title="Gallery.Controls.Example_D029F87E"
     >
       <flourish:Document>
-        <flourish:Paragraph Text="Document is intended for sustained reading rather than a short summary. Its transparent surface uses a rounded, thin, low-contrast outline without adding a title, content field, or visual variant." />
-        <flourish:Paragraph Text="Every Paragraph added to Document receives the standard first-line inset and the gap between adjacent paragraphs." />
-        <flourish:Paragraph Text="Keep Document as the only Body of its Chunk and preserve its default outer spacing from the Chunk copy. Place controls, cards, and illustrations in separate Chunks so the reading flow remains predictable." />
+        <flourish:Paragraph Text="Gallery.Controls.DocumentIsIntendedForSustainedReadingRatherThanAShortSummaryItsT_6DB3FAD3" />
+        <flourish:Paragraph Text="Gallery.Controls.EveryParagraphAddedToDocumentReceivesTheStandardFirstLineInsetAn_FB47A902" />
+        <flourish:Paragraph Text="Gallery.Controls.KeepDocumentAsTheOnlyBodyOfItsChunkAndPreserveItsDefaultOuterSpa_75D1E95F" />
       </flourish:Document>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Paragraph is the document-owned text element. Set Text directly or bind it to content; Document supplies paragraph spacing, first-line indentation, and reading typography."
+      Content="Gallery.Controls.ParagraphIsTheDocumentOwnedTextElementSetTextDirectlyOrBindItToC_AEADEE97"
       Title="Paragraph"
     >
-      <flourish:Card Title="Parent relationship" Content="Use Paragraph inside Document rather than as a standalone page-level surface." />
+      <flourish:Card Title="Gallery.Controls.ParentRelationship_C9CEA942" Content="Gallery.Controls.UseParagraphInsideDocumentRatherThanAsAStandalonePageLevelSurfac_35BAE916" />
     </flourish:Chunk>
 
     <flourish:Chunk Title="Card or Document">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
-          Content="Use Card when one concise block of copy is enough."
-          Title="One block"
+          Content="Gallery.Controls.UseCardWhenOneConciseBlockOfCopyIsEnough_1972ABB9"
+          Title="Gallery.Controls.OneBlock_FFCF88B6"
         />
         <flourish:Card
           Margin="8,0,0,0"
-          Content="Use Document when the content needs several distinct Paragraph elements."
-          Title="Several paragraphs"
+          Content="Gallery.Controls.UseDocumentWhenTheContentNeedsSeveralDistinctParagraphElements_26FBBF27"
+          Title="Gallery.Controls.SeveralParagraphs_3B88CC6C"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Add Paragraph elements directly to Document. Each Paragraph.Text also supports resources and view-model bindings. Document owns the rounded reading surface, paragraph spacing, and first-line indentation, so it should normally be the only Body of its Chunk; use Card instead for one short passage."
+          Content="Gallery.Controls.AddParagraphElementsDirectlyToDocumentEachParagraphTextAlsoSuppo_647251CC"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Compose a document"
+          Title="Gallery.Controls.ComposeADocument_C5F50FE8"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
@@ -77,23 +77,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the Document guide."
+          Content="Gallery.Controls.ReadTheDocumentGuide_349298DB"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="Document documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.DocumentDocumentation_C499786E"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

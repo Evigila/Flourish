@@ -10,36 +10,36 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Collect compact query text with a search glyph and an in-control placeholder."
+      Content="Gallery.Controls.CollectCompactQueryTextWithASearchGlyphAndAnInControlPlaceholder_53FB208B"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishSearchBox"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="The placeholder collapses when a query exists or the field receives focus."
-      Title="Query"
+      Content="Gallery.Controls.ThePlaceholderCollapsesWhenAQueryExistsOrTheFieldReceivesFocus_4E01A3A3"
+      Title="Gallery.Controls.Query_B80A3756"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Placeholder supplies a concise hint before the user enters a query."
+          Content="Gallery.Controls.PlaceholderSuppliesAConciseHintBeforeTheUserEntersAQuery_2BB544F0"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Empty query"
+          Title="Gallery.Controls.EmptyQuery_F1E2C7E8"
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishSearchBox
@@ -47,16 +47,16 @@
               Height="40"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Placeholder="Search controls"
+              Placeholder="Gallery.Controls.SearchControls_71EB81F3"
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Text uses the same binding, validation, and change notification contract as FlourishTextBox."
+          Content="Gallery.Controls.TextUsesTheSameBindingValidationAndChangeNotificationContractAsF_A964198E"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Active query"
+          Title="Gallery.Controls.ActiveQuery_6DC1590A"
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishSearchBox
@@ -64,7 +64,7 @@
               Height="40"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Placeholder="Search controls"
+              Placeholder="Gallery.Controls.SearchControls_71EB81F3"
               Text="Presenter"
             />
           </flourish:Presenter.Presentation>
@@ -72,13 +72,13 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Bind Text with PropertyChanged updates when results should react continuously as the query changes. TextChanged is an alternative for lightweight view-owned filtering. Placeholder guides an empty field but does not replace a visible label when the search purpose is ambiguous."
+          Content="Gallery.Controls.BindTextWithPropertyChangedUpdatesWhenResultsShouldReactContinuo_6C0F24FC"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Live query"
+          Title="Gallery.Controls.LiveQuery_5AC36933"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishSearchBox&#xA;  Placeholder=&quot;Search controls&quot;&#xA;  MaxLength=&quot;120&quot;&#xA;  Text=&quot;{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;" />
@@ -86,10 +86,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Use the normal WPF keyboard contract when search should run only after explicit submission. The KeyDown handler checks Enter and passes the current Text to an application command; prefer a command binding when the same gesture must be shared across several controls."
+          Content="Gallery.Controls.UseTheNormalWPFKeyboardContractWhenSearchShouldRunOnlyAfterExpli_F0AEADAD"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Submitted query"
+          Title="Gallery.Controls.SubmittedQuery_65ED7722"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -98,23 +98,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the FlourishSearchBox API reference."
+          Content="Gallery.Controls.ReadTheFlourishSearchBoxAPIReference_BB6586CD"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="FlourishSearchBox documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.FlourishSearchBoxDocumentation_08AB34C9"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

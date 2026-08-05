@@ -10,18 +10,18 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Combine copy and controls with images, illustrations, or groups of icons in one full-width presentation layout."
+      Content="Gallery.Controls.CombineCopyAndControlsWithImagesIllustrationsOrGroupsOfIconsInOn_3FA3ADBF"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Presenter"
     />
 
     <flourish:Chunk
-      Content="Each diagram summarizes a composition. The full-width live examples follow the member table."
+      Content="Gallery.Controls.EachDiagramSummarizesACompositionTheFullWidthLiveExamplesFollowT_952A6319"
       Title="Variant"
     >
       <UniformGrid Columns="3">
-        <flourish:Presenter Margin="0,0,8,0" Content="Places Presentation beside the copy-and-body region." PresenterMode="TopDown" PresenterPosition="Left" Title="Split">
+        <flourish:Presenter Margin="0,0,8,0" Content="Gallery.Controls.PlacesPresentationBesideTheCopyAndBodyRegion_FF81A68E" PresenterMode="TopDown" PresenterPosition="Left" Title="Split">
           <flourish:Presenter.Presentation>
             <Grid
               Width="320"
@@ -38,7 +38,7 @@
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="4,0" Content="Layers the copy-and-body region over Presentation." PresenterMode="TopDown" PresenterPosition="Left" Title="Overlay">
+        <flourish:Presenter Margin="4,0" Content="Gallery.Controls.LayersTheCopyAndBodyRegionOverPresentation_F73367E8" PresenterMode="TopDown" PresenterPosition="Left" Title="Overlay">
           <flourish:Presenter.Presentation>
             <Grid
               Width="320"
@@ -51,7 +51,7 @@
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,0,0,0" Content="Places Presentation above the copy-and-body region and may share a row with peer TopDown Presenters." PresenterMode="TopDown" PresenterPosition="Left" Title="TopDown">
+        <flourish:Presenter Margin="8,0,0,0" Content="Gallery.Controls.PlacesPresentationAboveTheCopyAndBodyRegionAndMayShareARowWithPe_4926FF66" PresenterMode="TopDown" PresenterPosition="Left" Title="TopDown">
           <flourish:Presenter.Presentation>
             <Grid
               Width="320"
@@ -71,32 +71,32 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Property" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Split places Presentation beside the copy-and-body region."
+      Content="Gallery.Controls.SplitPlacesPresentationBesideTheCopyAndBodyRegion_6DD84EA6"
       Title="Split"
     >
       <StackPanel>
         <flourish:Presenter
-          Content="Presentation defaults to the left. Body shares the copy region and stays aligned with the copy on the right."
+          Content="Gallery.Controls.PresentationDefaultsToTheLeftBodySharesTheCopyRegionAndStaysAlig_60DAF47E"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Left presentation (default)"
+          Title="Gallery.Controls.LeftPresentationDefault_5AD2213C"
         >
           <flourish:Presenter.Body>
-            <flourish:Button Content="Explore layout" Variant="Filled" />
+            <flourish:Button Content="Gallery.Controls.ExploreLayout_559848C8" Variant="Filled" />
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -113,13 +113,13 @@
 
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="PresenterPosition Right moves Presentation to the right while Title, Content, and Body remain grouped and left-aligned on the left."
+          Content="Gallery.Controls.PresenterPositionRightMovesPresentationToTheRightWhileTitleConte_5C0E08C4"
           PresenterMode="Split"
           PresenterPosition="Right"
-          Title="Right presentation"
+          Title="Gallery.Controls.RightPresentation_0EA252BB"
         >
           <flourish:Presenter.Body>
-            <flourish:Button Content="Open details" Variant="Tonal" />
+            <flourish:Button Content="Gallery.Controls.OpenDetails_67D16BB1" Variant="Tonal" />
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBlock
@@ -135,17 +135,17 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Overlay layers copy and Body over Presentation."
+      Content="Gallery.Controls.OverlayLayersCopyAndBodyOverPresentation_BCDA8D28"
       Title="Overlay"
     >
       <flourish:Presenter
-        Content="The presentation fills the surface while the copy remains readable above its scrim."
+        Content="Gallery.Controls.ThePresentationFillsTheSurfaceWhileTheCopyRemainsReadableAboveIt_16A46196"
         PresenterMode="Overlay"
         PresenterPosition="Right"
-        Title="Layered presentation"
+        Title="Gallery.Controls.LayeredPresentation_A98EC299"
       >
         <flourish:Presenter.Body>
-          <flourish:Button Content="Overlay action" Variant="Filled" />
+          <flourish:Button Content="Gallery.Controls.OverlayAction_99B0CE74" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
           <Grid>
@@ -166,17 +166,17 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="TopDown places Presentation above a left-aligned copy-and-body region."
+      Content="Gallery.Controls.TopDownPlacesPresentationAboveALeftAlignedCopyAndBodyRegion_98106B33"
       Title="TopDown"
     >
       <flourish:Presenter
-        Content="Use the vertical composition when the presented visual should establish context before the supporting copy and action."
+        Content="Gallery.Controls.UseTheVerticalCompositionWhenThePresentedVisualShouldEstablishCo_4B39E373"
         PresenterMode="TopDown"
         PresenterPosition="Right"
-        Title="Top-down presentation"
+        Title="Gallery.Controls.TopDownPresentation_D2629731"
       >
         <flourish:Presenter.Body>
-          <flourish:Button Content="Continue" Variant="Filled" />
+          <flourish:Button Content="Gallery.Controls.Continue_31FBEF16" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
           <StackPanel
@@ -192,26 +192,26 @@
       </flourish:Presenter>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Choosing a surface">
+    <flourish:Chunk Title="Gallery.Controls.ChoosingASurface_CF128427">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
-          Content="Use Card when concise copy needs exactly one icon and no arbitrary child controls."
-          Title="One icon"
+          Content="Gallery.Controls.UseCardWhenConciseCopyNeedsExactlyOneIconAndNoArbitraryChildCont_35E9E94E"
+          Title="Gallery.Controls.OneIcon_4563EB62"
         />
         <flourish:Card
           Margin="8,0,0,0"
-          Content="Use Presenter for images, multiple icons, illustrations, or controls arranged with copy."
-          Title="Rich presentation"
+          Content="Gallery.Controls.UsePresenterForImagesMultipleIconsIllustrationsOrControlsArrange_46DFD6A5"
+          Title="Gallery.Controls.RichPresentation_F63DA29B"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Arrange a split presentation"
-          Content="Split is the standard full-width arrangement. Left places Presentation on the left and the Title and Content copy group on the right; Right reverses those regions. Omit PresenterPosition to use Left."
+          Title="Gallery.Controls.ArrangeASplitPresentation_A85F75CF"
+          Content="Gallery.Controls.SplitIsTheStandardFullWidthArrangementLeftPlacesPresentationOnTh_76F638A9"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -221,8 +221,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Add an action beside the copy"
-          Content="Assign a supporting control through Presenter.Body. Body stays in the same copy-side region as Title and Content and follows their left alignment instead of joining Presentation."
+          Title="Gallery.Controls.AddAnActionBesideTheCopy_E75BC351"
+          Content="Gallery.Controls.AssignASupportingControlThroughPresenterBodyBodyStaysInTheSameCo_DDE93AE4"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -232,8 +232,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Place a wide presentation above the copy"
-          Content="TopDown is the only Presenter mode intended for multi-column placement. It puts Presentation first, followed by a left-aligned Title, Content, and Body group."
+          Title="Gallery.Controls.PlaceAWidePresentationAboveTheCopy_7769E5B5"
+          Content="Gallery.Controls.TopDownIsTheOnlyPresenterModeIntendedForMultiColumnPlacementItPu_FE61B683"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -243,8 +243,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Layer copy over a visual"
-          Content="Overlay fills the surface with Presentation and draws the copy-side content above it. Use it only when foreground text and controls remain legible over the visual in every theme."
+          Title="Gallery.Controls.LayerCopyOverAVisual_D306134E"
+          Content="Gallery.Controls.OverlayFillsTheSurfaceWithPresentationAndDrawsTheCopySideContent_8079F97D"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -255,23 +255,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the Presenter guide."
+          Content="Gallery.Controls.ReadThePresenterGuide_8D2233F1"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="Presenter documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.PresenterDocumentation_B2ED4CD5"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

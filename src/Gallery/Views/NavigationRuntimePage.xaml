@@ -7,15 +7,15 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Configure the navigation panel, routes, menu entries, and page caching while the application is running."
+      Content="Gallery.Shell.ConfigureTheNavigationPanelRoutesMenuEntriesAndPageCachingWhileT_9FE6DD3E"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Navigation"
+      Title="Gallery.Application.Navigation_3DB65F8C"
     />
 
     <flourish:Chunk
-      Content="Control whether the navigation panel is open and enabled, choose its host edge, and define its width constraints through INavigationPanelService. Use these settings for responsive shell layouts or user-selected navigation placement; the code below shows the complete panel state API used by this example."
-      Title="Navigation panel"
+      Content="Gallery.Shell.ControlWhetherTheNavigationPanelIsOpenAndEnabledChooseItsHostEdg_C1A825DC"
+      Title="Gallery.Shell.NavigationPanel_12D56584"
     >
       <StackPanel>
       <Grid>
@@ -26,28 +26,28 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE700;"
-            Title="Panel state"
-            Content="Open or close the live navigation panel."
+            Title="Gallery.Shell.PanelState_5763B01F"
+            Content="Gallery.Shell.OpenOrCloseTheLiveNavigationPanel_959EBFA5"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="TogglePanel_Click" Content="Open / close" />
+              <flourish:Button Click="TogglePanel_Click" Content="Gallery.Shell.OpenClose_DF4437D1" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE713;"
-            Title="Panel availability"
-            Content="Enable or disable navigation without recreating the shell."
+            Title="Gallery.Shell.PanelAvailability_462759FF"
+            Content="Gallery.Shell.EnableOrDisableNavigationWithoutRecreatingTheShell_521DD99A"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="TogglePanelEnabled_Click" Content="Enable / disable" />
+              <flourish:Button Click="TogglePanelEnabled_Click" Content="Gallery.Controls.EnableDisable_3A6366CC" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72A;"
-            Title="Panel direction"
-            Content="Choose the edge that hosts the navigation panel."
+            Title="Gallery.Shell.PanelDirection_150D2CAF"
+            Content="Gallery.Shell.ChooseTheEdgeThatHostsTheNavigationPanel_6C830F8C"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" SelectionChanged="DirectionBox_SelectionChanged" />
@@ -56,8 +56,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE713;"
-            Title="Open width"
-            Content="Set the panel width while navigation is open."
+            Title="Gallery.Shell.OpenWidth_997A3170"
+            Content="Gallery.Shell.SetThePanelWidthWhileNavigationIsOpen_8E0CD5D7"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="OpenWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="240" />
@@ -66,8 +66,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE713;"
-            Title="Closed width"
-            Content="Set the panel width while navigation is closed."
+            Title="Gallery.Shell.ClosedWidth_DEABFB0F"
+            Content="Gallery.Shell.SetThePanelWidthWhileNavigationIsClosed_B90A29E1"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="64" />
@@ -76,8 +76,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE713;"
-            Title="Minimum width"
-            Content="Set the minimum allowed panel width."
+            Title="Gallery.Shell.MinimumWidth_B4AEEC2F"
+            Content="Gallery.Shell.SetTheMinimumAllowedPanelWidth_15E7AE7F"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="MinWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="150" />
@@ -86,8 +86,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE713;"
-            Title="Maximum width"
-            Content="Set the maximum allowed panel width."
+            Title="Gallery.Shell.MaximumWidth_BA98BED4"
+            Content="Gallery.Shell.SetTheMaximumAllowedPanelWidth_6585BF24"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="480" />
@@ -101,8 +101,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Register a destination, place its item in the live navigation menu, navigate to it, and remove both pieces when the feature is unloaded. Use this for plugins or optional modules discovered after startup; the code below shows the route registry and menu update that must stay coordinated."
-      Title="Routes"
+      Content="Gallery.Shell.RegisterADestinationPlaceItsItemInTheLiveNavigationMenuNavigateT_E5E68AA5"
+      Title="Gallery.Shell.Routes_2C5B669B"
     >
       <StackPanel>
       <Grid>
@@ -113,41 +113,41 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE710;"
-            Title="Install demo route"
-            Content="Register the runtime route and its navigation item."
+            Title="Gallery.Shell.InstallDemoRoute_5A42223E"
+            Content="Gallery.Shell.RegisterTheRuntimeRouteAndItsNavigationItem_610ED459"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="InstallRoute_Click" Content="Install demo route" />
+              <flourish:Button Click="InstallRoute_Click" Content="Gallery.Shell.InstallDemoRoute_5A42223E" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72A;"
-            Title="Navigate to route"
-            Content="Open the registered runtime destination."
+            Title="Gallery.Shell.NavigateToRoute_42496C7F"
+            Content="Gallery.Shell.OpenTheRegisteredRuntimeDestination_EABB5FB7"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="NavigateRoute_Click" Content="Navigate to route" />
+              <flourish:Button Click="NavigateRoute_Click" Content="Gallery.Shell.NavigateToRoute_42496C7F" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE713;"
-            Title="Navigation item"
-            Content="Enable or disable the installed menu item."
+            Title="Gallery.Shell.NavigationItem_91D6947F"
+            Content="Gallery.Shell.EnableOrDisableTheInstalledMenuItem_12306729"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleMenuItem_Click" Content="Enable / disable item" />
+              <flourish:Button Click="ToggleMenuItem_Click" Content="Gallery.Shell.EnableDisableItem_CAF0B6C0" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Remove demo route"
-            Content="Remove the route and its navigation item."
+            Title="Gallery.Shell.RemoveDemoRoute_00244984"
+            Content="Gallery.Shell.RemoveTheRouteAndItsNavigationItem_C13E6D77"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveRoute_Click" Content="Remove route" />
+              <flourish:Button Click="RemoveRoute_Click" Content="Gallery.Shell.RemoveRoute_11A79956" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -158,8 +158,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Choose whether a registered route retains its Page instance and explicitly evict one or every cached page. Enable caching for stateful destinations that are revisited often, and disable it for short-lived or memory-heavy views; the code below keeps route metadata and the active cache policy in sync."
-      Title="Page cache"
+      Content="Gallery.Shell.ChooseWhetherARegisteredRouteRetainsItsPageInstanceAndExplicitly_2360444E"
+      Title="Gallery.Shell.PageCache_23B71E17"
     >
       <StackPanel>
       <Grid>
@@ -170,41 +170,41 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE74E;"
-            Title="Enable cache"
-            Content="Retain page instances for subsequent navigation."
+            Title="Gallery.Shell.EnableCache_4E49AAF2"
+            Content="Gallery.Shell.RetainPageInstancesForSubsequentNavigation_870E2E69"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="EnableCache_Click" Content="Enable cache" />
+              <flourish:Button Click="EnableCache_Click" Content="Gallery.Shell.EnableCache_4E49AAF2" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE711;"
-            Title="Disable cache"
-            Content="Stop retaining page instances for this route."
+            Title="Gallery.Shell.DisableCache_00033C6B"
+            Content="Gallery.Shell.StopRetainingPageInstancesForThisRoute_33D97E35"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="DisableCache_Click" Content="Disable cache" />
+              <flourish:Button Click="DisableCache_Click" Content="Gallery.Shell.DisableCache_00033C6B" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Evict demo page"
-            Content="Remove the demo instance while preserving its route."
+            Title="Gallery.Shell.EvictDemoPage_C77EA9F7"
+            Content="Gallery.Shell.RemoveTheDemoInstanceWhilePreservingItsRoute_B77CA904"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="EvictCache_Click" Content="Evict demo page" />
+              <flourish:Button Click="EvictCache_Click" Content="Gallery.Shell.EvictDemoPage_C77EA9F7" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Clear page cache"
-            Content="Remove every active cached page instance."
+            Title="Gallery.Shell.ClearPageCache_DB04B343"
+            Content="Gallery.Shell.RemoveEveryActiveCachedPageInstance_423F4EDB"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ClearCache_Click" Content="Clear all" />
+              <flourish:Button Click="ClearCache_Click" Content="Gallery.Shell.ClearAll_29A390F9" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -213,10 +213,10 @@
       <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Keep the route policy and active page cache aligned.&#10;routes.SetCacheMode(&quot;Reports&quot;, FlourishPageCacheMode.Enabled);&#10;cache.SetCacheMode(typeof(ReportsPage), FlourishPageCacheMode.Enabled);&#10;&#10;cache.Evict(typeof(ReportsPage));&#10;cache.Clear();" />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

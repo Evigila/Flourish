@@ -10,37 +10,37 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Own the scrolling page surface and enforce the HeaderChunk-then-Chunk hierarchy."
+      Content="Gallery.Controls.OwnTheScrollingPageSurfaceAndEnforceTheHeaderChunkThenChunkHiera_72250112"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="PageBody"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="This Gallery page is itself hosted by PageBody: one leading HeaderChunk is followed by full-width Chunks."
-      Title="Structure"
+      Content="Gallery.Controls.ThisGalleryPageIsItselfHostedByPageBodyOneLeadingHeaderChunkIsFo_0C64A518"
+      Title="Gallery.Controls.Structure_7203C2B3"
     >
       <flourish:CodeSpace Text="{Binding StructureCode, ElementName=RootPage}" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Create the page root"
-          Content="Replace the page-level ScrollViewer and margin StackPanel with one PageBody. It owns standard margins, disables horizontal page scrolling, and enables vertical scrolling. Add one leading HeaderChunk followed by full-width Chunk siblings; scroll-aware controls such as DataGrid should remain inside a Chunk so they can hand the mouse wheel back to PageBody at their boundaries."
+          Title="Gallery.Controls.CreateThePageRoot_3A205A9B"
+          Content="Gallery.Controls.ReplaceThePageLevelScrollViewerAndMarginStackPanelWithOnePageBod_8401F205"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -51,23 +51,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the PageBody API reference."
+          Content="Gallery.Controls.ReadThePageBodyAPIReference_92A0C746"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="PageBody documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.PageBodyDocumentation_21B54EA0"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

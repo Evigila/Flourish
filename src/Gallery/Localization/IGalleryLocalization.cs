@@ -12,9 +12,9 @@ public interface IGalleryLocalization
 
     event EventHandler? Changed;
 
-    string Get(string sourceText);
+    string Get(string key);
 
-    string Format(string sourceFormat, params object?[] arguments);
+    string Format(string key, params object?[] arguments);
 
     void Apply(DependencyObject root);
 }

@@ -10,20 +10,20 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Apply semantic Flourish typography roles without locally reproducing font resources."
+      Content="Gallery.Controls.ApplySemanticFlourishTypographyRolesWithoutLocallyReproducingFon_76D9B5D5"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishTextBlock"
     />
 
     <flourish:Chunk
-      Content="Representative roles share an equal-height TopDown presentation row."
+      Content="Gallery.Controls.RepresentativeRolesShareAnEqualHeightTopDownPresentationRow_0C75D65F"
       Title="Variant"
     >
       <UniformGrid Columns="3">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Default text for ordinary interface copy."
+          Content="Gallery.Controls.DefaultTextForOrdinaryInterfaceCopy_1FEB5E29"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Body"
@@ -33,14 +33,14 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Role="Body"
-              Text="Standard body copy"
+              Text="Gallery.Controls.StandardBodyCopy_F38F927B"
               TextAlignment="Center"
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0"
-          Content="A semantic heading for a compact content surface."
+          Content="Gallery.Controls.ASemanticHeadingForACompactContentSurface_7838F92C"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="CardTitle"
@@ -50,14 +50,14 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Role="CardTitle"
-              Text="Card title"
+              Text="Gallery.Controls.CardTitle_03449F68"
               TextAlignment="Center"
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="An icon glyph rendered through the configured icon family."
+          Content="Gallery.Controls.AnIconGlyphRenderedThroughTheConfiguredIconFamily_E889AF41"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Icon"
@@ -75,33 +75,33 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Roles">
+    <flourish:Chunk Title="Gallery.Controls.Roles_C2533705">
       <flourish:Card
-        Title="Semantic typography"
-        Content="Body, Paragraph, Caption, Muted, FieldLabel, Subtitle, Description, CardTitle, SectionTitle, PageTitle, Status, and Icon are available. Prefer the owning higher-level control for structural titles."
+        Title="Gallery.Controls.SemanticTypography_3595A11A"
+        Content="Gallery.Controls.BodyParagraphCaptionMutedFieldLabelSubtitleDescriptionCardTitleS_CB079295"
       />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Set Role to select a semantic Flourish typography treatment instead of assigning local font resources. Supply Text through a resource or binding as with a native TextBlock, enable wrapping for localized copy, reserve prominent roles for their documented hierarchy, and keep ordinary body text at its default treatment."
+          Content="Gallery.Controls.SetRoleToSelectASemanticFlourishTypographyTreatmentInsteadOfAssi_0E7E7EF2"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Choose a text role"
+          Title="Gallery.Controls.ChooseATextRole_4D349678"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -110,10 +110,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishTextBlock API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishTextBlock documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheFlourishTextBlockAPIReference_CDD5FBB4" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.FlourishTextBlockDocumentation_F6F69AA9" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

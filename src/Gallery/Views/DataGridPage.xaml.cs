@@ -14,12 +14,30 @@ public partial class DataGridPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("ItemsSource", "Supplies rows through the native WPF items contract."),
-            new("Columns", "Contains native DataGridColumn definitions."),
-            new("AutoGenerateColumns", "Generates columns from item properties when enabled."),
-            new("RowCount", "Reports data rows without the new-item placeholder."),
-            new("ColumnCount", "Reports declared and generated columns."),
-            new("FirstColumnForeground", "Sets the first displayed column color."),
+            new(
+                "ItemsSource",
+                GalleryLocaleKeys.ControlsSuppliesRowsThroughTheNativeWPFItemsContract_EFF3C048
+            ),
+            new(
+                "Columns",
+                GalleryLocaleKeys.ControlsContainsNativeDataGridColumnDefinitions_14066905
+            ),
+            new(
+                "AutoGenerateColumns",
+                GalleryLocaleKeys.ControlsGeneratesColumnsFromItemPropertiesWhenEnabled_AD6A6621
+            ),
+            new(
+                "RowCount",
+                GalleryLocaleKeys.ControlsReportsDataRowsWithoutTheNewItemPlaceholder_072240D4
+            ),
+            new(
+                "ColumnCount",
+                GalleryLocaleKeys.ControlsReportsDeclaredAndGeneratedColumns_580BD2E1
+            ),
+            new(
+                "FirstColumnForeground",
+                GalleryLocaleKeys.ControlsSetsTheFirstDisplayedColumnColor_59F9C6AD
+            ),
         };
         RefreshExampleRows();
         Loaded += Page_Loaded;
@@ -47,16 +65,20 @@ public partial class DataGridPage : Page
     {
         ExampleGrid.ItemsSource = new DataGridExampleRow[]
         {
-            new("Foobar", localization.Get("Ready"), localization.Get("Application")),
             new(
-                localization.Get("Reports"),
-                localization.Get("Running"),
-                localization.Get("Workspace")
+                "Foobar",
+                localization.Get(GalleryLocaleKeys.RuntimeReady_5FA7AAC5),
+                localization.Get(GalleryLocaleKeys.RuntimeApplication_E7AD522E)
             ),
             new(
-                localization.Get("Archive"),
-                localization.Get("Paused"),
-                localization.Get("System")
+                localization.Get(GalleryLocaleKeys.ControlsReports_DACCA3CB),
+                localization.Get(GalleryLocaleKeys.RuntimeRunning_F4CCAE29),
+                localization.Get(GalleryLocaleKeys.ControlsWorkspace_87BB59BA)
+            ),
+            new(
+                localization.Get(GalleryLocaleKeys.RuntimeArchive_66F4804E),
+                localization.Get(GalleryLocaleKeys.RuntimePaused_E159B061),
+                localization.Get(GalleryLocaleKeys.RuntimeSystem_6725E7BB)
             ),
         };
     }

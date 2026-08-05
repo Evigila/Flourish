@@ -10,20 +10,20 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Expose a standalone Flourish-styled WPF scroll bar for a custom scrolling surface."
+      Content="Gallery.Controls.ExposeAStandaloneFlourishStyledWPFScrollBarForACustomScrollingSu_9724412C"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishScrollBar"
     />
 
     <flourish:Chunk
-      Content="Orientation is native WPF state; both examples reserve the same presentation height."
+      Content="Gallery.Controls.OrientationIsNativeWPFStateBothExamplesReserveTheSamePresentatio_56B808AF"
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Moves along the vertical axis."
+          Content="Gallery.Controls.MovesAlongTheVerticalAxis_75BF7353"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Vertical"
@@ -43,7 +43,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Moves along the horizontal axis."
+          Content="Gallery.Controls.MovesAlongTheHorizontalAxis_EB176551"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Horizontal"
@@ -64,29 +64,29 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Most content should use ScrollViewer, which creates and coordinates FlourishScrollBar automatically."
-      Title="Hosting"
+      Content="Gallery.Controls.MostContentShouldUseScrollViewerWhichCreatesAndCoordinatesFlouri_90C31622"
+      Title="Gallery.Controls.Hosting_B4EC9BBA"
     >
-      <flourish:Card Title="Custom surfaces" Content="Use the standalone control only when a custom viewport owns its offset, range, commands, and synchronization." />
+      <flourish:Card Title="Gallery.Controls.CustomSurfaces_470EDA05" Content="Gallery.Controls.UseTheStandaloneControlOnlyWhenACustomViewportOwnsItsOffsetRange_A3DE4ED6" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="A custom viewport binds its offset, scrollable range, and visible extent to FlourishScrollBar. Keep Value two-way so pointer and keyboard changes immediately update the viewport, and set Orientation to Horizontal with the corresponding width bindings for a horizontal surface. Prefer ScrollViewer for ordinary application content because it creates and coordinates these bars automatically."
+          Content="Gallery.Controls.ACustomViewportBindsItsOffsetScrollableRangeAndVisibleExtentToFl_16F0A07A"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Bind a custom viewport"
+          Title="Gallery.Controls.BindACustomViewport_D1529247"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -95,10 +95,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the FlourishScrollBar API reference." Icon="&#xE8A5;" IsEnabled="False" Title="FlourishScrollBar documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheFlourishScrollBarAPIReference_6F96E77F" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.FlourishScrollBarDocumentation_33F8BEA7" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

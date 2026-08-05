@@ -7,66 +7,66 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Run application work outside the UI thread while retaining structured progress, cancellation, and completion results. The background task service is recommended for user-visible operations that must remain observable and responsive rather than for short, fire-and-forget callbacks."
+      Content="Gallery.Shell.RunApplicationWorkOutsideTheUIThreadWhileRetainingStructuredProg_5EBC59B1"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Background tasks"
+      Title="Gallery.Shell.BackgroundTasks_C6907E94"
     />
 
     <flourish:Chunk
-      Content="Queue progress-only or typed-result work with descriptive metadata, then keep the returned handle to observe or cancel that task. Use this API for imports, synchronization, report generation, and similar operations; the code below shows cooperative cancellation, progress reporting, and result retrieval."
-      Title="Task queue"
+      Content="Gallery.Shell.QueueProgressOnlyOrTypedResultWorkWithDescriptiveMetadataThenKee_5C27DD7B"
+      Title="Gallery.Shell.TaskQueue_6DAED5B2"
     >
       <StackPanel>
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE768;"
-            Content="Queue work that reports progress while it runs."
-            Title="Progress task"
+            Content="Gallery.Shell.QueueWorkThatReportsProgressWhileItRuns_0B85D081"
+            Title="Gallery.Shell.ProgressTask_0641C591"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AddProgressTask_Click" Content="Add task" />
+              <flourish:Button Click="AddProgressTask_Click" Content="Gallery.Shell.AddTask_BA423A46" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8F1;"
-            Content="Queue work that returns a captured value."
-            Title="Result task"
+            Content="Gallery.Shell.QueueWorkThatReturnsACapturedValue_5EDE3D0A"
+            Title="Gallery.Shell.ResultTask_74EBDDE6"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AddResultTask_Click" Content="Add task" />
+              <flourish:Button Click="AddResultTask_Click" Content="Gallery.Shell.AddTask_BA423A46" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8FD;"
-            Content="Queue four tasks to demonstrate bounded concurrency."
-            Title="Task burst"
+            Content="Gallery.Shell.QueueFourTasksToDemonstrateBoundedConcurrency_741BBD33"
+            Title="Gallery.Shell.TaskBurst_372EACE8"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AddBurst_Click" Content="Queue 4 tasks" />
+              <flourish:Button Click="AddBurst_Click" Content="Gallery.Shell.Queue4Tasks_45E2269C" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE711;"
-            Content="Cancel the most recently submitted task."
-            Title="Last task"
+            Content="Gallery.Shell.CancelTheMostRecentlySubmittedTask_AE008190"
+            Title="Gallery.Shell.LastTask_096AAD39"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="CancelLast_Click" Content="Cancel last" />
+              <flourish:Button Click="CancelLast_Click" Content="Gallery.Shell.CancelLast_913C9883" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Content="Cancel the task selected in the live task list."
-            Title="Selected task"
+            Content="Gallery.Shell.CancelTheTaskSelectedInTheLiveTaskList_67B2E735"
+            Title="Gallery.Shell.SelectedTask_1A3F175B"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="CancelSelected_Click" Content="Cancel selected" />
+              <flourish:Button Click="CancelSelected_Click" Content="Gallery.Shell.CancelSelected_34E18E5E" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -81,15 +81,15 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Subscribe to task changes and inspect active snapshots while work is queued, running, or cancelling. Combine the service snapshot with each handle's completion result when building status panels, activity centers, or diagnostics that must distinguish active work from recently completed outcomes."
-      Title="Task state"
+      Content="Gallery.Shell.SubscribeToTaskChangesAndInspectActiveSnapshotsWhileWorkIsQueued_F7BBAB1C"
+      Title="Gallery.Shell.TaskState_6511171D"
     >
       <StackPanel>
         <flourish:Presenter
-          Content="Queued, running, and cancelling items update through TasksChanged."
+          Content="Gallery.Shell.QueuedRunningAndCancellingItemsUpdateThroughTasksChanged_234E9419"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Live tasks"
+          Title="Gallery.Shell.LiveTasks_6CB0A11C"
         >
           <flourish:Presenter.Presentation>
             <flourish:ListBox
@@ -103,10 +103,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Completion never faults; failures and cancellation are represented in the result object."
+          Content="Gallery.Shell.CompletionNeverFaultsFailuresAndCancellationAreRepresentedInTheR_EBEAB0E5"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Recent outcomes"
+          Title="Gallery.Shell.RecentOutcomes_5605F097"
         >
           <flourish:Presenter.Presentation>
             <flourish:ListBox
@@ -122,10 +122,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

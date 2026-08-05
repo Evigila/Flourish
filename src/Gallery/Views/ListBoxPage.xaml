@@ -10,20 +10,20 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Select items through a Flourish-styled list that generates FlourishListBoxItem containers."
+      Content="Gallery.Controls.SelectItemsThroughAFlourishStyledListThatGeneratesFlourishListBo_8F517D6C"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="ListBox"
     />
 
     <flourish:Chunk
-      Content="Both appearances use the same selection model and an equal-height demonstration surface."
+      Content="Gallery.Controls.BothAppearancesUseTheSameSelectionModelAndAnEqualHeightDemonstra_949B1F42"
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="A bordered list for ordinary selectable content."
+          Content="Gallery.Controls.ABorderedListForOrdinarySelectableContent_1A8D53E9"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Standard"
@@ -36,15 +36,15 @@
               VerticalAlignment="Center"
               SelectedIndex="0"
             >
-                <flourish:FlourishListBoxItem Content="Design" />
-                <flourish:FlourishListBoxItem Content="Build" />
-                <flourish:FlourishListBoxItem Content="Verify" />
+                <flourish:FlourishListBoxItem Content="Gallery.Controls.Design_0072E6B9" />
+                <flourish:FlourishListBoxItem Content="Gallery.Controls.Build_BDD254B6" />
+                <flourish:FlourishListBoxItem Content="Gallery.Controls.Verify_EEA2745E" />
             </flourish:ListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="A borderless list for shell navigation items and group labels."
+          Content="Gallery.Controls.ABorderlessListForShellNavigationItemsAndGroupLabels_266F46C7"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Borderless"
@@ -57,49 +57,49 @@
               VerticalAlignment="Center"
               Appearance="Borderless"
             >
-                <flourish:FlourishListBoxItem Content="Workspace" IsGroupHeader="True" />
-                <flourish:FlourishListBoxItem Content="Overview" IsSelected="True" />
-                <flourish:FlourishListBoxItem Content="Settings" />
+                <flourish:FlourishListBoxItem Content="Gallery.Controls.Workspace_87BB59BA" IsGroupHeader="True" />
+                <flourish:FlourishListBoxItem Content="Gallery.Application.Overview_D4B1EA57" IsSelected="True" />
+                <flourish:FlourishListBoxItem Content="Gallery.Controls.Settings_74A883A0" />
             </flourish:ListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Bind ItemsSource for application data; the control creates FlourishListBoxItem containers automatically."
-      Title="Selection"
+      Content="Gallery.Controls.BindItemsSourceForApplicationDataTheControlCreatesFlourishListBo_8236604A"
+      Title="Gallery.Controls.Selection_CA406707"
     >
-      <flourish:Card Title="State ownership" Content="Bind SelectedItem or SelectedValue to the view model. IsCompact affects navigation geometry without changing selection state." />
+      <flourish:Card Title="Gallery.Controls.StateOwnership_29B592B3" Content="Gallery.Controls.BindSelectedItemOrSelectedValueToTheViewModelIsCompactAffectsNav_35F8E7BF" />
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="ListBox generates FlourishListBoxItem containers. Declare one explicitly only when a fixed entry needs item-level state."
+      Content="Gallery.Controls.ListBoxGeneratesFlourishListBoxItemContainersDeclareOneExplicitl_9B2428EC"
       Title="ListBoxItem"
     >
       <UniformGrid Columns="3">
-        <flourish:Card Title="Selectable" Content="Content and IsSelected describe a normal selectable entry." />
-        <flourish:Card Margin="8,0" Title="Group header" Content="IsGroupHeader creates a non-selectable label in a Borderless list." />
-        <flourish:Card Title="Command item" Content="IsCommandItem marks an entry invoked as a command rather than retained as the active destination." />
+        <flourish:Card Title="Gallery.Controls.Selectable_F84A01B2" Content="Gallery.Controls.ContentAndIsSelectedDescribeANormalSelectableEntry_4A8FE487" />
+        <flourish:Card Margin="8,0" Title="Gallery.Controls.GroupHeader_13304922" Content="Gallery.Controls.IsGroupHeaderCreatesANonSelectableLabelInABorderlessList_66E0B299" />
+        <flourish:Card Title="Gallery.Controls.CommandItem_8A79127E" Content="Gallery.Controls.IsCommandItemMarksAnEntryInvokedAsACommandRatherThanRetainedAsTh_7E5BCCCA" />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Use Standard for ordinary selectable collections. Bind ItemsSource and SelectedItem as with native WPF ListBox, using a two-way selection binding to synchronize the active view-model item. Choose Borderless when entries represent destinations or commands, and define group-header or command semantics through FlourishListBoxItem."
+          Content="Gallery.Controls.UseStandardForOrdinarySelectableCollectionsBindItemsSourceAndSel_FDD796FF"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Standard list"
+          Title="Gallery.Controls.StandardList_F08D3121"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -107,10 +107,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Use Borderless when entries represent destinations or commands. Explicit FlourishListBoxItem containers can mark group headings and command entries; IsCompact collapses their geometry without changing selection semantics."
+          Content="Gallery.Controls.UseBorderlessWhenEntriesRepresentDestinationsOrCommandsExplicitF_916349FB"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Borderless list"
+          Title="Gallery.Controls.BorderlessList_010B79F0"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ListBox&#xA;  Appearance=&quot;Borderless&quot;&#xA;  IsCompact=&quot;False&quot;&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Workspace&quot;&#xA;    IsGroupHeader=&quot;True&quot; /&gt;&#xA;  &lt;flourish:FlourishListBoxItem&#xA;    Content=&quot;Refresh&quot;&#xA;    IsCommandItem=&quot;True&quot; /&gt;&#xA;&lt;/flourish:ListBox&gt;" />
@@ -119,10 +119,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the ListBox API reference." Icon="&#xE8A5;" IsEnabled="False" Title="ListBox documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheListBoxAPIReference_689C9FC7" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.ListBoxDocumentation_73763F2F" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

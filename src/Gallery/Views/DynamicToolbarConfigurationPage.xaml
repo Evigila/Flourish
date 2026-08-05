@@ -7,21 +7,21 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Title="Dynamic toolbar"
-      Content="Associate toolbar actions with the page type that owns their workflow."
+      Title="Gallery.Application.DynamicToolbar_2B28D7DF"
+      Content="Gallery.Shell.AssociateToolbarActionsWithThePageTypeThatOwnsTheirWorkflow_973E5D96"
       PresenterMode="Split"
       PresenterPosition="Right"
     />
 
     <flourish:Chunk
-      Title="Page actions"
-      Content="The dynamic toolbar changes its commands with the active page, keeping page-specific actions close to their workflow. Enable the surface once, then associate each WPF Page type with FlourishToolbarItem values that provide display text, a glyph, and a stable command key. Use it for actions such as refresh, export, or preview; the code below demonstrates both registration overloads, including the text-only option."
+      Title="Gallery.Shell.PageActions_ADC00F39"
+      Content="Gallery.Shell.TheDynamicToolbarChangesItsCommandsWithTheActivePageKeepingPageS_B6361E4C"
     >
       <StackPanel>
         <flourish:Card
           Icon="&#xE945;"
-          Title="Toolbar items"
-          Content="Only the items registered for the active page are shown, and their command keys are dispatched through the shared command system."
+          Title="Gallery.Shell.ToolbarItems_5F1CD1DF"
+          Content="Gallery.Shell.OnlyTheItemsRegisteredForTheActivePageAreShownAndTheirCommandKey_DBEF7827"
         />
         <flourish:CodeSpace
           Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
@@ -29,10 +29,10 @@
         />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

@@ -9,12 +9,24 @@ public partial class HeaderChunkPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Title", "Names the page and uses the emphasized header title role."),
-        new("Content", "Adds supporting page context."),
-        new("Body", "Hosts controls in the same region as the copy."),
-        new("Presentation", "Hosts the page illustration or composed visual."),
-        new("PresenterMode", "Chooses Split, Overlay, or TopDown composition."),
-        new("PresenterPosition", "Places Split presentation content on the left or right."),
+        new(
+            "Title",
+            GalleryLocaleKeys.ControlsNamesThePageAndUsesTheEmphasizedHeaderTitleRole_D824091B
+        ),
+        new("Content", GalleryLocaleKeys.ControlsAddsSupportingPageContext_DE57218F),
+        new("Body", GalleryLocaleKeys.ControlsHostsControlsInTheSameRegionAsTheCopy_BD046E4D),
+        new(
+            "Presentation",
+            GalleryLocaleKeys.ControlsHostsThePageIllustrationOrComposedVisual_4F9EE000
+        ),
+        new(
+            "PresenterMode",
+            GalleryLocaleKeys.ControlsChoosesSplitOverlayOrTopDownComposition_C5760298
+        ),
+        new(
+            "PresenterPosition",
+            GalleryLocaleKeys.ControlsPlacesSplitPresentationContentOnTheLeftOrRight_42F1BD88
+        ),
     ];
 
     public HeaderChunkPage()

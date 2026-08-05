@@ -7,10 +7,10 @@ public partial class ScrollBarPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Orientation", "Chooses vertical or horizontal geometry."),
-        new("Minimum / Maximum", "Define the scrollable value range."),
-        new("Value", "Gets or sets the current offset."),
-        new("ViewportSize", "Controls thumb size relative to the range."),
+        new("Orientation", GalleryLocaleKeys.ControlsChoosesVerticalOrHorizontalGeometry_C14694AA),
+        new("Minimum / Maximum", GalleryLocaleKeys.ControlsDefineTheScrollableValueRange_7421BD50),
+        new("Value", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentOffset_999EDD1B),
+        new("ViewportSize", GalleryLocaleKeys.ControlsControlsThumbSizeRelativeToTheRange_397C9A2A),
     ];
 
     public string UsageCode { get; } =

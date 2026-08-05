@@ -10,36 +10,36 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Collect and edit a single value or a small block of text with the native WPF text contract."
+      Content="Gallery.Controls.CollectAndEditASingleValueOrASmallBlockOfTextWithTheNativeWPFTex_214CC14B"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishTextBox"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Member" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Purpose" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Use the native TextBox properties to select single-line, read-only, or multiline behavior."
-      Title="Editing"
+      Content="Gallery.Controls.UseTheNativeTextBoxPropertiesToSelectSingleLineReadOnlyOrMultili_F8FF545F"
+      Title="Gallery.Controls.Editing_FAB4539D"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Text updates through the regular WPF binding and TextChanged contracts."
+          Content="Gallery.Controls.TextUpdatesThroughTheRegularWPFBindingAndTextChangedContracts_B1BABA40"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Single line"
+          Title="Gallery.Controls.SingleLine_D66572A5"
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBox
@@ -53,10 +53,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="AcceptsReturn and TextWrapping create a bounded multiline editor."
+          Content="Gallery.Controls.AcceptsReturnAndTextWrappingCreateABoundedMultilineEditor_DE62A053"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Multiline"
+          Title="Gallery.Controls.Multiline_D3FD4F92"
         >
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBox
@@ -73,13 +73,13 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Bind Text in TwoWay mode when the value belongs to a view model, and choose PropertyChanged only when every edit must update the source. MaxLength limits input at the control boundary. Name the control when code must replace, select, or focus its value through the native TextBox methods."
+          Content="Gallery.Controls.BindTextInTwoWayModeWhenTheValueBelongsToAViewModelAndChooseProp_61CCCFF7"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Bound value"
+          Title="Gallery.Controls.BoundValue_CA1F3FD0"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -87,10 +87,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Handle TextChanged when each edit must trigger view-owned behavior that is not represented by the binding alone, such as a local character counter. The event fires for both user and application changes, so keep its handler lightweight. AcceptsReturn and TextWrapping can independently turn the same control into a bounded multiline editor."
+          Content="Gallery.Controls.HandleTextChangedWhenEachEditMustTriggerViewOwnedBehaviorThatIsN_7963AEB1"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Edit notifications"
+          Title="Gallery.Controls.EditNotifications_F44B9B2A"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishTextBox&#xA;  x:Name=&quot;NotesBox&quot;&#xA;  Height=&quot;96&quot;&#xA;  AcceptsReturn=&quot;True&quot;&#xA;  TextWrapping=&quot;Wrap&quot;&#xA;  TextChanged=&quot;NotesBox_TextChanged&quot; /&gt;&#xA;&#xA;private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)&#xA;{&#xA;    CharacterCount.Text = NotesBox.Text.Length.ToString();&#xA;}" />
@@ -99,23 +99,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Browse the Flourish source repository."
+          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Read the FlourishTextBox API reference."
+          Content="Gallery.Controls.ReadTheFlourishTextBoxAPIReference_EA748C36"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="FlourishTextBox documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.FlourishTextBoxDocumentation_07D8D1EF"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

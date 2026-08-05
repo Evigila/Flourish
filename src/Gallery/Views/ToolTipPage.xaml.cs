@@ -7,10 +7,16 @@ public partial class ToolTipPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", "Sets concise help content for the popup."),
-        new("Placement", "Uses native WPF placement with Flourish shell-region correction."),
-        new("IsOpen", "Gets or sets the popup open state."),
-        new("ToolTipService", "Controls delay, duration, and host behavior through WPF attached properties."),
+        new("Content", GalleryLocaleKeys.ControlsSetsConciseHelpContentForThePopup_5AFEF10E),
+        new(
+            "Placement",
+            GalleryLocaleKeys.ControlsUsesNativeWPFPlacementWithFlourishShellRegionCorrection_CC370C90
+        ),
+        new("IsOpen", GalleryLocaleKeys.ControlsGetsOrSetsThePopupOpenState_CEC2542B),
+        new(
+            "ToolTipService",
+            GalleryLocaleKeys.ControlsControlsDelayDurationAndHostBehaviorThroughWPFAttachedProperties_2CC65F82
+        ),
     ];
 
     public string UsageCode { get; } =

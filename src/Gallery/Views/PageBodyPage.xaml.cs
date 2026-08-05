@@ -7,9 +7,18 @@ public partial class PageBodyPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Children", "Contains the page-leading HeaderChunk and subsequent Chunk elements."),
-        new("Content", "Is owned internally by PageBody and must not be replaced by callers."),
-        new("Scrolling", "Provides the standard vertical page viewport and content margin."),
+        new(
+            "Children",
+            GalleryLocaleKeys.ControlsContainsThePageLeadingHeaderChunkAndSubsequentChunkElements_8F1F22B3
+        ),
+        new(
+            "Content",
+            GalleryLocaleKeys.ControlsIsOwnedInternallyByPageBodyAndMustNotBeReplacedByCallers_2C86637B
+        ),
+        new(
+            "Scrolling",
+            GalleryLocaleKeys.ControlsProvidesTheStandardVerticalPageViewportAndContentMargin_130DA46B
+        ),
     ];
 
     public string StructureCode { get; } =

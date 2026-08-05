@@ -7,9 +7,18 @@ public partial class GridSplitterPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Variant", "Chooses the Standard or navigation-pane layout role."),
-        new("ResizeDirection", "Chooses whether adjacent rows or columns are resized."),
-        new("ResizeBehavior", "Chooses which neighboring definitions change."),
+        new(
+            "Variant",
+            GalleryLocaleKeys.ControlsChoosesTheStandardOrNavigationPaneLayoutRole_07EFD4F3
+        ),
+        new(
+            "ResizeDirection",
+            GalleryLocaleKeys.ControlsChoosesWhetherAdjacentRowsOrColumnsAreResized_4BD32627
+        ),
+        new(
+            "ResizeBehavior",
+            GalleryLocaleKeys.ControlsChoosesWhichNeighboringDefinitionsChange_E669504A
+        ),
     ];
 
     public string UsageCode { get; } =

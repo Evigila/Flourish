@@ -7,31 +7,31 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Inspect a page created from a route that was registered after application startup. Dynamic routes are useful for optional modules, plug-ins, and user-selected workflows that cannot be fully declared during initial shell composition."
+      Content="Gallery.Controls.InspectAPageCreatedFromARouteThatWasRegisteredAfterApplicationSt_7864BE08"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Dynamic route"
+      Title="Gallery.Controls.DynamicRoute_06578B41"
     />
 
     <flourish:Chunk
-      Content="Review the page instance and parameter produced by dynamic navigation. The route registry supplies the page factory and cache policy, while the navigation service passes context to the created page; the code below shows registration and navigation with the same route key."
-      Title="Route details"
+      Content="Gallery.Controls.ReviewThePageInstanceAndParameterProducedByDynamicNavigationTheR_22E8B0EA"
+      Title="Gallery.Controls.RouteDetails_EAF60C14"
     >
       <StackPanel>
         <flourish:Presenter
-        Content="This page was not present in ConfigNavigation; its route and menu entry were registered while Gallery was already running."
+        Content="Gallery.Controls.ThisPageWasNotPresentInConfigNavigationItsRouteAndMenuEntryWereR_F0B315F9"
         PresenterMode="Split"
         PresenterPosition="Left"
-        Title="Route instance"
+        Title="Gallery.Controls.RouteInstance_85688AF6"
       >
         <flourish:Presenter.Presentation>
           <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
           >
-            <flourish:FlourishTextBlock Role="FieldLabel" Text="PAGE INSTANCE" />
+            <flourish:FlourishTextBlock Role="FieldLabel" Text="Gallery.Controls.PAGEINSTANCE_5E70553C" />
             <flourish:FlourishTextBlock x:Name="InstanceText" Foreground="{DynamicResource FlourishPrimaryForegroundBrush}" TextWrapping="Wrap" />
-            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="NAVIGATION PARAMETER" />
+            <flourish:FlourishTextBlock Role="FieldLabel" Margin="0,18,0,0" Text="Gallery.Controls.NAVIGATIONPARAMETER_97C36491" />
             <flourish:FlourishTextBlock x:Name="ParameterText" Foreground="{DynamicResource FlourishNeutralForeground1Brush}" TextWrapping="Wrap" />
           </StackPanel>
         </flourish:Presenter.Presentation>
@@ -39,10 +39,10 @@
         <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="routes.Set(new FlourishNavigationRoute(&#10;    &quot;ReportPreview&quot;,&#10;    typeof(RuntimeRoutePage),&#10;    FlourishPageCacheMode.Enabled,&#10;    provider =&gt; new RuntimeRoutePage(&#10;        provider.GetRequiredService&lt;INavigationService&gt;())));&#10;&#10;// The parameter is available to the page through navigation state.&#10;navigation.Navigate(&quot;ReportPreview&quot;, reportId);" />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the navigation documentation." Icon="&#xE946;" IsEnabled="False" Title="Navigation documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheNavigationDocumentation_7A074A0F" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Controls.NavigationDocumentation_96C77C43" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

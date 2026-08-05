@@ -9,7 +9,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="A concise display-only surface with optional title, content, and one icon."
+      Content="Gallery.Controls.AConciseDisplayOnlySurfaceWithOptionalTitleContentAndOneIcon_E6C6C7FD"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Card"
@@ -19,56 +19,56 @@
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,8"
-          Content="The default low-emphasis surface."
+          Content="Gallery.Controls.TheDefaultLowEmphasisSurface_C28E328F"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Standard"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Default card surface." Icon="&#xE8A5;" Title="Standard" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.DefaultCardSurface_47DC1F24" Icon="&#xE8A5;" Title="Standard" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,8"
-          Content="A quiet neutral surface for supporting information."
+          Content="Gallery.Controls.AQuietNeutralSurfaceForSupportingInformation_D3250801"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Tonal"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Tonal card surface." Icon="&#xE8A5;" Title="Tonal" Variant="Tonal" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.TonalCardSurface_D7BA84C5" Icon="&#xE8A5;" Title="Tonal" Variant="Tonal" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="0,8,8,0"
-          Content="A strong surface for prominent information."
+          Content="Gallery.Controls.AStrongSurfaceForProminentInformation_B85CB938"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Filled"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Filled card surface." Icon="&#xE8A5;" Title="Filled" Variant="Filled" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.FilledCardSurface_96857553" Icon="&#xE8A5;" Title="Filled" Variant="Filled" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,8,0,0"
-          Content="A raised surface for information above nearby content."
+          Content="Gallery.Controls.ARaisedSurfaceForInformationAboveNearbyContent_79C661FA"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Elevated"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Elevated card surface." Icon="&#xE8A5;" Title="Elevated" Variant="Elevated" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.ElevatedCardSurface_5B33D566" Icon="&#xE8A5;" Title="Elevated" Variant="Elevated" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid
         x:Name="CardMemberGrid"
         AutoGenerateColumns="False"
@@ -79,97 +79,97 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="PROPERTY" Width="224" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="PURPOSE" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Optional content">
+    <flourish:Chunk Title="Gallery.Controls.OptionalContent_57786ED5">
       <UniformGrid Columns="2">
         <flourish:Card
           MinHeight="160"
           Margin="0,0,8,0"
-          Content="Use Card when a title and one concise block of text are enough."
-          Title="Title and content"
+          Content="Gallery.Controls.UseCardWhenATitleAndOneConciseBlockOfTextAreEnough_BB19A8B4"
+          Title="Gallery.Controls.TitleAndContent_15BA5FDB"
         />
         <flourish:Card
           MinHeight="160"
           Margin="8,0,0,0"
-          Content="Omitting an optional region collapses both that region and its spacing."
+          Content="Gallery.Controls.OmittingAnOptionalRegionCollapsesBothThatRegionAndItsSpacing_8A211515"
           Icon="&#xE946;"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Alignment">
+    <flourish:Chunk Title="Gallery.Controls.Alignment_9D597870">
       <UniformGrid Columns="3">
         <flourish:Card
           MinHeight="176"
           Margin="0,0,8,0"
           ContentHorizontalAlignment="Left"
-          Content="Copy aligns left."
+          Content="Gallery.Controls.CopyAlignsLeft_91316731"
           Title="Left"
         />
         <flourish:Card
           MinHeight="176"
           Margin="4,0"
           ContentHorizontalAlignment="Center"
-          Content="Copy aligns center."
-          Title="Center"
+          Content="Gallery.Controls.CopyAlignsCenter_96749FF1"
+          Title="Gallery.Shell.Center_D9460674"
         />
         <flourish:Card
           MinHeight="176"
           Margin="8,0,0,0"
           ContentHorizontalAlignment="Right"
-          Content="Copy aligns right."
+          Content="Gallery.Controls.CopyAlignsRight_8BFE1FB7"
           Title="Right"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Icon position">
+    <flourish:Chunk Title="Gallery.Controls.IconPosition_AA62E053">
       <UniformGrid Columns="2">
         <flourish:Card
           MinHeight="184"
           Margin="0,0,8,8"
           Icon="&#xE8A5;"
           IconPosition="Top"
-          Content="The icon appears above the copy."
-          Title="Top icon"
+          Content="Gallery.Controls.TheIconAppearsAboveTheCopy_A4683444"
+          Title="Gallery.Controls.TopIcon_D8A8BEB7"
         />
         <flourish:Card
           MinHeight="184"
           Margin="8,0,0,8"
           Icon="&#xE8A5;"
           IconPosition="Left"
-          Content="The icon appears before the copy."
-          Title="Left icon"
+          Content="Gallery.Controls.TheIconAppearsBeforeTheCopy_16CCFA0C"
+          Title="Gallery.Controls.LeftIcon_6157C794"
         />
         <flourish:Card
           MinHeight="184"
           Margin="0,8,8,0"
           Icon="&#xE8A5;"
           IconPosition="Right"
-          Content="The icon appears after the copy."
-          Title="Right icon"
+          Content="Gallery.Controls.TheIconAppearsAfterTheCopy_2D6FD529"
+          Title="Gallery.Controls.RightIcon_F0F8EBB5"
         />
         <flourish:Card
           MinHeight="184"
           Margin="8,8,0,0"
           Icon="&#xE8A5;"
           IconPosition="Bottom"
-          Content="The icon appears below the copy."
-          Title="Bottom icon"
+          Content="Gallery.Controls.TheIconAppearsBelowTheCopy_6847127A"
+          Title="Gallery.Controls.BottomIcon_D11D8DEF"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Title="Present a concise message"
-          Content="Use Card for one optional Title, one paragraph of Content, and at most one Icon; omitted regions collapse. Choose Standard, Tonal, Filled, or Elevated according to surface emphasis, and set IconPosition to Left, Top, Right, or Bottom. Card is terminal display content—use Presenter for composed visuals and Document for multiple paragraphs."
+          Title="Gallery.Controls.PresentAConciseMessage_4C3E73AF"
+          Content="Gallery.Controls.UseCardForOneOptionalTitleOneParagraphOfContentAndAtMostOneIconO_BDC5DC20"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -180,25 +180,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Flourish GitHub repository"
-          Content="Repository link placeholder"
+          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
+          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="GitHub repository"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.GitHubRepository_50555492"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="Card documentation"
-          Content="Canonical documentation link placeholder"
+          AutomationProperties.Name="Gallery.Controls.CardDocumentation_54A3A9F0"
+          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Card documentation"
-          ToolTip="External navigation is not available in Gallery."
+          Title="Gallery.Controls.CardDocumentation_54A3A9F0"
+          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
         />
       </UniformGrid>
     </flourish:Chunk>

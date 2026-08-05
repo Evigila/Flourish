@@ -7,11 +7,20 @@ public partial class BunchedListBoxPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("ItemsSource", "Supplies data items and generates BunchedListBoxItem containers."),
-        new("SelectedItem", "Gets or sets the current selection."),
-        new("SelectionMode", "Chooses single, multiple, or extended WPF selection semantics."),
-        new("Appearance", "Chooses the Standard or Borderless surface."),
-        new("IsCompact", "Uses collapsed navigation-item geometry when true."),
+        new(
+            "ItemsSource",
+            GalleryLocaleKeys.ControlsSuppliesDataItemsAndGeneratesBunchedListBoxItemContainers_9F1AB28B
+        ),
+        new("SelectedItem", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentSelection_1F2CA123),
+        new(
+            "SelectionMode",
+            GalleryLocaleKeys.ControlsChoosesSingleMultipleOrExtendedWPFSelectionSemantics_4D921AD6
+        ),
+        new("Appearance", GalleryLocaleKeys.ControlsChoosesTheStandardOrBorderlessSurface_B401F34B),
+        new(
+            "IsCompact",
+            GalleryLocaleKeys.ControlsUsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
+        ),
     ];
 
     public string UsageCode { get; } =

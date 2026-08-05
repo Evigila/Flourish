@@ -10,20 +10,20 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Keep hover, pressed, and selection feedback continuous while the pointer moves between list items."
+      Content="Gallery.Controls.KeepHoverPressedAndSelectionFeedbackContinuousWhileThePointerMov_0D04624F"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="BunchedListBox"
     />
 
     <flourish:Chunk
-      Content="The parent list owns the interaction layer in both appearances; item containers remain visually transparent."
+      Content="Gallery.Controls.TheParentListOwnsTheInteractionLayerInBothAppearancesItemContain_568749F7"
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="A bordered collection whose equal-height rows share one moving interaction indicator."
+          Content="Gallery.Controls.ABorderedCollectionWhoseEqualHeightRowsShareOneMovingInteraction_23F83FA7"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Standard"
@@ -36,15 +36,15 @@
                 VerticalAlignment="Center"
                 SelectedIndex="0"
               >
-                <flourish:BunchedListBoxItem Content="Design" />
-                <flourish:BunchedListBoxItem Content="Build" />
-                <flourish:BunchedListBoxItem Content="Verify" />
+                <flourish:BunchedListBoxItem Content="Gallery.Controls.Design_0072E6B9" />
+                <flourish:BunchedListBoxItem Content="Gallery.Controls.Build_BDD254B6" />
+                <flourish:BunchedListBoxItem Content="Gallery.Controls.Verify_EEA2745E" />
               </flourish:BunchedListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="A borderless navigation collection with the same coordinated state layer and inherited item semantics."
+          Content="Gallery.Controls.ABorderlessNavigationCollectionWithTheSameCoordinatedStateLayerA_A5CC6256"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Borderless"
@@ -58,49 +58,49 @@
                 Appearance="Borderless"
                 SelectedIndex="1"
               >
-                <flourish:BunchedListBoxItem Content="Workspace" IsGroupHeader="True" />
-                <flourish:BunchedListBoxItem Content="Overview" />
-                <flourish:BunchedListBoxItem Content="Settings" />
+                <flourish:BunchedListBoxItem Content="Gallery.Controls.Workspace_87BB59BA" IsGroupHeader="True" />
+                <flourish:BunchedListBoxItem Content="Gallery.Application.Overview_D4B1EA57" />
+                <flourish:BunchedListBoxItem Content="Gallery.Controls.Settings_74A883A0" />
               </flourish:BunchedListBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="A single parent-owned layer renders hover and pressed feedback. Single selection uses one moving indicator; multiple selection keeps one realized indicator per selected item."
-      Title="Shared interaction layer"
+      Content="Gallery.Controls.ASingleParentOwnedLayerRendersHoverAndPressedFeedbackSingleSelec_F1A0A83E"
+      Title="Gallery.Controls.SharedInteractionLayer_1976A0CD"
     >
-      <flourish:Card Title="Native list behavior" Content="SelectionMode, keyboard navigation, data binding, scrolling, and UI virtualization continue to use the WPF ListBox implementation." />
+      <flourish:Card Title="Gallery.Controls.NativeListBehavior_3C854D7D" Content="Gallery.Controls.SelectionModeKeyboardNavigationDataBindingScrollingAndUIVirtuali_145B05F8" />
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="BunchedListBoxItem keeps its interaction background transparent so the parent-owned HoverReveal layer remains visible."
+      Content="Gallery.Controls.BunchedListBoxItemKeepsItsInteractionBackgroundTransparentSoTheP_9EC664A2"
       Title="BunchedListBoxItem"
     >
       <UniformGrid Columns="3">
-        <flourish:Card Title="Generated container" Content="Data items are wrapped automatically; explicit containers are only needed for local item state." />
-        <flourish:Card Margin="8,0" Title="Group header" Content="IsGroupHeader excludes the entry from hover and selection feedback." />
-        <flourish:Card Title="Command item" Content="IsCommandItem keeps hover feedback but does not retain the selection background." />
+        <flourish:Card Title="Gallery.Controls.GeneratedContainer_20F0EC7D" Content="Gallery.Controls.DataItemsAreWrappedAutomaticallyExplicitContainersAreOnlyNeededF_9305ED36" />
+        <flourish:Card Margin="8,0" Title="Gallery.Controls.GroupHeader_13304922" Content="Gallery.Controls.IsGroupHeaderExcludesTheEntryFromHoverAndSelectionFeedback_F70A88C3" />
+        <flourish:Card Title="Gallery.Controls.CommandItem_8A79127E" Content="Gallery.Controls.IsCommandItemKeepsHoverFeedbackButDoesNotRetainTheSelectionBackg_CA6263FD" />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Bind a data collection exactly as you would for ListBox. Generated containers are BunchedListBoxItem instances, so no per-item hover surface is required."
+          Content="Gallery.Controls.BindADataCollectionExactlyAsYouWouldForListBoxGeneratedContainer_39EA9931"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Data-bound list"
+          Title="Gallery.Controls.DataBoundList_051D209D"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -108,10 +108,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Use Multiple or Extended when several items can be selected. Only realized containers receive indicators, preserving virtualization for long collections."
+          Content="Gallery.Controls.UseMultipleOrExtendedWhenSeveralItemsCanBeSelectedOnlyRealizedCo_81435064"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Multiple selection"
+          Title="Gallery.Controls.MultipleSelection_EAE5341C"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:BunchedListBox&#xA;  ItemsSource=&quot;{Binding Tasks}&quot;&#xA;  SelectionMode=&quot;Extended&quot; /&gt;" />
@@ -120,10 +120,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the BunchedListBox API reference." Icon="&#xE8A5;" IsEnabled="False" Title="BunchedListBox documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheBunchedListBoxAPIReference_5174B065" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.BunchedListBoxDocumentation_A397C1EC" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

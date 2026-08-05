@@ -10,27 +10,27 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Host scrollable content with Flourish scroll bars, boundary handoff, and optional smooth wheel motion."
+      Content="Gallery.Controls.HostScrollableContentWithFlourishScrollBarsBoundaryHandoffAndOpt_E3F77F47"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="ScrollViewer"
     />
 
-    <flourish:Chunk Title="Table">
+    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Member" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Purpose" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="ScrollViewer uses one standard scroll-bar geometry so page content, nested surfaces, and control-owned viewports share the same visual weight."
-      Title="Standard scrollbar"
+      Content="Gallery.Controls.ScrollViewerUsesOneStandardScrollBarGeometrySoPageContentNestedS_6398896F"
+      Title="Gallery.Controls.StandardScrollbar_B73A0383"
     >
       <flourish:Presenter
-        Content="The standard scroll bar preserves a usable pointer target while keeping its visible thumb light. Wheel input moves the deepest viewport first and bubbles to the page at a boundary."
+        Content="Gallery.Controls.TheStandardScrollBarPreservesAUsablePointerTargetWhileKeepingIts_7D7D921C"
         PresenterMode="TopDown"
         PresenterPosition="Left"
         Title="Standard"
@@ -44,9 +44,9 @@
             VerticalScrollBarVisibility="Visible"
           >
               <StackPanel>
-                <flourish:Card Margin="0,0,0,8" Title="First" Content="Scroll through a bounded surface." />
-                <flourish:Card Margin="0,0,0,8" Title="Second" Content="Wheel input moves the inner viewport first." />
-                <flourish:Card Title="Third" Content="At the boundary, input may bubble to PageBody." />
+                <flourish:Card Margin="0,0,0,8" Title="Gallery.Controls.First_A151CEB1" Content="Gallery.Controls.ScrollThroughABoundedSurface_DD5A009B" />
+                <flourish:Card Margin="0,0,0,8" Title="Gallery.Controls.Second_8B88A850" Content="Gallery.Controls.WheelInputMovesTheInnerViewportFirst_8EC6BB6C" />
+                <flourish:Card Title="Gallery.Controls.Third_5E7425D7" Content="Gallery.Controls.AtTheBoundaryInputMayBubbleToPageBody_EF7CA01D" />
               </StackPanel>
           </flourish:ScrollViewer>
         </flourish:Presenter.Presentation>
@@ -54,19 +54,19 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="The deepest scrollable viewport consumes wheel input only while it can move in that direction."
-      Title="Boundary scrolling"
+      Content="Gallery.Controls.TheDeepestScrollableViewportConsumesWheelInputOnlyWhileItCanMove_3AA94F74"
+      Title="Gallery.Controls.BoundaryScrolling_4D944AD8"
     >
-      <flourish:Card Title="Nested viewports" Content="Do not add a PreviewMouseWheel handler that marks every event handled. Flourish lets outward wheel events bubble at the top and bottom." />
+      <flourish:Card Title="Gallery.Controls.NestedViewports_86E59515" Content="Gallery.Controls.DoNotAddAPreviewMouseWheelHandlerThatMarksEveryEventHandledFlour_BA4F024F" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Usage">
+    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
       <StackPanel>
         <flourish:Presenter
-          Content="Choose scroll-bar visibility with the native WPF properties and use IsSmoothScrollingEnabled to animate wheel movement. ScrollViewer always applies the standard Flourish scroll-bar geometry. Normal wheel input scrolls internally and bubbles at boundaries."
+          Content="Gallery.Controls.ChooseScrollBarVisibilityWithTheNativeWPFPropertiesAndUseIsSmoot_745213BA"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Configure the viewport"
+          Title="Gallery.Controls.ConfigureTheViewport_C5E1E1E9"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ScrollViewer&#xA;  x:Name=&quot;ContentViewport&quot;&#xA;  IsSmoothScrollingEnabled=&quot;True&quot;&#xA;  VerticalScrollBarVisibility=&quot;Auto&quot;&gt;&#xA;  &lt;StackPanel&gt;&#xA;    &lt;!-- Scrollable content --&gt;&#xA;  &lt;/StackPanel&gt;&#xA;&lt;/flourish:ScrollViewer&gt;" />
@@ -74,10 +74,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Name the viewer when code must inspect or move the viewport. The inherited WPF scrolling methods provide deliberate navigation independently of mouse-wheel behavior."
+          Content="Gallery.Controls.NameTheViewerWhenCodeMustInspectOrMoveTheViewportTheInheritedWPF_616CE67B"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Control scrolling"
+          Title="Gallery.Controls.ControlScrolling_991E410F"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="// Move to a known section after navigation.&#xA;ContentViewport.ScrollToVerticalOffset(240);&#xA;&#xA;// Or return to the start.&#xA;ContentViewport.ScrollToTop();" />
@@ -86,10 +86,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the ScrollViewer API reference." Icon="&#xE8A5;" IsEnabled="False" Title="ScrollViewer documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheScrollViewerAPIReference_AC9D5447" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.ScrollViewerDocumentation_6EC19E41" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

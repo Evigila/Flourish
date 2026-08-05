@@ -7,15 +7,15 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Manage project identities, storage paths, active selection, and title-bar integration through one shared catalog. Use project services in editors and document-based applications where shell state must follow the file or workspace selected by the user."
+      Content="Gallery.Shell.ManageProjectIdentitiesStoragePathsActiveSelectionAndTitleBarInt_A8CA15F5"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Project management"
+      Title="Gallery.Shell.ProjectManagement_329B3C46"
     />
 
     <flourish:Chunk
-      Content="Add, replace, and query project records by their stable identifier. Project records connect a display name to an existing storage file; use this catalog when navigation, window chrome, and persistence workflows need a consistent view of the user's open projects. The code below covers the collection APIs exercised by this section."
-      Title="Project catalog"
+      Content="Gallery.Shell.AddReplaceAndQueryProjectRecordsByTheirStableIdentifierProjectRe_990064D0"
+      Title="Gallery.Shell.ProjectCatalog_B5D6E5AF"
     >
       <StackPanel>
         <Grid>
@@ -31,14 +31,14 @@
         >
           <flourish:ActionCard
             Icon="&#xE8F9;"
-            Title="Project ID"
-            Content="Enter the stable, case-sensitive project identifier."
+            Title="Gallery.Shell.ProjectID_E511470B"
+            Content="Gallery.Shell.EnterTheStableCaseSensitiveProjectIdentifier_A60DBC3F"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox
                 x:Name="ProjectIdBox"
                 Width="220"
-                AutomationProperties.Name="Project ID"
+                AutomationProperties.Name="Gallery.Shell.ProjectID_E511470B"
                 Text="gallery"
               />
             </flourish:ActionCard.Body>
@@ -46,14 +46,14 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Project name"
-            Content="Enter the project name displayed by the title bar."
+            Title="Gallery.Shell.ProjectName_25498193"
+            Content="Gallery.Shell.EnterTheProjectNameDisplayedByTheTitleBar_38CC29E6"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox
                 x:Name="ProjectNameBox"
                 Width="220"
-                AutomationProperties.Name="Project name"
+                AutomationProperties.Name="Gallery.Shell.ProjectName_25498193"
                 Text="Flourish Gallery"
               />
             </flourish:ActionCard.Body>
@@ -61,45 +61,45 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE838;"
-            Title="Storage path"
-            Content="Choose an existing local file before adding, replacing, or updating a project mapping."
+            Title="Gallery.Shell.StoragePath_98D5DF60"
+            Content="Gallery.Shell.ChooseAnExistingLocalFileBeforeAddingReplacingOrUpdatingAProject_12893AAE"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox
                 x:Name="StoragePathBox"
                 Width="220"
-                AutomationProperties.Name="Project storage path"
+                AutomationProperties.Name="Gallery.Shell.ProjectStoragePath_0C226131"
               />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE710;"
-            Title="Add project"
-            Content="Register a project bound to the existing local file above and make it active."
+            Title="Gallery.Shell.AddProject_5EBD1527"
+            Content="Gallery.Shell.RegisterAProjectBoundToTheExistingLocalFileAboveAndMakeItActive_164A8DA7"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AppendProject_Click" Content="Add project" />
+              <flourish:Button Click="AppendProject_Click" Content="Gallery.Shell.AddProject_5EBD1527" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE70F;"
-            Title="Upsert project"
-            Content="Add or replace a project only when its local file exists."
+            Title="Gallery.Shell.UpsertProject_B5DDADFF"
+            Content="Gallery.Shell.AddOrReplaceAProjectOnlyWhenItsLocalFileExists_3173FA81"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="SetProject_Click" Content="Add or replace" />
+              <flourish:Button Click="SetProject_Click" Content="Gallery.Shell.AddOrReplace_73EAB0BA" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE721;"
-            Title="Find project"
-            Content="Query the registered project with the entered ID."
+            Title="Gallery.Shell.FindProject_15FF4621"
+            Content="Gallery.Shell.QueryTheRegisteredProjectWithTheEnteredID_BBEFF3C0"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="FindProject_Click" Content="Find by ID" />
+              <flourish:Button Click="FindProject_Click" Content="Gallery.Shell.FindByID_10D36113" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -110,8 +110,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Activate a registered project, update its metadata, clear the current selection, or delete it through the configured project behavior. Prefer the behavior APIs for user-facing activation and deletion because they can coordinate confirmation and persistence; direct service setters are suitable for controlled state updates. The code demonstrates both paths."
-      Title="Active project"
+      Content="Gallery.Shell.ActivateARegisteredProjectUpdateItsMetadataClearTheCurrentSelect_A7B1C1AF"
+      Title="Gallery.Shell.ActiveProject_B0018C91"
     >
       <StackPanel>
         <Grid>
@@ -127,14 +127,14 @@
         >
           <flourish:ActionCard
             Icon="&#xE8F9;"
-            Title="Project selection"
-            Content="Select a registered project to make it active."
+            Title="Gallery.Shell.ProjectSelection_ECEC46F4"
+            Content="Gallery.Shell.SelectARegisteredProjectToMakeItActive_72BEEE16"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox
                 x:Name="ActiveProjectBox"
                 Width="220"
-                AutomationProperties.Name="Active project"
+                AutomationProperties.Name="Gallery.Shell.ActiveProject_B0018C91"
                 DisplayMemberPath="Name"
                 SelectionChanged="ActiveProjectBox_SelectionChanged"
               />
@@ -143,31 +143,31 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE70F;"
-            Title="Project metadata"
-            Content="Update the selected name and path from the fields above."
+            Title="Gallery.Shell.ProjectMetadata_818043D9"
+            Content="Gallery.Shell.UpdateTheSelectedNameAndPathFromTheFieldsAbove_6800F295"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="UpdateMetadata_Click" Content="Update metadata" />
+              <flourish:Button Click="UpdateMetadata_Click" Content="Gallery.Shell.UpdateMetadata_04E7D103" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE711;"
-            Title="Active selection"
-            Content="Clear the selection without removing any project."
+            Title="Gallery.Shell.ActiveSelection_9ED83150"
+            Content="Gallery.Shell.ClearTheSelectionWithoutRemovingAnyProject_70439B68"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ClearActiveProject_Click" Content="Clear active" />
+              <flourish:Button Click="ClearActiveProject_Click" Content="Gallery.Shell.ClearActive_12573610" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE74D;"
-            Title="Delete project"
-            Content="Use the active project behavior to confirm deletion and remove a managed .txt file."
+            Title="Gallery.Shell.DeleteProject_9C0B617E"
+            Content="Gallery.Shell.UseTheActiveProjectBehaviorToConfirmDeletionAndRemoveAManagedTxt_50260BA4"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveProject_Click" Content="Delete selected" />
+              <flourish:Button Click="RemoveProject_Click" Content="Gallery.Shell.DeleteSelected_D2AB5D46" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -178,8 +178,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Enable the project-aware title selector and connect its create and save requests to the replaceable project behavior. This integration is recommended for multi-document shells that expose the active project in window chrome; the code includes startup composition, live display settings, and the default create/save workflow."
-      Title="Title bar"
+      Content="Gallery.Shell.EnableTheProjectAwareTitleSelectorAndConnectItsCreateAndSaveRequ_936625AE"
+      Title="Gallery.Application.TitleBar_11BCA4AC"
     >
       <StackPanel>
         <Grid>
@@ -190,15 +190,15 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE7B3;"
-            Title="Multi-project mode"
-            Content="Enable the project-aware title selector and dropdown."
+            Title="Gallery.Shell.MultiProjectMode_915DD5A0"
+            Content="Gallery.Shell.EnableTheProjectAwareTitleSelectorAndDropdown_474B91F6"
           >
             <flourish:ActionCard.Body>
               <flourish:CheckBox
                 x:Name="MultiProjectEnabledBox"
                 VerticalAlignment="Center"
                 Checked="MultiProjectEnabledBox_Changed"
-                Content="Enabled multi-project mode"
+                Content="Gallery.Shell.EnabledMultiProjectMode_F792C2AE"
                 Unchecked="MultiProjectEnabledBox_Changed"
               />
             </flourish:ActionCard.Body>
@@ -209,14 +209,14 @@
           >
             <flourish:ActionCard
               Icon="&#xE8D2;"
-              Title="Unnamed placeholder"
-              Content="Set the display name used for projects that do not yet have a storage path."
+              Title="Gallery.Shell.UnnamedPlaceholder_BFAB2865"
+              Content="Gallery.Shell.SetTheDisplayNameUsedForProjectsThatDoNotYetHaveAStoragePath_1E44D004"
             >
               <flourish:ActionCard.Body>
                 <flourish:FlourishTextBox
                   x:Name="UnnamedProjectPlaceholderBox"
                   Width="220"
-                  AutomationProperties.Name="Unnamed project placeholder"
+                  AutomationProperties.Name="Gallery.Shell.UnnamedProjectPlaceholder_1BA00AA9"
                   KeyDown="UnnamedProjectPlaceholderBox_KeyDown"
                   LostFocus="UnnamedProjectPlaceholderBox_LostFocus"
                 />
@@ -225,21 +225,21 @@
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
               Icon="&#xE8F2;"
-              Title="Create project"
-              Content="Open the default save picker and register a persisted project."
+              Title="Gallery.Shell.CreateProject_FA67E4D0"
+              Content="Gallery.Shell.OpenTheDefaultSavePickerAndRegisterAPersistedProject_C0D27F95"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="CreateProject_Click" Content="Create project" />
+                <flourish:Button Click="CreateProject_Click" Content="Gallery.Shell.CreateProject_FA67E4D0" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
               Icon="&#xE74E;"
-              Title="Save active project"
-              Content="Persist the active unnamed project through the registered behavior."
+              Title="Gallery.Shell.SaveActiveProject_A1E813A3"
+              Content="Gallery.Shell.PersistTheActiveUnnamedProjectThroughTheRegisteredBehavior_24A0AEF8"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="SaveActiveProject_Click" Content="Save active" />
+                <flourish:Button Click="SaveActiveProject_Click" Content="Gallery.Shell.SaveActive_9C99A2ED" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
           </StackPanel>
@@ -249,10 +249,10 @@
         <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable project-aware window chrome during application composition.&#10;builder.ConfigShell(shell =&gt; shell.UseMultiProject());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

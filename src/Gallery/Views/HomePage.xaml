@@ -7,10 +7,10 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Explore Flourish through focused, interactive examples. Each feature page explains what the API controls, where it fits in a desktop application, and lets you change live Gallery state so that the result is immediately visible."
+      Content="Gallery.Shell.ExploreFlourishThroughFocusedInteractiveExamplesEachFeaturePageE_74D8E627"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Flourish Gallery"
+      Title="Gallery.Shell.FlourishGallery_E383A04F"
     >
       <flourish:HeaderChunk.Presentation>
         <Border MinHeight="180" Background="{DynamicResource FlourishHeroBackgroundBrush}" CornerRadius="12">
@@ -28,8 +28,8 @@
     </flourish:HeaderChunk>
 
     <flourish:Chunk
-      Content="Choose a feature area to open its interactive guide. Start with Configuration for application data, Appearance and Shell for presentation, or Commands and Background tasks for application behavior; every destination combines practical controls with the code that drives them."
-      Title="Explore"
+      Content="Gallery.Shell.ChooseAFeatureAreaToOpenItsInteractiveGuideStartWithConfiguratio_E9A7BC4A"
+      Title="Gallery.Shell.Explore_3B73900B"
     >
       <UniformGrid
         x:Name="DemoGrid"
@@ -40,99 +40,99 @@
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Configuration and locale"
+          AutomationProperties.Name="Gallery.Shell.ConfigurationAndLocale_35353B16"
           Click="DemoCard_Click"
-          Content="Read, edit, append, save, reload, and switch locale."
+          Content="Gallery.Shell.ReadEditAppendSaveReloadAndSwitchLocale_76DF4139"
           Icon="&#xE713;"
           Tag="Configuration"
-          Title="Configuration &amp; locale"
+          Title="Gallery.Shell.ConfigurationLocale_7E731F1B"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Appearance"
+          AutomationProperties.Name="Gallery.Application.Appearance_3907FA7F"
           Click="DemoCard_Click"
-          Content="Theme, typography, page overrides, and material effects."
+          Content="Gallery.Shell.ThemeTypographyPageOverridesAndMaterialEffects_492AA572"
           Icon="&#xE790;"
           Tag="Appearance"
-          Title="Appearance"
+          Title="Gallery.Application.Appearance_3907FA7F"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Title bar and search"
+          AutomationProperties.Name="Gallery.Shell.TitleBarAndSearch_9A83ACC8"
           Click="DemoCard_Click"
-          Content="Identity, element visibility, title-bar availability, and search handlers."
+          Content="Gallery.Shell.IdentityElementVisibilityTitleBarAvailabilityAndSearchHandlers_26D40801"
           Icon="&#xE8A4;"
           Tag="TitleBarRuntime"
-          Title="Title bar &amp; search"
+          Title="Gallery.Shell.TitleBarSearch_89590FBD"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Projects"
+          AutomationProperties.Name="Gallery.Application.Projects_04E2A972"
           Click="DemoCard_Click"
-          Content="Register project metadata, change the active project, and handle title-bar requests."
+          Content="Gallery.Shell.RegisterProjectMetadataChangeTheActiveProjectAndHandleTitleBarRe_D4CB5B7C"
           Icon="&#xE8F9;"
           Tag="ProjectRuntime"
-          Title="Projects"
+          Title="Gallery.Application.Projects_04E2A972"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Navigation"
+          AutomationProperties.Name="Gallery.Application.Navigation_3DB65F8C"
           Click="DemoCard_Click"
-          Content="Panel placement, sizing, routes, cache, and menu items."
+          Content="Gallery.Shell.PanelPlacementSizingRoutesCacheAndMenuItems_6A4D8C17"
           Icon="&#xE700;"
           Tag="NavigationRuntime"
-          Title="Navigation"
+          Title="Gallery.Application.Navigation_3DB65F8C"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Dynamic toolbar"
+          AutomationProperties.Name="Gallery.Application.DynamicToolbar_2B28D7DF"
           Click="DemoCard_Click"
-          Content="Associate command actions with the page that owns each workflow."
+          Content="Gallery.Shell.AssociateCommandActionsWithThePageThatOwnsEachWorkflow_4A3E4136"
           Icon="&#xE945;"
           Tag="DynamicToolbarConfiguration"
-          Title="Dynamic toolbar"
+          Title="Gallery.Application.DynamicToolbar_2B28D7DF"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Commands and shortcuts"
+          AutomationProperties.Name="Gallery.Shell.CommandsAndShortcuts_2F563C72"
           Click="DemoCard_Click"
-          Content="Register, dispatch, disable, remove, and bind keyboard input."
+          Content="Gallery.Shell.RegisterDispatchDisableRemoveAndBindKeyboardInput_B95578BC"
           Icon="&#xE756;"
           Tag="Commands"
-          Title="Commands &amp; shortcuts"
+          Title="Gallery.Shell.CommandsShortcuts_04462026"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Window"
+          AutomationProperties.Name="Gallery.Application.Window_19734A1B"
           Click="DemoCard_Click"
-          Content="Window state, tray behavior, close guards, dialogs, and notifications."
+          Content="Gallery.Shell.WindowStateTrayBehaviorCloseGuardsDialogsAndNotifications_836C8064"
           Icon="&#xE737;"
           Tag="WindowRuntime"
-          Title="Window"
+          Title="Gallery.Application.Window_19734A1B"
         />
         <flourish:CardButton
           MinHeight="150"
           Margin="6"
-          AutomationProperties.Name="Background tasks"
+          AutomationProperties.Name="Gallery.Shell.BackgroundTasks_C6907E94"
           Click="DemoCard_Click"
-          Content="Queue work, observe progress, cancel, and capture results."
+          Content="Gallery.Shell.QueueWorkObserveProgressCancelAndCaptureResults_E7CAD9FD"
           Icon="&#xE895;"
           Tag="BackgroundTasks"
-          Title="Background tasks"
+          Title="Gallery.Shell.BackgroundTasks_C6907E94"
         />
       </UniformGrid>
     </flourish:Chunk>
-    <flourish:Chunk Title="Reference">
+    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Browse the Flourish source repository." Icon="&#xE943;" IsEnabled="False" Title="GitHub repository" ToolTip="External navigation is not available in Gallery." />
-        <flourish:CardButton Margin="8,0,0,0" Content="Read the canonical Flourish documentation." Icon="&#xE946;" IsEnabled="False" Title="Flourish documentation" ToolTip="External navigation is not available in Gallery." />
+        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>
