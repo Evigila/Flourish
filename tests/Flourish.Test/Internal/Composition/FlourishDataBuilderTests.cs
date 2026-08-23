@@ -13,10 +13,10 @@ public sealed class FlourishDataBuilderTests
         var sut = new FlourishDataBuilder(options);
 
         Assert.Same(sut, sut.InitLocale(" en-US "));
-        Assert.Same(sut, sut.AddLocaleFile(" Locales/lang_en-US.json "));
+        Assert.Same(sut, sut.AddLocaleFile(" Locales/Flourish.LangKey_en-US.Json "));
 
         Assert.Equal("en-US", options.Locale);
-        Assert.Equal(["Locales/lang_en-US.json"], options.LocalePaths);
+        Assert.Equal(["Locales/Flourish.LangKey_en-US.Json"], options.LocalePaths);
     }
 
     [Fact]

@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Moq;
@@ -71,11 +70,11 @@ public sealed class NavigationServiceTests
         var homePage = CreatePage();
         var settingsPage = CreatePage();
         var eventCount = 0;
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(HomePage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(HomePage)))
             .Returns(homePage);
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(SettingsPage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(SettingsPage)))
             .Returns(settingsPage);
         fixture.ContentHost.Setup(host => host.Navigate(homePage)).Returns(true);
         fixture.ContentHost.Setup(host => host.Navigate(settingsPage)).Returns(false);
@@ -173,14 +172,14 @@ public sealed class NavigationServiceTests
         var homePage = CreatePage();
         var settingsPage = CreatePage();
         var eventCount = 0;
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(HomePage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(HomePage)))
             .Returns(homePage);
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(SettingsPage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(SettingsPage)))
             .Returns(settingsPage);
-        fixture.ContentHost
-            .SetupSequence(host => host.Navigate(homePage))
+        fixture
+            .ContentHost.SetupSequence(host => host.Navigate(homePage))
             .Returns(true)
             .Returns(false);
         fixture.ContentHost.Setup(host => host.Navigate(settingsPage)).Returns(true);
@@ -205,12 +204,12 @@ public sealed class NavigationServiceTests
         var fixture = CreateFixture();
         var homePage = CreatePage();
         var settingsPage = CreatePage();
-        fixture.PageProvider
-            .SetupSequence(provider => provider.GetPage(typeof(HomePage)))
+        fixture
+            .PageProvider.SetupSequence(provider => provider.GetPage(typeof(HomePage)))
             .Returns(homePage)
             .Throws(new PageCreationException());
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(SettingsPage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(SettingsPage)))
             .Returns(settingsPage);
         fixture.ContentHost.Setup(host => host.Navigate(homePage)).Returns(true);
         fixture.ContentHost.Setup(host => host.Navigate(settingsPage)).Returns(true);
@@ -230,15 +229,15 @@ public sealed class NavigationServiceTests
         var fixture = CreateFixture();
         var homePage = CreatePage();
         var settingsPage = CreatePage();
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(HomePage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(HomePage)))
             .Returns(homePage);
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(SettingsPage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(SettingsPage)))
             .Returns(settingsPage);
         fixture.ContentHost.Setup(host => host.Navigate(homePage)).Returns(true);
-        fixture.ContentHost
-            .SetupSequence(host => host.Navigate(settingsPage))
+        fixture
+            .ContentHost.SetupSequence(host => host.Navigate(settingsPage))
             .Returns(true)
             .Returns(false);
         Assert.True(fixture.Sut.Navigate(HomeKey));
@@ -312,9 +311,7 @@ public sealed class NavigationServiceTests
         Register(options, HomeKey, typeof(HomePage));
         Register(options, SettingsKey, typeof(SettingsPage));
         var pageProvider = new Mock<INavigationPageProvider>(MockBehavior.Strict);
-        pageProvider
-            .Setup(provider => provider.GetPage(typeof(HomePage)))
-            .Returns(CreatePage());
+        pageProvider.Setup(provider => provider.GetPage(typeof(HomePage))).Returns(CreatePage());
         pageProvider
             .Setup(provider => provider.GetPage(typeof(SettingsPage)))
             .Returns(CreatePage());
@@ -383,9 +380,7 @@ public sealed class NavigationServiceTests
         INavigationRouteRegistration replacement;
         try
         {
-            replacement = routes.Append(
-                new FlourishNavigationRoute(HomeKey, typeof(HomePage))
-            );
+            replacement = routes.Append(new FlourishNavigationRoute(HomeKey, typeof(HomePage)));
         }
         finally
         {
@@ -422,9 +417,7 @@ public sealed class NavigationServiceTests
 
     private static void Register(FlourishShellOptions options, string key, Type pageType)
     {
-        options.InitialNavigationRoutes.Add(
-            new FlourishNavigationRoute(key, pageType)
-        );
+        options.InitialNavigationRoutes.Add(new FlourishNavigationRoute(key, pageType));
     }
 
     private static void SetupSuccessfulPages(
@@ -440,14 +433,12 @@ public sealed class NavigationServiceTests
         homePage = home;
         settingsPage = settings;
         galleryPage = gallery;
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(HomePage)))
-            .Returns(home);
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(SettingsPage)))
+        fixture.PageProvider.Setup(provider => provider.GetPage(typeof(HomePage))).Returns(home);
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(SettingsPage)))
             .Returns(settings);
-        fixture.PageProvider
-            .Setup(provider => provider.GetPage(typeof(GalleryPage)))
+        fixture
+            .PageProvider.Setup(provider => provider.GetPage(typeof(GalleryPage)))
             .Returns(gallery);
         fixture.ContentHost.Setup(host => host.Navigate(home)).Returns(true);
         fixture.ContentHost.Setup(host => host.Navigate(settings)).Returns(true);

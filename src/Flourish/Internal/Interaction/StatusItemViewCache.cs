@@ -1,7 +1,6 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
-using FlourishTextLayoutMode = ArkheideSystem.Flourish.Controls.FlourishTextLayoutMode;
 using FlourishTextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
+using FlourishTextLayoutMode = ArkheideSystem.Flourish.Controls.FlourishTextLayoutMode;
 using FlourishTextRole = ArkheideSystem.Flourish.Controls.FlourishTextRole;
 using WpfPanel = System.Windows.Controls.Panel;
 using WpfStackPanel = System.Windows.Controls.StackPanel;

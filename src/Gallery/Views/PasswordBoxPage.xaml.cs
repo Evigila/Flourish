@@ -1,4 +1,3 @@
-using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -13,32 +12,20 @@ public partial class PasswordBoxPage : Page
         {
             new(
                 "Password",
-                GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentPlaintextValueWithoutDataBinding_28BC0947
+                Key.Controls_GetsOrSetsTheCurrentPlaintextValueWithoutDataBinding_28BC0947
             ),
             new(
                 "SecurePassword",
-                GalleryLocaleKeys.ControlsReturnsTheCurrentValueAsAReadOnlySecureString_BCBBC3F6
+                Key.Controls_ReturnsTheCurrentValueAsAReadOnlySecureString_BCBBC3F6
             ),
-            new(
-                "PasswordChar",
-                GalleryLocaleKeys.ControlsSelectsTheGlyphUsedToMaskEachCharacter_F3405291
-            ),
-            new(
-                "MaxLength",
-                GalleryLocaleKeys.ControlsLimitsTheNumberOfAcceptedCharacters_F99BE746
-            ),
-            new(
-                "PasswordChanged",
-                GalleryLocaleKeys.ControlsReportsThatThePasswordValueChanged_3E6EEEE0
-            ),
-            new("Clear", GalleryLocaleKeys.ControlsRemovesTheCompleteCurrentPassword_9BF93B59),
-            new(
-                "SelectAll",
-                GalleryLocaleKeys.ControlsSelectsTheCompleteValueInTheInternalEditor_C8301B0D
-            ),
+            new("PasswordChar", Key.Controls_SelectsTheGlyphUsedToMaskEachCharacter_F3405291),
+            new("MaxLength", Key.Controls_LimitsTheNumberOfAcceptedCharacters_F99BE746),
+            new("PasswordChanged", Key.Controls_ReportsThatThePasswordValueChanged_3E6EEEE0),
+            new("Clear", Key.Controls_RemovesTheCompleteCurrentPassword_9BF93B59),
+            new("SelectAll", Key.Controls_SelectsTheCompleteValueInTheInternalEditor_C8301B0D),
             new(
                 "FocusEditor",
-                GalleryLocaleKeys.ControlsMovesKeyboardFocusToTheInternalPasswordEditor_6DDD9733
+                Key.Controls_MovesKeyboardFocusToTheInternalPasswordEditor_6DDD9733
             ),
         };
     }

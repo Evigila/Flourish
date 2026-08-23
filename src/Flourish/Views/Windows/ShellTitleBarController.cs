@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Services;
 
@@ -59,8 +58,7 @@ internal sealed class ShellTitleBarController : IDisposable
             searchService ?? throw new ArgumentNullException(nameof(searchService));
         this.projectSelector =
             projectSelector ?? throw new ArgumentNullException(nameof(projectSelector));
-        this.localization =
-            localization ?? throw new ArgumentNullException(nameof(localization));
+        this.localization = localization ?? throw new ArgumentNullException(nameof(localization));
         this.isNavigationEnabled =
             isNavigationEnabled ?? throw new ArgumentNullException(nameof(isNavigationEnabled));
         this.isThemeEnabled =
@@ -121,11 +119,7 @@ internal sealed class ShellTitleBarController : IDisposable
             DispatcherPriority.Input,
             new Action(() =>
             {
-                if (
-                    !isDisposed
-                    && state.IsEnabled
-                    && searchService.Current.FocusRequested
-                )
+                if (!isDisposed && state.IsEnabled && searchService.Current.FocusRequested)
                 {
                     titlebar.FocusSearchBox();
                     searchService.AcknowledgeFocusRequest();
@@ -181,9 +175,10 @@ internal sealed class ShellTitleBarController : IDisposable
             new System.Windows.Size(flyoutAnchor.ActualWidth, flyoutAnchor.ActualHeight)
         );
         var availableWidth = Math.Max(0, shellRoot.ActualWidth - EdgeSafeMargin * 2);
-        var cardWidth = applicationInfo.CardActualWidth > 0
-            ? Math.Min(applicationInfo.CardActualWidth, availableWidth)
-            : Math.Min(applicationInfo.CardWidth, availableWidth);
+        var cardWidth =
+            applicationInfo.CardActualWidth > 0
+                ? Math.Min(applicationInfo.CardActualWidth, availableWidth)
+                : Math.Min(applicationInfo.CardWidth, availableWidth);
         var desiredLeft = anchor.Left + (anchor.Width - cardWidth) / 2;
         var maximumLeft = Math.Max(
             EdgeSafeMargin,
@@ -243,10 +238,7 @@ internal sealed class ShellTitleBarController : IDisposable
             var previous = state;
             state = e.State;
             ApplyState(state, previous);
-            StateChanged?.Invoke(
-                this,
-                new ShellTitleBarStateChangedEventArgs(previous, state)
-            );
+            StateChanged?.Invoke(this, new ShellTitleBarStateChangedEventArgs(previous, state));
         });
     }
 
@@ -299,10 +291,7 @@ internal sealed class ShellTitleBarController : IDisposable
         }
     }
 
-    private void ApplyState(
-        FlourishTitleBarState current,
-        FlourishTitleBarState? previous
-    )
+    private void ApplyState(FlourishTitleBarState current, FlourishTitleBarState? previous)
     {
         state = current;
         projectSelector.SetTitleState(current);
@@ -313,10 +302,7 @@ internal sealed class ShellTitleBarController : IDisposable
         if (
             previous is null
             || !StringComparer.Ordinal.Equals(previous.LogoPath, current.LogoPath)
-            || !StringComparer.Ordinal.Equals(
-                previous.LogoFallbackText,
-                current.LogoFallbackText
-            )
+            || !StringComparer.Ordinal.Equals(previous.LogoFallbackText, current.LogoFallbackText)
             || previous.IsLogoVisible != current.IsLogoVisible
         )
         {
@@ -336,8 +322,7 @@ internal sealed class ShellTitleBarController : IDisposable
         var project = projectSelector.Current;
         titlebar.ConfigureVisibility(
             searchVisible,
-            state.IsBreadcrumbVisible
-                && state.BreadcrumbMode != BreadcrumbShowOption.Hidden,
+            state.IsBreadcrumbVisible && state.BreadcrumbMode != BreadcrumbShowOption.Hidden,
             state.IsNavigationToggleVisible && isNavigationEnabled(),
             state.IsLogoVisible,
             state.IsTitleVisible || project.IsMultiProjectEnabled,
@@ -516,10 +501,7 @@ internal sealed class ShellTitleBarController : IDisposable
             && !titlebar.Dispatcher.HasShutdownFinished
         )
         {
-            _ = titlebar.Dispatcher.BeginInvoke(
-                DispatcherPriority.DataBind,
-                new Action(Execute)
-            );
+            _ = titlebar.Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new Action(Execute));
         }
     }
 }

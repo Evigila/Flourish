@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
@@ -49,9 +48,7 @@ internal sealed class FlourishTitlebarBuilder(FlourishShellOptions options)
     )
     {
         ThrowIfFrozen();
-        options.LogoPath = logoPath is null
-            ? null
-            : ValidateNotBlank(logoPath, nameof(logoPath));
+        options.LogoPath = logoPath is null ? null : ValidateNotBlank(logoPath, nameof(logoPath));
         options.IsTitlebarLogoEnabled = enabled;
         options.ShowApplicationTitleInLogoFlyout = showApplicationTitle;
         options.ShowApplicationSubtitleInLogoFlyout = showApplicationSubTitle;

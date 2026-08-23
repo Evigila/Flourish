@@ -7,26 +7,26 @@ public partial class PresenterPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Title", GalleryLocaleKeys.ControlsRequiredExplicitHeadingForThePresentation_FCE3FE80),
+        new("Title", Key.Controls_RequiredExplicitHeadingForThePresentation_FCE3FE80),
         new(
             "Content",
-            GalleryLocaleKeys.ControlsRequiredExplicitSupportingCopyBelowTheHeading_A2E6EA83
+            Key.Controls_RequiredExplicitSupportingCopyBelowTheHeading_A2E6EA83
         ),
         new(
             "Body",
-            GalleryLocaleKeys.ControlsExplicitlyHostsControlsLeftAlignedWithTheCopy_AD5BD289
+            Key.Controls_ExplicitlyHostsControlsLeftAlignedWithTheCopy_AD5BD289
         ),
         new(
             "Presentation",
-            GalleryLocaleKeys.ControlsDefaultXAMLContentCenteredInTheRoundedSplitPresentationSurface_5A79E01D
+            Key.Controls_DefaultXAMLContentCenteredInTheRoundedSplitPresentationSurface_5A79E01D
         ),
         new(
             "PresenterMode",
-            GalleryLocaleKeys.ControlsRequiredExplicitSplitOverlayOrTopDownComposition_2E42290A
+            Key.Controls_RequiredExplicitSplitOverlayOrTopDownComposition_2E42290A
         ),
         new(
             "PresenterPosition",
-            GalleryLocaleKeys.ControlsPlacesSplitPresentationContentOnTheLeftOrRightOtherModesIgnoreIt_EF642202
+            Key.Controls_PlacesSplitPresentationContentOnTheLeftOrRightOtherModesIgnoreIt_EF642202
         ),
     ];
 

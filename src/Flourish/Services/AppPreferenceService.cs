@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -439,9 +438,7 @@ internal sealed class AppPreferenceService(
                 )
                 .ConfigureAwait(false);
             return node as JsonObject
-                ?? throw new InvalidDataException(
-                    $"{ManagedFileName} must contain a JSON object."
-                );
+                ?? throw new InvalidDataException($"{ManagedFileName} must contain a JSON object.");
         }
         catch (JsonException error)
         {
@@ -459,14 +456,9 @@ internal sealed class AppPreferenceService(
     {
         var directory =
             Path.GetDirectoryName(FilePath)
-            ?? throw new InvalidOperationException(
-                $"{ManagedFileName} has no parent directory."
-            );
+            ?? throw new InvalidOperationException($"{ManagedFileName} has no parent directory.");
         Directory.CreateDirectory(directory);
-        var temporaryPath = Path.Combine(
-            directory,
-            $".{ManagedFileName}.{Guid.NewGuid():N}.tmp"
-        );
+        var temporaryPath = Path.Combine(directory, $".{ManagedFileName}.{Guid.NewGuid():N}.tmp");
         var content = Encoding.UTF8.GetBytes(root.ToJsonString(SerializerOptions));
 
         try
@@ -682,11 +674,7 @@ internal sealed class AppPreferenceService(
                 );
             }
 
-            if (
-                !FlourishConfigurationPath.IsOwnedDescendant(
-                    string.Join(':', segments)
-                )
-            )
+            if (!FlourishConfigurationPath.IsOwnedDescendant(string.Join(':', segments)))
             {
                 throw new ArgumentException(
                     "An appsettings path must start with 'Flourish:' and identify a child value.",

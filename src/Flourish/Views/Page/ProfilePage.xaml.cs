@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Services;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -84,10 +83,7 @@ internal partial class FlourishProfilePage : WpfPage
         UpdateState();
     }
 
-    private void LocalizationService_Changed(
-        object? sender,
-        FlourishLocalizationChangedEventArgs e
-    )
+    private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
     {
         if (!Dispatcher.CheckAccess())
         {
@@ -114,9 +110,7 @@ internal partial class FlourishProfilePage : WpfPage
             LastNameInput.Text = profile.LastName;
             var imageSource = ProfileImageLoader.Load(profile.ImagePath);
             profileImageCache.Set(profile.ImagePath, imageSource);
-            selectedImagePath = imageSource is null
-                ? null
-                : profile.ImagePath;
+            selectedImagePath = imageSource is null ? null : profile.ImagePath;
             PasswordInput.Clear();
             ErrorText.Text = string.Empty;
             ApplyNameOrder(profile.NameOrder);
@@ -127,9 +121,7 @@ internal partial class FlourishProfilePage : WpfPage
         }
 
         UpdateState();
-        var firstInput = profile.NameOrder == NameOrder.FirstLast
-            ? FirstNameInput
-            : LastNameInput;
+        var firstInput = profile.NameOrder == NameOrder.FirstLast ? FirstNameInput : LastNameInput;
         firstInput.Focus();
         firstInput.SelectAll();
     }
@@ -150,7 +142,8 @@ internal partial class FlourishProfilePage : WpfPage
             Title = localizationService.Get(FlourishLocaleKeys.ProfileChooseImage),
             CheckFileExists = true,
             Multiselect = false,
-            Filter = $"{localizationService.Get(FlourishLocaleKeys.ProfileImageFiles)}"
+            Filter =
+                $"{localizationService.Get(FlourishLocaleKeys.ProfileImageFiles)}"
                 + "|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp|"
                 + $"{localizationService.Get(FlourishLocaleKeys.ProfileAllFiles)}|*.*",
         };
@@ -163,9 +156,7 @@ internal partial class FlourishProfilePage : WpfPage
         var imageSource = ProfileImageLoader.Load(dialog.FileName);
         if (imageSource is null)
         {
-            ErrorText.Text = localizationService.Get(
-                FlourishLocaleKeys.ProfileImageLoadFailed
-            );
+            ErrorText.Text = localizationService.Get(FlourishLocaleKeys.ProfileImageLoadFailed);
             return;
         }
 
@@ -202,7 +193,8 @@ internal partial class FlourishProfilePage : WpfPage
             );
             if (!result.Succeeded)
             {
-                ErrorText.Text = result.ErrorMessage
+                ErrorText.Text =
+                    result.ErrorMessage
                     ?? localizationService.Get(FlourishLocaleKeys.ProfileSignInFailed);
                 return;
             }
@@ -233,9 +225,7 @@ internal partial class FlourishProfilePage : WpfPage
         SetBusy(true);
         try
         {
-            await profileService.SetRememberLoginAsync(
-                RememberLoginCheckBox.IsChecked == true
-            );
+            await profileService.SetRememberLoginAsync(RememberLoginCheckBox.IsChecked == true);
         }
         catch (Exception error)
         {
@@ -292,15 +282,11 @@ internal partial class FlourishProfilePage : WpfPage
                     ? FlourishLocaleKeys.ProfileSignedIn
                     : FlourishLocaleKeys.ProfileSignedOut
             );
-            LoginButton.Visibility = !isSignedIn && !isEditingLogin
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-            LoginForm.Visibility = !isSignedIn && isEditingLogin
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-            SignedInPanel.Visibility = isSignedIn
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            LoginButton.Visibility =
+                !isSignedIn && !isEditingLogin ? Visibility.Visible : Visibility.Collapsed;
+            LoginForm.Visibility =
+                !isSignedIn && isEditingLogin ? Visibility.Visible : Visibility.Collapsed;
+            SignedInPanel.Visibility = isSignedIn ? Visibility.Visible : Visibility.Collapsed;
             RememberLoginCheckBox.IsChecked =
                 profileService.LoginState == ProfileLoginState.SignedInRemembered;
         }
@@ -343,13 +329,9 @@ internal partial class FlourishProfilePage : WpfPage
             AvatarImage.Fill = imageBrush;
         }
 
-        AvatarImage.Visibility = imageBrush is null
-            ? Visibility.Collapsed
-            : Visibility.Visible;
+        AvatarImage.Visibility = imageBrush is null ? Visibility.Collapsed : Visibility.Visible;
         AvatarInitials.Text = profile.Initials;
-        AvatarInitials.Visibility = imageBrush is null
-            ? Visibility.Visible
-            : Visibility.Collapsed;
+        AvatarInitials.Visibility = imageBrush is null ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void SetBusy(bool isBusy)

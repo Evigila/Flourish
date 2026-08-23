@@ -7,16 +7,16 @@ public partial class ListBoxPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Appearance", GalleryLocaleKeys.ControlsChoosesTheStandardOrBorderlessSurface_B401F34B),
+        new("Appearance", Key.Controls_ChoosesTheStandardOrBorderlessSurface_B401F34B),
         new(
             "IsCompact",
-            GalleryLocaleKeys.ControlsUsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
+            Key.Controls_UsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
         ),
         new(
             "ItemsSource",
-            GalleryLocaleKeys.ControlsSuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50
+            Key.Controls_SuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50
         ),
-        new("SelectedItem", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentSelection_1F2CA123),
+        new("SelectedItem", Key.Controls_GetsOrSetsTheCurrentSelection_1F2CA123),
     ];
 
     public string UsageCode { get; } =

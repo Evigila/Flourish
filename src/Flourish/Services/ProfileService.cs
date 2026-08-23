@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -37,8 +36,7 @@ internal sealed class ProfileService : IProfileService
 
     public ProfileUser CurrentProfile { get; private set; }
 
-    public ProfileLoginState LoginState { get; private set; } =
-        ProfileLoginState.SignedOut;
+    public ProfileLoginState LoginState { get; private set; } = ProfileLoginState.SignedOut;
 
     public NameOrder NameOrder { get; private set; }
 
@@ -188,27 +186,19 @@ internal sealed class ProfileService : IProfileService
             if (currentCredentials is null || LoginState == ProfileLoginState.SignedOut)
             {
                 throw new InvalidOperationException(
-                    localizationService.Get(
-                        FlourishLocaleKeys.ProfileRememberLoginRequiresSignIn
-                    )
+                    localizationService.Get(FlourishLocaleKeys.ProfileRememberLoginRequiresSignIn)
                 );
             }
 
             var nextState = rememberLogin
                 ? ProfileLoginState.SignedInRemembered
                 : ProfileLoginState.SignedIn;
-            if (
-                currentCredentials.RememberLogin == rememberLogin
-                && LoginState == nextState
-            )
+            if (currentCredentials.RememberLogin == rememberLogin && LoginState == nextState)
             {
                 return;
             }
 
-            var updatedCredentials = currentCredentials with
-            {
-                RememberLogin = rememberLogin,
-            };
+            var updatedCredentials = currentCredentials with { RememberLogin = rememberLogin };
             if (rememberLogin)
             {
                 await secretStore
@@ -252,9 +242,10 @@ internal sealed class ProfileService : IProfileService
 
             NameOrder = nameOrder;
             defaultProfile = WithNameOrder(defaultProfile, nameOrder);
-            CurrentProfile = LoginState == ProfileLoginState.SignedOut
-                ? defaultProfile
-                : WithNameOrder(CurrentProfile, nameOrder);
+            CurrentProfile =
+                LoginState == ProfileLoginState.SignedOut
+                    ? defaultProfile
+                    : WithNameOrder(CurrentProfile, nameOrder);
             changed = CreateChangedEventArgs();
         }
         finally
@@ -319,12 +310,7 @@ internal sealed class ProfileService : IProfileService
 
     private static ProfileUser WithNameOrder(ProfileUser profile, NameOrder nameOrder)
     {
-        return new ProfileUser(
-            profile.FirstName,
-            profile.LastName,
-            nameOrder,
-            profile.ImagePath
-        );
+        return new ProfileUser(profile.FirstName, profile.LastName, nameOrder, profile.ImagePath);
     }
 
     private void RaiseProfileChanged(ProfileChangedEventArgs? changed)

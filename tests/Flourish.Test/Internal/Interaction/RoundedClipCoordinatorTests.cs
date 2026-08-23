@@ -1,8 +1,6 @@
-using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Threading;
 using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
@@ -31,10 +29,7 @@ public sealed class RoundedClipCoordinatorTests
         StaTest.Run(() =>
         {
             var asymmetric = Assert.IsType<StreamGeometry>(
-                RoundedClipGeometry.Create(
-                    new Size(100, 40),
-                    new CornerRadius(2, 4, 6, 8)
-                )
+                RoundedClipGeometry.Create(new Size(100, 40), new CornerRadius(2, 4, 6, 8))
             );
             var constrained = Assert.IsType<RectangleGeometry>(
                 RoundedClipGeometry.Create(new Size(20, 10), new CornerRadius(12))
@@ -98,10 +93,7 @@ public sealed class RoundedClipCoordinatorTests
                 Assert.Equal(initialBuildCount + 1, coordinator.GeometryBuildCount);
                 DispatcherTest.DrainApplicationIdle();
                 Assert.Equal(initialBuildCount + 2, coordinator.GeometryBuildCount);
-                Assert.Equal(
-                    10,
-                    Assert.IsType<RectangleGeometry>(clipHost.Clip).RadiusX
-                );
+                Assert.Equal(10, Assert.IsType<RectangleGeometry>(clipHost.Clip).RadiusX);
 
                 coordinator.Detach();
                 surface.CornerRadius = new CornerRadius(12);
@@ -115,5 +107,4 @@ public sealed class RoundedClipCoordinatorTests
             }
         });
     }
-
 }

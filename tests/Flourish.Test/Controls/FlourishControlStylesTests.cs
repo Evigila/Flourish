@@ -30,49 +30,49 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 public sealed class FlourishControlStylesTests
 {
     private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+        "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     public static TheoryData<string> CanonicalResourceDictionaries =>
         new()
         {
             GenericThemeSource,
-            "/Flourish;component/Themes/Layout.xaml",
-            "/Flourish;component/Themes/Typography.xaml",
-            "/Flourish;component/Themes/Colors/Colors.xaml",
-            "/Flourish;component/Themes/Colors/Colors.Light.xaml",
-            "/Flourish;component/Themes/Colors/Colors.Dark.xaml",
-            "/Flourish;component/Themes/Controls.xaml",
-            "/Flourish;component/Controls/Button.xaml",
-            "/Flourish;component/Controls/WindowCaptionButton.xaml",
-            "/Flourish;component/Controls/CardButton.xaml",
-            "/Flourish;component/Controls/Chunk.xaml",
-            "/Flourish;component/Controls/HeaderChunk.xaml",
-            "/Flourish;component/Controls/Presenter.xaml",
-            "/Flourish;component/Controls/Paragraph.xaml",
-            "/Flourish;component/Controls/Document.xaml",
-            "/Flourish;component/Controls/CodeSpace.xaml",
-            "/Flourish;component/Controls/Card.xaml",
-            "/Flourish;component/Controls/ActionCard.xaml",
-            "/Flourish;component/Controls/OutputCard.xaml",
-            "/Flourish;component/Controls/Overlay.xaml",
-            "/Flourish;component/Controls/CheckBox.xaml",
-            "/Flourish;component/Controls/ComboBox.xaml",
-            "/Flourish;component/Controls/ComboBoxItem.xaml",
-            "/Flourish;component/Controls/GridSplitter.xaml",
-            "/Flourish;component/Controls/Label.xaml",
-            "/Flourish;component/Controls/ListBox.xaml",
-            "/Flourish;component/Controls/ListBoxItem.xaml",
-            "/Flourish;component/Controls/BunchedListBox.xaml",
-            "/Flourish;component/Controls/BunchedListBoxItem.xaml",
-            "/Flourish;component/Controls/PasswordBox.xaml",
-            "/Flourish;component/Controls/RadioButton.xaml",
-            "/Flourish;component/Controls/ScrollBar.xaml",
-            "/Flourish;component/Controls/ScrollViewer.xaml",
-            "/Flourish;component/Controls/PageBody.xaml",
-            "/Flourish;component/Controls/SearchBox.xaml",
-            "/Flourish;component/Controls/TextBlock.xaml",
-            "/Flourish;component/Controls/TextBox.xaml",
-            "/Flourish;component/Controls/ToolTip.xaml",
+            "/Arkheide.Flourish;component/Themes/Layout.xaml",
+            "/Arkheide.Flourish;component/Themes/Typography.xaml",
+            "/Arkheide.Flourish;component/Themes/Colors/Colors.xaml",
+            "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml",
+            "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml",
+            "/Arkheide.Flourish;component/Themes/Controls.xaml",
+            "/Arkheide.Flourish;component/Controls/Button.xaml",
+            "/Arkheide.Flourish;component/Controls/WindowCaptionButton.xaml",
+            "/Arkheide.Flourish;component/Controls/CardButton.xaml",
+            "/Arkheide.Flourish;component/Controls/Chunk.xaml",
+            "/Arkheide.Flourish;component/Controls/HeaderChunk.xaml",
+            "/Arkheide.Flourish;component/Controls/Presenter.xaml",
+            "/Arkheide.Flourish;component/Controls/Paragraph.xaml",
+            "/Arkheide.Flourish;component/Controls/Document.xaml",
+            "/Arkheide.Flourish;component/Controls/CodeSpace.xaml",
+            "/Arkheide.Flourish;component/Controls/Card.xaml",
+            "/Arkheide.Flourish;component/Controls/ActionCard.xaml",
+            "/Arkheide.Flourish;component/Controls/OutputCard.xaml",
+            "/Arkheide.Flourish;component/Controls/Overlay.xaml",
+            "/Arkheide.Flourish;component/Controls/CheckBox.xaml",
+            "/Arkheide.Flourish;component/Controls/ComboBox.xaml",
+            "/Arkheide.Flourish;component/Controls/ComboBoxItem.xaml",
+            "/Arkheide.Flourish;component/Controls/GridSplitter.xaml",
+            "/Arkheide.Flourish;component/Controls/Label.xaml",
+            "/Arkheide.Flourish;component/Controls/ListBox.xaml",
+            "/Arkheide.Flourish;component/Controls/ListBoxItem.xaml",
+            "/Arkheide.Flourish;component/Controls/BunchedListBox.xaml",
+            "/Arkheide.Flourish;component/Controls/BunchedListBoxItem.xaml",
+            "/Arkheide.Flourish;component/Controls/PasswordBox.xaml",
+            "/Arkheide.Flourish;component/Controls/RadioButton.xaml",
+            "/Arkheide.Flourish;component/Controls/ScrollBar.xaml",
+            "/Arkheide.Flourish;component/Controls/ScrollViewer.xaml",
+            "/Arkheide.Flourish;component/Controls/PageBody.xaml",
+            "/Arkheide.Flourish;component/Controls/SearchBox.xaml",
+            "/Arkheide.Flourish;component/Controls/TextBlock.xaml",
+            "/Arkheide.Flourish;component/Controls/TextBox.xaml",
+            "/Arkheide.Flourish;component/Controls/ToolTip.xaml",
         };
 
     [Theory]
@@ -580,10 +580,10 @@ public sealed class FlourishControlStylesTests
         StaTest.Run(() =>
         {
             var light = LoadResourceDictionary(
-                "/Flourish;component/Themes/Colors/Colors.Light.xaml"
+                "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml"
             );
             var dark = LoadResourceDictionary(
-                "/Flourish;component/Themes/Colors/Colors.Dark.xaml"
+                "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml"
             );
             var lightKeys = light.Keys.Cast<object>().ToHashSet();
             var darkKeys = dark.Keys.Cast<object>().ToHashSet();

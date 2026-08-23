@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
 using MediaColor = System.Windows.Media.Color;
@@ -54,11 +53,7 @@ internal static class FlourishPreferenceConfiguration
         ApplyWindow(configuration, shell);
         ApplyNavigation(configuration, shell);
         ApplyMotion(configuration, shell);
-        ApplyAppearance(
-            configuration,
-            shell,
-            materialPlatform ?? MaterialEffectPlatform.Current
-        );
+        ApplyAppearance(configuration, shell, materialPlatform ?? MaterialEffectPlatform.Current);
         ApplyFontAndLayout(configuration, shell);
 
         if (
@@ -82,7 +77,11 @@ internal static class FlourishPreferenceConfiguration
     {
         if (
             shell.UsePersistedWindowSize
-            && TryGetDouble(configuration, $"{FlourishPreferenceKeys.WindowSize}:Width", out var width)
+            && TryGetDouble(
+                configuration,
+                $"{FlourishPreferenceKeys.WindowSize}:Width",
+                out var width
+            )
             && TryGetDouble(
                 configuration,
                 $"{FlourishPreferenceKeys.WindowSize}:Height",
@@ -128,11 +127,7 @@ internal static class FlourishPreferenceConfiguration
 
         if (
             shell.UsePersistedWindowTopmost
-            && TryGetBoolean(
-                configuration,
-                FlourishPreferenceKeys.WindowTopmost,
-                out var topmost
-            )
+            && TryGetBoolean(configuration, FlourishPreferenceKeys.WindowTopmost, out var topmost)
         )
         {
             shell.WindowTopmost = topmost;
@@ -149,8 +144,7 @@ internal static class FlourishPreferenceConfiguration
             && Enum.IsDefined(parsedCloseBehavior)
         )
         {
-            shell.IsTrayExitEnabled =
-                parsedCloseBehavior == WindowCloseBehavior.MinimizeToTray;
+            shell.IsTrayExitEnabled = parsedCloseBehavior == WindowCloseBehavior.MinimizeToTray;
         }
     }
 
@@ -388,10 +382,7 @@ internal static class FlourishPreferenceConfiguration
         }
     }
 
-    private static void ApplyFontAndLayout(
-        IConfiguration configuration,
-        FlourishShellOptions shell
-    )
+    private static void ApplyFontAndLayout(IConfiguration configuration, FlourishShellOptions shell)
     {
         if (shell.UsePersistedFont)
         {
@@ -407,8 +398,7 @@ internal static class FlourishPreferenceConfiguration
                 && TryGetDouble(configuration, $"{prefix}:Large", out var large)
                 && TryGetDouble(configuration, $"{prefix}:ExtraLarge", out var extraLarge)
                 && TryGetDouble(configuration, $"{prefix}:Header", out var header)
-                && new[] { small, standard, icon, large, extraLarge, header }
-                    .All(IsPositiveFinite)
+                && new[] { small, standard, icon, large, extraLarge, header }.All(IsPositiveFinite)
             )
             {
                 shell.FontFamily = family.Trim();
@@ -442,17 +432,10 @@ internal static class FlourishPreferenceConfiguration
         }
     }
 
-    private static bool TryGetBoolean(
-        IConfiguration configuration,
-        string key,
-        out bool value
-    ) => bool.TryParse(configuration[key], out value);
+    private static bool TryGetBoolean(IConfiguration configuration, string key, out bool value) =>
+        bool.TryParse(configuration[key], out value);
 
-    private static bool TryGetDouble(
-        IConfiguration configuration,
-        string key,
-        out double value
-    ) =>
+    private static bool TryGetDouble(IConfiguration configuration, string key, out double value) =>
         double.TryParse(
             configuration[key],
             NumberStyles.Float,
@@ -460,14 +443,13 @@ internal static class FlourishPreferenceConfiguration
             out value
         );
 
-    private static bool TryGetDuration(
-        IConfiguration configuration,
-        string key,
-        out TimeSpan value
-    )
+    private static bool TryGetDuration(IConfiguration configuration, string key, out TimeSpan value)
     {
         value = default;
-        if (!TryGetDouble(configuration, key, out var milliseconds) || !IsPositiveFinite(milliseconds))
+        if (
+            !TryGetDouble(configuration, key, out var milliseconds)
+            || !IsPositiveFinite(milliseconds)
+        )
         {
             return false;
         }
@@ -476,19 +458,11 @@ internal static class FlourishPreferenceConfiguration
         return true;
     }
 
-    private static bool TryGetEnum<TEnum>(
-        IConfiguration configuration,
-        string key,
-        out TEnum value
-    )
+    private static bool TryGetEnum<TEnum>(IConfiguration configuration, string key, out TEnum value)
         where TEnum : struct, Enum =>
         Enum.TryParse(configuration[key], ignoreCase: true, out value) && Enum.IsDefined(value);
 
-    private static bool TryGetColor(
-        IConfiguration configuration,
-        string key,
-        out MediaColor color
-    )
+    private static bool TryGetColor(IConfiguration configuration, string key, out MediaColor color)
     {
         color = default;
         var value = configuration[key];

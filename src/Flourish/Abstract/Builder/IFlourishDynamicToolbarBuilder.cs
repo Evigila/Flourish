@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// builder.ConfigDynamicToolbar(toolbar =>
 /// {
 ///     toolbar.InitToolbarItems<ReportsPage>(
-///         new FlourishToolbarItem("Export", "\uE898", "reports.export"));
+///         new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
 /// });
 /// ]]></code>
 /// </example>
@@ -27,7 +27,7 @@ public interface IFlourishDynamicToolbarBuilder
     /// <code><![CDATA[
     /// toolbar.InitToolbarItems<ReportsPage>(
     ///     iconOnly: true,
-    ///     new FlourishToolbarItem("Export", "\uE898", "reports.export"));
+    ///     new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
     /// ]]></code>
     /// </example>
     IFlourishDynamicToolbarBuilder InitToolbarItems<TPage>(

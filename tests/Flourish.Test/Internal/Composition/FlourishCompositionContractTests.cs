@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,9 +74,7 @@ public sealed class FlourishCompositionContractTests
             .CreateDefaultBuilder([])
             .ConfigData(data => data.InitLocale("zh-CN"))
             .ConfigTitleBar(titleBar =>
-                titleBar
-                    .InitApplicationTitle("Configured")
-                    .UseThemeToggle(mode: FlourishTheme.Dark)
+                titleBar.InitApplicationTitle("Configured").UseThemeToggle(mode: FlourishTheme.Dark)
             )
             .ConfigNavigation(navigation =>
                 navigation
@@ -87,9 +84,7 @@ public sealed class FlourishCompositionContractTests
             )
             .ConfigMotion(motion =>
                 motion
-                    .UseHoverRevealAnimation(
-                        duration: TimeSpan.FromMilliseconds(250)
-                    )
+                    .UseHoverRevealAnimation(duration: TimeSpan.FromMilliseconds(250))
                     .UseSystemReducedMotion(false)
             )
             .ConfigWindow(window =>
@@ -205,9 +200,7 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<TitleBarService, ITitleBarService>(flourish);
         AssertSingletonAdapter<ProjectCatalogStore, IProjectCatalogStore>(flourish);
         AssertSingletonAdapter<ProjectService, IProjectService>(flourish);
-        Assert.IsType<DefaultProjectBehavior>(
-            flourish.GetRequiredService<IProjectBehavior>()
-        );
+        Assert.IsType<DefaultProjectBehavior>(flourish.GetRequiredService<IProjectBehavior>());
         AssertSingletonAdapter<TitleBarSearchService, ITitleBarSearchService>(flourish);
         AssertSingletonAdapter<WindowService, IWindowService>(flourish);
         AssertSingletonAdapter<WindowCloseService, IWindowCloseService>(flourish);
@@ -223,8 +216,8 @@ public sealed class FlourishCompositionContractTests
         var customBehavior = new TestProjectBehavior();
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigServices((_, services) =>
-                services.AddSingleton<IProjectBehavior>(customBehavior)
+            .ConfigServices(
+                (_, services) => services.AddSingleton<IProjectBehavior>(customBehavior)
             );
 
         using var flourish = builder.Build();
@@ -237,9 +230,7 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigStatusBar(statusBar =>
-                statusBar.UseLanConnectionStatus().UsePowerStatus()
-            );
+            .ConfigStatusBar(statusBar => statusBar.UseLanConnectionStatus().UsePowerStatus());
 
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
@@ -256,11 +247,13 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigServices((_, services) =>
-            {
-                services.AddNavigable<HomePage>("Home", "H");
-                services.AddNavigable<HomePage>("Start", "S");
-            });
+            .ConfigServices(
+                (_, services) =>
+                {
+                    services.AddNavigable<HomePage>("Home", "H");
+                    services.AddNavigable<HomePage>("Start", "S");
+                }
+            );
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
 
@@ -272,15 +265,19 @@ public sealed class FlourishCompositionContractTests
     public void Build_WithMultipleInitialPages_ThrowsInvalidOperationException()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigServices((_, services) =>
-            {
-                services.AddNavigable<HomePage>("Home", "H");
-                services.AddNavigable<SettingsPage>("Settings", "S");
-            })
+            .ConfigServices(
+                (_, services) =>
+                {
+                    services.AddNavigable<HomePage>("Home", "H");
+                    services.AddNavigable<SettingsPage>("Settings", "S");
+                }
+            )
             .ConfigNavigation(navigation =>
             {
-                navigation.AddGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<HomePage>(isInitial: true)
+                navigation.AddGroup(
+                    null,
+                    groupId: 0,
+                    group => group.AddNavigableViewItem<HomePage>(isInitial: true)
                 );
                 navigation.AddFixedNavigableViewItem<SettingsPage>(isInitial: true);
             });
@@ -294,18 +291,24 @@ public sealed class FlourishCompositionContractTests
     public void Build_OrdersGroupsAndCreatesHeaders()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigServices((_, services) =>
-            {
-                services.AddNavigable<HomePage>("Home", "H");
-                services.AddNavigable<SettingsPage>("Settings", "S");
-            })
+            .ConfigServices(
+                (_, services) =>
+                {
+                    services.AddNavigable<HomePage>("Home", "H");
+                    services.AddNavigable<SettingsPage>("Settings", "S");
+                }
+            )
             .ConfigNavigation(navigation =>
             {
-                navigation.AddGroup("Second", groupId: 2, group =>
-                    group.AddNavigableViewItem<SettingsPage>()
+                navigation.AddGroup(
+                    "Second",
+                    groupId: 2,
+                    group => group.AddNavigableViewItem<SettingsPage>()
                 );
-                navigation.AddGroup("First", groupId: 1, group =>
-                    group.AddNavigableViewItem<HomePage>()
+                navigation.AddGroup(
+                    "First",
+                    groupId: 1,
+                    group => group.AddNavigableViewItem<HomePage>()
                 );
             });
 
@@ -331,9 +334,7 @@ public sealed class FlourishCompositionContractTests
 
     private static IFlourishBuilder CreateNavigationBuilder()
     {
-        return FlourishBuilder
-            .CreateDefaultBuilder([])
-            .ConfigShell(shell => shell.UseNavigation());
+        return FlourishBuilder.CreateDefaultBuilder([]).ConfigShell(shell => shell.UseNavigation());
     }
 
     private static void AssertSingletonAdapter<TConcrete, TContract>(IFlourish flourish)
@@ -352,9 +353,8 @@ public sealed class FlourishCompositionContractTests
 
     private sealed class TestProjectBehavior : IProjectBehavior
     {
-        public ValueTask<bool> CreateProjectAsync(
-            CancellationToken cancellationToken = default
-        ) => ValueTask.FromResult(true);
+        public ValueTask<bool> CreateProjectAsync(CancellationToken cancellationToken = default) =>
+            ValueTask.FromResult(true);
 
         public ValueTask<bool> SaveActiveProjectAsync(
             CancellationToken cancellationToken = default
@@ -370,8 +370,7 @@ public sealed class FlourishCompositionContractTests
             CancellationToken cancellationToken = default
         ) => ValueTask.FromResult(true);
 
-        public ValueTask<bool> CanCloseAsync(
-            CancellationToken cancellationToken = default
-        ) => ValueTask.FromResult(true);
+        public ValueTask<bool> CanCloseAsync(CancellationToken cancellationToken = default) =>
+            ValueTask.FromResult(true);
     }
 }

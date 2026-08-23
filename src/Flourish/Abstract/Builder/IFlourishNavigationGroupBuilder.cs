@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// navigation.AddGroup("Navigation", groupId: 0, group =>
 /// {
 ///     group.AddNavigableViewItem<HomePage>(isInitial: true);
-///     group.AddNavigableItem("Refresh", "\uE72C", "navigation.refresh");
+///     group.AddNavigableItem("Refresh", "\uE72C", "cmd_navigation_refresh");
 /// });
 /// ]]></code>
 /// </example>
@@ -57,8 +57,8 @@ public interface IFlourishNavigationGroupBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
-    /// group.AddNavigableItem("Export", "\uE898", "reports.export");
+    /// group.AddNavigableItem("Refresh", "\uE72C", "cmd_reports_refresh");
+    /// group.AddNavigableItem("Export", "\uE898", "cmd_reports_export");
     /// ]]></code>
     /// </example>
     IFlourishNavigationGroupBuilder AddNavigableItem(

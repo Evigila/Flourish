@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -92,7 +91,7 @@ public sealed class NavigationRuntimeSurfaceTests
                     "runtime-command",
                     "Run",
                     "R",
-                    "demo.run",
+                    "cmd_demo_run",
                     parentId: "home-demo"
                 )
             );
@@ -136,27 +135,19 @@ public sealed class NavigationRuntimeSurfaceTests
     public void NavigationMenu_AppendAndInsertHaveDistinctOrderingSemantics()
     {
         var options = new FlourishShellOptions();
-        var sut = new NavigationMenuService(
-            options,
-            new NavigationRouteRegistry(options)
-        );
+        var sut = new NavigationMenuService(options, new NavigationRouteRegistry(options));
 
         sut.Set(editor =>
         {
             editor.AppendGroup("last");
             editor.SetGroupIndex("first", index: 0);
-            editor.AppendItem(
-                "first",
-                FlourishNavigationMenuItem.Command("last-item", "Last")
-            );
+            editor.AppendItem("first", FlourishNavigationMenuItem.Command("last-item", "Last"));
             editor.SetItemIndex(
                 "first",
                 FlourishNavigationMenuItem.Command("first-item", "First"),
                 index: 0
             );
-            editor.AppendFixedItem(
-                FlourishNavigationMenuItem.Command("last-fixed", "Last fixed")
-            );
+            editor.AppendFixedItem(FlourishNavigationMenuItem.Command("last-fixed", "Last fixed"));
             editor.SetFixedItemIndex(
                 FlourishNavigationMenuItem.Command("first-fixed", "First fixed"),
                 index: 0
@@ -168,10 +159,7 @@ public sealed class NavigationRuntimeSurfaceTests
             ["first-item", "last-item"],
             sut.Current.Groups[0].Items.Select(item => item.Id)
         );
-        Assert.Equal(
-            ["first-fixed", "last-fixed"],
-            sut.Current.FixedItems.Select(item => item.Id)
-        );
+        Assert.Equal(["first-fixed", "last-fixed"], sut.Current.FixedItems.Select(item => item.Id));
     }
 
     [Fact]
@@ -187,11 +175,7 @@ public sealed class NavigationRuntimeSurfaceTests
                 editor.AppendGroup("runtime");
                 editor.AppendItem(
                     "runtime",
-                    FlourishNavigationMenuItem.Page(
-                        "missing",
-                        "NotRegistered",
-                        "Missing"
-                    )
+                    FlourishNavigationMenuItem.Page("missing", "NotRegistered", "Missing")
                 );
             })
         );
@@ -268,7 +252,7 @@ public sealed class NavigationRuntimeSurfaceTests
                 "C",
                 0,
                 FlourishNavigationItemKind.Command,
-                commandKey: "child.run",
+                commandKey: "cmd_child_run",
                 childId: 7,
                 id: "child-command"
             )
@@ -280,7 +264,7 @@ public sealed class NavigationRuntimeSurfaceTests
                 "S",
                 0,
                 FlourishNavigationItemKind.Command,
-                commandKey: "sibling.run",
+                commandKey: "cmd_sibling_run",
                 id: "sibling-command"
             )
         );
@@ -361,10 +345,7 @@ public sealed class NavigationRuntimeSurfaceTests
         Assert.NotNull(routes.Get("Home"));
         var item = Assert.Single(Assert.Single(menu.Current.Groups).Items);
         Assert.Equal("home-menu", item.Id);
-        Assert.Equal(
-            typeof(ReplacementHomePage),
-            Assert.Single(options.NavigationItems).PageType
-        );
+        Assert.Equal(typeof(ReplacementHomePage), Assert.Single(options.NavigationItems).PageType);
         Assert.Equal(1, menu.Current.Version);
 
         replacement!.Dispose();
@@ -373,9 +354,7 @@ public sealed class NavigationRuntimeSurfaceTests
     private static FlourishShellOptions CreateRouteOptions()
     {
         var options = new FlourishShellOptions();
-        options.InitialNavigationRoutes.Add(
-            new FlourishNavigationRoute("Home", typeof(HomePage))
-        );
+        options.InitialNavigationRoutes.Add(new FlourishNavigationRoute("Home", typeof(HomePage)));
         return options;
     }
 

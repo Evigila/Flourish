@@ -1,5 +1,4 @@
 using System.IO;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
@@ -26,9 +25,7 @@ internal sealed class FlourishDataBuilder(FlourishDataOptions options)
         return this;
     }
 
-    public IFlourishDataBuilder InitAppSettingsFilePath(
-        string path = "appsettings.Flourish.json"
-    )
+    public IFlourishDataBuilder InitAppSettingsFilePath(string path = "appsettings.Flourish.json")
     {
         ThrowIfFrozen();
         options.AppSettingsFilePath = ResolveFilePath(path, nameof(path));
@@ -56,9 +53,14 @@ internal sealed class FlourishDataBuilder(FlourishDataOptions options)
             throw new ArgumentException("A file path cannot identify a directory.", parameterName);
         }
 
-        if (!string.Equals(Path.GetExtension(fullPath), ".json", StringComparison.OrdinalIgnoreCase))
+        if (
+            !string.Equals(Path.GetExtension(fullPath), ".json", StringComparison.OrdinalIgnoreCase)
+        )
         {
-            throw new ArgumentException("A settings file path must use the .json extension.", parameterName);
+            throw new ArgumentException(
+                "A settings file path must use the .json extension.",
+                parameterName
+            );
         }
 
         return fullPath;

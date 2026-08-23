@@ -2,6 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.PresenterPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -10,18 +11,18 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.CombineCopyAndControlsWithImagesIllustrationsOrGroupsOfIconsInOn_3FA3ADBF"
+      Content="{culture:Localize Key=Controls_CombineCopyAndControlsWithImagesIllustrationsOrGroupsOfIconsInOn_3FA3ADBF}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Presenter"
     />
 
     <flourish:Chunk
-      Content="Gallery.Controls.EachDiagramSummarizesACompositionTheFullWidthLiveExamplesFollowT_952A6319"
+      Content="{culture:Localize Key=Controls_EachDiagramSummarizesACompositionTheFullWidthLiveExamplesFollowT_952A6319}"
       Title="Variant"
     >
       <UniformGrid Columns="3">
-        <flourish:Presenter Margin="0,0,8,0" Content="Gallery.Controls.PlacesPresentationBesideTheCopyAndBodyRegion_FF81A68E" PresenterMode="TopDown" PresenterPosition="Left" Title="Split">
+        <flourish:Presenter Margin="0,0,8,0" Content="{culture:Localize Key=Controls_PlacesPresentationBesideTheCopyAndBodyRegion_FF81A68E}" PresenterMode="TopDown" PresenterPosition="Left" Title="Split">
           <flourish:Presenter.Presentation>
             <Grid
               Width="320"
@@ -38,7 +39,7 @@
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="4,0" Content="Gallery.Controls.LayersTheCopyAndBodyRegionOverPresentation_F73367E8" PresenterMode="TopDown" PresenterPosition="Left" Title="Overlay">
+        <flourish:Presenter Margin="4,0" Content="{culture:Localize Key=Controls_LayersTheCopyAndBodyRegionOverPresentation_F73367E8}" PresenterMode="TopDown" PresenterPosition="Left" Title="Overlay">
           <flourish:Presenter.Presentation>
             <Grid
               Width="320"
@@ -51,7 +52,7 @@
             </Grid>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:Presenter Margin="8,0,0,0" Content="Gallery.Controls.PlacesPresentationAboveTheCopyAndBodyRegionAndMayShareARowWithPe_4926FF66" PresenterMode="TopDown" PresenterPosition="Left" Title="TopDown">
+        <flourish:Presenter Margin="8,0,0,0" Content="{culture:Localize Key=Controls_PlacesPresentationAboveTheCopyAndBodyRegionAndMayShareARowWithPe_4926FF66}" PresenterMode="TopDown" PresenterPosition="Left" Title="TopDown">
           <flourish:Presenter.Presentation>
             <Grid
               Width="320"
@@ -71,32 +72,32 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Property_40040CB1}" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.SplitPlacesPresentationBesideTheCopyAndBodyRegion_6DD84EA6"
+      Content="{culture:Localize Key=Controls_SplitPlacesPresentationBesideTheCopyAndBodyRegion_6DD84EA6}"
       Title="Split"
     >
       <StackPanel>
         <flourish:Presenter
-          Content="Gallery.Controls.PresentationDefaultsToTheLeftBodySharesTheCopyRegionAndStaysAlig_60DAF47E"
+          Content="{culture:Localize Key=Controls_PresentationDefaultsToTheLeftBodySharesTheCopyRegionAndStaysAlig_60DAF47E}"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Gallery.Controls.LeftPresentationDefault_5AD2213C"
+          Title="{culture:Localize Key=Controls_LeftPresentationDefault_5AD2213C}"
         >
           <flourish:Presenter.Body>
-            <flourish:Button Content="Gallery.Controls.ExploreLayout_559848C8" Variant="Filled" />
+            <flourish:Button Content="{culture:Localize Key=Controls_ExploreLayout_559848C8}" Variant="Filled" />
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -113,13 +114,13 @@
 
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="Gallery.Controls.PresenterPositionRightMovesPresentationToTheRightWhileTitleConte_5C0E08C4"
+          Content="{culture:Localize Key=Controls_PresenterPositionRightMovesPresentationToTheRightWhileTitleConte_5C0E08C4}"
           PresenterMode="Split"
           PresenterPosition="Right"
-          Title="Gallery.Controls.RightPresentation_0EA252BB"
+          Title="{culture:Localize Key=Controls_RightPresentation_0EA252BB}"
         >
           <flourish:Presenter.Body>
-            <flourish:Button Content="Gallery.Controls.OpenDetails_67D16BB1" Variant="Tonal" />
+            <flourish:Button Content="{culture:Localize Key=Controls_OpenDetails_67D16BB1}" Variant="Tonal" />
           </flourish:Presenter.Body>
           <flourish:Presenter.Presentation>
             <flourish:FlourishTextBlock
@@ -135,17 +136,17 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.OverlayLayersCopyAndBodyOverPresentation_BCDA8D28"
+      Content="{culture:Localize Key=Controls_OverlayLayersCopyAndBodyOverPresentation_BCDA8D28}"
       Title="Overlay"
     >
       <flourish:Presenter
-        Content="Gallery.Controls.ThePresentationFillsTheSurfaceWhileTheCopyRemainsReadableAboveIt_16A46196"
+        Content="{culture:Localize Key=Controls_ThePresentationFillsTheSurfaceWhileTheCopyRemainsReadableAboveIt_16A46196}"
         PresenterMode="Overlay"
         PresenterPosition="Right"
-        Title="Gallery.Controls.LayeredPresentation_A98EC299"
+        Title="{culture:Localize Key=Controls_LayeredPresentation_A98EC299}"
       >
         <flourish:Presenter.Body>
-          <flourish:Button Content="Gallery.Controls.OverlayAction_99B0CE74" Variant="Filled" />
+          <flourish:Button Content="{culture:Localize Key=Controls_OverlayAction_99B0CE74}" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
           <Grid>
@@ -166,17 +167,17 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.TopDownPlacesPresentationAboveALeftAlignedCopyAndBodyRegion_98106B33"
+      Content="{culture:Localize Key=Controls_TopDownPlacesPresentationAboveALeftAlignedCopyAndBodyRegion_98106B33}"
       Title="TopDown"
     >
       <flourish:Presenter
-        Content="Gallery.Controls.UseTheVerticalCompositionWhenThePresentedVisualShouldEstablishCo_4B39E373"
+        Content="{culture:Localize Key=Controls_UseTheVerticalCompositionWhenThePresentedVisualShouldEstablishCo_4B39E373}"
         PresenterMode="TopDown"
         PresenterPosition="Right"
-        Title="Gallery.Controls.TopDownPresentation_D2629731"
+        Title="{culture:Localize Key=Controls_TopDownPresentation_D2629731}"
       >
         <flourish:Presenter.Body>
-          <flourish:Button Content="Gallery.Controls.Continue_31FBEF16" Variant="Filled" />
+          <flourish:Button Content="{culture:Localize Key=Controls_Continue_31FBEF16}" Variant="Filled" />
         </flourish:Presenter.Body>
         <flourish:Presenter.Presentation>
           <StackPanel
@@ -192,26 +193,26 @@
       </flourish:Presenter>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.ChoosingASurface_CF128427">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_ChoosingASurface_CF128427}">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
-          Content="Gallery.Controls.UseCardWhenConciseCopyNeedsExactlyOneIconAndNoArbitraryChildCont_35E9E94E"
-          Title="Gallery.Controls.OneIcon_4563EB62"
+          Content="{culture:Localize Key=Controls_UseCardWhenConciseCopyNeedsExactlyOneIconAndNoArbitraryChildCont_35E9E94E}"
+          Title="{culture:Localize Key=Controls_OneIcon_4563EB62}"
         />
         <flourish:Card
           Margin="8,0,0,0"
-          Content="Gallery.Controls.UsePresenterForImagesMultipleIconsIllustrationsOrControlsArrange_46DFD6A5"
-          Title="Gallery.Controls.RichPresentation_F63DA29B"
+          Content="{culture:Localize Key=Controls_UsePresenterForImagesMultipleIconsIllustrationsOrControlsArrange_46DFD6A5}"
+          Title="{culture:Localize Key=Controls_RichPresentation_F63DA29B}"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Title="Gallery.Controls.ArrangeASplitPresentation_A85F75CF"
-          Content="Gallery.Controls.SplitIsTheStandardFullWidthArrangementLeftPlacesPresentationOnTh_76F638A9"
+          Title="{culture:Localize Key=Controls_ArrangeASplitPresentation_A85F75CF}"
+          Content="{culture:Localize Key=Controls_SplitIsTheStandardFullWidthArrangementLeftPlacesPresentationOnTh_76F638A9}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -221,8 +222,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Gallery.Controls.AddAnActionBesideTheCopy_E75BC351"
-          Content="Gallery.Controls.AssignASupportingControlThroughPresenterBodyBodyStaysInTheSameCo_DDE93AE4"
+          Title="{culture:Localize Key=Controls_AddAnActionBesideTheCopy_E75BC351}"
+          Content="{culture:Localize Key=Controls_AssignASupportingControlThroughPresenterBodyBodyStaysInTheSameCo_DDE93AE4}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -232,8 +233,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Gallery.Controls.PlaceAWidePresentationAboveTheCopy_7769E5B5"
-          Content="Gallery.Controls.TopDownIsTheOnlyPresenterModeIntendedForMultiColumnPlacementItPu_FE61B683"
+          Title="{culture:Localize Key=Controls_PlaceAWidePresentationAboveTheCopy_7769E5B5}"
+          Content="{culture:Localize Key=Controls_TopDownIsTheOnlyPresenterModeIntendedForMultiColumnPlacementItPu_FE61B683}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -243,8 +244,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Title="Gallery.Controls.LayerCopyOverAVisual_D306134E"
-          Content="Gallery.Controls.OverlayFillsTheSurfaceWithPresentationAndDrawsTheCopySideContent_8079F97D"
+          Title="{culture:Localize Key=Controls_LayerCopyOverAVisual_D306134E}"
+          Content="{culture:Localize Key=Controls_OverlayFillsTheSurfaceWithPresentationAndDrawsTheCopySideContent_8079F97D}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -255,23 +256,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
+          Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Gallery.Controls.ReadThePresenterGuide_8D2233F1"
+          Content="{culture:Localize Key=Controls_ReadThePresenterGuide_8D2233F1}"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="Gallery.Controls.PresenterDocumentation_B2ED4CD5"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_PresenterDocumentation_B2ED4CD5}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

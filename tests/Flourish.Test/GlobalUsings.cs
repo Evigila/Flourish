@@ -6,7 +6,6 @@ global using ArkheideSystem.Flourish.Internal.Layout;
 global using ArkheideSystem.Flourish.Internal.Localization;
 global using ArkheideSystem.Flourish.Internal.Model.Navigation;
 global using ArkheideSystem.Flourish.Internal.Model.Profile;
-global using ArkheideSystem.Flourish.Internal.Model.Shell;
 global using ArkheideSystem.Flourish.Internal.Navigation;
 global using ArkheideSystem.Flourish.Internal.Validation;
 global using ArkheideSystem.Flourish.Internal.Windows;

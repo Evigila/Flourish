@@ -34,8 +34,8 @@ builder.ConfigShell(shell =>
 builder.ConfigDynamicToolbar(toolbar =>
 {
     toolbar.InitToolbarItems<ReportsPage>(
-        new FlourishToolbarItem("刷新", "\uE72C", "reports.refresh"),
-        new FlourishToolbarItem("导出", "\uE898", "reports.export"));
+        new FlourishToolbarItem("刷新", "\uE72C", "cmd_reports_refresh"),
+        new FlourishToolbarItem("导出", "\uE898", "cmd_reports_export"));
 });
 ```
 
@@ -46,7 +46,7 @@ builder.ConfigDynamicToolbar(toolbar =>
 ```csharp
 toolbar.InitToolbarItems<EditorPage>(
     icon: false,
-    new FlourishToolbarItem("预览", "\uE8A7", "editor.preview"));
+    new FlourishToolbarItem("预览", "\uE8A7", "cmd_editor_preview"));
 ```
 
 ## 工具栏项字段
@@ -59,7 +59,7 @@ toolbar.InitToolbarItems<EditorPage>(
 | `IconGlyph` | 启用图标显示时使用的图标字形。 |
 | `CommandKey` | 可选的命令键，通过 `ICommandDispatcher` 调度。 |
 
-命令键应使用稳定、带命名空间的名称，例如 `reports.export` 或 `editor.preview`。显示文本本地化时，命令键仍保持不变。
+命令键应使用稳定的 `cmd_` 前缀和下划线分段，例如 `cmd_reports_export` 或 `cmd_editor_preview`。显示文本本地化时，命令键仍保持不变。
 
 ## 处理命令
 
@@ -67,7 +67,7 @@ toolbar.InitToolbarItems<EditorPage>(
 
 ```csharp
 ICommandRegistration exportCommand = commands.Register(
-    "reports.export",
+    "cmd_reports_export",
     async (_, token) =>
     {
         await exporter.ExportAsync(token);

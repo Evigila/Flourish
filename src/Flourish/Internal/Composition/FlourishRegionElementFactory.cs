@@ -1,6 +1,4 @@
 using System.Windows;
-using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ButtonBase = ArkheideSystem.Flourish.Controls.Button;
 
@@ -50,11 +48,7 @@ internal static class FlourishRegionElementFactory
     {
         ButtonBase button = string.IsNullOrWhiteSpace(iconGlyph)
             ? new ButtonBase { Content = displayText }
-            : new ButtonBase
-            {
-                Icon = iconGlyph,
-                Content = displayText,
-            };
+            : new ButtonBase { Icon = iconGlyph, Content = displayText };
         button.Margin = new Thickness(8, -2, 0, -2);
         button.Height = 28;
         button.MinWidth = 28;
@@ -86,8 +80,7 @@ internal static class FlourishRegionElementFactory
             if (!string.IsNullOrWhiteSpace(commandKey))
             {
                 if (
-                    services.GetService(typeof(ICommandDispatcher))
-                    is ICommandDispatcher dispatcher
+                    services.GetService(typeof(ICommandDispatcher)) is ICommandDispatcher dispatcher
                 )
                 {
                     await dispatcher.ExecuteAsync(commandKey, source: commandSource);
@@ -113,11 +106,13 @@ internal static class FlourishRegionElementFactory
         if (!string.IsNullOrWhiteSpace(iconGlyph))
         {
             text.Role = FlourishTextRole.Icon;
-            text.SetResourceReference(FlourishTextBlock.FontFamilyProperty, "FlourishIconFontFamily");
+            text.SetResourceReference(
+                FlourishTextBlock.FontFamilyProperty,
+                "FlourishIconFontFamily"
+            );
         }
 
         text.SetResourceReference(FlourishTextBlock.FontSizeProperty, fontSizeResourceKey);
         return text;
     }
-
 }

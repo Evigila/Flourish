@@ -1,5 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
-
 namespace ArkheideSystem.Flourish.Internal.Validation;
 
 internal static class FlourishMessageOptionValidator
@@ -28,7 +26,10 @@ internal static class FlourishMessageOptionValidator
         {
             if (choice is null)
             {
-                throw new ArgumentException("Message options cannot contain null.", nameof(choices));
+                throw new ArgumentException(
+                    "Message options cannot contain null.",
+                    nameof(choices)
+                );
             }
 
             if (string.IsNullOrWhiteSpace(choice.Id))

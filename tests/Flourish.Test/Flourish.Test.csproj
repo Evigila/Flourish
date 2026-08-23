@@ -9,6 +9,9 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <RunSettingsFilePath>$(MSBuildThisFileDirectory)coverage.runsettings</RunSettingsFilePath>
+    <ArkheideEssentialCultureGeneratorEnabled>false</ArkheideEssentialCultureGeneratorEnabled>
+    <ArkheideEssentialCultureAutoCreate>false</ArkheideEssentialCultureAutoCreate>
+    <ArkheideEssentialCultureAutoInclude>false</ArkheideEssentialCultureAutoInclude>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,8 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Flourish\Flourish.csproj" />
+    <ProjectReference Include="..\..\src\Flourish\Arkheide.Flourish.csproj" />
     <ProjectReference Include="..\..\src\Gallery\Gallery.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\src\Gallery\Localization\Culture.json"
+          Link="Culture.json"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

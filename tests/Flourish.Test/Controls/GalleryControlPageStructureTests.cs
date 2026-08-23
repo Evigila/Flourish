@@ -389,7 +389,7 @@ public sealed class GalleryControlPageStructureTests
                 continue;
             }
 
-            var page = XDocument.Load(path);
+            var page = GalleryLocalizationTestResolver.LoadXaml(path);
             if (page.Root?.Name.LocalName != "Page")
             {
                 continue;
@@ -432,7 +432,7 @@ public sealed class GalleryControlPageStructureTests
             )
         )
         {
-            var page = XDocument.Load(path);
+            var page = GalleryLocalizationTestResolver.LoadXaml(path);
             var splitPresenters = page
                 .Descendants()
                 .Where(element =>
@@ -992,7 +992,7 @@ public sealed class GalleryControlPageStructureTests
     {
         foreach (var path in Directory.EnumerateFiles(ViewsRoot, "*Page.xaml"))
         {
-            var page = XDocument.Load(path);
+            var page = GalleryLocalizationTestResolver.LoadXaml(path);
             var variantChunks = page
                 .Descendants()
                 .Where(element =>
@@ -1064,7 +1064,7 @@ public sealed class GalleryControlPageStructureTests
             )
         )
         {
-            var page = XDocument.Load(path);
+            var page = GalleryLocalizationTestResolver.LoadXaml(path);
             var presentations = page
                 .Descendants()
                 .Where(element => element.Name.LocalName == "Presenter.Presentation");
@@ -1091,7 +1091,7 @@ public sealed class GalleryControlPageStructureTests
     {
         foreach (var path in Directory.EnumerateFiles(ViewsRoot, "*Page.xaml"))
         {
-            var page = XDocument.Load(path);
+            var page = GalleryLocalizationTestResolver.LoadXaml(path);
             var multiColumnLayouts = page
                 .Descendants()
                 .Where(element =>
@@ -1281,7 +1281,7 @@ public sealed class GalleryControlPageStructureTests
     }
 
     private static XDocument LoadPage(string fileName) =>
-        XDocument.Load(Path.Combine(ViewsRoot, fileName));
+        GalleryLocalizationTestResolver.LoadXaml(Path.Combine(ViewsRoot, fileName));
 
     private static void AssertCanonicalPresentationRoot(XElement presentationRoot)
     {

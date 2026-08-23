@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using Button = ArkheideSystem.Flourish.Controls.Button;
@@ -75,11 +74,7 @@ internal sealed class ShellNotificationController : IDisposable
     {
         lock (refreshGate)
         {
-            if (
-                isDisposed
-                || e.Version <= appliedVersion
-                || e.Version <= pendingVersion
-            )
+            if (isDisposed || e.Version <= appliedVersion || e.Version <= pendingVersion)
             {
                 return;
             }
@@ -134,11 +129,7 @@ internal sealed class ShellNotificationController : IDisposable
         var activeIds = notifications
             .Select(info => info.Notification.Id)
             .ToHashSet(StringComparer.Ordinal);
-        foreach (
-            var removedId in viewsById.Keys
-                .Where(id => !activeIds.Contains(id))
-                .ToArray()
-        )
+        foreach (var removedId in viewsById.Keys.Where(id => !activeIds.Contains(id)).ToArray())
         {
             if (viewsById.Remove(removedId, out var removed))
             {
@@ -261,10 +252,7 @@ internal sealed class ShellNotificationController : IDisposable
             ? Visibility.Collapsed
             : Visibility.Visible;
         view.Dismiss.Tag = definition.Id;
-        AutomationProperties.SetName(
-            view.Container,
-            $"{definition.Title}: {definition.Message}"
-        );
+        AutomationProperties.SetName(view.Container, $"{definition.Title}: {definition.Message}");
         view.Version = info.Version;
     }
 

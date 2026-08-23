@@ -1,11 +1,8 @@
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using System.Windows.Threading;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using FlourishNavigationService = ArkheideSystem.Flourish.Services.NavigationService;
@@ -14,8 +11,7 @@ namespace ArkheideSystem.Flourish.Test.Services;
 
 public sealed class FrameNavigationContentHostTests
 {
-    private const string XamlNamespace =
-        "http://schemas.microsoft.com/winfx/2006/xaml";
+    private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
 
     [Fact]
     public void ShellFrames_UseTheParentJournalPolicy()
@@ -26,9 +22,7 @@ public sealed class FrameNavigationContentHostTests
             .Select(file => XDocument.Load(Path.Combine(windowsViewRoot, file)))
             .SelectMany(document => document.Descendants())
             .Where(element => element.Name.LocalName == "Frame")
-            .Where(element =>
-                (string?)element.Attribute(name) is "RootFrame" or "ProfileFrame"
-            )
+            .Where(element => (string?)element.Attribute(name) is "RootFrame" or "ProfileFrame")
             .ToArray();
 
         Assert.Equal(2, frames.Length);
@@ -137,15 +131,9 @@ public sealed class FrameNavigationContentHostTests
         Assert.Empty(frame.ForwardStack?.Cast<object>() ?? []);
     }
 
-    private static void Register(
-        FlourishShellOptions options,
-        string navigationKey,
-        Type pageType
-    )
+    private static void Register(FlourishShellOptions options, string navigationKey, Type pageType)
     {
-        options.InitialNavigationRoutes.Add(
-            new FlourishNavigationRoute(navigationKey, pageType)
-        );
+        options.InitialNavigationRoutes.Add(new FlourishNavigationRoute(navigationKey, pageType));
     }
 
     private static string GetShellXamlPath()

@@ -15,11 +15,11 @@ public partial class WindowCaptionButtonPage : Page
     [
         new(
             "Variant",
-            GalleryLocaleKeys.ControlsUsesTextForOrdinaryCaptionActionsAndDangerForClose_B98A046B
+            Key.Controls_UsesTextForOrdinaryCaptionActionsAndDangerForClose_B98A046B
         ),
-        new("Icon", GalleryLocaleKeys.ControlsSuppliesTheCaptionGlyph_F1AD27EF),
-        new("Command", GalleryLocaleKeys.ControlsConnectsActivationToAWindowOwnedAction_ABB942F5),
-        new("IsEnabled", GalleryLocaleKeys.ControlsControlsKeyboardAndPointerActivation_6A5B63B0),
-        new("ToolTip", GalleryLocaleKeys.ControlsNamesTheIconOnlyCaptionAction_90AA1580),
+        new("Icon", Key.Controls_SuppliesTheCaptionGlyph_F1AD27EF),
+        new("Command", Key.Controls_ConnectsActivationToAWindowOwnedAction_ABB942F5),
+        new("IsEnabled", Key.Controls_ControlsKeyboardAndPointerActivation_6A5B63B0),
+        new("ToolTip", Key.Controls_NamesTheIconOnlyCaptionAction_90AA1580),
     ];
 }

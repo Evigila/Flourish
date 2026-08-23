@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Gallery.Localization;
 using ArkheideSystem.Gallery.Models;
 
 namespace ArkheideSystem.Gallery.Views;
@@ -8,44 +7,38 @@ namespace ArkheideSystem.Gallery.Views;
 public partial class OutputCardPage : Page
 {
     private const int BurstMessageCount = 24;
-    private readonly IGalleryLocalization localization;
     private int messageSequence;
 
-    public OutputCardPage(IGalleryLocalization localization)
+    public OutputCardPage()
     {
-        this.localization = localization;
         InitializeComponent();
         OutputCardMemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Output", GalleryLocaleKeys.ControlsGetsTheCompleteAppendOnlyOutputText_42EB24EB),
+            new("Output", Key.Controls_GetsTheCompleteAppendOnlyOutputText_42EB24EB),
             new(
                 "WriteLine",
-                GalleryLocaleKeys.ControlsAppendsOneLineAndScrollsTheViewportToTheLatestOutput_7EFCD505
+                Key.Controls_AppendsOneLineAndScrollsTheViewportToTheLatestOutput_7EFCD505
             ),
-            new("Clear", GalleryLocaleKeys.ControlsRemovesTheCompleteOutputHistory_5CC4506C),
+            new("Clear", Key.Controls_RemovesTheCompleteOutputHistory_5CC4506C),
         };
+        HistoryOutput.WriteLine(Localizer.Parse(Key.Runtime_OutputCardIsReady_D7FB9A68));
         HistoryOutput.WriteLine(
-            localization.Get(GalleryLocaleKeys.RuntimeOutputCardIsReady_D7FB9A68)
-        );
-        HistoryOutput.WriteLine(
-            localization.Get(
-                GalleryLocaleKeys.RuntimeEachActionAppendsALineInsteadOfReplacingHistory_3DF3CAE2
+            Localizer.Parse(
+                Key.Runtime_EachActionAppendsALineInsteadOfReplacingHistory_3DF3CAE2
             )
         );
     }
 
     private void AppendMessage_Click(object sender, RoutedEventArgs e) =>
-        WriteMessage(
-            localization.Get(GalleryLocaleKeys.RuntimeTheSampleOperationCompleted_1BE5D5D5)
-        );
+        WriteMessage(Localizer.Parse(Key.Runtime_TheSampleOperationCompleted_1BE5D5D5));
 
     private void AppendBurst_Click(object sender, RoutedEventArgs e)
     {
         for (var index = 1; index <= BurstMessageCount; index++)
         {
             WriteMessage(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeBurstEntry0Of1_11AD7242,
+                Localizer.Parse(
+                    Key.Runtime_BurstEntry0Of1_11AD7242,
                     index,
                     BurstMessageCount
                 )
@@ -57,8 +50,8 @@ public partial class OutputCardPage : Page
     {
         var characterCount = HistoryOutput.Output.Length;
         WriteMessage(
-            localization.Format(
-                GalleryLocaleKeys.RuntimeTheHistoryContained0CharactersBeforeThisSummary_269B14EE,
+            Localizer.Parse(
+                Key.Runtime_TheHistoryContained0CharactersBeforeThisSummary_269B14EE,
                 characterCount
             )
         );
@@ -74,8 +67,8 @@ public partial class OutputCardPage : Page
     {
         messageSequence++;
         HistoryOutput.WriteLine(
-            localization.Format(
-                GalleryLocaleKeys.RuntimeText0HHMmSsMessage12_6A44E992,
+            Localizer.Parse(
+                Key.Runtime_Text0HHMmSsMessage12_6A44E992,
                 DateTimeOffset.Now,
                 messageSequence,
                 message

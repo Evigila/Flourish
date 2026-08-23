@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -16,9 +15,7 @@ public sealed class ShellNotificationControllerTests
     {
         StaTest.Run(() =>
         {
-            using var service = new NotificationService(
-                NullLogger<NotificationService>.Instance
-            );
+            using var service = new NotificationService(NullLogger<NotificationService>.Instance);
             var host = new FlourishNotificationHost();
             using var controller = new ShellNotificationController(
                 host,
@@ -28,11 +25,7 @@ public sealed class ShellNotificationControllerTests
             for (var index = 0; index < 6; index++)
             {
                 service.Show(
-                    new FlourishNotification(
-                        $"id-{index}",
-                        $"Title {index}",
-                        $"Message {index}"
-                    )
+                    new FlourishNotification($"id-{index}", $"Title {index}", $"Message {index}")
                 );
             }
 
@@ -41,17 +34,12 @@ public sealed class ShellNotificationControllerTests
             Assert.Equal(5, host.Items.Children.Count);
             Assert.Equal(
                 ["Title 5", "Title 4", "Title 3", "Title 2", "Title 1"],
-                host.Items.Children
-                    .Cast<UIElement>()
-                    .Select(item =>
-                        AutomationProperties.GetName(item).Split(':', 2)[0]
-                    )
+                host.Items.Children.Cast<UIElement>()
+                    .Select(item => AutomationProperties.GetName(item).Split(':', 2)[0])
             );
             var newestView = host.Items.Children[0];
 
-            service.Upsert(
-                new FlourishNotification("id-5", "Updated", "Updated message")
-            );
+            service.Upsert(new FlourishNotification("id-5", "Updated", "Updated message"));
             DispatcherTest.DrainApplicationIdle();
 
             Assert.Same(newestView, host.Items.Children[0]);
@@ -74,22 +62,16 @@ public sealed class ShellNotificationControllerTests
     {
         StaTest.Run(() =>
         {
-            using var service = new NotificationService(
-                NullLogger<NotificationService>.Instance
-            );
+            using var service = new NotificationService(NullLogger<NotificationService>.Instance);
             var dispatcher = new RecordingCommandDispatcher();
             var host = new FlourishNotificationHost();
-            using var controller = new ShellNotificationController(
-                host,
-                service,
-                dispatcher
-            );
+            using var controller = new ShellNotificationController(host, service, dispatcher);
             service.Show(
                 new FlourishNotification(
                     "action",
                     "Action",
                     "Run it",
-                    CommandKey: "notification.run"
+                    CommandKey: "cmd_notification_run"
                 )
             );
             DispatcherTest.DrainApplicationIdle();
@@ -105,7 +87,7 @@ public sealed class ShellNotificationControllerTests
 
             action.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
 
-            Assert.Equal("notification.run", dispatcher.CommandKey);
+            Assert.Equal("cmd_notification_run", dispatcher.CommandKey);
             Assert.Equal(CommandSource.Notification, dispatcher.Source);
             Assert.IsType<FlourishNotification>(dispatcher.Parameter);
 

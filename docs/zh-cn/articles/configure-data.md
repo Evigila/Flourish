@@ -15,18 +15,52 @@ Flourish 内置 `en-US` 和 `zh-CN`。语言标识不区分大小写，并以规
 builder.ConfigData(data => data.InitLocale("en-US"));
 ```
 
-省略 `ConfigData` 时，Flourish 默认使用 `en-US`。持久化默认启用，因此有效配置中的合法 `Flourish:Preferences:Locale` 会优先，后续 `SetLocale` 变更也会写回。代码配置的语言必须始终优先时，传入 `usePersistedPreference: false`。应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
+省略 `ConfigData` 时，Flourish 默认使用 `en-US`。持久化默认启用，因此有效配置中的合法 `Flourish:Preferences:Locale` 会优先，后续 `SetLocale` 变更也会写回。代码配置的语言必须始终优先时，传入 `usePersistedPreference: false`。单独使用 Flourish 时，应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
+
+## 接入 Essential Culture
+
+需要使用 `Arkheide.Essential.Culture` 翻译应用文案时，只安装
+`Arkheide.Flourish.Extension.Culture`，不要再单独安装 Culture 包。扩展包会传递
+Culture Core、WPF 适配器和 Generator，并隐藏双方的事件、生命周期、Dispatcher 与
+Shell 状态同步细节。
+
+```bash
+dotnet add package Arkheide.Flourish.Extension.Culture
+```
+
+应用只需调用一次无泛型入口：
+
+```csharp
+using ArkheideSystem.Flourish.Extension.Culture;
+
+var flourish = FlourishBuilder
+    .CreateDefaultBuilder(args)
+    .UseEssentialCulture()
+    .ConfigData(data => data.InitLocale("en-US"))
+    .Build();
+```
+
+`IFlourishLocalization` 仍然是 Flourish 对外唯一的文化访问点。通过它切换文化时，
+扩展包会在首帧前和运行期间同步 Essential Culture，并刷新导航、标题栏、搜索占位、
+工具栏和状态栏中保存的 Culture 稳定键：
+
+```csharp
+localization.SetLocale("zh-CN");
+```
+
+应用继续维护自己的 `Culture.json`。XAML 使用传递提供的 `Localize`，临时弹窗、通知和
+带运行时参数的业务文本则在创建时解析。用户输入、项目名称和搜索内容不会被自动翻译。
 
 ## 添加自定义语言
 
-`AddLocaleFile(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `lang_<locale>.json` 格式；语言部分可以包含字母、数字、连字符和下划线，并且分隔符两侧都必须有非空子标识。文件名中的标识使用与 `InitLocale` 相同的规范化规则。
+`AddLocaleFile(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `Flourish.LangKey_<locale>.Json` 格式；语言部分可以包含字母、数字、连字符和下划线，并且分隔符两侧都必须有非空子标识。文件名中的标识使用与 `InitLocale` 相同的规范化规则。
 
 ```csharp
 builder.ConfigData(data =>
 {
     data
         .InitLocale("en-US")
-        .AddLocaleFile("Locales/lang_en-US.json");
+        .AddLocaleFile("Locales/Flourish.LangKey_en-US.Json");
 });
 ```
 
@@ -49,7 +83,7 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 4. 内置 `en-US` 值。
 5. 键本身。
 
-因此，`lang_fr-FR.json` 等自定义语言可以只定义部分界面文本，其余键会回退到英文。
+因此，`Flourish.LangKey_fr-FR.Json` 等自定义语言可以只定义部分界面文本，其余键会回退到英文。
 
 ## 翻译键
 

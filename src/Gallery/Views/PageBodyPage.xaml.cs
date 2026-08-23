@@ -9,15 +9,15 @@ public partial class PageBodyPage : Page
     [
         new(
             "Children",
-            GalleryLocaleKeys.ControlsContainsThePageLeadingHeaderChunkAndSubsequentChunkElements_8F1F22B3
+            Key.Controls_ContainsThePageLeadingHeaderChunkAndSubsequentChunkElements_8F1F22B3
         ),
         new(
             "Content",
-            GalleryLocaleKeys.ControlsIsOwnedInternallyByPageBodyAndMustNotBeReplacedByCallers_2C86637B
+            Key.Controls_IsOwnedInternallyByPageBodyAndMustNotBeReplacedByCallers_2C86637B
         ),
         new(
             "Scrolling",
-            GalleryLocaleKeys.ControlsProvidesTheStandardVerticalPageViewportAndContentMargin_130DA46B
+            Key.Controls_ProvidesTheStandardVerticalPageViewportAndContentMargin_130DA46B
         ),
     ];
 

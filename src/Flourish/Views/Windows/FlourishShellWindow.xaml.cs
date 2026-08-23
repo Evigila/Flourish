@@ -1,28 +1,24 @@
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using ArkheideSystem.Flourish.Services;
-using Button = ArkheideSystem.Flourish.Controls.Button;
 using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
 using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 using WpfComboBox = System.Windows.Controls.ComboBox;
 using WpfPage = System.Windows.Controls.Page;
-using WpfPanel = System.Windows.Controls.Panel;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal partial class FlourishShellWindow : Window
 {
-    private const string ProjectSaveCommandKey = "flourish.project.save";
+    private const string ProjectSaveCommandKey = "cmd_flourish_project_save";
     private const int BuiltInProjectBehaviorPriority = -1000;
 
     private readonly NavigationService navigationService;

@@ -1,6 +1,4 @@
 using System.IO;
-using System.Text;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -25,9 +23,7 @@ public sealed class FlourishLocalizationServiceTests
     [Fact]
     public void Constructor_WithEnglishLocale_UsesBuiltInEnglishAndFormatsValues()
     {
-        var sut = new FlourishLocalizationService(
-            new FlourishDataOptions { Locale = " en-US " }
-        );
+        var sut = new FlourishLocalizationService(new FlourishDataOptions { Locale = " en-US " });
 
         Assert.Equal("en-US", sut.CurrentLocale);
         Assert.Equal("Back", sut.Get(FlourishLocaleKeys.TitleBarBack));
@@ -45,9 +41,7 @@ public sealed class FlourishLocalizationServiceTests
     [InlineData("x_PRIVATE", "x-private")]
     public void Constructor_NormalizesLocaleIdentifiers(string locale, string expected)
     {
-        var sut = new FlourishLocalizationService(
-            new FlourishDataOptions { Locale = locale }
-        );
+        var sut = new FlourishLocalizationService(new FlourishDataOptions { Locale = locale });
 
         Assert.Equal(expected, sut.CurrentLocale);
     }
@@ -65,7 +59,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var directory = new TemporaryDirectory();
         var path = directory.WriteText(
-            "lang_en-US.json",
+            "Flourish.LangKey_en-US.Json",
             """
             {
               "Tray.Show": "Reveal"
@@ -86,7 +80,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var directory = new TemporaryDirectory();
         var path = directory.WriteText(
-            "lang_en-US.json",
+            "Flourish.LangKey_en-US.Json",
             """
             {
               "Tray.Show": "Reveal"
@@ -107,7 +101,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var directory = new TemporaryDirectory();
         var path = directory.WriteText(
-            "lang_en-US.json",
+            "Flourish.LangKey_en-US.Json",
             """
             {
               "Tray.Exit": "Quit"
@@ -127,7 +121,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var directory = new TemporaryDirectory();
         var path = directory.WriteText(
-            "lang_fr-FR.json",
+            "Flourish.LangKey_fr-FR.Json",
             """
             {
               "Tray.Show": "Afficher"
@@ -149,7 +143,7 @@ public sealed class FlourishLocalizationServiceTests
         using var firstDirectory = new TemporaryDirectory();
         using var secondDirectory = new TemporaryDirectory();
         var firstPath = firstDirectory.WriteText(
-            "lang_en-US.json",
+            "Flourish.LangKey_en-US.Json",
             """
             {
               "Tray.Show": "Reveal",
@@ -158,7 +152,7 @@ public sealed class FlourishLocalizationServiceTests
             """
         );
         var secondPath = secondDirectory.WriteText(
-            "lang_en-US.json",
+            "Flourish.LangKey_en-US.Json",
             """
             {
               "Tray.Show": "Open"
@@ -188,9 +182,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         foreach (var locale in new[] { "zh-CN", "en-US" })
         {
-            var sut = new FlourishLocalizationService(
-                new FlourishDataOptions { Locale = locale }
-            );
+            var sut = new FlourishLocalizationService(new FlourishDataOptions { Locale = locale });
 
             foreach (var key in FlourishLocaleKeys.All)
             {
@@ -205,7 +197,11 @@ public sealed class FlourishLocalizationServiceTests
     {
         var options = new FlourishDataOptions();
         options.LocalePaths.Add(
-            Path.Combine(Path.GetTempPath(), $"missing-{Guid.NewGuid():N}", "lang_en-US.json")
+            Path.Combine(
+                Path.GetTempPath(),
+                $"missing-{Guid.NewGuid():N}",
+                "Flourish.LangKey_en-US.Json"
+            )
         );
 
         var exception = Assert.Throws<FileNotFoundException>(() =>
@@ -230,9 +226,9 @@ public sealed class FlourishLocalizationServiceTests
 
     [Theory]
     [InlineData("translations.json")]
-    [InlineData("lang_.json")]
-    [InlineData("lang_en-US.txt")]
-    [InlineData("lang_en-US!.json")]
+    [InlineData("Flourish.LangKey_.Json")]
+    [InlineData("Flourish.LangKey_en-US.txt")]
+    [InlineData("Flourish.LangKey_en-US!.Json")]
     public void Constructor_WhenLocaleFileNameIsInvalid_ThrowsClearArgumentException(
         string fileName
     )
@@ -246,7 +242,11 @@ public sealed class FlourishLocalizationServiceTests
             new FlourishLocalizationService(options)
         );
 
-        Assert.Contains("lang_<locale>.json", exception.Message, StringComparison.Ordinal);
+        Assert.Contains(
+            "Flourish.LangKey_<locale>.Json",
+            exception.Message,
+            StringComparison.Ordinal
+        );
     }
 
     [Theory]
@@ -258,12 +258,10 @@ public sealed class FlourishLocalizationServiceTests
     [InlineData("{ \"Tray.Show\": 1 }")]
     [InlineData("{ \"\": \"Show\" }")]
     [InlineData("{ \"Tray.Show\": \"Show\", \"Tray.Show\": \"Open\" }")]
-    public void Constructor_WhenLocaleJsonIsInvalid_ThrowsClearInvalidDataException(
-        string json
-    )
+    public void Constructor_WhenLocaleJsonIsInvalid_ThrowsClearInvalidDataException(string json)
     {
         using var directory = new TemporaryDirectory();
-        var path = directory.WriteText("lang_en-US.json", json);
+        var path = directory.WriteText("Flourish.LangKey_en-US.Json", json);
         var options = new FlourishDataOptions();
         options.LocalePaths.Add(path);
 
@@ -281,7 +279,7 @@ public sealed class FlourishLocalizationServiceTests
         FlourishLocalizationChangedEventArgs? change = null;
         sut.Changed += (_, args) => change = args;
 
-        sut.SetLocale(" cn ");
+        sut.SetLocale(" zh_CN ");
 
         Assert.Equal("zh-CN", sut.CurrentLocale);
         Assert.Equal("zh-CN", sut.CurrentLocale);
@@ -310,7 +308,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         using var directory = new TemporaryDirectory();
         var path = directory.WriteText(
-            "lang_fr-FR.json",
+            "Flourish.LangKey_fr-FR.Json",
             """
             {
               "Tray.Show": "Afficher"
@@ -327,7 +325,7 @@ public sealed class FlourishLocalizationServiceTests
         Assert.Equal("Afficher", sut.Get(FlourishLocaleKeys.TrayShow));
 
         directory.WriteText(
-            "lang_fr-FR.json",
+            "Flourish.LangKey_fr-FR.Json",
             """
             {
               "Tray.Show": "Ouvrir"
@@ -358,11 +356,11 @@ public sealed class FlourishLocalizationServiceTests
         using var firstDirectory = new TemporaryDirectory();
         using var secondDirectory = new TemporaryDirectory();
         var first = firstDirectory.WriteText(
-            "lang_fr-FR.json",
+            "Flourish.LangKey_fr-FR.Json",
             "{ \"Tray.Show\": \"First\" }"
         );
         var second = secondDirectory.WriteText(
-            "lang_fr-FR.json",
+            "Flourish.LangKey_fr-FR.Json",
             "{ \"Tray.Show\": \"Second\" }"
         );
         var sut = new FlourishLocalizationService(new FlourishDataOptions());

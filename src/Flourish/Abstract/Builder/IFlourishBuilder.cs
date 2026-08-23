@@ -153,7 +153,7 @@ public interface IFlourishBuilder
     /// builder.ConfigDynamicToolbar(toolbar =>
     /// {
     ///     toolbar.InitToolbarItems<ReportsPage>(
-    ///         new FlourishToolbarItem("Export", "\uE898", "reports.export"));
+    ///         new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
     /// });
     /// ]]></code>
     /// </example>

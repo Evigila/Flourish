@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -21,10 +20,7 @@ public partial class HomePage : Page
         }
     }
 
-    private void DemoGrid_SizeChanged(
-        object sender,
-        System.Windows.SizeChangedEventArgs e
-    )
+    private void DemoGrid_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
     {
         DemoGrid.Columns = e.NewSize.Width switch
         {

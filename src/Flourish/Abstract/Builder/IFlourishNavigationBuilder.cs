@@ -15,7 +15,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 ///         .AddGroup("Navigation", groupId: 0, group =>
 ///     {
 ///         group.AddNavigableViewItem<HomePage>(isInitial: true);
-///         group.AddNavigableItem("Refresh", "\uE72C", "navigation.refresh");
+///         group.AddNavigableItem("Refresh", "\uE72C", "cmd_navigation_refresh");
 ///     });
 /// });
 /// ]]></code>
@@ -98,7 +98,7 @@ public interface IFlourishNavigationBuilder
     ///
     /// navigation.AddGroup("Tools", groupId: 1, group =>
     /// {
-    ///     group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
+    ///     group.AddNavigableItem("Refresh", "\uE72C", "cmd_reports_refresh");
     /// });
     /// ]]></code>
     /// </example>
@@ -148,7 +148,7 @@ public interface IFlourishNavigationBuilder
     /// </remarks>
     /// <example>
     /// <code><![CDATA[
-    /// navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
+    /// navigation.AddFixedNavigableItem("Help", "\uE946", "cmd_help_open");
     /// ]]></code>
     /// </example>
     IFlourishNavigationBuilder AddFixedNavigableItem(

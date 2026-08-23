@@ -1,15 +1,21 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using ArkheideSystem.Gallery.Localization;
-
 namespace ArkheideSystem.Gallery.Models;
 
-public sealed class ControlMemberRow(string name, string descriptionKey) : INotifyPropertyChanged
+public sealed class ControlMemberRow : INotifyPropertyChanged
 {
-    private readonly string resourceKey = descriptionKey;
-    private string description = descriptionKey;
+    private readonly string resourceKey;
+    private string description;
 
-    public string Name { get; } = name;
+    public ControlMemberRow(string name, string descriptionKey)
+    {
+        Name = name;
+        resourceKey = descriptionKey;
+        description = Localizer.Parse(resourceKey);
+        Localizer.Current.Changed += Localizer_Changed;
+    }
+
+    public string Name { get; }
 
     public string Description
     {
@@ -28,9 +34,9 @@ public sealed class ControlMemberRow(string name, string descriptionKey) : INoti
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    internal void Apply(IGalleryLocalization localization)
+    private void Localizer_Changed(object? sender, EventArgs e)
     {
-        Description = localization.Get(resourceKey);
+        Description = Localizer.Parse(resourceKey);
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

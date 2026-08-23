@@ -1,11 +1,10 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Interaction;
-using WpfPanel = System.Windows.Controls.Panel;
-using UserControl = System.Windows.Controls.UserControl;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using UserControl = System.Windows.Controls.UserControl;
+using WpfPanel = System.Windows.Controls.Panel;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
@@ -26,10 +25,7 @@ internal partial class FlourishStatusBar : UserControl
 
     internal StatusItemViewCache CreateStatusItemViewCache() => new(StatusItemsHost);
 
-    internal bool UpdateVisibility(
-        FlourishStatusBarSnapshot snapshot,
-        bool hasBackgroundTasks
-    )
+    internal bool UpdateVisibility(FlourishStatusBarSnapshot snapshot, bool hasBackgroundTasks)
     {
         var showConfiguredContent = snapshot.IsEnabled;
         var showStatusBar = showConfiguredContent || hasBackgroundTasks;
@@ -39,8 +35,7 @@ internal partial class FlourishStatusBar : UserControl
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         SystemStatusButton.Visibility =
-            showConfiguredContent
-            && (snapshot.IsLanStatusEnabled || snapshot.IsPowerStatusEnabled)
+            showConfiguredContent && (snapshot.IsLanStatusEnabled || snapshot.IsPowerStatusEnabled)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         FooterStartRegionHost.Visibility =
@@ -73,20 +68,15 @@ internal partial class FlourishStatusBar : UserControl
             .Children.OfType<FrameworkElement>()
             .FirstOrDefault(element => element.Tag is Guid id && id == taskId);
 
-    internal void SetRegionContent(
-        bool isStart,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    internal void SetRegionContent(bool isStart, IReadOnlyList<FrameworkElement> elements)
     {
         var host = isStart ? FooterStartRegionHost : FooterEndRegionHost;
         SynchronizeChildren(host, elements);
         host.Visibility = elements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void BackgroundTaskQueueButton_MouseEnter(
-        object sender,
-        MouseEventArgs e
-    ) => RaiseAnchorRequested(StatusBarAnchorKind.BackgroundTasks, focusRequested: false);
+    private void BackgroundTaskQueueButton_MouseEnter(object sender, MouseEventArgs e) =>
+        RaiseAnchorRequested(StatusBarAnchorKind.BackgroundTasks, focusRequested: false);
 
     private void BackgroundTaskQueueButton_Click(object sender, RoutedEventArgs e) =>
         RaiseAnchorRequested(StatusBarAnchorKind.BackgroundTasks, focusRequested: true);
@@ -107,17 +97,12 @@ internal partial class FlourishStatusBar : UserControl
             this,
             new StatusBarAnchorRequestedEventArgs(
                 kind,
-                kind == StatusBarAnchorKind.System
-                    ? SystemStatusButton
-                    : BackgroundTaskQueueButton,
+                kind == StatusBarAnchorKind.System ? SystemStatusButton : BackgroundTaskQueueButton,
                 focusRequested
             )
         );
 
-    private static void SynchronizeChildren(
-        WpfPanel host,
-        IReadOnlyList<UIElement> desiredChildren
-    )
+    private static void SynchronizeChildren(WpfPanel host, IReadOnlyList<UIElement> desiredChildren)
     {
         for (var index = 0; index < desiredChildren.Count; index++)
         {

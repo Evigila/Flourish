@@ -7,15 +7,15 @@ public partial class ToolTipPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", GalleryLocaleKeys.ControlsSetsConciseHelpContentForThePopup_5AFEF10E),
+        new("Content", Key.Controls_SetsConciseHelpContentForThePopup_5AFEF10E),
         new(
             "Placement",
-            GalleryLocaleKeys.ControlsUsesNativeWPFPlacementWithFlourishShellRegionCorrection_CC370C90
+            Key.Controls_UsesNativeWPFPlacementWithFlourishShellRegionCorrection_CC370C90
         ),
-        new("IsOpen", GalleryLocaleKeys.ControlsGetsOrSetsThePopupOpenState_CEC2542B),
+        new("IsOpen", Key.Controls_GetsOrSetsThePopupOpenState_CEC2542B),
         new(
             "ToolTipService",
-            GalleryLocaleKeys.ControlsControlsDelayDurationAndHostBehaviorThroughWPFAttachedProperties_2CC65F82
+            Key.Controls_ControlsDelayDurationAndHostBehaviorThroughWPFAttachedProperties_2CC65F82
         ),
     ];
 

@@ -1,7 +1,6 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
@@ -103,10 +102,7 @@ public sealed class FlourishDynamicToolbarBuilderTests
         var sut = new FlourishDynamicToolbarBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.InitToolbarItems<FirstPage>(
-                new FlourishToolbarItem("Valid", "V"),
-                null!
-            )
+            sut.InitToolbarItems<FirstPage>(new FlourishToolbarItem("Valid", "V"), null!)
         );
 
         Assert.Equal("items", exception.ParamName);

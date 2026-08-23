@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
 
@@ -34,9 +33,7 @@ public sealed class FlourishConfigurationServiceTests
     public void Reload_CapturesImmutableSnapshotAndRaisesChangedKeys()
     {
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string?> { ["Feature:Value"] = "before" }
-            )
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Feature:Value"] = "before" })
             .Build();
         using var sut = new FlourishConfigurationService(configuration);
         var original = sut.Current;

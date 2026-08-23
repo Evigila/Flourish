@@ -1,12 +1,8 @@
-using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Views.Windows;
 using CustomScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 using WpfScrollViewer = System.Windows.Controls.ScrollViewer;
 
@@ -14,8 +10,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 
 public sealed class CenteredPageContentLayoutTests
 {
-    private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+    private const string GenericThemeSource = "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Fact]
     public void Apply_WithoutWidthLimit_KeepsScrollableContentUnconstrained()
@@ -28,9 +23,7 @@ public sealed class CenteredPageContentLayoutTests
             CenteredPageContentLayout.Apply(page, contentWidth: null);
 
             Assert.Same(scrollViewer, page.Content);
-            var presenter = Assert.IsType<CenteredPageContentPresenter>(
-                scrollViewer.Content
-            );
+            var presenter = Assert.IsType<CenteredPageContentPresenter>(scrollViewer.Content);
             Assert.Equal(double.PositiveInfinity, presenter.MaxWidth);
         });
     }
@@ -53,9 +46,7 @@ public sealed class CenteredPageContentLayoutTests
             CenteredPageContentLayout.Apply(page, 480);
 
             Assert.Same(scrollViewer, page.Content);
-            var presenter = Assert.IsType<CenteredPageContentPresenter>(
-                scrollViewer.Content
-            );
+            var presenter = Assert.IsType<CenteredPageContentPresenter>(scrollViewer.Content);
             Assert.Same(content, presenter.Content);
             Assert.Equal(480, presenter.MaxWidth);
             Assert.Equal(HorizontalAlignment.Stretch, presenter.HorizontalAlignment);
@@ -71,9 +62,7 @@ public sealed class CenteredPageContentLayoutTests
             var page = new Page { Content = scrollViewer };
 
             CenteredPageContentLayout.Apply(page, 480);
-            var presenter = Assert.IsType<CenteredPageContentPresenter>(
-                scrollViewer.Content
-            );
+            var presenter = Assert.IsType<CenteredPageContentPresenter>(scrollViewer.Content);
             CenteredPageContentLayout.Apply(page, 720);
 
             Assert.Same(presenter, scrollViewer.Content);
@@ -109,17 +98,13 @@ public sealed class CenteredPageContentLayoutTests
                 WindowStartupLocation = WindowStartupLocation.Manual,
                 Content = page,
             };
-            window.Resources.MergedDictionaries.Add(
-                LoadResourceDictionary(GenericThemeSource)
-            );
+            window.Resources.MergedDictionaries.Add(LoadResourceDictionary(GenericThemeSource));
             window.Show();
 
             try
             {
                 DispatcherTest.DrainApplicationIdle();
-                var presenter = Assert.IsType<CenteredPageContentPresenter>(
-                    scrollViewer.Content
-                );
+                var presenter = Assert.IsType<CenteredPageContentPresenter>(scrollViewer.Content);
                 var verticalScrollBar = FindVisualDescendants<ScrollBar>(scrollViewer)
                     .Single(scrollBar => scrollBar.Orientation == Orientation.Vertical);
                 var presenterOrigin = presenter.TranslatePoint(new Point(), scrollViewer);
@@ -172,17 +157,13 @@ public sealed class CenteredPageContentLayoutTests
                 WindowStartupLocation = WindowStartupLocation.Manual,
                 Content = page,
             };
-            window.Resources.MergedDictionaries.Add(
-                LoadResourceDictionary(GenericThemeSource)
-            );
+            window.Resources.MergedDictionaries.Add(LoadResourceDictionary(GenericThemeSource));
             window.Show();
 
             try
             {
                 DispatcherTest.DrainApplicationIdle();
-                var presenter = Assert.IsType<CenteredPageContentPresenter>(
-                    scrollViewer.Content
-                );
+                var presenter = Assert.IsType<CenteredPageContentPresenter>(scrollViewer.Content);
 
                 Assert.InRange(
                     presenter.ActualWidth,
@@ -202,11 +183,7 @@ public sealed class CenteredPageContentLayoutTests
     {
         StaTest.Run(() =>
         {
-            var content = new Border
-            {
-                Background = Brushes.Blue,
-                Height = 900,
-            };
+            var content = new Border { Background = Brushes.Blue, Height = 900 };
             var scrollViewer = new CustomScrollViewer
             {
                 Content = content,
@@ -229,17 +206,13 @@ public sealed class CenteredPageContentLayoutTests
                 WindowStartupLocation = WindowStartupLocation.Manual,
                 Content = page,
             };
-            window.Resources.MergedDictionaries.Add(
-                LoadResourceDictionary(GenericThemeSource)
-            );
+            window.Resources.MergedDictionaries.Add(LoadResourceDictionary(GenericThemeSource));
             window.Show();
 
             try
             {
                 DispatcherTest.DrainApplicationIdle();
-                var presenter = Assert.IsType<CenteredPageContentPresenter>(
-                    scrollViewer.Content
-                );
+                var presenter = Assert.IsType<CenteredPageContentPresenter>(scrollViewer.Content);
                 presenter.RenderTransformOrigin = new Point(0.5, 0);
                 presenter.RenderTransform = new ScaleTransform(0.5, 1);
                 DispatcherTest.DrainApplicationIdle();
@@ -254,12 +227,7 @@ public sealed class CenteredPageContentLayoutTests
                 );
                 bitmap.Render(scrollViewer);
                 var pixels = new byte[pixelWidth * 4];
-                bitmap.CopyPixels(
-                    new Int32Rect(0, 20, pixelWidth, 1),
-                    pixels,
-                    pixels.Length,
-                    0
-                );
+                bitmap.CopyPixels(new Int32Rect(0, 20, pixelWidth, 1), pixels, pixels.Length, 0);
 
                 var bluePixelCount = Enumerable
                     .Range(0, pixelWidth)
@@ -309,5 +277,4 @@ public sealed class CenteredPageContentLayoutTests
             Application.LoadComponent(new Uri(source, UriKind.Relative))
         );
     }
-
 }

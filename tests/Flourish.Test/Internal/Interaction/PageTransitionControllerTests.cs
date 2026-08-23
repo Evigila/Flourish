@@ -5,7 +5,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using ArkheideSystem.Flourish.Services;
@@ -16,16 +15,13 @@ public sealed class PageTransitionControllerTests
 {
     private const double ConfiguredOpacity = 0.8;
     private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(200);
-    private static readonly XNamespace Xaml =
-        "http://schemas.microsoft.com/winfx/2006/xaml";
+    private static readonly XNamespace Xaml = "http://schemas.microsoft.com/winfx/2006/xaml";
     private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
 
     [Theory]
     [InlineData(FlourishPageTransition.Fade)]
     [InlineData(FlourishPageTransition.EntranceFromBottom)]
-    public void Transition_AnimatesCachedPresenterWithoutRelayout(
-        FlourishPageTransition transition
-    )
+    public void Transition_AnimatesCachedPresenterWithoutRelayout(FlourishPageTransition transition)
     {
         StaTest.Run(() =>
         {
@@ -47,9 +43,10 @@ public sealed class PageTransitionControllerTests
 
             var transitionCache = AssertTransitionCache(fixture);
             Assert.NotSame(fixture.OriginalCacheMode, transitionCache);
-            var translation = transition == FlourishPageTransition.EntranceFromBottom
-                ? Assert.IsType<TranslateTransform>(fixture.Presenter.RenderTransform)
-                : null;
+            var translation =
+                transition == FlourishPageTransition.EntranceFromBottom
+                    ? Assert.IsType<TranslateTransform>(fixture.Presenter.RenderTransform)
+                    : null;
             if (translation is null)
             {
                 Assert.Same(
@@ -123,9 +120,7 @@ public sealed class PageTransitionControllerTests
                     () => completionCount++
                 )
             );
-            var translation = Assert.IsType<TranslateTransform>(
-                fixture.Presenter.RenderTransform
-            );
+            var translation = Assert.IsType<TranslateTransform>(fixture.Presenter.RenderTransform);
             sut.ActiveClockController!.SeekAlignedToLastTick(
                 Duration / 2,
                 TimeSeekOrigin.BeginTime
@@ -233,10 +228,7 @@ public sealed class PageTransitionControllerTests
         StaTest.Run(() =>
         {
             var presenter = new ThrowOncePresenter();
-            var fixture = TransitionFixture.Create(
-                withOriginalCache: true,
-                presenter: presenter
-            );
+            var fixture = TransitionFixture.Create(withOriginalCache: true, presenter: presenter);
             var sut = new PageTransitionController();
             var completionCount = 0;
             presenter.ThrowOnNextOpacityCoercion = true;
@@ -297,19 +289,13 @@ public sealed class PageTransitionControllerTests
                     static () => { }
                 )
             );
-            sut.ActiveClockController!.SeekAlignedToLastTick(
-                Duration,
-                TimeSeekOrigin.BeginTime
-            );
+            sut.ActiveClockController!.SeekAlignedToLastTick(Duration, TimeSeekOrigin.BeginTime);
 
             AssertPresenterRestored(fixture);
             Assert.True(BindingOperations.IsDataBound(presenter, UIElement.OpacityProperty));
             Assert.True(BindingOperations.IsDataBound(presenter, UIElement.CacheModeProperty));
             Assert.True(
-                BindingOperations.IsDataBound(
-                    presenter,
-                    UIElement.RenderTransformProperty
-                )
+                BindingOperations.IsDataBound(presenter, UIElement.RenderTransformProperty)
             );
             AssertClose(source.Opacity, presenter.Opacity);
             Assert.Same(source.CacheMode, presenter.CacheMode);
@@ -550,9 +536,7 @@ public sealed class PageTransitionControllerTests
         )
         {
             var host = new Grid { Width = 480, Height = 320 };
-            var originalCache = withOriginalCache
-                ? new BitmapCache(1.25)
-                : null;
+            var originalCache = withOriginalCache ? new BitmapCache(1.25) : null;
             presenter ??= new Grid();
             if (withOriginalOpacity)
             {

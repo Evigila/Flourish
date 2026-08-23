@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Internal.Interaction;
 
@@ -34,10 +33,8 @@ internal sealed class PageTransitionController
         ArgumentNullException.ThrowIfNull(completed);
 
         if (
-            transition is not (
-                FlourishPageTransition.Fade
-                or FlourishPageTransition.EntranceFromBottom
-            )
+            transition
+                is not (FlourishPageTransition.Fade or FlourishPageTransition.EntranceFromBottom)
             || duration <= TimeSpan.Zero
         )
         {
@@ -78,10 +75,7 @@ internal sealed class PageTransitionController
 
         try
         {
-            target.Presenter.SetCurrentValue(
-                UIElement.CacheModeProperty,
-                state.TransitionCache
-            );
+            target.Presenter.SetCurrentValue(UIElement.CacheModeProperty, state.TransitionCache);
             if (transition == FlourishPageTransition.EntranceFromBottom)
             {
                 target.Presenter.SetCurrentValue(
@@ -159,14 +153,9 @@ internal sealed class PageTransitionController
         try
         {
             state.Target.Presenter.ApplyAnimationClock(UIElement.OpacityProperty, null);
-            if (
-                state.Transition == FlourishPageTransition.EntranceFromBottom
-            )
+            if (state.Transition == FlourishPageTransition.EntranceFromBottom)
             {
-                state.Translation.ApplyAnimationClock(
-                    TranslateTransform.YProperty,
-                    null
-                );
+                state.Translation.ApplyAnimationClock(TranslateTransform.YProperty, null);
             }
         }
         finally
@@ -197,10 +186,7 @@ internal sealed class PageTransitionController
             );
         }
 
-        target.Presenter.SetCurrentValue(
-            UIElement.CacheModeProperty,
-            state.OriginalCacheMode
-        );
+        target.Presenter.SetCurrentValue(UIElement.CacheModeProperty, state.OriginalCacheMode);
         RestoreLocalValue(
             target.Presenter,
             UIElement.CacheModeProperty,
@@ -252,18 +238,14 @@ internal sealed class PageTransitionController
         internal object OriginalCacheModeLocalValue { get; } =
             target.Presenter.ReadLocalValue(UIElement.CacheModeProperty);
 
-        internal Transform OriginalRenderTransform { get; } =
-            target.Presenter.RenderTransform;
+        internal Transform OriginalRenderTransform { get; } = target.Presenter.RenderTransform;
 
         internal object OriginalRenderTransformLocalValue { get; } =
             target.Presenter.ReadLocalValue(UIElement.RenderTransformProperty);
 
         internal TranslateTransform Translation { get; } = new();
 
-        internal BitmapCache TransitionCache { get; } = new()
-        {
-            SnapsToDevicePixels = false,
-        };
+        internal BitmapCache TransitionCache { get; } = new() { SnapsToDevicePixels = false };
 
         internal ClockGroup Clock { get; private set; } = null!;
 

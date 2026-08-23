@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
@@ -66,10 +65,7 @@ public sealed class ToolbarCommandButtonIndexTests
             dispatcher.SetAvailability("save", true);
             var sut = new ToolbarCommandButtonIndex(dispatcher);
             var button = new Button();
-            var item = new FlourishToolbarItem("Save", "S", "save")
-            {
-                IsEnabled = false,
-            };
+            var item = new FlourishToolbarItem("Save", "S", "save") { IsEnabled = false };
 
             sut.Track(button, item);
             sut.Refresh("save");

@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -57,9 +56,7 @@ public sealed class RuntimeShellStateServiceTests
         Assert.Equal(5, changes.Count);
         Assert.Equal([1, 2, 3, 4, 5], versions);
         Assert.Throws<ArgumentException>(() => sut.SetApplicationTitle("  "));
-        Assert.Throws<ArgumentException>(() =>
-            sut.SetUnnamedProjectPlaceholder("  ")
-        );
+        Assert.Throws<ArgumentException>(() => sut.SetUnnamedProjectPlaceholder("  "));
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             sut.SetElementVisible((TitleBarElement)int.MaxValue, true)
         );
@@ -125,32 +122,36 @@ public sealed class RuntimeShellStateServiceTests
         var secondHandled = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        using var waiting = sut.Subscribe(async (args, token) =>
-        {
-            if (args.Text == "first")
+        using var waiting = sut.Subscribe(
+            async (args, token) =>
             {
-                firstStarted.SetResult();
-                try
+                if (args.Text == "first")
                 {
-                    await Task.Delay(Timeout.InfiniteTimeSpan, token);
-                }
-                catch (OperationCanceledException)
-                {
-                    firstCanceled.SetResult();
-                    throw;
+                    firstStarted.SetResult();
+                    try
+                    {
+                        await Task.Delay(Timeout.InfiniteTimeSpan, token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        firstCanceled.SetResult();
+                        throw;
+                    }
                 }
             }
-        });
+        );
         using var failing = sut.Subscribe((_, _) => throw new InvalidOperationException("boom"));
-        using var succeeding = sut.Subscribe((args, _) =>
-        {
-            if (args.Text == "second")
+        using var succeeding = sut.Subscribe(
+            (args, _) =>
             {
-                secondHandled.SetResult();
-            }
+                if (args.Text == "second")
+                {
+                    secondHandled.SetResult();
+                }
 
-            return ValueTask.CompletedTask;
-        });
+                return ValueTask.CompletedTask;
+            }
+        );
 
         sut.PublishFromView("first");
         await firstStarted.Task.WaitAsync(TimeSpan.FromSeconds(2));
@@ -192,25 +193,23 @@ public sealed class RuntimeShellStateServiceTests
             new Mock<IServiceProvider>().Object,
             NullLogger<TitleBarSearchService>.Instance
         );
-        var started = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
-        var canceled = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
-        var subscription = sut.Subscribe(async (_, token) =>
-        {
-            started.SetResult();
-            try
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var canceled = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var subscription = sut.Subscribe(
+            async (_, token) =>
             {
-                await Task.Delay(Timeout.InfiniteTimeSpan, token);
+                started.SetResult();
+                try
+                {
+                    await Task.Delay(Timeout.InfiniteTimeSpan, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    canceled.SetResult();
+                    throw;
+                }
             }
-            catch (OperationCanceledException)
-            {
-                canceled.SetResult();
-                throw;
-            }
-        });
+        );
 
         sut.PublishFromView("first");
         await started.Task.WaitAsync(TimeSpan.FromSeconds(2));
@@ -236,20 +235,22 @@ public sealed class RuntimeShellStateServiceTests
         var secondHandled = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        using var subscription = sut.Subscribe(async (args, token) =>
-        {
-            if (args.Text == "second")
+        using var subscription = sut.Subscribe(
+            async (args, token) =>
             {
-                secondHandled.SetResult();
-                return;
-            }
+                if (args.Text == "second")
+                {
+                    secondHandled.SetResult();
+                    return;
+                }
 
-            using var registration = token.Register(() =>
-                throw new InvalidOperationException("cancel callback failed")
-            );
-            firstStarted.SetResult();
-            await Task.Delay(Timeout.InfiniteTimeSpan, token);
-        });
+                using var registration = token.Register(() =>
+                    throw new InvalidOperationException("cancel callback failed")
+                );
+                firstStarted.SetResult();
+                await Task.Delay(Timeout.InfiniteTimeSpan, token);
+            }
+        );
 
         sut.PublishFromView("first");
         await firstStarted.Task.WaitAsync(TimeSpan.FromSeconds(2));
@@ -276,11 +277,13 @@ public sealed class RuntimeShellStateServiceTests
         sut.StateChanged += (_, _) => stateChanges++;
         sut.ProgrammaticStateChanged += (_, _) => programmaticStateChanges++;
         sut.QueryChanged += (_, _) => queryChanges++;
-        var subscription = sut.Subscribe((_, _) =>
-        {
-            calls++;
-            return ValueTask.CompletedTask;
-        });
+        var subscription = sut.Subscribe(
+            (_, _) =>
+            {
+                calls++;
+                return ValueTask.CompletedTask;
+            }
+        );
         subscription.Dispose();
 
         sut.SetVisible(true);
@@ -300,14 +303,11 @@ public sealed class RuntimeShellStateServiceTests
         Assert.Throws<ArgumentException>(() => sut.SetPlaceholder(""));
     }
 
-    private static object? GetActiveQueryDispatch(
-        TitleBarSearchService service
-    )
+    private static object? GetActiveQueryDispatch(TitleBarSearchService service)
     {
         var field = typeof(TitleBarSearchService).GetField(
             "activeQueryDispatch",
-            System.Reflection.BindingFlags.Instance
-                | System.Reflection.BindingFlags.NonPublic
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic
         );
         Assert.NotNull(field);
         return field.GetValue(service);

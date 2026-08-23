@@ -10,21 +10,21 @@ public partial class LabelPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Content", GalleryLocaleKeys.ControlsSuppliesTextOrCustomLabelContent_2C033448),
+            new("Content", Key.Controls_SuppliesTextOrCustomLabelContent_2C033448),
             new(
                 "Target",
-                GalleryLocaleKeys.ControlsIdentifiesTheControlThatReceivesFocusThroughTheAccessKey_808886ED
+                Key.Controls_IdentifiesTheControlThatReceivesFocusThroughTheAccessKey_808886ED
             ),
-            new("Padding", GalleryLocaleKeys.ControlsControlsSpaceAroundTheLabelContent_EC85A9CD),
+            new("Padding", Key.Controls_ControlsSpaceAroundTheLabelContent_EC85A9CD),
             new(
                 "HorizontalContentAlignment",
-                GalleryLocaleKeys.ControlsAlignsContentWithinTheLabelBounds_8CD9E783
+                Key.Controls_AlignsContentWithinTheLabelBounds_8CD9E783
             ),
             new(
                 "IsEnabled",
-                GalleryLocaleKeys.ControlsReflectsWhetherTheAssociatedInputIsAvailable_B36D0858
+                Key.Controls_ReflectsWhetherTheAssociatedInputIsAvailable_B36D0858
             ),
-            new("ToolTip", GalleryLocaleKeys.ControlsSuppliesOptionalSupportingGuidance_77EF85E6),
+            new("ToolTip", Key.Controls_SuppliesOptionalSupportingGuidance_77EF85E6),
         };
     }
 

@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -13,11 +12,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
     public void ContentLayoutService_UsesStartupStateAndSuppressesNoOpChanges()
     {
         var sut = new ContentLayoutService(
-            new FlourishShellOptions
-            {
-                IsCenterContentEnabled = true,
-                CenterContentWidth = 960,
-            }
+            new FlourishShellOptions { IsCenterContentEnabled = true, CenterContentWidth = 960 }
         );
         var changes = 0;
         sut.Changed += (_, _) => changes++;
@@ -26,10 +21,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
         sut.SetCenterContent(false, 1080);
 
         Assert.Equal(1, changes);
-        Assert.Equal(
-            new FlourishContentLayoutSettings(false, 1080, 1),
-            sut.Current
-        );
+        Assert.Equal(new FlourishContentLayoutSettings(false, 1080, 1), sut.Current);
     }
 
     [Theory]
@@ -41,9 +33,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
     {
         var sut = new ContentLayoutService(new FlourishShellOptions());
 
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetCenterContent(true, width)
-        );
+        Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetCenterContent(true, width));
     }
 
     [Fact]
@@ -58,10 +48,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
 
         var overrides = Assert.Single(resources.MergedDictionaries);
         Assert.Equal(Colors.Red, overrides["FlourishPrimaryColor"]);
-        Assert.Equal(
-            new CornerRadius(7),
-            overrides["FlourishSurfaceCornerRadius"]
-        );
+        Assert.Equal(new CornerRadius(7), overrides["FlourishSurfaceCornerRadius"]);
 
         sut.SetAppearance(colors: null, cornerRadius: null);
 

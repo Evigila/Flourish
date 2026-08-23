@@ -11,21 +11,21 @@ public partial class HeaderChunkPage : Page
     [
         new(
             "Title",
-            GalleryLocaleKeys.ControlsNamesThePageAndUsesTheEmphasizedHeaderTitleRole_D824091B
+            Key.Controls_NamesThePageAndUsesTheEmphasizedHeaderTitleRole_D824091B
         ),
-        new("Content", GalleryLocaleKeys.ControlsAddsSupportingPageContext_DE57218F),
-        new("Body", GalleryLocaleKeys.ControlsHostsControlsInTheSameRegionAsTheCopy_BD046E4D),
+        new("Content", Key.Controls_AddsSupportingPageContext_DE57218F),
+        new("Body", Key.Controls_HostsControlsInTheSameRegionAsTheCopy_BD046E4D),
         new(
             "Presentation",
-            GalleryLocaleKeys.ControlsHostsThePageIllustrationOrComposedVisual_4F9EE000
+            Key.Controls_HostsThePageIllustrationOrComposedVisual_4F9EE000
         ),
         new(
             "PresenterMode",
-            GalleryLocaleKeys.ControlsChoosesSplitOverlayOrTopDownComposition_C5760298
+            Key.Controls_ChoosesSplitOverlayOrTopDownComposition_C5760298
         ),
         new(
             "PresenterPosition",
-            GalleryLocaleKeys.ControlsPlacesSplitPresentationContentOnTheLeftOrRight_42F1BD88
+            Key.Controls_PlacesSplitPresentationContentOnTheLeftOrRight_42F1BD88
         ),
     ];
 

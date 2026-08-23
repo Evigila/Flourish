@@ -10,13 +10,13 @@ public partial class OverlayPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", GalleryLocaleKeys.ControlsSuppliesTheObjectDisplayedByTheSurface_E5269887),
-        new("Variant", GalleryLocaleKeys.ControlsSelectsTemporaryOrStrongDismissal_0C07C90F),
+        new("Content", Key.Controls_SuppliesTheObjectDisplayedByTheSurface_E5269887),
+        new("Variant", Key.Controls_SelectsTemporaryOrStrongDismissal_0C07C90F),
         new(
             "PlacementTarget",
-            GalleryLocaleKeys.ControlsIdentifiesTheAnchorUsedByTemporaryHoverTracking_2EA04E33
+            Key.Controls_IdentifiesTheAnchorUsedByTemporaryHoverTracking_2EA04E33
         ),
-        new("DismissRequested", GalleryLocaleKeys.ControlsAsksTheHostToCloseTheSurface_829CE551),
+        new("DismissRequested", Key.Controls_AsksTheHostToCloseTheSurface_829CE551),
     ];
 
     public OverlayPage()
@@ -62,7 +62,7 @@ public partial class OverlayPage : Page
 
     private void Page_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Escape || (!StrongPopup.IsOpen && !TemporaryPopup.IsOpen))
+        if (e.Key != InputKey.Escape || (!StrongPopup.IsOpen && !TemporaryPopup.IsOpen))
         {
             return;
         }

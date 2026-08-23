@@ -1,6 +1,5 @@
 using System.Windows.Input;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
@@ -22,8 +21,10 @@ internal sealed class ShellNavigationController : IDisposable
     );
     private readonly Dictionary<Type, FlourishNavigationItem> itemsByPage = [];
     private readonly Dictionary<NavigationTreeKey, FlourishNavigationItem> parentsByKey = [];
-    private readonly Dictionary<NavigationTreeKey, List<FlourishNavigationItem>>
-        childrenByParentKey = [];
+    private readonly Dictionary<
+        NavigationTreeKey,
+        List<FlourishNavigationItem>
+    > childrenByParentKey = [];
     private FlourishNavigationItem? firstItem;
     private FlourishNavigationItem? selectedItem;
     private FlourishNavigationItem? activeChildParentItem;
@@ -44,21 +45,16 @@ internal sealed class ShellNavigationController : IDisposable
     )
     {
         this.pane = pane ?? throw new ArgumentNullException(nameof(pane));
-        this.contentHost =
-            contentHost ?? throw new ArgumentNullException(nameof(contentHost));
+        this.contentHost = contentHost ?? throw new ArgumentNullException(nameof(contentHost));
         this.titlebar = titlebar ?? throw new ArgumentNullException(nameof(titlebar));
-        this.navigation =
-            navigation ?? throw new ArgumentNullException(nameof(navigation));
-        this.panelService =
-            panelService ?? throw new ArgumentNullException(nameof(panelService));
-        this.menuService =
-            menuService ?? throw new ArgumentNullException(nameof(menuService));
+        this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+        this.panelService = panelService ?? throw new ArgumentNullException(nameof(panelService));
+        this.menuService = menuService ?? throw new ArgumentNullException(nameof(menuService));
         this.commandDispatcher =
             commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
         this.options = options ?? throw new ArgumentNullException(nameof(options));
         titleBarState =
-            initialTitleBarState
-            ?? throw new ArgumentNullException(nameof(initialTitleBarState));
+            initialTitleBarState ?? throw new ArgumentNullException(nameof(initialTitleBarState));
     }
 
     internal event EventHandler<NavigationLayoutRequestedEventArgs>? LayoutRequested;
@@ -209,10 +205,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
 
         pane.SetItems(options.NavigationItems, options.FixedNavigationItems);
-        if (
-            selectedNavigationKey is not null
-            && GetItem(selectedNavigationKey) is { } selected
-        )
+        if (selectedNavigationKey is not null && GetItem(selectedNavigationKey) is { } selected)
         {
             SelectItem(selected);
         }
@@ -244,18 +237,15 @@ internal sealed class ShellNavigationController : IDisposable
         children.Add(item);
     }
 
-    private void PanelService_Changed(
-        object? sender,
-        FlourishNavigationPanelChangedEventArgs e
-    )
+    private void PanelService_Changed(object? sender, FlourishNavigationPanelChangedEventArgs e)
     {
         Dispatch(() =>
         {
             ApplyPanelView(e.Current);
             titlebar.SetNavigationToggleVisibility(
                 titleBarState.IsEnabled
-                && titleBarState.IsNavigationToggleVisible
-                && e.Current.IsEnabled
+                    && titleBarState.IsNavigationToggleVisible
+                    && e.Current.IsEnabled
             );
             LayoutRequested?.Invoke(
                 this,
@@ -264,10 +254,7 @@ internal sealed class ShellNavigationController : IDisposable
         });
     }
 
-    private void MenuService_Changed(
-        object? sender,
-        FlourishNavigationMenuChangedEventArgs e
-    )
+    private void MenuService_Changed(object? sender, FlourishNavigationMenuChangedEventArgs e)
     {
         Dispatch(() =>
         {
@@ -457,9 +444,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private IEnumerable<FlourishNavigationItem> GetChildItems(
-        FlourishNavigationItem parent
-    )
+    private IEnumerable<FlourishNavigationItem> GetChildItems(FlourishNavigationItem parent)
     {
         return
             parent.ParentId != 0
@@ -519,9 +504,7 @@ internal sealed class ShellNavigationController : IDisposable
     private void UpdateActiveChildParent(FlourishNavigationItem activeItem)
     {
         var parent =
-            activeItem.IsPageItem && activeItem.ChildId != 0
-                ? FindParentItem(activeItem)
-                : null;
+            activeItem.IsPageItem && activeItem.ChildId != 0 ? FindParentItem(activeItem) : null;
         if (activeChildParentItem == parent)
         {
             return;
@@ -615,19 +598,12 @@ internal sealed class ShellNavigationController : IDisposable
             return;
         }
 
-        if (
-            isDisposed
-            || pane.Dispatcher.HasShutdownStarted
-            || pane.Dispatcher.HasShutdownFinished
-        )
+        if (isDisposed || pane.Dispatcher.HasShutdownStarted || pane.Dispatcher.HasShutdownFinished)
         {
             return;
         }
 
-        _ = pane.Dispatcher.BeginInvoke(
-            DispatcherPriority.DataBind,
-            new Action(ExecuteIfActive)
-        );
+        _ = pane.Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new Action(ExecuteIfActive));
     }
 
     private void EnsureInitialized()
@@ -644,14 +620,9 @@ internal sealed class ShellNavigationController : IDisposable
     private static NavigationTreeKey CreateTreeKey(
         FlourishNavigationItem item,
         int relationshipId
-    ) =>
-        new(item.IsFixed, item.GroupId, relationshipId);
+    ) => new(item.IsFixed, item.GroupId, relationshipId);
 
-    private readonly record struct NavigationTreeKey(
-        bool IsFixed,
-        int GroupId,
-        int RelationshipId
-    );
+    private readonly record struct NavigationTreeKey(bool IsFixed, int GroupId, int RelationshipId);
 }
 
 internal sealed class NavigationLayoutRequestedEventArgs(

@@ -13,7 +13,7 @@ namespace ArkheideSystem.Flourish.Themes;
 public sealed class FlourishThemeResources : ResourceDictionary
 {
     internal const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+        "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     /// <summary>
     /// Initializes a Flourish control and theme resource dictionary.

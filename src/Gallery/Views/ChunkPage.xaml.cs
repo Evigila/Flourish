@@ -7,9 +7,9 @@ public partial class ChunkPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Title", GalleryLocaleKeys.ControlsNamesTheSectionSRequiredTopic_350399A3),
-        new("Content", GalleryLocaleKeys.ControlsAddsOptionalSupportingContext_5790F6CE),
-        new("Body", GalleryLocaleKeys.ControlsHostsTheRequiredSectionContent_90A30B71),
+        new("Title", Key.Controls_NamesTheSectionSRequiredTopic_350399A3),
+        new("Content", Key.Controls_AddsOptionalSupportingContext_5790F6CE),
+        new("Body", Key.Controls_HostsTheRequiredSectionContent_90A30B71),
     ];
 
     public ChunkPage()

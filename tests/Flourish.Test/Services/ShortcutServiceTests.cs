@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -16,13 +15,13 @@ public sealed class ShortcutServiceTests
 
         var registration = sut.Register(
             Gesture(Key.S, ModifierKeys.Control),
-            "editor.save",
+            "cmd_editor_save",
             42
         );
 
         var snapshot = Assert.Single(sut.Registrations);
         Assert.Equal(registration.Id, snapshot.Id);
-        Assert.Equal("editor.save", snapshot.CommandKey);
+        Assert.Equal("cmd_editor_save", snapshot.CommandKey);
         Assert.Equal(42, snapshot.Parameter);
         Assert.False(snapshot.AllowWhenTextInputFocused);
         Assert.Equal(ShortcutRegistryChangeKind.Registered, changes[0].ChangeKind);
@@ -39,10 +38,10 @@ public sealed class ShortcutServiceTests
     public void Register_IdenticalGestureAndScope_RejectsByDefault()
     {
         var sut = new ShortcutService(new RecordingCommandDispatcher());
-        sut.Register(Gesture(Key.S, ModifierKeys.Control), "editor.save");
+        sut.Register(Gesture(Key.S, ModifierKeys.Control), "cmd_editor_save");
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.Register(Gesture(Key.S, ModifierKeys.Control), "editor.saveAs")
+            sut.Register(Gesture(Key.S, ModifierKeys.Control), "cmd_editor_save_as")
         );
 
         Assert.Contains("Ctrl", exception.Message, StringComparison.OrdinalIgnoreCase);
@@ -53,14 +52,11 @@ public sealed class ShortcutServiceTests
     public void Register_WithReplacePolicy_InvalidatesConflictingLease()
     {
         var sut = new ShortcutService(new RecordingCommandDispatcher());
-        var original = sut.Register(
-            Gesture(Key.S, ModifierKeys.Control),
-            "editor.save"
-        );
+        var original = sut.Register(Gesture(Key.S, ModifierKeys.Control), "cmd_editor_save");
 
         var replacement = sut.Register(
             Gesture(Key.S, ModifierKeys.Control),
-            "editor.saveAs",
+            "cmd_editor_save_as",
             options: new ShortcutRegistrationOptions
             {
                 ConflictPolicy = ShortcutConflictPolicy.Replace,
@@ -69,15 +65,11 @@ public sealed class ShortcutServiceTests
 
         Assert.False(original.IsRegistered);
         Assert.True(replacement.IsRegistered);
-        Assert.Equal("editor.saveAs", Assert.Single(sut.Registrations).CommandKey);
+        Assert.Equal("cmd_editor_save_as", Assert.Single(sut.Registrations).CommandKey);
         Assert.True(
-            sut.TryResolve(
-                Gesture(Key.S, ModifierKeys.Control),
-                context: null,
-                out var resolved
-            )
+            sut.TryResolve(Gesture(Key.S, ModifierKeys.Control), context: null, out var resolved)
         );
-        Assert.Equal("editor.saveAs", resolved!.CommandKey);
+        Assert.Equal("cmd_editor_save_as", resolved!.CommandKey);
     }
 
     [Fact]
@@ -86,12 +78,12 @@ public sealed class ShortcutServiceTests
         var sut = new ShortcutService(new RecordingCommandDispatcher());
         sut.Register(
             Gesture(Key.S, ModifierKeys.Control),
-            "editor.save",
+            "cmd_editor_save",
             options: new ShortcutRegistrationOptions { Priority = 1 }
         );
         sut.Register(
             Gesture(Key.S, ModifierKeys.Control),
-            "editor.saveAll",
+            "cmd_editor_save_all",
             options: new ShortcutRegistrationOptions
             {
                 ConflictPolicy = ShortcutConflictPolicy.Append,
@@ -99,15 +91,11 @@ public sealed class ShortcutServiceTests
             }
         );
 
-        var resolved = sut.TryResolve(
-            Gesture(Key.S, ModifierKeys.Control),
-            null,
-            out var shortcut
-        );
+        var resolved = sut.TryResolve(Gesture(Key.S, ModifierKeys.Control), null, out var shortcut);
 
         Assert.True(resolved);
         Assert.NotNull(shortcut);
-        Assert.Equal("editor.saveAll", shortcut.CommandKey);
+        Assert.Equal("cmd_editor_save_all", shortcut.CommandKey);
     }
 
     [Fact]
@@ -117,12 +105,12 @@ public sealed class ShortcutServiceTests
         var gesture = Gesture(Key.S, ModifierKeys.Control);
         sut.Register(
             gesture,
-            "editor.lowPriority",
+            "cmd_editor_low_priority",
             options: new ShortcutRegistrationOptions { Priority = 1 }
         );
         var firstHighPriority = sut.Register(
             gesture,
-            "editor.firstHighPriority",
+            "cmd_editor_first_high_priority",
             options: new ShortcutRegistrationOptions
             {
                 ConflictPolicy = ShortcutConflictPolicy.Append,
@@ -131,7 +119,7 @@ public sealed class ShortcutServiceTests
         );
         sut.Register(
             gesture,
-            "editor.secondHighPriority",
+            "cmd_editor_second_high_priority",
             options: new ShortcutRegistrationOptions
             {
                 ConflictPolicy = ShortcutConflictPolicy.Append,
@@ -140,12 +128,12 @@ public sealed class ShortcutServiceTests
         );
 
         Assert.True(sut.TryResolve(gesture, context: null, out var firstWinner));
-        Assert.Equal("editor.firstHighPriority", firstWinner!.CommandKey);
+        Assert.Equal("cmd_editor_first_high_priority", firstWinner!.CommandKey);
 
         firstHighPriority.Dispose();
 
         Assert.True(sut.TryResolve(gesture, context: null, out var secondWinner));
-        Assert.Equal("editor.secondHighPriority", secondWinner!.CommandKey);
+        Assert.Equal("cmd_editor_second_high_priority", secondWinner!.CommandKey);
     }
 
     [Fact]
@@ -154,14 +142,14 @@ public sealed class ShortcutServiceTests
         var sut = new ShortcutService(new RecordingCommandDispatcher());
         foreach (var key in new[] { Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G })
         {
-            sut.Register(Gesture(key, ModifierKeys.Control), $"unrelated.{key}");
+            sut.Register(Gesture(key, ModifierKeys.Control), $"cmd_unrelated_{key}");
         }
 
         var targetGesture = Gesture(Key.S, ModifierKeys.Control);
-        sut.Register(targetGesture, "editor.save");
+        sut.Register(targetGesture, "cmd_editor_save");
         sut.Register(
             targetGesture,
-            "otherPage.save",
+            "cmd_other_page_save",
             options: new ShortcutRegistrationOptions
             {
                 Scope = ShortcutScope.Page,
@@ -177,7 +165,7 @@ public sealed class ShortcutServiceTests
                 out var shortcut
             )
         );
-        Assert.Equal("editor.save", shortcut!.CommandKey);
+        Assert.Equal("cmd_editor_save", shortcut!.CommandKey);
     }
 
     [Fact]
@@ -185,10 +173,10 @@ public sealed class ShortcutServiceTests
     {
         var sut = new ShortcutService(new RecordingCommandDispatcher());
         var gesture = Gesture(Key.S, ModifierKeys.Control);
-        sut.Register(gesture, "app.save");
+        sut.Register(gesture, "cmd_app_save");
         sut.Register(
             gesture,
-            "window.save",
+            "cmd_window_save",
             options: new ShortcutRegistrationOptions
             {
                 Scope = ShortcutScope.Window,
@@ -197,7 +185,7 @@ public sealed class ShortcutServiceTests
         );
         sut.Register(
             gesture,
-            "page.save",
+            "cmd_page_save",
             options: new ShortcutRegistrationOptions
             {
                 Scope = ShortcutScope.Page,
@@ -212,7 +200,7 @@ public sealed class ShortcutServiceTests
                 out var pageShortcut
             )
         );
-        Assert.Equal("page.save", pageShortcut!.CommandKey);
+        Assert.Equal("cmd_page_save", pageShortcut!.CommandKey);
 
         Assert.True(
             sut.TryResolve(
@@ -221,7 +209,7 @@ public sealed class ShortcutServiceTests
                 out var windowShortcut
             )
         );
-        Assert.Equal("window.save", windowShortcut!.CommandKey);
+        Assert.Equal("cmd_window_save", windowShortcut!.CommandKey);
 
         Assert.True(
             sut.TryResolve(
@@ -230,7 +218,7 @@ public sealed class ShortcutServiceTests
                 out var appShortcut
             )
         );
-        Assert.Equal("app.save", appShortcut!.CommandKey);
+        Assert.Equal("cmd_app_save", appShortcut!.CommandKey);
     }
 
     [Fact]
@@ -240,16 +228,12 @@ public sealed class ShortcutServiceTests
         var gesture = Gesture(Key.S, ModifierKeys.Control);
         sut.Register(
             gesture,
-            "page.wildcard",
-            options: new ShortcutRegistrationOptions
-            {
-                Scope = ShortcutScope.Page,
-                Priority = 100,
-            }
+            "cmd_page_wildcard",
+            options: new ShortcutRegistrationOptions { Scope = ShortcutScope.Page, Priority = 100 }
         );
         sut.Register(
             gesture,
-            "page.editor",
+            "cmd_page_editor",
             options: new ShortcutRegistrationOptions
             {
                 Scope = ShortcutScope.Page,
@@ -264,7 +248,7 @@ public sealed class ShortcutServiceTests
                 out var shortcut
             )
         );
-        Assert.Equal("page.editor", shortcut!.CommandKey);
+        Assert.Equal("cmd_page_editor", shortcut!.CommandKey);
     }
 
     [Fact]
@@ -274,7 +258,7 @@ public sealed class ShortcutServiceTests
         var gesture = Gesture(Key.S, ModifierKeys.Control);
         sut.Register(
             gesture,
-            "page.wildcard",
+            "cmd_page_wildcard",
             options: new ShortcutRegistrationOptions
             {
                 Scope = ShortcutScope.Page,
@@ -283,7 +267,7 @@ public sealed class ShortcutServiceTests
         );
         sut.Register(
             gesture,
-            "page.editor",
+            "cmd_page_editor",
             options: new ShortcutRegistrationOptions
             {
                 Scope = ShortcutScope.Page,
@@ -301,7 +285,7 @@ public sealed class ShortcutServiceTests
                 out var shortcut
             )
         );
-        Assert.Equal("page.wildcard", shortcut!.CommandKey);
+        Assert.Equal("cmd_page_wildcard", shortcut!.CommandKey);
     }
 
     [Fact]
@@ -310,17 +294,13 @@ public sealed class ShortcutServiceTests
         var dispatcher = new RecordingCommandDispatcher();
         var sut = new ShortcutService(dispatcher);
         var parameter = new object();
-        sut.Register(
-            Gesture(Key.F5),
-            "document.refresh",
-            parameter
-        );
+        sut.Register(Gesture(Key.F5), "cmd_document_refresh", parameter);
 
         var result = await sut.ExecuteAsync(Gesture(Key.F5));
 
         Assert.True(result.IsHandled);
         var invocation = Assert.Single(dispatcher.Invocations);
-        Assert.Equal("document.refresh", invocation.CommandKey);
+        Assert.Equal("cmd_document_refresh", invocation.CommandKey);
         Assert.Same(parameter, invocation.Parameter);
         Assert.Equal(CommandSource.Shortcut, invocation.Source);
     }
@@ -358,14 +338,11 @@ public sealed class ShortcutServiceTests
     public void TryResolve_TextInputFocus_RequiresExplicitRegistrationOptIn()
     {
         var sut = new ShortcutService(new RecordingCommandDispatcher());
-        sut.Register(Gesture(Key.C, ModifierKeys.Control), "editor.copy");
+        sut.Register(Gesture(Key.C, ModifierKeys.Control), "cmd_editor_copy");
         sut.Register(
             Gesture(Key.S, ModifierKeys.Control),
-            "document.save",
-            options: new ShortcutRegistrationOptions
-            {
-                AllowWhenTextInputFocused = true,
-            }
+            "cmd_document_save",
+            options: new ShortcutRegistrationOptions { AllowWhenTextInputFocused = true }
         );
 
         Assert.False(
@@ -387,7 +364,7 @@ public sealed class ShortcutServiceTests
             )
         );
         Assert.NotNull(registration);
-        Assert.Equal("document.save", registration.CommandKey);
+        Assert.Equal("cmd_document_save", registration.CommandKey);
         Assert.True(registration.AllowWhenTextInputFocused);
     }
 
@@ -399,13 +376,13 @@ public sealed class ShortcutServiceTests
         var gesture = Gesture(Key.S, ModifierKeys.Control);
         sut.Register(
             gesture,
-            "editor.format",
+            "cmd_editor_format",
             options: new ShortcutRegistrationOptions { Priority = 100 }
         );
         var parameter = new object();
         sut.Register(
             gesture,
-            "document.save",
+            "cmd_document_save",
             parameter,
             new ShortcutRegistrationOptions
             {
@@ -428,7 +405,7 @@ public sealed class ShortcutServiceTests
 
         Assert.True(result.IsHandled);
         var invocation = Assert.Single(dispatcher.Invocations);
-        Assert.Equal("document.save", invocation.CommandKey);
+        Assert.Equal("cmd_document_save", invocation.CommandKey);
         Assert.Same(parameter, invocation.Parameter);
         Assert.Equal(CommandSource.Shortcut, invocation.Source);
     }
@@ -444,14 +421,14 @@ public sealed class ShortcutServiceTests
         var sut = new ShortcutService(dispatcher);
         var gesture = Gesture(Key.F5);
         var parameter = new object();
-        var original = sut.Register(gesture, "document.refresh", parameter);
+        var original = sut.Register(gesture, "cmd_document_refresh", parameter);
         Assert.True(sut.TryResolve(gesture, context: null, out var accepted));
 
         if (replace)
         {
             sut.Register(
                 gesture,
-                "document.reload",
+                "cmd_document_reload",
                 options: new ShortcutRegistrationOptions
                 {
                     ConflictPolicy = ShortcutConflictPolicy.Replace,
@@ -468,7 +445,7 @@ public sealed class ShortcutServiceTests
 
         Assert.True(result.IsHandled);
         var invocation = Assert.Single(dispatcher.Invocations);
-        Assert.Equal("document.refresh", invocation.CommandKey);
+        Assert.Equal("cmd_document_refresh", invocation.CommandKey);
         Assert.Same(parameter, invocation.Parameter);
         Assert.Equal(CommandSource.Shortcut, invocation.Source);
     }
@@ -479,7 +456,7 @@ public sealed class ShortcutServiceTests
         var dispatcher = new RecordingCommandDispatcher();
         var sut = new ShortcutService(dispatcher);
         var gesture = Gesture(Key.F5);
-        sut.Register(gesture, "document.refresh");
+        sut.Register(gesture, "cmd_document_refresh");
         Assert.True(sut.TryResolve(gesture, context: null, out var registration));
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
@@ -490,10 +467,7 @@ public sealed class ShortcutServiceTests
         Assert.Empty(dispatcher.Invocations);
     }
 
-    private static KeyGesture Gesture(
-        Key key,
-        ModifierKeys modifiers = ModifierKeys.None
-    )
+    private static KeyGesture Gesture(Key key, ModifierKeys modifiers = ModifierKeys.None)
     {
         return new KeyGesture(key, modifiers);
     }

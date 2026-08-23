@@ -1,9 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -14,7 +12,6 @@ public partial class WindowRuntimePage : Page
     private readonly IWindowCloseService close;
     private readonly IMessageService messages;
     private readonly INotificationService notifications;
-    private readonly IGalleryLocalization localization;
     private IWindowCloseGuardRegistration? closeGuard;
     private FlourishNotificationHandle? notificationHandle;
     private bool closeGuardAllows = true;
@@ -26,8 +23,7 @@ public partial class WindowRuntimePage : Page
         ITrayService tray,
         IWindowCloseService close,
         IMessageService messages,
-        INotificationService notifications,
-        IGalleryLocalization localization
+        INotificationService notifications
     )
     {
         this.window = window;
@@ -35,7 +31,6 @@ public partial class WindowRuntimePage : Page
         this.close = close;
         this.messages = messages;
         this.notifications = notifications;
-        this.localization = localization;
         InitializeComponent();
 
         CloseBehaviorBox.ItemsSource = Enum.GetValues<WindowCloseBehavior>();
@@ -71,14 +66,14 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => window.SetSize(1100, 760),
             WindowOutput,
-            localization.Get(GalleryLocaleKeys.RuntimeSetTheShellWindowSizeTo1100760_BEBC5F4A)
+            Localizer.Parse(Key.Runtime_SetTheShellWindowSizeTo1100760_BEBC5F4A)
         );
 
     private void CenterWindow_Click(object sender, RoutedEventArgs e) =>
         Execute(
             window.CenterOnScreen,
             WindowOutput,
-            localization.Get(GalleryLocaleKeys.RuntimeCenteredTheShellWindowOnScreen_3C0BE7A4)
+            Localizer.Parse(Key.Runtime_CenteredTheShellWindowOnScreen_3C0BE7A4)
         );
 
     private void ToggleTopmost_Click(object sender, RoutedEventArgs e)
@@ -87,12 +82,10 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => window.SetTopmost(topmost),
             WindowOutput,
-            localization.Format(
-                GalleryLocaleKeys.RuntimeShellWindowTopmostMode0_B8A0BA3C,
-                localization.Get(
-                    topmost
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+            Localizer.Parse(
+                Key.Runtime_ShellWindowTopmostMode0_B8A0BA3C,
+                Localizer.Parse(
+                    topmost ? Key.Runtime_Enabled_FB9CF756 : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -104,10 +97,10 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => window.SetShownInTaskbar(shown),
             WindowOutput,
-            localization.Get(
+            Localizer.Parse(
                 shown
-                    ? GalleryLocaleKeys.RuntimeShellWindowShownInTheTaskbar_9ABA9C6D
-                    : GalleryLocaleKeys.RuntimeShellWindowRemovedFromTheTaskbar_92D9DF14
+                    ? Key.Runtime_ShellWindowShownInTheTaskbar_9ABA9C6D
+                    : Key.Runtime_ShellWindowRemovedFromTheTaskbar_92D9DF14
             )
         );
     }
@@ -116,21 +109,21 @@ public partial class WindowRuntimePage : Page
         Execute(
             window.Minimize,
             WindowOutput,
-            localization.Get(GalleryLocaleKeys.RuntimeMinimizedTheShellWindow_478BE911)
+            Localizer.Parse(Key.Runtime_MinimizedTheShellWindow_478BE911)
         );
 
     private void MaximizeWindow_Click(object sender, RoutedEventArgs e) =>
         Execute(
             window.Maximize,
             WindowOutput,
-            localization.Get(GalleryLocaleKeys.RuntimeMaximizedTheShellWindow_1A48B139)
+            Localizer.Parse(Key.Runtime_MaximizedTheShellWindow_1A48B139)
         );
 
     private void RestoreWindow_Click(object sender, RoutedEventArgs e) =>
         Execute(
             window.Restore,
             WindowOutput,
-            localization.Get(GalleryLocaleKeys.RuntimeRestoredTheShellWindow_02648753)
+            Localizer.Parse(Key.Runtime_RestoredTheShellWindow_02648753)
         );
 
     private async void HideBriefly_Click(object sender, RoutedEventArgs e)
@@ -142,15 +135,13 @@ public partial class WindowRuntimePage : Page
             window.Show();
             window.Activate();
             WindowOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeRestoredTheShellWindowAfterOneSecond_876F4D37
-                )
+                Localizer.Parse(Key.Runtime_RestoredTheShellWindowAfterOneSecond_876F4D37)
             );
         }
         catch (Exception error)
         {
             WindowOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -161,12 +152,10 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => tray.SetEnabled(enabled),
             TrayOutput,
-            localization.Format(
-                GalleryLocaleKeys.RuntimeNotificationAreaTrayIcon0_E862BD7A,
-                localization.Get(
-                    enabled
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+            Localizer.Parse(
+                Key.Runtime_NotificationAreaTrayIcon0_E862BD7A,
+                Localizer.Parse(
+                    enabled ? Key.Runtime_Enabled_FB9CF756 : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -176,7 +165,7 @@ public partial class WindowRuntimePage : Page
 
     private void TrayToolTipBox_KeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Enter)
+        if (e.Key != InputKey.Enter)
         {
             return;
         }
@@ -202,10 +191,7 @@ public partial class WindowRuntimePage : Page
         Execute(
             () => tray.SetToolTip(TrayToolTipBox.Text),
             TrayOutput,
-            localization.Format(
-                GalleryLocaleKeys.RuntimeTrayTooltipSetTo0_D5C91582,
-                TrayToolTipBox.Text
-            )
+            Localizer.Parse(Key.Runtime_TrayTooltipSetTo0_D5C91582, TrayToolTipBox.Text)
         );
     }
 
@@ -221,18 +207,14 @@ public partial class WindowRuntimePage : Page
                 }
             },
             TrayOutput,
-            localization.Get(
-                GalleryLocaleKeys.RuntimeMinimizedTheShellWindowToTheNotificationArea_E26BDC65
-            )
+            Localizer.Parse(Key.Runtime_MinimizedTheShellWindowToTheNotificationArea_E26BDC65)
         );
 
     private void RestoreFromTray_Click(object sender, RoutedEventArgs e) =>
         Execute(
             tray.Restore,
             TrayOutput,
-            localization.Get(
-                GalleryLocaleKeys.RuntimeRestoredTheShellWindowFromTheNotificationArea_3144C274
-            )
+            Localizer.Parse(Key.Runtime_RestoredTheShellWindowFromTheNotificationArea_3144C274)
         );
 
     private void CloseBehaviorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -245,7 +227,7 @@ public partial class WindowRuntimePage : Page
             Execute(
                 () => close.SetBehavior(behavior),
                 CloseOutput,
-                localization.Format(GalleryLocaleKeys.RuntimeCloseBehaviorSetTo0_E715B552, behavior)
+                Localizer.Parse(Key.Runtime_CloseBehaviorSetTo0_E715B552, behavior)
             );
         }
     }
@@ -255,20 +237,20 @@ public partial class WindowRuntimePage : Page
         closeGuardAllows = CloseGuardAllowsBox.IsChecked == true;
         CloseOutput.WriteLine(
             closeGuard is null
-                ? localization.Format(
-                    GalleryLocaleKeys.RuntimeTheNextRegisteredGuardWill0CloseRequests_99AAEB54,
-                    localization.Get(
+                ? Localizer.Parse(
+                    Key.Runtime_TheNextRegisteredGuardWill0CloseRequests_99AAEB54,
+                    Localizer.Parse(
                         closeGuardAllows
-                            ? GalleryLocaleKeys.RuntimeAllow_41008373
-                            : GalleryLocaleKeys.RuntimeCancel_2374D917
+                            ? Key.Runtime_Allow_41008373
+                            : Key.Runtime_Cancel_2374D917
                     )
                 )
-                : localization.Format(
-                    GalleryLocaleKeys.RuntimeTheRegisteredGuardWillNow0CloseRequests_7DC92137,
-                    localization.Get(
+                : Localizer.Parse(
+                    Key.Runtime_TheRegisteredGuardWillNow0CloseRequests_7DC92137,
+                    Localizer.Parse(
                         closeGuardAllows
-                            ? GalleryLocaleKeys.RuntimeAllow_41008373
-                            : GalleryLocaleKeys.RuntimeCancel_2374D917
+                            ? Key.Runtime_Allow_41008373
+                            : Key.Runtime_Cancel_2374D917
                     )
                 )
         );
@@ -293,7 +275,7 @@ public partial class WindowRuntimePage : Page
                 );
             },
             CloseOutput,
-            localization.Format(GalleryLocaleKeys.RuntimeCloseGuardRegisteredAtOrder0_E0EA9354, 100)
+            Localizer.Parse(Key.Runtime_CloseGuardRegisteredAtOrder0_E0EA9354, 100)
         );
     }
 
@@ -302,7 +284,7 @@ public partial class WindowRuntimePage : Page
         closeGuard?.Dispose();
         closeGuard = null;
         CloseOutput.WriteLine(
-            localization.Get(GalleryLocaleKeys.RuntimeTheGalleryCloseGuardWasRemoved_5525779C)
+            Localizer.Parse(Key.Runtime_TheGalleryCloseGuardWasRemoved_5525779C)
         );
     }
 
@@ -312,12 +294,10 @@ public partial class WindowRuntimePage : Page
         {
             var allowed = await close.CanCloseAsync(WindowCloseRequestReason.Application);
             CloseOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeCurrentGuardEvaluation0_98F8FDC5,
-                    localization.Get(
-                        allowed
-                            ? GalleryLocaleKeys.RuntimeAllow_41008373
-                            : GalleryLocaleKeys.RuntimeCancel_2374D917
+                Localizer.Parse(
+                    Key.Runtime_CurrentGuardEvaluation0_98F8FDC5,
+                    Localizer.Parse(
+                        allowed ? Key.Runtime_Allow_41008373 : Key.Runtime_Cancel_2374D917
                     )
                 )
             );
@@ -325,7 +305,7 @@ public partial class WindowRuntimePage : Page
         catch (Exception error)
         {
             CloseOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -337,14 +317,14 @@ public partial class WindowRuntimePage : Page
             var closed = await close.RequestCloseAsync(WindowCloseRequestReason.Application);
             CloseOutput.WriteLine(
                 closed
-                    ? localization.Get(GalleryLocaleKeys.RuntimeTheCloseRequestWasAccepted_5EF3EC41)
-                    : localization.Get(GalleryLocaleKeys.RuntimeTheCloseRequestWasCanceled_28CDC2C5)
+                    ? Localizer.Parse(Key.Runtime_TheCloseRequestWasAccepted_5EF3EC41)
+                    : Localizer.Parse(Key.Runtime_TheCloseRequestWasCanceled_28CDC2C5)
             );
         }
         catch (Exception error)
         {
             CloseOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -354,24 +334,21 @@ public partial class WindowRuntimePage : Page
         try
         {
             var result = await messages.ShowAsync(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeThisDialogWasOpenedAndAwaitedThroughIMessageServiceShowAsync_201018F9
+                Localizer.Parse(
+                    Key.Runtime_ThisDialogWasOpenedAndAwaitedThroughIMessageServiceShowAsync_201018F9
                 ),
-                localization.Get(GalleryLocaleKeys.RuntimeRuntimeMessage_7E67DEE4),
+                Localizer.Parse(Key.Runtime_RuntimeMessage_7E67DEE4),
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Information
             );
             MessageActivityOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeStandardMessageResult0_6DDDFBE8,
-                    result
-                )
+                Localizer.Parse(Key.Runtime_StandardMessageResult0_6DDDFBE8, result)
             );
         }
         catch (Exception error)
         {
             MessageActivityOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -381,22 +358,22 @@ public partial class WindowRuntimePage : Page
         try
         {
             var result = await messages.ShowAsync(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeChooseARuntimeActionCustomOptionsAreReturnedAsDomainValues_7353BDBC
+                Localizer.Parse(
+                    Key.Runtime_ChooseARuntimeActionCustomOptionsAreReturnedAsDomainValues_7353BDBC
                 ),
-                localization.Get(GalleryLocaleKeys.RuntimeCustomRuntimeChoices_380A5D74),
+                Localizer.Parse(Key.Runtime_CustomRuntimeChoices_380A5D74),
                 new[]
                 {
                     new FlourishMessageOption(
                         "later",
-                        localization.Get(GalleryLocaleKeys.RuntimeLater_73B6E48A)
+                        Localizer.Parse(Key.Runtime_Later_73B6E48A)
                     )
                     {
                         IsCancel = true,
                     },
                     new FlourishMessageOption(
                         "apply",
-                        localization.Get(GalleryLocaleKeys.RuntimeApplyNow_3F0C9286)
+                        Localizer.Parse(Key.Runtime_ApplyNow_3F0C9286)
                     )
                     {
                         IsDefault = true,
@@ -406,16 +383,16 @@ public partial class WindowRuntimePage : Page
                 MessageBoxImage.Question
             );
             MessageActivityOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeCustomMessageResult0_443E6D0A,
-                    result?.Id ?? localization.Get(GalleryLocaleKeys.RuntimeDismissed_71116847)
+                Localizer.Parse(
+                    Key.Runtime_CustomMessageResult0_443E6D0A,
+                    result?.Id ?? Localizer.Parse(Key.Runtime_Dismissed_71116847)
                 )
             );
         }
         catch (Exception error)
         {
             MessageActivityOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -429,8 +406,8 @@ public partial class WindowRuntimePage : Page
             },
             MessageActivityOutput,
             () =>
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeShownNotification0_5506309A,
+                Localizer.Parse(
+                    Key.Runtime_ShownNotification0_5506309A,
                     notificationHandle!.Id
                 )
         );
@@ -445,8 +422,8 @@ public partial class WindowRuntimePage : Page
             },
             MessageActivityOutput,
             () =>
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeUpsertedNotification0_232DD227,
+                Localizer.Parse(
+                    Key.Runtime_UpsertedNotification0_232DD227,
                     notificationHandle!.Id
                 )
         );
@@ -463,10 +440,8 @@ public partial class WindowRuntimePage : Page
             MessageActivityOutput,
             () =>
                 dismissed
-                    ? localization.Get(GalleryLocaleKeys.RuntimeNotificationDismissed_3FC448EB)
-                    : localization.Get(
-                        GalleryLocaleKeys.RuntimeNoActiveNotificationMatchedThatID_A05E0448
-                    )
+                    ? Localizer.Parse(Key.Runtime_NotificationDismissed_3FC448EB)
+                    : Localizer.Parse(Key.Runtime_NoActiveNotificationMatchedThatID_A05E0448)
         );
     }
 
@@ -474,7 +449,7 @@ public partial class WindowRuntimePage : Page
         Execute(
             notifications.DismissAll,
             MessageActivityOutput,
-            localization.Get(GalleryLocaleKeys.RuntimeDismissedAllShellNotifications_3A0952B6)
+            Localizer.Parse(Key.Runtime_DismissedAllShellNotifications_3A0952B6)
         );
 
     private FlourishNotification CreateNotification()
@@ -487,7 +462,7 @@ public partial class WindowRuntimePage : Page
 
         return new FlourishNotification(
             id,
-            localization.Get(GalleryLocaleKeys.RuntimeRuntimeGallery_D19C2E76),
+            Localizer.Parse(Key.Runtime_RuntimeGallery_D19C2E76),
             NotificationMessageBox.Text,
             FlourishNotificationSeverity.Success,
             Duration: TimeSpan.FromSeconds(8)
@@ -507,19 +482,17 @@ public partial class WindowRuntimePage : Page
         }
         catch (Exception error)
         {
-            output.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
-            );
+            output.WriteLine(Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
     private void RefreshAll()
     {
         var trayState = tray.Current;
-        ToggleTrayButton.Content = localization.Get(
+        ToggleTrayButton.Content = Localizer.Parse(
             trayState.IsEnabled
-                ? GalleryLocaleKeys.RuntimeDisableTray_9AAE0B05
-                : GalleryLocaleKeys.RuntimeEnableTray_A0D89F7F
+                ? Key.Runtime_DisableTray_9AAE0B05
+                : Key.Runtime_EnableTray_A0D89F7F
         );
         isRefreshingTrayToolTip = true;
         try

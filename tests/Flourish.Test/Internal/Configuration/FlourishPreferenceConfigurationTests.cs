@@ -1,5 +1,4 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
@@ -16,11 +15,7 @@ public sealed class FlourishPreferenceConfigurationTests
             ("Flourish:Preferences:Window:Size:Width", "900"),
             ("Flourish:Preferences:Window:Size:Height", "700")
         );
-        var data = new FlourishDataOptions
-        {
-            Locale = "en-US",
-            UsePersistedLocale = false,
-        };
+        var data = new FlourishDataOptions { Locale = "en-US", UsePersistedLocale = false };
         var shell = new FlourishShellOptions
         {
             WindowWidth = 1200,
@@ -98,11 +93,7 @@ public sealed class FlourishPreferenceConfigurationTests
             UsePersistedWindowPosition = true,
         };
 
-        FlourishPreferenceConfiguration.Apply(
-            configuration,
-            new FlourishDataOptions(),
-            shell
-        );
+        FlourishPreferenceConfiguration.Apply(configuration, new FlourishDataOptions(), shell);
 
         Assert.Equal(1200, shell.WindowWidth);
         Assert.Equal(800, shell.WindowHeight);
@@ -120,11 +111,7 @@ public sealed class FlourishPreferenceConfigurationTests
             UsePersistedWindowState = true,
         };
 
-        FlourishPreferenceConfiguration.Apply(
-            configuration,
-            new FlourishDataOptions(),
-            shell
-        );
+        FlourishPreferenceConfiguration.Apply(configuration, new FlourishDataOptions(), shell);
 
         Assert.Equal(WindowState.Maximized, shell.WindowState);
     }
@@ -133,17 +120,9 @@ public sealed class FlourishPreferenceConfigurationTests
     public void Apply_WhenPersistedLocaleIsInvalid_KeepsBuilderFallback()
     {
         var configuration = Build(("Flourish:Preferences:Locale", "zh--CN"));
-        var data = new FlourishDataOptions
-        {
-            Locale = "en-US",
-            UsePersistedLocale = true,
-        };
+        var data = new FlourishDataOptions { Locale = "en-US", UsePersistedLocale = true };
 
-        FlourishPreferenceConfiguration.Apply(
-            configuration,
-            data,
-            new FlourishShellOptions()
-        );
+        FlourishPreferenceConfiguration.Apply(configuration, data, new FlourishShellOptions());
 
         Assert.Equal("en-US", data.Locale);
     }
@@ -151,27 +130,19 @@ public sealed class FlourishPreferenceConfigurationTests
     [Fact]
     public void Apply_RestoresLastNavigationOnlyWhenRouteStillExists()
     {
-        var configuration = Build(
-            ("Flourish:Preferences:Navigation:LastKey", "Reports")
-        );
+        var configuration = Build(("Flourish:Preferences:Navigation:LastKey", "Reports"));
         var shell = new FlourishShellOptions
         {
             InitialNavigationKey = "Home",
             InitialNavigationPageType = typeof(HomePage),
             UsePersistedLastNavigation = true,
         };
-        shell.InitialNavigationRoutes.Add(
-            new FlourishNavigationRoute("Home", typeof(HomePage))
-        );
+        shell.InitialNavigationRoutes.Add(new FlourishNavigationRoute("Home", typeof(HomePage)));
         shell.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute("Reports", typeof(ReportsPage))
         );
 
-        FlourishPreferenceConfiguration.Apply(
-            configuration,
-            new FlourishDataOptions(),
-            shell
-        );
+        FlourishPreferenceConfiguration.Apply(configuration, new FlourishDataOptions(), shell);
 
         Assert.Equal("Reports", shell.InitialNavigationKey);
         Assert.Equal(typeof(ReportsPage), shell.InitialNavigationPageType);
@@ -205,9 +176,7 @@ public sealed class FlourishPreferenceConfigurationTests
             ("Flourish:Preferences:Appearance:Material:Effect", "MicaAlt")
         );
         var shell = new FlourishShellOptions();
-        var windows10 = MaterialEffectPlatform.FromWindowsVersion(
-            new Version(10, 0, 19045)
-        );
+        var windows10 = MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 19045));
 
         FlourishPreferenceConfiguration.Apply(
             configuration,

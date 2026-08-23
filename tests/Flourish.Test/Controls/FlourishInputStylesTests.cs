@@ -16,7 +16,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 public sealed class FlourishInputStylesTests
 {
     private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+        "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Fact]
     public void ContentBodyMargin_UsesOneSharedThirtyTwoPixelGutter()
@@ -24,7 +24,7 @@ public sealed class FlourishInputStylesTests
         StaTest.Run(() =>
         {
             var resources = LoadResourceDictionary(
-                "/Flourish;component/Themes/Layout.xaml"
+                "/Arkheide.Flourish;component/Themes/Layout.xaml"
             );
 
             Assert.Equal(

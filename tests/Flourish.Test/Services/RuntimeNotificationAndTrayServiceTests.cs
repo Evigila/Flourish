@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -58,14 +57,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
             sut.Show(new FlourishNotification("", "Title", "Body"))
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.Show(
-                new FlourishNotification(
-                    "duration",
-                    "Title",
-                    "Body",
-                    Duration: TimeSpan.Zero
-                )
-            )
+            sut.Show(new FlourishNotification("duration", "Title", "Body", Duration: TimeSpan.Zero))
         );
         Assert.Throws<ArgumentException>(() =>
             handle.Update(new FlourishNotification("different", "Title", "Body"))
@@ -76,9 +68,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
     public async Task NotificationService_UpsertReplacesExpirationTimer()
     {
         using var sut = CreateNotificationService();
-        var expired = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
+        var expired = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         sut.NotificationsChanged += (_, args) =>
         {
             if (args.Notifications.Count == 0)
@@ -119,11 +109,13 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         var requested = new TaskCompletionSource<WindowCloseRequestReason>(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        close.Attach((reason, _) =>
-        {
-            requested.SetResult(reason);
-            return ValueTask.FromResult(true);
-        });
+        close.Attach(
+            (reason, _) =>
+            {
+                requested.SetResult(reason);
+                return ValueTask.FromResult(true);
+            }
+        );
         using var sut = CreateTrayService(options, close);
         ITrayService tray = sut;
 
@@ -152,9 +144,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
             (_, _) => ValueTask.FromResult(WindowCloseDecision.Cancel)
         );
         using var sut = CreateTrayService(options, close);
-        var reset = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
+        var reset = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var observedExit = false;
         sut.Changed += (_, args) =>
         {

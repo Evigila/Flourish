@@ -1,6 +1,5 @@
 using System.Windows.Controls;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Services;
 

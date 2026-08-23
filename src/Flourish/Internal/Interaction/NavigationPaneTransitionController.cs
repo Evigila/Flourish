@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using ArkheideSystem.Flourish.Abstract;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace ArkheideSystem.Flourish.Internal.Interaction;
@@ -85,11 +84,11 @@ internal sealed class NavigationPaneTransitionController
             currentVisibleWidth = existing.Clip.Rect.Width;
             currentScale = existing.ContentScale.ScaleX;
             currentTranslation = existing.ContentTranslation.X;
-            currentCenteredNetScales = existing.CenteredContentHosts
-                .Select(host => host.GetNetScale(currentScale))
+            currentCenteredNetScales = existing
+                .CenteredContentHosts.Select(host => host.GetNetScale(currentScale))
                 .ToArray();
-            currentCenteredWorldOffsets = existing.CenteredContentHosts
-                .Select(host => host.GetWorldOffset(currentScale))
+            currentCenteredWorldOffsets = existing
+                .CenteredContentHosts.Select(host => host.GetWorldOffset(currentScale))
                 .ToArray();
             StopClocks(existing);
         }
@@ -100,12 +99,8 @@ internal sealed class NavigationPaneTransitionController
             currentVisibleWidth = committedWidth;
             currentScale = state.ContentScale.ScaleX;
             currentTranslation = state.ContentTranslation.X;
-            currentCenteredNetScales = state.CenteredContentHosts
-                .Select(_ => 1d)
-                .ToArray();
-            currentCenteredWorldOffsets = state.CenteredContentHosts
-                .Select(_ => 0d)
-                .ToArray();
+            currentCenteredNetScales = state.CenteredContentHosts.Select(_ => 1d).ToArray();
+            currentCenteredWorldOffsets = state.CenteredContentHosts.Select(_ => 0d).ToArray();
         }
 
         currentVisibleWidth = Math.Clamp(currentVisibleWidth, 0, workWidth);
@@ -129,9 +124,8 @@ internal sealed class NavigationPaneTransitionController
         }
 
         var targetScale = targetContentWidth / committedContentWidth;
-        var targetTranslation = target.Direction == NavigationPanelDirection.Left
-            ? targetWidth - committedWidth
-            : 0;
+        var targetTranslation =
+            target.Direction == NavigationPanelDirection.Left ? targetWidth - committedWidth : 0;
         if (!double.IsFinite(targetScale) || targetScale <= 0)
         {
             active = state;
@@ -145,12 +139,7 @@ internal sealed class NavigationPaneTransitionController
             currentVisibleWidth,
             clipHeight
         );
-        var toClip = CreateClipRect(
-            target.Direction,
-            presentationWidth,
-            targetWidth,
-            clipHeight
-        );
+        var toClip = CreateClipRect(target.Direction, presentationWidth, targetWidth, clipHeight);
         var effectiveDuration = ScaleDuration(
             duration,
             Math.Abs(targetWidth - currentVisibleWidth),
@@ -189,9 +178,7 @@ internal sealed class NavigationPaneTransitionController
         );
 
         var contentWidthDelta = committedWidth - targetWidth;
-        var centeredRuns = new List<CenteredContentAnimationRun>(
-            state.CenteredContentHosts.Count
-        );
+        var centeredRuns = new List<CenteredContentAnimationRun>(state.CenteredContentHosts.Count);
         for (var index = 0; index < state.CenteredContentHosts.Count; index++)
         {
             var centeredHost = state.CenteredContentHosts[index];
@@ -339,20 +326,11 @@ internal sealed class NavigationPaneTransitionController
 
         state.Clip.ApplyAnimationClock(RectangleGeometry.RectProperty, null);
         state.ContentScale.ApplyAnimationClock(ScaleTransform.ScaleXProperty, null);
-        state.ContentTranslation.ApplyAnimationClock(
-            TranslateTransform.XProperty,
-            null
-        );
+        state.ContentTranslation.ApplyAnimationClock(TranslateTransform.XProperty, null);
         foreach (var centeredHost in state.CenteredContentHosts)
         {
-            centeredHost.CounterScale.ApplyAnimationClock(
-                ScaleTransform.ScaleXProperty,
-                null
-            );
-            centeredHost.CounterTranslation.ApplyAnimationClock(
-                TranslateTransform.XProperty,
-                null
-            );
+            centeredHost.CounterScale.ApplyAnimationClock(ScaleTransform.ScaleXProperty, null);
+            centeredHost.CounterTranslation.ApplyAnimationClock(TranslateTransform.XProperty, null);
         }
         state.ClearRun();
     }
@@ -403,9 +381,7 @@ internal sealed class NavigationPaneTransitionController
         double height
     )
     {
-        var x = direction == NavigationPanelDirection.Right
-            ? presentationWidth - visibleWidth
-            : 0;
+        var x = direction == NavigationPanelDirection.Right ? presentationWidth - visibleWidth : 0;
         return new Rect(Math.Max(0, x), 0, visibleWidth, height);
     }
 
@@ -420,11 +396,7 @@ internal sealed class NavigationPaneTransitionController
             return duration;
         }
 
-        var scale = Math.Clamp(
-            distance / referenceDistance,
-            MinimumDurationScale,
-            1
-        );
+        var scale = Math.Clamp(distance / referenceDistance, MinimumDurationScale, 1);
         return TimeSpan.FromTicks(Math.Max(1, (long)(duration.Ticks * scale)));
     }
 
@@ -534,19 +506,14 @@ internal sealed class NavigationPaneTransitionController
 
     private sealed class CenteredContentHostState
     {
-        internal CenteredContentHostState(
-            FrameworkElement element,
-            FrameworkElement contentHost
-        )
+        internal CenteredContentHostState(FrameworkElement element, FrameworkElement contentHost)
         {
             Element = element;
             LayoutWidth = element.ActualWidth;
             MaximumWidth = element.MaxWidth;
             AvailableWidth = GetAvailableWidth(element, contentHost);
             CenterX = GetCenterX(element, contentHost);
-            OriginalTransformLocalValue = element.ReadLocalValue(
-                UIElement.RenderTransformProperty
-            );
+            OriginalTransformLocalValue = element.ReadLocalValue(UIElement.RenderTransformProperty);
             OriginalTransformOriginLocalValue = element.ReadLocalValue(
                 UIElement.RenderTransformOriginProperty
             );
@@ -578,15 +545,12 @@ internal sealed class NavigationPaneTransitionController
 
         internal double GetNetScale(double outerScale)
         {
-            return outerScale
-                * (IsUsingTransformCompensation ? CounterScale.ScaleX : 1);
+            return outerScale * (IsUsingTransformCompensation ? CounterScale.ScaleX : 1);
         }
 
         internal double GetWorldOffset(double outerScale)
         {
-            return IsUsingTransformCompensation
-                ? outerScale * CounterTranslation.X
-                : 0;
+            return IsUsingTransformCompensation ? outerScale * CounterTranslation.X : 0;
         }
 
         internal double PredictTargetCenter(double contentWidthDelta)
@@ -608,18 +572,12 @@ internal sealed class NavigationPaneTransitionController
 
             var availableWidth = Math.Max(
                 0,
-                AvailableWidth
-                    + contentWidthDelta
-                    - Element.Margin.Left
-                    - Element.Margin.Right
+                AvailableWidth + contentWidthDelta - Element.Margin.Left - Element.Margin.Right
             );
             return Math.Clamp(availableWidth, Element.MinWidth, MaximumWidth);
         }
 
-        internal void ApplyTransform(
-            double targetCounterScale,
-            double targetLocalOffset
-        )
+        internal void ApplyTransform(double targetCounterScale, double targetLocalOffset)
         {
             CounterScale.ScaleX = targetCounterScale;
             CounterTranslation.X = targetLocalOffset;
@@ -667,10 +625,7 @@ internal sealed class NavigationPaneTransitionController
             return contentHost.ActualWidth;
         }
 
-        private static double GetCenterX(
-            FrameworkElement element,
-            FrameworkElement contentHost
-        )
+        private static double GetCenterX(FrameworkElement element, FrameworkElement contentHost)
         {
             return element
                 .TransformToAncestor(contentHost)
@@ -756,11 +711,12 @@ internal sealed class NavigationPaneTransitionController
                 typeof(CenteredContentCompensationAnimation)
             );
 
-        internal static readonly DependencyProperty OuterScaleToProperty = DependencyProperty.Register(
-            nameof(OuterScaleTo),
-            typeof(double),
-            typeof(CenteredContentCompensationAnimation)
-        );
+        internal static readonly DependencyProperty OuterScaleToProperty =
+            DependencyProperty.Register(
+                nameof(OuterScaleTo),
+                typeof(double),
+                typeof(CenteredContentCompensationAnimation)
+            );
 
         internal double CompensatedValueFrom
         {
@@ -805,11 +761,7 @@ internal sealed class NavigationPaneTransitionController
         {
             var easedProgress = GetEasedProgress(animationClock, EasingFunction);
             var outerScale = Lerp(OuterScaleFrom, OuterScaleTo, easedProgress);
-            var compensatedValue = Lerp(
-                CompensatedValueFrom,
-                CompensatedValueTo,
-                easedProgress
-            );
+            var compensatedValue = Lerp(CompensatedValueFrom, CompensatedValueTo, easedProgress);
             return double.IsFinite(outerScale) && outerScale > 0
                 ? compensatedValue / outerScale
                 : defaultDestinationValue;

@@ -26,18 +26,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Flourish\Flourish.csproj" />
+    <ProjectReference Include="..\Arkheide.Flourish.Extension.Culture\Arkheide.Flourish.Extension.Culture.csproj" />
+    <ProjectReference Include="..\Flourish\Arkheide.Flourish.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Localization\Catalogs\*.json" />
+    <AdditionalFiles Include="Localization\Culture.json" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="lang_es-ES.json">
+    <None Update="Localization\Culture.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Culture.json</TargetPath>
+    </None>
+    <None Update="Flourish.LangKey_es-ES.Json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

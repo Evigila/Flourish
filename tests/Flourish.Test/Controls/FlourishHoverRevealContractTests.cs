@@ -1,25 +1,18 @@
 using System.IO;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
 public sealed class FlourishHoverRevealContractTests
 {
-    private const string XamlNamespace =
-        "http://schemas.microsoft.com/winfx/2006/xaml";
-    private const string HoverRevealBrush =
-        "{DynamicResource FlourishHoverRevealBrush}";
+    private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+    private const string HoverRevealBrush = "{DynamicResource FlourishHoverRevealBrush}";
     private const string HoverRevealBrushBinding =
         "{Binding Path=(controls:HoverReveal.OverrideColor), RelativeSource={RelativeSource TemplatedParent}}";
     private const string HoverRevealBrushTemplateBinding =
         "{TemplateBinding controls:HoverReveal.OverrideColor}";
     private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
-    private static readonly string FlourishRoot = Path.Combine(
-        RepositoryRoot,
-        "src",
-        "Flourish"
-    );
+    private static readonly string FlourishRoot = Path.Combine(RepositoryRoot, "src", "Flourish");
     private static readonly HashSet<string> ApprovedBrandRamp = new(
         StringComparer.OrdinalIgnoreCase
     )
@@ -90,18 +83,15 @@ public sealed class FlourishHoverRevealContractTests
                     : HoverRevealBrushTemplateBinding,
                 violations
             );
-            var overrideColorSetter = template.Style
-                .Elements()
+            var overrideColorSetter = template
+                .Style.Elements()
                 .SingleOrDefault(element =>
                     element.Name.LocalName == "Setter"
                     && (string?)element.Attribute("Property")
                         == "controls:HoverReveal.OverrideColor"
                 );
             var expectedOverrideColor = HoverRevealBrush;
-            if (
-                (string?)overrideColorSetter?.Attribute("Value")
-                != expectedOverrideColor
-            )
+            if ((string?)overrideColorSetter?.Attribute("Value") != expectedOverrideColor)
             {
                 violations.Add(
                     $"{template.Identifier}: reveal override color is not bound to {expectedOverrideColor}"
@@ -138,8 +128,7 @@ public sealed class FlourishHoverRevealContractTests
             itemStyle.Elements(),
             element =>
                 element.Name.LocalName == "Setter"
-                && (string?)element.Attribute("Property")
-                    == "controls:HoverReveal.IsParticipant"
+                && (string?)element.Attribute("Property") == "controls:HoverReveal.IsParticipant"
                 && (string?)element.Attribute("Value") == "False"
         );
         Assert.Empty(FindNamedDescendants(itemTemplate, "HoverChrome"));
@@ -173,9 +162,7 @@ public sealed class FlourishHoverRevealContractTests
                 && (string?)element.Attribute("Property") == "Background"
         );
 
-        var ownerDocument = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "BunchedListBox.xaml")
-        );
+        var ownerDocument = LoadXaml(Path.Combine(FlourishRoot, "Controls", "BunchedListBox.xaml"));
         Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_IndicatorLayer"));
         Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_SelectionChrome"));
         Assert.Single(FindNamedDescendants(ownerDocument.Root!, "PART_HoverChrome"));
@@ -185,9 +172,7 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void ComboBox_ReplacesStaticMouseOverColorChangesWithReveal()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "ComboBox.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "ComboBox.xaml"));
         var mouseOverTriggers = document
             .Descendants()
             .Where(element =>
@@ -215,15 +200,12 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void CheckBox_ReplacesStaticMouseOverColorChangesWithReveal()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "CheckBox.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "CheckBox.xaml"));
         var template = document
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "ControlTemplate"
-                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-                    == "CheckBoxTemplate"
+                && (string?)element.Attribute(XName.Get("Key", XamlNamespace)) == "CheckBoxTemplate"
             );
         var mouseOverTriggers = template
             .Descendants()
@@ -232,10 +214,7 @@ public sealed class FlourishHoverRevealContractTests
             .ToArray();
         var fallback = Assert.Single(mouseOverTriggers);
 
-        Assert.Contains(
-            ("controls:HoverReveal.IsEnabled", "False"),
-            GetConditions(fallback)
-        );
+        Assert.Contains(("controls:HoverReveal.IsEnabled", "False"), GetConditions(fallback));
         Assert.All(
             fallback.Descendants().Where(element => element.Name.LocalName == "Setter"),
             setter => Assert.Equal("HoverChrome", (string?)setter.Attribute("TargetName"))
@@ -244,9 +223,7 @@ public sealed class FlourishHoverRevealContractTests
         var pressedTrigger = FindTrigger(template, "IsPressed", "True");
         AssertSetter(pressedTrigger, "HoverChrome", "Opacity", "0");
         AssertSetter(pressedTrigger, "PressedChrome", "Opacity", "1");
-        var pressedChrome = Assert.Single(
-            FindNamedDescendants(template, "PressedChrome")
-        );
+        var pressedChrome = Assert.Single(FindNamedDescendants(template, "PressedChrome"));
         Assert.Equal(
             "{DynamicResource FlourishPressedRevealBrush}",
             (string?)pressedChrome.Attribute("Background")
@@ -258,14 +235,12 @@ public sealed class FlourishHoverRevealContractTests
             element =>
                 element.Name.LocalName == "Setter"
                 && (string?)element.Attribute("TargetName") == "SurfaceChrome"
-                && (string?)element.Attribute("Property")
-                    is "Background" or "BorderBrush"
+                && (string?)element.Attribute("Property") is "Background" or "BorderBrush"
                 && element
                     .Ancestors()
                     .Any(ancestor =>
                         ancestor.Name.LocalName is "Trigger" or "MultiTrigger"
-                        && GetConditions(ancestor)
-                            .Contains(("IsPressed", "True"))
+                        && GetConditions(ancestor).Contains(("IsPressed", "True"))
                     )
         );
         var disabledTrigger = FindTrigger(template, "IsEnabled", "False");
@@ -280,8 +255,8 @@ public sealed class FlourishHoverRevealContractTests
 
         foreach (var template in FindParticipatingTemplates())
         {
-            var hoverFallbacks = template.Template
-                .Descendants()
+            var hoverFallbacks = template
+                .Template.Descendants()
                 .Where(element => element.Name.LocalName is "Trigger" or "MultiTrigger")
                 .Where(trigger =>
                     trigger
@@ -306,7 +281,9 @@ public sealed class FlourishHoverRevealContractTests
             var conditions = GetConditions(hoverFallbacks[0]);
             if (!conditions.Contains(("IsMouseOver", "True")))
             {
-                violations.Add($"{template.Identifier}: fallback does not require IsMouseOver=True");
+                violations.Add(
+                    $"{template.Identifier}: fallback does not require IsMouseOver=True"
+                );
             }
 
             if (!conditions.Contains(("controls:HoverReveal.IsEnabled", "False")))
@@ -326,8 +303,8 @@ public sealed class FlourishHoverRevealContractTests
         var violations = new List<string>();
         foreach (var template in FindParticipatingTemplates())
         {
-            var setter = template.Style
-                .Elements()
+            var setter = template
+                .Style.Elements()
                 .SingleOrDefault(element =>
                     element.Name.LocalName == "Setter"
                     && (string?)element.Attribute("Property")
@@ -341,8 +318,8 @@ public sealed class FlourishHoverRevealContractTests
             }
 
             if (
-                template.Style
-                    .Elements()
+                template
+                    .Style.Elements()
                     .Any(element =>
                         element.Name.LocalName == "Setter"
                         && (string?)element.Attribute("Property")
@@ -362,14 +339,13 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void ParticipatingStyles_ConsumeTheGlobalMotionPolicyThroughDynamicResources()
     {
-        const string expectedPolicy =
-            "{DynamicResource FlourishHoverRevealEnabled}";
+        const string expectedPolicy = "{DynamicResource FlourishHoverRevealEnabled}";
         var violations = new List<string>();
 
         foreach (var template in FindParticipatingTemplates())
         {
-            var setter = template.Style
-                .Elements()
+            var setter = template
+                .Style.Elements()
                 .SingleOrDefault(element =>
                     element.Name.LocalName == "Setter"
                     && (string?)element.Attribute("Property")
@@ -395,12 +371,9 @@ public sealed class FlourishHoverRevealContractTests
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "ControlTemplate"
-                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-                    == "ButtonTemplate"
+                && (string?)element.Attribute(XName.Get("Key", XamlNamespace)) == "ButtonTemplate"
             );
-        var pressedChrome = Assert.Single(
-            FindNamedDescendants(template, "PressedChrome")
-        );
+        var pressedChrome = Assert.Single(FindNamedDescendants(template, "PressedChrome"));
 
         Assert.Equal(
             "{DynamicResource FlourishPressedRevealBrush}",
@@ -432,30 +405,21 @@ public sealed class FlourishHoverRevealContractTests
             }
         )
         {
-            var familyDocument = LoadXaml(
-                Path.Combine(FlourishRoot, "Controls", fileName)
-            );
+            var familyDocument = LoadXaml(Path.Combine(FlourishRoot, "Controls", fileName));
             var familyTemplate = familyDocument
                 .Descendants()
                 .Single(element =>
                     element.Name.LocalName == "ControlTemplate"
-                    && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-                        == templateKey
+                    && (string?)element.Attribute(XName.Get("Key", XamlNamespace)) == templateKey
                 );
-            var familyPressedTrigger = FindTrigger(
-                familyTemplate,
-                "IsPressed",
-                "True"
-            );
+            var familyPressedTrigger = FindTrigger(familyTemplate, "IsPressed", "True");
 
             Assert.DoesNotContain(
                 familyPressedTrigger.Descendants(),
                 element =>
                     element.Name.LocalName == "Setter"
-                    && (string?)element.Attribute("TargetName")
-                        == "InteractionRoot"
-                    && (string?)element.Attribute("Property")
-                        == "RenderTransform"
+                    && (string?)element.Attribute("TargetName") == "InteractionRoot"
+                    && (string?)element.Attribute("Property") == "RenderTransform"
             );
         }
     }
@@ -463,23 +427,19 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void ButtonVariants_MapFilledAndUnfilledInteractionColorsConsistently()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "Button.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "Button.xaml"));
         var template = document
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "ControlTemplate"
-                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-                    == "ButtonTemplate"
+                && (string?)element.Attribute(XName.Get("Key", XamlNamespace)) == "ButtonTemplate"
             );
         var style = document
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "Style"
                 && element.Attribute(XName.Get("Key", XamlNamespace)) is null
-                && (string?)element.Attribute("TargetType")
-                    == "{x:Type controls:Button}"
+                && (string?)element.Attribute("TargetType") == "{x:Type controls:Button}"
             );
 
         Assert.Equal(
@@ -554,9 +514,7 @@ public sealed class FlourishHoverRevealContractTests
             "{DynamicResource FlourishForegroundOnDangerBrush}"
         );
 
-        var cardDocument = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "CardButton.xaml")
-        );
+        var cardDocument = LoadXaml(Path.Combine(FlourishRoot, "Controls", "CardButton.xaml"));
         var cardTemplate = cardDocument
             .Descendants()
             .Single(element =>
@@ -594,15 +552,12 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void ButtonVariants_ShareRevealAndKeepCaptionDangerSpecialized()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "Button.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "Button.xaml"));
         var template = document
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "ControlTemplate"
-                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-                    == "ButtonTemplate"
+                && (string?)element.Attribute(XName.Get("Key", XamlNamespace)) == "ButtonTemplate"
             );
 
         var dangerTrigger = FindTrigger(template, "Variant", "Danger");
@@ -614,10 +569,8 @@ public sealed class FlourishHoverRevealContractTests
         );
         Assert.DoesNotContain(
             document.Descendants().Attributes("Value"),
-            attribute => attribute.Value.Contains(
-                "FlourishWindowCaptionClose",
-                StringComparison.Ordinal
-            )
+            attribute =>
+                attribute.Value.Contains("FlourishWindowCaptionClose", StringComparison.Ordinal)
         );
 
         var implicitStyle = document
@@ -625,8 +578,7 @@ public sealed class FlourishHoverRevealContractTests
             .Single(element =>
                 element.Name.LocalName == "Style"
                 && element.Attribute(XName.Get("Key", XamlNamespace)) is null
-                && (string?)element.Attribute("TargetType")
-                    == "{x:Type controls:Button}"
+                && (string?)element.Attribute("TargetType") == "{x:Type controls:Button}"
             );
         var dangerStyleTrigger = FindTrigger(implicitStyle, "Variant", "Danger");
         AssertSetter(
@@ -691,13 +643,10 @@ public sealed class FlourishHoverRevealContractTests
             captionDangerTrigger.Descendants(),
             element =>
                 element.Name.LocalName == "Setter"
-                && (string?)element.Attribute("Property")
-                    == "controls:HoverReveal.IsMotionEnabled"
+                && (string?)element.Attribute("Property") == "controls:HoverReveal.IsMotionEnabled"
         );
 
-        var cardDocument = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "CardButton.xaml")
-        );
+        var cardDocument = LoadXaml(Path.Combine(FlourishRoot, "Controls", "CardButton.xaml"));
         foreach (
             var (templateDocument, templateKey) in new[]
             {
@@ -729,16 +678,13 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void ButtonFocusVisual_IsKeyboardOnlyAndDoesNotUseTemplateFocusState()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "Button.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "Button.xaml"));
         var implicitStyle = document
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "Style"
                 && element.Attribute(XName.Get("Key", XamlNamespace)) is null
-                && (string?)element.Attribute("TargetType")
-                    == "{x:Type controls:Button}"
+                && (string?)element.Attribute("TargetType") == "{x:Type controls:Button}"
             );
         var focusVisualSetter = implicitStyle
             .Elements()
@@ -769,16 +715,9 @@ public sealed class FlourishHoverRevealContractTests
     [Fact]
     public void WindowCaptionButtons_ReserveDangerVariantForCloseCommands()
     {
-        var titleBar = LoadXaml(
-            Path.Combine(FlourishRoot, "Views", "Windows", "TitleBar.xaml")
-        );
+        var titleBar = LoadXaml(Path.Combine(FlourishRoot, "Views", "Windows", "TitleBar.xaml"));
         var messageBox = LoadXaml(
-            Path.Combine(
-                FlourishRoot,
-                "Views",
-                "Windows",
-                "FlourishMessageBoxWindow.xaml"
-            )
+            Path.Combine(FlourishRoot, "Views", "Windows", "FlourishMessageBoxWindow.xaml")
         );
 
         AssertButtonVariant(titleBar, "MinimizeButton", "Text");
@@ -794,8 +733,8 @@ public sealed class FlourishHoverRevealContractTests
     {
         var selectedTriggers = FindParticipatingTemplates()
             .Select(template =>
-                template.Template
-                    .Descendants()
+                template
+                    .Template.Descendants()
                     .SingleOrDefault(element =>
                         element.Name.LocalName == "Trigger"
                         && (string?)element.Attribute("Property") == "IsSelected"
@@ -828,22 +767,8 @@ public sealed class FlourishHoverRevealContractTests
     }
 
     [Theory]
-    [InlineData(
-        "Colors.Light.xaml",
-        "#590F6CBD",
-        "#CFE4FA",
-        "#0C3B5E",
-        "#660E4775",
-        "#33C50F1F"
-    )]
-    [InlineData(
-        "Colors.Dark.xaml",
-        "#66479EF5",
-        "#0F548C",
-        "#FFFFFF",
-        "#732886DE",
-        "#33DC626D"
-    )]
+    [InlineData("Colors.Light.xaml", "#590F6CBD", "#CFE4FA", "#0C3B5E", "#660E4775", "#33C50F1F")]
+    [InlineData("Colors.Dark.xaml", "#66479EF5", "#0F548C", "#FFFFFF", "#732886DE", "#33DC626D")]
     public void Palettes_UseBrighterThemeColorsWithADeeperPressedState(
         string fileName,
         string expectedHover,
@@ -853,23 +778,15 @@ public sealed class FlourishHoverRevealContractTests
         string expectedDangerHover
     )
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
 
         Assert.Equal(expectedHover, GetBrushColor(document, "FlourishHoverRevealBrush"));
-        Assert.Equal(
-            expectedSelected,
-            GetBrushColor(document, "FlourishSelectionBackgroundBrush")
-        );
+        Assert.Equal(expectedSelected, GetBrushColor(document, "FlourishSelectionBackgroundBrush"));
         Assert.Equal(
             expectedSelectedForeground,
             GetBrushColor(document, "FlourishSelectionForegroundBrush")
         );
-        Assert.Equal(
-            expectedPressed,
-            GetBrushColor(document, "FlourishPressedRevealBrush")
-        );
+        Assert.Equal(expectedPressed, GetBrushColor(document, "FlourishPressedRevealBrush"));
         Assert.Equal(
             expectedDangerHover,
             GetBrushColor(document, "FlourishDangerHoverRevealBrush")
@@ -879,30 +796,14 @@ public sealed class FlourishHoverRevealContractTests
             GetBrushColor(document, "FlourishNeutralBackground1Brush")
         ).Rgb;
         Assert.True(
-            GetRelativeLuminance(
-                Composite(ParseColor(expectedHover), controlBackground)
-            )
-                > GetRelativeLuminance(
-                    Composite(ParseColor(expectedPressed), controlBackground)
-                )
+            GetRelativeLuminance(Composite(ParseColor(expectedHover), controlBackground))
+                > GetRelativeLuminance(Composite(ParseColor(expectedPressed), controlBackground))
         );
     }
 
     [Theory]
-    [InlineData(
-        "Colors.Light.xaml",
-        "#EBF3FC",
-        "#115EA3",
-        "#96C6FA",
-        "#0A2E4A"
-    )]
-    [InlineData(
-        "Colors.Dark.xaml",
-        "#082338",
-        "#62ABF5",
-        "#061724",
-        "#EBF3FC"
-    )]
+    [InlineData("Colors.Light.xaml", "#EBF3FC", "#115EA3", "#96C6FA", "#0A2E4A")]
+    [InlineData("Colors.Dark.xaml", "#082338", "#62ABF5", "#061724", "#EBF3FC")]
     public void TonalButtonPalette_UsesExpectedBrandInspiredTokens(
         string fileName,
         string expectedBackground,
@@ -911,12 +812,16 @@ public sealed class FlourishHoverRevealContractTests
         string expectedPressedForeground
     )
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
 
-        Assert.Equal(expectedBackground, GetBrushColor(document, "FlourishTonalButtonBackgroundBrush"));
-        Assert.Equal(expectedForeground, GetBrushColor(document, "FlourishTonalButtonForegroundBrush"));
+        Assert.Equal(
+            expectedBackground,
+            GetBrushColor(document, "FlourishTonalButtonBackgroundBrush")
+        );
+        Assert.Equal(
+            expectedForeground,
+            GetBrushColor(document, "FlourishTonalButtonForegroundBrush")
+        );
         Assert.Equal(expectedPressed, GetBrushColor(document, "FlourishTonalButtonPressedBrush"));
         Assert.Equal(
             expectedPressedForeground,
@@ -927,13 +832,9 @@ public sealed class FlourishHoverRevealContractTests
     [Theory]
     [InlineData("Colors.Light.xaml")]
     [InlineData("Colors.Dark.xaml")]
-    public void InteractiveAccentColors_ComeFromTheApprovedBrandRamp(
-        string fileName
-    )
+    public void InteractiveAccentColors_ComeFromTheApprovedBrandRamp(string fileName)
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
 
         foreach (
             var key in new[]
@@ -954,12 +855,8 @@ public sealed class FlourishHoverRevealContractTests
     [InlineData("Colors.Dark.xaml")]
     public void SelectedStates_MaintainReadableTextContrast(string fileName)
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
-        var selected = ParseColor(
-            GetBrushColor(document, "FlourishSelectionBackgroundBrush")
-        ).Rgb;
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
+        var selected = ParseColor(GetBrushColor(document, "FlourishSelectionBackgroundBrush")).Rgb;
         var foreground = ParseColor(
             GetBrushColor(document, "FlourishSelectionForegroundBrush")
         ).Rgb;
@@ -967,12 +864,7 @@ public sealed class FlourishHoverRevealContractTests
         var selectedHover = Composite(hover, selected);
 
         AssertReadableContrast(foreground, selected, fileName, "selected");
-        AssertReadableContrast(
-            foreground,
-            selectedHover,
-            fileName,
-            "selected + hover"
-        );
+        AssertReadableContrast(foreground, selectedHover, fileName, "selected + hover");
     }
 
     [Theory]
@@ -980,15 +872,11 @@ public sealed class FlourishHoverRevealContractTests
     [InlineData("Colors.Dark.xaml")]
     public void DangerPressedState_MaintainsReadableTextContrast(string fileName)
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
         var background = ParseColor(
             GetBrushColor(document, "FlourishDangerStrongBackgroundBrush")
         ).Rgb;
-        var foreground = ParseColor(
-            GetBrushColor(document, "FlourishForegroundOnDangerBrush")
-        ).Rgb;
+        var foreground = ParseColor(GetBrushColor(document, "FlourishForegroundOnDangerBrush")).Rgb;
 
         AssertReadableContrast(foreground, background, fileName, "danger pressed");
     }
@@ -1048,9 +936,7 @@ public sealed class FlourishHoverRevealContractTests
         string stroke1Hover
     )
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
 
         Assert.Equal(foreground1, GetBrushColor(document, "FlourishNeutralForeground1Brush"));
         Assert.Equal(foreground2, GetBrushColor(document, "FlourishNeutralForeground2Brush"));
@@ -1064,10 +950,7 @@ public sealed class FlourishHoverRevealContractTests
             GetBrushColor(document, "FlourishNeutralBackground1PressedBrush")
         );
         Assert.Equal(stroke1, GetBrushColor(document, "FlourishNeutralStroke1Brush"));
-        Assert.Equal(
-            stroke1Hover,
-            GetBrushColor(document, "FlourishNeutralStroke1HoverBrush")
-        );
+        Assert.Equal(stroke1Hover, GetBrushColor(document, "FlourishNeutralStroke1HoverBrush"));
     }
 
     [Theory]
@@ -1079,18 +962,10 @@ public sealed class FlourishHoverRevealContractTests
         string cardBackground
     )
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
 
-        Assert.Equal(
-            contentBackground,
-            GetBrushColor(document, "FlourishContentBackgroundBrush")
-        );
-        Assert.Equal(
-            cardBackground,
-            GetBrushColor(document, "FlourishCardBackgroundBrush")
-        );
+        Assert.Equal(contentBackground, GetBrushColor(document, "FlourishContentBackgroundBrush"));
+        Assert.Equal(cardBackground, GetBrushColor(document, "FlourishCardBackgroundBrush"));
         Assert.NotEqual(contentBackground, cardBackground);
     }
 
@@ -1101,19 +976,11 @@ public sealed class FlourishHoverRevealContractTests
             Path.Combine(FlourishRoot, "Themes", "Colors", "Colors.Light.xaml")
         );
 
-        Assert.Equal(
-            "#FDFDFD",
-            GetBrushColor(document, "FlourishNeutralBackground2Brush")
-        );
+        Assert.Equal("#FDFDFD", GetBrushColor(document, "FlourishNeutralBackground2Brush"));
         Assert.Equal("#FDFDFD", GetBrushColor(document, "FlourishCardBackgroundBrush"));
-        Assert.Equal(
-            "#E6FDFDFD",
-            GetBrushColor(document, "FlourishShellBackgroundBrush")
-        );
+        Assert.Equal("#E6FDFDFD", GetBrushColor(document, "FlourishShellBackgroundBrush"));
         Assert.DoesNotContain(
-            document.Descendants().Where(element =>
-                element.Name.LocalName == "SolidColorBrush"
-            ),
+            document.Descendants().Where(element => element.Name.LocalName == "SolidColorBrush"),
             brush =>
                 ((string?)brush.Attribute("Color"))?.EndsWith(
                     "FAFAFA",
@@ -1176,16 +1043,13 @@ public sealed class FlourishHoverRevealContractTests
                         && templateReference.EndsWith('}')
                     )
                     {
-                        var key = templateReference[
-                            staticResourcePrefix.Length..^1
-                        ];
+                        var key = templateReference[staticResourcePrefix.Length..^1];
                         template = document
                             .Descendants()
                             .SingleOrDefault(element =>
                                 element.Name.LocalName == "ControlTemplate"
-                                && (string?)element.Attribute(
-                                    XName.Get("Key", XamlNamespace)
-                                ) == key
+                                && (string?)element.Attribute(XName.Get("Key", XamlNamespace))
+                                    == key
                             );
                     }
                 }
@@ -1203,24 +1067,17 @@ public sealed class FlourishHoverRevealContractTests
             }
         }
 
-        return result
-            .OrderBy(template => template.Identifier, StringComparer.Ordinal)
-            .ToArray();
+        return result.OrderBy(template => template.Identifier, StringComparer.Ordinal).ToArray();
     }
 
     private static XElement[] FindNamedDescendants(XElement root, string name)
     {
-        return root
-            .Descendants()
-            .Where(element =>
-                (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == name
-            )
+        return root.Descendants()
+            .Where(element => (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == name)
             .ToArray();
     }
 
-    private static HashSet<(string Property, string Value)> GetConditions(
-        XElement trigger
-    )
+    private static HashSet<(string Property, string Value)> GetConditions(XElement trigger)
     {
         var result = new HashSet<(string Property, string Value)>();
         if (trigger.Name.LocalName == "Trigger")
@@ -1250,11 +1107,7 @@ public sealed class FlourishHoverRevealContractTests
         return result;
     }
 
-    private static XElement FindTrigger(
-        XElement template,
-        string property,
-        string value
-    )
+    private static XElement FindTrigger(XElement template, string property, string value)
     {
         return template
             .Descendants()
@@ -1265,11 +1118,7 @@ public sealed class FlourishHoverRevealContractTests
             );
     }
 
-    private static bool HasCondition(
-        XElement trigger,
-        string property,
-        string value
-    )
+    private static bool HasCondition(XElement trigger, string property, string value)
     {
         return trigger
             .Descendants()
@@ -1303,18 +1152,13 @@ public sealed class FlourishHoverRevealContractTests
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "WindowCaptionButton"
-                && (string?)element.Attribute(XName.Get("Name", XamlNamespace))
-                    == "CloseButton"
+                && (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == "CloseButton"
             );
 
         Assert.False(string.IsNullOrWhiteSpace((string?)closeButton.Attribute("Icon")));
     }
 
-    private static void AssertButtonVariant(
-        XDocument document,
-        string name,
-        string variant
-    )
+    private static void AssertButtonVariant(XDocument document, string name, string variant)
     {
         var button = document
             .Descendants()
@@ -1347,11 +1191,8 @@ public sealed class FlourishHoverRevealContractTests
 
     private static string[] GetResourceKeys(XDocument document) =>
         document
-            .Root!
-            .Elements()
-            .Select(element =>
-                (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-            )
+            .Root!.Elements()
+            .Select(element => (string?)element.Attribute(XName.Get("Key", XamlNamespace)))
             .Where(key => key is not null)
             .Select(key => key!)
             .Order(StringComparer.Ordinal)
@@ -1395,9 +1236,7 @@ public sealed class FlourishHoverRevealContractTests
 
     private static byte Blend(byte foreground, byte background, double alpha)
     {
-        return (byte)Math.Round(
-            (foreground * alpha) + (background * (1d - alpha))
-        );
+        return (byte)Math.Round((foreground * alpha) + (background * (1d - alpha)));
     }
 
     private static void AssertReadableContrast(
@@ -1432,9 +1271,7 @@ public sealed class FlourishHoverRevealContractTests
     private static double Linearize(byte channel)
     {
         var value = channel / 255d;
-        return value <= 0.04045
-            ? value / 12.92
-            : Math.Pow((value + 0.055) / 1.055, 2.4);
+        return value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
     }
 
     private static string ToHex(RgbColor color)

@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -23,10 +22,10 @@ public sealed class CommandDispatcherTests
     {
         var sut = new CommandDispatcher();
 
-        var result = await sut.ExecuteAsync("gallery.open");
+        var result = await sut.ExecuteAsync("cmd_gallery_open");
 
         Assert.Equal(CommandExecutionStatus.NotHandled, result.Status);
-        Assert.False(sut.CanExecute("gallery.open"));
+        Assert.False(sut.CanExecute("cmd_gallery_open"));
     }
 
     [Fact]
@@ -37,7 +36,7 @@ public sealed class CommandDispatcherTests
         CancellationToken receivedToken = default;
         var parameter = new object();
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (context, cancellationToken) =>
             {
                 receivedContext = context;
@@ -48,7 +47,7 @@ public sealed class CommandDispatcherTests
         using var cancellationSource = new CancellationTokenSource();
 
         var result = await sut.ExecuteAsync(
-            "editor.save",
+            "cmd_editor_save",
             parameter,
             CommandSource.Toolbar,
             cancellationSource.Token
@@ -57,7 +56,7 @@ public sealed class CommandDispatcherTests
         Assert.Equal(CommandExecutionStatus.Handled, result.Status);
         Assert.Equal("saved", result.Value);
         Assert.NotNull(receivedContext);
-        Assert.Equal("editor.save", receivedContext.CommandKey);
+        Assert.Equal("cmd_editor_save", receivedContext.CommandKey);
         Assert.Same(parameter, receivedContext.Parameter);
         Assert.Equal(CommandSource.Toolbar, receivedContext.Source);
         Assert.Equal(cancellationSource.Token, receivedToken);
@@ -69,7 +68,7 @@ public sealed class CommandDispatcherTests
         var invoked = false;
         var sut = new CommandDispatcher();
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 invoked = true;
@@ -78,12 +77,12 @@ public sealed class CommandDispatcherTests
             _ => false
         );
 
-        var result = await sut.ExecuteAsync("editor.save");
+        var result = await sut.ExecuteAsync("cmd_editor_save");
 
         Assert.Equal(CommandExecutionStatus.Disabled, result.Status);
         Assert.False(result.IsHandled);
         Assert.False(invoked);
-        Assert.False(sut.CanExecute("editor.save"));
+        Assert.False(sut.CanExecute("cmd_editor_save"));
     }
 
     [Fact]
@@ -91,11 +90,11 @@ public sealed class CommandDispatcherTests
     {
         var sut = new CommandDispatcher();
         sut.Register(
-            "reports.export",
+            "cmd_reports_export",
             (_, _) => ValueTask.FromResult(CommandResult.NotHandled)
         );
 
-        var result = await sut.ExecuteAsync("reports.export");
+        var result = await sut.ExecuteAsync("cmd_reports_export");
 
         Assert.Equal(CommandExecutionStatus.NotHandled, result.Status);
     }
@@ -105,9 +104,9 @@ public sealed class CommandDispatcherTests
     {
         var sut = new CommandDispatcher();
         var failure = new InvalidOperationException("save failed");
-        sut.Register("editor.save", (_, _) => throw failure);
+        sut.Register("cmd_editor_save", (_, _) => throw failure);
 
-        var result = await sut.ExecuteAsync("editor.save");
+        var result = await sut.ExecuteAsync("cmd_editor_save");
 
         Assert.Equal(CommandExecutionStatus.Failed, result.Status);
         Assert.Same(failure, result.Exception);
@@ -119,7 +118,7 @@ public sealed class CommandDispatcherTests
         var invoked = false;
         var sut = new CommandDispatcher();
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 invoked = true;
@@ -130,7 +129,7 @@ public sealed class CommandDispatcherTests
         cancellationSource.Cancel();
 
         var result = await sut.ExecuteAsync(
-            "editor.save",
+            "cmd_editor_save",
             cancellationToken: cancellationSource.Token
         );
 
@@ -142,19 +141,13 @@ public sealed class CommandDispatcherTests
     public void Register_WithDuplicateKeyAndRejectPolicy_Throws()
     {
         var sut = new CommandDispatcher();
-        sut.Register(
-            "editor.save",
-            (_, _) => ValueTask.FromResult(CommandResult.Handled)
-        );
+        sut.Register("cmd_editor_save", (_, _) => ValueTask.FromResult(CommandResult.Handled));
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.Register(
-                "editor.save",
-                (_, _) => ValueTask.FromResult(CommandResult.Handled)
-            )
+            sut.Register("cmd_editor_save", (_, _) => ValueTask.FromResult(CommandResult.Handled))
         );
 
-        Assert.Contains("editor.save", exception.Message);
+        Assert.Contains("cmd_editor_save", exception.Message);
         Assert.Single(sut.Registrations);
     }
 
@@ -164,7 +157,7 @@ public sealed class CommandDispatcherTests
         var calls = new List<string>();
         var sut = new CommandDispatcher();
         var original = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 calls.Add("original");
@@ -172,7 +165,7 @@ public sealed class CommandDispatcherTests
             }
         );
         var replacement = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 calls.Add("replacement");
@@ -187,7 +180,7 @@ public sealed class CommandDispatcherTests
         Assert.False(original.IsRegistered);
         Assert.True(replacement.IsRegistered);
         original.Dispose();
-        var result = await sut.ExecuteAsync("editor.save");
+        var result = await sut.ExecuteAsync("cmd_editor_save");
 
         Assert.True(result.IsHandled);
         Assert.Equal(["replacement"], calls);
@@ -199,7 +192,7 @@ public sealed class CommandDispatcherTests
         var calls = new List<string>();
         var sut = new CommandDispatcher();
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 calls.Add("low");
@@ -208,7 +201,7 @@ public sealed class CommandDispatcherTests
             options: new CommandRegistrationOptions { Priority = -1 }
         );
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 calls.Add("high-first");
@@ -221,7 +214,7 @@ public sealed class CommandDispatcherTests
             }
         );
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 calls.Add("high-second");
@@ -234,7 +227,7 @@ public sealed class CommandDispatcherTests
             }
         );
 
-        var result = await sut.ExecuteAsync("editor.save");
+        var result = await sut.ExecuteAsync("cmd_editor_save");
 
         Assert.True(result.IsHandled);
         Assert.Equal(["high-first", "high-second", "low"], calls);
@@ -252,7 +245,7 @@ public sealed class CommandDispatcherTests
         );
         var laterInvoked = false;
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             async (_, _) =>
             {
                 firstStarted.TrySetResult();
@@ -262,7 +255,7 @@ public sealed class CommandDispatcherTests
             options: new CommandRegistrationOptions { Priority = 10 }
         );
         var later = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 laterInvoked = true;
@@ -273,7 +266,7 @@ public sealed class CommandDispatcherTests
                 DuplicatePolicy = CommandDuplicatePolicy.Append,
             }
         );
-        var execution = sut.ExecuteAsync("editor.save").AsTask();
+        var execution = sut.ExecuteAsync("cmd_editor_save").AsTask();
         await firstStarted.Task.WaitAsync(Timeout);
 
         later.Dispose();
@@ -297,7 +290,7 @@ public sealed class CommandDispatcherTests
         var replacedInvoked = false;
         var replacementInvocations = 0;
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             async (_, _) =>
             {
                 firstStarted.TrySetResult();
@@ -307,7 +300,7 @@ public sealed class CommandDispatcherTests
             options: new CommandRegistrationOptions { Priority = 10 }
         );
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 replacedInvoked = true;
@@ -318,10 +311,10 @@ public sealed class CommandDispatcherTests
                 DuplicatePolicy = CommandDuplicatePolicy.Append,
             }
         );
-        var execution = sut.ExecuteAsync("editor.save").AsTask();
+        var execution = sut.ExecuteAsync("cmd_editor_save").AsTask();
         await firstStarted.Task.WaitAsync(Timeout);
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 replacementInvocations++;
@@ -335,7 +328,7 @@ public sealed class CommandDispatcherTests
 
         releaseFirst.TrySetResult();
         var firstResult = await execution.WaitAsync(Timeout);
-        var secondResult = await sut.ExecuteAsync("editor.save");
+        var secondResult = await sut.ExecuteAsync("cmd_editor_save");
 
         Assert.Equal(CommandExecutionStatus.NotHandled, firstResult.Status);
         Assert.False(replacedInvoked);
@@ -350,12 +343,12 @@ public sealed class CommandDispatcherTests
         var calls = new List<string>();
         ICommandRegistration? added = null;
         sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) =>
             {
                 calls.Add("original");
                 added ??= sut.Register(
-                    "editor.save",
+                    "cmd_editor_save",
                     (_, _) =>
                     {
                         calls.Add("added");
@@ -371,8 +364,8 @@ public sealed class CommandDispatcherTests
             }
         );
 
-        var firstResult = await sut.ExecuteAsync("editor.save");
-        var secondResult = await sut.ExecuteAsync("editor.save");
+        var firstResult = await sut.ExecuteAsync("cmd_editor_save");
+        var secondResult = await sut.ExecuteAsync("cmd_editor_save");
 
         Assert.Equal(CommandExecutionStatus.NotHandled, firstResult.Status);
         Assert.True(secondResult.IsHandled);
@@ -395,7 +388,7 @@ public sealed class CommandDispatcherTests
             }
 
             added = sut.Register(
-                "editor.save",
+                "cmd_editor_save",
                 (_, _) => ValueTask.FromResult(CommandResult.Handled),
                 _ => true,
                 new CommandRegistrationOptions
@@ -404,11 +397,11 @@ public sealed class CommandDispatcherTests
                     Priority = 10,
                 }
             );
-            reentrantRegistrationIsVisible = sut.CanExecute("editor.save");
+            reentrantRegistrationIsVisible = sut.CanExecute("cmd_editor_save");
         };
 
         var original = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) => ValueTask.FromResult(CommandResult.NotHandled),
             _ => false
         );
@@ -417,10 +410,7 @@ public sealed class CommandDispatcherTests
         Assert.NotNull(added);
         Assert.Equal([1, 2], changes.Select(change => change.Version));
         Assert.Equal([original.Id], changes[0].Registrations.Select(entry => entry.Id));
-        Assert.Equal(
-            [original.Id, added.Id],
-            changes[1].Registrations.Select(entry => entry.Id)
-        );
+        Assert.Equal([original.Id, added.Id], changes[1].Registrations.Select(entry => entry.Id));
     }
 
     [Fact]
@@ -430,11 +420,11 @@ public sealed class CommandDispatcherTests
         var changes = new List<CommandRegistryChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
         var first = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) => ValueTask.FromResult(CommandResult.NotHandled)
         );
         var second = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) => ValueTask.FromResult(CommandResult.Handled),
             options: new CommandRegistrationOptions
             {
@@ -451,7 +441,7 @@ public sealed class CommandDispatcherTests
         Assert.Equal(3, changes.Count);
         Assert.Equal(CommandRegistryChangeKind.Unregistered, changes[^1].ChangeKind);
         Assert.Single(changes[^1].Registrations);
-        Assert.True((await sut.ExecuteAsync("editor.save")).IsHandled);
+        Assert.True((await sut.ExecuteAsync("cmd_editor_save")).IsHandled);
     }
 
     [Fact]
@@ -461,7 +451,7 @@ public sealed class CommandDispatcherTests
         var affectedKeys = new List<string?>();
         sut.CanExecuteChanged += (_, args) => affectedKeys.Add(args.CommandKey);
         var registration = sut.Register(
-            "editor.save",
+            "cmd_editor_save",
             (_, _) => ValueTask.FromResult(CommandResult.Handled)
         );
 
@@ -470,6 +460,6 @@ public sealed class CommandDispatcherTests
         registration.Dispose();
         registration.NotifyCanExecuteChanged();
 
-        Assert.Equal(["editor.save", null], affectedKeys);
+        Assert.Equal(["cmd_editor_save", null], affectedKeys);
     }
 }

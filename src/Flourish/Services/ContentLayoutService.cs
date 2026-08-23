@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -41,10 +40,7 @@ internal sealed class ContentLayoutService : IContentLayoutService
         FlourishContentLayoutSettings current;
         lock (gate)
         {
-            if (
-                isCenterContentEnabled == enabled
-                && this.contentWidth.Equals(contentWidth)
-            )
+            if (isCenterContentEnabled == enabled && this.contentWidth.Equals(contentWidth))
             {
                 return;
             }

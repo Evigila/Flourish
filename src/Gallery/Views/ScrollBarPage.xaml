@@ -2,6 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.ScrollBarPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -10,20 +11,20 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.ExposeAStandaloneFlourishStyledWPFScrollBarForACustomScrollingSu_9724412C"
+      Content="{culture:Localize Key=Controls_ExposeAStandaloneFlourishStyledWPFScrollBarForACustomScrollingSu_9724412C}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishScrollBar"
     />
 
     <flourish:Chunk
-      Content="Gallery.Controls.OrientationIsNativeWPFStateBothExamplesReserveTheSamePresentatio_56B808AF"
+      Content="{culture:Localize Key=Controls_OrientationIsNativeWPFStateBothExamplesReserveTheSamePresentatio_56B808AF}"
       Title="Variant"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Gallery.Controls.MovesAlongTheVerticalAxis_75BF7353"
+          Content="{culture:Localize Key=Controls_MovesAlongTheVerticalAxis_75BF7353}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Vertical"
@@ -43,7 +44,7 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Gallery.Controls.MovesAlongTheHorizontalAxis_EB176551"
+          Content="{culture:Localize Key=Controls_MovesAlongTheHorizontalAxis_EB176551}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="Horizontal"
@@ -64,29 +65,29 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.MostContentShouldUseScrollViewerWhichCreatesAndCoordinatesFlouri_90C31622"
-      Title="Gallery.Controls.Hosting_B4EC9BBA"
+      Content="{culture:Localize Key=Controls_MostContentShouldUseScrollViewerWhichCreatesAndCoordinatesFlouri_90C31622}"
+      Title="{culture:Localize Key=Controls_Hosting_B4EC9BBA}"
     >
-      <flourish:Card Title="Gallery.Controls.CustomSurfaces_470EDA05" Content="Gallery.Controls.UseTheStandaloneControlOnlyWhenACustomViewportOwnsItsOffsetRange_A3DE4ED6" />
+      <flourish:Card Title="{culture:Localize Key=Controls_CustomSurfaces_470EDA05}" Content="{culture:Localize Key=Controls_UseTheStandaloneControlOnlyWhenACustomViewportOwnsItsOffsetRange_A3DE4ED6}" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Content="Gallery.Controls.ACustomViewportBindsItsOffsetScrollableRangeAndVisibleExtentToFl_16F0A07A"
+          Content="{culture:Localize Key=Controls_ACustomViewportBindsItsOffsetScrollableRangeAndVisibleExtentToFl_16F0A07A}"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Gallery.Controls.BindACustomViewport_D1529247"
+          Title="{culture:Localize Key=Controls_BindACustomViewport_D1529247}"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -95,10 +96,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
-        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheFlourishScrollBarAPIReference_6F96E77F" Icon="&#xE8A5;" IsEnabled="False" Title="Gallery.Controls.FlourishScrollBarDocumentation_33F8BEA7" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheFlourishScrollBarAPIReference_6F96E77F}" Icon="&#xE8A5;" IsEnabled="False" Title="{culture:Localize Key=Controls_FlourishScrollBarDocumentation_33F8BEA7}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

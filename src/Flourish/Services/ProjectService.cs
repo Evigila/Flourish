@@ -1,5 +1,4 @@
 using System.IO;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -15,14 +14,10 @@ internal sealed class ProjectService : IProjectService
     private FlourishProjectSnapshot? cachedSnapshot;
     private long version;
 
-    public ProjectService(
-        FlourishShellOptions options,
-        IProjectCatalogStore catalogStore
-    )
+    public ProjectService(FlourishShellOptions options, IProjectCatalogStore catalogStore)
     {
         this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.catalogStore = catalogStore
-            ?? throw new ArgumentNullException(nameof(catalogStore));
+        this.catalogStore = catalogStore ?? throw new ArgumentNullException(nameof(catalogStore));
         InitializeFromCatalog();
     }
 
@@ -35,8 +30,7 @@ internal sealed class ProjectService : IProjectService
 
     public event EventHandler<FlourishNewProjectRequestedEventArgs>? NewProjectRequested;
 
-    public event EventHandler<FlourishProjectActivationRequestedEventArgs>?
-        ProjectActivationRequested;
+    public event EventHandler<FlourishProjectActivationRequestedEventArgs>? ProjectActivationRequested;
 
     public FlourishProjectSnapshot Current
     {
@@ -63,27 +57,19 @@ internal sealed class ProjectService : IProjectService
                 );
             }
 
-            activeChanged =
-                activate && !StringComparer.Ordinal.Equals(activeProjectId, project.Id);
-            snapshot = CommitCatalogMutation(
-                () =>
+            activeChanged = activate && !StringComparer.Ordinal.Equals(activeProjectId, project.Id);
+            snapshot = CommitCatalogMutation(() =>
+            {
+                projects.Add(project.Id, project);
+                projectOrder.Add(project.Id);
+                if (activate)
                 {
-                    projects.Add(project.Id, project);
-                    projectOrder.Add(project.Id);
-                    if (activate)
-                    {
-                        activeProjectId = project.Id;
-                    }
+                    activeProjectId = project.Id;
                 }
-            );
+            });
         }
 
-        RaiseChanged(
-            snapshot,
-            FlourishRuntimeChangeKind.Added,
-            project.Id,
-            activeChanged
-        );
+        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Added, project.Id, activeChanged);
     }
 
     public void SetProject(FlourishProject project, bool activate = true)
@@ -97,11 +83,7 @@ internal sealed class ProjectService : IProjectService
             var exists = projects.ContainsKey(project.Id);
             var previous = exists ? projects[project.Id] : null;
             var wasActive = StringComparer.Ordinal.Equals(activeProjectId, project.Id);
-            if (
-                exists
-                && previous == project
-                && (!activate || wasActive)
-            )
+            if (exists && previous == project && (!activate || wasActive))
             {
                 return;
             }
@@ -109,23 +91,21 @@ internal sealed class ProjectService : IProjectService
             changeKind = exists
                 ? FlourishRuntimeChangeKind.Updated
                 : FlourishRuntimeChangeKind.Added;
-            activeChanged = (exists && wasActive && previous != project)
-                || (activate && !wasActive);
-            snapshot = CommitCatalogMutation(
-                () =>
+            activeChanged =
+                (exists && wasActive && previous != project) || (activate && !wasActive);
+            snapshot = CommitCatalogMutation(() =>
+            {
+                if (!exists)
                 {
-                    if (!exists)
-                    {
-                        projectOrder.Add(project.Id);
-                    }
-
-                    projects[project.Id] = project;
-                    if (activate)
-                    {
-                        activeProjectId = project.Id;
-                    }
+                    projectOrder.Add(project.Id);
                 }
-            );
+
+                projects[project.Id] = project;
+                if (activate)
+                {
+                    activeProjectId = project.Id;
+                }
+            });
         }
 
         RaiseChanged(snapshot, changeKind, project.Id, activeChanged);
@@ -155,12 +135,7 @@ internal sealed class ProjectService : IProjectService
             snapshot = CommitCatalogMutation(() => projects[projectId] = current);
         }
 
-        RaiseChanged(
-            snapshot,
-            FlourishRuntimeChangeKind.Updated,
-            projectId,
-            activeProjectChanged
-        );
+        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Updated, projectId, activeProjectChanged);
     }
 
     public void SetActiveProject(string? projectId)
@@ -203,25 +178,18 @@ internal sealed class ProjectService : IProjectService
             }
 
             activeChanged = StringComparer.Ordinal.Equals(activeProjectId, projectId);
-            snapshot = CommitCatalogMutation(
-                () =>
+            snapshot = CommitCatalogMutation(() =>
+            {
+                projects.Remove(projectId);
+                projectOrder.Remove(projectId);
+                if (activeChanged)
                 {
-                    projects.Remove(projectId);
-                    projectOrder.Remove(projectId);
-                    if (activeChanged)
-                    {
-                        activeProjectId = null;
-                    }
+                    activeProjectId = null;
                 }
-            );
+            });
         }
 
-        RaiseChanged(
-            snapshot,
-            FlourishRuntimeChangeKind.Removed,
-            projectId,
-            activeChanged
-        );
+        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Removed, projectId, activeChanged);
         return true;
     }
 
@@ -238,44 +206,37 @@ internal sealed class ProjectService : IProjectService
             }
 
             var previousActiveProjectId = activeProjectId;
-            snapshot = CommitCatalogMutation(
-                () =>
+            snapshot = CommitCatalogMutation(() =>
+            {
+                projects.Remove(projectId);
+                projectOrder.Remove(projectId);
+                if (StringComparer.Ordinal.Equals(activeProjectId, projectId))
                 {
-                    projects.Remove(projectId);
-                    projectOrder.Remove(projectId);
-                    if (StringComparer.Ordinal.Equals(activeProjectId, projectId))
-                    {
-                        activeProjectId = null;
-                    }
+                    activeProjectId = null;
+                }
 
-                    if (activeProjectId is null)
+                if (activeProjectId is null)
+                {
+                    if (projectOrder.Count > 0)
                     {
-                        if (projectOrder.Count > 0)
-                        {
-                            activeProjectId = projectOrder[0];
-                        }
-                        else
-                        {
-                            var unnamedProject = CreateUnnamedProject();
-                            projects.Add(unnamedProject.Id, unnamedProject);
-                            projectOrder.Add(unnamedProject.Id);
-                            activeProjectId = unnamedProject.Id;
-                        }
+                        activeProjectId = projectOrder[0];
+                    }
+                    else
+                    {
+                        var unnamedProject = CreateUnnamedProject();
+                        projects.Add(unnamedProject.Id, unnamedProject);
+                        projectOrder.Add(unnamedProject.Id);
+                        activeProjectId = unnamedProject.Id;
                     }
                 }
-            );
+            });
             activeChanged = !StringComparer.Ordinal.Equals(
                 previousActiveProjectId,
                 activeProjectId
             );
         }
 
-        RaiseChanged(
-            snapshot,
-            FlourishRuntimeChangeKind.Removed,
-            projectId,
-            activeChanged
-        );
+        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Removed, projectId, activeChanged);
         return true;
     }
 
@@ -421,17 +382,13 @@ internal sealed class ProjectService : IProjectService
             .Select(id => projects[id])
             .Where(IsPersistableProject)
             .ToArray();
-        var persistedActiveProjectId = activeProjectId is not null
+        var persistedActiveProjectId =
+            activeProjectId is not null
             && projects.TryGetValue(activeProjectId, out var activeProject)
             && IsPersistableProject(activeProject)
                 ? activeProjectId
                 : null;
-        catalogStore?.Save(
-            new ProjectCatalog(
-                persistedProjects,
-                persistedActiveProjectId
-            )
-        );
+        catalogStore?.Save(new ProjectCatalog(persistedProjects, persistedActiveProjectId));
     }
 
     private static bool IsPersistableProject(FlourishProject project) =>
@@ -483,9 +440,7 @@ internal sealed class ProjectService : IProjectService
             return cachedSnapshot;
         }
 
-        var orderedProjects = Array.AsReadOnly(
-            projectOrder.Select(id => projects[id]).ToArray()
-        );
+        var orderedProjects = Array.AsReadOnly(projectOrder.Select(id => projects[id]).ToArray());
         var activeProject = activeProjectId is not null
             ? projects.GetValueOrDefault(activeProjectId)
             : null;

@@ -131,9 +131,9 @@ public sealed class ShellToolbarControllerTests
         {
             var canExecute = true;
             var executions = 0;
-            var fixture = CreateFixture(Item("run", "Run", commandKey: "test.run"));
+            var fixture = CreateFixture(Item("run", "Run", commandKey: "cmd_test_run"));
             using var registration = fixture.Commands.Register(
-                "test.run",
+                "cmd_test_run",
                 (context, _) =>
                 {
                     Assert.Equal(CommandSource.Toolbar, context.Source);
@@ -150,12 +150,12 @@ public sealed class ShellToolbarControllerTests
             Assert.True(button.IsEnabled);
 
             canExecute = false;
-            fixture.Commands.NotifyCanExecuteChanged("test.run");
+            fixture.Commands.NotifyCanExecuteChanged("cmd_test_run");
             Assert.Same(button, Assert.Single(fixture.View.Items.Children));
             Assert.False(button.IsEnabled);
 
             canExecute = true;
-            fixture.Commands.NotifyCanExecuteChanged("test.run");
+            fixture.Commands.NotifyCanExecuteChanged("cmd_test_run");
             button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             Assert.Equal(1, executions);
 

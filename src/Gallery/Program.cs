@@ -1,6 +1,4 @@
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Builder;
-using ArkheideSystem.Gallery.Localization;
+using ArkheideSystem.Flourish.Extension.Culture;
 using ArkheideSystem.Gallery.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +14,7 @@ internal static class Program
     {
         flourish = FlourishBuilder
             .CreateDefaultBuilder(args) //Create default builder as hosting
+            .UseEssentialCulture()
             .ConfigData( // Configure data as hosting
                 (data) =>
                 {
@@ -26,79 +25,74 @@ internal static class Program
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
-                    services.AddSingleton<GalleryLocalizationService>();
-                    services.AddSingleton<IGalleryLocalization>(provider =>
-                        provider.GetRequiredService<GalleryLocalizationService>()
-                    );
-                    services.AddSingleton<GalleryShellLocalizationCoordinator>();
                     services.AddCommandParser<GalleryCommandParser>(); // Mapping command key and its executor
 
                     services.AddNavigable<HomePage>(
-                        GalleryLocaleKeys.ApplicationOverview_D4B1EA57,
+                        Key.Application_Overview_D4B1EA57,
                         "\uE80F"
                     ); // Using AddNavigable instead of AddSingleton or other
                     services.AddNavigable<AboutPage>(
-                        GalleryLocaleKeys.ApplicationAbout_4EFCA0D1,
+                        Key.Application_About_4EFCA0D1,
                         "\uE946"
                     );
                     services.AddNavigable<ConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationConfiguration_B332C349,
+                        Key.Application_Configuration_B332C349,
                         "\uE713"
                     );
                     services.AddNavigable<AppearancePage>(
-                        GalleryLocaleKeys.ApplicationAppearance_3907FA7F,
+                        Key.Application_Appearance_3907FA7F,
                         "\uE790"
                     );
                     services.AddNavigable<TitleBarRuntimePage>(
-                        GalleryLocaleKeys.ApplicationTitleBar_11BCA4AC,
+                        Key.Application_TitleBar_11BCA4AC,
                         "\uE8A4"
                     );
                     services.AddNavigable<ProjectRuntimePage>(
-                        GalleryLocaleKeys.ApplicationProjects_04E2A972,
+                        Key.Application_Projects_04E2A972,
                         "\uE8F9"
                     );
                     services.AddNavigable<NavigationRuntimePage>(
-                        GalleryLocaleKeys.ApplicationNavigation_3DB65F8C,
+                        Key.Application_Navigation_3DB65F8C,
                         "\uE700"
                     );
                     services.AddNavigable<ProfileConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationProfile_D696A35B,
+                        Key.Application_Profile_D696A35B,
                         "\uE77B"
                     );
                     services.AddNavigable<StatusBarConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationStatusBar_0BC4C2AF,
+                        Key.Application_StatusBar_0BC4C2AF,
                         "\uE930"
                     );
                     services.AddNavigable<DynamicToolbarConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationDynamicToolbar_2B28D7DF,
+                        Key.Application_DynamicToolbar_2B28D7DF,
                         "\uE945"
                     );
                     services.AddNavigable<ToolTipsConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationToolTips_53998699,
+                        Key.Application_ToolTips_53998699,
                         "\uE823"
                     );
                     services.AddNavigable<MotionConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationMotion_8CA34424,
+                        Key.Application_Motion_8CA34424,
                         "\uE768"
                     );
                     services.AddNavigable<CustomHandlerConfigurationPage>(
-                        GalleryLocaleKeys.ApplicationCustomHandler_41F3A17B,
+                        Key.Application_CustomHandler_41F3A17B,
                         "\uE8BA"
                     );
                     services.AddNavigable<CommandsPage>(
-                        GalleryLocaleKeys.ApplicationCommands_B269DC4E,
+                        Key.Application_Commands_B269DC4E,
                         "\uE756"
                     );
                     services.AddNavigable<WindowRuntimePage>(
-                        GalleryLocaleKeys.ApplicationWindow_19734A1B,
+                        Key.Application_Window_19734A1B,
                         "\uE737"
                     );
                     services.AddNavigable<BackgroundTasksPage>(
-                        GalleryLocaleKeys.ApplicationBackground_EA2B8A87,
+                        Key.Application_Background_EA2B8A87,
                         "\uF5EF"
                     );
                     services.AddNavigable<ControlLibraryPage>(
-                        GalleryLocaleKeys.ApplicationControls_799C2691,
+                        Key.Application_Controls_799C2691,
                         "\uE950"
                     );
                     services.AddNavigable<HeaderChunkPage>("HeaderChunk", "\uE840");
@@ -146,11 +140,11 @@ internal static class Program
                     .UseTitleBar(); // Use flourish style titlebar instead of WPF one
             })
             .ConfigTitleBar(t =>
-                t.InitApplicationSubTitle(GalleryLocaleKeys.ApplicationComponentReference_661E6097)
+                t.InitApplicationSubTitle(Key.Application_ComponentReference_661E6097)
             )
             .ConfigTitleBar(titlebar =>
                 titlebar.UseSearch(
-                    placeholder: GalleryLocaleKeys.ApplicationTypeHereToSearch_85717255,
+                    placeholder: Key.Application_TypeHereToSearch_85717255,
                     handler: (_, _) => { }
                 )
             ) // search handler TODO
@@ -166,7 +160,7 @@ internal static class Program
                     )
                     .AddGroup( // Create second one
                         // The non ID 0 group must have its name
-                        GalleryLocaleKeys.ApplicationConfiguration_B332C349,
+                        Key.Application_Configuration_B332C349,
                         1, // Unique ID, sorting and affect navigation tree order
                         group =>
                         {
@@ -177,7 +171,7 @@ internal static class Program
                         }
                     )
                     .AddGroup(
-                        GalleryLocaleKeys.ShellShell_A7332854,
+                        Key.Shell_Shell_A7332854,
                         2,
                         group =>
                         {
@@ -194,7 +188,7 @@ internal static class Program
                         }
                     )
                     .AddGroup(
-                        GalleryLocaleKeys.ApplicationControls_799C2691,
+                        Key.Application_Controls_799C2691,
                         3,
                         group =>
                         {
@@ -230,21 +224,21 @@ internal static class Program
                         }
                     )
                     .AddGroup(
-                        GalleryLocaleKeys.ApplicationActions_FF8059DC,
+                        Key.Application_Actions_FF8059DC,
                         4,
                         group =>
                         {
                             group.AddNavigableItem(
-                                GalleryLocaleKeys.ApplicationMessage_2F77668A,
+                                Key.Application_Message_2F77668A,
                                 "\uE8F2",
-                                "demo.hello"
+                                GalleryCommandKeys.DemoHello
                             ); // Using AddNavigableItem instead of AddNavigableViewItem if this nav node is NOT a page at same time
                             // When AddNavigableItem is not a parent nav node, its commandkey will be parsed.
                             // It means when it uses parentID, its commandkey will not be parsed anymore, should use null instead of set commandkey string at this case
                             group.AddNavigableItem(
-                                GalleryLocaleKeys.ApplicationTask_4BC74B21,
+                                Key.Application_Task_4BC74B21,
                                 "\uE895",
-                                "demo.background"
+                                GalleryCommandKeys.DemoBackground
                             );
                         }
                     )
@@ -254,14 +248,14 @@ internal static class Program
             {
                 toolbar.InitToolbarItems<HomePage>( //Create toolbar items only for HomePage view
                     new FlourishToolbarItem(
-                        GalleryLocaleKeys.ApplicationSayHello_6D995DBA,
+                        Key.Application_SayHello_6D995DBA,
                         "\uE8F2",
-                        "demo.hello"
+                        GalleryCommandKeys.DemoHello
                     ),
                     new FlourishToolbarItem(
-                        GalleryLocaleKeys.ApplicationQueueTask_229EFD6E,
+                        Key.Application_QueueTask_229EFD6E,
                         "\uE895",
-                        "demo.background"
+                        GalleryCommandKeys.DemoBackground
                     )
                 );
             })

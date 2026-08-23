@@ -9,15 +9,15 @@ public partial class GridSplitterPage : Page
     [
         new(
             "Variant",
-            GalleryLocaleKeys.ControlsChoosesTheStandardOrNavigationPaneLayoutRole_07EFD4F3
+            Key.Controls_ChoosesTheStandardOrNavigationPaneLayoutRole_07EFD4F3
         ),
         new(
             "ResizeDirection",
-            GalleryLocaleKeys.ControlsChoosesWhetherAdjacentRowsOrColumnsAreResized_4BD32627
+            Key.Controls_ChoosesWhetherAdjacentRowsOrColumnsAreResized_4BD32627
         ),
         new(
             "ResizeBehavior",
-            GalleryLocaleKeys.ControlsChoosesWhichNeighboringDefinitionsChange_E669504A
+            Key.Controls_ChoosesWhichNeighboringDefinitionsChange_E669504A
         ),
     ];
 

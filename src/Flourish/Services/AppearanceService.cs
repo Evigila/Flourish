@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 
@@ -185,8 +184,7 @@ internal sealed class AppearanceService : IAppearanceService
         );
     }
 
-    private FlourishAppearanceSettings CreateSnapshot() =>
-        new(themeColors, cornerRadius, version);
+    private FlourishAppearanceSettings CreateSnapshot() => new(themeColors, cornerRadius, version);
 
     private static void ValidateCornerRadius(double? radius)
     {

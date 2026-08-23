@@ -1,8 +1,6 @@
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
@@ -181,15 +179,7 @@ public sealed class RuntimeAppearanceServiceTests
     {
         IFontService sut = new FontService(new FlourishShellOptions());
 
-        sut.SetOverrideFont<RuntimeFontPage>(
-            "Arial",
-            30,
-            14,
-            16,
-            16,
-            12,
-            10
-        );
+        sut.SetOverrideFont<RuntimeFontPage>("Arial", 30, 14, 16, 16, 12, 10);
 
         Assert.Equal(
             new FlourishPageFontOverride("Arial", 30, 14, 16, 16, 12, 10),
@@ -272,10 +262,7 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.True(sut.Current.IsEnabled);
         Assert.Equal(FlourishPageTransition.Fade, sut.Current.PageTransition);
         Assert.Equal(TimeSpan.FromMilliseconds(250), sut.Current.PageTransitionDuration);
-        Assert.Equal(
-            FlourishNavigationPanelTransition.None,
-            sut.Current.NavigationPanelTransition
-        );
+        Assert.Equal(FlourishNavigationPanelTransition.None, sut.Current.NavigationPanelTransition);
         Assert.True(sut.Current.IsHoverRevealEnabled);
         Assert.False(sut.Current.RespectSystemReducedMotion);
         Assert.True(sut.CanAnimate);
@@ -293,9 +280,7 @@ public sealed class RuntimeAppearanceServiceTests
                 TimeSpan.FromMilliseconds(1)
             )
         );
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetHoverReveal(true, TimeSpan.Zero)
-        );
+        Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetHoverReveal(true, TimeSpan.Zero));
     }
 
     [Fact]
@@ -352,10 +337,7 @@ public sealed class RuntimeAppearanceServiceTests
             options,
             MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 19045))
         );
-        IMaterialEffectService unsupported = new MaterialEffectService(
-            options,
-            default
-        );
+        IMaterialEffectService unsupported = new MaterialEffectService(options, default);
 
         Assert.Equal(MaterialEffect.Auto, windows11.CurrentEffect);
         Assert.Equal(MaterialEffect.Mica, windows11.EffectiveEffect);
@@ -480,12 +462,8 @@ public sealed class RuntimeAppearanceServiceTests
                 .GetAwaiter()
                 .GetResult();
 
-        await Task.Run(() => sut.SetTheme(FlourishTheme.Dark))
-            .WaitAsync(TimeSpan.FromSeconds(5));
-        await preferences
-            .FlushThemeSavesAsync()
-            .AsTask()
-            .WaitAsync(TimeSpan.FromSeconds(5));
+        await Task.Run(() => sut.SetTheme(FlourishTheme.Dark)).WaitAsync(TimeSpan.FromSeconds(5));
+        await preferences.FlushThemeSavesAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
 
         Assert.Equal("True", configuration["Flourish:Feature:FromThemeChanged"]);
         Assert.Equal(FlourishTheme.Dark, preferences.ReadTheme());
@@ -501,11 +479,7 @@ public sealed class RuntimeAppearanceServiceTests
                 Color.FromRgb(0xE8, 0xC5, 0x47),
                 Color.FromRgb(0x7D, 0x4C, 0xDB)
             );
-            var options = new FlourishShellOptions
-            {
-                ThemeColors = colors,
-                CornerRadius = 5,
-            };
+            var options = new FlourishShellOptions { ThemeColors = colors, CornerRadius = 5 };
             var resources = new ResourceDictionary();
 
             ThemeService.ApplyStyleOverrides(resources, options);
@@ -520,9 +494,7 @@ public sealed class RuntimeAppearanceServiceTests
             AssertDirectBrushColor(resources, "FlourishPrimaryBackgroundBrush", colors.Primary);
             Assert.NotEqual(
                 colors.Secondary,
-                Assert.IsType<SolidColorBrush>(
-                    resources["FlourishSecondaryForegroundBrush"]
-                ).Color
+                Assert.IsType<SolidColorBrush>(resources["FlourishSecondaryForegroundBrush"]).Color
             );
             AssertDirectBrushColor(resources, "FlourishAccentForegroundBrush", colors.Accent);
             AssertDirectBrushColor(resources, "FlourishFocusStrokeBrush", colors.Primary);
@@ -555,9 +527,7 @@ public sealed class RuntimeAppearanceServiceTests
             }
             Assert.Equal(
                 new CornerRadius(0, 0, 5, 5),
-                Assert.IsType<CornerRadius>(
-                    resources["FlourishDialogFooterCornerRadius"]
-                )
+                Assert.IsType<CornerRadius>(resources["FlourishDialogFooterCornerRadius"])
             );
         });
     }
@@ -585,9 +555,7 @@ public sealed class RuntimeAppearanceServiceTests
             var lightPressedReveal = Assert.IsType<SolidColorBrush>(
                 light["FlourishPressedRevealBrush"]
             );
-            var darkHoverReveal = Assert.IsType<SolidColorBrush>(
-                dark["FlourishHoverRevealBrush"]
-            );
+            var darkHoverReveal = Assert.IsType<SolidColorBrush>(dark["FlourishHoverRevealBrush"]);
             var darkPressedReveal = Assert.IsType<SolidColorBrush>(
                 dark["FlourishPressedRevealBrush"]
             );
@@ -599,9 +567,7 @@ public sealed class RuntimeAppearanceServiceTests
             AssertDirectBrushColor(light, "FlourishPrimaryForegroundBrush", colors.Primary);
             Assert.NotEqual(
                 colors.Primary,
-                Assert.IsType<SolidColorBrush>(
-                    dark["FlourishPrimaryForegroundBrush"]
-                ).Color
+                Assert.IsType<SolidColorBrush>(dark["FlourishPrimaryForegroundBrush"]).Color
             );
             AssertDirectBrushColor(dark, "FlourishPrimaryBackgroundBrush", colors.Primary);
             Assert.NotEqual(
@@ -634,12 +600,8 @@ public sealed class RuntimeAppearanceServiceTests
             foreach (var theme in new[] { FlourishTheme.Light, FlourishTheme.Dark })
             {
                 var isDark = theme == FlourishTheme.Dark;
-                var neutralForeground = isDark
-                    ? Colors.White
-                    : Color.FromRgb(0x24, 0x24, 0x24);
-                var neutralBackground = isDark
-                    ? Color.FromRgb(0x29, 0x29, 0x29)
-                    : Colors.White;
+                var neutralForeground = isDark ? Colors.White : Color.FromRgb(0x24, 0x24, 0x24);
+                var neutralBackground = isDark ? Color.FromRgb(0x29, 0x29, 0x29) : Colors.White;
                 var controlBackground = neutralBackground;
                 var cardLayer = isDark
                     ? Color.FromRgb(0x33, 0x33, 0x33)
@@ -668,32 +630,28 @@ public sealed class RuntimeAppearanceServiceTests
 
                     ThemeService.ApplyStyleOverrides(resources, options, theme);
 
-                    var hoverReveal = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishHoverRevealBrush"]
-                    ).Color;
-                    var pressedReveal = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishPressedRevealBrush"]
-                    ).Color;
+                    var hoverReveal = Assert
+                        .IsType<SolidColorBrush>(resources["FlourishHoverRevealBrush"])
+                        .Color;
+                    var pressedReveal = Assert
+                        .IsType<SolidColorBrush>(resources["FlourishPressedRevealBrush"])
+                        .Color;
                     foreach (var background in interactionBackgrounds)
                     {
                         AssertOverlayContrast(neutralForeground, hoverReveal, background);
                         AssertOverlayContrast(neutralForeground, pressedReveal, background);
                     }
 
-                    var selectedBackground = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishSelectionBackgroundBrush"]
-                    ).Color;
-                    var selectedForeground = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishSelectionForegroundBrush"]
-                    ).Color;
-                    var selectedHover = Assert.IsType<SolidColorBrush>(
-                        resources["FlourishHoverRevealBrush"]
-                    ).Color;
-                    AssertOverlayContrast(
-                        selectedForeground,
-                        selectedHover,
-                        selectedBackground
-                    );
+                    var selectedBackground = Assert
+                        .IsType<SolidColorBrush>(resources["FlourishSelectionBackgroundBrush"])
+                        .Color;
+                    var selectedForeground = Assert
+                        .IsType<SolidColorBrush>(resources["FlourishSelectionForegroundBrush"])
+                        .Color;
+                    var selectedHover = Assert
+                        .IsType<SolidColorBrush>(resources["FlourishHoverRevealBrush"])
+                        .Color;
+                    AssertOverlayContrast(selectedForeground, selectedHover, selectedBackground);
 
                     if (isDark && primary == Colors.White)
                     {
@@ -728,14 +686,11 @@ public sealed class RuntimeAppearanceServiceTests
     {
         StaTest.Run(() =>
         {
-            const string paletteHostSource =
-                "/Flourish;component/Themes/Colors/Colors.xaml";
-            const string lightSource =
-                "/Flourish;component/Themes/Colors/Colors.Light.xaml";
-            const string darkSource =
-                "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
+            const string paletteHostSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.xaml";
+            const string lightSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml";
+            const string darkSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml";
             _ = Application.LoadComponent(
-                new Uri("/Flourish;component/Themes/Generic.xaml", UriKind.Relative)
+                new Uri("/Arkheide.Flourish;component/Themes/Generic.xaml", UriKind.Relative)
             );
             var resources = new ResourceDictionary();
             resources.MergedDictionaries.Add(new FlourishThemeResources());
@@ -746,24 +701,14 @@ public sealed class RuntimeAppearanceServiceTests
             );
             var lightPalette = LoadDictionary(lightSource);
             var darkPalette = LoadDictionary(darkSource);
-            var visualRoot = new Grid
-            {
-                Resources = resources,
-            };
-            var card = new Card
-            {
-                Style = Assert.IsType<Style>(resources[typeof(Card)]),
-            };
+            var visualRoot = new Grid { Resources = resources };
+            var card = new Card { Style = Assert.IsType<Style>(resources[typeof(Card)]) };
             visualRoot.Children.Add(card);
             card.ApplyTemplate();
 
             AssertPaletteColor(paletteHost, lightPalette, "FlourishShellBackgroundBrush");
             AssertPaletteColor(paletteHost, lightPalette, "FlourishContentBackgroundBrush");
-            AssertPaletteColor(
-                paletteHost,
-                lightPalette,
-                "FlourishNeutralForeground1Brush"
-            );
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishNeutralForeground1Brush");
             AssertPaletteColor(paletteHost, lightPalette, "FlourishCardBackgroundBrush");
             AssertBrushColor(card.Background, lightPalette, "FlourishCardBackgroundBrush");
             AssertBrushColor(card.Foreground, lightPalette, "FlourishNeutralForeground1Brush");
@@ -774,11 +719,7 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Empty(paletteHost.MergedDictionaries);
             AssertPaletteColor(paletteHost, darkPalette, "FlourishShellBackgroundBrush");
             AssertPaletteColor(paletteHost, darkPalette, "FlourishContentBackgroundBrush");
-            AssertPaletteColor(
-                paletteHost,
-                darkPalette,
-                "FlourishNeutralForeground1Brush"
-            );
+            AssertPaletteColor(paletteHost, darkPalette, "FlourishNeutralForeground1Brush");
             AssertPaletteColor(paletteHost, darkPalette, "FlourishCardBackgroundBrush");
             AssertBrushColor(card.Background, darkPalette, "FlourishCardBackgroundBrush");
             AssertBrushColor(card.Foreground, darkPalette, "FlourishNeutralForeground1Brush");
@@ -789,11 +730,7 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.Empty(paletteHost.MergedDictionaries);
             AssertPaletteColor(paletteHost, lightPalette, "FlourishShellBackgroundBrush");
             AssertPaletteColor(paletteHost, lightPalette, "FlourishContentBackgroundBrush");
-            AssertPaletteColor(
-                paletteHost,
-                lightPalette,
-                "FlourishNeutralForeground1Brush"
-            );
+            AssertPaletteColor(paletteHost, lightPalette, "FlourishNeutralForeground1Brush");
             AssertPaletteColor(paletteHost, lightPalette, "FlourishCardBackgroundBrush");
             AssertBrushColor(card.Background, lightPalette, "FlourishCardBackgroundBrush");
             AssertBrushColor(card.Foreground, lightPalette, "FlourishNeutralForeground1Brush");
@@ -810,10 +747,8 @@ public sealed class RuntimeAppearanceServiceTests
     {
         StaTest.Run(() =>
         {
-            const string lightSource =
-                "/Flourish;component/Themes/Colors/Colors.Light.xaml";
-            const string darkSource =
-                "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
+            const string lightSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml";
+            const string darkSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml";
             const string customToken = "FlourishPrimaryForegroundBrush";
             var resources = new ResourceDictionary();
             var wrapper = new ResourceDictionary();
@@ -869,10 +804,7 @@ public sealed class RuntimeAppearanceServiceTests
 
     private static ResourceDictionary LoadDictionary(string source)
     {
-        return new ResourceDictionary
-        {
-            Source = new Uri(source, UriKind.Relative),
-        };
+        return new ResourceDictionary { Source = new Uri(source, UriKind.Relative) };
     }
 
     private static void AssertPaletteColor(
@@ -886,11 +818,7 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.Equal(expectedBrush.Color, actualBrush.Color);
     }
 
-    private static void AssertBrushColor(
-        Brush actual,
-        ResourceDictionary expected,
-        string key
-    )
+    private static void AssertBrushColor(Brush actual, ResourceDictionary expected, string key)
     {
         var actualBrush = Assert.IsType<SolidColorBrush>(actual);
         var expectedBrush = Assert.IsType<SolidColorBrush>(expected[key]);
@@ -907,11 +835,7 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.Equal(expected, brush.Color);
     }
 
-    private static void AssertOverlayContrast(
-        Color foreground,
-        Color overlay,
-        Color background
-    )
+    private static void AssertOverlayContrast(Color foreground, Color overlay, Color background)
     {
         var composited = Composite(overlay, background);
         var contrast = GetContrastRatio(foreground, composited);
@@ -949,15 +873,10 @@ public sealed class RuntimeAppearanceServiceTests
     private static double Linearize(byte channel)
     {
         var value = channel / 255d;
-        return value <= 0.04045
-            ? value / 12.92
-            : Math.Pow((value + 0.055) / 1.055, 2.4);
+        return value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
     }
 
-    private static ResourceDictionary? FindDictionary(
-        ResourceDictionary dictionary,
-        string source
-    )
+    private static ResourceDictionary? FindDictionary(ResourceDictionary dictionary, string source)
     {
         if (dictionary.Source?.OriginalString == source)
         {

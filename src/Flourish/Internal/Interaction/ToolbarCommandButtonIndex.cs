@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Internal.Interaction;
@@ -94,10 +93,7 @@ internal sealed class ToolbarCommandButtonIndex(ICommandDispatcher commandDispat
         return item.IsEnabled
             && (
                 string.IsNullOrWhiteSpace(item.CommandKey)
-                || commandDispatcher.CanExecute(
-                    item.CommandKey,
-                    source: CommandSource.Toolbar
-                )
+                || commandDispatcher.CanExecute(item.CommandKey, source: CommandSource.Toolbar)
             );
     }
 

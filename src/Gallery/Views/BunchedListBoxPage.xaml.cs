@@ -9,17 +9,17 @@ public partial class BunchedListBoxPage : Page
     [
         new(
             "ItemsSource",
-            GalleryLocaleKeys.ControlsSuppliesDataItemsAndGeneratesBunchedListBoxItemContainers_9F1AB28B
+            Key.Controls_SuppliesDataItemsAndGeneratesBunchedListBoxItemContainers_9F1AB28B
         ),
-        new("SelectedItem", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentSelection_1F2CA123),
+        new("SelectedItem", Key.Controls_GetsOrSetsTheCurrentSelection_1F2CA123),
         new(
             "SelectionMode",
-            GalleryLocaleKeys.ControlsChoosesSingleMultipleOrExtendedWPFSelectionSemantics_4D921AD6
+            Key.Controls_ChoosesSingleMultipleOrExtendedWPFSelectionSemantics_4D921AD6
         ),
-        new("Appearance", GalleryLocaleKeys.ControlsChoosesTheStandardOrBorderlessSurface_B401F34B),
+        new("Appearance", Key.Controls_ChoosesTheStandardOrBorderlessSurface_B401F34B),
         new(
             "IsCompact",
-            GalleryLocaleKeys.ControlsUsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
+            Key.Controls_UsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
         ),
     ];
 

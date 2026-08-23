@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
@@ -43,10 +42,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
     {
         ThrowIfFrozen();
         ValidatePositiveFinite(openWidth, nameof(openWidth));
-        NavigationPanelDimensions.ValidateCollapsedWidth(
-            closedWidth,
-            nameof(closedWidth)
-        );
+        NavigationPanelDimensions.ValidateCollapsedWidth(closedWidth, nameof(closedWidth));
         ValidatePositiveFinite(minWidth, nameof(minWidth));
         ValidatePositiveFinite(maxWidth, nameof(maxWidth));
 
@@ -85,9 +81,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishNavigationBuilder UseLastNavigation(
-        bool usePersistedPreference = true
-    )
+    public IFlourishNavigationBuilder UseLastNavigation(bool usePersistedPreference = true)
     {
         ThrowIfFrozen();
         options.UsePersistedLastNavigation = usePersistedPreference;
@@ -120,11 +114,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
         options.NavigationGroups.Add(group);
         if (configureGroup is not null)
         {
-            var groupBuilder = new FlourishNavigationGroupBuilder(
-                group.Items,
-                groupId,
-                false
-            );
+            var groupBuilder = new FlourishNavigationGroupBuilder(group.Items, groupId, false);
             try
             {
                 configureGroup(groupBuilder);
@@ -191,8 +181,9 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
     )
     {
         ValidateParentChild(items, parentId, childId);
-        var navigationKey =
-            FlourishServiceCollectionExtensions.CreateDefaultNavigationKey(pageType);
+        var navigationKey = FlourishServiceCollectionExtensions.CreateDefaultNavigationKey(
+            pageType
+        );
 
         items.Add(
             new FlourishNavigationItem(
@@ -279,15 +270,7 @@ internal sealed class FlourishNavigationBuilder(FlourishShellOptions options)
             where TPage : Page
         {
             ThrowIfFrozen();
-            AddPageItem(
-                items,
-                groupId,
-                isFixed,
-                typeof(TPage),
-                isInitial,
-                parentId,
-                childId
-            );
+            AddPageItem(items, groupId, isFixed, typeof(TPage), isInitial, parentId, childId);
             return this;
         }
 

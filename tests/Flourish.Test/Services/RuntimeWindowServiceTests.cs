@@ -1,5 +1,4 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Moq;
@@ -62,9 +61,7 @@ public sealed class RuntimeWindowServiceTests
         var sut = new WindowService(options);
 
         Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetSize(double.NaN, 100));
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetBounds(new Rect(0, 0, 0, 100))
-        );
+        Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetBounds(new Rect(0, 0, 0, 100)));
         var minimumHeightError = Assert.Throws<ArgumentOutOfRangeException>(() =>
             sut.SetMinimumSize(500, 701)
         );
@@ -85,7 +82,11 @@ public sealed class RuntimeWindowServiceTests
         var sut = CreateCloseService();
         var calls = new List<string>();
         using var late = sut.RegisterGuard("late", Guard("late", WindowCloseDecision.Allow), 10);
-        using var cancel = sut.RegisterGuard("cancel", Guard("cancel", WindowCloseDecision.Cancel), 0);
+        using var cancel = sut.RegisterGuard(
+            "cancel",
+            Guard("cancel", WindowCloseDecision.Cancel),
+            0
+        );
         using var never = sut.RegisterGuard("never", Guard("never", WindowCloseDecision.Allow), 20);
 
         Assert.False(await sut.CanCloseAsync(WindowCloseRequestReason.Application));
@@ -114,12 +115,14 @@ public sealed class RuntimeWindowServiceTests
     {
         var sut = CreateCloseService();
         var delegateCalls = 0;
-        sut.Attach((reason, _) =>
-        {
-            delegateCalls++;
-            Assert.Equal(WindowCloseRequestReason.Tray, reason);
-            return ValueTask.FromResult(true);
-        });
+        sut.Attach(
+            (reason, _) =>
+            {
+                delegateCalls++;
+                Assert.Equal(WindowCloseRequestReason.Tray, reason);
+                return ValueTask.FromResult(true);
+            }
+        );
         using var registration = sut.RegisterGuard(
             "veto",
             (_, _) => ValueTask.FromResult(WindowCloseDecision.Cancel)
@@ -164,13 +167,15 @@ public sealed class RuntimeWindowServiceTests
             },
             order: -10
         );
-        sut.Attach((reason, token) =>
-        {
-            Assert.Equal(WindowCloseRequestReason.Tray, reason);
-            Assert.Equal(cancellation.Token, token);
-            calls.Add("shell");
-            return ValueTask.FromResult(true);
-        });
+        sut.Attach(
+            (reason, token) =>
+            {
+                Assert.Equal(WindowCloseRequestReason.Tray, reason);
+                Assert.Equal(cancellation.Token, token);
+                calls.Add("shell");
+                return ValueTask.FromResult(true);
+            }
+        );
 
         var handled = await sut.RequestCloseAsync(
             WindowCloseRequestReason.Tray,
@@ -189,10 +194,7 @@ public sealed class RuntimeWindowServiceTests
         cancellation.Cancel();
 
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            await sut.CanCloseAsync(
-                WindowCloseRequestReason.Application,
-                cancellation.Token
-            )
+            await sut.CanCloseAsync(WindowCloseRequestReason.Application, cancellation.Token)
         );
         Assert.Throws<ArgumentException>(() =>
             sut.RegisterGuard(" ", (_, _) => ValueTask.FromResult(WindowCloseDecision.Allow))

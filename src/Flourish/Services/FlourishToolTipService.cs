@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 

@@ -1,53 +1,54 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.ToolbarStatusPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.ManageCommandSurfacesStatusFeedbackAndCustomShellContentThroughS_846997CE"
+      Content="{culture:Localize Key=Controls_ManageCommandSurfacesStatusFeedbackAndCustomShellContentThroughS_846997CE}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Gallery.Controls.ShellSurfaces_0937FC9D"
+      Title="{culture:Localize Key=Controls_ShellSurfaces_0937FC9D}"
     />
 
     <flourish:Chunk
-      Content="Gallery.Controls.AddPageScopedToolbarActionsUpdateTheirEnabledAndVisibleStatesCha_4BBA0A98"
-      Title="Gallery.Controls.Toolbar_451AA51A"
+      Content="{culture:Localize Key=Controls_AddPageScopedToolbarActionsUpdateTheirEnabledAndVisibleStatesCha_4BBA0A98}"
+      Title="{culture:Localize Key=Controls_Toolbar_451AA51A}"
     >
       <StackPanel>
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE710;" Content="Gallery.Controls.AddTheGalleryRuntimeActionOrRefreshItsRegistration_E61E219D" Title="Gallery.Controls.ToolbarAction_2BD0DE61">
+          <flourish:ActionCard Icon="&#xE710;" Content="{culture:Localize Key=Controls_AddTheGalleryRuntimeActionOrRefreshItsRegistration_E61E219D}" Title="{culture:Localize Key=Controls_ToolbarAction_2BD0DE61}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AddToolbarItem_Click" Content="Gallery.Controls.AddUpdate_D3DC3D10" />
+              <flourish:Button Click="AddToolbarItem_Click" Content="{culture:Localize Key=Controls_AddUpdate_D3DC3D10}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8D7;" Content="Gallery.Controls.EnableOrDisableCommandInvocation_D063A835" Title="Gallery.Controls.ActionAvailability_A510E08A">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8D7;" Content="{culture:Localize Key=Controls_EnableOrDisableCommandInvocation_D063A835}" Title="{culture:Localize Key=Controls_ActionAvailability_A510E08A}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleToolbarItemEnabled_Click" Content="Gallery.Controls.EnableDisable_3A6366CC" />
+              <flourish:Button Click="ToggleToolbarItemEnabled_Click" Content="{culture:Localize Key=Controls_EnableDisable_3A6366CC}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="Gallery.Controls.ShowOrHideTheToolbarAction_733E2527" Title="Gallery.Controls.ActionVisibility_1BC5592D">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="{culture:Localize Key=Controls_ShowOrHideTheToolbarAction_733E2527}" Title="{culture:Localize Key=Controls_ActionVisibility_1BC5592D}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleToolbarItemVisible_Click" Content="Gallery.Controls.ShowHide_79EE9903" />
+              <flourish:Button Click="ToggleToolbarItemVisible_Click" Content="{culture:Localize Key=Controls_ShowHide_79EE9903}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8A5;" Content="Gallery.Controls.SwitchBetweenIconOnlyAndIconWithTextPresentation_55256163" Title="Gallery.Controls.ActionPresentation_73AB5691">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8A5;" Content="{culture:Localize Key=Controls_SwitchBetweenIconOnlyAndIconWithTextPresentation_55256163}" Title="{culture:Localize Key=Controls_ActionPresentation_73AB5691}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleIconOnly_Click" Content="Gallery.Controls.ToggleFormat_F937D79E" />
+              <flourish:Button Click="ToggleIconOnly_Click" Content="{culture:Localize Key=Controls_ToggleFormat_F937D79E}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="Gallery.Controls.MoveTheActionWithinTheToolbarOrder_2C956F84" Title="Gallery.Controls.ActionOrder_A4063CF8">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="{culture:Localize Key=Controls_MoveTheActionWithinTheToolbarOrder_2C956F84}" Title="{culture:Localize Key=Controls_ActionOrder_A4063CF8}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="MoveToolbarItem_Click" Content="Gallery.Controls.MoveAction_0CD80107" />
+              <flourish:Button Click="MoveToolbarItem_Click" Content="{culture:Localize Key=Controls_MoveAction_0CD80107}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Gallery.Controls.RemoveTheRuntimeToolbarAction_2ECE5DA1" Title="Gallery.Controls.ToolbarAction_2BD0DE61">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="{culture:Localize Key=Controls_RemoveTheRuntimeToolbarAction_2ECE5DA1}" Title="{culture:Localize Key=Controls_ToolbarAction_2BD0DE61}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveToolbarItem_Click" Content="Gallery.Controls.Remove_C3812FC4" />
+              <flourish:Button Click="RemoveToolbarItem_Click" Content="{culture:Localize Key=Controls_Remove_C3812FC4}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -58,55 +59,55 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.PublishPersistentOrTimedStatusMessagesControlTheirVisibilityAndO_DFE214E5"
-      Title="Gallery.Application.StatusBar_0BC4C2AF"
+      Content="{culture:Localize Key=Controls_PublishPersistentOrTimedStatusMessagesControlTheirVisibilityAndO_DFE214E5}"
+      Title="{culture:Localize Key=Application_StatusBar_0BC4C2AF}"
     >
       <StackPanel>
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE8D2;" Content="Gallery.Controls.SetTheContentUsedByPersistentAndTimedStatusItems_94F25DD8" Title="Gallery.Controls.StatusText_1AB61918">
+          <flourish:ActionCard Icon="&#xE8D2;" Content="{culture:Localize Key=Controls_SetTheContentUsedByPersistentAndTimedStatusItems_94F25DD8}" Title="{culture:Localize Key=Controls_StatusText_1AB61918}">
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="StatusTextBox" Width="230" Text="Gallery runtime API is ready" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE710;" Content="Gallery.Controls.AddThePersistentItemOrUpdateItsCurrentText_38654B15" Title="Gallery.Controls.PersistentStatus_7B711979">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE710;" Content="{culture:Localize Key=Controls_AddThePersistentItemOrUpdateItsCurrentText_38654B15}" Title="{culture:Localize Key=Controls_PersistentStatus_7B711979}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="UpsertStatus_Click" Content="Gallery.Controls.AddUpdate_D3DC3D10" />
+              <flourish:Button Click="UpsertStatus_Click" Content="{culture:Localize Key=Controls_AddUpdate_D3DC3D10}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE823;" Content="Gallery.Controls.ShowTheCurrentStatusTextForFourSeconds_572A489F" Title="Gallery.Controls.TimedStatus_ADE45349">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE823;" Content="{culture:Localize Key=Controls_ShowTheCurrentStatusTextForFourSeconds_572A489F}" Title="{culture:Localize Key=Controls_TimedStatus_ADE45349}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ShowTimedStatus_Click" Content="Gallery.Controls.ShowFor4Seconds_2373FDA2" />
+              <flourish:Button Click="ShowTimedStatus_Click" Content="{culture:Localize Key=Controls_ShowFor4Seconds_2373FDA2}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="Gallery.Controls.ShowOrHideTheRegisteredStatusItem_D5BD5493" Title="Gallery.Controls.StatusVisibility_F5A44B36">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE890;" Content="{culture:Localize Key=Controls_ShowOrHideTheRegisteredStatusItem_D5BD5493}" Title="{culture:Localize Key=Controls_StatusVisibility_F5A44B36}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleStatusVisible_Click" Content="Gallery.Controls.ShowHide_79EE9903" />
+              <flourish:Button Click="ToggleStatusVisible_Click" Content="{culture:Localize Key=Controls_ShowHide_79EE9903}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="Gallery.Controls.MoveTheItemWithinTheStatusBarOrder_A9D9FBA7" Title="Gallery.Controls.StatusOrder_8AC08713">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="{culture:Localize Key=Controls_MoveTheItemWithinTheStatusBarOrder_A9D9FBA7}" Title="{culture:Localize Key=Controls_StatusOrder_8AC08713}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="MoveStatus_Click" Content="Gallery.Controls.MoveItem_D2C97950" />
+              <flourish:Button Click="MoveStatus_Click" Content="{culture:Localize Key=Controls_MoveItem_D2C97950}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Gallery.Controls.RemoveTheRegisteredStatusItem_96A363E4" Title="Gallery.Controls.PersistentStatus_7B711979">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="{culture:Localize Key=Controls_RemoveTheRegisteredStatusItem_96A363E4}" Title="{culture:Localize Key=Controls_PersistentStatus_7B711979}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveStatus_Click" Content="Gallery.Controls.Remove_C3812FC4" />
+              <flourish:Button Click="RemoveStatus_Click" Content="{culture:Localize Key=Controls_Remove_C3812FC4}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE968;" Content="Gallery.Controls.ToggleTheShellLANIndicator_53482955" Title="Gallery.Controls.LANIndicator_94F7A706">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE968;" Content="{culture:Localize Key=Controls_ToggleTheShellLANIndicator_53482955}" Title="{culture:Localize Key=Controls_LANIndicator_94F7A706}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleLan_Click" Content="Gallery.Controls.ToggleLAN_3ACF3E1E" />
+              <flourish:Button Click="ToggleLan_Click" Content="{culture:Localize Key=Controls_ToggleLAN_3ACF3E1E}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE945;" Content="Gallery.Controls.ToggleTheShellPowerIndicator_4DE13D3B" Title="Gallery.Controls.PowerIndicator_35AA4D23">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE945;" Content="{culture:Localize Key=Controls_ToggleTheShellPowerIndicator_4DE13D3B}" Title="{culture:Localize Key=Controls_PowerIndicator_35AA4D23}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="TogglePower_Click" Content="Gallery.Controls.TogglePower_19129AF7" />
+              <flourish:Button Click="TogglePower_Click" Content="{culture:Localize Key=Controls_TogglePower_19129AF7}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7E8;" Content="Gallery.Controls.EnableOrDisableTheCompleteStatusBar_5FE70726" Title="Gallery.Controls.StatusBarAvailability_0A59FD9C">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE7E8;" Content="{culture:Localize Key=Controls_EnableOrDisableTheCompleteStatusBar_5FE70726}" Title="{culture:Localize Key=Controls_StatusBarAvailability_0A59FD9C}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleStatusBar_Click" Content="Gallery.Controls.EnableDisable_3A6366CC" />
+              <flourish:Button Click="ToggleStatusBar_Click" Content="{culture:Localize Key=Controls_EnableDisable_3A6366CC}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -117,30 +118,30 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.PlaceCustomWPFContentIntoANamedShellRegionThenAdjustItsAvailabil_AC0BA209"
-      Title="Gallery.Controls.ShellRegions_705954E4"
+      Content="{culture:Localize Key=Controls_PlaceCustomWPFContentIntoANamedShellRegionThenAdjustItsAvailabil_AC0BA209}"
+      Title="{culture:Localize Key=Controls_ShellRegions_705954E4}"
     >
       <StackPanel>
         <UniformGrid VerticalAlignment="Stretch" Columns="2">
         <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
-          <flourish:ActionCard Icon="&#xE710;" Content="Gallery.Controls.RegisterTheDemoWPFElementInContentHeader_85398AD1" Title="Gallery.Controls.HeaderContent_131AD77B">
+          <flourish:ActionCard Icon="&#xE710;" Content="{culture:Localize Key=Controls_RegisterTheDemoWPFElementInContentHeader_85398AD1}" Title="{culture:Localize Key=Controls_HeaderContent_131AD77B}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AddRegion_Click" Content="Gallery.Controls.AddContent_006E1FBB" />
+              <flourish:Button Click="AddRegion_Click" Content="{culture:Localize Key=Controls_AddContent_006E1FBB}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8D7;" Content="Gallery.Controls.EnableOrDisableTheCustomShellRegion_F884B85E" Title="Gallery.Controls.RegionAvailability_66657CB6">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8D7;" Content="{culture:Localize Key=Controls_EnableOrDisableTheCustomShellRegion_F884B85E}" Title="{culture:Localize Key=Controls_RegionAvailability_66657CB6}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleRegion_Click" Content="Gallery.Controls.EnableDisable_3A6366CC" />
+              <flourish:Button Click="ToggleRegion_Click" Content="{culture:Localize Key=Controls_EnableDisable_3A6366CC}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="Gallery.Controls.MoveTheRegionWithinTheShellOrder_84FB6E21" Title="Gallery.Controls.RegionOrder_0C69B19C">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE8CB;" Content="{culture:Localize Key=Controls_MoveTheRegionWithinTheShellOrder_84FB6E21}" Title="{culture:Localize Key=Controls_RegionOrder_0C69B19C}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ReorderRegion_Click" Content="Gallery.Controls.ChangeOrder_93C17B5B" />
+              <flourish:Button Click="ReorderRegion_Click" Content="{culture:Localize Key=Controls_ChangeOrder_93C17B5B}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
-          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="Gallery.Controls.RemoveTheContentHeaderRegistration_D1BA4165" Title="Gallery.Controls.HeaderContent_131AD77B">
+          <flourish:ActionCard Margin="{DynamicResource FlourishActionCardPeerMargin}" Icon="&#xE74D;" Content="{culture:Localize Key=Controls_RemoveTheContentHeaderRegistration_D1BA4165}" Title="{culture:Localize Key=Controls_HeaderContent_131AD77B}">
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RemoveRegion_Click" Content="Gallery.Controls.Remove_C3812FC4" />
+              <flourish:Button Click="RemoveRegion_Click" Content="{culture:Localize Key=Controls_Remove_C3812FC4}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -149,10 +150,10 @@
         <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="regions.Set(&#10;    &quot;reports.header&quot;,&#10;    FlourishRegion.ContentHeader,&#10;    _ =&gt; CreateReportHeader(),&#10;    order: 50);&#10;&#10;regions.SetEnabled(&quot;reports.header&quot;, true);&#10;regions.SetOrder(&quot;reports.header&quot;, 90);&#10;var entries = regions.Current.Entries;&#10;regions.Remove(&quot;reports.header&quot;);" />
       </StackPanel>
     </flourish:Chunk>
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
-        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Controls.ReadTheShellSurfaceDocumentation_81E968A3" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Controls.ShellDocumentation_68AD102E" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheShellSurfaceDocumentation_81E968A3}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Controls_ShellDocumentation_68AD102E}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

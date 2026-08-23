@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 
@@ -106,6 +105,5 @@ internal sealed class ScrollService : IScrollService
         dispatcher.Invoke(AttachCore);
     }
 
-    private FlourishScrollSettings CreateSnapshot() =>
-        new(isSmoothScrollingEnabled, version);
+    private FlourishScrollSettings CreateSnapshot() => new(isSmoothScrollingEnabled, version);
 }

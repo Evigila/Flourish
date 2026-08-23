@@ -2,7 +2,6 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Page;
@@ -14,8 +13,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 
 public sealed class FlourishProfilePageRenderingTests
 {
-    private const string XamlNamespace =
-        "http://schemas.microsoft.com/winfx/2006/xaml";
+    private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
     private const string FlourishControlsNamespace =
         "clr-namespace:ArkheideSystem.Flourish.Controls";
     private static readonly string ProfileXamlPath = Path.Combine(
@@ -46,18 +44,19 @@ public sealed class FlourishProfilePageRenderingTests
         );
         Assert.Equal(
             "{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}",
-            (string?)uploadButton
-                .Descendants()
-                .Single(element => element.Name.LocalName == "Path")
-                .Attribute("Stroke")
+            (string?)
+                uploadButton
+                    .Descendants()
+                    .Single(element => element.Name.LocalName == "Path")
+                    .Attribute("Stroke")
         );
         Assert.DoesNotContain(
             document.Descendants(),
             element =>
                 (string?)element.Attribute(XName.Get("Name", XamlNamespace))
-                is "SelectedImageContent"
-                    or "SelectedImagePreview"
-                    or "ImageSelectedText"
+                    is "SelectedImageContent"
+                        or "SelectedImagePreview"
+                        or "ImageSelectedText"
         );
     }
 

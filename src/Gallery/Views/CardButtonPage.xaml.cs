@@ -13,15 +13,15 @@ public partial class CardButtonPage : Page
 
     private static readonly ControlMemberRow[] propertyRows =
     [
-        new("Variant", GalleryLocaleKeys.ControlsSelectsCardEmphasisAndSemanticFeedback_0A19C046),
-        new("Title", GalleryLocaleKeys.ControlsSuppliesOptionalHeadingContent_BB3AF24B),
-        new("Content", GalleryLocaleKeys.ControlsSuppliesOptionalSupportingContent_790A7EA4),
-        new("Icon", GalleryLocaleKeys.ControlsSuppliesAnOptionalSingleIcon_B821DB91),
-        new("IconPosition", GalleryLocaleKeys.ControlsPlacesTheIconAboveOrBesideTheCopy_93065A79),
+        new("Variant", Key.Controls_SelectsCardEmphasisAndSemanticFeedback_0A19C046),
+        new("Title", Key.Controls_SuppliesOptionalHeadingContent_BB3AF24B),
+        new("Content", Key.Controls_SuppliesOptionalSupportingContent_790A7EA4),
+        new("Icon", Key.Controls_SuppliesAnOptionalSingleIcon_B821DB91),
+        new("IconPosition", Key.Controls_PlacesTheIconAboveOrBesideTheCopy_93065A79),
         new(
             "Command",
-            GalleryLocaleKeys.ControlsConnectsActivationToApplicationOwnedBehavior_A9E29329
+            Key.Controls_ConnectsActivationToApplicationOwnedBehavior_A9E29329
         ),
-        new("IsEnabled", GalleryLocaleKeys.ControlsControlsKeyboardAndPointerActivation_6A5B63B0),
+        new("IsEnabled", Key.Controls_ControlsKeyboardAndPointerActivation_6A5B63B0),
     ];
 }

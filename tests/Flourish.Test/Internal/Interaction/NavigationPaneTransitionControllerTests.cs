@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using ArkheideSystem.Flourish.Services;
@@ -25,8 +24,12 @@ public sealed class NavigationPaneTransitionControllerTests
             { NavigationPanelDirection.Right, 220, 48 },
         };
 
-    public static TheoryData<NavigationPanelDirection, double, double, double>
-        CenteredGeometryCases =>
+    public static TheoryData<
+        NavigationPanelDirection,
+        double,
+        double,
+        double
+    > CenteredGeometryCases =>
         new()
         {
             { NavigationPanelDirection.Left, 220, 48, 1600 },
@@ -85,9 +88,7 @@ public sealed class NavigationPaneTransitionControllerTests
             var transitionTransform = Assert.IsType<TransformGroup>(
                 fixture.Content.RenderTransform
             );
-            var contentScale = Assert.IsType<ScaleTransform>(
-                transitionTransform.Children[0]
-            );
+            var contentScale = Assert.IsType<ScaleTransform>(transitionTransform.Children[0]);
             var contentTranslation = Assert.IsType<TranslateTransform>(
                 transitionTransform.Children[1]
             );
@@ -103,9 +104,8 @@ public sealed class NavigationPaneTransitionControllerTests
             var targetScale =
                 (fixture.Content.ActualWidth + committedWidth - targetWidth)
                 / fixture.Content.ActualWidth;
-            var targetTranslation = direction == NavigationPanelDirection.Left
-                ? targetWidth - committedWidth
-                : 0;
+            var targetTranslation =
+                direction == NavigationPanelDirection.Left ? targetWidth - committedWidth : 0;
 
             AssertClip(direction, 420, midpointWidth, clip.Rect);
             AssertClose((1 + targetScale) / 2, contentScale.ScaleX);
@@ -126,11 +126,7 @@ public sealed class NavigationPaneTransitionControllerTests
     {
         StaTest.Run(() =>
         {
-            var fixture = CenteredTransitionFixture.Create(
-                direction,
-                committedWidth,
-                workWidth
-            );
+            var fixture = CenteredTransitionFixture.Create(direction, committedWidth, workWidth);
             var sut = new NavigationPaneTransitionController();
             var initialBounds = fixture.GetCenteredBounds();
             AssertClose(initialBounds.Width, fixture.GetScrollableCenteredBounds().Width);
@@ -156,9 +152,7 @@ public sealed class NavigationPaneTransitionControllerTests
                     }
                 )
             );
-            var clock = Assert.IsAssignableFrom<ClockController>(
-                sut.ActiveClockController
-            );
+            var clock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
 
             foreach (var progress in new[] { 0d, 0.25, 0.5, 0.75, 0.99 })
             {
@@ -170,10 +164,7 @@ public sealed class NavigationPaneTransitionControllerTests
                 var bounds = fixture.GetCenteredBounds();
                 var scrollableBounds = fixture.GetScrollableCenteredBounds();
 
-                AssertClose(
-                    Lerp(initialBounds.Width, targetBounds.Width, progress),
-                    bounds.Width
-                );
+                AssertClose(Lerp(initialBounds.Width, targetBounds.Width, progress), bounds.Width);
                 AssertClose(bounds.Width, scrollableBounds.Width);
                 AssertClose(
                     Lerp(GetCenterX(initialBounds), GetCenterX(targetBounds), progress),
@@ -196,10 +187,7 @@ public sealed class NavigationPaneTransitionControllerTests
                     );
                     AssertClose(initialTextWidth, fixture.CenteredText.ActualWidth);
                     AssertClose(initialTextHeight, fixture.CenteredText.ActualHeight);
-                    AssertClose(
-                        24,
-                        fixture.GetCenteredTextBounds().Left - bounds.Left
-                    );
+                    AssertClose(24, fixture.GetCenteredTextBounds().Left - bounds.Left);
                 }
                 Assert.Equal(committedWidth, fixture.PaneColumn.Width.Value);
                 Assert.False(IsMaxWidthAnimated(fixture.Centered));
@@ -228,9 +216,7 @@ public sealed class NavigationPaneTransitionControllerTests
             );
             Assert.Same(
                 DependencyProperty.UnsetValue,
-                fixture.ScrollableCentered.ReadLocalValue(
-                    UIElement.RenderTransformOriginProperty
-                )
+                fixture.ScrollableCentered.ReadLocalValue(UIElement.RenderTransformOriginProperty)
             );
         });
     }
@@ -247,10 +233,7 @@ public sealed class NavigationPaneTransitionControllerTests
         {
             const double workWidth = 1000;
             var workArea = new Grid { Width = workWidth, Height = 400 };
-            var paneColumn = new ColumnDefinition
-            {
-                Width = new GridLength(committedWidth),
-            };
+            var paneColumn = new ColumnDefinition { Width = new GridLength(committedWidth) };
             var contentColumn = new ColumnDefinition
             {
                 Width = new GridLength(1, GridUnitType.Star),
@@ -271,7 +254,8 @@ public sealed class NavigationPaneTransitionControllerTests
             Grid.SetColumn(pane, paneColumnIndex);
             var text = new TextBlock
             {
-                Text = "Scrollable centered text keeps its natural metrics while navigation changes.",
+                Text =
+                    "Scrollable centered text keeps its natural metrics while navigation changes.",
                 TextWrapping = TextWrapping.Wrap,
             };
             var centered = new Border
@@ -318,10 +302,13 @@ public sealed class NavigationPaneTransitionControllerTests
                 var initialTextWidth = text.ActualWidth;
                 var initialTextHeight = text.ActualHeight;
                 var paneWidthDelta = targetWidth - committedWidth;
-                var expectedTargetCenter = GetCenterX(initialBounds)
-                    + (direction == NavigationPanelDirection.Left
-                        ? paneWidthDelta / 2
-                        : -paneWidthDelta / 2);
+                var expectedTargetCenter =
+                    GetCenterX(initialBounds)
+                    + (
+                        direction == NavigationPanelDirection.Left
+                            ? paneWidthDelta / 2
+                            : -paneWidthDelta / 2
+                    );
 
                 Assert.True(
                     sut.Start(
@@ -345,9 +332,7 @@ public sealed class NavigationPaneTransitionControllerTests
                         }
                     )
                 );
-                var clock = Assert.IsAssignableFrom<ClockController>(
-                    sut.ActiveClockController
-                );
+                var clock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
                 clock.Pause();
 
                 foreach (var progress in new[] { 0d, 0.25, 0.5, 0.75, 0.999 })
@@ -364,20 +349,14 @@ public sealed class NavigationPaneTransitionControllerTests
                         Lerp(GetCenterX(initialBounds), expectedTargetCenter, progress),
                         GetCenterX(bounds)
                     );
-                    AssertClose(
-                        CenteredTransitionFixture.ContentMaximumWidth,
-                        bounds.Width
-                    );
+                    AssertClose(CenteredTransitionFixture.ContentMaximumWidth, bounds.Width);
                     AssertClose(text.ActualWidth, textBounds.Width);
                     AssertClose(initialTextWidth, text.ActualWidth);
                     AssertClose(initialTextHeight, text.ActualHeight);
                     AssertClose(24, textBounds.Left - bounds.Left);
                     Assert.False(
                         DependencyPropertyHelper
-                            .GetValueSource(
-                                centered,
-                                FrameworkElement.MaxWidthProperty
-                            )
+                            .GetValueSource(centered, FrameworkElement.MaxWidthProperty)
                             .IsAnimated
                     );
                 }
@@ -434,9 +413,7 @@ public sealed class NavigationPaneTransitionControllerTests
                     () => firstCompletionCount++
                 )
             );
-            var firstClock = Assert.IsAssignableFrom<ClockController>(
-                sut.ActiveClockController
-            );
+            var firstClock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
             firstClock.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
             fixture.Layout();
             var boundsBeforeReverse = fixture.GetCenteredBounds();
@@ -455,9 +432,7 @@ public sealed class NavigationPaneTransitionControllerTests
                     () => reverseCompletionCount++
                 )
             );
-            var reverseClock = Assert.IsAssignableFrom<ClockController>(
-                sut.ActiveClockController
-            );
+            var reverseClock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
             reverseClock.SeekAlignedToLastTick(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
             fixture.Layout();
             var boundsAfterReverse = fixture.GetCenteredBounds();
@@ -466,17 +441,13 @@ public sealed class NavigationPaneTransitionControllerTests
             AssertClose(boundsBeforeReverse.Width, boundsAfterReverse.Width);
             AssertClose(GetCenterX(boundsBeforeReverse), GetCenterX(boundsAfterReverse));
             AssertClose(textBoundsBeforeReverse.Width, textBoundsAfterReverse.Width);
-            AssertClose(
-                GetCenterX(textBoundsBeforeReverse),
-                GetCenterX(textBoundsAfterReverse)
-            );
+            AssertClose(GetCenterX(textBoundsBeforeReverse), GetCenterX(textBoundsAfterReverse));
             if (workWidth == 1600)
             {
                 AssertClose(fixture.CenteredText.ActualWidth, textBoundsAfterReverse.Width);
             }
             Assert.True(
-                boundsAfterReverse.Width
-                    <= CenteredTransitionFixture.ContentMaximumWidth + 0.001
+                boundsAfterReverse.Width <= CenteredTransitionFixture.ContentMaximumWidth + 0.001
             );
             Assert.Equal(0, firstCompletionCount);
             Assert.Equal(0, reverseCompletionCount);
@@ -496,9 +467,7 @@ public sealed class NavigationPaneTransitionControllerTests
     [Theory]
     [InlineData(1600)]
     [InlineData(700)]
-    public void Cancel_WithCenteredContent_RestoresLayoutTextAndTransformState(
-        double workWidth
-    )
+    public void Cancel_WithCenteredContent_RestoresLayoutTextAndTransformState(double workWidth)
     {
         StaTest.Run(() =>
         {
@@ -527,9 +496,7 @@ public sealed class NavigationPaneTransitionControllerTests
                     () => completionCount++
                 )
             );
-            var clock = Assert.IsAssignableFrom<ClockController>(
-                sut.ActiveClockController
-            );
+            var clock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
             clock.SeekAlignedToLastTick(Duration / 2, TimeSeekOrigin.BeginTime);
             fixture.Layout();
 
@@ -541,19 +508,14 @@ public sealed class NavigationPaneTransitionControllerTests
             AssertClose(initialBounds.Width, restoredBounds.Width);
             AssertClose(GetCenterX(initialBounds), GetCenterX(restoredBounds));
             AssertClose(initialTextBounds.Width, restoredTextBounds.Width);
-            AssertClose(
-                GetCenterX(initialTextBounds),
-                GetCenterX(restoredTextBounds)
-            );
+            AssertClose(GetCenterX(initialTextBounds), GetCenterX(restoredTextBounds));
             Assert.Same(
                 DependencyProperty.UnsetValue,
                 fixture.Centered.ReadLocalValue(UIElement.RenderTransformProperty)
             );
             Assert.Same(
                 DependencyProperty.UnsetValue,
-                fixture.Centered.ReadLocalValue(
-                    UIElement.RenderTransformOriginProperty
-                )
+                fixture.Centered.ReadLocalValue(UIElement.RenderTransformOriginProperty)
             );
             Assert.Equal(
                 originalMaxWidthLocalValue,
@@ -589,12 +551,8 @@ public sealed class NavigationPaneTransitionControllerTests
                 )
             );
             var animatedClip = Assert.IsType<RectangleGeometry>(fixture.Pane.Clip);
-            var animatedTransform = Assert.IsType<TransformGroup>(
-                fixture.Content.RenderTransform
-            );
-            var animatedScale = Assert.IsType<ScaleTransform>(
-                animatedTransform.Children[0]
-            );
+            var animatedTransform = Assert.IsType<TransformGroup>(fixture.Content.RenderTransform);
+            var animatedScale = Assert.IsType<ScaleTransform>(animatedTransform.Children[0]);
             var animatedTranslation = Assert.IsType<TranslateTransform>(
                 animatedTransform.Children[1]
             );
@@ -659,9 +617,7 @@ public sealed class NavigationPaneTransitionControllerTests
             var transitionTransform = Assert.IsType<TransformGroup>(
                 fixture.Content.RenderTransform
             );
-            var contentScale = Assert.IsType<ScaleTransform>(
-                transitionTransform.Children[0]
-            );
+            var contentScale = Assert.IsType<ScaleTransform>(transitionTransform.Children[0]);
             var contentTranslation = Assert.IsType<TranslateTransform>(
                 transitionTransform.Children[1]
             );
@@ -713,8 +669,7 @@ public sealed class NavigationPaneTransitionControllerTests
             var options = new FlourishShellOptions();
             options.Motion.IsEnabled = true;
             options.Motion.RespectSystemReducedMotion = false;
-            options.Motion.NavigationPanelTransition =
-                FlourishNavigationPanelTransition.Resize;
+            options.Motion.NavigationPanelTransition = FlourishNavigationPanelTransition.Resize;
             options.Motion.NavigationPanelTransitionDuration = Duration;
             var sut = new FlourishMotionService(options, static () => true);
             var openingCompletionCount = 0;
@@ -786,12 +741,8 @@ public sealed class NavigationPaneTransitionControllerTests
                 )
             );
             var animatedClip = Assert.IsType<RectangleGeometry>(fixture.Pane.Clip);
-            var animatedTransform = Assert.IsType<TransformGroup>(
-                fixture.Content.RenderTransform
-            );
-            var animatedScale = Assert.IsType<ScaleTransform>(
-                animatedTransform.Children[0]
-            );
+            var animatedTransform = Assert.IsType<TransformGroup>(fixture.Content.RenderTransform);
+            var animatedScale = Assert.IsType<ScaleTransform>(animatedTransform.Children[0]);
             var animatedTranslation = Assert.IsType<TranslateTransform>(
                 animatedTransform.Children[1]
             );
@@ -854,9 +805,7 @@ public sealed class NavigationPaneTransitionControllerTests
                     () => completionCount++
                 )
             );
-            var temporaryTransform = Assert.IsType<TransformGroup>(
-                fixture.Content.RenderTransform
-            );
+            var temporaryTransform = Assert.IsType<TransformGroup>(fixture.Content.RenderTransform);
             Assert.NotSame(originalTransform, temporaryTransform);
             Assert.Equal(new Point(), fixture.Content.RenderTransformOrigin);
 
@@ -1035,9 +984,7 @@ public sealed class NavigationPaneTransitionControllerTests
             );
             fixture.Layout();
             fixture.Content.ResetLayoutCounts();
-            var clock = Assert.IsAssignableFrom<ClockController>(
-                sut.ActiveClockController
-            );
+            var clock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
 
             clock.SeekAlignedToLastTick(Duration / 4, TimeSeekOrigin.BeginTime);
             fixture.Layout();
@@ -1048,18 +995,12 @@ public sealed class NavigationPaneTransitionControllerTests
 
             Assert.False(
                 DependencyPropertyHelper
-                    .GetValueSource(
-                        fixture.Centered,
-                        FrameworkElement.MaxWidthProperty
-                    )
+                    .GetValueSource(fixture.Centered, FrameworkElement.MaxWidthProperty)
                     .IsAnimated
             );
             Assert.False(
                 DependencyPropertyHelper
-                    .GetValueSource(
-                        fixture.ScrollableCentered,
-                        FrameworkElement.MaxWidthProperty
-                    )
+                    .GetValueSource(fixture.ScrollableCentered, FrameworkElement.MaxWidthProperty)
                     .IsAnimated
             );
             Assert.True(IsCounterScaleAnimated(fixture.Centered));
@@ -1096,9 +1037,7 @@ public sealed class NavigationPaneTransitionControllerTests
             );
             fixture.Layout();
             fixture.Content.ResetLayoutCounts();
-            var clock = Assert.IsAssignableFrom<ClockController>(
-                sut.ActiveClockController
-            );
+            var clock = Assert.IsAssignableFrom<ClockController>(sut.ActiveClockController);
             foreach (var progress in new[] { 0.25, 0.5, 0.75 })
             {
                 clock.SeekAlignedToLastTick(
@@ -1110,18 +1049,12 @@ public sealed class NavigationPaneTransitionControllerTests
 
             Assert.False(
                 DependencyPropertyHelper
-                    .GetValueSource(
-                        fixture.Centered,
-                        FrameworkElement.MaxWidthProperty
-                    )
+                    .GetValueSource(fixture.Centered, FrameworkElement.MaxWidthProperty)
                     .IsAnimated
             );
             Assert.False(
                 DependencyPropertyHelper
-                    .GetValueSource(
-                        fixture.ScrollableCentered,
-                        FrameworkElement.MaxWidthProperty
-                    )
+                    .GetValueSource(fixture.ScrollableCentered, FrameworkElement.MaxWidthProperty)
                     .IsAnimated
             );
             Assert.True(IsCounterScaleAnimated(fixture.Centered));
@@ -1138,7 +1071,8 @@ public sealed class NavigationPaneTransitionControllerTests
         var flourishRoot = Path.Combine(TestPaths.RepositoryRoot, "src", "Flourish");
         var source = string.Join(
             Environment.NewLine,
-            Directory.EnumerateFiles(flourishRoot, "*.cs", SearchOption.AllDirectories)
+            Directory
+                .EnumerateFiles(flourishRoot, "*.cs", SearchOption.AllDirectories)
                 .Select(File.ReadAllText)
         );
 
@@ -1166,9 +1100,8 @@ public sealed class NavigationPaneTransitionControllerTests
         Rect actual
     )
     {
-        var expectedX = direction == NavigationPanelDirection.Right
-            ? presentationWidth - visibleWidth
-            : 0;
+        var expectedX =
+            direction == NavigationPanelDirection.Right ? presentationWidth - visibleWidth : 0;
         AssertClose(expectedX, actual.X);
         AssertClose(visibleWidth, actual.Width);
         AssertClose(480, actual.Height);
@@ -1212,10 +1145,7 @@ public sealed class NavigationPaneTransitionControllerTests
         return from + ((to - from) * progress);
     }
 
-    private static Rect GetTransformedBounds(
-        FrameworkElement element,
-        Visual ancestor
-    )
+    private static Rect GetTransformedBounds(FrameworkElement element, Visual ancestor)
     {
         return element
             .TransformToAncestor(ancestor)
@@ -1224,19 +1154,13 @@ public sealed class NavigationPaneTransitionControllerTests
 
     private static void PumpRender()
     {
-        Dispatcher.CurrentDispatcher.Invoke(
-            DispatcherPriority.Render,
-            new Action(() => { })
-        );
+        Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Render, new Action(() => { }));
     }
 
     private static void AssertContentPresentationRestored(TransitionFixture fixture)
     {
         Assert.Same(fixture.OriginalContentTransform, fixture.Content.RenderTransform);
-        Assert.Equal(
-            fixture.OriginalContentTransformOrigin,
-            fixture.Content.RenderTransformOrigin
-        );
+        Assert.Equal(fixture.OriginalContentTransformOrigin, fixture.Content.RenderTransformOrigin);
         Assert.Equal(
             fixture.OriginalContentTransformLocalValue,
             fixture.Content.ReadLocalValue(UIElement.RenderTransformProperty)
@@ -1493,9 +1417,7 @@ public sealed class NavigationPaneTransitionControllerTests
         {
             return ScrollableCenteredText
                 .TransformToAncestor(WorkArea)
-                .TransformBounds(
-                    new Rect(new Point(), ScrollableCenteredText.RenderSize)
-                );
+                .TransformBounds(new Rect(new Point(), ScrollableCenteredText.RenderSize));
         }
 
         internal Rect GetExpectedCenteredBounds(double paneWidth)
@@ -1530,7 +1452,8 @@ public sealed class NavigationPaneTransitionControllerTests
         {
             return new TextBlock
             {
-                Text = "Centered navigation content keeps stable text metrics during the transition.",
+                Text =
+                    "Centered navigation content keeps stable text metrics during the transition.",
                 TextWrapping = TextWrapping.Wrap,
             };
         }
@@ -1585,13 +1508,7 @@ public sealed class NavigationPaneTransitionControllerTests
 
         internal object OriginalContentTransformOriginLocalValue { get; }
 
-        internal NavigationPaneTransitionTarget Target =>
-            new(
-                WorkArea,
-                Pane,
-                Content,
-                Direction
-            );
+        internal NavigationPaneTransitionTarget Target => new(WorkArea, Pane, Content, Direction);
 
         internal static TransitionFixture Create(
             NavigationPanelDirection direction,

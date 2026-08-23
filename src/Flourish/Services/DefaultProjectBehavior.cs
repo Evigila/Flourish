@@ -1,6 +1,5 @@
 using System.IO;
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using MessageBoxOptions = System.Windows.MessageBoxOptions;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -26,9 +25,7 @@ internal sealed class DefaultProjectBehavior(
         localization ?? throw new ArgumentNullException(nameof(localization));
     private readonly SemaphoreSlim operationGate = new(1, 1);
 
-    public async ValueTask<bool> CreateProjectAsync(
-        CancellationToken cancellationToken = default
-    )
+    public async ValueTask<bool> CreateProjectAsync(CancellationToken cancellationToken = default)
     {
         await operationGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -242,15 +239,12 @@ internal sealed class DefaultProjectBehavior(
         }
     }
 
-    public async ValueTask<bool> CanCloseAsync(
-        CancellationToken cancellationToken = default
-    )
+    public async ValueTask<bool> CanCloseAsync(CancellationToken cancellationToken = default)
     {
         await operationGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            return await ConfirmCloseActiveProjectAsync(cancellationToken)
-                .ConfigureAwait(false);
+            return await ConfirmCloseActiveProjectAsync(cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -283,10 +277,7 @@ internal sealed class DefaultProjectBehavior(
         ];
         var result = await messageService
             .ShowAsync(
-                localization.Format(
-                    FlourishLocaleKeys.ProjectUnsavedPrompt,
-                    activeProject.Name
-                ),
+                localization.Format(FlourishLocaleKeys.ProjectUnsavedPrompt, activeProject.Name),
                 localization.Get(FlourishLocaleKeys.ProjectUnsavedTitle),
                 choices,
                 MessageBoxImage.Warning,
@@ -327,10 +318,7 @@ internal sealed class DefaultProjectBehavior(
         ];
         var result = await messageService
             .ShowAsync(
-                localization.Format(
-                    FlourishLocaleKeys.ProjectUnsavedPrompt,
-                    activeProject.Name
-                ),
+                localization.Format(FlourishLocaleKeys.ProjectUnsavedPrompt, activeProject.Name),
                 localization.Get(FlourishLocaleKeys.ProjectUnsavedTitle),
                 choices,
                 MessageBoxImage.Warning,
@@ -342,9 +330,7 @@ internal sealed class DefaultProjectBehavior(
             && await SaveActiveProjectCoreAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    private async ValueTask<bool> SaveActiveProjectCoreAsync(
-        CancellationToken cancellationToken
-    )
+    private async ValueTask<bool> SaveActiveProjectCoreAsync(CancellationToken cancellationToken)
     {
         var activeProject = projectService.Current.ActiveProject;
         if (activeProject is null)
@@ -358,10 +344,7 @@ internal sealed class DefaultProjectBehavior(
         }
 
         var selectedPath = await saveFileDialog
-            .ShowAsync(
-                new ProjectSaveFileDialogRequest(DefaultProjectFileName),
-                cancellationToken
-            )
+            .ShowAsync(new ProjectSaveFileDialogRequest(DefaultProjectFileName), cancellationToken)
             .ConfigureAwait(false);
         if (string.IsNullOrWhiteSpace(selectedPath))
         {
@@ -438,7 +421,8 @@ internal sealed class DefaultProjectBehavior(
             return false;
         }
 
-        var directory = Path.GetDirectoryName(storagePath)
+        var directory =
+            Path.GetDirectoryName(storagePath)
             ?? throw new InvalidOperationException("The project file has no parent directory.");
         Directory.CreateDirectory(directory);
         try
@@ -482,7 +466,8 @@ internal sealed class DefaultProjectBehavior(
     private static string IsolateManagedFile(string storagePath)
     {
         var fullPath = Path.GetFullPath(storagePath);
-        var directory = Path.GetDirectoryName(fullPath)
+        var directory =
+            Path.GetDirectoryName(fullPath)
             ?? throw new InvalidOperationException("The project file has no parent directory.");
         var isolatedPath = Path.Combine(
             directory,
@@ -517,9 +502,7 @@ internal sealed class DefaultProjectBehavior(
         {
             File.Delete(storagePath);
         }
-        catch (Exception error) when (
-            error is IOException or UnauthorizedAccessException
-        )
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
             // Best-effort cleanup must not hide the catalog operation's result.
         }

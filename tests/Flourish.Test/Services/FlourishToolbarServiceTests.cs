@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -27,10 +26,7 @@ public sealed class FlourishToolbarServiceTests
     {
         var options = new FlourishShellOptions { IsDynamicToolbarEnabled = false };
         options.ToolbarItems.Add(new FlourishToolbarItem("Static", "S"));
-        options.DynamicToolbarItems[typeof(TestPage)] =
-        [
-            new FlourishToolbarItem("Dynamic", "D"),
-        ];
+        options.DynamicToolbarItems[typeof(TestPage)] = [new FlourishToolbarItem("Dynamic", "D")];
         var sut = new FlourishToolbarService(options);
 
         var result = sut.GetToolbarItems(typeof(TestPage));
@@ -44,10 +40,7 @@ public sealed class FlourishToolbarServiceTests
     {
         var options = new FlourishShellOptions { IsDynamicToolbarEnabled = true };
         options.ToolbarItems.Add(new FlourishToolbarItem("Static", "S"));
-        options.DynamicToolbarItems[typeof(TestPage)] =
-        [
-            new FlourishToolbarItem("Dynamic", "D"),
-        ];
+        options.DynamicToolbarItems[typeof(TestPage)] = [new FlourishToolbarItem("Dynamic", "D")];
         var sut = new FlourishToolbarService(options);
 
         var nullPageResult = sut.GetToolbarItems();

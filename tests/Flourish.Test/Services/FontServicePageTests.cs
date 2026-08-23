@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -37,10 +36,7 @@ public sealed class FontServicePageTests
             var service = new FontService(new FlourishShellOptions());
             var inheritedText = new TextBlock();
             var resourceText = new TextBlock();
-            resourceText.SetResourceReference(
-                TextBlock.FontFamilyProperty,
-                "FlourishFontFamily"
-            );
+            resourceText.SetResourceReference(TextBlock.FontFamilyProperty, "FlourishFontFamily");
             var explicitText = new TextBlock { FontFamily = new FontFamily("Consolas") };
             var panel = new StackPanel();
             panel.Children.Add(inheritedText);

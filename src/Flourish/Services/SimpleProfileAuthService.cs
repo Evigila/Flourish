@@ -1,10 +1,7 @@
-using ArkheideSystem.Flourish.Abstract;
-
 namespace ArkheideSystem.Flourish.Services;
 
-internal sealed class SimpleProfileAuthService(
-    FlourishLocalizationService localizationService
-) : IProfileAuthService
+internal sealed class SimpleProfileAuthService(FlourishLocalizationService localizationService)
+    : IProfileAuthService
 {
     public Task<ProfileAuthenticationResult> AuthenticateAsync(
         ProfileSignInRequest request,
@@ -35,10 +32,7 @@ internal sealed class SimpleProfileAuthService(
         return Task.FromResult(ProfileAuthenticationResult.Success());
     }
 
-    public Task SignOutAsync(
-        ProfileUser profile,
-        CancellationToken cancellationToken = default
-    )
+    public Task SignOutAsync(ProfileUser profile, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(profile);
         cancellationToken.ThrowIfCancellationRequested();

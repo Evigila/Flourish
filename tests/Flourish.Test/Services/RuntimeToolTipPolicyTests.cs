@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
@@ -17,8 +16,7 @@ public sealed class RuntimeToolTipPolicyTests
     private const string DelayKey = "FlourishToolTipInitialShowDelay";
     private const string MarginKey = "FlourishToolTipSpawnableMargin";
     private const string EnabledKey = "FlourishToolTipsEnabled";
-    private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+    private const string GenericThemeSource = "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Fact]
     public void Attach_PublishesOnlyApplicationPolicyResourcesAndSameScopeIsStable()
@@ -74,14 +72,8 @@ public sealed class RuntimeToolTipPolicyTests
             Assert.Equal(450, ToolTipService.GetInitialShowDelay(secondButton));
             Assert.Equal(8d, firstButton.TryFindResource(MarginKey));
             Assert.Equal(8d, secondButton.TryFindResource(MarginKey));
-            Assert.DoesNotContain(
-                DelayKey,
-                firstWindow.Resources.Keys.Cast<object>()
-            );
-            Assert.DoesNotContain(
-                DelayKey,
-                secondWindow.Resources.Keys.Cast<object>()
-            );
+            Assert.DoesNotContain(DelayKey, firstWindow.Resources.Keys.Cast<object>());
+            Assert.DoesNotContain(DelayKey, secondWindow.Resources.Keys.Cast<object>());
 
             sut.SetEnabled(false);
 
@@ -109,10 +101,7 @@ public sealed class RuntimeToolTipPolicyTests
             var flourishOwner = new FlourishButton { ToolTip = rawContent };
             var explicitOwner = new FlourishButton { ToolTip = explicitNativeToolTip };
             var nativeOwner = new WpfButton { ToolTip = "Native owner" };
-            var panel = new StackPanel
-            {
-                Children = { flourishOwner, explicitOwner, nativeOwner },
-            };
+            var panel = new StackPanel { Children = { flourishOwner, explicitOwner, nativeOwner } };
             var window = CreatePolicyWindow(panel, policyResources);
             var nativeDefaultDelay = ToolTipService.GetInitialShowDelay(new WpfButton());
 
@@ -200,12 +189,13 @@ public sealed class RuntimeToolTipPolicyTests
             var resources = new ResourceDictionary();
             var sut = new FlourishToolTipService(options);
             sut.Attach(dispatcher, resources);
-            var events = new List<(
-                int ThreadId,
-                int Delay,
-                double Margin,
-                FlourishToolTipChangedEventArgs Args
-            )>();
+            var events =
+                new List<(
+                    int ThreadId,
+                    int Delay,
+                    double Margin,
+                    FlourishToolTipChangedEventArgs Args
+                )>();
             sut.Changed += (_, args) =>
                 events.Add(
                     (
@@ -284,9 +274,7 @@ public sealed class RuntimeToolTipPolicyTests
         var runtimeSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Internal", "Composition", "FlourishRuntime.cs")
         );
-        var buttonXaml = XDocument.Load(
-            Path.Combine(flourishRoot, "Controls", "Button.xaml")
-        );
+        var buttonXaml = XDocument.Load(Path.Combine(flourishRoot, "Controls", "Button.xaml"));
 
         Assert.DoesNotContain("Window? owner", serviceSource, StringComparison.Ordinal);
         Assert.DoesNotContain("window.Resources", serviceSource, StringComparison.Ordinal);
@@ -312,8 +300,7 @@ public sealed class RuntimeToolTipPolicyTests
         Assert.Contains(
             buttonXaml.Descendants().Where(element => element.Name.LocalName == "Setter"),
             element =>
-                (string?)element.Attribute("Property")
-                    == "ToolTipService.InitialShowDelay"
+                (string?)element.Attribute("Property") == "ToolTipService.InitialShowDelay"
                 && (string?)element.Attribute("Value")
                     == "{DynamicResource FlourishToolTipInitialShowDelay}"
         );
@@ -322,10 +309,7 @@ public sealed class RuntimeToolTipPolicyTests
     private static WpfButton CreateDynamicDelayButton()
     {
         var button = new WpfButton();
-        button.SetResourceReference(
-            ToolTipService.InitialShowDelayProperty,
-            DelayKey
-        );
+        button.SetResourceReference(ToolTipService.InitialShowDelayProperty, DelayKey);
         return button;
     }
 
@@ -356,5 +340,4 @@ public sealed class RuntimeToolTipPolicyTests
 
         return window;
     }
-
 }

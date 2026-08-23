@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ListBox = ArkheideSystem.Flourish.Controls.BunchedListBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -76,13 +75,12 @@ internal partial class FlourishNavigationPane : UserControl
             : System.Windows.FlowDirection.LeftToRight;
         NavigationItemsHost.FlowDirection = flowDirection;
         FixedNavigationItemsHost.FlowDirection = flowDirection;
-        NavigationPaneBorder.BorderThickness =
-            isRight ? new Thickness(1, 0, 0, 0) : new Thickness(0, 0, 1, 0);
+        NavigationPaneBorder.BorderThickness = isRight
+            ? new Thickness(1, 0, 0, 0)
+            : new Thickness(0, 0, 1, 0);
         NavigationPaneBorder.SetResourceReference(
             Border.PaddingProperty,
-            isRight
-                ? "FlourishNavigationPaneRightPadding"
-                : "FlourishNavigationPaneLeftPadding"
+            isRight ? "FlourishNavigationPaneRightPadding" : "FlourishNavigationPaneLeftPadding"
         );
     }
 
@@ -91,10 +89,7 @@ internal partial class FlourishNavigationPane : UserControl
         NavigationPaneBorder.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    internal void SetRegionContent(
-        FlourishRegion region,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    internal void SetRegionContent(FlourishRegion region, IReadOnlyList<FrameworkElement> elements)
     {
         ArgumentNullException.ThrowIfNull(elements);
         var host = region switch
@@ -204,10 +199,7 @@ internal partial class FlourishNavigationPane : UserControl
         return null;
     }
 
-    private static void SetPanelContent(
-        WpfPanel host,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    private static void SetPanelContent(WpfPanel host, IReadOnlyList<FrameworkElement> elements)
     {
         for (var index = 0; index < elements.Count; index++)
         {

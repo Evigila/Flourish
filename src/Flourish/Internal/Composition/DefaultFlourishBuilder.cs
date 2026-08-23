@@ -1,7 +1,6 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
@@ -14,16 +13,15 @@ using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
-internal sealed class DefaultFlourishBuilder
-    : FlourishBuilderMutationGuard,
-        IFlourishBuilder
+internal sealed class DefaultFlourishBuilder : FlourishBuilderMutationGuard, IFlourishBuilder
 {
     private readonly FlourishShellOptions shellOptions = new();
     private readonly FlourishDataOptions dataOptions = new();
     private readonly IHostBuilder hostBuilder;
     private readonly List<Action<IFlourishDataBuilder>> dataConfigurations = [];
-    private readonly List<Action<HostBuilderContext, IFlourishConfigurationBuilder>>
-        configurationConfigurations = [];
+    private readonly List<
+        Action<HostBuilderContext, IFlourishConfigurationBuilder>
+    > configurationConfigurations = [];
     private readonly List<Action<HostBuilderContext, IServiceCollection>> serviceConfigurations =
     [];
     private readonly List<Action<IFlourishShellBuilder>> shellConfigurations = [];
@@ -38,11 +36,7 @@ internal sealed class DefaultFlourishBuilder
     public DefaultFlourishBuilder(string[] args)
     {
         ArgumentNullException.ThrowIfNull(args);
-        hostBuilder = CreateHostBuilder(
-            args,
-            dataOptions,
-            configurationConfigurations
-        );
+        hostBuilder = CreateHostBuilder(args, dataOptions, configurationConfigurations);
     }
 
     public IFlourishBuilder ConfigData(Action<IFlourishDataBuilder> configureData) =>
@@ -59,9 +53,8 @@ internal sealed class DefaultFlourishBuilder
     public IFlourishBuilder ConfigShell(Action<IFlourishShellBuilder> configureShell) =>
         RegisterConfiguration(configureShell, shellConfigurations);
 
-    public IFlourishBuilder ConfigTitleBar(
-        Action<IFlourishTitlebarBuilder> configureTitleBar
-    ) => RegisterConfiguration(configureTitleBar, titleBarConfigurations);
+    public IFlourishBuilder ConfigTitleBar(Action<IFlourishTitlebarBuilder> configureTitleBar) =>
+        RegisterConfiguration(configureTitleBar, titleBarConfigurations);
 
     public IFlourishBuilder ConfigNavigation(
         Action<IFlourishNavigationBuilder> configureNavigation
@@ -78,13 +71,11 @@ internal sealed class DefaultFlourishBuilder
     public IFlourishBuilder ConfigMotion(Action<IFlourishMotionBuilder> configureMotion) =>
         RegisterConfiguration(configureMotion, motionConfigurations);
 
-    public IFlourishBuilder ConfigWindow(
-        Action<IFlourishWindowPropertyBuilder> configureWindow
-    ) => RegisterConfiguration(configureWindow, windowConfigurations);
+    public IFlourishBuilder ConfigWindow(Action<IFlourishWindowPropertyBuilder> configureWindow) =>
+        RegisterConfiguration(configureWindow, windowConfigurations);
 
-    public IFlourishBuilder ConfigStatusBar(
-        Action<IFlourishStatusBarBuilder> configureStatusBar
-    ) => RegisterConfiguration(configureStatusBar, statusBarConfigurations);
+    public IFlourishBuilder ConfigStatusBar(Action<IFlourishStatusBarBuilder> configureStatusBar) =>
+        RegisterConfiguration(configureStatusBar, statusBarConfigurations);
 
     private IFlourishBuilder RegisterConfiguration<TDelegate>(
         TDelegate configure,
@@ -165,36 +156,36 @@ internal sealed class DefaultFlourishBuilder
     private static IHostBuilder CreateHostBuilder(
         string[] args,
         FlourishDataOptions dataOptions,
-        IReadOnlyList<Action<HostBuilderContext, IFlourishConfigurationBuilder>>
-            configurationConfigurations
+        IReadOnlyList<
+            Action<HostBuilderContext, IFlourishConfigurationBuilder>
+        > configurationConfigurations
     )
     {
         var builder = Host.CreateDefaultBuilder(args).UseContentRoot(AppContext.BaseDirectory);
-        builder.ConfigureAppConfiguration((context, configuration) =>
-        {
-            UseTargetedAppSettingsProvider(configuration, dataOptions.AppSettingsFilePath);
-            AddEntryAssemblyUserSecrets(configuration);
-            var applicationSources = new List<IConfigurationSource>();
-            foreach (var configure in configurationConfigurations)
+        builder.ConfigureAppConfiguration(
+            (context, configuration) =>
             {
-                var configurationBuilder = new FlourishConfigurationBuilder();
-                try
+                UseTargetedAppSettingsProvider(configuration, dataOptions.AppSettingsFilePath);
+                AddEntryAssemblyUserSecrets(configuration);
+                var applicationSources = new List<IConfigurationSource>();
+                foreach (var configure in configurationConfigurations)
                 {
-                    configure(context, configurationBuilder);
-                }
-                finally
-                {
-                    configurationBuilder.Freeze();
+                    var configurationBuilder = new FlourishConfigurationBuilder();
+                    try
+                    {
+                        configure(context, configurationBuilder);
+                    }
+                    finally
+                    {
+                        configurationBuilder.Freeze();
+                    }
+
+                    applicationSources.AddRange(configurationBuilder.Sources);
                 }
 
-                applicationSources.AddRange(configurationBuilder.Sources);
+                InsertApplicationConfigurationSources(configuration, applicationSources);
             }
-
-            InsertApplicationConfigurationSources(
-                configuration,
-                applicationSources
-            );
-        });
+        );
         return builder;
     }
 
@@ -206,11 +197,12 @@ internal sealed class DefaultFlourishBuilder
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(sources);
 
-        var insertionIndex = configuration.Sources
-            .Select((source, index) => (source, index))
+        var insertionIndex = configuration
+            .Sources.Select((source, index) => (source, index))
             .Where(item =>
-                item.source is EnvironmentVariablesConfigurationSource
-                or CommandLineConfigurationSource
+                item.source
+                    is EnvironmentVariablesConfigurationSource
+                        or CommandLineConfigurationSource
             )
             .Select(item => item.index)
             .DefaultIfEmpty(configuration.Sources.Count)
@@ -230,15 +222,13 @@ internal sealed class DefaultFlourishBuilder
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentException.ThrowIfNullOrWhiteSpace(appSettingsFilePath);
         var targetPath = Path.GetFullPath(appSettingsFilePath, AppContext.BaseDirectory);
-        if (
-            configuration.Sources.OfType<FlourishAppSettingsConfigurationSource>().Any()
-        )
+        if (configuration.Sources.OfType<FlourishAppSettingsConfigurationSource>().Any())
         {
             return;
         }
 
-        var baseSourceEntry = configuration.Sources
-            .Select((source, index) => (source, index))
+        var baseSourceEntry = configuration
+            .Sources.Select((source, index) => (source, index))
             .FirstOrDefault(item =>
                 item.source is JsonConfigurationSource json
                 && string.Equals(
@@ -279,8 +269,7 @@ internal sealed class DefaultFlourishBuilder
             WatchForChanges = true,
         };
         flourishSource.ResolveFileProvider();
-        var insertionIndex =
-            baseSourceEntry.source is null ? 0 : baseSourceEntry.index;
+        var insertionIndex = baseSourceEntry.source is null ? 0 : baseSourceEntry.index;
         configuration.Sources.Insert(insertionIndex, flourishSource);
     }
 
@@ -300,25 +289,19 @@ internal sealed class DefaultFlourishBuilder
             return;
         }
 
-        var secretPath = Path.GetFullPath(
-            PathHelper.GetSecretsPathFromSecretsId(userSecretsId)
-        );
-        var isAlreadyRegistered = configuration.Sources
-            .OfType<JsonConfigurationSource>()
+        var secretPath = Path.GetFullPath(PathHelper.GetSecretsPathFromSecretsId(userSecretsId));
+        var isAlreadyRegistered = configuration
+            .Sources.OfType<JsonConfigurationSource>()
             .Any(source => IsSourceForPath(source, secretPath));
         if (!isAlreadyRegistered)
         {
-            var insertionIndex = configuration.Sources
-                .Select((source, index) => (source, index))
+            var insertionIndex = configuration
+                .Sources.Select((source, index) => (source, index))
                 .Where(item => item.source is JsonConfigurationSource)
                 .Select(item => item.index + 1)
                 .DefaultIfEmpty(0)
                 .Last();
-            configuration.AddUserSecrets(
-                entryAssembly,
-                optional: true,
-                reloadOnChange: true
-            );
+            configuration.AddUserSecrets(entryAssembly, optional: true, reloadOnChange: true);
 
             var userSecretsSource = configuration.Sources[^1];
             configuration.Sources.RemoveAt(configuration.Sources.Count - 1);
@@ -326,10 +309,7 @@ internal sealed class DefaultFlourishBuilder
         }
     }
 
-    private static bool IsSourceForPath(
-        JsonConfigurationSource source,
-        string expectedPath
-    )
+    private static bool IsSourceForPath(JsonConfigurationSource source, string expectedPath)
     {
         if (string.IsNullOrWhiteSpace(source.Path))
         {

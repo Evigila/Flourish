@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Gallery.Views;
 

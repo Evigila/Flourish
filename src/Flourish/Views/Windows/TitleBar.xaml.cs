@@ -2,13 +2,12 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Imaging;
 using ArkheideSystem.Flourish.Services;
-using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
 using SelectionChangedEventHandler = System.Windows.Controls.SelectionChangedEventHandler;
+using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPanel = System.Windows.Controls.Panel;
 
@@ -65,7 +64,9 @@ internal partial class FlourishTitlebar : UserControl
     {
         localizationService = localization ?? throw new ArgumentNullException(nameof(localization));
         BackButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarBack));
-        ForwardButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarForward));
+        ForwardButton.ToolTip = GetToolTipContent(
+            localization.Get(FlourishLocaleKeys.TitleBarForward)
+        );
         NavigationToggleButton.ToolTip = GetToolTipContent(
             localization.Get(FlourishLocaleKeys.TitleBarToggleNavigation)
         );

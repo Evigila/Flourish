@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
@@ -104,11 +103,7 @@ internal sealed class ShellToolbarController : IDisposable
             return;
         }
 
-        if (
-            !force
-            && renderedPageType == pageType
-            && isDefaultToolbarActive == (pageType is null)
-        )
+        if (!force && renderedPageType == pageType && isDefaultToolbarActive == (pageType is null))
         {
             return;
         }
@@ -128,10 +123,7 @@ internal sealed class ShellToolbarController : IDisposable
     {
         if (pageType is null)
         {
-            return defaultButtons ??= CreateButtons(
-                service.GetToolbarItems(),
-                showIconOnly: false
-            );
+            return defaultButtons ??= CreateButtons(service.GetToolbarItems(), showIconOnly: false);
         }
 
         if (!buttonsByPageType.TryGetValue(pageType, out var buttons))
@@ -161,12 +153,9 @@ internal sealed class ShellToolbarController : IDisposable
 
             var hasIcon = !string.IsNullOrWhiteSpace(item.IconGlyph);
             var useIconOnly = showIconOnly && hasIcon;
-            Button button = hasIcon
-                ? new Button { Icon = item.IconGlyph }
-                : new Button();
+            Button button = hasIcon ? new Button { Icon = item.IconGlyph } : new Button();
             button.Content = useIconOnly ? null : item.DisplayName;
-            button.Margin =
-                buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness();
+            button.Margin = buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness();
             button.ToolTip = item.DisplayName;
             button.Variant = ButtonVariant.Text;
             button.Tag = item;
@@ -186,10 +175,7 @@ internal sealed class ShellToolbarController : IDisposable
     private async void Button_Click(object sender, RoutedEventArgs e)
     {
         if (
-            sender is Button
-            {
-                Tag: FlourishToolbarItem { CommandKey: string commandKey },
-            }
+            sender is Button { Tag: FlourishToolbarItem { CommandKey: string commandKey } }
             && !string.IsNullOrWhiteSpace(commandKey)
         )
         {
@@ -219,8 +205,7 @@ internal sealed class ShellToolbarController : IDisposable
             InvalidateButtonCache(e.PageType, e.Current);
             if (
                 e.PageType is null
-                    ? activePageType is null
-                        || !e.Current.Pages.ContainsKey(activePageType)
+                    ? activePageType is null || !e.Current.Pages.ContainsKey(activePageType)
                     : e.PageType == activePageType
             )
             {
@@ -264,19 +249,12 @@ internal sealed class ShellToolbarController : IDisposable
             return;
         }
 
-        if (
-            isDisposed
-            || view.Dispatcher.HasShutdownStarted
-            || view.Dispatcher.HasShutdownFinished
-        )
+        if (isDisposed || view.Dispatcher.HasShutdownStarted || view.Dispatcher.HasShutdownFinished)
         {
             return;
         }
 
-        _ = view.Dispatcher.BeginInvoke(
-            DispatcherPriority.DataBind,
-            new Action(ExecuteIfActive)
-        );
+        _ = view.Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new Action(ExecuteIfActive));
     }
 
     private void ClearButtonCache()
@@ -298,10 +276,7 @@ internal sealed class ShellToolbarController : IDisposable
         isDefaultToolbarActive = false;
     }
 
-    private void InvalidateButtonCache(
-        Type? pageType,
-        FlourishToolbarSnapshot snapshot
-    )
+    private void InvalidateButtonCache(Type? pageType, FlourishToolbarSnapshot snapshot)
     {
         if (pageType is not null)
         {
@@ -320,8 +295,8 @@ internal sealed class ShellToolbarController : IDisposable
         }
 
         foreach (
-            var fallbackPageType in buttonsByPageType.Keys
-                .Where(candidate => !snapshot.Pages.ContainsKey(candidate))
+            var fallbackPageType in buttonsByPageType
+                .Keys.Where(candidate => !snapshot.Pages.ContainsKey(candidate))
                 .ToArray()
         )
         {

@@ -1,5 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
-
 namespace ArkheideSystem.Flourish.Internal.Configuration;
 
 internal sealed class FlourishProfileOptions

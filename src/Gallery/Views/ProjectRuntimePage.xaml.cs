@@ -2,8 +2,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -12,20 +10,17 @@ public partial class ProjectRuntimePage : Page
     private readonly IProjectService projects;
     private readonly IProjectBehavior projectBehavior;
     private readonly ITitleBarService titleBar;
-    private readonly IGalleryLocalization localization;
     private bool isRefreshing;
 
     public ProjectRuntimePage(
         IProjectService projects,
         IProjectBehavior projectBehavior,
-        ITitleBarService titleBar,
-        IGalleryLocalization localization
+        ITitleBarService titleBar
     )
     {
         this.projects = projects;
         this.projectBehavior = projectBehavior;
         this.titleBar = titleBar;
-        this.localization = localization;
         InitializeComponent();
 
         Loaded += Page_Loaded;
@@ -64,13 +59,13 @@ public partial class ProjectRuntimePage : Page
             var project = ReadProjectInput();
             projects.AppendProject(project);
             CollectionOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.RuntimeAddedProject0_BC8EDEEB, project.Id)
+                Localizer.Parse(Key.Runtime_AddedProject0_BC8EDEEB, project.Id)
             );
         }
         catch (Exception error)
         {
             CollectionOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -84,16 +79,13 @@ public partial class ProjectRuntimePage : Page
             var project = ReadProjectInput();
             projects.SetProject(project);
             CollectionOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeAddedOrReplacedProject0_652E70C6,
-                    project.Id
-                )
+                Localizer.Parse(Key.Runtime_AddedOrReplacedProject0_652E70C6, project.Id)
             );
         }
         catch (Exception error)
         {
             CollectionOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -107,20 +99,20 @@ public partial class ProjectRuntimePage : Page
             if (projects.GetProject(ProjectIdBox.Text) is { } project)
             {
                 CollectionOutput.WriteLine(
-                    localization.Format(
-                        GalleryLocaleKeys.RuntimeFound01At2_56F0265D,
+                    Localizer.Parse(
+                        Key.Runtime_Found01At2_56F0265D,
                         project.Name,
                         project.Id,
                         project.StoragePath
-                            ?? localization.Get(GalleryLocaleKeys.RuntimeNoStoragePath_59132F06)
+                            ?? Localizer.Parse(Key.Runtime_NoStoragePath_59132F06)
                     )
                 );
             }
             else
             {
                 CollectionOutput.WriteLine(
-                    localization.Format(
-                        GalleryLocaleKeys.RuntimeProject0WasNotFound_F552F4FC,
+                    Localizer.Parse(
+                        Key.Runtime_Project0WasNotFound_F552F4FC,
                         ProjectIdBox.Text.Trim()
                     )
                 );
@@ -129,7 +121,7 @@ public partial class ProjectRuntimePage : Page
         catch (Exception error)
         {
             CollectionOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -149,12 +141,9 @@ public partial class ProjectRuntimePage : Page
             var activated = await projectBehavior.ActivateProjectAsync(project.Id);
             ActiveProjectOutput.WriteLine(
                 activated
-                    ? localization.Format(
-                        GalleryLocaleKeys.RuntimeActivatedProject0_A141BFAE,
-                        project.Id
-                    )
-                    : localization.Format(
-                        GalleryLocaleKeys.RuntimeActivationOfProject0WasCanceled_D2FBA00D,
+                    ? Localizer.Parse(Key.Runtime_ActivatedProject0_A141BFAE, project.Id)
+                    : Localizer.Parse(
+                        Key.Runtime_ActivationOfProject0WasCanceled_D2FBA00D,
                         project.Id
                     )
             );
@@ -162,7 +151,7 @@ public partial class ProjectRuntimePage : Page
         catch (Exception error)
         {
             ActiveProjectOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -174,9 +163,7 @@ public partial class ProjectRuntimePage : Page
         if (ActiveProjectBox.SelectedItem is not FlourishProject project)
         {
             ActiveProjectOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeSelectAProjectBeforeUpdatingItsMetadata_5DB9165E
-                )
+                Localizer.Parse(Key.Runtime_SelectAProjectBeforeUpdatingItsMetadata_5DB9165E)
             );
             RefreshState();
             return;
@@ -190,16 +177,13 @@ public partial class ProjectRuntimePage : Page
                 ReadExistingStoragePath(StoragePathBox.Text)
             );
             ActiveProjectOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeUpdatedMetadataForProject0_2AED78D9,
-                    project.Id
-                )
+                Localizer.Parse(Key.Runtime_UpdatedMetadataForProject0_2AED78D9, project.Id)
             );
         }
         catch (Exception error)
         {
             ActiveProjectOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -212,13 +196,13 @@ public partial class ProjectRuntimePage : Page
         {
             projects.SetActiveProject(null);
             ActiveProjectOutput.WriteLine(
-                localization.Get(GalleryLocaleKeys.RuntimeClearedTheActiveProject_CD1CD5F9)
+                Localizer.Parse(Key.Runtime_ClearedTheActiveProject_CD1CD5F9)
             );
         }
         catch (Exception error)
         {
             ActiveProjectOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -230,7 +214,7 @@ public partial class ProjectRuntimePage : Page
         if (ActiveProjectBox.SelectedItem is not FlourishProject project)
         {
             ActiveProjectOutput.WriteLine(
-                localization.Get(GalleryLocaleKeys.RuntimeSelectAProjectBeforeDeletingIt_2E30E35D)
+                Localizer.Parse(Key.Runtime_SelectAProjectBeforeDeletingIt_2E30E35D)
             );
             RefreshState();
             return;
@@ -241,12 +225,9 @@ public partial class ProjectRuntimePage : Page
             var deleted = await projectBehavior.DeleteProjectAsync(project.Id);
             ActiveProjectOutput.WriteLine(
                 deleted
-                    ? localization.Format(
-                        GalleryLocaleKeys.RuntimeDeletedProject0_0AABCF44,
-                        project.Id
-                    )
-                    : localization.Format(
-                        GalleryLocaleKeys.RuntimeDeletionOfProject0WasCanceled_EC73BFA7,
+                    ? Localizer.Parse(Key.Runtime_DeletedProject0_0AABCF44, project.Id)
+                    : Localizer.Parse(
+                        Key.Runtime_DeletionOfProject0WasCanceled_EC73BFA7,
                         project.Id
                     )
             );
@@ -254,7 +235,7 @@ public partial class ProjectRuntimePage : Page
         catch (Exception error)
         {
             ActiveProjectOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -270,18 +251,18 @@ public partial class ProjectRuntimePage : Page
                 projects.SetMultiProjectEnabled(MultiProjectEnabledBox.IsChecked == true);
                 RequestOutput.WriteLine(
                     MultiProjectEnabledBox.IsChecked == true
-                        ? localization.Get(
-                            GalleryLocaleKeys.RuntimeEnabledTheProjectAwareTitleSelector_9113E219
+                        ? Localizer.Parse(
+                            Key.Runtime_EnabledTheProjectAwareTitleSelector_9113E219
                         )
-                        : localization.Get(
-                            GalleryLocaleKeys.RuntimeDisabledProjectAwareTitleDisplayProjectMetadataRemainsRegistered_EF99C5FD
+                        : Localizer.Parse(
+                            Key.Runtime_DisabledProjectAwareTitleDisplayProjectMetadataRemainsRegistered_EF99C5FD
                         )
                 );
             }
             catch (Exception error)
             {
                 RequestOutput.WriteLine(
-                    localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                    Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
                 );
             }
 
@@ -306,8 +287,8 @@ public partial class ProjectRuntimePage : Page
         {
             titleBar.SetUnnamedProjectPlaceholder(UnnamedProjectPlaceholderBox.Text);
             RequestOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeUpdatedTheUnnamedProjectTitleTo0_DEA44997,
+                Localizer.Parse(
+                    Key.Runtime_UpdatedTheUnnamedProjectTitleTo0_DEA44997,
                     titleBar.Current.UnnamedProjectPlaceholder
                 )
             );
@@ -315,7 +296,7 @@ public partial class ProjectRuntimePage : Page
         catch (Exception error)
         {
             RequestOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -330,8 +311,8 @@ public partial class ProjectRuntimePage : Page
         Dispatcher.BeginInvoke(() =>
         {
             RequestOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeObservedANewProjectRequestFromTheTitleSelector_55EB08E8
+                Localizer.Parse(
+                    Key.Runtime_ObservedANewProjectRequestFromTheTitleSelector_55EB08E8
                 )
             );
             RefreshState();
@@ -346,8 +327,8 @@ public partial class ProjectRuntimePage : Page
         Dispatcher.BeginInvoke(() =>
         {
             RequestOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeObservedAnActivationRequestFor01_21C02866,
+                Localizer.Parse(
+                    Key.Runtime_ObservedAnActivationRequestFor01_21C02866,
                     e.Project.Name,
                     e.Project.Id
                 )
@@ -363,14 +344,14 @@ public partial class ProjectRuntimePage : Page
             var created = await projectBehavior.CreateProjectAsync();
             RequestOutput.WriteLine(
                 created
-                    ? localization.Get(GalleryLocaleKeys.RuntimeCreatedAPersistedProject_959B70B9)
-                    : localization.Get(GalleryLocaleKeys.RuntimeProjectCreationWasCanceled_5BE63576)
+                    ? Localizer.Parse(Key.Runtime_CreatedAPersistedProject_959B70B9)
+                    : Localizer.Parse(Key.Runtime_ProjectCreationWasCanceled_5BE63576)
             );
         }
         catch (Exception error)
         {
             RequestOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -384,14 +365,14 @@ public partial class ProjectRuntimePage : Page
             var saved = await projectBehavior.SaveActiveProjectAsync();
             RequestOutput.WriteLine(
                 saved
-                    ? localization.Get(GalleryLocaleKeys.RuntimeSavedTheActiveProject_1253EB9E)
-                    : localization.Get(GalleryLocaleKeys.RuntimeProjectSaveWasCanceled_409777D2)
+                    ? Localizer.Parse(Key.Runtime_SavedTheActiveProject_1253EB9E)
+                    : Localizer.Parse(Key.Runtime_ProjectSaveWasCanceled_409777D2)
             );
         }
         catch (Exception error)
         {
             RequestOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
 
@@ -432,7 +413,7 @@ public partial class ProjectRuntimePage : Page
 
     private static void CommitOnEnter(KeyEventArgs e, Action commit)
     {
-        if (e.Key != Key.Enter)
+        if (e.Key != InputKey.Enter)
         {
             return;
         }

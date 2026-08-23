@@ -1,8 +1,7 @@
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Runtime.InteropServices;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Themes;
 using Microsoft.Win32;
@@ -18,17 +17,14 @@ internal sealed class ThemeService(
     AppearanceService appearanceService
 ) : IThemeService
 {
-    internal ThemeService(
-        FlourishShellOptions shellOptions,
-        AppPreferenceService preferenceService
-    )
+    internal ThemeService(FlourishShellOptions shellOptions, AppPreferenceService preferenceService)
         : this(shellOptions, preferenceService, new AppearanceService(shellOptions)) { }
 
     private const int WmSettingChange = 0x001A;
     private const int WmThemeChanged = 0x031A;
-    private const string LightThemeSource = "/Flourish;component/Themes/Colors/Colors.Light.xaml";
-    private const string DarkThemeSource = "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
-    private const string PaletteHostSource = "/Flourish;component/Themes/Colors/Colors.xaml";
+    private const string LightThemeSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml";
+    private const string DarkThemeSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml";
+    private const string PaletteHostSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.xaml";
     private const string PersonalizeRegistryPath =
         @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
     private const string AppsUseLightThemeValue = "AppsUseLightTheme";
@@ -303,9 +299,11 @@ internal sealed class ThemeService(
 
         var name = Marshal.PtrToStringUni(settingName);
         return name is not null
-            && (name.Equals("ImmersiveColorSet", StringComparison.OrdinalIgnoreCase)
+            && (
+                name.Equals("ImmersiveColorSet", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("WindowsThemeElement", StringComparison.OrdinalIgnoreCase)
-                || name.Equals(AppsUseLightThemeValue, StringComparison.OrdinalIgnoreCase));
+                || name.Equals(AppsUseLightThemeValue, StringComparison.OrdinalIgnoreCase)
+            );
     }
 
     private FlourishTheme ResolveTheme(FlourishTheme theme)
@@ -361,12 +359,7 @@ internal sealed class ThemeService(
         ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(options);
 
-        ApplyStyleOverrides(
-            resources,
-            options.ThemeColors,
-            options.CornerRadius,
-            effectiveTheme
-        );
+        ApplyStyleOverrides(resources, options.ThemeColors, options.CornerRadius, effectiveTheme);
     }
 
     internal static void ApplyStyleOverrides(
@@ -408,9 +401,7 @@ internal sealed class ThemeService(
         var neutralBackground = isDark ? Color.FromRgb(0x29, 0x29, 0x29) : Colors.White;
         var controlBackground = neutralBackground;
         var neutralForeground = isDark ? Colors.White : Color.FromRgb(0x24, 0x24, 0x24);
-        var cardLayer = isDark
-            ? Color.FromRgb(0x33, 0x33, 0x33)
-            : Color.FromRgb(0xFA, 0xFA, 0xFA);
+        var cardLayer = isDark ? Color.FromRgb(0x33, 0x33, 0x33) : Color.FromRgb(0xFA, 0xFA, 0xFA);
         var cardBackgroundOnNeutral = Composite(cardLayer, neutralBackground);
         var cardBackgroundOnControl = Composite(cardLayer, controlBackground);
         var foregroundTarget = isDark ? Colors.White : Colors.Black;

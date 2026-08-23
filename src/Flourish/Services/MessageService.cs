@@ -1,6 +1,4 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Themes;
 using ArkheideSystem.Flourish.Views.Windows;
 using Application = System.Windows.Application;
@@ -22,15 +20,16 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
     )
     {
         return InvokeOnDispatcherAsync(
-            () => Show(
-                GetActiveOwner(),
-                messageBoxText,
-                caption,
-                button,
-                icon,
-                defaultResult,
-                options
-            ),
+            () =>
+                Show(
+                    GetActiveOwner(),
+                    messageBoxText,
+                    caption,
+                    button,
+                    icon,
+                    defaultResult,
+                    options
+                ),
             cancellationToken
         );
     }
@@ -92,7 +91,15 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
         MessageBoxOptions options = MessageBoxOptions.None
     )
     {
-        return Show(GetActiveOwner(), messageBoxText, caption, button, icon, defaultResult, options);
+        return Show(
+            GetActiveOwner(),
+            messageBoxText,
+            caption,
+            button,
+            icon,
+            defaultResult,
+            options
+        );
     }
 
     public MessageBoxResult Show(

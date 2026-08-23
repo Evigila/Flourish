@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 
@@ -14,19 +13,10 @@ public sealed class FlourishXamlArchitectureTests
 {
     private const string PresentationNamespace =
         "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
-    private const string XamlNamespace =
-        "http://schemas.microsoft.com/winfx/2006/xaml";
+    private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
     private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
-    private static readonly string FlourishRoot = Path.Combine(
-        RepositoryRoot,
-        "src",
-        "Flourish"
-    );
-    private static readonly string GalleryRoot = Path.Combine(
-        RepositoryRoot,
-        "src",
-        "Gallery"
-    );
+    private static readonly string FlourishRoot = Path.Combine(RepositoryRoot, "src", "Flourish");
+    private static readonly string GalleryRoot = Path.Combine(RepositoryRoot, "src", "Gallery");
     private static readonly string[] CanonicalFontSizeResourceNames =
     [
         "FlourishFontSizeSmall",
@@ -160,10 +150,10 @@ public sealed class FlourishXamlArchitectureTests
         var generic = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Generic.xaml"));
         string[] expectedSources =
         [
-            "/Flourish;component/Themes/Layout.xaml",
-            "/Flourish;component/Themes/Typography.xaml",
-            "/Flourish;component/Themes/Colors/Colors.xaml",
-            "/Flourish;component/Themes/Controls.xaml",
+            "/Arkheide.Flourish;component/Themes/Layout.xaml",
+            "/Arkheide.Flourish;component/Themes/Typography.xaml",
+            "/Arkheide.Flourish;component/Themes/Colors/Colors.xaml",
+            "/Arkheide.Flourish;component/Themes/Controls.xaml",
         ];
 
         Assert.Equal(expectedSources, GetMergedDictionarySources(generic));
@@ -183,10 +173,7 @@ public sealed class FlourishXamlArchitectureTests
             .Select(Path.GetFileName)
             .Order(StringComparer.Ordinal)
             .ToArray();
-        Assert.Equal(
-            new[] { "Colors.Dark.xaml", "Colors.Light.xaml", "Colors.xaml" },
-            colorFiles
-        );
+        Assert.Equal(new[] { "Colors.Dark.xaml", "Colors.Light.xaml", "Colors.xaml" }, colorFiles);
     }
 
     [Fact]
@@ -209,9 +196,7 @@ public sealed class FlourishXamlArchitectureTests
         var expectedSources = Directory
             .EnumerateFiles(controlsRoot, "*.xaml", SearchOption.TopDirectoryOnly)
             .Where(path => !familyDependencyFiles.Contains(Path.GetFileName(path)))
-            .Select(path =>
-                $"/Flourish;component/Controls/{Path.GetFileName(path)}"
-            )
+            .Select(path => $"/Arkheide.Flourish;component/Controls/{Path.GetFileName(path)}")
             .Order(StringComparer.Ordinal)
             .ToArray();
 
@@ -219,26 +204,20 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal(actualSources.Length, actualSources.Distinct(StringComparer.Ordinal).Count());
         Assert.All(
             actualSources,
-            source => Assert.StartsWith("/Flourish;component/Controls/", source)
+            source => Assert.StartsWith("/Arkheide.Flourish;component/Controls/", source)
         );
 
         Assert.Equal(
             ["ActionCard.xaml"],
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "OutputCard.xaml"))
-            )
+            GetMergedDictionarySources(LoadXaml(Path.Combine(controlsRoot, "OutputCard.xaml")))
         );
         Assert.Equal(
             ["Card.xaml"],
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "ActionCard.xaml"))
-            )
+            GetMergedDictionarySources(LoadXaml(Path.Combine(controlsRoot, "ActionCard.xaml")))
         );
         Assert.Equal(
             ["WindowCaptionButton.xaml"],
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "CardButton.xaml"))
-            )
+            GetMergedDictionarySources(LoadXaml(Path.Combine(controlsRoot, "CardButton.xaml")))
         );
         Assert.Equal(
             ["Button.xaml"],
@@ -248,9 +227,7 @@ public sealed class FlourishXamlArchitectureTests
         );
         Assert.Equal(
             ["ListBox.xaml", "BunchedListBoxItem.xaml"],
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "BunchedListBox.xaml"))
-            )
+            GetMergedDictionarySources(LoadXaml(Path.Combine(controlsRoot, "BunchedListBox.xaml")))
         );
         Assert.Equal(
             ["ListBoxItem.xaml"],
@@ -258,15 +235,9 @@ public sealed class FlourishXamlArchitectureTests
                 LoadXaml(Path.Combine(controlsRoot, "BunchedListBoxItem.xaml"))
             )
         );
+        Assert.Empty(GetMergedDictionarySources(LoadXaml(Path.Combine(controlsRoot, "Card.xaml"))));
         Assert.Empty(
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "Card.xaml"))
-            )
-        );
-        Assert.Empty(
-            GetMergedDictionarySources(
-                LoadXaml(Path.Combine(controlsRoot, "Button.xaml"))
-            )
+            GetMergedDictionarySources(LoadXaml(Path.Combine(controlsRoot, "Button.xaml")))
         );
     }
 
@@ -304,10 +275,7 @@ public sealed class FlourishXamlArchitectureTests
         foreach (var fileName in surfaceControlFiles)
         {
             var document = LoadXaml(Path.Combine(controlsRoot, fileName));
-            var disabledStates = document
-                .Descendants()
-                .Where(IsDisabledState)
-                .ToArray();
+            var disabledStates = document.Descendants().Where(IsDisabledState).ToArray();
 
             Assert.NotEmpty(disabledStates);
             Assert.Contains(
@@ -321,9 +289,7 @@ public sealed class FlourishXamlArchitectureTests
                         .ToArray();
 
                     return expectedResources.All(resource =>
-                        values.Any(value =>
-                            value.Contains(resource, StringComparison.Ordinal)
-                        )
+                        values.Any(value => value.Contains(resource, StringComparison.Ordinal))
                     );
                 }
             );
@@ -360,7 +326,7 @@ public sealed class FlourishXamlArchitectureTests
     public void EveryPublicVisualControl_HasAMatchingDictionaryCodePairAndProjectNesting()
     {
         var controlsRoot = Path.Combine(FlourishRoot, "Controls");
-        var project = LoadXaml(Path.Combine(FlourishRoot, "Flourish.csproj"));
+        var project = LoadXaml(Path.Combine(FlourishRoot, "Arkheide.Flourish.csproj"));
         var dependentUpon = project
             .Descendants()
             .Where(element => element.Name.LocalName == "Compile")
@@ -420,7 +386,9 @@ public sealed class FlourishXamlArchitectureTests
             {
                 violations.Add($"{RelativePath(codePath)} is missing");
             }
-            else if (!File.ReadAllText(codePath).Contains($"class {type.Name}", StringComparison.Ordinal))
+            else if (
+                !File.ReadAllText(codePath).Contains($"class {type.Name}", StringComparison.Ordinal)
+            )
             {
                 violations.Add($"{RelativePath(codePath)} does not declare {type.Name}");
             }
@@ -533,9 +501,7 @@ public sealed class FlourishXamlArchitectureTests
             foreach (
                 var declaration in document
                     .Descendants()
-                    .Where(element =>
-                        element.Name.LocalName is "Style" or "ControlTemplate"
-                    )
+                    .Where(element => element.Name.LocalName is "Style" or "ControlTemplate")
             )
             {
                 violations.Add(FormatViolation(file, declaration));
@@ -560,9 +526,7 @@ public sealed class FlourishXamlArchitectureTests
             foreach (
                 var element in document
                     .Descendants()
-                    .Where(element =>
-                        element.Name.LocalName is "Style" or "ControlTemplate"
-                    )
+                    .Where(element => element.Name.LocalName is "Style" or "ControlTemplate")
             )
             {
                 violations.Add(FormatViolation(file, element));
@@ -570,8 +534,7 @@ public sealed class FlourishXamlArchitectureTests
 
             foreach (
                 var styleAttribute in document
-                    .Root!
-                    .DescendantsAndSelf()
+                    .Root!.DescendantsAndSelf()
                     .SelectMany(element => element.Attributes())
                     .Where(attribute => attribute.Name.LocalName == "Style")
             )
@@ -592,7 +555,9 @@ public sealed class FlourishXamlArchitectureTests
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
 
-        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        foreach (
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
+        )
         {
             var document = LoadXaml(path);
             if (document.Root?.Name.LocalName != "Page")
@@ -604,10 +569,7 @@ public sealed class FlourishXamlArchitectureTests
                 .Root.Elements()
                 .Where(element => !IsPropertyElement(element))
                 .ToArray();
-            if (
-                rootContent.Length != 1
-                || rootContent[0].Name.LocalName != nameof(PageBody)
-            )
+            if (rootContent.Length != 1 || rootContent[0].Name.LocalName != nameof(PageBody))
             {
                 violations.Add(
                     $"{RelativePath(path)} must contain exactly one root {nameof(PageBody)}"
@@ -627,7 +589,9 @@ public sealed class FlourishXamlArchitectureTests
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
 
-        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        foreach (
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
+        )
         {
             var document = LoadXaml(path);
             if (document.Root?.Name.LocalName != "Page")
@@ -657,8 +621,7 @@ public sealed class FlourishXamlArchitectureTests
                 continue;
             }
 
-            var visibleSections = flow
-                .Elements()
+            var visibleSections = flow.Elements()
                 .Where(element => !IsPropertyElement(element))
                 .Where(element => element.Name.LocalName != "Popup")
                 .ToArray();
@@ -690,9 +653,7 @@ public sealed class FlourishXamlArchitectureTests
         var path = Path.Combine(FlourishRoot, "Views", "Page", "ProfilePage.xaml");
         var document = LoadXaml(path);
         var root = Assert.IsType<XElement>(document.Root);
-        var xamlNamespace = XNamespace.Get(
-            "http://schemas.microsoft.com/winfx/2006/xaml"
-        );
+        var xamlNamespace = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
 
         Assert.Equal("Page", root.Name.LocalName);
         Assert.Equal("internal", (string?)root.Attribute(xamlNamespace + "ClassModifier"));
@@ -708,7 +669,9 @@ public sealed class FlourishXamlArchitectureTests
         var viewsRoot = Path.Combine(RepositoryRoot, "src", "Gallery", "Views");
         var violations = new List<string>();
 
-        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        foreach (
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
+        )
         {
             var document = LoadXaml(path);
             if (document.Root?.Name.LocalName != "Page")
@@ -762,7 +725,9 @@ public sealed class FlourishXamlArchitectureTests
             nameof(Presenter.PresenterPosition),
         ];
 
-        foreach (var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories))
+        foreach (
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
+        )
         {
             var document = LoadXaml(path);
             foreach (
@@ -789,10 +754,12 @@ public sealed class FlourishXamlArchitectureTests
                 }
 
                 if (
-                    !presenter.Elements().Any(element =>
-                        element.Name.LocalName
+                    !presenter
+                        .Elements()
+                        .Any(element =>
+                            element.Name.LocalName
                             == $"{nameof(Presenter)}.{nameof(Presenter.Presentation)}"
-                    )
+                        )
                 )
                 {
                     violations.Add(
@@ -800,9 +767,11 @@ public sealed class FlourishXamlArchitectureTests
                     );
                 }
 
-                foreach (var directContent in presenter.Elements().Where(element =>
-                    !IsPropertyElement(element)
-                ))
+                foreach (
+                    var directContent in presenter
+                        .Elements()
+                        .Where(element => !IsPropertyElement(element))
+                )
                 {
                     violations.Add(
                         $"{FormatViolation(path, directContent)} is implicit Presenter content"
@@ -820,9 +789,7 @@ public sealed class FlourishXamlArchitectureTests
     [Fact]
     public void PresenterTemplate_DefinesSplitColumnsAndTopDownRows()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "Presenter.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "Presenter.xaml"));
         var template = document
             .Descendants()
             .Single(element =>
@@ -834,9 +801,7 @@ public sealed class FlourishXamlArchitectureTests
             .Descendants()
             .First(element =>
                 element.Name.LocalName == "Grid"
-                && element.Elements().Any(child =>
-                    child.Name.LocalName == "Grid.ColumnDefinitions"
-                )
+                && element.Elements().Any(child => child.Name.LocalName == "Grid.ColumnDefinitions")
             );
         var columns = layoutGrid
             .Elements()
@@ -858,26 +823,25 @@ public sealed class FlourishXamlArchitectureTests
             .Elements()
             .Single(element =>
                 (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
-                    == "PresentationSurface"
+                == "PresentationSurface"
             );
         var presentationHost = presentationSurface
             .Descendants()
             .Single(element =>
                 (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
-                    == "PresentationHost"
+                == "PresentationHost"
             );
         var copySurface = layoutGrid
             .Elements()
             .Single(element =>
-                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
-                    == "CopySurface"
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name") == "CopySurface"
             );
 
         var presenterSurface = template
             .Descendants()
             .Single(element =>
                 (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
-                    == "PresenterSurface"
+                == "PresenterSurface"
             );
         Assert.Equal(
             "PART_ClipHost",
@@ -913,8 +877,7 @@ public sealed class FlourishXamlArchitectureTests
         var bodyHost = copySurface
             .Descendants()
             .Single(element =>
-                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
-                    == "BodyHost"
+                (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name") == "BodyHost"
             );
         Assert.Equal("Left", (string?)bodyHost.Attribute("HorizontalAlignment"));
         Assert.Equal("Center", (string?)bodyHost.Attribute("VerticalAlignment"));
@@ -924,8 +887,7 @@ public sealed class FlourishXamlArchitectureTests
             var textHost = copySurface
                 .Descendants()
                 .Single(element =>
-                    (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name")
-                        == hostName
+                    (string?)element.Attribute(XNamespace.Get(XamlNamespace) + "Name") == hostName
                 );
             Assert.Equal("Left", (string?)textHost.Attribute("TextAlignment"));
         }
@@ -997,9 +959,7 @@ public sealed class FlourishXamlArchitectureTests
                 .Where(element => element.Name.LocalName == nameof(Chunk))
                 .ToArray();
             var actualTitles = chunks
-                .Select(element =>
-                    (string?)element.Attribute(nameof(Chunk.Title)) ?? string.Empty
-                )
+                .Select(element => (string?)element.Attribute(nameof(Chunk.Title)) ?? string.Empty)
                 .ToArray();
 
             var variantIndex = Array.IndexOf(actualTitles, "Variant");
@@ -1007,7 +967,10 @@ public sealed class FlourishXamlArchitectureTests
             var usageIndex = Array.IndexOf(actualTitles, "Usage");
             var referenceIndex = Array.IndexOf(actualTitles, "Reference");
 
-            Assert.True(variantIndex is -1 or 0, $"{fileName}: Variant must be first when present.");
+            Assert.True(
+                variantIndex is -1 or 0,
+                $"{fileName}: Variant must be first when present."
+            );
             Assert.Equal(variantIndex + 1, tableIndex);
             Assert.True(
                 usageIndex > tableIndex + 1,
@@ -1015,7 +978,10 @@ public sealed class FlourishXamlArchitectureTests
             );
             Assert.Equal(actualTitles.Length - 2, usageIndex);
             Assert.Equal(actualTitles.Length - 1, referenceIndex);
-            Assert.Equal(actualTitles.Length, actualTitles.Distinct(StringComparer.Ordinal).Count());
+            Assert.Equal(
+                actualTitles.Length,
+                actualTitles.Distinct(StringComparer.Ordinal).Count()
+            );
 
             var table = chunks[tableIndex];
             var dataGrid = Assert.Single(
@@ -1026,9 +992,9 @@ public sealed class FlourishXamlArchitectureTests
             Assert.Equal("True", (string?)dataGrid.Attribute("IsReadOnly"));
             Assert.Equal(
                 2,
-                dataGrid.Descendants().Count(element =>
-                    element.Name.LocalName == "DataGridTextColumn"
-                )
+                dataGrid
+                    .Descendants()
+                    .Count(element => element.Name.LocalName == "DataGridTextColumn")
             );
             Assert.DoesNotContain(
                 table.Descendants(),
@@ -1041,11 +1007,14 @@ public sealed class FlourishXamlArchitectureTests
                 .Where(element => element.Name.LocalName == nameof(CardButton))
                 .ToArray();
             Assert.Equal(2, referenceButtons.Length);
-            Assert.All(referenceButtons, button =>
-            {
-                Assert.Equal("False", (string?)button.Attribute("IsEnabled"));
-                Assert.False(string.IsNullOrWhiteSpace((string?)button.Attribute("ToolTip")));
-            });
+            Assert.All(
+                referenceButtons,
+                button =>
+                {
+                    Assert.Equal("False", (string?)button.Attribute("IsEnabled"));
+                    Assert.False(string.IsNullOrWhiteSpace((string?)button.Attribute("ToolTip")));
+                }
+            );
         }
     }
 
@@ -1056,11 +1025,7 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
@@ -1106,11 +1071,7 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
@@ -1120,9 +1081,9 @@ public sealed class FlourishXamlArchitectureTests
             }
 
             foreach (
-                var listCard in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(ActionCard)
-                )
+                var listCard in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == nameof(ActionCard))
             )
             {
                 string[] fixedProperties =
@@ -1142,9 +1103,9 @@ public sealed class FlourishXamlArchitectureTests
             }
 
             foreach (
-                var parent in document.Descendants().Where(element =>
-                    element.Name.LocalName == "StackPanel"
-                )
+                var parent in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == "StackPanel")
             )
             {
                 var directCards = parent
@@ -1195,22 +1156,17 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
             foreach (
-                var body in document.Descendants().Where(element =>
-                    element.Name.LocalName == "ActionCard.Body"
-                )
+                var body in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == "ActionCard.Body")
             )
             {
-                var interactiveControls = body
-                    .Descendants()
+                var interactiveControls = body.Descendants()
                     .Where(element => interactiveControlNames.Contains(element.Name.LocalName))
                     .ToArray();
                 if (interactiveControls.Length > 1)
@@ -1240,18 +1196,14 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
             foreach (
-                var listCard in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(ActionCard)
-                )
+                var listCard in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == nameof(ActionCard))
             )
             {
                 var previousPeer = listCard.ElementsBeforeSelf().LastOrDefault();
@@ -1287,18 +1239,14 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
             foreach (
-                var codeSpace in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(CodeSpace)
-                )
+                var codeSpace in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == nameof(CodeSpace))
             )
             {
                 var isStackPanelPeer =
@@ -1334,33 +1282,26 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
             foreach (
-                var listCard in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(ActionCard)
-                )
+                var listCard in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == nameof(ActionCard))
             )
             {
-                var title =
-                    (string?)listCard.Attribute(nameof(ActionCard.Title)) ?? string.Empty;
+                var title = (string?)listCard.Attribute(nameof(ActionCard.Title)) ?? string.Empty;
                 var hasApplyHandler = listCard
                     .Descendants()
                     .Where(element => element.Name.LocalName == "Button")
                     .Select(element => (string?)element.Attribute("Click"))
                     .Any(handler =>
-                        handler?.StartsWith("Apply", StringComparison.OrdinalIgnoreCase)
-                        == true
+                        handler?.StartsWith("Apply", StringComparison.OrdinalIgnoreCase) == true
                     );
                 if (
-                    title.StartsWith("Apply", StringComparison.OrdinalIgnoreCase)
-                    || hasApplyHandler
+                    title.StartsWith("Apply", StringComparison.OrdinalIgnoreCase) || hasApplyHandler
                 )
                 {
                     violations.Add(FormatViolation(path, listCard));
@@ -1381,18 +1322,14 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
             foreach (
-                var comboBox in document.Descendants().Where(element =>
-                    element.Name.LocalName is "ComboBox" or "FlourishComboBox"
-                )
+                var comboBox in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName is "ComboBox" or "FlourishComboBox")
             )
             {
                 if (
@@ -1422,28 +1359,22 @@ public sealed class FlourishXamlArchitectureTests
         var outputCardCount = 0;
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
-            outputCardCount += document.Descendants().Count(element =>
-                element.Name.LocalName == nameof(OutputCard)
-            );
+            outputCardCount += document
+                .Descendants()
+                .Count(element => element.Name.LocalName == nameof(OutputCard));
             foreach (
-                var card in document.Descendants().Where(element =>
-                    element.Name.LocalName == nameof(Card)
-                )
+                var card in document
+                    .Descendants()
+                    .Where(element => element.Name.LocalName == nameof(Card))
             )
             {
                 var title = (string?)card.Attribute(nameof(Card.Title)) ?? string.Empty;
-                var hasOutputSemantics = title.Contains(
-                        "Output",
-                        StringComparison.OrdinalIgnoreCase
-                    )
+                var hasOutputSemantics =
+                    title.Contains("Output", StringComparison.OrdinalIgnoreCase)
                     || title.Contains("Result", StringComparison.OrdinalIgnoreCase);
                 if (hasOutputSemantics)
                 {
@@ -1469,25 +1400,23 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
             foreach (
-                var uniformGrid in document.Descendants().Where(element =>
-                    element.Name.LocalName == "UniformGrid"
+                var uniformGrid in document
+                    .Descendants()
+                    .Where(element =>
+                        element.Name.LocalName == "UniformGrid"
                         && (string?)element.Attribute("Columns") == "2"
-                )
+                    )
             )
             {
                 foreach (
-                    var stack in uniformGrid.Elements().Where(element =>
-                        element.Name.LocalName == "StackPanel"
-                    )
+                    var stack in uniformGrid
+                        .Elements()
+                        .Where(element => element.Name.LocalName == "StackPanel")
                 )
                 {
                     var listCards = stack
@@ -1515,11 +1444,7 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
@@ -1531,9 +1456,7 @@ public sealed class FlourishXamlArchitectureTests
             var retiredBodies = document
                 .Descendants()
                 .Where(element => element.Name.LocalName == "Card.Body");
-            violations.AddRange(
-                retiredBodies.Select(element => FormatViolation(path, element))
-            );
+            violations.AddRange(retiredBodies.Select(element => FormatViolation(path, element)));
 
             violations.AddRange(
                 document
@@ -1559,11 +1482,7 @@ public sealed class FlourishXamlArchitectureTests
         var violations = new List<string>();
 
         foreach (
-            var path in Directory.EnumerateFiles(
-                viewsRoot,
-                "*.xaml",
-                SearchOption.AllDirectories
-            )
+            var path in Directory.EnumerateFiles(viewsRoot, "*.xaml", SearchOption.AllDirectories)
         )
         {
             var document = LoadXaml(path);
@@ -1575,30 +1494,25 @@ public sealed class FlourishXamlArchitectureTests
             foreach (
                 var body in document
                     .Descendants()
-                    .Where(element =>
-                        element.Name.LocalName == "ActionCard.Body"
-                    )
+                    .Where(element => element.Name.LocalName == "ActionCard.Body")
             )
             {
-                var hasLocalAction = body.Descendants().Any(element =>
-                    element.Name.LocalName
-                        is nameof(Button) or nameof(WindowCaptionButton)
-                );
+                var hasLocalAction = body.Descendants()
+                    .Any(element =>
+                        element.Name.LocalName is nameof(Button) or nameof(WindowCaptionButton)
+                    );
                 if (!hasLocalAction)
                 {
                     continue;
                 }
 
-                var namedStatus = body
-                    .Descendants()
+                var namedStatus = body.Descendants()
                     .Where(element => element.Name.LocalName == "FlourishTextBlock")
                     .Where(element => (string?)element.Attribute("Role") == "Status")
                     .Where(element =>
                         element.Attribute(XName.Get("Name", XamlNamespace)) is not null
                     );
-                violations.AddRange(
-                    namedStatus.Select(element => FormatViolation(path, element))
-                );
+                violations.AddRange(namedStatus.Select(element => FormatViolation(path, element)));
             }
         }
 
@@ -1668,9 +1582,7 @@ public sealed class FlourishXamlArchitectureTests
     [Fact]
     public void ProductTypography_DeclaresOnlyTheCanonicalIncreasingDefaultFontScale()
     {
-        var typography = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Typography.xaml")
-        );
+        var typography = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Typography.xaml"));
         var typographySizeResources = typography
             .Descendants()
             .Select(element => new
@@ -1679,8 +1591,7 @@ public sealed class FlourishXamlArchitectureTests
                 Name = (string?)element.Attribute(XName.Get("Key", XamlNamespace)),
             })
             .Where(resource =>
-                resource.Name?.StartsWith("FlourishFontSize", StringComparison.Ordinal)
-                == true
+                resource.Name?.StartsWith("FlourishFontSize", StringComparison.Ordinal) == true
             )
             .ToArray();
 
@@ -1701,9 +1612,7 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal(24d, actualSizes["FlourishFontSizeExtraLarge"]);
         Assert.Equal(32d, actualSizes["FlourishFontSizeHeaderSize"]);
 
-        var allowedNames = CanonicalFontSizeResourceNames.ToHashSet(
-            StringComparer.Ordinal
-        );
+        var allowedNames = CanonicalFontSizeResourceNames.ToHashSet(StringComparer.Ordinal);
         var violations = new List<string>();
 
         foreach (var root in new[] { FlourishRoot, GalleryRoot })
@@ -1718,9 +1627,7 @@ public sealed class FlourishXamlArchitectureTests
                     {
                         if (!allowedNames.Contains(match.Value))
                         {
-                            violations.Add(
-                                $"{RelativePath(file)}:{lineNumber} ({match.Value})"
-                            );
+                            violations.Add($"{RelativePath(file)}:{lineNumber} ({match.Value})");
                         }
                     }
                 }
@@ -1732,8 +1639,9 @@ public sealed class FlourishXamlArchitectureTests
             "Product source may only reference the four text tiers and the dedicated Icon font-size resource."
         );
 
-        var contextualIconSizes = typographySizeResources.First().Element.Parent!
-            .Elements()
+        var contextualIconSizes = typographySizeResources
+            .First()
+            .Element.Parent!.Elements()
             .Where(element =>
                 ((string?)element.Attribute(XName.Get("Key", XamlNamespace)))?.StartsWith(
                     "FlourishIconFontSize",
@@ -1755,17 +1663,12 @@ public sealed class FlourishXamlArchitectureTests
     [Fact]
     public void ProductTypography_DeclaresTieredLineHeightsAndBottomSpaces()
     {
-        var typography = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Typography.xaml")
-        );
+        var typography = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Typography.xaml"));
         var keyName = XName.Get("Key", XamlNamespace);
         var resources = typography
             .Descendants()
             .Where(element => element.Attribute(keyName) is not null)
-            .ToDictionary(
-                element => (string)element.Attribute(keyName)!,
-                StringComparer.Ordinal
-            );
+            .ToDictionary(element => (string)element.Attribute(keyName)!, StringComparer.Ordinal);
 
         (string Tier, double FontSize, double LineHeight, Thickness BottomSpace)[] tiers =
         [
@@ -1788,21 +1691,13 @@ public sealed class FlourishXamlArchitectureTests
             );
             Assert.Equal(
                 bottomSpace,
-                ParseThickness(
-                    resources[$"FlourishTypographyBottomSpace{tier}"].Value.Trim()
-                )
+                ParseThickness(resources[$"FlourishTypographyBottomSpace{tier}"].Value.Trim())
             );
             Assert.True(lineHeight >= fontSize);
         }
 
-        Assert.Equal(
-            22d,
-            XmlConvert.ToDouble(resources["FlourishFontSizeIcon"].Value.Trim())
-        );
-        Assert.Equal(
-            22d,
-            XmlConvert.ToDouble(resources["FlourishLineHeightIcon"].Value.Trim())
-        );
+        Assert.Equal(22d, XmlConvert.ToDouble(resources["FlourishFontSizeIcon"].Value.Trim()));
+        Assert.Equal(22d, XmlConvert.ToDouble(resources["FlourishLineHeightIcon"].Value.Trim()));
         Assert.Equal(
             new Thickness(),
             ParseThickness(resources["FlourishTypographyBottomSpaceIcon"].Value.Trim())
@@ -1828,9 +1723,9 @@ public sealed class FlourishXamlArchitectureTests
         foreach (var (file, name) in controlHosts)
         {
             var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", file));
-            var host = document.Descendants().Single(element =>
-                (string?)element.Attribute(xName) == name
-            );
+            var host = document
+                .Descendants()
+                .Single(element => (string?)element.Attribute(xName) == name);
 
             Assert.Equal(
                 "{DynamicResource FlourishControlContentPresenterStyle}",
@@ -1840,16 +1735,17 @@ public sealed class FlourishXamlArchitectureTests
             Assert.Null(host.Attribute("RenderTransform"));
             Assert.DoesNotContain(
                 host.Elements(),
-                element => element.Name.LocalName.EndsWith("RenderTransform", StringComparison.Ordinal)
+                element =>
+                    element.Name.LocalName.EndsWith("RenderTransform", StringComparison.Ordinal)
             );
         }
 
         var navigation = LoadXaml(
             Path.Combine(FlourishRoot, "Views", "Windows", "FlourishNavigationPane.xaml")
         );
-        var navigationLabel = navigation.Descendants().Single(element =>
-            (string?)element.Attribute(xName) == "NavigationItemLabel"
-        );
+        var navigationLabel = navigation
+            .Descendants()
+            .Single(element => (string?)element.Attribute(xName) == "NavigationItemLabel");
         Assert.Equal(
             "{DynamicResource FlourishControlTextBlockStyle}",
             (string?)navigationLabel.Attribute("Style")
@@ -1859,9 +1755,9 @@ public sealed class FlourishXamlArchitectureTests
         var searchBox = LoadXaml(Path.Combine(FlourishRoot, "Controls", "SearchBox.xaml"));
         foreach (var name in new[] { "SearchIcon", "PlaceholderText" })
         {
-            var text = searchBox.Descendants().Single(element =>
-                (string?)element.Attribute(xName) == name
-            );
+            var text = searchBox
+                .Descendants()
+                .Single(element => (string?)element.Attribute(xName) == name);
             Assert.Equal("BlockLineHeight", (string?)text.Attribute("LineStackingStrategy"));
         }
     }
@@ -1869,9 +1765,7 @@ public sealed class FlourishXamlArchitectureTests
     [Fact]
     public void CodeSpace_CanCollapseOwnsOnlyTheExpandedCollapseAffordance()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "CodeSpace.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "CodeSpace.xaml"));
         var collapseTrigger = Assert.Single(
             document.Descendants(),
             element =>
@@ -1891,16 +1785,13 @@ public sealed class FlourishXamlArchitectureTests
         var actions = document
             .Descendants()
             .Single(element =>
-                (string?)element.Attribute(XName.Get("Name", XamlNamespace))
-                    == "ExpandedActions"
+                (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == "ExpandedActions"
             );
         Assert.Equal(
             new[] { "PART_CollapseButton", "PART_CopyButton" },
             actions
                 .Elements()
-                .Select(element =>
-                    (string?)element.Attribute(XName.Get("Name", XamlNamespace))
-                )
+                .Select(element => (string?)element.Attribute(XName.Get("Name", XamlNamespace)))
         );
         Assert.All(
             actions.Elements(),
@@ -1979,11 +1870,7 @@ public sealed class FlourishXamlArchitectureTests
             servicePageOverrides,
             method => method.IsGenericMethodDefinition
         );
-        AssertParameterContract(
-            genericServicePageOverride,
-            nullableScaleTypes,
-            explicitScaleNames
-        );
+        AssertParameterContract(genericServicePageOverride, nullableScaleTypes, explicitScaleNames);
         var runtimeServicePageOverride = Assert.Single(
             servicePageOverrides,
             method => !method.IsGenericMethod
@@ -1997,15 +1884,10 @@ public sealed class FlourishXamlArchitectureTests
         var pageOverrideConstructor = Assert.Single(
             typeof(FlourishPageFontOverride).GetConstructors()
         );
-        AssertParameterContract(
-            pageOverrideConstructor,
-            nullableScaleTypes,
-            explicitScaleNames
-        );
+        AssertParameterContract(pageOverrideConstructor, nullableScaleTypes, explicitScaleNames);
 
         var fontAssemblyApiMethods = typeof(IFontService)
-            .Assembly
-            .GetTypes()
+            .Assembly.GetTypes()
             .SelectMany(type =>
                 type.GetMethods(
                     BindingFlags.Public
@@ -2062,17 +1944,10 @@ public sealed class FlourishXamlArchitectureTests
             fontAssemblyApiMethods.Where(method =>
                 method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
             ),
-            method =>
-                AssertParameterContract(
-                    method,
-                    nullableScaleTypes,
-                    explicitScaleNames
-                )
+            method => AssertParameterContract(method, nullableScaleTypes, explicitScaleNames)
         );
         Assert.All(
-            fontAssemblyApiMethods.Where(method =>
-                method.Name == nameof(IFontService.SetFont)
-            ),
+            fontAssemblyApiMethods.Where(method => method.Name == nameof(IFontService.SetFont)),
             method => AssertParameterContract(method, explicitScaleTypes, explicitScaleNames)
         );
         Assert.All(
@@ -2083,11 +1958,7 @@ public sealed class FlourishXamlArchitectureTests
             {
                 if (method.IsGenericMethodDefinition)
                 {
-                    AssertParameterContract(
-                        method,
-                        nullableScaleTypes,
-                        explicitScaleNames
-                    );
+                    AssertParameterContract(method, nullableScaleTypes, explicitScaleNames);
                     return;
                 }
 
@@ -2110,9 +1981,7 @@ public sealed class FlourishXamlArchitectureTests
                     lineNumber++;
                     foreach (Match match in RetiredFontApiPattern.Matches(line))
                     {
-                        violations.Add(
-                            $"{RelativePath(file)}:{lineNumber} ({match.Value})"
-                        );
+                        violations.Add($"{RelativePath(file)}:{lineNumber} ({match.Value})");
                     }
                 }
             }
@@ -2138,44 +2007,40 @@ public sealed class FlourishXamlArchitectureTests
         foreach (var root in new[] { FlourishRoot, GalleryRoot })
         {
             foreach (
-                var file in EnumerateProductSourceFiles(root).Where(file =>
-                    Path.GetExtension(file) == ".xaml"
-                )
+                var file in EnumerateProductSourceFiles(root)
+                    .Where(file => Path.GetExtension(file) == ".xaml")
             )
             {
                 var document = LoadXaml(file);
 
                 foreach (
                     var attribute in document
-                        .Root!
-                        .DescendantsAndSelf()
+                        .Root!.DescendantsAndSelf()
                         .SelectMany(element => element.Attributes())
                         .Where(attribute => IsFontSizePropertyName(attribute.Name.LocalName))
                 )
                 {
                     if (!allowedValues.Contains(attribute.Value))
                     {
-                        violations.Add(
-                            $"{FormatViolation(file, attribute)} ({attribute.Value})"
-                        );
+                        violations.Add($"{FormatViolation(file, attribute)} ({attribute.Value})");
                     }
                 }
 
                 foreach (
-                    var setter in document.Descendants().Where(element =>
-                        element.Name.LocalName == "Setter"
-                        && IsFontSizePropertyName(
-                            (string?)element.Attribute("Property") ?? string.Empty
+                    var setter in document
+                        .Descendants()
+                        .Where(element =>
+                            element.Name.LocalName == "Setter"
+                            && IsFontSizePropertyName(
+                                (string?)element.Attribute("Property") ?? string.Empty
+                            )
                         )
-                    )
                 )
                 {
                     var value = (string?)setter.Attribute("Value") ?? setter.Value.Trim();
                     if (!allowedValues.Contains(value))
                     {
-                        violations.Add(
-                            $"{FormatViolation(file, setter)} ({value})"
-                        );
+                        violations.Add($"{FormatViolation(file, setter)} ({value})");
                     }
                 }
 
@@ -2188,9 +2053,7 @@ public sealed class FlourishXamlArchitectureTests
                     var value = propertyElement.Value.Trim();
                     if (!allowedValues.Contains(value))
                     {
-                        violations.Add(
-                            $"{FormatViolation(file, propertyElement)} ({value})"
-                        );
+                        violations.Add($"{FormatViolation(file, propertyElement)} ({value})");
                     }
                 }
             }
@@ -2206,8 +2069,8 @@ public sealed class FlourishXamlArchitectureTests
     public void ProductXaml_AllFontGlyphEntryPointsUseTheIconFamilyAndIconSize()
     {
         const string iconFamily = "{DynamicResource FlourishIconFontFamily}";
-        var allowedIconSizes = ContextualIconFontSizes.Keys
-            .Prepend("FlourishFontSizeIcon")
+        var allowedIconSizes = ContextualIconFontSizes
+            .Keys.Prepend("FlourishFontSizeIcon")
             .Select(name => $"{{DynamicResource {name}}}")
             .ToHashSet(StringComparer.Ordinal);
         var violations = new List<string>();
@@ -2221,11 +2084,12 @@ public sealed class FlourishXamlArchitectureTests
                 foreach (var element in document.Root!.DescendantsAndSelf())
                 {
                     foreach (
-                        var familyAttribute in element.Attributes().Where(attribute =>
-                            attribute.Name.LocalName
-                                is "FontFamily" or "TextElement.FontFamily"
-                            && attribute.Value == iconFamily
-                        )
+                        var familyAttribute in element
+                            .Attributes()
+                            .Where(attribute =>
+                                attribute.Name.LocalName is "FontFamily" or "TextElement.FontFamily"
+                                && attribute.Value == iconFamily
+                            )
                     )
                     {
                         iconEntryCount++;
@@ -2236,9 +2100,7 @@ public sealed class FlourishXamlArchitectureTests
                         );
                         var sizeValue = element
                             .Attributes()
-                            .SingleOrDefault(attribute =>
-                                attribute.Name.LocalName == sizeProperty
-                            )
+                            .SingleOrDefault(attribute => attribute.Name.LocalName == sizeProperty)
                             ?.Value;
                         if (sizeValue is null || !allowedIconSizes.Contains(sizeValue))
                         {
@@ -2300,11 +2162,12 @@ public sealed class FlourishXamlArchitectureTests
             RegexOptions.CultureInvariant
         );
         Assert.NotEmpty(iconBindingCalls.Cast<Match>());
-        var allowedBindingKeys = ContextualIconFontSizes.Keys
-            .Prepend("FlourishFontSizeIcon")
+        var allowedBindingKeys = ContextualIconFontSizes
+            .Keys.Prepend("FlourishFontSizeIcon")
             .ToHashSet(StringComparer.Ordinal);
-        Assert.All(iconBindingCalls.Cast<Match>(), match =>
-            Assert.Contains(match.Groups["key"].Value, allowedBindingKeys)
+        Assert.All(
+            iconBindingCalls.Cast<Match>(),
+            match => Assert.Contains(match.Groups["key"].Value, allowedBindingKeys)
         );
 
         Assert.Contains(
@@ -2328,8 +2191,8 @@ public sealed class FlourishXamlArchitectureTests
     public void ProductXaml_ReservesTheDedicatedIconSizeForFontGlyphEntryPoints()
     {
         const string iconFamily = "{DynamicResource FlourishIconFontFamily}";
-        var iconSizes = ContextualIconFontSizes.Keys
-            .Prepend("FlourishFontSizeIcon")
+        var iconSizes = ContextualIconFontSizes
+            .Keys.Prepend("FlourishFontSizeIcon")
             .Select(name => $"{{DynamicResource {name}}}")
             .ToHashSet(StringComparer.Ordinal);
         var violations = new List<string>();
@@ -2342,10 +2205,12 @@ public sealed class FlourishXamlArchitectureTests
                 foreach (var element in document.Root!.DescendantsAndSelf())
                 {
                     foreach (
-                        var sizeAttribute in element.Attributes().Where(attribute =>
-                            IsFontSizePropertyName(attribute.Name.LocalName)
-                            && iconSizes.Contains(attribute.Value)
-                        )
+                        var sizeAttribute in element
+                            .Attributes()
+                            .Where(attribute =>
+                                IsFontSizePropertyName(attribute.Name.LocalName)
+                                && iconSizes.Contains(attribute.Value)
+                            )
                     )
                     {
                         var matchingFamilyProperty = sizeAttribute.Name.LocalName.Replace(
@@ -2355,10 +2220,12 @@ public sealed class FlourishXamlArchitectureTests
                         );
                         var isDirectIconEntry =
                             (string?)element.Attribute("Role") == "Icon"
-                            || element.Attributes().Any(attribute =>
-                                attribute.Name.LocalName == matchingFamilyProperty
-                                && attribute.Value == iconFamily
-                            );
+                            || element
+                                .Attributes()
+                                .Any(attribute =>
+                                    attribute.Name.LocalName == matchingFamilyProperty
+                                    && attribute.Value == iconFamily
+                                );
                         var isIconRoleSetter =
                             element.Name.LocalName == "Setter"
                             && (string?)element.Attribute("Property") == "FontSize"
@@ -2366,11 +2233,13 @@ public sealed class FlourishXamlArchitectureTests
                             && trigger.Name.LocalName == "Trigger"
                             && (string?)trigger.Attribute("Property") == "Role"
                             && (string?)trigger.Attribute("Value") == "Icon"
-                            && trigger.Elements().Any(sibling =>
-                                sibling.Name.LocalName == "Setter"
-                                && (string?)sibling.Attribute("Property") == "FontFamily"
-                                && (string?)sibling.Attribute("Value") == iconFamily
-                            );
+                            && trigger
+                                .Elements()
+                                .Any(sibling =>
+                                    sibling.Name.LocalName == "Setter"
+                                    && (string?)sibling.Attribute("Property") == "FontFamily"
+                                    && (string?)sibling.Attribute("Value") == iconFamily
+                                );
 
                         if (!isDirectIconEntry && !isIconRoleSetter)
                         {
@@ -2395,9 +2264,8 @@ public sealed class FlourishXamlArchitectureTests
         foreach (var root in new[] { FlourishRoot, GalleryRoot })
         {
             foreach (
-                var file in EnumerateProductSourceFiles(root).Where(file =>
-                    Path.GetExtension(file) == ".cs"
-                )
+                var file in EnumerateProductSourceFiles(root)
+                    .Where(file => Path.GetExtension(file) == ".cs")
             )
             {
                 var lineNumber = 0;
@@ -2421,15 +2289,12 @@ public sealed class FlourishXamlArchitectureTests
     [Fact]
     public void TextRoles_MapToCanonicalSizeLineHeightBottomSpaceAndWeightMetrics()
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Controls", "TextBlock.xaml")
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", "TextBlock.xaml"));
         var style = document
             .Descendants()
             .Single(element =>
                 element.Name.LocalName == "Style"
-                && (string?)element.Attribute("TargetType")
-                    == "{x:Type controls:FlourishTextBlock}"
+                && (string?)element.Attribute("TargetType") == "{x:Type controls:FlourishTextBlock}"
                 && element.Attribute(XName.Get("Key", XamlNamespace)) is null
             );
         static string? SetterValue(XElement owner, string property)
@@ -2454,10 +2319,7 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal("{DynamicResource FlourishFontSizeStandard}", baseFontSize);
         Assert.Equal("Regular", baseFontWeight);
         Assert.Equal("{DynamicResource FlourishLineHeightStandard}", baseLineHeight);
-        Assert.Equal(
-            "{DynamicResource FlourishTypographyBottomSpaceStandard}",
-            baseBottomSpace
-        );
+        Assert.Equal("{DynamicResource FlourishTypographyBottomSpaceStandard}", baseBottomSpace);
         Assert.Equal("BlockLineHeight", SetterValue(style, "LineStackingStrategy"));
 
         var roleTriggers = style
@@ -2466,10 +2328,7 @@ public sealed class FlourishXamlArchitectureTests
                 element.Name.LocalName == "Trigger"
                 && (string?)element.Attribute("Property") == "Role"
             )
-            .ToDictionary(
-                element => (string)element.Attribute("Value")!,
-                StringComparer.Ordinal
-            );
+            .ToDictionary(element => (string)element.Attribute("Value")!, StringComparer.Ordinal);
 
         foreach (var role in Enum.GetValues<FlourishTextRole>())
         {
@@ -2497,14 +2356,8 @@ public sealed class FlourishXamlArchitectureTests
                 actualBottomSpace = SetterValue(trigger, "Padding") ?? actualBottomSpace;
             }
 
-            Assert.Equal(
-                $"{{DynamicResource FlourishFontSize{expectedTier}}}",
-                actualSize
-            );
-            Assert.Equal(
-                $"{{DynamicResource FlourishLineHeight{expectedTier}}}",
-                actualLineHeight
-            );
+            Assert.Equal($"{{DynamicResource FlourishFontSize{expectedTier}}}", actualSize);
+            Assert.Equal($"{{DynamicResource FlourishLineHeight{expectedTier}}}", actualLineHeight);
             Assert.Equal(
                 $"{{DynamicResource FlourishTypographyBottomSpace{expectedTier}}}",
                 actualBottomSpace
@@ -2537,14 +2390,11 @@ public sealed class FlourishXamlArchitectureTests
 
         foreach (var (fileName, expectedRole) in expectations)
         {
-            var document = LoadXaml(
-                Path.Combine(FlourishRoot, "Controls", fileName)
-            );
+            var document = LoadXaml(Path.Combine(FlourishRoot, "Controls", fileName));
             var titleHost = document
                 .Descendants()
                 .Single(element =>
-                    (string?)element.Attribute(XName.Get("Name", XamlNamespace))
-                    == "TitleHost"
+                    (string?)element.Attribute(XName.Get("Name", XamlNamespace)) == "TitleHost"
                 );
 
             Assert.Equal(expectedRole, (string?)titleHost.Attribute("Role"));
@@ -2590,8 +2440,7 @@ public sealed class FlourishXamlArchitectureTests
             {
                 var document = LoadXaml(file);
                 return document
-                    .Root!
-                    .DescendantsAndSelf()
+                    .Root!.DescendantsAndSelf()
                     .SelectMany(element => element.Attributes())
                     .Where(attribute => textOptionNames.Contains(attribute.Name.LocalName))
                     .Select(attribute => FormatViolation(file, attribute));
@@ -2613,8 +2462,7 @@ public sealed class FlourishXamlArchitectureTests
         {
             var document = LoadXaml(file);
             var fontWeights = document
-                .Root!
-                .DescendantsAndSelf()
+                .Root!.DescendantsAndSelf()
                 .SelectMany(element => element.Attributes())
                 .Where(attribute =>
                     attribute.Name.LocalName == "FontWeight"
@@ -2627,9 +2475,7 @@ public sealed class FlourishXamlArchitectureTests
             {
                 if (fontWeight.Value is not ("Regular" or "Bold"))
                 {
-                    violations.Add(
-                        $"{FormatViolation(file, fontWeight)} ({fontWeight.Value})"
-                    );
+                    violations.Add($"{FormatViolation(file, fontWeight)} ({fontWeight.Value})");
                 }
             }
         }
@@ -2658,9 +2504,7 @@ public sealed class FlourishXamlArchitectureTests
                 {
                     if (line.Contains(forbiddenWeight, StringComparison.Ordinal))
                     {
-                        violations.Add(
-                            $"{RelativePath(file)}:{lineNumber} ({forbiddenWeight})"
-                        );
+                        violations.Add($"{RelativePath(file)}:{lineNumber} ({forbiddenWeight})");
                     }
                 }
             }
@@ -2699,19 +2543,17 @@ public sealed class FlourishXamlArchitectureTests
         var demoCards = document
             .Descendants()
             .Where(element =>
-                element.Name.LocalName == "CardButton"
-                && element.Attribute("Tag") is not null
+                element.Name.LocalName == "CardButton" && element.Attribute("Tag") is not null
             )
             .ToArray();
 
         Assert.Equal(9, demoCards.Length);
         Assert.All(
             demoCards,
-            card => Assert.False(
-                string.IsNullOrWhiteSpace(
-                    (string?)card.Attribute("AutomationProperties.Name")
+            card =>
+                Assert.False(
+                    string.IsNullOrWhiteSpace((string?)card.Attribute("AutomationProperties.Name"))
                 )
-            )
         );
     }
 
@@ -2720,14 +2562,10 @@ public sealed class FlourishXamlArchitectureTests
     [InlineData("Colors.Dark.xaml")]
     public void ColorPalettes_UseCanonicalResourceNames(string fileName)
     {
-        var document = LoadXaml(
-            Path.Combine(FlourishRoot, "Themes", "Colors", fileName)
-        );
+        var document = LoadXaml(Path.Combine(FlourishRoot, "Themes", "Colors", fileName));
         var keys = document
             .Descendants()
-            .Select(element =>
-                (string?)element.Attribute(XName.Get("Key", XamlNamespace))
-            )
+            .Select(element => (string?)element.Attribute(XName.Get("Key", XamlNamespace)))
             .OfType<string>()
             .ToArray();
 
@@ -2811,10 +2649,12 @@ public sealed class FlourishXamlArchitectureTests
             return explicitBody.Nodes().Any(IsMeaningfulContentNode);
         }
 
-        return chunk.Nodes().Any(node =>
-            node is XElement element && !IsPropertyElement(element)
-            || IsMeaningfulTextNode(node)
-        );
+        return chunk
+            .Nodes()
+            .Any(node =>
+                node is XElement element && !IsPropertyElement(element)
+                || IsMeaningfulTextNode(node)
+            );
     }
 
     private static bool IsMeaningfulContentNode(XNode node)
@@ -2834,15 +2674,13 @@ public sealed class FlourishXamlArchitectureTests
     {
         Assert.True(
             violations.Count == 0,
-            message
-                + Environment.NewLine
-                + string.Join(Environment.NewLine, violations)
+            message + Environment.NewLine + string.Join(Environment.NewLine, violations)
         );
     }
 
     private static XDocument LoadXaml(string file)
     {
-        return XDocument.Load(file, LoadOptions.SetLineInfo);
+        return GalleryLocalizationTestResolver.LoadXaml(file, LoadOptions.SetLineInfo);
     }
 
     private static IEnumerable<string> EnumerateXamlFiles(string directory)
@@ -2871,9 +2709,7 @@ public sealed class FlourishXamlArchitectureTests
     private static bool IsFontSizeSetter(XElement element)
     {
         return element.Name.LocalName == "Setter"
-            && IsFontSizePropertyName(
-                (string?)element.Attribute("Property") ?? string.Empty
-            );
+            && IsFontSizePropertyName((string?)element.Attribute("Property") ?? string.Empty);
     }
 
     private static bool IsFontWeightSetter(XElement element)
@@ -2884,10 +2720,7 @@ public sealed class FlourishXamlArchitectureTests
 
     private static Thickness ParseThickness(string value)
     {
-        var values = value
-            .Split(',')
-            .Select(part => XmlConvert.ToDouble(part.Trim()))
-            .ToArray();
+        var values = value.Split(',').Select(part => XmlConvert.ToDouble(part.Trim())).ToArray();
         return values.Length switch
         {
             1 => new Thickness(values[0]),

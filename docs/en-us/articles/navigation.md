@@ -114,8 +114,8 @@ The default widths are `220` expanded and `64` collapsed. Set `closedWidth` to `
 ```csharp
 nav.AddGroup("Commands", groupId: 2, group =>
 {
-    group.AddNavigableItem("Refresh", "\uE72C", "reports.refresh");
-    group.AddNavigableItem("Export", "\uE898", "reports.export");
+    group.AddNavigableItem("Refresh", "\uE72C", "cmd_reports_refresh");
+    group.AddNavigableItem("Export", "\uE898", "cmd_reports_export");
 });
 ```
 
@@ -135,7 +135,7 @@ builder.ConfigNavigation(navigation =>
     });
 
     navigation.AddFixedNavigableViewItem<SettingsPage>();
-    navigation.AddFixedNavigableItem("Help", "\uE946", "help.open");
+    navigation.AddFixedNavigableItem("Help", "\uE946", "cmd_help_open");
 });
 ```
 
@@ -149,8 +149,8 @@ Navigation items are flat by default. To create a one-level parent-child tree, s
 nav.AddGroup("Tree", groupId: 3, group =>
 {
     group.AddNavigableViewItem<TreeParentPage>(parentId: 1);
-    group.AddNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
-    group.AddNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
+    group.AddNavigableItem("Button1", "\uE8B7", "cmd_tree_button1", childId: 1);
+    group.AddNavigableItem("Button2", "\uE8B7", "cmd_tree_button2", childId: 1);
 
     group.AddNavigableItem("Pages", "\uE8A5", null, parentId: 2);
     group.AddNavigableViewItem<Page1>(childId: 2);

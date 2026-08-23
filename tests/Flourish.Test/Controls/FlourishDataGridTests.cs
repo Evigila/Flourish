@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Controls;
 using FlourishDataGrid = ArkheideSystem.Flourish.Controls.DataGrid;
 using FlourishScrollViewer = ArkheideSystem.Flourish.Controls.ScrollViewer;
 
@@ -12,7 +11,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 
 public sealed class FlourishDataGridTests
 {
-    private const string GenericThemeSource = "/Flourish;component/Themes/Generic.xaml";
+    private const string GenericThemeSource = "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Fact]
     public void DataGrid_PreservesNativeContractAndExposesReadOnlyCounts()
@@ -40,14 +39,22 @@ public sealed class FlourishDataGridTests
             {
                 new("Variant", "Selects the surface treatment."),
             };
-            var grid = new FlourishDataGrid
-            {
-                AutoGenerateColumns = false,
-                ItemsSource = rows,
-            };
+            var grid = new FlourishDataGrid { AutoGenerateColumns = false, ItemsSource = rows };
 
-            grid.Columns.Add(new DataGridTextColumn { Header = "Property", Binding = new System.Windows.Data.Binding(nameof(MemberRow.Name)) });
-            grid.Columns.Add(new DataGridTextColumn { Header = "Function", Binding = new System.Windows.Data.Binding(nameof(MemberRow.Description)) });
+            grid.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Property",
+                    Binding = new System.Windows.Data.Binding(nameof(MemberRow.Name)),
+                }
+            );
+            grid.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Function",
+                    Binding = new System.Windows.Data.Binding(nameof(MemberRow.Description)),
+                }
+            );
 
             Assert.Equal(1, grid.RowCount);
             Assert.Equal(2, grid.ColumnCount);
@@ -198,10 +205,7 @@ public sealed class FlourishDataGridTests
                     precision: 3
                 );
 
-                var boundaryWheel = RaiseMouseWheel(
-                    cell,
-                    -Mouse.MouseWheelDeltaForOneLine
-                );
+                var boundaryWheel = RaiseMouseWheel(cell, -Mouse.MouseWheelDeltaForOneLine);
                 PumpDispatcher(window);
 
                 Assert.True(boundaryWheel.Handled);
@@ -226,7 +230,8 @@ public sealed class FlourishDataGridTests
             AutoGenerateColumns = false,
             CanUserAddRows = false,
             IsReadOnly = true,
-            ItemsSource = Enumerable.Range(1, rowCount)
+            ItemsSource = Enumerable
+                .Range(1, rowCount)
                 .Select(index => new MemberRow($"Member {index}", $"Description {index}")),
         };
         grid.Columns.Add(
@@ -248,11 +253,7 @@ public sealed class FlourishDataGridTests
 
     private static MouseWheelEventArgs RaiseMouseWheel(UIElement source, int delta)
     {
-        var wheel = new MouseWheelEventArgs(
-            Mouse.PrimaryDevice,
-            Environment.TickCount,
-            delta
-        )
+        var wheel = new MouseWheelEventArgs(Mouse.PrimaryDevice, Environment.TickCount, delta)
         {
             RoutedEvent = Mouse.MouseWheelEvent,
             Source = source,
@@ -283,7 +284,9 @@ public sealed class FlourishDataGridTests
             Content = content,
         };
         window.Resources.MergedDictionaries.Add(
-            Assert.IsType<ResourceDictionary>(Application.LoadComponent(new Uri(GenericThemeSource, UriKind.Relative)))
+            Assert.IsType<ResourceDictionary>(
+                Application.LoadComponent(new Uri(GenericThemeSource, UriKind.Relative))
+            )
         );
         return window;
     }

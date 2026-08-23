@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
@@ -10,22 +9,28 @@ public sealed class NavigationCompositionTests
     public void Build_WithRegisteredKeyTree_CreatesFinalNavigationModel()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigServices((_, services) =>
-            {
-                services.AddNavigable<HomePage>("Home", "H");
-                services.AddNavigable<SettingsPage>(
-                    "Settings",
-                    "S",
-                    FlourishPageCacheMode.Disabled
-                );
-            })
+            .ConfigServices(
+                (_, services) =>
+                {
+                    services.AddNavigable<HomePage>("Home", "H");
+                    services.AddNavigable<SettingsPage>(
+                        "Settings",
+                        "S",
+                        FlourishPageCacheMode.Disabled
+                    );
+                }
+            )
             .ConfigNavigation(navigation =>
             {
-                navigation.AddGroup(null, groupId: 0, group =>
-                {
-                    group.AddNavigableViewItem<HomePage>(isInitial: true, parentId: 10);
-                    group.AddNavigableViewItem<SettingsPage>(childId: 10);
-                });
+                navigation.AddGroup(
+                    null,
+                    groupId: 0,
+                    group =>
+                    {
+                        group.AddNavigableViewItem<HomePage>(isInitial: true, parentId: 10);
+                        group.AddNavigableViewItem<SettingsPage>(childId: 10);
+                    }
+                );
             });
 
         using var flourish = builder.Build();
@@ -74,11 +79,13 @@ public sealed class NavigationCompositionTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigServices((_, services) =>
-            {
-                services.AddNavigable<FirstFeature.SettingsPage>("First settings", "1");
-                services.AddNavigable<SecondFeature.SettingsPage>("Second settings", "2");
-            });
+            .ConfigServices(
+                (_, services) =>
+                {
+                    services.AddNavigable<FirstFeature.SettingsPage>("First settings", "1");
+                    services.AddNavigable<SecondFeature.SettingsPage>("Second settings", "2");
+                }
+            );
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
 
@@ -91,11 +98,14 @@ public sealed class NavigationCompositionTests
     [Fact]
     public void Build_WithUnregisteredPageType_ThrowsInvalidOperationException()
     {
-        var builder = CreateNavigationBuilder().ConfigNavigation(navigation =>
-            navigation.AddGroup(null, groupId: 0, group =>
-                group.AddNavigableViewItem<UnregisteredPage>()
-            )
-        );
+        var builder = CreateNavigationBuilder()
+            .ConfigNavigation(navigation =>
+                navigation.AddGroup(
+                    null,
+                    groupId: 0,
+                    group => group.AddNavigableViewItem<UnregisteredPage>()
+                )
+            );
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
 
@@ -107,13 +117,13 @@ public sealed class NavigationCompositionTests
     public void Build_WithPageInGroupAndFixedArea_ThrowsInvalidOperationException()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigServices((_, services) =>
-                services.AddNavigable<HomePage>("Home", "H")
-            )
+            .ConfigServices((_, services) => services.AddNavigable<HomePage>("Home", "H"))
             .ConfigNavigation(navigation =>
             {
-                navigation.AddGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<HomePage>()
+                navigation.AddGroup(
+                    null,
+                    groupId: 0,
+                    group => group.AddNavigableViewItem<HomePage>()
                 );
                 navigation.AddFixedNavigableViewItem<HomePage>();
             });
@@ -129,11 +139,15 @@ public sealed class NavigationCompositionTests
     [Fact]
     public void Build_WithOrphanedChild_ThrowsInvalidOperationException()
     {
-        var builder = CreateNavigationBuilder().ConfigNavigation(navigation =>
-            navigation.AddGroup(null, groupId: 0, group =>
-                group.AddNavigableItem("Orphan", null, "orphan.command", childId: 42)
-            )
-        );
+        var builder = CreateNavigationBuilder()
+            .ConfigNavigation(navigation =>
+                navigation.AddGroup(
+                    null,
+                    groupId: 0,
+                    group =>
+                        group.AddNavigableItem("Orphan", null, "cmd_orphan_command", childId: 42)
+                )
+            );
 
         var exception = Assert.Throws<InvalidOperationException>(builder.Build);
 
@@ -144,11 +158,14 @@ public sealed class NavigationCompositionTests
     [Fact]
     public void Build_WithNavigationEnabledAndNoVisibleConfiguration_KeepsMenuEmpty()
     {
-        var builder = CreateNavigationBuilder().ConfigServices((_, services) =>
-        {
-            services.AddNavigable<HomePage>("Home", "H");
-            services.AddNavigable<SettingsPage>("Settings", "S");
-        });
+        var builder = CreateNavigationBuilder()
+            .ConfigServices(
+                (_, services) =>
+                {
+                    services.AddNavigable<HomePage>("Home", "H");
+                    services.AddNavigable<SettingsPage>("Settings", "S");
+                }
+            );
 
         using var flourish = builder.Build();
         var options = flourish.GetRequiredService<FlourishShellOptions>();
@@ -163,8 +180,10 @@ public sealed class NavigationCompositionTests
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
             .ConfigNavigation(navigation =>
-                navigation.AddGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<UnregisteredPage>()
+                navigation.AddGroup(
+                    null,
+                    groupId: 0,
+                    group => group.AddNavigableViewItem<UnregisteredPage>()
                 )
             );
 
@@ -178,9 +197,7 @@ public sealed class NavigationCompositionTests
 
     private static IFlourishBuilder CreateNavigationBuilder()
     {
-        return FlourishBuilder
-            .CreateDefaultBuilder([])
-            .ConfigShell(shell => shell.UseNavigation());
+        return FlourishBuilder.CreateDefaultBuilder([]).ConfigShell(shell => shell.UseNavigation());
     }
 
     private sealed class HomePage : Page { }

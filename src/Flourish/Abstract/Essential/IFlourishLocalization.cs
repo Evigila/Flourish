@@ -37,7 +37,7 @@ public interface IFlourishLocalization
     void SetLocale(string locale);
 
     /// <summary>
-    /// Loads and registers a lang_&lt;locale&gt;.json file.
+    /// Loads and registers a <c>Flourish.LangKey_&lt;locale&gt;.Json</c> file.
     /// </summary>
     FlourishLocaleRegistration RegisterFile(string path);
 

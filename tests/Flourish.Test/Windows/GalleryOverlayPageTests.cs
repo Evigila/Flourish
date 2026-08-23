@@ -86,7 +86,7 @@ public sealed class GalleryOverlayPageTests
         Assert.Contains("TemporaryPopup.IsOpen = true;", OverlayPageCode);
         Assert.Contains("StrongPopup.IsOpen = true;", OverlayPageCode);
         Assert.Contains("Overlay.DismissRequestedEvent", OverlayPageCode);
-        Assert.Contains("e.Key != Key.Escape", OverlayPageCode);
+        Assert.Contains("e.Key != InputKey.Escape", OverlayPageCode);
         Assert.Contains("private void Page_Unloaded", OverlayPageCode);
         Assert.Contains("TemporaryPopup.IsOpen = false;", OverlayPageCode);
         Assert.Contains("StrongPopup.IsOpen = false;", OverlayPageCode);

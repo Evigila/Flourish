@@ -2,6 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.CodeSpacePage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -10,39 +11,39 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.PresentExactCodeTextInACopyableRoundedLightlyOutlinedCodeSurface_710B1793"
+      Content="{culture:Localize Key=Controls_PresentExactCodeTextInACopyableRoundedLightlyOutlinedCodeSurface_710B1793}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="CodeSpace"
     />
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.TheCopyActionPreservesEveryNewlineAndIndentationCharacterInText_0EA3E243"
-      Title="Gallery.Controls.Example_D029F87E"
+      Content="{culture:Localize Key=Controls_TheCopyActionPreservesEveryNewlineAndIndentationCharacterInText_0EA3E243}"
+      Title="{culture:Localize Key=Controls_Example_D029F87E}"
     >
       <flourish:CodeSpace Text="{Binding ExampleCode, ElementName=RootPage}" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Content="Gallery.Controls.AssignTheCompleteSourceSnippetThroughTextEncodeLineBreaksAsChara_72DEEC31"
+          Content="{culture:Localize Key=Controls_AssignTheCompleteSourceSnippetThroughTextEncodeLineBreaksAsChara_72DEEC31}"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Gallery.Controls.InlineSourceText_40EC1432"
+          Title="{culture:Localize Key=Controls_InlineSourceText_40EC1432}"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CodeSpace&#xA;  Text=&quot;public void Save()&amp;#xA;{&amp;#xA;    repository.Save();&amp;#xA;}&quot; /&gt;" />
@@ -51,23 +52,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
+          Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Gallery.Controls.ReadTheCodeSpaceGuide_5B389267"
+          Content="{culture:Localize Key=Controls_ReadTheCodeSpaceGuide_5B389267}"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="Gallery.Controls.CodeSpaceDocumentation_CF4366B6"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_CodeSpaceDocumentation_CF4366B6}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

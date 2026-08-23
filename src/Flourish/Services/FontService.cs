@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Application = System.Windows.Application;
 using FontFamily = System.Windows.Media.FontFamily;
@@ -204,17 +203,16 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
             extraLargeFontSize,
             headerSizeFontSize
         );
-        ExecuteMutation(
-            () =>
-                SetFontCore(
-                    fontFamily,
-                    smallFontSize,
-                    standardFontSize,
-                    iconFontSize,
-                    largeFontSize,
-                    extraLargeFontSize,
-                    headerSizeFontSize
-                )
+        ExecuteMutation(() =>
+            SetFontCore(
+                fontFamily,
+                smallFontSize,
+                standardFontSize,
+                iconFontSize,
+                largeFontSize,
+                extraLargeFontSize,
+                headerSizeFontSize
+            )
         );
     }
 
@@ -653,10 +651,7 @@ internal sealed class FontService(FlourishShellOptions options) : IFontService
         page.Resources[key] = state.OriginalResources[key];
     }
 
-    private static void SetPageFontSizeResources(
-        ResourceDictionary resources,
-        FontScale scale
-    )
+    private static void SetPageFontSizeResources(ResourceDictionary resources, FontScale scale)
     {
         ValidateFontScale(
             scale.Small,

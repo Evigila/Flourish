@@ -1,5 +1,4 @@
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WpfPage = System.Windows.Controls.Page;
@@ -90,9 +89,7 @@ internal sealed class ShellProfileController : IDisposable
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { }
         catch (Exception error)
         {
-            System.Diagnostics.Debug.WriteLine(
-                $"Flourish profile initialization failed: {error}"
-            );
+            System.Diagnostics.Debug.WriteLine($"Flourish profile initialization failed: {error}");
         }
     }
 
@@ -137,9 +134,7 @@ internal sealed class ShellProfileController : IDisposable
         SetProfileSubscription(enabled: false);
     }
 
-    private void ConfigureSurface(
-        FlourishProfileFlyoutState? state = null
-    )
+    private void ConfigureSurface(FlourishProfileFlyoutState? state = null)
     {
         if (isDisposed)
         {
@@ -207,10 +202,7 @@ internal sealed class ShellProfileController : IDisposable
         }
     }
 
-    private void ApplyFlyoutState(
-        FlourishProfileFlyoutState state,
-        bool isAvailable
-    )
+    private void ApplyFlyoutState(FlourishProfileFlyoutState state, bool isAvailable)
     {
         overlay.Close();
         if (!isAvailable)
@@ -253,10 +245,7 @@ internal sealed class ShellProfileController : IDisposable
         }
 
         overlay.Open();
-        _ = dispatcher.BeginInvoke(
-            DispatcherPriority.Loaded,
-            new Action(RequestPlacement)
-        );
+        _ = dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(RequestPlacement));
     }
 
     private void ProfileService_ProfileChanged(object? sender, ProfileChangedEventArgs e)
@@ -270,18 +259,12 @@ internal sealed class ShellProfileController : IDisposable
         });
     }
 
-    private void FlyoutService_Changed(
-        object? sender,
-        FlourishProfileFlyoutChangedEventArgs e
-    )
+    private void FlyoutService_Changed(object? sender, FlourishProfileFlyoutChangedEventArgs e)
     {
         DispatchIfActive(() => ConfigureSurface(e.State));
     }
 
-    private void TitleBarService_Changed(
-        object? sender,
-        FlourishTitleBarChangedEventArgs e
-    )
+    private void TitleBarService_Changed(object? sender, FlourishTitleBarChangedEventArgs e)
     {
         DispatchIfActive(() => ConfigureSurface());
     }
@@ -310,18 +293,13 @@ internal sealed class ShellProfileController : IDisposable
 
     private void Overlay_DismissRequested(object? sender, EventArgs e) => Hide();
 
-    private void Overlay_PlacementInvalidated(object? sender, EventArgs e) =>
-        RequestPlacement();
+    private void Overlay_PlacementInvalidated(object? sender, EventArgs e) => RequestPlacement();
 
     private void DispatchIfActive(Action action)
     {
         void ExecuteIfActive()
         {
-            if (
-                isDisposed
-                || dispatcher.HasShutdownStarted
-                || dispatcher.HasShutdownFinished
-            )
+            if (isDisposed || dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished)
             {
                 return;
             }
@@ -335,18 +313,11 @@ internal sealed class ShellProfileController : IDisposable
             return;
         }
 
-        if (
-            isDisposed
-            || dispatcher.HasShutdownStarted
-            || dispatcher.HasShutdownFinished
-        )
+        if (isDisposed || dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished)
         {
             return;
         }
 
-        _ = dispatcher.BeginInvoke(
-            DispatcherPriority.DataBind,
-            new Action(ExecuteIfActive)
-        );
+        _ = dispatcher.BeginInvoke(DispatcherPriority.DataBind, new Action(ExecuteIfActive));
     }
 }

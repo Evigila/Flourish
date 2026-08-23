@@ -1,6 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.CardPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -9,7 +10,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.AConciseDisplayOnlySurfaceWithOptionalTitleContentAndOneIcon_E6C6C7FD"
+      Content="{culture:Localize Key=Controls_AConciseDisplayOnlySurfaceWithOptionalTitleContentAndOneIcon_E6C6C7FD}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Card"
@@ -19,56 +20,56 @@
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,8"
-          Content="Gallery.Controls.TheDefaultLowEmphasisSurface_C28E328F"
+          Content="{culture:Localize Key=Controls_TheDefaultLowEmphasisSurface_C28E328F}"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Standard"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.DefaultCardSurface_47DC1F24" Icon="&#xE8A5;" Title="Standard" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{culture:Localize Key=Controls_DefaultCardSurface_47DC1F24}" Icon="&#xE8A5;" Title="Standard" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,8"
-          Content="Gallery.Controls.AQuietNeutralSurfaceForSupportingInformation_D3250801"
+          Content="{culture:Localize Key=Controls_AQuietNeutralSurfaceForSupportingInformation_D3250801}"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Tonal"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.TonalCardSurface_D7BA84C5" Icon="&#xE8A5;" Title="Tonal" Variant="Tonal" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{culture:Localize Key=Controls_TonalCardSurface_D7BA84C5}" Icon="&#xE8A5;" Title="Tonal" Variant="Tonal" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="0,8,8,0"
-          Content="Gallery.Controls.AStrongSurfaceForProminentInformation_B85CB938"
+          Content="{culture:Localize Key=Controls_AStrongSurfaceForProminentInformation_B85CB938}"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Filled"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.FilledCardSurface_96857553" Icon="&#xE8A5;" Title="Filled" Variant="Filled" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{culture:Localize Key=Controls_FilledCardSurface_96857553}" Icon="&#xE8A5;" Title="Filled" Variant="Filled" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,8,0,0"
-          Content="Gallery.Controls.ARaisedSurfaceForInformationAboveNearbyContent_79C661FA"
+          Content="{culture:Localize Key=Controls_ARaisedSurfaceForInformationAboveNearbyContent_79C661FA}"
           PresenterMode="TopDown"
           PresentationMinHeight="220"
           PresenterPosition="Left"
           Title="Elevated"
         >
           <flourish:Presenter.Presentation>
-            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Gallery.Controls.ElevatedCardSurface_5B33D566" Icon="&#xE8A5;" Title="Elevated" Variant="Elevated" />
+            <flourish:Card Width="260" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{culture:Localize Key=Controls_ElevatedCardSurface_5B33D566}" Icon="&#xE8A5;" Title="Elevated" Variant="Elevated" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         x:Name="CardMemberGrid"
         AutoGenerateColumns="False"
@@ -79,97 +80,97 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="224" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_PROPERTY_638D02E6}" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="{culture:Localize Key=Controls_PURPOSE_D31A37AD}" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.OptionalContent_57786ED5">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_OptionalContent_57786ED5}">
       <UniformGrid Columns="2">
         <flourish:Card
           MinHeight="160"
           Margin="0,0,8,0"
-          Content="Gallery.Controls.UseCardWhenATitleAndOneConciseBlockOfTextAreEnough_BB19A8B4"
-          Title="Gallery.Controls.TitleAndContent_15BA5FDB"
+          Content="{culture:Localize Key=Controls_UseCardWhenATitleAndOneConciseBlockOfTextAreEnough_BB19A8B4}"
+          Title="{culture:Localize Key=Controls_TitleAndContent_15BA5FDB}"
         />
         <flourish:Card
           MinHeight="160"
           Margin="8,0,0,0"
-          Content="Gallery.Controls.OmittingAnOptionalRegionCollapsesBothThatRegionAndItsSpacing_8A211515"
+          Content="{culture:Localize Key=Controls_OmittingAnOptionalRegionCollapsesBothThatRegionAndItsSpacing_8A211515}"
           Icon="&#xE946;"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Alignment_9D597870">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Alignment_9D597870}">
       <UniformGrid Columns="3">
         <flourish:Card
           MinHeight="176"
           Margin="0,0,8,0"
           ContentHorizontalAlignment="Left"
-          Content="Gallery.Controls.CopyAlignsLeft_91316731"
+          Content="{culture:Localize Key=Controls_CopyAlignsLeft_91316731}"
           Title="Left"
         />
         <flourish:Card
           MinHeight="176"
           Margin="4,0"
           ContentHorizontalAlignment="Center"
-          Content="Gallery.Controls.CopyAlignsCenter_96749FF1"
-          Title="Gallery.Shell.Center_D9460674"
+          Content="{culture:Localize Key=Controls_CopyAlignsCenter_96749FF1}"
+          Title="{culture:Localize Key=Shell_Center_D9460674}"
         />
         <flourish:Card
           MinHeight="176"
           Margin="8,0,0,0"
           ContentHorizontalAlignment="Right"
-          Content="Gallery.Controls.CopyAlignsRight_8BFE1FB7"
+          Content="{culture:Localize Key=Controls_CopyAlignsRight_8BFE1FB7}"
           Title="Right"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.IconPosition_AA62E053">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_IconPosition_AA62E053}">
       <UniformGrid Columns="2">
         <flourish:Card
           MinHeight="184"
           Margin="0,0,8,8"
           Icon="&#xE8A5;"
           IconPosition="Top"
-          Content="Gallery.Controls.TheIconAppearsAboveTheCopy_A4683444"
-          Title="Gallery.Controls.TopIcon_D8A8BEB7"
+          Content="{culture:Localize Key=Controls_TheIconAppearsAboveTheCopy_A4683444}"
+          Title="{culture:Localize Key=Controls_TopIcon_D8A8BEB7}"
         />
         <flourish:Card
           MinHeight="184"
           Margin="8,0,0,8"
           Icon="&#xE8A5;"
           IconPosition="Left"
-          Content="Gallery.Controls.TheIconAppearsBeforeTheCopy_16CCFA0C"
-          Title="Gallery.Controls.LeftIcon_6157C794"
+          Content="{culture:Localize Key=Controls_TheIconAppearsBeforeTheCopy_16CCFA0C}"
+          Title="{culture:Localize Key=Controls_LeftIcon_6157C794}"
         />
         <flourish:Card
           MinHeight="184"
           Margin="0,8,8,0"
           Icon="&#xE8A5;"
           IconPosition="Right"
-          Content="Gallery.Controls.TheIconAppearsAfterTheCopy_2D6FD529"
-          Title="Gallery.Controls.RightIcon_F0F8EBB5"
+          Content="{culture:Localize Key=Controls_TheIconAppearsAfterTheCopy_2D6FD529}"
+          Title="{culture:Localize Key=Controls_RightIcon_F0F8EBB5}"
         />
         <flourish:Card
           MinHeight="184"
           Margin="8,8,0,0"
           Icon="&#xE8A5;"
           IconPosition="Bottom"
-          Content="Gallery.Controls.TheIconAppearsBelowTheCopy_6847127A"
-          Title="Gallery.Controls.BottomIcon_D11D8DEF"
+          Content="{culture:Localize Key=Controls_TheIconAppearsBelowTheCopy_6847127A}"
+          Title="{culture:Localize Key=Controls_BottomIcon_D11D8DEF}"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Title="Gallery.Controls.PresentAConciseMessage_4C3E73AF"
-          Content="Gallery.Controls.UseCardForOneOptionalTitleOneParagraphOfContentAndAtMostOneIconO_BDC5DC20"
+          Title="{culture:Localize Key=Controls_PresentAConciseMessage_4C3E73AF}"
+          Content="{culture:Localize Key=Controls_UseCardForOneOptionalTitleOneParagraphOfContentAndAtMostOneIconO_BDC5DC20}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -180,25 +181,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
-          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
+          AutomationProperties.Name="{culture:Localize Key=Controls_FlourishGitHubRepository_52730F6E}"
+          Content="{culture:Localize Key=Controls_RepositoryLinkPlaceholder_ACCB5690}"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="Gallery.Controls.CardDocumentation_54A3A9F0"
-          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
+          AutomationProperties.Name="{culture:Localize Key=Controls_CardDocumentation_54A3A9F0}"
+          Content="{culture:Localize Key=Controls_CanonicalDocumentationLinkPlaceholder_90AB4F65}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.CardDocumentation_54A3A9F0"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_CardDocumentation_54A3A9F0}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

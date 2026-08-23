@@ -17,12 +17,12 @@ builder
     {
         custom
             .InitProfileContent(_ => new Button { Content = "Foo Bar" })
-            .AddTitleBarAction("Sync", "\uE895", "sync.run")
+            .AddTitleBarAction("Sync", "\uE895", "cmd_sync_run")
             .AddFooterCommand(
                 FlourishRegion.FooterEnd,
                 "Help",
                 "\uE946",
-                "help.open");
+                "cmd_help_open");
     });
 ```
 

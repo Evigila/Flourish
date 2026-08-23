@@ -1,7 +1,6 @@
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
@@ -84,15 +83,13 @@ public sealed class AppPreferenceServiceTests
 
         Assert.True(File.Exists(sut.FilePath));
         Assert.Equal(FlourishTheme.Dark, sut.ReadTheme());
-        Assert.Empty(
-            Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
-        );
+        Assert.Empty(Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp"));
 
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "Dark",
-            document.RootElement
-                .GetProperty("Flourish")
+            document
+                .RootElement.GetProperty("Flourish")
                 .GetProperty("Preferences")
                 .GetProperty("Theme")
                 .GetString()
@@ -129,8 +126,8 @@ public sealed class AppPreferenceServiceTests
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "Information",
-            document.RootElement
-                .GetProperty("Logging")
+            document
+                .RootElement.GetProperty("Logging")
                 .GetProperty("LogLevel")
                 .GetProperty("Default")
                 .GetString()
@@ -237,16 +234,12 @@ public sealed class AppPreferenceServiceTests
             }
             """;
         WriteAppSettings(directory.Path, originalJson);
-        var exception = Assert.Throws<FormatException>(() =>
-            CreateConfiguration(directory.Path)
-        );
+        var exception = Assert.Throws<FormatException>(() => CreateConfiguration(directory.Path));
 
         Assert.Contains("Flourish", exception.Message);
         Assert.Equal(
             originalJson,
-            File.ReadAllText(
-                Path.Combine(directory.Path, "appsettings.Flourish.json")
-            )
+            File.ReadAllText(Path.Combine(directory.Path, "appsettings.Flourish.json"))
         );
     }
 
@@ -264,9 +257,7 @@ public sealed class AppPreferenceServiceTests
             """
         );
 
-        var exception = Assert.Throws<FormatException>(() =>
-            CreateConfiguration(directory.Path)
-        );
+        var exception = Assert.Throws<FormatException>(() => CreateConfiguration(directory.Path));
 
         Assert.Contains("more than one", exception.Message);
     }
@@ -276,27 +267,20 @@ public sealed class AppPreferenceServiceTests
     {
         using var directory = new TemporaryDirectory();
         using var sut = CreateService(directory.Path);
-        var themes = new[]
-        {
-            FlourishTheme.System,
-            FlourishTheme.Light,
-            FlourishTheme.Dark,
-        };
+        var themes = new[] { FlourishTheme.System, FlourishTheme.Light, FlourishTheme.Dark };
 
         Parallel.For(0, 24, index => sut.SaveTheme(themes[index % themes.Length]));
         await sut.FlushThemeSavesAsync();
 
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
-        var persistedTheme = document.RootElement
-            .GetProperty("Flourish")
+        var persistedTheme = document
+            .RootElement.GetProperty("Flourish")
             .GetProperty("Preferences")
             .GetProperty("Theme")
             .GetString();
         Assert.True(Enum.TryParse<FlourishTheme>(persistedTheme, out var parsedTheme));
         Assert.Contains(parsedTheme, themes);
-        Assert.Empty(
-            Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
-        );
+        Assert.Empty(Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp"));
     }
 
     [Fact]
@@ -331,24 +315,16 @@ public sealed class AppPreferenceServiceTests
         Assert.True(result.Changed);
         Assert.True(result.ConfigurationReloaded);
         Assert.Equal(sut.FilePath, result.FilePath);
-        Assert.Empty(
-            Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp")
-        );
+        Assert.Empty(Directory.EnumerateFiles(directory.Path, ".appsettings.Flourish.json.*.tmp"));
         using var document = JsonDocument.Parse(File.ReadAllText(result.FilePath));
-        var feature = document.RootElement
-            .GetProperty("Flourish")
-            .GetProperty("Feature");
+        var feature = document.RootElement.GetProperty("Flourish").GetProperty("Feature");
         Assert.True(feature.GetProperty("Enabled").GetBoolean());
         Assert.Equal(JsonValueKind.Null, feature.GetProperty("NullValue").ValueKind);
         Assert.Equal(2, feature.GetProperty("Existing").GetInt32());
         Assert.Equal("value", feature.GetProperty("Added").GetString());
         Assert.Equal(
             new string?[] { "first", "second" },
-            feature
-                .GetProperty("Items")
-                .EnumerateArray()
-                .Select(item => item.GetString())
-                .ToArray()
+            feature.GetProperty("Items").EnumerateArray().Select(item => item.GetString()).ToArray()
         );
         Assert.False(feature.TryGetProperty("RemoveMe", out _));
     }
@@ -358,25 +334,17 @@ public sealed class AppPreferenceServiceTests
     [InlineData("Flourish")]
     [InlineData("Flourish::Feature")]
     [InlineData("FlourishExtra:Feature")]
-    public async Task SettingsOperations_RejectPathsOutsideAFlourishChild(
-        string path
-    )
+    public async Task SettingsOperations_RejectPathsOutsideAFlourishChild(string path)
     {
         using var directory = new TemporaryDirectory();
         using var sut = CreateService(directory.Path);
 
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-            sut.SetAsync(path, true).AsTask()
-        );
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-            sut.RemoveAsync(path).AsTask()
-        );
+        await Assert.ThrowsAsync<ArgumentException>(() => sut.SetAsync(path, true).AsTask());
+        await Assert.ThrowsAsync<ArgumentException>(() => sut.RemoveAsync(path).AsTask());
         await Assert.ThrowsAsync<ArgumentException>(() =>
             sut.MergeAsync(path, new { Enabled = true }).AsTask()
         );
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-            sut.AppendAsync(path, "value").AsTask()
-        );
+        await Assert.ThrowsAsync<ArgumentException>(() => sut.AppendAsync(path, "value").AsTask());
 
         Assert.False(File.Exists(sut.FilePath));
     }
@@ -392,8 +360,8 @@ public sealed class AppPreferenceServiceTests
         Assert.True(result.Changed);
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.True(
-            document.RootElement
-                .GetProperty("Flourish")
+            document
+                .RootElement.GetProperty("Flourish")
                 .GetProperty("Feature")
                 .GetProperty("Value")
                 .GetBoolean()
@@ -472,8 +440,7 @@ public sealed class AppPreferenceServiceTests
         using var sut = CreateService(directory.Path);
         using var firstEntered = new ManualResetEventSlim();
         using var releaseFirst = new ManualResetEventSlim();
-        var first = sut
-            .UpdateAsync(editor =>
+        var first = sut.UpdateAsync(editor =>
             {
                 firstEntered.Set();
                 releaseFirst.Wait();
@@ -486,8 +453,7 @@ public sealed class AppPreferenceServiceTests
         try
         {
             Assert.True(firstEntered.Wait(TimeSpan.FromSeconds(5)));
-            second = sut
-                .UpdateAsync(editor =>
+            second = sut.UpdateAsync(editor =>
                 {
                     editor.Set("Flourish:Feature:Second", true);
                     editor.Set("Flourish:Feature:Shared", "second");
@@ -504,9 +470,7 @@ public sealed class AppPreferenceServiceTests
         await Task.WhenAll(first, second!);
 
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
-        var feature = document.RootElement
-            .GetProperty("Flourish")
-            .GetProperty("Feature");
+        var feature = document.RootElement.GetProperty("Flourish").GetProperty("Feature");
         Assert.True(feature.GetProperty("First").GetBoolean());
         Assert.True(feature.GetProperty("Second").GetBoolean());
         Assert.Equal("second", feature.GetProperty("Shared").GetString());
@@ -519,8 +483,7 @@ public sealed class AppPreferenceServiceTests
         using var sut = CreateService(directory.Path);
         using var firstEntered = new ManualResetEventSlim();
         using var releaseFirst = new ManualResetEventSlim();
-        var first = sut
-            .UpdateAsync(editor =>
+        var first = sut.UpdateAsync(editor =>
             {
                 firstEntered.Set();
                 releaseFirst.Wait();
@@ -534,8 +497,7 @@ public sealed class AppPreferenceServiceTests
         try
         {
             Assert.True(firstEntered.Wait(TimeSpan.FromSeconds(5)));
-            canceled = sut
-                .UpdateAsync(
+            canceled = sut.UpdateAsync(
                     editor =>
                     {
                         editorInvoked = true;
@@ -558,9 +520,7 @@ public sealed class AppPreferenceServiceTests
         Assert.True(final.Changed);
         Assert.False(editorInvoked);
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
-        var feature = document.RootElement
-            .GetProperty("Flourish")
-            .GetProperty("Feature");
+        var feature = document.RootElement.GetProperty("Flourish").GetProperty("Feature");
         Assert.False(feature.TryGetProperty("Canceled", out _));
         Assert.True(feature.GetProperty("Final").GetBoolean());
     }
@@ -584,12 +544,10 @@ public sealed class AppPreferenceServiceTests
             .Add(unrelatedSource)
             .Build();
         var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.ContentRootPath)
+        hostEnvironment
+            .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
-        using var sut = new AppPreferenceService(
-            configuration,
-            hostEnvironment.Object
-        );
+        using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
         using var runtimeConfiguration = new FlourishConfigurationService(configuration);
         var changeCount = 0;
         string? valueObservedByEvent = null;
@@ -625,19 +583,14 @@ public sealed class AppPreferenceServiceTests
                 }
             )
             .AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["Flourish:Feature:Value"] = "higher-priority",
-                }
+                new Dictionary<string, string?> { ["Flourish:Feature:Value"] = "higher-priority" }
             )
             .Build();
         var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.ContentRootPath)
+        hostEnvironment
+            .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
-        using var sut = new AppPreferenceService(
-            configuration,
-            hostEnvironment.Object
-        );
+        using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
 
         var result = await sut.SetAsync("Flourish:Feature:Value", "base-value");
 
@@ -646,8 +599,8 @@ public sealed class AppPreferenceServiceTests
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "base-value",
-            document.RootElement
-                .GetProperty("Flourish")
+            document
+                .RootElement.GetProperty("Flourish")
                 .GetProperty("Feature")
                 .GetProperty("Value")
                 .GetString()
@@ -697,14 +650,12 @@ public sealed class AppPreferenceServiceTests
         using var directory = new TemporaryDirectory();
         using var sut = CreateService(directory.Path);
 
-        var beforeRestart = await sut
-            .SetAsync("Flourish:Feature:BeforeRestart", true)
+        var beforeRestart = await sut.SetAsync("Flourish:Feature:BeforeRestart", true)
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
         await sut.StopAsync(CancellationToken.None);
         await sut.StartAsync(CancellationToken.None);
-        var afterRestart = await sut
-            .SetAsync("Flourish:Feature:AfterRestart", true)
+        var afterRestart = await sut.SetAsync("Flourish:Feature:AfterRestart", true)
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -712,15 +663,15 @@ public sealed class AppPreferenceServiceTests
         Assert.True(afterRestart.Changed);
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.True(
-            document.RootElement
-                .GetProperty("Flourish")
+            document
+                .RootElement.GetProperty("Flourish")
                 .GetProperty("Feature")
                 .GetProperty("BeforeRestart")
                 .GetBoolean()
         );
         Assert.True(
-            document.RootElement
-                .GetProperty("Flourish")
+            document
+                .RootElement.GetProperty("Flourish")
                 .GetProperty("Feature")
                 .GetProperty("AfterRestart")
                 .GetBoolean()
@@ -734,12 +685,10 @@ public sealed class AppPreferenceServiceTests
         var configuration = CreateConfiguration(directory.Path);
         using var configurationDisposal = (IDisposable)configuration;
         var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.ContentRootPath)
+        hostEnvironment
+            .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
-        using var sut = new AppPreferenceService(
-            configuration,
-            hostEnvironment.Object
-        );
+        using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
         using var runtimeConfiguration = new FlourishConfigurationService(configuration);
         Exception? reentrantError = null;
         var callbackInvoked = 0;
@@ -759,8 +708,7 @@ public sealed class AppPreferenceServiceTests
             );
         };
 
-        var result = await sut
-            .SetAsync("Flourish:Feature:Value", "updated")
+        var result = await sut.SetAsync("Flourish:Feature:Value", "updated")
             .AsTask()
             .WaitAsync(TimeSpan.FromSeconds(5));
 
@@ -776,19 +724,16 @@ public sealed class AppPreferenceServiceTests
         using var directory = new TemporaryDirectory();
         var configuration = CreateConfiguration(directory.Path);
         var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.ContentRootPath)
+        hostEnvironment
+            .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
-        using var sut = new AppPreferenceService(
-            configuration,
-            hostEnvironment.Object
-        );
+        using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
         using var runtimeConfiguration = new FlourishConfigurationService(configuration);
         var changeCount = 0;
         runtimeConfiguration.Changed += (_, _) => changeCount++;
         using var blockerEntered = new ManualResetEventSlim();
         using var releaseBlocker = new ManualResetEventSlim();
-        var blocker = sut
-            .UpdateAsync(_ =>
+        var blocker = sut.UpdateAsync(_ =>
             {
                 blockerEntered.Set();
                 releaseBlocker.Wait();
@@ -824,8 +769,7 @@ public sealed class AppPreferenceServiceTests
         using var sut = CreateService(directory.Path);
         using var blockerEntered = new ManualResetEventSlim();
         using var releaseBlocker = new ManualResetEventSlim();
-        var blocker = sut
-            .UpdateAsync(_ =>
+        var blocker = sut.UpdateAsync(_ =>
             {
                 blockerEntered.Set();
                 releaseBlocker.Wait();
@@ -860,9 +804,7 @@ public sealed class AppPreferenceServiceTests
         WriteAppSettings(directory.Path, invalidJson);
 
         sut.SaveTheme(FlourishTheme.Dark);
-        await Assert.ThrowsAsync<InvalidDataException>(() =>
-            sut.FlushThemeSavesAsync().AsTask()
-        );
+        await Assert.ThrowsAsync<InvalidDataException>(() => sut.FlushThemeSavesAsync().AsTask());
         Assert.Equal(invalidJson, File.ReadAllText(sut.FilePath));
 
         WriteAppSettings(directory.Path, "{}");
@@ -872,8 +814,8 @@ public sealed class AppPreferenceServiceTests
         using var document = JsonDocument.Parse(File.ReadAllText(sut.FilePath));
         Assert.Equal(
             "Light",
-            document.RootElement
-                .GetProperty("Flourish")
+            document
+                .RootElement.GetProperty("Flourish")
                 .GetProperty("Preferences")
                 .GetProperty("Theme")
                 .GetString()
@@ -942,10 +884,7 @@ public sealed class AppPreferenceServiceTests
             overwrite: true
         );
 
-        Assert.Equal(
-            "after",
-            await completion.Task.WaitAsync(TimeSpan.FromSeconds(5))
-        );
+        Assert.Equal("after", await completion.Task.WaitAsync(TimeSpan.FromSeconds(5)));
         Assert.Equal("after", configuration["Flourish:Feature:Value"]);
         Assert.True(Volatile.Read(ref changeCount) >= 1);
     }
@@ -969,12 +908,10 @@ public sealed class AppPreferenceServiceTests
             .Build();
         using var configurationDisposal = (IDisposable)configuration;
         var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.ContentRootPath)
+        hostEnvironment
+            .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
-        using var sut = new AppPreferenceService(
-            configuration,
-            hostEnvironment.Object
-        );
+        using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
         var changeCount = 0;
         using var subscription = ChangeToken.OnChange(
             configuration.GetReloadToken,
@@ -1057,10 +994,7 @@ public sealed class AppPreferenceServiceTests
             "recovered"
         );
 
-        Assert.Equal(
-            "after",
-            await recovered.Task.WaitAsync(TimeSpan.FromSeconds(5))
-        );
+        Assert.Equal("after", await recovered.Task.WaitAsync(TimeSpan.FromSeconds(5)));
     }
 
     [Fact]
@@ -1073,8 +1007,7 @@ public sealed class AppPreferenceServiceTests
         var provider = Assert.Single(
             configuration.Providers.OfType<FlourishAppSettingsConfigurationProvider>()
         );
-        const string staleContent =
-            """
+        const string staleContent = """
             {
               "Flourish": {
                 "Feature": {
@@ -1083,8 +1016,7 @@ public sealed class AppPreferenceServiceTests
               }
             }
             """;
-        const string newerContent =
-            """
+        const string newerContent = """
             {
               "Flourish": {
                 "Feature": {
@@ -1104,7 +1036,8 @@ public sealed class AppPreferenceServiceTests
     {
         var configuration = CreateConfiguration(contentRootPath);
         var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.ContentRootPath)
+        hostEnvironment
+            .SetupGet(environment => environment.ContentRootPath)
             .Returns(contentRootPath);
         return new AppPreferenceService(configuration, hostEnvironment.Object);
     }
@@ -1127,17 +1060,10 @@ public sealed class AppPreferenceServiceTests
 
     private static void WriteAppSettings(string directoryPath, string json)
     {
-        File.WriteAllText(
-            Path.Combine(directoryPath, "appsettings.Flourish.json"),
-            json
-        );
+        File.WriteAllText(Path.Combine(directoryPath, "appsettings.Flourish.json"), json);
     }
 
-    private static void ReplaceAppSettings(
-        string directoryPath,
-        string json,
-        string temporaryName
-    )
+    private static void ReplaceAppSettings(string directoryPath, string json, string temporaryName)
     {
         var temporaryPath = Path.Combine(directoryPath, $".{temporaryName}.tmp");
         File.WriteAllText(temporaryPath, json);

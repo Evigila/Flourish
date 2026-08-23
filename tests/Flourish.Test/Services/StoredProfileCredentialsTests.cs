@@ -1,5 +1,3 @@
-using ArkheideSystem.Flourish.Services;
-
 namespace ArkheideSystem.Flourish.Test.Services;
 
 public sealed class StoredProfileCredentialsTests
@@ -75,11 +73,7 @@ public sealed class StoredProfileCredentialsTests
     [Fact]
     public void TryGetName_WithEmptyNameParts_Fails()
     {
-        var sut = new StoredProfileCredentials
-        {
-            Password = "password",
-            RememberLogin = true,
-        };
+        var sut = new StoredProfileCredentials { Password = "password", RememberLogin = true };
 
         Assert.True(sut.IsSupportedSchema);
         Assert.False(sut.TryGetName(out _));

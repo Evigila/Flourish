@@ -1,5 +1,4 @@
 using System.IO;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
@@ -49,13 +48,7 @@ public sealed class ProfileServiceTests
             localization
         );
         await sut.SignInAsync(
-            new ProfileSignInRequest(
-                "Ada",
-                "Lovelace",
-                "secret",
-                NameOrder.FirstLast,
-                "avatar.png"
-            )
+            new ProfileSignInRequest("Ada", "Lovelace", "secret", NameOrder.FirstLast, "avatar.png")
         );
         var changes = new List<ProfileChangedEventArgs>();
         sut.ProfileChanged += (_, eventArgs) => changes.Add(eventArgs);
@@ -119,9 +112,7 @@ public sealed class ProfileServiceTests
     public async Task SignInWithoutUserSecrets_RemainsInMemoryAndRememberFailsTransactionally()
     {
         var localization = new FlourishLocalizationService(new FlourishDataOptions());
-        var secretStore = new ProfileSecretStore(
-            new ConfigurationBuilder().Build()
-        );
+        var secretStore = new ProfileSecretStore(new ConfigurationBuilder().Build());
         var sut = new ProfileService(
             new SimpleProfileAuthService(localization),
             secretStore,
@@ -130,12 +121,7 @@ public sealed class ProfileServiceTests
         );
 
         var result = await sut.SignInAsync(
-            new ProfileSignInRequest(
-                "Ada",
-                "Lovelace",
-                "secret",
-                NameOrder.FirstLast
-            )
+            new ProfileSignInRequest("Ada", "Lovelace", "secret", NameOrder.FirstLast)
         );
 
         Assert.True(result.Succeeded);
@@ -165,12 +151,7 @@ public sealed class ProfileServiceTests
         await File.WriteAllTextAsync(secretPath, "{}");
         using var fileProvider = new PhysicalFileProvider(directory.Path);
         var configuration = new ConfigurationBuilder()
-            .AddJsonFile(
-                fileProvider,
-                "secrets.json",
-                optional: true,
-                reloadOnChange: false
-            )
+            .AddJsonFile(fileProvider, "secrets.json", optional: true, reloadOnChange: false)
             .Build();
         var secretStore = new ProfileSecretStore(configuration);
         await secretStore.SaveAsync(

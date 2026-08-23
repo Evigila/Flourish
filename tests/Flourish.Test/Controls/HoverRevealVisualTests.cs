@@ -16,7 +16,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 public sealed class HoverRevealVisualTests
 {
     private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+        "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Fact]
     public void Animator_ResetAndStaticRevealPreserveExplicitVisualStates()
@@ -844,7 +844,7 @@ public sealed class HoverRevealVisualTests
             <ControlTemplate
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Flourish"
+              xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Arkheide.Flourish"
               TargetType="{x:Type controls:Button}"
             >
               <Border x:Name="HoverChrome" Opacity="0">

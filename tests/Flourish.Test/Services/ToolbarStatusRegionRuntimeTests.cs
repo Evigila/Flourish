@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -69,11 +68,7 @@ public sealed class ToolbarStatusRegionRuntimeTests
     {
         var options = new FlourishShellOptions();
         var sut = new ShellRegionService(options);
-        var oldHandle = sut.Append(
-            "runtime",
-            FlourishRegion.ToolbarStart,
-            _ => new Border()
-        );
+        var oldHandle = sut.Append("runtime", FlourishRegion.ToolbarStart, _ => new Border());
         var replacement = sut.Set(
             "runtime",
             FlourishRegion.FooterEnd,

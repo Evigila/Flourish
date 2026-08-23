@@ -1,7 +1,5 @@
-using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Internal.Interaction;
 
@@ -33,13 +31,7 @@ public sealed class StatusItemViewCacheTests
                 first = first with { Text = $"Update {version}", IconGlyph = version.ToString() };
                 Assert.True(
                     sut.Apply(
-                        Change(
-                            version,
-                            FlourishRuntimeChangeKind.Updated,
-                            first.Id,
-                            first,
-                            second
-                        )
+                        Change(version, FlourishRuntimeChangeKind.Updated, first.Id, first, second)
                     )
                 );
             }
@@ -107,30 +99,20 @@ public sealed class StatusItemViewCacheTests
             Assert.Equal([thirdRoot, secondRoot, firstRoot], host.Children.Cast<UIElement>());
 
             Assert.True(
-                sut.Apply(
-                    Change(4, FlourishRuntimeChangeKind.Removed, second.Id, third, first)
-                )
+                sut.Apply(Change(4, FlourishRuntimeChangeKind.Removed, second.Id, third, first))
             );
             Assert.Equal([thirdRoot, firstRoot], host.Children.Cast<UIElement>());
 
             var replacement = Item("replacement", "Replacement", "R");
             Assert.True(
-                sut.Apply(
-                    Change(5, FlourishRuntimeChangeKind.Reset, itemId: null, replacement)
-                )
+                sut.Apply(Change(5, FlourishRuntimeChangeKind.Reset, itemId: null, replacement))
             );
             var replacementRoot = Assert.IsType<StackPanel>(Assert.Single(host.Children));
             Assert.NotSame(firstRoot, replacementRoot);
 
             Assert.True(
                 sut.Apply(
-                    Change(
-                        6,
-                        FlourishRuntimeChangeKind.Updated,
-                        first.Id,
-                        replacement,
-                        first
-                    )
+                    Change(6, FlourishRuntimeChangeKind.Updated, first.Id, replacement, first)
                 )
             );
             Assert.NotSame(firstRoot, host.Children[1]);
@@ -149,9 +131,7 @@ public sealed class StatusItemViewCacheTests
             var firstRoot = host.Children[0];
 
             var stale = first with { Text = "Stale" };
-            Assert.False(
-                sut.Apply(Change(1, FlourishRuntimeChangeKind.Updated, first.Id, stale))
-            );
+            Assert.False(sut.Apply(Change(1, FlourishRuntimeChangeKind.Updated, first.Id, stale)));
             Assert.Same(firstRoot, host.Children[0]);
             Assert.Equal("First", GetLabel(host.Children[0]).Text);
 
@@ -163,14 +143,7 @@ public sealed class StatusItemViewCacheTests
             Assert.NotSame(firstRoot, replacementRoot);
 
             Assert.True(
-                sut.Apply(
-                    Change(
-                        5,
-                        FlourishRuntimeChangeKind.Updated,
-                        itemId: null,
-                        replacement
-                    )
-                )
+                sut.Apply(Change(5, FlourishRuntimeChangeKind.Updated, itemId: null, replacement))
             );
             Assert.Same(replacementRoot, host.Children[0]);
             Assert.False(

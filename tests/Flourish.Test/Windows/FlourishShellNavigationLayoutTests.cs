@@ -16,7 +16,7 @@ namespace ArkheideSystem.Flourish.Test.Windows;
 public sealed class FlourishShellNavigationLayoutTests
 {
     private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+        "/Arkheide.Flourish;component/Themes/Generic.xaml";
     private const string XamlNamespace =
         "http://schemas.microsoft.com/winfx/2006/xaml";
     private static readonly string RepositoryRoot = TestPaths.RepositoryRoot;
@@ -1666,10 +1666,10 @@ public sealed class FlourishShellNavigationLayoutTests
         standalone.SetAttributeValue(XNamespace.Xmlns + "x", XamlNamespace);
         standalone.SetAttributeValue(
             XNamespace.Xmlns + "control",
-            "clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Flourish"
+            "clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Arkheide.Flourish"
         );
         var looseReaderControlsNamespace = XNamespace.Get(
-            "clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Flourish"
+            "clr-namespace:ArkheideSystem.Flourish.Controls;assembly=Arkheide.Flourish"
         );
         standalone
             .Descendants()

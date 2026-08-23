@@ -16,7 +16,7 @@ namespace ArkheideSystem.Flourish.Abstract.Essential;
 /// {
 ///     public void RegisterCommands(ICommandRegistrar commands)
 ///     {
-///         commands.Register("reports.refresh", async (_, token) =>
+///         commands.Register("cmd_reports_refresh", async (_, token) =>
 ///         {
 ///             await reports.RefreshAsync(token);
 ///             return CommandResult.Handled;

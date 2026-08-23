@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -74,8 +73,7 @@ internal sealed class FlourishToolbarService(FlourishShellOptions options) : ITo
                 if (
                     options.DynamicToolbarItems.TryGetValue(pageType, out var current)
                     && current.SequenceEqual(replacement)
-                    && options.DynamicToolbarIconModes.GetValueOrDefault(pageType, true)
-                        == iconOnly
+                    && options.DynamicToolbarIconModes.GetValueOrDefault(pageType, true) == iconOnly
                 )
                 {
                     return false;

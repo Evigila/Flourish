@@ -1,6 +1,5 @@
 using System.IO;
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Moq;
@@ -90,7 +89,10 @@ public sealed class DefaultProjectBehaviorTests
         Assert.True(result);
         Assert.Equal("NewProject", Assert.Single(dialog.Requests).SuggestedFileName);
         Assert.True(File.Exists(replacementPath));
-        Assert.Equal(Path.GetFullPath(replacementPath), projects.Current.ActiveProject?.StoragePath);
+        Assert.Equal(
+            Path.GetFullPath(replacementPath),
+            projects.Current.ActiveProject?.StoragePath
+        );
     }
 
     [Fact]
@@ -111,9 +113,7 @@ public sealed class DefaultProjectBehaviorTests
             new Mock<IMessageService>().Object
         );
 
-        await Assert.ThrowsAsync<IOException>(() =>
-            sut.SaveActiveProjectAsync().AsTask()
-        );
+        await Assert.ThrowsAsync<IOException>(() => sut.SaveActiveProjectAsync().AsTask());
 
         Assert.Equal("existing content", await File.ReadAllTextAsync(storagePath));
         Assert.Null(projects.Current.ActiveProject?.StoragePath);
@@ -212,11 +212,7 @@ public sealed class DefaultProjectBehaviorTests
             activate: false
         );
         var messages = CreateStandardMessageService(MessageBoxResult.Yes);
-        var sut = CreateBehavior(
-            projects,
-            new RecordingSaveFileDialog(),
-            messages.Object
-        );
+        var sut = CreateBehavior(projects, new RecordingSaveFileDialog(), messages.Object);
 
         var result = await sut.DeleteProjectAsync("first");
 
@@ -237,11 +233,7 @@ public sealed class DefaultProjectBehaviorTests
         );
         projects.AppendProject(new FlourishProject("only", "Only", externalPath));
         var messages = CreateStandardMessageService(MessageBoxResult.Yes);
-        var sut = CreateBehavior(
-            projects,
-            new RecordingSaveFileDialog(),
-            messages.Object
-        );
+        var sut = CreateBehavior(projects, new RecordingSaveFileDialog(), messages.Object);
 
         var result = await sut.DeleteProjectAsync("only");
 
@@ -291,15 +283,9 @@ public sealed class DefaultProjectBehaviorTests
         );
         var projects = new ProjectService(new FlourishShellOptions(), catalogStore);
         var messages = CreateStandardMessageService(MessageBoxResult.Yes);
-        var sut = CreateBehavior(
-            projects,
-            new RecordingSaveFileDialog(),
-            messages.Object
-        );
+        var sut = CreateBehavior(projects, new RecordingSaveFileDialog(), messages.Object);
 
-        await Assert.ThrowsAsync<IOException>(() =>
-            sut.DeleteProjectAsync(project.Id).AsTask()
-        );
+        await Assert.ThrowsAsync<IOException>(() => sut.DeleteProjectAsync(project.Id).AsTask());
 
         Assert.Equal("recoverable content", await File.ReadAllTextAsync(managedPath));
         Assert.Equal(project, Assert.Single(projects.Current.Projects));
@@ -339,21 +325,14 @@ public sealed class DefaultProjectBehaviorTests
             "cancel",
             observedChoices => choices = observedChoices
         );
-        var sut = CreateBehavior(
-            projects,
-            new RecordingSaveFileDialog(),
-            messages.Object
-        );
+        var sut = CreateBehavior(projects, new RecordingSaveFileDialog(), messages.Object);
 
         var result = await sut.CanCloseAsync();
 
         Assert.False(result);
         Assert.Null(projects.Current.ActiveProject?.StoragePath);
         Assert.NotNull(choices);
-        Assert.Equal(
-            ["cancel", "dont-save", "save"],
-            choices.Select(choice => choice.Id)
-        );
+        Assert.Equal(["cancel", "dont-save", "save"], choices.Select(choice => choice.Id));
         Assert.Equal("Don't save", choices.Single(choice => choice.Id == "dont-save").Text);
         Assert.True(choices.Single(choice => choice.Id == "cancel").IsCancel);
         Assert.True(choices.Single(choice => choice.Id == "save").IsDefault);
@@ -401,12 +380,7 @@ public sealed class DefaultProjectBehaviorTests
         IProjectSaveFileDialog dialog,
         IMessageService messages
     ) =>
-        new(
-            projects,
-            dialog,
-            messages,
-            new FlourishLocalizationService(new FlourishDataOptions())
-        );
+        new(projects, dialog, messages, new FlourishLocalizationService(new FlourishDataOptions()));
 
     private static Mock<IMessageService> CreateStandardMessageService(MessageBoxResult result)
     {
@@ -427,8 +401,8 @@ public sealed class DefaultProjectBehaviorTests
         return messages;
     }
 
-    private static Mock<IMessageService> CreateSavePromptMessageService(bool save)
-        => CreateCustomPromptMessageService(save ? "save" : "cancel");
+    private static Mock<IMessageService> CreateSavePromptMessageService(bool save) =>
+        CreateCustomPromptMessageService(save ? "save" : "cancel");
 
     private static Mock<IMessageService> CreateCustomPromptMessageService(
         string selectedOptionId,
@@ -461,8 +435,7 @@ public sealed class DefaultProjectBehaviorTests
         return messages;
     }
 
-    private sealed class RecordingSaveFileDialog(params string?[] results)
-        : IProjectSaveFileDialog
+    private sealed class RecordingSaveFileDialog(params string?[] results) : IProjectSaveFileDialog
     {
         private readonly Queue<string?> results = new(results);
 
@@ -482,8 +455,7 @@ public sealed class DefaultProjectBehaviorTests
     private sealed class FailingProjectCatalogStore(
         ProjectCatalog catalog,
         int successfulSavesBeforeFailure = 0
-    )
-        : IProjectCatalogStore
+    ) : IProjectCatalogStore
     {
         public int SaveCallCount { get; private set; }
 

@@ -1,6 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>Arkheide.Flourish</AssemblyName>
+    <PackageId>Arkheide.Flourish</PackageId>
+    <Title>Arkheide.Flourish</Title>
+    <Authors>Arkheide</Authors>
+    <Description>A WPF application shell and control library for the Arkheide ecosystem.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Evigila/Flourish</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <RootNamespace>ArkheideSystem.Flourish</RootNamespace>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,8 +21,8 @@
 
   <ItemGroup>
     <Resource Include="Assets\favicon.ico" />
-    <EmbeddedResource Include="Assets\lang_en-US.json" />
-    <EmbeddedResource Include="Assets\lang_zh-CN.json" />
+    <EmbeddedResource Include="Assets\Flourish.LangKey_en-US.Json" />
+    <EmbeddedResource Include="Assets\Flourish.LangKey_zh-CN.Json" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
 

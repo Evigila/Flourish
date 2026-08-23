@@ -1,6 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Services;
-
 namespace ArkheideSystem.Flourish.Test.Services;
 
 public sealed class FlourishMessageOptionValidatorTests
@@ -58,9 +55,9 @@ public sealed class FlourishMessageOptionValidatorTests
     public void Validate_WithMissingText_ThrowsArgumentException(string? optionText)
     {
         var exception = Assert.Throws<ArgumentException>(() =>
-            FlourishMessageOptionValidator.Validate(
-                [new FlourishMessageOption("continue", optionText!)]
-            )
+            FlourishMessageOptionValidator.Validate([
+                new FlourishMessageOption("continue", optionText!),
+            ])
         );
 
         Assert.Equal("choices", exception.ParamName);
@@ -71,12 +68,10 @@ public sealed class FlourishMessageOptionValidatorTests
     public void Validate_WithDuplicateIds_ThrowsArgumentException()
     {
         var exception = Assert.Throws<ArgumentException>(() =>
-            FlourishMessageOptionValidator.Validate(
-                [
-                    new FlourishMessageOption("continue", "Continue"),
-                    new FlourishMessageOption("continue", "Proceed"),
-                ]
-            )
+            FlourishMessageOptionValidator.Validate([
+                new FlourishMessageOption("continue", "Continue"),
+                new FlourishMessageOption("continue", "Proceed"),
+            ])
         );
 
         Assert.Equal("choices", exception.ParamName);

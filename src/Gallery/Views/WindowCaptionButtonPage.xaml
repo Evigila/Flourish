@@ -1,6 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.WindowCaptionButtonPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -9,7 +10,7 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.ADedicatedTitleBarActionWithCaptionGeometryAndWindowInteractionS_99BF0EA9"
+      Content="{culture:Localize Key=Controls_ADedicatedTitleBarActionWithCaptionGeometryAndWindowInteractionS_99BF0EA9}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="WindowCaptionButton"
@@ -17,10 +18,10 @@
 
     <flourish:Chunk Title="Variant">
       <flourish:Presenter
-        Content="Gallery.Controls.UseTextForOrdinaryCaptionCommandsAndReserveDangerForTheCloseComm_CAE8A103"
+        Content="{culture:Localize Key=Controls_UseTextForOrdinaryCaptionCommandsAndReserveDangerForTheCloseComm_CAE8A103}"
         PresenterMode="Split"
         PresenterPosition="Left"
-        Title="Gallery.Controls.CaptionSemantics_6928015C"
+        Title="{culture:Localize Key=Controls_CaptionSemantics_6928015C}"
       >
         <flourish:Presenter.Presentation>
           <Grid
@@ -35,16 +36,16 @@
               VerticalAlignment="Center"
               Orientation="Horizontal"
             >
-              <flourish:WindowCaptionButton AutomationProperties.Name="Gallery.Controls.Minimize_D72E311C" Icon="&#xE921;" ToolTip="Gallery.Controls.Minimize_D72E311C" Variant="Text" />
-              <flourish:WindowCaptionButton AutomationProperties.Name="Gallery.Controls.Maximize_FBA6C2C5" Icon="&#xE922;" ToolTip="Gallery.Controls.Maximize_FBA6C2C5" Variant="Text" />
-              <flourish:WindowCaptionButton AutomationProperties.Name="Gallery.Controls.Close_7D9EB7AC" Icon="&#xE8BB;" ToolTip="Gallery.Controls.Close_7D9EB7AC" Variant="Danger" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="{culture:Localize Key=Controls_Minimize_D72E311C}" Icon="&#xE921;" ToolTip="{culture:Localize Key=Controls_Minimize_D72E311C}" Variant="Text" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="{culture:Localize Key=Controls_Maximize_FBA6C2C5}" Icon="&#xE922;" ToolTip="{culture:Localize Key=Controls_Maximize_FBA6C2C5}" Variant="Text" />
+              <flourish:WindowCaptionButton AutomationProperties.Name="{culture:Localize Key=Controls_Close_7D9EB7AC}" Icon="&#xE8BB;" ToolTip="{culture:Localize Key=Controls_Close_7D9EB7AC}" Variant="Danger" />
             </StackPanel>
           </Grid>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         x:Name="PropertiesGrid"
         AutoGenerateColumns="False"
@@ -55,22 +56,22 @@
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.PROPERTY_638D02E6" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.PURPOSE_D31A37AD" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_PROPERTY_638D02E6}" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="{culture:Localize Key=Controls_PURPOSE_D31A37AD}" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.CaptionGeometry_F705FE33">
-      <flourish:Card Content="Gallery.Controls.WindowCaptionButtonIsSizedForTheTitleBarAndKeepsTheCaptionHitTar_C277C7B9" />
+    <flourish:Chunk Title="{culture:Localize Key=Controls_CaptionGeometry_F705FE33}">
+      <flourish:Card Content="{culture:Localize Key=Controls_WindowCaptionButtonIsSizedForTheTitleBarAndKeepsTheCaptionHitTar_C277C7B9}" />
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.InteractionContract_BCA9C747">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_InteractionContract_BCA9C747}">
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Title="Gallery.Controls.WindowControls_9CEA69FD"
-          Content="Gallery.Controls.MinimizeMaximizeAndRestoreChangeTheWindowStateWithoutDiscardingW_DF87D21D"
+          Title="{culture:Localize Key=Controls_WindowControls_9CEA69FD}"
+          Content="{culture:Localize Key=Controls_MinimizeMaximizeAndRestoreChangeTheWindowStateWithoutDiscardingW_DF87D21D}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
         >
@@ -87,21 +88,21 @@
                 Orientation="Horizontal"
               >
                 <flourish:WindowCaptionButton
-                  AutomationProperties.Name="Gallery.Controls.Minimize_D72E311C"
+                  AutomationProperties.Name="{culture:Localize Key=Controls_Minimize_D72E311C}"
                   Icon="&#xE921;"
-                  ToolTip="Gallery.Controls.Minimize_D72E311C"
+                  ToolTip="{culture:Localize Key=Controls_Minimize_D72E311C}"
                   Variant="Text"
                 />
                 <flourish:WindowCaptionButton
-                  AutomationProperties.Name="Gallery.Controls.Maximize_FBA6C2C5"
+                  AutomationProperties.Name="{culture:Localize Key=Controls_Maximize_FBA6C2C5}"
                   Icon="&#xE922;"
-                  ToolTip="Gallery.Controls.Maximize_FBA6C2C5"
+                  ToolTip="{culture:Localize Key=Controls_Maximize_FBA6C2C5}"
                   Variant="Text"
                 />
                 <flourish:WindowCaptionButton
-                  AutomationProperties.Name="Gallery.Controls.Restore_A76E13B9"
+                  AutomationProperties.Name="{culture:Localize Key=Controls_Restore_A76E13B9}"
                   Icon="&#xE923;"
-                  ToolTip="Gallery.Controls.Restore_A76E13B9"
+                  ToolTip="{culture:Localize Key=Controls_Restore_A76E13B9}"
                   Variant="Text"
                 />
               </StackPanel>
@@ -110,8 +111,8 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Title="Gallery.Controls.CloseAction_E312EBE7"
-          Content="Gallery.Controls.ClosingCanEndTheCurrentSessionOrDiscardUnsavedWorkUseTheDangerVa_9B7343DB"
+          Title="{culture:Localize Key=Controls_CloseAction_E312EBE7}"
+          Content="{culture:Localize Key=Controls_ClosingCanEndTheCurrentSessionOrDiscardUnsavedWorkUseTheDangerVa_9B7343DB}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
         >
@@ -121,9 +122,9 @@
               Height="32"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              AutomationProperties.Name="Gallery.Controls.Close_7D9EB7AC"
+              AutomationProperties.Name="{culture:Localize Key=Controls_Close_7D9EB7AC}"
               Icon="&#xE8BB;"
-              ToolTip="Gallery.Controls.Close_7D9EB7AC"
+              ToolTip="{culture:Localize Key=Controls_Close_7D9EB7AC}"
               Variant="Danger"
             />
           </flourish:Presenter.Presentation>
@@ -131,11 +132,11 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Title="Gallery.Controls.BindCaptionCommands_DC880523"
-          Content="Gallery.Controls.UseWindowCaptionButtonOnlyInTheTitleBarAndBindItToASystemCommand_5E0921E9"
+          Title="{culture:Localize Key=Controls_BindCaptionCommands_DC880523}"
+          Content="{culture:Localize Key=Controls_UseWindowCaptionButtonOnlyInTheTitleBarAndBindItToASystemCommand_5E0921E9}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -146,25 +147,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
-          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
+          AutomationProperties.Name="{culture:Localize Key=Controls_FlourishGitHubRepository_52730F6E}"
+          Content="{culture:Localize Key=Controls_RepositoryLinkPlaceholder_ACCB5690}"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="Gallery.Controls.WindowCaptionButtonDocumentation_0D35F729"
-          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
+          AutomationProperties.Name="{culture:Localize Key=Controls_WindowCaptionButtonDocumentation_0D35F729}"
+          Content="{culture:Localize Key=Controls_CanonicalDocumentationLinkPlaceholder_90AB4F65}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.WindowCaptionButtonDocumentation_0D35F729"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_WindowCaptionButtonDocumentation_0D35F729}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

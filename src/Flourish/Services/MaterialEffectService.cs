@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Brushes = System.Windows.Media.Brushes;
 using Colors = System.Windows.Media.Colors;
@@ -41,10 +40,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
     public MaterialEffectService(FlourishShellOptions? options = null)
         : this(options, MaterialEffectPlatform.Current) { }
 
-    internal MaterialEffectService(
-        FlourishShellOptions? options,
-        MaterialEffectPlatform platform
-    )
+    internal MaterialEffectService(FlourishShellOptions? options, MaterialEffectPlatform platform)
     {
         this.options = options;
         this.platform = platform;
@@ -123,10 +119,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
                 attachedOwner,
                 () =>
                 {
-                    if (
-                        EffectiveEffect == MaterialEffect.Acrylic
-                        && platform.SupportsAccentAcrylic
-                    )
+                    if (EffectiveEffect == MaterialEffect.Acrylic && platform.SupportsAccentAcrylic)
                     {
                         ApplyCurrentEffectCore(attachedOwner);
                     }
@@ -300,14 +293,11 @@ internal sealed class MaterialEffectService : IMaterialEffectService
 
         var applied = backend switch
         {
-            MaterialEffectBackend.SystemMica =>
-                ApplySystemBackdrop(hwnd, DwmsbtMainWindow),
+            MaterialEffectBackend.SystemMica => ApplySystemBackdrop(hwnd, DwmsbtMainWindow),
             MaterialEffectBackend.LegacyMica => ApplyLegacyMica(hwnd),
-            MaterialEffectBackend.SystemAcrylic =>
-                ApplySystemBackdrop(hwnd, DwmsbtTransientWindow),
+            MaterialEffectBackend.SystemAcrylic => ApplySystemBackdrop(hwnd, DwmsbtTransientWindow),
             MaterialEffectBackend.AccentAcrylic => ApplyAccentAcrylic(hwnd),
-            MaterialEffectBackend.SystemMicaAlt =>
-                ApplySystemBackdrop(hwnd, DwmsbtTabbedWindow),
+            MaterialEffectBackend.SystemMicaAlt => ApplySystemBackdrop(hwnd, DwmsbtTabbedWindow),
             _ => false,
         };
 
@@ -359,12 +349,8 @@ internal sealed class MaterialEffectService : IMaterialEffectService
         var frameExtended = DwmExtendFrameIntoClientArea(hwnd, ref frameMargins) == Succeeded;
         var enabled = 1;
         var micaApplied =
-            DwmSetWindowAttribute(
-                hwnd,
-                DwmwaLegacyMicaEffect,
-                ref enabled,
-                Marshal.SizeOf<int>()
-            ) == Succeeded;
+            DwmSetWindowAttribute(hwnd, DwmwaLegacyMicaEffect, ref enabled, Marshal.SizeOf<int>())
+            == Succeeded;
         return frameExtended && micaApplied;
     }
 
@@ -416,12 +402,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
         if (platform.SupportsLegacyMica)
         {
             var disabled = 0;
-            DwmSetWindowAttribute(
-                hwnd,
-                DwmwaLegacyMicaEffect,
-                ref disabled,
-                Marshal.SizeOf<int>()
-            );
+            DwmSetWindowAttribute(hwnd, DwmwaLegacyMicaEffect, ref disabled, Marshal.SizeOf<int>());
         }
 
         if (platform.SupportsAccentAcrylic)
@@ -536,11 +517,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
 
     private static bool SetAccentPolicy(IntPtr hwnd, int state, int gradientColor)
     {
-        var policy = new AccentPolicy
-        {
-            AccentState = state,
-            GradientColor = gradientColor,
-        };
+        var policy = new AccentPolicy { AccentState = state, GradientColor = gradientColor };
         var policySize = Marshal.SizeOf<AccentPolicy>();
         var policyPointer = Marshal.AllocHGlobal(policySize);
         try

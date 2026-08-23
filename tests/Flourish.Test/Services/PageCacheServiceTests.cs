@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Moq;
@@ -75,10 +74,7 @@ public sealed class PageCacheServiceTests
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
         factory.Setup(value => value.Create(typeof(CacheablePage))).Returns(page);
         var options = CreateOptions(typeof(CacheablePage), FlourishPageCacheMode.Enabled);
-        var sut = new PageCacheService(
-            factory.Object,
-            new NavigationRouteRegistry(options)
-        );
+        var sut = new PageCacheService(factory.Object, new NavigationRouteRegistry(options));
         options.InitialNavigationRoutes.Clear();
 
         var first = sut.GetPage(typeof(CacheablePage));

@@ -12,29 +12,29 @@ public partial class CheckBoxPage : Page
         {
             new(
                 "Variant",
-                GalleryLocaleKeys.ControlsChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
+                Key.Controls_ChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
             ),
             new(
                 "Icon",
-                GalleryLocaleKeys.ControlsSuppliesOptionalIconContentRenderedOnlyByTheVerticalLayout_064A3C53
+                Key.Controls_SuppliesOptionalIconContentRenderedOnlyByTheVerticalLayout_064A3C53
             ),
             new(
                 "IsChecked",
-                GalleryLocaleKeys.ControlsGetsOrSetsTrueFalseOrNullWhenThreeStateBehaviorIsEnabled_1CE68B0F
+                Key.Controls_GetsOrSetsTrueFalseOrNullWhenThreeStateBehaviorIsEnabled_1CE68B0F
             ),
             new(
                 "IsThreeState",
-                GalleryLocaleKeys.ControlsAllowsTheControlToEnterTheIndeterminateState_31967F58
+                Key.Controls_AllowsTheControlToEnterTheIndeterminateState_31967F58
             ),
-            new("Content", GalleryLocaleKeys.ControlsSuppliesTheVisibleOptionLabel_2FF959F7),
-            new("Checked", GalleryLocaleKeys.ControlsReportsATransitionToTheCheckedState_0D8A8B08),
+            new("Content", Key.Controls_SuppliesTheVisibleOptionLabel_2FF959F7),
+            new("Checked", Key.Controls_ReportsATransitionToTheCheckedState_0D8A8B08),
             new(
                 "Unchecked",
-                GalleryLocaleKeys.ControlsReportsATransitionToTheUncheckedState_ABD97118
+                Key.Controls_ReportsATransitionToTheUncheckedState_ABD97118
             ),
             new(
                 "Indeterminate",
-                GalleryLocaleKeys.ControlsReportsATransitionToTheNullState_C6DF7C32
+                Key.Controls_ReportsATransitionToTheNullState_C6DF7C32
             ),
         };
     }

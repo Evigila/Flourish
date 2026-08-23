@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -78,9 +77,7 @@ public sealed class FlourishBackgroundTaskServiceTests
     {
         var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
         await service.StartAsync(CancellationToken.None);
-        var started = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var handle = service.QueueTask(
             new FlourishBackgroundTaskMetadata("Stop worker"),
             async context =>
@@ -141,12 +138,16 @@ public sealed class FlourishBackgroundTaskServiceTests
         var activeTasks = service.ActiveTasks;
 
         Assert.Equal(3, service.MaxConcurrency);
-        Assert.Equal(3, activeTasks.Count(task => task.State == FlourishBackgroundTaskState.Running));
+        Assert.Equal(
+            3,
+            activeTasks.Count(task => task.State == FlourishBackgroundTaskState.Running)
+        );
         Assert.Single(activeTasks, task => task.State == FlourishBackgroundTaskState.Queued);
         Assert.Equal(3, Volatile.Read(ref maximumRunning));
 
         release.TrySetResult();
-        var results = await Task.WhenAll(handles.Select(handle => handle.Completion)).WaitAsync(Timeout);
+        var results = await Task.WhenAll(handles.Select(handle => handle.Completion))
+            .WaitAsync(Timeout);
         Assert.All(results, result => Assert.True(result.Succeeded));
         Assert.Empty(service.ActiveTasks);
         await service.StopAsync(CancellationToken.None);
@@ -329,10 +330,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             captured.SelectMany(tasks => tasks),
             task => task.State == FlourishBackgroundTaskState.Running
         );
-        Assert.Contains(
-            captured.SelectMany(tasks => tasks),
-            task => task.Progress == 0.5
-        );
+        Assert.Contains(captured.SelectMany(tasks => tasks), task => task.Progress == 0.5);
         Assert.Empty(captured[^1]);
         await service.StopAsync(CancellationToken.None);
     }
@@ -397,10 +395,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         service.TasksChanged += (_, args) =>
         {
             var task = args.Tasks.SingleOrDefault();
-            if (
-                task?.State == FlourishBackgroundTaskState.Running
-                && !requestedCancellation
-            )
+            if (task?.State == FlourishBackgroundTaskState.Running && !requestedCancellation)
             {
                 requestedCancellation = true;
                 service.CancelTask(task.Id);
@@ -584,17 +579,11 @@ public sealed class FlourishBackgroundTaskServiceTests
             Func<TState, Exception?, string> formatter
         )
         {
-            Logged.TrySetResult(
-                new LogEntry(logLevel, formatter(state, exception), exception)
-            );
+            Logged.TrySetResult(new LogEntry(logLevel, formatter(state, exception), exception));
         }
     }
 
-    private sealed record LogEntry(
-        LogLevel Level,
-        string Message,
-        Exception? Exception
-    );
+    private sealed record LogEntry(LogLevel Level, string Message, Exception? Exception);
 
     private sealed class EmptyScope : IDisposable
     {

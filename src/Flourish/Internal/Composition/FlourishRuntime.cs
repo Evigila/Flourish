@@ -1,6 +1,3 @@
-using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Themes;
 using ArkheideSystem.Flourish.Views.Windows;

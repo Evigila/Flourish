@@ -1,5 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
-
 namespace ArkheideSystem.Flourish.Services;
 
 internal enum MaterialEffectBackend
@@ -46,8 +44,7 @@ internal readonly record struct MaterialEffectPlatform(
         return new MaterialEffectPlatform(true, version.Major, version.Build);
     }
 
-    internal bool IsWindows10 =>
-        IsWindows && MajorVersion == 10 && BuildNumber < Windows11Build;
+    internal bool IsWindows10 => IsWindows && MajorVersion == 10 && BuildNumber < Windows11Build;
 
     internal bool IsWindows11OrLater =>
         IsWindows && MajorVersion == 10 && BuildNumber >= Windows11Build;
@@ -64,11 +61,10 @@ internal readonly record struct MaterialEffectPlatform(
         && BuildNumber >= Windows10AcrylicBuild
         && !SupportsSystemBackdrop;
 
-    internal MaterialEffect DefaultEffect => IsWindows11OrLater
-        ? MaterialEffect.Mica
-        : IsWindows10 && BuildNumber >= Windows10AcrylicBuild
-            ? MaterialEffect.Acrylic
-            : MaterialEffect.None;
+    internal MaterialEffect DefaultEffect =>
+        IsWindows11OrLater ? MaterialEffect.Mica
+        : IsWindows10 && BuildNumber >= Windows10AcrylicBuild ? MaterialEffect.Acrylic
+        : MaterialEffect.None;
 
     internal MaterialEffect Resolve(MaterialEffect effect)
     {
@@ -86,8 +82,7 @@ internal readonly record struct MaterialEffectPlatform(
         return Resolve(effect) switch
         {
             MaterialEffect.None => MaterialEffectBackend.None,
-            MaterialEffect.Mica when SupportsSystemBackdrop =>
-                MaterialEffectBackend.SystemMica,
+            MaterialEffect.Mica when SupportsSystemBackdrop => MaterialEffectBackend.SystemMica,
             MaterialEffect.Mica when SupportsLegacyMica => MaterialEffectBackend.LegacyMica,
             MaterialEffect.Acrylic when SupportsSystemBackdrop =>
                 MaterialEffectBackend.SystemAcrylic,
@@ -105,8 +100,7 @@ internal readonly record struct MaterialEffectPlatform(
         {
             MaterialEffect.Mica => "Windows 11 build 22000 or later",
             MaterialEffect.MicaAlt => "Windows 11 build 22621 or later",
-            MaterialEffect.Acrylic =>
-                "Windows 10 version 1803 or later, including Windows 11",
+            MaterialEffect.Acrylic => "Windows 10 version 1803 or later, including Windows 11",
             _ => "a supported Windows material platform",
         };
     }

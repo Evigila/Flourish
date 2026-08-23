@@ -1,4 +1,3 @@
-using System.Windows;
 using System.Windows.Controls.Primitives;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
@@ -43,10 +42,7 @@ internal static class ToolTipPlacementCalculator
         );
 
         return new CustomPopupPlacement(
-            new Point(
-                rootPoint.X - targetPosition.X,
-                rootPoint.Y - targetPosition.Y
-            ),
+            new Point(rootPoint.X - targetPosition.X, rootPoint.Y - targetPosition.Y),
             GetPrimaryAxis(placement)
         );
     }
@@ -59,11 +55,7 @@ internal static class ToolTipPlacementCalculator
         );
     }
 
-    internal static bool IsLeftSide(
-        Point elementPosition,
-        Size elementSize,
-        Size rootSize
-    )
+    internal static bool IsLeftSide(Point elementPosition, Size elementSize, Size rootSize)
     {
         return elementPosition.X + elementSize.Width / 2 < rootSize.Width / 2;
     }
@@ -89,10 +81,7 @@ internal static class ToolTipPlacementCalculator
         };
     }
 
-    private static PlacementMode ChooseNearestEdgePlacement(
-        Point targetCenter,
-        Size rootSize
-    )
+    private static PlacementMode ChooseNearestEdgePlacement(Point targetCenter, Size rootSize)
     {
         var distanceToTop = targetCenter.Y;
         var distanceToBottom = rootSize.Height - targetCenter.Y;
@@ -103,14 +92,10 @@ internal static class ToolTipPlacementCalculator
 
         if (nearestVerticalEdge <= nearestHorizontalEdge)
         {
-            return distanceToTop <= distanceToBottom
-                ? PlacementMode.Bottom
-                : PlacementMode.Top;
+            return distanceToTop <= distanceToBottom ? PlacementMode.Bottom : PlacementMode.Top;
         }
 
-        return distanceToLeft <= distanceToRight
-            ? PlacementMode.Right
-            : PlacementMode.Left;
+        return distanceToLeft <= distanceToRight ? PlacementMode.Right : PlacementMode.Left;
     }
 
     private static Point CalculateRootPoint(

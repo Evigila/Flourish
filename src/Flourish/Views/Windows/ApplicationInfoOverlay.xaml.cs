@@ -2,10 +2,9 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
-using WpfPanel = System.Windows.Controls.Panel;
-using UserControl = System.Windows.Controls.UserControl;
 using Canvas = System.Windows.Controls.Canvas;
+using UserControl = System.Windows.Controls.UserControl;
+using WpfPanel = System.Windows.Controls.Panel;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
@@ -41,15 +40,15 @@ internal partial class ApplicationInfoOverlay : UserControl
     )
     {
         ApplicationInfoLogoImage.Source = logoSource;
-        ApplicationInfoLogoImage.Visibility =
-            logoSource is null ? Visibility.Collapsed : Visibility.Visible;
-        ApplicationInfoLogoFallback.Text = string.IsNullOrWhiteSpace(
-            titleState.LogoFallbackText
-        )
+        ApplicationInfoLogoImage.Visibility = logoSource is null
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        ApplicationInfoLogoFallback.Text = string.IsNullOrWhiteSpace(titleState.LogoFallbackText)
             ? "F"
             : titleState.LogoFallbackText[..1];
-        ApplicationInfoLogoFallback.Visibility =
-            logoSource is null ? Visibility.Visible : Visibility.Collapsed;
+        ApplicationInfoLogoFallback.Visibility = logoSource is null
+            ? Visibility.Visible
+            : Visibility.Collapsed;
 
         SetTextVisibility(
             ApplicationInfoTitle,
@@ -61,8 +60,8 @@ internal partial class ApplicationInfoOverlay : UserControl
             titleState.ApplicationSubTitle,
             titleState.ShowApplicationSubTitle
         );
-        var projectTitle = projectState.IsMultiProjectEnabled
-            && projectState.ActiveProject is { } activeProject
+        var projectTitle =
+            projectState.IsMultiProjectEnabled && projectState.ActiveProject is { } activeProject
                 ? activeProject.StoragePath is null
                     ? titleState.UnnamedProjectPlaceholder
                     : activeProject.Name
@@ -73,9 +72,7 @@ internal partial class ApplicationInfoOverlay : UserControl
             titleState.ShowProjectTitle
         );
         ApplicationInfoBodyScrollViewer.Visibility =
-            ApplicationInfoBodyHost.Children.Count > 0
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            ApplicationInfoBodyHost.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         var identityParts = new[]
         {
@@ -111,10 +108,7 @@ internal partial class ApplicationInfoOverlay : UserControl
         Canvas.SetTop(TitleBarFlyoutCard, top);
     }
 
-    private void OverlayCanvas_PreviewMouseLeftButtonDown(
-        object sender,
-        MouseButtonEventArgs e
-    )
+    private void OverlayCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         var position = e.GetPosition(TitleBarFlyoutCard);
         if (
@@ -148,18 +142,13 @@ internal partial class ApplicationInfoOverlay : UserControl
     {
         element.Text = text;
         element.Visibility =
-            enabled && !string.IsNullOrWhiteSpace(text)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            enabled && !string.IsNullOrWhiteSpace(text) ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private static string? GetVisibleText(System.Windows.Controls.TextBlock element) =>
         element.Visibility == Visibility.Visible ? element.Text : null;
 
-    private static void SynchronizeChildren(
-        WpfPanel host,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    private static void SynchronizeChildren(WpfPanel host, IReadOnlyList<FrameworkElement> elements)
     {
         for (var index = 0; index < elements.Count; index++)
         {

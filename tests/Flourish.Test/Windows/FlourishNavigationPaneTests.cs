@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Views.Windows;
 using NavigationListBox = ArkheideSystem.Flourish.Controls.BunchedListBox;
@@ -20,9 +19,7 @@ public sealed class FlourishNavigationPaneTests
             var requested = 0;
             sut.ItemRequested += (_, _) => requested++;
             sut.SetItems([main], [fixedItem]);
-            var mainList = Assert.IsType<NavigationListBox>(
-                sut.FindName("NavigationItemsHost")
-            );
+            var mainList = Assert.IsType<NavigationListBox>(sut.FindName("NavigationItemsHost"));
             var fixedList = Assert.IsType<NavigationListBox>(
                 sut.FindName("FixedNavigationItemsHost")
             );
@@ -53,9 +50,8 @@ public sealed class FlourishNavigationPaneTests
             sut.SetItems([item], []);
             sut.ItemRequested += (_, e) => request = e;
 
-            Assert.IsType<NavigationListBox>(
-                sut.FindName("NavigationItemsHost")
-            ).SelectedItem = item;
+            Assert.IsType<NavigationListBox>(sut.FindName("NavigationItemsHost")).SelectedItem =
+                item;
 
             Assert.NotNull(request);
             Assert.Same(item, request.Item);
@@ -69,9 +65,7 @@ public sealed class FlourishNavigationPaneTests
         StaTest.Run(() =>
         {
             var sut = new FlourishNavigationPane();
-            var mainList = Assert.IsType<NavigationListBox>(
-                sut.FindName("NavigationItemsHost")
-            );
+            var mainList = Assert.IsType<NavigationListBox>(sut.FindName("NavigationItemsHost"));
             var fixedList = Assert.IsType<NavigationListBox>(
                 sut.FindName("FixedNavigationItemsHost")
             );
@@ -94,10 +88,7 @@ public sealed class FlourishNavigationPaneTests
         });
     }
 
-    private static FlourishNavigationItem CreatePageItem(
-        string key,
-        bool isFixed = false
-    ) =>
+    private static FlourishNavigationItem CreatePageItem(string key, bool isFixed = false) =>
         new(
             key,
             key,

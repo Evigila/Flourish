@@ -12,7 +12,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 
 public sealed class FlourishControlTextPresenterTests
 {
-    private const string GenericThemeSource = "/Flourish;component/Themes/Generic.xaml";
+    private const string GenericThemeSource = "/Arkheide.Flourish;component/Themes/Generic.xaml";
     private const string ControlPresenterStyleKey = "FlourishControlContentPresenterStyle";
 
     [Fact]

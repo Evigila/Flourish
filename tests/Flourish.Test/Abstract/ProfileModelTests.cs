@@ -1,5 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
-
 namespace ArkheideSystem.Flourish.Test.Abstract;
 
 public sealed class ProfileUserTests
@@ -51,16 +49,12 @@ public sealed class ProfileUserTests
     [InlineData(null, null)]
     [InlineData("", "")]
     [InlineData("   ", "\t")]
-    public void Constructor_WithNoName_ThrowsArgumentException(
-        string? firstName,
-        string? lastName
-    )
+    public void Constructor_WithNoName_ThrowsArgumentException(string? firstName, string? lastName)
     {
         Assert.Throws<ArgumentException>(() =>
             new ProfileUser(firstName!, lastName!, NameOrder.FirstLast)
         );
     }
-
 }
 
 public sealed class ProfileSignInRequestTests
@@ -88,12 +82,7 @@ public sealed class ProfileSignInRequestTests
     public void ToString_MasksPassword()
     {
         const string password = "unique-secret-value";
-        var request = new ProfileSignInRequest(
-            "Ada",
-            "Lovelace",
-            password,
-            NameOrder.FirstLast
-        );
+        var request = new ProfileSignInRequest("Ada", "Lovelace", password, NameOrder.FirstLast);
 
         var result = request.ToString();
 
@@ -128,9 +117,7 @@ public sealed class ProfileAuthenticationResultTests
     [InlineData("   ")]
     public void Failure_WithBlankMessage_ThrowsArgumentException(string? errorMessage)
     {
-        Assert.Throws<ArgumentException>(() =>
-            ProfileAuthenticationResult.Failure(errorMessage!)
-        );
+        Assert.Throws<ArgumentException>(() => ProfileAuthenticationResult.Failure(errorMessage!));
     }
 
     [Fact]

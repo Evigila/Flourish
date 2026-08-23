@@ -2,15 +2,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Layout;
 using FlourishListBox = ArkheideSystem.Flourish.Controls.ListBox;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
 public sealed class PresenterPresentationLayoutTests
 {
-    private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+    private const string GenericThemeSource = "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Theory]
     [InlineData(PresenterMode.Split)]
@@ -52,11 +50,7 @@ public sealed class PresenterPresentationLayoutTests
                 MinHeight = 48,
                 MaxHeight = 80,
                 Margin = new Thickness(0, 10, 0, 0),
-                Items =
-                {
-                    "Registered command",
-                    "Registered shortcut",
-                },
+                Items = { "Registered command", "Registered shortcut" },
             };
             verticalGroup.Children.Add(registryList);
             var textContent = new FlourishTextBlock
@@ -96,16 +90,11 @@ public sealed class PresenterPresentationLayoutTests
                 AssertCentered(fixedContent, fixedPresenter);
                 AssertVisibleChildrenCentered(horizontalGroup, horizontalPresenter);
                 AssertVisibleChildrenCentered(verticalGroup, verticalPresenter);
-                AssertVerticalGroupFillsCrossAxis(
-                    verticalGroup,
-                    registryList,
-                    verticalPresenter
-                );
+                AssertVerticalGroupFillsCrossAxis(verticalGroup, registryList, verticalPresenter);
                 AssertCentered(textContent, textPresenter);
                 Assert.True(
                     textContent.ActualHeight
-                        < GetTemplatePart<Border>(textPresenter, "PresentationSurface")
-                            .ActualHeight
+                        < GetTemplatePart<Border>(textPresenter, "PresentationSurface").ActualHeight
                 );
                 Assert.Equal(HorizontalAlignment.Stretch, horizontalGroup.HorizontalAlignment);
                 Assert.Equal(VerticalAlignment.Stretch, horizontalGroup.VerticalAlignment);
@@ -118,11 +107,7 @@ public sealed class PresenterPresentationLayoutTests
                 AssertCentered(fixedContent, fixedPresenter);
                 AssertVisibleChildrenCentered(horizontalGroup, horizontalPresenter);
                 AssertVisibleChildrenCentered(verticalGroup, verticalPresenter);
-                AssertVerticalGroupFillsCrossAxis(
-                    verticalGroup,
-                    registryList,
-                    verticalPresenter
-                );
+                AssertVerticalGroupFillsCrossAxis(verticalGroup, registryList, verticalPresenter);
                 AssertCentered(textContent, textPresenter);
             }
             finally
@@ -178,11 +163,7 @@ public sealed class PresenterPresentationLayoutTests
         });
     }
 
-    private static Border CreateMarker(
-        double width,
-        double height,
-        Thickness margin = default
-    )
+    private static Border CreateMarker(double width, double height, Thickness margin = default)
     {
         return new Border
         {
@@ -193,10 +174,7 @@ public sealed class PresenterPresentationLayoutTests
         };
     }
 
-    private static Presenter CreatePresenter(
-        UIElement presentation,
-        PresenterMode presenterMode
-    )
+    private static Presenter CreatePresenter(UIElement presentation, PresenterMode presenterMode)
     {
         return new Presenter
         {
@@ -218,13 +196,7 @@ public sealed class PresenterPresentationLayoutTests
         }
 
         var pageBody = new PageBody();
-        pageBody.Children.Add(
-            new Chunk
-            {
-                Title = "Presenter layout",
-                Body = presenterStack,
-            }
-        );
+        pageBody.Children.Add(new Chunk { Title = "Presenter layout", Body = presenterStack });
         var page = new Page { Content = pageBody };
         CenteredPageContentLayout.Apply(page, 880);
         return page;
@@ -266,10 +238,7 @@ public sealed class PresenterPresentationLayoutTests
         AssertClose((surface.ActualHeight - content.ActualHeight) / 2, origin.Y);
     }
 
-    private static void AssertVisibleChildrenCentered(
-        Panel group,
-        Presenter presenter
-    )
+    private static void AssertVisibleChildrenCentered(Panel group, Presenter presenter)
     {
         AssertVisibleChildrenCentered(
             group,
@@ -293,10 +262,7 @@ public sealed class PresenterPresentationLayoutTests
         AssertClose((surface.ActualHeight - group.ActualHeight) / 2, groupOrigin.Y);
     }
 
-    private static void AssertVisibleChildrenCentered(
-        Panel group,
-        FrameworkElement surface
-    )
+    private static void AssertVisibleChildrenCentered(Panel group, FrameworkElement surface)
     {
         Rect? union = null;
         foreach (FrameworkElement child in group.Children)
@@ -307,14 +273,8 @@ public sealed class PresenterPresentationLayoutTests
         }
 
         var visibleBounds = Assert.IsType<Rect>(union);
-        AssertClose(
-            surface.ActualWidth / 2,
-            visibleBounds.Left + visibleBounds.Width / 2
-        );
-        AssertClose(
-            surface.ActualHeight / 2,
-            visibleBounds.Top + visibleBounds.Height / 2
-        );
+        AssertClose(surface.ActualWidth / 2, visibleBounds.Left + visibleBounds.Width / 2);
+        AssertClose(surface.ActualHeight / 2, visibleBounds.Top + visibleBounds.Height / 2);
     }
 
     private static FrameworkElement GetHeaderPresentationRegion(HeaderChunk header)

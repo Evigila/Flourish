@@ -34,8 +34,8 @@ Use `IFlourishDynamicToolbarBuilder.InitToolbarItems<TPage>` to associate toolba
 builder.ConfigDynamicToolbar(toolbar =>
 {
     toolbar.InitToolbarItems<ReportsPage>(
-        new FlourishToolbarItem("Refresh", "\uE72C", "reports.refresh"),
-        new FlourishToolbarItem("Export", "\uE898", "reports.export"));
+        new FlourishToolbarItem("Refresh", "\uE72C", "cmd_reports_refresh"),
+        new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
 });
 ```
 
@@ -46,7 +46,7 @@ The overload with `icon: false` keeps text-only toolbar items.
 ```csharp
 toolbar.InitToolbarItems<EditorPage>(
     icon: false,
-    new FlourishToolbarItem("Preview", "\uE8A7", "editor.preview"));
+    new FlourishToolbarItem("Preview", "\uE8A7", "cmd_editor_preview"));
 ```
 
 ## Toolbar item fields
@@ -59,7 +59,7 @@ toolbar.InitToolbarItems<EditorPage>(
 | `IconGlyph` | Glyph shown when icon display is enabled. |
 | `CommandKey` | Optional command key dispatched through `ICommandDispatcher`. |
 
-Use stable, namespaced command keys such as `reports.export` or `editor.preview`. Localizing display text does not change the command key.
+Use stable `cmd_` command keys with underscore-separated segments, such as `cmd_reports_export` or `cmd_editor_preview`. Localizing display text does not change the command key.
 
 ## Handle commands
 
@@ -67,7 +67,7 @@ Resolve `ICommandRegistry` from the built runtime and register the command key u
 
 ```csharp
 ICommandRegistration exportCommand = commands.Register(
-    "reports.export",
+    "cmd_reports_export",
     async (_, token) =>
     {
         await exporter.ExportAsync(token);

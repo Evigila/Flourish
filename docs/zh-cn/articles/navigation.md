@@ -114,8 +114,8 @@ nav.InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180
 ```csharp
 nav.AddGroup("命令", groupId: 2, group =>
 {
-    group.AddNavigableItem("刷新", "\uE72C", "reports.refresh");
-    group.AddNavigableItem("导出", "\uE898", "reports.export");
+    group.AddNavigableItem("刷新", "\uE72C", "cmd_reports_refresh");
+    group.AddNavigableItem("导出", "\uE898", "cmd_reports_export");
 });
 ```
 
@@ -135,7 +135,7 @@ builder.ConfigNavigation(navigation =>
     });
 
     navigation.AddFixedNavigableViewItem<SettingsPage>();
-    navigation.AddFixedNavigableItem("帮助", "\uE946", "help.open");
+    navigation.AddFixedNavigableItem("帮助", "\uE946", "cmd_help_open");
 });
 ```
 
@@ -149,8 +149,8 @@ builder.ConfigNavigation(navigation =>
 nav.AddGroup("树", groupId: 3, group =>
 {
     group.AddNavigableViewItem<TreeParentPage>(parentId: 1);
-    group.AddNavigableItem("Button1", "\uE8B7", "tree.button1", childId: 1);
-    group.AddNavigableItem("Button2", "\uE8B7", "tree.button2", childId: 1);
+    group.AddNavigableItem("Button1", "\uE8B7", "cmd_tree_button1", childId: 1);
+    group.AddNavigableItem("Button2", "\uE8B7", "cmd_tree_button2", childId: 1);
 
     group.AddNavigableItem("页面", "\uE8A5", null, parentId: 2);
     group.AddNavigableViewItem<Page1>(childId: 2);

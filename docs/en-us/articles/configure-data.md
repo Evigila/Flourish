@@ -15,18 +15,54 @@ Flourish includes `en-US` and `zh-CN`. Locale identifiers are case-insensitive a
 builder.ConfigData(data => data.InitLocale("en-US"));
 ```
 
-Flourish uses `en-US` when `ConfigData` is omitted. Persistence is enabled by default, so a valid effective `Flourish:Preferences:Locale` value takes precedence and later `SetLocale` changes are written back. Pass `usePersistedPreference: false` when the configured locale must always win. Application-provided text such as titles, search placeholders, navigation labels, custom status-item labels, dialog messages, and custom option text is not translated automatically.
+Flourish uses `en-US` when `ConfigData` is omitted. Persistence is enabled by default, so a valid effective `Flourish:Preferences:Locale` value takes precedence and later `SetLocale` changes are written back. Pass `usePersistedPreference: false` when the configured locale must always win. When Flourish is used by itself, application-provided text such as titles, search placeholders, navigation labels, custom status-item labels, dialog messages, and custom option text is not translated automatically.
+
+## Connect Essential Culture
+
+To translate application text with `Arkheide.Essential.Culture`, install only
+`Arkheide.Flourish.Extension.Culture`; do not install the Culture packages separately. The extension
+provides Culture Core, the WPF adapter, and the Generator transitively while hiding event,
+lifecycle, Dispatcher, and shell-state synchronization.
+
+```bash
+dotnet add package Arkheide.Flourish.Extension.Culture
+```
+
+The application calls one non-generic entry point:
+
+```csharp
+using ArkheideSystem.Flourish.Extension.Culture;
+
+var flourish = FlourishBuilder
+    .CreateDefaultBuilder(args)
+    .UseEssentialCulture()
+    .ConfigData(data => data.InitLocale("en-US"))
+    .Build();
+```
+
+`IFlourishLocalization` remains the only public Flourish culture endpoint. Changing its locale
+causes the extension to synchronize Essential Culture before the first frame and at runtime, then
+refresh Culture tokens stored in navigation, title-bar, search-placeholder, toolbar, and status-bar
+state:
+
+```csharp
+localization.SetLocale("zh-CN");
+```
+
+The application continues to own its `Culture.json`. XAML uses the transitively supplied
+`Localize` extension. Resolve transient dialogs, notifications, and parameterized business text
+when they are created. User input, project names, and search text are never translated implicitly.
 
 ## Add a custom locale
 
-`AddLocaleFile(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `lang_<locale>.json`; the locale segment may contain letters, digits, hyphens, and underscores. Each separator must have a non-empty subtag on both sides. File-name identifiers use the same canonicalization as `InitLocale`.
+`AddLocaleFile(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `Flourish.LangKey_<locale>.Json`; the locale segment may contain letters, digits, hyphens, and underscores. Each separator must have a non-empty subtag on both sides. File-name identifiers use the same canonicalization as `InitLocale`.
 
 ```csharp
 builder.ConfigData(data =>
 {
     data
         .InitLocale("en-US")
-        .AddLocaleFile("Locales/lang_en-US.json");
+        .AddLocaleFile("Locales/Flourish.LangKey_en-US.Json");
 });
 ```
 
@@ -49,7 +85,7 @@ Calling `AddLocaleFile` more than once for the same locale merges the files in r
 4. Built-in `en-US` value.
 5. The key itself.
 
-This lookup also allows a custom locale such as `lang_fr-FR.json` to define only part of the interface while the remaining keys fall back to English.
+This lookup also allows a custom locale such as `Flourish.LangKey_fr-FR.Json` to define only part of the interface while the remaining keys fall back to English.
 
 ## Translation keys
 

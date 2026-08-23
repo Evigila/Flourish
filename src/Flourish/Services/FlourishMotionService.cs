@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Interaction;
 using Application = System.Windows.Application;

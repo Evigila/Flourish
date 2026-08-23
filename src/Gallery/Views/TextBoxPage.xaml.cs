@@ -10,26 +10,26 @@ public partial class TextBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Text", GalleryLocaleKeys.ControlsGetsOrSetsTheEditableTextValue_607E5735),
+            new("Text", Key.Controls_GetsOrSetsTheEditableTextValue_607E5735),
             new(
                 "IsReadOnly",
-                GalleryLocaleKeys.ControlsPreventsEditsWhilePreservingSelectionAndCopying_AB44FBCC
+                Key.Controls_PreventsEditsWhilePreservingSelectionAndCopying_AB44FBCC
             ),
             new(
                 "AcceptsReturn",
-                GalleryLocaleKeys.ControlsAllowsTheEnterKeyToInsertANewLine_578EB817
+                Key.Controls_AllowsTheEnterKeyToInsertANewLine_578EB817
             ),
             new(
                 "TextWrapping",
-                GalleryLocaleKeys.ControlsWrapsLongTextWithinTheAvailableWidth_1FC91E99
+                Key.Controls_WrapsLongTextWithinTheAvailableWidth_1FC91E99
             ),
             new(
                 "MaxLength",
-                GalleryLocaleKeys.ControlsLimitsTheNumberOfAcceptedCharacters_F99BE746
+                Key.Controls_LimitsTheNumberOfAcceptedCharacters_F99BE746
             ),
             new(
                 "TextChanged",
-                GalleryLocaleKeys.ControlsReportsEditsMadeByTheUserOrApplication_91DF28A1
+                Key.Controls_ReportsEditsMadeByTheUserOrApplication_91DF28A1
             ),
         };
     }

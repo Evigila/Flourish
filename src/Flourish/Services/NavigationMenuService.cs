@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -602,10 +601,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
         IReadOnlyList<FlourishNavigationMenuItem> rightFixedItems
     )
     {
-        if (
-            leftGroups.Count != rightGroups.Count
-            || !leftFixedItems.SequenceEqual(rightFixedItems)
-        )
+        if (leftGroups.Count != rightGroups.Count || !leftFixedItems.SequenceEqual(rightFixedItems))
         {
             return false;
         }
@@ -745,20 +741,12 @@ internal sealed class NavigationMenuService : INavigationMenuService
             InsertItemCore(groupId, item, index: null);
         }
 
-        public void SetItemIndex(
-            string groupId,
-            FlourishNavigationMenuItem item,
-            int index
-        )
+        public void SetItemIndex(string groupId, FlourishNavigationMenuItem item, int index)
         {
             InsertItemCore(groupId, item, index);
         }
 
-        private void InsertItemCore(
-            string groupId,
-            FlourishNavigationMenuItem item,
-            int? index
-        )
+        private void InsertItemCore(string groupId, FlourishNavigationMenuItem item, int? index)
         {
             ArgumentNullException.ThrowIfNull(item);
             EnsureItemIdAvailable(item.Id);
@@ -775,10 +763,7 @@ internal sealed class NavigationMenuService : INavigationMenuService
             InsertFixedItemCore(item, index);
         }
 
-        private void InsertFixedItemCore(
-            FlourishNavigationMenuItem item,
-            int? index
-        )
+        private void InsertFixedItemCore(FlourishNavigationMenuItem item, int? index)
         {
             ArgumentNullException.ThrowIfNull(item);
             EnsureItemIdAvailable(item.Id);

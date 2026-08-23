@@ -1,5 +1,4 @@
 using System.IO;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -28,15 +27,9 @@ public sealed class ProjectServiceTests
         sut.Changed += (_, args) => changes.Add(args);
 
         sut.AppendProject(new FlourishProject(" first ", " First ", @" C:\Work\First "));
-        sut.AppendProject(
-            new FlourishProject("second", "Second", "   "),
-            activate: false
-        );
+        sut.AppendProject(new FlourishProject("second", "Second", "   "), activate: false);
 
-        Assert.Equal(
-            ["first", "second"],
-            sut.Current.Projects.Select(project => project.Id)
-        );
+        Assert.Equal(["first", "second"], sut.Current.Projects.Select(project => project.Id));
         Assert.Equal("First", sut.Current.Projects[0].Name);
         Assert.Equal(@"C:\Work\First", sut.Current.Projects[0].StoragePath);
         Assert.Null(sut.Current.Projects[1].StoragePath);
@@ -76,15 +69,9 @@ public sealed class ProjectServiceTests
         Assert.Throws<InvalidOperationException>(() =>
             sut.AppendProject(new FlourishProject("project", "Duplicate"))
         );
-        sut.AppendProject(
-            new FlourishProject("PROJECT", "Uppercase"),
-            activate: false
-        );
+        sut.AppendProject(new FlourishProject("PROJECT", "Uppercase"), activate: false);
 
-        Assert.Equal(
-            ["project", "PROJECT"],
-            sut.Current.Projects.Select(project => project.Id)
-        );
+        Assert.Equal(["project", "PROJECT"], sut.Current.Projects.Select(project => project.Id));
         Assert.Equal(2, sut.Current.Version);
     }
 
@@ -123,10 +110,7 @@ public sealed class ProjectServiceTests
             [false, false, true, true],
             changes.Select(change => change.ActiveProjectChanged)
         );
-        Assert.Equal(
-            [1L, 2L, 3L, 4L],
-            changes.Select(change => change.Current.Version)
-        );
+        Assert.Equal([1L, 2L, 3L, 4L], changes.Select(change => change.Current.Version));
     }
 
     [Fact]
@@ -147,9 +131,7 @@ public sealed class ProjectServiceTests
         Assert.Equal(2, change.Current.Version);
         Assert.Equal("Renamed", sut.Current.ActiveProject?.Name);
         Assert.Null(sut.Current.ActiveProject?.StoragePath);
-        Assert.Throws<KeyNotFoundException>(() =>
-            sut.SetProjectMetadata("missing", "Missing")
-        );
+        Assert.Throws<KeyNotFoundException>(() => sut.SetProjectMetadata("missing", "Missing"));
     }
 
     [Fact]
@@ -194,14 +176,8 @@ public sealed class ProjectServiceTests
         Assert.Empty(sut.Current.Projects);
         Assert.Null(sut.Current.ActiveProject);
         Assert.Equal(4, sut.Current.Version);
-        Assert.Equal(
-            ["second", "first"],
-            changes.Select(change => change.ProjectId)
-        );
-        Assert.Equal(
-            [false, true],
-            changes.Select(change => change.ActiveProjectChanged)
-        );
+        Assert.Equal(["second", "first"], changes.Select(change => change.ProjectId));
+        Assert.Equal([false, true], changes.Select(change => change.ActiveProjectChanged));
         Assert.All(
             changes,
             change => Assert.Equal(FlourishRuntimeChangeKind.Removed, change.ChangeKind)
@@ -258,9 +234,7 @@ public sealed class ProjectServiceTests
         Assert.Equal("first", sut.Current.ActiveProject?.Id);
         Assert.Equal(2, sut.Current.Version);
         Assert.Equal(0, changedCount);
-        Assert.Throws<KeyNotFoundException>(() =>
-            sut.RequestProjectActivation("missing")
-        );
+        Assert.Throws<KeyNotFoundException>(() => sut.RequestProjectActivation("missing"));
     }
 
     [Fact]
@@ -283,9 +257,7 @@ public sealed class ProjectServiceTests
         Assert.Equal(
             "Name",
             Assert
-                .Throws<ArgumentException>(() =>
-                    sut.AppendProject(new FlourishProject("id", " "))
-                )
+                .Throws<ArgumentException>(() => sut.AppendProject(new FlourishProject("id", " ")))
                 .ParamName
         );
         Assert.Equal(
@@ -294,9 +266,7 @@ public sealed class ProjectServiceTests
         );
         Assert.Equal(
             "projectId",
-            Assert
-                .Throws<ArgumentException>(() => sut.GetProject(" "))
-                .ParamName
+            Assert.Throws<ArgumentException>(() => sut.GetProject(" ")).ParamName
         );
     }
 
@@ -351,10 +321,7 @@ public sealed class ProjectServiceTests
         File.WriteAllText(firstPath, string.Empty);
         File.WriteAllText(secondPath, string.Empty);
         first.SetProjectMetadata(unnamed.Id, "First", firstPath);
-        first.AppendProject(
-            new FlourishProject("second", "Second", secondPath),
-            activate: false
-        );
+        first.AppendProject(new FlourishProject("second", "Second", secondPath), activate: false);
         first.SetActiveProject("second");
 
         var reloaded = new ProjectService(options, store);
@@ -436,9 +403,7 @@ public sealed class ProjectServiceTests
         File.WriteAllText(existingPath, string.Empty);
         File.WriteAllText(addedPath, string.Empty);
         var existing = new FlourishProject("existing", "Existing", existingPath);
-        var store = new ThrowingProjectCatalogStore(
-            new ProjectCatalog([existing], existing.Id)
-        );
+        var store = new ThrowingProjectCatalogStore(new ProjectCatalog([existing], existing.Id));
         var sut = new ProjectService(new FlourishShellOptions(), store);
         var before = sut.Current;
         var changedCount = 0;
@@ -489,8 +454,7 @@ public sealed class ProjectServiceTests
         ) => throw new NotSupportedException();
     }
 
-    private sealed class RecordingProjectCatalogStore(ProjectCatalog catalog)
-        : IProjectCatalogStore
+    private sealed class RecordingProjectCatalogStore(ProjectCatalog catalog) : IProjectCatalogStore
     {
         public List<ProjectCatalog> SavedCatalogs { get; } = [];
 
@@ -499,12 +463,10 @@ public sealed class ProjectServiceTests
         public void Save(ProjectCatalog catalog) => SavedCatalogs.Add(catalog);
     }
 
-    private sealed class ThrowingProjectCatalogStore(ProjectCatalog catalog)
-        : IProjectCatalogStore
+    private sealed class ThrowingProjectCatalogStore(ProjectCatalog catalog) : IProjectCatalogStore
     {
         public ProjectCatalog Load() => catalog;
 
-        public void Save(ProjectCatalog catalog) =>
-            throw new IOException("Catalog save failed.");
+        public void Save(ProjectCatalog catalog) => throw new IOException("Catalog save failed.");
     }
 }

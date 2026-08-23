@@ -9,11 +9,11 @@ public partial class CodeSpacePage : Page
     [
         new(
             "Text",
-            GalleryLocaleKeys.ControlsContainsTheExactCodeTextDisplayedAndCopiedByTheControl_6A5A8805
+            Key.Controls_ContainsTheExactCodeTextDisplayedAndCopiedByTheControl_6A5A8805
         ),
         new(
             "ApplicationCommands.Copy",
-            GalleryLocaleKeys.ControlsCopiesTextThroughTheBuiltInUpperRightAction_95EB53A7
+            Key.Controls_CopiesTextThroughTheBuiltInUpperRightAction_95EB53A7
         ),
     ];
 

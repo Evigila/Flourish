@@ -2,8 +2,6 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Gallery.Localization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Gallery.Views;
@@ -19,7 +17,6 @@ public partial class NavigationRuntimePage : Page
     private readonly INavigationRouteRegistry routes;
     private readonly INavigationService navigation;
     private readonly IPageCacheService cache;
-    private readonly IGalleryLocalization localization;
     private bool isRefreshing;
 
     public NavigationRuntimePage(
@@ -27,8 +24,7 @@ public partial class NavigationRuntimePage : Page
         INavigationMenuService menu,
         INavigationRouteRegistry routes,
         INavigationService navigation,
-        IPageCacheService cache,
-        IGalleryLocalization localization
+        IPageCacheService cache
     )
     {
         this.panel = panel;
@@ -36,7 +32,6 @@ public partial class NavigationRuntimePage : Page
         this.routes = routes;
         this.navigation = navigation;
         this.cache = cache;
-        this.localization = localization;
         InitializeComponent();
 
         DirectionBox.ItemsSource = Enum.GetValues<NavigationPanelDirection>();
@@ -70,12 +65,12 @@ public partial class NavigationRuntimePage : Page
     {
         panel.Toggle();
         PanelOutput.WriteLine(
-            localization.Format(
-                GalleryLocaleKeys.RuntimeNavigationPanel0_92C7D51F,
-                localization.Get(
+            Localizer.Parse(
+                Key.Runtime_NavigationPanel0_92C7D51F,
+                Localizer.Parse(
                     panel.Current.IsOpen
-                        ? GalleryLocaleKeys.RuntimeOpened_50236627
-                        : GalleryLocaleKeys.RuntimeClosed_C3EEFB58
+                        ? Key.Runtime_Opened_50236627
+                        : Key.Runtime_Closed_C3EEFB58
                 )
             )
         );
@@ -85,12 +80,12 @@ public partial class NavigationRuntimePage : Page
     {
         panel.SetEnabled(!panel.Current.IsEnabled);
         PanelOutput.WriteLine(
-            localization.Format(
-                GalleryLocaleKeys.RuntimeNavigationPanel0_92C7D51F,
-                localization.Get(
+            Localizer.Parse(
+                Key.Runtime_NavigationPanel0_92C7D51F,
+                Localizer.Parse(
                     panel.Current.IsEnabled
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                        ? Key.Runtime_Enabled_FB9CF756
+                        : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -106,10 +101,7 @@ public partial class NavigationRuntimePage : Page
         {
             panel.SetDirection(direction);
             PanelOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeNavigationPanelMovedTo0_39B53359,
-                    direction
-                )
+                Localizer.Parse(Key.Runtime_NavigationPanelMovedTo0_39B53359, direction)
             );
         }
     }
@@ -126,8 +118,8 @@ public partial class NavigationRuntimePage : Page
             );
             var state = panel.Current;
             PanelOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimePanelWidthsSetToClosed00Open10Range2030_7AF1DFF9,
+                Localizer.Parse(
+                    Key.Runtime_PanelWidthsSetToClosed00Open10Range2030_7AF1DFF9,
                     state.ClosedWidth,
                     state.OpenWidth,
                     state.MinWidth,
@@ -138,7 +130,7 @@ public partial class NavigationRuntimePage : Page
         catch (Exception error)
         {
             PanelOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -147,7 +139,7 @@ public partial class NavigationRuntimePage : Page
 
     private void WidthBox_KeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Enter)
+        if (e.Key != InputKey.Enter)
         {
             return;
         }
@@ -186,7 +178,7 @@ public partial class NavigationRuntimePage : Page
                 {
                     editor.AppendGroup(
                         RuntimeGroupId,
-                        localization.Get(GalleryLocaleKeys.RuntimeAddedAtRuntime_82975386)
+                        Localizer.Parse(Key.Runtime_AddedAtRuntime_82975386)
                     );
                 }
 
@@ -195,21 +187,19 @@ public partial class NavigationRuntimePage : Page
                     FlourishNavigationMenuItem.Page(
                         RuntimeItemId,
                         RuntimeRouteKey,
-                        localization.Get(GalleryLocaleKeys.RuntimeRuntimeRouteInstance_9BC2A49C),
+                        Localizer.Parse(Key.Runtime_RuntimeRouteInstance_9BC2A49C),
                         "\uE8A7"
                     )
                 );
             });
             RouteOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeInstalledTheDemoRouteAndNavigationItem_2DE1D70D
-                )
+                Localizer.Parse(Key.Runtime_InstalledTheDemoRouteAndNavigationItem_2DE1D70D)
             );
         }
         catch (Exception error)
         {
             RouteOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -220,13 +210,13 @@ public partial class NavigationRuntimePage : Page
         {
             navigation.Navigate(RuntimeRouteKey, DateTimeOffset.Now);
             RouteOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.RuntimeNavigatedTo0_27A49119, RuntimeRouteKey)
+                Localizer.Parse(Key.Runtime_NavigatedTo0_27A49119, RuntimeRouteKey)
             );
         }
         catch (Exception error)
         {
             RouteOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -239,19 +229,19 @@ public partial class NavigationRuntimePage : Page
         if (item is null)
         {
             RouteOutput.WriteLine(
-                localization.Get(GalleryLocaleKeys.RuntimeInstallTheDemoRouteFirst_54C0B4AA)
+                Localizer.Parse(Key.Runtime_InstallTheDemoRouteFirst_54C0B4AA)
             );
             return;
         }
 
         menu.Set(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
         RouteOutput.WriteLine(
-            localization.Format(
-                GalleryLocaleKeys.RuntimeDemoNavigationItem0_4FBC3954,
-                localization.Get(
+            Localizer.Parse(
+                Key.Runtime_DemoNavigationItem0_4FBC3954,
+                Localizer.Parse(
                     !item.IsEnabled
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                        ? Key.Runtime_Enabled_FB9CF756
+                        : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -270,10 +260,8 @@ public partial class NavigationRuntimePage : Page
         var removed = routes.Remove(RuntimeRouteKey);
         RouteOutput.WriteLine(
             removed
-                ? localization.Get(
-                    GalleryLocaleKeys.RuntimeRemovedTheDemoRouteAndNavigationItem_932415B1
-                )
-                : localization.Get(GalleryLocaleKeys.RuntimeTheDemoRouteWasAlreadyAbsent_0556D625)
+                ? Localizer.Parse(Key.Runtime_RemovedTheDemoRouteAndNavigationItem_932415B1)
+                : Localizer.Parse(Key.Runtime_TheDemoRouteWasAlreadyAbsent_0556D625)
         );
     }
 
@@ -287,12 +275,8 @@ public partial class NavigationRuntimePage : Page
     {
         CacheOutput.WriteLine(
             cache.Evict(typeof(RuntimeRoutePage))
-                ? localization.Get(
-                    GalleryLocaleKeys.RuntimeEvictedTheCachedDemoPageInstance_2957A414
-                )
-                : localization.Get(
-                    GalleryLocaleKeys.RuntimeNoCachedDemoPageInstanceWasPresent_34354CBF
-                )
+                ? Localizer.Parse(Key.Runtime_EvictedTheCachedDemoPageInstance_2957A414)
+                : Localizer.Parse(Key.Runtime_NoCachedDemoPageInstanceWasPresent_34354CBF)
         );
     }
 
@@ -300,7 +284,7 @@ public partial class NavigationRuntimePage : Page
     {
         cache.Clear();
         CacheOutput.WriteLine(
-            localization.Get(GalleryLocaleKeys.RuntimeClearedAllCachedPageInstances_7839F7BC)
+            Localizer.Parse(Key.Runtime_ClearedAllCachedPageInstances_7839F7BC)
         );
     }
 
@@ -316,13 +300,13 @@ public partial class NavigationRuntimePage : Page
             routes.SetCacheMode(RuntimeRouteKey, mode);
             cache.SetCacheMode(typeof(RuntimeRoutePage), mode);
             CacheOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.RuntimeDemoPageCacheModeSetTo0_1348FE55, mode)
+                Localizer.Parse(Key.Runtime_DemoPageCacheModeSetTo0_1348FE55, mode)
             );
         }
         catch (Exception error)
         {
             CacheOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }

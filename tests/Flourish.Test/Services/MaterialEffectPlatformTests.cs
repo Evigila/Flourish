@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -29,9 +28,7 @@ public sealed class MaterialEffectPlatformTests
         MaterialEffect expected
     )
     {
-        var platform = MaterialEffectPlatform.FromWindowsVersion(
-            new Version(major, minor, build)
-        );
+        var platform = MaterialEffectPlatform.FromWindowsVersion(new Version(major, minor, build));
 
         Assert.Equal(expected, platform.DefaultEffect);
         Assert.Equal(expected, platform.Resolve(MaterialEffect.Auto));
@@ -41,9 +38,7 @@ public sealed class MaterialEffectPlatformTests
     [Fact]
     public void Win10_UsesOnlyTheAccentAcrylicBackend()
     {
-        var platform = MaterialEffectPlatform.FromWindowsVersion(
-            new Version(10, 0, 19045)
-        );
+        var platform = MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 19045));
 
         Assert.Equal(
             MaterialEffectBackend.AccentAcrylic,
@@ -62,9 +57,7 @@ public sealed class MaterialEffectPlatformTests
     [Fact]
     public void InitialWin11_UsesLegacyMicaAndAccentAcrylic()
     {
-        var platform = MaterialEffectPlatform.FromWindowsVersion(
-            new Version(10, 0, 22000)
-        );
+        var platform = MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22000));
 
         Assert.Equal(
             MaterialEffectBackend.LegacyMica,
@@ -83,9 +76,7 @@ public sealed class MaterialEffectPlatformTests
     [Fact]
     public void CurrentWin11_UsesAllThreeSystemBackdropMappings()
     {
-        var platform = MaterialEffectPlatform.FromWindowsVersion(
-            new Version(10, 0, 22621)
-        );
+        var platform = MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22621));
 
         Assert.Equal(
             MaterialEffectBackend.SystemMica,

@@ -2,6 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.ChunkPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -10,26 +11,26 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.GroupOnePageTopicIntoAFullWidthSection_08AD89D7"
+      Content="{culture:Localize Key=Controls_GroupOnePageTopicIntoAFullWidthSection_08AD89D7}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="Chunk"
     />
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         ItemsSource="{Binding Properties, ElementName=RootPage}"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <DataGrid.Columns>
-          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" />
-          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" />
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Property_40040CB1}" />
+          <DataGridTextColumn Width="*" Binding="{Binding Description}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
         </DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <!--<flourish:Chunk Title="Gallery.Controls.Example_D029F87E">
+    <!--<flourish:Chunk Title="{culture:Localize Key=Controls_Example_D029F87E}">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
@@ -49,11 +50,11 @@
       <flourish:Card Content="Title names the topic, Content adds optional context, and Body contains the required section content. Empty optional copy collapses with its spacing." />
     </flourish:Chunk>-->
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Title="Gallery.Controls.CreateAPageSection_4F196611"
-          Content="Gallery.Controls.DeclareChunkDirectlyUnderPageBodyGiveItAConciseTitleAndPlaceTheS_27E63969"
+          Title="{culture:Localize Key=Controls_CreateAPageSection_4F196611}"
+          Content="{culture:Localize Key=Controls_DeclareChunkDirectlyUnderPageBodyGiveItAConciseTitleAndPlaceTheS_27E63969}"
           PresenterMode="Split"
           PresenterPosition="Left"
         >
@@ -64,23 +65,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
+          Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Gallery.Controls.ReadTheChunkGuide_71E29FEB"
+          Content="{culture:Localize Key=Controls_ReadTheChunkGuide_71E29FEB}"
           Icon="&#xE946;"
           IsEnabled="False"
-          Title="Gallery.Controls.ChunkDocumentation_FE325A53"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_ChunkDocumentation_FE325A53}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

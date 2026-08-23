@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
@@ -19,11 +18,8 @@ public sealed class GalleryNavigationTreeTests
     {
         var source = File.ReadAllText(ProgramPath);
 
-        Assert.Contains(
-            "services.AddNavigable<AboutPage>(\"About\", \"\\uE946\")",
-            source,
-            StringComparison.Ordinal
-        );
+        Assert.Contains("services.AddNavigable<AboutPage>(", source, StringComparison.Ordinal);
+        Assert.Contains("Key.Application_About_4EFCA0D1", source, StringComparison.Ordinal);
         Assert.Contains(
             ".AddFixedNavigableViewItem<AboutPage>()",
             source,
@@ -40,19 +36,20 @@ public sealed class GalleryNavigationTreeTests
     public void NavigationTree_UsesSeparateConfigurationAndShellApiPages()
     {
         var source = File.ReadAllText(ProgramPath);
-        Assert.Contains("\"Configuration\",", source, StringComparison.Ordinal);
-        Assert.Contains("\"Shell\",", source, StringComparison.Ordinal);
-        Assert.Contains("\"Actions\",", source, StringComparison.Ordinal);
+        Assert.Contains(
+            "Key.Application_Configuration_B332C349,",
+            source,
+            StringComparison.Ordinal
+        );
+        Assert.Contains("Key.Shell_Shell_A7332854,", source, StringComparison.Ordinal);
+        Assert.Contains("Key.Application_Actions_FF8059DC,", source, StringComparison.Ordinal);
         Assert.DoesNotContain("\"Surfaces\"", source, StringComparison.Ordinal);
         Assert.False(
-            Regex.IsMatch(source, @"\.AddGroup\(\s*""Commands"""),
+            Regex.IsMatch(source, @"\.AddGroup\(\s*LangKey\.Application_Commands"),
             "The interactive command nodes belong to Actions, not a second Commands group."
         );
 
-        string[] configurationPages =
-        [
-            "ConfigurationPage",
-        ];
+        string[] configurationPages = ["ConfigurationPage"];
         string[] shellPages =
         [
             "AppearancePage",
@@ -69,11 +66,7 @@ public sealed class GalleryNavigationTreeTests
 
         foreach (var page in configurationPages.Concat(shellPages))
         {
-            Assert.Contains(
-                $"services.AddNavigable<{page}>",
-                source,
-                StringComparison.Ordinal
-            );
+            Assert.Contains($"services.AddNavigable<{page}>", source, StringComparison.Ordinal);
             Assert.Contains(
                 $"group.AddNavigableViewItem<{page}>()",
                 source,

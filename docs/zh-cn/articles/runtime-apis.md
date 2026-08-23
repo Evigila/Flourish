@@ -31,7 +31,7 @@ Flourish 提供两层互补的配置方式：
 | --- | --- |
 | `IFlourishConfiguration` | 通过 `Current`、字符串索引器、`Get<T>` 或 `GetSection<T>` 读取 Host 的最终有效配置；可调用 `Reload()` 并监听 `Changed`。 |
 | `IFlourishSettingsStore` | 原子更新 `Flourish` 顶级节拥有的值。每个路径都必须以 `Flourish:` 开头；文件发生变化后会重载 Host 配置。 |
-| `IFlourishLocalization` | 读取、格式化本地化键，运行时调用 `SetLocale`，以及注册、重载或注销 `lang_<locale>.json` 文件。 |
+| `IFlourishLocalization` | 读取、格式化本地化键，运行时调用 `SetLocale`，以及注册、重载或注销 `Flourish.LangKey_<locale>.Json` 文件。 |
 
 `IFlourishSettingsStore` 会写入 `InitAppSettingsFilePath` 选择的文件，默认是应用根目录下的 `appsettings.Flourish.json`。它不能修改 `Logging`、`ConnectionStrings` 或其他由应用拥有的顶级节。`IProjectService` 会另外将项目目录持久化到独立选择的 `InitProjectCatalogFilePath`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
 
@@ -195,7 +195,7 @@ public sealed class RefreshBindings : IDisposable
         IShortcutService shortcuts,
         IDataRefresher refresher)
     {
-        command = commands.Register("data.refresh", async (_, token) =>
+        command = commands.Register("cmd_data_refresh", async (_, token) =>
         {
             await refresher.RefreshAsync(token);
             return CommandResult.Handled;
@@ -203,7 +203,7 @@ public sealed class RefreshBindings : IDisposable
 
         shortcut = shortcuts.Register(
             new KeyGesture(Key.F5, ModifierKeys.Control),
-            "data.refresh");
+            "cmd_data_refresh");
     }
 
     public void Dispose()

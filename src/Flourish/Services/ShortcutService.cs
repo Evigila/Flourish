@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Services;
 
@@ -46,10 +45,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         ShortcutRegistryChangedEventArgs changed;
         lock (gate)
         {
-            var gestureKey = new ShortcutGestureKey(
-                storedGesture.Key,
-                storedGesture.Modifiers
-            );
+            var gestureKey = new ShortcutGestureKey(storedGesture.Key, storedGesture.Modifiers);
             if (!entriesByGesture.TryGetValue(gestureKey, out var gestureIndex))
             {
                 gestureIndex = new ShortcutGestureIndex();
@@ -66,19 +62,11 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
             }
 
             var changeKind = ShortcutRegistryChangeKind.Registered;
-            if (
-                conflictGroup.Count > 0
-                && options.ConflictPolicy == ShortcutConflictPolicy.Replace
-            )
+            if (conflictGroup.Count > 0 && options.ConflictPolicy == ShortcutConflictPolicy.Replace)
             {
                 foreach (var conflict in conflictGroup.ToArray())
                 {
-                    RemoveEntryLocked(
-                        conflict,
-                        gestureKey,
-                        gestureIndex,
-                        removeEmptyIndex: false
-                    );
+                    RemoveEntryLocked(conflict, gestureKey, gestureIndex, removeEmptyIndex: false);
                 }
 
                 changeKind = ShortcutRegistryChangeKind.Replaced;
@@ -218,10 +206,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
         ShortcutRegistryChangedEventArgs? changed = null;
         lock (gate)
         {
-            var gestureKey = new ShortcutGestureKey(
-                entry.Gesture.Key,
-                entry.Gesture.Modifiers
-            );
+            var gestureKey = new ShortcutGestureKey(entry.Gesture.Key, entry.Gesture.Modifiers);
             if (
                 !entry.IsRegistered
                 || !entriesByGesture.TryGetValue(gestureKey, out var gestureIndex)
@@ -441,10 +426,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
             }
         }
 
-        public ShortcutEntry? Resolve(
-            ShortcutResolutionContext? context,
-            bool isTextInputFocused
-        )
+        public ShortcutEntry? Resolve(ShortcutResolutionContext? context, bool isTextInputFocused)
         {
             if (context?.PageKey is { } pageKey)
             {
@@ -508,17 +490,11 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
             return entries;
         }
 
-        private static ShortcutEntry? Resolve(
-            List<ShortcutEntry> entries,
-            bool isTextInputFocused
-        )
+        private static ShortcutEntry? Resolve(List<ShortcutEntry> entries, bool isTextInputFocused)
         {
             foreach (var entry in entries)
             {
-                if (
-                    entry.IsRegistered
-                    && (!isTextInputFocused || entry.AllowWhenTextInputFocused)
-                )
+                if (entry.IsRegistered && (!isTextInputFocused || entry.AllowWhenTextInputFocused))
                 {
                     return entry;
                 }

@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPage = System.Windows.Controls.Page;
 using WpfPanel = System.Windows.Controls.Panel;
@@ -55,10 +54,7 @@ internal partial class FlourishShellContentHost : UserControl
         }
     }
 
-    internal void SetRegionContent(
-        FlourishRegion region,
-        IReadOnlyList<FrameworkElement> elements
-    )
+    internal void SetRegionContent(FlourishRegion region, IReadOnlyList<FrameworkElement> elements)
     {
         WpfPanel host = region switch
         {

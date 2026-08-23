@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -49,12 +48,7 @@ public sealed class FlourishStatusServiceTests
 
         var error = Record.Exception(() =>
         {
-            using var handle = sut.Show(
-                "transient",
-                "Working",
-                "W",
-                TimeSpan.FromSeconds(1)
-            );
+            using var handle = sut.Show("transient", "Working", "W", TimeSpan.FromSeconds(1));
         });
 
         Assert.Null(error);

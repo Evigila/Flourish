@@ -2,6 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.LabelPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -10,36 +11,36 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.NameAnInputAndTransferKeyboardFocusThroughTheNativeWPFAccessKeyC_75D00937"
+      Content="{culture:Localize Key=Controls_NameAnInputAndTransferKeyboardFocusThroughTheNativeWPFAccessKeyC_75D00937}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="FlourishLabel"
     />
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Member_7C968FB7" Width="220" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Purpose_D4E8830A" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" Width="220" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Controls.PlaceTheLabelNextToItsTargetAndMarkOneCharacterWithAnUnderscoreF_F97F62FA"
-      Title="Gallery.Controls.Association_C1D43420"
+      Content="{culture:Localize Key=Controls_PlaceTheLabelNextToItsTargetAndMarkOneCharacterWithAnUnderscoreF_F97F62FA}"
+      Title="{culture:Localize Key=Controls_Association_C1D43420}"
     >
       <UniformGrid Columns="2">
         <flourish:Presenter
           Margin="0,0,8,0"
-          Content="Gallery.Controls.TargetSendsFocusToTheRelatedControlWhenTheAccessKeyIsInvoked_53FBAFD1"
+          Content="{culture:Localize Key=Controls_TargetSendsFocusToTheRelatedControlWhenTheAccessKeyIsInvoked_53FBAFD1}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Gallery.Controls.TextInput_F9BE71E0"
+          Title="{culture:Localize Key=Controls_TextInput_F9BE71E0}"
         >
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -47,7 +48,7 @@
               VerticalAlignment="Center"
             >
                 <flourish:FlourishLabel
-                  Content="Gallery.Controls.DisplayName_AA37B12F"
+                  Content="{culture:Localize Key=Controls_DisplayName_AA37B12F}"
                   Target="{Binding ElementName=DisplayNameBox}"
                 />
                 <flourish:FlourishTextBox
@@ -60,10 +61,10 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="Gallery.Controls.TheSameAssociationWorksForSelectorsAndOtherFocusableControls_546138B7"
+          Content="{culture:Localize Key=Controls_TheSameAssociationWorksForSelectorsAndOtherFocusableControls_546138B7}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
-          Title="Gallery.Controls.SelectionInput_F3442002"
+          Title="{culture:Localize Key=Controls_SelectionInput_F3442002}"
         >
           <flourish:Presenter.Presentation>
             <StackPanel
@@ -71,7 +72,7 @@
               VerticalAlignment="Center"
             >
                 <flourish:FlourishLabel
-                  Content="Gallery.Controls.Theme_F52B45AE"
+                  Content="{culture:Localize Key=Controls_Theme_F52B45AE}"
                   Target="{Binding ElementName=ThemeBox}"
                 />
                 <flourish:FlourishComboBox
@@ -79,7 +80,7 @@
                   Margin="0,4,0,0"
                   SelectedIndex="0"
                 >
-                  <flourish:FlourishComboBoxItem Content="Gallery.Runtime.System_6725E7BB" />
+                  <flourish:FlourishComboBoxItem Content="{culture:Localize Key=Runtime_System_6725E7BB}" />
                   <flourish:FlourishComboBoxItem Content="Light" />
                   <flourish:FlourishComboBoxItem Content="Dark" />
                 </flourish:FlourishComboBox>
@@ -89,13 +90,13 @@
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Content="Gallery.Controls.SetTargetToTheAssociatedInputAndMarkOneCharacterInContentWithAnU_F2E2D993"
+          Content="{culture:Localize Key=Controls_SetTargetToTheAssociatedInputAndMarkOneCharacterInContentWithAnU_F2E2D993}"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Gallery.Controls.InputAssociation_1D8FDCED"
+          Title="{culture:Localize Key=Controls_InputAssociation_1D8FDCED}"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
@@ -104,23 +105,23 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39"
+          Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="Gallery.Controls.ReadTheFlourishLabelAPIReference_2BDAB019"
+          Content="{culture:Localize Key=Controls_ReadTheFlourishLabelAPIReference_2BDAB019}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.FlourishLabelDocumentation_D7C69726"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_FlourishLabelDocumentation_D7C69726}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

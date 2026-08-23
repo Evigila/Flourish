@@ -1,6 +1,5 @@
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using System.Windows.Controls;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
 
@@ -68,10 +67,7 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
         return this;
     }
 
-    public IFlourishShellBuilder UseMotion(
-        bool enabled = true,
-        bool usePersistedPreference = true
-    )
+    public IFlourishShellBuilder UseMotion(bool enabled = true, bool usePersistedPreference = true)
     {
         ThrowIfFrozen();
         options.Motion.IsEnabled = enabled;
@@ -191,16 +187,15 @@ internal sealed class FlourishShellBuilder(FlourishShellOptions options)
             headerSizeFontSize ?? options.FontSizeHeaderSize
         );
 
-        options.PageFontOverridesByPageType[typeof(TPage)] =
-            new FlourishPageFontOverride(
-                fontFamily,
-                smallFontSize,
-                standardFontSize,
-                iconFontSize,
-                largeFontSize,
-                extraLargeFontSize,
-                headerSizeFontSize
-            );
+        options.PageFontOverridesByPageType[typeof(TPage)] = new FlourishPageFontOverride(
+            fontFamily,
+            smallFontSize,
+            standardFontSize,
+            iconFontSize,
+            largeFontSize,
+            extraLargeFontSize,
+            headerSizeFontSize
+        );
         return this;
     }
 

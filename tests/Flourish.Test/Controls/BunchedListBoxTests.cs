@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 
 public sealed class BunchedListBoxTests
 {
-    private const string GenericThemeSource = "/Flourish;component/Themes/Generic.xaml";
+    private const string GenericThemeSource = "/Arkheide.Flourish;component/Themes/Generic.xaml";
 
     [Fact]
     public void GeneratedAndExplicitItems_UseOnlyBunchedContainers()

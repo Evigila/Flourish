@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,9 +18,7 @@ public sealed class FlourishServiceCollectionExtensionsTests
 
         Assert.Same(services, result);
         using var serviceProvider = services.BuildServiceProvider();
-        var parsers = serviceProvider
-            .GetServices<ICommandParser>()
-            .ToArray();
+        var parsers = serviceProvider.GetServices<ICommandParser>().ToArray();
         Assert.Collection(
             parsers,
             parser => Assert.IsType<FirstCommandParser>(parser),

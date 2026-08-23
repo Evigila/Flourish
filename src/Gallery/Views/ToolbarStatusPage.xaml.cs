@@ -1,9 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -11,7 +8,7 @@ public partial class ToolbarStatusPage : Page
 {
     private const string ToolbarItemId = "gallery.runtime.toolbar";
     private const string CompanionToolbarItemId = "gallery.runtime.toolbar.companion";
-    private const string ToolbarCommandKey = "gallery.runtime.toolbar.execute";
+    private const string ToolbarCommandKey = "cmd_gallery_runtime_toolbar_execute";
     private const string StatusItemId = "gallery.runtime.status";
     private const string RegionId = "gallery.runtime.content-header";
 
@@ -19,22 +16,19 @@ public partial class ToolbarStatusPage : Page
     private readonly IStatusBarService status;
     private readonly IShellRegionService regions;
     private readonly ICommandRegistry commands;
-    private readonly IGalleryLocalization galleryLocalization;
     private ICommandRegistration? commandRegistration;
 
     public ToolbarStatusPage(
         IToolbarService toolbar,
         IStatusBarService status,
         IShellRegionService regions,
-        ICommandRegistry commands,
-        IGalleryLocalization galleryLocalization
+        ICommandRegistry commands
     )
     {
         this.toolbar = toolbar;
         this.status = status;
         this.regions = regions;
         this.commands = commands;
-        this.galleryLocalization = galleryLocalization;
         InitializeComponent();
 
         Loaded += Page_Loaded;
@@ -67,7 +61,7 @@ public partial class ToolbarStatusPage : Page
                 toolbar.SetEnabled(true);
                 toolbar.SetItem(
                     new FlourishToolbarItem(
-                        galleryLocalization.Get(GalleryLocaleKeys.RuntimeRunLiveCommand_7352E4E7),
+                        Localizer.Parse(Key.Runtime_RunLiveCommand_7352E4E7),
                         "\uE768",
                         ToolbarCommandKey
                     )
@@ -78,7 +72,7 @@ public partial class ToolbarStatusPage : Page
                 );
                 toolbar.SetItem(
                     new FlourishToolbarItem(
-                        galleryLocalization.Get(GalleryLocaleKeys.RuntimeCompanion_1DADB328),
+                        Localizer.Parse(Key.Runtime_Companion_1DADB328),
                         "\uE8EF",
                         ToolbarCommandKey
                     )
@@ -89,8 +83,8 @@ public partial class ToolbarStatusPage : Page
                 );
             },
             ToolbarOutput,
-            galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeAddedOrUpdatedTheTwoRuntimeToolbarActions_063BFB6C
+            Localizer.Parse(
+                Key.Runtime_AddedOrUpdatedTheTwoRuntimeToolbarActions_063BFB6C
             )
         );
     }
@@ -104,12 +98,12 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetItemEnabled(ToolbarItemId, enabled, typeof(ToolbarStatusPage)),
                 ToolbarOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeRuntimeToolbarAction0_ABFE414D,
-                    galleryLocalization.Get(
+                Localizer.Parse(
+                    Key.Runtime_RuntimeToolbarAction0_ABFE414D,
+                    Localizer.Parse(
                         enabled
-                            ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                            : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                            ? Key.Runtime_Enabled_FB9CF756
+                            : Key.Runtime_Disabled_17EB3C01
                     )
                 )
             );
@@ -117,9 +111,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             ToolbarOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddTheRuntimeToolbarActionFirst_C243FC0B
-                )
+                Localizer.Parse(Key.Runtime_AddTheRuntimeToolbarActionFirst_C243FC0B)
             );
         }
     }
@@ -133,12 +125,10 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetItemVisible(ToolbarItemId, visible, typeof(ToolbarStatusPage)),
                 ToolbarOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeRuntimeToolbarAction0_ABFE414D,
-                    galleryLocalization.Get(
-                        visible
-                            ? GalleryLocaleKeys.RuntimeShown_BAAF5362
-                            : GalleryLocaleKeys.RuntimeHidden_E564B408
+                Localizer.Parse(
+                    Key.Runtime_RuntimeToolbarAction0_ABFE414D,
+                    Localizer.Parse(
+                        visible ? Key.Runtime_Shown_BAAF5362 : Key.Runtime_Hidden_E564B408
                     )
                 )
             );
@@ -146,9 +136,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             ToolbarOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddTheRuntimeToolbarActionFirst_C243FC0B
-                )
+                Localizer.Parse(Key.Runtime_AddTheRuntimeToolbarActionFirst_C243FC0B)
             );
         }
     }
@@ -162,12 +150,12 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetIconOnly(typeof(ToolbarStatusPage), iconOnly),
                 ToolbarOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeToolbarPresentationSetTo0_D717A96F,
-                    galleryLocalization.Get(
+                Localizer.Parse(
+                    Key.Runtime_ToolbarPresentationSetTo0_D717A96F,
+                    Localizer.Parse(
                         iconOnly
-                            ? GalleryLocaleKeys.RuntimeIconOnly_3B3B44D5
-                            : GalleryLocaleKeys.RuntimeIconAndText_5C472518
+                            ? Key.Runtime_IconOnly_3B3B44D5
+                            : Key.Runtime_IconAndText_5C472518
                     )
                 )
             );
@@ -175,9 +163,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             ToolbarOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddTheRuntimeToolbarActionFirst_C243FC0B
-                )
+                Localizer.Parse(Key.Runtime_AddTheRuntimeToolbarActionFirst_C243FC0B)
             );
         }
     }
@@ -195,8 +181,8 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => toolbar.SetOrder(ToolbarItemId, targetIndex, typeof(ToolbarStatusPage)),
                 ToolbarOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeMovedTheRuntimeToolbarActionToIndex0_375DFF7C,
+                Localizer.Parse(
+                    Key.Runtime_MovedTheRuntimeToolbarActionToIndex0_375DFF7C,
                     targetIndex
                 )
             );
@@ -204,9 +190,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             ToolbarOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddTheRuntimeToolbarActionFirst_C243FC0B
-                )
+                Localizer.Parse(Key.Runtime_AddTheRuntimeToolbarActionFirst_C243FC0B)
             );
         }
     }
@@ -220,9 +204,7 @@ public partial class ToolbarStatusPage : Page
                 toolbar.Remove(CompanionToolbarItemId, typeof(ToolbarStatusPage));
             },
             ToolbarOutput,
-            galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeRemovedTheRuntimeToolbarActions_DC2790AE
-            )
+            Localizer.Parse(Key.Runtime_RemovedTheRuntimeToolbarActions_DC2790AE)
         );
     }
 
@@ -232,8 +214,8 @@ public partial class ToolbarStatusPage : Page
     )
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var message = galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeExecutedAt0HHMmSsFffFrom1_C1532414,
+        var message = Localizer.Parse(
+            Key.Runtime_ExecutedAt0HHMmSsFffFrom1_C1532414,
             DateTimeOffset.Now,
             context.Source
         );
@@ -258,9 +240,7 @@ public partial class ToolbarStatusPage : Page
                 status.SetItem(new FlourishStatusItem(StatusItemId, StatusTextBox.Text, "\uE946"));
             },
             StatusOutput,
-            galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeAddedOrUpdatedThePersistentStatusItem_D8C174F7
-            )
+            Localizer.Parse(Key.Runtime_AddedOrUpdatedThePersistentStatusItem_D8C174F7)
         );
 
     private void ShowTimedStatus_Click(object sender, RoutedEventArgs e) =>
@@ -276,8 +256,8 @@ public partial class ToolbarStatusPage : Page
                 );
             },
             StatusOutput,
-            galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeDisplayedTheTimedStatusItemForFourSeconds_C5514AE4
+            Localizer.Parse(
+                Key.Runtime_DisplayedTheTimedStatusItemForFourSeconds_C5514AE4
             )
         );
 
@@ -290,12 +270,10 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => status.SetItemVisible(StatusItemId, visible),
                 StatusOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimePersistentStatusItem0_66B63E53,
-                    galleryLocalization.Get(
-                        visible
-                            ? GalleryLocaleKeys.RuntimeShown_BAAF5362
-                            : GalleryLocaleKeys.RuntimeHidden_E564B408
+                Localizer.Parse(
+                    Key.Runtime_PersistentStatusItem0_66B63E53,
+                    Localizer.Parse(
+                        visible ? Key.Runtime_Shown_BAAF5362 : Key.Runtime_Hidden_E564B408
                     )
                 )
             );
@@ -303,9 +281,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             StatusOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddThePersistentStatusItemFirst_ED79CDE9
-                )
+                Localizer.Parse(Key.Runtime_AddThePersistentStatusItemFirst_ED79CDE9)
             );
         }
     }
@@ -314,9 +290,7 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.Remove(StatusItemId),
             StatusOutput,
-            galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeRemovedThePersistentStatusItem_02776B4A
-            )
+            Localizer.Parse(Key.Runtime_RemovedThePersistentStatusItem_02776B4A)
         );
 
     private void MoveStatus_Click(object sender, RoutedEventArgs e)
@@ -332,8 +306,8 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => status.SetOrder(StatusItemId, targetIndex),
                 StatusOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeMovedThePersistentStatusItemToIndex0_333774DF,
+                Localizer.Parse(
+                    Key.Runtime_MovedThePersistentStatusItemToIndex0_333774DF,
                     targetIndex
                 )
             );
@@ -341,9 +315,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             StatusOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddThePersistentStatusItemFirst_ED79CDE9
-                )
+                Localizer.Parse(Key.Runtime_AddThePersistentStatusItemFirst_ED79CDE9)
             );
         }
     }
@@ -354,12 +326,10 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.SetLanStatusEnabled(enabled),
             StatusOutput,
-            galleryLocalization.Format(
-                GalleryLocaleKeys.RuntimeLANIndicator0_C793788E,
-                galleryLocalization.Get(
-                    enabled
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+            Localizer.Parse(
+                Key.Runtime_LANIndicator0_C793788E,
+                Localizer.Parse(
+                    enabled ? Key.Runtime_Enabled_FB9CF756 : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -371,12 +341,10 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.SetPowerStatusEnabled(enabled),
             StatusOutput,
-            galleryLocalization.Format(
-                GalleryLocaleKeys.RuntimePowerIndicator0_8A0236F4,
-                galleryLocalization.Get(
-                    enabled
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+            Localizer.Parse(
+                Key.Runtime_PowerIndicator0_8A0236F4,
+                Localizer.Parse(
+                    enabled ? Key.Runtime_Enabled_FB9CF756 : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -388,12 +356,10 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => status.SetEnabled(enabled),
             StatusOutput,
-            galleryLocalization.Format(
-                GalleryLocaleKeys.RuntimeStatusBar0_EB094B42,
-                galleryLocalization.Get(
-                    enabled
-                        ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                        : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+            Localizer.Parse(
+                Key.Runtime_StatusBar0_EB094B42,
+                Localizer.Parse(
+                    enabled ? Key.Runtime_Enabled_FB9CF756 : Key.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -410,8 +376,8 @@ public partial class ToolbarStatusPage : Page
                     order: 50
                 ),
             RegionOutput,
-            galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeAddedOrUpdatedTheContentHeaderRegionAtOrder50_57F220FA
+            Localizer.Parse(
+                Key.Runtime_AddedOrUpdatedTheContentHeaderRegionAtOrder50_57F220FA
             )
         );
     }
@@ -425,12 +391,12 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => regions.SetEnabled(RegionId, enabled),
                 RegionOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeContentHeaderRegion0_CE212BA6,
-                    galleryLocalization.Get(
+                Localizer.Parse(
+                    Key.Runtime_ContentHeaderRegion0_CE212BA6,
+                    Localizer.Parse(
                         enabled
-                            ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                            : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                            ? Key.Runtime_Enabled_FB9CF756
+                            : Key.Runtime_Disabled_17EB3C01
                     )
                 )
             );
@@ -438,9 +404,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             RegionOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddTheContentHeaderRegionFirst_AF6B9E4C
-                )
+                Localizer.Parse(Key.Runtime_AddTheContentHeaderRegionFirst_AF6B9E4C)
             );
         }
     }
@@ -449,7 +413,7 @@ public partial class ToolbarStatusPage : Page
         Execute(
             () => regions.Remove(RegionId),
             RegionOutput,
-            galleryLocalization.Get(GalleryLocaleKeys.RuntimeRemovedTheContentHeaderRegion_03EAF38D)
+            Localizer.Parse(Key.Runtime_RemovedTheContentHeaderRegion_03EAF38D)
         );
 
     private void ReorderRegion_Click(object sender, RoutedEventArgs e)
@@ -461,8 +425,8 @@ public partial class ToolbarStatusPage : Page
             Execute(
                 () => regions.SetOrder(RegionId, order),
                 RegionOutput,
-                galleryLocalization.Format(
-                    GalleryLocaleKeys.RuntimeMovedTheContentHeaderRegionToOrder0_C3C9AC0D,
+                Localizer.Parse(
+                    Key.Runtime_MovedTheContentHeaderRegionToOrder0_C3C9AC0D,
                     order
                 )
             );
@@ -470,9 +434,7 @@ public partial class ToolbarStatusPage : Page
         else
         {
             RegionOutput.WriteLine(
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAddTheContentHeaderRegionFirst_AF6B9E4C
-                )
+                Localizer.Parse(Key.Runtime_AddTheContentHeaderRegionFirst_AF6B9E4C)
             );
         }
     }
@@ -481,8 +443,8 @@ public partial class ToolbarStatusPage : Page
     {
         var text = new FlourishTextBlock
         {
-            Text = galleryLocalization.Format(
-                GalleryLocaleKeys.RuntimeContentHeaderRegisteredAt0HHMmSs_52D12698,
+            Text = Localizer.Parse(
+                Key.Runtime_ContentHeaderRegisteredAt0HHMmSs_52D12698,
                 DateTimeOffset.Now
             ),
             VerticalAlignment = VerticalAlignment.Center,
@@ -523,7 +485,7 @@ public partial class ToolbarStatusPage : Page
         catch (Exception error)
         {
             output.WriteLine(
-                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }

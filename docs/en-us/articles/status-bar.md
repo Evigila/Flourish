@@ -71,7 +71,7 @@ builder.ConfigCustomHandler(custom =>
         FlourishRegion.FooterEnd,
         "Sync",
         "\uE895",
-        "sync.run");
+        "cmd_sync_run");
 });
 ```
 

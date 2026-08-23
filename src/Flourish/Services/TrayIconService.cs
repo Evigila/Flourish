@@ -1,5 +1,4 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Logging;
 using Application = System.Windows.Application;
@@ -15,7 +14,7 @@ internal sealed class TrayIconService(
 ) : ITrayService, IDisposable
 {
     private const string DefaultIconUri =
-        "pack://application:,,,/Flourish;component/Assets/favicon.ico";
+        "pack://application:,,,/Arkheide.Flourish;component/Assets/favicon.ico";
 
     private readonly Lock gate = new();
     private Forms.NotifyIcon? notifyIcon;

@@ -1,6 +1,5 @@
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
@@ -17,10 +16,7 @@ public sealed class FlourishMotionBuilderTests
 
         Assert.Same(
             sut,
-            sut.UsePageTransition(
-                transition: FlourishPageTransition.Fade,
-                duration: pageDuration
-            )
+            sut.UsePageTransition(transition: FlourishPageTransition.Fade, duration: pageDuration)
         );
         Assert.Same(
             sut,
@@ -34,10 +30,7 @@ public sealed class FlourishMotionBuilderTests
 
         Assert.Equal(FlourishPageTransition.Fade, options.PageTransition);
         Assert.Equal(pageDuration, options.PageTransitionDuration);
-        Assert.Equal(
-            FlourishNavigationPanelTransition.None,
-            options.NavigationPanelTransition
-        );
+        Assert.Equal(FlourishNavigationPanelTransition.None, options.NavigationPanelTransition);
         Assert.Equal(navigationDuration, options.NavigationPanelTransitionDuration);
         Assert.True(options.IsHoverRevealEnabled);
         Assert.Equal(hoverDuration, options.HoverRevealAnimationDuration);
@@ -56,9 +49,7 @@ public sealed class FlourishMotionBuilderTests
         var sut = new FlourishMotionBuilder(options);
 
         sut.UsePageTransition(transition: FlourishPageTransition.None);
-        sut.UseNavigationPanelTransition(
-            transition: FlourishNavigationPanelTransition.Resize
-        );
+        sut.UseNavigationPanelTransition(transition: FlourishNavigationPanelTransition.Resize);
         sut.UseHoverRevealAnimation();
 
         Assert.Equal(TimeSpan.FromMilliseconds(11), options.PageTransitionDuration);

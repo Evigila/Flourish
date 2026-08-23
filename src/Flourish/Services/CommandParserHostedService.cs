@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using Microsoft.Extensions.Hosting;
 
 namespace ArkheideSystem.Flourish.Services;

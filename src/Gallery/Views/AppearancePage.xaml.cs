@@ -3,9 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -17,7 +15,6 @@ public partial class AppearancePage : Page
     private readonly IScrollService scroll;
     private readonly IAppearanceService appearance;
     private readonly IContentLayoutService contentLayout;
-    private readonly IGalleryLocalization galleryLocalization;
     private readonly IReadOnlyList<FlourishComboBoxItem> materialOptions;
     private bool isRefreshing;
 
@@ -27,8 +24,7 @@ public partial class AppearancePage : Page
         IMaterialEffectService material,
         IScrollService scroll,
         IAppearanceService appearance,
-        IContentLayoutService contentLayout,
-        IGalleryLocalization galleryLocalization
+        IContentLayoutService contentLayout
     )
     {
         this.theme = theme;
@@ -37,7 +33,6 @@ public partial class AppearancePage : Page
         this.scroll = scroll;
         this.appearance = appearance;
         this.contentLayout = contentLayout;
-        this.galleryLocalization = galleryLocalization;
         materialOptions =
         [
             CreateMaterialOption(MaterialEffect.Auto),
@@ -65,7 +60,7 @@ public partial class AppearancePage : Page
         scroll.Changed += RuntimeState_Changed;
         appearance.Changed += RuntimeState_Changed;
         contentLayout.Changed += RuntimeState_Changed;
-        galleryLocalization.Changed += GalleryLocalization_Changed;
+        Localizer.Current.Changed += GalleryLocalization_Changed;
         RefreshAll();
     }
 
@@ -77,7 +72,7 @@ public partial class AppearancePage : Page
         scroll.Changed -= RuntimeState_Changed;
         appearance.Changed -= RuntimeState_Changed;
         contentLayout.Changed -= RuntimeState_Changed;
-        galleryLocalization.Changed -= GalleryLocalization_Changed;
+        Localizer.Current.Changed -= GalleryLocalization_Changed;
     }
 
     private void RuntimeState_Changed(object? sender, EventArgs e)
@@ -203,8 +198,8 @@ public partial class AppearancePage : Page
             () => font.RemoveOverrideFont<AppearancePage>(),
             PageFontOverrideOutput,
             () =>
-                galleryLocalization.Get(
-                    GalleryLocaleKeys.RuntimeAppearancePageTypographyOverrideCleared_812D6991
+                Localizer.Parse(
+                    Key.Runtime_AppearancePageTypographyOverrideCleared_812D6991
                 )
         );
     }
@@ -322,7 +317,7 @@ public partial class AppearancePage : Page
 
     private static void CommitOnEnter(KeyEventArgs e, Action commit)
     {
-        if (e.Key != Key.Enter)
+        if (e.Key != InputKey.Enter)
         {
             return;
         }
@@ -342,7 +337,7 @@ public partial class AppearancePage : Page
         catch (Exception error)
         {
             output.WriteLine(
-                galleryLocalization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -427,16 +422,16 @@ public partial class AppearancePage : Page
     }
 
     private string FormatThemeOutput() =>
-        galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeThemeUpdatedRequested0Effective1Dark2_10410DE8,
+        Localizer.Parse(
+            Key.Runtime_ThemeUpdatedRequested0Effective1Dark2_10410DE8,
             theme.CurrentTheme,
             theme.EffectiveTheme,
             theme.IsDark
         );
 
     private string FormatTypographyOutput() =>
-        galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeTypographyUpdatedText01Icons2_6EFDFFD3,
+        Localizer.Parse(
+            Key.Runtime_TypographyUpdatedText01Icons2_6EFDFFD3,
             font.FontFamily,
             FormatScale(
                 font.SmallFontSize,
@@ -453,13 +448,13 @@ public partial class AppearancePage : Page
     {
         if (!font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
         {
-            return galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeAppearancePageTypographyOverrideWasNotApplied_E8E937EF
+            return Localizer.Parse(
+                Key.Runtime_AppearancePageTypographyOverrideWasNotApplied_E8E937EF
             );
         }
 
-        return galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeAppearancePageTypographyOverrideApplied01_C79A613D,
+        return Localizer.Parse(
+            Key.Runtime_AppearancePageTypographyOverrideApplied01_C79A613D,
             pageOverride.FontFamily,
             FormatScale(
                 pageOverride.SmallFontSize ?? font.SmallFontSize,
@@ -473,8 +468,8 @@ public partial class AppearancePage : Page
     }
 
     private string FormatMaterialOutput() =>
-        galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeWindowMaterialUpdatedRequested0Effective1Supported2Applied3DarkM_AA9929C6,
+        Localizer.Parse(
+            Key.Runtime_WindowMaterialUpdatedRequested0Effective1Supported2Applied3DarkM_AA9929C6,
             material.CurrentEffect,
             material.EffectiveEffect,
             material.IsSupported(material.CurrentEffect),
@@ -509,31 +504,28 @@ public partial class AppearancePage : Page
     {
         option.Content =
             effect == MaterialEffect.Auto
-                ? galleryLocalization.Get(GalleryLocaleKeys.RuntimeAutoSystemDefault_FAE8027B)
+                ? Localizer.Parse(Key.Runtime_AutoSystemDefault_FAE8027B)
             : isSupported ? effect.ToString()
-            : galleryLocalization.Format(
-                GalleryLocaleKeys.RuntimeText0Unsupported_2326A1BB,
-                effect
-            );
+            : Localizer.Parse(Key.Runtime_Text0Unsupported_2326A1BB, effect);
         option.ToolTip = isSupported
             ? null
-            : galleryLocalization.Get(
-                GalleryLocaleKeys.RuntimeThisMaterialIsUnavailableOnThisWindowsVersion_44BE2E27
+            : Localizer.Parse(
+                Key.Runtime_ThisMaterialIsUnavailableOnThisWindowsVersion_44BE2E27
             );
     }
 
     private string FormatAppearanceOutput()
     {
         var current = appearance.Current;
-        return galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeAppearanceUpdatedPalette0CornerRadius1_3790C925,
-            galleryLocalization.Get(
+        return Localizer.Parse(
+            Key.Runtime_AppearanceUpdatedPalette0CornerRadius1_3790C925,
+            Localizer.Parse(
                 current.ThemeColors is null
-                    ? GalleryLocaleKeys.RuntimeStandard_FE6D3468
-                    : GalleryLocaleKeys.RuntimeCustom_6CDFD271
+                    ? Key.Runtime_Standard_FE6D3468
+                    : Key.Runtime_Custom_6CDFD271
             ),
             current.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture)
-                ?? galleryLocalization.Get(GalleryLocaleKeys.RuntimeStandard_FE6D3468)
+                ?? Localizer.Parse(Key.Runtime_Standard_FE6D3468)
         );
     }
 
@@ -561,8 +553,8 @@ public partial class AppearancePage : Page
         double headerSizeFontSize
     )
     {
-        return galleryLocalization.Format(
-            GalleryLocaleKeys.RuntimeSmall00Standard10Icon20Large30ExtraLarge40Header50DIP_0BEDC756,
+        return Localizer.Parse(
+            Key.Runtime_Small00Standard10Icon20Large30ExtraLarge40Header50DIP_0BEDC756,
             smallFontSize,
             standardFontSize,
             iconFontSize,

@@ -12,12 +12,12 @@ public partial class ActionCardPage : Page
         {
             new(
                 "Variant",
-                GalleryLocaleKeys.ControlsChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
+                Key.Controls_ChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
             ),
-            new("Title", GalleryLocaleKeys.ControlsSetsTheOptionalHeading_209DFEAA),
-            new("Content", GalleryLocaleKeys.ControlsSetsOneOptionalBlockOfSupportingCopy_C07BA241),
-            new("Icon", GalleryLocaleKeys.ControlsSetsOneOptionalIconGlyph_73C296CD),
-            new("Body", GalleryLocaleKeys.ControlsHostsExactlyOneInteractiveControl_DBA310D6),
+            new("Title", Key.Controls_SetsTheOptionalHeading_209DFEAA),
+            new("Content", Key.Controls_SetsOneOptionalBlockOfSupportingCopy_C07BA241),
+            new("Icon", Key.Controls_SetsOneOptionalIconGlyph_73C296CD),
+            new("Body", Key.Controls_HostsExactlyOneInteractiveControl_DBA310D6),
         };
     }
 }

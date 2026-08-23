@@ -1,9 +1,9 @@
 ---
-title: Flourish
-description: Documentation for the Flourish WPF shell composition library.
+title: Arkheide.Flourish
+description: Documentation for the Arkheide.Flourish WPF shell composition library.
 ---
 
-# Flourish
+# Arkheide.Flourish
 
 Flourish is an open-source desktop application composition and control library for WPF. It provides a shell layer with host-based startup, configurable window chrome, navigation, dynamic toolbar commands, status bar integration, page caching, material effects, motion options, and public `Flourish*` WPF controls.
 

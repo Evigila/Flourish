@@ -37,7 +37,7 @@ jobs:
       uses: actions/configure-pages@v6
 
     - name: Restore project
-      run: dotnet restore src/Flourish/Flourish.csproj
+      run: dotnet restore src/Flourish/Arkheide.Flourish.csproj
 
     - name: Restore tools
       run: dotnet tool restore

@@ -1,7 +1,6 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
@@ -77,9 +76,7 @@ public sealed class FlourishNavigationBuilderTests
     [Theory]
     [InlineData(0)]
     [InlineData(64)]
-    public void SetPanelWidth_WithSupportedCollapsedBoundary_UpdatesOptions(
-        double closedWidth
-    )
+    public void SetPanelWidth_WithSupportedCollapsedBoundary_UpdatesOptions(double closedWidth)
     {
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
@@ -219,11 +216,15 @@ public sealed class FlourishNavigationBuilderTests
         var options = new FlourishShellOptions();
         var sut = new FlourishNavigationBuilder(options);
 
-        sut.AddGroup("Main", groupId: 1, group =>
-        {
-            group.AddNavigableViewItem<TestPage>(isInitial: true);
-            group.AddNavigableItem("Refresh", "R", "gallery.refresh");
-        });
+        sut.AddGroup(
+            "Main",
+            groupId: 1,
+            group =>
+            {
+                group.AddNavigableViewItem<TestPage>(isInitial: true);
+                group.AddNavigableItem("Refresh", "R", "cmd_gallery_refresh");
+            }
+        );
 
         var navigationGroup = Assert.Single(options.NavigationGroups);
         Assert.Equal(1, navigationGroup.GroupId);
@@ -231,7 +232,7 @@ public sealed class FlourishNavigationBuilderTests
         Assert.Equal(2, navigationGroup.Items.Count);
         Assert.Equal(typeof(TestPage), navigationGroup.Items[0].PageType);
         Assert.True(navigationGroup.Items[0].IsInitial);
-        Assert.Equal("gallery.refresh", navigationGroup.Items[1].CommandKey);
+        Assert.Equal("cmd_gallery_refresh", navigationGroup.Items[1].CommandKey);
         Assert.Equal("R", navigationGroup.Items[1].IconGlyph);
     }
 
@@ -241,8 +242,10 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<ArgumentException>(() =>
-            sut.AddGroup(null, groupId: 0, group =>
-                group.AddNavigableItem("Invalid", null, null, parentId: 1, childId: 1)
+            sut.AddGroup(
+                null,
+                groupId: 0,
+                group => group.AddNavigableItem("Invalid", null, null, parentId: 1, childId: 1)
             )
         );
 
@@ -255,11 +258,15 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(new FlourishShellOptions());
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            sut.AddGroup(null, groupId: 0, group =>
-            {
-                group.AddNavigableItem("First", null, null, parentId: 7);
-                group.AddNavigableItem("Second", null, null, parentId: 7);
-            })
+            sut.AddGroup(
+                null,
+                groupId: 0,
+                group =>
+                {
+                    group.AddNavigableItem("First", null, null, parentId: 7);
+                    group.AddNavigableItem("Second", null, null, parentId: 7);
+                }
+            )
         );
 
         Assert.Contains("parentId 7", exception.Message);
@@ -272,12 +279,7 @@ public sealed class FlourishNavigationBuilderTests
         var sut = new FlourishNavigationBuilder(options);
 
         sut.AddFixedNavigableViewItem<TestPage>(isInitial: true, parentId: 7);
-        sut.AddFixedNavigableItem(
-            "Refresh",
-            "R",
-            "app.refresh",
-            childId: 7
-        );
+        sut.AddFixedNavigableItem("Refresh", "R", "cmd_app_refresh", childId: 7);
 
         Assert.Collection(
             options.FixedNavigationItemDefinitions,
@@ -293,7 +295,7 @@ public sealed class FlourishNavigationBuilderTests
             {
                 Assert.True(command.IsCommandItem);
                 Assert.Equal("Refresh", command.Label);
-                Assert.Equal("app.refresh", command.CommandKey);
+                Assert.Equal("cmd_app_refresh", command.CommandKey);
                 Assert.Equal("R", command.IconGlyph);
                 Assert.True(command.IsFixed);
                 Assert.Equal(7, command.ChildId);

@@ -1,11 +1,8 @@
 using System.Reflection;
-using System.Runtime.ExceptionServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 
@@ -68,12 +65,8 @@ public sealed class PageBodyTests
             body.Children.Add(new HeaderChunk());
             body.Children.Add(new Chunk());
 
-            Assert.Throws<InvalidOperationException>(() =>
-                body.Children.Add(new HeaderChunk())
-            );
-            Assert.Throws<InvalidOperationException>(() =>
-                body.Children.Insert(0, new Chunk())
-            );
+            Assert.Throws<InvalidOperationException>(() => body.Children.Add(new HeaderChunk()));
+            Assert.Throws<InvalidOperationException>(() => body.Children.Insert(0, new Chunk()));
         });
     }
 

@@ -1,22 +1,19 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
 public partial class CommandsPage : Page
 {
     private static readonly KeyGesture DemoGesture = new(
-        Key.G,
+        InputKey.G,
         ModifierKeys.Control | ModifierKeys.Shift
     );
 
     private readonly ICommandRegistry commandRegistry;
     private readonly ICommandDispatcher commandDispatcher;
     private readonly IShortcutService shortcuts;
-    private readonly IGalleryLocalization localization;
     private ICommandRegistration? commandRegistration;
     private IShortcutRegistration? shortcutRegistration;
     private bool commandEnabled = true;
@@ -25,14 +22,12 @@ public partial class CommandsPage : Page
     public CommandsPage(
         ICommandRegistry commandRegistry,
         ICommandDispatcher commandDispatcher,
-        IShortcutService shortcuts,
-        IGalleryLocalization localization
+        IShortcutService shortcuts
     )
     {
         this.commandRegistry = commandRegistry;
         this.commandDispatcher = commandDispatcher;
         this.shortcuts = shortcuts;
-        this.localization = localization;
         InitializeComponent();
         CommandEnabledBox.Checked += CommandEnabled_Changed;
         CommandEnabledBox.Unchecked += CommandEnabled_Changed;
@@ -82,18 +77,14 @@ public partial class CommandsPage : Page
                 }
             );
             CommandOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.RuntimeRegistered0WithPriority1_10A41D09,
-                    key,
-                    100
-                )
+                Localizer.Parse(Key.Runtime_Registered0WithPriority1_10A41D09, key, 100)
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
             CommandOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -114,17 +105,13 @@ public partial class CommandsPage : Page
                 CommandSource.Application
             );
             CommandOutput.WriteLine(
-                FormatResult(
-                    localization.Get(GalleryLocaleKeys.RuntimeCommand_71316697),
-                    result,
-                    canExecute
-                )
+                FormatResult(Localizer.Parse(Key.Runtime_Command_71316697), result, canExecute)
             );
         }
         catch (Exception error)
         {
             CommandOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -134,8 +121,8 @@ public partial class CommandsPage : Page
         if (commandRegistration is null)
         {
             CommandOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeThisPageDoesNotCurrentlyOwnACommandRegistration_9C294C80
+                Localizer.Parse(
+                    Key.Runtime_ThisPageDoesNotCurrentlyOwnACommandRegistration_9C294C80
                 )
             );
             return;
@@ -146,16 +133,14 @@ public partial class CommandsPage : Page
             commandRegistration.Dispose();
             commandRegistration = null;
             CommandOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeTheRuntimeCommandRegistrationWasRemoved_9BF1D72B
-                )
+                Localizer.Parse(Key.Runtime_TheRuntimeCommandRegistrationWasRemoved_9BF1D72B)
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
             CommandOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -168,20 +153,20 @@ public partial class CommandsPage : Page
             commandRegistration?.NotifyCanExecuteChanged();
             CommandOutput.WriteLine(
                 commandRegistration is null
-                    ? localization.Format(
-                        GalleryLocaleKeys.RuntimeTheNextRegisteredHandlerWillBe0_861E241D,
-                        localization.Get(
+                    ? Localizer.Parse(
+                        Key.Runtime_TheNextRegisteredHandlerWillBe0_861E241D,
+                        Localizer.Parse(
                             commandEnabled
-                                ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                                : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                                ? Key.Runtime_Enabled_FB9CF756
+                                : Key.Runtime_Disabled_17EB3C01
                         )
                     )
-                    : localization.Format(
-                        GalleryLocaleKeys.RuntimeTheCommandIsNow0_25507420,
-                        localization.Get(
+                    : Localizer.Parse(
+                        Key.Runtime_TheCommandIsNow0_25507420,
+                        Localizer.Parse(
                             commandEnabled
-                                ? GalleryLocaleKeys.RuntimeEnabled_FB9CF756
-                                : GalleryLocaleKeys.RuntimeDisabled_17EB3C01
+                                ? Key.Runtime_Enabled_FB9CF756
+                                : Key.Runtime_Disabled_17EB3C01
                         )
                     )
             );
@@ -189,7 +174,7 @@ public partial class CommandsPage : Page
         catch (Exception error)
         {
             CommandOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -212,14 +197,14 @@ public partial class CommandsPage : Page
                 }
             );
             ShortcutOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.RuntimeCtrlShiftGNowDispatches0_2B41B29B, key)
+                Localizer.Parse(Key.Runtime_CtrlShiftGNowDispatches0_2B41B29B, key)
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
             ShortcutOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -233,17 +218,13 @@ public partial class CommandsPage : Page
                 new ShortcutResolutionContext(pageKey: nameof(CommandsPage))
             );
             ShortcutOutput.WriteLine(
-                FormatResult(
-                    localization.Get(GalleryLocaleKeys.RuntimeShortcut_5753EA37),
-                    result,
-                    null
-                )
+                FormatResult(Localizer.Parse(Key.Runtime_Shortcut_5753EA37), result, null)
             );
         }
         catch (Exception error)
         {
             ShortcutOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -253,8 +234,8 @@ public partial class CommandsPage : Page
         if (shortcutRegistration is null)
         {
             ShortcutOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeThisPageDoesNotCurrentlyOwnAShortcutRegistration_B41D35DD
+                Localizer.Parse(
+                    Key.Runtime_ThisPageDoesNotCurrentlyOwnAShortcutRegistration_B41D35DD
                 )
             );
             return;
@@ -265,16 +246,14 @@ public partial class CommandsPage : Page
             shortcutRegistration.Dispose();
             shortcutRegistration = null;
             ShortcutOutput.WriteLine(
-                localization.Get(
-                    GalleryLocaleKeys.RuntimeTheCtrlShiftGRegistrationWasRemoved_D62E6ACC
-                )
+                Localizer.Parse(Key.Runtime_TheCtrlShiftGRegistrationWasRemoved_D62E6ACC)
             );
             RefreshRegistryState();
         }
         catch (Exception error)
         {
             ShortcutOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -287,9 +266,9 @@ public partial class CommandsPage : Page
         await Task.Delay(180, cancellationToken);
         var count = Interlocked.Increment(ref executionCount);
         return CommandResult.HandledWith(
-            localization.Format(
-                GalleryLocaleKeys.RuntimeHello0Invocation1From2_4B6A51EC,
-                context.Parameter ?? localization.Get(GalleryLocaleKeys.RuntimeRuntime_D92C6A81),
+            Localizer.Parse(
+                Key.Runtime_Hello0Invocation1From2_4B6A51EC,
+                context.Parameter ?? Localizer.Parse(Key.Runtime_Runtime_D92C6A81),
                 count,
                 context.Source
             )
@@ -298,22 +277,22 @@ public partial class CommandsPage : Page
 
     private void RefreshRegistryState()
     {
-        RegistrySummaryText.Text = localization.Format(
-            GalleryLocaleKeys.RuntimeCommands0Shortcuts1_EE620469,
+        RegistrySummaryText.Text = Localizer.Parse(
+            Key.Runtime_Commands0Shortcuts1_EE620469,
             commandRegistry.Registrations.Count,
             shortcuts.Registrations.Count
         );
 
         var commandItems = commandRegistry.Registrations.Select(item =>
-            localization.Format(
-                GalleryLocaleKeys.RuntimeCommand0Priority1_6F653DF7,
+            Localizer.Parse(
+                Key.Runtime_Command0Priority1_6F653DF7,
                 item.CommandKey,
                 item.Priority
             )
         );
         var shortcutItems = shortcuts.Registrations.Select(item =>
-            localization.Format(
-                GalleryLocaleKeys.RuntimeShortcut012_B5D726B0,
+            Localizer.Parse(
+                Key.Runtime_Shortcut012_B5D726B0,
                 item.Gesture.GetDisplayStringForCulture(
                     System.Globalization.CultureInfo.CurrentCulture
                 ),
@@ -339,18 +318,15 @@ public partial class CommandsPage : Page
     {
         var canExecuteText = canExecute is null
             ? string.Empty
-            : localization.Format(GalleryLocaleKeys.RuntimeCanExecute0_43748D6F, canExecute);
+            : Localizer.Parse(Key.Runtime_CanExecute0_43748D6F, canExecute);
         var valueText = result.Value is null
             ? string.Empty
-            : localization.Format(GalleryLocaleKeys.RuntimeValue0_BF1A56EF, result.Value);
+            : Localizer.Parse(Key.Runtime_Value0_BF1A56EF, result.Value);
         var errorText = result.Exception is null
             ? string.Empty
-            : localization.Format(
-                GalleryLocaleKeys.RuntimeError0_EB96953F,
-                result.Exception.Message
-            );
-        return localization.Format(
-            GalleryLocaleKeys.RuntimeText0Status1234_535E9DA8,
+            : Localizer.Parse(Key.Runtime_Error0_EB96953F, result.Exception.Message);
+        return Localizer.Parse(
+            Key.Runtime_Text0Status1234_535E9DA8,
             label,
             result.Status,
             canExecuteText,

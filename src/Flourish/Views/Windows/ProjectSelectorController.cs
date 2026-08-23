@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using WpfContextMenu = System.Windows.Controls.ContextMenu;
@@ -49,8 +48,7 @@ internal sealed class ProjectSelectorController : IDisposable
         this.projectBehavior =
             projectBehavior ?? throw new ArgumentNullException(nameof(projectBehavior));
         this.localizationService =
-            localizationService
-            ?? throw new ArgumentNullException(nameof(localizationService));
+            localizationService ?? throw new ArgumentNullException(nameof(localizationService));
         this.notificationService =
             notificationService ?? throw new ArgumentNullException(nameof(notificationService));
         dispatcher = selector.Dispatcher;
@@ -217,9 +215,7 @@ internal sealed class ProjectSelectorController : IDisposable
         lifetimeCancellation.Dispose();
     }
 
-    private void Refresh(
-        FlourishProjectSnapshot? projectState = null
-    )
+    private void Refresh(FlourishProjectSnapshot? projectState = null)
     {
         if (isDisposed)
         {
@@ -264,12 +260,12 @@ internal sealed class ProjectSelectorController : IDisposable
         suppressSelectionChanged = true;
         try
         {
-            var activeIds = projectState.Projects
-                .Select(project => project.Id)
+            var activeIds = projectState
+                .Projects.Select(project => project.Id)
                 .ToHashSet(StringComparer.Ordinal);
             foreach (
-                var removedId in projectItemsById.Keys
-                    .Where(id => !activeIds.Contains(id))
+                var removedId in projectItemsById
+                    .Keys.Where(id => !activeIds.Contains(id))
                     .ToArray()
             )
             {
@@ -292,12 +288,7 @@ internal sealed class ProjectSelectorController : IDisposable
                     }
 
                     desiredItems.Add(item);
-                    if (
-                        StringComparer.Ordinal.Equals(
-                            projectState.ActiveProject?.Id,
-                            project.Id
-                        )
-                    )
+                    if (StringComparer.Ordinal.Equals(projectState.ActiveProject?.Id, project.Id))
                     {
                         selectedItem = item;
                     }
@@ -394,10 +385,7 @@ internal sealed class ProjectSelectorController : IDisposable
             Header = localizationService.Get(FlourishLocaleKeys.ProjectDelete),
             Tag = project.Id,
         };
-        deleteItem.SetResourceReference(
-            WpfControl.FontSizeProperty,
-            "FlourishFontSizeStandard"
-        );
+        deleteItem.SetResourceReference(WpfControl.FontSizeProperty, "FlourishFontSizeStandard");
         deleteItem.Click += ProjectDeleteMenuItem_Click;
         item.ContextMenu = new WpfContextMenu { Items = { deleteItem } };
         AutomationProperties.SetName(item, displayTitle);
@@ -435,10 +423,7 @@ internal sealed class ProjectSelectorController : IDisposable
         item.FontWeight = FontWeights.Normal;
     }
 
-    private async void Titlebar_TitleSelectionChanged(
-        object sender,
-        SelectionChangedEventArgs e
-    )
+    private async void Titlebar_TitleSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (
             suppressSelectionChanged
@@ -546,10 +531,7 @@ internal sealed class ProjectSelectorController : IDisposable
         });
     }
 
-    private void ProjectService_Changed(
-        object? sender,
-        FlourishProjectsChangedEventArgs e
-    )
+    private void ProjectService_Changed(object? sender, FlourishProjectsChangedEventArgs e)
     {
         DispatchIfActive(() =>
         {
@@ -564,10 +546,7 @@ internal sealed class ProjectSelectorController : IDisposable
         });
     }
 
-    private void LocalizationService_Changed(
-        object? sender,
-        FlourishLocalizationChangedEventArgs e
-    )
+    private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
     {
         DispatchIfActive(() => Refresh());
     }
@@ -579,11 +558,7 @@ internal sealed class ProjectSelectorController : IDisposable
     {
         void ExecuteIfActive()
         {
-            if (
-                isDisposed
-                || dispatcher.HasShutdownStarted
-                || dispatcher.HasShutdownFinished
-            )
+            if (isDisposed || dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished)
             {
                 return;
             }
@@ -597,28 +572,18 @@ internal sealed class ProjectSelectorController : IDisposable
             return;
         }
 
-        if (
-            isDisposed
-            || dispatcher.HasShutdownStarted
-            || dispatcher.HasShutdownFinished
-        )
+        if (isDisposed || dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished)
         {
             return;
         }
 
-        _ = dispatcher.BeginInvoke(
-            DispatcherPriority.DataBind,
-            new Action(ExecuteIfActive)
-        );
+        _ = dispatcher.BeginInvoke(DispatcherPriority.DataBind, new Action(ExecuteIfActive));
     }
 
     private static string GetProjectDisplayTitle(
         FlourishProject project,
         FlourishTitleBarState titleState
-    ) =>
-        project.StoragePath is null
-            ? titleState.UnnamedProjectPlaceholder
-            : project.Name;
+    ) => project.StoragePath is null ? titleState.UnnamedProjectPlaceholder : project.Name;
 
     private void RemoveDeleteHandler(FlourishComboBoxItem item)
     {
@@ -670,8 +635,5 @@ internal sealed class ProjectSelectorController : IDisposable
         NewProject,
     }
 
-    private sealed record ProjectMenuItemTag(
-        ProjectMenuItemKind Kind,
-        string? ProjectId = null
-    );
+    private sealed record ProjectMenuItemTag(ProjectMenuItemKind Kind, string? ProjectId = null);
 }

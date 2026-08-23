@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 
@@ -11,9 +10,7 @@ public sealed class RuntimeScrollServiceTests
     [Fact]
     public void GetCurrent_UsesStartupValue()
     {
-        var sut = new ScrollService(
-            new FlourishShellOptions { IsSmoothScrollingEnabled = false }
-        );
+        var sut = new ScrollService(new FlourishShellOptions { IsSmoothScrollingEnabled = false });
 
         var current = sut.GetCurrent();
 

@@ -15,7 +15,7 @@ Flourish UI 区域通过 `ICommandDispatcher` 发送稳定的命令键。使用 
 ICommandRegistry commands = flourish.GetRequiredService<ICommandRegistry>();
 
 ICommandRegistration exportCommand = commands.Register(
-    "reports.export",
+    "cmd_reports_export",
     async (context, cancellationToken) =>
     {
         await exporter.ExportAsync(context.Parameter, cancellationToken);
@@ -36,7 +36,7 @@ internal sealed class ReportCommands(ReportService reports)
     public void RegisterCommands(ICommandRegistrar commands)
     {
         commands.Register(
-            "reports.refresh",
+            "cmd_reports_refresh",
             async (_, token) =>
             {
                 await reports.RefreshAsync(token);
@@ -44,7 +44,7 @@ internal sealed class ReportCommands(ReportService reports)
             });
 
         commands.Register(
-            "reports.export",
+            "cmd_reports_export",
             async (context, token) =>
             {
                 await reports.ExportAsync(context.Parameter, token);
@@ -72,7 +72,7 @@ builder.ConfigServices((_, services) =>
 
 ```csharp
 var saveCommand = commands.Register(
-    "editor.save",
+    "cmd_editor_save",
     async (_, token) =>
     {
         await editor.SaveAsync(token);
@@ -81,7 +81,7 @@ var saveCommand = commands.Register(
     _ => editor.HasChanges);
 ```
 
-谓词依赖的状态变化时，调用 `commands.NotifyCanExecuteChanged("editor.save")`。省略命令键可以通知监听器任意命令都可能发生变化。
+谓词依赖的状态变化时，调用 `commands.NotifyCanExecuteChanged("cmd_editor_save")`。省略命令键可以通知监听器任意命令都可能发生变化。
 
 ## 重复命令键
 
@@ -95,7 +95,7 @@ var saveCommand = commands.Register(
 
 ```csharp
 CommandResult result = await dispatcher.ExecuteAsync(
-    "reports.export",
+    "cmd_reports_export",
     selectedReport,
     CommandSource.Application,
     cancellationToken);
@@ -114,14 +114,14 @@ if (result.Status == CommandExecutionStatus.Failed)
 
 ```csharp
 toolbar.InitToolbarItems<ReportsPage>(
-    new FlourishToolbarItem("导出", "\uE898", "reports.export"));
+    new FlourishToolbarItem("导出", "\uE898", "cmd_reports_export"));
 ```
 
 命令项无需了解由哪个服务处理命令键。这样既能独立本地化显示文本，也能在不重建 UI 模型的情况下变更注册。
 
 ## 命令键约定
 
-- 使用小写点分名称，例如 `reports.export`。
+- 使用以 `cmd_` 开头、各段以下划线分隔的小写名称，例如 `cmd_reports_export`。
 - 用功能或页面作为前缀。
 - 显示文本本地化时保持命令键不变。
 - 所属功能被移除时释放对应注册。

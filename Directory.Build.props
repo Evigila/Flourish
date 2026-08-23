@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <ArkheideEssentialCultureVersion Condition="'$(ArkheideEssentialCultureVersion)' == ''">1.0.0</ArkheideEssentialCultureVersion>
+  </PropertyGroup>
+</Project>

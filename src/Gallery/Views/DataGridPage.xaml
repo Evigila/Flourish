@@ -1,6 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.DataGridPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -9,61 +10,61 @@
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Controls.PresentNativeWPFRowsAndColumnsOnAFlourishSurface_982D6DA0"
+      Content="{culture:Localize Key=Controls_PresentNativeWPFRowsAndColumnsOnAFlourishSurface_982D6DA0}"
       PresenterMode="Split"
       PresenterPosition="Right"
       Title="DataGrid"
     />
 
-    <flourish:Chunk Title="Gallery.Controls.Table_16D1C905">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
       <flourish:DataGrid
         x:Name="MemberGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Property_40040CB1" Width="224" />
-          <DataGridTextColumn Binding="{Binding Description}" Header="Gallery.Controls.Function_C8037103" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Property_40040CB1}" Width="224" />
+          <DataGridTextColumn Binding="{Binding Description}" Header="{culture:Localize Key=Controls_Function_C8037103}" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Example_D029F87E">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Example_D029F87E}">
       <flourish:DataGrid
         x:Name="ExampleGrid"
         AutoGenerateColumns="False"
         IsReadOnly="True"
       >
         <flourish:DataGrid.Columns>
-          <DataGridTextColumn Binding="{Binding Name}" Header="Gallery.Controls.Project_98595978" Width="2*" />
-          <DataGridTextColumn Binding="{Binding Status}" Header="Gallery.Controls.Status_920E413C" Width="*" />
-          <DataGridTextColumn Binding="{Binding Owner}" Header="Gallery.Controls.Owner_4B1B8AA3" Width="*" />
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Project_98595978}" Width="2*" />
+          <DataGridTextColumn Binding="{Binding Status}" Header="{culture:Localize Key=Controls_Status_920E413C}" Width="*" />
+          <DataGridTextColumn Binding="{Binding Owner}" Header="{culture:Localize Key=Controls_Owner_4B1B8AA3}" Width="*" />
         </flourish:DataGrid.Columns>
       </flourish:DataGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Counts_C3EA5BF7">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Counts_C3EA5BF7}">
       <UniformGrid Columns="2">
         <flourish:Card
           Margin="0,0,8,0"
           Content="{Binding RowCount, ElementName=ExampleGrid}"
-          Title="Gallery.Controls.Rows_101F2FF3"
+          Title="{culture:Localize Key=Controls_Rows_101F2FF3}"
         />
         <flourish:Card
           Margin="8,0,0,0"
           Content="{Binding ColumnCount, ElementName=ExampleGrid}"
-          Title="Gallery.Controls.Columns_53AADE77"
+          Title="{culture:Localize Key=Controls_Columns_53AADE77}"
         />
       </UniformGrid>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Usage_8D59829C">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
       <StackPanel>
         <flourish:Presenter
-          Content="Gallery.Controls.BindItemsSourceAndUseNativeWPFDataGridColumnsDisableAutomaticCol_F5C4C38E"
+          Content="{culture:Localize Key=Controls_BindItemsSourceAndUseNativeWPFDataGridColumnsDisableAutomaticCol_F5C4C38E}"
           PresenterMode="Split"
           PresenterPosition="Left"
-          Title="Gallery.Controls.DefineColumns_BAB293E7"
+          Title="{culture:Localize Key=Controls_DefineColumns_BAB293E7}"
         >
           <flourish:Presenter.Presentation>
             <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:DataGrid ItemsSource=&quot;{Binding Reports}&quot; AutoGenerateColumns=&quot;False&quot; IsReadOnly=&quot;True&quot;&gt;&#xA;  &lt;DataGrid.Columns&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Name&quot; Binding=&quot;{Binding Name}&quot; /&gt;&#xA;    &lt;DataGridTextColumn Header=&quot;Status&quot; Binding=&quot;{Binding Status}&quot; /&gt;&#xA;  &lt;/DataGrid.Columns&gt;&#xA;&lt;/flourish:DataGrid&gt;" />
@@ -72,25 +73,25 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton
           Margin="0,0,8,0"
-          AutomationProperties.Name="Gallery.Controls.FlourishGitHubRepository_52730F6E"
-          Content="Gallery.Controls.RepositoryLinkPlaceholder_ACCB5690"
+          AutomationProperties.Name="{culture:Localize Key=Controls_FlourishGitHubRepository_52730F6E}"
+          Content="{culture:Localize Key=Controls_RepositoryLinkPlaceholder_ACCB5690}"
           Icon="&#xE943;"
           IsEnabled="False"
-          Title="Gallery.Controls.GitHubRepository_50555492"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          AutomationProperties.Name="Gallery.Controls.DataGridDocumentation_57FFA968"
-          Content="Gallery.Controls.CanonicalDocumentationLinkPlaceholder_90AB4F65"
+          AutomationProperties.Name="{culture:Localize Key=Controls_DataGridDocumentation_57FFA968}"
+          Content="{culture:Localize Key=Controls_CanonicalDocumentationLinkPlaceholder_90AB4F65}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="Gallery.Controls.DataGridDocumentation_57FFA968"
-          ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A"
+          Title="{culture:Localize Key=Controls_DataGridDocumentation_57FFA968}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>
     </flourish:Chunk>

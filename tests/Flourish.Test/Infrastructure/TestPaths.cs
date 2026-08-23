@@ -17,7 +17,7 @@ internal static class TestPaths
         )
         {
             if (
-                File.Exists(Path.Combine(directory.FullName, "Flourish.slnx"))
+                File.Exists(Path.Combine(directory.FullName, "Arkheide.Flourish.slnx"))
                 && Directory.Exists(Path.Combine(directory.FullName, "src", "Flourish"))
             )
             {

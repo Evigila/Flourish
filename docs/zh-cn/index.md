@@ -1,9 +1,9 @@
 ---
-title: Flourish
-description: Flourish WPF Shell 组合库文档。
+title: Arkheide.Flourish
+description: Arkheide.Flourish WPF Shell 组合库文档。
 ---
 
-# Flourish
+# Arkheide.Flourish
 
 Flourish 是面向 WPF 的开源桌面应用组合与控件库。它提供基于 Host 的启动流程、窗口外观配置、导航、动态工具栏命令、状态栏集成、页面缓存、材质特效、动效选项，以及公开的 `Flourish*` WPF 控件。
 

@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,10 +25,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         Assert.NotNull(sut.Get("Reports"));
         Assert.True(sut.TryGet(typeof(ReportsPage), out var indexedRoute));
         Assert.Equal("Reports", indexedRoute.NavigationKey);
-        Assert.Equal(
-            FlourishPageCacheMode.Enabled,
-            sut.Current.Routes["Reports"].CacheMode
-        );
+        Assert.Equal(FlourishPageCacheMode.Enabled, sut.Current.Routes["Reports"].CacheMode);
         Assert.Empty(options.InitialNavigationRoutes);
 
         registration.Dispose();
@@ -151,10 +147,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
                 FlourishPageCacheMode.Enabled
             )
         );
-        var sut = new PageCacheService(
-            factory.Object,
-            new NavigationRouteRegistry(options)
-        );
+        var sut = new PageCacheService(factory.Object, new NavigationRouteRegistry(options));
 
         Assert.Same(page, sut.GetPage(typeof(ReportsPage)));
         Assert.True(sut.Contains(typeof(ReportsPage)));
@@ -162,10 +155,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         sut.SetCacheMode(typeof(ReportsPage), FlourishPageCacheMode.Disabled);
 
         Assert.False(sut.Contains(typeof(ReportsPage)));
-        Assert.Equal(
-            FlourishPageCacheMode.Disabled,
-            sut.Current.CacheModes[typeof(ReportsPage)]
-        );
+        Assert.Equal(FlourishPageCacheMode.Disabled, sut.Current.CacheModes[typeof(ReportsPage)]);
     }
 
     [Fact]
@@ -227,10 +217,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         }
 
         await firstMutation.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.Equal(
-            FlourishPageCacheMode.Disabled,
-            cache.Current.CacheModes[typeof(ReportsPage)]
-        );
+        Assert.Equal(FlourishPageCacheMode.Disabled, cache.Current.CacheModes[typeof(ReportsPage)]);
     }
 
     [Fact]
@@ -247,10 +234,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
                 FlourishPageCacheMode.Enabled,
                 _ =>
                 {
-                    cache!.SetCacheMode(
-                        typeof(ReportsPage),
-                        FlourishPageCacheMode.Disabled
-                    );
+                    cache!.SetCacheMode(typeof(ReportsPage), FlourishPageCacheMode.Disabled);
                     return page;
                 }
             )
@@ -259,10 +243,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         cache = new PageCacheService(provider, routes);
 
         Assert.Same(page, cache.GetPage(typeof(ReportsPage)));
-        Assert.Equal(
-            FlourishPageCacheMode.Disabled,
-            cache.Current.CacheModes[typeof(ReportsPage)]
-        );
+        Assert.Equal(FlourishPageCacheMode.Disabled, cache.Current.CacheModes[typeof(ReportsPage)]);
         Assert.True(routes.TryGet(typeof(ReportsPage), out var updatedRoute));
         Assert.Equal(FlourishPageCacheMode.Disabled, updatedRoute.CacheMode);
         Assert.False(cache.Contains(typeof(ReportsPage)));

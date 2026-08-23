@@ -12,18 +12,18 @@ public partial class SearchBoxPage : Page
         {
             new(
                 "Placeholder",
-                GalleryLocaleKeys.ControlsDisplaysAnInControlHintWhileTheQueryIsEmptyAndUnfocused_E3A4B8DC
+                Key.Controls_DisplaysAnInControlHintWhileTheQueryIsEmptyAndUnfocused_E3A4B8DC
             ),
-            new("Text", GalleryLocaleKeys.ControlsGetsOrSetsTheCurrentSearchQuery_8E559920),
+            new("Text", Key.Controls_GetsOrSetsTheCurrentSearchQuery_8E559920),
             new(
                 "IsReadOnly",
-                GalleryLocaleKeys.ControlsPreventsQueryEditsWhilePreservingSelection_3D0FAB32
+                Key.Controls_PreventsQueryEditsWhilePreservingSelection_3D0FAB32
             ),
-            new("MaxLength", GalleryLocaleKeys.ControlsLimitsTheAcceptedQueryLength_715D6B09),
-            new("TextChanged", GalleryLocaleKeys.ControlsReportsEachQueryUpdate_4FBCC3DE),
+            new("MaxLength", Key.Controls_LimitsTheAcceptedQueryLength_715D6B09),
+            new("TextChanged", Key.Controls_ReportsEachQueryUpdate_4FBCC3DE),
             new(
                 "CommandBindings",
-                GalleryLocaleKeys.ControlsConnectsKeyboardGesturesSuchAsEnterToApplicationSearch_537F6EA1
+                Key.Controls_ConnectsKeyboardGesturesSuchAsEnterToApplicationSearch_537F6EA1
             ),
         };
     }
@@ -38,7 +38,7 @@ public partial class SearchBoxPage : Page
 
             private void ControlSearch_KeyDown(object sender, KeyEventArgs e)
             {
-                if (e.Key == Key.Enter)
+                if (e.Key == InputKey.Enter)
                     SearchCommand.Execute(ControlSearch.Text);
             }
             """;

@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Page;
@@ -34,8 +33,9 @@ internal sealed class FlourishCompositionRoot(
         titleBarConfigurations;
     private readonly IReadOnlyList<Action<IFlourishNavigationBuilder>> navigationConfigurations =
         navigationConfigurations;
-    private readonly IReadOnlyList<Action<IFlourishCustomHandlerBuilder>> customHandlerConfigurations =
-        customHandlerConfigurations;
+    private readonly IReadOnlyList<
+        Action<IFlourishCustomHandlerBuilder>
+    > customHandlerConfigurations = customHandlerConfigurations;
     private readonly IReadOnlyList<Action<IFlourishDynamicToolbarBuilder>> toolbarConfigurations =
         toolbarConfigurations;
     private readonly IReadOnlyList<Action<IFlourishMotionBuilder>> motionConfigurations =
@@ -213,8 +213,7 @@ internal sealed class FlourishCompositionRoot(
 
     private void ApplyNavigationRegistrations(FlourishServiceCollectionState? state)
     {
-        IReadOnlyList<NavigablePageRegistration> registeredPages =
-            state?.NavigablePages ?? [];
+        IReadOnlyList<NavigablePageRegistration> registeredPages = state?.NavigablePages ?? [];
         var registeredPagesByPageType = CreateRegisteredPagesByPageType(registeredPages);
         var registeredPagesByKey = CreateRegisteredPagesByKey(registeredPages);
         shellOptions.NavigationItems.Clear();
@@ -226,11 +225,7 @@ internal sealed class FlourishCompositionRoot(
         foreach (var page in registeredPagesByKey.Values)
         {
             shellOptions.InitialNavigationRoutes.Add(
-                new FlourishNavigationRoute(
-                    page.NavigationKey,
-                    page.PageType,
-                    page.CacheMode
-                )
+                new FlourishNavigationRoute(page.NavigationKey, page.PageType, page.CacheMode)
             );
         }
 
@@ -283,9 +278,10 @@ internal sealed class FlourishCompositionRoot(
         shellOptions.FixedNavigationItems.AddRange(fixedNavigationItems);
     }
 
-    private static IReadOnlyDictionary<Type, NavigablePageRegistration> CreateRegisteredPagesByPageType(
-        IReadOnlyList<NavigablePageRegistration> registeredPages
-    )
+    private static IReadOnlyDictionary<
+        Type,
+        NavigablePageRegistration
+    > CreateRegisteredPagesByPageType(IReadOnlyList<NavigablePageRegistration> registeredPages)
     {
         var duplicatePageTypes = registeredPages
             .GroupBy(page => page.PageType)
@@ -304,9 +300,10 @@ internal sealed class FlourishCompositionRoot(
         return registeredPages.ToDictionary(page => page.PageType);
     }
 
-    private static IReadOnlyDictionary<string, NavigablePageRegistration> CreateRegisteredPagesByKey(
-        IReadOnlyList<NavigablePageRegistration> registeredPages
-    )
+    private static IReadOnlyDictionary<
+        string,
+        NavigablePageRegistration
+    > CreateRegisteredPagesByKey(IReadOnlyList<NavigablePageRegistration> registeredPages)
     {
         var duplicateKeys = registeredPages
             .GroupBy(page => page.NavigationKey, StringComparer.Ordinal)
@@ -380,11 +377,7 @@ internal sealed class FlourishCompositionRoot(
 
         foreach (var group in navigationGroups)
         {
-            AddNavigationPageLocations(
-                pageLocationsByType,
-                group.Items,
-                $"group {group.GroupId}"
-            );
+            AddNavigationPageLocations(pageLocationsByType, group.Items, $"group {group.GroupId}");
         }
 
         AddNavigationPageLocations(
@@ -503,7 +496,6 @@ internal sealed class FlourishCompositionRoot(
                     item.IconGlyph = page.IconGlyph;
                 }
             }
-
         }
 
         foreach (var child in items.Where(item => item.ChildId != 0))
@@ -532,20 +524,14 @@ internal sealed class FlourishCompositionRoot(
         services.AddSingleton(shellOptions);
         services.AddSingleton(shellOptions.Profile);
         services.AddSingleton(dataOptions);
-        services.AddSingletonAdapter<
-            FlourishConfigurationService,
-            IFlourishConfiguration
-        >();
+        services.AddSingletonAdapter<FlourishConfigurationService, IFlourishConfiguration>();
         services.AddSingleton<FlourishShellWindow>();
         services.AddSingletonAdapter<NavigationPanelService, INavigationPanelService>();
         services.AddSingletonAdapter<NavigationMenuService, INavigationMenuService>();
         services.AddSingletonAdapter<FlourishToolbarService, IToolbarService>();
         services.AddSingletonAdapter<FlourishStatusService, IStatusBarService>();
         services.AddSingletonAdapter<ShellRegionService, IShellRegionService>();
-        services.AddSingletonAdapter<
-            FlourishBackgroundTaskService,
-            IBackgroundTaskService
-        >();
+        services.AddSingletonAdapter<FlourishBackgroundTaskService, IBackgroundTaskService>();
         services.AddSingleton<IHostedService>(provider =>
             provider.GetRequiredService<FlourishBackgroundTaskService>()
         );
@@ -605,7 +591,5 @@ internal static class FlourishSingletonRegistrationExtensions
     )
         where TConcrete : class, TContract
         where TContract : class =>
-        services.AddSingleton<TContract>(provider =>
-            provider.GetRequiredService<TConcrete>()
-        );
+        services.AddSingleton<TContract>(provider => provider.GetRequiredService<TConcrete>());
 }

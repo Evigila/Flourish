@@ -13,13 +13,13 @@ public partial class ButtonPage : Page
 
     private static readonly ControlMemberRow[] propertyRows =
     [
-        new("Variant", GalleryLocaleKeys.ControlsSelectsVisualEmphasisAndSemanticFeedback_00B96251),
-        new("Content", GalleryLocaleKeys.ControlsSuppliesTheVisibleLabelOrCustomContent_26C0C0B7),
+        new("Variant", Key.Controls_SelectsVisualEmphasisAndSemanticFeedback_00B96251),
+        new("Content", Key.Controls_SuppliesTheVisibleLabelOrCustomContent_26C0C0B7),
         new(
             "Command",
-            GalleryLocaleKeys.ControlsConnectsActivationToApplicationOwnedBehavior_A9E29329
+            Key.Controls_ConnectsActivationToApplicationOwnedBehavior_A9E29329
         ),
-        new("IsEnabled", GalleryLocaleKeys.ControlsControlsKeyboardAndPointerActivation_6A5B63B0),
-        new("ToolTip", GalleryLocaleKeys.ControlsLabelsIconOnlyActions_5AA8BA24),
+        new("IsEnabled", Key.Controls_ControlsKeyboardAndPointerActivation_6A5B63B0),
+        new("ToolTip", Key.Controls_LabelsIconOnlyActions_5AA8BA24),
     ];
 }

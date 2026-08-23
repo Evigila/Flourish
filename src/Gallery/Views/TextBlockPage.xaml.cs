@@ -7,14 +7,14 @@ public partial class TextBlockPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Text", GalleryLocaleKeys.ControlsSetsTheDisplayedText_6B2DA7F7),
+        new("Text", Key.Controls_SetsTheDisplayedText_6B2DA7F7),
         new(
             "Role",
-            GalleryLocaleKeys.ControlsSelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97
+            Key.Controls_SelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97
         ),
         new(
             "TextWrapping",
-            GalleryLocaleKeys.ControlsUsesTheNativeWPFWrappingBehaviorWhenContentNeedsMultipleLines_BEEAB3F9
+            Key.Controls_UsesTheNativeWPFWrappingBehaviorWhenContentNeedsMultipleLines_BEEAB3F9
         ),
     ];
 

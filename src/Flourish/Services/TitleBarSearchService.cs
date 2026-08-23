@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -23,8 +22,7 @@ internal sealed class TitleBarSearchService(
 
     public event EventHandler<FlourishTitleBarSearchStateChangedEventArgs>? StateChanged;
 
-    internal event EventHandler<FlourishTitleBarSearchStateChangedEventArgs>?
-        ProgrammaticStateChanged;
+    internal event EventHandler<FlourishTitleBarSearchStateChangedEventArgs>? ProgrammaticStateChanged;
 
     public event EventHandler<FlourishTitleBarSearchChangedEventArgs>? QueryChanged;
 
@@ -85,11 +83,7 @@ internal sealed class TitleBarSearchService(
     internal void PublishFromView(string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        Func<
-            FlourishTitleBarSearchChangedEventArgs,
-            CancellationToken,
-            ValueTask
-        >[]? subscribers;
+        Func<FlourishTitleBarSearchChangedEventArgs, CancellationToken, ValueTask>[]? subscribers;
         EventHandler<FlourishTitleBarSearchStateChangedEventArgs>? stateChanged;
         FlourishTitleBarSearchState? state;
         QueryDispatch? dispatch = null;
@@ -135,17 +129,15 @@ internal sealed class TitleBarSearchService(
         }
 
         var queryChanged = QueryChanged;
-        var args = queryChanged is null && subscribers is null
-            ? null
-            : new FlourishTitleBarSearchChangedEventArgs(value, sequence);
+        var args =
+            queryChanged is null && subscribers is null
+                ? null
+                : new FlourishTitleBarSearchChangedEventArgs(value, sequence);
         try
         {
             if (stateChanged is not null)
             {
-                stateChanged(
-                    this,
-                    new FlourishTitleBarSearchStateChangedEventArgs(state!)
-                );
+                stateChanged(this, new FlourishTitleBarSearchStateChangedEventArgs(state!));
             }
 
             queryChanged?.Invoke(this, args!);
@@ -219,8 +211,7 @@ internal sealed class TitleBarSearchService(
                     cancellationToken.ThrowIfCancellationRequested();
                     await subscriber(args, cancellationToken).ConfigureAwait(false);
                 }
-                catch (OperationCanceledException)
-                    when (cancellationToken.IsCancellationRequested)
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
                     return;
                 }
@@ -266,9 +257,8 @@ internal sealed class TitleBarSearchService(
             version++;
             programmaticStateChanged = ProgrammaticStateChanged;
             stateChanged = StateChanged;
-            state = programmaticStateChanged is null && stateChanged is null
-                ? null
-                : CreateSnapshot();
+            state =
+                programmaticStateChanged is null && stateChanged is null ? null : CreateSnapshot();
         }
 
         if (state is null)

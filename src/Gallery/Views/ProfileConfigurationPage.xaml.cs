@@ -1,18 +1,15 @@
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery.Views;
 
 public partial class ProfileConfigurationPage : Page
 {
     private readonly IProfileService profile;
-    private readonly IGalleryLocalization localization;
 
-    public ProfileConfigurationPage(IProfileService profile, IGalleryLocalization localization)
+    public ProfileConfigurationPage(IProfileService profile)
     {
         this.profile = profile;
-        this.localization = localization;
         InitializeComponent();
     }
 
@@ -28,8 +25,8 @@ public partial class ProfileConfigurationPage : Page
         {
             await profile.SetNameOrderAsync(order);
             ProfileOutput.WriteLine(
-                localization.Format(
-                    GalleryLocaleKeys.DynamicNameOrderUpdated0DisplayName1_E5C6CE57,
+                Localizer.Parse(
+                    Key.Dynamic_NameOrderUpdated0DisplayName1_E5C6CE57,
                     profile.NameOrder,
                     profile.CurrentProfile.DisplayName
                 )
@@ -38,7 +35,7 @@ public partial class ProfileConfigurationPage : Page
         catch (Exception error)
         {
             ProfileOutput.WriteLine(
-                localization.Format(GalleryLocaleKeys.DynamicError0_43F78154, error.Message)
+                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }

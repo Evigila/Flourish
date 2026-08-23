@@ -18,7 +18,7 @@ namespace ArkheideSystem.Flourish.Test.Controls;
 public sealed class FlourishPublicControlsTests
 {
     private const string GenericThemeSource =
-        "/Flourish;component/Themes/Generic.xaml";
+        "/Arkheide.Flourish;component/Themes/Generic.xaml";
     private const string XamlNamespace = "http://schemas.arkheide.system/flourish";
 
     [Fact]

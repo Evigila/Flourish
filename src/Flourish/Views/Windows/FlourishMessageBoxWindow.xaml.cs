@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Services;
 using Button = ArkheideSystem.Flourish.Controls.Button;
@@ -84,11 +83,7 @@ internal partial class FlourishMessageBoxWindow : Window
         base.OnKeyDown(e);
     }
 
-    private void ConfigureDialog(
-        string messageBoxText,
-        string caption,
-        MessageBoxOptions options
-    )
+    private void ConfigureDialog(string messageBoxText, string caption, MessageBoxOptions options)
     {
         Title = caption;
         CaptionText.Text = caption;
@@ -135,9 +130,7 @@ internal partial class FlourishMessageBoxWindow : Window
                 IsDefault = buttonDefinition.IsDefault,
                 IsCancel = buttonDefinition.IsCancel,
                 Margin =
-                    ButtonsHost.Children.Count > 0
-                        ? new Thickness(8, 0, 0, 0)
-                        : new Thickness(),
+                    ButtonsHost.Children.Count > 0 ? new Thickness(8, 0, 0, 0) : new Thickness(),
                 Tag = buttonDefinition.Selection,
             };
             button.Click += ResultButton_Click;
@@ -174,7 +167,8 @@ internal partial class FlourishMessageBoxWindow : Window
         {
             MessageBoxButton.OKCancel => [MessageBoxResult.OK, MessageBoxResult.Cancel],
             MessageBoxButton.YesNo => [MessageBoxResult.No, MessageBoxResult.Yes],
-            MessageBoxButton.YesNoCancel => [
+            MessageBoxButton.YesNoCancel =>
+            [
                 MessageBoxResult.Cancel,
                 MessageBoxResult.No,
                 MessageBoxResult.Yes,
@@ -243,8 +237,8 @@ internal partial class FlourishMessageBoxWindow : Window
         return buttons switch
         {
             MessageBoxButton.OK => result == MessageBoxResult.OK,
-            MessageBoxButton.OKCancel or MessageBoxButton.YesNoCancel =>
-                result == MessageBoxResult.Cancel,
+            MessageBoxButton.OKCancel or MessageBoxButton.YesNoCancel => result
+                == MessageBoxResult.Cancel,
             _ => false,
         };
     }
@@ -265,9 +259,7 @@ internal partial class FlourishMessageBoxWindow : Window
         return result switch
         {
             MessageBoxResult.OK => localizationService.Get(FlourishLocaleKeys.MessageBoxOk),
-            MessageBoxResult.Cancel => localizationService.Get(
-                FlourishLocaleKeys.MessageBoxCancel
-            ),
+            MessageBoxResult.Cancel => localizationService.Get(FlourishLocaleKeys.MessageBoxCancel),
             MessageBoxResult.Yes => localizationService.Get(FlourishLocaleKeys.MessageBoxYes),
             MessageBoxResult.No => localizationService.Get(FlourishLocaleKeys.MessageBoxNo),
             _ => result.ToString(),
@@ -305,32 +297,20 @@ internal partial class FlourishMessageBoxWindow : Window
     {
         if (icon == MessageBoxImage.Hand)
         {
-            return (
-                "FlourishDangerBackgroundBrush",
-                "FlourishDangerForegroundBrush"
-            );
+            return ("FlourishDangerBackgroundBrush", "FlourishDangerForegroundBrush");
         }
 
         if (icon == MessageBoxImage.Question)
         {
-            return (
-                "FlourishSecondarySurfaceBrush",
-                "FlourishSecondaryForegroundBrush"
-            );
+            return ("FlourishSecondarySurfaceBrush", "FlourishSecondaryForegroundBrush");
         }
 
         if (icon == MessageBoxImage.Exclamation)
         {
-            return (
-                "FlourishWarningBackgroundBrush",
-                "FlourishWarningForegroundBrush"
-            );
+            return ("FlourishWarningBackgroundBrush", "FlourishWarningForegroundBrush");
         }
 
-        return (
-            "FlourishPrimarySurfaceBrush",
-            "FlourishPrimaryForegroundBrush"
-        );
+        return ("FlourishPrimarySurfaceBrush", "FlourishPrimaryForegroundBrush");
     }
 
     private sealed record MessageDialogButton(

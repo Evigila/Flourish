@@ -1,5 +1,3 @@
-using System.Windows.Controls;
-
 namespace ArkheideSystem.Flourish.Abstract.Runtime;
 
 /// <summary>

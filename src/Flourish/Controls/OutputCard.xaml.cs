@@ -1,6 +1,5 @@
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Threading;
 using WpfControl = System.Windows.Controls.Control;
 
@@ -22,8 +21,7 @@ public class OutputCard : WpfControl
         );
 
     /// <summary>Identifies the read-only <see cref="Output" /> dependency property.</summary>
-    public static readonly DependencyProperty OutputProperty =
-        OutputPropertyKey.DependencyProperty;
+    public static readonly DependencyProperty OutputProperty = OutputPropertyKey.DependencyProperty;
 
     private StringBuilder _outputBuilder = new();
     private ScrollViewer? _outputScrollViewer;
@@ -117,9 +115,7 @@ public class OutputCard : WpfControl
         var constrainedHeight = double.IsPositiveInfinity(constraint.Height)
             ? MinHeight
             : Math.Min(constraint.Height, MinHeight);
-        return base.MeasureOverride(
-            new System.Windows.Size(constraint.Width, constrainedHeight)
-        );
+        return base.MeasureOverride(new System.Windows.Size(constraint.Width, constrainedHeight));
     }
 
     private string MaterializeOutput()

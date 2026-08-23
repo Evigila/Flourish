@@ -8,7 +8,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// builder.ConfigData(data =>
 /// {
 ///     data.InitLocale("en-US")
-///         .AddLocaleFile("Locales/lang_en-US.json");
+///         .AddLocaleFile("Locales/Flourish.LangKey_en-US.Json");
 /// });
 /// ]]></code>
 /// </example>
@@ -42,7 +42,8 @@ public interface IFlourishDataBuilder
     /// <remarks>
     /// <para>
     /// The file is read while <see cref="IFlourishBuilder.Build" /> applies configuration. It
-    /// must be a UTF-8, non-empty, flat JSON object named <c>lang_&lt;locale&gt;.json</c>.
+    /// must be a UTF-8, non-empty, flat JSON object named
+    /// <c>Flourish.LangKey_&lt;locale&gt;.Json</c>.
     /// Keys and values must be non-empty strings, and keys cannot be repeated. The locale segment
     /// may contain letters, digits, hyphens, and underscores. Underscores are normalized to
     /// hyphens, and locale identifiers are returned in canonical form.

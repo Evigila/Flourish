@@ -1,7 +1,6 @@
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Internal.Composition;
+using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
@@ -130,13 +129,13 @@ public sealed class FlourishTitlebarBuilderTests
         var sut = new FlourishTitlebarBuilder(options);
 
         var result = sut.UseLogo(
-            logoPath: "pack://application:,,,/Flourish;component/Assets/favicon.ico"
+            logoPath: "pack://application:,,,/Arkheide.Flourish;component/Assets/favicon.ico"
         );
 
         Assert.Same(sut, result);
         Assert.True(options.IsTitlebarLogoEnabled);
         Assert.Equal(
-            "pack://application:,,,/Flourish;component/Assets/favicon.ico",
+            "pack://application:,,,/Arkheide.Flourish;component/Assets/favicon.ico",
             options.LogoPath
         );
     }
@@ -191,22 +190,16 @@ public sealed class FlourishTitlebarBuilderTests
 
         Assert.Equal(
             "title",
-            Assert
-                .Throws<ArgumentException>(() => sut.InitApplicationTitle(value!))
-                .ParamName
+            Assert.Throws<ArgumentException>(() => sut.InitApplicationTitle(value!)).ParamName
         );
         Assert.Equal(
             "subTitle",
-            Assert
-                .Throws<ArgumentException>(() => sut.InitApplicationSubTitle(value!))
-                .ParamName
+            Assert.Throws<ArgumentException>(() => sut.InitApplicationSubTitle(value!)).ParamName
         );
         Assert.Equal(
             "placeholder",
             Assert
-                .Throws<ArgumentException>(() =>
-                    sut.InitUnnamedProjectPlaceholder(value!)
-                )
+                .Throws<ArgumentException>(() => sut.InitUnnamedProjectPlaceholder(value!))
                 .ParamName
         );
         Assert.Equal(
@@ -228,9 +221,7 @@ public sealed class FlourishTitlebarBuilderTests
 
         Assert.Equal(
             "logoPath",
-            Assert
-                .Throws<ArgumentException>(() => sut.UseLogo(logoPath: value))
-                .ParamName
+            Assert.Throws<ArgumentException>(() => sut.UseLogo(logoPath: value)).ParamName
         );
     }
 

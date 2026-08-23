@@ -1,13 +1,10 @@
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shell;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
-using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -172,12 +169,7 @@ public sealed class FlourishShellWindowFrameTests
                 window.Background = replacementBackground;
                 Assert.Same(replacementBackground, window.Background);
 
-                SendMessage(
-                    handle,
-                    wmDwmCompositionChanged,
-                    IntPtr.Zero,
-                    IntPtr.Zero
-                );
+                SendMessage(handle, wmDwmCompositionChanged, IntPtr.Zero, IntPtr.Zero);
 
                 Assert.Same(originalBackground, window.Background);
                 Assert.Equal(MaterialEffect.None, material.CurrentEffect);

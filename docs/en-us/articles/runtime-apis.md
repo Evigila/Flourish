@@ -31,7 +31,7 @@ Registration and presentation APIs use disposable leases. Keep the returned obje
 | --- | --- |
 | `IFlourishConfiguration` | Read `Current`, the string indexer, `Get<T>`, or `GetSection<T>` from the effective Host configuration; call `Reload()` and observe `Changed`. |
 | `IFlourishSettingsStore` | Atomically update values owned by the `Flourish` top-level section. Every path must start with `Flourish:`; a changed file reloads Host configuration. |
-| `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `lang_<locale>.json` files while running. |
+| `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `Flourish.LangKey_<locale>.Json` files while running. |
 
 `IFlourishSettingsStore` writes the file selected by `InitAppSettingsFilePath`, which defaults to application-root `appsettings.Flourish.json`. It cannot modify `Logging`, `ConnectionStrings`, or another application-owned top-level section. `IProjectService` separately persists its catalog to the independently selected `InitProjectCatalogFilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
 
@@ -196,7 +196,7 @@ public sealed class RefreshBindings : IDisposable
         IShortcutService shortcuts,
         IDataRefresher refresher)
     {
-        command = commands.Register("data.refresh", async (_, token) =>
+        command = commands.Register("cmd_data_refresh", async (_, token) =>
         {
             await refresher.RefreshAsync(token);
             return CommandResult.Handled;
@@ -204,7 +204,7 @@ public sealed class RefreshBindings : IDisposable
 
         shortcut = shortcuts.Register(
             new KeyGesture(Key.F5, ModifierKeys.Control),
-            "data.refresh");
+            "cmd_data_refresh");
     }
 
     public void Dispose()

@@ -1,21 +1,22 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.AppearancePage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
 >
   <flourish:PageBody>
     <flourish:HeaderChunk
-      Content="Gallery.Shell.ConfigureSharedShellAppearanceAndExploreVisualResourcesThatCanAl_47220926"
+      Content="{culture:Localize Key=Shell_ConfigureSharedShellAppearanceAndExploreVisualResourcesThatCanAl_47220926}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="Gallery.Application.Appearance_3907FA7F"
+      Title="{culture:Localize Key=Application_Appearance_3907FA7F}"
     />
 
     <flourish:Chunk
-      Content="Gallery.Shell.SelectTheApplicationColorThemeAndSwitchAmongTheSupportedModesWit_C1EDC9B6"
-      Title="Gallery.Controls.Theme_EFB52E71"
+      Content="{culture:Localize Key=Shell_SelectTheApplicationColorThemeAndSwitchAmongTheSupportedModesWit_C1EDC9B6}"
+      Title="{culture:Localize Key=Controls_Theme_EFB52E71}"
     >
       <StackPanel>
       <Grid>
@@ -26,8 +27,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE713;"
-            Title="Gallery.Controls.Theme_EFB52E71"
-            Content="Gallery.Shell.ChooseTheRequestedApplicationColorMode_D332B194"
+            Title="{culture:Localize Key=Controls_Theme_EFB52E71}"
+            Content="{culture:Localize Key=Shell_ChooseTheRequestedApplicationColorMode_D332B194}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox x:Name="ThemeBox" Width="220" SelectionChanged="ThemeBox_SelectionChanged" />
@@ -36,11 +37,11 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72C;"
-            Title="Gallery.Shell.CycleTheme_4F08FD02"
-            Content="Gallery.Shell.MoveThroughSystemLightAndDark_79B96D1E"
+            Title="{culture:Localize Key=Shell_CycleTheme_4F08FD02}"
+            Content="{culture:Localize Key=Shell_MoveThroughSystemLightAndDark_79B96D1E}"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ToggleTheme_Click" Content="Gallery.Shell.CycleTheme_4F08FD02" />
+              <flourish:Button Click="ToggleTheme_Click" Content="{culture:Localize Key=Shell_CycleTheme_4F08FD02}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -56,8 +57,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Shell.ChangeTheApplicationWideTextScaleTextFamilyAndIconFamilyThroughI_5981BD80"
-      Title="Gallery.Shell.Typography_CAB94ABA"
+      Content="{culture:Localize Key=Shell_ChangeTheApplicationWideTextScaleTextFamilyAndIconFamilyThroughI_5981BD80}"
+      Title="{culture:Localize Key=Shell_Typography_CAB94ABA}"
     >
       <StackPanel>
       <Grid>
@@ -68,8 +69,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.TextFontFamily_BDAD59BB"
-            Content="Gallery.Shell.SetTheApplicationWideTextFamily_51BED724"
+            Title="{culture:Localize Key=Shell_TextFontFamily_BDAD59BB}"
+            Content="{culture:Localize Key=Shell_SetTheApplicationWideTextFamily_51BED724}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="FontFamilyBox" Width="220" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -78,8 +79,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.SmallTextSize_5BE132C2"
-            Content="Gallery.Shell.SetTheSmallTypographyTier_093845E4"
+            Title="{culture:Localize Key=Shell_SmallTextSize_5BE132C2}"
+            Content="{culture:Localize Key=Shell_SetTheSmallTypographyTier_093845E4}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="SmallFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -88,8 +89,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.StandardTextSize_81229A4D"
-            Content="Gallery.Shell.SetTheStandardTypographyTier_EF1F551B"
+            Title="{culture:Localize Key=Shell_StandardTextSize_81229A4D}"
+            Content="{culture:Localize Key=Shell_SetTheStandardTypographyTier_EF1F551B}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="StandardFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -98,8 +99,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.IconSize_A86CAFC7"
-            Content="Gallery.Shell.SetTheDedicatedIconGlyphSize_B55BC458"
+            Title="{culture:Localize Key=Shell_IconSize_A86CAFC7}"
+            Content="{culture:Localize Key=Shell_SetTheDedicatedIconGlyphSize_B55BC458}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="IconFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -108,8 +109,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.LargeTextSize_A13F1B10"
-            Content="Gallery.Shell.SetTheBoldLargeTypographyTier_4BFC7E63"
+            Title="{culture:Localize Key=Shell_LargeTextSize_A13F1B10}"
+            Content="{culture:Localize Key=Shell_SetTheBoldLargeTypographyTier_4BFC7E63}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="LargeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -118,8 +119,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.ExtraLargeTextSize_89659B30"
-            Content="Gallery.Shell.SetTheBoldExtraLargeTypographyTier_3089CFA2"
+            Title="{culture:Localize Key=Shell_ExtraLargeTextSize_89659B30}"
+            Content="{culture:Localize Key=Shell_SetTheBoldExtraLargeTypographyTier_3089CFA2}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="ExtraLargeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -128,8 +129,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.HeaderTextSize_EE385089"
-            Content="Gallery.Shell.SetTheBoldPageHeaderTypographyTier_50A4EFA0"
+            Title="{culture:Localize Key=Shell_HeaderTextSize_EE385089}"
+            Content="{culture:Localize Key=Shell_SetTheBoldPageHeaderTypographyTier_50A4EFA0}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="HeaderSizeFontSizeBox" Width="120" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -138,8 +139,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8B9;"
-            Title="Gallery.Shell.IconFontFamily_FD125382"
-            Content="Gallery.Shell.SetTheFontUsedForApplicationGlyphs_6FA682DA"
+            Title="{culture:Localize Key=Shell_IconFontFamily_FD125382}"
+            Content="{culture:Localize Key=Shell_SetTheFontUsedForApplicationGlyphs_6FA682DA}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="IconFontFamilyBox" Width="220" KeyDown="TypographyBox_KeyDown" LostFocus="TypographyBox_LostFocus" />
@@ -153,8 +154,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Shell.OverrideSelectedTypographyResourcesForOnePageTypeWhileAllOmitted_85813212"
-      Title="Gallery.Shell.PageTypography_68D36EEA"
+      Content="{culture:Localize Key=Shell_OverrideSelectedTypographyResourcesForOnePageTypeWhileAllOmitted_85813212}"
+      Title="{culture:Localize Key=Shell_PageTypography_68D36EEA}"
     >
       <StackPanel>
       <Grid>
@@ -165,8 +166,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageFontFamily_72A09A8C"
-            Content="Gallery.Shell.OverrideTheTextFamilyOnThisPage_79C98EB0"
+            Title="{culture:Localize Key=Shell_PageFontFamily_72A09A8C}"
+            Content="{culture:Localize Key=Shell_OverrideTheTextFamilyOnThisPage_79C98EB0}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideFontFamilyBox" Width="220" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" Text="Georgia" />
@@ -175,8 +176,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageSmallSize_1E6ECE4B"
-            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalSmallSize_EEB46D7D"
+            Title="{culture:Localize Key=Shell_PageSmallSize_1E6ECE4B}"
+            Content="{culture:Localize Key=Shell_LeaveEmptyToFollowTheGlobalSmallSize_EEB46D7D}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideSmallFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -185,8 +186,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageStandardSize_13B6264D"
-            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalStandardSize_AF081960"
+            Title="{culture:Localize Key=Shell_PageStandardSize_13B6264D}"
+            Content="{culture:Localize Key=Shell_LeaveEmptyToFollowTheGlobalStandardSize_AF081960}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideStandardFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -195,8 +196,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageIconSize_68EB6DAA"
-            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalIconSize_7B5D9302"
+            Title="{culture:Localize Key=Shell_PageIconSize_68EB6DAA}"
+            Content="{culture:Localize Key=Shell_LeaveEmptyToFollowTheGlobalIconSize_7B5D9302}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideIconFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -205,8 +206,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageLargeSize_D500FA22"
-            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalLargeSize_73A327DA"
+            Title="{culture:Localize Key=Shell_PageLargeSize_D500FA22}"
+            Content="{culture:Localize Key=Shell_LeaveEmptyToFollowTheGlobalLargeSize_73A327DA}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideLargeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -215,8 +216,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageExtraLargeSize_DA2102E4"
-            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalExtraLargeSize_4C968F32"
+            Title="{culture:Localize Key=Shell_PageExtraLargeSize_DA2102E4}"
+            Content="{culture:Localize Key=Shell_LeaveEmptyToFollowTheGlobalExtraLargeSize_4C968F32}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideExtraLargeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -225,8 +226,8 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE8D2;"
-            Title="Gallery.Shell.PageHeaderSize_CF98FBE9"
-            Content="Gallery.Shell.LeaveEmptyToFollowTheGlobalHeaderSize_01B67D74"
+            Title="{culture:Localize Key=Shell_PageHeaderSize_CF98FBE9}"
+            Content="{culture:Localize Key=Shell_LeaveEmptyToFollowTheGlobalHeaderSize_01B67D74}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishTextBox x:Name="PageOverrideHeaderSizeFontSizeBox" Width="120" KeyDown="PageOverrideBox_KeyDown" LostFocus="PageOverrideBox_LostFocus" />
@@ -235,11 +236,11 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE72C;"
-            Title="Gallery.Shell.ClearPageOverride_C2236B42"
-            Content="Gallery.Shell.RestoreTheGlobalApplicationTypography_A05C913A"
+            Title="{culture:Localize Key=Shell_ClearPageOverride_C2236B42}"
+            Content="{culture:Localize Key=Shell_RestoreTheGlobalApplicationTypography_A05C913A}"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ClearPageFontOverride_Click" Content="Gallery.Shell.ClearOverride_46FDBF5F" />
+              <flourish:Button Click="ClearPageFontOverride_Click" Content="{culture:Localize Key=Shell_ClearOverride_46FDBF5F}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -250,8 +251,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Shell.ApplySharedPaletteAndCornerRadiusOverridesWithoutReplacingTheAct_7D937A92"
-      Title="Gallery.Shell.AppearanceOverrides_014D45A8"
+      Content="{culture:Localize Key=Shell_ApplySharedPaletteAndCornerRadiusOverridesWithoutReplacingTheAct_7D937A92}"
+      Title="{culture:Localize Key=Shell_AppearanceOverrides_014D45A8}"
     >
       <StackPanel>
         <Grid>
@@ -261,19 +262,19 @@
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="0,0,8,0">
             <flourish:ActionCard
-              Content="Gallery.Shell.ApplyASamplePrimarySecondaryAndAccentPalette_EB8F8C31"
+              Content="{culture:Localize Key=Shell_ApplyASamplePrimarySecondaryAndAccentPalette_EB8F8C31}"
               Icon="&#xE790;"
-              Title="Gallery.Shell.ColorPalette_81A9BE1A"
+              Title="{culture:Localize Key=Shell_ColorPalette_81A9BE1A}"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="Palette_Click" Content="Gallery.Shell.PreviewPalette_B9C6FB33" />
+                <flourish:Button Click="Palette_Click" Content="{culture:Localize Key=Shell_PreviewPalette_B9C6FB33}" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
-              Content="Gallery.Shell.SetOneSharedRadiusOrLeaveTheFieldEmptyToRestoreTheStandardHierar_79220300"
+              Content="{culture:Localize Key=Shell_SetOneSharedRadiusOrLeaveTheFieldEmptyToRestoreTheStandardHierar_79220300}"
               Icon="&#xE809;"
-              Title="Gallery.Shell.CornerRadius_76A6D9F3"
+              Title="{culture:Localize Key=Shell_CornerRadius_76A6D9F3}"
             >
               <flourish:ActionCard.Body>
                 <flourish:FlourishTextBox
@@ -286,12 +287,12 @@
             </flourish:ActionCard>
             <flourish:ActionCard
               Margin="{DynamicResource FlourishActionCardPeerMargin}"
-              Content="Gallery.Shell.RemoveBothFlourishOwnedOverrides_E00BA896"
+              Content="{culture:Localize Key=Shell_RemoveBothFlourishOwnedOverrides_E00BA896}"
               Icon="&#xE777;"
-              Title="Gallery.Shell.StandardAppearance_C2FBFFC7"
+              Title="{culture:Localize Key=Shell_StandardAppearance_C2FBFFC7}"
             >
               <flourish:ActionCard.Body>
-                <flourish:Button Click="ClearAppearance_Click" Content="Gallery.Shell.RestoreDefaults_602F8E63" />
+                <flourish:Button Click="ClearAppearance_Click" Content="{culture:Localize Key=Shell_RestoreDefaults_602F8E63}" />
               </flourish:ActionCard.Body>
             </flourish:ActionCard>
           </StackPanel>
@@ -307,20 +308,20 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Shell.CenterPageContentWithinASharedMaximumWidthAndUpdateBothTheActive_4729774F"
-      Title="Gallery.Shell.ContentLayout_D3657AA9"
+      Content="{culture:Localize Key=Shell_CenterPageContentWithinASharedMaximumWidthAndUpdateBothTheActive_4729774F}"
+      Title="{culture:Localize Key=Shell_ContentLayout_D3657AA9}"
     >
       <StackPanel>
         <flourish:ActionCard
-          Content="Gallery.Shell.EnableOrDisableTheCenteredPageLayout_45F80EAF"
+          Content="{culture:Localize Key=Shell_EnableOrDisableTheCenteredPageLayout_45F80EAF}"
           Icon="&#xE8A7;"
-          Title="Gallery.Shell.CenteredContent_F26AD2B7"
+          Title="{culture:Localize Key=Shell_CenteredContent_F26AD2B7}"
         >
           <flourish:ActionCard.Body>
             <flourish:CheckBox
               x:Name="CenterContentBox"
               Checked="ContentLayout_Changed"
-              Content="Gallery.Shell.CenterContent_6043ED7D"
+              Content="{culture:Localize Key=Shell_CenterContent_6043ED7D}"
               Unchecked="ContentLayout_Changed"
               VerticalAlignment="Center"
             />
@@ -328,9 +329,9 @@
         </flourish:ActionCard>
         <flourish:ActionCard
           Margin="{DynamicResource FlourishActionCardPeerMargin}"
-          Content="Gallery.Shell.SetThePositiveMaximumWidthUsedByCenteredPages_D6A2CFCB"
+          Content="{culture:Localize Key=Shell_SetThePositiveMaximumWidthUsedByCenteredPages_D6A2CFCB}"
           Icon="&#xE8A7;"
-          Title="Gallery.Shell.ContentWidth_B8A71D3A"
+          Title="{culture:Localize Key=Shell_ContentWidth_B8A71D3A}"
         >
           <flourish:ActionCard.Body>
             <flourish:FlourishTextBox
@@ -346,8 +347,8 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Shell.ChooseTheNativeMaterialBehindTheShellAndCoordinateItsImmersiveDa_469AEA19"
-      Title="Gallery.Shell.WindowMaterial_053B7771"
+      Content="{culture:Localize Key=Shell_ChooseTheNativeMaterialBehindTheShellAndCoordinateItsImmersiveDa_469AEA19}"
+      Title="{culture:Localize Key=Shell_WindowMaterial_053B7771}"
     >
       <StackPanel>
       <Grid>
@@ -358,8 +359,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
           <flourish:ActionCard
             Icon="&#xE7F4;"
-            Title="Gallery.Shell.WindowMaterial_053B7771"
-            Content="Gallery.Shell.ChooseTheNativeShellBackdrop_832D086B"
+            Title="{culture:Localize Key=Shell_WindowMaterial_053B7771}"
+            Content="{culture:Localize Key=Shell_ChooseTheNativeShellBackdrop_832D086B}"
           >
             <flourish:ActionCard.Body>
               <flourish:FlourishComboBox
@@ -372,11 +373,11 @@
           <flourish:ActionCard
             Margin="{DynamicResource FlourishActionCardPeerMargin}"
             Icon="&#xE708;"
-            Title="Gallery.Shell.ImmersiveDarkMode_7E1CB18B"
-            Content="Gallery.Shell.RequestDarkNativeWindowChrome_4E04D64F"
+            Title="{culture:Localize Key=Shell_ImmersiveDarkMode_7E1CB18B}"
+            Content="{culture:Localize Key=Shell_RequestDarkNativeWindowChrome_4E04D64F}"
           >
             <flourish:ActionCard.Body>
-              <flourish:CheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="Gallery.Shell.ImmersiveDarkMode_7E1CB18B" Unchecked="MaterialDarkModeBox_Changed" />
+              <flourish:CheckBox x:Name="MaterialDarkModeBox" VerticalAlignment="Center" Checked="MaterialDarkModeBox_Changed" Content="{culture:Localize Key=Shell_ImmersiveDarkMode_7E1CB18B}" Unchecked="MaterialDarkModeBox_Changed" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -387,20 +388,20 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="Gallery.Shell.ChooseWhetherFlourishOwnedShellNavigationAndPageViewportsSmoothM_1EA6E35D"
-      Title="Gallery.Shell.SmoothScrolling_F62E8490"
+      Content="{culture:Localize Key=Shell_ChooseWhetherFlourishOwnedShellNavigationAndPageViewportsSmoothM_1EA6E35D}"
+      Title="{culture:Localize Key=Shell_SmoothScrolling_F62E8490}"
     >
       <StackPanel>
         <flourish:ActionCard
-          Content="Gallery.Shell.TheSettingUpdatesExistingFlourishViewportsThroughTheSharedDynami_4D207F2C"
+          Content="{culture:Localize Key=Shell_TheSettingUpdatesExistingFlourishViewportsThroughTheSharedDynami_4D207F2C}"
           Icon="&#xE7C2;"
-          Title="Gallery.Shell.ShellScrolling_A9D6873F"
+          Title="{culture:Localize Key=Shell_ShellScrolling_A9D6873F}"
         >
           <flourish:ActionCard.Body>
             <flourish:CheckBox
               x:Name="SmoothScrollingBox"
               Checked="SmoothScrollingBox_Changed"
-              Content="Gallery.Shell.EnableSmoothScrolling_9C57F675"
+              Content="{culture:Localize Key=Shell_EnableSmoothScrolling_9C57F675}"
               Unchecked="SmoothScrollingBox_Changed"
               VerticalAlignment="Center"
             />
@@ -412,10 +413,10 @@
       </StackPanel>
     </flourish:Chunk>
 
-    <flourish:Chunk Title="Gallery.Controls.Reference_71BF9093">
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
-        <flourish:CardButton Margin="0,0,8,0" Content="Gallery.Controls.BrowseTheFlourishSourceRepository_5CC28F39" Icon="&#xE943;" IsEnabled="False" Title="Gallery.Controls.GitHubRepository_50555492" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
-        <flourish:CardButton Margin="8,0,0,0" Content="Gallery.Shell.ReadTheCanonicalFlourishDocumentation_7BB05CDB" Icon="&#xE946;" IsEnabled="False" Title="Gallery.Shell.FlourishDocumentation_A1D1605B" ToolTip="Gallery.Controls.ExternalNavigationIsNotAvailableInGallery_E2F1482A" />
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

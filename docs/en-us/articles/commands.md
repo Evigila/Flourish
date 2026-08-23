@@ -15,7 +15,7 @@ Flourish UI surfaces send stable command keys through `ICommandDispatcher`. Regi
 ICommandRegistry commands = flourish.GetRequiredService<ICommandRegistry>();
 
 ICommandRegistration exportCommand = commands.Register(
-    "reports.export",
+    "cmd_reports_export",
     async (context, cancellationToken) =>
     {
         await exporter.ExportAsync(context.Parameter, cancellationToken);
@@ -36,7 +36,7 @@ internal sealed class ReportCommands(ReportService reports)
     public void RegisterCommands(ICommandRegistrar commands)
     {
         commands.Register(
-            "reports.refresh",
+            "cmd_reports_refresh",
             async (_, token) =>
             {
                 await reports.RefreshAsync(token);
@@ -44,7 +44,7 @@ internal sealed class ReportCommands(ReportService reports)
             });
 
         commands.Register(
-            "reports.export",
+            "cmd_reports_export",
             async (context, token) =>
             {
                 await reports.ExportAsync(context.Parameter, token);
@@ -72,7 +72,7 @@ Pass a predicate to `Register` when availability depends on application state. F
 
 ```csharp
 var saveCommand = commands.Register(
-    "editor.save",
+    "cmd_editor_save",
     async (_, token) =>
     {
         await editor.SaveAsync(token);
@@ -81,7 +81,7 @@ var saveCommand = commands.Register(
     _ => editor.HasChanges);
 ```
 
-Call `commands.NotifyCanExecuteChanged("editor.save")` when the state used by the predicate changes. Omit the key to notify listeners that any command may have changed.
+Call `commands.NotifyCanExecuteChanged("cmd_editor_save")` when the state used by the predicate changes. Omit the key to notify listeners that any command may have changed.
 
 ## Duplicate command keys
 
@@ -95,7 +95,7 @@ Use `ICommandDispatcher` when application code needs to invoke the same path as 
 
 ```csharp
 CommandResult result = await dispatcher.ExecuteAsync(
-    "reports.export",
+    "cmd_reports_export",
     selectedReport,
     CommandSource.Application,
     cancellationToken);
@@ -114,14 +114,14 @@ Toolbar, navigation, title-bar, status-bar, notification, and shortcut APIs acce
 
 ```csharp
 toolbar.InitToolbarItems<ReportsPage>(
-    new FlourishToolbarItem("Export", "\uE898", "reports.export"));
+    new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
 ```
 
 Command items do not need to know which service handles the key. This keeps display text localizable and lets registrations change without rebuilding the UI model.
 
 ## Command key conventions
 
-- Use lowercase dotted names such as `reports.export`.
+- Use lowercase `cmd_` names with underscore-separated segments, such as `cmd_reports_export`.
 - Prefix keys by feature or page.
 - Keep keys stable when display text is localized.
 - Dispose registrations when their owning feature is removed.

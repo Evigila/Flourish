@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -9,7 +8,8 @@ namespace ArkheideSystem.Flourish.Services;
 internal sealed class FlourishLocalizationService : IFlourishLocalization
 {
     internal const string DefaultLocale = "en-US";
-    private const string EmbeddedResourcePrefix = "ArkheideSystem.Flourish.Assets.lang_";
+    private const string EmbeddedResourcePrefix =
+        "ArkheideSystem.Flourish.Assets.Flourish.LangKey_";
 
     private readonly IReadOnlyDictionary<
         string,
@@ -254,15 +254,15 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
     private static string GetLocaleFromFileName(string path)
     {
         var fileName = Path.GetFileName(path);
-        const string prefix = "lang_";
-        const string extension = ".json";
+        const string prefix = "Flourish.LangKey_";
+        const string extension = ".Json";
         if (
             !fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
             || !fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase)
         )
         {
             throw new ArgumentException(
-                $"Locale file '{fileName}' must be named lang_<locale>.json.",
+                $"Locale file '{fileName}' must be named Flourish.LangKey_<locale>.Json.",
                 nameof(path)
             );
         }
@@ -276,7 +276,7 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
         )
         {
             throw new ArgumentException(
-                $"Locale file '{fileName}' must be named lang_<locale>.json.",
+                $"Locale file '{fileName}' must be named Flourish.LangKey_<locale>.Json.",
                 nameof(path)
             );
         }
@@ -286,7 +286,7 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
 
     private static IReadOnlyDictionary<string, string> LoadEmbeddedLocale(string locale)
     {
-        var resourceName = $"{EmbeddedResourcePrefix}{locale}.json";
+        var resourceName = $"{EmbeddedResourcePrefix}{locale}.Json";
         var assembly = typeof(FlourishLocalizationService).Assembly;
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream is null)
@@ -403,9 +403,7 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
         ArgumentException.ThrowIfNullOrWhiteSpace(locale);
         var normalized = locale.Trim().Replace('_', '-');
         if (
-            normalized.Any(character =>
-                !char.IsLetterOrDigit(character) && character is not '-'
-            )
+            normalized.Any(character => !char.IsLetterOrDigit(character) && character is not '-')
             || normalized.Split('-').Any(string.IsNullOrEmpty)
         )
         {
@@ -417,7 +415,8 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
 
         try
         {
-            return CultureInfo.GetCultureInfo(normalized).Name;
+            var canonical = CultureInfo.GetCultureInfo(normalized).Name;
+            return canonical.Length == 0 ? CanonicalizeCustomLocale(normalized) : canonical;
         }
         catch (CultureNotFoundException)
         {
@@ -434,11 +433,11 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
             subtags[index] = index switch
             {
                 0 => subtag.ToLowerInvariant(),
-                _ when subtag.Length == 4 && subtag.All(char.IsLetter) =>
-                    char.ToUpperInvariant(subtag[0]) + subtag[1..].ToLowerInvariant(),
-                _ when
-                    (subtag.Length == 2 && subtag.All(char.IsLetter))
-                    || (subtag.Length == 3 && subtag.All(char.IsDigit)) =>
+                _ when subtag.Length == 4 && subtag.All(char.IsLetter) => char.ToUpperInvariant(
+                    subtag[0]
+                ) + subtag[1..].ToLowerInvariant(),
+                _ when (subtag.Length == 2 && subtag.All(char.IsLetter))
+                        || (subtag.Length == 3 && subtag.All(char.IsDigit)) =>
                     subtag.ToUpperInvariant(),
                 _ => subtag.ToLowerInvariant(),
             };

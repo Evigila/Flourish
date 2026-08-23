@@ -12,21 +12,21 @@ public partial class RadioButtonPage : Page
         {
             new(
                 "GroupName",
-                GalleryLocaleKeys.ControlsAssociatesMutuallyExclusiveOptionsAcrossALogicalContainer_21819671
+                Key.Controls_AssociatesMutuallyExclusiveOptionsAcrossALogicalContainer_21819671
             ),
             new(
                 "IsChecked",
-                GalleryLocaleKeys.ControlsGetsOrSetsWhetherThisOptionIsSelected_2A781960
+                Key.Controls_GetsOrSetsWhetherThisOptionIsSelected_2A781960
             ),
-            new("Content", GalleryLocaleKeys.ControlsSuppliesTheVisibleOptionLabel_2FF959F7),
-            new("Checked", GalleryLocaleKeys.ControlsReportsSelectionOfThisOption_6027BFAA),
+            new("Content", Key.Controls_SuppliesTheVisibleOptionLabel_2FF959F7),
+            new("Checked", Key.Controls_ReportsSelectionOfThisOption_6027BFAA),
             new(
                 "Command",
-                GalleryLocaleKeys.ControlsInvokesApplicationOwnedBehaviorWhenSelected_DE302977
+                Key.Controls_InvokesApplicationOwnedBehaviorWhenSelected_DE302977
             ),
             new(
                 "CommandParameter",
-                GalleryLocaleKeys.ControlsSuppliesTheSelectedOptionValueToACommand_F7AB29C1
+                Key.Controls_SuppliesTheSelectedOptionValueToACommand_F7AB29C1
             ),
         };
     }

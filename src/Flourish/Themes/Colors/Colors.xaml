@@ -3,6 +3,6 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/Flourish;component/Themes/Colors/Colors.Light.xaml" />
+    <ResourceDictionary Source="/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml" />
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

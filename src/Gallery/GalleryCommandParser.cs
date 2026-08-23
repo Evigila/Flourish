@@ -1,13 +1,10 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Gallery.Localization;
 
 namespace ArkheideSystem.Gallery;
 
 internal sealed class GalleryCommandParser(
     IMessageService messages,
-    IBackgroundTaskService backgroundTasks,
-    IGalleryLocalization localization
+    IBackgroundTaskService backgroundTasks
 ) : ICommandParser
 {
     public void RegisterCommands(ICommandRegistrar commands)
@@ -17,21 +14,21 @@ internal sealed class GalleryCommandParser(
         ArgumentNullException.ThrowIfNull(backgroundTasks);
 
         commands.Register(
-            "demo.hello",
-            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeHello_185F8DB3)
+            GalleryCommandKeys.DemoHello,
+            () => ShowCommandOutput(Key.Runtime_Hello_185F8DB3)
         );
         commands.Register(
-            "demo.world",
-            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeWorld_78AE647D)
+            GalleryCommandKeys.DemoWorld,
+            () => ShowCommandOutput(Key.Runtime_World_78AE647D)
         );
         commands.Register(
-            "demo.background",
+            GalleryCommandKeys.DemoBackground,
             () =>
                 backgroundTasks.QueueTask(
                     new FlourishBackgroundTaskMetadata(
-                        localization.Get(GalleryLocaleKeys.RuntimeGalleryBackgroundTask_26C68541),
-                        localization.Get(
-                            GalleryLocaleKeys.RuntimeACancellableTenSecondTaskThatReportsProgress_C83A0037
+                        Localizer.Parse(Key.Runtime_GalleryBackgroundTask_26C68541),
+                        Localizer.Parse(
+                            Key.Runtime_ACancellableTenSecondTaskThatReportsProgress_C83A0037
                         ),
                         "\uE895"
                     ),
@@ -46,46 +43,46 @@ internal sealed class GalleryCommandParser(
                 )
         );
         commands.Register(
-            "tree.button1",
-            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeButton1_BDA4837E)
+            GalleryCommandKeys.TreeButton1,
+            () => ShowCommandOutput(Key.Runtime_Button1_BDA4837E)
         );
         commands.Register(
-            "tree.button2",
-            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeButton2_9EF26615)
+            GalleryCommandKeys.TreeButton2,
+            () => ShowCommandOutput(Key.Runtime_Button2_9EF26615)
         );
         commands.Register(
-            "app.about",
-            () => ShowCommandOutput(GalleryLocaleKeys.ApplicationAbout_4EFCA0D1)
+            GalleryCommandKeys.AppAbout,
+            () => ShowCommandOutput(Key.Application_About_4EFCA0D1)
         );
         commands.Register(
-            "titlebar.trace",
-            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeTitlebarCommandInvoked_5B658D8B)
+            GalleryCommandKeys.TitleBarTrace,
+            () => ShowCommandOutput(Key.Runtime_TitlebarCommandInvoked_5B658D8B)
         );
         commands.Register(
-            "footer.trace",
-            () => ShowCommandOutput(GalleryLocaleKeys.RuntimeFooterCommandInvoked_750C5860)
+            GalleryCommandKeys.FooterTrace,
+            () => ShowCommandOutput(Key.Runtime_FooterCommandInvoked_750C5860)
         );
         commands.Register(
-            "home.open",
+            GalleryCommandKeys.HomeOpen,
             () =>
                 messages.Show(
-                    localization.Get(GalleryLocaleKeys.RuntimeHelloWorld_DFFD6021),
-                    localization.Get(GalleryLocaleKeys.RuntimeGallery_352CFC74),
+                    Localizer.Parse(Key.Runtime_HelloWorld_DFFD6021),
+                    Localizer.Parse(Key.Runtime_Gallery_352CFC74),
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 )
         );
-        commands.Register("home.save", static () => { });
-        commands.Register("gallery.open", static () => { });
-        commands.Register("gallery.save", static () => { });
-        commands.Register("gallery.import", static () => { });
+        commands.Register(GalleryCommandKeys.HomeSave, static () => { });
+        commands.Register(GalleryCommandKeys.GalleryOpen, static () => { });
+        commands.Register(GalleryCommandKeys.GallerySave, static () => { });
+        commands.Register(GalleryCommandKeys.GalleryImport, static () => { });
     }
 
     private void ShowCommandOutput(string resourceKey)
     {
         messages.Show(
-            localization.Get(resourceKey),
-            localization.Get(GalleryLocaleKeys.RuntimeGallery_352CFC74),
+            Localizer.Parse(resourceKey),
+            Localizer.Parse(Key.Runtime_Gallery_352CFC74),
             MessageBoxButton.OK,
             MessageBoxImage.Information
         );

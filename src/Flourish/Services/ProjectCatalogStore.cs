@@ -1,6 +1,5 @@
 using System.IO;
 using System.Text.Json;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Services;
@@ -100,17 +99,12 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
 
     private void SaveCore(ProjectCatalog catalog)
     {
-        var directory = Path.GetDirectoryName(filePath)
+        var directory =
+            Path.GetDirectoryName(filePath)
             ?? throw new InvalidOperationException($"{ManagedFileName} has no parent directory.");
         Directory.CreateDirectory(directory);
-        var temporaryPath = Path.Combine(
-            directory,
-            $".{ManagedFileName}.{Guid.NewGuid():N}.tmp"
-        );
-        var document = new ProjectCatalogDocument(
-            [.. catalog.Projects],
-            catalog.ActiveProjectId
-        );
+        var temporaryPath = Path.Combine(directory, $".{ManagedFileName}.{Guid.NewGuid():N}.tmp");
+        var document = new ProjectCatalogDocument([.. catalog.Projects], catalog.ActiveProjectId);
 
         try
         {

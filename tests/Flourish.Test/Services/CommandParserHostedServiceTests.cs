@@ -1,4 +1,3 @@
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -16,11 +15,11 @@ public sealed class CommandParserHostedServiceTests
         var parsers = new ICommandParser[]
         {
             new DelegateParser(commands =>
-                commands.Register("app.first", () => actionExecutions++)
+                commands.Register("cmd_app_first", () => actionExecutions++)
             ),
             new DelegateParser(commands =>
                 commands.Register(
-                    "app.second",
+                    "cmd_app_second",
                     static (_, _) => ValueTask.FromResult(CommandResult.Handled)
                 )
             ),
@@ -29,22 +28,22 @@ public sealed class CommandParserHostedServiceTests
 
         await sut.StartAsync(CancellationToken.None);
 
-        Assert.True(dispatcher.Contains("app.first"));
-        Assert.True(dispatcher.Contains("app.second"));
-        var result = await dispatcher.ExecuteAsync("app.first");
+        Assert.True(dispatcher.Contains("cmd_app_first"));
+        Assert.True(dispatcher.Contains("cmd_app_second"));
+        var result = await dispatcher.ExecuteAsync("cmd_app_first");
         Assert.Equal(CommandExecutionStatus.Handled, result.Status);
         Assert.Equal(1, actionExecutions);
 
         await sut.StopAsync(CancellationToken.None);
 
-        Assert.False(dispatcher.Contains("app.first"));
-        Assert.False(dispatcher.Contains("app.second"));
+        Assert.False(dispatcher.Contains("cmd_app_first"));
+        Assert.False(dispatcher.Contains("cmd_app_second"));
         Assert.Equal(
             [
-                "Registered:app.first",
-                "Registered:app.second",
-                "Unregistered:app.second",
-                "Unregistered:app.first",
+                "Registered:cmd_app_first",
+                "Registered:cmd_app_second",
+                "Unregistered:cmd_app_second",
+                "Unregistered:cmd_app_first",
             ],
             changes
         );
@@ -58,7 +57,7 @@ public sealed class CommandParserHostedServiceTests
         var parser = new DelegateParser(commands =>
         {
             parserCalls++;
-            commands.Register("app.restart", static () => { });
+            commands.Register("cmd_app_restart", static () => { });
         });
         using var sut = new CommandParserHostedService(dispatcher, [parser]);
 
@@ -71,7 +70,7 @@ public sealed class CommandParserHostedServiceTests
         await sut.StartAsync(CancellationToken.None);
 
         Assert.Equal(2, parserCalls);
-        Assert.True(dispatcher.Contains("app.restart"));
+        Assert.True(dispatcher.Contains("cmd_app_restart"));
     }
 
     [Fact]
@@ -81,12 +80,10 @@ public sealed class CommandParserHostedServiceTests
         var failure = new InvalidOperationException("Parser failed.");
         var parsers = new ICommandParser[]
         {
-            new DelegateParser(commands =>
-                commands.Register("app.first", static () => { })
-            ),
+            new DelegateParser(commands => commands.Register("cmd_app_first", static () => { })),
             new DelegateParser(commands =>
             {
-                commands.Register("app.second", static () => { });
+                commands.Register("cmd_app_second", static () => { });
                 throw failure;
             }),
         };
@@ -98,8 +95,8 @@ public sealed class CommandParserHostedServiceTests
         });
 
         Assert.Same(failure, exception);
-        Assert.False(dispatcher.Contains("app.first"));
-        Assert.False(dispatcher.Contains("app.second"));
+        Assert.False(dispatcher.Contains("cmd_app_first"));
+        Assert.False(dispatcher.Contains("cmd_app_second"));
     }
 
     [Fact]
@@ -114,9 +111,9 @@ public sealed class CommandParserHostedServiceTests
 
         Assert.NotNull(captured);
         Assert.Throws<ObjectDisposedException>(() =>
-            captured.Register("app.late", static () => { })
+            captured.Register("cmd_app_late", static () => { })
         );
-        Assert.False(dispatcher.Contains("app.late"));
+        Assert.False(dispatcher.Contains("cmd_app_late"));
     }
 
     [Fact]
@@ -138,8 +135,7 @@ public sealed class CommandParserHostedServiceTests
         Assert.Empty(dispatcher.Registrations);
     }
 
-    private sealed class DelegateParser(Action<ICommandRegistrar> registerCommands)
-        : ICommandParser
+    private sealed class DelegateParser(Action<ICommandRegistrar> registerCommands) : ICommandParser
     {
         public void RegisterCommands(ICommandRegistrar commands)
         {

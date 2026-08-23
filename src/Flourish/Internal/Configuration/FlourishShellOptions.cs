@@ -1,5 +1,4 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Internal.Configuration;
 
@@ -102,7 +101,8 @@ internal sealed class FlourishShellOptions
 
     public bool IsNavigationPanelInitiallyOpen { get; set; }
 
-    public NavigationPanelDirection NavigationPanelDirection { get; set; } = NavigationPanelDirection.Left;
+    public NavigationPanelDirection NavigationPanelDirection { get; set; } =
+        NavigationPanelDirection.Left;
 
     public bool IsTitlebarEnabled { get; set; }
 

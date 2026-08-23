@@ -1,5 +1,4 @@
 using System.Windows;
-using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Internal.Composition;
@@ -46,13 +45,14 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         displayName = ValidateNotBlank(displayName, nameof(displayName));
         return AddRegionContent(
             FlourishRegion.TitlebarEnd,
-            services => FlourishRegionElementFactory.CreateTitlebarActionButton(
-                services,
-                displayName,
-                iconGlyph,
-                commandKey,
-                action: null
-            ),
+            services =>
+                FlourishRegionElementFactory.CreateTitlebarActionButton(
+                    services,
+                    displayName,
+                    iconGlyph,
+                    commandKey,
+                    action: null
+                ),
             order
         );
     }
@@ -69,13 +69,14 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         ArgumentNullException.ThrowIfNull(action);
         return AddRegionContent(
             FlourishRegion.TitlebarEnd,
-            services => FlourishRegionElementFactory.CreateTitlebarActionButton(
-                services,
-                displayName,
-                iconGlyph,
-                commandKey: null,
-                action
-            ),
+            services =>
+                FlourishRegionElementFactory.CreateTitlebarActionButton(
+                    services,
+                    displayName,
+                    iconGlyph,
+                    commandKey: null,
+                    action
+                ),
             order
         );
     }
@@ -93,13 +94,14 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         displayText = ValidateNotBlank(displayText, nameof(displayText));
         return AddRegionContent(
             region,
-            services => FlourishRegionElementFactory.CreateFooterCommandButton(
-                services,
-                displayText,
-                iconGlyph,
-                commandKey,
-                action: null
-            ),
+            services =>
+                FlourishRegionElementFactory.CreateFooterCommandButton(
+                    services,
+                    displayText,
+                    iconGlyph,
+                    commandKey,
+                    action: null
+                ),
             order
         );
     }
@@ -118,13 +120,14 @@ internal sealed class FlourishCustomHandlerBuilder(FlourishShellOptions options)
         ArgumentNullException.ThrowIfNull(action);
         return AddRegionContent(
             region,
-            services => FlourishRegionElementFactory.CreateFooterCommandButton(
-                services,
-                displayText,
-                iconGlyph,
-                commandKey: null,
-                action
-            ),
+            services =>
+                FlourishRegionElementFactory.CreateFooterCommandButton(
+                    services,
+                    displayText,
+                    iconGlyph,
+                    commandKey: null,
+                    action
+                ),
             order
         );
     }
