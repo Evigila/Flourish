@@ -187,7 +187,7 @@
             Content="{culture:Localize Key=Shell_ChooseAnExternalLangLocaleJsonSource_A4EE0621}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="LocaleFilePathBox" Width="220" Text="Flourish.LangKey_ES.Json" />
+              <flourish:FlourishTextBox x:Name="CultureFilePathBox" Width="220" Text="FlourishCulture.Json" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -197,7 +197,7 @@
             Content="{culture:Localize Key=Shell_RegisterTheSelectedSourceWithLocalization_C659B5B7}"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="RegisterLocaleFile_Click" Content="{culture:Localize Key=Shell_RegisterFile_04EED623}" />
+              <flourish:Button Click="RegisterCultureFile_Click" Content="{culture:Localize Key=Shell_RegisterFile_04EED623}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -207,7 +207,7 @@
             Content="{culture:Localize Key=Shell_ReloadEditsFromTheRegisteredSource_B9F123C3}"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="ReloadLocaleFile_Click" Content="{culture:Localize Key=Shell_ReloadFile_7E2434B6}" />
+              <flourish:Button Click="ReloadCultureFile_Click" Content="{culture:Localize Key=Shell_ReloadFile_7E2434B6}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -217,13 +217,13 @@
             Content="{culture:Localize Key=Shell_UnregisterTheCurrentExternalSource_84D0CA5A}"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="UnregisterLocaleFile_Click" Content="{culture:Localize Key=Shell_Unregister_BE01AA28}" />
+              <flourish:Button Click="UnregisterCultureFile_Click" Content="{culture:Localize Key=Shell_Unregister_BE01AA28}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           </StackPanel>
-          <flourish:OutputCard x:Name="LocaleFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+          <flourish:OutputCard x:Name="CultureFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Load a custom locale during application composition.&#10;builder.ConfigData(data =&gt;&#10;    data.AddLocaleFile(&quot;Locales/Flourish.LangKey_ES.Json&quot;));&#10;&#10;// Keep the registration handle for inspection, reload, and removal.&#10;var registration = localization.RegisterFile(&quot;Locales/Flourish.LangKey_ES.Json&quot;);&#10;var id = registration.Id;&#10;var locale = registration.Locale;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// FlourishCulture.Json in the application directory is loaded automatically.&#10;// Additional catalogs can still be registered explicitly.&#10;builder.ConfigData(data =&gt;&#10;    data.AddCultureFile(&quot;Locales/FlourishCulture.Json&quot;));&#10;&#10;var registration = localization.RegisterFile(&quot;Locales/FlourishCulture.Json&quot;);&#10;var id = registration.Id;&#10;var locales = registration.Locales;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
       </StackPanel>
     </flourish:Chunk>
 

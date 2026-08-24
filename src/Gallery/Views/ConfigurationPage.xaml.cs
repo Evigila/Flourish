@@ -1,3 +1,7 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -7,7 +11,7 @@ namespace ArkheideSystem.Gallery.Views;
 
 public partial class ConfigurationPage : Page
 {
-    private static FlourishLocaleRegistration? localeFileRegistration;
+    private static FlourishCultureRegistration? cultureFileRegistration;
 
     private readonly ObservableCollection<string> availableLocales = [];
     private readonly IFlourishConfiguration configuration;
@@ -26,10 +30,7 @@ public partial class ConfigurationPage : Page
         this.localization = localization;
         InitializeComponent();
         LocaleBox.ItemsSource = availableLocales;
-        LocaleFilePathBox.Text = Path.Combine(
-            AppContext.BaseDirectory,
-            "Flourish.LangKey_es-ES.Json"
-        );
+        CultureFilePathBox.Text = Path.Combine(AppContext.BaseDirectory, "FlourishCulture.Json");
 
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
@@ -55,25 +56,17 @@ public partial class ConfigurationPage : Page
             var key = ReadKeyBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(key))
             {
-                ReadOutput.WriteLine(
-                    Localizer.Parse(Key.Dynamic_EnterAConfigurationPath_7DFDBF45)
-                );
+                ReadOutput.WriteLine(Localizer.Parse(CKey.Dynamic_EnterAConfigurationPath_7DFDBF45));
                 return;
             }
 
             ReadOutput.WriteLine(
-                Localizer.Parse(
-                    Key.Dynamic_Read01_611124DE,
-                    key,
-                    configuration[key] ?? "<null>"
-                )
+                Localizer.Parse(CKey.Dynamic_Read01_611124DE, key, configuration[key] ?? "<null>")
             );
         }
         catch (Exception error)
         {
-            ReadOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            ReadOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
@@ -85,7 +78,7 @@ public partial class ConfigurationPage : Page
             var snapshot = configuration.Current;
             ReadOutput.WriteLine(
                 Localizer.Parse(
-                    Key.Dynamic_ReloadedConfigurationProvidersSnapshotV0Contains1ValuesCaptured2_75761543,
+                    CKey.Dynamic_ReloadedConfigurationProvidersSnapshotV0Contains1ValuesCaptured2_75761543,
                     snapshot.Version,
                     snapshot.Values.Count,
                     snapshot.CapturedAt.LocalDateTime
@@ -94,16 +87,14 @@ public partial class ConfigurationPage : Page
         }
         catch (Exception error)
         {
-            ReadOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            ReadOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
     private async void SetValue_Click(object sender, RoutedEventArgs e)
     {
         await ExecuteSettingUpdateAsync(
-            Key.Dynamic_Set_B6F6F3AD,
+            CKey.Dynamic_Set_B6F6F3AD,
             () => settings.SetAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
         );
     }
@@ -111,7 +102,7 @@ public partial class ConfigurationPage : Page
     private async void AppendValue_Click(object sender, RoutedEventArgs e)
     {
         await ExecuteSettingUpdateAsync(
-            Key.Dynamic_Append_FC15CC0A,
+            CKey.Dynamic_Append_FC15CC0A,
             () => settings.AppendAsync(WriteKeyBox.Text, WriteValueBox.Text).AsTask()
         );
     }
@@ -124,7 +115,7 @@ public partial class ConfigurationPage : Page
         var propertyName = separator > 0 ? path[(separator + 1)..] : "Value";
 
         await ExecuteSettingUpdateAsync(
-            Key.Dynamic_Merge_8851AAA7,
+            CKey.Dynamic_Merge_8851AAA7,
             () =>
                 settings
                     .MergeAsync(
@@ -142,7 +133,7 @@ public partial class ConfigurationPage : Page
     private async void RemoveValue_Click(object sender, RoutedEventArgs e)
     {
         await ExecuteSettingUpdateAsync(
-            Key.Controls_Remove_C3812FC4,
+            CKey.Controls_Remove_C3812FC4,
             () => settings.RemoveAsync(WriteKeyBox.Text).AsTask()
         );
     }
@@ -162,109 +153,93 @@ public partial class ConfigurationPage : Page
             localization.SetLocale(locale);
             RefreshLocaleState();
             LocaleOutput.WriteLine(
-                Localizer.Parse(
-                    Key.Dynamic_LocaleChangedTo0_1C2A91ED,
-                    localization.CurrentLocale
-                )
+                Localizer.Parse(CKey.Dynamic_LocaleChangedTo0_1C2A91ED, localization.CurrentLocale)
             );
         }
         catch (Exception error)
         {
-            LocaleOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            LocaleOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
-    private void RegisterLocaleFile_Click(object sender, RoutedEventArgs e)
+    private void RegisterCultureFile_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            if (localeFileRegistration is not null)
+            if (cultureFileRegistration is not null)
             {
-                localization.Unregister(localeFileRegistration);
+                localization.Unregister(cultureFileRegistration);
             }
 
-            localeFileRegistration = localization.RegisterFile(LocaleFilePathBox.Text);
-            LocaleFilePathBox.Text = localeFileRegistration.FilePath;
-            LocaleFileOutput.WriteLine(
+            cultureFileRegistration = localization.RegisterFile(CultureFilePathBox.Text);
+            CultureFilePathBox.Text = cultureFileRegistration.FilePath;
+            CultureFileOutput.WriteLine(
                 Localizer.Parse(
-                    Key.Dynamic_Registered0From1_29302AFF,
-                    localeFileRegistration.Locale,
-                    localeFileRegistration.FilePath
+                    CKey.Dynamic_Registered0From1_29302AFF,
+                    string.Join(", ", cultureFileRegistration.Locales),
+                    cultureFileRegistration.FilePath
                 )
             );
             RefreshLocaleState();
         }
         catch (Exception error)
         {
-            LocaleFileOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            CultureFileOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
-    private void ReloadLocaleFile_Click(object sender, RoutedEventArgs e)
+    private void ReloadCultureFile_Click(object sender, RoutedEventArgs e)
     {
-        if (localeFileRegistration is null)
+        if (cultureFileRegistration is null)
         {
-            LocaleFileOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_RegisterALocaleFileFirst_5BC84B5D)
+            CultureFileOutput.WriteLine(
+                Localizer.Parse(CKey.Dynamic_RegisterALocaleFileFirst_5BC84B5D)
             );
             return;
         }
 
         try
         {
-            localization.ReloadFile(localeFileRegistration);
-            LocaleFileOutput.WriteLine(
+            localization.ReloadFile(cultureFileRegistration);
+            CultureFileOutput.WriteLine(
                 Localizer.Parse(
-                    Key.Dynamic_Reloaded0At1T_19E0356E,
-                    localeFileRegistration.Locale,
+                    CKey.Dynamic_Reloaded0At1T_19E0356E,
+                    string.Join(", ", cultureFileRegistration.Locales),
                     DateTime.Now
                 )
             );
         }
         catch (Exception error)
         {
-            LocaleFileOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            CultureFileOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
-    private void UnregisterLocaleFile_Click(object sender, RoutedEventArgs e)
+    private void UnregisterCultureFile_Click(object sender, RoutedEventArgs e)
     {
-        if (localeFileRegistration is null)
+        if (cultureFileRegistration is null)
         {
-            LocaleFileOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_NoLocaleFileIsRegisteredByThisPage_156204FE)
+            CultureFileOutput.WriteLine(
+                Localizer.Parse(CKey.Dynamic_NoLocaleFileIsRegisteredByThisPage_156204FE)
             );
             return;
         }
 
         try
         {
-            var locale = localeFileRegistration.Locale;
-            var removed = localization.Unregister(localeFileRegistration);
-            localeFileRegistration = null;
-            LocaleFileOutput.WriteLine(
+            var locales = string.Join(", ", cultureFileRegistration.Locales);
+            var removed = localization.Unregister(cultureFileRegistration);
+            cultureFileRegistration = null;
+            CultureFileOutput.WriteLine(
                 removed
-                    ? Localizer.Parse(
-                        Key.Dynamic_UnregisteredLocaleSource0_7FAC9B2D,
-                        locale
-                    )
-                    : Localizer.Parse(
-                        Key.Dynamic_ThatLocaleSourceWasAlreadyUnregistered_C7896D3D
-                    )
+                    ? Localizer.Parse(CKey.Dynamic_UnregisteredLocaleSource0_7FAC9B2D, locales)
+                    : Localizer.Parse(CKey.Dynamic_ThatLocaleSourceWasAlreadyUnregistered_C7896D3D)
             );
             RefreshLocaleState();
         }
         catch (Exception error)
         {
-            LocaleFileOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            CultureFileOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 
@@ -279,22 +254,20 @@ public partial class ConfigurationPage : Page
             WriteOutput.WriteLine(
                 result.Changed
                     ? Localizer.Parse(
-                        Key.Dynamic_Text0Saved1ConfigurationReloaded2_4F6CD457,
+                        CKey.Dynamic_Text0Saved1ConfigurationReloaded2_4F6CD457,
                         Localizer.Parse(operationKey),
                         result.FilePath,
                         result.ConfigurationReloaded
                     )
                     : Localizer.Parse(
-                        Key.Dynamic_Text0CompletedWithoutChangingTheDocument_4AAA1AD3,
+                        CKey.Dynamic_Text0CompletedWithoutChangingTheDocument_4AAA1AD3,
                         Localizer.Parse(operationKey)
                     )
             );
         }
         catch (Exception error)
         {
-            WriteOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
-            );
+            WriteOutput.WriteLine(Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message));
         }
     }
 

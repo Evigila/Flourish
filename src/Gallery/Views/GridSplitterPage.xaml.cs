@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -9,15 +10,15 @@ public partial class GridSplitterPage : Page
     [
         new(
             "Variant",
-            Key.Controls_ChoosesTheStandardOrNavigationPaneLayoutRole_07EFD4F3
+            CKey.Controls_ChoosesTheStandardOrNavigationPaneLayoutRole_07EFD4F3
         ),
         new(
             "ResizeDirection",
-            Key.Controls_ChoosesWhetherAdjacentRowsOrColumnsAreResized_4BD32627
+            CKey.Controls_ChoosesWhetherAdjacentRowsOrColumnsAreResized_4BD32627
         ),
         new(
             "ResizeBehavior",
-            Key.Controls_ChoosesWhichNeighboringDefinitionsChange_E669504A
+            CKey.Controls_ChoosesWhichNeighboringDefinitionsChange_E669504A
         ),
     ];
 

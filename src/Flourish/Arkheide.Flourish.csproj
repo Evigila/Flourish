@@ -21,8 +21,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\favicon.ico" />
-    <EmbeddedResource Include="Assets\Flourish.LangKey_en-US.Json" />
-    <EmbeddedResource Include="Assets\Flourish.LangKey_zh-CN.Json" />
+    <EmbeddedResource Include="Assets\FlourishCulture.Json" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
 

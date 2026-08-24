@@ -37,17 +37,17 @@ public interface IFlourishLocalization
     void SetLocale(string locale);
 
     /// <summary>
-    /// Loads and registers a <c>Flourish.LangKey_&lt;locale&gt;.Json</c> file.
+    /// Loads and registers a <c>FlourishCulture.Json</c> catalog.
     /// </summary>
-    FlourishLocaleRegistration RegisterFile(string path);
+    FlourishCultureRegistration RegisterFile(string path);
 
     /// <summary>
-    /// Reloads a previously registered locale file from disk.
+    /// Reloads a previously registered culture file from disk.
     /// </summary>
-    void ReloadFile(FlourishLocaleRegistration registration);
+    void ReloadFile(FlourishCultureRegistration registration);
 
     /// <summary>
-    /// Removes a previously registered locale file.
+    /// Removes a previously registered culture file.
     /// </summary>
-    bool Unregister(FlourishLocaleRegistration registration);
+    bool Unregister(FlourishCultureRegistration registration);
 }

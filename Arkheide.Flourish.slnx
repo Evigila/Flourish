@@ -11,25 +11,13 @@
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
   </Project>
-  <Project Path="src/Arkheide.Flourish.Extension.Culture/Arkheide.Flourish.Extension.Culture.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="*|x86" Project="x86" />
-  </Project>
   <Project Path="src/Gallery/Gallery.csproj">
     <Platform Solution="*|Any CPU" Project="AnyCPU" />
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
   </Project>
-  <Project Path="tests/Flourish.Test/Flourish.Test.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="*|x86" Project="x86" />
-  </Project>
-  <Project Path="tests/Arkheide.Flourish.Extension.Culture.Test/Arkheide.Flourish.Extension.Culture.Test.csproj">
+  <Project Path="tests/Arkheide.Flourish.Test/Arkheide.Flourish.Test.csproj">
     <Platform Solution="*|Any CPU" Project="AnyCPU" />
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />

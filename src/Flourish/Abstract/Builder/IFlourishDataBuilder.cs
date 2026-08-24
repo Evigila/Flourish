@@ -8,7 +8,7 @@ namespace ArkheideSystem.Flourish.Abstract.Builder;
 /// builder.ConfigData(data =>
 /// {
 ///     data.InitLocale("en-US")
-///         .AddLocaleFile("Locales/Flourish.LangKey_en-US.Json");
+///         .AddCultureFile("Locales/FlourishCulture.Json");
 /// });
 /// ]]></code>
 /// </example>
@@ -29,38 +29,41 @@ public interface IFlourishDataBuilder
     /// subsequent runtime locale changes should be persisted.
     /// </param>
     /// <returns>The current builder for chained configuration.</returns>
-    IFlourishDataBuilder InitLocale(
-        string locale = "en-US",
-        bool usePersistedPreference = true
-    );
+    IFlourishDataBuilder InitLocale(string locale = "en-US", bool usePersistedPreference = true);
 
     /// <summary>
-    /// Adds a custom locale file that can extend or override built-in translations.
+    /// Adds a custom culture file that can extend or override built-in translations.
     /// </summary>
-    /// <param name="path">The path to the custom locale file.</param>
+    /// <param name="path">The path to the custom culture file.</param>
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// <para>
     /// The file is read while <see cref="IFlourishBuilder.Build" /> applies configuration. It
-    /// must be a UTF-8, non-empty, flat JSON object named
-    /// <c>Flourish.LangKey_&lt;locale&gt;.Json</c>.
-    /// Keys and values must be non-empty strings, and keys cannot be repeated. The locale segment
-    /// may contain letters, digits, hyphens, and underscores. Underscores are normalized to
-    /// hyphens, and locale identifiers are returned in canonical form.
+    /// must be a UTF-8, non-empty JSON object named <c>FlourishCulture.Json</c>. Each top-level
+    /// property is a translation key whose value is an object of locale/value pairs. Keys,
+    /// locale identifiers, and translated values cannot be empty. Locale identifiers are
+    /// normalized to canonical form.
     /// </para>
     /// <para>
-    /// Files registered for the same locale are merged in registration order; a later file
-    /// replaces earlier values for matching keys. Lookup priority is: custom selected locale,
+    /// Catalogs are merged in registration order at locale-and-key granularity; a later file
+    /// replaces earlier values for matching cells. Flourish also automatically loads a
+    /// <c>FlourishCulture.Json</c> file from <see cref="AppContext.BaseDirectory" /> when present.
+    /// Lookup priority is: custom selected locale,
     /// built-in selected locale, custom <c>en-US</c>, built-in <c>en-US</c>, then the key itself.
     /// A missing file throws <see cref="System.IO.FileNotFoundException" />. Invalid file names throw
     /// <see cref="ArgumentException" />. Unreadable files and invalid locale JSON throw
     /// <see cref="System.IO.InvalidDataException" />.
     /// </para>
-    /// <para>A custom locale file can contain only the values it overrides:</para>
+    /// <para>A custom culture file can contain only the values it overrides:</para>
     /// <code><![CDATA[
     /// {
-    ///   "TitleBar.Back": "Previous",
-    ///   "Tray.Show": "Open"
+    ///   "TitleBar.Back": {
+    ///     "en-US": "Previous",
+    ///     "fr-FR": "Précédent"
+    ///   },
+    ///   "Tray.Show": {
+    ///     "fr-FR": "Ouvrir"
+    ///   }
     /// }
     /// ]]></code>
     /// <para>The canonical built-in translation keys and values are:</para>
@@ -130,13 +133,17 @@ public interface IFlourishDataBuilder
     /// <item><term><c>MessageBox.No</c></term><description>No / 否</description></item>
     /// <item><term><c>Window.CloseTitle</c></term><description>Close / 关闭</description></item>
     /// <item><term><c>Window.ClosePrompt</c></term><description>Are you sure you want to close this window? / 确定要关闭此窗口吗？</description></item>
+    /// <item><term><c>Window.BackgroundTasksCloseTitle</c></term><description>Stop background tasks? / 中止后台任务？</description></item>
+    /// <item><term><c>Window.BackgroundTasksClosePrompt</c></term><description>Active background tasks: {0}. Closing the window will cancel them. Stop the tasks and exit? / 仍有 {0} 个后台任务正在进行。关闭窗口将取消这些任务。是否中止任务并退出？</description></item>
+    /// <item><term><c>Window.BackgroundTasksKeepRunning</c></term><description>Keep running / 继续运行</description></item>
+    /// <item><term><c>Window.BackgroundTasksStopAndExit</c></term><description>Stop tasks and exit / 中止任务并退出</description></item>
     /// <item><term><c>Tray.Show</c></term><description>Show / 显示</description></item>
     /// <item><term><c>Tray.Exit</c></term><description>Exit / 退出</description></item>
     /// <item><term><c>Status.Connected</c></term><description>Connected / 已连接</description></item>
     /// <item><term><c>Status.Disconnected</c></term><description>Disconnected / 未连接</description></item>
     /// </list>
     /// </remarks>
-    IFlourishDataBuilder AddLocaleFile(string path);
+    IFlourishDataBuilder AddCultureFile(string path);
 
     /// <summary>
     /// Selects the JSON file that supplies the <c>Flourish</c> configuration section and receives
@@ -155,9 +162,7 @@ public interface IFlourishDataBuilder
     /// added as a lower-priority Flourish configuration source and the Host appsettings sources
     /// remain available to the application.
     /// </remarks>
-    IFlourishDataBuilder InitAppSettingsFilePath(
-        string path = "appsettings.Flourish.json"
-    );
+    IFlourishDataBuilder InitAppSettingsFilePath(string path = "appsettings.Flourish.json");
 
     /// <summary>
     /// Selects the JSON file used for the Flourish project metadata catalog.
@@ -171,5 +176,4 @@ public interface IFlourishDataBuilder
     /// application-owned project content files.
     /// </remarks>
     IFlourishDataBuilder InitProjectCatalogFilePath(string path = "projects.json");
-
 }

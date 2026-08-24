@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -12,21 +13,21 @@ public partial class RadioButtonPage : Page
         {
             new(
                 "GroupName",
-                Key.Controls_AssociatesMutuallyExclusiveOptionsAcrossALogicalContainer_21819671
+                CKey.Controls_AssociatesMutuallyExclusiveOptionsAcrossALogicalContainer_21819671
             ),
             new(
                 "IsChecked",
-                Key.Controls_GetsOrSetsWhetherThisOptionIsSelected_2A781960
+                CKey.Controls_GetsOrSetsWhetherThisOptionIsSelected_2A781960
             ),
-            new("Content", Key.Controls_SuppliesTheVisibleOptionLabel_2FF959F7),
-            new("Checked", Key.Controls_ReportsSelectionOfThisOption_6027BFAA),
+            new("Content", CKey.Controls_SuppliesTheVisibleOptionLabel_2FF959F7),
+            new("Checked", CKey.Controls_ReportsSelectionOfThisOption_6027BFAA),
             new(
                 "Command",
-                Key.Controls_InvokesApplicationOwnedBehaviorWhenSelected_DE302977
+                CKey.Controls_InvokesApplicationOwnedBehaviorWhenSelected_DE302977
             ),
             new(
                 "CommandParameter",
-                Key.Controls_SuppliesTheSelectedOptionValueToACommand_F7AB29C1
+                CKey.Controls_SuppliesTheSelectedOptionValueToACommand_F7AB29C1
             ),
         };
     }

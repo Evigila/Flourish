@@ -378,11 +378,10 @@ internal sealed class TrayIconService(
     {
         if (
             e.Kind != FlourishLocalizationChangeKind.LocaleChanged
-            && !string.Equals(e.AffectedLocale, e.CurrentLocale, StringComparison.OrdinalIgnoreCase)
-            && !string.Equals(
-                e.AffectedLocale,
+            && !e.AffectedLocales.Contains(e.CurrentLocale, StringComparer.OrdinalIgnoreCase)
+            && !e.AffectedLocales.Contains(
                 FlourishLocalizationService.DefaultLocale,
-                StringComparison.OrdinalIgnoreCase
+                StringComparer.OrdinalIgnoreCase
             )
         )
         {

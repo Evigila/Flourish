@@ -1,3 +1,5 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using InputKey = System.Windows.Input.Key;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,13 +12,13 @@ public partial class OverlayPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", Key.Controls_SuppliesTheObjectDisplayedByTheSurface_E5269887),
-        new("Variant", Key.Controls_SelectsTemporaryOrStrongDismissal_0C07C90F),
+        new("Content", CKey.Controls_SuppliesTheObjectDisplayedByTheSurface_E5269887),
+        new("Variant", CKey.Controls_SelectsTemporaryOrStrongDismissal_0C07C90F),
         new(
             "PlacementTarget",
-            Key.Controls_IdentifiesTheAnchorUsedByTemporaryHoverTracking_2EA04E33
+            CKey.Controls_IdentifiesTheAnchorUsedByTemporaryHoverTracking_2EA04E33
         ),
-        new("DismissRequested", Key.Controls_AsksTheHostToCloseTheSurface_829CE551),
+        new("DismissRequested", CKey.Controls_AsksTheHostToCloseTheSurface_829CE551),
     ];
 
     public OverlayPage()

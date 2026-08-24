@@ -942,12 +942,12 @@ public sealed class GalleryControlPageStructureTests
                 "localization.Get",
                 "localization.Format",
             ],
-            ["Locale files"] =
+            ["Culture files"] =
             [
-                "AddLocaleFile",
+                "AddCultureFile",
                 "localization.RegisterFile",
                 "registration.Id",
-                "registration.Locale",
+                "registration.Locales",
                 "registration.FilePath",
                 "localization.ReloadFile",
                 "localization.Unregister",

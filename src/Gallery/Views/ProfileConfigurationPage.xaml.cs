@@ -1,3 +1,7 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,7 +30,7 @@ public partial class ProfileConfigurationPage : Page
             await profile.SetNameOrderAsync(order);
             ProfileOutput.WriteLine(
                 Localizer.Parse(
-                    Key.Dynamic_NameOrderUpdated0DisplayName1_E5C6CE57,
+                    CKey.Dynamic_NameOrderUpdated0DisplayName1_E5C6CE57,
                     profile.NameOrder,
                     profile.CurrentProfile.DisplayName
                 )
@@ -35,7 +39,7 @@ public partial class ProfileConfigurationPage : Page
         catch (Exception error)
         {
             ProfileOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }

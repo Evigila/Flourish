@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -12,12 +13,12 @@ public partial class ActionCardPage : Page
         {
             new(
                 "Variant",
-                Key.Controls_ChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
+                CKey.Controls_ChoosesTheHorizontalOrVerticalFixedLayout_8EF172C1
             ),
-            new("Title", Key.Controls_SetsTheOptionalHeading_209DFEAA),
-            new("Content", Key.Controls_SetsOneOptionalBlockOfSupportingCopy_C07BA241),
-            new("Icon", Key.Controls_SetsOneOptionalIconGlyph_73C296CD),
-            new("Body", Key.Controls_HostsExactlyOneInteractiveControl_DBA310D6),
+            new("Title", CKey.Controls_SetsTheOptionalHeading_209DFEAA),
+            new("Content", CKey.Controls_SetsOneOptionalBlockOfSupportingCopy_C07BA241),
+            new("Icon", CKey.Controls_SetsOneOptionalIconGlyph_73C296CD),
+            new("Body", CKey.Controls_HostsExactlyOneInteractiveControl_DBA310D6),
         };
     }
 }

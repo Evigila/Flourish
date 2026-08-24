@@ -9,7 +9,7 @@ internal sealed class TemporaryDirectory : IDisposable
     {
         Path = System.IO.Path.Combine(
             System.IO.Path.GetTempPath(),
-            "Flourish.Test",
+            "Arkheide.Flourish.Test",
             Guid.NewGuid().ToString("N")
         );
         Directory.CreateDirectory(Path);

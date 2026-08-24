@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -7,18 +8,18 @@ public partial class ScrollViewerPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", Key.Controls_HostsOneScrollableContentTree_F9A46D80),
+        new("Content", CKey.Controls_HostsOneScrollableContentTree_F9A46D80),
         new(
             "IsSmoothScrollingEnabled",
-            Key.Controls_EnablesRenderOnlyMouseWheelInterpolation_8F88D907
+            CKey.Controls_EnablesRenderOnlyMouseWheelInterpolation_8F88D907
         ),
         new(
             "CanContentScroll",
-            Key.Controls_SwitchesBetweenPhysicalAndLogicalScrolling_577AEBFD
+            CKey.Controls_SwitchesBetweenPhysicalAndLogicalScrolling_577AEBFD
         ),
         new(
             "VerticalScrollBarVisibility",
-            Key.Controls_ControlsTheVerticalScrollBarPolicy_87BCE4CC
+            CKey.Controls_ControlsTheVerticalScrollBarPolicy_87BCE4CC
         ),
     ];
 

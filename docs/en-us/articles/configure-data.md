@@ -5,7 +5,7 @@ description: Configure localization, persisted settings paths, and the project c
 
 # Application data
 
-`ConfigData` controls Flourish built-in interface language, custom locale files, and persisted settings paths. Localization is always available: when `ConfigData` or `InitLocale` is omitted, Flourish uses the built-in English (`en-US`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata uses an independently configurable catalog.
+`ConfigData` controls Flourish built-in interface language, custom culture files, and persisted settings paths. Localization is always available: when `ConfigData` or `InitLocale` is omitted, Flourish uses the built-in English (`en-US`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata uses an independently configurable catalog.
 
 ## Select a built-in locale
 
@@ -53,31 +53,38 @@ The application continues to own its `Culture.json`. XAML uses the transitively 
 `Localize` extension. Resolve transient dialogs, notifications, and parameterized business text
 when they are created. User input, project names, and search text are never translated implicitly.
 
-## Add a custom locale
+## Override the built-in culture catalog
 
-`AddLocaleFile(path)` registers a UTF-8 JSON file. The file name supplies the locale identifier and must follow `Flourish.LangKey_<locale>.Json`; the locale segment may contain letters, digits, hyphens, and underscores. Each separator must have a non-empty subtag on both sides. File-name identifiers use the same canonicalization as `InitLocale`.
+Flourish embeds one `FlourishCulture.Json` catalog. If the application output directory contains a file with the same name, Flourish loads it automatically and overlays its locale-and-key cells on the built-in catalog. The application file does not need to repeat every locale or key.
+
+Additional catalogs can be registered with `AddCultureFile(path)`. Every registered file must also be named `FlourishCulture.Json`; use separate directories when composing multiple catalogs.
 
 ```csharp
 builder.ConfigData(data =>
 {
     data
         .InitLocale("en-US")
-        .AddLocaleFile("Locales/Flourish.LangKey_en-US.Json");
+        .AddCultureFile("Locales/FlourishCulture.Json");
 });
 ```
 
-Flourish reads registered locale files while `Build()` applies configuration. A missing file throws `FileNotFoundException`. An invalid file name throws `ArgumentException`. Unreadable files, malformed JSON, an empty object, duplicate or empty keys, and empty or non-string values throw `InvalidDataException`.
+Flourish reads registered catalogs while `Build()` applies configuration. A missing file throws `FileNotFoundException`. An invalid file name throws `ArgumentException`. Unreadable files, malformed JSON, empty objects, duplicate or empty keys, duplicate normalized locale identifiers, and empty or non-string values throw `InvalidDataException`.
 
-Locale files are flat JSON objects. They may contain only the keys they need to override:
+The format matches Essential Culture: translation keys are top-level properties and locales are nested properties. A user catalog may contain only the cells it needs to override:
 
 ```json
 {
-  "TitleBar.Back": "Previous",
-  "Tray.Show": "Open"
+  "TitleBar.Back": {
+    "en-US": "Previous",
+    "fr-FR": "Précédent"
+  },
+  "Tray.Show": {
+    "fr-FR": "Ouvrir"
+  }
 }
 ```
 
-Calling `AddLocaleFile` more than once for the same locale merges the files in registration order. A later file replaces earlier values for the same key. For each lookup, Flourish uses this priority:
+Catalogs are merged in registration order. A later catalog replaces an earlier value only when both its locale and key match. For each lookup, Flourish uses this priority:
 
 1. Custom value for the selected locale.
 2. Built-in value for the selected locale.
@@ -85,11 +92,11 @@ Calling `AddLocaleFile` more than once for the same locale merges the files in r
 4. Built-in `en-US` value.
 5. The key itself.
 
-This lookup also allows a custom locale such as `Flourish.LangKey_fr-FR.Json` to define only part of the interface while the remaining keys fall back to English.
+Consequently, a user catalog can override one English key without replacing the rest of built-in English, or add only part of a new locale while its remaining keys fall back to English.
 
 ## Translation keys
 
-The built-in locale files define the following keys. `{0}` is a format placeholder and must remain in custom values that use it.
+The built-in `FlourishCulture.Json` catalog defines the following keys. `{0}` is a format placeholder and must remain in custom values that use it.
 
 | Key | English (`en-US`) | Simplified Chinese (`zh-CN`) |
 | --- | --- | --- |
@@ -157,6 +164,10 @@ The built-in locale files define the following keys. `{0}` is a format placehold
 | `MessageBox.No` | No | 否 |
 | `Window.CloseTitle` | Close | 关闭 |
 | `Window.ClosePrompt` | Are you sure you want to close this window? | 确定要关闭此窗口吗？ |
+| `Window.BackgroundTasksCloseTitle` | Stop background tasks? | 中止后台任务？ |
+| `Window.BackgroundTasksClosePrompt` | Active background tasks: {0}. Closing the window will cancel them. Stop the tasks and exit? | 仍有 {0} 个后台任务正在进行。关闭窗口将取消这些任务。是否中止任务并退出？ |
+| `Window.BackgroundTasksKeepRunning` | Keep running | 继续运行 |
+| `Window.BackgroundTasksStopAndExit` | Stop tasks and exit | 中止任务并退出 |
 | `Tray.Show` | Show | 显示 |
 | `Tray.Exit` | Exit | 退出 |
 | `Status.Connected` | Connected | 已连接 |
@@ -245,7 +256,7 @@ For each logical preference, the last builder call supplies both the fallback an
 
 Persistence is available for locale; theme mode; window restore size, position, state, topmost behavior, and close-to-notification-area behavior; navigation side, open state, user-adjusted width, and last route; profile name order; motion categories; smooth scrolling; global font; centered-content layout; material effect; theme colors; and corner radius. Runtime changes are coalesced before an atomic appsettings update, and pending changes are flushed during Host shutdown. `Minimized` is never restored, normal restore bounds are retained while maximized, and an off-screen persisted position is moved far enough into the current virtual desktop to remain reachable.
 
-Application capabilities and structure are not preferences. Flourish does not persist title bar, navigation, Profile, project, toolbar, or status-bar enablement; page types and routes; handlers and factories; branding; minimum or maximum window constraints; resize mode; taskbar visibility; locale-file registrations; or page-specific font overrides. A stored value therefore cannot re-enable a capability that application code has disabled.
+Application capabilities and structure are not preferences. Flourish does not persist title bar, navigation, Profile, project, toolbar, or status-bar enablement; page types and routes; handlers and factories; branding; minimum or maximum window constraints; resize mode; taskbar visibility; culture-file registrations; or page-specific font overrides. A stored value therefore cannot re-enable a capability that application code has disabled.
 
 Flourish reads preference values through the effective `IConfiguration`, preserving normal Host precedence. By default it writes application-root `appsettings.Flourish.json`. Select another JSON file and an independent project-catalog file in `ConfigData`:
 

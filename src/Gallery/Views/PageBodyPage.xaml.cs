@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -9,15 +10,15 @@ public partial class PageBodyPage : Page
     [
         new(
             "Children",
-            Key.Controls_ContainsThePageLeadingHeaderChunkAndSubsequentChunkElements_8F1F22B3
+            CKey.Controls_ContainsThePageLeadingHeaderChunkAndSubsequentChunkElements_8F1F22B3
         ),
         new(
             "Content",
-            Key.Controls_IsOwnedInternallyByPageBodyAndMustNotBeReplacedByCallers_2C86637B
+            CKey.Controls_IsOwnedInternallyByPageBodyAndMustNotBeReplacedByCallers_2C86637B
         ),
         new(
             "Scrolling",
-            Key.Controls_ProvidesTheStandardVerticalPageViewportAndContentMargin_130DA46B
+            CKey.Controls_ProvidesTheStandardVerticalPageViewportAndContentMargin_130DA46B
         ),
     ];
 

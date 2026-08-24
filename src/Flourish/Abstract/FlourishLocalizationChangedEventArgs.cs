@@ -7,8 +7,8 @@ public sealed class FlourishLocalizationChangedEventArgs(
     FlourishLocalizationChangeKind kind,
     string previousLocale,
     string currentLocale,
-    string affectedLocale,
-    FlourishLocaleRegistration? registration
+    IReadOnlyList<string> affectedLocales,
+    FlourishCultureRegistration? registration
 ) : EventArgs
 {
     /// <summary>
@@ -27,12 +27,13 @@ public sealed class FlourishLocalizationChangedEventArgs(
     public string CurrentLocale { get; } = currentLocale;
 
     /// <summary>
-    /// Gets the locale whose values were affected.
+    /// Gets the locales whose values were affected.
     /// </summary>
-    public string AffectedLocale { get; } = affectedLocale;
+    public IReadOnlyList<string> AffectedLocales { get; } =
+        Array.AsReadOnly(affectedLocales.ToArray());
 
     /// <summary>
     /// Gets the affected file registration, when the change originated from a file.
     /// </summary>
-    public FlourishLocaleRegistration? Registration { get; } = registration;
+    public FlourishCultureRegistration? Registration { get; } = registration;
 }

@@ -51,31 +51,38 @@ localization.SetLocale("zh-CN");
 应用继续维护自己的 `Culture.json`。XAML 使用传递提供的 `Localize`，临时弹窗、通知和
 带运行时参数的业务文本则在创建时解析。用户输入、项目名称和搜索内容不会被自动翻译。
 
-## 添加自定义语言
+## 覆盖内置文化目录
 
-`AddLocaleFile(path)` 注册 UTF-8 JSON 文件。文件名提供语言标识，必须使用 `Flourish.LangKey_<locale>.Json` 格式；语言部分可以包含字母、数字、连字符和下划线，并且分隔符两侧都必须有非空子标识。文件名中的标识使用与 `InitLocale` 相同的规范化规则。
+Flourish 内嵌一份 `FlourishCulture.Json` 目录。应用输出目录存在同名文件时，Flourish 会自动加载，并按照“语言与键”的单元覆盖内置目录。应用文件不需要重复所有语言或所有键。
+
+还可以通过 `AddCultureFile(path)` 注册其他目录。所有目录文件仍必须命名为 `FlourishCulture.Json`；组合多个目录时将它们放在不同文件夹中。
 
 ```csharp
 builder.ConfigData(data =>
 {
     data
         .InitLocale("en-US")
-        .AddLocaleFile("Locales/Flourish.LangKey_en-US.Json");
+        .AddCultureFile("Locales/FlourishCulture.Json");
 });
 ```
 
-Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不存在时抛出 `FileNotFoundException`；文件名无效时抛出 `ArgumentException`；文件不可读、JSON 无效、对象为空、键重复或为空、值为空或非字符串时抛出 `InvalidDataException`。
+Flourish 在 `Build()` 应用配置时读取已注册目录。文件不存在时抛出 `FileNotFoundException`；文件名无效时抛出 `ArgumentException`；文件不可读、JSON 无效、对象为空、键重复或为空、规范化后重复的语言标识，以及空白或非字符串译文会抛出 `InvalidDataException`。
 
-语言文件是扁平 JSON 对象，可以只提供需要覆盖的键：
+格式与 Essential Culture 一致：翻译键位于最外层，语言是内层属性。用户目录只需要提供待覆盖的单元：
 
 ```json
 {
-  "TitleBar.Back": "上一页",
-  "Tray.Show": "打开"
+  "TitleBar.Back": {
+    "zh-CN": "上一页",
+    "fr-FR": "Précédent"
+  },
+  "Tray.Show": {
+    "fr-FR": "Ouvrir"
+  }
 }
 ```
 
-为同一语言多次调用 `AddLocaleFile` 时，Flourish 会按注册顺序合并文件，后添加的文件会覆盖先添加文件中的同名键。每次查找按以下优先级返回文本：
+目录按注册顺序合并；只有语言和键都相同时，后注册的目录才会覆盖先前值。每次查找按以下优先级返回文本：
 
 1. 选中语言的自定义值。
 2. 选中语言的内置值。
@@ -83,11 +90,11 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 4. 内置 `en-US` 值。
 5. 键本身。
 
-因此，`Flourish.LangKey_fr-FR.Json` 等自定义语言可以只定义部分界面文本，其余键会回退到英文。
+因此，用户可以只覆盖一个英文键而保留其余内置英文，也可以只增加新语言的一部分键，其余内容继续回退到英文。
 
 ## 翻译键
 
-内置语言文件定义以下键。`{0}` 是格式化占位符，覆盖对应文本时应保留它。
+内置 `FlourishCulture.Json` 目录定义以下键。`{0}` 是格式化占位符，覆盖对应文本时应保留它。
 
 | 键 | 英文（`en-US`） | 简体中文（`zh-CN`） |
 | --- | --- | --- |
@@ -155,6 +162,10 @@ Flourish 在 `Build()` 应用配置时读取已注册的语言文件。文件不
 | `MessageBox.No` | No | 否 |
 | `Window.CloseTitle` | Close | 关闭 |
 | `Window.ClosePrompt` | Are you sure you want to close this window? | 确定要关闭此窗口吗？ |
+| `Window.BackgroundTasksCloseTitle` | Stop background tasks? | 中止后台任务？ |
+| `Window.BackgroundTasksClosePrompt` | Active background tasks: {0}. Closing the window will cancel them. Stop the tasks and exit? | 仍有 {0} 个后台任务正在进行。关闭窗口将取消这些任务。是否中止任务并退出？ |
+| `Window.BackgroundTasksKeepRunning` | Keep running | 继续运行 |
+| `Window.BackgroundTasksStopAndExit` | Stop tasks and exit | 中止任务并退出 |
 | `Tray.Show` | Show | 显示 |
 | `Tray.Exit` | Exit | 退出 |
 | `Status.Connected` | Connected | 已连接 |
@@ -232,7 +243,7 @@ builder
 
 可持久化范围包括：语言；主题模式；窗口还原大小、位置、状态、置顶和关闭到通知区域行为；导航栏方向、开合状态、用户调整后的宽度与最后路由；Profile 姓名顺序；各类动效；平滑滚动；全局字体；居中内容布局；材质；主题配色；圆角。运行时变更会先合并再原子更新 appsettings，并在 Host 停止期间刷新待写入内容。Flourish 不会恢复最小化状态；窗口最大化时会保留正常还原边界；完全移出屏幕的持久化位置会被移回当前虚拟桌面的可触达范围。
 
-应用能力和结构不属于用户偏好。Flourish 不会持久化标题栏、导航、Profile、项目、工具栏或状态栏的能力开关，也不会持久化页面类型与路由、处理程序与工厂、品牌信息、窗口最小/最大约束、ResizeMode、任务栏可见性、语言文件注册或页面专用字体覆盖。因此，保存的数据不能重新启用应用代码已经关闭的能力。
+应用能力和结构不属于用户偏好。Flourish 不会持久化标题栏、导航、Profile、项目、工具栏或状态栏的能力开关，也不会持久化页面类型与路由、处理程序与工厂、品牌信息、窗口最小/最大约束、ResizeMode、任务栏可见性、文化文件注册或页面专用字体覆盖。因此，保存的数据不能重新启用应用代码已经关闭的能力。
 
 Flourish 通过最终有效的 `IConfiguration` 读取偏好，并保留 Host 的正常优先级。默认写入应用根目录中的 `appsettings.Flourish.json`。可在 `ConfigData` 中选择其他 JSON 文件以及独立的项目目录文件：
 

@@ -1,3 +1,8 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
+using InputKey = System.Windows.Input.Key;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -84,11 +89,11 @@ public partial class TitleBarRuntimePage : Page
             SearchOutput.WriteLine(
                 string.IsNullOrWhiteSpace(args.Text)
                     ? Localizer.Parse(
-                        Key.Runtime_Query0EmptyQuery_1782FB95,
+                        CKey.Runtime_Query0EmptyQuery_1782FB95,
                         args.Sequence
                     )
                     : Localizer.Parse(
-                        Key.Runtime_Query0SimulatedResultsFor1CompletedAt2T_DD07B40D,
+                        CKey.Runtime_Query0SimulatedResultsFor1CompletedAt2T_DD07B40D,
                         args.Sequence,
                         args.Text,
                         DateTime.Now
@@ -103,7 +108,7 @@ public partial class TitleBarRuntimePage : Page
             () =>
                 titleBar.SetApplicationIdentity(TitleBox.Text, NullIfWhiteSpace(SubtitleBox.Text)),
             IdentityOutput,
-            Localizer.Parse(Key.Runtime_ApplicationIdentityUpdated_965263E3)
+            Localizer.Parse(CKey.Runtime_ApplicationIdentityUpdated_965263E3)
         );
     }
 
@@ -133,7 +138,7 @@ public partial class TitleBarRuntimePage : Page
                     current.ShowProjectTitle
                 ),
             IdentityOutput,
-            Localizer.Parse(Key.Runtime_TitleBarLogoSettingsUpdated_791EEA02)
+            Localizer.Parse(CKey.Runtime_TitleBarLogoSettingsUpdated_791EEA02)
         );
     }
 
@@ -162,7 +167,7 @@ public partial class TitleBarRuntimePage : Page
             Execute(
                 () => titleBar.SetUnnamedProjectPlaceholder(UnnamedProjectBox.Text),
                 IdentityOutput,
-                Localizer.Parse(Key.Runtime_UnnamedProjectPlaceholderUpdated_B0D701C1)
+                Localizer.Parse(CKey.Runtime_UnnamedProjectPlaceholderUpdated_B0D701C1)
             );
         }
     }
@@ -184,7 +189,7 @@ public partial class TitleBarRuntimePage : Page
                     ),
                 ElementOutput,
                 Localizer.Parse(
-                    Key.Runtime_Text0VisibilitySetTo1_16423423,
+                    CKey.Runtime_Text0VisibilitySetTo1_16423423,
                     element,
                     TitleBarElementVisibleBox.IsChecked == true
                 )
@@ -208,7 +213,7 @@ public partial class TitleBarRuntimePage : Page
                 () => titleBar.SetBreadcrumbMode(mode),
                 ElementOutput,
                 Localizer.Parse(
-                    Key.Runtime_BreadcrumbDisplayModeSetTo0_19EF937D,
+                    CKey.Runtime_BreadcrumbDisplayModeSetTo0_19EF937D,
                     mode
                 )
             );
@@ -229,7 +234,7 @@ public partial class TitleBarRuntimePage : Page
             () => search.SetText(SearchTextBox.Text),
             SearchOutput,
             Localizer.Parse(
-                Key.Runtime_SearchTextSetTo0_37DE597D,
+                CKey.Runtime_SearchTextSetTo0_37DE597D,
                 SearchTextBox.Text
             )
         );
@@ -253,7 +258,7 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             search.Focus,
             SearchOutput,
-            Localizer.Parse(Key.Runtime_MovedFocusToTitleBarSearch_935CEC34)
+            Localizer.Parse(CKey.Runtime_MovedFocusToTitleBarSearch_935CEC34)
         );
     }
 
@@ -262,7 +267,7 @@ public partial class TitleBarRuntimePage : Page
         Execute(
             search.Clear,
             SearchOutput,
-            Localizer.Parse(Key.Runtime_ClearedTheTitleBarSearchQuery_36169020)
+            Localizer.Parse(CKey.Runtime_ClearedTheTitleBarSearchQuery_36169020)
         );
     }
 
@@ -272,7 +277,7 @@ public partial class TitleBarRuntimePage : Page
             () => search.SetPlaceholder(SearchPlaceholderBox.Text),
             SearchOutput,
             Localizer.Parse(
-                Key.Runtime_SearchPlaceholderSetTo0_F701246C,
+                CKey.Runtime_SearchPlaceholderSetTo0_F701246C,
                 SearchPlaceholderBox.Text
             )
         );
@@ -299,9 +304,9 @@ public partial class TitleBarRuntimePage : Page
             () => search.SetVisible(visible),
             SearchOutput,
             Localizer.Parse(
-                Key.Runtime_TitleBarSearch0_262A9ED5,
+                CKey.Runtime_TitleBarSearch0_262A9ED5,
                 Localizer.Parse(
-                    visible ? Key.Runtime_Shown_BAAF5362 : Key.Runtime_Hidden_E564B408
+                    visible ? CKey.Runtime_Shown_BAAF5362 : CKey.Runtime_Hidden_E564B408
                 )
             )
         );
@@ -316,11 +321,11 @@ public partial class TitleBarRuntimePage : Page
                 () => titleBar.SetEnabled(enabled),
                 TitleBarAvailabilityOutput,
                 Localizer.Parse(
-                    Key.Runtime_TitleBar0_7ACF611F,
+                    CKey.Runtime_TitleBar0_7ACF611F,
                     Localizer.Parse(
                         enabled
-                            ? Key.Runtime_Enabled_FB9CF756
-                            : Key.Runtime_Disabled_17EB3C01
+                            ? CKey.Runtime_Enabled_FB9CF756
+                            : CKey.Runtime_Disabled_17EB3C01
                     )
                 )
             );
@@ -351,7 +356,7 @@ public partial class TitleBarRuntimePage : Page
         catch (Exception error)
         {
             output.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -385,8 +390,8 @@ public partial class TitleBarRuntimePage : Page
         SearchPlaceholderBox.Text = current.Placeholder;
         ToggleSearchVisibilityButton.Content = Localizer.Parse(
             current.IsVisible
-                ? Key.Runtime_HideSearch_14BD5CB7
-                : Key.Runtime_ShowSearch_96369815
+                ? CKey.Runtime_HideSearch_14BD5CB7
+                : CKey.Runtime_ShowSearch_96369815
         );
     }
 

@@ -1,3 +1,5 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using InputKey = System.Windows.Input.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -12,18 +14,18 @@ public partial class SearchBoxPage : Page
         {
             new(
                 "Placeholder",
-                Key.Controls_DisplaysAnInControlHintWhileTheQueryIsEmptyAndUnfocused_E3A4B8DC
+                CKey.Controls_DisplaysAnInControlHintWhileTheQueryIsEmptyAndUnfocused_E3A4B8DC
             ),
-            new("Text", Key.Controls_GetsOrSetsTheCurrentSearchQuery_8E559920),
+            new("Text", CKey.Controls_GetsOrSetsTheCurrentSearchQuery_8E559920),
             new(
                 "IsReadOnly",
-                Key.Controls_PreventsQueryEditsWhilePreservingSelection_3D0FAB32
+                CKey.Controls_PreventsQueryEditsWhilePreservingSelection_3D0FAB32
             ),
-            new("MaxLength", Key.Controls_LimitsTheAcceptedQueryLength_715D6B09),
-            new("TextChanged", Key.Controls_ReportsEachQueryUpdate_4FBCC3DE),
+            new("MaxLength", CKey.Controls_LimitsTheAcceptedQueryLength_715D6B09),
+            new("TextChanged", CKey.Controls_ReportsEachQueryUpdate_4FBCC3DE),
             new(
                 "CommandBindings",
-                Key.Controls_ConnectsKeyboardGesturesSuchAsEnterToApplicationSearch_537F6EA1
+                CKey.Controls_ConnectsKeyboardGesturesSuchAsEnterToApplicationSearch_537F6EA1
             ),
         };
     }

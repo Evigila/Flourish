@@ -11,17 +11,17 @@ public enum FlourishLocalizationChangeKind
     LocaleChanged,
 
     /// <summary>
-    /// A locale file was registered.
+    /// A culture file was registered.
     /// </summary>
     FileRegistered,
 
     /// <summary>
-    /// A registered locale file was reloaded.
+    /// A registered culture file was reloaded.
     /// </summary>
     FileReloaded,
 
     /// <summary>
-    /// A locale-file registration was removed.
+    /// A culture-file registration was removed.
     /// </summary>
     FileUnregistered,
 }

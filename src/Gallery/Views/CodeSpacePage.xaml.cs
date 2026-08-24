@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -9,11 +10,11 @@ public partial class CodeSpacePage : Page
     [
         new(
             "Text",
-            Key.Controls_ContainsTheExactCodeTextDisplayedAndCopiedByTheControl_6A5A8805
+            CKey.Controls_ContainsTheExactCodeTextDisplayedAndCopiedByTheControl_6A5A8805
         ),
         new(
             "ApplicationCommands.Copy",
-            Key.Controls_CopiesTextThroughTheBuiltInUpperRightAction_95EB53A7
+            CKey.Controls_CopiesTextThroughTheBuiltInUpperRightAction_95EB53A7
         ),
     ];
 

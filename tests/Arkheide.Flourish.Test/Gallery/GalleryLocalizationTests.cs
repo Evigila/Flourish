@@ -38,7 +38,10 @@ public sealed class GalleryLocalizationTests
                 ["en-US", "zh-CN"],
                 translations.Keys.OrderBy(value => value, StringComparer.Ordinal).ToArray()
             );
-            Assert.All(translations.Values, value => Assert.False(string.IsNullOrWhiteSpace(value)));
+            Assert.All(
+                translations.Values,
+                value => Assert.False(string.IsNullOrWhiteSpace(value))
+            );
             Assert.DoesNotContain('\uFFFD', translations["en-US"]);
             Assert.DoesNotContain('\uFFFD', translations["zh-CN"]);
             Assert.Equal(
@@ -65,7 +68,8 @@ public sealed class GalleryLocalizationTests
         Assert.All(keys, key => Assert.True(document.ContainsKey(key), key));
         Assert.All(
             files,
-            path => Assert.Contains("xmlns:culture=", File.ReadAllText(path), StringComparison.Ordinal)
+            path =>
+                Assert.Contains("xmlns:culture=", File.ReadAllText(path), StringComparison.Ordinal)
         );
         Assert.DoesNotContain("LangKey.", xaml, StringComparison.Ordinal);
     }
@@ -74,14 +78,24 @@ public sealed class GalleryLocalizationTests
     public void GalleryProject_UsesEssentialCultureWithoutChangingFlourishResources()
     {
         var repository = FindRepositoryRoot();
-        var project = File.ReadAllText(Path.Combine(repository, "src", "Gallery", "Gallery.csproj"));
+        var project = File.ReadAllText(
+            Path.Combine(repository, "src", "Gallery", "Gallery.csproj")
+        );
         var program = File.ReadAllText(Path.Combine(repository, "src", "Gallery", "Program.cs"));
         var flourishProject = File.ReadAllText(
             Path.Combine(repository, "src", "Flourish", "Arkheide.Flourish.csproj")
         );
 
-        Assert.Contains("Arkheide.Flourish.Extension.Culture.csproj", project, StringComparison.Ordinal);
-        Assert.DoesNotContain("PackageReference Include=\"Arkheide.Essential.Culture", project, StringComparison.Ordinal);
+        Assert.Contains(
+            "PackageReference Include=\"Arkheide.Flourish.Extension.Culture\"",
+            project,
+            StringComparison.Ordinal
+        );
+        Assert.DoesNotContain(
+            "PackageReference Include=\"Arkheide.Essential.Culture",
+            project,
+            StringComparison.Ordinal
+        );
         Assert.Contains(
             "<AdditionalFiles Include=\"Localization\\Culture.json\" />",
             project,
@@ -90,27 +104,72 @@ public sealed class GalleryLocalizationTests
         Assert.DoesNotContain("ArkheideSystem.LangKey", project, StringComparison.Ordinal);
         Assert.Contains(".UseEssentialCulture()", program, StringComparison.Ordinal);
         Assert.DoesNotContain("AddGalleryLocalization", program, StringComparison.Ordinal);
-        Assert.DoesNotContain("Arkheide.Essential.Culture", flourishProject, StringComparison.Ordinal);
-        Assert.Contains("Flourish.LangKey_en-US.Json", flourishProject, StringComparison.Ordinal);
+        Assert.DoesNotContain("appsettings.json", project, StringComparison.OrdinalIgnoreCase);
+        Assert.False(
+            File.Exists(Path.Combine(repository, "src", "Gallery", "appsettings.json"))
+        );
+        Assert.False(
+            File.Exists(Path.Combine(repository, "src", "Gallery", "GalleryCommandKeys.cs"))
+        );
+        Assert.Contains(
+            "GalleryCommandParser.DemoHello",
+            program,
+            StringComparison.Ordinal
+        );
+        Assert.Contains(
+            "GalleryCommandParser.DemoBackground",
+            program,
+            StringComparison.Ordinal
+        );
+        Assert.DoesNotContain(
+            "Arkheide.Essential.Culture",
+            flourishProject,
+            StringComparison.Ordinal
+        );
+        Assert.Contains("FlourishCulture.Json", flourishProject, StringComparison.Ordinal);
     }
 
     [Fact]
     public void PublicIdentities_UseConciseCultureKeyAndArkheideFlourishAssemblyNames()
     {
         var repository = FindRepositoryRoot();
-        var globalUsings = File.ReadAllText(
-            Path.Combine(repository, "src", "Gallery", "GlobalUsings.cs")
-        );
+        var gallerySources = Directory
+            .GetFiles(
+                Path.Combine(repository, "src", "Gallery"),
+                "*.cs",
+                SearchOption.AllDirectories
+            )
+            .Where(path =>
+                !path.Contains(
+                    $"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}",
+                    StringComparison.OrdinalIgnoreCase
+                )
+                && !path.Contains(
+                    $"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            .Select(File.ReadAllText)
+            .ToArray();
         var flourishProject = File.ReadAllText(
             Path.Combine(repository, "src", "Flourish", "Arkheide.Flourish.csproj")
         );
 
         Assert.Contains(
-            "global using Key = Arkheide.Essential.Culture.Key;",
-            globalUsings,
-            StringComparison.Ordinal
+            gallerySources,
+            source => source.Contains(
+                "using CKey = Arkheide.Essential.Culture.Key;",
+                StringComparison.Ordinal
+            )
         );
-        Assert.DoesNotContain("CultureKeyToken", globalUsings, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            gallerySources,
+            source => source.Contains("global using", StringComparison.Ordinal)
+        );
+        Assert.DoesNotContain(
+            gallerySources,
+            source => source.Contains("CultureKeyToken", StringComparison.Ordinal)
+        );
         Assert.Contains(
             "<AssemblyName>Arkheide.Flourish</AssemblyName>",
             flourishProject,
@@ -126,16 +185,59 @@ public sealed class GalleryLocalizationTests
     }
 
     [Fact]
-    public void FlourishAssets_RemainOwnedByFlourish()
+    public void FlourishAssets_UseOneKeyFirstCultureCatalog()
     {
-        var assetDirectory = Path.Combine(FindRepositoryRoot(), "src", "Flourish", "Assets");
+        var repository = FindRepositoryRoot();
+        var assetDirectory = Path.Combine(repository, "src", "Flourish", "Assets");
         var files = Directory
-            .GetFiles(assetDirectory, "Flourish.LangKey_*.Json")
+            .GetFiles(assetDirectory, "*Culture.Json")
             .Select(path => Path.GetFileName(path)!)
             .OrderBy(value => value, StringComparer.Ordinal)
             .ToArray();
 
-        Assert.Equal(["Flourish.LangKey_en-US.Json", "Flourish.LangKey_zh-CN.Json"], files);
+        Assert.Equal(["FlourishCulture.Json"], files);
+
+        using var document = JsonDocument.Parse(
+            File.ReadAllText(Path.Combine(assetDirectory, "FlourishCulture.Json"))
+        );
+        Assert.All(
+            document.RootElement.EnumerateObject(),
+            key =>
+            {
+                Assert.Equal(JsonValueKind.Object, key.Value.ValueKind);
+                Assert.True(key.Value.TryGetProperty("en-US", out _), key.Name);
+                Assert.True(key.Value.TryGetProperty("zh-CN", out _), key.Name);
+            }
+        );
+
+        var galleryCatalogPath = Path.Combine(repository, "src", "Gallery", "FlourishCulture.Json");
+        using var galleryDocument = JsonDocument.Parse(File.ReadAllText(galleryCatalogPath));
+        Assert.True(
+            galleryDocument.RootElement.EnumerateObject().Count()
+                < document.RootElement.EnumerateObject().Count()
+        );
+        Assert.All(
+            galleryDocument.RootElement.EnumerateObject(),
+            key =>
+                Assert.Equal(
+                    ["es-ES"],
+                    key.Value.EnumerateObject().Select(locale => locale.Name).ToArray()
+                )
+        );
+        Assert.Empty(
+            Directory.GetFiles(
+                assetDirectory,
+                "Flourish.LangKey_*.Json",
+                SearchOption.TopDirectoryOnly
+            )
+        );
+        Assert.Empty(
+            Directory.GetFiles(
+                Path.Combine(repository, "src", "Gallery"),
+                "Flourish.LangKey_*.Json",
+                SearchOption.TopDirectoryOnly
+            )
+        );
     }
 
     private static string GetCulturePath() =>

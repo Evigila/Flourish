@@ -1,5 +1,7 @@
+using Localizer = Arkheide.Essential.Culture.Localizer;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+
 namespace ArkheideSystem.Gallery.Models;
 
 public sealed class ControlMemberRow : INotifyPropertyChanged

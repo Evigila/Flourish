@@ -1,3 +1,8 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
+using InputKey = System.Windows.Input.Key;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -199,7 +204,7 @@ public partial class AppearancePage : Page
             PageFontOverrideOutput,
             () =>
                 Localizer.Parse(
-                    Key.Runtime_AppearancePageTypographyOverrideCleared_812D6991
+                    CKey.Runtime_AppearancePageTypographyOverrideCleared_812D6991
                 )
         );
     }
@@ -337,7 +342,7 @@ public partial class AppearancePage : Page
         catch (Exception error)
         {
             output.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -423,7 +428,7 @@ public partial class AppearancePage : Page
 
     private string FormatThemeOutput() =>
         Localizer.Parse(
-            Key.Runtime_ThemeUpdatedRequested0Effective1Dark2_10410DE8,
+            CKey.Runtime_ThemeUpdatedRequested0Effective1Dark2_10410DE8,
             theme.CurrentTheme,
             theme.EffectiveTheme,
             theme.IsDark
@@ -431,7 +436,7 @@ public partial class AppearancePage : Page
 
     private string FormatTypographyOutput() =>
         Localizer.Parse(
-            Key.Runtime_TypographyUpdatedText01Icons2_6EFDFFD3,
+            CKey.Runtime_TypographyUpdatedText01Icons2_6EFDFFD3,
             font.FontFamily,
             FormatScale(
                 font.SmallFontSize,
@@ -449,12 +454,12 @@ public partial class AppearancePage : Page
         if (!font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
         {
             return Localizer.Parse(
-                Key.Runtime_AppearancePageTypographyOverrideWasNotApplied_E8E937EF
+                CKey.Runtime_AppearancePageTypographyOverrideWasNotApplied_E8E937EF
             );
         }
 
         return Localizer.Parse(
-            Key.Runtime_AppearancePageTypographyOverrideApplied01_C79A613D,
+            CKey.Runtime_AppearancePageTypographyOverrideApplied01_C79A613D,
             pageOverride.FontFamily,
             FormatScale(
                 pageOverride.SmallFontSize ?? font.SmallFontSize,
@@ -469,7 +474,7 @@ public partial class AppearancePage : Page
 
     private string FormatMaterialOutput() =>
         Localizer.Parse(
-            Key.Runtime_WindowMaterialUpdatedRequested0Effective1Supported2Applied3DarkM_AA9929C6,
+            CKey.Runtime_WindowMaterialUpdatedRequested0Effective1Supported2Applied3DarkM_AA9929C6,
             material.CurrentEffect,
             material.EffectiveEffect,
             material.IsSupported(material.CurrentEffect),
@@ -504,13 +509,13 @@ public partial class AppearancePage : Page
     {
         option.Content =
             effect == MaterialEffect.Auto
-                ? Localizer.Parse(Key.Runtime_AutoSystemDefault_FAE8027B)
+                ? Localizer.Parse(CKey.Runtime_AutoSystemDefault_FAE8027B)
             : isSupported ? effect.ToString()
-            : Localizer.Parse(Key.Runtime_Text0Unsupported_2326A1BB, effect);
+            : Localizer.Parse(CKey.Runtime_Text0Unsupported_2326A1BB, effect);
         option.ToolTip = isSupported
             ? null
             : Localizer.Parse(
-                Key.Runtime_ThisMaterialIsUnavailableOnThisWindowsVersion_44BE2E27
+                CKey.Runtime_ThisMaterialIsUnavailableOnThisWindowsVersion_44BE2E27
             );
     }
 
@@ -518,14 +523,14 @@ public partial class AppearancePage : Page
     {
         var current = appearance.Current;
         return Localizer.Parse(
-            Key.Runtime_AppearanceUpdatedPalette0CornerRadius1_3790C925,
+            CKey.Runtime_AppearanceUpdatedPalette0CornerRadius1_3790C925,
             Localizer.Parse(
                 current.ThemeColors is null
-                    ? Key.Runtime_Standard_FE6D3468
-                    : Key.Runtime_Custom_6CDFD271
+                    ? CKey.Runtime_Standard_FE6D3468
+                    : CKey.Runtime_Custom_6CDFD271
             ),
             current.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture)
-                ?? Localizer.Parse(Key.Runtime_Standard_FE6D3468)
+                ?? Localizer.Parse(CKey.Runtime_Standard_FE6D3468)
         );
     }
 
@@ -554,7 +559,7 @@ public partial class AppearancePage : Page
     )
     {
         return Localizer.Parse(
-            Key.Runtime_Small00Standard10Icon20Large30ExtraLarge40Header50DIP_0BEDC756,
+            CKey.Runtime_Small00Standard10Icon20Large30ExtraLarge40Header50DIP_0BEDC756,
             smallFontSize,
             standardFontSize,
             iconFontSize,

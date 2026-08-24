@@ -1,3 +1,5 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
@@ -14,23 +16,23 @@ public partial class OutputCardPage : Page
         InitializeComponent();
         OutputCardMemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Output", Key.Controls_GetsTheCompleteAppendOnlyOutputText_42EB24EB),
+            new("Output", CKey.Controls_GetsTheCompleteAppendOnlyOutputText_42EB24EB),
             new(
                 "WriteLine",
-                Key.Controls_AppendsOneLineAndScrollsTheViewportToTheLatestOutput_7EFCD505
+                CKey.Controls_AppendsOneLineAndScrollsTheViewportToTheLatestOutput_7EFCD505
             ),
-            new("Clear", Key.Controls_RemovesTheCompleteOutputHistory_5CC4506C),
+            new("Clear", CKey.Controls_RemovesTheCompleteOutputHistory_5CC4506C),
         };
-        HistoryOutput.WriteLine(Localizer.Parse(Key.Runtime_OutputCardIsReady_D7FB9A68));
+        HistoryOutput.WriteLine(Localizer.Parse(CKey.Runtime_OutputCardIsReady_D7FB9A68));
         HistoryOutput.WriteLine(
             Localizer.Parse(
-                Key.Runtime_EachActionAppendsALineInsteadOfReplacingHistory_3DF3CAE2
+                CKey.Runtime_EachActionAppendsALineInsteadOfReplacingHistory_3DF3CAE2
             )
         );
     }
 
     private void AppendMessage_Click(object sender, RoutedEventArgs e) =>
-        WriteMessage(Localizer.Parse(Key.Runtime_TheSampleOperationCompleted_1BE5D5D5));
+        WriteMessage(Localizer.Parse(CKey.Runtime_TheSampleOperationCompleted_1BE5D5D5));
 
     private void AppendBurst_Click(object sender, RoutedEventArgs e)
     {
@@ -38,7 +40,7 @@ public partial class OutputCardPage : Page
         {
             WriteMessage(
                 Localizer.Parse(
-                    Key.Runtime_BurstEntry0Of1_11AD7242,
+                    CKey.Runtime_BurstEntry0Of1_11AD7242,
                     index,
                     BurstMessageCount
                 )
@@ -51,7 +53,7 @@ public partial class OutputCardPage : Page
         var characterCount = HistoryOutput.Output.Length;
         WriteMessage(
             Localizer.Parse(
-                Key.Runtime_TheHistoryContained0CharactersBeforeThisSummary_269B14EE,
+                CKey.Runtime_TheHistoryContained0CharactersBeforeThisSummary_269B14EE,
                 characterCount
             )
         );
@@ -68,7 +70,7 @@ public partial class OutputCardPage : Page
         messageSequence++;
         HistoryOutput.WriteLine(
             Localizer.Parse(
-                Key.Runtime_Text0HHMmSsMessage12_6A44E992,
+                CKey.Runtime_Text0HHMmSsMessage12_6A44E992,
                 DateTimeOffset.Now,
                 messageSequence,
                 message

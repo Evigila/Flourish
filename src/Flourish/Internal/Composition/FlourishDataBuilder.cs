@@ -18,10 +18,10 @@ internal sealed class FlourishDataBuilder(FlourishDataOptions options)
         return this;
     }
 
-    public IFlourishDataBuilder AddLocaleFile(string path)
+    public IFlourishDataBuilder AddCultureFile(string path)
     {
         ThrowIfFrozen();
-        options.LocalePaths.Add(ValidateNotBlank(path, nameof(path)).Trim());
+        options.CulturePaths.Add(ValidateNotBlank(path, nameof(path)).Trim());
         return this;
     }
 

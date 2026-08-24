@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -15,11 +16,11 @@ public partial class WindowCaptionButtonPage : Page
     [
         new(
             "Variant",
-            Key.Controls_UsesTextForOrdinaryCaptionActionsAndDangerForClose_B98A046B
+            CKey.Controls_UsesTextForOrdinaryCaptionActionsAndDangerForClose_B98A046B
         ),
-        new("Icon", Key.Controls_SuppliesTheCaptionGlyph_F1AD27EF),
-        new("Command", Key.Controls_ConnectsActivationToAWindowOwnedAction_ABB942F5),
-        new("IsEnabled", Key.Controls_ControlsKeyboardAndPointerActivation_6A5B63B0),
-        new("ToolTip", Key.Controls_NamesTheIconOnlyCaptionAction_90AA1580),
+        new("Icon", CKey.Controls_SuppliesTheCaptionGlyph_F1AD27EF),
+        new("Command", CKey.Controls_ConnectsActivationToAWindowOwnedAction_ABB942F5),
+        new("IsEnabled", CKey.Controls_ControlsKeyboardAndPointerActivation_6A5B63B0),
+        new("ToolTip", CKey.Controls_NamesTheIconOnlyCaptionAction_90AA1580),
     ];
 }

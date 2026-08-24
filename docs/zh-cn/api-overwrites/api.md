@@ -336,10 +336,10 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.AddLocaleFile(System.String)
-summary: 添加可扩展或覆盖内置翻译的自定义语言文件。
+uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.AddCultureFile(System.String)
+summary: 添加可扩展或覆盖内置翻译的自定义文化文件。
 remarks: |
-  文件在 `Build()` 应用配置时读取，必须是使用 UTF-8 编码的非空扁平 JSON 对象，并命名为 `Flourish.LangKey_<locale>.Json`。键和值必须是非空字符串，键不能重复。语言部分可以包含字母、数字、连字符和下划线；下划线会转换为连字符，分隔符两侧都必须有非空子标识。
+  文件在 `Build()` 应用配置时读取，必须使用 UTF-8 编码并命名为 `FlourishCulture.Json`。最外层属性是翻译键，内层属性是语言标识与译文；用户文件可以只包含需要覆盖的语言与键组合。应用输出目录中的同名文件会自动加载，额外目录按注册顺序覆盖相同语言与键的先前值。
 
   同一语言的多个文件按注册顺序合并，后添加文件中的同名键优先。查找顺序为：选中语言的自定义值、选中语言的内置值、自定义 `en-US`、内置 `en-US`，最后返回键本身。
 
@@ -347,8 +347,12 @@ remarks: |
 
   ```json
   {
-    "TitleBar.Back": "上一页",
-    "Tray.Show": "打开"
+    "TitleBar.Back": {
+      "zh-CN": "上一页"
+    },
+    "Tray.Show": {
+      "zh-CN": "打开"
+    }
   }
   ```
 
@@ -418,6 +422,10 @@ remarks: |
   | `MessageBox.No` | No | 否 |
   | `Window.CloseTitle` | Close | 关闭 |
   | `Window.ClosePrompt` | Are you sure you want to close this window? | 确定要关闭此窗口吗？ |
+  | `Window.BackgroundTasksCloseTitle` | Stop background tasks? | 中止后台任务？ |
+  | `Window.BackgroundTasksClosePrompt` | Active background tasks: {0}. Closing the window will cancel them. Stop the tasks and exit? | 仍有 {0} 个后台任务正在进行。关闭窗口将取消这些任务。是否中止任务并退出？ |
+  | `Window.BackgroundTasksKeepRunning` | Keep running | 继续运行 |
+  | `Window.BackgroundTasksStopAndExit` | Stop tasks and exit | 中止任务并退出 |
   | `Tray.Show` | Show | 显示 |
   | `Tray.Exit` | Exit | 退出 |
   | `Status.Connected` | Connected | 已连接 |
@@ -425,7 +433,7 @@ remarks: |
 syntax:
   parameters:
   - id: path
-    description: 自定义语言文件路径。
+    description: 自定义文化文件路径。
   return:
     description: 用于链式配置的当前 builder。
 ---

@@ -3140,16 +3140,16 @@
     "zh-CN": "姓名顺序已更新为 {0}；显示名称为 {1}。"
   },
   "Dynamic_NoLocaleFileIsRegisteredByThisPage_156204FE": {
-    "en-US": "No locale file is registered by this page.",
-    "zh-CN": "此页面尚未注册区域设置文件。"
+    "en-US": "No culture file is registered by this page.",
+    "zh-CN": "此页面尚未注册文化文件。"
   },
   "Dynamic_Read01_611124DE": {
     "en-US": "Read {0}: {1}",
     "zh-CN": "读取 {0}：{1}"
   },
   "Dynamic_RegisterALocaleFileFirst_5BC84B5D": {
-    "en-US": "Register a locale file first.",
-    "zh-CN": "请先注册区域设置文件。"
+    "en-US": "Register a culture file first.",
+    "zh-CN": "请先注册文化文件。"
   },
   "Dynamic_Registered0From1_29302AFF": {
     "en-US": "Registered {0} from {1}.",
@@ -4156,8 +4156,8 @@
     "zh-CN": "在添加、替换或更新项目映射之前，选择一个现有本地文件。"
   },
   "Shell_ChooseAnExternalLangLocaleJsonSource_A4EE0621": {
-    "en-US": "Choose an external Flourish.LangKey_<locale>.Json source.",
-    "zh-CN": "选择外部 Flourish.LangKey_<locale>.Json 翻译源。"
+    "en-US": "Choose an external FlourishCulture.Json source.",
+    "zh-CN": "选择外部 FlourishCulture.Json 翻译源。"
   },
   "Shell_ChooseTheAppsettingsKeyToEdit_BCD25047": {
     "en-US": "Choose the appsettings key to edit.",
@@ -4564,8 +4564,8 @@
     "zh-CN": "探索"
   },
   "Shell_ExtendOrOverrideTranslationsWithUTF8LangLocaleJsonFilesAddFilesD_A991B111": {
-    "en-US": "Extend or override translations with UTF-8 Flourish.LangKey_<locale>.Json files. Add files during app setup or register, reload, and remove them through IFlourishLocalization. Use this for product-specific translations, plugins, and externally maintained language packs; the code below demonstrates both registration paths, registration metadata, file reload, and removal.",
-    "zh-CN": "使用 UTF-8 编码的 Flourish.LangKey_<locale>.Json 文件扩展或覆盖翻译。可以在应用配置期间添加文件，也可以通过 IFlourishLocalization 注册、重新加载和移除文件。它适用于产品专属翻译、插件和外部维护的语言包；下方代码演示两种注册方式、注册元数据、文件重新加载和移除。"
+    "en-US": "Extend or override translations with a UTF-8 FlourishCulture.Json catalog. A catalog in the application directory is loaded automatically; additional catalogs can be registered, reloaded, and removed through IFlourishLocalization. Each file may provide only the locale-and-key cells it overrides. Use the code below to inspect the registration and manage its lifetime.",
+    "zh-CN": "使用 UTF-8 编码的 FlourishCulture.Json 目录扩展或覆盖翻译。应用目录中的同名文件会被自动加载，也可以通过 IFlourishLocalization 注册、重新加载和移除其他目录；每个文件只需提供需要覆盖的语言与键组合。使用下方代码可以检查注册信息并管理其生命周期。"
   },
   "Shell_ExtraLargeTextSize_89659B30": {
     "en-US": "Extra-large text size",
@@ -4712,12 +4712,12 @@
     "zh-CN": "实时任务"
   },
   "Shell_LocaleFilePath_9B6FF179": {
-    "en-US": "Locale file path",
-    "zh-CN": "区域设置文件路径"
+    "en-US": "Culture file path",
+    "zh-CN": "文化文件路径"
   },
   "Shell_LocaleFiles_66483B15": {
-    "en-US": "Locale files",
-    "zh-CN": "区域设置文件"
+    "en-US": "Culture files",
+    "zh-CN": "文化文件"
   },
   "Shell_Localization_031C2D79": {
     "en-US": "Localization",
@@ -5080,8 +5080,8 @@
     "zh-CN": "注册守卫"
   },
   "Shell_RegisterLocaleFile_E5F5A5EA": {
-    "en-US": "Register locale file",
-    "zh-CN": "注册区域设置文件"
+    "en-US": "Register culture file",
+    "zh-CN": "注册文化文件"
   },
   "Shell_RegisterProjectMetadataChangeTheActiveProjectAndHandleTitleBarRe_D4CB5B7C": {
     "en-US": "Register project metadata, change the active project, and handle title-bar requests.",
@@ -5128,8 +5128,8 @@
     "zh-CN": "重新加载文件"
   },
   "Shell_ReloadLocaleFile_B942D119": {
-    "en-US": "Reload locale file",
-    "zh-CN": "重新加载区域设置文件"
+    "en-US": "Reload culture file",
+    "zh-CN": "重新加载文化文件"
   },
   "Shell_ReloadProviders_0C783486": {
     "en-US": "Reload providers",
@@ -5156,8 +5156,8 @@
     "zh-CN": "移除守卫"
   },
   "Shell_RemoveLocaleFile_8391B6C7": {
-    "en-US": "Remove locale file",
-    "zh-CN": "移除区域设置文件"
+    "en-US": "Remove culture file",
+    "zh-CN": "移除文化文件"
   },
   "Shell_RemoveRoute_11A79956": {
     "en-US": "Remove route",

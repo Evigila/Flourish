@@ -1,0 +1,206 @@
+{
+  "TitleBar.Back": {
+    "es-ES": "Atrás"
+  },
+  "TitleBar.Forward": {
+    "es-ES": "Adelante"
+  },
+  "TitleBar.ToggleNavigation": {
+    "es-ES": "Alternar navegación"
+  },
+  "TitleBar.Theme": {
+    "es-ES": "Tema"
+  },
+  "TitleBar.ThemeSystem": {
+    "es-ES": "Tema: Sistema ({0})"
+  },
+  "TitleBar.ThemeCurrent": {
+    "es-ES": "Tema: {0}"
+  },
+  "TitleBar.Profile": {
+    "es-ES": "Perfil"
+  },
+  "TitleBar.ApplicationInfo": {
+    "es-ES": "Información de la aplicación"
+  },
+  "TitleBar.ProjectMenu": {
+    "es-ES": "Proyectos"
+  },
+  "TitleBar.NewProject": {
+    "es-ES": "Nuevo proyecto"
+  },
+  "Project.Delete": {
+    "es-ES": "Eliminar proyecto"
+  },
+  "Project.Save": {
+    "es-ES": "Guardar"
+  },
+  "Project.DontSave": {
+    "es-ES": "No guardar"
+  },
+  "Project.SaveDialogTitle": {
+    "es-ES": "Guardar proyecto"
+  },
+  "Project.TextFileFilter": {
+    "es-ES": "Archivos de proyecto de texto (*.txt)|*.txt"
+  },
+  "Project.UnsavedTitle": {
+    "es-ES": "Guardar proyecto"
+  },
+  "Project.UnsavedPrompt": {
+    "es-ES": "\"{0}\" no se ha guardado. ¿Quieres guardarlo antes de continuar?"
+  },
+  "Project.DeleteTitle": {
+    "es-ES": "Eliminar proyecto"
+  },
+  "Project.DeletePrompt": {
+    "es-ES": "¿Eliminar \"{0}\"? Su archivo administrado también se elimina cuando ningún otro proyecto usa la misma ruta.\n{1}"
+  },
+  "TitleBar.Minimize": {
+    "es-ES": "Minimizar"
+  },
+  "TitleBar.Maximize": {
+    "es-ES": "Maximizar"
+  },
+  "TitleBar.Restore": {
+    "es-ES": "Restaurar"
+  },
+  "TitleBar.Close": {
+    "es-ES": "Cerrar"
+  },
+  "Theme.Dark": {
+    "es-ES": "Oscuro"
+  },
+  "Theme.Light": {
+    "es-ES": "Claro"
+  },
+  "Profile.DefaultName": {
+    "es-ES": "Usuario"
+  },
+  "Profile.SignIn": {
+    "es-ES": "Iniciar sesión"
+  },
+  "Profile.SignOut": {
+    "es-ES": "Cerrar sesión"
+  },
+  "Profile.FirstName": {
+    "es-ES": "Nombre"
+  },
+  "Profile.LastName": {
+    "es-ES": "Apellido"
+  },
+  "Profile.Image": {
+    "es-ES": "Imagen de perfil"
+  },
+  "Profile.ChooseImage": {
+    "es-ES": "Elegir imagen"
+  },
+  "Profile.UploadImage": {
+    "es-ES": "Subir imagen"
+  },
+  "Profile.Password": {
+    "es-ES": "Contraseña"
+  },
+  "Profile.Cancel": {
+    "es-ES": "Cancelar"
+  },
+  "Profile.RememberLogin": {
+    "es-ES": "Recordar inicio de sesión"
+  },
+  "Profile.SignedIn": {
+    "es-ES": "Sesión iniciada"
+  },
+  "Profile.SignedOut": {
+    "es-ES": "Sesión cerrada"
+  },
+  "Profile.ImageFiles": {
+    "es-ES": "Archivos de imagen"
+  },
+  "Profile.AllFiles": {
+    "es-ES": "Todos los archivos"
+  },
+  "Profile.ImageLoadFailed": {
+    "es-ES": "No se pudo cargar la imagen seleccionada."
+  },
+  "Profile.SignInFailed": {
+    "es-ES": "No se pudo iniciar sesión."
+  },
+  "Profile.EnterName": {
+    "es-ES": "Introduce un nombre o apellido."
+  },
+  "Profile.EnterPassword": {
+    "es-ES": "Introduce una contraseña."
+  },
+  "Profile.RememberLoginRequiresSignIn": {
+    "es-ES": "Solo se puede recordar el inicio con una sesión activa."
+  },
+  "BackgroundTask.Title": {
+    "es-ES": "Tareas en segundo plano"
+  },
+  "BackgroundTask.Running": {
+    "es-ES": "En ejecución"
+  },
+  "BackgroundTask.Queued": {
+    "es-ES": "En espera"
+  },
+  "BackgroundTask.Cancelling": {
+    "es-ES": "Cancelando"
+  },
+  "BackgroundTask.Cancel": {
+    "es-ES": "Cancelar"
+  },
+  "BackgroundTask.WaitingCount": {
+    "es-ES": "{0} tarea(s) en espera"
+  },
+  "BackgroundTask.NoActiveTasks": {
+    "es-ES": "No hay tareas activas"
+  },
+  "SystemStatus.Title": {
+    "es-ES": "Estado del sistema"
+  },
+  "SystemStatus.Network": {
+    "es-ES": "Red"
+  },
+  "SystemStatus.Power": {
+    "es-ES": "Energía"
+  },
+  "SystemStatus.AC": {
+    "es-ES": "Corriente alterna"
+  },
+  "SystemStatus.Battery": {
+    "es-ES": "Batería"
+  },
+  "SystemStatus.Unknown": {
+    "es-ES": "Desconocido"
+  },
+  "MessageBox.OK": {
+    "es-ES": "Aceptar"
+  },
+  "MessageBox.Cancel": {
+    "es-ES": "Cancelar"
+  },
+  "MessageBox.Yes": {
+    "es-ES": "Sí"
+  },
+  "MessageBox.No": {
+    "es-ES": "No"
+  },
+  "Window.CloseTitle": {
+    "es-ES": "Cerrar"
+  },
+  "Window.ClosePrompt": {
+    "es-ES": "¿Seguro que quieres cerrar esta ventana?"
+  },
+  "Tray.Show": {
+    "es-ES": "Mostrar"
+  },
+  "Tray.Exit": {
+    "es-ES": "Salir"
+  },
+  "Status.Connected": {
+    "es-ES": "Conectado"
+  },
+  "Status.Disconnected": {
+    "es-ES": "Desconectado"
+  }
+}

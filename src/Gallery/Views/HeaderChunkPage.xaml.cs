@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Controls;
@@ -11,21 +12,21 @@ public partial class HeaderChunkPage : Page
     [
         new(
             "Title",
-            Key.Controls_NamesThePageAndUsesTheEmphasizedHeaderTitleRole_D824091B
+            CKey.Controls_NamesThePageAndUsesTheEmphasizedHeaderTitleRole_D824091B
         ),
-        new("Content", Key.Controls_AddsSupportingPageContext_DE57218F),
-        new("Body", Key.Controls_HostsControlsInTheSameRegionAsTheCopy_BD046E4D),
+        new("Content", CKey.Controls_AddsSupportingPageContext_DE57218F),
+        new("Body", CKey.Controls_HostsControlsInTheSameRegionAsTheCopy_BD046E4D),
         new(
             "Presentation",
-            Key.Controls_HostsThePageIllustrationOrComposedVisual_4F9EE000
+            CKey.Controls_HostsThePageIllustrationOrComposedVisual_4F9EE000
         ),
         new(
             "PresenterMode",
-            Key.Controls_ChoosesSplitOverlayOrTopDownComposition_C5760298
+            CKey.Controls_ChoosesSplitOverlayOrTopDownComposition_C5760298
         ),
         new(
             "PresenterPosition",
-            Key.Controls_PlacesSplitPresentationContentOnTheLeftOrRight_42F1BD88
+            CKey.Controls_PlacesSplitPresentationContentOnTheLeftOrRight_42F1BD88
         ),
     ];
 

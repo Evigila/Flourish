@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -7,15 +8,15 @@ public partial class ToolTipPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Content", Key.Controls_SetsConciseHelpContentForThePopup_5AFEF10E),
+        new("Content", CKey.Controls_SetsConciseHelpContentForThePopup_5AFEF10E),
         new(
             "Placement",
-            Key.Controls_UsesNativeWPFPlacementWithFlourishShellRegionCorrection_CC370C90
+            CKey.Controls_UsesNativeWPFPlacementWithFlourishShellRegionCorrection_CC370C90
         ),
-        new("IsOpen", Key.Controls_GetsOrSetsThePopupOpenState_CEC2542B),
+        new("IsOpen", CKey.Controls_GetsOrSetsThePopupOpenState_CEC2542B),
         new(
             "ToolTipService",
-            Key.Controls_ControlsDelayDurationAndHostBehaviorThroughWPFAttachedProperties_2CC65F82
+            CKey.Controls_ControlsDelayDurationAndHostBehaviorThroughWPFAttachedProperties_2CC65F82
         ),
     ];
 

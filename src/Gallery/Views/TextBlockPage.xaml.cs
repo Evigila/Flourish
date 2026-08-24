@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -7,14 +8,14 @@ public partial class TextBlockPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Text", Key.Controls_SetsTheDisplayedText_6B2DA7F7),
+        new("Text", CKey.Controls_SetsTheDisplayedText_6B2DA7F7),
         new(
             "Role",
-            Key.Controls_SelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97
+            CKey.Controls_SelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97
         ),
         new(
             "TextWrapping",
-            Key.Controls_UsesTheNativeWPFWrappingBehaviorWhenContentNeedsMultipleLines_BEEAB3F9
+            CKey.Controls_UsesTheNativeWPFWrappingBehaviorWhenContentNeedsMultipleLines_BEEAB3F9
         ),
     ];
 

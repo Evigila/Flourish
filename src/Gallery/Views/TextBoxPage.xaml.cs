@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -10,26 +11,26 @@ public partial class TextBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("Text", Key.Controls_GetsOrSetsTheEditableTextValue_607E5735),
+            new("Text", CKey.Controls_GetsOrSetsTheEditableTextValue_607E5735),
             new(
                 "IsReadOnly",
-                Key.Controls_PreventsEditsWhilePreservingSelectionAndCopying_AB44FBCC
+                CKey.Controls_PreventsEditsWhilePreservingSelectionAndCopying_AB44FBCC
             ),
             new(
                 "AcceptsReturn",
-                Key.Controls_AllowsTheEnterKeyToInsertANewLine_578EB817
+                CKey.Controls_AllowsTheEnterKeyToInsertANewLine_578EB817
             ),
             new(
                 "TextWrapping",
-                Key.Controls_WrapsLongTextWithinTheAvailableWidth_1FC91E99
+                CKey.Controls_WrapsLongTextWithinTheAvailableWidth_1FC91E99
             ),
             new(
                 "MaxLength",
-                Key.Controls_LimitsTheNumberOfAcceptedCharacters_F99BE746
+                CKey.Controls_LimitsTheNumberOfAcceptedCharacters_F99BE746
             ),
             new(
                 "TextChanged",
-                Key.Controls_ReportsEditsMadeByTheUserOrApplication_91DF28A1
+                CKey.Controls_ReportsEditsMadeByTheUserOrApplication_91DF28A1
             ),
         };
     }

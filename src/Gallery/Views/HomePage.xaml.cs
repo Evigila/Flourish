@@ -1,3 +1,4 @@
+using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Windows.Controls;
 
 namespace ArkheideSystem.Gallery.Views;

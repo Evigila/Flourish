@@ -1,3 +1,5 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -12,18 +14,18 @@ public partial class DataGridPage : Page
         {
             new(
                 "ItemsSource",
-                Key.Controls_SuppliesRowsThroughTheNativeWPFItemsContract_EFF3C048
+                CKey.Controls_SuppliesRowsThroughTheNativeWPFItemsContract_EFF3C048
             ),
-            new("Columns", Key.Controls_ContainsNativeDataGridColumnDefinitions_14066905),
+            new("Columns", CKey.Controls_ContainsNativeDataGridColumnDefinitions_14066905),
             new(
                 "AutoGenerateColumns",
-                Key.Controls_GeneratesColumnsFromItemPropertiesWhenEnabled_AD6A6621
+                CKey.Controls_GeneratesColumnsFromItemPropertiesWhenEnabled_AD6A6621
             ),
-            new("RowCount", Key.Controls_ReportsDataRowsWithoutTheNewItemPlaceholder_072240D4),
-            new("ColumnCount", Key.Controls_ReportsDeclaredAndGeneratedColumns_580BD2E1),
+            new("RowCount", CKey.Controls_ReportsDataRowsWithoutTheNewItemPlaceholder_072240D4),
+            new("ColumnCount", CKey.Controls_ReportsDeclaredAndGeneratedColumns_580BD2E1),
             new(
                 "FirstColumnForeground",
-                Key.Controls_SetsTheFirstDisplayedColumnColor_59F9C6AD
+                CKey.Controls_SetsTheFirstDisplayedColumnColor_59F9C6AD
             ),
         };
         RefreshExampleRows();
@@ -54,18 +56,18 @@ public partial class DataGridPage : Page
         {
             new(
                 "Foobar",
-                Localizer.Parse(Key.Runtime_Ready_5FA7AAC5),
-                Localizer.Parse(Key.Runtime_Application_E7AD522E)
+                Localizer.Parse(CKey.Runtime_Ready_5FA7AAC5),
+                Localizer.Parse(CKey.Runtime_Application_E7AD522E)
             ),
             new(
-                Localizer.Parse(Key.Controls_Reports_DACCA3CB),
-                Localizer.Parse(Key.Runtime_Running_F4CCAE29),
-                Localizer.Parse(Key.Controls_Workspace_87BB59BA)
+                Localizer.Parse(CKey.Controls_Reports_DACCA3CB),
+                Localizer.Parse(CKey.Runtime_Running_F4CCAE29),
+                Localizer.Parse(CKey.Controls_Workspace_87BB59BA)
             ),
             new(
-                Localizer.Parse(Key.Runtime_Archive_66F4804E),
-                Localizer.Parse(Key.Runtime_Paused_E159B061),
-                Localizer.Parse(Key.Runtime_System_6725E7BB)
+                Localizer.Parse(CKey.Runtime_Archive_66F4804E),
+                Localizer.Parse(CKey.Runtime_Paused_E159B061),
+                Localizer.Parse(CKey.Runtime_System_6725E7BB)
             ),
         };
     }

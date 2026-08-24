@@ -1,3 +1,9 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
+using InputKey = System.Windows.Input.Key;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Abstract.Essential;
+using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -66,11 +72,11 @@ public partial class NavigationRuntimePage : Page
         panel.Toggle();
         PanelOutput.WriteLine(
             Localizer.Parse(
-                Key.Runtime_NavigationPanel0_92C7D51F,
+                CKey.Runtime_NavigationPanel0_92C7D51F,
                 Localizer.Parse(
                     panel.Current.IsOpen
-                        ? Key.Runtime_Opened_50236627
-                        : Key.Runtime_Closed_C3EEFB58
+                        ? CKey.Runtime_Opened_50236627
+                        : CKey.Runtime_Closed_C3EEFB58
                 )
             )
         );
@@ -81,11 +87,11 @@ public partial class NavigationRuntimePage : Page
         panel.SetEnabled(!panel.Current.IsEnabled);
         PanelOutput.WriteLine(
             Localizer.Parse(
-                Key.Runtime_NavigationPanel0_92C7D51F,
+                CKey.Runtime_NavigationPanel0_92C7D51F,
                 Localizer.Parse(
                     panel.Current.IsEnabled
-                        ? Key.Runtime_Enabled_FB9CF756
-                        : Key.Runtime_Disabled_17EB3C01
+                        ? CKey.Runtime_Enabled_FB9CF756
+                        : CKey.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -101,7 +107,7 @@ public partial class NavigationRuntimePage : Page
         {
             panel.SetDirection(direction);
             PanelOutput.WriteLine(
-                Localizer.Parse(Key.Runtime_NavigationPanelMovedTo0_39B53359, direction)
+                Localizer.Parse(CKey.Runtime_NavigationPanelMovedTo0_39B53359, direction)
             );
         }
     }
@@ -119,7 +125,7 @@ public partial class NavigationRuntimePage : Page
             var state = panel.Current;
             PanelOutput.WriteLine(
                 Localizer.Parse(
-                    Key.Runtime_PanelWidthsSetToClosed00Open10Range2030_7AF1DFF9,
+                    CKey.Runtime_PanelWidthsSetToClosed00Open10Range2030_7AF1DFF9,
                     state.ClosedWidth,
                     state.OpenWidth,
                     state.MinWidth,
@@ -130,7 +136,7 @@ public partial class NavigationRuntimePage : Page
         catch (Exception error)
         {
             PanelOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -178,7 +184,7 @@ public partial class NavigationRuntimePage : Page
                 {
                     editor.AppendGroup(
                         RuntimeGroupId,
-                        Localizer.Parse(Key.Runtime_AddedAtRuntime_82975386)
+                        Localizer.Parse(CKey.Runtime_AddedAtRuntime_82975386)
                     );
                 }
 
@@ -187,19 +193,19 @@ public partial class NavigationRuntimePage : Page
                     FlourishNavigationMenuItem.Page(
                         RuntimeItemId,
                         RuntimeRouteKey,
-                        Localizer.Parse(Key.Runtime_RuntimeRouteInstance_9BC2A49C),
+                        Localizer.Parse(CKey.Runtime_RuntimeRouteInstance_9BC2A49C),
                         "\uE8A7"
                     )
                 );
             });
             RouteOutput.WriteLine(
-                Localizer.Parse(Key.Runtime_InstalledTheDemoRouteAndNavigationItem_2DE1D70D)
+                Localizer.Parse(CKey.Runtime_InstalledTheDemoRouteAndNavigationItem_2DE1D70D)
             );
         }
         catch (Exception error)
         {
             RouteOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -210,13 +216,13 @@ public partial class NavigationRuntimePage : Page
         {
             navigation.Navigate(RuntimeRouteKey, DateTimeOffset.Now);
             RouteOutput.WriteLine(
-                Localizer.Parse(Key.Runtime_NavigatedTo0_27A49119, RuntimeRouteKey)
+                Localizer.Parse(CKey.Runtime_NavigatedTo0_27A49119, RuntimeRouteKey)
             );
         }
         catch (Exception error)
         {
             RouteOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }
@@ -229,7 +235,7 @@ public partial class NavigationRuntimePage : Page
         if (item is null)
         {
             RouteOutput.WriteLine(
-                Localizer.Parse(Key.Runtime_InstallTheDemoRouteFirst_54C0B4AA)
+                Localizer.Parse(CKey.Runtime_InstallTheDemoRouteFirst_54C0B4AA)
             );
             return;
         }
@@ -237,11 +243,11 @@ public partial class NavigationRuntimePage : Page
         menu.Set(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
         RouteOutput.WriteLine(
             Localizer.Parse(
-                Key.Runtime_DemoNavigationItem0_4FBC3954,
+                CKey.Runtime_DemoNavigationItem0_4FBC3954,
                 Localizer.Parse(
                     !item.IsEnabled
-                        ? Key.Runtime_Enabled_FB9CF756
-                        : Key.Runtime_Disabled_17EB3C01
+                        ? CKey.Runtime_Enabled_FB9CF756
+                        : CKey.Runtime_Disabled_17EB3C01
                 )
             )
         );
@@ -260,8 +266,8 @@ public partial class NavigationRuntimePage : Page
         var removed = routes.Remove(RuntimeRouteKey);
         RouteOutput.WriteLine(
             removed
-                ? Localizer.Parse(Key.Runtime_RemovedTheDemoRouteAndNavigationItem_932415B1)
-                : Localizer.Parse(Key.Runtime_TheDemoRouteWasAlreadyAbsent_0556D625)
+                ? Localizer.Parse(CKey.Runtime_RemovedTheDemoRouteAndNavigationItem_932415B1)
+                : Localizer.Parse(CKey.Runtime_TheDemoRouteWasAlreadyAbsent_0556D625)
         );
     }
 
@@ -275,8 +281,8 @@ public partial class NavigationRuntimePage : Page
     {
         CacheOutput.WriteLine(
             cache.Evict(typeof(RuntimeRoutePage))
-                ? Localizer.Parse(Key.Runtime_EvictedTheCachedDemoPageInstance_2957A414)
-                : Localizer.Parse(Key.Runtime_NoCachedDemoPageInstanceWasPresent_34354CBF)
+                ? Localizer.Parse(CKey.Runtime_EvictedTheCachedDemoPageInstance_2957A414)
+                : Localizer.Parse(CKey.Runtime_NoCachedDemoPageInstanceWasPresent_34354CBF)
         );
     }
 
@@ -284,7 +290,7 @@ public partial class NavigationRuntimePage : Page
     {
         cache.Clear();
         CacheOutput.WriteLine(
-            Localizer.Parse(Key.Runtime_ClearedAllCachedPageInstances_7839F7BC)
+            Localizer.Parse(CKey.Runtime_ClearedAllCachedPageInstances_7839F7BC)
         );
     }
 
@@ -300,13 +306,13 @@ public partial class NavigationRuntimePage : Page
             routes.SetCacheMode(RuntimeRouteKey, mode);
             cache.SetCacheMode(typeof(RuntimeRoutePage), mode);
             CacheOutput.WriteLine(
-                Localizer.Parse(Key.Runtime_DemoPageCacheModeSetTo0_1348FE55, mode)
+                Localizer.Parse(CKey.Runtime_DemoPageCacheModeSetTo0_1348FE55, mode)
             );
         }
         catch (Exception error)
         {
             CacheOutput.WriteLine(
-                Localizer.Parse(Key.Dynamic_Error0_43F78154, error.Message)
+                Localizer.Parse(CKey.Dynamic_Error0_43F78154, error.Message)
             );
         }
     }

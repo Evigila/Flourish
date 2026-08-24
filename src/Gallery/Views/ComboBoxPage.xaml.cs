@@ -1,3 +1,5 @@
+using CKey = Arkheide.Essential.Culture.Key;
+using Localizer = Arkheide.Essential.Culture.Localizer;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
@@ -12,18 +14,18 @@ public partial class ComboBoxPage : Page
         InitializeComponent();
         MemberGrid.ItemsSource = new ControlMemberRow[]
         {
-            new("ItemsSource", Key.Controls_SuppliesApplicationOwnedOptionData_13C18B8E),
-            new("Items", Key.Controls_ContainsOptionsDeclaredDirectlyInXAMLOrCode_6FAC0DAA),
-            new("SelectedItem", Key.Controls_GetsOrSetsTheSelectedDataItem_56379BE7),
-            new("SelectedIndex", Key.Controls_GetsOrSetsTheSelectedZeroBasedIndex_8AED634D),
+            new("ItemsSource", CKey.Controls_SuppliesApplicationOwnedOptionData_13C18B8E),
+            new("Items", CKey.Controls_ContainsOptionsDeclaredDirectlyInXAMLOrCode_6FAC0DAA),
+            new("SelectedItem", CKey.Controls_GetsOrSetsTheSelectedDataItem_56379BE7),
+            new("SelectedIndex", CKey.Controls_GetsOrSetsTheSelectedZeroBasedIndex_8AED634D),
             new(
                 "DisplayMemberPath",
-                Key.Controls_SelectsThePropertyDisplayedForEachDataItem_0F59DE20
+                CKey.Controls_SelectsThePropertyDisplayedForEachDataItem_0F59DE20
             ),
-            new("SelectionChanged", Key.Controls_ReportsAddedAndRemovedSelections_CBA4EF2F),
+            new("SelectionChanged", CKey.Controls_ReportsAddedAndRemovedSelections_CBA4EF2F),
             new(
                 "HoverReveal.IsEnabled",
-                Key.Controls_ControlsPointerRevealFeedbackOnTheClosedSelector_CF5469E0
+                CKey.Controls_ControlsPointerRevealFeedbackOnTheClosedSelector_CF5469E0
             ),
         };
         Loaded += Page_Loaded;
@@ -52,8 +54,8 @@ public partial class ComboBoxPage : Page
     private void RefreshDensityOptions()
     {
         DensityOptions.Clear();
-        DensityOptions.Add(Localizer.Parse(Key.Controls_Comfortable_459A23A5));
-        DensityOptions.Add(Localizer.Parse(Key.Controls_Compact_99452646));
+        DensityOptions.Add(Localizer.Parse(CKey.Controls_Comfortable_459A23A5));
+        DensityOptions.Add(Localizer.Parse(CKey.Controls_Compact_99452646));
     }
 
     public string UsageCode { get; } =

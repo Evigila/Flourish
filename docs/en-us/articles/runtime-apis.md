@@ -23,7 +23,7 @@ Public APIs are grouped by responsibility:
 
 Stateful services expose an immutable `Current` snapshot (or a named snapshot such as `ActiveTasks` or `Registrations`) and a `Changed`, `StateChanged`, or domain-specific event. Read the new snapshot after an event instead of retaining mutable UI objects. Events normally run on the thread that caused the change; configuration reloads, background tasks, and notification expiry can raise events away from the WPF dispatcher, so marshal UI updates when required.
 
-Registration and presentation APIs use disposable leases. Keep the returned object for exactly as long as the feature should exist, then call `Dispose()`. This applies to `ICommandRegistration`, `IShortcutRegistration`, `INavigationRouteRegistration`, `IShellRegionRegistration`, `IStatusBarItemHandle`, `FlourishNotificationHandle`, `IWindowCloseGuardRegistration`, and title-bar search subscriptions. `FlourishLocaleRegistration` is removed explicitly with `IFlourishLocalization.Unregister`.
+Registration and presentation APIs use disposable leases. Keep the returned object for exactly as long as the feature should exist, then call `Dispose()`. This applies to `ICommandRegistration`, `IShortcutRegistration`, `INavigationRouteRegistration`, `IShellRegionRegistration`, `IStatusBarItemHandle`, `FlourishNotificationHandle`, `IWindowCloseGuardRegistration`, and title-bar search subscriptions. `FlourishCultureRegistration` is removed explicitly with `IFlourishLocalization.Unregister`.
 
 ## Configuration and localization
 
@@ -31,7 +31,7 @@ Registration and presentation APIs use disposable leases. Keep the returned obje
 | --- | --- |
 | `IFlourishConfiguration` | Read `Current`, the string indexer, `Get<T>`, or `GetSection<T>` from the effective Host configuration; call `Reload()` and observe `Changed`. |
 | `IFlourishSettingsStore` | Atomically update values owned by the `Flourish` top-level section. Every path must start with `Flourish:`; a changed file reloads Host configuration. |
-| `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `Flourish.LangKey_<locale>.Json` files while running. |
+| `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `FlourishCulture.Json` catalogs while running. |
 
 `IFlourishSettingsStore` writes the file selected by `InitAppSettingsFilePath`, which defaults to application-root `appsettings.Flourish.json`. It cannot modify `Logging`, `ConnectionStrings`, or another application-owned top-level section. `IProjectService` separately persists its catalog to the independently selected `InitProjectCatalogFilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
 

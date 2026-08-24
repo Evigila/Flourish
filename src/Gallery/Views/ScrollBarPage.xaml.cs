@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -7,10 +8,10 @@ public partial class ScrollBarPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Orientation", Key.Controls_ChoosesVerticalOrHorizontalGeometry_C14694AA),
-        new("Minimum / Maximum", Key.Controls_DefineTheScrollableValueRange_7421BD50),
-        new("Value", Key.Controls_GetsOrSetsTheCurrentOffset_999EDD1B),
-        new("ViewportSize", Key.Controls_ControlsThumbSizeRelativeToTheRange_397C9A2A),
+        new("Orientation", CKey.Controls_ChoosesVerticalOrHorizontalGeometry_C14694AA),
+        new("Minimum / Maximum", CKey.Controls_DefineTheScrollableValueRange_7421BD50),
+        new("Value", CKey.Controls_GetsOrSetsTheCurrentOffset_999EDD1B),
+        new("ViewportSize", CKey.Controls_ControlsThumbSizeRelativeToTheRange_397C9A2A),
     ];
 
     public string UsageCode { get; } =

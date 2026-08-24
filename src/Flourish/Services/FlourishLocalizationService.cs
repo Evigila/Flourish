@@ -8,8 +8,9 @@ namespace ArkheideSystem.Flourish.Services;
 internal sealed class FlourishLocalizationService : IFlourishLocalization
 {
     internal const string DefaultLocale = "en-US";
-    private const string EmbeddedResourcePrefix =
-        "ArkheideSystem.Flourish.Assets.Flourish.LangKey_";
+    internal const string CultureFileName = "FlourishCulture.Json";
+    private const string EmbeddedResourceName =
+        "ArkheideSystem.Flourish.Assets.FlourishCulture.Json";
 
     private readonly IReadOnlyDictionary<
         string,
@@ -18,28 +19,42 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
     private readonly Dictionary<string, Dictionary<string, string>> customLocales = new(
         StringComparer.OrdinalIgnoreCase
     );
-    private readonly List<LocaleRegistrationState> registrations = [];
+    private readonly List<CultureRegistrationState> registrations = [];
     private readonly FlourishDataOptions options;
     private readonly Lock gate = new();
     private string locale;
 
     public FlourishLocalizationService(FlourishDataOptions options)
+        : this(options, AppContext.BaseDirectory) { }
+
+    internal FlourishLocalizationService(FlourishDataOptions options, string baseDirectory)
     {
         ArgumentNullException.ThrowIfNull(options);
+        ArgumentException.ThrowIfNullOrWhiteSpace(baseDirectory);
         this.options = options;
 
         locale = NormalizeLocale(options.Locale);
-        builtInLocales = new Dictionary<string, IReadOnlyDictionary<string, string>>(
-            StringComparer.OrdinalIgnoreCase
-        )
-        {
-            ["zh-CN"] = LoadEmbeddedLocale("zh-CN"),
-            ["en-US"] = LoadEmbeddedLocale("en-US"),
-        };
+        builtInLocales = LoadEmbeddedCatalog();
 
-        foreach (var path in options.LocalePaths)
+        var automaticCulturePath = Path.Combine(baseDirectory, CultureFileName);
+        if (File.Exists(automaticCulturePath))
         {
-            RegisterFileCore(path);
+            RegisterFileCore(automaticCulturePath);
+        }
+
+        foreach (var path in options.CulturePaths)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                RegisterFileCore(path);
+                continue;
+            }
+
+            var fullPath = Path.GetFullPath(path);
+            if (!IsRegisteredPath(fullPath))
+            {
+                RegisterFileCore(fullPath);
+            }
         }
     }
 
@@ -61,7 +76,7 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
             lock (gate)
             {
                 return builtInLocales
-                    .Keys.Concat(registrations.Select(registration => registration.Handle.Locale))
+                    .Keys.Concat(customLocales.Keys)
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
                     .ToArray();
@@ -116,13 +131,13 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
                 FlourishLocalizationChangeKind.LocaleChanged,
                 previousLocale,
                 normalizedLocale,
-                normalizedLocale,
+                [normalizedLocale],
                 null
             )
         );
     }
 
-    public FlourishLocaleRegistration RegisterFile(string path)
+    public FlourishCultureRegistration RegisterFile(string path)
     {
         var registration = RegisterFileCore(path);
         var currentLocale = CurrentLocale;
@@ -132,17 +147,17 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
                 FlourishLocalizationChangeKind.FileRegistered,
                 currentLocale,
                 currentLocale,
-                registration.Locale,
+                registration.Locales,
                 registration
             )
         );
         return registration;
     }
 
-    public void ReloadFile(FlourishLocaleRegistration registration)
+    public void ReloadFile(FlourishCultureRegistration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
-        var values = LoadLocaleFile(registration.FilePath);
+        var values = LoadCultureFile(registration.FilePath);
         lock (gate)
         {
             var state = registrations.FirstOrDefault(candidate =>
@@ -150,11 +165,12 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
             );
             if (state is null)
             {
-                throw new InvalidOperationException("The locale-file registration is not active.");
+                throw new InvalidOperationException("The culture-file registration is not active.");
             }
 
             state.Values = values;
-            RebuildCustomLocale(state.Handle.Locale);
+            state.Handle.UpdateLocales(GetSortedLocales(values));
+            RebuildCustomLocales();
         }
 
         var currentLocale = CurrentLocale;
@@ -164,16 +180,16 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
                 FlourishLocalizationChangeKind.FileReloaded,
                 currentLocale,
                 currentLocale,
-                registration.Locale,
+                registration.Locales,
                 registration
             )
         );
     }
 
-    public bool Unregister(FlourishLocaleRegistration registration)
+    public bool Unregister(FlourishCultureRegistration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
-        FlourishLocaleRegistration? removedRegistration;
+        FlourishCultureRegistration? removedRegistration;
         lock (gate)
         {
             var index = registrations.FindIndex(candidate =>
@@ -186,7 +202,7 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
 
             removedRegistration = registrations[index].Handle;
             registrations.RemoveAt(index);
-            RebuildCustomLocale(removedRegistration.Locale);
+            RebuildCustomLocales();
         }
 
         var currentLocale = CurrentLocale;
@@ -196,115 +212,114 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
                 FlourishLocalizationChangeKind.FileUnregistered,
                 currentLocale,
                 currentLocale,
-                removedRegistration.Locale,
+                removedRegistration.Locales,
                 removedRegistration
             )
         );
         return true;
     }
 
-    private FlourishLocaleRegistration RegisterFileCore(string path)
+    private FlourishCultureRegistration RegisterFileCore(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
-            throw new ArgumentException("Locale file path cannot be empty.", nameof(path));
+            throw new ArgumentException("Culture file path cannot be empty.", nameof(path));
         }
 
         var fullPath = Path.GetFullPath(path);
         if (!File.Exists(fullPath))
         {
-            throw new FileNotFoundException($"Locale file '{fullPath}' does not exist.", fullPath);
+            throw new FileNotFoundException($"Culture file '{fullPath}' does not exist.", fullPath);
         }
 
-        var locale = GetLocaleFromFileName(fullPath);
-        var values = LoadLocaleFile(fullPath);
-        var handle = new FlourishLocaleRegistration(Guid.NewGuid(), locale, fullPath);
+        ValidateCultureFileName(fullPath);
+        var values = LoadCultureFile(fullPath);
+        var handle = new FlourishCultureRegistration(
+            Guid.NewGuid(),
+            GetSortedLocales(values),
+            fullPath
+        );
         lock (gate)
         {
-            registrations.Add(new LocaleRegistrationState(handle, values));
-            RebuildCustomLocale(locale);
+            registrations.Add(new CultureRegistrationState(handle, values));
+            RebuildCustomLocales();
         }
 
         return handle;
     }
 
-    private void RebuildCustomLocale(string locale)
+    private bool IsRegisteredPath(string fullPath)
     {
-        customLocales.Remove(locale);
-        Dictionary<string, string>? mergedValues = null;
-        foreach (
-            var registration in registrations.Where(candidate =>
-                string.Equals(candidate.Handle.Locale, locale, StringComparison.OrdinalIgnoreCase)
-            )
-        )
+        lock (gate)
         {
-            mergedValues ??= new Dictionary<string, string>(StringComparer.Ordinal);
-            foreach (var (key, value) in registration.Values)
+            return registrations.Any(registration =>
+                string.Equals(
+                    registration.Handle.FilePath,
+                    fullPath,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            );
+        }
+    }
+
+    private void RebuildCustomLocales()
+    {
+        customLocales.Clear();
+        foreach (var registration in registrations)
+        {
+            foreach (var (locale, values) in registration.Values)
             {
-                mergedValues[key] = value;
+                if (!customLocales.TryGetValue(locale, out var mergedValues))
+                {
+                    mergedValues = new Dictionary<string, string>(StringComparer.Ordinal);
+                    customLocales.Add(locale, mergedValues);
+                }
+
+                foreach (var (key, value) in values)
+                {
+                    mergedValues[key] = value;
+                }
             }
         }
-
-        if (mergedValues is not null)
-        {
-            customLocales[locale] = mergedValues;
-        }
     }
 
-    private static string GetLocaleFromFileName(string path)
+    private static void ValidateCultureFileName(string path)
     {
         var fileName = Path.GetFileName(path);
-        const string prefix = "Flourish.LangKey_";
-        const string extension = ".Json";
-        if (
-            !fileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-            || !fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase)
-        )
+        if (!string.Equals(fileName, CultureFileName, StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException(
-                $"Locale file '{fileName}' must be named Flourish.LangKey_<locale>.Json.",
+                $"Culture file '{fileName}' must be named {CultureFileName}.",
                 nameof(path)
             );
         }
-
-        var locale = fileName[prefix.Length..^extension.Length];
-        if (
-            locale.Length == 0
-            || locale.Any(character =>
-                !char.IsLetterOrDigit(character) && character is not '-' and not '_'
-            )
-        )
-        {
-            throw new ArgumentException(
-                $"Locale file '{fileName}' must be named Flourish.LangKey_<locale>.Json.",
-                nameof(path)
-            );
-        }
-
-        return NormalizeLocale(locale);
     }
 
-    private static IReadOnlyDictionary<string, string> LoadEmbeddedLocale(string locale)
+    private static IReadOnlyDictionary<
+        string,
+        IReadOnlyDictionary<string, string>
+    > LoadEmbeddedCatalog()
     {
-        var resourceName = $"{EmbeddedResourcePrefix}{locale}.Json";
         var assembly = typeof(FlourishLocalizationService).Assembly;
-        using var stream = assembly.GetManifestResourceStream(resourceName);
+        using var stream = assembly.GetManifestResourceStream(EmbeddedResourceName);
         if (stream is null)
         {
             throw new InvalidOperationException(
-                $"Built-in locale resource '{resourceName}' could not be found."
+                $"Built-in culture resource '{EmbeddedResourceName}' could not be found."
             );
         }
 
-        return ParseLocale(stream, resourceName);
+        return ParseCatalog(stream, EmbeddedResourceName);
     }
 
-    private static IReadOnlyDictionary<string, string> LoadLocaleFile(string path)
+    private static IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> LoadCultureFile(
+        string path
+    )
     {
         try
         {
             using var stream = File.OpenRead(path);
-            return ParseLocale(stream, path);
+            return ParseCatalog(stream, path);
         }
         catch (InvalidDataException)
         {
@@ -312,11 +327,14 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            throw new InvalidDataException($"Locale file '{path}' could not be read.", error);
+            throw new InvalidDataException($"Culture file '{path}' could not be read.", error);
         }
     }
 
-    private static IReadOnlyDictionary<string, string> ParseLocale(Stream stream, string sourceName)
+    private static IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ParseCatalog(
+        Stream stream,
+        string sourceName
+    )
     {
         try
         {
@@ -324,55 +342,112 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
             if (document.RootElement.ValueKind != JsonValueKind.Object)
             {
                 throw new InvalidDataException(
-                    $"Locale source '{sourceName}' must contain a JSON object."
+                    $"Culture source '{sourceName}' must contain a JSON object."
                 );
             }
 
-            var values = new Dictionary<string, string>(StringComparer.Ordinal);
-            foreach (var property in document.RootElement.EnumerateObject())
+            var keys = new HashSet<string>(StringComparer.Ordinal);
+            var locales = new Dictionary<string, Dictionary<string, string>>(
+                StringComparer.OrdinalIgnoreCase
+            );
+            foreach (var keyProperty in document.RootElement.EnumerateObject())
             {
-                if (string.IsNullOrWhiteSpace(property.Name))
+                if (string.IsNullOrWhiteSpace(keyProperty.Name))
                 {
                     throw new InvalidDataException(
-                        $"Locale source '{sourceName}' contains an empty key."
+                        $"Culture source '{sourceName}' contains an empty key."
                     );
                 }
 
-                if (
-                    property.Value.ValueKind != JsonValueKind.String
-                    || string.IsNullOrWhiteSpace(property.Value.GetString())
-                )
+                if (!keys.Add(keyProperty.Name))
                 {
                     throw new InvalidDataException(
-                        $"Locale source '{sourceName}' contains an empty or non-string value for key '{property.Name}'."
+                        $"Culture source '{sourceName}' contains duplicate key '{keyProperty.Name}'."
                     );
                 }
 
-                if (!values.TryAdd(property.Name, property.Value.GetString()!))
+                if (keyProperty.Value.ValueKind != JsonValueKind.Object)
                 {
                     throw new InvalidDataException(
-                        $"Locale source '{sourceName}' contains duplicate key '{property.Name}'."
+                        $"Culture source '{sourceName}' must define an object of locale values for key '{keyProperty.Name}'."
+                    );
+                }
+
+                var keyLocales = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var localeProperty in keyProperty.Value.EnumerateObject())
+                {
+                    string normalizedLocale;
+                    try
+                    {
+                        normalizedLocale = NormalizeRuntimeLocale(localeProperty.Name);
+                    }
+                    catch (ArgumentException error)
+                    {
+                        throw new InvalidDataException(
+                            $"Culture source '{sourceName}' contains invalid locale '{localeProperty.Name}' for key '{keyProperty.Name}'.",
+                            error
+                        );
+                    }
+
+                    if (!keyLocales.Add(normalizedLocale))
+                    {
+                        throw new InvalidDataException(
+                            $"Culture source '{sourceName}' contains duplicate locale '{normalizedLocale}' for key '{keyProperty.Name}'."
+                        );
+                    }
+
+                    if (
+                        localeProperty.Value.ValueKind != JsonValueKind.String
+                        || string.IsNullOrWhiteSpace(localeProperty.Value.GetString())
+                    )
+                    {
+                        throw new InvalidDataException(
+                            $"Culture source '{sourceName}' contains an empty or non-string value for key '{keyProperty.Name}' and locale '{normalizedLocale}'."
+                        );
+                    }
+
+                    if (!locales.TryGetValue(normalizedLocale, out var values))
+                    {
+                        values = new Dictionary<string, string>(StringComparer.Ordinal);
+                        locales.Add(normalizedLocale, values);
+                    }
+
+                    values.Add(keyProperty.Name, localeProperty.Value.GetString()!);
+                }
+
+                if (keyLocales.Count == 0)
+                {
+                    throw new InvalidDataException(
+                        $"Culture source '{sourceName}' does not define any locales for key '{keyProperty.Name}'."
                     );
                 }
             }
 
-            if (values.Count == 0)
+            if (keys.Count == 0)
             {
                 throw new InvalidDataException(
-                    $"Locale source '{sourceName}' does not contain any translations."
+                    $"Culture source '{sourceName}' does not contain any translations."
                 );
             }
 
-            return values;
+            return locales.ToDictionary(
+                pair => pair.Key,
+                pair => (IReadOnlyDictionary<string, string>)pair.Value,
+                StringComparer.OrdinalIgnoreCase
+            );
         }
         catch (JsonException error)
         {
             throw new InvalidDataException(
-                $"Locale source '{sourceName}' contains invalid JSON.",
+                $"Culture source '{sourceName}' contains invalid JSON.",
                 error
             );
         }
     }
+
+    private static string[] GetSortedLocales(
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> values
+    ) => [.. values.Keys.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)];
 
     private static string NormalizeLocale(string? locale)
     {
@@ -458,13 +533,16 @@ internal sealed class FlourishLocalizationService : IFlourishLocalization
             : null;
     }
 
-    private sealed class LocaleRegistrationState(
-        FlourishLocaleRegistration handle,
-        IReadOnlyDictionary<string, string> values
+    private sealed class CultureRegistrationState(
+        FlourishCultureRegistration handle,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> values
     )
     {
-        public FlourishLocaleRegistration Handle { get; } = handle;
+        public FlourishCultureRegistration Handle { get; } = handle;
 
-        public IReadOnlyDictionary<string, string> Values { get; set; } = values;
+        public IReadOnlyDictionary<
+            string,
+            IReadOnlyDictionary<string, string>
+        > Values { get; set; } = values;
     }
 }

@@ -9,10 +9,10 @@
           <CodeCoverage>
             <ModulePaths>
               <Include>
-                <ModulePath>.*Flourish\.dll$</ModulePath>
+                <ModulePath>.*Arkheide\.Flourish\.dll$</ModulePath>
               </Include>
               <Exclude>
-                <ModulePath>.*Flourish\.Test\.dll$</ModulePath>
+                <ModulePath>.*Arkheide\.Flourish\.Test\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
           </CodeCoverage>

@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Markup;
 
-[assembly: InternalsVisibleTo("Flourish.Test")]
+[assembly: InternalsVisibleTo("Arkheide.Flourish.Test")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: XmlnsDefinition(
     "http://schemas.arkheide.system/flourish",

@@ -1,3 +1,4 @@
+using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -7,16 +8,16 @@ public partial class ListBoxPage : Page
 {
     public IReadOnlyList<ControlMemberRow> Properties { get; } =
     [
-        new("Appearance", Key.Controls_ChoosesTheStandardOrBorderlessSurface_B401F34B),
+        new("Appearance", CKey.Controls_ChoosesTheStandardOrBorderlessSurface_B401F34B),
         new(
             "IsCompact",
-            Key.Controls_UsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
+            CKey.Controls_UsesCollapsedNavigationItemGeometryWhenTrue_A8D228F7
         ),
         new(
             "ItemsSource",
-            Key.Controls_SuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50
+            CKey.Controls_SuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50
         ),
-        new("SelectedItem", Key.Controls_GetsOrSetsTheCurrentSelection_1F2CA123),
+        new("SelectedItem", CKey.Controls_GetsOrSetsTheCurrentSelection_1F2CA123),
     ];
 
     public string UsageCode { get; } =

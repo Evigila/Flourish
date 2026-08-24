@@ -11,7 +11,7 @@ public sealed class FlourishDataOptionsTests
         var options = new FlourishDataOptions();
 
         Assert.Equal("en-US", options.Locale);
-        Assert.Empty(options.LocalePaths);
+        Assert.Empty(options.CulturePaths);
         Assert.True(options.UsePersistedLocale);
         Assert.Equal(
             Path.Combine(AppContext.BaseDirectory, "appsettings.Flourish.json"),
