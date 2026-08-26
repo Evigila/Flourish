@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using InputKey = System.Windows.Input.Key;
 using System.Windows;

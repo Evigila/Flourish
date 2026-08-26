@@ -1,3 +1,8 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
+using System.Collections.Generic;
+
 using System.Windows;
 
 namespace ArkheideSystem.Flourish.Themes;

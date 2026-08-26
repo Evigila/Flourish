@@ -1,5 +1,13 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Messaging;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Shell.TitleBar;
 using Microsoft.Extensions.DependencyInjection;
 using WpfPage = System.Windows.Controls.Page;
 
@@ -68,7 +76,7 @@ internal sealed class ShellProfileController : IDisposable
         && titleBarService.Current is { IsEnabled: true, IsProfileVisible: true }
         && flyoutService.Current.IsEnabled;
 
-    internal async Task InitializeAsync(CancellationToken cancellationToken = default)
+    internal async Task RestoreAsync(CancellationToken cancellationToken = default)
     {
         if (isDisposed || !flyoutService.Current.IsEnabled)
         {
@@ -77,12 +85,15 @@ internal sealed class ShellProfileController : IDisposable
 
         try
         {
-            await profileService.InitializeAsync(cancellationToken);
+            if (profileService is ProfileService builtInProfileService)
+            {
+                await builtInProfileService.RestoreAsync(cancellationToken);
+            }
             DispatchIfActive(() =>
             {
                 if (IsAvailable)
                 {
-                    titlebar.SetProfile(profileService.CurrentProfile);
+                    titlebar.SetProfile(profileService.Current.Profile);
                 }
             });
         }
@@ -150,7 +161,7 @@ internal sealed class ShellProfileController : IDisposable
         SetProfileSubscription(isAvailable);
         if (isAvailable)
         {
-            titlebar.SetProfile(profileService.CurrentProfile);
+            titlebar.SetProfile(profileService.Current.Profile);
         }
 
         ApplyFlyoutState(current, isAvailable);
@@ -165,11 +176,11 @@ internal sealed class ShellProfileController : IDisposable
 
         if (enabled)
         {
-            profileService.ProfileChanged += ProfileService_ProfileChanged;
+            profileService.Changed += ProfileService_Changed;
         }
         else
         {
-            profileService.ProfileChanged -= ProfileService_ProfileChanged;
+            profileService.Changed -= ProfileService_Changed;
         }
 
         isProfileServiceSubscribed = enabled;
@@ -248,23 +259,26 @@ internal sealed class ShellProfileController : IDisposable
         _ = dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(RequestPlacement));
     }
 
-    private void ProfileService_ProfileChanged(object? sender, ProfileChangedEventArgs e)
+    private void ProfileService_Changed(
+        object? sender,
+        FlourishStateChangedEventArgs<FlourishProfileState> e
+    )
     {
         DispatchIfActive(() =>
         {
             if (IsAvailable)
             {
-                titlebar.SetProfile(e.Profile);
+                titlebar.SetProfile(e.Current.Profile);
             }
         });
     }
 
-    private void FlyoutService_Changed(object? sender, FlourishProfileFlyoutChangedEventArgs e)
+    private void FlyoutService_Changed(object? sender, FlourishStateChangedEventArgs<FlourishProfileFlyoutState> e)
     {
-        DispatchIfActive(() => ConfigureSurface(e.State));
+        DispatchIfActive(() => ConfigureSurface(e.Current));
     }
 
-    private void TitleBarService_Changed(object? sender, FlourishTitleBarChangedEventArgs e)
+    private void TitleBarService_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e)
     {
         DispatchIfActive(() => ConfigureSurface());
     }

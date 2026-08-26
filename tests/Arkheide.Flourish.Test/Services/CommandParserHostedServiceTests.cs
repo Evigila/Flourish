@@ -1,4 +1,11 @@
-using ArkheideSystem.Flourish.Services;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Commands;
+
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -40,10 +47,10 @@ public sealed class CommandParserHostedServiceTests
         Assert.False(dispatcher.Contains("cmd_app_second"));
         Assert.Equal(
             [
-                "Registered:cmd_app_first",
-                "Registered:cmd_app_second",
-                "Unregistered:cmd_app_second",
-                "Unregistered:cmd_app_first",
+                "Added:cmd_app_first",
+                "Added:cmd_app_second",
+                "Removed:cmd_app_second",
+                "Removed:cmd_app_first",
             ],
             changes
         );
@@ -132,7 +139,7 @@ public sealed class CommandParserHostedServiceTests
         });
 
         Assert.Equal(0, parserCalls);
-        Assert.Empty(dispatcher.Registrations);
+        Assert.Empty(dispatcher.Current);
     }
 
     private sealed class DelegateParser(Action<ICommandRegistrar> registerCommands) : ICommandParser

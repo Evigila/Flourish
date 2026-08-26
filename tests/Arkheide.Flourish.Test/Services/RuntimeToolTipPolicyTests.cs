@@ -1,11 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.ToolTips;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using WpfButton = System.Windows.Controls.Button;
 
@@ -23,9 +31,9 @@ public sealed class RuntimeToolTipPolicyTests
     {
         StaTest.Run(() =>
         {
-            var options = new FlourishShellOptions { IsTipsEnabled = true };
-            options.Tips.InitialShowDelayMilliseconds = 240;
-            options.Tips.SpawnableMargin = 6;
+            var options = new FlourishTipOptions { IsTipsEnabled = true };
+            options.InitialShowDelayMilliseconds = 240;
+            options.SpawnableMargin = 6;
             var resources = new ResourceDictionary();
             var sut = new FlourishToolTipService(options);
 
@@ -49,8 +57,8 @@ public sealed class RuntimeToolTipPolicyTests
     {
         StaTest.Run(() =>
         {
-            var options = new FlourishShellOptions { IsTipsEnabled = true };
-            options.Tips.InitialShowDelayMilliseconds = 200;
+            var options = new FlourishTipOptions { IsTipsEnabled = true };
+            options.InitialShowDelayMilliseconds = 200;
             var resources = new ResourceDictionary();
             var sut = new FlourishToolTipService(options);
             sut.Attach(Dispatcher.CurrentDispatcher, resources);
@@ -89,9 +97,9 @@ public sealed class RuntimeToolTipPolicyTests
     {
         StaTest.Run(() =>
         {
-            var options = new FlourishShellOptions { IsTipsEnabled = true };
-            options.Tips.InitialShowDelayMilliseconds = 240;
-            options.Tips.SpawnableMargin = 6;
+            var options = new FlourishTipOptions { IsTipsEnabled = true };
+            options.InitialShowDelayMilliseconds = 240;
+            options.SpawnableMargin = 6;
             var policyResources = new ResourceDictionary();
             var sut = new FlourishToolTipService(options);
             sut.Attach(Dispatcher.CurrentDispatcher, policyResources);
@@ -183,9 +191,9 @@ public sealed class RuntimeToolTipPolicyTests
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
             var dispatcherThreadId = Environment.CurrentManagedThreadId;
-            var options = new FlourishShellOptions { IsTipsEnabled = true };
-            options.Tips.InitialShowDelayMilliseconds = 200;
-            options.Tips.SpawnableMargin = 5;
+            var options = new FlourishTipOptions { IsTipsEnabled = true };
+            options.InitialShowDelayMilliseconds = 200;
+            options.SpawnableMargin = 5;
             var resources = new ResourceDictionary();
             var sut = new FlourishToolTipService(options);
             sut.Attach(dispatcher, resources);
@@ -194,7 +202,7 @@ public sealed class RuntimeToolTipPolicyTests
                     int ThreadId,
                     int Delay,
                     double Margin,
-                    FlourishToolTipChangedEventArgs Args
+                    FlourishStateTransitionEventArgs<FlourishToolTipSettings> Args
                 )>();
             sut.Changed += (_, args) =>
                 events.Add(
@@ -241,9 +249,9 @@ public sealed class RuntimeToolTipPolicyTests
     {
         StaTest.Run(() =>
         {
-            var options = new FlourishShellOptions { IsTipsEnabled = true };
-            options.Tips.InitialShowDelayMilliseconds = 200;
-            options.Tips.SpawnableMargin = 5;
+            var options = new FlourishTipOptions { IsTipsEnabled = true };
+            options.InitialShowDelayMilliseconds = 200;
+            options.SpawnableMargin = 5;
             var resources = new ResourceDictionary();
             var sut = new FlourishToolTipService(options);
             sut.Attach(Dispatcher.CurrentDispatcher, resources);
@@ -266,13 +274,13 @@ public sealed class RuntimeToolTipPolicyTests
     {
         var flourishRoot = Path.Combine(TestPaths.RepositoryRoot, "src", "Flourish");
         var serviceSource = File.ReadAllText(
-            Path.Combine(flourishRoot, "Services", "FlourishToolTipService.cs")
+            Path.Combine(flourishRoot, "ToolTips", "FlourishToolTipService.cs")
         );
         var shellSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Views", "Windows", "FlourishShellWindow.xaml.cs")
         );
         var runtimeSource = File.ReadAllText(
-            Path.Combine(flourishRoot, "Internal", "Composition", "FlourishRuntime.cs")
+            Path.Combine(flourishRoot, "Hosting", "FlourishRuntime.cs")
         );
         var buttonXaml = XDocument.Load(Path.Combine(flourishRoot, "Controls", "Button.xaml"));
 

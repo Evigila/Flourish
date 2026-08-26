@@ -1,3 +1,11 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Motion;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -5,9 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Internal.Interaction;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
 
@@ -268,7 +273,7 @@ public sealed class NavigationPaneTransitionControllerTests
                 Padding = new Thickness(24, 0, 24, 0),
                 VerticalAlignment = VerticalAlignment.Top,
             };
-            var scrollViewer = new ScrollViewer
+            var scrollViewer = new System.Windows.Controls.ScrollViewer
             {
                 Content = centered,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -666,11 +671,11 @@ public sealed class NavigationPaneTransitionControllerTests
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var controller = new NavigationPaneTransitionController();
-            var options = new FlourishShellOptions();
-            options.Motion.IsEnabled = true;
-            options.Motion.RespectSystemReducedMotion = false;
-            options.Motion.NavigationPanelTransition = FlourishNavigationPanelTransition.Resize;
-            options.Motion.NavigationPanelTransitionDuration = Duration;
+            var options = new FlourishMotionOptions();
+            options.IsEnabled = true;
+            options.RespectSystemReducedMotion = false;
+            options.NavigationPanelTransition = FlourishNavigationPanelTransition.Resize;
+            options.NavigationPanelTransitionDuration = Duration;
             var sut = new FlourishMotionService(options, static () => true);
             var openingCompletionCount = 0;
             var reverseCompletionCount = 0;
@@ -894,10 +899,10 @@ public sealed class NavigationPaneTransitionControllerTests
         {
             var fixture = TransitionFixture.Create(NavigationPanelDirection.Left, 48);
             var controller = new NavigationPaneTransitionController();
-            var options = new FlourishShellOptions();
-            options.Motion.IsEnabled = enabled;
-            options.Motion.NavigationPanelTransition = transition;
-            options.Motion.RespectSystemReducedMotion = respectReducedMotion;
+            var options = new FlourishMotionOptions();
+            options.IsEnabled = enabled;
+            options.NavigationPanelTransition = transition;
+            options.RespectSystemReducedMotion = respectReducedMotion;
             var sut = new FlourishMotionService(options, () => systemAnimationsEnabled);
             var completionCount = 0;
 
@@ -1358,7 +1363,7 @@ public sealed class NavigationPaneTransitionControllerTests
                 Padding = new Thickness(24, 0, 24, 0),
                 VerticalAlignment = VerticalAlignment.Top,
             };
-            var scrollViewer = new ScrollViewer
+            var scrollViewer = new System.Windows.Controls.ScrollViewer
             {
                 Content = scrollableCentered,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,

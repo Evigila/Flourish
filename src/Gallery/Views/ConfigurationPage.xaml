@@ -57,7 +57,7 @@
           </StackPanel>
           <flourish:OutputCard x:Name="ReadOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Changes may arrive off the UI thread.&#10;configuration.Changed += (_, change) =&gt;&#10;{&#10;    var previous = change.Previous;&#10;    var current = change.Current;&#10;    var changedKeys = change.ChangedKeys;&#10;};&#10;&#10;// Reload every provider that supports reloading.&#10;configuration.Reload();&#10;&#10;// Read snapshot, raw, converted, and bound values.&#10;var snapshot = configuration.Current;&#10;var raw = configuration[&quot;Flourish:Preferences:Theme&quot;];&#10;var timeout = configuration.Get&lt;int&gt;(&quot;Network:Timeout&quot;);&#10;var reports = configuration.GetSection&lt;ReportOptions&gt;(&quot;Reports&quot;);" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Flourish uses the standard Microsoft configuration pipeline.&#10;if (configuration is IConfigurationRoot root)&#10;{&#10;    root.Reload();&#10;}&#10;&#10;// Read raw, converted, and bound values with standard extensions.&#10;var raw = configuration[&quot;Flourish:Preferences:Theme&quot;];&#10;var timeout = configuration.GetValue&lt;int&gt;(&quot;Network:Timeout&quot;);&#10;var reports = configuration.GetSection(&quot;Reports&quot;).Get&lt;ReportOptions&gt;();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -166,7 +166,7 @@
           </flourish:ActionCard>
           <flourish:OutputCard x:Name="LocaleOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Select the initial language during application composition.&#10;builder.ConfigData(data =&gt; data.InitLocale(&quot;en-US&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;zh-CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.CurrentLocale;&#10;var available = localization.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Select the initial language during application composition.&#10;builder.ConfigureData(data =&gt; data.SetLocale(&quot;en-US&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;zh-CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.Current.Locale;&#10;var available = localization.Current.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -223,7 +223,7 @@
           </StackPanel>
           <flourish:OutputCard x:Name="CultureFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// FlourishCulture.Json in the application directory is loaded automatically.&#10;// Additional catalogs can still be registered explicitly.&#10;builder.ConfigData(data =&gt;&#10;    data.AddCultureFile(&quot;Locales/FlourishCulture.Json&quot;));&#10;&#10;var registration = localization.RegisterFile(&quot;Locales/FlourishCulture.Json&quot;);&#10;var id = registration.Id;&#10;var locales = registration.Locales;&#10;var filePath = registration.FilePath;&#10;localization.ReloadFile(registration);&#10;var removed = localization.Unregister(registration);" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// FlourishCulture.Json in the application directory is loaded automatically.&#10;// Additional catalogs can still be registered explicitly.&#10;builder.ConfigureData(data =&gt;&#10;    data.AddCultureFile(&quot;Locales/FlourishCulture.Json&quot;));&#10;&#10;using var registration = localization.RegisterFile(&quot;Locales/FlourishCulture.Json&quot;);&#10;var id = registration.Id;&#10;var locales = registration.Locales;&#10;var filePath = registration.FilePath;&#10;registration.Reload();&#10;// Dispose unregisters only this catalog registration." />
       </StackPanel>
     </flourish:Chunk>
 

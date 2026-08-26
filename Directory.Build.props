@@ -1,5 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <ArkheideFlourishExtensionCultureVersion Condition="'$(ArkheideFlourishExtensionCultureVersion)' == ''">1.0.0</ArkheideFlourishExtensionCultureVersion>
-  </PropertyGroup>
-</Project>

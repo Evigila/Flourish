@@ -1,7 +1,10 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Imaging;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Localization;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using WpfPage = System.Windows.Controls.Page;
 
@@ -51,7 +54,7 @@ internal partial class FlourishProfilePage : WpfPage
     {
         if (!isSubscribed)
         {
-            profileService.ProfileChanged += ProfileService_ProfileChanged;
+            profileService.Changed += ProfileService_Changed;
             localizationService.Changed += LocalizationService_Changed;
             isSubscribed = true;
         }
@@ -67,12 +70,15 @@ internal partial class FlourishProfilePage : WpfPage
             return;
         }
 
-        profileService.ProfileChanged -= ProfileService_ProfileChanged;
+        profileService.Changed -= ProfileService_Changed;
         localizationService.Changed -= LocalizationService_Changed;
         isSubscribed = false;
     }
 
-    private void ProfileService_ProfileChanged(object? sender, ProfileChangedEventArgs e)
+    private void ProfileService_Changed(
+        object? sender,
+        FlourishStateChangedEventArgs<FlourishProfileState> e
+    )
     {
         if (!Dispatcher.CheckAccess())
         {
@@ -101,7 +107,7 @@ internal partial class FlourishProfilePage : WpfPage
 
     private void LoginButton_Click(object sender, RoutedEventArgs e)
     {
-        var profile = profileService.CurrentProfile;
+        var profile = profileService.Current.Profile;
         isUpdatingState = true;
         try
         {
@@ -187,7 +193,7 @@ internal partial class FlourishProfilePage : WpfPage
                     FirstNameInput.Text,
                     LastNameInput.Text,
                     PasswordInput.Password,
-                    profileService.CurrentProfile.NameOrder,
+                    profileService.Current.NameOrder,
                     selectedImagePath
                 )
             );
@@ -216,7 +222,7 @@ internal partial class FlourishProfilePage : WpfPage
 
     private async void RememberLoginCheckBox_Changed(object sender, RoutedEventArgs e)
     {
-        if (isUpdatingState || profileService.LoginState == ProfileLoginState.SignedOut)
+        if (isUpdatingState || profileService.Current.LoginState == ProfileLoginState.SignedOut)
         {
             return;
         }
@@ -264,7 +270,8 @@ internal partial class FlourishProfilePage : WpfPage
         isUpdatingState = true;
         try
         {
-            var profile = profileService.CurrentProfile;
+            var state = profileService.Current;
+            var profile = state.Profile;
             DisplayNameText.Text = profile.DisplayName;
             ApplyNameOrder(profile.NameOrder);
             if (isEditingLogin)
@@ -276,7 +283,7 @@ internal partial class FlourishProfilePage : WpfPage
                 SetAvatar(profile);
             }
 
-            var isSignedIn = profileService.LoginState != ProfileLoginState.SignedOut;
+            var isSignedIn = state.LoginState != ProfileLoginState.SignedOut;
             LoginStateText.Text = localizationService.Get(
                 isSignedIn
                     ? FlourishLocaleKeys.ProfileSignedIn
@@ -288,7 +295,7 @@ internal partial class FlourishProfilePage : WpfPage
                 !isSignedIn && isEditingLogin ? Visibility.Visible : Visibility.Collapsed;
             SignedInPanel.Visibility = isSignedIn ? Visibility.Visible : Visibility.Collapsed;
             RememberLoginCheckBox.IsChecked =
-                profileService.LoginState == ProfileLoginState.SignedInRemembered;
+                state.LoginState == ProfileLoginState.SignedInRemembered;
         }
         finally
         {
@@ -315,7 +322,7 @@ internal partial class FlourishProfilePage : WpfPage
             new ProfileUser(
                 firstName,
                 lastName,
-                profileService.CurrentProfile.NameOrder,
+                profileService.Current.NameOrder,
                 selectedImagePath
             )
         );

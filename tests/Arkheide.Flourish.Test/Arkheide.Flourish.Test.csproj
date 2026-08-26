@@ -4,7 +4,7 @@
     <AssemblyName>Arkheide.Flourish.Test</AssemblyName>
     <RootNamespace>ArkheideSystem.Flourish.Test</RootNamespace>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
     <IsPackable>false</IsPackable>
@@ -34,9 +34,5 @@
     <None Include="..\..\src\Gallery\Localization\Culture.json"
           Link="Culture.json"
           CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
   </ItemGroup>
 </Project>

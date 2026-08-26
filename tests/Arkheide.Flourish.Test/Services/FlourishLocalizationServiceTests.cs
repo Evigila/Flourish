@@ -1,6 +1,12 @@
+using System;
+using System.Collections.Generic;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -11,7 +17,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         var sut = CreateService();
 
-        Assert.Equal("en-US", sut.CurrentLocale);
+        Assert.Equal("en-US", sut.Current.Locale);
         Assert.Equal("Back", sut.Get(FlourishLocaleKeys.TitleBarBack));
         Assert.Equal("User", sut.Get(FlourishLocaleKeys.ProfileDefaultName));
     }
@@ -26,7 +32,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         var sut = CreateService(new FlourishDataOptions { Locale = locale });
 
-        Assert.Equal(expected, sut.CurrentLocale);
+        Assert.Equal(expected, sut.Current.Locale);
     }
 
     [Fact]
@@ -34,7 +40,7 @@ public sealed class FlourishLocalizationServiceTests
     {
         var sut = CreateService();
 
-        Assert.Equal(["en-US", "zh-CN"], sut.AvailableLocales);
+        Assert.Equal(["en-US", "zh-CN"], sut.Current.AvailableLocales);
     }
 
     [Fact]
@@ -55,7 +61,7 @@ public sealed class FlourishLocalizationServiceTests
 
         var sut = new FlourishLocalizationService(new FlourishDataOptions(), directory.Path);
 
-        Assert.Equal(["en-US", "es-ES", "zh-CN"], sut.AvailableLocales);
+        Assert.Equal(["en-US", "es-ES", "zh-CN"], sut.Current.AvailableLocales);
         Assert.Equal("Reveal", sut.Get(FlourishLocaleKeys.TrayShow));
         Assert.Equal("Exit", sut.Get(FlourishLocaleKeys.TrayExit));
 
@@ -202,7 +208,7 @@ public sealed class FlourishLocalizationServiceTests
 
         sut.SetLocale(" zh_CN ");
 
-        Assert.Equal("zh-CN", sut.CurrentLocale);
+        Assert.Equal("zh-CN", sut.Current.Locale);
         Assert.NotNull(change);
         Assert.Equal(FlourishLocalizationChangeKind.LocaleChanged, change.Kind);
         Assert.Equal("en-US", change.PreviousLocale);
@@ -253,14 +259,15 @@ public sealed class FlourishLocalizationServiceTests
             }
             """
         );
-        sut.ReloadFile(registration);
+        registration.Reload();
         Assert.Equal(["fr-FR"], registration.Locales);
-        Assert.DoesNotContain("de-DE", sut.AvailableLocales);
+        Assert.DoesNotContain("de-DE", sut.Current.AvailableLocales);
         Assert.Equal("Ouvrir", sut.Get(FlourishLocaleKeys.TrayShow));
 
-        Assert.True(sut.Unregister(registration));
-        Assert.False(sut.Unregister(registration));
-        Assert.DoesNotContain("fr-FR", sut.AvailableLocales);
+        registration.Dispose();
+        Assert.False(registration.IsRegistered);
+        registration.Dispose();
+        Assert.DoesNotContain("fr-FR", sut.Current.AvailableLocales);
         Assert.Equal("Show", sut.Get(FlourishLocaleKeys.TrayShow));
         Assert.Equal(
             [
@@ -274,7 +281,7 @@ public sealed class FlourishLocalizationServiceTests
     }
 
     [Fact]
-    public void Unregister_LaterOverride_RevealsEarlierRegistration()
+    public void Dispose_LaterOverride_RevealsEarlierRegistration()
     {
         using var firstDirectory = new TemporaryDirectory();
         using var secondDirectory = new TemporaryDirectory();
@@ -292,7 +299,7 @@ public sealed class FlourishLocalizationServiceTests
         sut.SetLocale("fr-FR");
         Assert.Equal("Second", sut.Get(FlourishLocaleKeys.TrayShow));
 
-        sut.Unregister(overrideRegistration);
+        overrideRegistration.Dispose();
 
         Assert.Equal("First", sut.Get(FlourishLocaleKeys.TrayShow));
     }

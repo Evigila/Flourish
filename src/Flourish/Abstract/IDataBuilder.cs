@@ -1,0 +1,181 @@
+using System;
+
+namespace ArkheideSystem.Flourish.Abstract;
+
+/// <summary>
+/// Configures localization used by Flourish.
+/// </summary>
+/// <example>
+/// <code><![CDATA[
+/// builder.ConfigureData(data =>
+/// {
+///     data.SetLocale("en-US")
+///         .AddCultureFile("Locales/FlourishCulture.Json");
+/// });
+/// ]]></code>
+/// </example>
+public interface IDataBuilder
+{
+    /// <summary>
+    /// Sets the locale used by Flourish built-in interface text.
+    /// </summary>
+    /// <param name="locale">The locale identifier.</param>
+    /// <remarks>
+    /// Flourish uses the built-in English locale when this method and
+    /// <see cref="IFlourishBuilder.ConfigureData(Action{IDataBuilder})" /> are omitted.
+    /// Built-in locale identifiers are <c>en-US</c> and <c>zh-CN</c>. Identifiers are
+    /// case-insensitive and are returned in canonical BCP 47 form.
+    /// </remarks>
+    /// <param name="usePersistedPreference">
+    /// Whether a valid effective Host configuration value should override the fallback and
+    /// subsequent runtime locale changes should be persisted.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    IDataBuilder SetLocale(string locale = "en-US", bool usePersistedPreference = true);
+
+    /// <summary>
+    /// Adds a custom culture file that can extend or override built-in translations.
+    /// </summary>
+    /// <param name="path">The path to the custom culture file.</param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// <para>
+    /// The file is read while <see cref="IFlourishBuilder.Build" /> applies configuration. It
+    /// must be a UTF-8, non-empty JSON object named <c>FlourishCulture.Json</c>. Each top-level
+    /// property is a translation key whose value is an object of locale/value pairs. Keys,
+    /// locale identifiers, and translated values cannot be empty. Locale identifiers are
+    /// normalized to canonical form.
+    /// </para>
+    /// <para>
+    /// Catalogs are merged in registration order at locale-and-key granularity; a later file
+    /// replaces earlier values for matching cells. Flourish also automatically loads a
+    /// <c>FlourishCulture.Json</c> file from <see cref="AppContext.BaseDirectory" /> when present.
+    /// Lookup priority is: custom selected locale,
+    /// built-in selected locale, custom <c>en-US</c>, built-in <c>en-US</c>, then the key itself.
+    /// A missing file throws <see cref="System.IO.FileNotFoundException" />. Invalid file names throw
+    /// <see cref="ArgumentException" />. Unreadable files and invalid locale JSON throw
+    /// <see cref="System.IO.InvalidDataException" />.
+    /// </para>
+    /// <para>A custom culture file can contain only the values it overrides:</para>
+    /// <code><![CDATA[
+    /// {
+    ///   "TitleBar.Back": {
+    ///     "en-US": "Previous",
+    ///     "fr-FR": "Précédent"
+    ///   },
+    ///   "Tray.Show": {
+    ///     "fr-FR": "Ouvrir"
+    ///   }
+    /// }
+    /// ]]></code>
+    /// <para>The canonical built-in translation keys and values are:</para>
+    /// <list type="table">
+    /// <listheader><term>Key</term><description>English / Simplified Chinese</description></listheader>
+    /// <item><term><c>TitleBar.Back</c></term><description>Back / 返回</description></item>
+    /// <item><term><c>TitleBar.Forward</c></term><description>Forward / 前进</description></item>
+    /// <item><term><c>TitleBar.ToggleNavigation</c></term><description>Toggle navigation / 切换导航</description></item>
+    /// <item><term><c>TitleBar.Theme</c></term><description>Theme / 主题</description></item>
+    /// <item><term><c>TitleBar.ThemeSystem</c></term><description>Theme: System ({0}) / 主题：跟随系统（{0}）</description></item>
+    /// <item><term><c>TitleBar.ThemeCurrent</c></term><description>Theme: {0} / 主题：{0}</description></item>
+    /// <item><term><c>TitleBar.Profile</c></term><description>Profile / 个人资料</description></item>
+    /// <item><term><c>TitleBar.ApplicationInfo</c></term><description>Application information / 应用信息</description></item>
+    /// <item><term><c>TitleBar.ProjectMenu</c></term><description>Projects / 项目</description></item>
+    /// <item><term><c>TitleBar.NewProject</c></term><description>New project / 新建项目</description></item>
+    /// <item><term><c>Project.Delete</c></term><description>Delete project / 删除项目</description></item>
+    /// <item><term><c>Project.Save</c></term><description>Save / 保存</description></item>
+    /// <item><term><c>Project.DontSave</c></term><description>Don't save / 不保存</description></item>
+    /// <item><term><c>Project.SaveDialogTitle</c></term><description>Save project / 保存项目</description></item>
+    /// <item><term><c>Project.TextFileFilter</c></term><description>Text project files (*.txt)|*.txt / 文本项目文件 (*.txt)|*.txt</description></item>
+    /// <item><term><c>Project.UnsavedTitle</c></term><description>Save project / 保存项目</description></item>
+    /// <item><term><c>Project.UnsavedPrompt</c></term><description>&quot;{0}&quot; has not been saved. Save it before continuing? / “{0}”尚未保存。是否先保存再继续？</description></item>
+    /// <item><term><c>Project.DeleteTitle</c></term><description>Delete project / 删除项目</description></item>
+    /// <item><term><c>Project.DeletePrompt</c></term><description>Delete &quot;{0}&quot;? Its managed project file is also deleted when no other project uses it. / 是否删除“{0}”？没有其他项目使用同一路径时，也会删除其受管理的项目文件。</description></item>
+    /// <item><term><c>TitleBar.Minimize</c></term><description>Minimize / 最小化</description></item>
+    /// <item><term><c>TitleBar.Maximize</c></term><description>Maximize / 最大化</description></item>
+    /// <item><term><c>TitleBar.Restore</c></term><description>Restore / 还原</description></item>
+    /// <item><term><c>TitleBar.Close</c></term><description>Close / 关闭</description></item>
+    /// <item><term><c>Theme.Dark</c></term><description>Dark / 深色</description></item>
+    /// <item><term><c>Theme.Light</c></term><description>Light / 浅色</description></item>
+    /// <item><term><c>Profile.DefaultName</c></term><description>User / 用户</description></item>
+    /// <item><term><c>Profile.SignIn</c></term><description>Sign in / 登录</description></item>
+    /// <item><term><c>Profile.SignOut</c></term><description>Sign out / 退出登录</description></item>
+    /// <item><term><c>Profile.FirstName</c></term><description>First Name / 名</description></item>
+    /// <item><term><c>Profile.LastName</c></term><description>Last Name / 姓</description></item>
+    /// <item><term><c>Profile.Image</c></term><description>Profile image / 个人资料图片</description></item>
+    /// <item><term><c>Profile.ChooseImage</c></term><description>Choose profile image / 选择个人资料图片</description></item>
+    /// <item><term><c>Profile.UploadImage</c></term><description>Upload image / 上传图片</description></item>
+    /// <item><term><c>Profile.Password</c></term><description>Password / 密码</description></item>
+    /// <item><term><c>Profile.Cancel</c></term><description>Cancel / 取消</description></item>
+    /// <item><term><c>Profile.RememberLogin</c></term><description>Remember login / 记住登录状态</description></item>
+    /// <item><term><c>Profile.SignedIn</c></term><description>Signed in / 已登录</description></item>
+    /// <item><term><c>Profile.SignedOut</c></term><description>Signed out / 未登录</description></item>
+    /// <item><term><c>Profile.ImageFiles</c></term><description>Image files / 图片文件</description></item>
+    /// <item><term><c>Profile.AllFiles</c></term><description>All files / 所有文件</description></item>
+    /// <item><term><c>Profile.ImageLoadFailed</c></term><description>The selected image could not be loaded. / 无法加载所选图片。</description></item>
+    /// <item><term><c>Profile.SignInFailed</c></term><description>Sign in failed. / 登录失败。</description></item>
+    /// <item><term><c>Profile.EnterName</c></term><description>Enter a first or last name. / 请输入名字或姓氏。</description></item>
+    /// <item><term><c>Profile.EnterPassword</c></term><description>Enter a password. / 请输入密码。</description></item>
+    /// <item><term><c>Profile.RememberLoginRequiresSignIn</c></term><description>Remember login can only be changed while a profile is signed in. / 仅可在个人资料已登录时更改记住登录状态。</description></item>
+    /// <item><term><c>BackgroundTask.Title</c></term><description>Background tasks / 后台任务</description></item>
+    /// <item><term><c>BackgroundTask.Running</c></term><description>Running / 运行中</description></item>
+    /// <item><term><c>BackgroundTask.Queued</c></term><description>Waiting / 等待中</description></item>
+    /// <item><term><c>BackgroundTask.Cancelling</c></term><description>Cancelling / 正在取消</description></item>
+    /// <item><term><c>BackgroundTask.Cancel</c></term><description>Cancel / 取消</description></item>
+    /// <item><term><c>BackgroundTask.WaitingCount</c></term><description>{0} task(s) waiting / {0} 个任务等待中</description></item>
+    /// <item><term><c>BackgroundTask.NoActiveTasks</c></term><description>No active background tasks / 没有活动的后台任务</description></item>
+    /// <item><term><c>SystemStatus.Title</c></term><description>System status / 系统状态</description></item>
+    /// <item><term><c>SystemStatus.Network</c></term><description>Network / 网络</description></item>
+    /// <item><term><c>SystemStatus.Power</c></term><description>Power / 电源</description></item>
+    /// <item><term><c>SystemStatus.AC</c></term><description>AC power / 外接电源</description></item>
+    /// <item><term><c>SystemStatus.Battery</c></term><description>Battery / 电池供电</description></item>
+    /// <item><term><c>SystemStatus.Unknown</c></term><description>Unknown / 未知</description></item>
+    /// <item><term><c>MessageBox.OK</c></term><description>OK / 确定</description></item>
+    /// <item><term><c>MessageBox.Cancel</c></term><description>Cancel / 取消</description></item>
+    /// <item><term><c>MessageBox.Yes</c></term><description>Yes / 是</description></item>
+    /// <item><term><c>MessageBox.No</c></term><description>No / 否</description></item>
+    /// <item><term><c>Window.CloseTitle</c></term><description>Close / 关闭</description></item>
+    /// <item><term><c>Window.ClosePrompt</c></term><description>Are you sure you want to close this window? / 确定要关闭此窗口吗？</description></item>
+    /// <item><term><c>Window.BackgroundTasksCloseTitle</c></term><description>Stop background tasks? / 中止后台任务？</description></item>
+    /// <item><term><c>Window.BackgroundTasksClosePrompt</c></term><description>Active background tasks: {0}. Closing the window will cancel them. Stop the tasks and exit? / 仍有 {0} 个后台任务正在进行。关闭窗口将取消这些任务。是否中止任务并退出？</description></item>
+    /// <item><term><c>Window.BackgroundTasksKeepRunning</c></term><description>Keep running / 继续运行</description></item>
+    /// <item><term><c>Window.BackgroundTasksStopAndExit</c></term><description>Stop tasks and exit / 中止任务并退出</description></item>
+    /// <item><term><c>Tray.Show</c></term><description>Show / 显示</description></item>
+    /// <item><term><c>Tray.Exit</c></term><description>Exit / 退出</description></item>
+    /// <item><term><c>Status.Connected</c></term><description>Connected / 已连接</description></item>
+    /// <item><term><c>Status.Disconnected</c></term><description>Disconnected / 未连接</description></item>
+    /// </list>
+    /// </remarks>
+    IDataBuilder AddCultureFile(string path);
+
+    /// <summary>
+    /// Selects the JSON file that supplies the <c>Flourish</c> configuration section and receives
+    /// updates through <see cref="IFlourishSettingsStore" />.
+    /// </summary>
+    /// <param name="path">
+    /// An absolute path, or a path relative to <see cref="AppContext.BaseDirectory" />.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// The default file is <c>appsettings.Flourish.json</c> in
+    /// <see cref="AppContext.BaseDirectory" />.
+    /// Flourish loads and writes only the <c>Flourish</c> top-level section. Other sections are
+    /// preserved unchanged and remain outside the framework-owned configuration source.
+    /// When this path differs from the Host's base <c>appsettings.json</c>, the selected file is
+    /// added as a lower-priority Flourish configuration source and the Host appsettings sources
+    /// remain available to the application.
+    /// </remarks>
+    IDataBuilder SetAppSettingsFilePath(string path = "appsettings.Flourish.json");
+
+    /// <summary>
+    /// Selects the JSON file used for the Flourish project metadata catalog.
+    /// </summary>
+    /// <param name="path">
+    /// An absolute path, or a path relative to <see cref="AppContext.BaseDirectory" />.
+    /// </param>
+    /// <returns>The current builder for chained configuration.</returns>
+    /// <remarks>
+    /// This path stores project identities and mappings. It does not select the location of
+    /// application-owned project content files.
+    /// </remarks>
+    IDataBuilder SetProjectCatalogFilePath(string path = "projects.json");
+}

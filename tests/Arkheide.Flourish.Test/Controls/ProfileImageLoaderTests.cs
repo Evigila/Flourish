@@ -1,8 +1,11 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Profile;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ArkheideSystem.Flourish.Internal.Imaging;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 

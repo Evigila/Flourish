@@ -1,8 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Arkheide.Essential.Culture;
 using GalleryKey = Arkheide.Essential.Culture.Key;
 
 namespace ArkheideSystem.Flourish.Test.Gallery;
@@ -87,10 +93,11 @@ public sealed class GalleryLocalizationTests
         );
 
         Assert.Contains(
-            "PackageReference Include=\"Arkheide.Flourish.Extension.Culture\"",
+            "ProjectReference Include=\"..\\..\\..\\Arkheide.Extension\\src\\Arkheide.Flourish.Extension.Culture\\Arkheide.Flourish.Extension.Culture.csproj\"",
             project,
             StringComparison.Ordinal
         );
+        Assert.Contains("<AdditionalProperties>UseLocalFlourish=true</AdditionalProperties>", project);
         Assert.DoesNotContain(
             "PackageReference Include=\"Arkheide.Essential.Culture",
             project,

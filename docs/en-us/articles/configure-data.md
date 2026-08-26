@@ -5,17 +5,17 @@ description: Configure localization, persisted settings paths, and the project c
 
 # Application data
 
-`ConfigData` controls Flourish built-in interface language, custom culture files, and persisted settings paths. Localization is always available: when `ConfigData` or `InitLocale` is omitted, Flourish uses the built-in English (`en-US`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata uses an independently configurable catalog.
+`ConfigureData` controls Flourish built-in interface language, custom culture files, and persisted settings paths. Localization is always available: when `ConfigureData` or `SetLocale` is omitted, Flourish uses the built-in English (`en-US`) locale. Preferences and protected profile credentials use the configuration owned by the .NET Generic Host. Project metadata uses an independently configurable catalog.
 
 ## Select a built-in locale
 
 Flourish includes `en-US` and `zh-CN`. Locale identifiers are case-insensitive and returned in canonical BCP 47 form. Hyphens are preferred; underscores are accepted and normalized to hyphens.
 
 ```csharp
-builder.ConfigData(data => data.InitLocale("en-US"));
+builder.ConfigureData(data => data.SetLocale("en-US"));
 ```
 
-Flourish uses `en-US` when `ConfigData` is omitted. Persistence is enabled by default, so a valid effective `Flourish:Preferences:Locale` value takes precedence and later `SetLocale` changes are written back. Pass `usePersistedPreference: false` when the configured locale must always win. When Flourish is used by itself, application-provided text such as titles, search placeholders, navigation labels, custom status-item labels, dialog messages, and custom option text is not translated automatically.
+Flourish uses `en-US` when `ConfigureData` is omitted. Persistence is enabled by default, so a valid effective `Flourish:Preferences:Locale` value takes precedence and later `SetLocale` changes are written back. Pass `usePersistedPreference: false` when the configured locale must always win. When Flourish is used by itself, application-provided text such as titles, search placeholders, navigation labels, custom status-item labels, dialog messages, and custom option text is not translated automatically.
 
 ## Connect Essential Culture
 
@@ -36,7 +36,7 @@ using ArkheideSystem.Flourish.Extension.Culture;
 var flourish = FlourishBuilder
     .CreateDefaultBuilder(args)
     .UseEssentialCulture()
-    .ConfigData(data => data.InitLocale("en-US"))
+    .ConfigureData(data => data.SetLocale("en-US"))
     .Build();
 ```
 
@@ -47,6 +47,10 @@ state:
 
 ```csharp
 localization.SetLocale("zh-CN");
+
+string locale = localization.Current.Locale;
+IReadOnlyList<string> available = localization.Current.AvailableLocales;
+localization.Changed += OnLocalizationChanged;
 ```
 
 The application continues to own its `Culture.json`. XAML uses the transitively supplied
@@ -60,10 +64,10 @@ Flourish embeds one `FlourishCulture.Json` catalog. If the application output di
 Additional catalogs can be registered with `AddCultureFile(path)`. Every registered file must also be named `FlourishCulture.Json`; use separate directories when composing multiple catalogs.
 
 ```csharp
-builder.ConfigData(data =>
+builder.ConfigureData(data =>
 {
     data
-        .InitLocale("en-US")
+        .SetLocale("en-US")
         .AddCultureFile("Locales/FlourishCulture.Json");
 });
 ```
@@ -211,17 +215,17 @@ The application can copy its own base file to the output in the normal way:
 
 The configuration key is `Flourish:Preferences:Theme`. Reads follow the complete Host precedence: `appsettings.Flourish.json`, `appsettings.json`, `appsettings.{Environment}.json`, User Secrets, application-registered sources, environment variables, and command-line arguments. Later sources override earlier sources. `Host.CreateDefaultBuilder` automatically loads only the base and current-environment appsettings files; another name such as `appsettings.User.json` must be registered by application code.
 
-Use `ConfigConfiguration` to register that file:
+Use `ConfigureConfiguration` to register that file:
 
 ```csharp
-builder.ConfigConfiguration((_, configuration) =>
-    configuration.UseConfigurationFile(
+builder.ConfigureConfiguration((_, configuration) =>
+    configuration.AddJsonFile(
         "appsettings.User.json",
         optional: true,
         reloadOnChange: true));
 ```
 
-`UseConfigurationFile` registers a JSON source. `AddConfigurationSource` accepts a standard Microsoft `IConfigurationSource` when another provider type is required. Flourish does not expose the Host's mutable `IConfigurationBuilder`; it inserts registered sources after appsettings and User Secrets but before environment variables and command-line arguments. Registration order is preserved, so a later application source overrides an earlier one without overriding environment or command-line policy.
+The callback receives the standard Microsoft `IConfigurationBuilder`, so use `AddJsonFile` or the extension supplied by any other installed configuration provider. Flourish inserts these application sources after appsettings and User Secrets but before environment variables and command-line arguments. Registration order is preserved, so a later application source overrides an earlier one without overriding environment or command-line policy.
 
 `IFlourishSettingsStore` accepts only descendant paths that start with `Flourish:`.
 It cannot create, replace, or remove another top-level section. Flourish
@@ -238,18 +242,18 @@ User-interface preferences are restored and updated by default. The normal calls
 
 ```csharp
 builder
-    .ConfigData(data =>
-        data.InitLocale("en-US"))
-    .ConfigWindow(window =>
+    .ConfigureData(data =>
+        data.SetLocale("en-US"))
+    .ConfigureWindow(window =>
         window
-            .InitWindowSize(1280, 720)
-            .InitManualWindowPosition(80, 60)
-            .InitWindowState(WindowState.Normal))
-    .ConfigNavigation(navigation =>
+            .SetSize(1280, 720)
+            .SetManualPosition(80, 60)
+            .SetState(WindowState.Normal))
+    .ConfigureNavigation(navigation =>
         navigation
-            .InitInitiallyOpen()
-            .InitPanelWidth(260, 64, 520, 180)
-            .UseLastNavigation());
+            .SetInitiallyOpen()
+            .SetPanelWidth(260, 64, 520, 180)
+            .SetLastNavigationPersistence());
 ```
 
 For each logical preference, the last builder call supplies both the fallback and the persistence policy. Pass `usePersistedPreference: false` when code must always use that call's value and stop writing runtime changes. This does not delete an existing stored value. With persistence enabled, a complete valid effective Host configuration value takes precedence; a missing, incomplete, or invalid value leaves the builder fallback intact. Compound settings such as size, position, font scale, colors, and motion timings are restored atomically instead of mixing saved and fallback fields.
@@ -258,12 +262,12 @@ Persistence is available for locale; theme mode; window restore size, position, 
 
 Application capabilities and structure are not preferences. Flourish does not persist title bar, navigation, Profile, project, toolbar, or status-bar enablement; page types and routes; handlers and factories; branding; minimum or maximum window constraints; resize mode; taskbar visibility; culture-file registrations; or page-specific font overrides. A stored value therefore cannot re-enable a capability that application code has disabled.
 
-Flourish reads preference values through the effective `IConfiguration`, preserving normal Host precedence. By default it writes application-root `appsettings.Flourish.json`. Select another JSON file and an independent project-catalog file in `ConfigData`:
+Flourish reads preference values through the effective `IConfiguration`, preserving normal Host precedence. By default it writes application-root `appsettings.Flourish.json`. Select another JSON file and an independent project-catalog file in `ConfigureData`:
 
 ```csharp
-builder.ConfigData(data => data
-    .InitAppSettingsFilePath("Data/appsettings.Flourish.json")
-    .InitProjectCatalogFilePath("Data/projects.json"));
+builder.ConfigureData(data => data
+    .SetAppSettingsFilePath("Data/appsettings.Flourish.json")
+    .SetProjectCatalogFilePath("Data/projects.json"));
 ```
 
 Relative paths are resolved against `AppContext.BaseDirectory`; absolute paths are accepted. When the selected settings file differs from the base `appsettings.json`, Flourish adds a section-limited provider before that base source and leaves all Host appsettings sources available to the application. User Secrets, environment variables, and command-line providers keep their normal higher priority. Selecting the base `appsettings.json` explicitly keeps its normal full-document Host provider behavior, while Flourish writes only descendant paths under its `Flourish` section. Both paths must identify different `.json` files, and parent directories are created on the first write.
@@ -272,7 +276,7 @@ Use `IFlourishSettingsStore.RemoveAsync` with a full `Flourish:` path to reset o
 
 ## Project catalog
 
-`IProjectService` stores ordered project mappings whose local files exist, plus the active persisted project ID, in the file selected by `InitProjectCatalogFilePath`; the default is application-root `projects.json`. The catalog path is independent of `IFlourishSettingsStore.FilePath`, is not a Host configuration source, and does not participate in configuration precedence.
+`IProjectService` stores ordered project mappings whose local files exist, plus the active persisted project ID, in the file selected by `SetProjectCatalogFilePath`; the default is application-root `projects.json`. The catalog path is independent of `IFlourishSettingsStore.FilePath`, is not a Host configuration source, and does not participate in configuration precedence.
 
 Flourish loads this catalog when the project service starts, removes entries whose mapped files no longer exist, and writes valid catalog mutations atomically. Registering a replacement `IProjectBehavior` changes project dialogs and file lifecycle only; it does not disable catalog persistence. The directory must be writable. See [Projects](projects.md) for process-local unpersisted projects and lifecycle behavior.
 

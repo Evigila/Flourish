@@ -5,147 +5,45 @@ description: Build and run a basic WPF application with Flourish.
 
 # Getting started
 
-A basic Flourish application registers a WPF page, enables navigation, builds an `IFlourish` runtime, and displays the shell.
-
-Built-in Flourish text uses the `en-US` locale by default. To use Simplified Chinese, call `builder.ConfigData(data => data.InitLocale("zh-CN"))` before `Build()`. [Application data](configure-data.md) explains built-in and custom locales.
-
-## Reference the controls and theme
-
-`Run(Application)` and `IFlourish.Show(Application)` load the Flourish control and theme resources before the shell opens. Add `FlourishThemeResources` explicitly in `App.xaml` when the WPF designer, content shown before the shell, or standalone [control library](control-library.md) usage needs those resources.
-
-When the Flourish shell is the main window, do not set `StartupUri` in `App.xaml`.
-
-```xml
-<Application
-  x:Class="Foobar.App"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:flourish="http://schemas.arkheide.system/flourish"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <Application.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <flourish:FlourishThemeResources />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </Application.Resources>
-</Application>
-```
-
-## Configure the application entry point
-
-The application can own the Flourish runtime from `App.xaml.cs`. Start the Host, show the shell, and release the runtime when WPF exits.
+Install or reference `Arkheide.Flourish`, then import the single public namespace:
 
 ```csharp
-using System.Windows;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Foobar;
-
-public partial class App : Application
-{
-    private static IFlourish? flourish;
-
-    public static IFlourish Flourish =>
-        flourish ?? throw new InvalidOperationException("Flourish has not been built.");
-
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        base.OnStartup(e);
-
-        flourish = FlourishBuilder
-            .CreateDefaultBuilder(e.Args)
-            .ConfigServices((_, services) =>
-            {
-                services.AddSingleton(this);
-                services.AddNavigable<HomePage>("Home", "\uE80F");
-            })
-            .ConfigShell(shell =>
-                shell.UseTitleBar().UseNavigation())
-            .ConfigTitleBar(titleBar =>
-                titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
-            .ConfigNavigation(navigation =>
-                navigation.AddGroup(null, groupId: 0, group =>
-                    group.AddNavigableViewItem<HomePage>(isInitial: true)))
-            .Build();
-
-        flourish.Start();
-        flourish.Show(this);
-    }
-
-    protected override void OnExit(ExitEventArgs e)
-    {
-        if (flourish is not null)
-        {
-            flourish.StopAsync().GetAwaiter().GetResult();
-            flourish.Dispose();
-            flourish = null;
-        }
-
-        base.OnExit(e);
-    }
-}
 ```
 
-The navigation group explicitly places `HomePage` in the panel and selects it as the initial page. Use [Navigation](navigation.md) to add more groups, fixed items, command items, or parent-child relationships.
-
-## Alternative startup path
-
-A custom entry point or bootstrapper can build the same configuration and use the `Run<App>()` shortcut.
+Do not set `StartupUri` when the Flourish shell is the main window. Register the WPF application, configure the title bar and navigation, then run the host:
 
 ```csharp
 return FlourishBuilder
     .CreateDefaultBuilder(args)
-    .ConfigServices((_, services) =>
-    {
-        services.AddSingleton<App>();
-        services.AddNavigable<HomePage>("Home", "\uE80F");
-    })
-    .ConfigShell(shell =>
-        shell.UseTitleBar().UseNavigation())
-    .ConfigTitleBar(titleBar =>
-        titleBar.InitApplicationTitle("Foobar").UseNavigationToggle())
-    .ConfigNavigation(navigation =>
-        navigation.AddGroup(null, groupId: 0, group =>
-            group.AddNavigableViewItem<HomePage>(isInitial: true)))
+    .ConfigureServices((_, services) => services.AddSingleton<App>())
+    .ConfigureTitleBar(titleBar =>
+        titleBar
+            .SetEnabled()
+            .SetApplicationTitle("Foobar")
+            .SetNavigationToggle())
+    .ConfigureNavigation(navigation =>
+        navigation
+            .SetEnabled()
+            .AddNavigable<HomePage>(
+                displayName: "Home",
+                iconGlyph: "\uE80F",
+                isInitial: true))
     .Run<App>();
 ```
 
-Use either the `App.xaml.cs` lifetime path or `Run<App>()` for a launch flow.
+`AddNavigable<TPage>` registers the page, creates its route, and adds its visible navigation item. Use `AddGroup` or the fixed-item methods when the application needs an explicit hierarchy.
 
-## Create a page
-
-Pages registered with `AddNavigable` are WPF `Page` classes. Flourish resolves them from dependency injection when navigation occurs.
+Flourish text defaults to `en-US`. Select another built-in or custom locale before build:
 
 ```csharp
-using System.Windows.Controls;
-
-namespace Foobar;
-
-public partial class HomePage : Page
-{
-    public HomePage()
-    {
-        InitializeComponent();
-    }
-}
+builder.ConfigureData(data =>
+    data.SetLocale("zh-CN")
+        .AddCultureFile("Locales/FlourishCulture.Json"));
 ```
 
-## Explore features
+After startup, resolve runtime services through dependency injection. Builders define initial state; services update live state. For example, read `theme.Current`, observe `theme.Changed`, and call `theme.SetTheme(...)`.
 
-- [Dependency injection](configure-services.md) registers application services and pages.
-- [Application data](configure-data.md) selects the built-in interface language and registers custom locales.
-- [Shell configuration](shell-configuration.md) enables shell features and explains their prerequisites.
-- [Title bar](configure-title-bar.md) configures title bar content.
-- [Projects](projects.md) adds project-aware title semantics and runtime display metadata.
-- [Navigation](navigation.md) places registered pages and command items in explicit navigation groups.
-- [Background tasks](background-tasks.md) runs cancellable asynchronous work.
-- [Tooltips](configure-tips.md), [Typography](configure-font.md), and [Window](configure-window.md) configure supporting shell behavior.
+Flourish uses standard Microsoft `IConfiguration`. Inject it to read effective values. Inject `IFlourishSettingsStore` when the application must atomically update the `Flourish:` section in `appsettings.Flourish.json`.
 
-## First run checklist
-
-- The WPF application starts Flourish from `App.xaml.cs` or another application entry point.
-- At least one page is registered with `AddNavigable`.
-- Navigation is enabled, and each visible page is placed in a group or the fixed area.
-- The runtime is disposed during application exit, or `Run<App>()` owns its lifetime.
+Continue with [IFlourishBuilder](flourish-builder.md), [feature configuration](shell-configuration.md), and [runtime APIs](runtime-apis.md).

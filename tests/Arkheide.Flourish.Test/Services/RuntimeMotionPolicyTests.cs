@@ -1,9 +1,12 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Motion;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -22,11 +25,11 @@ public sealed class RuntimeMotionPolicyTests
         StaTest.Run(() =>
         {
             var duration = TimeSpan.FromMilliseconds(96);
-            var options = new FlourishShellOptions();
-            options.Motion.IsEnabled = true;
-            options.Motion.IsHoverRevealEnabled = true;
-            options.Motion.RespectSystemReducedMotion = false;
-            options.Motion.HoverRevealAnimationDuration = duration;
+            var options = new FlourishMotionOptions();
+            options.IsEnabled = true;
+            options.IsHoverRevealEnabled = true;
+            options.RespectSystemReducedMotion = false;
+            options.HoverRevealAnimationDuration = duration;
             var resources = new ResourceDictionary();
             var sut = new FlourishMotionService(options);
 
@@ -92,7 +95,7 @@ public sealed class RuntimeMotionPolicyTests
     public void Runtime_AttachesMotionPolicyAfterApplicationThemeResources()
     {
         var source = File.ReadAllText(
-            Path.Combine(FlourishRoot, "Internal", "Composition", "FlourishRuntime.cs")
+            Path.Combine(FlourishRoot, "Hosting", "FlourishRuntime.cs")
         );
         var resourcesIndex = source.IndexOf(
             "EnsureApplicationResources(application)",
@@ -115,7 +118,7 @@ public sealed class RuntimeMotionPolicyTests
     public void MotionService_DoesNotWriteInheritedHoverRevealPropertiesOrWindowResources()
     {
         var source = File.ReadAllText(
-            Path.Combine(FlourishRoot, "Services", "FlourishMotionService.cs")
+            Path.Combine(FlourishRoot, "Motion", "FlourishMotionService.cs")
         );
 
         Assert.DoesNotContain("Window? owner", source, StringComparison.Ordinal);

@@ -1,6 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
@@ -23,18 +31,18 @@ public sealed class ProfileServiceTests
             },
             localization
         );
-        ProfileChangedEventArgs? change = null;
-        sut.ProfileChanged += (_, eventArgs) => change = eventArgs;
+        FlourishStateChangedEventArgs<FlourishProfileState>? change = null;
+        sut.Changed += (_, eventArgs) => change = eventArgs;
 
         await sut.SetNameOrderAsync(NameOrder.LastFirst);
 
-        Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
-        Assert.Equal(ProfileLoginState.SignedOut, sut.LoginState);
-        Assert.Equal("Lovelace Ada", sut.CurrentProfile.DisplayName);
-        Assert.Equal("LA", sut.CurrentProfile.Initials);
+        Assert.Equal(NameOrder.LastFirst, sut.Current.NameOrder);
+        Assert.Equal(ProfileLoginState.SignedOut, sut.Current.LoginState);
+        Assert.Equal("Lovelace Ada", sut.Current.Profile.DisplayName);
+        Assert.Equal("LA", sut.Current.Profile.Initials);
         Assert.NotNull(change);
-        Assert.Same(sut.CurrentProfile, change.Profile);
-        Assert.Equal(ProfileLoginState.SignedOut, change.LoginState);
+        Assert.Same(sut.Current.Profile, change.Current.Profile);
+        Assert.Equal(ProfileLoginState.SignedOut, change.Current.LoginState);
     }
 
     [Fact]
@@ -50,23 +58,23 @@ public sealed class ProfileServiceTests
         await sut.SignInAsync(
             new ProfileSignInRequest("Ada", "Lovelace", "secret", NameOrder.FirstLast, "avatar.png")
         );
-        var changes = new List<ProfileChangedEventArgs>();
-        sut.ProfileChanged += (_, eventArgs) => changes.Add(eventArgs);
+        var changes = new List<FlourishStateChangedEventArgs<FlourishProfileState>>();
+        sut.Changed += (_, eventArgs) => changes.Add(eventArgs);
 
         await sut.SetNameOrderAsync(NameOrder.LastFirst);
 
-        Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
-        Assert.Equal(ProfileLoginState.SignedIn, sut.LoginState);
-        Assert.Equal("Ada", sut.CurrentProfile.FirstName);
-        Assert.Equal("Lovelace", sut.CurrentProfile.LastName);
-        Assert.Equal("avatar.png", sut.CurrentProfile.ImagePath);
-        Assert.Equal("Lovelace Ada", sut.CurrentProfile.DisplayName);
+        Assert.Equal(NameOrder.LastFirst, sut.Current.NameOrder);
+        Assert.Equal(ProfileLoginState.SignedIn, sut.Current.LoginState);
+        Assert.Equal("Ada", sut.Current.Profile.FirstName);
+        Assert.Equal("Lovelace", sut.Current.Profile.LastName);
+        Assert.Equal("avatar.png", sut.Current.Profile.ImagePath);
+        Assert.Equal("Lovelace Ada", sut.Current.Profile.DisplayName);
         var change = Assert.Single(changes);
-        Assert.Same(sut.CurrentProfile, change.Profile);
-        Assert.Equal(ProfileLoginState.SignedIn, change.LoginState);
+        Assert.Same(sut.Current.Profile, change.Current.Profile);
+        Assert.Equal(ProfileLoginState.SignedIn, change.Current.LoginState);
 
         await sut.SetRememberLoginAsync(rememberLogin: false);
-        Assert.Equal(ProfileLoginState.SignedIn, sut.LoginState);
+        Assert.Equal(ProfileLoginState.SignedIn, sut.Current.LoginState);
     }
 
     [Fact]
@@ -80,12 +88,12 @@ public sealed class ProfileServiceTests
             localization
         );
         var changeCount = 0;
-        sut.ProfileChanged += (_, _) => changeCount++;
+        sut.Changed += (_, _) => changeCount++;
 
         await sut.SetNameOrderAsync(NameOrder.LastFirst);
 
         Assert.Equal(0, changeCount);
-        Assert.Equal(NameOrder.LastFirst, sut.NameOrder);
+        Assert.Equal(NameOrder.LastFirst, sut.Current.NameOrder);
     }
 
     [Fact]
@@ -98,14 +106,14 @@ public sealed class ProfileServiceTests
             new FlourishProfileOptions(),
             localization
         );
-        var originalProfile = sut.CurrentProfile;
+        var originalProfile = sut.Current.Profile;
 
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             sut.SetNameOrderAsync((NameOrder)42)
         );
 
-        Assert.Equal(NameOrder.FirstLast, sut.NameOrder);
-        Assert.Same(originalProfile, sut.CurrentProfile);
+        Assert.Equal(NameOrder.FirstLast, sut.Current.NameOrder);
+        Assert.Same(originalProfile, sut.Current.Profile);
     }
 
     [Fact]
@@ -125,22 +133,22 @@ public sealed class ProfileServiceTests
         );
 
         Assert.True(result.Succeeded);
-        Assert.Equal(ProfileLoginState.SignedIn, sut.LoginState);
-        Assert.Equal("Ada Lovelace", sut.CurrentProfile.DisplayName);
+        Assert.Equal(ProfileLoginState.SignedIn, sut.Current.LoginState);
+        Assert.Equal("Ada Lovelace", sut.Current.Profile.DisplayName);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             sut.SetRememberLoginAsync(rememberLogin: true)
         );
 
         Assert.Contains("<UserSecretsId>", exception.Message);
-        Assert.Equal(ProfileLoginState.SignedIn, sut.LoginState);
-        Assert.Equal("Ada Lovelace", sut.CurrentProfile.DisplayName);
+        Assert.Equal(ProfileLoginState.SignedIn, sut.Current.LoginState);
+        Assert.Equal("Ada Lovelace", sut.Current.Profile.DisplayName);
     }
 
     [Theory]
     [InlineData(0, "Ada", "Lovelace")]
     [InlineData(StoredProfileCredentials.CurrentSchemaVersion, null, null)]
-    public async Task InitializeAsync_WithUnsupportedOrNamelessCredentials_ClearsStoredValue(
+    public async Task RestoreAsync_WithUnsupportedOrNamelessCredentials_ClearsStoredValue(
         int schemaVersion,
         string? firstName,
         string? lastName
@@ -172,9 +180,9 @@ public sealed class ProfileServiceTests
             localization
         );
 
-        await sut.InitializeAsync();
+        await sut.RestoreAsync();
 
-        Assert.Equal(ProfileLoginState.SignedOut, sut.LoginState);
+        Assert.Equal(ProfileLoginState.SignedOut, sut.Current.LoginState);
         Assert.Null(await secretStore.ReadAsync());
     }
 }

@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows;

@@ -15,16 +15,16 @@ description: 管理项目标识、目录持久化、标题栏选择与可替换�
 
 ```csharp
 builder
-    .ConfigShell(shell =>
-        shell.UseTitleBar().UseMultiProject())
-    .ConfigTitleBar(titleBar =>
+    .ConfigureProjects(projects => projects.SetMultiProjectEnabled())
+    .ConfigureTitleBar(titleBar =>
         titleBar
-            .InitApplicationTitle("Foobar")
-            .InitUnnamedProjectPlaceholder("未命名项目")
-            .UseLogo(showProjectTitle: true));
+            .SetEnabled()
+            .SetApplicationTitle("Foobar")
+            .SetUnnamedProjectPlaceholder("未命名项目")
+            .SetLogo(showProjectTitle: true));
 ```
 
-调用 `UseMultiProject()` 时默认启用；省略该调用时则默认禁用。未启用项目模式时，标题选择器只显示并列出应用标题，Flourish 不公开项目标题、项目保存或项目关闭语义。启用项目模式后，选择器显示活动项目名称；活动项目未持久化或没有活动选择时显示未命名项目占位文本，下拉框中包含全部项目以及“新建项目”。
+调用 `IProjectBuilder.SetMultiProjectEnabled()` 时默认启用；省略 `ConfigureProjects` 时则默认禁用。未启用项目模式时，标题选择器只显示并列出应用标题，Flourish 不公开项目标题、项目保存或项目关闭语义。启用项目模式后，选择器显示活动项目名称；活动项目未持久化或没有活动选择时显示未命名项目占位文本，下拉框中包含全部项目以及“新建项目”。
 
 ## 项目元数据与持久化
 
@@ -35,7 +35,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 {
     public void Register()
     {
-        projects.AppendProject(
+        projects.AddProject(
             new FlourishProject(
                 "reports",
                 "报表",
@@ -50,7 +50,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 
 `StoragePath == null` 表示项目尚未持久化。未命名项目占位文本只用于显示；不要通过比较项目名称与占位文本来判断持久化状态。项目名称不要求唯一，占位文本也可以修改或本地化。
 
-Flourish 从 `InitProjectCatalogFilePath` 选择的文件加载有序目录与活动项目 ID，默认路径是应用根目录下的 `projects.json`，且独立于可写设置文件。每次通过 `IProjectService` 修改目录时，Flourish 都会原子重写该文件。写入失败时会回滚内存变更，并且不会发布变更事件。
+Flourish 从 `SetProjectCatalogFilePath` 选择的文件加载有序目录与活动项目 ID，默认路径是应用根目录下的 `projects.json`，且独立于可写设置文件。每次通过 `IProjectService` 修改目录时，Flourish 都会原子重写该文件。写入失败时会回滚内存变更，并且不会发布变更事件。
 
 目录持久化属于 `IProjectService`；即使应用替换 `IProjectBehavior`，该行为也会继续生效。目录只保存元数据；`IProjectService` 不会读取或写入项目所表示的路径。
 
@@ -62,7 +62,7 @@ Flourish 从 `InitProjectCatalogFilePath` 选择的文件加载有序目录与�
 
 | 操作 | 行为 |
 | --- | --- |
-| `AppendProject(project, activate)` | 追加唯一的项目元数据，并可将其设为活动项目。 |
+| `AddProject(project, activate)` | 添加唯一的项目元数据，并可将其设为活动项目。 |
 | `SetProject(project, activate)` | 按 ID 添加或替换项目元数据。 |
 | `SetProjectMetadata(id, name, storagePath)` | 修改现有项目的名称与可选路径。 |
 | `SetActiveProject(id)` | 只修改活动 Shell 标识；传入 `null` 可清除选择。 |
@@ -90,10 +90,10 @@ Flourish 从 `InitProjectCatalogFilePath` 选择的文件加载有序目录与�
 
 ## 替换项目行为
 
-通过 `ConfigServices` 注册一个单例 `IProjectBehavior`。只有应用没有注册该接口时，Flourish 才会提供默认实现。
+通过 `ConfigureServices` 注册一个单例 `IProjectBehavior`。只有应用没有注册该接口时，Flourish 才会提供默认实现。
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 

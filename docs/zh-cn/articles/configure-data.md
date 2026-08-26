@@ -5,17 +5,17 @@ description: 配置 Flourish 本地化、持久化设置路径与项目目录。
 
 # 应用数据
 
-`ConfigData` 用于配置 Flourish 内置界面的语言、自定义翻译文件与持久化设置路径。即使没有调用 `ConfigData` 或 `InitLocale`，Flourish 也会使用内置英文（`en-US`），因此内置界面始终具有可用文案。偏好与受保护的 Profile 凭据使用 .NET Generic Host 管理的配置；项目元数据使用可独立配置的目录文件。
+`ConfigureData` 用于配置 Flourish 内置界面的语言、自定义翻译文件与持久化设置路径。即使没有调用 `ConfigureData` 或 `SetLocale`，Flourish 也会使用内置英文（`en-US`），因此内置界面始终具有可用文案。偏好与受保护的 Profile 凭据使用 .NET Generic Host 管理的配置；项目元数据使用可独立配置的目录文件。
 
 ## 选择内置语言
 
 Flourish 内置 `en-US` 和 `zh-CN`。语言标识不区分大小写，并以规范的 BCP 47 形式返回。建议使用连字符；下划线输入也会被接受并转换为连字符。
 
 ```csharp
-builder.ConfigData(data => data.InitLocale("en-US"));
+builder.ConfigureData(data => data.SetLocale("en-US"));
 ```
 
-省略 `ConfigData` 时，Flourish 默认使用 `en-US`。持久化默认启用，因此有效配置中的合法 `Flourish:Preferences:Locale` 会优先，后续 `SetLocale` 变更也会写回。代码配置的语言必须始终优先时，传入 `usePersistedPreference: false`。单独使用 Flourish 时，应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
+省略 `ConfigureData` 时，Flourish 默认使用 `en-US`。持久化默认启用，因此有效配置中的合法 `Flourish:Preferences:Locale` 会优先，后续 `SetLocale` 变更也会写回。代码配置的语言必须始终优先时，传入 `usePersistedPreference: false`。单独使用 Flourish 时，应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
 
 ## 接入 Essential Culture
 
@@ -36,7 +36,7 @@ using ArkheideSystem.Flourish.Extension.Culture;
 var flourish = FlourishBuilder
     .CreateDefaultBuilder(args)
     .UseEssentialCulture()
-    .ConfigData(data => data.InitLocale("en-US"))
+    .ConfigureData(data => data.SetLocale("en-US"))
     .Build();
 ```
 
@@ -46,6 +46,10 @@ var flourish = FlourishBuilder
 
 ```csharp
 localization.SetLocale("zh-CN");
+
+string locale = localization.Current.Locale;
+IReadOnlyList<string> available = localization.Current.AvailableLocales;
+localization.Changed += OnLocalizationChanged;
 ```
 
 应用继续维护自己的 `Culture.json`。XAML 使用传递提供的 `Localize`，临时弹窗、通知和
@@ -58,10 +62,10 @@ Flourish 内嵌一份 `FlourishCulture.Json` 目录。应用输出目录存在�
 还可以通过 `AddCultureFile(path)` 注册其他目录。所有目录文件仍必须命名为 `FlourishCulture.Json`；组合多个目录时将它们放在不同文件夹中。
 
 ```csharp
-builder.ConfigData(data =>
+builder.ConfigureData(data =>
 {
     data
-        .InitLocale("en-US")
+        .SetLocale("en-US")
         .AddCultureFile("Locales/FlourishCulture.Json");
 });
 ```
@@ -205,17 +209,17 @@ Provider 进入 Host 配置。不要在每次构建或部署时用种子文件�
 
 配置键为 `Flourish:Preferences:Theme`。读取遵循完整的 Host 优先级：`appsettings.Flourish.json`、`appsettings.json`、`appsettings.{Environment}.json`、User Secrets、应用注册的配置源、环境变量、命令行参数；越靠后的来源优先级越高。`Host.CreateDefaultBuilder` 只会自动加载基础文件和当前环境文件；`appsettings.User.json` 等其他名称必须由应用代码显式注册。
 
-通过 `ConfigConfiguration` 注册该文件：
+通过 `ConfigureConfiguration` 注册该文件：
 
 ```csharp
-builder.ConfigConfiguration((_, configuration) =>
-    configuration.UseConfigurationFile(
+builder.ConfigureConfiguration((_, configuration) =>
+    configuration.AddJsonFile(
         "appsettings.User.json",
         optional: true,
         reloadOnChange: true));
 ```
 
-`UseConfigurationFile` 用于注册 JSON 配置源；其他 provider 类型可以通过 `AddConfigurationSource` 传入标准 Microsoft `IConfigurationSource`。Flourish 不会公开 Host 可变的 `IConfigurationBuilder`，而是把这些来源统一插入 appsettings 与 User Secrets 之后、环境变量与命令行之前。注册顺序会被保留，因此后注册的应用源可以覆盖先注册的应用源，但不会覆盖环境变量或命令行策略。
+回调直接接收标准 Microsoft `IConfigurationBuilder`，因此可以使用 `AddJsonFile`，也可以使用其他已安装配置 provider 提供的扩展。Flourish 会把这些应用来源插入 appsettings 与 User Secrets 之后、环境变量与命令行之前。注册顺序会被保留，因此后注册的应用源可以覆盖先注册的应用源，但不会覆盖环境变量或命令行策略。
 
 `IFlourishSettingsStore` 只接受以 `Flourish:` 开头的后代路径，不能创建、替换或删除其他顶级节。Flourish 会保留所选文件中已有无关节的值，但会重新序列化整个 JSON 对象，因此文档可能被重新格式化，注释也会被移除。若另一个进程也会管理应用配置，建议使用默认的独立文件。所选目录必须可写；已有文件必须是根节点为对象的有效 JSON，其中已有的 `Flourish` 属性必须是对象。
 
@@ -225,18 +229,18 @@ builder.ConfigConfiguration((_, configuration) =>
 
 ```csharp
 builder
-    .ConfigData(data =>
-        data.InitLocale("en-US"))
-    .ConfigWindow(window =>
+    .ConfigureData(data =>
+        data.SetLocale("en-US"))
+    .ConfigureWindow(window =>
         window
-            .InitWindowSize(1280, 720)
-            .InitManualWindowPosition(80, 60)
-            .InitWindowState(WindowState.Normal))
-    .ConfigNavigation(navigation =>
+            .SetSize(1280, 720)
+            .SetManualPosition(80, 60)
+            .SetState(WindowState.Normal))
+    .ConfigureNavigation(navigation =>
         navigation
-            .InitInitiallyOpen()
-            .InitPanelWidth(260, 64, 520, 180)
-            .UseLastNavigation());
+            .SetInitiallyOpen()
+            .SetPanelWidth(260, 64, 520, 180)
+            .SetLastNavigationPersistence());
 ```
 
 对于每个逻辑偏好，最后一次 Builder 调用同时决定回退值和持久化策略。代码必须始终采用本次调用值并停止写回运行时变更时，传入 `usePersistedPreference: false`；这不会删除旧的存储值。持久化启用时，完整且合法的有效 Host 配置值优先，缺失、不完整或无效的值则保留 Builder 回退值。窗口大小、位置、字体比例、配色和动效时长等复合设置会整组恢复，不会把部分保存字段与部分回退字段混合。
@@ -245,12 +249,12 @@ builder
 
 应用能力和结构不属于用户偏好。Flourish 不会持久化标题栏、导航、Profile、项目、工具栏或状态栏的能力开关，也不会持久化页面类型与路由、处理程序与工厂、品牌信息、窗口最小/最大约束、ResizeMode、任务栏可见性、文化文件注册或页面专用字体覆盖。因此，保存的数据不能重新启用应用代码已经关闭的能力。
 
-Flourish 通过最终有效的 `IConfiguration` 读取偏好，并保留 Host 的正常优先级。默认写入应用根目录中的 `appsettings.Flourish.json`。可在 `ConfigData` 中选择其他 JSON 文件以及独立的项目目录文件：
+Flourish 通过最终有效的 `IConfiguration` 读取偏好，并保留 Host 的正常优先级。默认写入应用根目录中的 `appsettings.Flourish.json`。可在 `ConfigureData` 中选择其他 JSON 文件以及独立的项目目录文件：
 
 ```csharp
-builder.ConfigData(data => data
-    .InitAppSettingsFilePath("Data/appsettings.Flourish.json")
-    .InitProjectCatalogFilePath("Data/projects.json"));
+builder.ConfigureData(data => data
+    .SetAppSettingsFilePath("Data/appsettings.Flourish.json")
+    .SetProjectCatalogFilePath("Data/projects.json"));
 ```
 
 相对路径以 `AppContext.BaseDirectory` 为基准，也可以传入绝对路径。所选设置文件与基础 `appsettings.json` 不同时，Flourish 会把仅发布 `Flourish` 节的 Provider 插入该基础配置源之前，并保留应用的全部 Host appsettings 配置源；User Secrets、环境变量与命令行仍保持正常的更高优先级。显式选择基础 `appsettings.json` 时，该文件仍保持正常的完整 Host Provider 行为，但 Flourish 只能写入其 `Flourish` 节下的后代路径。两个路径必须指向不同的 `.json` 文件，首次写入时会创建父目录。
@@ -259,7 +263,7 @@ builder.ConfigData(data => data
 
 ## 项目目录
 
-`IProjectService` 将有序项目元数据与活动项目 ID 存储在 `InitProjectCatalogFilePath` 选择的文件中，默认是应用根目录下的 `projects.json`。该路径独立于 `IFlourishSettingsStore.FilePath`，不是 Host 配置源，也不参与配置优先级。
+`IProjectService` 将有序项目元数据与活动项目 ID 存储在 `SetProjectCatalogFilePath` 选择的文件中，默认是应用根目录下的 `projects.json`。该路径独立于 `IFlourishSettingsStore.FilePath`，不是 Host 配置源，也不参与配置优先级。
 
 项目服务启动时会加载该目录，并在每次目录变更时执行原子写入。注册替换的 `IProjectBehavior` 只会改变项目对话框与文件生命周期，不会禁用目录持久化。目录必须可写。未持久化项目与生命周期行为参见[项目](projects.md)。
 

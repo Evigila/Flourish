@@ -408,7 +408,7 @@
           </flourish:ActionCard.Body>
         </flourish:ActionCard>
         <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
-          Text="// Initialize the default for built-in Flourish scrolling surfaces.&#10;builder.ConfigShell(shell =&gt;&#10;    shell.UseSmoothScroll(enabled: true));&#10;&#10;// Change the active application and observe later changes.&#10;scroll.SetSmoothScrollingEnabled(false);&#10;var current = scroll.GetCurrent();&#10;scroll.Changed += OnScrollSettingsChanged;"
+          Text="// Configure the initial value during application composition.&#10;builder.ConfigureLayout(layout =&gt;&#10;    layout.SetSmoothScrollingEnabled(enabled: true));&#10;&#10;// Change and observe the same setting at runtime.&#10;scroll.SetSmoothScrollingEnabled(false);&#10;var current = scroll.Current;&#10;scroll.Changed += OnScrollSettingsChanged;"
         />
       </StackPanel>
     </flourish:Chunk>

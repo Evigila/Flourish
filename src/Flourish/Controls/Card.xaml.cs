@@ -1,3 +1,6 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;

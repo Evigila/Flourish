@@ -1,7 +1,14 @@
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Messaging;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
 using Microsoft.Extensions.Logging.Abstractions;
 using Button = ArkheideSystem.Flourish.Controls.Button;
@@ -94,7 +101,7 @@ public sealed class ShellNotificationControllerTests
             dismiss.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
             DispatcherTest.DrainApplicationIdle();
 
-            Assert.Empty(service.ActiveNotifications);
+            Assert.Empty(service.Current.Notifications);
             Assert.Empty(host.Items.Children);
         });
     }

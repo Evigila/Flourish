@@ -1,7 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,27 +28,27 @@ public partial class BackgroundTasksPage : Page
         OutcomeList.ItemsSource = outcomes;
         Loaded += Page_Loaded;
         Unloaded += Page_Unloaded;
-        RefreshActiveTasks(backgroundTasks.ActiveTasks);
+        RefreshActiveTasks(backgroundTasks.Current);
     }
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-        backgroundTasks.TasksChanged -= BackgroundTasks_TasksChanged;
-        backgroundTasks.TasksChanged += BackgroundTasks_TasksChanged;
-        RefreshActiveTasks(backgroundTasks.ActiveTasks);
+        backgroundTasks.Changed -= BackgroundTasks_Changed;
+        backgroundTasks.Changed += BackgroundTasks_Changed;
+        RefreshActiveTasks(backgroundTasks.Current);
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        backgroundTasks.TasksChanged -= BackgroundTasks_TasksChanged;
+        backgroundTasks.Changed -= BackgroundTasks_Changed;
     }
 
-    private void BackgroundTasks_TasksChanged(
+    private void BackgroundTasks_Changed(
         object? sender,
-        FlourishBackgroundTasksChangedEventArgs e
+        FlourishStateChangedEventArgs<IReadOnlyList<FlourishBackgroundTaskInfo>> e
     )
     {
-        Dispatcher.BeginInvoke(() => RefreshActiveTasks(e.Tasks));
+        Dispatcher.BeginInvoke(() => RefreshActiveTasks(e.Current));
     }
 
     private void AddProgressTask_Click(object sender, RoutedEventArgs e)

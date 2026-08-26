@@ -37,15 +37,15 @@ Every submission requires `FlourishBackgroundTaskMetadata`. `Name` must contain 
 
 While work is active, the left side of the status bar shows one icon for each running or cancelling task. Hovering an icon shows its metadata, state, and reported progress; clicking it opens the background-task flyout. If all execution slots are occupied, later submissions remain queued and a plain number displays the waiting count without an icon or badge. The queue provides cancellation actions for queued or running work.
 
-Task status and queue details remain available when the application omits `UseTips()`. The task and queue buttons support pointer and keyboard interaction.
+Task status and queue details remain available when the application omits `ConfigureToolTips`. The task and queue buttons support pointer and keyboard interaction.
 
-Active work temporarily reveals the status bar even when `UseStatusBar()` was not configured. Completed, failed, and cancelled tasks leave the active list and their icons are removed; use the returned handle when an application needs the final outcome or its own completed-task record.
+Active work temporarily reveals the status bar even when `IStatusBarBuilder.SetEnabled()` was not configured. Completed, failed, and cancelled tasks leave the active list and their icons are removed; use the returned handle when an application needs the final outcome or its own completed-task record.
 
 ## Concurrency and the waiting queue
 
 `MaxConcurrency` reports how many delegates can run concurrently. Additional tasks remain in the waiting queue in submission order until an execution slot is available.
 
-`ActiveTasks` returns immutable snapshots of queued, running, and cancelling tasks. `TasksChanged` publishes a new immutable list when collection membership, state, or progress changes. The event can be raised from a non-UI thread, so event handlers that update application UI must dispatch back to the UI thread.
+`Current` returns immutable snapshots of queued, running, and cancelling tasks. `Changed` publishes the same cached list through `args.Current` when collection membership, task state, or progress changes. The event can be raised from a non-UI thread, so event handlers that update application UI must dispatch back to the UI thread.
 
 `FlourishBackgroundTaskState` reports the lifecycle:
 
@@ -58,7 +58,7 @@ Active work temporarily reveals the status bar even when `UseStatusBar()` was no
 | `Canceled` | Completed as cancelled. |
 | `Failed` | Completed with a captured exception. |
 
-Only the first three states appear in `ActiveTasks`; terminal state remains available through the handle and result.
+Only the first three states appear in `Current`; terminal state remains available through the handle and result.
 
 ## ValueTask delegates
 

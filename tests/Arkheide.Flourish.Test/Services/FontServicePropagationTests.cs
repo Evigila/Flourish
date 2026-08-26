@@ -1,3 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -5,8 +15,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Themes;
 using WpfControl = System.Windows.Controls.Control;
 
@@ -43,7 +51,7 @@ public sealed class FontServicePropagationTests
         StaTest.Run(() =>
         {
             var resources = new ResourceDictionary();
-            var sut = new FontService(new FlourishShellOptions());
+            var sut = new FontService(new FlourishAppearanceOptions());
 
             sut.Attach(Dispatcher.CurrentDispatcher, resources);
             var before = CaptureResources(resources);
@@ -79,12 +87,12 @@ public sealed class FontServicePropagationTests
 
             sut.SetFont(
                 "Arial",
-                sut.SmallFontSize,
-                sut.StandardFontSize,
-                sut.IconFontSize,
-                sut.LargeFontSize,
-                sut.ExtraLargeFontSize,
-                sut.HeaderSizeFontSize
+                sut.Current.SmallFontSize,
+                sut.Current.StandardFontSize,
+                sut.Current.IconFontSize,
+                sut.Current.LargeFontSize,
+                sut.Current.ExtraLargeFontSize,
+                sut.Current.HeaderSizeFontSize
             );
 
             AssertOnlyResourcesChanged(before, resources, TextFamilyKey);
@@ -163,24 +171,24 @@ public sealed class FontServicePropagationTests
             sut.Changed += (_, args) => events.Add(args);
 
             sut.SetFont(
-                sut.FontFamily,
-                sut.SmallFontSize,
-                sut.StandardFontSize,
-                sut.IconFontSize,
-                sut.LargeFontSize,
-                sut.ExtraLargeFontSize,
-                sut.HeaderSizeFontSize
+                sut.Current.FontFamily,
+                sut.Current.SmallFontSize,
+                sut.Current.StandardFontSize,
+                sut.Current.IconFontSize,
+                sut.Current.LargeFontSize,
+                sut.Current.ExtraLargeFontSize,
+                sut.Current.HeaderSizeFontSize
             );
-            sut.SetIconFontFamily(sut.IconFontFamily);
+            sut.SetIconFontFamily(sut.Current.IconFontFamily);
 
             Assert.Empty(events);
 
-            sut.SetOverrideFont<TestPage>("Arial", 15, 18, 20, 21, 24, 30);
-            sut.SetOverrideFont<TestPage>("Arial", 15, 18, 20, 21, 24, 30);
+            sut.SetOverrideFont(typeof(TestPage), "Arial", 15, 18, 20, 21, 24, 30);
+            sut.SetOverrideFont(typeof(TestPage), "Arial", 15, 18, 20, 21, 24, 30);
             Assert.Single(events);
 
-            Assert.True(sut.RemoveOverrideFont<TestPage>());
-            Assert.False(sut.RemoveOverrideFont<TestPage>());
+            Assert.True(sut.RemoveOverrideFont(typeof(TestPage)));
+            Assert.False(sut.RemoveOverrideFont(typeof(TestPage)));
             Assert.Equal(2, events.Count);
         });
     }
@@ -196,17 +204,17 @@ public sealed class FontServicePropagationTests
 
             sut.SetFont(
                 "Arial",
-                sut.SmallFontSize,
-                sut.StandardFontSize,
-                sut.IconFontSize,
-                sut.LargeFontSize,
-                sut.ExtraLargeFontSize,
-                sut.HeaderSizeFontSize
+                sut.Current.SmallFontSize,
+                sut.Current.StandardFontSize,
+                sut.Current.IconFontSize,
+                sut.Current.LargeFontSize,
+                sut.Current.ExtraLargeFontSize,
+                sut.Current.HeaderSizeFontSize
             );
             sut.SetFont("Times New Roman", 14, 19, 21, 24, 28, 34);
             sut.SetIconFontFamily("Arial");
-            sut.SetOverrideFont<TestPage>("Arial", 15, 18, 20, 21, 24, 30);
-            sut.RemoveOverrideFont<TestPage>();
+            sut.SetOverrideFont(typeof(TestPage), "Arial", 15, 18, 20, 21, 24, 30);
+            sut.RemoveOverrideFont(typeof(TestPage));
 
             Assert.Equal(
                 [
@@ -223,12 +231,12 @@ public sealed class FontServicePropagationTests
                 events.Skip(3),
                 args => Assert.Equal(typeof(TestPage), args.AffectedPageType)
             );
-            Assert.Equal(14d, events[1].SmallFontSize);
-            Assert.Equal(19d, events[1].StandardFontSize);
-            Assert.Equal(21d, events[1].IconFontSize);
-            Assert.Equal(24d, events[1].LargeFontSize);
-            Assert.Equal(28d, events[1].ExtraLargeFontSize);
-            Assert.Equal(34d, events[1].HeaderSizeFontSize);
+            Assert.Equal(14d, events[1].Current.SmallFontSize);
+            Assert.Equal(19d, events[1].Current.StandardFontSize);
+            Assert.Equal(21d, events[1].Current.IconFontSize);
+            Assert.Equal(24d, events[1].Current.LargeFontSize);
+            Assert.Equal(28d, events[1].Current.ExtraLargeFontSize);
+            Assert.Equal(34d, events[1].Current.HeaderSizeFontSize);
         });
     }
 
@@ -239,7 +247,7 @@ public sealed class FontServicePropagationTests
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
             var dispatcherThreadId = Environment.CurrentManagedThreadId;
-            var options = new FlourishShellOptions
+            var options = new FlourishAppearanceOptions
             {
                 FontFamily = "Segoe UI",
                 IconFontFamily = "Segoe MDL2 Assets",
@@ -261,7 +269,7 @@ public sealed class FontServicePropagationTests
             {
                 () => sut.SetFont("Arial", 12, 16, 18, 20, 23, 29),
                 () => sut.SetIconFontFamily("Arial"),
-                () => sut.SetOverrideFont<TestPage>("Arial", 14, 18, 20, 22, 26, 32),
+                () => sut.SetOverrideFont(typeof(TestPage), "Arial", 14, 18, 20, 22, 26, 32),
                 () => sut.SetFont("Consolas", 15, 19, 21, 24, 29, 35),
             };
             var tasks = new List<Task>();
@@ -320,22 +328,22 @@ public sealed class FontServicePropagationTests
             Assert.Equal(24d, options.FontSizeLarge);
             Assert.Equal(29d, options.FontSizeExtraLarge);
             Assert.Equal(35d, options.FontSizeHeaderSize);
-            Assert.Equal(options.FontFamily, sut.FontFamily);
-            Assert.Equal(options.IconFontFamily, sut.IconFontFamily);
-            Assert.Equal(options.FontSizeSmall, sut.SmallFontSize);
-            Assert.Equal(options.FontSizeStandard, sut.StandardFontSize);
-            Assert.Equal(options.FontSizeIcon, sut.IconFontSize);
-            Assert.Equal(options.FontSizeLarge, sut.LargeFontSize);
-            Assert.Equal(options.FontSizeExtraLarge, sut.ExtraLargeFontSize);
-            Assert.Equal(options.FontSizeHeaderSize, sut.HeaderSizeFontSize);
-            Assert.Equal(last.FontFamily, options.FontFamily);
-            Assert.Equal(last.IconFontFamily, options.IconFontFamily);
-            Assert.Equal(last.SmallFontSize, options.FontSizeSmall);
-            Assert.Equal(last.StandardFontSize, options.FontSizeStandard);
-            Assert.Equal(last.IconFontSize, options.FontSizeIcon);
-            Assert.Equal(last.LargeFontSize, options.FontSizeLarge);
-            Assert.Equal(last.ExtraLargeFontSize, options.FontSizeExtraLarge);
-            Assert.Equal(last.HeaderSizeFontSize, options.FontSizeHeaderSize);
+            Assert.Equal(options.FontFamily, sut.Current.FontFamily);
+            Assert.Equal(options.IconFontFamily, sut.Current.IconFontFamily);
+            Assert.Equal(options.FontSizeSmall, sut.Current.SmallFontSize);
+            Assert.Equal(options.FontSizeStandard, sut.Current.StandardFontSize);
+            Assert.Equal(options.FontSizeIcon, sut.Current.IconFontSize);
+            Assert.Equal(options.FontSizeLarge, sut.Current.LargeFontSize);
+            Assert.Equal(options.FontSizeExtraLarge, sut.Current.ExtraLargeFontSize);
+            Assert.Equal(options.FontSizeHeaderSize, sut.Current.HeaderSizeFontSize);
+            Assert.Equal(last.Current.FontFamily, options.FontFamily);
+            Assert.Equal(last.Current.IconFontFamily, options.IconFontFamily);
+            Assert.Equal(last.Current.SmallFontSize, options.FontSizeSmall);
+            Assert.Equal(last.Current.StandardFontSize, options.FontSizeStandard);
+            Assert.Equal(last.Current.IconFontSize, options.FontSizeIcon);
+            Assert.Equal(last.Current.LargeFontSize, options.FontSizeLarge);
+            Assert.Equal(last.Current.ExtraLargeFontSize, options.FontSizeExtraLarge);
+            Assert.Equal(last.Current.HeaderSizeFontSize, options.FontSizeHeaderSize);
             Assert.Equal(
                 options.FontFamily,
                 Assert.IsType<FontFamily>(resources[TextFamilyKey]).Source
@@ -369,7 +377,7 @@ public sealed class FontServicePropagationTests
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
             var dispatcherThreadId = Environment.CurrentManagedThreadId;
-            var options = new FlourishShellOptions
+            var options = new FlourishAppearanceOptions
             {
                 FontFamily = "Segoe UI",
                 IconFontFamily = "Segoe MDL2 Assets",
@@ -408,12 +416,12 @@ public sealed class FontServicePropagationTests
             Assert.NotEqual(dispatcherThreadId, detachedEvent.ThreadId);
             Assert.Equal(0, detachedEvent.ResourceCount);
             Assert.Empty(resources);
-            Assert.Equal("Arial", sut.FontFamily);
-            Assert.Equal(14d, sut.SmallFontSize);
-            Assert.Equal(18d, sut.StandardFontSize);
-            Assert.Equal(20d, sut.IconFontSize);
-            Assert.Equal(22d, sut.LargeFontSize);
-            Assert.Equal(25d, sut.ExtraLargeFontSize);
+            Assert.Equal("Arial", sut.Current.FontFamily);
+            Assert.Equal(14d, sut.Current.SmallFontSize);
+            Assert.Equal(18d, sut.Current.StandardFontSize);
+            Assert.Equal(20d, sut.Current.IconFontSize);
+            Assert.Equal(22d, sut.Current.LargeFontSize);
+            Assert.Equal(25d, sut.Current.ExtraLargeFontSize);
 
             DispatcherTest.Wait(dispatcher, attachTask);
 
@@ -423,13 +431,13 @@ public sealed class FontServicePropagationTests
             Assert.Equal(20d, resources["FlourishFontSizeIcon"]);
             Assert.Equal(22d, resources["FlourishFontSizeLarge"]);
             Assert.Equal(25d, resources["FlourishFontSizeExtraLarge"]);
-            Assert.Equal(sut.FontFamily, detachedEvent.Args.FontFamily);
-            Assert.Equal(sut.SmallFontSize, detachedEvent.Args.SmallFontSize);
-            Assert.Equal(sut.StandardFontSize, detachedEvent.Args.StandardFontSize);
-            Assert.Equal(sut.IconFontSize, detachedEvent.Args.IconFontSize);
-            Assert.Equal(sut.LargeFontSize, detachedEvent.Args.LargeFontSize);
-            Assert.Equal(sut.ExtraLargeFontSize, detachedEvent.Args.ExtraLargeFontSize);
-            Assert.Equal(sut.HeaderSizeFontSize, detachedEvent.Args.HeaderSizeFontSize);
+            Assert.Equal(sut.Current.FontFamily, detachedEvent.Args.Current.FontFamily);
+            Assert.Equal(sut.Current.SmallFontSize, detachedEvent.Args.Current.SmallFontSize);
+            Assert.Equal(sut.Current.StandardFontSize, detachedEvent.Args.Current.StandardFontSize);
+            Assert.Equal(sut.Current.IconFontSize, detachedEvent.Args.Current.IconFontSize);
+            Assert.Equal(sut.Current.LargeFontSize, detachedEvent.Args.Current.LargeFontSize);
+            Assert.Equal(sut.Current.ExtraLargeFontSize, detachedEvent.Args.Current.ExtraLargeFontSize);
+            Assert.Equal(sut.Current.HeaderSizeFontSize, detachedEvent.Args.Current.HeaderSizeFontSize);
 
             using var attachedMutationPosted = new ManualResetEventSlim();
             dispatcher.Hooks.OperationPosted += OnAttachedMutationPosted;
@@ -440,12 +448,12 @@ public sealed class FontServicePropagationTests
             );
             dispatcher.Hooks.OperationPosted -= OnAttachedMutationPosted;
 
-            Assert.Equal("Arial", sut.FontFamily);
-            Assert.Equal(14d, sut.SmallFontSize);
-            Assert.Equal(18d, sut.StandardFontSize);
-            Assert.Equal(20d, sut.IconFontSize);
-            Assert.Equal(22d, sut.LargeFontSize);
-            Assert.Equal(25d, sut.ExtraLargeFontSize);
+            Assert.Equal("Arial", sut.Current.FontFamily);
+            Assert.Equal(14d, sut.Current.SmallFontSize);
+            Assert.Equal(18d, sut.Current.StandardFontSize);
+            Assert.Equal(20d, sut.Current.IconFontSize);
+            Assert.Equal(22d, sut.Current.LargeFontSize);
+            Assert.Equal(25d, sut.Current.ExtraLargeFontSize);
             Assert.Equal("Arial", Assert.IsType<FontFamily>(resources[TextFamilyKey]).Source);
             Assert.Equal(18d, resources["FlourishFontSizeStandard"]);
 
@@ -454,21 +462,21 @@ public sealed class FontServicePropagationTests
             Assert.Equal(2, events.Count);
             var attachedEvent = events[^1];
             Assert.Equal(dispatcherThreadId, attachedEvent.ThreadId);
-            Assert.Equal("Consolas", sut.FontFamily);
-            Assert.Equal(15d, sut.SmallFontSize);
-            Assert.Equal(19d, sut.StandardFontSize);
-            Assert.Equal(21d, sut.IconFontSize);
-            Assert.Equal(24d, sut.LargeFontSize);
-            Assert.Equal(28d, sut.ExtraLargeFontSize);
+            Assert.Equal("Consolas", sut.Current.FontFamily);
+            Assert.Equal(15d, sut.Current.SmallFontSize);
+            Assert.Equal(19d, sut.Current.StandardFontSize);
+            Assert.Equal(21d, sut.Current.IconFontSize);
+            Assert.Equal(24d, sut.Current.LargeFontSize);
+            Assert.Equal(28d, sut.Current.ExtraLargeFontSize);
             Assert.Equal("Consolas", Assert.IsType<FontFamily>(resources[TextFamilyKey]).Source);
             Assert.Equal(19d, resources["FlourishFontSizeStandard"]);
-            Assert.Equal(sut.FontFamily, attachedEvent.Args.FontFamily);
-            Assert.Equal(sut.SmallFontSize, attachedEvent.Args.SmallFontSize);
-            Assert.Equal(sut.StandardFontSize, attachedEvent.Args.StandardFontSize);
-            Assert.Equal(sut.IconFontSize, attachedEvent.Args.IconFontSize);
-            Assert.Equal(sut.LargeFontSize, attachedEvent.Args.LargeFontSize);
-            Assert.Equal(sut.ExtraLargeFontSize, attachedEvent.Args.ExtraLargeFontSize);
-            Assert.Equal(sut.HeaderSizeFontSize, attachedEvent.Args.HeaderSizeFontSize);
+            Assert.Equal(sut.Current.FontFamily, attachedEvent.Args.Current.FontFamily);
+            Assert.Equal(sut.Current.SmallFontSize, attachedEvent.Args.Current.SmallFontSize);
+            Assert.Equal(sut.Current.StandardFontSize, attachedEvent.Args.Current.StandardFontSize);
+            Assert.Equal(sut.Current.IconFontSize, attachedEvent.Args.Current.IconFontSize);
+            Assert.Equal(sut.Current.LargeFontSize, attachedEvent.Args.Current.LargeFontSize);
+            Assert.Equal(sut.Current.ExtraLargeFontSize, attachedEvent.Args.Current.ExtraLargeFontSize);
+            Assert.Equal(sut.Current.HeaderSizeFontSize, attachedEvent.Args.Current.HeaderSizeFontSize);
 
             void OnAttachPosted(object? sender, DispatcherHookEventArgs e)
             {
@@ -497,10 +505,10 @@ public sealed class FontServicePropagationTests
             window.Measure(new Size(400, 300));
             window.Arrange(new Rect(0, 0, 400, 300));
 
-            Assert.Equal(sut.FontFamily, window.FontFamily.Source);
-            Assert.Equal(sut.FontFamily, text.FontFamily.Source);
-            Assert.Equal(sut.StandardFontSize, window.FontSize);
-            Assert.Equal(sut.StandardFontSize, text.FontSize);
+            Assert.Equal(sut.Current.FontFamily, window.FontFamily.Source);
+            Assert.Equal(sut.Current.FontFamily, text.FontFamily.Source);
+            Assert.Equal(sut.Current.StandardFontSize, window.FontSize);
+            Assert.Equal(sut.Current.StandardFontSize, text.FontSize);
             Assert.DoesNotContain(TextFamilyKey, window.Resources.Keys.Cast<object>());
             Assert.DoesNotContain("FlourishFontSizeStandard", window.Resources.Keys.Cast<object>());
 
@@ -524,7 +532,7 @@ public sealed class FontServicePropagationTests
         {
             var resources = new ResourceDictionary();
             resources.MergedDictionaries.Add(new FlourishThemeResources());
-            var sut = new FontService(new FlourishShellOptions());
+            var sut = new FontService(new FlourishAppearanceOptions());
             sut.Attach(Dispatcher.CurrentDispatcher, resources);
 
             WpfControl[] controls =
@@ -591,13 +599,13 @@ public sealed class FontServicePropagationTests
 
             sut.SetIconFontFamily("Arial");
             sut.SetFont(
-                sut.FontFamily,
-                sut.SmallFontSize,
-                sut.StandardFontSize,
+                sut.Current.FontFamily,
+                sut.Current.SmallFontSize,
+                sut.Current.StandardFontSize,
                 18,
-                sut.LargeFontSize,
-                sut.ExtraLargeFontSize,
-                sut.HeaderSizeFontSize
+                sut.Current.LargeFontSize,
+                sut.Current.ExtraLargeFontSize,
+                sut.Current.HeaderSizeFontSize
             );
 
             Assert.Same(originalIcon, window.Content);
@@ -635,7 +643,7 @@ public sealed class FontServicePropagationTests
         {
             var (sut, resources) = CreateAttachedService();
             var page = CreatePageWithResources(resources);
-            sut.SetOverrideFont<TestPage>("Arial", null, null, null, null, null, null);
+            sut.SetOverrideFont(typeof(TestPage), "Arial", null, null, null, null, null, null);
 
             Assert.True(sut.ApplyToPage(page));
             Assert.Equal("Arial", page.FontFamily.Source);
@@ -660,7 +668,7 @@ public sealed class FontServicePropagationTests
         {
             var (sut, resources) = CreateAttachedService();
             var page = CreatePageWithResources(resources);
-            sut.SetOverrideFont<TestPage>("Arial", 14, 18, 20, 22, 26, 32);
+            sut.SetOverrideFont(typeof(TestPage), "Arial", 14, 18, 20, 22, 26, 32);
             Assert.True(sut.ApplyToPage(page));
 
             sut.SetFont("Times New Roman", 17, 22, 24, 27, 31, 37);
@@ -695,10 +703,10 @@ public sealed class FontServicePropagationTests
             page.Resources["FlourishFontSizeIcon"] = 17d;
             page.Resources["FlourishFontSizeLarge"] = 19d;
             page.Resources["FlourishFontSizeExtraLarge"] = 22d;
-            sut.SetOverrideFont<TestPage>("Arial", 14, 18, 20, 22, 25, 31);
+            sut.SetOverrideFont(typeof(TestPage), "Arial", 14, 18, 20, 22, 25, 31);
             Assert.True(sut.ApplyToPage(page));
 
-            Assert.True(sut.RemoveOverrideFont<TestPage>());
+            Assert.True(sut.RemoveOverrideFont(typeof(TestPage)));
             Assert.True(sut.ApplyToPage(page));
 
             Assert.Same(originalFamily, page.Resources[TextFamilyKey]);
@@ -716,7 +724,9 @@ public sealed class FontServicePropagationTests
     public void SourceContractsUseOneApplicationScopeAndFilterPageOverrideRefreshes()
     {
         var flourishRoot = Path.Combine(TestPaths.RepositoryRoot, "src", "Flourish");
-        var fontSource = File.ReadAllText(Path.Combine(flourishRoot, "Services", "FontService.cs"));
+        var fontSource = File.ReadAllText(
+            Path.Combine(flourishRoot, "Appearance", "FontService.cs")
+        );
         var shellSource = File.ReadAllText(
             Path.Combine(flourishRoot, "Views", "Windows", "FlourishShellWindow.xaml.cs")
         );
@@ -735,10 +745,10 @@ public sealed class FontServicePropagationTests
             statusSurfaceSource
         );
         var statusItemSource = File.ReadAllText(
-            Path.Combine(flourishRoot, "Internal", "Interaction", "StatusItemViewCache.cs")
+            Path.Combine(flourishRoot, "Views", "Windows", "StatusItemViewCache.cs")
         );
         var runtimeSource = File.ReadAllText(
-            Path.Combine(flourishRoot, "Internal", "Composition", "FlourishRuntime.cs")
+            Path.Combine(flourishRoot, "Hosting", "FlourishRuntime.cs")
         );
         var shellXaml = XDocument.Load(
             Path.Combine(flourishRoot, "Views", "Windows", "FlourishShellWindow.xaml")
@@ -814,7 +824,7 @@ public sealed class FontServicePropagationTests
 
     private static (FontService Service, ResourceDictionary Resources) CreateAttachedService()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishAppearanceOptions();
         options.FontFamily = "Segoe UI";
         options.IconFontFamily = "Segoe MDL2 Assets";
         options.FontSizeSmall = 11;

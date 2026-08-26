@@ -1,4 +1,4 @@
-using ArkheideSystem.Flourish.Abstract.Essential;
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows.Controls;
 
 namespace ArkheideSystem.Gallery.Views;

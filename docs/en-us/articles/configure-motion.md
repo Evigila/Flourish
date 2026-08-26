@@ -5,24 +5,24 @@ description: Configure page, navigation, and hover animations while respecting r
 
 # Motion
 
-Motion can communicate page changes, navigation panel state, and hover affordances. Enable motion through [Shell configuration](shell-configuration.md), then use `ConfigMotion` to select transitions and durations.
+Motion can communicate page changes, navigation panel state, and hover affordances. Use `ConfigureMotion` to enable the feature and select transitions and durations.
 
 ## Configure motion
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseMotion())
-    .ConfigMotion(motion =>
+    .ConfigureMotion(motion =>
     {
         motion
-            .UsePageTransition(
+            .SetEnabled()
+            .SetPageTransition(
                 transition: FlourishPageTransition.EntranceFromBottom,
                 duration: TimeSpan.FromMilliseconds(180))
-            .UseNavigationPanelTransition(
+            .SetNavigationPanelTransition(
                 transition: FlourishNavigationPanelTransition.Resize,
                 duration: TimeSpan.FromMilliseconds(180))
-            .UseHoverRevealAnimation(duration: TimeSpan.FromMilliseconds(140))
-            .UseSystemReducedMotion();
+            .SetHoverReveal(duration: TimeSpan.FromMilliseconds(140))
+            .SetRespectSystemReducedMotion();
     });
 ```
 
@@ -30,13 +30,13 @@ The shell-wide motion switch and each motion category are persisted independentl
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseMotion())
-    .ConfigMotion(motion => motion
-        .UsePageTransition(transition: FlourishPageTransition.Fade)
-        .UseNavigationPanelTransition(
+    .ConfigureMotion(motion => motion
+        .SetEnabled()
+        .SetPageTransition(transition: FlourishPageTransition.Fade)
+        .SetNavigationPanelTransition(
             transition: FlourishNavigationPanelTransition.Resize)
-        .UseHoverRevealAnimation()
-        .UseSystemReducedMotion());
+        .SetHoverReveal()
+        .SetRespectSystemReducedMotion());
 ```
 
 ## Transitions and durations
@@ -45,9 +45,9 @@ Each transition or animation accepts its own optional duration. If no duration i
 
 Explicit durations must be greater than zero. Set the page or navigation transition enum to `None` to disable only that category.
 
-`UsePageTransition` controls how pages enter the content frame. `UseNavigationPanelTransition` controls how the navigation panel opens and closes.
+`SetPageTransition` controls how pages enter the content frame. `SetNavigationPanelTransition` controls how the navigation panel opens and closes.
 
-`UseHoverRevealAnimation` enables hover animation on supported controls, including the Button family, CheckBox layouts, selection-item containers, the closed ComboBox selector, and the parent-owned interaction layer of BunchedListBox.
+`SetHoverReveal` enables hover animation on supported controls, including the Button family, CheckBox layouts, selection-item containers, the closed ComboBox selector, and the parent-owned interaction layer of BunchedListBox.
 
 ## Navigation panel behavior during transitions
 
@@ -59,9 +59,9 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 ## Reduced motion
 
-`UseSystemReducedMotion` lets Flourish follow the operating system reduced-motion preference. Use it when animations are enabled so the shell can adapt to the user's accessibility setting.
+`SetRespectSystemReducedMotion` lets Flourish follow the operating system reduced-motion preference. Use it when animations are enabled so the shell can adapt to the user's accessibility setting.
 
-`UseMotion(false)` disables all configured motion.
+At runtime, `IMotionService.SetEnabled(false)` disables all configured motion. `IMotionService.Current` exposes the active settings, and `Changed` reports updates.
 
 ## Related features
 

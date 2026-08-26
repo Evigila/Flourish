@@ -1,6 +1,9 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Reflection;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Composition;
 using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Windows;

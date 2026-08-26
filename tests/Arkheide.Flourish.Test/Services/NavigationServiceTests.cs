@@ -1,7 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Moq;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -307,7 +313,7 @@ public sealed class NavigationServiceTests
     [Fact]
     public async Task ConcurrentNavigations_AreSerializedAcrossTheHostAndHistoryCommit()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         Register(options, HomeKey, typeof(HomePage));
         Register(options, SettingsKey, typeof(SettingsPage));
         var pageProvider = new Mock<INavigationPageProvider>(MockBehavior.Strict);
@@ -321,7 +327,7 @@ public sealed class NavigationServiceTests
             new PageHistoryService(),
             new NavigationRouteRegistry(options)
         );
-        sut.Init(host);
+        sut.Attach(host);
         using var secondStarted = new ManualResetEventSlim();
 
         var firstNavigation = Task.Run(() => sut.Navigate(HomeKey));
@@ -352,9 +358,47 @@ public sealed class NavigationServiceTests
     }
 
     [Fact]
+    public void NavigationEventsCanReadStateFromAnotherThreadWithoutHoldingNavigationLock()
+    {
+        var fixture = CreateFixture();
+        SetupSuccessfulPages(fixture, out _, out _, out _);
+        using var navigatedRead = new ManualResetEventSlim();
+        using var stateChangedRead = new ManualResetEventSlim();
+
+        fixture.Sut.Navigated += (_, _) =>
+        {
+            _ = Task.Run(() =>
+            {
+                _ = fixture.Sut.CurrentNavigationKey;
+                navigatedRead.Set();
+            });
+            Assert.True(
+                navigatedRead.Wait(TimeSpan.FromSeconds(5)),
+                "Navigated was raised while the navigation lock was held."
+            );
+        };
+        fixture.Sut.StateChanged += (_, _) =>
+        {
+            _ = Task.Run(() =>
+            {
+                _ = fixture.Sut.CanGoBack;
+                stateChangedRead.Set();
+            });
+            Assert.True(
+                stateChangedRead.Wait(TimeSpan.FromSeconds(5)),
+                "StateChanged was raised while the navigation lock was held."
+            );
+        };
+
+        Assert.True(fixture.Sut.Navigate(HomeKey));
+        Assert.True(navigatedRead.IsSet);
+        Assert.True(stateChangedRead.IsSet);
+    }
+
+    [Fact]
     public async Task RouteEventsArrivingOutOfOrderDoNotRemoveHistoryForReRegisteredRoute()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         Register(options, HomeKey, typeof(HomePage));
         var routes = new NavigationRouteRegistry(options);
         using var firstEventEntered = new ManualResetEventSlim();
@@ -377,7 +421,7 @@ public sealed class NavigationServiceTests
 
         var remove = Task.Run(() => routes.Remove(HomeKey));
         Assert.True(firstEventEntered.Wait(TimeSpan.FromSeconds(5)));
-        INavigationRouteRegistration replacement;
+        IRegistration replacement;
         try
         {
             replacement = routes.Append(new FlourishNavigationRoute(HomeKey, typeof(HomePage)));
@@ -394,7 +438,7 @@ public sealed class NavigationServiceTests
 
     private static NavigationFixture CreateFixture(bool initialize = true)
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         Register(options, HomeKey, typeof(HomePage));
         Register(options, SettingsKey, typeof(SettingsPage));
         Register(options, GalleryKey, typeof(GalleryPage));
@@ -409,13 +453,13 @@ public sealed class NavigationServiceTests
         );
         if (initialize)
         {
-            sut.Init(contentHost.Object);
+            sut.Attach(contentHost.Object);
         }
 
         return new NavigationFixture(sut, pageProvider, contentHost, history);
     }
 
-    private static void Register(FlourishShellOptions options, string key, Type pageType)
+    private static void Register(FlourishNavigationOptions options, string key, Type pageType)
     {
         options.InitialNavigationRoutes.Add(new FlourishNavigationRoute(key, pageType));
     }

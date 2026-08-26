@@ -5,24 +5,24 @@ description: 配置页面过渡、导航栏过渡、悬停动画和减少动态�
 
 # 动效
 
-Flourish 可以为页面切换、导航栏展开和支持的悬停状态提供动画。先在 [Shell 配置](shell-configuration.md)中启用 `UseMotion()`，再使用 `ConfigMotion` 选择具体效果。
+Flourish 可以为页面切换、导航栏展开和支持的悬停状态提供动画。使用 `ConfigureMotion` 启用该功能并选择具体效果。
 
 ## 配置动效
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseMotion())
-    .ConfigMotion(motion =>
+    .ConfigureMotion(motion =>
     {
         motion
-            .UsePageTransition(
+            .SetEnabled()
+            .SetPageTransition(
                 transition: FlourishPageTransition.EntranceFromBottom,
                 duration: TimeSpan.FromMilliseconds(180))
-            .UseNavigationPanelTransition(
+            .SetNavigationPanelTransition(
                 transition: FlourishNavigationPanelTransition.Resize,
                 duration: TimeSpan.FromMilliseconds(180))
-            .UseHoverRevealAnimation(duration: TimeSpan.FromMilliseconds(140))
-            .UseSystemReducedMotion();
+            .SetHoverReveal(duration: TimeSpan.FromMilliseconds(140))
+            .SetRespectSystemReducedMotion();
     });
 ```
 
@@ -30,13 +30,13 @@ Shell 总动效开关与每一种动效类别默认独立持久化。只有代�
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseMotion())
-    .ConfigMotion(motion => motion
-        .UsePageTransition(transition: FlourishPageTransition.Fade)
-        .UseNavigationPanelTransition(
+    .ConfigureMotion(motion => motion
+        .SetEnabled()
+        .SetPageTransition(transition: FlourishPageTransition.Fade)
+        .SetNavigationPanelTransition(
             transition: FlourishNavigationPanelTransition.Resize)
-        .UseHoverRevealAnimation()
-        .UseSystemReducedMotion());
+        .SetHoverReveal()
+        .SetRespectSystemReducedMotion());
 ```
 
 ## 过渡与时长
@@ -45,9 +45,9 @@ builder
 
 显式时长必须大于零。将页面或导航栏过渡枚举设为 `None`，可以单独禁用对应类别。
 
-`UsePageTransition` 控制页面进入内容框架时的呈现方式，`UseNavigationPanelTransition` 控制导航栏展开和折叠时的过渡。
+`SetPageTransition` 控制页面进入内容框架时的呈现方式，`SetNavigationPanelTransition` 控制导航栏展开和折叠时的过渡。
 
-`UseHoverRevealAnimation` 为支持该效果的控件启用悬停动画，包括 Button 家族、CheckBox 布局、选择项容器、关闭状态的 ComboBox 选择框以及 BunchedListBox 的父级统一交互层。
+`SetHoverReveal` 为支持该效果的控件启用悬停动画，包括 Button 家族、CheckBox 布局、选择项容器、关闭状态的 ComboBox 选择框以及 BunchedListBox 的父级统一交互层。
 
 ## 导航栏过渡期间的行为
 
@@ -59,9 +59,9 @@ builder
 
 ## 减少动态效果
 
-`UseSystemReducedMotion` 让 Flourish 遵循操作系统的减少动态效果偏好。启用动画时使用该设置，可让 Shell 根据用户的辅助功能首选项进行调整。
+`SetRespectSystemReducedMotion` 让 Flourish 遵循操作系统的减少动态效果偏好。启用动画时使用该设置，可让 Shell 根据用户的辅助功能首选项进行调整。
 
-`UseMotion(false)` 会禁用所有已配置的动效。
+运行时调用 `IMotionService.SetEnabled(false)` 会禁用所有已配置的动效。`IMotionService.Current` 提供当前设置，`Changed` 用于通知更新。
 
 ## 相关功能
 

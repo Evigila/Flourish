@@ -1,3 +1,5 @@
+using System;
+
 using Color = System.Windows.Media.Color;
 
 namespace ArkheideSystem.Flourish.Abstract;

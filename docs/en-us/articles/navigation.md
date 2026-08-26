@@ -5,14 +5,14 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Register WPF pages through [Dependency injection](configure-services.md), enable the navigation surface through [Shell configuration](shell-configuration.md), and use `ConfigNavigation` to place pages and command items in explicit positions.
+Register WPF pages through [Dependency injection](configure-services.md), then use `ConfigureNavigation` to enable the navigation surface and place pages and command items in explicit positions.
 
 ## Register pages
 
 `AddNavigable` registers a `Page` type in dependency injection and records the display name, icon glyph, and cache mode used by navigation. Registration makes the page available to navigation; add a corresponding view item to make it visible in the panel.
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
 {
     services.AddNavigable<HomePage>(
         displayName: "Home",
@@ -44,27 +44,24 @@ Direction, initial open state, user-adjusted open width, and the last successful
 
 ```csharp
 navigation
-    .InitDirection(NavigationPanelDirection.Left)
-    .InitInitiallyOpen()
-    .InitPanelWidth(260, 64, 480, 180)
-    .UseLastNavigation();
+    .SetDirection(NavigationPanelDirection.Left)
+    .SetInitiallyOpen()
+    .SetPanelWidth(260, 64, 480, 180)
+    .SetLastNavigationPersistence();
 ```
 
 ## Configure groups
 
-Use `ConfigNavigation` to define the visible navigation model. `AddGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+Use `ConfigureNavigation` to define the visible navigation model. `AddGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
 
 ```csharp
-builder.ConfigShell(shell =>
-{
-    shell.UseNavigation();
-})
-.ConfigNavigation(navigation =>
+builder.ConfigureNavigation(navigation =>
 {
     navigation
-        .InitDirection(NavigationPanelDirection.Left)
-        .InitInitiallyOpen()
-        .InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
+        .SetEnabled()
+        .SetDirection(NavigationPanelDirection.Left)
+        .SetInitiallyOpen()
+        .SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
         .AddGroup("Navigation", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -99,13 +96,13 @@ nav.AddGroup("Admin", groupId: 10, group =>
 
 ## Resize the panel
 
-Use `InitPanelWidth` to configure the expanded width, collapsed width, and resize constraints for the navigation panel.
+Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize constraints for the navigation panel.
 
 ```csharp
-nav.InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
+nav.SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `220` expanded and `64` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `64`. The default resize range is `160` to `420`. User resizing updates the expanded width within that range.
+The default widths are `250` expanded and `64` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `64`. The default resize range is `180` to `520`. User resizing updates the expanded width within that range.
 
 ## Add command items
 
@@ -126,7 +123,7 @@ Command items do not remain selected. After a command is invoked, the navigation
 Fixed items are displayed in the bottom section of the navigation panel. They are not affected by the scrollable group area, which is useful for settings, about, profile, or other persistent actions.
 
 ```csharp
-builder.ConfigNavigation(navigation =>
+builder.ConfigureNavigation(navigation =>
 {
     navigation.AddGroup("Navigation", groupId: 0, group =>
     {

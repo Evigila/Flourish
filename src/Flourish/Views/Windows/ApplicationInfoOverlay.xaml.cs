@@ -1,3 +1,9 @@
+using System.Linq;
+
+using System;
+using System.Collections.Generic;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
@@ -57,8 +63,8 @@ internal partial class ApplicationInfoOverlay : UserControl
         );
         SetTextVisibility(
             ApplicationInfoSubTitle,
-            titleState.ApplicationSubTitle,
-            titleState.ShowApplicationSubTitle
+            titleState.ApplicationSubtitle,
+            titleState.ShowApplicationSubtitle
         );
         var projectTitle =
             projectState.IsMultiProjectEnabled && projectState.ActiveProject is { } activeProject

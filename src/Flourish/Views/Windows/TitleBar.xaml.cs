@@ -1,10 +1,15 @@
+using System;
+using System.Collections.Generic;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Imaging;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Profile;
 using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
 using SelectionChangedEventHandler = System.Windows.Controls.SelectionChangedEventHandler;
 using TextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
@@ -274,16 +279,16 @@ internal partial class FlourishTitlebar : UserControl
     {
         switch (region)
         {
-            case FlourishRegion.TitlebarStart:
+            case FlourishRegion.TitleBarStart:
                 SetPanelContent(TitlebarStartRegionHost, elements);
                 break;
-            case FlourishRegion.TitlebarCenter:
+            case FlourishRegion.TitleBarCenter:
                 SetPanelContent(TitlebarCenterRegionHost, elements);
                 break;
-            case FlourishRegion.TitlebarEnd:
+            case FlourishRegion.TitleBarEnd:
                 SetPanelContent(TitlebarEndRegionHost, elements);
                 break;
-            case FlourishRegion.TitlebarProfile:
+            case FlourishRegion.TitleBarProfile:
                 SetPanelContent(TitlebarProfileRegionHost, elements);
                 hasProfileRegionContent = elements.Count > 0;
                 UpdateProfileRegionVisibility();

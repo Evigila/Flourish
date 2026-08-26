@@ -1,3 +1,5 @@
+using System;
+
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

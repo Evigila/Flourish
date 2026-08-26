@@ -1,3 +1,5 @@
+using System;
+
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>
@@ -11,5 +13,6 @@ public sealed record FlourishMotionSettings(
     TimeSpan NavigationPanelTransitionDuration,
     bool IsHoverRevealEnabled,
     TimeSpan HoverRevealAnimationDuration,
-    bool RespectSystemReducedMotion
+    bool RespectSystemReducedMotion,
+    bool CanAnimate
 );

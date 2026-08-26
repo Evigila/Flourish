@@ -1,5 +1,8 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Configuration;
+
 using System.IO;
-using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Configuration;
 

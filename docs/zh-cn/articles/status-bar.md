@@ -5,17 +5,17 @@ description: 配置自定义状态项、后台任务指示器以及合并的系�
 
 # 状态栏
 
-状态栏是 Shell 中用于显示活动后台任务、应用自定义状态和系统详情的紧凑区域。通过 [Shell 配置](shell-configuration.md)启用其常驻界面，再使用 `ConfigStatusBar` 配置可选的自定义项和系统状态。
+状态栏是 Shell 中用于显示活动后台任务、应用自定义状态和系统详情的紧凑区域。使用 `ConfigureStatusBar` 启用常驻界面，并配置可选的自定义项和系统状态。
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseStatusBar())
-    .ConfigStatusBar(statusBar =>
+    .ConfigureStatusBar(statusBar =>
     {
         statusBar
+            .SetEnabled()
             .AddStatusItem("在线", "\uE774")
-            .UseLanConnectionStatus()
-            .UsePowerStatus();
+            .SetLanStatusEnabled()
+            .SetPowerStatusEnabled();
     });
 ```
 
@@ -33,7 +33,7 @@ builder
 
 Shell 从 `FlourishBackgroundTaskMetadata` 读取任务名称、描述和图标；未提供图标时使用内置任务字形。
 
-即使省略了 `UseStatusBar()`，活动任务也会临时显示状态栏。所有活动任务结束后，状态栏恢复到配置决定的可见性。任务提交、并发上限、取消、进度和结果参见[后台任务](background-tasks.md)。
+即使省略了 `SetEnabled()`，活动任务也会临时显示状态栏。所有活动任务结束后，状态栏恢复到配置决定的可见性。任务提交、并发上限、取消、进度和结果参见[后台任务](background-tasks.md)。
 
 ## 自定义状态项
 
@@ -48,12 +48,12 @@ statusBar.AddStatusItem("已同步", "\uE73E");
 
 ## 合并的网络与电源状态
 
-`UseLanConnectionStatus` 和 `UsePowerStatus` 会在状态栏右侧的同一个系统状态图标中启用对应详情行。配置任一辅助方法都会显示这个图标；同时配置两者也不会产生两个独立图标。
+`SetLanStatusEnabled` 和 `SetPowerStatusEnabled` 会在状态栏右侧的同一个系统状态图标中启用对应详情行。配置任一辅助方法都会显示这个图标；同时配置两者也不会产生两个独立图标。
 
 ```csharp
 statusBar
-    .UseLanConnectionStatus()
-    .UsePowerStatus();
+    .SetLanStatusEnabled()
+    .SetPowerStatusEnabled();
 ```
 
 悬停或点击图标会打开临时 [Overlay](../controls/overlay.md)；指针同时离开图标与浮层后，它会自行关闭。网络行在浮层打开时读取当前网络可用性；电源行显示外接电源、电池供电或未知来源，并在 Windows 提供有效值时显示电池百分比。这些值是打开界面时取得的当前快照，并非持续的网络或电池监视器。
@@ -65,7 +65,7 @@ statusBar
 [自定义 Shell 内容](configure-custom-handler.md)可添加应用提供的控件和命令按钮。`FooterStart` 位于内置后台任务指示器之后；`FooterEnd` 位于自定义状态和系统状态区域之后。
 
 ```csharp
-builder.ConfigCustomHandler(custom =>
+builder.ConfigureContent(custom =>
 {
     custom.AddFooterCommand(
         FlourishRegion.FooterEnd,
@@ -75,4 +75,4 @@ builder.ConfigCustomHandler(custom =>
 });
 ```
 
-自定义内容本身不会启用常驻状态栏；需要在没有活动后台任务时也保持显示，仍应调用 `UseStatusBar()`。
+自定义内容本身不会启用常驻状态栏；需要在没有活动后台任务时也保持显示，应调用 `ConfigureStatusBar(statusBar => statusBar.SetEnabled())`。

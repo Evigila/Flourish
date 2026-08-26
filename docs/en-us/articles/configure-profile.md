@@ -5,16 +5,17 @@ description: Configure profile identity, sign-in state, remembered credentials, 
 
 # Profile
 
-The profile surface provides account access from the title bar. Call `UseProfile` to display the profile trigger and use the built-in profile page.
+The profile surface provides account access from the title bar. Call `SetProfile` to display the profile trigger and use the built-in profile page.
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseTitleBar())
-    .ConfigTitleBar(titleBar =>
-        titleBar.UseProfile(nameOrder: NameOrder.FirstLast));
+    .ConfigureTitleBar(titleBar =>
+        titleBar
+            .SetEnabled()
+            .SetProfile(nameOrder: NameOrder.FirstLast));
 ```
 
-Calling `UseProfile()` without an argument uses `NameOrder.FirstLast`. Before sign-in, the built-in page displays the localized `Profile.DefaultName` value.
+Calling `SetProfile()` without an argument uses `NameOrder.FirstLast`. Before sign-in, the built-in page displays the localized `Profile.DefaultName` value.
 
 ## Names and initials
 
@@ -27,16 +28,17 @@ The built-in sign-in form collects first and last names separately. `NameOrder` 
 
 At least one name field must be non-empty. `ProfileUser.FirstName`, `LastName`, `NameOrder`, `DisplayName`, and `Initials` expose the formatted result.
 
-`UseProfile` defines the startup order. Change the global order at runtime through
+`SetProfile` defines the startup order. Change the global order at runtime through
 `IProfileService`:
 
 ```csharp
 await profile.SetNameOrderAsync(NameOrder.LastFirst);
-var currentOrder = profile.NameOrder;
+var state = profile.Current;
+var currentOrder = state.NameOrder;
 ```
 
 The service rebuilds the signed-out placeholder or active profile and raises
-`ProfileChanged`. The login state, credentials, names, and image path remain unchanged.
+`Changed`. The login state, credentials, names, and image path remain unchanged.
 
 The user's last name-order choice takes precedence and later changes are written back by default. Pass `usePersistedPreference: false` when the configured order must always win. This persists only `NameOrder`; credentials remain in User Secrets.
 
@@ -54,7 +56,7 @@ The built-in form lets the user select or replace an image with the native Windo
 
 ## Login state
 
-After authentication, the sign-in form is replaced by remembered-login and sign-out actions. `IProfileService.LoginState` reports the current state.
+After authentication, the sign-in form is replaced by remembered-login and sign-out actions. `IProfileService.Current.LoginState` reports the current state.
 
 | State | Meaning |
 | --- | --- |
@@ -86,7 +88,7 @@ Without a User Secrets provider, ordinary sign-in remains available, but enablin
 Register `IProfileAuthService` through [Dependency injection](configure-services.md) to replace authentication while retaining the built-in profile state and remembered-login behavior.
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<IProfileAuthService, FoobarProfileAuthService>();
 });
@@ -102,23 +104,23 @@ Flourish supplies its default implementations only when the application has not 
 
 ## Host a custom page
 
-Use `InitProfilePage` in the title bar configuration to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; call `UseProfile` in the same configuration to display the trigger.
+Use `SetProfilePage` in the title bar configuration to replace the content hosted by the profile surface. The custom page is resolved from dependency injection; call `SetProfile` in the same configuration to display the trigger.
 
 ```csharp
 builder
-    .ConfigServices((_, services) =>
+    .ConfigureServices((_, services) =>
         services.AddTransient<FoobarProfilePage>())
-    .ConfigShell(shell => shell.UseTitleBar())
-    .ConfigTitleBar(titleBar =>
+    .ConfigureTitleBar(titleBar =>
         titleBar
-            .UseProfile(nameOrder: NameOrder.FirstLast)
-            .InitProfilePage<FoobarProfilePage>());
+            .SetEnabled()
+            .SetProfile(nameOrder: NameOrder.FirstLast)
+            .SetProfilePage<FoobarProfilePage>());
 ```
 
-When `InitProfilePage` is omitted, `UseProfile` uses the built-in page.
+When `SetProfilePage` is omitted, `SetProfile` uses the built-in page.
 
 ## Related features
 
-- [Shell configuration](shell-configuration.md) enables the title bar.
+- [Shell configuration](shell-configuration.md) explains the feature-specific Builder and Service model.
 - [Title bar](configure-title-bar.md) displays the profile trigger and selects the startup name order.
 - [Dependency injection](configure-services.md) registers custom profile services and pages.

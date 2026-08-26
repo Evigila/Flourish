@@ -1,18 +1,20 @@
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Layout;
+
 using System.Windows;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
 public sealed class RuntimeScrollServiceTests
 {
     [Fact]
-    public void GetCurrent_UsesStartupValue()
+    public void Current_UsesStartupValue()
     {
-        var sut = new ScrollService(new FlourishShellOptions { IsSmoothScrollingEnabled = false });
+        var sut = new ScrollService(new FlourishLayoutOptions { IsSmoothScrollingEnabled = false });
 
-        var current = sut.GetCurrent();
+        var current = sut.Current;
 
         Assert.False(current.IsSmoothScrollingEnabled);
         Assert.Equal(0, current.Version);
@@ -21,8 +23,8 @@ public sealed class RuntimeScrollServiceTests
     [Fact]
     public void SetSmoothScrollingEnabled_RaisesChangedOnlyForRealChanges()
     {
-        var sut = new ScrollService(new FlourishShellOptions());
-        FlourishScrollChangedEventArgs? change = null;
+        var sut = new ScrollService(new FlourishLayoutOptions());
+        FlourishStateTransitionEventArgs<FlourishScrollSettings>? change = null;
         var changeCount = 0;
         sut.Changed += (_, e) =>
         {
@@ -44,13 +46,13 @@ public sealed class RuntimeScrollServiceTests
     [Fact]
     public void AttachedResources_UpdateWithRuntimeState()
     {
-        var sut = new ScrollService(new FlourishShellOptions());
+        var sut = new ScrollService(new FlourishLayoutOptions());
         var resources = new ResourceDictionary();
 
         sut.Attach(Dispatcher.CurrentDispatcher, resources);
         sut.SetSmoothScrollingEnabled(false);
 
         Assert.False((bool)resources[ScrollService.SmoothScrollingResourceKey]);
-        Assert.False(sut.GetCurrent().IsSmoothScrollingEnabled);
+        Assert.False(sut.Current.IsSmoothScrollingEnabled);
     }
 }

@@ -1,5 +1,13 @@
-using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Interaction;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Views.Windows;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
+using WpfButton = System.Windows.Controls.Button;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
 
@@ -14,8 +22,8 @@ public sealed class ToolbarCommandButtonIndexTests
             dispatcher.SetAvailability("save", true);
             dispatcher.SetAvailability("export", true);
             var sut = new ToolbarCommandButtonIndex(dispatcher);
-            var saveButton = new Button();
-            var exportButton = new Button();
+            var saveButton = new WpfButton();
+            var exportButton = new WpfButton();
             sut.Track(saveButton, new FlourishToolbarItem("Save", "S", "save"));
             sut.Track(exportButton, new FlourishToolbarItem("Export", "E", "export"));
             dispatcher.ResetCalls();
@@ -39,8 +47,8 @@ public sealed class ToolbarCommandButtonIndexTests
             dispatcher.SetAvailability("save", true);
             dispatcher.SetAvailability("export", true);
             var sut = new ToolbarCommandButtonIndex(dispatcher);
-            var saveButton = new Button();
-            var exportButton = new Button();
+            var saveButton = new WpfButton();
+            var exportButton = new WpfButton();
             sut.Track(saveButton, new FlourishToolbarItem("Save", "S", "save"));
             sut.Track(exportButton, new FlourishToolbarItem("Export", "E", "export"));
             dispatcher.ResetCalls();
@@ -64,7 +72,7 @@ public sealed class ToolbarCommandButtonIndexTests
             var dispatcher = new RecordingCommandDispatcher();
             dispatcher.SetAvailability("save", true);
             var sut = new ToolbarCommandButtonIndex(dispatcher);
-            var button = new Button();
+            var button = new WpfButton();
             var item = new FlourishToolbarItem("Save", "S", "save") { IsEnabled = false };
 
             sut.Track(button, item);
@@ -83,7 +91,7 @@ public sealed class ToolbarCommandButtonIndexTests
             var dispatcher = new RecordingCommandDispatcher();
             dispatcher.SetAvailability("save", true);
             var sut = new ToolbarCommandButtonIndex(dispatcher);
-            var button = new Button();
+            var button = new WpfButton();
             sut.Track(button, new FlourishToolbarItem("Save", "S", "save"));
             dispatcher.ResetCalls();
             dispatcher.SetAvailability("save", false);

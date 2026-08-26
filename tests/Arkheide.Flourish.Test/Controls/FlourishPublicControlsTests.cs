@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
@@ -91,7 +97,7 @@ public sealed class FlourishPublicControlsTests
             .ToHashSet(StringComparer.Ordinal);
         var prefixes = assembly.GetCustomAttributes<XmlnsPrefixAttribute>();
 
-        Assert.Contains("ArkheideSystem.Flourish.Abstract", definitions);
+        Assert.DoesNotContain("ArkheideSystem.Flourish.Abstract", definitions);
         Assert.Contains("ArkheideSystem.Flourish.Controls", definitions);
         Assert.Contains("ArkheideSystem.Flourish.Themes", definitions);
         Assert.Contains(

@@ -80,7 +80,7 @@
             Content="{culture:Localize Key=Shell_RegisterAProjectBoundToTheExistingLocalFileAboveAndMakeItActive_164A8DA7}"
           >
             <flourish:ActionCard.Body>
-              <flourish:Button Click="AppendProject_Click" Content="{culture:Localize Key=Shell_AddProject_5EBD1527}" />
+              <flourish:Button Click="AddProject_Click" Content="{culture:Localize Key=Shell_AddProject_5EBD1527}" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -106,7 +106,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CollectionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AppendProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AddProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -247,7 +247,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RequestOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable project-aware window chrome during application composition.&#10;builder.ConfigShell(shell =&gt; shell.UseMultiProject());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Enable project-aware behavior during application composition.&#10;builder.ConfigureProjects(projects =&gt; projects.SetMultiProjectEnabled());&#10;&#10;projects.SetMultiProjectEnabled(true);&#10;titleBar.SetUnnamedProjectPlaceholder(&quot;Untitled project&quot;);&#10;&#10;// The configured behavior owns file pickers and persistence policy.&#10;var created = await projectBehavior.CreateProjectAsync();&#10;var saved = await projectBehavior.SaveActiveProjectAsync();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">

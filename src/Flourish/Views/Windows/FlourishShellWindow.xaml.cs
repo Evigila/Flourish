@@ -1,3 +1,11 @@
+using System.Linq;
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,9 +14,20 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Internal.Interaction;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Commands;
+using ArkheideSystem.Flourish.Layout;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Messaging;
+using ArkheideSystem.Flourish.Motion;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Projects;
+using ArkheideSystem.Flourish.Shell.Regions;
+using ArkheideSystem.Flourish.Shell.StatusBar;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+using ArkheideSystem.Flourish.Shell.Toolbar;
+using ArkheideSystem.Flourish.Windowing;
 using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
 using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 using WpfComboBox = System.Windows.Controls.ComboBox;
@@ -47,12 +66,15 @@ internal partial class FlourishShellWindow : Window
     private readonly WindowFrameFixService windowFrameFixService;
     private readonly FlourishLocalizationService localizationService;
     private readonly IServiceProvider serviceProvider;
-    private readonly FlourishShellOptions options;
+    private readonly FlourishAppearanceOptions appearanceOptions;
+    private readonly FlourishWindowOptions windowOptions;
+    private readonly FlourishNavigationOptions navigationOptions;
+    private readonly FlourishTitleBarOptions titleBarOptions;
     private readonly FlourishShellWindowFrame shellWindowFrame;
     private readonly ShellStatusSurfaceController statusSurfaceController;
-    private readonly ICommandRegistration projectSaveCommandRegistration;
-    private readonly IShortcutRegistration projectSaveShortcutRegistration;
-    private readonly IWindowCloseGuardRegistration projectCloseGuardRegistration;
+    private readonly IRegistration projectSaveCommandRegistration;
+    private readonly IRegistration projectSaveShortcutRegistration;
+    private readonly IRegistration projectCloseGuardRegistration;
     private readonly Dictionary<string, RegionElementView> regionElementsById = new(
         StringComparer.Ordinal
     );
@@ -100,10 +122,13 @@ internal partial class FlourishShellWindow : Window
         IProfileService profileService,
         FlourishLocalizationService localizationService,
         IServiceProvider serviceProvider,
-        FlourishShellOptions options
+        FlourishAppearanceOptions appearanceOptions,
+        FlourishWindowOptions windowOptions,
+        FlourishNavigationOptions navigationOptions,
+        FlourishTitleBarOptions titleBarOptions
     )
     {
-        themeService.Initialize(System.Windows.Application.Current);
+        themeService.Attach(System.Windows.Application.Current);
         InitializeComponent();
         shellWindowFrame = new FlourishShellWindowFrame(this, ShellBorder);
 
@@ -138,7 +163,10 @@ internal partial class FlourishShellWindow : Window
         this.windowFrameFixService = windowFrameFixService;
         this.localizationService = localizationService;
         this.serviceProvider = serviceProvider;
-        this.options = options;
+        this.appearanceOptions = appearanceOptions;
+        this.windowOptions = windowOptions;
+        this.navigationOptions = navigationOptions;
+        this.titleBarOptions = titleBarOptions;
         projectSelectorController = new ProjectSelectorController(
             Titlebar,
             projectService,
@@ -154,7 +182,7 @@ internal partial class FlourishShellWindow : Window
             navigationPanelService,
             navigationMenuService,
             commandDispatcher,
-            options,
+            navigationOptions,
             titleBarService.Current
         );
         navigationController.LayoutRequested += NavigationController_LayoutRequested;
@@ -167,7 +195,7 @@ internal partial class FlourishShellWindow : Window
             fontService,
             notificationService,
             serviceProvider,
-            options.IsTitlebarProfileEnabled
+            titleBarOptions.IsTitlebarProfileEnabled
         );
         profileController.Opening += ProfileController_Opening;
         profileController.PlacementRequested += ProfileController_PlacementRequested;
@@ -195,14 +223,14 @@ internal partial class FlourishShellWindow : Window
             projectSelectorController,
             localizationService,
             () => navigationController.IsPanelEnabled,
-            () => options.IsThemeEnabled,
+            () => appearanceOptions.IsThemeEnabled,
             () => profileController.IsAvailable
         );
         titleBarController.Opening += TitleBarController_Opening;
         titleBarController.StateChanged += TitleBarController_StateChanged;
         titleBarController.ProjectChanged += TitleBarController_ProjectChanged;
         titleBarController.IconChanged += TitleBarController_IconChanged;
-        titleBarController.Init();
+        titleBarController.Start();
         ApplyOptions();
         windowService.Attach(this);
         windowCloseService.Attach(RequestCloseCoreAsync);
@@ -230,9 +258,9 @@ internal partial class FlourishShellWindow : Window
             "flourish.project.behavior",
             ProjectBehaviorCloseGuardAsync
         );
-        toolbarController.Init();
+        toolbarController.Start();
         BuildRegionContents();
-        navigationController.Init();
+        navigationController.Start();
         shellRegionService.Changed += ShellRegionService_Changed;
         contentLayoutService.Changed += ContentLayoutService_Changed;
         fontService.Changed += FontService_Changed;
@@ -245,7 +273,7 @@ internal partial class FlourishShellWindow : Window
         Closed += ShellWindow_Closed;
         Loaded += ShellWindow_Loaded;
         PreviewKeyDown += ShellWindow_PreviewKeyDown;
-        navigationService.Init(ContentHost.NavigationFrame);
+        navigationService.Attach(ContentHost.NavigationFrame);
         navigationService.Navigated += RootFrame_Navigated;
 
         navigationController.NavigateInitial();
@@ -254,7 +282,7 @@ internal partial class FlourishShellWindow : Window
     private void ApplyOptions()
     {
         ApplyWindowOptions();
-        Title = options.ApplicationTitle;
+        Title = titleBarOptions.ApplicationTitle;
         statusSurfaceController.RefreshVisibility();
         ApplyContentLayoutOptions();
 
@@ -264,52 +292,54 @@ internal partial class FlourishShellWindow : Window
         windowFrameFixService.Attach(this, titleBarService.Current.IsEnabled);
         materialEffectService.Attach(
             this,
-            options.IsMaterialEffectEnabled ? options.MaterialEffect : MaterialEffect.None,
+            appearanceOptions.IsMaterialEffectEnabled
+                ? appearanceOptions.MaterialEffect
+                : MaterialEffect.None,
             "FlourishShellBackgroundBrush"
         );
         themeService.Attach(this);
         ApplyThemeState();
-        trayIconService.Initialize(this, options.ApplicationTitle);
+        trayIconService.Attach(this, titleBarOptions.ApplicationTitle);
     }
 
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
     {
         Loaded -= ShellWindow_Loaded;
-        await profileController.InitializeAsync();
+        await profileController.RestoreAsync();
     }
 
     private void ApplyWindowOptions()
     {
-        MinWidth = options.WindowMinWidth;
-        MinHeight = options.WindowMinHeight;
-        MaxWidth = options.WindowMaxWidth;
-        MaxHeight = options.WindowMaxHeight;
-        Width = options.WindowWidth;
-        Height = options.WindowHeight;
-        WindowStartupLocation = options.WindowStartupLocation;
-        ResizeMode = options.WindowResizeMode;
-        Topmost = options.WindowTopmost;
-        ShowInTaskbar = options.WindowShowInTaskbar;
+        MinWidth = windowOptions.WindowMinWidth;
+        MinHeight = windowOptions.WindowMinHeight;
+        MaxWidth = windowOptions.WindowMaxWidth;
+        MaxHeight = windowOptions.WindowMaxHeight;
+        Width = windowOptions.WindowWidth;
+        Height = windowOptions.WindowHeight;
+        WindowStartupLocation = windowOptions.WindowStartupLocation;
+        ResizeMode = windowOptions.WindowResizeMode;
+        Topmost = windowOptions.WindowTopmost;
+        ShowInTaskbar = windowOptions.WindowShowInTaskbar;
 
-        if (options.WindowLeft is { } left)
+        if (windowOptions.WindowLeft is { } left)
         {
             Left = left;
         }
 
-        if (options.WindowTop is { } top)
+        if (windowOptions.WindowTop is { } top)
         {
             Top = top;
         }
 
         if (
-            options.UsePersistedWindowPosition
+            windowOptions.UsePersistedWindowPosition
             && WindowStartupLocation == WindowStartupLocation.Manual
         )
         {
             KeepPersistedWindowReachable();
         }
 
-        WindowState = options.WindowState;
+        WindowState = windowOptions.WindowState;
         ApplyTitleBarFeatureState();
         Titlebar.SetMaximizeEnabled(
             ResizeMode is ResizeMode.CanResize or ResizeMode.CanResizeWithGrip
@@ -589,7 +619,7 @@ internal partial class FlourishShellWindow : Window
     {
         if (
             context.Reason != WindowCloseRequestReason.Tray
-            && windowCloseService.Behavior == WindowCloseBehavior.MinimizeToTray
+            && windowCloseService.Current.Behavior == WindowCloseBehavior.MinimizeToTray
         )
         {
             return WindowCloseDecision.Allow;
@@ -755,8 +785,14 @@ internal partial class FlourishShellWindow : Window
     private void NormalizeNavigationPaneWidths()
     {
         var state = navigationController.CurrentPanelState;
-        options.OpenPaneWidth = CoerceOpenPaneWidth(options.OpenPaneWidth, state);
-        options.ClosedPaneWidth = Math.Min(options.ClosedPaneWidth, options.OpenPaneWidth);
+        navigationOptions.OpenPaneWidth = CoerceOpenPaneWidth(
+            navigationOptions.OpenPaneWidth,
+            state
+        );
+        navigationOptions.ClosedPaneWidth = Math.Min(
+            navigationOptions.ClosedPaneWidth,
+            navigationOptions.OpenPaneWidth
+        );
     }
 
     private static double CoerceOpenPaneWidth(double width, FlourishNavigationPanelState state)
@@ -968,13 +1004,13 @@ internal partial class FlourishShellWindow : Window
     {
         switch (region)
         {
-            case FlourishRegion.TitlebarStart:
-            case FlourishRegion.TitlebarCenter:
-            case FlourishRegion.TitlebarEnd:
-            case FlourishRegion.TitlebarProfile:
+            case FlourishRegion.TitleBarStart:
+            case FlourishRegion.TitleBarCenter:
+            case FlourishRegion.TitleBarEnd:
+            case FlourishRegion.TitleBarProfile:
                 Titlebar.SetRegionContent(region, elements);
                 break;
-            case FlourishRegion.TitlebarApplicationInfo:
+            case FlourishRegion.TitleBarApplicationInfo:
                 titleBarController.SetApplicationInfoBody(elements);
                 break;
             case FlourishRegion.NavigationHeader:
@@ -1047,7 +1083,7 @@ internal partial class FlourishShellWindow : Window
     private void TitleBarController_ProjectChanged(
         object? sender,
         FlourishProjectsChangedEventArgs e
-    ) => projectSaveCommandRegistration.NotifyCanExecuteChanged();
+    ) => commandRegistry.NotifyCanExecuteChanged(ProjectSaveCommandKey);
 
     private void TitleBarController_IconChanged(
         object? sender,
@@ -1079,15 +1115,18 @@ internal partial class FlourishShellWindow : Window
         });
     }
 
-    private void MotionService_Changed(object? sender, FlourishMotionChangedEventArgs e)
+    private void MotionService_Changed(
+        object? sender,
+        FlourishStateTransitionEventArgs<FlourishMotionSettings> e
+    )
     {
         var cancelPageTransition =
             pageTransition.IsActive
-            && (!e.CanAnimate || e.Current.PageTransition == FlourishPageTransition.None);
+            && (!e.Current.CanAnimate || e.Current.PageTransition == FlourishPageTransition.None);
         var resetNavigationPane =
             navigationPaneTransition.IsActive
             && (
-                !e.CanAnimate
+                !e.Current.CanAnimate
                 || e.Current.NavigationPanelTransition == FlourishNavigationPanelTransition.None
             );
         if (!cancelPageTransition && !resetNavigationPane)
@@ -1201,7 +1240,7 @@ internal partial class FlourishShellWindow : Window
 
     private void ContentLayoutService_Changed(
         object? sender,
-        FlourishContentLayoutChangedEventArgs e
+        FlourishStateTransitionEventArgs<FlourishContentLayoutSettings> e
     )
     {
         DispatchRuntimeChange(() =>
@@ -1263,15 +1302,19 @@ internal partial class FlourishShellWindow : Window
         themeService.ToggleTheme();
     }
 
-    private void ThemeService_ThemeChanged(object? sender, FlourishThemeChangedEventArgs e)
+    private void ThemeService_ThemeChanged(
+        object? sender,
+        FlourishStateChangedEventArgs<FlourishThemeState> e
+    )
     {
         ApplyThemeState();
     }
 
     private void ApplyThemeState()
     {
-        materialEffectService.SetDarkMode(this, themeService.IsDark);
-        Titlebar.SetThemeToggleState(themeService.CurrentTheme, themeService.EffectiveTheme);
+        var current = themeService.Current;
+        materialEffectService.SetDarkMode(this, current.IsDark);
+        Titlebar.SetThemeToggleState(current.RequestedTheme, current.EffectiveTheme);
     }
 
     private async Task<bool> ConfirmCloseRequestAsync(CancellationToken cancellationToken)
@@ -1371,7 +1414,7 @@ internal partial class FlourishShellWindow : Window
         {
             if (
                 reason != WindowCloseRequestReason.Tray
-                && windowCloseService.Behavior == WindowCloseBehavior.MinimizeToTray
+                && windowCloseService.Current.Behavior == WindowCloseBehavior.MinimizeToTray
                 && trayIconService.MinimizeToTray()
             )
             {
@@ -1380,7 +1423,7 @@ internal partial class FlourishShellWindow : Window
 
             if (
                 reason != WindowCloseRequestReason.Tray
-                && windowCloseService.Behavior == WindowCloseBehavior.Prompt
+                && windowCloseService.Current.Behavior == WindowCloseBehavior.Prompt
             )
             {
                 var activeTaskCount = statusSurfaceController.ActiveTaskCount;

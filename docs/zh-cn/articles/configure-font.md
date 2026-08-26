@@ -5,18 +5,18 @@ description: 配置字体系列和 Flourish 六种字号层级；未显式选择
 
 # 排版
 
-在 `ConfigShell` 中调用 `InitGlobalFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列与六种字号层级。
+在 `ConfigureFont` 中调用 `SetFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列与六种字号层级。
 
 ## 配置全局字体
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell.InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32));
+builder.ConfigureFont(font =>
+    font.SetFont("Segoe UI", 12, 14, 22, 16, 24, 32));
 ```
 
 全局文本字体族、图标字体族与完整的六档字号默认作为同一偏好组恢复和更新。需要代码配置的全局比例始终优先时，传入 `usePersistedPreference: false`。页面专属覆盖仍由应用拥有，不会持久化。
 
-七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `InitGlobalFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
+七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `SetFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
 
 ## 字号层级角色
 
@@ -33,7 +33,7 @@ builder.ConfigShell(shell =>
 
 `Document` 中的 `Paragraph` 与 `CodeSpace` 显式使用 Large 层级，因此会跟随全局和页面级 Large 设置变化，而不会从 Standard 派生额外字号。
 
-Large、ExtraLarge 和 HeaderSize 标题角色使用 `Bold`。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitlebarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
+Large、ExtraLarge 和 HeaderSize 标题角色使用 `Bold`。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitleBarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
 
 Small 与 Standard 使用紧凑行高和最小下方空间，Large、ExtraLarge 与 HeaderSize 逐级增大，Icon 不增加下方空间。
 
@@ -45,29 +45,31 @@ Icon 是默认图标字号。由于 Segoe MDL2 的不同字形拥有不同的天
 
 ## 覆盖单个页面
 
-`InitOverrideFont<TPage>` 可以初始化指定页面的字体系列或字号。某一档传入 `null` 时，该档继续跟随全局值。
+`SetOverrideFont<TPage>` 可以设置指定页面的字体系列或字号。某一档传入 `null` 时，该档继续跟随全局值。
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell
-        .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
-        .InitOverrideFont<CodeEditorPage>(
+builder.ConfigureFont(font =>
+{
+    font
+        .SetFont("Segoe UI", 12, 14, 22, 16, 24, 32)
+        .SetOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,
             null,
             null,
             null,
             null,
-            null));
+            null);
 
-shell.InitOverrideFont<PresentationPage>(
-    "Microsoft YaHei UI",
-    14,
-    16,
-    19,
-    22,
-    26,
-    32);
+    font.SetOverrideFont<PresentationPage>(
+        "Microsoft YaHei UI",
+        14,
+        16,
+        19,
+        22,
+        26,
+        32);
+});
 ```
 
 页面覆盖中提供的每一档都必须是有限正数；除此之外各档彼此独立，包括通过 `null` 继承的值。
@@ -99,7 +101,7 @@ fontService.SetOverrideFont(
     28);
 
 IReadOnlyDictionary<Type, FlourishPageFontOverride> overrides =
-    fontService.PageOverrides;
+    fontService.Current.PageOverrides;
 
 fontService.RemoveOverrideFont<CodeEditorPage>();
 ```

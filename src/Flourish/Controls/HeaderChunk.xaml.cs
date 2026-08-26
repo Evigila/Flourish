@@ -1,6 +1,6 @@
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Markup;
-using ArkheideSystem.Flourish.Internal.Interaction;
 using WpfBorder = System.Windows.Controls.Border;
 
 namespace ArkheideSystem.Flourish.Controls;

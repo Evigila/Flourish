@@ -1,3 +1,9 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -63,7 +69,7 @@ public sealed class FlourishExtractedShellControlsTests
         );
 
         var initializeIndex = source.IndexOf(
-            "toolbarController.Init();",
+            "toolbarController.Start();",
             StringComparison.Ordinal
         );
         var regionsIndex = source.IndexOf("BuildRegionContents();", StringComparison.Ordinal);

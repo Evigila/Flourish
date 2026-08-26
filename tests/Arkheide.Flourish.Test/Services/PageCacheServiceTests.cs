@@ -1,7 +1,10 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Moq;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -57,7 +60,7 @@ public sealed class PageCacheServiceTests
             .Returns(CreatePage());
         var sut = new PageCacheService(
             factory.Object,
-            new NavigationRouteRegistry(new FlourishShellOptions())
+            new NavigationRouteRegistry(new FlourishNavigationOptions())
         );
 
         var first = sut.GetPage(typeof(TransientPage));
@@ -112,7 +115,7 @@ public sealed class PageCacheServiceTests
             .Returns(returnsNull ? null : new NotAPage());
         var sut = new PageCacheService(
             factory.Object,
-            new NavigationRouteRegistry(new FlourishShellOptions())
+            new NavigationRouteRegistry(new FlourishNavigationOptions())
         );
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
@@ -129,19 +132,19 @@ public sealed class PageCacheServiceTests
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
         var sut = new PageCacheService(
             factory.Object,
-            new NavigationRouteRegistry(new FlourishShellOptions())
+            new NavigationRouteRegistry(new FlourishNavigationOptions())
         );
 
         Assert.Throws<ArgumentNullException>(() => sut.GetPage(null!));
         factory.VerifyNoOtherCalls();
     }
 
-    private static FlourishShellOptions CreateOptions(
+    private static FlourishNavigationOptions CreateOptions(
         Type pageType,
         FlourishPageCacheMode cacheMode
     )
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute(pageType.Name, pageType, cacheMode)
         );

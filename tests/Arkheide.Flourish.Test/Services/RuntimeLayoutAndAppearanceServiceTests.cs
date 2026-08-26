@@ -1,8 +1,12 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Layout;
+
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -12,7 +16,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
     public void ContentLayoutService_UsesStartupStateAndSuppressesNoOpChanges()
     {
         var sut = new ContentLayoutService(
-            new FlourishShellOptions { IsCenterContentEnabled = true, CenterContentWidth = 960 }
+            new FlourishLayoutOptions { IsCenterContentEnabled = true, CenterContentWidth = 960 }
         );
         var changes = 0;
         sut.Changed += (_, _) => changes++;
@@ -31,7 +35,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
     [InlineData(double.PositiveInfinity)]
     public void ContentLayoutService_RejectsInvalidWidths(double width)
     {
-        var sut = new ContentLayoutService(new FlourishShellOptions());
+        var sut = new ContentLayoutService(new FlourishLayoutOptions());
 
         Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetCenterContent(true, width));
     }
@@ -41,7 +45,7 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
     {
         var resources = new ResourceDictionary();
         var colors = new FlourishThemeColors(Colors.Red, Colors.Green, Colors.Blue);
-        var sut = new AppearanceService(new FlourishShellOptions());
+        var sut = new AppearanceService(new FlourishAppearanceOptions());
         sut.Attach(Dispatcher.CurrentDispatcher, resources, FlourishTheme.Light);
 
         sut.SetAppearance(colors, 7);
@@ -59,8 +63,8 @@ public sealed class RuntimeLayoutAndAppearanceServiceTests
     [Fact]
     public void AppearanceService_RaisesOneChangeForAtomicUpdate()
     {
-        var sut = new AppearanceService(new FlourishShellOptions());
-        FlourishAppearanceChangedEventArgs? change = null;
+        var sut = new AppearanceService(new FlourishAppearanceOptions());
+        FlourishStateTransitionEventArgs<FlourishAppearanceSettings>? change = null;
         var changes = 0;
         sut.Changed += (_, args) =>
         {

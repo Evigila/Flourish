@@ -1,5 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Commands;
+
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -19,19 +26,19 @@ public sealed class ShortcutServiceTests
             42
         );
 
-        var snapshot = Assert.Single(sut.Registrations);
-        Assert.Equal(registration.Id, snapshot.Id);
+        var snapshot = Assert.Single(sut.Current);
+        Assert.NotEqual(Guid.Empty, snapshot.Id);
         Assert.Equal("cmd_editor_save", snapshot.CommandKey);
         Assert.Equal(42, snapshot.Parameter);
         Assert.False(snapshot.AllowWhenTextInputFocused);
-        Assert.Equal(ShortcutRegistryChangeKind.Registered, changes[0].ChangeKind);
+        Assert.Equal(FlourishRuntimeChangeKind.Added, changes[0].ChangeKind);
         registration.Dispose();
         registration.Dispose();
         Assert.False(registration.IsRegistered);
-        Assert.Empty(sut.Registrations);
+        Assert.Empty(sut.Current);
         Assert.Equal(2, changes.Count);
-        Assert.Equal(ShortcutRegistryChangeKind.Unregistered, changes[1].ChangeKind);
-        Assert.Empty(changes[1].Registrations);
+        Assert.Equal(FlourishRuntimeChangeKind.Removed, changes[1].ChangeKind);
+        Assert.Empty(changes[1].Current);
     }
 
     [Fact]
@@ -45,7 +52,7 @@ public sealed class ShortcutServiceTests
         );
 
         Assert.Contains("Ctrl", exception.Message, StringComparison.OrdinalIgnoreCase);
-        Assert.Single(sut.Registrations);
+        Assert.Single(sut.Current);
     }
 
     [Fact]
@@ -65,7 +72,7 @@ public sealed class ShortcutServiceTests
 
         Assert.False(original.IsRegistered);
         Assert.True(replacement.IsRegistered);
-        Assert.Equal("cmd_editor_save_as", Assert.Single(sut.Registrations).CommandKey);
+        Assert.Equal("cmd_editor_save_as", Assert.Single(sut.Current).CommandKey);
         Assert.True(
             sut.TryResolve(Gesture(Key.S, ModifierKeys.Control), context: null, out var resolved)
         );

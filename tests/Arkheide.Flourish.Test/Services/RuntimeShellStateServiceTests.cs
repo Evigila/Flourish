@@ -1,6 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Projects;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
@@ -11,14 +20,14 @@ public sealed class RuntimeShellStateServiceTests
     [Fact]
     public void TitleBarService_UpdatesApplicationIdentityLogoDetailsAndRaisesOnlyMaterialChanges()
     {
-        var options = new FlourishShellOptions();
-        ITitleBarService sut = new TitleBarService(options);
+        var options = new FlourishTitleBarOptions();
+        var sut = new TitleBarService(options, new FlourishProjectOptions());
         var changes = new List<FlourishTitleBarState>();
         var versions = new List<long>();
         sut.Changed += (_, args) =>
         {
-            changes.Add(args.State);
-            versions.Add(args.Version);
+            changes.Add(args.Current);
+            versions.Add(args.Current.Version);
         };
 
         sut.SetApplicationIdentity("Runtime Gallery", "Live APIs");
@@ -28,14 +37,14 @@ public sealed class RuntimeShellStateServiceTests
             null,
             "RG",
             showApplicationTitle: false,
-            showApplicationSubTitle: false,
+            showApplicationSubtitle: false,
             showProjectTitle: true
         );
         sut.SetLogo(
             null,
             "RG",
             showApplicationTitle: false,
-            showApplicationSubTitle: false,
+            showApplicationSubtitle: false,
             showProjectTitle: true
         );
         sut.SetElementVisible(TitleBarElement.Search, true);
@@ -43,11 +52,11 @@ public sealed class RuntimeShellStateServiceTests
         sut.SetBreadcrumbMode(BreadcrumbShowOption.Hidden);
 
         Assert.Equal("Runtime Gallery", sut.Current.ApplicationTitle);
-        Assert.Equal("Live APIs", sut.Current.ApplicationSubTitle);
+        Assert.Equal("Live APIs", sut.Current.ApplicationSubtitle);
         Assert.Equal("Untitled workspace", sut.Current.UnnamedProjectPlaceholder);
         Assert.Equal("RG", sut.Current.LogoFallbackText);
         Assert.False(sut.Current.ShowApplicationTitle);
-        Assert.False(sut.Current.ShowApplicationSubTitle);
+        Assert.False(sut.Current.ShowApplicationSubtitle);
         Assert.True(sut.Current.ShowProjectTitle);
         Assert.True(sut.Current.IsLogoVisible);
         Assert.True(sut.Current.IsTitleVisible);
@@ -65,14 +74,9 @@ public sealed class RuntimeShellStateServiceTests
     [Fact]
     public void TitleBarService_SetEnabledSuppressesNoOpsAndPreservesMaterialRequest()
     {
-        var options = new FlourishShellOptions
-        {
-            IsTitlebarEnabled = true,
-            IsMaterialEffectEnabled = true,
-            MaterialEffect = MaterialEffect.Mica,
-        };
-        ITitleBarService sut = new TitleBarService(options);
-        var changes = new List<FlourishTitleBarChangedEventArgs>();
+        var options = new FlourishTitleBarOptions { IsTitlebarEnabled = true };
+        var sut = new TitleBarService(options, new FlourishProjectOptions());
+        var changes = new List<FlourishStateChangedEventArgs<FlourishTitleBarState>>();
         sut.Changed += (_, args) => changes.Add(args);
 
         sut.SetEnabled(false);
@@ -82,16 +86,14 @@ public sealed class RuntimeShellStateServiceTests
 
         Assert.True(sut.Current.IsEnabled);
         Assert.Equal(2, changes.Count);
-        Assert.Equal([1L, 2L], changes.Select(change => change.Version));
-        Assert.True(options.IsMaterialEffectEnabled);
-        Assert.Equal(MaterialEffect.Mica, options.MaterialEffect);
+        Assert.Equal([1L, 2L], changes.Select(change => change.Current.Version));
     }
 
     [Fact]
     public void TitleBarService_MultiProjectModeMakesTheTitleButtonVisible()
     {
-        var options = new FlourishShellOptions { IsMultiProjectEnabled = true };
-        ITitleBarService sut = new TitleBarService(options);
+        var options = new FlourishProjectOptions { IsMultiProjectEnabled = true };
+        var sut = new TitleBarService(new FlourishTitleBarOptions(), options);
 
         Assert.True(sut.Current.IsTitleVisible);
         Assert.Equal("Unnamed project", sut.Current.UnnamedProjectPlaceholder);
@@ -101,18 +103,24 @@ public sealed class RuntimeShellStateServiceTests
     public async Task TitleBarSearchService_UserQueryPublishesStateAndCancelsStaleWork()
     {
         using var sut = new TitleBarSearchService(
-            new FlourishShellOptions(),
+            new FlourishTitleBarOptions(),
             new Mock<IServiceProvider>().Object,
             NullLogger<TitleBarSearchService>.Instance
         );
         var states = new List<FlourishTitleBarSearchState>();
-        var queries = new List<FlourishTitleBarSearchChangedEventArgs>();
-        sut.StateChanged += (_, args) =>
+        var queries = new List<FlourishTitleBarSearchQuery>();
+        sut.Changed += (_, args) =>
         {
-            states.Add(args.State);
-            Assert.Equal(args.State, sut.Current);
+            states.Add(args.Current);
+            Assert.Equal(args.Current, sut.Current);
         };
-        sut.QueryChanged += (_, args) => queries.Add(args);
+        using var queryObserver = sut.Subscribe(
+            (args, _) =>
+            {
+                queries.Add(args);
+                return ValueTask.CompletedTask;
+            }
+        );
         var firstStarted = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
@@ -168,20 +176,16 @@ public sealed class RuntimeShellStateServiceTests
     }
 
     [Fact]
-    public void TitleBarSearchService_SynchronousQueryObserversDoNotAllocateCancellationSource()
+    public void TitleBarSearchService_PublishWithoutSubscribersDoesNotAllocateCancellationSource()
     {
         using var sut = new TitleBarSearchService(
-            new FlourishShellOptions(),
+            new FlourishTitleBarOptions(),
             new Mock<IServiceProvider>().Object,
             NullLogger<TitleBarSearchService>.Instance
         );
-        FlourishTitleBarSearchChangedEventArgs? query = null;
-        sut.QueryChanged += (_, args) => query = args;
-
         sut.PublishFromView("typed");
 
-        Assert.NotNull(query);
-        Assert.Equal("typed", query.Text);
+        Assert.Equal("typed", sut.Current.Text);
         Assert.Null(GetActiveQueryDispatch(sut));
     }
 
@@ -189,7 +193,7 @@ public sealed class RuntimeShellStateServiceTests
     public async Task TitleBarSearchService_NewQueryCancelsWorkAfterLastSubscriberLeaves()
     {
         using var sut = new TitleBarSearchService(
-            new FlourishShellOptions(),
+            new FlourishTitleBarOptions(),
             new Mock<IServiceProvider>().Object,
             NullLogger<TitleBarSearchService>.Instance
         );
@@ -225,7 +229,7 @@ public sealed class RuntimeShellStateServiceTests
     public async Task TitleBarSearchService_CancelCallbackFailureDoesNotBlockNewQuery()
     {
         using var sut = new TitleBarSearchService(
-            new FlourishShellOptions(),
+            new FlourishTitleBarOptions(),
             new Mock<IServiceProvider>().Object,
             NullLogger<TitleBarSearchService>.Instance
         );
@@ -266,17 +270,15 @@ public sealed class RuntimeShellStateServiceTests
     public void TitleBarSearchService_TracksStateAndSubscriptionLease()
     {
         using var sut = new TitleBarSearchService(
-            new FlourishShellOptions(),
+            new FlourishTitleBarOptions(),
             new Mock<IServiceProvider>().Object,
             NullLogger<TitleBarSearchService>.Instance
         );
         var calls = 0;
         var stateChanges = 0;
         var programmaticStateChanges = 0;
-        var queryChanges = 0;
-        sut.StateChanged += (_, _) => stateChanges++;
+        sut.Changed += (_, _) => stateChanges++;
         sut.ProgrammaticStateChanged += (_, _) => programmaticStateChanges++;
-        sut.QueryChanged += (_, _) => queryChanges++;
         var subscription = sut.Subscribe(
             (_, _) =>
             {
@@ -296,7 +298,6 @@ public sealed class RuntimeShellStateServiceTests
         Assert.Equal(0, calls);
         Assert.Equal(5, stateChanges);
         Assert.Equal(4, programmaticStateChanges);
-        Assert.Equal(1, queryChanges);
         Assert.Equal("Find demos", sut.Current.Placeholder);
         Assert.False(sut.Current.FocusRequested);
         Assert.Equal(5, sut.Current.Version);
@@ -316,14 +317,13 @@ public sealed class RuntimeShellStateServiceTests
     [Fact]
     public void ProfileFlyoutService_ValidatesPagesAndSynchronizesVisibilityEvents()
     {
-        var shellOptions = new FlourishShellOptions();
         var profileOptions = new FlourishProfileOptions();
-        var sut = new ProfileFlyoutService(shellOptions, profileOptions);
+        var sut = new ProfileFlyoutService(profileOptions);
         var changes = new List<FlourishProfileFlyoutState>();
-        sut.Changed += (_, args) => changes.Add(args.State);
+        sut.Changed += (_, args) => changes.Add(args.Current);
 
         sut.SetEnabled(true);
-        sut.SetContentPage<TestProfilePage>();
+        sut.SetContentPage(typeof(TestProfilePage));
         sut.Show();
         sut.SynchronizeVisibility(false);
 

@@ -1,7 +1,10 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.ToolTips;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Internal.Interaction;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
 using ToolTip = System.Windows.Controls.ToolTip;

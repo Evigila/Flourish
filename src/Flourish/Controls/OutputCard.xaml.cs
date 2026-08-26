@@ -1,3 +1,6 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;

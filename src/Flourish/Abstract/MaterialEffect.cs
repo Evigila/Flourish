@@ -5,8 +5,8 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// builder.ConfigShell(shell =>
-///     shell.UseMaterialEffect(enabled: true, effect: MaterialEffect.Auto));
+/// builder.ConfigureAppearance(appearance =>
+///     appearance.SetEffect(enabled: true, effect: MaterialEffect.Auto));
 /// ]]></code>
 /// </example>
 public enum MaterialEffect
@@ -16,7 +16,7 @@ public enum MaterialEffect
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// builder.ConfigShell(shell => shell.UseMaterialEffect(enabled: false));
+    /// builder.ConfigureAppearance(appearance => appearance.SetEffect(enabled: false));
     /// ]]></code>
     /// </example>
     None = 0,
@@ -26,8 +26,8 @@ public enum MaterialEffect
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// builder.ConfigShell(shell =>
-    ///     shell.UseMaterialEffect(enabled: true, effect: MaterialEffect.Mica));
+    /// builder.ConfigureAppearance(appearance =>
+    ///     appearance.SetEffect(enabled: true, effect: MaterialEffect.Mica));
     /// ]]></code>
     /// </example>
     Mica = 1,

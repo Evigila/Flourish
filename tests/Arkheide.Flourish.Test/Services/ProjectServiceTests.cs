@@ -1,6 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Projects;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -10,7 +19,7 @@ public sealed class ProjectServiceTests
     public void Current_StartsEmptyAndReflectsConfiguredMultiProjectMode()
     {
         IProjectService sut = new ProjectService(
-            new FlourishShellOptions { IsMultiProjectEnabled = true }
+            new FlourishProjectOptions { IsMultiProjectEnabled = true }
         );
 
         Assert.Empty(sut.Current.Projects);
@@ -22,12 +31,12 @@ public sealed class ProjectServiceTests
     [Fact]
     public void AppendProject_NormalizesMetadataPreservesOrderAndPublishesChanges()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
-        sut.AppendProject(new FlourishProject(" first ", " First ", @" C:\Work\First "));
-        sut.AppendProject(new FlourishProject("second", "Second", "   "), activate: false);
+        sut.AddProject(new FlourishProject(" first ", " First ", @" C:\Work\First "));
+        sut.AddProject(new FlourishProject("second", "Second", "   "), activate: false);
 
         Assert.Equal(["first", "second"], sut.Current.Projects.Select(project => project.Id));
         Assert.Equal("First", sut.Current.Projects[0].Name);
@@ -63,13 +72,13 @@ public sealed class ProjectServiceTests
     [Fact]
     public void AppendProject_UsesCaseSensitiveIdsAndRejectsExactDuplicates()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AppendProject(new FlourishProject("project", "Lowercase"));
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
+        sut.AddProject(new FlourishProject("project", "Lowercase"));
 
         Assert.Throws<InvalidOperationException>(() =>
-            sut.AppendProject(new FlourishProject("project", "Duplicate"))
+            sut.AddProject(new FlourishProject("project", "Duplicate"))
         );
-        sut.AppendProject(new FlourishProject("PROJECT", "Uppercase"), activate: false);
+        sut.AddProject(new FlourishProject("PROJECT", "Uppercase"), activate: false);
 
         Assert.Equal(["project", "PROJECT"], sut.Current.Projects.Select(project => project.Id));
         Assert.Equal(2, sut.Current.Version);
@@ -78,7 +87,7 @@ public sealed class ProjectServiceTests
     [Fact]
     public void SetProject_UpdatesInPlaceActivatesOnRequestAndSuppressesNoOps()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
         var original = new FlourishProject("alpha", "Alpha");
@@ -116,8 +125,8 @@ public sealed class ProjectServiceTests
     [Fact]
     public void SetProjectMetadata_UpdatesActiveProjectAndSuppressesEquivalentValues()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AppendProject(new FlourishProject("alpha", "Alpha", @"C:\Work\Alpha"));
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
+        sut.AddProject(new FlourishProject("alpha", "Alpha", @"C:\Work\Alpha"));
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -137,9 +146,9 @@ public sealed class ProjectServiceTests
     [Fact]
     public void SetActiveProject_SwitchesClearsAndSuppressesNoOps()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AppendProject(new FlourishProject("first", "First"));
-        sut.AppendProject(new FlourishProject("second", "Second"), activate: false);
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
+        sut.AddProject(new FlourishProject("first", "First"));
+        sut.AddProject(new FlourishProject("second", "Second"), activate: false);
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -159,9 +168,9 @@ public sealed class ProjectServiceTests
     [Fact]
     public void RemoveProject_UpdatesLookupAndClearsTheActiveProject()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
-        sut.AppendProject(new FlourishProject("first", "First"));
-        sut.AppendProject(new FlourishProject("second", "Second"), activate: false);
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
+        sut.AddProject(new FlourishProject("first", "First"));
+        sut.AddProject(new FlourishProject("second", "Second"), activate: false);
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
 
@@ -187,7 +196,7 @@ public sealed class ProjectServiceTests
     [Fact]
     public void SetMultiProjectEnabled_PublishesOnlyMaterialChanges()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishProjectOptions();
         IProjectService sut = new ProjectService(options);
         var changes = new List<FlourishProjectsChangedEventArgs>();
         sut.Changed += (_, args) => changes.Add(args);
@@ -212,9 +221,9 @@ public sealed class ProjectServiceTests
     [Fact]
     public void TitleBarRequests_RaiseIntentEventsWithoutMutatingProjectState()
     {
-        var sut = new ProjectService(new FlourishShellOptions());
-        sut.AppendProject(new FlourishProject("first", "First"));
-        sut.AppendProject(new FlourishProject("second", "Second"), activate: false);
+        var sut = new ProjectService(new FlourishProjectOptions());
+        sut.AddProject(new FlourishProject("first", "First"));
+        sut.AddProject(new FlourishProject("second", "Second"), activate: false);
         var changedCount = 0;
         FlourishNewProjectRequestedEventArgs? newProjectRequest = null;
         FlourishProjectActivationRequestedEventArgs? activationRequest = null;
@@ -240,24 +249,24 @@ public sealed class ProjectServiceTests
     [Fact]
     public void ProjectMutations_ValidateRequiredMetadata()
     {
-        IProjectService sut = new ProjectService(new FlourishShellOptions());
+        IProjectService sut = new ProjectService(new FlourishProjectOptions());
 
         Assert.Equal(
             "project",
-            Assert.Throws<ArgumentNullException>(() => sut.AppendProject(null!)).ParamName
+            Assert.Throws<ArgumentNullException>(() => sut.AddProject(null!)).ParamName
         );
         Assert.Equal(
             "Id",
             Assert
                 .Throws<ArgumentException>(() =>
-                    sut.AppendProject(new FlourishProject(" ", "Name"))
+                    sut.AddProject(new FlourishProject(" ", "Name"))
                 )
                 .ParamName
         );
         Assert.Equal(
             "Name",
             Assert
-                .Throws<ArgumentException>(() => sut.AppendProject(new FlourishProject("id", " ")))
+                .Throws<ArgumentException>(() => sut.AddProject(new FlourishProject("id", " ")))
                 .ParamName
         );
         Assert.Equal(
@@ -271,11 +280,46 @@ public sealed class ProjectServiceTests
     }
 
     [Fact]
+    public void PersistentService_WhenMultiProjectIsDisabled_DoesNotTouchCatalogStore()
+    {
+        var persisted = new FlourishProject("persisted", "Persisted", "persisted.txt");
+        var store = new RecordingProjectCatalogStore(
+            new ProjectCatalog([persisted], persisted.Id)
+        );
+        var sut = new ProjectService(new FlourishProjectOptions(), store);
+
+        sut.AddProject(new FlourishProject("runtime", "Runtime", "runtime.txt"));
+
+        Assert.Equal(0, store.LoadCallCount);
+        Assert.Empty(store.SavedCatalogs);
+        Assert.Equal("runtime", Assert.Single(sut.Current.Projects).Id);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void ProjectCatalogStore_WithoutConfiguredPath_IsANoOp(string? path)
+    {
+        var sut = new ProjectCatalogStore(
+            new FlourishDataOptions { ProjectCatalogFilePath = path }
+        );
+
+        var loaded = sut.Load();
+        sut.Save(new ProjectCatalog([], null));
+
+        Assert.Null(sut.FilePath);
+        Assert.Empty(loaded.Projects);
+        Assert.Null(loaded.ActiveProjectId);
+    }
+
+    [Fact]
     public void PersistentService_DoesNotPersistActiveUnnamedProject()
     {
         using var directory = new TemporaryDirectory();
-        var options = new FlourishShellOptions
+        var options = new FlourishProjectOptions
         {
+            IsMultiProjectEnabled = true,
             UnnamedProjectPlaceholder = "Configured unnamed project",
         };
         var store = new ProjectCatalogStore(
@@ -307,7 +351,7 @@ public sealed class ProjectServiceTests
     public void PersistentService_RoundTripsProjectOrderMetadataAndActiveId()
     {
         using var directory = new TemporaryDirectory();
-        var options = new FlourishShellOptions();
+        var options = new FlourishProjectOptions { IsMultiProjectEnabled = true };
         var store = new ProjectCatalogStore(
             new FlourishDataOptions
             {
@@ -321,7 +365,7 @@ public sealed class ProjectServiceTests
         File.WriteAllText(firstPath, string.Empty);
         File.WriteAllText(secondPath, string.Empty);
         first.SetProjectMetadata(unnamed.Id, "First", firstPath);
-        first.AppendProject(new FlourishProject("second", "Second", secondPath), activate: false);
+        first.AddProject(new FlourishProject("second", "Second", secondPath), activate: false);
         first.SetActiveProject("second");
 
         var reloaded = new ProjectService(options, store);
@@ -339,7 +383,7 @@ public sealed class ProjectServiceTests
     public void PersistentService_PersistsOnlyExistingStorageMappings()
     {
         using var directory = new TemporaryDirectory();
-        var options = new FlourishShellOptions();
+        var options = new FlourishProjectOptions { IsMultiProjectEnabled = true };
         var store = new ProjectCatalogStore(
             new FlourishDataOptions
             {
@@ -352,11 +396,11 @@ public sealed class ProjectServiceTests
         var first = new ProjectService(options, store);
         var initial = Assert.Single(first.Current.Projects);
         first.SetProjectMetadata(initial.Id, "Existing", existingPath);
-        first.AppendProject(
+        first.AddProject(
             new FlourishProject("missing", "Missing", missingPath),
             activate: false
         );
-        first.AppendProject(new FlourishProject("unmapped", "Unmapped"));
+        first.AddProject(new FlourishProject("unmapped", "Unmapped"));
 
         var reloaded = new ProjectService(options, store);
 
@@ -385,7 +429,10 @@ public sealed class ProjectServiceTests
             new ProjectCatalog([existing, missing, unmapped], missing.Id)
         );
 
-        var sut = new ProjectService(new FlourishShellOptions(), store);
+        var sut = new ProjectService(
+            new FlourishProjectOptions { IsMultiProjectEnabled = true },
+            store
+        );
 
         Assert.Equal(existing, Assert.Single(sut.Current.Projects));
         Assert.Equal(existing, sut.Current.ActiveProject);
@@ -404,13 +451,16 @@ public sealed class ProjectServiceTests
         File.WriteAllText(addedPath, string.Empty);
         var existing = new FlourishProject("existing", "Existing", existingPath);
         var store = new ThrowingProjectCatalogStore(new ProjectCatalog([existing], existing.Id));
-        var sut = new ProjectService(new FlourishShellOptions(), store);
+        var sut = new ProjectService(
+            new FlourishProjectOptions { IsMultiProjectEnabled = true },
+            store
+        );
         var before = sut.Current;
         var changedCount = 0;
         sut.Changed += (_, _) => changedCount++;
 
         Assert.Throws<IOException>(() =>
-            sut.AppendProject(new FlourishProject("added", "Added", addedPath))
+            sut.AddProject(new FlourishProject("added", "Added", addedPath))
         );
 
         var after = sut.Current;
@@ -456,9 +506,15 @@ public sealed class ProjectServiceTests
 
     private sealed class RecordingProjectCatalogStore(ProjectCatalog catalog) : IProjectCatalogStore
     {
+        public int LoadCallCount { get; private set; }
+
         public List<ProjectCatalog> SavedCatalogs { get; } = [];
 
-        public ProjectCatalog Load() => catalog;
+        public ProjectCatalog Load()
+        {
+            LoadCallCount++;
+            return catalog;
+        }
 
         public void Save(ProjectCatalog catalog) => SavedCatalogs.Add(catalog);
     }

@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -352,27 +355,28 @@ public partial class AppearancePage : Page
         isRefreshing = true;
         try
         {
-            ThemeBox.SelectedItem = theme.CurrentTheme;
+            ThemeBox.SelectedItem = theme.Current.RequestedTheme;
 
-            FontFamilyBox.Text = font.FontFamily;
-            SmallFontSizeBox.Text = font.SmallFontSize.ToString("0.##", CultureInfo.CurrentCulture);
-            StandardFontSizeBox.Text = font.StandardFontSize.ToString(
+            var fontState = font.Current;
+            FontFamilyBox.Text = fontState.FontFamily;
+            SmallFontSizeBox.Text = fontState.SmallFontSize.ToString("0.##", CultureInfo.CurrentCulture);
+            StandardFontSizeBox.Text = fontState.StandardFontSize.ToString(
                 "0.##",
                 CultureInfo.CurrentCulture
             );
-            IconFontSizeBox.Text = font.IconFontSize.ToString("0.##", CultureInfo.CurrentCulture);
-            LargeFontSizeBox.Text = font.LargeFontSize.ToString("0.##", CultureInfo.CurrentCulture);
-            ExtraLargeFontSizeBox.Text = font.ExtraLargeFontSize.ToString(
+            IconFontSizeBox.Text = fontState.IconFontSize.ToString("0.##", CultureInfo.CurrentCulture);
+            LargeFontSizeBox.Text = fontState.LargeFontSize.ToString("0.##", CultureInfo.CurrentCulture);
+            ExtraLargeFontSizeBox.Text = fontState.ExtraLargeFontSize.ToString(
                 "0.##",
                 CultureInfo.CurrentCulture
             );
-            HeaderSizeFontSizeBox.Text = font.HeaderSizeFontSize.ToString(
+            HeaderSizeFontSizeBox.Text = fontState.HeaderSizeFontSize.ToString(
                 "0.##",
                 CultureInfo.CurrentCulture
             );
-            IconFontFamilyBox.Text = font.IconFontFamily;
+            IconFontFamilyBox.Text = fontState.IconFontFamily;
 
-            if (font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
+            if (fontState.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
             {
                 PageOverrideFontFamilyBox.Text = pageOverride.FontFamily;
                 PageOverrideSmallFontSizeBox.Text =
@@ -405,10 +409,10 @@ public partial class AppearancePage : Page
             }
 
             MaterialBox.SelectedItem = materialOptions.Single(option =>
-                Equals(option.Tag, material.CurrentEffect)
+                Equals(option.Tag, material.Current.RequestedEffect)
             );
-            MaterialDarkModeBox.IsChecked = material.IsDarkMode;
-            SmoothScrollingBox.IsChecked = scroll.GetCurrent().IsSmoothScrollingEnabled;
+            MaterialDarkModeBox.IsChecked = material.Current.IsDarkMode;
+            SmoothScrollingBox.IsChecked = scroll.Current.IsSmoothScrollingEnabled;
             var appearanceState = appearance.Current;
             CornerRadiusBox.Text =
                 appearanceState.CornerRadius?.ToString("0.##", CultureInfo.CurrentCulture)
@@ -429,29 +433,29 @@ public partial class AppearancePage : Page
     private string FormatThemeOutput() =>
         Localizer.Parse(
             CKey.Runtime_ThemeUpdatedRequested0Effective1Dark2_10410DE8,
-            theme.CurrentTheme,
-            theme.EffectiveTheme,
-            theme.IsDark
+            theme.Current.RequestedTheme,
+            theme.Current.EffectiveTheme,
+            theme.Current.IsDark
         );
 
     private string FormatTypographyOutput() =>
         Localizer.Parse(
             CKey.Runtime_TypographyUpdatedText01Icons2_6EFDFFD3,
-            font.FontFamily,
+            font.Current.FontFamily,
             FormatScale(
-                font.SmallFontSize,
-                font.StandardFontSize,
-                font.IconFontSize,
-                font.LargeFontSize,
-                font.ExtraLargeFontSize,
-                font.HeaderSizeFontSize
+                font.Current.SmallFontSize,
+                font.Current.StandardFontSize,
+                font.Current.IconFontSize,
+                font.Current.LargeFontSize,
+                font.Current.ExtraLargeFontSize,
+                font.Current.HeaderSizeFontSize
             ),
-            font.IconFontFamily
+            font.Current.IconFontFamily
         );
 
     private string FormatPageTypographyOutput()
     {
-        if (!font.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
+        if (!font.Current.PageOverrides.TryGetValue(typeof(AppearancePage), out var pageOverride))
         {
             return Localizer.Parse(
                 CKey.Runtime_AppearancePageTypographyOverrideWasNotApplied_E8E937EF
@@ -462,12 +466,12 @@ public partial class AppearancePage : Page
             CKey.Runtime_AppearancePageTypographyOverrideApplied01_C79A613D,
             pageOverride.FontFamily,
             FormatScale(
-                pageOverride.SmallFontSize ?? font.SmallFontSize,
-                pageOverride.StandardFontSize ?? font.StandardFontSize,
-                pageOverride.IconFontSize ?? font.IconFontSize,
-                pageOverride.LargeFontSize ?? font.LargeFontSize,
-                pageOverride.ExtraLargeFontSize ?? font.ExtraLargeFontSize,
-                pageOverride.HeaderSizeFontSize ?? font.HeaderSizeFontSize
+                pageOverride.SmallFontSize ?? font.Current.SmallFontSize,
+                pageOverride.StandardFontSize ?? font.Current.StandardFontSize,
+                pageOverride.IconFontSize ?? font.Current.IconFontSize,
+                pageOverride.LargeFontSize ?? font.Current.LargeFontSize,
+                pageOverride.ExtraLargeFontSize ?? font.Current.ExtraLargeFontSize,
+                pageOverride.HeaderSizeFontSize ?? font.Current.HeaderSizeFontSize
             )
         );
     }
@@ -475,11 +479,11 @@ public partial class AppearancePage : Page
     private string FormatMaterialOutput() =>
         Localizer.Parse(
             CKey.Runtime_WindowMaterialUpdatedRequested0Effective1Supported2Applied3DarkM_AA9929C6,
-            material.CurrentEffect,
-            material.EffectiveEffect,
-            material.IsSupported(material.CurrentEffect),
-            material.IsApplied,
-            material.IsDarkMode
+            material.Current.RequestedEffect,
+            material.Current.EffectiveEffect,
+            material.Current.IsSupported,
+            material.Current.IsApplied,
+            material.Current.IsDarkMode
         );
 
     private FlourishComboBoxItem CreateMaterialOption(MaterialEffect effect)

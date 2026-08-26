@@ -1,6 +1,27 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.BackgroundTasks;
+using ArkheideSystem.Flourish.Commands;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Layout;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Messaging;
+using ArkheideSystem.Flourish.Motion;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Projects;
+using ArkheideSystem.Flourish.Shell.Regions;
+using ArkheideSystem.Flourish.Shell.StatusBar;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+using ArkheideSystem.Flourish.Shell.Toolbar;
+using ArkheideSystem.Flourish.ToolTips;
+using ArkheideSystem.Flourish.Windowing;
+
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
@@ -14,7 +35,7 @@ public sealed class FlourishCompositionContractTests
 
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
 
-        Assert.Equal("en-US", localization.CurrentLocale);
+        Assert.Equal("en-US", localization.Current.Locale);
         Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
@@ -22,49 +43,54 @@ public sealed class FlourishCompositionContractTests
     public void Build_WithoutOptionalConfigurations_AppliesLatentDefaultsWithoutEnablingShell()
     {
         using var flourish = FlourishBuilder.CreateDefaultBuilder([]).Build();
-        var options = flourish.GetRequiredService<FlourishShellOptions>();
+        var titleBar = flourish.GetRequiredService<FlourishTitleBarOptions>();
+        var navigation = flourish.GetRequiredService<FlourishNavigationOptions>();
+        var motion = flourish.GetRequiredService<FlourishMotionOptions>();
+        var window = flourish.GetRequiredService<FlourishWindowOptions>();
+        var statusBar = flourish.GetRequiredService<FlourishStatusBarOptions>();
+        var toolbar = flourish.GetRequiredService<FlourishToolbarOptions>();
 
-        Assert.False(options.IsTitlebarEnabled);
-        Assert.False(options.IsNavigationPanelEnabled);
-        Assert.False(options.Motion.IsEnabled);
-        Assert.False(options.IsStatusBarEnabled);
-        Assert.False(options.IsDynamicToolbarEnabled);
+        Assert.False(titleBar.IsTitlebarEnabled);
+        Assert.False(navigation.IsNavigationPanelEnabled);
+        Assert.False(motion.IsEnabled);
+        Assert.False(statusBar.IsStatusBarEnabled);
+        Assert.False(toolbar.IsDynamicToolbarEnabled);
 
-        Assert.True(options.IsBreadcrumbEnabled);
-        Assert.True(options.IsTitlebarNavigationToggleEnabled);
-        Assert.True(options.IsTitlebarLogoEnabled);
-        Assert.True(options.IsTitlebarTitleEnabled);
-        Assert.True(options.IsTitlebarProfileEnabled);
-        Assert.True(options.IsTitlebarThemeToggleEnabled);
-        Assert.False(options.IsTitlebarSearchEnabled);
-        Assert.Equal("MyApp", options.ApplicationTitle);
-        Assert.Equal("MyApp", options.ApplicationSubtitle);
+        Assert.True(titleBar.IsBreadcrumbEnabled);
+        Assert.True(titleBar.IsTitlebarNavigationToggleEnabled);
+        Assert.True(titleBar.IsTitlebarLogoEnabled);
+        Assert.True(titleBar.IsTitlebarTitleEnabled);
+        Assert.True(titleBar.IsTitlebarProfileEnabled);
+        Assert.True(titleBar.IsTitlebarThemeToggleEnabled);
+        Assert.False(titleBar.IsTitlebarSearchEnabled);
+        Assert.Equal("MyApp", titleBar.ApplicationTitle);
+        Assert.Equal("MyApp", titleBar.ApplicationSubtitle);
 
-        Assert.Equal(NavigationPanelDirection.Left, options.NavigationPanelDirection);
-        Assert.True(options.IsNavigationPanelInitiallyOpen);
-        Assert.Equal(250, options.OpenPaneWidth);
-        Assert.Equal(64, options.ClosedPaneWidth);
-        Assert.Equal(180, options.NavigationPaneMinWidth);
-        Assert.Equal(520, options.NavigationPaneMaxWidth);
-        Assert.Empty(options.NavigationGroups);
-        Assert.Empty(options.FixedNavigationItemDefinitions);
+        Assert.Equal(NavigationPanelDirection.Left, navigation.NavigationPanelDirection);
+        Assert.True(navigation.IsNavigationPanelInitiallyOpen);
+        Assert.Equal(250, navigation.OpenPaneWidth);
+        Assert.Equal(64, navigation.ClosedPaneWidth);
+        Assert.Equal(180, navigation.NavigationPaneMinWidth);
+        Assert.Equal(520, navigation.NavigationPaneMaxWidth);
+        Assert.Empty(navigation.NavigationGroups);
+        Assert.Empty(navigation.FixedNavigationItemDefinitions);
 
-        Assert.True(options.Motion.IsHoverRevealEnabled);
-        Assert.True(options.Motion.RespectSystemReducedMotion);
-        Assert.Equal(1536, options.WindowWidth);
-        Assert.Equal(864, options.WindowHeight);
-        Assert.Equal(1280, options.WindowMinWidth);
-        Assert.Equal(720, options.WindowMinHeight);
-        Assert.False(options.WindowTopmost);
-        Assert.False(options.IsTrayExitEnabled);
+        Assert.True(motion.IsHoverRevealEnabled);
+        Assert.True(motion.RespectSystemReducedMotion);
+        Assert.Equal(1536, window.WindowWidth);
+        Assert.Equal(864, window.WindowHeight);
+        Assert.Equal(1280, window.WindowMinWidth);
+        Assert.Equal(720, window.WindowMinHeight);
+        Assert.False(window.WindowTopmost);
+        Assert.False(window.IsTrayExitEnabled);
 
-        var statusItem = Assert.Single(options.StatusItems);
+        var statusItem = Assert.Single(statusBar.StatusItems);
         Assert.Equal("OK", statusItem.Text);
         Assert.Equal("\uE930", statusItem.IconGlyph);
-        Assert.True(options.IsLANConnectionStatusEnabled);
-        Assert.True(options.IsPowerStatusEnabled);
-        Assert.Empty(options.ToolbarItems);
-        Assert.Empty(options.DynamicToolbarItems);
+        Assert.True(statusBar.IsLANConnectionStatusEnabled);
+        Assert.True(statusBar.IsPowerStatusEnabled);
+        Assert.Empty(toolbar.ToolbarItems);
+        Assert.Empty(toolbar.DynamicToolbarItems);
     }
 
     [Fact]
@@ -72,48 +98,55 @@ public sealed class FlourishCompositionContractTests
     {
         using var flourish = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigData(data => data.InitLocale("zh-CN"))
-            .ConfigTitleBar(titleBar =>
-                titleBar.InitApplicationTitle("Configured").UseThemeToggle(mode: FlourishTheme.Dark)
+            .ConfigureData(data => data.SetLocale("zh-CN", usePersistedPreference: false))
+            .ConfigureTitleBar(titleBar =>
+                titleBar.SetApplicationTitle("Configured").SetThemeToggle(mode: FlourishTheme.Dark)
             )
-            .ConfigNavigation(navigation =>
+            .ConfigureNavigation(navigation =>
                 navigation
-                    .InitDirection(NavigationPanelDirection.Right)
-                    .InitInitiallyOpen(false)
-                    .InitPanelWidth(300, 64, 600, 200)
+                    .SetDirection(NavigationPanelDirection.Right, usePersistedPreference: false)
+                    .SetInitiallyOpen(false, usePersistedPreference: false)
+                    .SetPanelWidth(300, 64, 600, 200, usePersistedPreference: false)
             )
-            .ConfigMotion(motion =>
+            .ConfigureMotion(motion =>
                 motion
-                    .UseHoverRevealAnimation(duration: TimeSpan.FromMilliseconds(250))
-                    .UseSystemReducedMotion(false)
+                    .SetHoverReveal(
+                        duration: TimeSpan.FromMilliseconds(250),
+                        usePersistedPreference: false
+                    )
+                    .SetRespectSystemReducedMotion(false, usePersistedPreference: false)
             )
-            .ConfigWindow(window =>
+            .ConfigureWindow(window =>
                 window
-                    .InitWindowSize(1400, 800)
-                    .InitWindowMinSize(900, 600)
-                    .UseTopmost(false)
-                    .UseTrayExit(false)
+                    .SetSize(1400, 800, usePersistedPreference: false)
+                    .SetMinimumSize(900, 600)
+                    .SetTopmost(false, usePersistedPreference: false)
+                    .SetTrayExit(false, usePersistedPreference: false)
             )
             .Build();
-        var options = flourish.GetRequiredService<FlourishShellOptions>();
+        var titleBar = flourish.GetRequiredService<FlourishTitleBarOptions>();
+        var appearance = flourish.GetRequiredService<FlourishAppearanceOptions>();
+        var navigation = flourish.GetRequiredService<FlourishNavigationOptions>();
+        var motion = flourish.GetRequiredService<FlourishMotionOptions>();
+        var window = flourish.GetRequiredService<FlourishWindowOptions>();
         var data = flourish.GetRequiredService<FlourishDataOptions>();
 
         Assert.Equal("zh-CN", data.Locale);
-        Assert.Equal("Configured", options.ApplicationTitle);
-        Assert.Equal(FlourishTheme.Dark, options.DefaultTheme);
-        Assert.Equal(NavigationPanelDirection.Right, options.NavigationPanelDirection);
-        Assert.False(options.IsNavigationPanelInitiallyOpen);
-        Assert.Equal(300, options.OpenPaneWidth);
-        Assert.Equal(200, options.NavigationPaneMinWidth);
-        Assert.Equal(600, options.NavigationPaneMaxWidth);
-        Assert.Equal(TimeSpan.FromMilliseconds(250), options.Motion.HoverRevealAnimationDuration);
-        Assert.False(options.Motion.RespectSystemReducedMotion);
-        Assert.Equal(1400, options.WindowWidth);
-        Assert.Equal(800, options.WindowHeight);
-        Assert.Equal(900, options.WindowMinWidth);
-        Assert.Equal(600, options.WindowMinHeight);
-        Assert.False(options.WindowTopmost);
-        Assert.False(options.IsTrayExitEnabled);
+        Assert.Equal("Configured", titleBar.ApplicationTitle);
+        Assert.Equal(FlourishTheme.Dark, appearance.DefaultTheme);
+        Assert.Equal(NavigationPanelDirection.Right, navigation.NavigationPanelDirection);
+        Assert.False(navigation.IsNavigationPanelInitiallyOpen);
+        Assert.Equal(300, navigation.OpenPaneWidth);
+        Assert.Equal(200, navigation.NavigationPaneMinWidth);
+        Assert.Equal(600, navigation.NavigationPaneMaxWidth);
+        Assert.Equal(TimeSpan.FromMilliseconds(250), motion.HoverRevealAnimationDuration);
+        Assert.False(motion.RespectSystemReducedMotion);
+        Assert.Equal(1400, window.WindowWidth);
+        Assert.Equal(800, window.WindowHeight);
+        Assert.Equal(900, window.WindowMinWidth);
+        Assert.Equal(600, window.WindowMinHeight);
+        Assert.False(window.WindowTopmost);
+        Assert.False(window.IsTrayExitEnabled);
     }
 
     [Fact]
@@ -121,12 +154,12 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigData(data => data.InitLocale("en-US"));
+            .ConfigureData(data => data.SetLocale("en-US"));
 
         using var flourish = builder.Build();
         var localization = flourish.GetRequiredService<FlourishLocalizationService>();
 
-        Assert.Equal("en-US", localization.CurrentLocale);
+        Assert.Equal("en-US", localization.Current.Locale);
         Assert.Equal("Close", localization.Get(FlourishLocaleKeys.TitleBarClose));
     }
 
@@ -138,10 +171,6 @@ public sealed class FlourishCompositionContractTests
         Assert.Same(
             flourish.GetRequiredService<FlourishLocalizationService>(),
             flourish.GetRequiredService<IFlourishLocalization>()
-        );
-        Assert.Same(
-            flourish.GetRequiredService<FlourishConfigurationService>(),
-            flourish.GetRequiredService<IFlourishConfiguration>()
         );
         Assert.Same(
             flourish.GetRequiredService<AppPreferenceService>(),
@@ -186,8 +215,8 @@ public sealed class FlourishCompositionContractTests
     {
         using var flourish = FlourishBuilder.CreateDefaultBuilder([]).Build();
 
-        AssertSingletonAdapter<NavigationPanelService, INavigationPanelService>(flourish);
-        AssertSingletonAdapter<NavigationMenuService, INavigationMenuService>(flourish);
+        AssertSingleton<NavigationPanelService>(flourish);
+        AssertSingleton<NavigationMenuService>(flourish);
         AssertSingletonAdapter<FlourishToolbarService, IToolbarService>(flourish);
         AssertSingletonAdapter<FlourishStatusService, IStatusBarService>(flourish);
         AssertSingletonAdapter<ShellRegionService, IShellRegionService>(flourish);
@@ -197,17 +226,19 @@ public sealed class FlourishCompositionContractTests
         AssertSingletonAdapter<CommandDispatcher, ICommandRegistry>(flourish);
         AssertSingletonAdapter<CommandDispatcher, ICommandDispatcher>(flourish);
         AssertSingletonAdapter<ShortcutService, IShortcutService>(flourish);
-        AssertSingletonAdapter<TitleBarService, ITitleBarService>(flourish);
+        AssertSingleton<TitleBarService>(flourish);
+        AssertSingletonAdapter<TitleBarRuntimeFacade, ITitleBarService>(flourish);
         AssertSingletonAdapter<ProjectCatalogStore, IProjectCatalogStore>(flourish);
         AssertSingletonAdapter<ProjectService, IProjectService>(flourish);
         Assert.IsType<DefaultProjectBehavior>(flourish.GetRequiredService<IProjectBehavior>());
-        AssertSingletonAdapter<TitleBarSearchService, ITitleBarSearchService>(flourish);
+        AssertSingleton<TitleBarSearchService>(flourish);
         AssertSingletonAdapter<WindowService, IWindowService>(flourish);
         AssertSingletonAdapter<WindowCloseService, IWindowCloseService>(flourish);
         AssertSingletonAdapter<ProfileFlyoutService, IProfileFlyoutService>(flourish);
-        AssertSingletonAdapter<NavigationRouteRegistry, INavigationRouteRegistry>(flourish);
-        AssertSingletonAdapter<PageCacheService, IPageCacheService>(flourish);
-        AssertSingletonAdapter<NavigationService, INavigationService>(flourish);
+        AssertSingleton<NavigationRouteRegistry>(flourish);
+        AssertSingleton<PageCacheService>(flourish);
+        AssertSingleton<NavigationService>(flourish);
+        AssertSingletonAdapter<NavigationRuntimeFacade, INavigationService>(flourish);
     }
 
     [Fact]
@@ -216,7 +247,7 @@ public sealed class FlourishCompositionContractTests
         var customBehavior = new TestProjectBehavior();
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigServices(
+            .ConfigureServices(
                 (_, services) => services.AddSingleton<IProjectBehavior>(customBehavior)
             );
 
@@ -230,10 +261,10 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigStatusBar(statusBar => statusBar.UseLanConnectionStatus().UsePowerStatus());
+            .ConfigureStatusBar(statusBar => statusBar.SetLanStatusEnabled().SetPowerStatusEnabled());
 
         using var flourish = builder.Build();
-        var options = flourish.GetRequiredService<FlourishShellOptions>();
+        var options = flourish.GetRequiredService<FlourishStatusBarOptions>();
 
         Assert.True(options.IsLANConnectionStatusEnabled);
         Assert.True(options.IsPowerStatusEnabled);
@@ -247,7 +278,7 @@ public sealed class FlourishCompositionContractTests
     {
         var builder = FlourishBuilder
             .CreateDefaultBuilder([])
-            .ConfigServices(
+            .ConfigureServices(
                 (_, services) =>
                 {
                     services.AddNavigable<HomePage>("Home", "H");
@@ -265,14 +296,14 @@ public sealed class FlourishCompositionContractTests
     public void Build_WithMultipleInitialPages_ThrowsInvalidOperationException()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigServices(
+            .ConfigureServices(
                 (_, services) =>
                 {
                     services.AddNavigable<HomePage>("Home", "H");
                     services.AddNavigable<SettingsPage>("Settings", "S");
                 }
             )
-            .ConfigNavigation(navigation =>
+            .ConfigureNavigation(navigation =>
             {
                 navigation.AddGroup(
                     null,
@@ -291,14 +322,14 @@ public sealed class FlourishCompositionContractTests
     public void Build_OrdersGroupsAndCreatesHeaders()
     {
         var builder = CreateNavigationBuilder()
-            .ConfigServices(
+            .ConfigureServices(
                 (_, services) =>
                 {
                     services.AddNavigable<HomePage>("Home", "H");
                     services.AddNavigable<SettingsPage>("Settings", "S");
                 }
             )
-            .ConfigNavigation(navigation =>
+            .ConfigureNavigation(navigation =>
             {
                 navigation.AddGroup(
                     "Second",
@@ -313,7 +344,7 @@ public sealed class FlourishCompositionContractTests
             });
 
         using var flourish = builder.Build();
-        var items = flourish.GetRequiredService<FlourishShellOptions>().NavigationItems;
+        var items = flourish.GetRequiredService<FlourishNavigationOptions>().NavigationItems;
 
         Assert.Collection(
             items,
@@ -334,7 +365,9 @@ public sealed class FlourishCompositionContractTests
 
     private static IFlourishBuilder CreateNavigationBuilder()
     {
-        return FlourishBuilder.CreateDefaultBuilder([]).ConfigShell(shell => shell.UseNavigation());
+        return FlourishBuilder
+            .CreateDefaultBuilder([])
+            .ConfigureNavigation(navigation => navigation.SetEnabled());
     }
 
     private static void AssertSingletonAdapter<TConcrete, TContract>(IFlourish flourish)
@@ -344,6 +377,15 @@ public sealed class FlourishCompositionContractTests
         Assert.Same(
             flourish.GetRequiredService<TConcrete>(),
             flourish.GetRequiredService<TContract>()
+        );
+    }
+
+    private static void AssertSingleton<TService>(IFlourish flourish)
+        where TService : class
+    {
+        Assert.Same(
+            flourish.GetRequiredService<TService>(),
+            flourish.GetRequiredService<TService>()
         );
     }
 

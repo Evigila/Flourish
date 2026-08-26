@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Xml.Linq;
 
@@ -249,7 +254,7 @@ public sealed class FlourishShellTitleBarFlyoutTests
         Assert.Contains("projectBehavior.CanCloseAsync", ProjectSelectorCode);
         Assert.Contains("!projectService.Current.IsMultiProjectEnabled", ProjectSelectorCode);
         Assert.Contains("context.Reason != WindowCloseRequestReason.Tray", ShellCode);
-        Assert.Contains("windowCloseService.Behavior == WindowCloseBehavior.MinimizeToTray", ShellCode);
+        Assert.Contains("windowCloseService.Current.Behavior == WindowCloseBehavior.MinimizeToTray", ShellCode);
     }
 
     [Fact]
@@ -319,7 +324,7 @@ public sealed class FlourishShellTitleBarFlyoutTests
             "private void StopNavigationPaneAnimations("
         );
 
-        Assert.Contains("case FlourishRegion.TitlebarApplicationInfo:", routing);
+        Assert.Contains("case FlourishRegion.TitleBarApplicationInfo:", routing);
         Assert.Contains(
             "titleBarController.SetApplicationInfoBody(elements);",
             routing
@@ -345,7 +350,7 @@ public sealed class FlourishShellTitleBarFlyoutTests
     [Fact]
     public void TitleBarController_OwnsVersionedStateSearchLogoAndFlyoutLifetime()
     {
-        Assert.Contains("e.Version <= appliedVersion", TitleBarControllerCode);
+        Assert.Contains("e.Current.Version <= appliedVersion", TitleBarControllerCode);
         Assert.Contains("logoCoordinator.IsCurrent(result)", TitleBarControllerCode);
         Assert.Contains("searchService.AcknowledgeFocusRequest();", TitleBarControllerCode);
         Assert.Contains("if (!openedWithFocus)", TitleBarControllerCode);

@@ -1,8 +1,10 @@
+using Xunit;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -13,7 +15,7 @@ public sealed class FontServicePageTests
     {
         StaTest.Run(() =>
         {
-            var service = new FontService(new FlourishShellOptions());
+            var service = new FontService(new FlourishAppearanceOptions());
             var text = new TextBlock();
             var page = new FontPage { Content = text };
             page.Resources["FlourishFontFamily"] = new FontFamily("Arial");
@@ -33,7 +35,7 @@ public sealed class FontServicePageTests
     {
         StaTest.Run(() =>
         {
-            var service = new FontService(new FlourishShellOptions());
+            var service = new FontService(new FlourishAppearanceOptions());
             var inheritedText = new TextBlock();
             var resourceText = new TextBlock();
             resourceText.SetResourceReference(TextBlock.FontFamilyProperty, "FlourishFontFamily");
@@ -44,7 +46,7 @@ public sealed class FontServicePageTests
             panel.Children.Add(explicitText);
             var page = new FontPage { Content = panel };
 
-            service.SetOverrideFont<FontPage>("Arial", 15, 18, 20, 21, 24, 30);
+            service.SetOverrideFont(typeof(FontPage), "Arial", 15, 18, 20, 21, 24, 30);
             service.ApplyToPage(page);
 
             Assert.Equal("Arial", page.FontFamily.Source);
@@ -65,14 +67,14 @@ public sealed class FontServicePageTests
     {
         StaTest.Run(() =>
         {
-            var service = new FontService(new FlourishShellOptions());
+            var service = new FontService(new FlourishAppearanceOptions());
             var page = new FontPage();
             var originalFamily = new FontFamily("Times New Roman");
             page.Resources["FlourishFontFamily"] = originalFamily;
             page.Resources["FlourishFontSizeSmall"] = 14d;
             page.Resources["FlourishFontSizeStandard"] = 15d;
 
-            service.SetOverrideFont<FontPage>("Arial", 16, 20, 22, 24, 28, 34);
+            service.SetOverrideFont(typeof(FontPage), "Arial", 16, 20, 22, 24, 28, 34);
             service.ApplyToPage(page);
             Assert.Equal(16d, page.Resources["FlourishFontSizeSmall"]);
             Assert.Equal(20d, page.Resources["FlourishFontSizeStandard"]);
@@ -80,7 +82,7 @@ public sealed class FontServicePageTests
             Assert.Equal(24d, page.Resources["FlourishFontSizeLarge"]);
             Assert.Equal(28d, page.Resources["FlourishFontSizeExtraLarge"]);
 
-            service.SetOverrideFont<FontPage>("Arial", null, null, null, null, null, null);
+            service.SetOverrideFont(typeof(FontPage), "Arial", null, null, null, null, null, null);
             service.ApplyToPage(page);
             Assert.Equal(15d, page.FontSize);
             Assert.Equal(14d, page.Resources["FlourishFontSizeSmall"]);
@@ -89,7 +91,7 @@ public sealed class FontServicePageTests
             Assert.False(page.Resources.Contains("FlourishFontSizeLarge"));
             Assert.False(page.Resources.Contains("FlourishFontSizeExtraLarge"));
 
-            Assert.True(service.RemoveOverrideFont<FontPage>());
+            Assert.True(service.RemoveOverrideFont(typeof(FontPage)));
             service.ApplyToPage(page);
             Assert.Same(originalFamily, page.Resources["FlourishFontFamily"]);
             Assert.Equal("Times New Roman", page.FontFamily.Source);
@@ -102,13 +104,13 @@ public sealed class FontServicePageTests
     {
         StaTest.Run(() =>
         {
-            var service = new FontService(new FlourishShellOptions());
+            var service = new FontService(new FlourishAppearanceOptions());
             var resources = new ResourceDictionary();
             service.Attach(System.Windows.Threading.Dispatcher.CurrentDispatcher, resources);
             var page = new FontPage();
             page.Resources.MergedDictionaries.Add(resources);
 
-            service.SetOverrideFont<FontPage>("Arial", 11, null, null, 19, null, null);
+            service.SetOverrideFont(typeof(FontPage), "Arial", 11, null, null, 19, null, null);
 
             Assert.True(service.ApplyToPage(page));
             Assert.Equal(11d, page.Resources["FlourishFontSizeSmall"]);
@@ -135,10 +137,10 @@ public sealed class FontServicePageTests
     {
         StaTest.Run(() =>
         {
-            var service = new FontService(new FlourishShellOptions());
+            var service = new FontService(new FlourishAppearanceOptions());
             var page = new DerivedFontPage();
 
-            service.SetOverrideFont<FontPage>("Arial", 15, 19, 21, 23, 27, 33);
+            service.SetOverrideFont(typeof(FontPage), "Arial", 15, 19, 21, 23, 27, 33);
             service.ApplyToPage(page, typeof(FontPage));
 
             Assert.Equal("Arial", page.FontFamily.Source);

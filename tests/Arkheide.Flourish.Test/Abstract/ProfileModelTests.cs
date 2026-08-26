@@ -1,3 +1,7 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+
 namespace ArkheideSystem.Flourish.Test.Abstract;
 
 public sealed class ProfileUserTests

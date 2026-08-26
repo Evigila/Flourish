@@ -1,121 +1,37 @@
 ---
-title: Shell 配置
-description: 启用 Flourish Shell 功能并配置共享外观选项。
+title: 功能配置
+description: 将每个启动 Builder 对应到运行时 Service。
 ---
 
-# Shell 配置
+# 功能配置
 
-`ConfigShell` 用于启用主要 Shell 区域，并应用这些区域共用的选项。标题栏、导航、工具栏、动效与状态栏的内容和行为由对应功能 builder 配置。
+Flourish 不再提供包揽全部功能的 Shell Builder。每项功能都有聚焦的启动 Builder；允许启动后修改的功能同时提供对应的运行时 Service。
 
-```csharp
-builder.ConfigShell(shell =>
-{
-    shell
-        .UseTitleBar()
-        .UseMultiProject()
-        .UseNavigation()
-        .UseCenterContent(enabled: true, contentWidth: 1200)
-        .UseDynamicToolbar()
-        .UseTips(enabled: true, delay: 200)
-        .UseMotion()
-        .UseSmoothScroll(enabled: true)
-        .UseMaterialEffect(enabled: true, effect: MaterialEffect.Auto)
-        .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
-        .UseStatusBar();
-});
-
-builder.ConfigNavigation(navigation =>
-    navigation.AddGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
-```
-
-## 功能开关与共享选项
-
-| Shell 方法 | 行为 | 功能文章 |
+| 启动入口 | 常用启动调用 | 运行时 Service |
 | --- | --- | --- |
-| `UseTitleBar` | 启用 Flourish 标题栏；禁用后使用 Windows 原生标题栏。 | [标题栏](configure-title-bar.md) |
-| `UseMultiProject` | 为标题选择器启用项目语义，公开持久化目录与“新建项目”，并启用内置项目保存和关闭流程。 | [项目](projects.md) |
-| `UseNavigation` | 启用导航栏。 | [导航](navigation.md) |
-| `UseCenterContent` | 在宽视口中限制导航页面内容宽度并将其居中。 | [内容对齐](#自定义内容对齐) |
-| `UseDynamicToolbar` | 启用页面专属工具栏内容。 | [动态工具栏](dynamic-toolbar.md) |
-| `UseTips` | 将 Flourish 控件与 Shell 区域自有的 Tooltip 从原生 WPF 呈现切换为 Flourish 呈现，并设置首次显示延迟。 | [提示浮层](configure-tips.md) |
-| `UseMotion` | 启用已配置的过渡和动画。 | [动效](configure-motion.md) |
-| `UseSmoothScroll` | 为 Flourish 内置视口选择平滑或即时的鼠标滚轮行为。 | [ScrollViewer 与 ScrollBar](../controls/scroll-viewer.md) |
-| `UseMaterialEffect` | 选择并启用窗口材质；`None` 会禁用材质。 | [材质特效](configure-material-effect.md) |
-| `UseThemeColors` | 设置主要色、辅助色和强调色。 | [主题](configure-themes.md) |
-| `UseCornerRadius` | 设置控件与表面共用的圆角。 | [主题](configure-themes.md) |
-| `InitGlobalFont` | 设置全局字体及显式的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号。 | [排版](configure-font.md) |
-| `UseStatusBar` | 启用常驻状态栏。 | [状态栏](status-bar.md) |
-
-[窗口](configure-window.md)不需要 Shell 功能开关，通过 `ConfigWindow` 直接配置。
-
-## 前置条件与优先级
-
-布尔功能开关的优先级高于详细配置。例如，启用 `UseDynamicToolbar(false)` 时不会显示已注册的工具栏项，启用 `UseStatusBar(false)` 时不会显示已配置的状态项。
-
-标题栏元素与 `UseMultiProject()` 都需要 `UseTitleBar()`。未启用项目模式时，标题选择器只显示并列出应用标题；Flourish 不附加项目标题、项目保存或项目关闭语义。项目模式会将当前标题改为活动项目或未命名项目占位文本，将选项扩展为全部项目与“新建项目”，并启用内置项目生命周期入口。应用代码在任一模式下仍可使用项目目录 API。
-
-导航切换按钮还需要 `UseNavigation()`，因为它控制该面板。向预定义 Shell 区域加入应用内容时，也需要启用对应的标题栏、导航、工具栏或状态栏区域。
-
-后台任务是常驻状态栏可见性的例外。即使省略 `UseStatusBar()`，活动任务也会临时显示任务指示器；没有活动任务后，状态栏会恢复到配置决定的可见性。参见[后台任务](background-tasks.md)。
-
-## 自定义内容对齐
-
-面包屑、动态工具栏、内容页面与内容区域宿主使用 `FlourishContentBodyMargin` 动态资源。应用可以在加入 `FlourishThemeResources` 后覆盖该资源：
-
-```xml
-<Thickness x:Key="FlourishContentBodyMargin">24,0,24,0</Thickness>
-```
-
-使用 `UseCenterContent(true, contentWidth)` 可以为导航页面内容以及与其对齐的 Shell 区域（内容页眉、动态工具栏、面包屑和内容页脚）设置以设备无关像素为单位的最大宽度。当可用内容区宽于 `contentWidth` 时，Flourish 会将这些界面保持在该宽度并居中显示。较窄的内容区仍会使用全部可用宽度，最大化窗口也不会解除已配置的限制。
-
-使用导航栏 `Resize` 过渡时，居中界面会随内容区宽度变化而移动，同时持续遵守已配置的宽度限制。始终达到 `contentWidth` 的界面只会平移，其文本和内部间距不会被横向缩放，从而同时避免临时伸展和过渡结束时的布局步进。
-
-页面的根滚动视图始终保持全宽。垂直滚动条会停留在内容区最右侧，不会移动到居中内容的旁边。
-
-未调用 `UseCenterContent`，或将其 `enabled` 参数设为 `false` 时，导航页面内容不受最大宽度限制，会铺满全部可用宽度。
-
-启动后需要修改同一布局时，使用 `IContentLayoutService`：
+| `ConfigureAppearance` | `SetEffect`、`SetThemeColors`、`SetCornerRadius` | `IMaterialEffectService`、`IAppearanceService` |
+| `ConfigureFont` | `SetFont`、`SetOverrideFont<TPage>` | `IFontService` |
+| `ConfigureLayout` | `SetCenterContent`、`SetSmoothScrollingEnabled` | `IContentLayoutService`、`IScrollService` |
+| `ConfigureToolTips` | `SetEnabled`、`SetSettings` | `IToolTipService` |
+| `ConfigureProjects` | `SetMultiProjectEnabled` | `IProjectService` |
+| `ConfigureTitleBar` | `SetEnabled`、`SetApplicationTitle`、`SetSearch`、`SetProfile` | `ITitleBarService`、`IProfileFlyoutService` |
+| `ConfigureNavigation` | `SetEnabled`、`AddNavigable`、`SetPanelWidth` | `INavigationService` |
+| `ConfigureContent` | `AddRegionContent`、`SetProfileContent` | `IShellRegionService` |
+| `ConfigureToolbar` | `SetEnabled`、`Set<TPage>` | `IToolbarService` |
+| `ConfigureMotion` | `SetEnabled` 和过渡方法 | `IMotionService` |
+| `ConfigureWindow` | `SetSize`、`SetStartupLocation`、`SetTrayExit` | `IWindowService`、`IWindowCloseService`、`ITrayService` |
+| `ConfigureStatusBar` | `SetEnabled`、状态项和指示器 | `IStatusBarService` |
 
 ```csharp
-contentLayout.SetCenterContent(enabled: true, contentWidth: 1080);
-contentLayout.Changed += OnContentLayoutChanged;
+builder
+    .ConfigureAppearance(appearance =>
+        appearance.SetEffect(effect: MaterialEffect.Auto))
+    .ConfigureFont(font =>
+        font.SetFont("Segoe UI", 12, 14, 22, 16, 24, 32))
+    .ConfigureLayout(layout =>
+        layout.SetCenterContent(contentWidth: 1200).SetSmoothScrollingEnabled())
+    .ConfigureToolTips(toolTips =>
+        toolTips.SetEnabled().SetSettings(200, 5));
 ```
 
-修改会立即更新当前页面及对齐的 Shell 区域。之后导航到的页面会读取同一服务状态。
-
-## 禁用功能
-
-除 `InitGlobalFont` 外，Shell API 族的每个 `Use...` 方法都把 `enabled` 放在第一位。这样，无论功能是否还有其他选项，共用组合代码都使用一致的开关顺序。`UseCenterContent`、`UseTips`、`UseMaterialEffect`、`UseThemeColors` 和 `UseCornerRadius` 会把详细设置放在该开关之后。
-
-```csharp
-builder.ConfigShell(shell =>
-{
-    shell
-        .UseNavigation(showNavigation)
-        .UseMultiProject(useProjects)
-        .UseCenterContent(enabled: useCenteredPages, contentWidth: 1200)
-        .UseTips(enabled: useFlourishTips, delay: 200)
-        .UseMotion(!useStaticInterface)
-        .UseSmoothScroll(useSmoothScrolling)
-        .UseMaterialEffect(useMaterial, MaterialEffect.Auto)
-        .UseStatusBar(showStatusBar);
-});
-
-builder.ConfigNavigation(navigation =>
-    navigation.AddGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
-```
-
-向 `UseTips` 传入 `false` 时，Flourish 自有的 Tooltip 内容会使用原生 WPF 的外观和默认行为呈现；附加到原生 WPF 与第三方控件的 Tooltip 保持不变。`UseSmoothScroll(false)` 会让 Flourish 内置视口使用即时的原生鼠标滚轮行为。共用配置需要恢复主题定义的行为时，可向 `UseMaterialEffect`、`UseThemeColors` 或 `UseCornerRadius` 传入 `false`。省略 `InitGlobalFont` 时保留其默认值。
-
-`UseCenterContent`、`UseMotion`、`UseSmoothScroll`、`UseMaterialEffect`、`UseThemeColors`、`UseCornerRadius` 与 `InitGlobalFont` 默认持久化面向用户的值。只有代码必须保持某个值始终优先时，才传入 `usePersistedPreference: false`。`UseNavigation`、`UseTitleBar`、`UseStatusBar` 等能力开关仍由代码拥有，永远不会从设置文件恢复。
-
-## 相关功能
-
-- [窗口](configure-window.md)配置尺寸、位置和关闭行为。
-- [项目](projects.md)说明项目目录持久化与可替换生命周期行为。
-- [应用数据](configure-data.md)配置本地化与 Host 设置。
-- [依赖注入](configure-services.md)注册应用服务与可替换的 Flourish 服务。
-- [自定义 Shell 内容](configure-custom-handler.md)向已启用的 Shell 区域插入应用元素。
-- [后台任务](background-tasks.md)运行可取消工作并显示活动状态。
+Builder 仅记录启动默认值。运行时 Service 操作已构建的应用；可观察状态统一通过不可变的 `Current` 快照与 `Changed` 事件公开。

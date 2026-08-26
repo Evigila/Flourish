@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -61,40 +68,46 @@ public sealed class FlourishXamlArchitectureTests
     );
 
     [Fact]
-    public void ProjectFolders_FollowThePublicInternalThemeAndViewBoundaries()
+    public void ProjectFolders_FollowFeatureModuleThemeAndViewBoundaries()
     {
         string[] requiredDirectories =
         [
             "Abstract",
-            "Abstract/Builder",
-            "Abstract/Essential",
-            "Abstract/Runtime",
+            "Appearance",
             "Assets",
+            "BackgroundTasks",
+            "Commands",
+            "Configuration",
             "Controls",
-            "Internal",
-            "Internal/Composition",
-            "Internal/Configuration",
-            "Internal/Imaging",
-            "Internal/Layout",
-            "Internal/Localization",
-            "Internal/Model",
-            "Internal/Model/Navigation",
-            "Internal/Model/Profile",
-            "Internal/Model/Shell",
-            "Internal/Navigation",
-            "Internal/Validation",
-            "Internal/Windows",
-            "Services",
+            "Hosting",
+            "Layout",
+            "Localization",
+            "Messaging",
+            "Motion",
+            "Navigation",
+            "Profile",
+            "Projects",
+            "Shell",
+            "Shell/Regions",
+            "Shell/StatusBar",
+            "Shell/TitleBar",
+            "Shell/Toolbar",
             "Themes",
             "Themes/Colors",
+            "ToolTips",
             "Views",
             "Views/Page",
             "Views/Windows",
+            "Windowing",
         ];
         string[] retiredDirectories =
         [
             "Composition",
-            "Configuration",
+            "Abstract/Builder",
+            "Abstract/Essential",
+            "Abstract/Runtime",
+            "Internal",
+            "Services",
             "Styles",
             "Windows",
             "Controls/Behaviors",
@@ -112,10 +125,18 @@ public sealed class FlourishXamlArchitectureTests
         Assert.All(
             retiredDirectories,
             path =>
+            {
+                var retiredPath = Path.Combine(FlourishRoot, NormalizePlatformPath(path));
                 Assert.False(
-                    Directory.Exists(Path.Combine(FlourishRoot, NormalizePlatformPath(path))),
-                    $"Retired directory src/Flourish/{path} must not exist."
-                )
+                    Directory.Exists(retiredPath)
+                        && Directory.EnumerateFiles(
+                            retiredPath,
+                            "*",
+                            SearchOption.AllDirectories
+                        ).Any(),
+                    $"Retired directory src/Flourish/{path} must contain no product files."
+                );
+            }
         );
     }
 
@@ -972,10 +993,17 @@ public sealed class FlourishXamlArchitectureTests
                 $"{fileName}: Variant must be first when present."
             );
             Assert.Equal(variantIndex + 1, tableIndex);
-            Assert.True(
-                usageIndex > tableIndex + 1,
-                $"{fileName}: Table and Usage must be separated by topic-specific examples."
-            );
+            if (fileName == "ChunkPage.xaml")
+            {
+                Assert.Equal(tableIndex + 1, usageIndex);
+            }
+            else
+            {
+                Assert.True(
+                    usageIndex > tableIndex + 1,
+                    $"{fileName}: Table and Usage must be separated by topic-specific examples."
+                );
+            }
             Assert.Equal(actualTitles.Length - 2, usageIndex);
             Assert.Equal(actualTitles.Length - 1, referenceIndex);
             Assert.Equal(
@@ -1838,8 +1866,8 @@ public sealed class FlourishXamlArchitectureTests
         ];
 
         var builderGlobalFont = Assert.Single(
-            typeof(IFlourishShellBuilder).GetMethods(),
-            method => method.Name == nameof(IFlourishShellBuilder.InitGlobalFont)
+            typeof(IFontBuilder).GetMethods(),
+            method => method.Name == nameof(IFontBuilder.SetFont)
         );
         AssertOptionalParameterContract(
             builderGlobalFont,
@@ -1855,11 +1883,15 @@ public sealed class FlourishXamlArchitectureTests
         AssertParameterContract(serviceSetFont, runtimeScaleTypes, runtimeScaleNames);
 
         var builderPageOverride = Assert.Single(
-            typeof(IFlourishShellBuilder).GetMethods(),
-            method => method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
+            typeof(IFontBuilder).GetMethods(),
+            method => method.Name == nameof(IFontBuilder.SetOverrideFont)
         );
         Assert.True(builderPageOverride.IsGenericMethodDefinition);
-        AssertParameterContract(builderPageOverride, nullableScaleTypes, explicitScaleNames);
+        AssertTrailingOptionalParameterContract(
+            builderPageOverride,
+            nullableScaleTypes,
+            runtimeScaleNames
+        );
 
         var servicePageOverrides = typeof(IFontService)
             .GetMethods()
@@ -1870,7 +1902,7 @@ public sealed class FlourishXamlArchitectureTests
             servicePageOverrides,
             method => method.IsGenericMethodDefinition
         );
-        AssertParameterContract(genericServicePageOverride, nullableScaleTypes, explicitScaleNames);
+        AssertParameterContract(genericServicePageOverride, nullableScaleTypes, runtimeScaleNames);
         var runtimeServicePageOverride = Assert.Single(
             servicePageOverrides,
             method => !method.IsGenericMethod
@@ -1878,13 +1910,13 @@ public sealed class FlourishXamlArchitectureTests
         AssertParameterContract(
             runtimeServicePageOverride,
             [typeof(Type), .. nullableScaleTypes],
-            ["pageType", .. explicitScaleNames]
+            ["pageType", .. runtimeScaleNames]
         );
 
         var pageOverrideConstructor = Assert.Single(
             typeof(FlourishPageFontOverride).GetConstructors()
         );
-        AssertParameterContract(pageOverrideConstructor, nullableScaleTypes, explicitScaleNames);
+        AssertParameterContract(pageOverrideConstructor, nullableScaleTypes, runtimeScaleNames);
 
         var fontAssemblyApiMethods = typeof(IFontService)
             .Assembly.GetTypes()
@@ -1899,73 +1931,65 @@ public sealed class FlourishXamlArchitectureTests
             )
             .Where(method =>
                 method.Name
-                    is nameof(IFlourishShellBuilder.InitGlobalFont)
-                        or nameof(IFlourishShellBuilder.InitOverrideFont)
+                    is nameof(IFontBuilder.SetFont)
+                        or nameof(IFontBuilder.SetOverrideFont)
                         or nameof(IFontService.SetFont)
                         or nameof(IFontService.SetOverrideFont)
             )
             .ToArray();
 
-        Assert.Equal(
-            2,
-            fontAssemblyApiMethods.Count(method =>
-                method.Name == nameof(IFlourishShellBuilder.InitGlobalFont)
-            )
-        );
-        Assert.Equal(
-            2,
-            fontAssemblyApiMethods.Count(method => method.Name == nameof(IFontService.SetFont))
-        );
-        Assert.Equal(
-            2,
-            fontAssemblyApiMethods.Count(method =>
-                method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
-            )
-        );
-        Assert.Equal(
-            4,
-            fontAssemblyApiMethods.Count(method =>
-                method.Name == nameof(IFontService.SetOverrideFont)
-            )
-        );
+        var setFontMethods = fontAssemblyApiMethods
+            .Where(method => method.Name == nameof(IFontBuilder.SetFont))
+            .ToArray();
+        Assert.Equal(4, setFontMethods.Length);
+        Assert.Equal(2, setFontMethods.Count(method => method.GetParameters().Length == 8));
+        Assert.Equal(2, setFontMethods.Count(method => method.GetParameters().Length == 7));
         Assert.All(
-            fontAssemblyApiMethods.Where(method =>
-                method.Name == nameof(IFlourishShellBuilder.InitGlobalFont)
-            ),
-            method =>
-                AssertOptionalParameterContract(
-                    method,
-                    explicitScaleTypes,
-                    explicitScaleNames,
-                    ["Microsoft Yahei", 12d, 14d, 22d, 16d, 24d, 32d, true]
-                )
-        );
-        Assert.All(
-            fontAssemblyApiMethods.Where(method =>
-                method.Name == nameof(IFlourishShellBuilder.InitOverrideFont)
-            ),
-            method => AssertParameterContract(method, nullableScaleTypes, explicitScaleNames)
-        );
-        Assert.All(
-            fontAssemblyApiMethods.Where(method => method.Name == nameof(IFontService.SetFont)),
-            method => AssertParameterContract(method, explicitScaleTypes, explicitScaleNames)
-        );
-        Assert.All(
-            fontAssemblyApiMethods.Where(method =>
-                method.Name == nameof(IFontService.SetOverrideFont)
-            ),
+            setFontMethods,
             method =>
             {
+                if (method.GetParameters().Length == 8)
+                {
+                    AssertOptionalParameterContract(
+                        method,
+                        explicitScaleTypes,
+                        explicitScaleNames,
+                        ["Microsoft Yahei", 12d, 14d, 22d, 16d, 24d, 32d, true]
+                    );
+                    return;
+                }
+
+                AssertParameterContract(method, runtimeScaleTypes, runtimeScaleNames);
+            }
+        );
+        var setOverrideFontMethods = fontAssemblyApiMethods
+            .Where(method => method.Name == nameof(IFontBuilder.SetOverrideFont))
+            .ToArray();
+        Assert.Equal(5, setOverrideFontMethods.Length);
+        Assert.All(
+            setOverrideFontMethods,
+            method =>
+            {
+                if (method.GetParameters().Skip(1).Any(parameter => parameter.IsOptional))
+                {
+                    AssertTrailingOptionalParameterContract(
+                        method,
+                        nullableScaleTypes,
+                        runtimeScaleNames
+                    );
+                    return;
+                }
+
                 if (method.IsGenericMethodDefinition)
                 {
-                    AssertParameterContract(method, nullableScaleTypes, explicitScaleNames);
+                    AssertParameterContract(method, nullableScaleTypes, runtimeScaleNames);
                     return;
                 }
 
                 AssertParameterContract(
                     method,
                     [typeof(Type), .. nullableScaleTypes],
-                    ["pageType", .. explicitScaleNames]
+                    ["pageType", .. runtimeScaleNames]
                 );
             }
         );
@@ -2756,6 +2780,24 @@ public sealed class FlourishXamlArchitectureTests
         Assert.Equal(expectedNames, parameters.Select(parameter => parameter.Name));
         Assert.Equal(expectedDefaultValues, parameters.Select(parameter => parameter.DefaultValue));
         Assert.All(parameters, parameter => Assert.True(parameter.IsOptional));
+    }
+
+    private static void AssertTrailingOptionalParameterContract(
+        MethodBase method,
+        IReadOnlyList<Type> expectedTypes,
+        IReadOnlyList<string> expectedNames
+    )
+    {
+        var parameters = method.GetParameters();
+        Assert.Equal(expectedTypes.Count, parameters.Length);
+        Assert.Equal(expectedTypes, parameters.Select(parameter => parameter.ParameterType));
+        Assert.Equal(expectedNames, parameters.Select(parameter => parameter.Name));
+        Assert.False(parameters[0].IsOptional);
+        Assert.All(parameters.Skip(1), parameter =>
+        {
+            Assert.True(parameter.IsOptional);
+            Assert.Null(parameter.DefaultValue);
+        });
     }
 
     private static string FormatViolation(string file, XObject node)

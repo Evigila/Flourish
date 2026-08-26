@@ -1,7 +1,12 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -12,7 +17,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public void RouteRegistry_RegisterAndDisposeOwnsRuntimeRouteState()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         var sut = new NavigationRouteRegistry(options);
         var registration = sut.Append(
             new FlourishNavigationRoute(
@@ -38,7 +43,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public void RouteRegistry_InitialPageTypeIndexTracksCacheModeUpdates()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute("Reports", typeof(ReportsPage))
         );
@@ -58,7 +63,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public void RouteRegistry_UpsertChangingPageTypeClearsOldMapping()
     {
-        var sut = new NavigationRouteRegistry(new FlourishShellOptions());
+        var sut = new NavigationRouteRegistry(new FlourishNavigationOptions());
         sut.Append(new FlourishNavigationRoute("Reports", typeof(ReportsPage)));
 
         sut.Set(new FlourishNavigationRoute("Reports", typeof(AnalyticsPage)));
@@ -71,7 +76,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public void RouteRegistry_DuplicatePageTypeFailureDoesNotMutateIndexesOrVersion()
     {
-        var sut = new NavigationRouteRegistry(new FlourishShellOptions());
+        var sut = new NavigationRouteRegistry(new FlourishNavigationOptions());
         sut.Append(new FlourishNavigationRoute("Reports", typeof(ReportsPage)));
         sut.Append(new FlourishNavigationRoute("Analytics", typeof(AnalyticsPage)));
         var version = sut.Current.Version;
@@ -94,7 +99,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public void RouteRegistry_StaleRegistrationCannotRemoveUpsertedPageTypeMapping()
     {
-        var sut = new NavigationRouteRegistry(new FlourishShellOptions());
+        var sut = new NavigationRouteRegistry(new FlourishNavigationOptions());
         var oldRegistration = sut.Append(
             new FlourishNavigationRoute("Reports", typeof(ReportsPage))
         );
@@ -120,7 +125,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public void RouteRegistry_RemoveClearsPageTypeMapping()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute("Reports", typeof(ReportsPage))
         );
@@ -139,7 +144,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         var page = CreatePage();
         var factory = new Mock<IPageFactory>(MockBehavior.Strict);
         factory.Setup(value => value.Create(typeof(ReportsPage))).Returns(page);
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute(
                 "Reports",
@@ -162,7 +167,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     public void RuntimeRouteFactory_CreatesAndCachesPageWithoutRootPageRegistration()
     {
         using var provider = new ServiceCollection().BuildServiceProvider();
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         var routes = new NavigationRouteRegistry(provider, options);
         var page = CreatePage();
         routes.Append(
@@ -183,7 +188,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
     [Fact]
     public async Task PageCache_OutOfOrderRouteEventsKeepNewestSnapshot()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute("Reports", typeof(ReportsPage))
         );
@@ -226,7 +231,7 @@ public sealed class NavigationRouteAndCacheRuntimeTests
         using var provider = new ServiceCollection().BuildServiceProvider();
         var page = CreatePage();
         PageCacheService? cache = null;
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute(
                 "Reports",

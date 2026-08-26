@@ -5,17 +5,17 @@ description: Configure custom status items, background-task indicators, and cons
 
 # Status bar
 
-The status bar is the compact Shell surface for active background work, application-defined status items, and built-in system details. Enable its persistent surface through [Shell configuration](shell-configuration.md), then use `ConfigStatusBar` for optional custom and system items.
+The status bar is the compact Shell surface for active background work, application-defined status items, and built-in system details. Use `ConfigureStatusBar` to enable its persistent surface and add optional custom or system items.
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseStatusBar())
-    .ConfigStatusBar(statusBar =>
+    .ConfigureStatusBar(statusBar =>
     {
         statusBar
+            .SetEnabled()
             .AddStatusItem("Online", "\uE774")
-            .UseLanConnectionStatus()
-            .UsePowerStatus();
+            .SetLanStatusEnabled()
+            .SetPowerStatusEnabled();
     });
 ```
 
@@ -33,7 +33,7 @@ Use `AddStatusItem` for non-interactive text-and-icon state. Use a [custom foote
 
 The Shell takes task names, descriptions, and glyphs from `FlourishBackgroundTaskMetadata`. A task that has not supplied an icon uses the built-in task glyph.
 
-Active work temporarily shows the status bar even when `UseStatusBar()` was omitted. When no active tasks remain, the bar returns to its configured visibility. See [Background tasks](background-tasks.md) for submission, bounded concurrency, cancellation, progress, and results.
+Active work temporarily shows the status bar even when `SetEnabled()` was omitted. When no active tasks remain, the bar returns to its configured visibility. See [Background tasks](background-tasks.md) for submission, bounded concurrency, cancellation, progress, and results.
 
 ## Custom status items
 
@@ -48,12 +48,12 @@ Use custom items for application-specific state such as account state, workspace
 
 ## Consolidated network and power status
 
-`UseLanConnectionStatus` and `UsePowerStatus` enable rows in one consolidated system-status icon on the right side of the status bar. Configuring either helper displays that single icon; configuring both does not create two separate icons.
+`SetLanStatusEnabled` and `SetPowerStatusEnabled` enable rows in one consolidated system-status icon on the right side of the status bar. Configuring either helper displays that single icon; configuring both does not create two separate icons.
 
 ```csharp
 statusBar
-    .UseLanConnectionStatus()
-    .UsePowerStatus();
+    .SetLanStatusEnabled()
+    .SetPowerStatusEnabled();
 ```
 
 Hover or click the icon to open its temporary [Overlay](../controls/overlay.md). It closes after the pointer leaves both the icon and surface. The network row reads current network availability when the overlay opens. The power row reports AC, battery, or unknown power source and includes the battery percentage when Windows supplies a valid value. These are current snapshots taken when the surface opens, not a continuous connectivity or battery monitor.
@@ -65,7 +65,7 @@ Built-in labels follow the locale selected through [Application data](configure-
 Use [Custom shell content](configure-custom-handler.md) for application-provided controls and command buttons. `FooterStart` is placed after built-in background-task indicators; `FooterEnd` is placed after the custom and system status area.
 
 ```csharp
-builder.ConfigCustomHandler(custom =>
+builder.ConfigureContent(custom =>
 {
     custom.AddFooterCommand(
         FlourishRegion.FooterEnd,
@@ -75,4 +75,4 @@ builder.ConfigCustomHandler(custom =>
 });
 ```
 
-Custom content does not enable the persistent status bar by itself, so call `UseStatusBar()` when it should remain visible without active background work.
+Custom content does not enable the persistent status bar by itself, so call `ConfigureStatusBar(statusBar => statusBar.SetEnabled())` when it should remain visible without active background work.

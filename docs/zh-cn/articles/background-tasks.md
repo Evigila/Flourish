@@ -37,15 +37,15 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 
 存在活动任务时，状态栏左侧会为每个正在运行或正在取消的任务显示一个图标。悬停图标可查看元信息、状态和已报告进度；点击会打开后台任务浮层。所有执行槽都被占用后，后续任务进入等待队列，状态栏直接显示不带图标和角标的等待数量。队列提供取消等待中或运行中任务的操作。
 
-即使应用省略 `UseTips()`，任务状态和队列详情仍然可用。任务和队列按钮支持指针与键盘操作。
+即使应用省略 `ConfigureToolTips`，任务状态和队列详情仍然可用。任务和队列按钮支持指针与键盘操作。
 
-即使应用没有配置 `UseStatusBar()`，活动任务也会临时显示状态栏。任务完成、失败或取消后会离开活动列表，其图标也会移除；需要最终结果或已完成任务记录时，应保存返回的 handle 并由应用自行记录。
+即使应用没有配置 `IStatusBarBuilder.SetEnabled()`，活动任务也会临时显示状态栏。任务完成、失败或取消后会离开活动列表，其图标也会移除；需要最终结果或已完成任务记录时，应保存返回的 handle 并由应用自行记录。
 
 ## 并发与等待队列
 
 `MaxConcurrency` 提供可同时运行的委托数量。超过该数量的任务按提交顺序等待，直到执行槽可用。
 
-`ActiveTasks` 返回等待中、运行中和正在取消任务的不可变快照。活动集合、状态或进度变化时，`TasksChanged` 会发布一份新的不可变列表。该事件可能从非 UI 线程触发；事件处理器若要更新应用 UI，必须切换到 UI dispatcher。
+`Current` 返回等待中、运行中和正在取消任务的不可变快照。活动集合、任务状态或进度变化时，`Changed` 会通过 `args.Current` 发布同一份缓存列表。该事件可能从非 UI 线程触发；事件处理器若要更新应用 UI，必须切换到 UI dispatcher。
 
 `FlourishBackgroundTaskState` 描述完整生命周期：
 
@@ -58,7 +58,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 | `Canceled` | 已以取消状态结束。 |
 | `Failed` | 已失败并捕获异常。 |
 
-`ActiveTasks` 只包含前三种状态；终止状态仍可从 handle 和结果读取。
+`Current` 只包含前三种状态；终止状态仍可从 handle 和结果读取。
 
 ## ValueTask 委托
 

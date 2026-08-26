@@ -28,16 +28,16 @@ Set `IsSmoothScrollingEnabled="False"` when immediate native pixel scrolling is 
 Applications can initialize the same policy for Flourish-owned Shell, navigation, and page scrolling surfaces during composition:
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell.UseSmoothScroll(enabled: true));
+builder.ConfigureLayout(layout =>
+    layout.SetSmoothScrollingEnabled(enabled: true));
 ```
 
-`UseSmoothScroll` supplies the startup state for Flourish scrolling surfaces that are created by the built-in templates and cannot be reached from application XAML. Change the active application through `IScrollService`:
+`SetSmoothScrollingEnabled` supplies the startup state for Flourish scrolling surfaces that are created by the built-in templates and cannot be reached from application XAML. Change the active application through `IScrollService`:
 
 ```csharp
 scrollService.SetSmoothScrollingEnabled(false);
 
-FlourishScrollSettings current = scrollService.GetCurrent();
+FlourishScrollSettings current = scrollService.Current;
 scrollService.Changed += OnScrollSettingsChanged;
 ```
 

@@ -1,4 +1,5 @@
-using System.Collections.ObjectModel;
+using System;
+using System.Collections.Generic;
 
 namespace ArkheideSystem.Flourish.Abstract;
 
@@ -9,17 +10,15 @@ public sealed class ShortcutRegistryChangedEventArgs : EventArgs
 {
     internal ShortcutRegistryChangedEventArgs(
         long version,
-        ShortcutRegistryChangeKind changeKind,
+        FlourishRuntimeChangeKind changeKind,
         ShortcutRegistrationInfo affectedShortcut,
-        IEnumerable<ShortcutRegistrationInfo> registrations
+        IReadOnlyList<ShortcutRegistrationInfo> current
     )
     {
         Version = version;
         ChangeKind = changeKind;
         AffectedShortcut = affectedShortcut;
-        Registrations = new ReadOnlyCollection<ShortcutRegistrationInfo>(
-            registrations.ToArray()
-        );
+        Current = current;
     }
 
     /// <summary>
@@ -30,7 +29,7 @@ public sealed class ShortcutRegistryChangedEventArgs : EventArgs
     /// <summary>
     /// Gets the kind of structural change.
     /// </summary>
-    public ShortcutRegistryChangeKind ChangeKind { get; }
+    public FlourishRuntimeChangeKind ChangeKind { get; }
 
     /// <summary>
     /// Gets the shortcut added or removed by the change.
@@ -40,5 +39,5 @@ public sealed class ShortcutRegistryChangedEventArgs : EventArgs
     /// <summary>
     /// Gets all active shortcuts in registration order.
     /// </summary>
-    public IReadOnlyList<ShortcutRegistrationInfo> Registrations { get; }
+    public IReadOnlyList<ShortcutRegistrationInfo> Current { get; }
 }

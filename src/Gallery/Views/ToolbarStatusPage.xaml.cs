@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
-using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Controls;
@@ -21,7 +25,7 @@ public partial class ToolbarStatusPage : Page
     private readonly IStatusBarService status;
     private readonly IShellRegionService regions;
     private readonly ICommandRegistry commands;
-    private ICommandRegistration? commandRegistration;
+    private IRegistration? commandRegistration;
 
     public ToolbarStatusPage(
         IToolbarService toolbar,

@@ -1,4 +1,9 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 using Application = System.Windows.Application;
+using StartupEventArgs = System.Windows.StartupEventArgs;
 
 namespace ArkheideSystem.Flourish.Abstract;
 
@@ -69,4 +74,41 @@ public interface IFlourish : IDisposable
     /// ]]></code>
     /// </example>
     void Show(Application application);
+
+    /// <summary>
+    /// Starts Flourish, shows the shell for the registered WPF application, and runs its dispatcher.
+    /// </summary>
+    /// <typeparam name="TApplication">The WPF application type registered in the service provider.</typeparam>
+    /// <returns>The application exit code.</returns>
+    int Run<TApplication>()
+        where TApplication : Application => Run(GetRequiredService<TApplication>());
+
+    /// <summary>
+    /// Starts Flourish, shows the shell for the specified WPF application, and runs its dispatcher.
+    /// </summary>
+    /// <param name="application">The WPF application that owns the Flourish shell.</param>
+    /// <returns>The application exit code.</returns>
+    int Run(Application application)
+    {
+        ArgumentNullException.ThrowIfNull(application);
+
+        Start();
+
+        try
+        {
+            application.Startup += ShowShell;
+            return application.Run();
+        }
+        finally
+        {
+            application.Startup -= ShowShell;
+            StopAsync().GetAwaiter().GetResult();
+        }
+
+        void ShowShell(object? sender, StartupEventArgs e)
+        {
+            application.Startup -= ShowShell;
+            Show(application);
+        }
+    }
 }

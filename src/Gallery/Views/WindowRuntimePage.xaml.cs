@@ -1,9 +1,10 @@
+using System;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
-using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +19,7 @@ public partial class WindowRuntimePage : Page
     private readonly IWindowCloseService close;
     private readonly IMessageService messages;
     private readonly INotificationService notifications;
-    private IWindowCloseGuardRegistration? closeGuard;
+    private IRegistration? closeGuard;
     private FlourishNotificationHandle? notificationHandle;
     private bool closeGuardAllows = true;
     private bool isRefreshingCloseBehavior;
@@ -50,7 +51,7 @@ public partial class WindowRuntimePage : Page
         Page_Unloaded(sender, e);
         window.Changed += RuntimeState_Changed;
         tray.Changed += RuntimeState_Changed;
-        notifications.NotificationsChanged += RuntimeState_Changed;
+        notifications.Changed += RuntimeState_Changed;
         RefreshAll();
     }
 
@@ -58,7 +59,7 @@ public partial class WindowRuntimePage : Page
     {
         window.Changed -= RuntimeState_Changed;
         tray.Changed -= RuntimeState_Changed;
-        notifications.NotificationsChanged -= RuntimeState_Changed;
+        notifications.Changed -= RuntimeState_Changed;
         closeGuard?.Dispose();
         closeGuard = null;
     }
@@ -512,7 +513,7 @@ public partial class WindowRuntimePage : Page
         isRefreshingCloseBehavior = true;
         try
         {
-            CloseBehaviorBox.SelectedItem = close.Behavior;
+            CloseBehaviorBox.SelectedItem = close.Current.Behavior;
         }
         finally
         {

@@ -1,3 +1,5 @@
+using System;
+
 namespace ArkheideSystem.Flourish.Abstract;
 
 /// <summary>

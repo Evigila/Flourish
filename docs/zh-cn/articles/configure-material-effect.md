@@ -5,11 +5,11 @@ description: 选择 Flourish Shell 窗口使用的 Windows 材质。
 
 # 材质特效
 
-`UseMaterialEffect` 为 Shell 窗口选择背景材质。
+`SetEffect` 为 Shell 窗口选择背景材质。
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell.UseMaterialEffect());
+builder.ConfigureAppearance(appearance =>
+    appearance.SetEffect());
 ```
 
 ## 选择材质
@@ -26,7 +26,7 @@ builder.ConfigShell(shell =>
 
 传入 `enabled: false` 或选择 `MaterialEffect.None` 可恢复不透明 Shell 背景。`IsSupported` 用于判断具体材质是否可用；运行时通过 `SetEffect` 显式请求不支持的材质时，会在改变状态前抛出 `PlatformNotSupportedException`。`Auto` 不会抛出平台异常，必要时会安全解析为 `None`。
 
-材质应用于 Shell 窗口。内置页面宿主保持透明，使背景材质可以连续显示在内容区域中；页面仍可在设计需要时添加局部背景。`CurrentEffect` 返回请求值，`EffectiveEffect` 返回当前平台解析后的具体效果。
+材质应用于 Shell 窗口。内置页面宿主保持透明，使背景材质可以连续显示在内容区域中；页面仍可在设计需要时添加局部背景。运行时可通过 `IMaterialEffectService.Current.RequestedEffect` 读取请求值，通过 `Current.EffectiveEffect` 读取平台解析后的具体效果，并订阅 `Changed` 获取新的不可变状态快照。
 
 运行时材质选择默认从所选 Flourish 设置文件恢复并写回。需要代码配置的材质始终优先时，传入 `usePersistedPreference: false`。已保存组合缺失、无效或不完整时，会完整保留代码参数。当具体材质偏好被迁移到不支持它的平台时，Flourish 会把请求安全回退为 `Auto`，使用新平台默认值，而不会令 Shell 启动失败。
 

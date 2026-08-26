@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;

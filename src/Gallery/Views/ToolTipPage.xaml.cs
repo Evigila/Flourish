@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
@@ -27,7 +29,7 @@ public partial class ToolTipPage : Page
         + "      Content=\"Refresh the current workspace.\" />\n"
         + "  </flourish:Button.ToolTip>\n"
         + "</flourish:Button>\n\n"
-        + "<!-- With ConfigureTips/UseTips, a short string is sufficient. -->\n"
+        + "<!-- With ConfigureToolTips enabled, a short string is sufficient. -->\n"
         + "<flourish:Button Content=\"Save\" ToolTip=\"Save changes.\" />";
 
     public ToolTipPage()

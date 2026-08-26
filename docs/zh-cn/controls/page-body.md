@@ -33,7 +33,7 @@ description: 使用 PageBody 作为导航页面的严格滚动根容器，并直
 
 `PageBody` 继承 Flourish `ScrollViewer` 的行为。默认禁用水平滚动，并按需显示纵向滚动条。页面有不同需求时，可以通过继承的滚动属性覆盖这些设置。
 
-Shell 启用 `UseCenterContent` 后，会限制并居中 PageBody 内部的内容，同时让滚动视口保持全宽。因此纵向滚动条仍位于 Shell 内容区边缘；较窄视口中的页面主体会使用可用宽度。
+Shell 启用 `SetCenterContent` 后，会限制并居中 PageBody 内部的内容，同时让滚动视口保持全宽。因此纵向滚动条仍位于 Shell 内容区边缘；较窄视口中的页面主体会使用可用宽度。
 
 不要设置继承的 `Content` 属性。该属性由 PageBody 用于承载内部纵向堆栈，Flourish Shell 在应用页面宽度约束时也可能包装这个堆栈。应通过 XAML 直接内容或 `Children` 添加和移除页面区块。
 

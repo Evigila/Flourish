@@ -1,7 +1,13 @@
+using System.Linq;
+
+using System;
+using System.Collections.Generic;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
-using ArkheideSystem.Flourish.Internal.Interaction;
+using ArkheideSystem.Flourish.Shell.StatusBar;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPanel = System.Windows.Controls.Panel;

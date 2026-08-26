@@ -1,15 +1,16 @@
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Internal.Composition;
+using Xunit;
+using ArkheideSystem.Flourish.Shell.StatusBar;
+
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
-public sealed class FlourishStatusBarBuilderTests
+public sealed class StatusBarBuilderTests
 {
     [Fact]
     public void AddStatusItem_UpdatesOptionsAndReturnsBuilder()
     {
-        var options = new FlourishShellOptions();
-        var sut = new FlourishStatusBarBuilder(options);
+        var options = new FlourishStatusBarOptions();
+        var sut = new StatusBarBuilder(options);
 
         Assert.Same(sut, sut.AddStatusItem("Online", "N"));
 
@@ -21,11 +22,11 @@ public sealed class FlourishStatusBarBuilderTests
     [Fact]
     public void ShowSystemStatuses_EnableFlagsAndReturnBuilder()
     {
-        var options = new FlourishShellOptions();
-        var sut = new FlourishStatusBarBuilder(options);
+        var options = new FlourishStatusBarOptions();
+        var sut = new StatusBarBuilder(options);
 
-        var lanResult = sut.UseLanConnectionStatus();
-        var powerResult = sut.UsePowerStatus();
+        var lanResult = sut.SetLanStatusEnabled();
+        var powerResult = sut.SetPowerStatusEnabled();
 
         Assert.Same(sut, lanResult);
         Assert.Same(sut, powerResult);

@@ -61,7 +61,7 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 
 `IsEnabled` 为 `false` 时，所有 Button 变体都会使用统一的淡灰禁用背景、边框与前景。禁用状态会覆盖 Filled、Danger 等启用状态颜色，使不可用操作保持一致。
 
-仅图标按钮应同时设置可见的 `ToolTip` 和能够说明操作意图的 `AutomationProperties.Name`。启用 `UseTips` 后，Flourish 按钮提示使用统一的 Temporary Overlay 表面；未启用时，同一提示内容使用原生 WPF Tooltip 行为。
+仅图标按钮应同时设置可见的 `ToolTip` 和能够说明操作意图的 `AutomationProperties.Name`。通过 `ConfigureToolTips` 或 `IToolTipService` 启用 Flourish Tooltip 呈现后，Flourish 按钮提示使用统一的 Temporary Overlay 表面；未启用时，同一提示内容使用原生 WPF Tooltip 行为。
 
 ## CardButton
 

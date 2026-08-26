@@ -24,12 +24,12 @@ summary: 隐藏面包屑导航。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.FlourishBuilder
+uid: ArkheideSystem.Flourish.Abstract.FlourishBuilder
 summary: 提供用于创建 Flourish 应用 builder 的工厂方法。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.FlourishBuilder.CreateDefaultBuilder(System.String[])
+uid: ArkheideSystem.Flourish.Abstract.FlourishBuilder.CreateDefaultBuilder(System.String[])
 summary: 创建使用标准 .NET Host 默认值配置的 Flourish builder。
 syntax:
   parameters:
@@ -130,12 +130,12 @@ summary: 从底部揭示保持静止的页面。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.FlourishServiceCollectionExtensions
+uid: ArkheideSystem.Flourish.Abstract.FlourishServiceCollectionExtensions
 summary: 提供 Flourish 应用使用的服务集合扩展方法。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.FlourishServiceCollectionExtensions.AddNavigable``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String,ArkheideSystem.Flourish.Abstract.FlourishPageCacheMode)
+uid: ArkheideSystem.Flourish.Abstract.FlourishServiceCollectionExtensions.AddNavigable``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.String,ArkheideSystem.Flourish.Abstract.FlourishPageCacheMode)
 summary: 注册 WPF 页面，根据页面类名生成默认导航键，并在构建时验证键的唯一性。
 syntax:
   typeParameters:
@@ -234,12 +234,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder
 summary: 在构建运行时之前配置 Flourish 应用。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigData(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureData(System.Action{ArkheideSystem.Flourish.Abstract.IDataBuilder})
 summary: 配置 Flourish 内置界面的语言与自定义翻译文件。
 syntax:
   parameters:
@@ -250,59 +250,26 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigConfiguration(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureConfiguration(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.Configuration.IConfigurationBuilder})
 summary: 向 .NET Host 管线注册应用配置源。
 remarks: Flourish 将来源插入 appsettings 与 User Secrets 之后、环境变量与命令行之前，并保持标准 Microsoft IConfiguration。
 syntax:
   parameters:
   - id: configure
-    description: 接收 Host 上下文与 Flourish 配置源 builder 的回调。
+    description: 接收 Host 上下文与标准 Microsoft IConfigurationBuilder 的回调。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder
-summary: 按受控优先级注册应用拥有的配置源。
-remarks: 注册顺序会被保留，后注册的应用源覆盖先注册的应用源；环境变量和命令行仍具有更高优先级。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder.UseConfigurationFile(System.String,System.Boolean,System.Boolean)
-summary: 注册 JSON 配置文件。
-syntax:
-  parameters:
-  - id: path
-    description: 配置文件路径；相对路径以 AppContext.BaseDirectory 为基准。
-  - id: optional
-    description: 是否允许文件不存在。
-  - id: reloadOnChange
-    description: 文件变化时是否重新加载有效配置。
-  return:
-    description: 用于链式注册的当前配置 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishConfigurationBuilder.AddConfigurationSource(Microsoft.Extensions.Configuration.IConfigurationSource)
-summary: 注册标准 Microsoft 配置源。
-remarks: Flourish 决定该来源在 Host 管线中的位置，不会公开底层 IConfigurationBuilder。
-syntax:
-  parameters:
-  - id: source
-    description: 要注册的配置源。
-  return:
-    description: 用于链式注册的当前配置 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder
+uid: ArkheideSystem.Flourish.Abstract.IDataBuilder
 summary: 配置 Flourish 使用的本地化资源。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitLocale(System.String,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IDataBuilder.SetLocale(System.String,System.Boolean)
 summary: 选择 Flourish 内置界面文案使用的语言。
-remarks: 即使省略 ConfigData 和 InitLocale，Flourish 也会使用内置 en-US 语言。内置语言标识为 en-US 和 zh-CN，标识不区分大小写并以规范的 BCP 47 形式返回。
+remarks: 即使省略 ConfigureData 和 SetLocale，Flourish 也会使用内置 en-US 语言。内置语言标识为 en-US 和 zh-CN，标识不区分大小写并以规范的 BCP 47 形式返回。
 syntax:
   parameters:
   - id: locale
@@ -312,7 +279,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitAppSettingsFilePath(System.String)
+uid: ArkheideSystem.Flourish.Abstract.IDataBuilder.SetAppSettingsFilePath(System.String)
 summary: 选择提供 `Flourish` 配置节并接收 IFlourishSettingsStore 更新的 JSON 文件。
 remarks: 默认文件是应用根目录下的 `appsettings.Flourish.json`。相对路径以 `AppContext.BaseDirectory` 为基准。所选文件不是基础 `appsettings.json` 时，只会把结构上的顶级 `Flourish` 对象发布为低优先级配置，并保留宿主应用的全部 appsettings 配置源。其他顶级节会保留，但不归 Flourish 读取或写入。
 syntax:
@@ -324,7 +291,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.InitProjectCatalogFilePath(System.String)
+uid: ArkheideSystem.Flourish.Abstract.IDataBuilder.SetProjectCatalogFilePath(System.String)
 summary: 选择 Flourish 项目元数据目录使用的 JSON 文件。
 remarks: 此路径仅保存项目身份与映射，不控制应用拥有的项目内容文件位置。
 syntax:
@@ -336,7 +303,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDataBuilder.AddCultureFile(System.String)
+uid: ArkheideSystem.Flourish.Abstract.IDataBuilder.AddCultureFile(System.String)
 summary: 添加可扩展或覆盖内置翻译的自定义文化文件。
 remarks: |
   文件在 `Build()` 应用配置时读取，必须使用 UTF-8 编码并命名为 `FlourishCulture.Json`。最外层属性是翻译键，内层属性是语言标识与译文；用户文件可以只包含需要覆盖的语言与键组合。应用输出目录中的同名文件会自动加载，额外目录按注册顺序覆盖相同语言与键的先前值。
@@ -439,7 +406,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigServices(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.DependencyInjection.IServiceCollection})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureServices(System.Action{Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.DependencyInjection.IServiceCollection})
 summary: 向底层 .NET Host builder 添加服务注册。
 syntax:
   parameters:
@@ -450,18 +417,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigShell(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder})
-summary: 配置 Flourish Shell 功能与共享选项。
-syntax:
-  parameters:
-  - id: configureShell
-    description: 接收 Shell builder 的配置回调。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigTitleBar(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureTitleBar(System.Action{ArkheideSystem.Flourish.Abstract.ITitleBarBuilder})
 summary: 配置标题栏内容和行为。
 syntax:
   parameters:
@@ -472,7 +428,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigNavigation(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureNavigation(System.Action{ArkheideSystem.Flourish.Abstract.INavigationBuilder})
 summary: 配置导航栏展示和可见导航模型。
 syntax:
   parameters:
@@ -483,7 +439,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigCustomHandler(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureContent(System.Action{ArkheideSystem.Flourish.Abstract.ICustomContentBuilder})
 summary: 配置预定义 Shell 区域中的自定义 WPF 内容。
 syntax:
   parameters:
@@ -494,7 +450,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigDynamicToolbar(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishDynamicToolbarBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureToolbar(System.Action{ArkheideSystem.Flourish.Abstract.IToolbarBuilder})
 summary: 配置按页面变化的动态工具栏项。
 syntax:
   parameters:
@@ -505,7 +461,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigMotion(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureMotion(System.Action{ArkheideSystem.Flourish.Abstract.IMotionBuilder})
 summary: 配置 Flourish 动效行为。
 syntax:
   parameters:
@@ -516,7 +472,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigWindow(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureWindow(System.Action{ArkheideSystem.Flourish.Abstract.IWindowBuilder})
 summary: 配置 Flourish Shell 窗口属性。
 syntax:
   parameters:
@@ -527,7 +483,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.ConfigStatusBar(System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder})
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.ConfigureStatusBar(System.Action{ArkheideSystem.Flourish.Abstract.IStatusBarBuilder})
 summary: 配置 Shell 状态栏。
 syntax:
   parameters:
@@ -538,7 +494,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishBuilder.Build
+uid: ArkheideSystem.Flourish.Abstract.IFlourishBuilder.Build
 summary: 构建 Flourish 运行时。
 syntax:
   return:
@@ -546,12 +502,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder
 summary: 配置显示在预定义 Shell 区域中的自定义 WPF 内容。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddRegionContent(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.Func{System.IServiceProvider,System.Windows.FrameworkElement},System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder.AddRegionContent(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.Func{System.IServiceProvider,System.Windows.FrameworkElement},System.Int32)
 summary: 向 Shell 区域添加自定义内容。
 syntax:
   parameters:
@@ -566,9 +522,9 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.InitProfileContent(System.Func{System.IServiceProvider,System.Windows.FrameworkElement})
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder.SetProfileContent(System.Func{System.IServiceProvider,System.Windows.FrameworkElement})
 summary: 设置标题栏 Profile 区域的自定义 WPF 内容。
-remarks: 在标题栏配置中调用 `UseProfile()` 启用 Profile 区域后，该内容才会显示。
+remarks: 在标题栏配置中调用 `SetProfile()` 启用 Profile 区域后，该内容才会显示。
 syntax:
   parameters:
   - id: contentFactory
@@ -578,7 +534,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddTitleBarAction(System.String,System.String,System.String,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder.AddTitleBarAction(System.String,System.String,System.String,System.Int32)
 summary: 向标题栏末尾添加命令按钮。
 syntax:
   parameters:
@@ -595,7 +551,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddTitleBarActionHandler(System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder.AddTitleBarActionHandler(System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
 summary: 向标题栏末尾添加回调按钮。
 syntax:
   parameters:
@@ -612,7 +568,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddFooterCommand(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.String,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder.AddFooterCommand(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.String,System.Int32)
 summary: 向指定 Shell Footer 区域添加命令按钮。
 syntax:
   parameters:
@@ -631,7 +587,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishCustomHandlerBuilder.AddFooterCommandHandler(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.ICustomContentBuilder.AddFooterCommandHandler(ArkheideSystem.Flourish.Abstract.FlourishRegion,System.String,System.String,System.Action{System.IServiceProvider},System.Int32)
 summary: 向指定 Shell Footer 区域添加回调按钮。
 syntax:
   parameters:
@@ -650,12 +606,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDynamicToolbarBuilder
+uid: ArkheideSystem.Flourish.Abstract.IToolbarBuilder
 summary: 配置会随当前页面变化的工具栏项。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDynamicToolbarBuilder.InitToolbarItems``1(ArkheideSystem.Flourish.Abstract.FlourishToolbarItem[])
+uid: ArkheideSystem.Flourish.Abstract.IToolbarBuilder.Set``1(ArkheideSystem.Flourish.Abstract.FlourishToolbarItem[])
 summary: 为指定泛型页面类型创建工具栏项。
 syntax:
   typeParameters:
@@ -669,7 +625,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishDynamicToolbarBuilder.InitToolbarItems``1(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishToolbarItem[])
+uid: ArkheideSystem.Flourish.Abstract.IToolbarBuilder.Set``1(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishToolbarItem[])
 summary: 为指定泛型页面类型创建工具栏项，并控制是否显示工具栏图标。
 syntax:
   typeParameters:
@@ -685,12 +641,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder
+uid: ArkheideSystem.Flourish.Abstract.IMotionBuilder
 summary: 配置 Flourish Shell 的动效和动画行为。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UsePageTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishPageTransition,System.Nullable{System.TimeSpan},System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IMotionBuilder.SetPageTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishPageTransition,System.Nullable{System.TimeSpan},System.Boolean)
 summary: 启用页面进入内容框架时使用的过渡效果。
 syntax:
   parameters:
@@ -703,7 +659,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseNavigationPanelTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishNavigationPanelTransition,System.Nullable{System.TimeSpan},System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IMotionBuilder.SetNavigationPanelTransition(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishNavigationPanelTransition,System.Nullable{System.TimeSpan},System.Boolean)
 summary: 启用导航面板打开或关闭时使用的过渡效果。
 syntax:
   parameters:
@@ -716,7 +672,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseHoverRevealAnimation(System.Boolean,System.Nullable{System.TimeSpan},System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IMotionBuilder.SetHoverReveal(System.Boolean,System.Nullable{System.TimeSpan},System.Boolean)
 summary: 启用悬停揭示动画。
 syntax:
   parameters:
@@ -727,7 +683,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishMotionBuilder.UseSystemReducedMotion(System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IMotionBuilder.SetRespectSystemReducedMotion(System.Boolean,System.Boolean)
 summary: 控制 Flourish 是否遵循操作系统的减少动态效果偏好。
 syntax:
   parameters:
@@ -738,12 +694,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder
 summary: 配置 Flourish 导航栏展示和可见导航模型。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitDirection(ArkheideSystem.Flourish.Abstract.NavigationPanelDirection,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.SetDirection(ArkheideSystem.Flourish.Abstract.NavigationPanelDirection,System.Boolean)
 summary: 设置导航面板显示在 Shell 的哪一侧。
 syntax:
   parameters:
@@ -754,7 +710,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitInitiallyOpen(System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.SetInitiallyOpen(System.Boolean,System.Boolean)
 summary: 设置 Shell 首次显示时导航面板是否打开。
 syntax:
   parameters:
@@ -765,7 +721,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.InitPanelWidth(System.Double,System.Double,System.Double,System.Double,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.SetPanelWidth(System.Double,System.Double,System.Double,System.Double,System.Boolean)
 summary: 设置导航栏宽度和 splitter 调整范围。
 syntax:
   parameters:
@@ -782,7 +738,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.AddGroup(System.String,System.Int32,System.Action{ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder})
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.AddGroup(System.String,System.Int32,System.Action{ArkheideSystem.Flourish.Abstract.INavigationGroupBuilder})
 summary: 添加并配置一个可滚动导航分组。
 syntax:
   parameters:
@@ -797,7 +753,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.AddFixedNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.AddFixedNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
 summary: 在导航栏底部固定区域添加一个已注册页面导航项。
 syntax:
   typeParameters:
@@ -815,7 +771,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationBuilder.AddFixedNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.AddFixedNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
 summary: 在导航栏底部固定区域添加一个按钮类型命令项。
 syntax:
   parameters:
@@ -834,12 +790,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder
+uid: ArkheideSystem.Flourish.Abstract.INavigationGroupBuilder
 summary: 配置 Flourish 导航分组中显示的导航项。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder.AddNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.INavigationGroupBuilder.AddNavigableViewItem``1(System.Boolean,System.Int32,System.Int32)
 summary: 将一个已注册 WPF 页面添加到当前导航分组。
 syntax:
   typeParameters:
@@ -857,7 +813,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishNavigationGroupBuilder.AddNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
+uid: ArkheideSystem.Flourish.Abstract.INavigationGroupBuilder.AddNavigableItem(System.String,System.String,System.String,System.Int32,System.Int32)
 summary: 将一个按钮类型命令项添加到当前导航分组。
 syntax:
   parameters:
@@ -873,11 +829,6 @@ syntax:
     description: 可选父节点归属 ID。parentId 不为 0 时必须为 0。
   return:
     description: 用于链式配置的当前分组 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder
-summary: 配置 Flourish Shell 功能与共享选项。
 ---
 
 ---
@@ -914,7 +865,7 @@ summary: 获取强调内容使用的颜色。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseTitleBar(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetEnabled(System.Boolean)
 summary: 启用或禁用 Shell 标题栏。
 syntax:
   parameters:
@@ -925,7 +876,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMultiProject(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IProjectBuilder.SetMultiProjectEnabled(System.Boolean)
 summary: 启用或禁用标题栏的多项目显示语义；调用时默认启用，项目目录本身始终可用。
 syntax:
   parameters:
@@ -936,7 +887,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseNavigation(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.INavigationBuilder.SetEnabled(System.Boolean)
 summary: 启用或禁用 Shell 导航栏。
 syntax:
   parameters:
@@ -947,7 +898,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseCenterContent(System.Boolean,System.Double,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ILayoutBuilder.SetCenterContent(System.Boolean,System.Double,System.Boolean)
 summary: 配置导航页面内容及对齐的 Shell 内容区域是否在宽视口和导航栏过渡期间按最大宽度居中显示。
 syntax:
   parameters:
@@ -960,7 +911,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseDynamicToolbar(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IToolbarBuilder.SetEnabled(System.Boolean)
 summary: 启用或禁用动态工具栏区域。
 syntax:
   parameters:
@@ -971,20 +922,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseTips(System.Boolean,System.Int32)
-summary: 启用或禁用 Flourish 自有工具提示的 Flourish 呈现，并设置首次显示延迟；原生与第三方控件不受影响。
-syntax:
-  parameters:
-  - id: enabled
-    description: 指示是否启用 Flourish 工具提示呈现；禁用时回退为原生 WPF 呈现。
-  - id: delay
-    description: 工具提示的初始显示延迟（毫秒）。
-  return:
-    description: 用于链式配置的当前 builder。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMotion(System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IMotionBuilder.SetEnabled(System.Boolean,System.Boolean)
 summary: 启用或禁用 Flourish 动效。
 syntax:
   parameters:
@@ -995,7 +933,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseMaterialEffect(System.Boolean,ArkheideSystem.Flourish.Abstract.MaterialEffect,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IAppearanceBuilder.SetEffect(System.Boolean,ArkheideSystem.Flourish.Abstract.MaterialEffect,System.Boolean)
 summary: 启用或禁用 Shell 窗口的系统材质效果，并选择启用时使用的材质。
 syntax:
   parameters:
@@ -1008,7 +946,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseThemeColors(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishThemeColors,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IAppearanceBuilder.SetThemeColors(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishThemeColors,System.Boolean)
 summary: 启用或禁用自定义 Flourish 主题颜色，并设置启用时使用的主要、辅助和强调颜色。
 syntax:
   parameters:
@@ -1021,7 +959,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseCornerRadius(System.Boolean,System.Double,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IAppearanceBuilder.SetCornerRadius(System.Boolean,System.Double,System.Boolean)
 summary: 启用或禁用自定义共用圆角，并设置启用时 Flourish 控件与 Shell 区域使用的圆角半径。
 syntax:
   parameters:
@@ -1034,7 +972,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseSmoothScroll(System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ILayoutBuilder.SetSmoothScrollingEnabled(System.Boolean,System.Boolean)
 summary: 启用或禁用 Flourish 内置滚动区域默认使用的平滑鼠标滚轮行为。
 syntax:
   parameters:
@@ -1045,7 +983,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.InitGlobalFont(System.String,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IFontBuilder.SetFont(System.String,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean)
 summary: 设置 Flourish Shell UI 使用的全局字体与 Small、Standard、Icon、Large、ExtraLarge 和 HeaderSize 六种字号。
 syntax:
   parameters:
@@ -1068,7 +1006,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishShellBuilder.UseStatusBar(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IStatusBarBuilder.SetEnabled(System.Boolean)
 summary: 启用或禁用 Shell 状态栏。
 syntax:
   parameters:
@@ -1079,12 +1017,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder
+uid: ArkheideSystem.Flourish.Abstract.IStatusBarBuilder
 summary: 配置 Flourish Shell 状态栏。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder.AddStatusItem(System.String,System.String)
+uid: ArkheideSystem.Flourish.Abstract.IStatusBarBuilder.AddStatusItem(System.String,System.String)
 summary: 添加包含显示文本和图标字形的状态栏项目。
 syntax:
   parameters:
@@ -1097,7 +1035,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder.UseLanConnectionStatus(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IStatusBarBuilder.SetLanStatusEnabled(System.Boolean)
 summary: 在合并的系统状态浮层中启用网络详情；浮层打开时读取当前网络可用性。
 syntax:
   return:
@@ -1105,7 +1043,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishStatusBarBuilder.UsePowerStatus(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IStatusBarBuilder.SetPowerStatusEnabled(System.Boolean)
 summary: 在合并的系统状态浮层中启用电源来源和可用电池百分比。
 syntax:
   return:
@@ -1113,12 +1051,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder
 summary: 配置 Flourish Shell 标题栏；调用成员时会同时显示对应元素，未配置的元素保持隐藏。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseSearch(System.Boolean,System.String,System.Action{System.IServiceProvider,System.String})
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetSearch(System.Boolean,System.String,System.Action{System.IServiceProvider,System.String})
 summary: 设置占位文本和可访问应用服务的文本变化回调，并显示搜索框。
 syntax:
   parameters:
@@ -1131,7 +1069,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseBreadcrumb(System.Boolean,ArkheideSystem.Flourish.Abstract.BreadcrumbShowOption)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetBreadcrumbMode(System.Boolean,ArkheideSystem.Flourish.Abstract.BreadcrumbShowOption)
 summary: 设置面包屑显示行为，并启用面包屑按钮。
 syntax:
   parameters:
@@ -1142,7 +1080,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseNavigationToggle(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetNavigationToggle(System.Boolean)
 summary: 显示导航面板切换按钮。
 syntax:
   return:
@@ -1150,7 +1088,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseLogo(System.Boolean,System.String,System.Boolean,System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetLogo(System.Boolean,System.String,System.Boolean,System.Boolean,System.Boolean)
 summary: 设置 Logo 按钮及其信息视图中显示的应用与项目标识；省略路径时使用 Flourish 内置图标。
 syntax:
   parameters:
@@ -1158,7 +1096,7 @@ syntax:
     description: Logo 图像的相对 URI、绝对 URI 或 WPF pack URI；省略时使用内置图标。
   - id: showApplicationTitle
     description: 是否在 Logo 信息视图中显示应用标题；默认为 true。
-  - id: showApplicationSubTitle
+  - id: showApplicationSubtitle
     description: 是否在 Logo 信息视图中显示应用副标题；默认为 true。
   - id: showProjectTitle
     description: 是否在 Logo 信息视图中显示当前项目标题；默认为 false。
@@ -1167,7 +1105,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.InitApplicationTitle(System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetApplicationTitle(System.String)
 summary: 设置应用标题并显示标题选择器；未启用多项目时，选择器只显示该标题。
 syntax:
   parameters:
@@ -1178,18 +1116,18 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.InitApplicationSubTitle(System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetApplicationSubtitle(System.String)
 summary: 设置在 Logo 信息视图中显示的应用副标题。
 syntax:
   parameters:
-  - id: subTitle
+  - id: subtitle
     description: 应用的非空辅助标题。
   return:
     description: 用于链式配置的当前 builder。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.InitUnnamedProjectPlaceholder(System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetUnnamedProjectPlaceholder(System.String)
 summary: 设置未持久化项目或缺少活动选择时使用的显示占位文本。
 syntax:
   parameters:
@@ -1200,7 +1138,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseProfile(System.Boolean,ArkheideSystem.Flourish.Abstract.NameOrder,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetProfile(System.Boolean,ArkheideSystem.Flourish.Abstract.NameOrder,System.Boolean)
 summary: 使用内置默认资料设置名称顺序，并显示 Profile 入口。
 syntax:
   parameters:
@@ -1211,7 +1149,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.InitProfilePage``1
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetProfilePage``1
 summary: 设置由 DI 解析并承载在 Profile 弹层中的 WPF 页面。
 syntax:
   typeParameters:
@@ -1222,7 +1160,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishTitlebarBuilder.UseThemeToggle(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishTheme,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarBuilder.SetThemeToggle(System.Boolean,ArkheideSystem.Flourish.Abstract.FlourishTheme,System.Boolean)
 summary: 设置尚无已保存偏好时使用的主题，并显示主题切换按钮。
 syntax:
   parameters:
@@ -1233,12 +1171,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder
 summary: 配置 Flourish Shell 窗口。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowSize(System.Double,System.Double,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetSize(System.Double,System.Double,System.Boolean)
 summary: 设置 Shell 窗口初始尺寸。
 syntax:
   parameters:
@@ -1251,7 +1189,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowMinSize(System.Double,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetMinimumSize(System.Double,System.Double)
 summary: 设置 Shell 窗口最小尺寸。
 syntax:
   parameters:
@@ -1264,7 +1202,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowMaxSize(System.Double,System.Double)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetMaximumSize(System.Double,System.Double)
 summary: 设置 Shell 窗口最大尺寸。
 syntax:
   parameters:
@@ -1277,7 +1215,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowPosition(System.Windows.WindowStartupLocation,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetStartupLocation(System.Windows.WindowStartupLocation,System.Boolean)
 summary: 设置 Shell 窗口启动位置。
 syntax:
   parameters:
@@ -1288,7 +1226,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitManualWindowPosition(System.Double,System.Double,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetManualPosition(System.Double,System.Double,System.Boolean)
 summary: 设置 Shell 窗口的手动位置。
 syntax:
   parameters:
@@ -1301,7 +1239,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowState(System.Windows.WindowState,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetState(System.Windows.WindowState,System.Boolean)
 summary: 设置 Shell 窗口初始状态。
 syntax:
   parameters:
@@ -1312,7 +1250,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitWindowResizeMode(System.Windows.ResizeMode)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetResizeMode(System.Windows.ResizeMode)
 summary: 设置 Shell 窗口调整大小模式。
 syntax:
   parameters:
@@ -1323,7 +1261,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.UseTopmost(System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetTopmost(System.Boolean,System.Boolean)
 summary: 设置 Shell 窗口是否保持在其他窗口上方。
 syntax:
   parameters:
@@ -1334,7 +1272,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.InitShownInTaskbar(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetShownInTaskbar(System.Boolean)
 summary: 设置 Shell 窗口是否显示在 Windows 任务栏中。
 syntax:
   parameters:
@@ -1345,7 +1283,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Builder.IFlourishWindowPropertyBuilder.UseTrayExit(System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IWindowBuilder.SetTrayExit(System.Boolean,System.Boolean)
 summary: 设置标题栏关闭按钮是否将 Shell 窗口隐藏到 Windows 通知区域。
 remarks: 启用后，关闭按钮不会显示退出确认；可以通过通知区域菜单恢复窗口或退出应用。禁用后，关闭按钮使用常规退出确认流程。
 syntax:
@@ -1357,37 +1295,17 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService
+uid: ArkheideSystem.Flourish.Abstract.INavigationService
 summary: 为已注册的 Flourish 页面提供运行时导航服务。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.Navigated
+uid: ArkheideSystem.Flourish.Abstract.INavigationService.Navigated
 summary: Flourish 导航到已注册页面后触发。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.CanGoBack
-summary: 获取是否可以执行后退导航。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.CanGoForward
-summary: 获取是否可以执行前进导航。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.CurrentSourcePageType
-summary: 获取当前显示在内容框架中的已注册源页面类型。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.CurrentNavigationKey
-summary: 获取当前导航键。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.Navigate(System.String,System.Object,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.INavigationService.Navigate(System.String,System.Object,System.Boolean)
 summary: 使用区分大小写的已注册导航键执行导航。
 syntax:
   parameters:
@@ -1402,7 +1320,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.GoBack
+uid: ArkheideSystem.Flourish.Abstract.INavigationService.GoBack
 summary: 导航到后退栈中的上一页。
 syntax:
   return:
@@ -1410,7 +1328,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.GoForward
+uid: ArkheideSystem.Flourish.Abstract.INavigationService.GoForward
 summary: 导航到前进栈中的下一页。
 syntax:
   return:
@@ -1418,43 +1336,28 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationService.ClearBackStack
+uid: ArkheideSystem.Flourish.Abstract.INavigationService.ClearBackStack
 summary: 清空导航后退栈。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor
+uid: ArkheideSystem.Flourish.Abstract.INavigationMenuEditor
 summary: 在一个事务中编辑运行时导航菜单。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.AppendGroup(System.String,System.String)
+uid: ArkheideSystem.Flourish.Abstract.INavigationMenuEditor.AddGroup(System.String,System.String)
 summary: 将导航分组追加到菜单末尾。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.InsertGroup(System.String,System.Int32,System.String)
-summary: 将导航分组插入从零开始的指定位置。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.AppendItem(System.String,ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem)
+uid: ArkheideSystem.Flourish.Abstract.INavigationMenuEditor.AddItem(System.String,ArkheideSystem.Flourish.Abstract.FlourishNavigationMenuItem)
 summary: 将导航项追加到可滚动分组末尾。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.InsertItem(System.String,ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem,System.Int32)
-summary: 将导航项插入可滚动分组中从零开始的指定位置。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.AppendFixedItem(ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem)
+uid: ArkheideSystem.Flourish.Abstract.INavigationMenuEditor.AddFixedItem(ArkheideSystem.Flourish.Abstract.FlourishNavigationMenuItem)
 summary: 将导航项追加到固定区域末尾。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.INavigationMenuEditor.InsertFixedItem(ArkheideSystem.Flourish.Abstract.Essential.FlourishNavigationMenuItem,System.Int32)
-summary: 将导航项插入固定区域中从零开始的指定位置。
 ---
 
 ---
@@ -1502,6 +1405,7 @@ uid: ArkheideSystem.Flourish.Abstract.NavigationPanelDirection.Right
 summary: 在 Shell 右侧显示导航面板。
 ---
 
+---
 uid: ArkheideSystem.Flourish.Abstract.NameOrder
 summary: 指定 Profile first name 与 last name 的显示顺序。
 ---
@@ -1670,27 +1574,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.ProfileChangedEventArgs
-summary: 提供 Profile 用户或登录状态发生变化时的数据。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.ProfileChangedEventArgs.Profile
-summary: 获取当前 Profile 用户信息。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.ProfileChangedEventArgs.LoginState
-summary: 获取当前登录状态。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileAuthService
+uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService
 summary: 定义可由应用替换的 Profile 认证逻辑。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileAuthService.AuthenticateAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService.AuthenticateAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
 summary: 异步认证给定的 Profile 登录请求。
 syntax:
   parameters:
@@ -1703,7 +1592,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileAuthService.SignOutAsync(ArkheideSystem.Flourish.Abstract.ProfileUser,System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProfileAuthService.SignOutAsync(ArkheideSystem.Flourish.Abstract.ProfileUser,System.Threading.CancellationToken)
 summary: 执行认证提供程序所需的异步登出工作。
 syntax:
   parameters:
@@ -1716,38 +1605,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService
+uid: ArkheideSystem.Flourish.Abstract.IProfileService
 summary: 维护当前 Profile 用户、登录状态和持久化流程。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.CurrentProfile
-summary: 获取 Shell 当前显示的 Profile 用户。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.LoginState
-summary: 获取当前 Profile 登录状态。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.ProfileChanged
-summary: 当 Profile 用户或登录状态变化时发生。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.InitializeAsync(System.Threading.CancellationToken)
-summary: 初始化 Profile 状态，并在存在已存储凭据时恢复已记住的登录。
-syntax:
-  parameters:
-  - id: cancellationToken
-    description: 请求取消操作的令牌。
-  return:
-    description: 初始化完成时结束的任务。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.SignInAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.SignInAsync(ArkheideSystem.Flourish.Abstract.ProfileSignInRequest,System.Threading.CancellationToken)
 summary: 异步认证并激活当前 Profile。
 syntax:
   parameters:
@@ -1760,7 +1623,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.SetRememberLoginAsync(System.Boolean,System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.SetRememberLoginAsync(System.Boolean,System.Threading.CancellationToken)
 summary: 设置是否在下次启动时恢复当前登录。
 syntax:
   parameters:
@@ -1773,7 +1636,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProfileService.SignOutAsync(System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProfileService.SignOutAsync(System.Threading.CancellationToken)
 summary: 异步登出并删除持久化的 Profile 凭据。
 syntax:
   parameters:
@@ -1784,27 +1647,17 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService
+uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService
 summary: 提交并执行具有并发上限的异步后台任务。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.MaxConcurrency
+uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService.MaxConcurrency
 summary: 获取可同时运行的最大任务数量。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.ActiveTasks
-summary: 获取所有等待中、运行中和正在取消任务的不可变快照。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.TasksChanged
-summary: 当活动任务集合、任务状态或任务进度发生变化时触发。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.QueueTask(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask})
+uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService.QueueTask(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask})
 summary: 提交一个没有返回值的异步后台任务。
 syntax:
   parameters:
@@ -1817,7 +1670,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.QueueTask``1(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask{``0}})
+uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService.QueueTask``1(ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskMetadata,System.Func{ArkheideSystem.Flourish.Abstract.FlourishBackgroundTaskContext,System.Threading.Tasks.ValueTask{``0}})
 summary: 提交一个产生返回值的异步后台任务。
 syntax:
   parameters:
@@ -1830,7 +1683,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IBackgroundTaskService.CancelTask(System.Guid)
+uid: ArkheideSystem.Flourish.Abstract.IBackgroundTaskService.CancelTask(System.Guid)
 summary: 使用任务标识符请求协作式取消。
 syntax:
   parameters:
@@ -2078,22 +1931,12 @@ summary: 获取失败任务捕获的异常。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.FlourishBackgroundTasksChangedEventArgs
-summary: 提供后台任务变化后的当前活动任务列表。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.FlourishBackgroundTasksChangedEventArgs.Tasks
-summary: 获取按提交顺序排列的等待中、运行中和正在取消任务。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectBehavior
+uid: ArkheideSystem.Flourish.Abstract.IProjectBehavior
 summary: 协调 Shell 使用的项目新建、保存、激活、删除与关闭生命周期；应用可以通过依赖注入替换默认行为。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectBehavior.CreateProjectAsync(System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProjectBehavior.CreateProjectAsync(System.Threading.CancellationToken)
 summary: 创建并激活一个项目。
 syntax:
   parameters:
@@ -2104,7 +1947,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectBehavior.SaveActiveProjectAsync(System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProjectBehavior.SaveActiveProjectAsync(System.Threading.CancellationToken)
 summary: 在活动项目需要框架管理的持久化时保存它。
 syntax:
   parameters:
@@ -2115,7 +1958,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectBehavior.ActivateProjectAsync(System.String,System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProjectBehavior.ActivateProjectAsync(System.String,System.Threading.CancellationToken)
 summary: 处理尚未保存的活动项目后，激活指定项目。
 syntax:
   parameters:
@@ -2128,7 +1971,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectBehavior.DeleteProjectAsync(System.String,System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProjectBehavior.DeleteProjectAsync(System.String,System.Threading.CancellationToken)
 summary: 确认后删除指定项目。
 syntax:
   parameters:
@@ -2141,7 +1984,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectBehavior.CanCloseAsync(System.Threading.CancellationToken)
+uid: ArkheideSystem.Flourish.Abstract.IProjectBehavior.CanCloseAsync(System.Threading.CancellationToken)
 summary: 确定活动项目是否允许 Shell 关闭。
 syntax:
   parameters:
@@ -2152,32 +1995,32 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService
+uid: ArkheideSystem.Flourish.Abstract.IProjectService
 summary: 管理 Flourish Shell 显示的项目目录，并将有序元数据与活动项目 ID 持久化到所选项目目录文件。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.Changed
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.Changed
 summary: 项目元数据、活动选择或多项目模式变化后发生。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.NewProjectRequested
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.NewProjectRequested
 summary: 标题选择器请求创建项目时发生；事件本身不创建业务数据。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.ProjectActivationRequested
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.ProjectActivationRequested
 summary: 标题选择器请求激活项目时发生；事件本身不切换业务状态。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.Current
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.Current
 summary: 获取当前项目显示状态的只读快照。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.AppendProject(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.AddProject(ArkheideSystem.Flourish.Abstract.FlourishProject,System.Boolean)
 summary: 将项目标识追加到项目目录，并可选将其设为活动项目。
 syntax:
   parameters:
@@ -2188,7 +2031,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.SetProject(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetProject(ArkheideSystem.Flourish.Abstract.FlourishProject,System.Boolean)
 summary: 添加项目，或按区分大小写的 ID 替换已有项目元数据。
 syntax:
   parameters:
@@ -2199,7 +2042,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.SetProjectMetadata(System.String,System.String,System.String)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetProjectMetadata(System.String,System.String,System.String)
 summary: 修改已注册项目的显示名称与可选本地存储路径。
 syntax:
   parameters:
@@ -2212,7 +2055,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.SetActiveProject(System.String)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetActiveProject(System.String)
 summary: 更改活动项目；传入 null 或空白文本可清除选择。
 syntax:
   parameters:
@@ -2221,7 +2064,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.RemoveProject(System.String)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.RemoveProject(System.String)
 summary: 移除 Shell 中的项目元数据；移除活动项目时会清除选择。
 syntax:
   parameters:
@@ -2232,7 +2075,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.GetProject(System.String)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.GetProject(System.String)
 summary: 按区分大小写的 ID 查询项目元数据。
 syntax:
   parameters:
@@ -2245,7 +2088,7 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IProjectService.SetMultiProjectEnabled(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IProjectService.SetMultiProjectEnabled(System.Boolean)
 summary: 在运行时启用或禁用标题栏的项目感知显示。
 syntax:
   parameters:
@@ -2254,12 +2097,12 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProject
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject
 summary: 描述 Flourish Shell 所表示的一个应用项目。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProject.#ctor(System.String,System.String,System.String)
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.#ctor(System.String,System.String,System.String)
 summary: 创建项目显示元数据。
 syntax:
   parameters:
@@ -2272,27 +2115,27 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProject.Id
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.Id
 summary: 获取稳定且区分大小写的项目 ID。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProject.Name
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.Name
 summary: 获取项目显示名称。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProject.StoragePath
+uid: ArkheideSystem.Flourish.Abstract.FlourishProject.StoragePath
 summary: 获取项目表示的本地存储路径；项目尚未持久化时为 null。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot
 summary: 表示当前项目标识、活动选择与模式的只读快照。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot.#ctor(System.Collections.Generic.IReadOnlyList{ArkheideSystem.Flourish.Abstract.Essential.FlourishProject},ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,System.Boolean,System.Int64)
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.#ctor(System.Collections.Generic.IReadOnlyList{ArkheideSystem.Flourish.Abstract.FlourishProject},ArkheideSystem.Flourish.Abstract.FlourishProject,System.Boolean,System.Int64)
 summary: 创建项目显示状态快照。
 syntax:
   parameters:
@@ -2307,97 +2150,97 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot.Projects
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.Projects
 summary: 获取按插入顺序排列的已注册项目。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot.ActiveProject
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.ActiveProject
 summary: 获取活动项目；尚未选择时为 null。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot.IsMultiProjectEnabled
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.IsMultiProjectEnabled
 summary: 获取标题栏是否使用项目感知的显示语义。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot.Version
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot.Version
 summary: 获取单调递增的项目状态版本号。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectsChangedEventArgs
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs
 summary: 提供项目显示状态变化后的数据。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectsChangedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot,ArkheideSystem.Flourish.Abstract.FlourishRuntimeChangeKind,System.String,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot,ArkheideSystem.Flourish.Abstract.FlourishRuntimeChangeKind,System.String,System.Boolean)
 summary: 创建项目状态变更事件数据。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectsChangedEventArgs.Current
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.Current
 summary: 获取变更后的项目状态。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectsChangedEventArgs.ChangeKind
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.ChangeKind
 summary: 获取引发事件的变更种类。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectsChangedEventArgs.ProjectId
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.ProjectId
 summary: 获取受影响的项目 ID；不适用时为 null。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectsChangedEventArgs.ActiveProjectChanged
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectsChangedEventArgs.ActiveProjectChanged
 summary: 获取活动项目标识或其显示元数据是否变化。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishNewProjectRequestedEventArgs
+uid: ArkheideSystem.Flourish.Abstract.FlourishNewProjectRequestedEventArgs
 summary: 标题栏请求创建项目时提供项目状态。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishNewProjectRequestedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot)
+uid: ArkheideSystem.Flourish.Abstract.FlourishNewProjectRequestedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot)
 summary: 创建新建项目请求事件数据。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishNewProjectRequestedEventArgs.Current
+uid: ArkheideSystem.Flourish.Abstract.FlourishNewProjectRequestedEventArgs.Current
 summary: 获取发出请求时的项目状态。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectActivationRequestedEventArgs
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs
 summary: 提供标题栏请求激活的项目与当前状态。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectActivationRequestedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.Essential.FlourishProject,ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectSnapshot)
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs.#ctor(ArkheideSystem.Flourish.Abstract.FlourishProject,ArkheideSystem.Flourish.Abstract.FlourishProjectSnapshot)
 summary: 创建项目激活请求事件数据。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectActivationRequestedEventArgs.Project
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs.Project
 summary: 获取用户选择的项目。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.FlourishProjectActivationRequestedEventArgs.Current
+uid: ArkheideSystem.Flourish.Abstract.FlourishProjectActivationRequestedEventArgs.Current
 summary: 获取发出请求时的项目状态。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.ITitleBarService
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService
 summary: 在应用运行期间更改 Flourish 标题栏内容与可见性。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.ITitleBarService.SetApplicationTitle(System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetApplicationTitle(System.String)
 summary: 在运行时设置应用标题并显示标题选择器。
 syntax:
   parameters:
@@ -2406,28 +2249,28 @@ syntax:
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.ITitleBarService.SetApplicationSubTitle(System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetApplicationSubtitle(System.String)
 summary: 设置 Logo 信息视图中的应用副标题；传入 null 可清除。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.ITitleBarService.SetApplicationIdentity(System.String,System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetApplicationIdentity(System.String,System.String)
 summary: 在运行时原子更新应用标题与副标题。
 syntax:
   parameters:
   - id: title
     description: 非空应用标题。
-  - id: subTitle
+  - id: subtitle
     description: 应用副标题，或 null。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.ITitleBarService.SetUnnamedProjectPlaceholder(System.String)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetUnnamedProjectPlaceholder(System.String)
 summary: 设置未持久化项目或缺少活动选择时显示的标题占位文本。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.ITitleBarService.SetLogo(System.String,System.String,System.Boolean,System.Boolean,System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.ITitleBarService.SetLogo(System.String,System.String,System.Boolean,System.Boolean,System.Boolean)
 summary: 在运行时更改 Logo 来源与信息视图字段，并显示 Logo 按钮。
 ---
 
@@ -2442,7 +2285,7 @@ summary: 获取应用标题。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ApplicationSubTitle
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ApplicationSubtitle
 summary: 获取 Logo 信息视图使用的应用副标题。
 ---
 
@@ -2457,7 +2300,7 @@ summary: 获取 Logo 信息视图是否显示应用标题。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ShowApplicationSubTitle
+uid: ArkheideSystem.Flourish.Abstract.FlourishTitleBarState.ShowApplicationSubtitle
 summary: 获取 Logo 信息视图是否显示应用副标题。
 ---
 
@@ -2467,7 +2310,7 @@ summary: 获取 Logo 信息视图是否显示活动项目标题。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.FlourishRegion.TitlebarApplicationInfo
+uid: ArkheideSystem.Flourish.Abstract.FlourishRegion.TitleBarApplicationInfo
 summary: Logo 信息视图中位于标识元数据下方的应用自定义 Body 区域。
 ---
 
@@ -2482,44 +2325,34 @@ summary: 加载 Flourish 控件与主题资源。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.IScrollService
+uid: ArkheideSystem.Flourish.Abstract.IScrollService
 summary: 在运行时读取和修改应用级 Flourish 滚动行为。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.IScrollService.GetCurrent
-summary: 获取当前应用级滚动设置的不可变快照。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Runtime.IScrollService.SetSmoothScrollingEnabled(System.Boolean)
+uid: ArkheideSystem.Flourish.Abstract.IScrollService.SetSmoothScrollingEnabled(System.Boolean)
 summary: 启用或禁用 Flourish ScrollViewer 的应用级平滑鼠标滚轮滚动。
 remarks: 应用自有 ScrollViewer 上显式设置的 IsSmoothScrollingEnabled 具有局部优先级。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.IScrollService.Changed
+uid: ArkheideSystem.Flourish.Abstract.IScrollService.Changed
 summary: 应用级滚动设置实际发生变化后同步触发。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.FlourishScrollSettings
+uid: ArkheideSystem.Flourish.Abstract.FlourishScrollSettings
 summary: 描述当前应用级 Flourish 滚动设置。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Runtime.FlourishScrollChangedEventArgs
-summary: 提供变更前后的应用级滚动设置快照。
----
-
----
-uid: ArkheideSystem.Flourish.Abstract.Essential.IFlourishSettingsStore
+uid: ArkheideSystem.Flourish.Abstract.IFlourishSettingsStore
 summary: 对所选 JSON 文件中的 `Flourish` 顶级节执行事务性原子更新。
 remarks: 每个设置路径都必须以 `Flourish:` 开头并指向其后代值。其他顶级节不归该服务所有，会在写入时保留。
 ---
 
 ---
-uid: ArkheideSystem.Flourish.Abstract.Essential.IFlourishSettingsEditor
+uid: ArkheideSystem.Flourish.Abstract.IFlourishSettingsEditor
 summary: 在一次内存事务中编辑 `Flourish` 配置节。
 remarks: 每个路径都必须以 `Flourish:` 开头并指向其后代值。
 ---

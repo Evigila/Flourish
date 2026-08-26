@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Internal.Configuration;
+using ArkheideSystem.Flourish.Navigation;
 using ListBox = ArkheideSystem.Flourish.Controls.BunchedListBox;
 using UserControl = System.Windows.Controls.UserControl;
 using WpfPanel = System.Windows.Controls.Panel;

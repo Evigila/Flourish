@@ -1,7 +1,9 @@
+using System;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,11 +30,12 @@ public partial class ProfileConfigurationPage : Page
         try
         {
             await profile.SetNameOrderAsync(order);
+            var state = profile.Current;
             ProfileOutput.WriteLine(
                 Localizer.Parse(
                     CKey.Dynamic_NameOrderUpdated0DisplayName1_E5C6CE57,
-                    profile.NameOrder,
-                    profile.CurrentProfile.DisplayName
+                    state.NameOrder,
+                    state.Profile.DisplayName
                 )
             );
         }

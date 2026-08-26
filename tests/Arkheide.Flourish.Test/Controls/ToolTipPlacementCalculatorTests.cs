@@ -1,8 +1,11 @@
+using Xunit;
+using ArkheideSystem.Flourish.ToolTips;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Test.Controls;
 

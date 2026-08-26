@@ -1,3 +1,6 @@
+using System.Linq;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Data;

@@ -1,10 +1,16 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Windowing;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shell;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -99,43 +105,43 @@ public sealed class FlourishShellWindowFrameTests
 
             try
             {
-                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 // Custom + platform material -> Native + platform material.
                 frame.Apply(FlourishShellWindowFrameMode.Native);
                 material.Reapply(window);
                 AssertNativeFrame(window, shellBorder, handle, frame.Chrome);
-                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 // Changing the effect while the custom chrome is detached must not leave
                 // stale glass settings when that chrome is attached again.
                 material.SetEffect(MaterialEffect.None);
-                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.None, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 frame.Apply(FlourishShellWindowFrameMode.Custom);
                 material.Reapply(window);
                 AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
-                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.None, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 // Exercise the inverse sequence through the current platform default.
                 frame.Apply(FlourishShellWindowFrameMode.Native);
                 material.Reapply(window);
                 material.SetEffect(MaterialEffect.Auto);
-                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 frame.Apply(FlourishShellWindowFrameMode.Custom);
                 material.Reapply(window);
                 AssertCustomFrame(window, shellBorder, handle, frame.Chrome);
-                Assert.Equal(MaterialEffect.Auto, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.Auto, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
 
                 material.SetEffect(MaterialEffect.None);
-                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
+                Assert.Equal(MaterialEffect.None, material.Current.RequestedEffect);
                 Assert.Equal(originalGlassFrame, frame.Chrome.GlassFrameThickness);
             }
             finally
@@ -172,8 +178,8 @@ public sealed class FlourishShellWindowFrameTests
                 SendMessage(handle, wmDwmCompositionChanged, IntPtr.Zero, IntPtr.Zero);
 
                 Assert.Same(originalBackground, window.Background);
-                Assert.Equal(MaterialEffect.None, material.CurrentEffect);
-                Assert.False(material.IsApplied);
+                Assert.Equal(MaterialEffect.None, material.Current.RequestedEffect);
+                Assert.False(material.Current.IsApplied);
                 Assert.Equal(0, changedCount);
             }
             finally

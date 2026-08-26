@@ -1,11 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.Configuration;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -14,13 +19,13 @@ public partial class ConfigurationPage : Page
     private static FlourishCultureRegistration? cultureFileRegistration;
 
     private readonly ObservableCollection<string> availableLocales = [];
-    private readonly IFlourishConfiguration configuration;
+    private readonly IConfiguration configuration;
     private readonly IFlourishSettingsStore settings;
     private readonly IFlourishLocalization localization;
     private bool isRefreshingLocale;
 
     public ConfigurationPage(
-        IFlourishConfiguration configuration,
+        IConfiguration configuration,
         IFlourishSettingsStore settings,
         IFlourishLocalization localization
     )
@@ -74,14 +79,19 @@ public partial class ConfigurationPage : Page
     {
         try
         {
-            configuration.Reload();
-            var snapshot = configuration.Current;
+            if (configuration is not IConfigurationRoot root)
+            {
+                throw new InvalidOperationException("The active configuration cannot be reloaded.");
+            }
+
+            root.Reload();
+            var valueCount = configuration.AsEnumerable().Count();
             ReadOutput.WriteLine(
                 Localizer.Parse(
                     CKey.Dynamic_ReloadedConfigurationProvidersSnapshotV0Contains1ValuesCaptured2_75761543,
-                    snapshot.Version,
-                    snapshot.Values.Count,
-                    snapshot.CapturedAt.LocalDateTime
+                    0,
+                    valueCount,
+                    DateTime.Now
                 )
             );
         }
@@ -153,7 +163,7 @@ public partial class ConfigurationPage : Page
             localization.SetLocale(locale);
             RefreshLocaleState();
             LocaleOutput.WriteLine(
-                Localizer.Parse(CKey.Dynamic_LocaleChangedTo0_1C2A91ED, localization.CurrentLocale)
+                Localizer.Parse(CKey.Dynamic_LocaleChangedTo0_1C2A91ED, localization.Current.Locale)
             );
         }
         catch (Exception error)
@@ -168,7 +178,7 @@ public partial class ConfigurationPage : Page
         {
             if (cultureFileRegistration is not null)
             {
-                localization.Unregister(cultureFileRegistration);
+                cultureFileRegistration.Dispose();
             }
 
             cultureFileRegistration = localization.RegisterFile(CultureFilePathBox.Text);
@@ -200,7 +210,7 @@ public partial class ConfigurationPage : Page
 
         try
         {
-            localization.ReloadFile(cultureFileRegistration);
+            cultureFileRegistration.Reload();
             CultureFileOutput.WriteLine(
                 Localizer.Parse(
                     CKey.Dynamic_Reloaded0At1T_19E0356E,
@@ -228,7 +238,8 @@ public partial class ConfigurationPage : Page
         try
         {
             var locales = string.Join(", ", cultureFileRegistration.Locales);
-            var removed = localization.Unregister(cultureFileRegistration);
+            var removed = cultureFileRegistration.IsRegistered;
+            cultureFileRegistration.Dispose();
             cultureFileRegistration = null;
             CultureFileOutput.WriteLine(
                 removed
@@ -281,7 +292,7 @@ public partial class ConfigurationPage : Page
         isRefreshingLocale = true;
         try
         {
-            var locales = localization.AvailableLocales;
+            var locales = localization.Current.AvailableLocales;
             if (!availableLocales.SequenceEqual(locales, StringComparer.OrdinalIgnoreCase))
             {
                 availableLocales.Clear();
@@ -294,7 +305,7 @@ public partial class ConfigurationPage : Page
             LocaleBox.SelectedItem = availableLocales.FirstOrDefault(locale =>
                 string.Equals(
                     locale,
-                    localization.CurrentLocale,
+                    localization.Current.Locale,
                     StringComparison.OrdinalIgnoreCase
                 )
             );

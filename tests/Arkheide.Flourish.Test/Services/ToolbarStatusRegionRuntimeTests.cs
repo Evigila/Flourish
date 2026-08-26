@@ -1,6 +1,10 @@
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Shell.Regions;
+using ArkheideSystem.Flourish.Shell.StatusBar;
+using ArkheideSystem.Flourish.Shell.Toolbar;
+
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -9,13 +13,13 @@ public sealed class ToolbarStatusRegionRuntimeTests
     [Fact]
     public void Toolbar_RuntimeMutationsUseStableIdsAndPublishAffectedPage()
     {
-        var options = new FlourishShellOptions { IsDynamicToolbarEnabled = true };
+        var options = new FlourishToolbarOptions { IsDynamicToolbarEnabled = true };
         var sut = new FlourishToolbarService(options);
         FlourishToolbarChangedEventArgs? change = null;
         sut.Changed += (_, args) => change = args;
         var save = new FlourishToolbarItem("Save", "S", "save") { Id = "save" };
 
-        sut.Append(save, typeof(EditorPage));
+        sut.AddItem(save, typeof(EditorPage));
         sut.SetItemEnabled("save", false, typeof(EditorPage));
         sut.SetItemVisible("save", false, typeof(EditorPage));
 
@@ -29,14 +33,14 @@ public sealed class ToolbarStatusRegionRuntimeTests
     [Fact]
     public void Toolbar_EquivalentReplaceAndUpsertDoNotPublish()
     {
-        var options = new FlourishShellOptions { IsDynamicToolbarEnabled = true };
+        var options = new FlourishToolbarOptions { IsDynamicToolbarEnabled = true };
         var item = new FlourishToolbarItem("Save", "S", "save") { Id = "save" };
         var sut = new FlourishToolbarService(options);
         var changes = 0;
         sut.Changed += (_, _) => changes++;
 
-        sut.Set<EditorPage>([item]);
-        sut.Set<EditorPage>([item]);
+        sut.Set(typeof(EditorPage), [item]);
+        sut.Set(typeof(EditorPage), [item]);
         sut.SetItem(item, typeof(EditorPage));
 
         Assert.Equal(1, changes);
@@ -46,7 +50,7 @@ public sealed class ToolbarStatusRegionRuntimeTests
     [Fact]
     public void Status_HandleOnlyRemovesTheRegistrationItOwns()
     {
-        var options = new FlourishShellOptions { IsStatusBarEnabled = true };
+        var options = new FlourishStatusBarOptions { IsStatusBarEnabled = true };
         var sut = new FlourishStatusService(options);
         var oldHandle = sut.Show("sync", "Syncing", "S");
         var newHandle = sut.Show("sync", "Complete", "C");
@@ -66,9 +70,9 @@ public sealed class ToolbarStatusRegionRuntimeTests
     [Fact]
     public void Region_UpsertMovesRegistrationAndStaleHandleCannotRemoveReplacement()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishRegionOptions();
         var sut = new ShellRegionService(options);
-        var oldHandle = sut.Append("runtime", FlourishRegion.ToolbarStart, _ => new Border());
+        var oldHandle = sut.Add("runtime", FlourishRegion.ToolbarStart, _ => new Border());
         var replacement = sut.Set(
             "runtime",
             FlourishRegion.FooterEnd,

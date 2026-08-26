@@ -1,117 +1,55 @@
 ---
 title: IFlourishBuilder
-description: 理解 builder、Hosting 集成、服务注册和页面注册。
+description: 使用按功能划分的 Builder 配置并构建 Flourish 应用。
 ---
 
 # IFlourishBuilder
 
-`IFlourishBuilder` 是 Flourish 应用的组合入口。配置阶段不会立即创建窗口或页面；它会收集服务注册和 Shell 选项，最后在 `Build()` 时创建一个由 .NET Generic Host 支撑的 `IFlourish` 运行时。
-
-Builder API 位于 `ArkheideSystem.Flourish.Abstract.Builder`，共享模型继续位于
-`ArkheideSystem.Flourish.Abstract`。
-
-## Hosting 模型
-
-`FlourishBuilder.CreateDefaultBuilder(args)` 创建采用 .NET Generic Host 默认配置和生命周期模型的运行时。因此应用可以使用标准 Hosting 能力：
-
-- 可以在 `ConfigServices` 中通过 `HostBuilderContext` 访问配置和环境信息
-- Flourish 设置使用同一 Host 配置中的标准 appsettings 与 User Secrets 来源
-- 使用 `IServiceCollection` 注册服务
-- 最终服务提供器可通过 `IFlourish.Services` 获取
-- 应用对象可以用 `flourish.GetRequiredService<T>()` 解析
-- `flourish.Run<App>()` 会启动 Host、显示 Shell、运行 WPF dispatcher，并在应用退出时停止 Host
-- `flourish.Start()` 和 `flourish.StopAsync()` 对应 Host 生命周期方法
+`IFlourishBuilder` 是一次性的组合入口。它记录启动默认值和服务注册，最后由 `Build()` 创建基于 .NET Generic Host 的 `IFlourish` 运行时。所有 Flourish 公开契约统一位于 `ArkheideSystem.Flourish.Abstract`。
 
 ```csharp
+using ArkheideSystem.Flourish.Abstract;
+
 using var flourish = FlourishBuilder
     .CreateDefaultBuilder(args)
-    .ConfigServices((context, services) =>
-    {
-        services.AddSingleton<App>();
-    })
+    .ConfigureServices((context, services) => services.AddSingleton<App>())
+    .ConfigureTitleBar(titleBar =>
+        titleBar.SetEnabled().SetApplicationTitle("Foobar"))
     .Build();
 
 return flourish.Run<App>();
 ```
 
-## Builder 阶段
+## 功能 Builder
 
-公开 builder 分别组织 Hosting、应用服务、功能开关和各功能配置。
-
-| 功能 | Builder 方法 | 作用 |
+| 入口 | Builder | 启动职责 |
 | --- | --- | --- |
-| [应用数据](configure-data.md) | `ConfigData` | 配置本地化以及可写的设置文件和项目目录文件路径。 |
-| [应用配置](configure-data.md) | `ConfigConfiguration` | 按受控优先级注册 JSON 文件或标准 Microsoft 配置源。 |
-| [依赖注入](configure-services.md) | `ConfigServices` | 注册应用服务、页面和可替换的 Flourish 服务。 |
-| [Shell 配置](shell-configuration.md) | `ConfigShell` | 配置 Shell 区域、提示浮层、排版和材质特效。 |
-| [用户资料（Profile）](configure-profile.md) | `ConfigTitleBar` | 启用 Profile，并可配置名称顺序和承载页面。 |
-| [标题栏](configure-title-bar.md) | `ConfigTitleBar` | 配置标题栏内容和行为。 |
-| [项目](projects.md) | `ConfigShell`、`IProjectService`、`IProjectBehavior` | 启用项目感知的标题显示、持久化元数据目录并提供可替换的生命周期。 |
-| [导航](navigation.md) | `ConfigNavigation` | 配置导航栏展示、页面位置、命令项、分组和固定项。 |
-| [自定义 Shell 内容](configure-custom-handler.md) | `ConfigCustomHandler` | 将自定义 WPF 元素或命令插入预定义 Shell 区域。 |
-| [动态工具栏](dynamic-toolbar.md) | `ConfigDynamicToolbar` | 注册按页面变化的工具栏项。 |
-| [后台任务](background-tasks.md) | `IBackgroundTaskService` | 提交有并发上限、可取消的异步工作。 |
-| [提示浮层](configure-tips.md) | `ConfigShell` | 使用 `UseTips` 选择并配置 Flourish 自有 Tooltip 的 Flourish 呈现。 |
-| [动效](configure-motion.md) | `ConfigMotion` | 配置页面过渡、导航栏过渡和悬停揭示动画。 |
-| [窗口](configure-window.md) | `ConfigWindow` | 配置 Shell 窗口属性与行为。 |
-| [排版](configure-font.md) | `ConfigShell` | 使用 `InitGlobalFont` 配置 Shell 排版。 |
-| [材质特效](configure-material-effect.md) | `ConfigShell` | 使用 `UseMaterialEffect` 应用窗口材质。 |
-| [主题](configure-themes.md) | `ConfigShell`、`ConfigTitleBar` | 配置应用颜色和圆角，并使用 `UseThemeToggle` 启用主题选择。 |
-| [状态栏](status-bar.md) | `ConfigStatusBar` | 配置自定义状态项和合并的系统状态入口。 |
+| `ConfigureData` | `IDataBuilder` | 语言、文化文件以及可写设置/项目路径。 |
+| `ConfigureConfiguration` | 标准 `IConfigurationBuilder` | 应用拥有的 Microsoft 配置源。 |
+| `ConfigureServices` | 标准 `IServiceCollection` | 应用服务和可替换的 Flourish 服务。 |
+| `ConfigureAppearance` | `IAppearanceBuilder` | 材质、色板和圆角默认值。 |
+| `ConfigureFont` | `IFontBuilder` | 全局与页面字体。 |
+| `ConfigureLayout` | `ILayoutBuilder` | 居中内容和平滑滚动。 |
+| `ConfigureToolTips` | `IToolTipBuilder` | Flourish 提示外观与时序。 |
+| `ConfigureProjects` | `IProjectBuilder` | 项目感知 Shell 模式。 |
+| `ConfigureTitleBar` | `ITitleBarBuilder` | 标题栏状态和内容。 |
+| `ConfigureNavigation` | `INavigationBuilder` | 导航区域、路由、页面和可见项。 |
+| `ConfigureContent` | `ICustomContentBuilder` | 自定义 WPF Shell 区域内容。 |
+| `ConfigureToolbar` | `IToolbarBuilder` | 按页面变化的工具栏定义。 |
+| `ConfigureMotion` | `IMotionBuilder` | 动效状态和过渡默认值。 |
+| `ConfigureWindow` | `IWindowBuilder` | 初始窗口边界与行为。 |
+| `ConfigureStatusBar` | `IStatusBarBuilder` | 状态区域和内置指示器。 |
 
-Builder 入口可以在 `Build()` 前调用多次。同一入口的重复回调会按注册顺序应用；重复设置同一选项时使用最后一次配置的值。
+嵌套 Builder 使用 `SetEnabled`、`SetFont`、`SetSize`、`SetPanelWidth` 等领域动词；可选行为和持久化偏好选择也统一使用 `Set...` 约定。
 
-`ConfigData` 回调会在 Host 构建之前执行，因此选定的设置文件会参与最终的 `IConfiguration`，并可在 `ConfigServices` 中读取。随后，`ConfigConfiguration` 回调通过 `IFlourishConfigurationBuilder` 注册应用配置源；Flourish 会把它们放在环境变量与命令行之前，而不会公开 Host 的可变配置源集合。
+同一入口可在 `Build()` 前注册多次，并按注册顺序执行。`Build()` 会消费 Builder；之后继续配置、再次构建或调用已结束回调中捕获的嵌套 Builder，都会抛出 `InvalidOperationException`。
 
-`Build()` 会消费并冻结 Builder。再次调用 `Build()`、继续添加 `Config...` 回调，
-或在回调结束后调用此前捕获的嵌套 Builder，都会抛出 `InvalidOperationException`。
-因此依赖注入、窗口创建前属性和初始对象图在组合结束后不会被外部再次修改。
+## Host 配置
 
-## 注册服务
+`CreateDefaultBuilder` 保留标准 .NET Host 配置。`ConfigureConfiguration` 直接接收 Microsoft `IConfigurationBuilder`，`ConfigureServices` 接收 `HostBuilderContext` 和 `IServiceCollection`。通过依赖注入获取 `IConfiguration` 即可读取最终配置。
 
-所有属于依赖注入的内容都放在[依赖注入](configure-services.md)配置中。
+`appsettings.Flourish.json` 仍是默认的可写 Flourish 设置文件。`IFlourishSettingsStore` 负责原子写入 `Flourish:` 节并重新加载同一份标准 `IConfiguration`，它不会取代 Microsoft 配置系统。
 
-```csharp
-builder.ConfigServices((_, services) =>
-{
-    services.AddSingleton<App>();
-    services.AddSingleton<ReportService>();
-    services.AddTransient<EditorViewModel>();
-});
-```
+## 运行时 Service
 
-调用 `Build()` 后，应用可以从 `IFlourish.Services` 解析公开服务。
-
-其中包括 `IBackgroundTaskService`、`IProjectService` 与 `IProjectBehavior`。应用通过依赖注入解析它们，以提交异步工作、修改持久化项目目录或调用项目生命周期行为。应用可以在 `Build()` 前注册自己的单例 `IProjectBehavior`，替换默认对话框和 `.txt` 文件流程；完整用法参见[后台任务](background-tasks.md)与[项目](projects.md)。
-
-## 注册导航页面
-
-`AddNavigable<TPage>` 会在依赖注入中注册 WPF `Page`。Flourish 从页面类名生成区分大小写的导航键，并移除一个末尾 `Page` 后缀。
-
-```csharp
-services.AddNavigable<HomePage>(
-    displayName: "首页",
-    iconGlyph: "\uE80F",
-    cacheMode: FlourishPageCacheMode.Enabled);
-```
-
-注册页面会使其可供导航使用，但不会添加可见项。使用 `ConfigNavigation` 显式放置页面：
-
-```csharp
-builder.ConfigNavigation(navigation =>
-    navigation.AddGroup(null, groupId: 0, group =>
-        group.AddNavigableViewItem<HomePage>(isInitial: true)));
-```
-
-[导航](navigation.md)说明生成键、页面元数据、缓存行为、分组、固定项、校验和运行时字符串导航。
-
-## 构建运行时
-
-`Build()` 会创建 Host 并返回 `IFlourish`。调用之后，一次性配置会被冻结。对于常见 WPF 应用，调用 `Run<App>()` 即可；它会启动 Host、创建并显示 Flourish Shell、进入 WPF dispatcher，并在应用退出后停止 Host。
-
-```csharp
-using var flourish = builder.Build();
-return flourish.Run<App>();
-```
-
-只要 WPF 应用还在运行，就应保持这个运行时实例存活。
+Builder 定义启动草稿；`Build()` 后通过依赖注入解析对应 Service。例如 `ITitleBarBuilder` 定义标题栏初始状态，`ITitleBarService` 修改已构建的标题栏。具有状态的 Service 统一公开 `Current` 与 `Changed`。

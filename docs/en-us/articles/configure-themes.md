@@ -5,7 +5,7 @@ description: Configure theme selection, application colors, shared corner radius
 
 # Themes
 
-Flourish provides system-following, light, and dark themes. `UseThemeToggle` enables theme selection, displays the title bar control, and defines the fallback mode used when Host configuration has no saved preference.
+Flourish provides system-following, light, and dark themes. `SetThemeToggle` enables theme selection, displays the title bar control, and defines the fallback mode used when Host configuration has no saved preference.
 
 ## Configure theme selection
 
@@ -13,34 +13,35 @@ Enable the title bar before displaying the theme control:
 
 ```csharp
 builder
-    .ConfigShell(shell => shell.UseTitleBar())
-    .ConfigTitleBar(titleBar =>
-        titleBar.UseThemeToggle(mode: FlourishTheme.System));
+    .ConfigureTitleBar(titleBar =>
+        titleBar
+            .SetEnabled()
+            .SetThemeToggle(mode: FlourishTheme.System));
 ```
 
 Omitting the argument uses `FlourishTheme.System`. Theme persistence is enabled by default, so the fallback applies only when `Flourish:Preferences:Theme` is absent or invalid. Pass `usePersistedPreference: false` when code must always choose the startup theme and runtime selections must not update it. [Application data](configure-data.md) explains the corresponding settings file.
 
-If `UseThemeToggle` is not called, the title bar control remains hidden and the shell initializes with the light theme. The application can still change the theme at runtime through `IThemeService`.
+If `SetThemeToggle` is not called, the title bar control remains hidden and the shell initializes with the light theme. The application can still change the theme at runtime through `IThemeService`.
 
 ## Configure application colors and corner radius
 
-Use `ConfigShell` to provide primary, secondary, and accent colors and a shared corner radius:
+Use `ConfigureAppearance` to provide primary, secondary, and accent colors and a shared corner radius:
 
 ```csharp
 using System.Windows.Media;
 
-builder.ConfigShell(shell =>
-    shell
-        .UseThemeColors(enabled: true, colors: new FlourishThemeColors(
+builder.ConfigureAppearance(appearance =>
+    appearance
+        .SetThemeColors(enabled: true, colors: new FlourishThemeColors(
             primary: Color.FromRgb(15, 108, 189),
             secondary: Color.FromRgb(92, 46, 145),
             accent: Color.FromRgb(216, 59, 1)))
-        .UseCornerRadius(enabled: true, radius: 5));
+        .SetCornerRadius(enabled: true, radius: 5));
 ```
 
 All three colors must be fully opaque. Flourish derives the semantic interaction, surface, and foreground resources for the effective light or dark theme and recalculates them after a theme change. Pass `enabled: false` to restore the theme-defined colors while retaining a common builder call shape.
 
-`UseCornerRadius` accepts a finite, non-negative value in device-independent pixels. A value of `0` produces square shared geometry. When the method is omitted, or when `enabled` is `false`, controls and surfaces use their theme-defined radii.
+`SetCornerRadius` accepts a finite, non-negative value in device-independent pixels. A value of `0` produces square shared geometry. When the method is omitted, or when `enabled` is `false`, controls and surfaces use their theme-defined radii.
 
 Verify application colors in both light and dark themes and preserve readable text contrast.
 
@@ -80,7 +81,7 @@ template consistent across light, dark, and runtime-customized themes.
 
 `FlourishTheme.System` follows the Windows application theme. `Light` and `Dark` select a fixed theme until the user chooses another mode.
 
-Flourish reads `Flourish:Preferences:Theme` with the complete Host configuration precedence. A selection made through the title bar writes the file selected by `InitAppSettingsFilePath`. Host appsettings, User Secrets, environment variables, or command-line values can take priority on a later launch.
+Flourish reads `Flourish:Preferences:Theme` with the complete Host configuration precedence. A selection made through the title bar writes the file selected by `SetAppSettingsFilePath`. Host appsettings, User Secrets, environment variables, or command-line values can take priority on a later launch.
 
 The selected directory must be writable. Writing the preference serializes the complete JSON object again, which reformats the file and removes comments.
 

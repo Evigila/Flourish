@@ -207,7 +207,7 @@
           VerticalAlignment="Stretch"
         />
       </UniformGrid>
-      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Await a modal decision without blocking the UI thread.&#10;var result = await messages.ShowAsync(&#10;    &quot;Operation complete.&quot;,&#10;    &quot;Reports&quot;,&#10;    MessageBoxButton.OKCancel,&#10;    MessageBoxImage.Information);&#10;&#10;// Use a stable ID when later updates or dismissal are required.&#10;var notice = new FlourishNotification(&#10;    &quot;reports.complete&quot;,&#10;    &quot;Reports&quot;,&#10;    &quot;Export finished.&quot;,&#10;    FlourishNotificationSeverity.Success);&#10;var handle = notifications.Upsert(notice);&#10;notifications.Dismiss(handle.Id);&#10;notifications.DismissAll();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Await a modal decision without blocking the UI thread.&#10;var result = await messages.ShowAsync(&#10;    &quot;Operation complete.&quot;,&#10;    &quot;Reports&quot;,&#10;    MessageBoxButton.OKCancel,&#10;    MessageBoxImage.Information);&#10;&#10;// Use a stable ID when later updates or dismissal are required.&#10;var notice = new FlourishNotification(&#10;    &quot;reports.complete&quot;,&#10;    &quot;Reports&quot;,&#10;    &quot;Export finished.&quot;,&#10;    FlourishNotificationSeverity.Success);&#10;var handle = notifications.Upsert(notice);&#10;var current = notifications.Current;&#10;notifications.Changed += (_, change) =&gt;&#10;    RefreshNotifications(change.Current);&#10;notifications.Dismiss(handle.Id);&#10;notifications.DismissAll();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">

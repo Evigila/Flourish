@@ -1,7 +1,7 @@
+using ArkheideSystem.Flourish.Abstract;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Controls;
 

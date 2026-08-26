@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Xml.Linq;
 
@@ -114,12 +119,13 @@ public sealed class FlourishShellRenderingContractTests
 
         var changedHandler = GetMethod(
             File.ReadAllText(NotificationControllerCodePath),
-            "private void NotificationService_NotificationsChanged(",
+            "private void NotificationService_Changed(",
             "private void FlushPendingNotifications("
         );
-        Assert.Contains("pendingNotifications = e.Notifications", changedHandler);
-        Assert.Contains("e.Version <= pendingVersion", changedHandler);
-        Assert.DoesNotContain("notificationService.ActiveNotifications", changedHandler);
+        Assert.Contains("var current = e.Current;", changedHandler);
+        Assert.Contains("pendingNotifications = current.Notifications", changedHandler);
+        Assert.Contains("current.Version <= pendingVersion", changedHandler);
+        Assert.DoesNotContain("notificationService.Current", changedHandler);
         var shellCode = File.ReadAllText(ShellCodePath);
         Assert.Contains("notificationController = new ShellNotificationController(", shellCode);
         Assert.Contains("notificationController.Dispose();", shellCode);

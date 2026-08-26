@@ -1,210 +1,94 @@
 ---
 title: Runtime APIs
-description: Inspect and change Flourish configuration, shell surfaces, projects, navigation, commands, windows, notifications, and background work while the application is running.
+description: Use focused Flourish services after the application is built.
 ---
 
 # Runtime APIs
 
-Flourish uses two complementary configuration layers:
+Startup builders and runtime services describe the same domains at different times:
 
-- `IFlourishBuilder` and its `Config...` callbacks define the initial application graph and startup state. Use them to register pages and services, select defaults, and validate the application before the shell opens.
-- Runtime services change the live application after `Build()`. Resolve them through dependency injection, preferably by constructor injection into a page, view model, or application service.
+- a feature Builder records the initial draft before `Build()`;
+- a feature Service changes the built application and reports its live state.
 
-All runtime services below are registered as singletons. A builder remains the right place for deterministic startup defaults; a runtime service is the right place for user preferences, plug-ins, feature switches, and state that changes during a session.
+All contracts use `ArkheideSystem.Flourish.Abstract` and all services are available through dependency injection.
 
-Public APIs are grouped by responsibility:
+## State and events
 
-- `ArkheideSystem.Flourish.Abstract.Builder` contains the one-shot startup builders and service-registration extensions.
-- `ArkheideSystem.Flourish.Abstract.Essential` contains runtime operations that perform application work, including navigation, commands, projects, localization, and background tasks.
-- `ArkheideSystem.Flourish.Abstract.Runtime` contains live UI and shell configuration services.
-- `ArkheideSystem.Flourish.Abstract` contains shared models and the `IFlourish` lifetime contract.
+Stateful UI services expose an immutable `Current` snapshot and a `Changed` event. Read related values from one snapshot so they represent one atomic state.
 
-## State, events, and lifetimes
+```csharp
+var themeState = theme.Current;
+var materialState = material.Current;
+var fontState = fonts.Current;
 
-Stateful services expose an immutable `Current` snapshot (or a named snapshot such as `ActiveTasks` or `Registrations`) and a `Changed`, `StateChanged`, or domain-specific event. Read the new snapshot after an event instead of retaining mutable UI objects. Events normally run on the thread that caused the change; configuration reloads, background tasks, and notification expiry can raise events away from the WPF dispatcher, so marshal UI updates when required.
+theme.Changed += (_, change) => ApplyTheme(change.Current);
+```
 
-Registration and presentation APIs use disposable leases. Keep the returned object for exactly as long as the feature should exist, then call `Dispose()`. This applies to `ICommandRegistration`, `IShortcutRegistration`, `INavigationRouteRegistration`, `IShellRegionRegistration`, `IStatusBarItemHandle`, `FlourishNotificationHandle`, `IWindowCloseGuardRegistration`, and title-bar search subscriptions. `FlourishCultureRegistration` is removed explicitly with `IFlourishLocalization.Unregister`.
+`IThemeService.Current` contains `RequestedTheme`, `EffectiveTheme`, and `IsDark`. `IMaterialEffectService.Current` contains requested/effective effects, support, application, and dark-mode state. `IFontService.Current` contains both font families, all size tiers, and `PageOverrides`. Font changes keep the specialized `FlourishFontChangedEventArgs` because `ChangeKind` and `AffectedPageType` identify the changed domain scope; the resulting font state is still `args.Current`.
 
-## Configuration and localization
+Most simple state changes use `FlourishStateChangedEventArgs<TState>` or `FlourishStateTransitionEventArgs<TState>`. Domain events retain specialized arguments only when they carry additional change metadata.
 
-| Service | Runtime use |
-| --- | --- |
-| `IFlourishConfiguration` | Read `Current`, the string indexer, `Get<T>`, or `GetSection<T>` from the effective Host configuration; call `Reload()` and observe `Changed`. |
-| `IFlourishSettingsStore` | Atomically update values owned by the `Flourish` top-level section. Every path must start with `Flourish:`; a changed file reloads Host configuration. |
-| `IFlourishLocalization` | Read and format keys, call `SetLocale`, and register, reload, or unregister `FlourishCulture.Json` catalogs while running. |
+Collection services use the same `Current`/`Changed` shape. `IBackgroundTaskService.Current` is the active task list, and its generic change event publishes that same cached list through `args.Current`. `INotificationService.Current` is a `FlourishNotificationState` that keeps `Notifications` and `Version` atomic. `ICommandRegistry` and `IShortcutService` expose active registrations; their specialized event arguments use `Current` for the resulting snapshot and `FlourishRuntimeChangeKind` for `Added`, `Updated`, or `Removed` metadata.
 
-`IFlourishSettingsStore` writes the file selected by `InitAppSettingsFilePath`, which defaults to application-root `appsettings.Flourish.json`. It cannot modify `Logging`, `ConnectionStrings`, or another application-owned top-level section. `IProjectService` separately persists its catalog to the independently selected `InitProjectCatalogFilePath`; ordinary runtime snapshots are in-memory unless their service explicitly documents persistence.
+`IFlourishLocalization.Current` contains `Locale` and `AvailableLocales`; call `SetLocale` and observe `Changed` for locale or source updates. `IProfileService.Current` is a `FlourishProfileState` containing the profile, login state, and name order, and its `Changed` event reports the replacement snapshot.
+
+## Configuration and writable settings
+
+Inject standard `Microsoft.Extensions.Configuration.IConfiguration` to read the effective Host configuration, including appsettings, User Secrets, environment variables, command-line arguments, and sources added with `ConfigureConfiguration`.
+
+`appsettings.Flourish.json` remains the default writable settings file. `IDataBuilder.SetAppSettingsFilePath` can select another path before build. Inject `IFlourishSettingsStore` to atomically update values under `Flourish:`; each successful write reloads the same standard `IConfiguration` pipeline.
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
+    IConfiguration configuration,
     IFlourishSettingsStore settings,
-    IFlourishLocalization localization,
     string endpoint,
     CancellationToken cancellationToken)
 {
-    await settings.UpdateAsync(editor =>
-    {
-        editor.Set("Flourish:Extensions:Foobar:Api:BaseUrl", endpoint);
-        editor.Merge(
-            "Flourish:Extensions:Foobar:FeatureFlags",
-            new { ReportsEnabled = true });
-        editor.Append(
-            "Flourish:Extensions:Foobar:Api:RecentEndpoints",
-            endpoint);
-    }, cancellationToken);
-
-    localization.SetLocale("zh-CN");
+    string? previous = configuration["Flourish:Extensions:Api:BaseUrl"];
+    await settings.SetAsync(
+        "Flourish:Extensions:Api:BaseUrl",
+        endpoint,
+        cancellationToken);
 }
 ```
 
-## Appearance and shell features
+## Runtime service map
 
-| Service | Runtime use |
+| Domain | Runtime service |
 | --- | --- |
-| `IThemeService` | Select and persist `System`, `Light`, or `Dark` with `SetTheme`, or cycle with `ToggleTheme`; inspect `EffectiveTheme` and `IsDark`. |
-| `IAppearanceService` | Set or clear shared theme-color and corner-radius overrides, apply both atomically, and observe `Changed`. Clearing an override reveals the standard theme resources without removing application-owned resources. |
-| `IContentLayoutService` | Enable or disable centered page content and atomically set its maximum width. The active page and subsequently navigated pages use the same state. |
-| `IFontService` | Atomically change the global family and independent positive, finite Small, Standard, Icon, Large, ExtraLarge, and HeaderSize sizes with `SetFont`; change the icon family; inspect, set, and remove page-specific overrides through `PageOverrides`, `SetOverrideFont`, and `RemoveOverrideFont`. |
-| `IToolTipService` | Switch Flourish-owned tooltips between native WPF and Flourish presentation, and change the Flourish initial delay and spawn margin with `SetSettings`; native and third-party controls are outside its scope. |
-| `IScrollService` | Read the active application-wide scrolling settings with `GetCurrent`, change smooth scrolling with `SetSmoothScrollingEnabled`, and observe `Changed`. A local `ScrollViewer.IsSmoothScrollingEnabled` value takes precedence. |
-| `IMotionService` | Enable motion, change page/navigation transitions and durations, configure hover reveal, and respect Windows reduced-motion settings. |
-| `IMaterialEffectService` | Inspect requested and effective material values, test platform support, apply `Auto`, Mica, Acrylic, Mica Alt, or `None`, and change immersive dark mode. A concrete unsupported request throws `PlatformNotSupportedException`. |
+| Theme and appearance | `IThemeService`, `IAppearanceService`, `IMaterialEffectService`, `IFontService` |
+| Layout and interaction | `IContentLayoutService`, `IScrollService`, `IToolTipService`, `IMotionService` |
+| Title bar and profile | `ITitleBarService`, `IProfileFlyoutService`, `IProfileService` |
+| Navigation | `INavigationService` |
+| Toolbar, status, regions | `IToolbarService`, `IStatusBarService`, `IShellRegionService` |
+| Window and tray | `IWindowService`, `IWindowCloseService`, `ITrayService` |
+| Projects | `IProjectService`, `IProjectBehavior` |
+| Commands | `ICommandRegistry`, `ICommandDispatcher`, `IShortcutService` |
+| Messaging and work | `IMessageService`, `INotificationService`, `IBackgroundTaskService` |
+| Localization and settings | `IFlourishLocalization`, `IFlourishSettingsStore`, standard `IConfiguration` |
 
-Each shell surface is enabled through its authoritative domain service. For example,
-`ITitleBarService.SetEnabled` switches between the Flourish custom title bar and the native
-Windows title bar, while `INavigationPanelService`, `IToolbarService`, `IStatusBarService`,
-`IToolTipService`, `IMotionService`, and `IProfileFlyoutService` expose their own
-`SetEnabled` operations. Disabling the title bar restores the native title bar without
-changing the requested material effect; enabling it again restores the Flourish title bar
-and reapplies that material request to the custom frame.
+`INavigationService` is the complete navigation facade. Its `Current` snapshot combines active navigation, route, menu, panel, and cache state; it also owns route registration, menu transactions, panel changes, navigation history, and page-cache operations.
 
-## Title bar, projects, and search
+`ITitleBarService` similarly owns title content, element visibility, search state, and search subscriptions. Search registration returns `IRegistration` through `SubscribeSearch`.
 
-| Service | Runtime use |
-| --- | --- |
-| `ITitleBarService` | Change the application title/subtitle, unnamed-project placeholder, logo and information-field visibility, search placeholder, breadcrumb mode, and each `TitleBarElement`. |
-| `IProjectService` | Add, update, query, activate, and remove `FlourishProject` metadata; change project mode; and observe immutable snapshots. Mappings to existing local files are written atomically to `projects.json`; transient and stale entries are excluded. |
-| `IProjectBehavior` | Asynchronously create, save, activate, and delete projects, and approve a close request. Applications can replace the default dialog and `.txt` file lifecycle. |
-| `ITitleBarSearchService` | Control search text, visibility, placeholder, clearing and focus; observe `QueryChanged`; and add ordered asynchronous handlers through `Subscribe`. |
+## Registration lifetimes
 
-The title selector displays and lists only the application title while project mode is disabled. With project mode enabled, it displays the active project or unnamed-project placeholder and lists all projects plus **New project**. `StoragePath == null` identifies a process-local unpersisted project; the placeholder is display text only. Catalog entries whose local files are missing are removed during startup.
+Command handlers, shortcuts, runtime routes, shell-region entries, close guards, and title-bar search handlers return the common `IRegistration`. Keep the lease while the feature is active, then call `Dispose()`.
 
-Direct `IProjectService` mutations update Shell state and the persistent catalog, but do not show lifecycle dialogs or access project files. While project mode is enabled, selecting, creating, right-click deleting, saving with Ctrl+S, and closing route through `IProjectBehavior`; the built-in Ctrl+S registration uses low priority. Outside project mode these Shell routes are inactive and application code owns single-project save behavior. Replacing the behavior changes project dialogs and file operations but leaves `IProjectService` catalog persistence intact.
-
-Activation updates only the active catalog entry and title. Applications remain responsible for loading or switching business content. See [Projects](projects.md).
-
-```csharp
-public sealed class SearchModule(
-    ITitleBarSearchService search,
-    ISearchIndex searchIndex) : IDisposable
-{
-    private readonly IDisposable subscription = search.Subscribe(async (query, token) =>
-    {
-        await searchIndex.UpdateResultsAsync(query.Text, token);
-    });
-
-    public void Open()
-    {
-        search.SetVisible(true);
-        search.SetPlaceholder("Search reports");
-        search.Focus();
-    }
-
-    public void Dispose() => subscription.Dispose();
-}
-```
-
-## Navigation, routes, and page cache
-
-| Service | Runtime use |
-| --- | --- |
-| `INavigationService` | Navigate by case-sensitive route key or page type, navigate asynchronously, inspect the current route/parameter, and control back/forward history. |
-| `INavigationPanelService` | Enable, move, size, open, close, or toggle the navigation panel. |
-| `INavigationMenuService` | Atomically edit groups, fixed items, page/command items, order, labels, visibility, enabled state, and tree expansion through `Set`. |
-| `INavigationRouteRegistry` | `Append` or `Set` a route, `Get` or remove it, and change its `FlourishPageCacheMode`. |
-| `IPageCacheService` | Change cache mode by page type, inspect cached page types, evict one page, or clear all cached instances. |
-
-Register the route before exposing a menu item that targets it. Remove the menu item before disposing the route lease.
-
-`AppendGroup`, `AppendItem`, and `AppendFixedItem` always add to the end of their target collection. Use `SetGroupIndex`, `SetItemIndex`, or `SetFixedItemIndex` when a specific zero-based position is required.
-
-```csharp
-public sealed class DiagnosticsModule : IDisposable
-{
-    private readonly INavigationRouteRegistration route;
-    private readonly INavigationMenuService menu;
-
-    public DiagnosticsModule(
-        INavigationRouteRegistry routes,
-        INavigationMenuService menu,
-        INavigationService navigation)
-    {
-        this.menu = menu;
-        route = routes.Append(new FlourishNavigationRoute(
-            "runtime.diagnostics",
-            typeof(DiagnosticsPage),
-            FlourishPageCacheMode.Enabled));
-
-        menu.Set(editor =>
-        {
-            editor.AppendGroup("runtime", "Runtime");
-            editor.AppendItem("runtime", FlourishNavigationMenuItem.Page(
-                "runtime.diagnostics.item", "runtime.diagnostics", "Diagnostics", "\uE9D2"));
-        });
-
-        navigation.Navigate("runtime.diagnostics");
-    }
-
-    public void Dispose()
-    {
-        menu.Set(editor =>
-        {
-            editor.RemoveItem("runtime.diagnostics.item");
-            editor.RemoveGroup("runtime");
-        });
-        route.Dispose();
-    }
-}
-```
-
-## Toolbar, status bar, and shell regions
-
-| Service | Runtime use |
-| --- | --- |
-| `IToolbarService` | Enable the surface; use `SetDefault` or `Set` for complete definitions; `Append`, `SetItem`, `SetOrder`, or `Remove` individual `FlourishToolbarItem` values; change item state and page `IconOnly` mode with `Set` operations. |
-| `IStatusBarService` | Enable custom content and built-in LAN/power indicators; `Append`, `SetItem`, `SetOrder`, or `Remove` `FlourishStatusItem` values. `Show` can create a timed item and returns a disposable handle. |
-| `IShellRegionService` | Use `Append` or `Set` for WPF content factories in a `FlourishRegion`, then enable, reorder, or remove registrations with `Set` and `Remove` operations. |
-
-Toolbar and navigation command items are dispatched through `ICommandDispatcher`.
-
-## Commands and keyboard shortcuts
-
-`ICommandRegistry.Register` adds an asynchronous handler with an optional availability predicate, duplicate policy, and priority. `ICommandDispatcher.CanExecute` queries whether a command is available. `ExecuteAsync` dispatches the command and returns a captured `CommandResult`. `IShortcutService.Register` maps a WPF `KeyGesture` to a command with application, window, or page scope and configurable conflict handling.
-
-Shortcuts are ignored while a text input control has keyboard focus by default, preserving typing, clipboard, editing, AltGr, and IME behavior. Set `ShortcutRegistrationOptions.AllowWhenTextInputFocused` to `true` only for shortcuts that must remain active while the user is editing text.
-
-Command handlers are registered through `ICommandRegistry` and invoked through `ICommandDispatcher`. Keep each `ICommandRegistration` for the lifetime of its owning feature and dispose it to remove the handler. For mappings that share the complete Host lifetime, implement `ICommandParser` so Flourish owns their leases automatically.
+`FlourishCultureRegistration` also implements `IRegistration`. It adds `Reload()` for refreshing its culture file and unregisters when disposed. `IStatusBarItemHandle` inherits `IRegistration`; it and `FlourishNotificationHandle` retain specialized APIs because they can update a live presentation as well as dispose it.
 
 ```csharp
 public sealed class RefreshBindings : IDisposable
 {
-    private readonly ICommandRegistration command;
-    private readonly IShortcutRegistration shortcut;
+    private readonly IRegistration command;
+    private readonly IRegistration shortcut;
 
-    public RefreshBindings(
-        ICommandRegistry commands,
-        IShortcutService shortcuts,
-        IDataRefresher refresher)
+    public RefreshBindings(ICommandRegistry commands, IShortcutService shortcuts)
     {
-        command = commands.Register("cmd_data_refresh", async (_, token) =>
-        {
-            await refresher.RefreshAsync(token);
-            return CommandResult.Handled;
-        });
-
-        shortcut = shortcuts.Register(
-            new KeyGesture(Key.F5, ModifierKeys.Control),
-            "cmd_data_refresh");
+        command = commands.Register("refresh", (_, _) =>
+            ValueTask.FromResult(CommandResult.Handled));
+        shortcut = shortcuts.Register(new KeyGesture(Key.F5), "refresh");
     }
 
     public void Dispose()
@@ -214,51 +98,3 @@ public sealed class RefreshBindings : IDisposable
     }
 }
 ```
-
-Call `NotifyCanExecuteChanged(commandKey)` when external state changes an availability predicate.
-
-## Window, tray, close, profile, messages, and notifications
-
-| Service | Runtime use |
-| --- | --- |
-| `IWindowService` | Change bounds and size constraints, resize mode, topmost/taskbar state; center, show, hide, activate, minimize, maximize, or restore the shell. |
-| `ITrayService` | Enable notification-area behavior, change its tooltip, minimize to tray, restore, or request exit. |
-| `IWindowCloseService` | Select `Prompt`, `Close`, or `MinimizeToTray`; register ordered asynchronous close guards; evaluate or request a close. |
-| `IProfileFlyoutService` | Enable, show, hide, or toggle the profile flyout and replace its WPF `Page` content. |
-| `IProfileService` | Inspect profile/login state, change the global `NameOrder` without signing out, initialize remembered login, sign in, change remember-login behavior, or sign out. |
-| `IMessageService` | Show standard or custom-choice modal messages synchronously or with `ShowAsync`; async cancellation only applies before the dialog opens. |
-| `INotificationService` | `Show` or `Upsert` non-modal notifications, inspect active notifications, dismiss one/all, and optionally dispatch a command when activated. |
-
-Close guards and notifications return disposable leases. A notification handle can update its notification before dismissal.
-`IProfileAuthService` remains a startup-registered authentication provider; `IProfileService` is the runtime facade that invokes it.
-
-## Background tasks
-
-`IBackgroundTaskService.QueueTask` queues bounded asynchronous work at runtime. Each task receives cooperative cancellation and progress reporting through `FlourishBackgroundTaskContext`; the returned handle exposes `Cancel`, `Snapshot`, and a `Completion` task whose result captures success, cancellation, or failure.
-
-```csharp
-public FlourishBackgroundTaskHandle StartExport(
-    IBackgroundTaskService tasks,
-    IReportExporter exporter)
-{
-    return tasks.QueueTask(
-        new FlourishBackgroundTaskMetadata("Export report", "Writing files", "\uE74E"),
-        async context =>
-        {
-            for (var step = 1; step <= 10; step++)
-            {
-                await exporter.WritePartAsync(step, context.CancellationToken);
-                context.ReportProgress(step / 10d);
-            }
-        });
-}
-```
-
-Task delegates do not run on the WPF UI thread. Observe `TasksChanged` for live shell or application UI, and dispatch control updates to the UI thread.
-
-## Related guides
-
-- [IFlourishBuilder](flourish-builder.md) and [Dependency injection](configure-services.md)
-- [Application data](configure-data.md), [Projects](projects.md), [Navigation](navigation.md), and [Command dispatch](commands.md)
-- [Dynamic toolbar](dynamic-toolbar.md), [Status bar](status-bar.md), and [Background tasks](background-tasks.md)
-- [Window](configure-window.md), [Profile](configure-profile.md), and [Message service](message-service.md)

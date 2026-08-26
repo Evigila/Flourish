@@ -7,33 +7,29 @@ description: Configure page-specific toolbar items and connect them to command d
 
 The dynamic toolbar is a shell surface whose items change with the active page. Use it for page-scoped commands such as open, save, import, or refresh.
 
-There are two steps:
-
-1. Enable the toolbar surface in [Shell configuration](shell-configuration.md).
-2. Register page-specific toolbar items with `ConfigDynamicToolbar`.
+Use `ConfigureToolbar` both to enable the surface and to register page-specific toolbar items.
 
 ## Enable the surface
 
 ```csharp
-builder.ConfigShell(shell =>
-{
-    shell.UseDynamicToolbar();
-});
+builder.ConfigureToolbar(toolbar => toolbar.SetEnabled());
 ```
 
-`UseDynamicToolbar(false)` keeps the surface disabled even if items are registered.
+`SetEnabled(false)` keeps the surface disabled even if items are registered.
 
 > [!NOTE]
-> Enabling the dynamic toolbar only creates the shell surface. A page shows toolbar buttons after matching items are registered with `ConfigDynamicToolbar`.
+> Enabling the dynamic toolbar only creates the shell surface. A page shows toolbar buttons after matching items are registered with `ConfigureToolbar`.
 
 ## Register items for a page
 
-Use `IFlourishDynamicToolbarBuilder.InitToolbarItems<TPage>` to associate toolbar items with a WPF page type.
+Use `IToolbarBuilder.Set<TPage>` to associate toolbar items with a WPF page type.
 
 ```csharp
-builder.ConfigDynamicToolbar(toolbar =>
+builder.ConfigureToolbar(toolbar =>
 {
-    toolbar.InitToolbarItems<ReportsPage>(
+    toolbar
+        .SetEnabled()
+        .Set<ReportsPage>(
         new FlourishToolbarItem("Refresh", "\uE72C", "cmd_reports_refresh"),
         new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
 });
@@ -41,11 +37,11 @@ builder.ConfigDynamicToolbar(toolbar =>
 
 ## Control icon visibility
 
-The overload with `icon: false` keeps text-only toolbar items.
+The overload with `iconOnly: false` keeps text-only toolbar items.
 
 ```csharp
-toolbar.InitToolbarItems<EditorPage>(
-    icon: false,
+toolbar.Set<EditorPage>(
+    iconOnly: false,
     new FlourishToolbarItem("Preview", "\uE8A7", "cmd_editor_preview"));
 ```
 
@@ -66,7 +62,7 @@ Use stable `cmd_` command keys with underscore-separated segments, such as `cmd_
 Resolve `ICommandRegistry` from the built runtime and register the command key used by the toolbar item.
 
 ```csharp
-ICommandRegistration exportCommand = commands.Register(
+IRegistration exportCommand = commands.Register(
     "cmd_reports_export",
     async (_, token) =>
     {

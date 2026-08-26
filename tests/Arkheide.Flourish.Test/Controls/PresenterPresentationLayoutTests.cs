@@ -1,3 +1,8 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Layout;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;

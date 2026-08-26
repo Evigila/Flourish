@@ -5,14 +5,14 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，通过 [Shell 配置](shell-configuration.md)启用导航区域，再使用 `ConfigNavigation` 把页面和命令项放入明确的位置。
+在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，再使用 `ConfigureNavigation` 启用导航区域并把页面和命令项放入明确的位置。
 
 ## 注册页面
 
 `AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录导航使用的显示名称、图标字形和缓存模式。注册后页面可供导航使用；若要在面板中显示它，还需添加对应的 ViewItem。
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
 {
     services.AddNavigable<HomePage>(
         displayName: "首页",
@@ -44,27 +44,24 @@ services.AddNavigable<EditorPage>(
 
 ```csharp
 navigation
-    .InitDirection(NavigationPanelDirection.Left)
-    .InitInitiallyOpen()
-    .InitPanelWidth(260, 64, 480, 180)
-    .UseLastNavigation();
+    .SetDirection(NavigationPanelDirection.Left)
+    .SetInitiallyOpen()
+    .SetPanelWidth(260, 64, 480, 180)
+    .SetLastNavigationPersistence();
 ```
 
 ## 配置分组
 
-使用 `ConfigNavigation` 定义可见导航模型。`AddGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
+使用 `ConfigureNavigation` 定义可见导航模型。`AddGroup` 创建可滚动的分组，`AddNavigableViewItem<TPage>` 将已注册页面放入该分组。
 
 ```csharp
-builder.ConfigShell(shell =>
-{
-    shell.UseNavigation();
-})
-.ConfigNavigation(navigation =>
+builder.ConfigureNavigation(navigation =>
 {
     navigation
-        .InitDirection(NavigationPanelDirection.Left)
-        .InitInitiallyOpen()
-        .InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
+        .SetEnabled()
+        .SetDirection(NavigationPanelDirection.Left)
+        .SetInitiallyOpen()
+        .SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180)
         .AddGroup("导航", groupId: 0, group =>
         {
             group.AddNavigableViewItem<HomePage>(isInitial: true);
@@ -99,13 +96,13 @@ nav.AddGroup("管理", groupId: 10, group =>
 
 ## 调整导航栏宽度
 
-使用 `InitPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
+使用 `SetPanelWidth` 可以配置导航栏展开宽度、折叠宽度，以及拖拽调整时的宽度约束。
 
 ```csharp
-nav.InitPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
+nav.SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
 ```
 
-默认展开宽度为 `220`，折叠宽度为 `64`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `64`。可调整范围默认为 `160` 到 `420`。用户调整大小时，会在该范围内更新展开宽度。
+默认展开宽度为 `250`，折叠宽度为 `64`。将 `closedWidth` 设为 `0` 会完全隐藏折叠面板；否则其值不得小于 `64`。可调整范围默认为 `180` 到 `520`。用户调整大小时，会在该范围内更新展开宽度。
 
 ## 添加命令项
 
@@ -126,7 +123,7 @@ nav.AddGroup("命令", groupId: 2, group =>
 固定项显示在导航栏底部区域，不受上半部分滚动视角影响，适合放置设置、关于、用户资料或其他持久操作。
 
 ```csharp
-builder.ConfigNavigation(navigation =>
+builder.ConfigureNavigation(navigation =>
 {
     navigation.AddGroup("导航", groupId: 0, group =>
     {

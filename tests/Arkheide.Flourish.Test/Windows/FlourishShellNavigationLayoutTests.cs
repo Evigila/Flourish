@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -5,7 +12,6 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml.Linq;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Views.Windows;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using ListBox = ArkheideSystem.Flourish.Controls.ListBox;
@@ -72,16 +78,16 @@ public sealed class FlourishShellNavigationLayoutTests
         RepositoryRoot,
         "src",
         "Flourish",
-        "Internal",
-        "Interaction",
+        "Views",
+        "Windows",
         "ShellToolbarController.cs"
     );
     private static readonly string NavigationControllerCodePath = Path.Combine(
         RepositoryRoot,
         "src",
         "Flourish",
-        "Internal",
-        "Interaction",
+        "Views",
+        "Windows",
         "ShellNavigationController.cs"
     );
     private static readonly string StatusControllerCodePath = Path.Combine(
@@ -104,8 +110,8 @@ public sealed class FlourishShellNavigationLayoutTests
         RepositoryRoot,
         "src",
         "Flourish",
-        "Internal",
-        "Interaction",
+        "Views",
+        "Windows",
         "StatusItemViewCache.cs"
     );
     private static readonly string ListBoxItemXamlPath = Path.Combine(
@@ -905,7 +911,7 @@ public sealed class FlourishShellNavigationLayoutTests
         var handler = GetSourceBlock(
             statusControllerSource,
             "private void StatusService_Changed(",
-            "private void BackgroundTaskService_TasksChanged("
+            "private void BackgroundTaskService_Changed("
         );
         var cacheSource = File.ReadAllText(StatusItemViewCachePath);
 
@@ -930,11 +936,11 @@ public sealed class FlourishShellNavigationLayoutTests
         var statusControllerSource = File.ReadAllText(StatusControllerCodePath);
         var changedHandler = GetSourceBlock(
             statusControllerSource,
-            "private void BackgroundTaskService_TasksChanged(",
+            "private void BackgroundTaskService_Changed(",
             "private void BackgroundTaskRefreshTimer_Tick("
         );
         Assert.Contains(
-            "pendingBackgroundTasks = e.Tasks;",
+            "pendingBackgroundTasks = e.Current;",
             changedHandler,
             StringComparison.Ordinal
         );

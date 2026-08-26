@@ -5,9 +5,9 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// builder.ConfigTitleBar(titlebar =>
+/// builder.ConfigureTitleBar(titlebar =>
 /// {
-///     titlebar.UseBreadcrumb(option: BreadcrumbShowOption.Auto);
+///     titlebar.SetBreadcrumbMode(option: BreadcrumbShowOption.Auto);
 /// });
 /// ]]></code>
 /// </example>
@@ -18,7 +18,7 @@ public enum BreadcrumbShowOption
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// titlebar.UseBreadcrumb(option: BreadcrumbShowOption.Always);
+    /// titlebar.SetBreadcrumbMode(option: BreadcrumbShowOption.Always);
     /// ]]></code>
     /// </example>
     Always,
@@ -28,7 +28,7 @@ public enum BreadcrumbShowOption
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// titlebar.UseBreadcrumb(option: BreadcrumbShowOption.Auto);
+    /// titlebar.SetBreadcrumbMode(option: BreadcrumbShowOption.Auto);
     /// ]]></code>
     /// </example>
     Auto,
@@ -38,7 +38,7 @@ public enum BreadcrumbShowOption
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// titlebar.UseBreadcrumb(option: BreadcrumbShowOption.Hidden);
+    /// titlebar.SetBreadcrumbMode(option: BreadcrumbShowOption.Hidden);
     /// ]]></code>
     /// </example>
     Hidden,

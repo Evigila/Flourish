@@ -1,9 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Motion;
+using ArkheideSystem.Flourish.ToolTips;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -16,7 +27,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void FontService_UpdatesSettingsAndRaisesChanged()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishAppearanceOptions();
         IFontService sut = new FontService(options);
         FlourishFontChangedEventArgs? change = null;
         sut.Changed += (_, args) => change = args;
@@ -24,22 +35,23 @@ public sealed class RuntimeAppearanceServiceTests
         sut.SetFont("Arial", 13, 16, 18, 21, 24, 30);
         sut.SetIconFontFamily("Segoe Fluent Icons");
 
-        Assert.Equal("Arial", sut.FontFamily);
-        Assert.Equal(13, sut.SmallFontSize);
-        Assert.Equal(16, sut.StandardFontSize);
-        Assert.Equal(18, sut.IconFontSize);
-        Assert.Equal(21, sut.LargeFontSize);
-        Assert.Equal(24, sut.ExtraLargeFontSize);
-        Assert.Equal(30, sut.HeaderSizeFontSize);
-        Assert.Equal("Segoe Fluent Icons", sut.IconFontFamily);
+        var current = sut.Current;
+        Assert.Equal("Arial", current.FontFamily);
+        Assert.Equal(13, current.SmallFontSize);
+        Assert.Equal(16, current.StandardFontSize);
+        Assert.Equal(18, current.IconFontSize);
+        Assert.Equal(21, current.LargeFontSize);
+        Assert.Equal(24, current.ExtraLargeFontSize);
+        Assert.Equal(30, current.HeaderSizeFontSize);
+        Assert.Equal("Segoe Fluent Icons", current.IconFontFamily);
         Assert.NotNull(change);
-        Assert.Equal("Segoe Fluent Icons", change.IconFontFamily);
-        Assert.Equal(13, change.SmallFontSize);
-        Assert.Equal(16, change.StandardFontSize);
-        Assert.Equal(18, change.IconFontSize);
-        Assert.Equal(21, change.LargeFontSize);
-        Assert.Equal(24, change.ExtraLargeFontSize);
-        Assert.Equal(30, change.HeaderSizeFontSize);
+        Assert.Equal("Segoe Fluent Icons", change.Current.IconFontFamily);
+        Assert.Equal(13, change.Current.SmallFontSize);
+        Assert.Equal(16, change.Current.StandardFontSize);
+        Assert.Equal(18, change.Current.IconFontSize);
+        Assert.Equal(21, change.Current.LargeFontSize);
+        Assert.Equal(24, change.Current.ExtraLargeFontSize);
+        Assert.Equal(30, change.Current.HeaderSizeFontSize);
     }
 
     [Theory]
@@ -49,7 +61,7 @@ public sealed class RuntimeAppearanceServiceTests
     [InlineData(double.PositiveInfinity)]
     public void FontService_InvalidTier_Throws(double size)
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             sut.SetFont("Arial", size, 14, 16, 18, 20, 24)
@@ -74,28 +86,28 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void FontService_IndependentPositiveTiers_AcceptsEqualAndUnorderedSizes()
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
 
         sut.SetFont("Arial", 30, 14, 16, 16, 12, 10);
 
-        Assert.Equal(30, sut.SmallFontSize);
-        Assert.Equal(14, sut.StandardFontSize);
-        Assert.Equal(16, sut.IconFontSize);
-        Assert.Equal(16, sut.LargeFontSize);
-        Assert.Equal(12, sut.ExtraLargeFontSize);
-        Assert.Equal(10, sut.HeaderSizeFontSize);
+        Assert.Equal(30, sut.Current.SmallFontSize);
+        Assert.Equal(14, sut.Current.StandardFontSize);
+        Assert.Equal(16, sut.Current.IconFontSize);
+        Assert.Equal(16, sut.Current.LargeFontSize);
+        Assert.Equal(12, sut.Current.ExtraLargeFontSize);
+        Assert.Equal(10, sut.Current.HeaderSizeFontSize);
     }
 
     [Fact]
     public void FontService_PageOverrideSnapshotsAreImmutableAndChangesAreIdempotent()
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
         var changes = 0;
         sut.Changed += (_, _) => changes++;
 
-        sut.SetOverrideFont<RuntimeFontPage>("Consolas", null, null, null, null, null, null);
-        var firstSnapshot = sut.PageOverrides;
-        sut.SetOverrideFont<RuntimeFontPage>("Consolas", null, null, null, null, null, null);
+        sut.SetOverrideFont(typeof(RuntimeFontPage), "Consolas", null, null, null, null, null, null);
+        var firstSnapshot = sut.Current.PageOverrides;
+        sut.SetOverrideFont(typeof(RuntimeFontPage), "Consolas", null, null, null, null, null, null);
 
         Assert.Equal(1, changes);
         var pageOverride = Assert.Single(firstSnapshot);
@@ -119,17 +131,17 @@ public sealed class RuntimeAppearanceServiceTests
 
         sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", 13, 16, 18, 21, 24, 30);
         Assert.Equal(2, changes);
-        var current = sut.PageOverrides[typeof(RuntimeFontPage)];
+        var current = sut.Current.PageOverrides[typeof(RuntimeFontPage)];
         Assert.Equal(13, current.SmallFontSize);
         Assert.Equal(16, current.StandardFontSize);
         Assert.Equal(18, current.IconFontSize);
         Assert.Equal(21, current.LargeFontSize);
         Assert.Equal(24, current.ExtraLargeFontSize);
         Assert.Equal(30, current.HeaderSizeFontSize);
-        Assert.True(sut.RemoveOverrideFont<RuntimeFontPage>());
+        Assert.True(sut.RemoveOverrideFont(typeof(RuntimeFontPage)));
         Assert.False(sut.RemoveOverrideFont(typeof(RuntimeFontPage)));
         Assert.Equal(3, changes);
-        Assert.Empty(sut.PageOverrides);
+        Assert.Empty(sut.Current.PageOverrides);
     }
 
     [Theory]
@@ -138,10 +150,10 @@ public sealed class RuntimeAppearanceServiceTests
     [InlineData("   ")]
     public void FontService_PageOverrideRejectsMissingFamily(string? fontFamily)
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
 
         Assert.Throws<ArgumentException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>(fontFamily!, null, null, null, null, null, null)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), fontFamily!, null, null, null, null, null, null)
         );
     }
 
@@ -152,45 +164,45 @@ public sealed class RuntimeAppearanceServiceTests
     [InlineData(double.PositiveInfinity)]
     public void FontService_PageOverrideRejectsInvalidTier(double size)
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>("Arial", size, null, null, null, null, null)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", size, null, null, null, null, null)
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>("Arial", null, size, null, null, null, null)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", null, size, null, null, null, null)
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>("Arial", null, null, size, null, null, null)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", null, null, size, null, null, null)
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>("Arial", null, null, null, size, null, null)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", null, null, null, size, null, null)
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>("Arial", null, null, null, null, size, null)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", null, null, null, null, size, null)
         );
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.SetOverrideFont<RuntimeFontPage>("Arial", null, null, null, null, null, size)
+            sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", null, null, null, null, null, size)
         );
     }
 
     [Fact]
     public void FontService_PageOverrideAcceptsEqualAndUnorderedPositiveTiers()
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
 
-        sut.SetOverrideFont<RuntimeFontPage>("Arial", 30, 14, 16, 16, 12, 10);
+        sut.SetOverrideFont(typeof(RuntimeFontPage), "Arial", 30, 14, 16, 16, 12, 10);
 
         Assert.Equal(
             new FlourishPageFontOverride("Arial", 30, 14, 16, 16, 12, 10),
-            sut.PageOverrides[typeof(RuntimeFontPage)]
+            sut.Current.PageOverrides[typeof(RuntimeFontPage)]
         );
     }
 
     [Fact]
     public void FontService_PageOverrideRejectsInvalidRuntimePageType()
     {
-        IFontService sut = new FontService(new FlourishShellOptions());
+        IFontService sut = new FontService(new FlourishAppearanceOptions());
 
         Assert.Throws<ArgumentNullException>(() =>
             sut.SetOverrideFont(null!, "Arial", null, null, null, null, null, null)
@@ -215,9 +227,9 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void ToolTipService_EnablesConfiguresAndDisablesAtRuntime()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishTipOptions();
         IToolTipService sut = new FlourishToolTipService(options);
-        var changes = new List<FlourishToolTipChangedEventArgs>();
+        var changes = new List<FlourishStateTransitionEventArgs<FlourishToolTipSettings>>();
         sut.Changed += (_, args) => changes.Add(args);
 
         sut.SetSettings(450, 8);
@@ -231,6 +243,28 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.False(changes[1].Current.IsEnabled);
     }
 
+    [Fact]
+    public void ToolTipService_DetachedChangedHandlersCanReadCurrentFromAnotherThread()
+    {
+        var sut = new FlourishToolTipService(new FlourishTipOptions());
+        using var currentRead = new ManualResetEventSlim();
+        sut.Changed += (_, _) =>
+        {
+            _ = Task.Run(() =>
+            {
+                _ = sut.Current;
+                currentRead.Set();
+            });
+
+            Assert.True(
+                currentRead.Wait(TimeSpan.FromSeconds(5)),
+                "The Changed event was raised while the tooltip mutation lock was held."
+            );
+        };
+
+        sut.SetEnabled(true);
+    }
+
     [Theory]
     [InlineData(-1, 5)]
     [InlineData(0, -1)]
@@ -238,7 +272,7 @@ public sealed class RuntimeAppearanceServiceTests
     [InlineData(0, double.PositiveInfinity)]
     public void ToolTipService_InvalidSettings_Throw(int delay, double margin)
     {
-        IToolTipService sut = new FlourishToolTipService(new FlourishShellOptions());
+        IToolTipService sut = new FlourishToolTipService(new FlourishTipOptions());
 
         Assert.Throws<ArgumentOutOfRangeException>(() => sut.SetSettings(delay, margin));
     }
@@ -246,8 +280,8 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void MotionService_UpdatesIndependentRuntimeSettings()
     {
-        IMotionService sut = new FlourishMotionService(new FlourishShellOptions());
-        var changes = new List<FlourishMotionChangedEventArgs>();
+        IMotionService sut = new FlourishMotionService(new FlourishMotionOptions());
+        var changes = new List<FlourishStateTransitionEventArgs<FlourishMotionSettings>>();
         sut.Changed += (_, args) => changes.Add(args);
 
         sut.SetEnabled(true);
@@ -265,14 +299,14 @@ public sealed class RuntimeAppearanceServiceTests
         Assert.Equal(FlourishNavigationPanelTransition.None, sut.Current.NavigationPanelTransition);
         Assert.True(sut.Current.IsHoverRevealEnabled);
         Assert.False(sut.Current.RespectSystemReducedMotion);
-        Assert.True(sut.CanAnimate);
+        Assert.True(sut.Current.CanAnimate);
         Assert.Equal(5, changes.Count);
     }
 
     [Fact]
     public void MotionService_InvalidTransitionValues_Throw()
     {
-        IMotionService sut = new FlourishMotionService(new FlourishShellOptions());
+        IMotionService sut = new FlourishMotionService(new FlourishMotionOptions());
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             sut.SetPageTransition(
@@ -287,27 +321,28 @@ public sealed class RuntimeAppearanceServiceTests
     public void MaterialEffectService_TracksRequestedRuntimeStateWithoutOwner()
     {
         IMaterialEffectService sut = new MaterialEffectService(
-            null,
+            (FlourishAppearanceOptions?)null,
             MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22621))
         );
-        var changes = new List<FlourishMaterialEffectChangedEventArgs>();
+        var changes =
+            new List<FlourishStateChangedEventArgs<FlourishMaterialEffectState>>();
         sut.Changed += (_, args) => changes.Add(args);
 
         sut.SetEffect(MaterialEffect.Mica);
         sut.SetDarkMode(true);
 
-        Assert.Equal(MaterialEffect.Mica, sut.CurrentEffect);
-        Assert.False(sut.IsApplied);
-        Assert.True(sut.IsDarkMode);
+        Assert.Equal(MaterialEffect.Mica, sut.Current.RequestedEffect);
+        Assert.False(sut.Current.IsApplied);
+        Assert.True(sut.Current.IsDarkMode);
         Assert.Equal(2, changes.Count);
-        Assert.Equal(sut.IsSupported(MaterialEffect.Mica), changes[0].IsSupported);
+        Assert.Equal(sut.IsSupported(MaterialEffect.Mica), changes[0].Current.IsSupported);
     }
 
     [Fact]
     public void MaterialEffectService_IgnoresRepeatedRequestedState()
     {
         IMaterialEffectService sut = new MaterialEffectService(
-            null,
+            (FlourishAppearanceOptions?)null,
             MaterialEffectPlatform.FromWindowsVersion(new Version(10, 0, 22621))
         );
         var changes = 0;
@@ -324,7 +359,7 @@ public sealed class RuntimeAppearanceServiceTests
     [Fact]
     public void MaterialEffectService_AutoExposesTheResolvedPlatformEffect()
     {
-        var options = new FlourishShellOptions
+        var options = new FlourishAppearanceOptions
         {
             IsMaterialEffectEnabled = true,
             MaterialEffect = MaterialEffect.Auto,
@@ -339,16 +374,16 @@ public sealed class RuntimeAppearanceServiceTests
         );
         IMaterialEffectService unsupported = new MaterialEffectService(options, default);
 
-        Assert.Equal(MaterialEffect.Auto, windows11.CurrentEffect);
-        Assert.Equal(MaterialEffect.Mica, windows11.EffectiveEffect);
-        Assert.Equal(MaterialEffect.Acrylic, windows10.EffectiveEffect);
-        Assert.Equal(MaterialEffect.None, unsupported.EffectiveEffect);
+        Assert.Equal(MaterialEffect.Auto, windows11.Current.RequestedEffect);
+        Assert.Equal(MaterialEffect.Mica, windows11.Current.EffectiveEffect);
+        Assert.Equal(MaterialEffect.Acrylic, windows10.Current.EffectiveEffect);
+        Assert.Equal(MaterialEffect.None, unsupported.Current.EffectiveEffect);
     }
 
     [Fact]
     public void MaterialEffectService_UnsupportedExplicitRequestThrowsWithoutChangingState()
     {
-        var options = new FlourishShellOptions
+        var options = new FlourishAppearanceOptions
         {
             IsMaterialEffectEnabled = true,
             MaterialEffect = MaterialEffect.Auto,
@@ -365,15 +400,15 @@ public sealed class RuntimeAppearanceServiceTests
         );
 
         Assert.Contains("Windows 11", exception.Message, StringComparison.Ordinal);
-        Assert.Equal(MaterialEffect.Auto, sut.CurrentEffect);
-        Assert.Equal(MaterialEffect.Acrylic, sut.EffectiveEffect);
+        Assert.Equal(MaterialEffect.Auto, sut.Current.RequestedEffect);
+        Assert.Equal(MaterialEffect.Acrylic, sut.Current.EffectiveEffect);
         Assert.Equal(MaterialEffect.Auto, options.MaterialEffect);
         Assert.True(options.IsMaterialEffectEnabled);
         Assert.Equal(0, changes);
 
         sut.SetEffect(MaterialEffect.Acrylic);
 
-        Assert.Equal(MaterialEffect.Acrylic, sut.CurrentEffect);
+        Assert.Equal(MaterialEffect.Acrylic, sut.Current.RequestedEffect);
         Assert.Equal(MaterialEffect.Acrylic, options.MaterialEffect);
         Assert.Equal(1, changes);
     }
@@ -397,9 +432,9 @@ public sealed class RuntimeAppearanceServiceTests
         var environment = new Mock<IHostEnvironment>();
         environment.SetupGet(value => value.ContentRootPath).Returns(directory.Path);
         using var preferences = new AppPreferenceService(configuration, environment.Object);
-        var options = new FlourishShellOptions();
-        IThemeService sut = new ThemeService(options, preferences);
-        FlourishThemeChangedEventArgs? change = null;
+        var options = new FlourishAppearanceOptions();
+        IThemeService sut = new ThemeService(options, preferences, new AppearanceService(options));
+        FlourishStateChangedEventArgs<FlourishThemeState>? change = null;
         sut.Changed += (_, args) => change = args;
         using var updateEntered = new ManualResetEventSlim();
         using var releaseUpdate = new ManualResetEventSlim();
@@ -416,12 +451,12 @@ public sealed class RuntimeAppearanceServiceTests
             Assert.True(updateEntered.Wait(TimeSpan.FromSeconds(5)));
             sut.SetTheme(FlourishTheme.Dark);
 
-            Assert.Equal(FlourishTheme.Dark, sut.CurrentTheme);
-            Assert.Equal(FlourishTheme.Dark, sut.EffectiveTheme);
-            Assert.True(sut.IsDark);
+            Assert.Equal(FlourishTheme.Dark, sut.Current.RequestedTheme);
+            Assert.Equal(FlourishTheme.Dark, sut.Current.EffectiveTheme);
+            Assert.True(sut.Current.IsDark);
             Assert.True(options.IsThemeEnabled);
             Assert.NotNull(change);
-            Assert.Equal(FlourishTheme.Dark, change.RequestedTheme);
+            Assert.Equal(FlourishTheme.Dark, change.Current.RequestedTheme);
             Assert.False(blockingUpdate.IsCompleted);
         }
         finally
@@ -453,7 +488,12 @@ public sealed class RuntimeAppearanceServiceTests
         var environment = new Mock<IHostEnvironment>();
         environment.SetupGet(value => value.ContentRootPath).Returns(directory.Path);
         using var preferences = new AppPreferenceService(configuration, environment.Object);
-        IThemeService sut = new ThemeService(new FlourishShellOptions(), preferences);
+        var options = new FlourishAppearanceOptions();
+        IThemeService sut = new ThemeService(
+            options,
+            preferences,
+            new AppearanceService(options)
+        );
         sut.Changed += (_, _) =>
             preferences
                 .SetAsync("Flourish:Feature:FromThemeChanged", true)
@@ -479,10 +519,15 @@ public sealed class RuntimeAppearanceServiceTests
                 Color.FromRgb(0xE8, 0xC5, 0x47),
                 Color.FromRgb(0x7D, 0x4C, 0xDB)
             );
-            var options = new FlourishShellOptions { ThemeColors = colors, CornerRadius = 5 };
+            var options = new FlourishAppearanceOptions { ThemeColors = colors, CornerRadius = 5 };
             var resources = new ResourceDictionary();
 
-            ThemeService.ApplyStyleOverrides(resources, options);
+            ThemeService.ApplyStyleOverrides(
+                resources,
+                options.ThemeColors,
+                options.CornerRadius,
+                FlourishTheme.System
+            );
 
             Assert.Equal(colors.Primary, Assert.IsType<Color>(resources["FlourishPrimaryColor"]));
             Assert.Equal(
@@ -542,12 +587,22 @@ public sealed class RuntimeAppearanceServiceTests
                 Color.FromRgb(0x5C, 0x2E, 0x91),
                 Color.FromRgb(0xD8, 0x3B, 0x01)
             );
-            var options = new FlourishShellOptions { ThemeColors = colors };
+            var options = new FlourishAppearanceOptions { ThemeColors = colors };
             var light = new ResourceDictionary();
             var dark = new ResourceDictionary();
 
-            ThemeService.ApplyStyleOverrides(light, options, FlourishTheme.Light);
-            ThemeService.ApplyStyleOverrides(dark, options, FlourishTheme.Dark);
+            ThemeService.ApplyStyleOverrides(
+                light,
+                options.ThemeColors,
+                options.CornerRadius,
+                FlourishTheme.Light
+            );
+            ThemeService.ApplyStyleOverrides(
+                dark,
+                options.ThemeColors,
+                options.CornerRadius,
+                FlourishTheme.Dark
+            );
 
             var lightHoverReveal = Assert.IsType<SolidColorBrush>(
                 light["FlourishHoverRevealBrush"]
@@ -619,7 +674,7 @@ public sealed class RuntimeAppearanceServiceTests
                 foreach (var primary in primaryColors)
                 {
                     var resources = new ResourceDictionary();
-                    var options = new FlourishShellOptions
+                    var options = new FlourishAppearanceOptions
                     {
                         ThemeColors = new FlourishThemeColors(
                             primary,
@@ -628,7 +683,12 @@ public sealed class RuntimeAppearanceServiceTests
                         ),
                     };
 
-                    ThemeService.ApplyStyleOverrides(resources, options, theme);
+                    ThemeService.ApplyStyleOverrides(
+                        resources,
+                        options.ThemeColors,
+                        options.CornerRadius,
+                        theme
+                    );
 
                     var hoverReveal = Assert
                         .IsType<SolidColorBrush>(resources["FlourishHoverRevealBrush"])
@@ -671,7 +731,12 @@ public sealed class RuntimeAppearanceServiceTests
             var hostBrush = new SolidColorBrush(Color.FromRgb(0x12, 0x34, 0x56));
             resources["FlourishPrimaryForegroundBrush"] = hostBrush;
 
-            ThemeService.ApplyStyleOverrides(resources, new FlourishShellOptions());
+            ThemeService.ApplyStyleOverrides(
+                resources,
+                null,
+                null,
+                FlourishTheme.System
+            );
 
             Assert.Same(hostBrush, resources["FlourishPrimaryForegroundBrush"]);
             Assert.DoesNotContain(
@@ -747,6 +812,9 @@ public sealed class RuntimeAppearanceServiceTests
     {
         StaTest.Run(() =>
         {
+            _ = Application.LoadComponent(
+                new Uri("/Arkheide.Flourish;component/Themes/Generic.xaml", UriKind.Relative)
+            );
             const string lightSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml";
             const string darkSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml";
             const string customToken = "FlourishPrimaryForegroundBrush";

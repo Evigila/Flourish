@@ -92,9 +92,9 @@ Use an interactive control such as [Button](button.md) or `CardButton` as the tr
 
 ## Tooltip integration
 
-When `UseTips` is active, Flourish controls present their own hints with a `FlourishToolTip` template containing one `Temporary` Overlay. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
+When Flourish tooltip presentation is enabled through `ConfigureToolTips` or `IToolTipService`, Flourish controls present their own hints with a `FlourishToolTip` template containing one `Temporary` Overlay. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
 
-When `UseTips` is omitted or the `ToolTips` feature is disabled at runtime, Flourish controls present the same hint content with the native WPF tooltip appearance and default behavior. Tooltips attached to native WPF controls and tooltips owned by third-party controls always keep their own templates and default behavior; Flourish does not globally re-template them.
+When `ConfigureToolTips` is omitted or `IToolTipService.SetEnabled(false)` is used at runtime, Flourish controls present the same hint content with the native WPF tooltip appearance and default behavior. Tooltips attached to native WPF controls and tooltips owned by third-party controls always keep their own templates and default behavior; Flourish does not globally re-template them.
 
 ## Related controls
 

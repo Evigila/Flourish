@@ -5,29 +5,29 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <remarks>
 /// Region content is configured during application composition with
-/// <see cref="Builder.IFlourishBuilder.ConfigCustomHandler(System.Action{Builder.IFlourishCustomHandlerBuilder})" />.
+/// <see cref="IFlourishBuilder.ConfigureContent(System.Action{ICustomContentBuilder})" />.
 /// </remarks>
 public enum FlourishRegion
 {
     /// <summary>
     /// A title bar area after breadcrumb and navigation controls, before the built-in brand block.
     /// </summary>
-    TitlebarStart,
+    TitleBarStart,
 
     /// <summary>
     /// The center area of the title bar.
     /// </summary>
-    TitlebarCenter,
+    TitleBarCenter,
 
     /// <summary>
     /// A title bar area after built-in profile or theme controls and before the window caption buttons.
     /// </summary>
-    TitlebarEnd,
+    TitleBarEnd,
 
     /// <summary>
     /// The title bar profile area. Custom content replaces the built-in profile content.
     /// </summary>
-    TitlebarProfile,
+    TitleBarProfile,
 
     /// <summary>
     /// The top area of the navigation panel, above scrollable navigation items.
@@ -77,5 +77,5 @@ public enum FlourishRegion
     /// <summary>
     /// The application-provided body displayed below identity metadata in the logo information surface.
     /// </summary>
-    TitlebarApplicationInfo,
+    TitleBarApplicationInfo,
 }

@@ -1,4 +1,12 @@
-using ArkheideSystem.Flourish.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Commands;
+
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -148,7 +156,7 @@ public sealed class CommandDispatcherTests
         );
 
         Assert.Contains("cmd_editor_save", exception.Message);
-        Assert.Single(sut.Registrations);
+        Assert.Single(sut.Current);
     }
 
     [Fact]
@@ -341,7 +349,7 @@ public sealed class CommandDispatcherTests
     {
         var sut = new CommandDispatcher();
         var calls = new List<string>();
-        ICommandRegistration? added = null;
+        IRegistration? added = null;
         sut.Register(
             "cmd_editor_save",
             (_, _) =>
@@ -377,7 +385,7 @@ public sealed class CommandDispatcherTests
     {
         var sut = new CommandDispatcher();
         var changes = new List<CommandRegistryChangedEventArgs>();
-        ICommandRegistration? added = null;
+        IRegistration? added = null;
         var reentrantRegistrationIsVisible = false;
         sut.Changed += (_, args) =>
         {
@@ -409,8 +417,9 @@ public sealed class CommandDispatcherTests
         Assert.True(reentrantRegistrationIsVisible);
         Assert.NotNull(added);
         Assert.Equal([1, 2], changes.Select(change => change.Version));
-        Assert.Equal([original.Id], changes[0].Registrations.Select(entry => entry.Id));
-        Assert.Equal([original.Id, added.Id], changes[1].Registrations.Select(entry => entry.Id));
+        var originalId = Assert.Single(changes[0].Current).Id;
+        Assert.Equal(originalId, changes[1].Current[0].Id);
+        Assert.NotEqual(originalId, changes[1].Current[1].Id);
     }
 
     [Fact]
@@ -437,15 +446,15 @@ public sealed class CommandDispatcherTests
 
         Assert.False(first.IsRegistered);
         Assert.True(second.IsRegistered);
-        Assert.Single(sut.Registrations);
+        Assert.Single(sut.Current);
         Assert.Equal(3, changes.Count);
-        Assert.Equal(CommandRegistryChangeKind.Unregistered, changes[^1].ChangeKind);
-        Assert.Single(changes[^1].Registrations);
+        Assert.Equal(FlourishRuntimeChangeKind.Removed, changes[^1].ChangeKind);
+        Assert.Single(changes[^1].Current);
         Assert.True((await sut.ExecuteAsync("cmd_editor_save")).IsHandled);
     }
 
     [Fact]
-    public void NotifyCanExecuteChanged_FromLeaseAndRegistry_IdentifiesAffectedCommands()
+    public void NotifyCanExecuteChanged_IdentifiesAffectedCommands()
     {
         var sut = new CommandDispatcher();
         var affectedKeys = new List<string?>();
@@ -455,10 +464,9 @@ public sealed class CommandDispatcherTests
             (_, _) => ValueTask.FromResult(CommandResult.Handled)
         );
 
-        registration.NotifyCanExecuteChanged();
+        sut.NotifyCanExecuteChanged("cmd_editor_save");
         sut.NotifyCanExecuteChanged();
         registration.Dispose();
-        registration.NotifyCanExecuteChanged();
 
         Assert.Equal(["cmd_editor_save", null], affectedKeys);
     }

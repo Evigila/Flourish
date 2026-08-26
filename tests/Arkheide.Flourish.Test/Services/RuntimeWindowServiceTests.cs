@@ -1,6 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Windowing;
+
 using System.Windows;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Moq;
 
 namespace ArkheideSystem.Flourish.Test.Services;
@@ -10,10 +17,10 @@ public sealed class RuntimeWindowServiceTests
     [Fact]
     public void WindowService_UpdatesUnattachedStateAndRaisesSnapshots()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishWindowOptions();
         IWindowService sut = new WindowService(options);
         var states = new List<FlourishWindowState>();
-        sut.Changed += (_, args) => states.Add(args.State);
+        sut.Changed += (_, args) => states.Add(args.Current);
 
         sut.SetBounds(new Rect(40, 60, 1000, 700));
         sut.SetMinimumSize(400, 300);
@@ -36,7 +43,7 @@ public sealed class RuntimeWindowServiceTests
     [Fact]
     public void WindowService_DoesNotPublishIdenticalUnattachedSnapshots()
     {
-        var sut = new WindowService(new FlourishShellOptions());
+        var sut = new WindowService(new FlourishWindowOptions());
         var changes = 0;
         sut.Changed += (_, _) => changes++;
 
@@ -51,7 +58,7 @@ public sealed class RuntimeWindowServiceTests
     [Fact]
     public void WindowService_RejectsInvalidGeometryAndReportsCorrectDimension()
     {
-        var options = new FlourishShellOptions
+        var options = new FlourishWindowOptions
         {
             WindowMaxWidth = 1000,
             WindowMaxHeight = 700,
@@ -140,7 +147,7 @@ public sealed class RuntimeWindowServiceTests
     public async Task WindowCloseService_RequestCloseRunsAllowedGuardsInOrderBeforeShell()
     {
         var services = new Mock<IServiceProvider>().Object;
-        var sut = new WindowCloseService(new FlourishShellOptions(), services);
+        var sut = new WindowCloseService(new FlourishWindowOptions(), services);
         var calls = new List<string>();
         using var cancellation = new CancellationTokenSource();
         using var later = sut.RegisterGuard(
@@ -211,16 +218,24 @@ public sealed class RuntimeWindowServiceTests
     [Fact]
     public void WindowCloseService_UpdatesBehaviorAndTrayOption()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishWindowOptions();
         var sut = new WindowCloseService(options, new Mock<IServiceProvider>().Object);
+        var changes = new List<FlourishWindowCloseState>();
+        sut.Changed += (_, args) => changes.Add(args.Current);
 
         sut.SetBehavior(WindowCloseBehavior.MinimizeToTray);
-        Assert.Equal(WindowCloseBehavior.MinimizeToTray, sut.Behavior);
+        sut.SetBehavior(WindowCloseBehavior.MinimizeToTray);
+        Assert.Equal(WindowCloseBehavior.MinimizeToTray, sut.Current.Behavior);
         Assert.True(options.IsTrayExitEnabled);
         sut.SetBehavior(WindowCloseBehavior.Close);
+        Assert.Equal(WindowCloseBehavior.Close, sut.Current.Behavior);
         Assert.False(options.IsTrayExitEnabled);
+        Assert.Equal(
+            [WindowCloseBehavior.MinimizeToTray, WindowCloseBehavior.Close],
+            changes.Select(state => state.Behavior)
+        );
     }
 
     private static WindowCloseService CreateCloseService() =>
-        new(new FlourishShellOptions(), new Mock<IServiceProvider>().Object);
+        new(new FlourishWindowOptions(), new Mock<IServiceProvider>().Object);
 }

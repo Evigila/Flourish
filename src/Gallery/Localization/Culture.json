@@ -2847,9 +2847,9 @@
     "en-US": "This Gallery page is itself hosted by PageBody: one leading HeaderChunk is followed by full-width Chunks.",
     "zh-CN": "这个 Gallery 页面本身由 PageBody 承载：一个页首 HeaderChunk 后跟若干全宽 Chunk。"
   },
-  "Controls_ThisPageWasNotPresentInConfigNavigationItsRouteAndMenuEntryWereR_F0B315F9": {
-    "en-US": "This page was not present in ConfigNavigation; its route and menu entry were registered while Gallery was already running.",
-    "zh-CN": "此页面并未包含在 ConfigNavigation 中；其路由和菜单项是在 Gallery 已运行后注册的。"
+  "Controls_ThisPageWasNotPresentInConfigureNavigationItsRouteAndMenuEntryWereR_F0B315F9": {
+    "en-US": "This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running.",
+    "zh-CN": "此页面并未包含在 ConfigureNavigation 中；其路由和菜单项是在 Gallery 已运行后注册的。"
   },
   "Controls_TimedStatus_ADE45349": {
     "en-US": "Timed status",
@@ -3903,8 +3903,8 @@
     "en-US": "Title-bar search {0}.",
     "zh-CN": "标题栏搜索已{0}。"
   },
-  "Runtime_TitlebarCommandInvoked_5B658D8B": {
-    "en-US": "Titlebar command invoked",
+  "Runtime_TitleBarCommandInvoked_5B658D8B": {
+    "en-US": "Title bar command invoked",
     "zh-CN": "已调用标题栏命令"
   },
   "Runtime_ToolbarPresentationSetTo0_D717A96F": {
@@ -3971,9 +3971,9 @@
     "en-US": "Active selection",
     "zh-CN": "活动选择"
   },
-  "Shell_AddAndInitProfileContentCreateApplicationElementsWhenTheShellIsC_49F55273": {
-    "en-US": "Add and InitProfileContent create application elements when the Shell is composed, with access to registered services.",
-    "zh-CN": "Add 和 InitProfileContent 在 Shell 组合时创建应用元素，并可访问已注册服务。"
+  "Shell_AddAndSetProfileContentCreateApplicationElementsWhenTheShellIsC_49F55273": {
+    "en-US": "AddRegionContent and SetProfileContent create application elements when the Shell is composed, with access to registered services.",
+    "zh-CN": "AddRegionContent 和 SetProfileContent 在 Shell 组合时创建应用元素，并可访问已注册服务。"
   },
   "Shell_AddOrReplaceAProjectOnlyWhenItsLocalFileExists_3173FA81": {
     "en-US": "Add or replace a project only when its local file exists.",
@@ -4216,8 +4216,8 @@
     "zh-CN": "选择已注册路由是否保留其 Page 实例，并显式逐个或全部逐出缓存页面。对于经常重新访问且有状态的目标页面应启用缓存，对于短生命周期或占用大量内存的视图则应禁用；下方代码使路由元数据与当前缓存策略保持同步。"
   },
   "Shell_ChooseWhetherFlourishOwnedShellNavigationAndPageViewportsSmoothM_1EA6E35D": {
-    "en-US": "Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. UseSmoothScroll sets the startup state, while IScrollService updates the active application immediately. An explicit IsSmoothScrollingEnabled value still overrides the application policy on an application-owned ScrollViewer.",
-    "zh-CN": "选择是否让 Flourish 管理的 Shell、导航和页面视口平滑响应鼠标滚轮。UseSmoothScroll 设置启动状态，IScrollService 则立即更新当前应用。应用自有 ScrollViewer 上显式设置的 IsSmoothScrollingEnabled 仍会覆盖应用策略。"
+    "en-US": "Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. SetSmoothScrollingEnabled sets the startup state, while IScrollService updates the active application immediately. An explicit IsSmoothScrollingEnabled value still overrides the application policy on an application-owned ScrollViewer.",
+    "zh-CN": "选择是否让 Flourish 管理的 Shell、导航和页面视口平滑响应鼠标滚轮。SetSmoothScrollingEnabled 设置启动状态，IScrollService 则立即更新当前应用。应用自有 ScrollViewer 上显式设置的 IsSmoothScrollingEnabled 仍会覆盖应用策略。"
   },
   "Shell_ChooseWhetherTheRegisteredHandlerCanExecute_B62C2F1D": {
     "en-US": "Choose whether the registered handler can execute.",
@@ -4340,12 +4340,12 @@
     "zh-CN": "内容宽度"
   },
   "Shell_ControlTitleBarSearchTextVisibilityFocusPlaceholderAndAsynchrono_E6F24826": {
-    "en-US": "Control title-bar search text, visibility, focus, placeholder, and asynchronous query handling through ITitleBarSearchService. Use a disposable subscription for page- or feature-scoped search behavior; the code below registers a cancellable handler and updates the visible search state.",
-    "zh-CN": "通过 ITitleBarSearchService 控制标题栏搜索文本、可见性、焦点、占位文本和异步查询处理。页面或功能范围内的搜索行为应使用可释放订阅；下方代码注册一个可取消的处理程序并更新可见的搜索状态。"
+    "en-US": "Control title-bar search text, visibility, focus, placeholder, and asynchronous query handling through ITitleBarService. Use a disposable subscription for page- or feature-scoped search behavior; the code below registers a cancellable handler and updates the visible search state.",
+    "zh-CN": "通过 ITitleBarService 控制标题栏搜索文本、可见性、焦点、占位文本和异步查询处理。页面或功能范围内的搜索行为应使用可释放订阅；下方代码注册一个可取消的处理程序并更新可见的搜索状态。"
   },
   "Shell_ControlWhetherTheNavigationPanelIsOpenAndEnabledChooseItsHostEdg_C1A825DC": {
-    "en-US": "Control whether the navigation panel is open and enabled, choose its host edge, and define its width constraints through INavigationPanelService. Use these settings for responsive shell layouts or user-selected navigation placement; the code below shows the complete panel state API used by this example.",
-    "zh-CN": "通过 INavigationPanelService 控制导航面板是否打开和启用、选择其停靠边缘并定义宽度约束。这些设置适用于响应式 Shell 布局或由用户选择导航位置的场景；下方代码展示本示例使用的完整面板状态 API。"
+    "en-US": "Control whether the navigation panel is open and enabled, choose its host edge, and define its width constraints through INavigationService. Use these settings for responsive shell layouts or user-selected navigation placement; the code below shows the complete panel state API used by this example.",
+    "zh-CN": "通过 INavigationService 控制导航面板是否打开和启用、选择其停靠边缘并定义宽度约束。这些设置适用于响应式 Shell 布局或由用户选择导航位置的场景；下方代码展示本示例使用的完整面板状态 API。"
   },
   "Shell_ControlWindowTrayProfileAndNotificationBehavior_D7E490DA": {
     "en-US": "Control window, tray, profile, and notification behavior.",
@@ -4784,8 +4784,8 @@
     "zh-CN": "最小宽度"
   },
   "Shell_MotionCommunicatesPageChangesNavigationPanelStateAndHoverAfforda_2E1BDAC0": {
-    "en-US": "Motion communicates page changes, navigation-panel state, and hover affordances while preserving the final layout. Enable motion at the Shell level, then choose each transition and its optional duration through ConfigMotion. Use restrained timings where movement clarifies state, and keep the operating-system reduced-motion preference enabled; the code below covers every motion setting.",
-    "zh-CN": "动效在保持最终布局的同时传达页面变化、导航面板状态和悬停交互提示。先在 Shell 层启用动效，再通过 ConfigMotion 选择各项过渡及其可选持续时间。当移动有助于说明状态时应使用克制的时长，并保持启用操作系统的减少动态效果首选项；下方代码涵盖所有动效设置。"
+    "en-US": "Motion communicates page changes, navigation-panel state, and hover affordances while preserving the final layout. Enable motion at the Shell level, then choose each transition and its optional duration through ConfigureMotion. Use restrained timings where movement clarifies state, and keep the operating-system reduced-motion preference enabled; the code below covers every motion setting.",
+    "zh-CN": "动效在保持最终布局的同时传达页面变化、导航面板状态和悬停交互提示。先在 Shell 层启用动效，再通过 ConfigureMotion 选择各项过渡及其可选持续时间。当移动有助于说明状态时应使用克制的时长，并保持启用操作系统的减少动态效果首选项；下方代码涵盖所有动效设置。"
   },
   "Shell_MoveKeyboardFocusToTheTitleBarSearchBox_696AD4DF": {
     "en-US": "Move keyboard focus to the title-bar search box.",
@@ -5015,9 +5015,9 @@
     "en-US": "Queue work that returns a captured value.",
     "zh-CN": "将返回所捕获值的工作加入队列。"
   },
-  "Shell_QueuedRunningAndCancellingItemsUpdateThroughTasksChanged_234E9419": {
-    "en-US": "Queued, running, and cancelling items update through TasksChanged.",
-    "zh-CN": "排队、运行和取消中的项目通过 TasksChanged 更新。"
+  "Shell_QueuedRunningAndCancellingItemsUpdateThroughChanged_234E9419": {
+    "en-US": "Queued, running, and cancelling items update through Changed.",
+    "zh-CN": "排队、运行和取消中的项目通过 Changed 更新。"
   },
   "Shell_ReadEditAppendSaveReloadAndSwitchLocale_76DF4139": {
     "en-US": "Read, edit, append, save, reload, and switch locale.",
@@ -5528,8 +5528,8 @@
     "zh-CN": "此设置通过共享动态资源更新现有 Flourish 视口。"
   },
   "Shell_TheStatusBarKeepsApplicationStateAndBuiltInSystemDetailsVisibleW_B3D10F2D": {
-    "en-US": "The status bar keeps application state and built-in system details visible without interrupting the current workflow. Enable the persistent surface with UseStatusBar, then add non-interactive text and glyphs or opt into the consolidated network and power indicator with ConfigStatusBar. This pattern is recommended for synchronization, workspace, connectivity, and power information; the code below covers every status-bar configuration API.",
-    "zh-CN": "状态栏可持续显示应用状态和内置系统详细信息，而不会打断当前工作流。先使用 UseStatusBar 启用持久界面，然后添加非交互文本和字形，或通过 ConfigStatusBar 启用整合的网络与电源指示器。建议将此模式用于同步、工作区、连接和电源信息；下方代码涵盖所有状态栏配置 API。"
+    "en-US": "The status bar keeps application state and built-in system details visible without interrupting the current workflow. Enable the persistent surface and configure non-interactive text, glyphs, and the consolidated network and power indicator through ConfigureStatusBar. This pattern is recommended for synchronization, workspace, connectivity, and power information; the code below covers every status-bar configuration API.",
+    "zh-CN": "状态栏可持续显示应用状态和内置系统详细信息，而不会打断当前工作流。通过 ConfigureStatusBar 启用持久界面，并配置非交互文本、字形以及整合的网络与电源指示器。建议将此模式用于同步、工作区、连接和电源信息；下方代码涵盖所有状态栏配置 API。"
   },
   "Shell_ThemeTypographyPageOverridesAndMaterialEffects_492AA572": {
     "en-US": "Theme, typography, page overrides, and material effects.",
@@ -5580,8 +5580,8 @@
     "zh-CN": "工具提示行为"
   },
   "Shell_TooltipsLabelCompactOrIconOnlyFlourishControlsWithoutAddingPerma_7ADF66F8": {
-    "en-US": "Tooltips label compact or icon-only Flourish controls without adding permanent visual noise. UseTips selects the Flourish presentation and sets the initial hover delay, while each control continues to provide its own ToolTip content and accessible name. This is recommended for unfamiliar icons and secondary actions; the code below configures the host and shows the corresponding XAML.",
-    "zh-CN": "工具提示可为紧凑型或仅图标的 Flourish 控件提供说明，而不会增加永久的视觉干扰。UseTips 选择 Flourish 样式并设置初始悬停延迟，同时每个控件仍提供自己的 ToolTip 内容和无障碍名称。建议将它用于不熟悉的图标和次要操作；下方代码配置宿主并展示相应 XAML。"
+    "en-US": "Tooltips label compact or icon-only Flourish controls without adding permanent visual noise. ConfigureToolTips selects the Flourish presentation and sets the initial hover delay, while each control continues to provide its own ToolTip content and accessible name. This is recommended for unfamiliar icons and secondary actions; the code below configures the host and shows the corresponding XAML.",
+    "zh-CN": "工具提示可为紧凑型或仅图标的 Flourish 控件提供说明，而不会增加永久的视觉干扰。ConfigureToolTips 选择 Flourish 样式并设置初始悬停延迟，同时每个控件仍提供自己的 ToolTip 内容和无障碍名称。建议将它用于不熟悉的图标和次要操作；下方代码配置宿主并展示相应 XAML。"
   },
   "Shell_Topmost_73EC388A": {
     "en-US": "Topmost",

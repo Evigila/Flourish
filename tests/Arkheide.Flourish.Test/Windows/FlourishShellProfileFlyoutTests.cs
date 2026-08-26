@@ -1,7 +1,10 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Profile;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Windows;
 
@@ -47,13 +50,13 @@ public sealed class FlourishShellProfileFlyoutTests
             "private void EnsureProfileContent("
         );
 
-        Assert.Contains("titlebar.SetProfile(profileService.CurrentProfile);", method);
+        Assert.Contains("titlebar.SetProfile(profileService.Current.Profile);", method);
         Assert.Contains(
-            "profileService.ProfileChanged += ProfileService_ProfileChanged;",
+            "profileService.Changed += ProfileService_Changed;",
             method
         );
         Assert.Contains(
-            "profileService.ProfileChanged -= ProfileService_ProfileChanged;",
+            "profileService.Changed -= ProfileService_Changed;",
             method
         );
         Assert.Contains("isProfileServiceSubscribed = enabled;", method);
@@ -117,7 +120,7 @@ public sealed class FlourishShellProfileFlyoutTests
         var method = GetSourceSection(
             ProfileControllerSource,
             "private void ApplyFlyoutState(",
-            "private void ProfileService_ProfileChanged("
+            "private void ProfileService_Changed("
         );
         var hiddenGuardIndex = method.IndexOf("if (!state.IsVisible)", StringComparison.Ordinal);
         var ensureIndex = method.IndexOf("EnsureProfileContent(state);", StringComparison.Ordinal);
@@ -159,7 +162,7 @@ public sealed class FlourishShellProfileFlyoutTests
             "private void TitleBarService_Changed("
         );
 
-        Assert.Contains("DispatchIfActive(() => ConfigureSurface(e.State));", method);
+        Assert.Contains("DispatchIfActive(() => ConfigureSurface(e.Current));", method);
         Assert.DoesNotContain("ApplyFlyoutState", method, StringComparison.Ordinal);
         Assert.Equal(1, CountOccurrences(ProfileControllerSource, "EnsureProfileContent(state)"));
     }
@@ -197,7 +200,7 @@ public sealed class FlourishShellProfileFlyoutTests
     public void ShellWindow_DelegatesProfileOwnershipToTheController()
     {
         Assert.Contains("new ShellProfileController(", ShellSource);
-        Assert.Contains("profileController.InitializeAsync()", ShellSource);
+        Assert.Contains("profileController.RestoreAsync()", ShellSource);
         Assert.Contains("profileController.Hide();", ShellSource);
         Assert.Contains("profileController.Dispose();", ShellSource);
         Assert.DoesNotContain("ConfigureProfileSurface", ShellSource, StringComparison.Ordinal);
@@ -207,16 +210,16 @@ public sealed class FlourishShellProfileFlyoutTests
     [Fact]
     public void ProfileFlyoutService_PageChangesRemainHiddenUntilExplicitlyShown()
     {
-        var shellOptions = new FlourishShellOptions { IsProfileEnabled = true };
         var profileOptions = new FlourishProfileOptions
         {
+            IsProfileEnabled = true,
             PageType = typeof(FirstProfilePage),
         };
-        var sut = new ProfileFlyoutService(shellOptions, profileOptions);
+        var sut = new ProfileFlyoutService(profileOptions);
 
         sut.Show();
         sut.Hide();
-        sut.SetContentPage<SecondProfilePage>();
+        sut.SetContentPage(typeof(SecondProfilePage));
 
         Assert.False(sut.Current.IsVisible);
         Assert.Equal(typeof(SecondProfilePage), sut.Current.ContentPageType);

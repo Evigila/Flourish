@@ -1,5 +1,10 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Flourish.Test.Abstract;

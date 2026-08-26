@@ -57,7 +57,7 @@ An action group should normally have only one `Filled` button. Use `Danger` for 
 
 When `IsEnabled` is `false`, every Button variant uses the shared disabled gray background, border, and foreground. The disabled state suppresses Filled, Danger, and other enabled-state colors so unavailable actions have one consistent treatment.
 
-With `UseTips` active, Button-family hints use the Flourish temporary Overlay surface and Shell-aware placement. Without it, the same hint content uses the native WPF tooltip appearance. Tooltips attached to native WPF and third-party controls remain unchanged.
+When Flourish tooltip presentation is enabled through `ConfigureToolTips` or `IToolTipService`, Button-family hints use the Flourish temporary Overlay surface and Shell-aware placement. Without it, the same hint content uses the native WPF tooltip appearance. Tooltips attached to native WPF and third-party controls remain unchanged.
 
 ## CardButton
 

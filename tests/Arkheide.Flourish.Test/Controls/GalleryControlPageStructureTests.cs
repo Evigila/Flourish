@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -909,12 +915,12 @@ public sealed class GalleryControlPageStructureTests
         {
             ["Configuration values"] =
             [
-                "configuration.Changed",
-                "configuration.Reload",
-                "configuration.Current",
+                "IConfigurationRoot",
+                "root.Reload",
                 "configuration[",
-                "configuration.Get<int>",
-                "configuration.GetSection<ReportOptions>",
+                "configuration.GetValue<int>",
+                "configuration.GetSection",
+                ".Get<ReportOptions>",
             ],
             ["App settings"] =
             [
@@ -934,11 +940,11 @@ public sealed class GalleryControlPageStructureTests
             ],
             ["Localization"] =
             [
-                "ConfigData",
-                "InitLocale",
+                "ConfigureData",
+                "SetLocale",
                 "localization.Changed",
-                "localization.CurrentLocale",
-                "localization.AvailableLocales",
+                "localization.Current.Locale",
+                "localization.Current.AvailableLocales",
                 "localization.Get",
                 "localization.Format",
             ],
@@ -949,8 +955,8 @@ public sealed class GalleryControlPageStructureTests
                 "registration.Id",
                 "registration.Locales",
                 "registration.FilePath",
-                "localization.ReloadFile",
-                "localization.Unregister",
+                "registration.Reload",
+                "using var registration",
             ],
         };
 

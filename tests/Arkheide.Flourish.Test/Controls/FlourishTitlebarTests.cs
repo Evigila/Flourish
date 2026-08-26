@@ -1,9 +1,13 @@
+using System.Collections.Generic;
+using Xunit;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Imaging;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
 
 namespace ArkheideSystem.Flourish.Test.Controls;

@@ -1,5 +1,7 @@
+using Xunit;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
 

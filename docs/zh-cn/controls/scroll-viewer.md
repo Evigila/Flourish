@@ -28,16 +28,16 @@ description: 使用平滑像素滚动与标准 Flourish 滚动条承载超出视
 应用还可以在组合阶段为 Flourish 自有的 Shell、导航与页面滚动区域初始化同一策略：
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell.UseSmoothScroll(enabled: true));
+builder.ConfigureLayout(layout =>
+    layout.SetSmoothScrollingEnabled(enabled: true));
 ```
 
-`UseSmoothScroll` 为内置模板创建、因而无法从应用 XAML 直接访问的 Flourish 滚动区域提供启动状态。运行时通过 `IScrollService` 修改当前应用：
+`SetSmoothScrollingEnabled` 为内置模板创建、因而无法从应用 XAML 直接访问的 Flourish 滚动区域提供启动状态。运行时通过 `IScrollService` 修改当前应用：
 
 ```csharp
 scrollService.SetSmoothScrollingEnabled(false);
 
-FlourishScrollSettings current = scrollService.GetCurrent();
+FlourishScrollSettings current = scrollService.Current;
 scrollService.Changed += OnScrollSettingsChanged;
 ```
 

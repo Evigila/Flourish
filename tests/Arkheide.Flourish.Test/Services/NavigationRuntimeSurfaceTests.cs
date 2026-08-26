@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -9,7 +14,7 @@ public sealed class NavigationRuntimeSurfaceTests
     [Fact]
     public void NavigationPanel_MutationsUpdateOptionsAndPublishVersionedSnapshots()
     {
-        var options = new FlourishShellOptions
+        var options = new FlourishNavigationOptions
         {
             IsNavigationPanelEnabled = true,
             IsNavigationPanelInitiallyOpen = false,
@@ -37,7 +42,7 @@ public sealed class NavigationRuntimeSurfaceTests
         double closedWidth
     )
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         var sut = new NavigationPanelService(options);
 
         sut.SetPanelWidth(280, closedWidth, 500, 180);
@@ -54,7 +59,7 @@ public sealed class NavigationRuntimeSurfaceTests
         double closedWidth
     )
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         var sut = new NavigationPanelService(options);
         var before = sut.Current;
 
@@ -80,12 +85,12 @@ public sealed class NavigationRuntimeSurfaceTests
         {
             editor.RemoveItem("Home");
             editor.RemoveGroup("group:0");
-            editor.AppendGroup("runtime", "Runtime APIs");
-            editor.AppendItem(
+            editor.AddGroup("runtime", "Runtime APIs");
+            editor.AddItem(
                 "runtime",
                 FlourishNavigationMenuItem.Page("home-demo", "Home", "Home", "H")
             );
-            editor.AppendItem(
+            editor.AddItem(
                 "runtime",
                 FlourishNavigationMenuItem.Command(
                     "runtime-command",
@@ -123,7 +128,7 @@ public sealed class NavigationRuntimeSurfaceTests
         sut.Set(_ => { });
         sut.Set(editor =>
         {
-            editor.AppendGroup("temporary");
+            editor.AddGroup("temporary");
             editor.RemoveGroup("temporary");
         });
 
@@ -134,20 +139,20 @@ public sealed class NavigationRuntimeSurfaceTests
     [Fact]
     public void NavigationMenu_AppendAndInsertHaveDistinctOrderingSemantics()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         var sut = new NavigationMenuService(options, new NavigationRouteRegistry(options));
 
         sut.Set(editor =>
         {
-            editor.AppendGroup("last");
+            editor.AddGroup("last");
             editor.SetGroupIndex("first", index: 0);
-            editor.AppendItem("first", FlourishNavigationMenuItem.Command("last-item", "Last"));
+            editor.AddItem("first", FlourishNavigationMenuItem.Command("last-item", "Last"));
             editor.SetItemIndex(
                 "first",
                 FlourishNavigationMenuItem.Command("first-item", "First"),
                 index: 0
             );
-            editor.AppendFixedItem(FlourishNavigationMenuItem.Command("last-fixed", "Last fixed"));
+            editor.AddFixedItem(FlourishNavigationMenuItem.Command("last-fixed", "Last fixed"));
             editor.SetFixedItemIndex(
                 FlourishNavigationMenuItem.Command("first-fixed", "First fixed"),
                 index: 0
@@ -172,8 +177,8 @@ public sealed class NavigationRuntimeSurfaceTests
         Assert.Throws<InvalidOperationException>(() =>
             sut.Set(editor =>
             {
-                editor.AppendGroup("runtime");
-                editor.AppendItem(
+                editor.AddGroup("runtime");
+                editor.AddItem(
                     "runtime",
                     FlourishNavigationMenuItem.Page("missing", "NotRegistered", "Missing")
                 );
@@ -229,7 +234,7 @@ public sealed class NavigationRuntimeSurfaceTests
     [Fact]
     public void RemovingParentPageRoute_CascadesItsChildrenAndKeepsMenuConsistent()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(
             new FlourishNavigationRoute("Parent", typeof(ParentPage))
         );
@@ -322,7 +327,7 @@ public sealed class NavigationRuntimeSurfaceTests
             )
         );
         var routes = new NavigationRouteRegistry(options);
-        INavigationRouteRegistration? replacement = null;
+        IRegistration? replacement = null;
         var reentered = false;
         routes.Changed += (_, change) =>
         {
@@ -351,9 +356,9 @@ public sealed class NavigationRuntimeSurfaceTests
         replacement!.Dispose();
     }
 
-    private static FlourishShellOptions CreateRouteOptions()
+    private static FlourishNavigationOptions CreateRouteOptions()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishNavigationOptions();
         options.InitialNavigationRoutes.Add(new FlourishNavigationRoute("Home", typeof(HomePage)));
         return options;
     }

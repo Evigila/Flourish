@@ -1,3 +1,7 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -95,7 +99,9 @@ public sealed class FlourishShellWindowShortcutTests
     {
         StaTest.Run(() =>
         {
-            Assert.False(FlourishShellWindow.IsTextInputTarget(new Button()));
+            Assert.False(
+                FlourishShellWindow.IsTextInputTarget(new System.Windows.Controls.Button())
+            );
             Assert.False(
                 FlourishShellWindow.IsTextInputTarget(new ComboBox { IsEditable = false })
             );

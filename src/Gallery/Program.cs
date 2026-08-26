@@ -1,5 +1,6 @@
+using System;
+
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Builder;
 using ArkheideSystem.Flourish.Extension.Culture;
 using ArkheideSystem.Gallery.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,13 +19,13 @@ internal static class Program
         flourish = FlourishBuilder
             .CreateDefaultBuilder(args) //Create default builder as hosting
             .UseEssentialCulture()
-            .ConfigData( // Configure data as hosting
+            .ConfigureData( // Configure data as hosting
                 (data) =>
                 {
-                    data.InitLocale("en-US"); // Set default locale for application
+                    data.SetLocale("en-US"); // Set default locale for application
                 }
             )
-            .ConfigServices( // Configure services as hosting
+            .ConfigureServices( // Configure services as hosting
                 (_, services) =>
                 {
                     services.AddSingleton<App>();
@@ -122,32 +123,21 @@ internal static class Program
                     services.AddNavigable<LabelPage>("Label", "\uE8EC");
                 }
             )
-            .ConfigShell(shell => // Enable functionality at top level
-            {
-                shell
-                    .InitGlobalFont() // Init uniform global font family and sizes
-                    .UseCenterContent() // Use centered width restricted content
-                    .UseDynamicToolbar() // Able to create toolbar items dynamically
-                    .UseMaterialEffect() // Use the current Windows default material backdrop
-                    .UseMotion() // Use flourish style motion for interactions
-                    .UseNavigation() // Able to use navigation panel and its functionality
-                    .UseSmoothScroll() // Use smooth scrolling with global scrollviewer
-                    .UseStatusBar() // Able to use status bar and its functionality
-                    .UseTips() // Use flourish style tooltips instead of WPF one
-                    .UseTitleBar(); // Use flourish style titlebar instead of WPF one
-            })
-            .ConfigTitleBar(t =>
-                t.InitApplicationSubTitle(CKey.Application_ComponentReference_661E6097)
+            .ConfigureAppearance(appearance => appearance.SetEffect())
+            .ConfigureFont(font => font.SetFont())
+            .ConfigureLayout(layout => layout.SetCenterContent().SetSmoothScrollingEnabled())
+            .ConfigureToolTips(toolTips => toolTips.SetEnabled().SetSettings())
+            .ConfigureMotion(motion => motion.SetEnabled())
+            .ConfigureStatusBar(statusBar => statusBar.SetEnabled())
+            .ConfigureTitleBar(titleBar =>
+                titleBar
+                    .SetEnabled()
+                    .SetApplicationSubtitle(CKey.Application_ComponentReference_661E6097)
+                    .SetSearch(placeholder: CKey.Application_TypeHereToSearch_85717255)
             )
-            .ConfigTitleBar(titlebar =>
-                titlebar.UseSearch(
-                    placeholder: CKey.Application_TypeHereToSearch_85717255,
-                    handler: (_, _) => { }
-                )
-            ) // search handler TODO
-            .ConfigNavigation(nav => // configure navigation panel and its functionality, once UseNavigation is called and enabled (by default)
+            .ConfigureNavigation(nav => // configure navigation panel and its functionality
             {
-                nav.AddGroup( // Create basic essential structure for navigation tree
+                nav.SetEnabled().AddGroup( // Create basic essential structure for navigation tree
                         null, // The group with ID 0 can create without name, using null instead of String.Empty
                         0, // Unique ID for group, should not repeat
                         group =>
@@ -241,9 +231,9 @@ internal static class Program
                     )
                     .AddFixedNavigableViewItem<AboutPage>();
             })
-            .ConfigDynamicToolbar(toolbar =>
+            .ConfigureToolbar(toolbar =>
             {
-                toolbar.InitToolbarItems<HomePage>( //Create toolbar items only for HomePage view
+                toolbar.SetEnabled().Set<HomePage>( //Create toolbar items only for HomePage view
                     new FlourishToolbarItem(
                         CKey.Application_SayHello_6D995DBA,
                         "\uE8F2",

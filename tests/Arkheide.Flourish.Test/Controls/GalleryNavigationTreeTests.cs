@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Text.RegularExpressions;
 

@@ -1,18 +1,20 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Configuration;
+
 using System.IO;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Internal.Composition;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
-public sealed class FlourishDataBuilderTests
+public sealed class DataBuilderTests
 {
     [Fact]
     public void ConfigurationMethods_WithValidValues_UpdateOptionsAndReturnBuilder()
     {
         var options = new FlourishDataOptions();
-        var sut = new FlourishDataBuilder(options);
+        var sut = new DataBuilder(options);
 
-        Assert.Same(sut, sut.InitLocale(" en-US "));
+        Assert.Same(sut, sut.SetLocale(" en-US "));
         Assert.Same(sut, sut.AddCultureFile(" Locales/FlourishCulture.Json "));
 
         Assert.Equal("en-US", options.Locale);
@@ -20,18 +22,18 @@ public sealed class FlourishDataBuilderTests
     }
 
     [Fact]
-    public void InitLocale_LastCallControlsPersistencePolicy()
+    public void SetLocale_LastCallControlsPersistencePolicy()
     {
         var options = new FlourishDataOptions();
-        var sut = new FlourishDataBuilder(options);
+        var sut = new DataBuilder(options);
 
-        sut.InitLocale("zh-CN", usePersistedPreference: true);
+        sut.SetLocale("zh-CN", usePersistedPreference: true);
         Assert.True(options.UsePersistedLocale);
 
-        sut.InitLocale("en-US");
+        sut.SetLocale("en-US");
         Assert.True(options.UsePersistedLocale);
 
-        sut.InitLocale("zh-CN", usePersistedPreference: false);
+        sut.SetLocale("zh-CN", usePersistedPreference: false);
         Assert.False(options.UsePersistedLocale);
     }
 
@@ -39,13 +41,13 @@ public sealed class FlourishDataBuilderTests
     public void StoragePaths_ResolveRelativeToApplicationDirectory()
     {
         var options = new FlourishDataOptions();
-        var sut = new FlourishDataBuilder(options);
+        var sut = new DataBuilder(options);
 
         Assert.Same(
             sut,
-            sut.InitAppSettingsFilePath("Data/appsettings.Flourish.json")
+            sut.SetAppSettingsFilePath("Data/appsettings.Flourish.json")
         );
-        Assert.Same(sut, sut.InitProjectCatalogFilePath("Data/projects.catalog.json"));
+        Assert.Same(sut, sut.SetProjectCatalogFilePath("Data/projects.catalog.json"));
 
         Assert.Equal(
             Path.GetFullPath(
@@ -61,7 +63,7 @@ public sealed class FlourishDataBuilderTests
     }
 
     [Fact]
-    public void InitAppSettingsFilePath_WithoutPathRestoresFlourishDefault()
+    public void SetAppSettingsFilePath_WithoutPathRestoresFlourishDefault()
     {
         var options = new FlourishDataOptions
         {
@@ -71,9 +73,9 @@ public sealed class FlourishDataBuilderTests
                 "custom.json"
             ),
         };
-        var sut = new FlourishDataBuilder(options);
+        var sut = new DataBuilder(options);
 
-        Assert.Same(sut, sut.InitAppSettingsFilePath());
+        Assert.Same(sut, sut.SetAppSettingsFilePath());
         Assert.Equal(
             Path.Combine(AppContext.BaseDirectory, "appsettings.Flourish.json"),
             options.AppSettingsFilePath
@@ -95,23 +97,23 @@ public sealed class FlourishDataBuilderTests
     )
     {
         var options = new FlourishDataOptions();
-        var sut = new FlourishDataBuilder(options);
+        var sut = new DataBuilder(options);
 
         var exception = Assert.Throws<ArgumentException>(() =>
         {
             switch (parameterName)
             {
                 case "locale":
-                    sut.InitLocale(value!);
+                    sut.SetLocale(value!);
                     break;
                 case "localePath":
                     sut.AddCultureFile(value!);
                     break;
                 case "appSettingsPath":
-                    sut.InitAppSettingsFilePath(value!);
+                    sut.SetAppSettingsFilePath(value!);
                     break;
                 case "projectCatalogPath":
-                    sut.InitProjectCatalogFilePath(value!);
+                    sut.SetProjectCatalogFilePath(value!);
                     break;
             }
         });

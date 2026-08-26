@@ -12,10 +12,6 @@ using System.Windows.Markup;
     "http://schemas.arkheide.system/flourish",
     "ArkheideSystem.Flourish.Themes"
 )]
-[assembly: XmlnsDefinition(
-    "http://schemas.arkheide.system/flourish",
-    "ArkheideSystem.Flourish.Abstract"
-)]
 [assembly: XmlnsPrefix("http://schemas.arkheide.system/flourish", "flourish")]
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None,

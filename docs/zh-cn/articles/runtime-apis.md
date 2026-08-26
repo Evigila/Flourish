@@ -1,209 +1,94 @@
 ---
 title: 运行时 API
-description: 在应用运行期间读取和修改 Flourish 配置、Shell 界面、项目、导航、命令、窗口、通知与后台任务。
+description: 在应用构建后使用聚焦的 Flourish Service。
 ---
 
 # 运行时 API
 
-Flourish 提供两层互补的配置方式：
+启动 Builder 与运行时 Service 描述相同领域的不同时期：
 
-- `IFlourishBuilder` 及其 `Config...` 回调用于定义应用的初始对象图和启动状态。页面与服务注册、默认值选择以及启动前校验仍应放在 Builder 期完成。
-- 运行时服务用于在 `Build()` 之后修改正在运行的应用。请通过依赖注入获取这些服务，通常应将其注入 Page、ViewModel 或应用服务的构造函数。
+- 功能 Builder 在 `Build()` 前记录初始草稿；
+- 功能 Service 修改已构建应用并报告实时状态。
 
-下列运行时服务均以单例注册。Builder 负责确定且可复现的启动默认值；运行时服务则适合用户偏好、插件、功能开关以及会在会话期间变化的状态。
+所有契约统一使用 `ArkheideSystem.Flourish.Abstract`，所有 Service 都可通过依赖注入获得。
 
-公开 API 按职责分为以下命名空间：
+## 状态与事件
 
-- `ArkheideSystem.Flourish.Abstract.Builder` 放置一次性启动 Builder 和服务注册扩展。
-- `ArkheideSystem.Flourish.Abstract.Essential` 放置执行业务操作的运行时契约，包括导航、命令、项目、本地化与后台任务。
-- `ArkheideSystem.Flourish.Abstract.Runtime` 放置实时 UI 与 Shell 配置服务。
-- `ArkheideSystem.Flourish.Abstract` 放置共享模型及 `IFlourish` 生命周期契约。
+具有状态的 UI Service 公开不可变 `Current` 快照与 `Changed` 事件。一次读取同一快照中的关联值，才能保证它们属于同一个原子状态。
 
-## 状态、事件与生命周期
+```csharp
+var themeState = theme.Current;
+var materialState = material.Current;
+var fontState = fonts.Current;
 
-有状态的服务会公开不可变的 `Current` 快照，或 `ActiveTasks`、`Registrations` 等具名快照，并提供 `Changed`、`StateChanged` 或领域专用事件。收到事件后应读取新快照，不要长期保存可变 UI 对象。事件通常在发起修改的线程同步触发；配置重载、后台任务和通知过期可能在 WPF Dispatcher 之外触发，因此更新 UI 时需要按需切回 UI 线程。
+theme.Changed += (_, change) => ApplyTheme(change.Current);
+```
 
-注册和临时展示 API 使用可释放的租约。返回对象应只存活到对应功能不再需要为止，随后调用 `Dispose()`。这适用于 `ICommandRegistration`、`IShortcutRegistration`、`INavigationRouteRegistration`、`IShellRegionRegistration`、`IStatusBarItemHandle`、`FlourishNotificationHandle`、`IWindowCloseGuardRegistration` 以及标题栏搜索订阅。`FlourishCultureRegistration` 不实现 `IDisposable`，需要通过 `IFlourishLocalization.Unregister` 显式移除。
+`IThemeService.Current` 包含 `RequestedTheme`、`EffectiveTheme` 和 `IsDark`。`IMaterialEffectService.Current` 包含请求/有效材质、支持状态、应用状态与深色模式。`IFontService.Current` 包含两种字体、全部字号层级和 `PageOverrides`。字体事件保留专用 `FlourishFontChangedEventArgs`，因为 `ChangeKind` 与 `AffectedPageType` 描述了变化范围；变化后的字体状态仍通过 `args.Current` 获取。
 
-## 配置与本地化
+简单状态变化使用 `FlourishStateChangedEventArgs<TState>` 或 `FlourishStateTransitionEventArgs<TState>`；只有携带额外领域变化元数据时才保留专用事件参数。
 
-| 服务 | 运行时用途 |
-| --- | --- |
-| `IFlourishConfiguration` | 通过 `Current`、字符串索引器、`Get<T>` 或 `GetSection<T>` 读取 Host 的最终有效配置；可调用 `Reload()` 并监听 `Changed`。 |
-| `IFlourishSettingsStore` | 原子更新 `Flourish` 顶级节拥有的值。每个路径都必须以 `Flourish:` 开头；文件发生变化后会重载 Host 配置。 |
-| `IFlourishLocalization` | 读取、格式化本地化键，运行时调用 `SetLocale`，以及注册、重载或注销 `FlourishCulture.Json` 目录。 |
+集合型 Service 也使用统一的 `Current`/`Changed` 形态。`IBackgroundTaskService.Current` 是活动任务列表，通用变化事件通过 `args.Current` 发布同一份缓存列表。`INotificationService.Current` 是 `FlourishNotificationState`，以一个原子快照同时提供 `Notifications` 与 `Version`。`ICommandRegistry` 和 `IShortcutService` 暴露活动注册，其专用事件参数通过 `Current` 提供变化后的快照，并使用 `FlourishRuntimeChangeKind` 表示 `Added`、`Updated` 或 `Removed`。
 
-`IFlourishSettingsStore` 会写入 `InitAppSettingsFilePath` 选择的文件，默认是应用根目录下的 `appsettings.Flourish.json`。它不能修改 `Logging`、`ConnectionStrings` 或其他由应用拥有的顶级节。`IProjectService` 会另外将项目目录持久化到独立选择的 `InitProjectCatalogFilePath`；普通运行时快照仅存在于内存中，除非对应服务明确说明会持久化。
+`IFlourishLocalization.Current` 包含 `Locale` 与 `AvailableLocales`；调用 `SetLocale` 切换语言，并通过 `Changed` 监听语言或来源更新。`IProfileService.Current` 是包含用户资料、登录状态与名称顺序的 `FlourishProfileState`，其 `Changed` 事件提供替换后的快照。
+
+## 配置与可写设置
+
+注入标准 `Microsoft.Extensions.Configuration.IConfiguration` 即可读取最终 Host 配置，其中包括 appsettings、User Secrets、环境变量、命令行以及通过 `ConfigureConfiguration` 添加的来源。
+
+`appsettings.Flourish.json` 仍是默认可写设置文件。可在构建前使用 `IDataBuilder.SetAppSettingsFilePath` 选择其他路径。注入 `IFlourishSettingsStore` 可原子修改 `Flourish:` 下的值；成功写入后会重新加载同一套标准 `IConfiguration` 管线。
 
 ```csharp
 public async ValueTask SaveEndpointAsync(
+    IConfiguration configuration,
     IFlourishSettingsStore settings,
-    IFlourishLocalization localization,
     string endpoint,
     CancellationToken cancellationToken)
 {
-    await settings.UpdateAsync(editor =>
-    {
-        editor.Set("Flourish:Extensions:Foobar:Api:BaseUrl", endpoint);
-        editor.Merge(
-            "Flourish:Extensions:Foobar:FeatureFlags",
-            new { ReportsEnabled = true });
-        editor.Append(
-            "Flourish:Extensions:Foobar:Api:RecentEndpoints",
-            endpoint);
-    }, cancellationToken);
-
-    localization.SetLocale("zh-CN");
+    string? previous = configuration["Flourish:Extensions:Api:BaseUrl"];
+    await settings.SetAsync(
+        "Flourish:Extensions:Api:BaseUrl",
+        endpoint,
+        cancellationToken);
 }
 ```
 
-## 外观与 Shell 功能
+## 运行时 Service 对照
 
-| 服务 | 运行时用途 |
+| 领域 | 运行时 Service |
 | --- | --- |
-| `IThemeService` | 使用 `SetTheme` 选择并持久化 `System`、`Light` 或 `Dark`，或通过 `ToggleTheme` 循环切换；可读取 `EffectiveTheme` 和 `IsDark`。 |
-| `IAppearanceService` | 设置或清除共享主题颜色与圆角覆盖，可原子修改两项并监听 `Changed`。清除覆盖会重新显露标准主题资源，不会删除应用自有资源。 |
-| `IContentLayoutService` | 启用或禁用居中页面内容，并原子设置最大宽度。当前页面和之后导航到的页面使用同一状态。 |
-| `IFontService` | 通过 `SetFont` 原子修改全局字体及彼此独立、仅要求有限正数的 Small、Standard、Icon、Large、ExtraLarge、HeaderSize 字号；可独立修改图标字体，并通过 `PageOverrides`、`SetOverrideFont` 与 `RemoveOverrideFont` 查看、设置和移除页面字体覆盖。 |
-| `IToolTipService` | 在原生 WPF 与 Flourish 呈现之间切换 Flourish 自有 Tooltip，并通过 `SetSettings` 修改 Flourish 呈现的首次显示延迟和生成边距；原生与第三方控件不受其控制。 |
-| `IScrollService` | 通过 `GetCurrent` 读取应用级滚动状态、通过 `SetSmoothScrollingEnabled` 修改平滑滚动并监听 `Changed`。本地设置的 `ScrollViewer.IsSmoothScrollingEnabled` 优先。 |
-| `IMotionService` | 启用动画，修改页面/导航过渡及其时长，配置 Hover Reveal，并遵循 Windows 的减少动态效果设置。 |
-| `IMaterialEffectService` | 查看请求值与实际材质、检查平台支持、应用 `Auto`、Mica、Acrylic、Mica Alt 或 `None`，并修改沉浸式深色模式；显式请求平台不支持的材质会抛出 `PlatformNotSupportedException`。 |
+| 主题与外观 | `IThemeService`、`IAppearanceService`、`IMaterialEffectService`、`IFontService` |
+| 布局与交互 | `IContentLayoutService`、`IScrollService`、`IToolTipService`、`IMotionService` |
+| 标题栏与资料 | `ITitleBarService`、`IProfileFlyoutService`、`IProfileService` |
+| 导航 | `INavigationService` |
+| 工具栏、状态、区域 | `IToolbarService`、`IStatusBarService`、`IShellRegionService` |
+| 窗口与托盘 | `IWindowService`、`IWindowCloseService`、`ITrayService` |
+| 项目 | `IProjectService`、`IProjectBehavior` |
+| 命令 | `ICommandRegistry`、`ICommandDispatcher`、`IShortcutService` |
+| 消息与工作 | `IMessageService`、`INotificationService`、`IBackgroundTaskService` |
+| 本地化与设置 | `IFlourishLocalization`、`IFlourishSettingsStore`、标准 `IConfiguration` |
 
-每个 Shell 界面都通过其权威领域服务启用。例如，`ITitleBarService.SetEnabled`
-用于在 Flourish 自定义标题栏与 Windows 原生标题栏之间切换，而
-`INavigationPanelService`、`IToolbarService`、`IStatusBarService`、
-`IToolTipService`、`IMotionService` 与 `IProfileFlyoutService` 分别提供自己的
-`SetEnabled` 操作。禁用标题栏会恢复原生标题栏，但不会改变请求的材质效果；
-重新启用后会恢复 Flourish 标题栏，并将该材质请求重新应用到自定义窗口框架。
+`INavigationService` 是完整导航门面。它的 `Current` 快照组合活动导航、路由、菜单、面板和缓存状态，并负责路由注册、菜单事务、面板修改、导航历史与页面缓存操作。
 
-## 标题栏、项目与搜索
+`ITitleBarService` 同样统一负责标题内容、元素可见性、搜索状态和搜索订阅。通过 `SubscribeSearch` 注册搜索处理器会返回 `IRegistration`。
 
-| 服务 | 运行时用途 |
-| --- | --- |
-| `ITitleBarService` | 修改应用标题/副标题、未命名项目占位文本、Logo 及其信息字段可见性、搜索占位符、面包屑模式和各个 `TitleBarElement`。 |
-| `IProjectService` | 添加、更新、查询、激活和移除 `FlourishProject` 目录元数据；修改项目模式；观察不可变快照。每次目录变更都会原子写入 `projects.json`。 |
-| `IProjectBehavior` | 以异步方式新建、保存、激活和删除项目，并决定是否允许关闭。应用可以替换默认对话框与 `.txt` 文件生命周期。 |
-| `ITitleBarSearchService` | 控制搜索文本、可见性、占位符、清空和焦点；观察 `QueryChanged`；通过 `Subscribe` 按注册顺序添加异步处理器。 |
+## 注册生命周期
 
-未启用项目模式时，标题选择器只显示并列出应用标题。启用项目模式后，选择器显示活动项目或未命名项目占位文本，并列出全部项目与“新建项目”。`StoragePath == null` 表示项目未持久化，占位文本只用于显示。
+命令处理器、快捷键、运行时路由、Shell 区域项、关闭守卫和标题栏搜索处理器统一返回 `IRegistration`。功能有效期间持有租约，不再需要时调用 `Dispose()`。
 
-直接调用 `IProjectService` 会更新 Shell 状态与持久化目录，但不会显示生命周期对话框或访问项目文件。启用项目模式时，选择项目、新建项目、右键删除、使用 Ctrl+S 保存以及关闭都会路由到 `IProjectBehavior`；内置 Ctrl+S 注册使用低优先级。未启用项目模式时，这些 Shell 路由保持停用，由应用代码管理单项目保存行为。替换该行为会改变项目对话框与文件操作，但不会停用 `IProjectService` 的目录持久化。
-
-激活操作只更新活动目录项与标题。应用仍负责加载或切换业务内容。参见[项目](projects.md)。
-
-```csharp
-public sealed class SearchModule(
-    ITitleBarSearchService search,
-    ISearchIndex searchIndex) : IDisposable
-{
-    private readonly IDisposable subscription = search.Subscribe(async (query, token) =>
-    {
-        await searchIndex.UpdateResultsAsync(query.Text, token);
-    });
-
-    public void Open()
-    {
-        search.SetVisible(true);
-        search.SetPlaceholder("搜索报表");
-        search.Focus();
-    }
-
-    public void Dispose() => subscription.Dispose();
-}
-```
-
-## 导航、路由与页面缓存
-
-| 服务 | 运行时用途 |
-| --- | --- |
-| `INavigationService` | 按区分大小写的路由键或页面类型导航，执行异步导航，读取当前路由/参数，并控制后退和前进历史。 |
-| `INavigationPanelService` | 启用、移动、调整导航面板尺寸，以及打开、关闭或切换面板。 |
-| `INavigationMenuService` | 通过一次 `Set` 事务原子修改分组、固定项、页面/命令项、顺序、文字、可见性、启用状态与树展开状态。 |
-| `INavigationRouteRegistry` | 使用 `Append` 或 `Set` 注册路由，通过 `Get` 查询或移除路由，并修改其 `FlourishPageCacheMode`。 |
-| `IPageCacheService` | 按页面类型修改缓存模式，读取已缓存页面类型，逐页驱逐或清空全部缓存实例。 |
-
-应先注册路由，再公开指向该路由的菜单项。释放路由租约之前，应先移除对应菜单项。
-
-`AppendGroup`、`AppendItem` 与 `AppendFixedItem` 始终追加到目标集合末尾；需要指定从零开始的位置时，使用 `SetGroupIndex`、`SetItemIndex` 或 `SetFixedItemIndex`。
-
-```csharp
-public sealed class DiagnosticsModule : IDisposable
-{
-    private readonly INavigationRouteRegistration route;
-    private readonly INavigationMenuService menu;
-
-    public DiagnosticsModule(
-        INavigationRouteRegistry routes,
-        INavigationMenuService menu,
-        INavigationService navigation)
-    {
-        this.menu = menu;
-        route = routes.Append(new FlourishNavigationRoute(
-            "runtime.diagnostics",
-            typeof(DiagnosticsPage),
-            FlourishPageCacheMode.Enabled));
-
-        menu.Set(editor =>
-        {
-            editor.AppendGroup("runtime", "运行时");
-            editor.AppendItem("runtime", FlourishNavigationMenuItem.Page(
-                "runtime.diagnostics.item", "runtime.diagnostics", "诊断", "\uE9D2"));
-        });
-
-        navigation.Navigate("runtime.diagnostics");
-    }
-
-    public void Dispose()
-    {
-        menu.Set(editor =>
-        {
-            editor.RemoveItem("runtime.diagnostics.item");
-            editor.RemoveGroup("runtime");
-        });
-        route.Dispose();
-    }
-}
-```
-
-## 工具栏、状态栏与 Shell 区域
-
-| 服务 | 运行时用途 |
-| --- | --- |
-| `IToolbarService` | 启用工具栏；通过 `SetDefault` 或 `Set` 设置完整定义；使用 `Append`、`SetItem`、`SetOrder` 或 `Remove` 修改单个 `FlourishToolbarItem`；通过其他 `Set` 操作修改项目状态和页面 `IconOnly` 模式。 |
-| `IStatusBarService` | 启用自定义内容和内置 LAN/电源指示；使用 `Append`、`SetItem`、`SetOrder` 或 `Remove` 修改 `FlourishStatusItem`。`Show` 可创建定时项目并返回可释放句柄。 |
-| `IShellRegionService` | 使用 `Append` 或 `Set` 向 `FlourishRegion` 注册 WPF 内容工厂，并通过 `Set` 与 `Remove` 操作修改状态、顺序或移除注册项。 |
-
-工具栏和导航中的命令项通过 `ICommandDispatcher` 调度。
-
-## 命令与快捷键
-
-`ICommandRegistry.Register` 可添加异步处理器，并指定可选的可执行谓词、重复策略和优先级。`ICommandDispatcher.CanExecute` 用于查询命令当前是否可用；`ExecuteAsync` 用于调度命令，并返回捕获了执行结果的 `CommandResult`。`IShortcutService.Register` 可将 WPF `KeyGesture` 映射到命令，并配置应用、窗口或页面作用域及冲突策略。
-
-默认情况下，文本输入控件获得键盘焦点时不会派发快捷键，以保留正常输入、剪贴板、编辑、AltGr 与 IME 行为。只有确实需要在编辑文字时保持生效的快捷键，才应将 `ShortcutRegistrationOptions.AllowWhenTextInputFocused` 设置为 `true`。
-
-命令处理程序通过 `ICommandRegistry` 注册，并通过 `ICommandDispatcher` 调用。应在所属功能的生命周期内持有 `ICommandRegistration`，并通过释放注册来移除处理程序。命令映射与整个 Host 生命周期一致时，实现 `ICommandParser` 即可由 Flourish 自动管理其租约。
+`FlourishCultureRegistration` 同样实现 `IRegistration`，并额外提供 `Reload()` 刷新文化文件；释放时会自动取消注册。`IStatusBarItemHandle` 继承 `IRegistration`；它与 `FlourishNotificationHandle` 仍保留专用 API，因为两者除了释放外还可以更新实时展示。
 
 ```csharp
 public sealed class RefreshBindings : IDisposable
 {
-    private readonly ICommandRegistration command;
-    private readonly IShortcutRegistration shortcut;
+    private readonly IRegistration command;
+    private readonly IRegistration shortcut;
 
-    public RefreshBindings(
-        ICommandRegistry commands,
-        IShortcutService shortcuts,
-        IDataRefresher refresher)
+    public RefreshBindings(ICommandRegistry commands, IShortcutService shortcuts)
     {
-        command = commands.Register("cmd_data_refresh", async (_, token) =>
-        {
-            await refresher.RefreshAsync(token);
-            return CommandResult.Handled;
-        });
-
-        shortcut = shortcuts.Register(
-            new KeyGesture(Key.F5, ModifierKeys.Control),
-            "cmd_data_refresh");
+        command = commands.Register("refresh", (_, _) =>
+            ValueTask.FromResult(CommandResult.Handled));
+        shortcut = shortcuts.Register(new KeyGesture(Key.F5), "refresh");
     }
 
     public void Dispose()
@@ -213,51 +98,3 @@ public sealed class RefreshBindings : IDisposable
     }
 }
 ```
-
-当外部状态改变了可执行谓词的结果时，调用 `NotifyCanExecuteChanged(commandKey)`。
-
-## 窗口、托盘、关闭、Profile、消息与通知
-
-| 服务 | 运行时用途 |
-| --- | --- |
-| `IWindowService` | 修改边界、尺寸约束、缩放模式、置顶/任务栏状态；居中、显示、隐藏、激活、最小化、最大化或还原 Shell。 |
-| `ITrayService` | 启用通知区域行为，修改 Tooltip，最小化到托盘、还原或请求退出。 |
-| `IWindowCloseService` | 选择 `Prompt`、`Close` 或 `MinimizeToTray`；注册有序异步关闭守卫；检查或发起关闭请求。 |
-| `IProfileFlyoutService` | 启用、显示、隐藏或切换 Profile Flyout，并替换其中的 WPF `Page` 内容。 |
-| `IProfileService` | 读取 Profile/登录状态，在不退出登录的情况下修改全局 `NameOrder`，初始化已记住的登录，登录，修改“记住登录”状态或退出登录。 |
-| `IMessageService` | 同步或通过 `ShowAsync` 显示标准/自定义选项模态消息；异步取消只在对话框打开前有效。 |
-| `INotificationService` | `Show` 或 `Upsert` 非模态通知，读取活动通知，关闭单项/全部通知，并可在激活通知时派发命令。 |
-
-关闭守卫和通知都会返回可释放租约。通知句柄还可在关闭前更新通知内容。
-`IProfileAuthService` 仍是启动期注册的认证提供程序；`IProfileService` 是运行时调用它的门面。
-
-## 后台任务
-
-`IBackgroundTaskService.QueueTask` 可在运行时将异步工作加入有界队列。任务通过 `FlourishBackgroundTaskContext` 获得协作式取消和进度上报能力；返回句柄提供 `Cancel`、`Snapshot`，以及通过结果对象捕获成功、取消或失败的 `Completion` Task。
-
-```csharp
-public FlourishBackgroundTaskHandle StartExport(
-    IBackgroundTaskService tasks,
-    IReportExporter exporter)
-{
-    return tasks.QueueTask(
-        new FlourishBackgroundTaskMetadata("导出报告", "正在写入文件", "\uE74E"),
-        async context =>
-        {
-            for (var step = 1; step <= 10; step++)
-            {
-                await exporter.WritePartAsync(step, context.CancellationToken);
-                context.ReportProgress(step / 10d);
-            }
-        });
-}
-```
-
-任务委托不会在 WPF UI 线程运行。可监听 `TasksChanged` 更新 Shell 或应用 UI，并将控件更新切回 UI 线程。
-
-## 相关指南
-
-- [IFlourishBuilder](flourish-builder.md)与[依赖注入](configure-services.md)
-- [应用数据](configure-data.md)、[项目](projects.md)、[导航](navigation.md)与[命令调度](commands.md)
-- [动态工具栏](dynamic-toolbar.md)、[状态栏](status-bar.md)与[后台任务](background-tasks.md)
-- [窗口](configure-window.md)、[Profile](configure-profile.md)与[消息服务](message-service.md)

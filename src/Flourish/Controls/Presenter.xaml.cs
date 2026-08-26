@@ -1,10 +1,12 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using System.Windows.Media;
-using ArkheideSystem.Flourish.Internal.Interaction;
 using WpfControl = System.Windows.Controls.Control;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfOrientation = System.Windows.Controls.Orientation;

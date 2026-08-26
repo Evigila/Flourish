@@ -1,5 +1,16 @@
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Messaging;
+using ArkheideSystem.Flourish.Views.Windows;
+using ArkheideSystem.Flourish.Windowing;
+
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
@@ -13,10 +24,10 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         using var sut = CreateNotificationService();
         var snapshots = new List<IReadOnlyList<FlourishNotificationInfo>>();
         var versions = new List<long>();
-        sut.NotificationsChanged += (_, args) =>
+        sut.Changed += (_, args) =>
         {
-            snapshots.Add(args.Notifications);
-            versions.Add(args.Version);
+            snapshots.Add(args.Current.Notifications);
+            versions.Add(args.Current.Version);
         };
         using var first = sut.Show(new FlourishNotification("one", "One", "Initial"));
         using var second = sut.Show(new FlourishNotification("two", "Two", "Second"));
@@ -33,13 +44,13 @@ public sealed class RuntimeNotificationAndTrayServiceTests
             new FlourishNotification("two", "Two updated", "Replacement")
         );
 
-        Assert.Equal(["one", "two"], sut.ActiveNotifications.Select(x => x.Notification.Id));
-        Assert.Equal("One updated", sut.ActiveNotifications[0].Notification.Title);
-        Assert.Equal("Two updated", sut.ActiveNotifications[1].Notification.Title);
+        Assert.Equal(["one", "two"], sut.Current.Notifications.Select(x => x.Notification.Id));
+        Assert.Equal("One updated", sut.Current.Notifications[0].Notification.Title);
+        Assert.Equal("Two updated", sut.Current.Notifications[1].Notification.Title);
         Assert.True(sut.Dismiss("one"));
         Assert.False(sut.Dismiss("missing"));
         sut.DismissAll();
-        Assert.Empty(sut.ActiveNotifications);
+        Assert.Empty(sut.Current.Notifications);
         Assert.Equal(6, snapshots.Count);
         Assert.Equal([1, 2, 3, 4, 5, 6], versions);
     }
@@ -69,9 +80,9 @@ public sealed class RuntimeNotificationAndTrayServiceTests
     {
         using var sut = CreateNotificationService();
         var expired = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        sut.NotificationsChanged += (_, args) =>
+        sut.Changed += (_, args) =>
         {
-            if (args.Notifications.Count == 0)
+            if (args.Current.Notifications.Count == 0)
             {
                 expired.TrySetResult();
             }
@@ -95,16 +106,16 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         );
 
         await Task.Delay(90);
-        Assert.Single(sut.ActiveNotifications);
-        Assert.Equal("Replacement", sut.ActiveNotifications[0].Notification.Message);
+        Assert.Single(sut.Current.Notifications);
+        Assert.Equal("Replacement", sut.Current.Notifications[0].Notification.Message);
         await expired.Task.WaitAsync(TimeSpan.FromSeconds(2));
-        Assert.Empty(sut.ActiveNotifications);
+        Assert.Empty(sut.Current.Notifications);
     }
 
     [Fact]
     public async Task TrayService_UsesClosePipelineWithTrayReason()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishWindowOptions();
         var close = new WindowCloseService(options, new Mock<IServiceProvider>().Object);
         var requested = new TaskCompletionSource<WindowCloseRequestReason>(
             TaskCreationOptions.RunContinuationsAsynchronously
@@ -136,7 +147,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
     [Fact]
     public async Task TrayService_CanceledGuardResetsExitRequest()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishWindowOptions();
         var close = new WindowCloseService(options, new Mock<IServiceProvider>().Object);
         close.Attach((_, _) => ValueTask.FromResult(true));
         using var guard = close.RegisterGuard(
@@ -148,8 +159,8 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         var observedExit = false;
         sut.Changed += (_, args) =>
         {
-            observedExit |= args.State.IsExitRequested;
-            if (observedExit && !args.State.IsExitRequested)
+            observedExit |= args.Current.IsExitRequested;
+            if (observedExit && !args.Current.IsExitRequested)
             {
                 reset.TrySetResult();
             }
@@ -164,16 +175,16 @@ public sealed class RuntimeNotificationAndTrayServiceTests
     [Fact]
     public void TrayService_DisablingMinimizeToTrayRestoresPromptCloseBehavior()
     {
-        var options = new FlourishShellOptions();
+        var options = new FlourishWindowOptions();
         var close = new WindowCloseService(options, new Mock<IServiceProvider>().Object);
         close.SetBehavior(WindowCloseBehavior.MinimizeToTray);
         using var sut = CreateTrayService(options, close);
         var states = new List<FlourishTrayState>();
-        sut.Changed += (_, args) => states.Add(args.State);
+        sut.Changed += (_, args) => states.Add(args.Current);
 
         ((ITrayService)sut).SetEnabled(false);
 
-        Assert.Equal(WindowCloseBehavior.Prompt, close.Behavior);
+        Assert.Equal(WindowCloseBehavior.Prompt, close.Current.Behavior);
         Assert.False(options.IsTrayExitEnabled);
         Assert.False(sut.Current.IsEnabled);
         Assert.Collection(states, state => Assert.False(state.IsEnabled));
@@ -203,7 +214,7 @@ public sealed class RuntimeNotificationAndTrayServiceTests
         new(NullLogger<NotificationService>.Instance);
 
     private static TrayIconService CreateTrayService(
-        FlourishShellOptions options,
+        FlourishWindowOptions options,
         WindowCloseService close
     ) =>
         new(

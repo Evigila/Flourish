@@ -1,9 +1,15 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Page;
 using Moq;
 using Shape = System.Windows.Shapes.Shape;
@@ -67,12 +73,13 @@ public sealed class FlourishProfilePageRenderingTests
         {
             var profileService = new Mock<IProfileService>();
             profileService
-                .SetupGet(service => service.CurrentProfile)
-                .Returns(new ProfileUser("User", "", NameOrder.FirstLast));
-            profileService
-                .SetupGet(service => service.LoginState)
-                .Returns(ProfileLoginState.SignedOut);
-            profileService.SetupGet(service => service.NameOrder).Returns(NameOrder.FirstLast);
+                .SetupGet(service => service.Current)
+                .Returns(
+                    new FlourishProfileState(
+                        new ProfileUser("User", "", NameOrder.FirstLast),
+                        ProfileLoginState.SignedOut
+                    )
+                );
 
             var page = new FlourishProfilePage(
                 profileService.Object,

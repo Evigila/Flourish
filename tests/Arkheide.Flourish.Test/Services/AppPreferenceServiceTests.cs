@@ -1,8 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Configuration;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
@@ -234,9 +242,12 @@ public sealed class AppPreferenceServiceTests
             }
             """;
         WriteAppSettings(directory.Path, originalJson);
-        var exception = Assert.Throws<FormatException>(() => CreateConfiguration(directory.Path));
+        var exception = Assert.Throws<InvalidDataException>(() =>
+            CreateConfiguration(directory.Path)
+        );
+        var formatException = Assert.IsType<FormatException>(exception.InnerException);
 
-        Assert.Contains("Flourish", exception.Message);
+        Assert.Contains("Flourish", formatException.Message);
         Assert.Equal(
             originalJson,
             File.ReadAllText(Path.Combine(directory.Path, "appsettings.Flourish.json"))
@@ -257,9 +268,12 @@ public sealed class AppPreferenceServiceTests
             """
         );
 
-        var exception = Assert.Throws<FormatException>(() => CreateConfiguration(directory.Path));
+        var exception = Assert.Throws<InvalidDataException>(() =>
+            CreateConfiguration(directory.Path)
+        );
+        var formatException = Assert.IsType<FormatException>(exception.InnerException);
 
-        Assert.Contains("more than one", exception.Message);
+        Assert.Contains("more than one", formatException.Message);
     }
 
     [Fact]
@@ -548,20 +562,21 @@ public sealed class AppPreferenceServiceTests
             .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
         using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
-        using var runtimeConfiguration = new FlourishConfigurationService(configuration);
         var changeCount = 0;
         string? valueObservedByEvent = null;
-        runtimeConfiguration.Changed += (_, _) =>
-        {
-            changeCount++;
-            valueObservedByEvent = runtimeConfiguration["Flourish:Feature:Value"];
-        };
+        using var reloadRegistration = ChangeToken.OnChange(
+            configuration.GetReloadToken,
+            () =>
+            {
+                changeCount++;
+                valueObservedByEvent = configuration["Flourish:Feature:Value"];
+            }
+        );
 
         var result = await sut.SetAsync("Flourish:Feature:Value", "updated");
 
         Assert.True(result.ConfigurationReloaded);
         Assert.Equal("updated", configuration["Flourish:Feature:Value"]);
-        Assert.Equal("updated", runtimeConfiguration.Current["Flourish:Feature:Value"]);
         Assert.Equal("updated", valueObservedByEvent);
         Assert.Equal(1, changeCount);
         Assert.Equal(1, unrelatedSource.Provider.LoadCount);
@@ -689,24 +704,26 @@ public sealed class AppPreferenceServiceTests
             .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
         using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
-        using var runtimeConfiguration = new FlourishConfigurationService(configuration);
         Exception? reentrantError = null;
         var callbackInvoked = 0;
-        runtimeConfiguration.Changed += (_, _) =>
-        {
-            if (Interlocked.Exchange(ref callbackInvoked, 1) != 0)
+        using var reloadRegistration = ChangeToken.OnChange(
+            configuration.GetReloadToken,
+            () =>
             {
-                return;
-            }
+                if (Interlocked.Exchange(ref callbackInvoked, 1) != 0)
+                {
+                    return;
+                }
 
-            reentrantError = Record.Exception(() =>
-                sut.SetAsync("Flourish:Feature:Nested", true)
-                    .AsTask()
-                    .WaitAsync(TimeSpan.FromSeconds(1))
-                    .GetAwaiter()
-                    .GetResult()
-            );
-        };
+                reentrantError = Record.Exception(() =>
+                    sut.SetAsync("Flourish:Feature:Nested", true)
+                        .AsTask()
+                        .WaitAsync(TimeSpan.FromSeconds(1))
+                        .GetAwaiter()
+                        .GetResult()
+                );
+            }
+        );
 
         var result = await sut.SetAsync("Flourish:Feature:Value", "updated")
             .AsTask()
@@ -728,9 +745,11 @@ public sealed class AppPreferenceServiceTests
             .SetupGet(environment => environment.ContentRootPath)
             .Returns(directory.Path);
         using var sut = new AppPreferenceService(configuration, hostEnvironment.Object);
-        using var runtimeConfiguration = new FlourishConfigurationService(configuration);
         var changeCount = 0;
-        runtimeConfiguration.Changed += (_, _) => changeCount++;
+        using var reloadRegistration = ChangeToken.OnChange(
+            configuration.GetReloadToken,
+            () => changeCount++
+        );
         using var blockerEntered = new ManualResetEventSlim();
         using var releaseBlocker = new ManualResetEventSlim();
         var blocker = sut.UpdateAsync(_ =>
@@ -970,7 +989,7 @@ public sealed class AppPreferenceServiceTests
         ReplaceAppSettings(directory.Path, "{ invalid json", "invalid");
 
         var error = await loadError.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.IsType<FormatException>(error);
+        Assert.IsAssignableFrom<JsonException>(error);
         Assert.Equal("before", configuration["Flourish:Feature:Value"]);
 
         var recovered = new TaskCompletionSource<string?>(

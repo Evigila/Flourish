@@ -1,9 +1,10 @@
+using System;
+using System.Linq;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
-using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,26 +19,14 @@ public partial class NavigationRuntimePage : Page
     private const string RuntimeItemId = "runtime-gallery.preview";
     private const string RuntimeRouteKey = "RuntimePreview";
 
-    private readonly INavigationPanelService panel;
-    private readonly INavigationMenuService menu;
-    private readonly INavigationRouteRegistry routes;
     private readonly INavigationService navigation;
-    private readonly IPageCacheService cache;
     private bool isRefreshing;
 
     public NavigationRuntimePage(
-        INavigationPanelService panel,
-        INavigationMenuService menu,
-        INavigationRouteRegistry routes,
-        INavigationService navigation,
-        IPageCacheService cache
+        INavigationService navigation
     )
     {
-        this.panel = panel;
-        this.menu = menu;
-        this.routes = routes;
         this.navigation = navigation;
-        this.cache = cache;
         InitializeComponent();
 
         DirectionBox.ItemsSource = Enum.GetValues<NavigationPanelDirection>();
@@ -48,33 +37,24 @@ public partial class NavigationRuntimePage : Page
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-        panel.Changed -= RuntimeState_Changed;
-        menu.Changed -= RuntimeState_Changed;
-        routes.Changed -= RuntimeState_Changed;
-        cache.Changed -= RuntimeState_Changed;
-        panel.Changed += RuntimeState_Changed;
-        menu.Changed += RuntimeState_Changed;
-        routes.Changed += RuntimeState_Changed;
-        cache.Changed += RuntimeState_Changed;
+        navigation.Changed -= RuntimeState_Changed;
+        navigation.Changed += RuntimeState_Changed;
         RefreshState();
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        panel.Changed -= RuntimeState_Changed;
-        menu.Changed -= RuntimeState_Changed;
-        routes.Changed -= RuntimeState_Changed;
-        cache.Changed -= RuntimeState_Changed;
+        navigation.Changed -= RuntimeState_Changed;
     }
 
     private void TogglePanel_Click(object sender, RoutedEventArgs e)
     {
-        panel.Toggle();
+        navigation.Toggle();
         PanelOutput.WriteLine(
             Localizer.Parse(
                 CKey.Runtime_NavigationPanel0_92C7D51F,
                 Localizer.Parse(
-                    panel.Current.IsOpen
+                    navigation.Current.Panel.IsOpen
                         ? CKey.Runtime_Opened_50236627
                         : CKey.Runtime_Closed_C3EEFB58
                 )
@@ -84,12 +64,12 @@ public partial class NavigationRuntimePage : Page
 
     private void TogglePanelEnabled_Click(object sender, RoutedEventArgs e)
     {
-        panel.SetEnabled(!panel.Current.IsEnabled);
+        navigation.SetEnabled(!navigation.Current.Panel.IsEnabled);
         PanelOutput.WriteLine(
             Localizer.Parse(
                 CKey.Runtime_NavigationPanel0_92C7D51F,
                 Localizer.Parse(
-                    panel.Current.IsEnabled
+                    navigation.Current.Panel.IsEnabled
                         ? CKey.Runtime_Enabled_FB9CF756
                         : CKey.Runtime_Disabled_17EB3C01
                 )
@@ -105,7 +85,7 @@ public partial class NavigationRuntimePage : Page
             && DirectionBox.SelectedItem is NavigationPanelDirection direction
         )
         {
-            panel.SetDirection(direction);
+            navigation.SetDirection(direction);
             PanelOutput.WriteLine(
                 Localizer.Parse(CKey.Runtime_NavigationPanelMovedTo0_39B53359, direction)
             );
@@ -116,13 +96,13 @@ public partial class NavigationRuntimePage : Page
     {
         try
         {
-            panel.SetPanelWidth(
+            navigation.SetPanelWidth(
                 Parse(OpenWidthBox.Text),
                 Parse(ClosedWidthBox.Text),
                 Parse(MaxWidthBox.Text),
                 Parse(MinWidthBox.Text)
             );
-            var state = panel.Current;
+            var state = navigation.Current.Panel;
             PanelOutput.WriteLine(
                 Localizer.Parse(
                     CKey.Runtime_PanelWidthsSetToClosed00Open10Range2030_7AF1DFF9,
@@ -166,7 +146,7 @@ public partial class NavigationRuntimePage : Page
     {
         try
         {
-            routes.Set(
+            navigation.SetNavigable(
                 new FlourishNavigationRoute(
                     RuntimeRouteKey,
                     typeof(RuntimeRoutePage),
@@ -177,12 +157,12 @@ public partial class NavigationRuntimePage : Page
                 )
             );
 
-            var hasGroup = menu.Current.Groups.Any(group => group.Id == RuntimeGroupId);
-            menu.Set(editor =>
+            var hasGroup = navigation.Current.Menu.Groups.Any(group => group.Id == RuntimeGroupId);
+            navigation.SetMenu(editor =>
             {
                 if (!hasGroup)
                 {
-                    editor.AppendGroup(
+                    editor.AddGroup(
                         RuntimeGroupId,
                         Localizer.Parse(CKey.Runtime_AddedAtRuntime_82975386)
                     );
@@ -229,8 +209,8 @@ public partial class NavigationRuntimePage : Page
 
     private void ToggleMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        var item = menu
-            .Current.Groups.SelectMany(group => group.Items)
+        var item = navigation
+            .Current.Menu.Groups.SelectMany(group => group.Items)
             .FirstOrDefault(candidate => candidate.Id == RuntimeItemId);
         if (item is null)
         {
@@ -240,7 +220,7 @@ public partial class NavigationRuntimePage : Page
             return;
         }
 
-        menu.Set(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
+        navigation.SetMenu(editor => editor.SetItemEnabled(RuntimeItemId, !item.IsEnabled));
         RouteOutput.WriteLine(
             Localizer.Parse(
                 CKey.Runtime_DemoNavigationItem0_4FBC3954,
@@ -255,15 +235,15 @@ public partial class NavigationRuntimePage : Page
 
     private void RemoveRoute_Click(object sender, RoutedEventArgs e)
     {
-        menu.Set(editor =>
+        navigation.SetMenu(editor =>
         {
             editor.RemoveItem(RuntimeItemId);
-            if (menu.Current.Groups.Any(group => group.Id == RuntimeGroupId))
+            if (navigation.Current.Menu.Groups.Any(group => group.Id == RuntimeGroupId))
             {
                 editor.RemoveGroup(RuntimeGroupId);
             }
         });
-        var removed = routes.Remove(RuntimeRouteKey);
+        var removed = navigation.RemoveNavigable(RuntimeRouteKey);
         RouteOutput.WriteLine(
             removed
                 ? Localizer.Parse(CKey.Runtime_RemovedTheDemoRouteAndNavigationItem_932415B1)
@@ -280,7 +260,7 @@ public partial class NavigationRuntimePage : Page
     private void EvictCache_Click(object sender, RoutedEventArgs e)
     {
         CacheOutput.WriteLine(
-            cache.Evict(typeof(RuntimeRoutePage))
+            navigation.Evict(typeof(RuntimeRoutePage))
                 ? Localizer.Parse(CKey.Runtime_EvictedTheCachedDemoPageInstance_2957A414)
                 : Localizer.Parse(CKey.Runtime_NoCachedDemoPageInstanceWasPresent_34354CBF)
         );
@@ -288,7 +268,7 @@ public partial class NavigationRuntimePage : Page
 
     private void ClearCache_Click(object sender, RoutedEventArgs e)
     {
-        cache.Clear();
+        navigation.ClearCache();
         CacheOutput.WriteLine(
             Localizer.Parse(CKey.Runtime_ClearedAllCachedPageInstances_7839F7BC)
         );
@@ -298,13 +278,12 @@ public partial class NavigationRuntimePage : Page
     {
         try
         {
-            if (routes.Get(RuntimeRouteKey) is null)
+            if (navigation.GetNavigable(RuntimeRouteKey) is null)
             {
                 InstallRoute_Click(this, new RoutedEventArgs());
             }
 
-            routes.SetCacheMode(RuntimeRouteKey, mode);
-            cache.SetCacheMode(typeof(RuntimeRoutePage), mode);
+            navigation.SetCacheMode(typeof(RuntimeRoutePage), mode);
             CacheOutput.WriteLine(
                 Localizer.Parse(CKey.Runtime_DemoPageCacheModeSetTo0_1348FE55, mode)
             );
@@ -325,7 +304,7 @@ public partial class NavigationRuntimePage : Page
         isRefreshing = true;
         try
         {
-            var panelState = panel.Current;
+            var panelState = navigation.Current.Panel;
             DirectionBox.SelectedItem = panelState.Direction;
         }
         finally

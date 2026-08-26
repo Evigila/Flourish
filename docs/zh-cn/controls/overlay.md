@@ -119,9 +119,9 @@ Flourish Shell 功能将 Overlay 托管在窗口范围内的浮层中，而不�
 
 ## Tooltip 集成
 
-启用 `UseTips` 后，Flourish 控件使用包含单个 Temporary Overlay 的 `FlourishToolTip` 模板呈现自有提示。打开、延迟、Popup 定位与关闭仍由 WPF `ToolTipService` 负责，因此嵌套 Overlay 不设置 `PlacementTarget`。
+通过 `ConfigureToolTips` 或 `IToolTipService` 启用 Flourish Tooltip 呈现后，Flourish 控件使用包含单个 Temporary Overlay 的 `FlourishToolTip` 模板呈现自有提示。打开、延迟、Popup 定位与关闭仍由 WPF `ToolTipService` 负责，因此嵌套 Overlay 不设置 `PlacementTarget`。
 
-省略 `UseTips` 或在运行时禁用 ToolTips 功能时，Flourish 控件会使用原生 WPF Tooltip 外观和默认行为呈现同一份提示内容。附加到原生 WPF 与第三方控件的 Tooltip 保留各自模板和行为。
+省略 `ConfigureToolTips` 或在运行时调用 `IToolTipService.SetEnabled(false)` 时，Flourish 控件会使用原生 WPF Tooltip 外观和默认行为呈现同一份提示内容。附加到原生 WPF 与第三方控件的 Tooltip 保留各自模板和行为。
 
 ## 相关控件
 

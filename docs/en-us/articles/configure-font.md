@@ -5,18 +5,18 @@ description: Configure the font family and six Flourish font-size tiers, with St
 
 # Typography
 
-Use `InitGlobalFont` inside `ConfigShell` to set the font family and six size tiers for shell surfaces, navigated application pages, and the Profile page.
+Use `SetFont` inside `ConfigureFont` to set the font family and six size tiers for shell surfaces, navigated application pages, and the Profile page.
 
 ## Configure shell typography
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell.InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32));
+builder.ConfigureFont(font =>
+    font.SetFont("Segoe UI", 12, 14, 22, 16, 24, 32));
 ```
 
 The global text family, icon family, and complete six-size scale are restored and updated as one preference group by default. Pass `usePersistedPreference: false` to keep the configured global scale authoritative. Page-specific overrides remain application-owned and are not persisted.
 
-The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `InitGlobalFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
+The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `SetFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
 
 ## Size tier roles
 
@@ -33,7 +33,7 @@ When a text element or control does not explicitly select a font-size tier, it u
 
 `Document` paragraphs and `CodeSpace` explicitly use the Large tier. They therefore follow global and page-specific Large changes instead of deriving another size from Standard.
 
-Large, ExtraLarge, and HeaderSize title roles use `Bold`. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitlebarApplicationInfo` retains its own WPF typography choices.
+Large, ExtraLarge, and HeaderSize title roles use `Bold`. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitleBarApplicationInfo` retains its own WPF typography choices.
 
 Small and Standard have compact line spacing and bottom space; Large, ExtraLarge, and HeaderSize progressively add more, while Icon adds none.
 
@@ -45,29 +45,31 @@ Pages displayed in the main content frame or Profile inherit the configured glob
 
 ## Override one page
 
-Use `InitOverrideFont<TPage>` when one page needs a different initial text family or size scale. Pass `null` for any tier that should continue following its global value.
+Use `SetOverrideFont<TPage>` when one page needs a different initial text family or size scale. Pass `null` for any tier that should continue following its global value.
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell
-        .InitGlobalFont("Segoe UI", 12, 14, 22, 16, 24, 32)
-        .InitOverrideFont<CodeEditorPage>(
+builder.ConfigureFont(font =>
+{
+    font
+        .SetFont("Segoe UI", 12, 14, 22, 16, 24, 32)
+        .SetOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,
             null,
             null,
             null,
             null,
-            null));
+            null);
 
-shell.InitOverrideFont<PresentationPage>(
-    "Aptos Display",
-    14,
-    16,
-    19,
-    22,
-    26,
-    32);
+    font.SetOverrideFont<PresentationPage>(
+        "Aptos Display",
+        14,
+        16,
+        19,
+        22,
+        26,
+        32);
+});
 ```
 
 Every supplied page tier must be positive and finite. Tiers are otherwise independent, including values inherited through `null`.
@@ -99,7 +101,7 @@ fontService.SetOverrideFont(
     28);
 
 IReadOnlyDictionary<Type, FlourishPageFontOverride> overrides =
-    fontService.PageOverrides;
+    fontService.Current.PageOverrides;
 
 fontService.RemoveOverrideFont<CodeEditorPage>();
 ```

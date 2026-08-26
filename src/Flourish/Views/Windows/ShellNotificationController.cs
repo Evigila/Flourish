@@ -1,9 +1,16 @@
+using System.Linq;
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Messaging;
 using Button = ArkheideSystem.Flourish.Controls.Button;
 using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
 using WpfPanel = System.Windows.Controls.Panel;
@@ -38,9 +45,10 @@ internal sealed class ShellNotificationController : IDisposable
         this.commandDispatcher =
             commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
         dispatcher = host.Dispatcher;
-        appliedVersion = notificationService.CurrentVersion;
-        BuildNotifications(notificationService.ActiveNotifications);
-        notificationService.NotificationsChanged += NotificationService_NotificationsChanged;
+        var current = notificationService.Current;
+        appliedVersion = current.Version;
+        BuildNotifications(current.Notifications);
+        notificationService.Changed += NotificationService_Changed;
     }
 
     public void Dispose()
@@ -57,7 +65,7 @@ internal sealed class ShellNotificationController : IDisposable
             pendingNotifications = [];
         }
 
-        notificationService.NotificationsChanged -= NotificationService_NotificationsChanged;
+        notificationService.Changed -= NotificationService_Changed;
         foreach (var view in viewsById.Values)
         {
             view.Action.Click -= NotificationAction_Click;
@@ -67,20 +75,25 @@ internal sealed class ShellNotificationController : IDisposable
         viewsById.Clear();
     }
 
-    private void NotificationService_NotificationsChanged(
+    private void NotificationService_Changed(
         object? sender,
-        FlourishNotificationsChangedEventArgs e
+        FlourishStateChangedEventArgs<FlourishNotificationState> e
     )
     {
+        var current = e.Current;
         lock (refreshGate)
         {
-            if (isDisposed || e.Version <= appliedVersion || e.Version <= pendingVersion)
+            if (
+                isDisposed
+                || current.Version <= appliedVersion
+                || current.Version <= pendingVersion
+            )
             {
                 return;
             }
 
-            pendingNotifications = e.Notifications;
-            pendingVersion = e.Version;
+            pendingNotifications = current.Notifications;
+            pendingVersion = current.Version;
             if (refreshPending)
             {
                 return;

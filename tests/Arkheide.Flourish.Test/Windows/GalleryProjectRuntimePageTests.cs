@@ -1,3 +1,7 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 
 namespace ArkheideSystem.Flourish.Test.Windows;

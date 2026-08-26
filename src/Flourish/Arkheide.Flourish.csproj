@@ -12,7 +12,7 @@
     <RepositoryType>git</RepositoryType>
     <RootNamespace>ArkheideSystem.Flourish</RootNamespace>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>AnyCPU;x86;x64;ARM64</Platforms>

@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
+using Xunit;
+using ArkheideSystem.Flourish.Navigation;
+
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Configuration;
 

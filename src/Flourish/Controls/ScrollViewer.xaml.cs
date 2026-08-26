@@ -1,3 +1,6 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -147,7 +150,7 @@ public class ScrollViewer : WpfScrollViewer
         }
 
         // Custom templates without the smooth host retain native wheel scrolling.
-        if (!CanUseSmoothScrolling())
+        if (!CanSetSmoothScrollingEnableding())
         {
             base.OnMouseWheel(e);
             return;
@@ -241,7 +244,7 @@ public class ScrollViewer : WpfScrollViewer
         viewer.RebaseAnimationState();
     }
 
-    private bool CanUseSmoothScrolling()
+    private bool CanSetSmoothScrollingEnableding()
     {
         if (
             !IsSmoothScrollingEnabled

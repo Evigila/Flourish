@@ -7,33 +7,29 @@ description: 配置按页面变化的工具栏项，并连接到命令调度。
 
 动态工具栏是 Shell 中会随当前页面变化的命令区域。它用于打开、保存、导入或刷新等页面范围的命令。
 
-配置分两步：
-
-1. 在 [Shell 配置](shell-configuration.md)中启用工具栏区域。
-2. 使用 `ConfigDynamicToolbar` 注册页面对应的工具栏项。
+使用 `ConfigureToolbar` 同时启用工具栏区域并注册页面对应的工具栏项。
 
 ## 启用工具栏区域
 
 ```csharp
-builder.ConfigShell(shell =>
-{
-    shell.UseDynamicToolbar();
-});
+builder.ConfigureToolbar(toolbar => toolbar.SetEnabled());
 ```
 
-即使已经注册工具栏项，`UseDynamicToolbar(false)` 也会让该区域保持禁用。
+即使已经注册工具栏项，`SetEnabled(false)` 也会让该区域保持禁用。
 
 > [!NOTE]
 > 启用动态工具栏只会创建 Shell 区域。为页面注册匹配的工具栏项后，该区域才会显示按钮。
 
 ## 为页面注册工具栏项
 
-使用 `IFlourishDynamicToolbarBuilder.InitToolbarItems<TPage>` 将工具栏项与 WPF 页面类型关联。
+使用 `IToolbarBuilder.Set<TPage>` 将工具栏项与 WPF 页面类型关联。
 
 ```csharp
-builder.ConfigDynamicToolbar(toolbar =>
+builder.ConfigureToolbar(toolbar =>
 {
-    toolbar.InitToolbarItems<ReportsPage>(
+    toolbar
+        .SetEnabled()
+        .Set<ReportsPage>(
         new FlourishToolbarItem("刷新", "\uE72C", "cmd_reports_refresh"),
         new FlourishToolbarItem("导出", "\uE898", "cmd_reports_export"));
 });
@@ -41,11 +37,11 @@ builder.ConfigDynamicToolbar(toolbar =>
 
 ## 控制图标显示
 
-带 `icon: false` 的重载可以创建纯文本工具栏项。
+带 `iconOnly: false` 的重载可以创建纯文本工具栏项。
 
 ```csharp
-toolbar.InitToolbarItems<EditorPage>(
-    icon: false,
+toolbar.Set<EditorPage>(
+    iconOnly: false,
     new FlourishToolbarItem("预览", "\uE8A7", "cmd_editor_preview"));
 ```
 
@@ -66,7 +62,7 @@ toolbar.InitToolbarItems<EditorPage>(
 从构建完成的运行时解析 `ICommandRegistry`，并注册工具栏项使用的命令键：
 
 ```csharp
-ICommandRegistration exportCommand = commands.Register(
+IRegistration exportCommand = commands.Register(
     "cmd_reports_export",
     async (_, token) =>
     {

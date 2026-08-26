@@ -1,11 +1,16 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Services;
-using FlourishNavigationService = ArkheideSystem.Flourish.Services.NavigationService;
+using FlourishNavigationService = ArkheideSystem.Flourish.Navigation.NavigationService;
 
 namespace ArkheideSystem.Flourish.Test.Services;
 
@@ -57,7 +62,7 @@ public sealed class FrameNavigationContentHostTests
                 WindowStartupLocation = WindowStartupLocation.Manual,
                 Content = frame,
             };
-            var options = new FlourishShellOptions();
+            var options = new FlourishNavigationOptions();
             Register(options, HomeKey, typeof(HomePage));
             Register(options, SettingsKey, typeof(SettingsPage));
             Register(options, GalleryKey, typeof(GalleryPage));
@@ -66,7 +71,7 @@ public sealed class FrameNavigationContentHostTests
                 new PageHistoryService(maximumEntries: 2),
                 new NavigationRouteRegistry(options)
             );
-            sut.Init(frame);
+            sut.Attach(frame);
             window.Show();
 
             try
@@ -131,7 +136,7 @@ public sealed class FrameNavigationContentHostTests
         Assert.Empty(frame.ForwardStack?.Cast<object>() ?? []);
     }
 
-    private static void Register(FlourishShellOptions options, string navigationKey, Type pageType)
+    private static void Register(FlourishNavigationOptions options, string navigationKey, Type pageType)
     {
         options.InitialNavigationRoutes.Add(new FlourishNavigationRoute(navigationKey, pageType));
     }

@@ -26,7 +26,7 @@
         />
         <flourish:CodeSpace
           Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
-          Text="builder&#10;    .ConfigShell(shell =&gt; shell.UseDynamicToolbar())&#10;    .ConfigDynamicToolbar(toolbar =&gt; toolbar&#10;        // Icons are shown by default.&#10;        .InitToolbarItems&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;cmd_reports_refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;cmd_reports_export&quot;))&#10;        // Set iconOnly: false for actions that show text.&#10;        .InitToolbarItems&lt;EditorPage&gt;(&#10;            iconOnly: false,&#10;            new FlourishToolbarItem(&quot;Preview&quot;, &quot;\uE8A7&quot;, &quot;cmd_editor_preview&quot;)));"
+          Text="builder&#10;    .ConfigureToolbar(toolbar =&gt; toolbar&#10;        .SetEnabled()&#10;        // Icons are shown by default.&#10;        .Set&lt;ReportsPage&gt;(&#10;            new FlourishToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;cmd_reports_refresh&quot;),&#10;            new FlourishToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;cmd_reports_export&quot;))&#10;        // Set iconOnly: false for actions that show text.&#10;        .Set&lt;EditorPage&gt;(&#10;            iconOnly: false,&#10;            new FlourishToolbarItem(&quot;Preview&quot;, &quot;\uE8A7&quot;, &quot;cmd_editor_preview&quot;)));"
         />
       </StackPanel>
     </flourish:Chunk>

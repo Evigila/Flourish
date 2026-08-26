@@ -15,16 +15,16 @@ Enable the title bar and project mode, then configure the text used to display a
 
 ```csharp
 builder
-    .ConfigShell(shell =>
-        shell.UseTitleBar().UseMultiProject())
-    .ConfigTitleBar(titleBar =>
+    .ConfigureProjects(projects => projects.SetMultiProjectEnabled())
+    .ConfigureTitleBar(titleBar =>
         titleBar
-            .InitApplicationTitle("Foobar")
-            .InitUnnamedProjectPlaceholder("Unnamed project")
-            .UseLogo(showProjectTitle: true));
+            .SetEnabled()
+            .SetApplicationTitle("Foobar")
+            .SetUnnamedProjectPlaceholder("Unnamed project")
+            .SetLogo(showProjectTitle: true));
 ```
 
-`UseMultiProject()` defaults to `true` when called and is omitted by default. Without project mode, the title selector displays and lists only the application title; Flourish does not expose project-title, project-save, or project-close semantics. With project mode, the selector displays the active project name, or the unnamed-project placeholder for an unpersisted or missing selection, and lists every project plus **New project**.
+`IProjectBuilder.SetMultiProjectEnabled()` defaults to `true` when called, while project mode is disabled if `ConfigureProjects` is omitted. Without project mode, the title selector displays and lists only the application title; Flourish does not expose project-title, project-save, or project-close semantics. With project mode, the selector displays the active project name, or the unnamed-project placeholder for an unpersisted or missing selection, and lists every project plus **New project**.
 
 ## Project metadata and persistence
 
@@ -35,7 +35,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 {
     public void Register()
     {
-        projects.AppendProject(
+        projects.AddProject(
             new FlourishProject(
                 "reports",
                 "Reports",
@@ -50,7 +50,7 @@ public sealed class WorkspaceCatalog(IProjectService projects)
 
 `StoragePath == null` means that a project is unpersisted. Unpersisted projects may exist in the current process, but they are excluded from `projects.json`. The unnamed-project placeholder is display text only; do not compare a project name with the placeholder to determine persistence. Names are not required to be unique and the placeholder can be changed or localized.
 
-Flourish loads the ordered catalog and active project ID from the file selected by `InitProjectCatalogFilePath`; the default is application-root `projects.json`. This path is independent of the writable settings file. Only mappings whose `StoragePath` refers to an existing local file are retained. On startup, entries with an empty path or a missing target file are removed and the repaired catalog is written back atomically. Every catalog mutation through `IProjectService` also rewrites the valid mappings atomically. If the write fails, the in-memory mutation is rolled back and the change event is not published.
+Flourish loads the ordered catalog and active project ID from the file selected by `SetProjectCatalogFilePath`; the default is application-root `projects.json`. This path is independent of the writable settings file. Only mappings whose `StoragePath` refers to an existing local file are retained. On startup, entries with an empty path or a missing target file are removed and the repaired catalog is written back atomically. Every catalog mutation through `IProjectService` also rewrites the valid mappings atomically. If the write fails, the in-memory mutation is rolled back and the change event is not published.
 
 Catalog persistence belongs to `IProjectService` and remains active when the application replaces `IProjectBehavior`. The catalog stores metadata only; `IProjectService` checks whether the represented file exists but does not read or write its contents.
 
@@ -62,7 +62,7 @@ When no persisted catalog entries exist, Flourish creates and activates one proc
 
 | Operation | Behavior |
 | --- | --- |
-| `AppendProject(project, activate)` | Appends unique metadata and optionally makes it active. |
+| `AddProject(project, activate)` | Adds unique metadata and optionally makes it active. |
 | `SetProject(project, activate)` | Adds or replaces metadata by ID. |
 | `SetProjectMetadata(id, name, storagePath)` | Changes the name and optional path of an existing project. |
 | `SetActiveProject(id)` | Changes only the active Shell identity; pass `null` to clear it. |
@@ -90,10 +90,10 @@ The placeholder files do not contain application data. An application that needs
 
 ## Replace project behavior
 
-Register one singleton `IProjectBehavior` through `ConfigServices`. Flourish supplies its default only when no application registration exists.
+Register one singleton `IProjectBehavior` through `ConfigureServices`. Flourish supplies its default only when no application registration exists.
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 

@@ -38,7 +38,7 @@ A standard content page uses one leading `HeaderChunk` followed by one or more `
 
 Horizontal scrolling is disabled and vertical scrolling is automatic by default. Because `PageBody` inherits the Flourish `ScrollViewer` behavior, nested Flourish scroll surfaces consume wheel input while they can move and let boundary input continue scrolling the page.
 
-When the Shell enables `UseCenterContent`, it limits and centers the section stack while keeping the scrolling viewport full width. The vertical scroll bar therefore remains at the edge of the Shell content area. In narrower viewports, the body uses the available width.
+When the Shell enables `SetCenterContent`, it limits and centers the section stack while keeping the scrolling viewport full width. The vertical scroll bar therefore remains at the edge of the Shell content area. In narrower viewports, the body uses the available width.
 
 Do not assign the inherited `Content` property. `PageBody` uses it for its internal section stack, and the Flourish Shell may wrap that stack while applying its page-width constraint. Add or remove sections through `Children` instead.
 

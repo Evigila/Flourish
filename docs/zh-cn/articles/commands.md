@@ -9,12 +9,12 @@ Flourish UI 区域通过 `ICommandDispatcher` 发送稳定的命令键。使用 
 
 ## 注册处理程序
 
-`ICommandRegistry.Register` 将命令键与异步处理程序关联，并返回 `ICommandRegistration`。只要处理程序需要保持有效，就应持有该注册；释放注册会移除命令。
+`ICommandRegistry.Register` 将命令键与异步处理程序关联，并返回 `IRegistration`。只要处理程序需要保持有效，就应持有该注册；释放注册会移除命令。
 
 ```csharp
 ICommandRegistry commands = flourish.GetRequiredService<ICommandRegistry>();
 
-ICommandRegistration exportCommand = commands.Register(
+IRegistration exportCommand = commands.Register(
     "cmd_reports_export",
     async (context, cancellationToken) =>
     {
@@ -57,7 +57,7 @@ internal sealed class ReportCommands(ReportService reports)
 在服务配置中注册解析器及其依赖项。应用无需主动解析该解析器，也无需实现 `IDisposable`：
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<ReportService>();
     services.AddCommandParser<ReportCommands>();
@@ -113,7 +113,7 @@ if (result.Status == CommandExecutionStatus.Failed)
 工具栏、导航、标题栏、状态栏、通知和快捷键 API 使用同一套命令键。例如：
 
 ```csharp
-toolbar.InitToolbarItems<ReportsPage>(
+toolbar.Set<ReportsPage>(
     new FlourishToolbarItem("导出", "\uE898", "cmd_reports_export"));
 ```
 

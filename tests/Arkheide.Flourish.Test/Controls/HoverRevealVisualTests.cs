@@ -1,3 +1,7 @@
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -5,7 +9,6 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Interaction;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 using FlourishCheckBox = ArkheideSystem.Flourish.Controls.CheckBox;
 using ListBox = ArkheideSystem.Flourish.Controls.ListBox;

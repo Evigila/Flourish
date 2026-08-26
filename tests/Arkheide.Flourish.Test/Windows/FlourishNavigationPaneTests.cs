@@ -1,6 +1,10 @@
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
-using ArkheideSystem.Flourish.Internal.Configuration;
 using ArkheideSystem.Flourish.Views.Windows;
 using NavigationListBox = ArkheideSystem.Flourish.Controls.BunchedListBox;
 

@@ -1,3 +1,9 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Layout;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;

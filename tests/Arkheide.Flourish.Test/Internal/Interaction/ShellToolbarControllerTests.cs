@@ -1,9 +1,13 @@
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Commands;
+using ArkheideSystem.Flourish.Shell.Toolbar;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Internal.Interaction;
-using ArkheideSystem.Flourish.Services;
 using ArkheideSystem.Flourish.Views.Windows;
 using FlourishButton = ArkheideSystem.Flourish.Controls.Button;
 
@@ -17,13 +21,13 @@ public sealed class ShellToolbarControllerTests
         StaTest.Run(() =>
         {
             var fixture = CreateFixture();
-            fixture.Options.DynamicToolbarItems[typeof(TestPage)] =
-            [
-                Item("page", "Page", "\uE8A7"),
-            ];
-            fixture.Options.DynamicToolbarIconModes[typeof(TestPage)] = true;
+            fixture.Service.Set(
+                typeof(TestPage),
+                [Item("page", "Page", "\uE8A7")],
+                iconOnly: true
+            );
             using var sut = fixture.CreateController();
-            sut.Init();
+            sut.Start();
 
             var defaultButton = Assert.IsType<FlourishButton>(
                 Assert.Single(fixture.View.Items.Children)
@@ -48,10 +52,10 @@ public sealed class ShellToolbarControllerTests
         StaTest.Run(() =>
         {
             var fixture = CreateFixture();
-            fixture.Options.DynamicToolbarItems[typeof(TestPage)] = [Item("page", "Page")];
-            fixture.Options.DynamicToolbarItems[typeof(OtherPage)] = [Item("other", "Other")];
+            fixture.Service.Set(typeof(TestPage), [Item("page", "Page")]);
+            fixture.Service.Set(typeof(OtherPage), [Item("other", "Other")]);
             using var sut = fixture.CreateController();
-            sut.Init(typeof(TestPage));
+            sut.Start(typeof(TestPage));
             var original = Assert.Single(fixture.View.Items.Children);
 
             fixture.Service.Set(typeof(OtherPage), [Item("other-2", "Other 2")]);
@@ -76,9 +80,9 @@ public sealed class ShellToolbarControllerTests
         StaTest.Run(() =>
         {
             var fixture = CreateFixture();
-            fixture.Options.DynamicToolbarItems[typeof(TestPage)] = [Item("page", "Page")];
+            fixture.Service.Set(typeof(TestPage), [Item("page", "Page")]);
             using var sut = fixture.CreateController();
-            sut.Init(typeof(TestPage));
+            sut.Start(typeof(TestPage));
 
             fixture.Service.SetEnabled(false);
             Assert.Empty(fixture.View.Items.Children);
@@ -101,9 +105,9 @@ public sealed class ShellToolbarControllerTests
         StaTest.Run(() =>
         {
             var fixture = CreateFixture();
-            fixture.Options.ToolbarItems.Clear();
+            fixture.Service.SetDefault([]);
             using var sut = fixture.CreateController();
-            sut.Init();
+            sut.Start();
             Assert.Equal(
                 Visibility.Collapsed,
                 Assert.IsType<Border>(fixture.View.Content).Visibility
@@ -143,7 +147,7 @@ public sealed class ShellToolbarControllerTests
                 _ => canExecute
             );
             var sut = fixture.CreateController();
-            sut.Init();
+            sut.Start();
             var button = Assert.IsType<FlourishButton>(
                 Assert.Single(fixture.View.Items.Children)
             );
@@ -170,7 +174,7 @@ public sealed class ShellToolbarControllerTests
 
     private static Fixture CreateFixture(params FlourishToolbarItem[] defaultItems)
     {
-        var options = new FlourishShellOptions { IsDynamicToolbarEnabled = true };
+        var options = new FlourishToolbarOptions { IsDynamicToolbarEnabled = true };
         options.ToolbarItems.AddRange(
             defaultItems.Length == 0 ? [Item("default", "Default")] : defaultItems
         );
@@ -188,7 +192,7 @@ public sealed class ShellToolbarControllerTests
         new(displayName, icon ?? string.Empty, commandKey) { Id = id };
 
     private sealed record Fixture(
-        FlourishShellOptions Options,
+        FlourishToolbarOptions Options,
         FlourishToolbarService Service,
         CommandDispatcher Commands,
         FlourishToolbar View

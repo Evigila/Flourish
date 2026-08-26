@@ -1,9 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Internal.Interaction;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Shell.StatusBar;
+using ArkheideSystem.Flourish.BackgroundTasks;
+using ArkheideSystem.Flourish.Localization;
 using Border = System.Windows.Controls.Border;
 using Button = ArkheideSystem.Flourish.Controls.Button;
 using ColumnDefinition = System.Windows.Controls.ColumnDefinition;
@@ -88,7 +94,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     internal double CardWidth => overlay.CardWidth;
 
-    internal int ActiveTaskCount => backgroundTaskService.ActiveTasks.Count;
+    internal int ActiveTaskCount => backgroundTaskService.Current.Count;
 
     internal void Start()
     {
@@ -100,7 +106,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
         started = true;
         statusService.Changed += StatusService_Changed;
-        backgroundTaskService.TasksChanged += BackgroundTaskService_TasksChanged;
+        backgroundTaskService.Changed += BackgroundTaskService_Changed;
         localizationService.Changed += LocalizationService_Changed;
         statusBar.AnchorRequested += StatusBar_AnchorRequested;
         statusBar.InteractionStarted += StatusBar_InteractionStarted;
@@ -109,7 +115,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
         statusBarSnapshot = statusService.Current;
         statusItemViews.Synchronize(statusBarSnapshot);
-        RefreshBackgroundTaskStatus(backgroundTaskService.ActiveTasks);
+        RefreshBackgroundTaskStatus(backgroundTaskService.Current);
         RefreshLocale();
         RefreshVisibility();
     }
@@ -180,7 +186,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     internal void CancelActiveTasks()
     {
-        foreach (var task in backgroundTaskService.ActiveTasks)
+        foreach (var task in backgroundTaskService.Current)
         {
             backgroundTaskService.CancelTask(task.Id);
         }
@@ -196,7 +202,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         if (started)
         {
             statusService.Changed -= StatusService_Changed;
-            backgroundTaskService.TasksChanged -= BackgroundTaskService_TasksChanged;
+            backgroundTaskService.Changed -= BackgroundTaskService_Changed;
             localizationService.Changed -= LocalizationService_Changed;
             statusBar.AnchorRequested -= StatusBar_AnchorRequested;
             statusBar.InteractionStarted -= StatusBar_InteractionStarted;
@@ -294,9 +300,9 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         }
     }
 
-    private void BackgroundTaskService_TasksChanged(
+    private void BackgroundTaskService_Changed(
         object? sender,
-        FlourishBackgroundTasksChangedEventArgs e
+        FlourishStateChangedEventArgs<IReadOnlyList<FlourishBackgroundTaskInfo>> e
     )
     {
         var shouldStartRefreshLoop = false;
@@ -307,7 +313,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
                 return;
             }
 
-            pendingBackgroundTasks = e.Tasks;
+            pendingBackgroundTasks = e.Current;
             backgroundTaskRefreshPending = true;
             if (!backgroundTaskRefreshLoopActive)
             {
@@ -888,7 +894,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         statusBar.SetSystemAutomationName(
             localizationService.Get(FlourishLocaleKeys.SystemStatusTitle)
         );
-        RefreshBackgroundTaskStatus(backgroundTaskService.ActiveTasks);
+        RefreshBackgroundTaskStatus(backgroundTaskService.Current);
         if (kind == StatusSurfaceKind.System && overlay.IsOpen)
         {
             BuildSystemStatusFlyoutContent();

@@ -1,32 +1,35 @@
-using ArkheideSystem.Flourish.Internal.Composition;
-using ArkheideSystem.Flourish.Internal.Configuration;
+using System;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Motion;
+
 
 namespace ArkheideSystem.Flourish.Test.Internal.Composition;
 
-public sealed class FlourishMotionBuilderTests
+public sealed class MotionBuilderTests
 {
     [Fact]
     public void ConfigurationMethods_WithExplicitValues_UpdateOptionsAndReturnBuilder()
     {
         var options = new FlourishMotionOptions();
-        var sut = new FlourishMotionBuilder(options);
+        var sut = new MotionBuilder(options);
         var pageDuration = TimeSpan.FromMilliseconds(250);
         var navigationDuration = TimeSpan.FromMilliseconds(300);
         var hoverDuration = TimeSpan.FromMilliseconds(90);
 
         Assert.Same(
             sut,
-            sut.UsePageTransition(transition: FlourishPageTransition.Fade, duration: pageDuration)
+            sut.SetPageTransition(transition: FlourishPageTransition.Fade, duration: pageDuration)
         );
         Assert.Same(
             sut,
-            sut.UseNavigationPanelTransition(
+            sut.SetNavigationPanelTransition(
                 transition: FlourishNavigationPanelTransition.None,
                 duration: navigationDuration
             )
         );
-        Assert.Same(sut, sut.UseHoverRevealAnimation(duration: hoverDuration));
-        Assert.Same(sut, sut.UseSystemReducedMotion(false));
+        Assert.Same(sut, sut.SetHoverReveal(duration: hoverDuration));
+        Assert.Same(sut, sut.SetRespectSystemReducedMotion(false));
 
         Assert.Equal(FlourishPageTransition.Fade, options.PageTransition);
         Assert.Equal(pageDuration, options.PageTransitionDuration);
@@ -46,11 +49,11 @@ public sealed class FlourishMotionBuilderTests
             NavigationPanelTransitionDuration = TimeSpan.FromMilliseconds(12),
             HoverRevealAnimationDuration = TimeSpan.FromMilliseconds(13),
         };
-        var sut = new FlourishMotionBuilder(options);
+        var sut = new MotionBuilder(options);
 
-        sut.UsePageTransition(transition: FlourishPageTransition.None);
-        sut.UseNavigationPanelTransition(transition: FlourishNavigationPanelTransition.Resize);
-        sut.UseHoverRevealAnimation();
+        sut.SetPageTransition(transition: FlourishPageTransition.None);
+        sut.SetNavigationPanelTransition(transition: FlourishNavigationPanelTransition.Resize);
+        sut.SetHoverReveal();
 
         Assert.Equal(TimeSpan.FromMilliseconds(11), options.PageTransitionDuration);
         Assert.Equal(TimeSpan.FromMilliseconds(12), options.NavigationPanelTransitionDuration);
@@ -61,17 +64,17 @@ public sealed class FlourishMotionBuilderTests
     public void PreferenceAwareMethods_EnableTheirIndependentPolicies()
     {
         var options = new FlourishMotionOptions();
-        var sut = new FlourishMotionBuilder(options);
+        var sut = new MotionBuilder(options);
 
-        sut.UsePageTransition(true, FlourishPageTransition.Fade, null, true)
-            .UseNavigationPanelTransition(
+        sut.SetPageTransition(true, FlourishPageTransition.Fade, null, true)
+            .SetNavigationPanelTransition(
                 true,
                 FlourishNavigationPanelTransition.Resize,
                 null,
                 true
             )
-            .UseHoverRevealAnimation(true, null, true)
-            .UseSystemReducedMotion(true, true);
+            .SetHoverReveal(true, null, true)
+            .SetRespectSystemReducedMotion(true, true);
 
         Assert.True(options.UsePersistedPageTransition);
         Assert.True(options.UsePersistedNavigationPanelTransition);
@@ -91,7 +94,7 @@ public sealed class FlourishMotionBuilderTests
         long ticks
     )
     {
-        var sut = new FlourishMotionBuilder(new FlourishMotionOptions());
+        var sut = new MotionBuilder(new FlourishMotionOptions());
         var duration = TimeSpan.FromTicks(ticks);
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -99,13 +102,13 @@ public sealed class FlourishMotionBuilderTests
             switch (animation)
             {
                 case "page":
-                    sut.UsePageTransition(duration: duration);
+                    sut.SetPageTransition(duration: duration);
                     break;
                 case "navigation":
-                    sut.UseNavigationPanelTransition(duration: duration);
+                    sut.SetNavigationPanelTransition(duration: duration);
                     break;
                 case "hover":
-                    sut.UseHoverRevealAnimation(duration: duration);
+                    sut.SetHoverReveal(duration: duration);
                     break;
             }
         });
@@ -116,10 +119,10 @@ public sealed class FlourishMotionBuilderTests
     [Fact]
     public void EnablePageTransition_WithUndefinedValue_ThrowsArgumentOutOfRangeException()
     {
-        var sut = new FlourishMotionBuilder(new FlourishMotionOptions());
+        var sut = new MotionBuilder(new FlourishMotionOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.UsePageTransition(transition: (FlourishPageTransition)int.MaxValue)
+            sut.SetPageTransition(transition: (FlourishPageTransition)int.MaxValue)
         );
 
         Assert.Equal("transition", exception.ParamName);
@@ -128,10 +131,10 @@ public sealed class FlourishMotionBuilderTests
     [Fact]
     public void EnableNavigationPanelTransition_WithUndefinedValue_ThrowsArgumentOutOfRangeException()
     {
-        var sut = new FlourishMotionBuilder(new FlourishMotionOptions());
+        var sut = new MotionBuilder(new FlourishMotionOptions());
 
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
-            sut.UseNavigationPanelTransition(
+            sut.SetNavigationPanelTransition(
                 transition: (FlourishNavigationPanelTransition)int.MaxValue
             )
         );

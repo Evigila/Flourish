@@ -1,8 +1,11 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,17 +16,12 @@ namespace ArkheideSystem.Gallery.Views;
 public partial class TitleBarRuntimePage : Page
 {
     private readonly ITitleBarService titleBar;
-    private readonly ITitleBarSearchService search;
-    private IDisposable? searchSubscription;
+    private IRegistration? searchSubscription;
     private bool isRefreshing;
 
-    public TitleBarRuntimePage(
-        ITitleBarService titleBar,
-        ITitleBarSearchService search
-    )
+    public TitleBarRuntimePage(ITitleBarService titleBar)
     {
         this.titleBar = titleBar;
-        this.search = search;
         InitializeComponent();
 
         TitleBarElementBox.ItemsSource = new TitleBarElement[]
@@ -48,29 +46,22 @@ public partial class TitleBarRuntimePage : Page
     {
         Page_Unloaded(sender, e);
         titleBar.Changed += TitleBar_Changed;
-        search.StateChanged += Search_StateChanged;
         Localizer.Current.Changed += Localizer_Changed;
-        searchSubscription = search.Subscribe(HandleSearchQueryAsync);
+        searchSubscription = titleBar.SubscribeSearch(HandleSearchQueryAsync);
         RefreshState();
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
         titleBar.Changed -= TitleBar_Changed;
-        search.StateChanged -= Search_StateChanged;
         Localizer.Current.Changed -= Localizer_Changed;
         searchSubscription?.Dispose();
         searchSubscription = null;
     }
 
-    private void TitleBar_Changed(object? sender, FlourishTitleBarChangedEventArgs e)
+    private void TitleBar_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e)
     {
         Dispatcher.BeginInvoke(RefreshState);
-    }
-
-    private void Search_StateChanged(object? sender, FlourishTitleBarSearchStateChangedEventArgs e)
-    {
-        Dispatcher.BeginInvoke(RefreshSearchState);
     }
 
     private void Localizer_Changed(object? sender, EventArgs e)
@@ -79,7 +70,7 @@ public partial class TitleBarRuntimePage : Page
     }
 
     private async ValueTask HandleSearchQueryAsync(
-        FlourishTitleBarSearchChangedEventArgs args,
+        FlourishTitleBarSearchQuery args,
         CancellationToken cancellationToken
     )
     {
@@ -134,7 +125,7 @@ public partial class TitleBarRuntimePage : Page
                     NullIfWhiteSpace(LogoPathBox.Text),
                     NullIfWhiteSpace(LogoFallbackBox.Text),
                     current.ShowApplicationTitle,
-                    current.ShowApplicationSubTitle,
+                    current.ShowApplicationSubtitle,
                     current.ShowProjectTitle
                 ),
             IdentityOutput,
@@ -231,7 +222,7 @@ public partial class TitleBarRuntimePage : Page
     private void SetSearchText_Click(object sender, RoutedEventArgs e)
     {
         Execute(
-            () => search.SetText(SearchTextBox.Text),
+            () => titleBar.SetSearchText(SearchTextBox.Text),
             SearchOutput,
             Localizer.Parse(
                 CKey.Runtime_SearchTextSetTo0_37DE597D,
@@ -256,7 +247,7 @@ public partial class TitleBarRuntimePage : Page
     private void FocusSearch_Click(object sender, RoutedEventArgs e)
     {
         Execute(
-            search.Focus,
+            titleBar.FocusSearch,
             SearchOutput,
             Localizer.Parse(CKey.Runtime_MovedFocusToTitleBarSearch_935CEC34)
         );
@@ -265,7 +256,7 @@ public partial class TitleBarRuntimePage : Page
     private void ClearSearch_Click(object sender, RoutedEventArgs e)
     {
         Execute(
-            search.Clear,
+            titleBar.ClearSearch,
             SearchOutput,
             Localizer.Parse(CKey.Runtime_ClearedTheTitleBarSearchQuery_36169020)
         );
@@ -274,7 +265,7 @@ public partial class TitleBarRuntimePage : Page
     private void ApplySearchPlaceholder_Click(object sender, RoutedEventArgs e)
     {
         Execute(
-            () => search.SetPlaceholder(SearchPlaceholderBox.Text),
+            () => titleBar.SetSearchPlaceholder(SearchPlaceholderBox.Text),
             SearchOutput,
             Localizer.Parse(
                 CKey.Runtime_SearchPlaceholderSetTo0_F701246C,
@@ -299,9 +290,9 @@ public partial class TitleBarRuntimePage : Page
 
     private void ToggleSearchVisibility_Click(object sender, RoutedEventArgs e)
     {
-        var visible = !search.Current.IsVisible;
+        var visible = !titleBar.Current.IsSearchVisible;
         Execute(
-            () => search.SetVisible(visible),
+            () => titleBar.SetSearchVisible(visible),
             SearchOutput,
             Localizer.Parse(
                 CKey.Runtime_TitleBarSearch0_262A9ED5,
@@ -368,7 +359,7 @@ public partial class TitleBarRuntimePage : Page
         {
             var current = titleBar.Current;
             TitleBox.Text = current.ApplicationTitle;
-            SubtitleBox.Text = current.ApplicationSubTitle;
+            SubtitleBox.Text = current.ApplicationSubtitle;
             LogoPathBox.Text = current.LogoPath ?? string.Empty;
             LogoFallbackBox.Text = current.LogoFallbackText;
             UnnamedProjectBox.Text = current.UnnamedProjectPlaceholder;
@@ -385,11 +376,11 @@ public partial class TitleBarRuntimePage : Page
 
     private void RefreshSearchState()
     {
-        var current = search.Current;
-        SearchTextBox.Text = current.Text;
-        SearchPlaceholderBox.Text = current.Placeholder;
+        var current = titleBar.Current;
+        SearchTextBox.Text = current.SearchText;
+        SearchPlaceholderBox.Text = current.SearchPlaceholder;
         ToggleSearchVisibilityButton.Content = Localizer.Parse(
-            current.IsVisible
+            current.IsSearchVisible
                 ? CKey.Runtime_HideSearch_14BD5CB7
                 : CKey.Runtime_ShowSearch_96369815
         );

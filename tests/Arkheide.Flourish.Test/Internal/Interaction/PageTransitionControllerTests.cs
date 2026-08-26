@@ -1,3 +1,11 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.Motion;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Test.Infrastructure;
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -5,9 +13,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Xml.Linq;
-using ArkheideSystem.Flourish.Internal.Configuration;
-using ArkheideSystem.Flourish.Internal.Interaction;
-using ArkheideSystem.Flourish.Services;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Interaction;
 
@@ -366,10 +371,10 @@ public sealed class PageTransitionControllerTests
                 )
             );
 
-            var options = new FlourishShellOptions();
-            options.Motion.IsEnabled = enabled;
-            options.Motion.PageTransition = transition;
-            options.Motion.RespectSystemReducedMotion = respectReducedMotion;
+            var options = new FlourishMotionOptions();
+            options.IsEnabled = enabled;
+            options.PageTransition = transition;
+            options.RespectSystemReducedMotion = respectReducedMotion;
             var sut = new FlourishMotionService(options, () => systemAnimationsEnabled);
 
             sut.AnimatePageEntrance(controller, fixture.Target);
@@ -390,11 +395,11 @@ public sealed class PageTransitionControllerTests
         StaTest.Run(() =>
         {
             var fixture = TransitionFixture.Create();
-            var options = new FlourishShellOptions();
-            options.Motion.IsEnabled = true;
-            options.Motion.PageTransition = transition;
-            options.Motion.PageTransitionDuration = Duration;
-            options.Motion.RespectSystemReducedMotion = false;
+            var options = new FlourishMotionOptions();
+            options.IsEnabled = true;
+            options.PageTransition = transition;
+            options.PageTransitionDuration = Duration;
+            options.RespectSystemReducedMotion = false;
             var sut = new FlourishMotionService(options, static () => false);
             var controller = new PageTransitionController();
 

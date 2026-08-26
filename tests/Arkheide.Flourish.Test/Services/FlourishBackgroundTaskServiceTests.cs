@@ -1,4 +1,12 @@
-using ArkheideSystem.Flourish.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+using ArkheideSystem.Flourish.BackgroundTasks;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -135,7 +143,7 @@ public sealed class FlourishBackgroundTaskServiceTests
             .ToArray();
 
         await threeStarted.Task.WaitAsync(Timeout);
-        var activeTasks = service.ActiveTasks;
+        var activeTasks = service.Current;
 
         Assert.Equal(3, service.MaxConcurrency);
         Assert.Equal(
@@ -149,7 +157,7 @@ public sealed class FlourishBackgroundTaskServiceTests
         var results = await Task.WhenAll(handles.Select(handle => handle.Completion))
             .WaitAsync(Timeout);
         Assert.All(results, result => Assert.True(result.Succeeded));
-        Assert.Empty(service.ActiveTasks);
+        Assert.Empty(service.Current);
         await service.StopAsync(CancellationToken.None);
     }
 
@@ -293,16 +301,16 @@ public sealed class FlourishBackgroundTaskServiceTests
     }
 
     [Fact]
-    public async Task TasksChanged_ReportsStateAndProgressSnapshots()
+    public async Task Changed_ReportsStateAndProgressSnapshots()
     {
         var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
         var snapshots = new List<IReadOnlyList<FlourishBackgroundTaskInfo>>();
         var eventGate = new object();
-        service.TasksChanged += (_, args) =>
+        service.Changed += (_, args) =>
         {
             lock (eventGate)
             {
-                snapshots.Add(args.Tasks);
+                snapshots.Add(args.Current);
             }
         };
         await service.StartAsync(CancellationToken.None);
@@ -341,11 +349,11 @@ public sealed class FlourishBackgroundTaskServiceTests
         var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
         var snapshots = new List<IReadOnlyList<FlourishBackgroundTaskInfo>>();
         var eventGate = new object();
-        service.TasksChanged += (_, args) =>
+        service.Changed += (_, args) =>
         {
             lock (eventGate)
             {
-                snapshots.Add(args.Tasks);
+                snapshots.Add(args.Current);
             }
         };
         await service.StartAsync(CancellationToken.None);
@@ -383,7 +391,7 @@ public sealed class FlourishBackgroundTaskServiceTests
     }
 
     [Fact]
-    public async Task TasksChanged_ReentrantCancellationDoesNotRegressLaterSubscribers()
+    public async Task Changed_ReentrantCancellationDoesNotRegressLaterSubscribers()
     {
         var service = new FlourishBackgroundTaskService(maxConcurrency: 1);
         var finish = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -392,18 +400,18 @@ public sealed class FlourishBackgroundTaskServiceTests
         );
         var recordedStates = new List<FlourishBackgroundTaskState>();
         var requestedCancellation = false;
-        service.TasksChanged += (_, args) =>
+        service.Changed += (_, args) =>
         {
-            var task = args.Tasks.SingleOrDefault();
+            var task = args.Current.SingleOrDefault();
             if (task?.State == FlourishBackgroundTaskState.Running && !requestedCancellation)
             {
                 requestedCancellation = true;
                 service.CancelTask(task.Id);
             }
         };
-        service.TasksChanged += (_, args) =>
+        service.Changed += (_, args) =>
         {
-            var task = args.Tasks.SingleOrDefault();
+            var task = args.Current.SingleOrDefault();
             if (task is null)
             {
                 return;
@@ -465,7 +473,7 @@ public sealed class FlourishBackgroundTaskServiceTests
 
         Assert.All(results, result => Assert.True(result.Canceled));
         Assert.False(queuedInvoked);
-        Assert.Empty(service.ActiveTasks);
+        Assert.Empty(service.Current);
         Assert.Throws<InvalidOperationException>(() =>
             service.QueueTask(
                 new FlourishBackgroundTaskMetadata("Rejected"),

@@ -9,12 +9,12 @@ Flourish UI surfaces send stable command keys through `ICommandDispatcher`. Regi
 
 ## Register handlers
 
-`ICommandRegistry.Register` associates a command key with an asynchronous handler and returns an `ICommandRegistration`. Keep the registration for as long as the handler should remain active, then dispose it to unregister the command.
+`ICommandRegistry.Register` associates a command key with an asynchronous handler and returns an `IRegistration`. Keep the registration for as long as the handler should remain active, then dispose it to unregister the command.
 
 ```csharp
 ICommandRegistry commands = flourish.GetRequiredService<ICommandRegistry>();
 
-ICommandRegistration exportCommand = commands.Register(
+IRegistration exportCommand = commands.Register(
     "cmd_reports_export",
     async (context, cancellationToken) =>
     {
@@ -57,7 +57,7 @@ internal sealed class ReportCommands(ReportService reports)
 Register the parser and its dependencies during service configuration. The application does not need to resolve the parser or implement `IDisposable`:
 
 ```csharp
-builder.ConfigServices((_, services) =>
+builder.ConfigureServices((_, services) =>
 {
     services.AddSingleton<ReportService>();
     services.AddCommandParser<ReportCommands>();
@@ -113,7 +113,7 @@ The dispatcher captures handler exceptions in `CommandResult` and reports cancel
 Toolbar, navigation, title-bar, status-bar, notification, and shortcut APIs accept the same command keys. For example:
 
 ```csharp
-toolbar.InitToolbarItems<ReportsPage>(
+toolbar.Set<ReportsPage>(
     new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
 ```
 

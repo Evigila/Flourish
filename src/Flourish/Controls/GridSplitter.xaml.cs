@@ -1,3 +1,6 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using WpfGridSplitter = System.Windows.Controls.GridSplitter;
 

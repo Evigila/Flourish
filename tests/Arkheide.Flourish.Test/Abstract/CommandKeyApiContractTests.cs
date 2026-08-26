@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using Xunit;
+using ArkheideSystem.Flourish.Abstract;
+
 using System.Reflection;
 
 namespace ArkheideSystem.Flourish.Test.Abstract;
@@ -10,17 +15,17 @@ public sealed class CommandKeyApiContractTests
         MethodBase[] members =
         [
             Assert.Single(typeof(FlourishToolbarItem).GetConstructors()),
-            GetMethod<IFlourishCustomHandlerBuilder>(
-                nameof(IFlourishCustomHandlerBuilder.AddTitleBarAction)
+            GetMethod<ICustomContentBuilder>(
+                nameof(ICustomContentBuilder.AddTitleBarAction)
             ),
-            GetMethod<IFlourishCustomHandlerBuilder>(
-                nameof(IFlourishCustomHandlerBuilder.AddFooterCommand)
+            GetMethod<ICustomContentBuilder>(
+                nameof(ICustomContentBuilder.AddFooterCommand)
             ),
-            GetMethod<IFlourishNavigationBuilder>(
-                nameof(IFlourishNavigationBuilder.AddFixedNavigableItem)
+            GetMethod<INavigationBuilder>(
+                nameof(INavigationBuilder.AddFixedNavigableItem)
             ),
-            GetMethod<IFlourishNavigationGroupBuilder>(
-                nameof(IFlourishNavigationGroupBuilder.AddNavigableItem)
+            GetMethod<INavigationGroupBuilder>(
+                nameof(INavigationGroupBuilder.AddNavigableItem)
             ),
         ];
 

@@ -1,9 +1,19 @@
+using System.Linq;
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Messaging;
+using ArkheideSystem.Flourish.Projects;
 using WpfContextMenu = System.Windows.Controls.ContextMenu;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMenuItem = System.Windows.Controls.MenuItem;
@@ -65,7 +75,7 @@ internal sealed class ProjectSelectorController : IDisposable
         && projectService.Current.IsMultiProjectEnabled
         && projectService.Current.ActiveProject is not null;
 
-    internal void Init(FlourishTitleBarState initialTitleState)
+    internal void ApplyInitialState(FlourishTitleBarState initialTitleState)
     {
         ArgumentNullException.ThrowIfNull(initialTitleState);
         ObjectDisposedException.ThrowIf(isDisposed, this);

@@ -1,3 +1,6 @@
+using Xunit;
+using ArkheideSystem.Flourish.Profile;
+
 namespace ArkheideSystem.Flourish.Test.Services;
 
 public sealed class StoredProfileCredentialsTests

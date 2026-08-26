@@ -5,9 +5,9 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <example>
 /// <code><![CDATA[
-/// builder.ConfigNavigation(nav =>
+/// builder.ConfigureNavigation(nav =>
 /// {
-///     nav.InitDirection(NavigationPanelDirection.Left);
+///     nav.SetDirection(NavigationPanelDirection.Left);
 /// });
 /// ]]></code>
 /// </example>
@@ -18,7 +18,7 @@ public enum NavigationPanelDirection
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// nav.InitDirection(NavigationPanelDirection.Left);
+    /// nav.SetDirection(NavigationPanelDirection.Left);
     /// ]]></code>
     /// </example>
     Left,
@@ -28,7 +28,7 @@ public enum NavigationPanelDirection
     /// </summary>
     /// <example>
     /// <code><![CDATA[
-    /// nav.InitDirection(NavigationPanelDirection.Right);
+    /// nav.SetDirection(NavigationPanelDirection.Right);
     /// ]]></code>
     /// </example>
     Right,

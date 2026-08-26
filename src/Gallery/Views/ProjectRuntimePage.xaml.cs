@@ -1,9 +1,9 @@
+using System;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
-using ArkheideSystem.Flourish.Abstract.Runtime;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,15 +55,15 @@ public partial class ProjectRuntimePage : Page
     private void Projects_Changed(object? sender, FlourishProjectsChangedEventArgs e) =>
         Dispatcher.BeginInvoke(RefreshState);
 
-    private void TitleBar_Changed(object? sender, FlourishTitleBarChangedEventArgs e) =>
+    private void TitleBar_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e) =>
         Dispatcher.BeginInvoke(RefreshState);
 
-    private void AppendProject_Click(object sender, RoutedEventArgs e)
+    private void AddProject_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             var project = ReadProjectInput();
-            projects.AppendProject(project);
+            projects.AddProject(project);
             CollectionOutput.WriteLine(
                 Localizer.Parse(CKey.Runtime_AddedProject0_BC8EDEEB, project.Id)
             );

@@ -1,4 +1,5 @@
-using System.Collections.ObjectModel;
+using System;
+using System.Collections.Generic;
 
 namespace ArkheideSystem.Flourish.Abstract;
 
@@ -9,17 +10,15 @@ public sealed class CommandRegistryChangedEventArgs : EventArgs
 {
     internal CommandRegistryChangedEventArgs(
         long version,
-        CommandRegistryChangeKind changeKind,
+        FlourishRuntimeChangeKind changeKind,
         string commandKey,
-        IEnumerable<CommandRegistrationInfo> registrations
+        IReadOnlyList<CommandRegistrationInfo> current
     )
     {
         Version = version;
         ChangeKind = changeKind;
         CommandKey = commandKey;
-        Registrations = new ReadOnlyCollection<CommandRegistrationInfo>(
-            registrations.ToArray()
-        );
+        Current = current;
     }
 
     /// <summary>
@@ -30,7 +29,7 @@ public sealed class CommandRegistryChangedEventArgs : EventArgs
     /// <summary>
     /// Gets the kind of structural change.
     /// </summary>
-    public CommandRegistryChangeKind ChangeKind { get; }
+    public FlourishRuntimeChangeKind ChangeKind { get; }
 
     /// <summary>
     /// Gets the command key affected by the change.
@@ -40,5 +39,5 @@ public sealed class CommandRegistryChangedEventArgs : EventArgs
     /// <summary>
     /// Gets all active runtime registrations in registration order.
     /// </summary>
-    public IReadOnlyList<CommandRegistrationInfo> Registrations { get; }
+    public IReadOnlyList<CommandRegistrationInfo> Current { get; }
 }

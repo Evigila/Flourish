@@ -1,4 +1,6 @@
-using ArkheideSystem.Flourish.Abstract.Essential;
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,7 +22,7 @@ public partial class RuntimeRoutePage : Page
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
         InstanceText.Text = $"{instanceId:N}\nCreated {createdAt:HH:mm:ss.fff}";
-        ParameterText.Text = navigation.CurrentParameter switch
+        ParameterText.Text = navigation.Current.Parameter switch
         {
             null => "<none>",
             var value => value.ToString() ?? "<null>",

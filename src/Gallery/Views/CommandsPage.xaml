@@ -83,7 +83,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CommandOutput" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </UniformGrid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Keep the handle so the command can be replaced or removed.&#10;var registration = commandRegistry.Register(&#10;    &quot;cmd_reports_refresh&quot;,&#10;    RefreshReportsAsync,&#10;    _ =&gt; reportsCanRefresh,&#10;    new CommandRegistrationOptions&#10;    {&#10;        DuplicatePolicy = CommandDuplicatePolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;var canExecute = commandDispatcher.CanExecute(&#10;    &quot;cmd_reports_refresh&quot;, reportId, CommandSource.Application);&#10;var result = await commandDispatcher.ExecuteAsync(&#10;    &quot;cmd_reports_refresh&quot;, reportId, CommandSource.Application);&#10;&#10;registration.NotifyCanExecuteChanged();&#10;registration.Dispose();" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Keep the handle so the command can be replaced or removed.&#10;var registration = commandRegistry.Register(&#10;    &quot;cmd_reports_refresh&quot;,&#10;    RefreshReportsAsync,&#10;    _ =&gt; reportsCanRefresh,&#10;    new CommandRegistrationOptions&#10;    {&#10;        DuplicatePolicy = CommandDuplicatePolicy.Replace,&#10;        Priority = 100,&#10;    });&#10;&#10;var canExecute = commandDispatcher.CanExecute(&#10;    &quot;cmd_reports_refresh&quot;, reportId, CommandSource.Application);&#10;var result = await commandDispatcher.ExecuteAsync(&#10;    &quot;cmd_reports_refresh&quot;, reportId, CommandSource.Application);&#10;&#10;commandRegistry.NotifyCanExecuteChanged(&quot;cmd_reports_refresh&quot;);&#10;registration.Dispose();" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -150,7 +150,7 @@
           </StackPanel>
         </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="commandRegistry.Changed += (_, _) =&gt; RefreshCommands();&#10;shortcuts.Changed += (_, _) =&gt; RefreshShortcuts();&#10;&#10;var commands = commandRegistry.Registrations;&#10;var bindings = shortcuts.Registrations;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="commandRegistry.Changed += (_, _) =&gt; RefreshCommands();&#10;shortcuts.Changed += (_, _) =&gt; RefreshShortcuts();&#10;&#10;var commands = commandRegistry.Current;&#10;var bindings = shortcuts.Current;" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">

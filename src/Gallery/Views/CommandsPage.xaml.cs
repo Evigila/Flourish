@@ -1,8 +1,12 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
 using CKey = Arkheide.Essential.Culture.Key;
 using Localizer = Arkheide.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Abstract.Essential;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,8 +23,8 @@ public partial class CommandsPage : Page
     private readonly ICommandRegistry commandRegistry;
     private readonly ICommandDispatcher commandDispatcher;
     private readonly IShortcutService shortcuts;
-    private ICommandRegistration? commandRegistration;
-    private IShortcutRegistration? shortcutRegistration;
+    private IRegistration? commandRegistration;
+    private IRegistration? shortcutRegistration;
     private bool commandEnabled = true;
     private int executionCount;
 
@@ -155,7 +159,10 @@ public partial class CommandsPage : Page
         try
         {
             commandEnabled = CommandEnabledBox.IsChecked == true;
-            commandRegistration?.NotifyCanExecuteChanged();
+            if (commandRegistration is not null)
+            {
+                commandRegistry.NotifyCanExecuteChanged(RequireCommandKey());
+            }
             CommandOutput.WriteLine(
                 commandRegistration is null
                     ? Localizer.Parse(
@@ -284,18 +291,18 @@ public partial class CommandsPage : Page
     {
         RegistrySummaryText.Text = Localizer.Parse(
             CKey.Runtime_Commands0Shortcuts1_EE620469,
-            commandRegistry.Registrations.Count,
-            shortcuts.Registrations.Count
+            commandRegistry.Current.Count,
+            shortcuts.Current.Count
         );
 
-        var commandItems = commandRegistry.Registrations.Select(item =>
+        var commandItems = commandRegistry.Current.Select(item =>
             Localizer.Parse(
                 CKey.Runtime_Command0Priority1_6F653DF7,
                 item.CommandKey,
                 item.Priority
             )
         );
-        var shortcutItems = shortcuts.Registrations.Select(item =>
+        var shortcutItems = shortcuts.Current.Select(item =>
             Localizer.Parse(
                 CKey.Runtime_Shortcut012_B5D726B0,
                 item.Gesture.GetDisplayStringForCulture(

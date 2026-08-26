@@ -1,9 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ArkheideSystem.Flourish.Internal.Imaging;
-using ArkheideSystem.Flourish.Services;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+using ArkheideSystem.Flourish.Appearance;
+using ArkheideSystem.Flourish.Localization;
+using ArkheideSystem.Flourish.Navigation;
+using ArkheideSystem.Flourish.Profile;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
@@ -81,7 +89,7 @@ internal sealed class ShellTitleBarController : IDisposable
 
     internal bool IsApplicationInfoOpen => applicationInfo.IsOpen;
 
-    internal void Init()
+    internal void Start()
     {
         ObjectDisposedException.ThrowIf(isDisposed, this);
         if (isInitialized)
@@ -103,7 +111,7 @@ internal sealed class ShellTitleBarController : IDisposable
         localization.Changed += Localization_Changed;
 
         titlebar.ApplyLocale(localization);
-        projectSelector.Init(state);
+        projectSelector.ApplyInitialState(state);
         ApplyState(state, previous: null);
         ApplySearchState(searchService.Current);
     }
@@ -225,18 +233,18 @@ internal sealed class ShellTitleBarController : IDisposable
         IconChanged = null;
     }
 
-    private void TitleBarService_Changed(object? sender, FlourishTitleBarChangedEventArgs e)
+    private void TitleBarService_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e)
     {
         Dispatch(() =>
         {
-            if (e.Version <= appliedVersion)
+            if (e.Current.Version <= appliedVersion)
             {
                 return;
             }
 
-            appliedVersion = e.Version;
+            appliedVersion = e.Current.Version;
             var previous = state;
-            state = e.State;
+            state = e.Current;
             ApplyState(state, previous);
             StateChanged?.Invoke(this, new ShellTitleBarStateChangedEventArgs(previous, state));
         });
@@ -267,14 +275,14 @@ internal sealed class ShellTitleBarController : IDisposable
 
     private void SearchService_ProgrammaticStateChanged(
         object? sender,
-        FlourishTitleBarSearchStateChangedEventArgs e
+        FlourishStateChangedEventArgs<FlourishTitleBarSearchState> e
     )
     {
         Dispatch(() =>
         {
-            if (searchService.IsCurrentVersion(e.State.Version))
+            if (searchService.IsCurrentVersion(e.Current.Version))
             {
-                ApplySearchState(e.State);
+                ApplySearchState(e.Current);
             }
         });
     }

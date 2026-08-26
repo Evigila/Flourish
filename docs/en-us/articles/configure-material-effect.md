@@ -5,11 +5,11 @@ description: Select the Windows material used by the Flourish shell window.
 
 # Material effects
 
-`UseMaterialEffect` selects the background material for the shell window.
+`SetEffect` selects the background material for the shell window.
 
 ```csharp
-builder.ConfigShell(shell =>
-    shell.UseMaterialEffect());
+builder.ConfigureAppearance(appearance =>
+    appearance.SetEffect());
 ```
 
 ## Select a material
@@ -26,7 +26,7 @@ builder.ConfigShell(shell =>
 
 Pass `enabled: false` or select `MaterialEffect.None` to use the opaque Shell background. `IsSupported` reports whether a concrete material is available. `SetEffect` throws `PlatformNotSupportedException` before changing state when a concrete unsupported material is requested; `Auto` never throws and safely resolves to `None` when necessary.
 
-Material is applied to the shell window. The built-in page host remains transparent so the backdrop continues through the content area. Pages can still add local backgrounds when their design requires one. `CurrentEffect` returns the requested value and `EffectiveEffect` returns the concrete platform result.
+Material is applied to the shell window. The built-in page host remains transparent so the backdrop continues through the content area. Pages can still add local backgrounds when their design requires one. At runtime, `IMaterialEffectService.Current.RequestedEffect` reports the requested value and `Current.EffectiveEffect` reports the concrete platform result. Subscribe to `Changed` to observe a new immutable state snapshot.
 
 The runtime material selection is restored from and written to the selected Flourish settings file by default. Pass `usePersistedPreference: false` to keep the configured material authoritative. A missing, invalid, or incomplete saved group leaves the configured arguments intact. When a concrete saved material is moved to a platform that does not support it, Flourish changes that saved request to `Auto` and uses the new platform default instead of failing Shell startup.
 

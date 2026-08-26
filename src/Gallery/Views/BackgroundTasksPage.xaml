@@ -87,7 +87,7 @@
     >
       <StackPanel>
         <flourish:Presenter
-          Content="{culture:Localize Key=Shell_QueuedRunningAndCancellingItemsUpdateThroughTasksChanged_234E9419}"
+          Content="{culture:Localize Key=Shell_QueuedRunningAndCancellingItemsUpdateThroughChanged_234E9419}"
           PresenterMode="Split"
           PresenterPosition="Left"
           Title="{culture:Localize Key=Shell_LiveTasks_6CB0A11C}"
@@ -119,7 +119,7 @@
             />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="backgroundTasks.TasksChanged += (_, change) =&gt;&#10;    RefreshTaskList(change.Tasks);&#10;&#10;var activeTasks = backgroundTasks.ActiveTasks;&#10;var concurrencyLimit = backgroundTasks.MaxConcurrency;&#10;&#10;var completion = await handle.Completion;&#10;var finalState = completion.Info.State;&#10;var error = completion.Info.Exception;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="backgroundTasks.Changed += (_, change) =&gt;&#10;    RefreshTaskList(change.Current);&#10;&#10;var activeTasks = backgroundTasks.Current;&#10;var concurrencyLimit = backgroundTasks.MaxConcurrency;&#10;&#10;var completion = await handle.Completion;&#10;var finalState = completion.Info.State;&#10;var error = completion.Info.Exception;" />
       </StackPanel>
     </flourish:Chunk>
 

@@ -1,7 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using ArkheideSystem.Flourish.Shell.TitleBar;
+
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ArkheideSystem.Flourish.Internal.Imaging;
 
 namespace ArkheideSystem.Flourish.Test.Internal.Imaging;
 

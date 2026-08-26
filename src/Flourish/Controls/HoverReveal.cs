@@ -1,6 +1,8 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using WpfBrush = System.Windows.Media.Brush;
-using ArkheideSystem.Flourish.Internal.Interaction;
 
 namespace ArkheideSystem.Flourish.Controls;
 
