@@ -13,7 +13,7 @@ using MessageBoxOptions = System.Windows.MessageBoxOptions;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
-internal sealed class MessageService(FlourishLocalizationService localizationService)
+internal sealed class MessageService(LocalizationService localizationService)
     : IMessageService
 {
     public Task<MessageBoxResult> ShowAsync(
@@ -58,10 +58,10 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
         );
     }
 
-    public Task<FlourishMessageOption?> ShowAsync(
+    public Task<MessageDialogOption?> ShowAsync(
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None,
         CancellationToken cancellationToken = default
@@ -73,11 +73,11 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
         );
     }
 
-    public Task<FlourishMessageOption?> ShowAsync(
+    public Task<MessageDialogOption?> ShowAsync(
         Window? owner,
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None,
         CancellationToken cancellationToken = default
@@ -121,7 +121,7 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
     {
         EnsureApplicationResources();
 
-        var dialog = new FlourishMessageBoxWindow(
+        var dialog = new MessageBoxWindow(
             messageBoxText,
             caption,
             button,
@@ -136,10 +136,10 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
         return dialog.Result;
     }
 
-    public FlourishMessageOption? Show(
+    public MessageDialogOption? Show(
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None
     )
@@ -147,21 +147,21 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
         return Show(GetActiveOwner(), messageBoxText, caption, choices, icon, options);
     }
 
-    public FlourishMessageOption? Show(
+    public MessageDialogOption? Show(
         Window? owner,
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None
     )
     {
         EnsureApplicationResources();
 
-        var dialog = new FlourishMessageBoxWindow(
+        var dialog = new MessageBoxWindow(
             messageBoxText,
             caption,
-            FlourishMessageOptionValidator.Validate(choices),
+            MessageDialogOptionValidator.Validate(choices),
             icon,
             options,
             localizationService
@@ -211,7 +211,7 @@ internal sealed class MessageService(FlourishLocalizationService localizationSer
             return;
         }
 
-        FlourishThemeResources.EnsureMerged(application.Resources);
+        ThemeResources.EnsureMerged(application.Resources);
     }
 
     private static async Task<TResult> InvokeOnDispatcherAsync<TResult>(

@@ -1,16 +1,16 @@
 ---
-title: IFlourishBuilder
+title: IApplicationBuilder
 description: 使用按功能划分的 Builder 配置并构建 Flourish 应用。
 ---
 
-# IFlourishBuilder
+# IApplicationBuilder
 
-`IFlourishBuilder` 是一次性的组合入口。它记录启动默认值和服务注册，最后由 `Build()` 创建基于 .NET Generic Host 的 `IFlourish` 运行时。所有 Flourish 公开契约统一位于 `ArkheideSystem.Flourish.Abstract`。
+`IApplicationBuilder` 记录启动默认值和服务注册，`Build()` 最终创建基于 Generic Host 的 `IApplicationRuntime`。公开契约位于 `ArkheideSystem.Flourish.Abstract`。
 
 ```csharp
 using ArkheideSystem.Flourish.Abstract;
 
-using var flourish = FlourishBuilder
+using var flourish = ApplicationBuilder
     .CreateDefaultBuilder(args)
     .ConfigureServices((context, services) => services.AddSingleton<App>())
     .ConfigureTitleBar(titleBar =>
@@ -46,9 +46,9 @@ return flourish.Run<App>();
 
 ## Host 配置
 
-`CreateDefaultBuilder` 保留标准 .NET Host 配置。`ConfigureConfiguration` 直接接收 Microsoft `IConfigurationBuilder`，`ConfigureServices` 接收 `HostBuilderContext` 和 `IServiceCollection`。通过依赖注入获取 `IConfiguration` 即可读取最终配置。
+`CreateDefaultBuilder` 保留标准 .NET Host 配置。`ConfigureConfiguration` 接收 `IConfigurationBuilder`，`ConfigureServices` 接收 `HostBuilderContext` 和 `IServiceCollection`；注入 `IConfiguration` 可读取最终配置。
 
-`appsettings.Flourish.json` 仍是默认的可写 Flourish 设置文件。`IFlourishSettingsStore` 负责原子写入 `Flourish:` 节并重新加载同一份标准 `IConfiguration`，它不会取代 Microsoft 配置系统。
+`appsettings.Flourish.json` 仍是默认的可写 Flourish 设置文件。`ISettingsStore` 负责原子写入 `Flourish:` 节并重新加载同一份标准 `IConfiguration`，它不会取代 Microsoft 配置系统。
 
 ## 运行时 Service
 

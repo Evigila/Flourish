@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// builder.ConfigureToolbar(toolbar =>
 /// {
 ///     toolbar.Set<ReportsPage>(
-///         new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
+///         new ToolbarItem("Export", "\uE898", "cmd_reports_export"));
 /// });
 /// ]]></code>
 /// </example>
@@ -30,16 +30,16 @@ public interface IToolbarBuilder
     /// <code><![CDATA[
     /// toolbar.Set<ReportsPage>(
     ///     iconOnly: true,
-    ///     new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
+    ///     new ToolbarItem("Export", "\uE898", "cmd_reports_export"));
     /// ]]></code>
     /// </example>
     IToolbarBuilder Set<TPage>(
         bool iconOnly,
-        params FlourishToolbarItem[] items
+        params ToolbarItem[] items
     )
         where TPage : Page;
 
     /// <summary>Creates icon-only toolbar items for a page type.</summary>
-    IToolbarBuilder Set<TPage>(params FlourishToolbarItem[] items)
+    IToolbarBuilder Set<TPage>(params ToolbarItem[] items)
         where TPage : Page => Set<TPage>(iconOnly: true, items);
 }

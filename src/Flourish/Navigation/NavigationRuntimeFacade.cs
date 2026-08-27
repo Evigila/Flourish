@@ -17,7 +17,7 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
     private readonly NavigationMenuService menu;
     private readonly NavigationPanelService panel;
     private readonly PageCacheService cache;
-    private FlourishNavigationState current;
+    private NavigationState current;
     private long version;
     private bool isDisposed;
 
@@ -42,7 +42,7 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
         cache.Changed += Source_Changed;
     }
 
-    public FlourishNavigationState Current
+    public NavigationState Current
     {
         get
         {
@@ -51,9 +51,9 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
         }
     }
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishNavigationState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<NavigationState>>? Changed;
 
-    public event EventHandler<FlourishNavigatedEventArgs>? Navigated
+    public event EventHandler<NavigatedEventArgs>? Navigated
     {
         add => navigation.Navigated += value;
         remove => navigation.Navigated -= value;
@@ -78,19 +78,19 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
 
     public IRegistration AddNavigable<TPage>(
         string? navigationKey = null,
-        FlourishPageCacheMode cacheMode = FlourishPageCacheMode.Enabled
+        PageCacheMode cacheMode = PageCacheMode.Enabled
     )
         where TPage : Page
     {
         navigationKey = string.IsNullOrWhiteSpace(navigationKey)
-            ? FlourishServiceCollectionExtensions.CreateDefaultNavigationKey(typeof(TPage))
+            ? ServiceCollectionExtensions.CreateDefaultNavigationKey(typeof(TPage))
             : navigationKey.Trim();
-        return routes.Set(new FlourishNavigationRoute(navigationKey, typeof(TPage), cacheMode));
+        return routes.Set(new NavigationRoute(navigationKey, typeof(TPage), cacheMode));
     }
 
-    public IRegistration SetNavigable(FlourishNavigationRoute route) => routes.Set(route);
+    public IRegistration SetNavigable(NavigationRoute route) => routes.Set(route);
     public bool RemoveNavigable(string navigationKey) => routes.Remove(navigationKey);
-    public FlourishNavigationRoute? GetNavigable(string navigationKey) => routes.Get(navigationKey);
+    public NavigationRoute? GetNavigable(string navigationKey) => routes.Get(navigationKey);
     public void SetMenu(Action<INavigationMenuEditor> update) => menu.Set(update);
     public void SetEnabled(bool enabled) => panel.SetEnabled(enabled);
     public void SetDirection(NavigationPanelDirection direction) => panel.SetDirection(direction);
@@ -99,7 +99,7 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
     public void Open(bool animate = true) => panel.Open(animate);
     public void Close(bool animate = true) => panel.Close(animate);
     public void Toggle(bool animate = true) => panel.Toggle(animate);
-    public void SetCacheMode(Type pageType, FlourishPageCacheMode cacheMode)
+    public void SetCacheMode(Type pageType, PageCacheMode cacheMode)
     {
         ArgumentNullException.ThrowIfNull(pageType);
         foreach (var route in routes.Current.Routes.Values.Where(route => route.PageType == pageType))
@@ -134,7 +134,7 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
 
     private void Source_Changed(object? sender, EventArgs args)
     {
-        FlourishNavigationState snapshot;
+        NavigationState snapshot;
         lock (gate)
         {
             if (isDisposed)
@@ -147,10 +147,10 @@ internal sealed class NavigationRuntimeFacade : INavigationService, IDisposable
             Volatile.Write(ref current, snapshot);
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishNavigationState>(snapshot));
+        Changed?.Invoke(this, new StateChangedEventArgs<NavigationState>(snapshot));
     }
 
-    private FlourishNavigationState CaptureCurrent() => new(
+    private NavigationState CaptureCurrent() => new(
         navigation.CurrentNavigationKey,
         navigation.CurrentSourcePageType,
         navigation.CurrentParameter,

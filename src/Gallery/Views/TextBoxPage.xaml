@@ -2,7 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.TextBoxPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -14,7 +14,7 @@
       Content="{culture:Localize Key=Controls_CollectAndEditASingleValueOrASmallBlockOfTextWithTheNativeWPFTex_214CC14B}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishTextBox"
+      Title="TextBox"
     />
 
     <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
@@ -43,7 +43,7 @@
           Title="{culture:Localize Key=Controls_SingleLine_D66572A5}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishTextBox
+            <flourish:TextBox
               Width="240"
               Height="40"
               HorizontalAlignment="Center"
@@ -60,7 +60,7 @@
           Title="{culture:Localize Key=Controls_Multiline_D3FD4F92}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishTextBox
+            <flourish:TextBox
               Width="240"
               Height="80"
               HorizontalAlignment="Center"
@@ -94,7 +94,7 @@
           Title="{culture:Localize Key=Controls_EditNotifications_F44B9B2A}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishTextBox&#xA;  x:Name=&quot;NotesBox&quot;&#xA;  Height=&quot;96&quot;&#xA;  AcceptsReturn=&quot;True&quot;&#xA;  TextWrapping=&quot;Wrap&quot;&#xA;  TextChanged=&quot;NotesBox_TextChanged&quot; /&gt;&#xA;&#xA;private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)&#xA;{&#xA;    CharacterCount.Text = NotesBox.Text.Length.ToString();&#xA;}" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:TextBox&#xA;  x:Name=&quot;NotesBox&quot;&#xA;  Height=&quot;96&quot;&#xA;  AcceptsReturn=&quot;True&quot;&#xA;  TextWrapping=&quot;Wrap&quot;&#xA;  TextChanged=&quot;NotesBox_TextChanged&quot; /&gt;&#xA;&#xA;private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)&#xA;{&#xA;    CharacterCount.Text = NotesBox.Text.Length.ToString();&#xA;}" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
@@ -112,10 +112,10 @@
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="{culture:Localize Key=Controls_ReadTheFlourishTextBoxAPIReference_EA748C36}"
+          Content="{culture:Localize Key=Controls_ReadTheTextBoxAPIReference_EA748C36}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="{culture:Localize Key=Controls_FlourishTextBoxDocumentation_07D8D1EF}"
+          Title="{culture:Localize Key=Controls_TextBoxDocumentation_07D8D1EF}"
           ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>

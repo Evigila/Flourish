@@ -5,7 +5,7 @@ description: Configure the Flourish presentation for tooltips owned by Flourish 
 
 # Tooltips
 
-Tooltips provide labels for compact or icon-only Flourish controls and Shell surfaces. `ConfigureToolTips` switches these hints from the native WPF tooltip presentation to the Flourish presentation and configures its timing.
+`ConfigureToolTips` applies Flourish presentation and timing to hints owned by Flourish controls and Shell surfaces.
 
 ## Configure tooltips
 
@@ -22,7 +22,7 @@ Flourish keeps this presentation within the shell boundary. Pass `false` to `Set
 
 ## Native and third-party controls
 
-`ConfigureToolTips` does not configure tooltips attached to native WPF controls or tooltips owned by third-party controls. Flourish does not apply an application-wide template to those tooltips, so they always retain their own appearance, timing, placement, and opening behavior.
+Native WPF and third-party tooltips keep their own appearance and behavior.
 
 When the Flourish presentation is active, WPF `ToolTipService` still owns opening, delay, popup placement, and closure.
 
@@ -30,6 +30,6 @@ Background-task status details are not controlled by tooltip presentation. They 
 
 ## Related features
 
-- [Shell configuration](shell-configuration.md) explains the feature-specific Builder and Service model.
-- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md) contain controls governed by this setting.
-- [Background tasks](background-tasks.md) provides task status and queue details.
+- [Shell configuration](shell-configuration.md)
+- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md)
+- [Background tasks](background-tasks.md)

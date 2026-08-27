@@ -14,7 +14,7 @@
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
       <Grid Background="Transparent">
-        <controls:FlourishTextBlock
+        <controls:TextBlock
           x:Name="CollapsedLabel"
           Style="{DynamicResource FlourishControlTextBlockStyle}"
           HorizontalAlignment="Center"
@@ -57,7 +57,7 @@
             Command="{x:Static controls:CodeSpace.CollapseCommand}"
             CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
             Icon="&#xE70E;"
-            IconSize="16"
+            IconSize="{DynamicResource FlourishFontSizeStandardIcon}"
             ToolTip="Collapse code"
             Variant="Elevated"
           />
@@ -67,7 +67,7 @@
             Command="{x:Static ApplicationCommands.Copy}"
             CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
             Icon="&#xE8C8;"
-            IconSize="16"
+            IconSize="{DynamicResource FlourishFontSizeStandardIcon}"
             ToolTip="Copy code"
             Variant="Elevated"
           />

@@ -10,7 +10,7 @@ public interface IMotionService
     /// <summary>
     /// Gets the current animation settings.
     /// </summary>
-    FlourishMotionSettings Current { get; }
+    MotionSettings Current { get; }
 
     /// <summary>
     /// Raised after animation settings change.
@@ -18,7 +18,7 @@ public interface IMotionService
     /// <remarks>
     /// When a shell window is attached, the event is raised on its dispatcher.
     /// </remarks>
-    event EventHandler<FlourishStateTransitionEventArgs<FlourishMotionSettings>>? Changed;
+    event EventHandler<StateTransitionEventArgs<MotionSettings>>? Changed;
 
     /// <summary>
     /// Enables or disables all Flourish animation.
@@ -29,7 +29,7 @@ public interface IMotionService
     /// Changes the page transition and duration.
     /// </summary>
     void SetPageTransition(
-        FlourishPageTransition transition,
+        PageTransition transition,
         TimeSpan? duration = null
     );
 
@@ -37,7 +37,7 @@ public interface IMotionService
     /// Changes the navigation panel transition and duration.
     /// </summary>
     void SetNavigationPanelTransition(
-        FlourishNavigationPanelTransition transition,
+        NavigationPanelTransition transition,
         TimeSpan? duration = null
     );
 

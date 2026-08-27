@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Shell.StatusBar;
 using System.Windows;
-using FlourishTextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
-using FlourishTextLayoutMode = ArkheideSystem.Flourish.Controls.FlourishTextLayoutMode;
-using FlourishTextRole = ArkheideSystem.Flourish.Controls.FlourishTextRole;
+using TextBlock = ArkheideSystem.Flourish.Controls.TextBlock;
+using TextLayoutMode = ArkheideSystem.Flourish.Controls.TextLayoutMode;
+using TextRole = ArkheideSystem.Flourish.Controls.TextRole;
 using WpfPanel = System.Windows.Controls.Panel;
 using WpfStackPanel = System.Windows.Controls.StackPanel;
 
@@ -25,7 +25,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
     private long appliedVersion = -1;
 
     /// <summary>Builds or reconciles the complete authoritative snapshot.</summary>
-    internal void Synchronize(FlourishStatusBarSnapshot snapshot)
+    internal void Synchronize(StatusBarSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         SynchronizeCore(snapshot.Items);
@@ -36,7 +36,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
     /// Applies a newer change, falling back to keyed reconciliation when an event was skipped.
     /// </summary>
     /// <returns><see langword="true" /> when the snapshot was applied.</returns>
-    internal bool Apply(FlourishStatusBarChangedEventArgs change)
+    internal bool Apply(StatusBarChangedEventArgs change)
     {
         ArgumentNullException.ThrowIfNull(change);
         var snapshot = change.Current;
@@ -47,7 +47,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
 
         if (
             snapshot.Version != appliedVersion + 1
-            || change.ChangeKind == FlourishRuntimeChangeKind.Reset
+            || change.ChangeKind == CollectionChangeKind.Reset
             || !TryApplyIncremental(change)
         )
         {
@@ -58,19 +58,19 @@ internal sealed class StatusItemViewCache(WpfPanel host)
         return true;
     }
 
-    private bool TryApplyIncremental(FlourishStatusBarChangedEventArgs change)
+    private bool TryApplyIncremental(StatusBarChangedEventArgs change)
     {
         if (change.ItemId is null)
         {
-            return change.ChangeKind == FlourishRuntimeChangeKind.Updated;
+            return change.ChangeKind == CollectionChangeKind.Updated;
         }
 
         var itemId = change.ItemId;
         switch (change.ChangeKind)
         {
-            case FlourishRuntimeChangeKind.Added:
-            case FlourishRuntimeChangeKind.Updated:
-            case FlourishRuntimeChangeKind.Moved:
+            case CollectionChangeKind.Added:
+            case CollectionChangeKind.Updated:
+            case CollectionChangeKind.Moved:
                 if (!TryFindItem(change.Current.Items, itemId, out var item, out var visibleIndex))
                 {
                     return false;
@@ -78,7 +78,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
 
                 return Upsert(item, visibleIndex);
 
-            case FlourishRuntimeChangeKind.Removed:
+            case CollectionChangeKind.Removed:
                 if (ContainsItem(change.Current.Items, itemId))
                 {
                     return false;
@@ -91,7 +91,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
         }
     }
 
-    private void SynchronizeCore(IReadOnlyList<FlourishStatusItem> items)
+    private void SynchronizeCore(IReadOnlyList<StatusBarItem> items)
     {
         var activeIds = new HashSet<string>(items.Count, StringComparer.Ordinal);
         var desiredViews = new List<UIElement>(items.Count);
@@ -116,7 +116,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
         UpdateMargins();
     }
 
-    private bool Upsert(FlourishStatusItem item, int visibleIndex)
+    private bool Upsert(StatusBarItem item, int visibleIndex)
     {
         var view = GetOrCreate(item);
         Update(view, item);
@@ -170,45 +170,45 @@ internal sealed class StatusItemViewCache(WpfPanel host)
         return true;
     }
 
-    private StatusItemView GetOrCreate(FlourishStatusItem item)
+    private StatusItemView GetOrCreate(StatusBarItem item)
     {
         if (viewsById.TryGetValue(item.Id, out var view))
         {
             return view;
         }
 
-        var iconText = new FlourishTextBlock
+        var iconText = new TextBlock
         {
-            Role = FlourishTextRole.Icon,
+            Role = TextRole.Icon,
             VerticalAlignment = VerticalAlignment.Center,
             TextAlignment = TextAlignment.Center,
             LineStackingStrategy = LineStackingStrategy.BlockLineHeight,
         };
-        BindResource(iconText, FlourishTextBlock.FontFamilyProperty, "FlourishIconFontFamily");
-        BindResource(iconText, FlourishTextBlock.FontSizeProperty, "FlourishIconFontSizeStatusBar");
+        BindResource(iconText, TextBlock.FontFamilyProperty, "FlourishIconFontFamily");
+        BindResource(iconText, TextBlock.FontSizeProperty, "FlourishIconFontSizeStatusBar");
         BindResource(
             iconText,
-            FlourishTextBlock.LineHeightProperty,
+            TextBlock.LineHeightProperty,
             "FlourishIconFontSizeStatusBar"
         );
         BindResource(
             iconText,
-            FlourishTextBlock.ForegroundProperty,
+            TextBlock.ForegroundProperty,
             "FlourishNeutralForeground2Brush"
         );
 
-        var labelText = new FlourishTextBlock
+        var labelText = new TextBlock
         {
-            LayoutMode = FlourishTextLayoutMode.Control,
+            LayoutMode = TextLayoutMode.Control,
             Margin = new Thickness(5, 0, 0, 0),
             VerticalAlignment = VerticalAlignment.Center,
             LineStackingStrategy = LineStackingStrategy.BlockLineHeight,
         };
-        BindResource(labelText, FlourishTextBlock.FontSizeProperty, "FlourishFontSizeSmall");
-        BindResource(labelText, FlourishTextBlock.LineHeightProperty, "FlourishLineHeightSmall");
+        BindResource(labelText, TextBlock.FontSizeProperty, "FlourishFontSizeSmall");
+        BindResource(labelText, TextBlock.LineHeightProperty, "FlourishLineHeightSmall");
         BindResource(
             labelText,
-            FlourishTextBlock.ForegroundProperty,
+            TextBlock.ForegroundProperty,
             "FlourishNeutralForeground2Brush"
         );
 
@@ -225,7 +225,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
         return view;
     }
 
-    private static void Update(StatusItemView view, FlourishStatusItem item)
+    private static void Update(StatusItemView view, StatusBarItem item)
     {
         if (!StringComparer.Ordinal.Equals(view.Icon.Text, item.IconGlyph))
         {
@@ -248,9 +248,9 @@ internal sealed class StatusItemViewCache(WpfPanel host)
     }
 
     private static bool TryFindItem(
-        IReadOnlyList<FlourishStatusItem> items,
+        IReadOnlyList<StatusBarItem> items,
         string itemId,
-        out FlourishStatusItem item,
+        out StatusBarItem item,
         out int visibleIndex
     )
     {
@@ -273,7 +273,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
         return false;
     }
 
-    private static bool ContainsItem(IReadOnlyList<FlourishStatusItem> items, string itemId)
+    private static bool ContainsItem(IReadOnlyList<StatusBarItem> items, string itemId)
     {
         foreach (var item in items)
         {
@@ -326,7 +326,7 @@ internal sealed class StatusItemViewCache(WpfPanel host)
 
     private sealed record StatusItemView(
         WpfStackPanel Root,
-        FlourishTextBlock Icon,
-        FlourishTextBlock Label
+        TextBlock Icon,
+        TextBlock Label
     );
 }

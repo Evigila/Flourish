@@ -5,7 +5,7 @@ description: 配置主题选择、应用配色、共用圆角和偏好持久化�
 
 # 主题
 
-Flourish 提供跟随系统、亮色和暗色主题。`SetThemeToggle` 会启用主题选择、显示标题栏入口，并指定 Host 配置中没有已保存偏好时使用的回退模式。
+`SetThemeToggle` 启用系统、亮色和暗色主题选择，显示标题栏入口，并设置无已保存偏好时的回退模式。
 
 ## 配置主题选择
 
@@ -16,10 +16,10 @@ builder
     .ConfigureTitleBar(titleBar =>
         titleBar
             .SetEnabled()
-            .SetThemeToggle(mode: FlourishTheme.System));
+            .SetThemeToggle(mode: ApplicationTheme.System));
 ```
 
-省略参数时使用 `FlourishTheme.System`。主题持久化默认启用，因此只有 Host 配置中不存在有效的 `Flourish:Preferences:Theme` 时回退值才会生效。如果代码必须始终决定启动主题，且运行时选择不应更新存储值，请传入 `usePersistedPreference: false`。[应用数据](configure-data.md)说明对应的设置文件。
+省略参数时使用 `ApplicationTheme.System`。主题默认持久化，仅在没有有效 `Flourish:Preferences:Theme` 时使用回退值。代码必须决定启动主题且运行时选择不写回时，传入 `usePersistedPreference: false`；见[应用数据](configure-data.md)。
 
 不调用 `SetThemeToggle` 时，标题栏主题入口保持隐藏，Shell 以亮色主题初始化。应用仍可通过 `IThemeService` 在运行时更改主题。
 
@@ -32,7 +32,7 @@ using System.Windows.Media;
 
 builder.ConfigureAppearance(appearance =>
     appearance
-        .SetThemeColors(enabled: true, colors: new FlourishThemeColors(
+        .SetThemeColors(enabled: true, colors: new ThemeColors(
             primary: Color.FromRgb(15, 108, 189),
             secondary: Color.FromRgb(92, 46, 145),
             accent: Color.FromRgb(216, 59, 1)))
@@ -48,7 +48,7 @@ builder.ConfigureAppearance(appearance =>
 需要在启动后修改这些值时，使用 `IAppearanceService`：
 
 ```csharp
-appearance.SetThemeColors(new FlourishThemeColors(primary, secondary, accent));
+appearance.SetThemeColors(new ThemeColors(primary, secondary, accent));
 appearance.SetCornerRadius(8);
 
 // 原子修改两项；传入 null 可恢复标准资源。
@@ -74,7 +74,7 @@ Flourish 使用 Fluent 颜色系统的精简子集。中性色角色负责文字
 
 ## 主题模式与偏好
 
-`FlourishTheme.System` 跟随 Windows 应用主题，`Light` 与 `Dark` 使用固定主题，直到用户选择其他模式。
+`ApplicationTheme.System` 跟随 Windows 应用主题，`Light` 与 `Dark` 使用固定主题，直到用户选择其他模式。
 
 Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。用户通过标题栏选择主题时，会写入 `SetAppSettingsFilePath` 选择的文件；Host appsettings、User Secrets、环境变量或命令行值仍可能在后续启动时优先。
 
@@ -82,9 +82,9 @@ Flourish 按 Host 的完整配置优先级读取 `Flourish:Preferences:Theme`。
 
 ## 相关功能
 
-- [控件库](control-library.md)说明显式 Flourish 控件与主题资源加载。
-- [标题栏](configure-title-bar.md)配置主题入口。
-- [应用数据](configure-data.md)说明 Host 配置与主题偏好键。
-- [运行时 API](runtime-apis.md)说明应用运行期间通过 `IThemeService` 与 `IAppearanceService` 更改主题和外观。
-- [材质特效](configure-material-effect.md)配置与当前主题配合使用的窗口材质。
-- [排版](configure-font.md)配置主题资源使用的字体。
+- [控件库](control-library.md)
+- [标题栏](configure-title-bar.md)
+- [应用数据](configure-data.md)
+- [运行时 API](runtime-apis.md)
+- [材质特效](configure-material-effect.md)
+- [排版](configure-font.md)

@@ -1,11 +1,11 @@
 ---
 title: PageBody
-description: Use PageBody as the scrolling root that enforces the HeaderChunk and Chunk hierarchy of a Flourish page.
+description: Use PageBody as the validated scrolling root of a Flourish page.
 ---
 
 # PageBody
 
-`PageBody` is the root content container for a navigated Flourish page. It combines a Flourish [ScrollViewer](scroll-viewer.md), the standard page margin, and a vertical section stack. Declare sections directly without adding another `ScrollViewer` or `StackPanel`.
+`PageBody` combines a Flourish [ScrollViewer](scroll-viewer.md), page margin, and vertical section stack. Add sections directly without another `ScrollViewer` or `StackPanel`.
 
 ```xml
 <Page
@@ -32,7 +32,7 @@ Direct XAML content is added to `Children` and arranged vertically in declaratio
 - When present, `HeaderChunk` is the first child.
 - Cards, Presenters, Documents, panels, and other content belong inside a `Chunk.Body` or `HeaderChunk.Body`, never directly under `PageBody`.
 
-A standard content page uses one leading `HeaderChunk` followed by one or more `Chunk` sections. The collection permits temporarily constructing a page without a header, but does not permit placing one after another section.
+The collection allows no header temporarily, but a header cannot follow another section.
 
 ## Scrolling and centered content
 
@@ -44,7 +44,7 @@ Do not assign the inherited `Content` property. `PageBody` uses it for its inter
 
 ## Related features
 
-- [Chunk](chunk.md) defines the `HeaderChunk` and `Chunk` hierarchy inside PageBody.
-- [ScrollViewer](scroll-viewer.md) documents inherited scrolling behavior.
-- [Shell configuration](../articles/shell-configuration.md#customize-content-alignment) configures centered page width.
-- The [PageBody API](xref:ArkheideSystem.Flourish.Controls.PageBody) lists all members.
+- [Chunk](chunk.md)
+- [ScrollViewer](scroll-viewer.md)
+- [Feature configuration](../articles/shell-configuration.md)
+- [PageBody API](xref:ArkheideSystem.Flourish.Controls.PageBody)

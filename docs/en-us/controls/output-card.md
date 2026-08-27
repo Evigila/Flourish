@@ -1,11 +1,11 @@
 ---
 title: OutputCard
-description: Append operation messages to a compact scrolling history that does not determine a peer layout's height.
+description: Append messages to a compact scrolling history.
 ---
 
 # OutputCard
 
-`OutputCard` displays raw messages, ongoing progress, completed results, and failures in one read-only history. Its themed neutral viewport fills the complete surface, uses compact text, and scrolls when the history exceeds the arranged height.
+`OutputCard` is an append-only, read-only history for progress, results, and failures.
 
 > [!IMPORTANT]
 > `OutputCard` has no `Title`, `Content`, `Icon`, or arbitrary `Body`. Keep explanatory copy in the containing `Chunk` and actions in a purpose-built action control, then append each observable outcome as a message.
@@ -69,7 +69,7 @@ private void ClearOutput_Click(object sender, RoutedEventArgs e) =>
 
 ## Message history
 
-Every `WriteLine` call adds the supplied message as the next line and scrolls the viewport to the end. Passing `null`, or using the overload without a message, adds an empty line. Completed results and failures follow the same append-only rule as progress messages; do not replace the existing history with the latest state.
+`WriteLine` appends a line and scrolls to the end; `null` or no argument adds an empty line. Append results and failures instead of replacing history.
 
 `Output` returns the complete history as a read-only string. Read it when another operation needs a snapshot, but use `WriteLine` to add content. `Clear` removes the complete history and returns the viewport to its initial position.
 
@@ -83,7 +83,7 @@ Every `WriteLine` call adds the supplied message as the next line and scrolls th
 
 With automatic height, the output history does not increase `OutputCard`'s desired height. Its minimum height still participates in measurement, while a stretching parent or an explicit height determines the arranged viewport size.
 
-For an ActionCard-plus-output layout, place the complete ActionCard column and `OutputCard` in the same auto-sized `Grid` row and leave `OutputCard.VerticalAlignment` as `Stretch`. The ActionCard column then determines the row height. Additional output remains inside the viewport and uses its vertical scrollbar instead of making the ActionCards taller. Do not recalculate `Height` from `Output` or wrap `OutputCard` in another scrolling container.
+Place ActionCards and `OutputCard` in the same auto-sized `Grid` row, leaving `VerticalAlignment="Stretch"`. The actions set the row height and output scrolls within it. Do not derive `Height` from `Output` or add another scroll container.
 
 Long lines do not wrap and use the horizontal scrollbar when needed. The viewport uses the standard Flourish scrollbars, whose narrow visible thumbs keep both axes available without adding substantial visual weight.
 
@@ -97,7 +97,7 @@ Give the control an `AutomationProperties.Name` when the surrounding section and
 
 ## Related content
 
-- [Card](card.md) covers explanatory and display-oriented information surfaces.
-- [Chunk](chunk.md) explains how to group actions and their output in one page section.
-- [ScrollViewer](scroll-viewer.md) describes the underlying Flourish scrolling behavior.
-- The [OutputCard API](xref:ArkheideSystem.Flourish.Controls.OutputCard) lists the complete member signatures.
+- [Card](card.md)
+- [Chunk](chunk.md)
+- [ScrollViewer](scroll-viewer.md)
+- [OutputCard API](xref:ArkheideSystem.Flourish.Controls.OutputCard)

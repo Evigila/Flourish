@@ -5,7 +5,7 @@ description: Host overflowing content with smooth pixel scrolling and the standa
 
 # ScrollViewer and ScrollBar
 
-`ScrollViewer` hosts content that can exceed the available viewport. Its horizontal and vertical `ScrollBar` parts use the single standard Flourish appearance, with a narrow rounded thumb and a larger transparent interaction area. Mouse-wheel input can be smoothed without requiring a layout pass for every animation frame.
+`ScrollViewer` hosts overflowing content with shared Flourish scroll bars and optional smooth mouse-wheel scrolling.
 
 Use the Flourish XML namespace to distinguish this control from the WPF type with the same name:
 
@@ -32,12 +32,12 @@ builder.ConfigureLayout(layout =>
     layout.SetSmoothScrollingEnabled(enabled: true));
 ```
 
-`SetSmoothScrollingEnabled` supplies the startup state for Flourish scrolling surfaces that are created by the built-in templates and cannot be reached from application XAML. Change the active application through `IScrollService`:
+`SetSmoothScrollingEnabled` sets built-in Shell viewports. Use `IScrollService` at runtime:
 
 ```csharp
 scrollService.SetSmoothScrollingEnabled(false);
 
-FlourishScrollSettings current = scrollService.Current;
+ScrollSettings current = scrollService.Current;
 scrollService.Changed += OnScrollSettingsChanged;
 ```
 
@@ -68,7 +68,7 @@ Do not wrap a virtualized item control in another `ScrollViewer`; let the item c
 
 ## Scroll bar appearance
 
-Flourish uses one standard `ScrollBar` appearance for page, Shell, navigation, and control-owned viewports. The visible thumb is narrower than its transparent interaction area, so the bar keeps a light visual profile without making pointer dragging unnecessarily precise. Its small corner radius rounds the ends without making the short cross-axis profile appear pointed or capsule-shaped. There is no compact appearance variant to select.
+All Flourish viewports use one `ScrollBar` appearance: a narrow visible thumb within a larger pointer target. There is no compact variant.
 
 ## Related features
 

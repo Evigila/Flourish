@@ -1,5 +1,5 @@
 <UserControl
-  x:Class="ArkheideSystem.Flourish.Views.Windows.FlourishTitlebar"
+  x:Class="ArkheideSystem.Flourish.Views.Windows.TitleBarView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
@@ -11,7 +11,7 @@
 >
   <Grid Background="Transparent">
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="{DynamicResource FlourishTitlebarLeadingSpacerWidth}" />
+      <ColumnDefinition Width="{DynamicResource TitleBarViewLeadingSpacerWidth}" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
@@ -45,7 +45,7 @@
         IsEnabled="False"
       >
         <controls:Button.Icon>
-          <controls:FlourishTextBlock
+          <controls:TextBlock
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="{DynamicResource FlourishIconFontSizeTitlebar}"
             LineHeight="{DynamicResource FlourishIconFontSizeTitlebar}"
@@ -68,7 +68,7 @@
         IsEnabled="False"
       >
         <controls:Button.Icon>
-          <controls:FlourishTextBlock
+          <controls:TextBlock
             FontFamily="{DynamicResource FlourishIconFontFamily}"
             FontSize="{DynamicResource FlourishIconFontSizeTitlebar}"
             LineHeight="{DynamicResource FlourishIconFontSizeTitlebar}"
@@ -88,11 +88,11 @@
       MinWidth="0"
       MinHeight="0"
       Padding="0"
-      Margin="{DynamicResource FlourishTitlebarNavigationToggleMargin}"
+      Margin="{DynamicResource TitleBarViewNavigationToggleMargin}"
       Click="NavigationToggleButton_Click"
     >
       <controls:Button.Icon>
-        <controls:FlourishTextBlock
+        <controls:TextBlock
           FontFamily="{DynamicResource FlourishIconFontFamily}"
           FontSize="{DynamicResource FlourishIconFontSizeTitlebar}"
           LineHeight="{DynamicResource FlourishIconFontSizeTitlebar}"
@@ -144,7 +144,7 @@
                 RenderOptions.BitmapScalingMode="HighQuality"
                 Stretch="Uniform"
               />
-              <controls:FlourishTextBlock
+              <controls:TextBlock
                 x:Name="LogoFallback"
                 Style="{DynamicResource FlourishControlTextBlockStyle}"
                 HorizontalAlignment="Center"
@@ -157,7 +157,7 @@
           </Border>
         </controls:Button.Icon>
       </controls:Button>
-      <controls:FlourishComboBox
+      <controls:ComboBox
         x:Name="TitleComboBox"
         Height="32"
         MinWidth="0"
@@ -190,7 +190,7 @@
       />
     </Grid>
 
-    <controls:FlourishSearchBox
+    <controls:SearchBox
       x:Name="SearchBox"
       Grid.Column="6"
       Width="320"
@@ -255,7 +255,7 @@
               RenderOptions.BitmapScalingMode="HighQuality"
               Visibility="Collapsed"
             />
-            <controls:FlourishTextBlock
+            <controls:TextBlock
               x:Name="ProfileInitialsText"
               Style="{DynamicResource FlourishControlTextBlockStyle}"
               HorizontalAlignment="Center"
@@ -299,7 +299,7 @@
       Click="MaximizeButton_Click"
     >
       <controls:WindowCaptionButton.Icon>
-        <controls:FlourishTextBlock
+        <controls:TextBlock
           x:Name="MaximizeButtonIcon"
           FontFamily="{DynamicResource FlourishIconFontFamily}"
           FontSize="{DynamicResource FlourishIconFontSizeWindowCaption}"

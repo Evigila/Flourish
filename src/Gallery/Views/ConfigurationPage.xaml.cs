@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -16,18 +16,18 @@ namespace ArkheideSystem.Gallery.Views;
 
 public partial class ConfigurationPage : Page
 {
-    private static FlourishCultureRegistration? cultureFileRegistration;
+    private static CultureRegistration? cultureFileRegistration;
 
     private readonly ObservableCollection<string> availableLocales = [];
     private readonly IConfiguration configuration;
-    private readonly IFlourishSettingsStore settings;
-    private readonly IFlourishLocalization localization;
+    private readonly ISettingsStore settings;
+    private readonly ILocalizationService localization;
     private bool isRefreshingLocale;
 
     public ConfigurationPage(
         IConfiguration configuration,
-        IFlourishSettingsStore settings,
-        IFlourishLocalization localization
+        ISettingsStore settings,
+        ILocalizationService localization
     )
     {
         this.configuration = configuration;
@@ -81,7 +81,7 @@ public partial class ConfigurationPage : Page
         {
             if (configuration is not IConfigurationRoot root)
             {
-                throw new InvalidOperationException("The active configuration cannot be reloaded.");
+                throw new InvalidOperationException("Can't reload the configuration.");
             }
 
             root.Reload();
@@ -256,7 +256,7 @@ public partial class ConfigurationPage : Page
 
     private async Task ExecuteSettingUpdateAsync(
         string operationKey,
-        Func<Task<FlourishSettingsUpdateResult>> update
+        Func<Task<SettingsUpdateResult>> update
     )
     {
         try
@@ -282,7 +282,7 @@ public partial class ConfigurationPage : Page
         }
     }
 
-    private void Localization_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
+    private void Localization_Changed(object? sender, LocalizationChangedEventArgs e)
     {
         Dispatcher.BeginInvoke(RefreshLocaleState);
     }

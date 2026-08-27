@@ -1,7 +1,7 @@
 using System;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
 using System.IO;
@@ -52,10 +52,10 @@ public partial class ProjectRuntimePage : Page
         titleBar.Changed -= TitleBar_Changed;
     }
 
-    private void Projects_Changed(object? sender, FlourishProjectsChangedEventArgs e) =>
+    private void Projects_Changed(object? sender, ProjectCatalogChangedEventArgs e) =>
         Dispatcher.BeginInvoke(RefreshState);
 
-    private void TitleBar_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e) =>
+    private void TitleBar_Changed(object? sender, StateChangedEventArgs<TitleBarState> e) =>
         Dispatcher.BeginInvoke(RefreshState);
 
     private void AddProject_Click(object sender, RoutedEventArgs e)
@@ -136,7 +136,7 @@ public partial class ProjectRuntimePage : Page
 
     private async void ActiveProjectBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (isRefreshing || ActiveProjectBox.SelectedItem is not FlourishProject project)
+        if (isRefreshing || ActiveProjectBox.SelectedItem is not ProjectDescriptor project)
         {
             return;
         }
@@ -166,7 +166,7 @@ public partial class ProjectRuntimePage : Page
 
     private void UpdateMetadata_Click(object sender, RoutedEventArgs e)
     {
-        if (ActiveProjectBox.SelectedItem is not FlourishProject project)
+        if (ActiveProjectBox.SelectedItem is not ProjectDescriptor project)
         {
             ActiveProjectOutput.WriteLine(
                 Localizer.Parse(CKey.Runtime_SelectAProjectBeforeUpdatingItsMetadata_5DB9165E)
@@ -217,7 +217,7 @@ public partial class ProjectRuntimePage : Page
 
     private async void RemoveProject_Click(object sender, RoutedEventArgs e)
     {
-        if (ActiveProjectBox.SelectedItem is not FlourishProject project)
+        if (ActiveProjectBox.SelectedItem is not ProjectDescriptor project)
         {
             ActiveProjectOutput.WriteLine(
                 Localizer.Parse(CKey.Runtime_SelectAProjectBeforeDeletingIt_2E30E35D)
@@ -311,7 +311,7 @@ public partial class ProjectRuntimePage : Page
 
     private void Projects_NewProjectRequested(
         object? sender,
-        FlourishNewProjectRequestedEventArgs e
+        ProjectCreationRequestedEventArgs e
     )
     {
         Dispatcher.BeginInvoke(() =>
@@ -327,7 +327,7 @@ public partial class ProjectRuntimePage : Page
 
     private void Projects_ProjectActivationRequested(
         object? sender,
-        FlourishProjectActivationRequestedEventArgs e
+        ProjectActivationRequestedEventArgs e
     )
     {
         Dispatcher.BeginInvoke(() =>
@@ -385,10 +385,10 @@ public partial class ProjectRuntimePage : Page
         RefreshState();
     }
 
-    private FlourishProject ReadProjectInput() =>
+    private ProjectDescriptor ReadProjectInput() =>
         new(ProjectIdBox.Text, ProjectNameBox.Text, ReadExistingStoragePath(StoragePathBox.Text));
 
-    private void PopulateProjectInput(FlourishProject project)
+    private void PopulateProjectInput(ProjectDescriptor project)
     {
         ProjectIdBox.Text = project.Id;
         ProjectNameBox.Text = project.Name;
@@ -432,16 +432,14 @@ public partial class ProjectRuntimePage : Page
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new InvalidOperationException(
-                "Select an existing local project file before registering the project."
-            );
+            throw new InvalidOperationException("Select a project file.");
         }
 
         var storagePath = Path.GetFullPath(value.Trim());
         if (!File.Exists(storagePath))
         {
             throw new FileNotFoundException(
-                "The selected local project file does not exist.",
+                "Project file not found.",
                 storagePath
             );
         }

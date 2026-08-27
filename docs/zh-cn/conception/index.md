@@ -5,15 +5,15 @@ description: 统一应用 Flourish 的页面层级、字体、间距、呈现、
 
 # 页面与控件设计理念
 
-Flourish 将布局和控件选择视为应用语义的一部分。页面应先表达清晰层级：PageBody 建立根结构，区块定义主题，内容控件呈现信息，按钮表达操作。
+Flourish 以布局和控件表达语义：PageBody 建立根结构，区块划分主题，内容控件呈现信息，按钮表达操作。
 
 ## 建立严格的页面层级
 
-每个主导航内容页面都使用 `PageBody` 作为根容器。其直接子项只能是 `HeaderChunk` 与 `Chunk`：标准页面以一个 HeaderChunk 开头，随后放置一个或多个 Chunk。HeaderChunk 最多出现一次且必须位于最前方，两种区块都全宽独占一行。Split 与 Overlay Presenter 同样全宽独占一行；只有 TopDown Presenter 可以在保持可读的前提下分列。
+主导航页面以 `PageBody` 为根，直接子项只能是 `HeaderChunk` 和 `Chunk`。标准页面先放唯一的全宽 HeaderChunk，再放一个或多个全宽 Chunk；Split 与 Overlay Presenter 也必须全宽，只有可读的 TopDown Presenter 可分列。
 
-所有实际页面内容都应位于这些区块中。不要把游离标题、卡片、Presenter、Document 或手工间距面板作为 PageBody 的直接子项，也不要并排放置 Chunk。
+实际内容必须位于区块内；不要把标题、卡片、Presenter、Document 或间距面板直接放入 PageBody，也不要并排 Chunk。
 
-Shell 自有的瞬时表面（包括 Profile、Popup 和 Dialog）不是主导航内容页面，不需要加入完整 PageBody 或 HeaderChunk。它们仍需遵循字体、间距、控件选择、按钮和可访问性规范。
+Profile、Popup 和 Dialog 等瞬时表面无需 PageBody 或 HeaderChunk，但仍须遵循字体、间距、控件、按钮和可访问性规范。
 
 `Chunk` 的三个区域具有明确职责：
 
@@ -33,7 +33,7 @@ Flourish 有六种字号层级。控件或文本元素没有显式选择层级�
 | --- | --- |
 | `Small` | 紧凑辅助文本，包括导航栏分组标签和 OutputCard 输出。 |
 | `Standard` | 默认正文和控件文字。没有专门角色时始终使用它。 |
-| `Icon` | 通用图标字形；专用图标控件可按自身几何进行局部校正。 |
+| `StandardIcon` | 普通图标字形，包括按钮图标；卡片和展示图标使用 `LargeIcon`。 |
 | `Large` | 卡片标题与 Document 中的 Paragraph 正文。 |
 | `ExtraLarge` | 区块标题一族，包括 `Chunk.Title`。 |
 | `HeaderSize` | 仅用于 HeaderChunk 的页面标题。 |
@@ -68,7 +68,7 @@ Flourish 有六种字号层级。控件或文本元素没有显式选择层级�
 
 `Card` 具有可选的 `Title`、`Content` 和 `Icon`。它只呈现单段正文与单个图标，不具有 Body，也不接受图片、图标组或任意子控件。`IconPosition` 可将图标放在文案的 Left、Top、Right 或 Bottom。空间允许时，Card 可以排列为两列或更多列。
 
-`ActionCard` 在相同的可选信息区域之外提供一个 `Body`，其中只放一个按钮、下拉框、选择框、输入框或同类局部交互控件。`Horizontal` 是默认结构：Icon 在左，Title 与 Content 在中间纵向排列，Body 在右，整体垂直居中。`Vertical` 将四个区域从上到下排列并统一靠左，适合浮窗卡片。相关 ActionCard 应使用紧凑同级间距。
+`ActionCard.Body` 只放一个按钮、下拉框、选择框、输入框或同类局部控件。默认 `Horizontal` 依次为左侧 Icon、中间 Title/Content 和右侧 Body；`Vertical` 自上而下左对齐，适合浮窗。相关 ActionCard 使用紧凑同级间距。
 
 当只有 Body 中的一小部分需要交互时使用 ActionCard；当整个卡片都执行同一操作时使用 `CardButton`。CardButton 支持 Card 的 Standard、Elevated、Tonal 与 Filled 视觉变体，并让完整表面参与点击、命令、键盘与自动化行为。
 
@@ -90,7 +90,7 @@ Document 会在段落之间提供统一间距，并为每个非空段落的首�
 - `TopDown` 把 Presentation 放在上方，把 Title、Content 与 Body 放在下方并统一靠左，也是普通 Presenter 唯一允许分列的模式。
 - `Overlay` 让 Presentation 填满控件，并把文案与 Body 呈现在其上方。
 
-Presentation 是默认 XAML 内容属性；Body 应通过显式的 `Presenter.Body` 属性元素赋值。Split 与 Overlay Presenter 全宽独占一行，TopDown Presenter 可按需分列；文案与 Body 一侧保持透明并共用左侧对齐线，Presentation 区域使用浅灰色圆角背景、填满其分配空间，并让展示内容居中。HeaderChunk 即使使用 TopDown 也始终独占一行。
+Presentation 是默认 XAML 内容属性，Body 应显式赋给 `Presenter.Body`。Split 与 Overlay 全宽，TopDown 可分列；文案与 Body 透明且左对齐，Presentation 使用填满空间的浅灰圆角背景并居中内容。HeaderChunk 即使为 TopDown 也始终全宽。
 
 HeaderChunk 使用相同字段和三种模式，但增加强调背景、HeaderSize 标题和页面开头语义。
 
@@ -102,7 +102,7 @@ HeaderChunk 使用相同字段和三种模式，但增加强调背景、HeaderSi
 | `CardButton` | 具有 Card 视觉变体且完整表面可交互的操作。 |
 | `WindowCaptionButton` | 仅用于窗口标题栏操作。 |
 
-Button 的 Icon 或 Content 为空时，对应区域及间距完全折叠。不要给非交互 Card 添加指针处理器来模拟按钮。仅图标按钮应有可见 ToolTip 和有意义的 `AutomationProperties.Name`。
+Button 的 Icon 或 Content 为空时，对应区域和间距折叠。非交互 Card 不得用指针处理器模拟按钮；仅图标按钮必须有可见 ToolTip 和有意义的 `AutomationProperties.Name`。
 
 按钮变体表达操作层级：一组操作通常只有一个 Filled 主操作，辅助操作使用较低强调变体，破坏性操作使用 Danger。卡片变体表达表面强调；它本身不暗示可点击性。
 
@@ -135,12 +135,12 @@ Overlay 通常承载 `ActionCard Variant="Vertical"` 作为标准浮窗视图，
 
 ## 相关内容
 
-- [PageBody](../controls/page-body.md)说明严格页面根容器。
-- [Chunk](../controls/chunk.md)说明 HeaderChunk 与 Chunk 页面层级。
-- [Card](../controls/card.md)说明 Card 与 ActionCard。
-- [Document](../controls/document.md)说明多段文本布局。
-- [CodeSpace](../controls/code-space.md)说明精确代码文本与内置复制操作。
-- [Presenter](../controls/presenter.md)说明 Split、TopDown 与 Overlay 展示布局。
-- [OutputCard](../controls/output-card.md)说明紧凑可滚动输出。
-- [Button](../controls/button.md)说明操作控件。
-- [排版](../articles/configure-font.md)说明六种字号层级和全局配置。
+- [PageBody](../controls/page-body.md)
+- [Chunk](../controls/chunk.md)
+- [Card](../controls/card.md)
+- [Document](../controls/document.md)
+- [CodeSpace](../controls/code-space.md)
+- [Presenter](../controls/presenter.md)
+- [OutputCard](../controls/output-card.md)
+- [Button](../controls/button.md)
+- [排版](../articles/configure-font.md)

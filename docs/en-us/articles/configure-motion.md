@@ -5,7 +5,7 @@ description: Configure page, navigation, and hover animations while respecting r
 
 # Motion
 
-Motion can communicate page changes, navigation panel state, and hover affordances. Use `ConfigureMotion` to enable the feature and select transitions and durations.
+Use `ConfigureMotion` to set page, navigation-panel, and hover animation.
 
 ## Configure motion
 
@@ -16,25 +16,25 @@ builder
         motion
             .SetEnabled()
             .SetPageTransition(
-                transition: FlourishPageTransition.EntranceFromBottom,
+                transition: PageTransition.EntranceFromBottom,
                 duration: TimeSpan.FromMilliseconds(180))
             .SetNavigationPanelTransition(
-                transition: FlourishNavigationPanelTransition.Resize,
+                transition: NavigationPanelTransition.Resize,
                 duration: TimeSpan.FromMilliseconds(180))
             .SetHoverReveal(duration: TimeSpan.FromMilliseconds(140))
             .SetRespectSystemReducedMotion();
     });
 ```
 
-The shell-wide motion switch and each motion category are persisted independently by default. Set `usePersistedPreference: false` only when the configured fallback must always win and later runtime changes must not be written back.
+Motion settings persist independently by default. Pass `usePersistedPreference: false` to keep configuration authoritative.
 
 ```csharp
 builder
     .ConfigureMotion(motion => motion
         .SetEnabled()
-        .SetPageTransition(transition: FlourishPageTransition.Fade)
+        .SetPageTransition(transition: PageTransition.Fade)
         .SetNavigationPanelTransition(
-            transition: FlourishNavigationPanelTransition.Resize)
+            transition: NavigationPanelTransition.Resize)
         .SetHoverReveal()
         .SetRespectSystemReducedMotion());
 ```
@@ -51,11 +51,11 @@ Explicit durations must be greater than zero. Set the page or navigation transit
 
 ## Navigation panel behavior during transitions
 
-`Resize` animates the navigation panel and the visual bounds of the Shell content area, then commits the final column width when the transition completes. If centered content is enabled, the page and aligned Shell regions remain centered and within the configured maximum width throughout the transition. Content that remains at the maximum width translates without horizontal scaling, so text and internal spacing retain their natural metrics. When the available width crosses the limit, the centered surface resizes within that limit.
+`Resize` animates the navigation panel and Shell content bounds, then commits the final width. Centered content remains centered, respects its maximum width, and is not horizontally scaled.
 
 ## Page behavior during transitions
 
-`Fade` fades the navigated page into view. `EntranceFromBottom` combines the fade with a short upward translation. Flourish temporarily caches the transparent page surface while either transition is active, so the animation is composed from a bitmap instead of redrawing a complex page on every frame. Fractional movement remains available for a smooth translation. The live page, cache, and render transform are restored as soon as the transition completes or is cancelled, and neither transition changes the page's final layout.
+`Fade` fades the page in; `EntranceFromBottom` also moves it upward. Transitions do not change final layout, and cancellation restores the live page immediately.
 
 ## Reduced motion
 
@@ -65,5 +65,5 @@ At runtime, `IMotionService.SetEnabled(false)` disables all configured motion. `
 
 ## Related features
 
-- [Control library](control-library.md) describes the standard templates and the public HoverReveal attached behavior.
-- [Navigation](navigation.md) uses navigation panel transitions.
+- [Control library](control-library.md)
+- [Navigation](navigation.md)

@@ -12,40 +12,40 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal sealed class ShellNavigationController : IDisposable
 {
-    private readonly FlourishNavigationPane pane;
-    private readonly FlourishShellContentHost contentHost;
-    private readonly FlourishTitlebar titlebar;
+    private readonly NavigationPaneView pane;
+    private readonly ShellContentHost contentHost;
+    private readonly TitleBarView titlebar;
     private readonly NavigationService navigation;
     private readonly NavigationPanelService panelService;
     private readonly NavigationMenuService menuService;
     private readonly ICommandDispatcher commandDispatcher;
-    private readonly FlourishNavigationOptions options;
-    private readonly Dictionary<string, FlourishNavigationItem> itemsByKey = new(
+    private readonly NavigationOptions options;
+    private readonly Dictionary<string, NavigationItemDefinition> itemsByKey = new(
         StringComparer.Ordinal
     );
-    private readonly Dictionary<Type, FlourishNavigationItem> itemsByPage = [];
-    private readonly Dictionary<NavigationTreeKey, FlourishNavigationItem> parentsByKey = [];
+    private readonly Dictionary<Type, NavigationItemDefinition> itemsByPage = [];
+    private readonly Dictionary<NavigationTreeKey, NavigationItemDefinition> parentsByKey = [];
     private readonly Dictionary<
         NavigationTreeKey,
-        List<FlourishNavigationItem>
+        List<NavigationItemDefinition>
     > childrenByParentKey = [];
-    private FlourishNavigationItem? firstItem;
-    private FlourishNavigationItem? selectedItem;
-    private FlourishNavigationItem? activeChildParentItem;
-    private FlourishTitleBarState titleBarState;
+    private NavigationItemDefinition? firstItem;
+    private NavigationItemDefinition? selectedItem;
+    private NavigationItemDefinition? activeChildParentItem;
+    private TitleBarState titleBarState;
     private bool isInitialized;
     private bool isDisposed;
 
     internal ShellNavigationController(
-        FlourishNavigationPane pane,
-        FlourishShellContentHost contentHost,
-        FlourishTitlebar titlebar,
+        NavigationPaneView pane,
+        ShellContentHost contentHost,
+        TitleBarView titlebar,
         NavigationService navigation,
         NavigationPanelService panelService,
         NavigationMenuService menuService,
         ICommandDispatcher commandDispatcher,
-        FlourishNavigationOptions options,
-        FlourishTitleBarState initialTitleBarState
+        NavigationOptions options,
+        TitleBarState initialTitleBarState
     )
     {
         this.pane = pane ?? throw new ArgumentNullException(nameof(pane));
@@ -63,7 +63,7 @@ internal sealed class ShellNavigationController : IDisposable
 
     internal event EventHandler<NavigationLayoutRequestedEventArgs>? LayoutRequested;
 
-    internal FlourishNavigationPanelState CurrentPanelState => panelService.Current;
+    internal NavigationPanelState CurrentPanelState => panelService.Current;
 
     internal bool IsPanelEnabled => panelService.Current.IsEnabled;
 
@@ -109,7 +109,7 @@ internal sealed class ShellNavigationController : IDisposable
         ActivateItem(initialItem, addToBackStack: false, toggleChildren: false);
     }
 
-    internal void OnNavigated(FlourishNavigatedEventArgs e)
+    internal void OnNavigated(NavigatedEventArgs e)
     {
         EnsureInitialized();
         ArgumentNullException.ThrowIfNull(e);
@@ -118,7 +118,7 @@ internal sealed class ShellNavigationController : IDisposable
         SelectItem(e.SourcePageType);
     }
 
-    internal void ApplyTitleBarState(FlourishTitleBarState state)
+    internal void ApplyTitleBarState(TitleBarState state)
     {
         ObjectDisposedException.ThrowIf(isDisposed, this);
         titleBarState = state ?? throw new ArgumentNullException(nameof(state));
@@ -219,7 +219,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private void IndexTreeItem(FlourishNavigationItem item)
+    private void IndexTreeItem(NavigationItemDefinition item)
     {
         if (item.ParentId != 0)
         {
@@ -241,7 +241,7 @@ internal sealed class ShellNavigationController : IDisposable
         children.Add(item);
     }
 
-    private void PanelService_Changed(object? sender, FlourishNavigationPanelChangedEventArgs e)
+    private void PanelService_Changed(object? sender, NavigationPanelChangedEventArgs e)
     {
         Dispatch(() =>
         {
@@ -258,7 +258,7 @@ internal sealed class ShellNavigationController : IDisposable
         });
     }
 
-    private void MenuService_Changed(object? sender, FlourishStateTransitionEventArgs<FlourishNavigationMenuSnapshot> e)
+    private void MenuService_Changed(object? sender, StateTransitionEventArgs<NavigationMenuSnapshot> e)
     {
         Dispatch(() =>
         {
@@ -270,7 +270,7 @@ internal sealed class ShellNavigationController : IDisposable
         });
     }
 
-    private void ApplyPanelView(FlourishNavigationPanelState state)
+    private void ApplyPanelView(NavigationPanelState state)
     {
         pane.SetEnabled(state.IsEnabled);
         pane.SetDirection(state.Direction);
@@ -349,7 +349,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private void ActivateCommandItem(FlourishNavigationItem item)
+    private void ActivateCommandItem(NavigationItemDefinition item)
     {
         ActivateItem(item, addToBackStack: true);
         RestoreSelectedItem();
@@ -357,7 +357,7 @@ internal sealed class ShellNavigationController : IDisposable
     }
 
     private void ActivateItem(
-        FlourishNavigationItem item,
+        NavigationItemDefinition item,
         bool addToBackStack,
         bool toggleChildren = true
     )
@@ -401,14 +401,14 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private void ToggleChildren(FlourishNavigationItem parent)
+    private void ToggleChildren(NavigationItemDefinition parent)
     {
         parent.IsExpanded = !parent.IsExpanded;
         menuService.RecordExpansion(parent.Id, parent.IsExpanded);
         SetChildItemsVisibility(parent, parent.IsExpanded);
     }
 
-    private void OpenPaneForCollapsedParent(FlourishNavigationItem item)
+    private void OpenPaneForCollapsedParent(NavigationItemDefinition item)
     {
         if (panelService.Current.IsOpen || !item.HasChildren)
         {
@@ -428,7 +428,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private void ExpandAncestorsForSelection(FlourishNavigationItem item)
+    private void ExpandAncestorsForSelection(NavigationItemDefinition item)
     {
         if (item.ChildId == 0 || FindParentItem(item) is not { } parent)
         {
@@ -440,7 +440,7 @@ internal sealed class ShellNavigationController : IDisposable
         SetChildItemsVisibility(parent, isVisible: true);
     }
 
-    private void SetChildItemsVisibility(FlourishNavigationItem parent, bool isVisible)
+    private void SetChildItemsVisibility(NavigationItemDefinition parent, bool isVisible)
     {
         foreach (var child in GetChildItems(parent))
         {
@@ -448,7 +448,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private IEnumerable<FlourishNavigationItem> GetChildItems(FlourishNavigationItem parent)
+    private IEnumerable<NavigationItemDefinition> GetChildItems(NavigationItemDefinition parent)
     {
         return
             parent.ParentId != 0
@@ -460,14 +460,14 @@ internal sealed class ShellNavigationController : IDisposable
             : [];
     }
 
-    private FlourishNavigationItem? FindParentItem(FlourishNavigationItem child)
+    private NavigationItemDefinition? FindParentItem(NavigationItemDefinition child)
     {
         return child.ChildId == 0
             ? null
             : parentsByKey.GetValueOrDefault(CreateTreeKey(child, child.ChildId));
     }
 
-    private FlourishNavigationItem? GetItem(string? key)
+    private NavigationItemDefinition? GetItem(string? key)
     {
         return key is not null && itemsByKey.TryGetValue(key, out var item) ? item : null;
     }
@@ -480,7 +480,7 @@ internal sealed class ShellNavigationController : IDisposable
         }
     }
 
-    private void SelectItem(FlourishNavigationItem item)
+    private void SelectItem(NavigationItemDefinition item)
     {
         if (!item.IsPageItem)
         {
@@ -505,7 +505,7 @@ internal sealed class ShellNavigationController : IDisposable
         pane.SetSelectedItem(null);
     }
 
-    private void UpdateActiveChildParent(FlourishNavigationItem activeItem)
+    private void UpdateActiveChildParent(NavigationItemDefinition activeItem)
     {
         var parent =
             activeItem.IsPageItem && activeItem.ChildId != 0 ? FindParentItem(activeItem) : null;
@@ -622,7 +622,7 @@ internal sealed class ShellNavigationController : IDisposable
     }
 
     private static NavigationTreeKey CreateTreeKey(
-        FlourishNavigationItem item,
+        NavigationItemDefinition item,
         int relationshipId
     ) => new(item.IsFixed, item.GroupId, relationshipId);
 
@@ -630,11 +630,11 @@ internal sealed class ShellNavigationController : IDisposable
 }
 
 internal sealed class NavigationLayoutRequestedEventArgs(
-    FlourishNavigationPanelState state,
+    NavigationPanelState state,
     bool animate
 ) : EventArgs
 {
-    internal FlourishNavigationPanelState State { get; } =
+    internal NavigationPanelState State { get; } =
         state ?? throw new ArgumentNullException(nameof(state));
 
     internal bool Animate { get; } = animate;

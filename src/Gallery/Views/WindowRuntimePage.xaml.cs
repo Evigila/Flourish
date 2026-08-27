@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
@@ -20,7 +20,7 @@ public partial class WindowRuntimePage : Page
     private readonly IMessageService messages;
     private readonly INotificationService notifications;
     private IRegistration? closeGuard;
-    private FlourishNotificationHandle? notificationHandle;
+    private NotificationHandle? notificationHandle;
     private bool closeGuardAllows = true;
     private bool isRefreshingCloseBehavior;
     private bool isRefreshingTrayToolTip;
@@ -208,9 +208,7 @@ public partial class WindowRuntimePage : Page
             {
                 if (!tray.MinimizeToTray())
                 {
-                    throw new InvalidOperationException(
-                        "Enable the tray icon before minimizing to it."
-                    );
+                    throw new InvalidOperationException("Enable the tray icon first.");
                 }
             },
             TrayOutput,
@@ -371,14 +369,14 @@ public partial class WindowRuntimePage : Page
                 Localizer.Parse(CKey.Runtime_CustomRuntimeChoices_380A5D74),
                 new[]
                 {
-                    new FlourishMessageOption(
+                    new MessageDialogOption(
                         "later",
                         Localizer.Parse(CKey.Runtime_Later_73B6E48A)
                     )
                     {
                         IsCancel = true,
                     },
-                    new FlourishMessageOption(
+                    new MessageDialogOption(
                         "apply",
                         Localizer.Parse(CKey.Runtime_ApplyNow_3F0C9286)
                     )
@@ -459,7 +457,7 @@ public partial class WindowRuntimePage : Page
             Localizer.Parse(CKey.Runtime_DismissedAllShellNotifications_3A0952B6)
         );
 
-    private FlourishNotification CreateNotification()
+    private Notification CreateNotification()
     {
         var id = NotificationIdBox.Text.Trim();
         if (id.Length == 0)
@@ -467,11 +465,11 @@ public partial class WindowRuntimePage : Page
             throw new ArgumentException("Enter a notification ID.");
         }
 
-        return new FlourishNotification(
+        return new Notification(
             id,
             Localizer.Parse(CKey.Runtime_RuntimeGallery_D19C2E76),
             NotificationMessageBox.Text,
-            FlourishNotificationSeverity.Success,
+            NotificationSeverity.Success,
             Duration: TimeSpan.FromSeconds(8)
         );
     }

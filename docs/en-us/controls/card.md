@@ -1,11 +1,11 @@
 ---
 title: Card
-description: Use Card, ActionCard, and OutputCard as focused content surfaces with clear presentation and interaction boundaries.
+description: Choose a focused card for information, a local action, or output.
 ---
 
 # Card
 
-Cards are the basic content surfaces of the Flourish layout system. Choose the card type by whether the surface is informational, contains one local control, or presents operation output.
+Choose a card by whether it presents information, one local control, output, or one whole-surface action.
 
 | Need | Control |
 | --- | --- |
@@ -18,7 +18,7 @@ Use [Document](document.md) when the content contains several paragraphs. Use [P
 
 ## Card
 
-`Card` presents optional `Title`, `Content`, and `Icon` regions. `Content` is one paragraph, and `Icon` is one icon-font glyph. Each `null` or empty region and its associated spacing collapse completely.
+`Card` has optional `Title`, one-paragraph `Content`, and one-glyph `Icon` regions. Empty regions collapse with their spacing.
 
 ```xml
 <flourish:Card
@@ -40,7 +40,7 @@ Use [Document](document.md) when the content contains several paragraphs. Use [P
 
 `Icon` accepts at most one Unicode text element rendered with the configured icon font. Images, icon groups, and composed control trees belong in `Presenter.Presentation`. `Card` has no `Body` and cannot host arbitrary controls.
 
-Card and ActionCard icons use the adaptive primary foreground so they remain visually distinct from neutral copy. A Filled Card uses the on-primary foreground for contrast.
+Card icons use the adaptive primary foreground; Filled cards use the on-primary foreground.
 
 ### Variants
 
@@ -64,7 +64,7 @@ Cards may be arranged in two or more columns inside one `Chunk` when the availab
 
 ## ActionCard
 
-`ActionCard` combines optional copy and one optional icon with a single local interactive control in `Body`. It is not itself clickable. Use it when only a button, combo box, check box, text box, or comparable local control should handle interaction.
+`ActionCard` combines optional copy and icon with one interactive `Body` control. The card itself is not clickable.
 
 `Variant` selects one of two fixed structures:
 
@@ -78,7 +78,7 @@ Cards may be arranged in two or more columns inside one `Chunk` when the availab
   Icon="&#xE790;"
   Title="Theme"
   Content="Choose the application appearance.">
-  <flourish:FlourishComboBox
+  <flourish:ComboBox
     Width="160"
     ItemsSource="{Binding Themes}"
     SelectedItem="{Binding Theme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -110,9 +110,9 @@ As with `Card`, empty `Title`, `Content`, and `Icon` regions collapse with their
 
 ## Related content
 
-- [Chunk](chunk.md) defines the page section that contains cards.
-- [Document](document.md) presents several paragraphs in one reading surface.
-- [Presenter](presenter.md) presents images, icon groups, and composed visuals.
-- [OutputCard](output-card.md) presents scrolling operation history.
-- [Button](button.md) explains when the complete surface should be interactive.
-- The [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant), and [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard) list all members.
+- [Chunk](chunk.md)
+- [Document](document.md)
+- [Presenter](presenter.md)
+- [OutputCard](output-card.md)
+- [Button](button.md)
+- [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant), [Card API](xref:ArkheideSystem.Flourish.Controls.Card), [ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant), and [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard)

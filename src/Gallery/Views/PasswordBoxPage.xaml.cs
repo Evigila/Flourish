@@ -1,4 +1,4 @@
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -33,7 +33,7 @@ public partial class PasswordBoxPage : Page
 
     public string UsageCode { get; } =
         """
-            <flourish:FlourishPasswordBox
+            <flourish:PasswordBox
               x:Name="PasswordInput"
               MaxLength="64"
               PasswordChanged="PasswordInput_PasswordChanged" />

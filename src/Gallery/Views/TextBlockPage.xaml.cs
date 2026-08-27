@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -13,7 +13,7 @@ public partial class TextBlockPage : Page
         new("Text", CKey.Controls_SetsTheDisplayedText_6B2DA7F7),
         new(
             "Role",
-            CKey.Controls_SelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97
+            CKey.Controls_SelectsASemanticTextRoleAndItsTypographyResources_67B80C97
         ),
         new(
             "TextWrapping",
@@ -22,7 +22,7 @@ public partial class TextBlockPage : Page
     ];
 
     public string UsageCode { get; } =
-        "<flourish:FlourishTextBlock\n"
+        "<flourish:TextBlock\n"
         + "  Role=\"Status\"\n"
         + "  Text=\"Synchronization completed.\"\n"
         + "  TextWrapping=\"Wrap\" />";

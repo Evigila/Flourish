@@ -1,11 +1,11 @@
 ---
 title: Button
-description: Use Button, CardButton, and WindowCaptionButton to express ordinary, card-shaped, and window-caption actions.
+description: Choose a Flourish button for ordinary, card, or window-caption actions.
 ---
 
 # Button
 
-The Flourish button family keeps the command, click, keyboard, focus, and automation behavior of WPF `Button` while supplying consistent theme and pointer feedback. The complete visual boundary is interactive.
+Flourish buttons preserve WPF `Button` interaction and automation while applying shared theming. Their complete visual boundary is interactive.
 
 | Control | Use for |
 | --- | --- |
@@ -15,7 +15,7 @@ The Flourish button family keeps the command, click, keyboard, focus, and automa
 
 ## Button
 
-`Button` exposes optional `Icon` and inherited `Content` regions. Use text alone for the usual action, combine text with an icon when the icon reinforces the label, or omit `Content` for an icon-only action. A `null` or empty region and its associated spacing collapse completely.
+`Button` has optional `Icon` and inherited `Content` regions. Empty regions collapse with their spacing.
 
 ```xml
 <WrapPanel>
@@ -39,7 +39,7 @@ The Flourish button family keeps the command, click, keyboard, focus, and automa
 </WrapPanel>
 ```
 
-`Icon` accepts an icon glyph or another WPF object. `IconSize` defaults to `22` DIP and can be overridden for compact actions. Icon-only buttons use compact square geometry. Give every icon-only action a visible `ToolTip` and an `AutomationProperties.Name` that identifies the action.
+`Icon` accepts a glyph or WPF object, and `IconSize` defaults to the 14 DIP StandardIcon tier. Icon-only buttons use compact square geometry and require a visible `ToolTip` and identifying `AutomationProperties.Name`.
 
 `Button.Variant` selects action emphasis, not size or layout. Its default is `Outlined`.
 
@@ -53,15 +53,15 @@ The Flourish button family keeps the command, click, keyboard, focus, and automa
 | `Danger` | A destructive or difficult-to-reverse action. |
 | `Standard` | The neutral card surface used by `CardButton`; do not use it as an ordinary button treatment. |
 
-An action group should normally have only one `Filled` button. Use `Danger` for destructive intent. Let the containing layout control determine placement rather than using `Variant` to select structural dimensions.
+Use one `Filled` primary action per group and `Danger` for destructive intent. Layout, not `Variant`, controls placement.
 
 When `IsEnabled` is `false`, every Button variant uses the shared disabled gray background, border, and foreground. The disabled state suppresses Filled, Danger, and other enabled-state colors so unavailable actions have one consistent treatment.
 
-When Flourish tooltip presentation is enabled through `ConfigureToolTips` or `IToolTipService`, Button-family hints use the Flourish temporary Overlay surface and Shell-aware placement. Without it, the same hint content uses the native WPF tooltip appearance. Tooltips attached to native WPF and third-party controls remain unchanged.
+`ConfigureToolTips` or `IToolTipService` gives button hints Flourish presentation. Otherwise they use native WPF tooltips; native and third-party controls remain unchanged.
 
 ## CardButton
 
-`CardButton` is an interactive card. Use it when invoking the complete surface is the action. Textual `Content` wraps automatically and is limited to three lines by default; set `ContentMaxLines` to another positive line count when the layout needs a different limit. Overflow on the final visible line is shown with an ellipsis. When only one control inside a card should be interactive, use [ActionCard](card.md#actioncard) instead.
+Use `CardButton` when the complete card is the action. `Content` wraps to three lines by default; change `ContentMaxLines` with a positive value. Use [ActionCard](card.md#actioncard) when only an inner control is interactive.
 
 Like `Card`, it exposes optional `Title`, `Content`, and `Icon` regions. Each absent region and its spacing collapse completely. `IconPosition` places the icon at `Left`, `Top`, `Right`, or `Bottom`; its default is `Top`.
 
@@ -125,7 +125,7 @@ Interaction colors preserve separate default, hover, and pressed states. `Filled
 
 ## Related content
 
-- [Chunk](chunk.md) explains how to organize actions within page sections.
-- [Card](card.md) distinguishes non-interactive cards, local ActionCard controls, and whole-card actions.
-- [Motion](../articles/configure-motion.md) configures hover reveal and reduced motion.
-- The [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant), [Button API](xref:ArkheideSystem.Flourish.Controls.Button), [CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton), and [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton) list all members.
+- [Chunk](chunk.md)
+- [Card](card.md)
+- [Motion](../articles/configure-motion.md)
+- [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant), [Button API](xref:ArkheideSystem.Flourish.Controls.Button), [CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton), and [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton)

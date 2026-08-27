@@ -12,12 +12,12 @@ public interface IProfileService
     /// <summary>
     /// Gets the current immutable profile state.
     /// </summary>
-    FlourishProfileState Current { get; }
+    ProfileState Current { get; }
 
     /// <summary>
     /// Occurs when the profile or login state changes.
     /// </summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishProfileState>>? Changed;
+    event EventHandler<StateChangedEventArgs<ProfileState>>? Changed;
 
     /// <summary>
     /// Authenticates and activates a profile for the current session.

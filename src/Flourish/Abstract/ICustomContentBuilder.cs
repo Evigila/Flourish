@@ -12,7 +12,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// builder.ConfigureContent(custom =>
 /// {
 ///     custom.AddRegionContent(
-///         FlourishRegion.TitleBarEnd,
+///         ShellRegion.TitleBarEnd,
 ///         services => new Button { Content = "Account" });
 /// });
 /// ]]></code>
@@ -27,7 +27,7 @@ public interface ICustomContentBuilder
     /// <param name="order">The display order inside the region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
     ICustomContentBuilder AddRegionContent(
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
     );
@@ -77,14 +77,14 @@ public interface ICustomContentBuilder
     /// <summary>
     /// Adds a command button to the selected shell footer region.
     /// </summary>
-    /// <param name="region">The footer region. Must be <see cref="FlourishRegion.FooterStart" /> or <see cref="FlourishRegion.FooterEnd" />.</param>
+    /// <param name="region">The footer region. Must be <see cref="ShellRegion.FooterStart" /> or <see cref="ShellRegion.FooterEnd" />.</param>
     /// <param name="displayText">The command display text.</param>
     /// <param name="iconGlyph">The icon glyph displayed before the text.</param>
     /// <param name="commandKey">The optional command key dispatched through <see cref="ICommandDispatcher" /> when clicked.</param>
     /// <param name="order">The display order in the footer region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
     ICustomContentBuilder AddFooterCommand(
-        FlourishRegion region,
+        ShellRegion region,
         string displayText,
         string iconGlyph,
         string? commandKey,
@@ -94,14 +94,14 @@ public interface ICustomContentBuilder
     /// <summary>
     /// Adds a callback button to the selected shell footer region.
     /// </summary>
-    /// <param name="region">The footer region. Must be <see cref="FlourishRegion.FooterStart" /> or <see cref="FlourishRegion.FooterEnd" />.</param>
+    /// <param name="region">The footer region. Must be <see cref="ShellRegion.FooterStart" /> or <see cref="ShellRegion.FooterEnd" />.</param>
     /// <param name="displayText">The command display text.</param>
     /// <param name="iconGlyph">The icon glyph displayed before the text.</param>
     /// <param name="action">The callback invoked when the command is clicked.</param>
     /// <param name="order">The display order in the footer region. Lower values are displayed first.</param>
     /// <returns>The current builder for chained configuration.</returns>
     ICustomContentBuilder AddFooterCommandHandler(
-        FlourishRegion region,
+        ShellRegion region,
         string displayText,
         string iconGlyph,
         Action<IServiceProvider> action,

@@ -100,8 +100,8 @@
     "zh-CN": "窗口"
   },
   "Controls_ABorderedCollectionWhoseEqualHeightRowsShareOneMovingInteraction_23F83FA7": {
-    "en-US": "A bordered collection whose equal-height rows share one moving interaction indicator.",
-    "zh-CN": "带边框的集合，其中等高行共用一个移动的交互指示器。"
+    "en-US": "A bordered, equal-row list with one moving indicator.",
+    "zh-CN": "带边框的等高行列表，共用一个移动指示器。"
   },
   "Controls_ABorderedListForOrdinarySelectableContent_1A8D53E9": {
     "en-US": "A bordered list for ordinary selectable content.",
@@ -112,16 +112,16 @@
     "zh-CN": "用于承载多个段落的带边框界面。"
   },
   "Controls_ABorderlessListForShellNavigationItemsAndGroupLabels_266F46C7": {
-    "en-US": "A borderless list for shell navigation items and group labels.",
-    "zh-CN": "适用于 Shell 导航项和分组标签的无边框列表。"
+    "en-US": "A borderless list for shell navigation and group labels.",
+    "zh-CN": "用于 Shell 导航和分组标签的无边框列表。"
   },
   "Controls_ABorderlessNavigationCollectionWithTheSameCoordinatedStateLayerA_A5CC6256": {
-    "en-US": "A borderless navigation collection with the same coordinated state layer and inherited item semantics.",
-    "zh-CN": "无边框的导航集合，使用相同的协调状态层并继承项目语义。"
+    "en-US": "A borderless navigation list with shared interaction state.",
+    "zh-CN": "共享交互状态的无边框导航列表。"
   },
   "Controls_ACardShapedActionWhoseCompleteSurfaceParticipatesInButtonInterac_C962A9EF": {
     "en-US": "A card-shaped action whose complete surface participates in button interaction.",
-    "zh-CN": "整个表面都参与按钮交互的卡片式操作。"
+    "zh-CN": "整面都参与按钮交互的卡片式操作。"
   },
   "Controls_ACompactDropDownSelectionSurface_19C9CE7E": {
     "en-US": "A compact drop-down selection surface.",
@@ -136,20 +136,20 @@
     "zh-CN": "具有可选标题、内容和单个图标的简洁只读界面。"
   },
   "Controls_ACustomViewportBindsItsOffsetScrollableRangeAndVisibleExtentToFl_16F0A07A": {
-    "en-US": "A custom viewport binds its offset, scrollable range, and visible extent to FlourishScrollBar. Keep Value two-way so pointer and keyboard changes immediately update the viewport, and set Orientation to Horizontal with the corresponding width bindings for a horizontal surface. Prefer ScrollViewer for ordinary application content because it creates and coordinates these bars automatically.",
-    "zh-CN": "自定义视口将其偏移量、可滚动范围和可见范围绑定到 FlourishScrollBar。请让 Value 保持双向绑定，以便指针和键盘操作立即更新视口；对于水平区域，将 Orientation 设为 Horizontal，并绑定相应宽度。普通应用内容应优先使用 ScrollViewer，因为它会自动创建并协调这些滚动条。"
+    "en-US": "Bind custom views to ScrollBar; otherwise use ScrollViewer.",
+    "zh-CN": "自定义视口绑定 ScrollBar；否则用 ScrollViewer。"
   },
   "Controls_ADedicatedTitleBarActionWithCaptionGeometryAndWindowInteractionS_99BF0EA9": {
     "en-US": "A dedicated title-bar action with caption geometry and window interaction semantics.",
     "zh-CN": "具有标题栏几何结构和窗口交互语义的专用操作。"
   },
   "Controls_ADisabledCardButtonKeepsTheCompleteCardUnavailableAndPresentsThe_5708B614": {
-    "en-US": "A disabled CardButton keeps the complete card unavailable and presents the disabled treatment across every visual region.",
-    "zh-CN": "禁用的 CardButton 会使整张卡片不可用，并在所有视觉区域中呈现禁用样式。"
+    "en-US": "A disabled CardButton disables every region of the card.",
+    "zh-CN": "禁用 CardButton 会禁用卡片的所有区域。"
   },
   "Controls_ADisabledItemRemainsVisibleWhileItsTooltipExplainsWhyTheOptionIs_438D4035": {
-    "en-US": "A disabled item remains visible while its tooltip explains why the option is unavailable.",
-    "zh-CN": "禁用的项目仍保持可见，其工具提示会说明该选项不可用的原因。"
+    "en-US": "Disabled items stay visible; their tooltip explains why.",
+    "zh-CN": "禁用项保持可见，并由工具提示说明原因。"
   },
   "Controls_ADraggableDividerBetweenGridRegions_F6C87FDB": {
     "en-US": "A draggable divider between Grid regions.",
@@ -192,16 +192,16 @@
     "zh-CN": "适用于紧凑内容区域的语义标题。"
   },
   "Controls_ASeparateGroupNameCreatesAnotherIndependentDecisionInTheSamePage_71792381": {
-    "en-US": "A separate GroupName creates another independent decision in the same page.",
-    "zh-CN": "另一个 GroupName 可在同一页面中创建独立的另一项决策。"
+    "en-US": "A separate GroupName creates an independent choice.",
+    "zh-CN": "不同 GroupName 会创建独立选择。"
   },
   "Controls_ASharedGroupNameGuaranteesThatOnlyOneOptionStaysChecked_5AF1D305": {
-    "en-US": "A shared GroupName guarantees that only one option stays checked.",
-    "zh-CN": "共享 GroupName 可确保只有一个选项保持选中。"
+    "en-US": "A shared GroupName keeps only one option checked.",
+    "zh-CN": "共享 GroupName 仅保留一个选中项。"
   },
   "Controls_ASingleParentOwnedLayerRendersHoverAndPressedFeedbackSingleSelec_F1A0A83E": {
-    "en-US": "A single parent-owned layer renders hover and pressed feedback. Single selection uses one moving indicator; multiple selection keeps one realized indicator per selected item.",
-    "zh-CN": "由父级负责的单一图层呈现悬停与按下反馈。单选使用一个移动指示器；多选则为每个已选中的已实现项目保留一个指示器。"
+    "en-US": "A single parent-owned layer renders hover and pressed feedback.",
+    "zh-CN": "由父级负责的单一图层呈现悬停与按下反馈。"
   },
   "Controls_AStandardActionWithOptionalContentAndIcon_582227BA": {
     "en-US": "A standard action with optional content and icon.",
@@ -232,8 +232,8 @@
     "zh-CN": "窗口专用的标题栏操作。"
   },
   "Controls_AcceptsReturnAndTextWrappingCreateABoundedMultilineEditor_DE62A053": {
-    "en-US": "AcceptsReturn and TextWrapping create a bounded multiline editor.",
-    "zh-CN": "AcceptsReturn 和 TextWrapping 可创建有边界的多行编辑器。"
+    "en-US": "AcceptsReturn and TextWrapping enable multiple lines.",
+    "zh-CN": "两项属性共同启用多行编辑。"
   },
   "Controls_AccessibleApplicationActionsBuiltOnTheWPFButtonContract_75B7D1CE": {
     "en-US": "Accessible application actions built on the WPF button contract.",
@@ -276,12 +276,12 @@
     "zh-CN": "添加项"
   },
   "Controls_AddPageScopedToolbarActionsUpdateTheirEnabledAndVisibleStatesCha_4BBA0A98": {
-    "en-US": "Add page-scoped toolbar actions, update their enabled and visible states, change presentation and order, or remove them when the owning workflow ends. Use toolbar items for frequently accessed commands tied to a page; the code below demonstrates registration and the complete item-management lifecycle.",
-    "zh-CN": "添加页面作用域的工具栏操作，更新其启用和可见状态，更改呈现方式和顺序，或在所属工作流结束时移除它们。工具栏项目适用于与页面相关的常用命令；以下代码演示注册和完整的项目管理生命周期。"
+    "en-US": "Manage page toolbar actions, including state, style, order, and removal.",
+    "zh-CN": "管理页面工具栏操作的状态、样式、顺序和移除。"
   },
   "Controls_AddParagraphElementsDirectlyToDocumentEachParagraphTextAlsoSuppo_647251CC": {
-    "en-US": "Add Paragraph elements directly to Document. Each Paragraph.Text also supports resources and view-model bindings. Document owns the rounded reading surface, paragraph spacing, and first-line indentation, so it should normally be the only Body of its Chunk; use Card instead for one short passage.",
-    "zh-CN": "将 Paragraph 元素直接添加到 Document。每个 Paragraph.Text 也支持资源和视图模型绑定。Document 负责圆角阅读界面、段落间距和首行缩进，因此通常应作为其 Chunk 中唯一的 Body；单段短文本则使用 Card。"
+    "en-US": "Add Paragraph to Document; use Card for one passage.",
+    "zh-CN": "Document 加段落；单段内容用 Card。"
   },
   "Controls_AddTheGalleryRuntimeActionOrRefreshItsRegistration_E61E219D": {
     "en-US": "Add the Gallery runtime action or refresh its registration.",
@@ -300,12 +300,12 @@
     "zh-CN": "添加/更新"
   },
   "Controls_AddsElevationToSeparateAnActionFromItsSurroundingSurface_F288FF29": {
-    "en-US": "Adds elevation to separate an action from its surrounding surface.",
-    "zh-CN": "通过增加高度层级，使操作与周围界面区分开。"
+    "en-US": "Elevation separates the action from its surface.",
+    "zh-CN": "高度层级让操作与界面分离。"
   },
   "Controls_AddsElevationWhileTheCompleteSurfaceRemainsInteractive_FAFF88DD": {
-    "en-US": "Adds elevation while the complete surface remains interactive.",
-    "zh-CN": "在保持整个表面可交互的同时增加高度层级。"
+    "en-US": "Adds elevation while the surface remains interactive.",
+    "zh-CN": "在保持整面可交互的同时增加高度层级。"
   },
   "Controls_AddsOptionalSupportingContext_5790F6CE": {
     "en-US": "Adds optional supporting context.",
@@ -399,17 +399,17 @@
     "en-US": "Asks the host to close the surface.",
     "zh-CN": "请求宿主关闭界面。"
   },
-  "Controls_AssignAFlourishToolTipInstanceWhenPlacementOpenStateOrAnotherToo_E76B093C": {
-    "en-US": "Assign a FlourishToolTip instance when placement, open state, or another ToolTip property needs explicit configuration. This path is appropriate for a reusable tooltip control or richer content that still remains concise and supplemental.",
-    "zh-CN": "当定位、打开状态或其他 ToolTip 属性需要显式配置时，请分配 FlourishToolTip 实例。此方式适用于可复用的工具提示控件，或仍保持简洁、起补充作用的丰富内容。"
+  "Controls_AssignAToolTipInstanceWhenPlacementOpenStateOrAnotherToo_E76B093C": {
+    "en-US": "Use a ToolTip instance to configure its properties.",
+    "zh-CN": "配置属性时，使用 ToolTip 实例。"
   },
   "Controls_AssignASupportingControlThroughPresenterBodyBodyStaysInTheSameCo_DDE93AE4": {
-    "en-US": "Assign a supporting control through Presenter.Body. Body stays in the same copy-side region as Title and Content and follows their left alignment instead of joining Presentation.",
-    "zh-CN": "通过 Presenter.Body 指定辅助控件。Body 与 Title 和 Content 保持在同一个文案侧区域，并沿用其左对齐方式，而不会加入 Presentation。"
+    "en-US": "Assign a supporting control through Presenter.Body.",
+    "zh-CN": "通过 Presenter.Body 指定辅助控件。"
   },
   "Controls_AssignTheCompleteSourceSnippetThroughTextEncodeLineBreaksAsChara_72DEEC31": {
-    "en-US": "Assign the complete source snippet through Text. Encode line breaks as character entities for inline XAML, or bind Text for longer and generated examples. Updating a binding replaces both the displayed and copied value, while an empty value disables the built-in copy action.",
-    "zh-CN": "通过 Text 指定完整的源代码片段。在内联 XAML 中将换行编码为字符实体；对于较长或生成的示例，则绑定 Text。更新绑定会同时替换显示值和复制值；空值会禁用内置复制操作。"
+    "en-US": "Assign the complete source snippet through Text.",
+    "zh-CN": "通过 Text 指定完整的源代码片段。"
   },
   "Controls_AssociatesMutuallyExclusiveOptionsAcrossALogicalContainer_21819671": {
     "en-US": "Associates mutually exclusive options across a logical container.",
@@ -432,51 +432,51 @@
     "zh-CN": "绑定自定义视口"
   },
   "Controls_BindADataCollectionExactlyAsYouWouldForListBoxGeneratedContainer_39EA9931": {
-    "en-US": "Bind a data collection exactly as you would for ListBox. Generated containers are BunchedListBoxItem instances, so no per-item hover surface is required.",
-    "zh-CN": "按照 ListBox 的方式绑定数据集合。生成的容器是 BunchedListBoxItem 实例，因此无需为每个项目单独创建悬停表面。"
+    "en-US": "Bind a data collection exactly as you would for ListBox.",
+    "zh-CN": "按照 ListBox 的方式绑定数据集合。"
   },
   "Controls_BindASharedCommandWhenSelectingAnOptionMustInvokeApplicationBeha_CBA76246": {
-    "en-US": "Bind a shared Command when selecting an option must invoke application behavior. CommandParameter carries each option value, avoiding a separate Checked handler for every radio button.",
-    "zh-CN": "当选择选项必须调用应用行为时，请绑定共享 Command。CommandParameter 携带各选项的值，从而无需为每个单选按钮编写独立的 Checked 处理程序。"
+    "en-US": "Bind Command when selection must invoke app behavior.",
+    "zh-CN": "选择需触发应用行为时，绑定 Command。"
   },
   "Controls_BindCaptionCommands_DC880523": {
     "en-US": "Bind caption commands",
     "zh-CN": "绑定标题栏命令"
   },
   "Controls_BindCommandForReusableActionsOrHandleClickForLocalBehavior_7A3EBD47": {
-    "en-US": "Bind Command for reusable actions, or handle Click for local behavior.",
-    "zh-CN": "为可复用操作绑定 Command，或通过 Click 处理局部行为。"
+    "en-US": "Use Command for shared actions and Click for local behavior.",
+    "zh-CN": "共享操作用 Command，局部行为用 Click。"
   },
   "Controls_BindCommandToApplicationLogicAndSetContentForTheVisibleLabelAddI_CCEF3BB4": {
-    "en-US": "Bind Command to application logic and set Content for the visible label. Add Icon when it improves recognition; either region collapses when omitted. Use Filled for a primary action, Tonal or Outlined for supporting actions, Text for low emphasis, and Danger only for destructive work.",
-    "zh-CN": "将 Command 绑定到应用逻辑，并通过 Content 设置可见标签。在图标有助于识别时添加 Icon；任一区域省略后都会自动折叠。主要操作使用 Filled，辅助操作使用 Tonal 或 Outlined，低强调操作使用 Text，Danger 仅用于破坏性操作。"
+    "en-US": "Bind Command, set a clear Content label, and add Icon only when useful.",
+    "zh-CN": "绑定 Command，设置清晰的 Content；必要时再添加 Icon。"
   },
   "Controls_BindItemsSourceAndUseNativeWPFDataGridColumnsDisableAutomaticCol_F5C4C38E": {
-    "en-US": "Bind ItemsSource and use native WPF DataGrid columns. Disable automatic columns when visible fields and order are part of the design, and use IsReadOnly for reference or result tables. Native selection properties can bind an active row to another view; Flourish also hands the mouse wheel to PageBody when the grid reaches its scroll boundary.",
-    "zh-CN": "绑定 ItemsSource 并使用原生 WPF DataGrid 列。当可见字段和顺序属于设计的一部分时，请禁用自动生成列；参考表或结果表应使用 IsReadOnly。原生选择属性可将活动行绑定到另一个视图；当网格到达滚动边界时，Flourish 还会将鼠标滚轮交还给 PageBody。"
+    "en-US": "Bind ItemsSource; define columns when their order matters.",
+    "zh-CN": "绑定 ItemsSource；列顺序固定时手动定义。"
   },
   "Controls_BindItemsSourceForApplicationDataTheControlCreatesFlourishListBo_8236604A": {
-    "en-US": "Bind ItemsSource for application data; the control creates FlourishListBoxItem containers automatically.",
-    "zh-CN": "将 ItemsSource 绑定到应用数据；控件会自动创建 FlourishListBoxItem 容器。"
+    "en-US": "Bind ItemsSource for application data; the control creates ListBoxItem containers automatically.",
+    "zh-CN": "将 ItemsSource 绑定到应用数据；控件会自动创建 ListBoxItem 容器。"
   },
   "Controls_BindItemsSourceToApplicationDataAndSelectedItemInTwoWayModeWhenS_51BDFE32": {
-    "en-US": "Bind ItemsSource to application data and SelectedItem in TwoWay mode when selection belongs to the view model. DisplayMemberPath selects the label for non-string items. Handle SelectionChanged only when added or removed selections must trigger immediate view-owned work beyond the binding update.",
-    "zh-CN": "将 ItemsSource 绑定到应用数据；当选择属于视图模型时，以 TwoWay 模式绑定 SelectedItem。DisplayMemberPath 用于选择非字符串项目显示的标签。仅当添加或移除选择必须立即触发绑定更新之外的视图工作时，才处理 SelectionChanged。"
+    "en-US": "Bind ItemsSource; use TwoWay SelectedItem for selection.",
+    "zh-CN": "绑定 ItemsSource；选择用 TwoWay。"
   },
   "Controls_BindSelectedItemOrSelectedValueToTheViewModelIsCompactAffectsNav_35F8E7BF": {
-    "en-US": "Bind SelectedItem or SelectedValue to the view model. IsCompact affects navigation geometry without changing selection state.",
-    "zh-CN": "将 SelectedItem 或 SelectedValue 绑定到视图模型。IsCompact 会影响导航几何尺寸，但不会改变选择状态。"
+    "en-US": "Bind SelectedItem or SelectedValue to the view model.",
+    "zh-CN": "将 SelectedItem 或 SelectedValue 绑定到视图模型。"
   },
   "Controls_BindTextInTwoWayModeWhenTheValueBelongsToAViewModelAndChooseProp_61CCCFF7": {
-    "en-US": "Bind Text in TwoWay mode when the value belongs to a view model, and choose PropertyChanged only when every edit must update the source. MaxLength limits input at the control boundary. Name the control when code must replace, select, or focus its value through the native TextBox methods.",
-    "zh-CN": "当值属于视图模型时，以 TwoWay 模式绑定 Text；仅当每次编辑都必须更新数据源时才选择 PropertyChanged。MaxLength 会在控件边界限制输入。当代码需要通过 TextBox 原生方法替换、选择或聚焦其值时，请为控件命名。"
+    "en-US": "Use TwoWay Text; add PropertyChanged for live updates.",
+    "zh-CN": "Text 用 TwoWay；实时更新时加通知。"
   },
   "Controls_BindTextWithPropertyChangedUpdatesWhenResultsShouldReactContinuo_6C0F24FC": {
-    "en-US": "Bind Text with PropertyChanged updates when results should react continuously as the query changes. TextChanged is an alternative for lightweight view-owned filtering. Placeholder guides an empty field but does not replace a visible label when the search purpose is ambiguous.",
-    "zh-CN": "当结果需要随查询变化而持续响应时，请使用 PropertyChanged 更新绑定 Text。对于视图自行负责的轻量筛选，也可使用 TextChanged。Placeholder 可提示空字段，但当搜索用途不明确时，不能替代可见标签。"
+    "en-US": "Use PropertyChanged when results follow every query edit.",
+    "zh-CN": "结果跟随查询时，用 PropertyChanged。"
   },
   "Controls_BindsAnApplicationOwnedParagraphCollectionWhenNeeded_39E7CC3C": {
-    "en-US": "Binds an application-owned paragraph collection when needed.",
+    "en-US": "Binds an app-owned paragraph collection when needed.",
     "zh-CN": "在需要时绑定应用自身的段落集合。"
   },
   "Controls_BodyControls_B4C6B4D8": {
@@ -484,8 +484,8 @@
     "zh-CN": "Body 控件"
   },
   "Controls_BodyParagraphCaptionMutedFieldLabelSubtitleDescriptionCardTitleS_CB079295": {
-    "en-US": "Body, Paragraph, Caption, Muted, FieldLabel, Subtitle, Description, CardTitle, SectionTitle, PageTitle, Status, and Icon are available. Prefer the owning higher-level control for structural titles.",
-    "zh-CN": "可用角色包括 Body、Paragraph、Caption、Muted、FieldLabel、Subtitle、Description、CardTitle、SectionTitle、PageTitle、Status 和 Icon。对于结构性标题，应优先使用负责该结构的上层控件。"
+    "en-US": "Choose the semantic text role that matches the content.",
+    "zh-CN": "选择与内容匹配的语义文本角色。"
   },
   "Controls_BorderlessList_010B79F0": {
     "en-US": "Borderless list",
@@ -496,8 +496,8 @@
     "zh-CN": "两种外观使用相同的选择模型和等高演示区域。"
   },
   "Controls_BothLayoutRolesUseTheSame4DIPInteractionSurfaceCentered2DIPHighl_FE794693": {
-    "en-US": "Both layout roles use the same 4 DIP interaction surface, centered 2 DIP highlight, and immediate resizing. NavigationPane changes only shell-edge alignment and column-resize defaults.",
-    "zh-CN": "两种布局角色使用相同的 4 DIP 交互表面、居中的 2 DIP 高亮线和即时调整。NavigationPane 仅更改 Shell 边缘对齐方式和列调整默认值。"
+    "en-US": "Both roles share a 4 DIP surface and 2 DIP highlight.",
+    "zh-CN": "两种角色共用 4 DIP 表面和 2 DIP 高亮。"
   },
   "Controls_BottomIcon_D11D8DEF": {
     "en-US": "Bottom icon",
@@ -532,16 +532,16 @@
     "zh-CN": "BunchedListBox 文档"
   },
   "Controls_BunchedListBoxItemKeepsItsInteractionBackgroundTransparentSoTheP_9EC664A2": {
-    "en-US": "BunchedListBoxItem keeps its interaction background transparent so the parent-owned HoverReveal layer remains visible.",
-    "zh-CN": "BunchedListBoxItem 会让自身交互背景保持透明，从而显示由父级负责的 HoverReveal 图层。"
+    "en-US": "Items stay transparent so the parent HoverReveal remains visible.",
+    "zh-CN": "项目保持透明，以显示父级 HoverReveal。"
   },
   "Controls_ButtonDocumentation_79064CD6": {
     "en-US": "Button documentation",
     "zh-CN": "Button 文档"
   },
   "Controls_CallWriteLineForEachObservableResultSoExistingHistoryRemainsAvai_465D705E": {
-    "en-US": "Call WriteLine for each observable result so existing history remains available. Use Clear only when the workflow deliberately begins a new output session; overflow remains accessible in the control's scrolling viewport.",
-    "zh-CN": "为每个可观察结果调用 WriteLine，以保留现有历史。仅当工作流明确开始新的输出会话时才使用 Clear；溢出内容仍可通过控件的滚动视口访问。"
+    "en-US": "Call WriteLine for each observable result so existing history remains available.",
+    "zh-CN": "为每个可观察结果调用 WriteLine，以保留现有历史。"
   },
   "Controls_Cancel_19766ED6": {
     "en-US": "Cancel",
@@ -588,8 +588,8 @@
     "zh-CN": "选择主题值。"
   },
   "Controls_ChooseNavigationPaneOnlyForTheDividerAtAShellNavigationEdgeTheVa_75ADE1D3": {
-    "en-US": "Choose NavigationPane only for the divider at a shell navigation edge. The variant supplies horizontal column resizing, edge alignment, cursor, and layer defaults while retaining the same geometry and thin live-resize highlight as Standard. The surrounding Grid continues to define minimum and available widths.",
-    "zh-CN": "仅将 NavigationPane 用于 Shell 导航边缘的分隔线。此变体提供水平列调整、边缘对齐、光标和图层默认值，同时保留与 Standard 相同的几何尺寸和细窄实时高亮线。周围的 Grid 仍负责定义最小宽度和可用宽度。"
+    "en-US": "Use NavigationPane only at the navigation edge.",
+    "zh-CN": "NavigationPane 仅用于导航边缘。"
   },
   "Controls_ChooseOneValueFromACompactCollectionUsingFlourishItemContainers_1BCC40CE": {
     "en-US": "Choose one value from a compact collection using Flourish item containers.",
@@ -600,16 +600,16 @@
     "zh-CN": "从一组数量较少、全部可见且互斥的选项中选择一个值。"
   },
   "Controls_ChooseScrollBarVisibilityWithTheNativeWPFPropertiesAndUseIsSmoot_745213BA": {
-    "en-US": "Choose scroll-bar visibility with the native WPF properties and use IsSmoothScrollingEnabled to animate wheel movement. ScrollViewer always applies the standard Flourish scroll-bar geometry. Normal wheel input scrolls internally and bubbles at boundaries.",
-    "zh-CN": "使用 WPF 原生属性选择滚动条可见性，并通过 IsSmoothScrollingEnabled 为滚轮移动添加动画。ScrollViewer 始终应用标准 Flourish 滚动条几何尺寸。普通滚轮输入会在内部滚动，并在边界处冒泡。"
+    "en-US": "Set visibility natively; enable smooth wheel motion.",
+    "zh-CN": "原生设置可见性；按需启用平滑滚动。"
   },
   "Controls_ChooseTopDownWhenABannerDiagramOrOtherWidePresentationShouldEsta_B0DC7FB3": {
-    "en-US": "Choose TopDown when a banner, diagram, or other wide presentation should establish context before the header text. PresenterPosition does not rearrange this vertical mode, and HeaderChunk still occupies a complete row.",
-    "zh-CN": "当横幅、图表或其他宽幅展示内容需要在页眉文本之前建立上下文时，请选择 TopDown。PresenterPosition 不会重新排列这种纵向模式，HeaderChunk 仍会占据完整一行。"
+    "en-US": "Use TopDown when a wide visual should appear before header text.",
+    "zh-CN": "宽幅视觉内容需先于页眉时，使用 TopDown。"
   },
   "Controls_ChooseVerticalForACardShapedSelectionIconAcceptsArbitraryContent_2FA82121": {
-    "en-US": "Choose Vertical for a card-shaped selection. Icon accepts arbitrary content but is rendered only by the Vertical layout.",
-    "zh-CN": "卡片式选择请使用 Vertical。Icon 接受任意内容，但只会在 Vertical 布局中呈现。"
+    "en-US": "Use Vertical for card choices; only it renders Icon.",
+    "zh-CN": "卡片式选择使用 Vertical，且仅它显示 Icon。"
   },
   "Controls_ChoosesSingleMultipleOrExtendedWPFSelectionSemantics_4D921AD6": {
     "en-US": "Chooses single, multiple, or extended WPF selection semantics.",
@@ -680,8 +680,8 @@
     "zh-CN": "指针离开后关闭。"
   },
   "Controls_ClosingCanEndTheCurrentSessionOrDiscardUnsavedWorkUseTheDangerVa_9B7343DB": {
-    "en-US": "Closing can end the current session or discard unsaved work. Use the Danger variant to give this destructive caption action distinct warning feedback.",
-    "zh-CN": "关闭可能会结束当前会话或丢弃未保存的工作。使用 Danger 变体，为这种破坏性标题栏操作提供明确的警告反馈。"
+    "en-US": "Closing can end the current session or discard unsaved work.",
+    "zh-CN": "关闭可能会结束当前会话或丢弃未保存的工作。"
   },
   "Controls_CloudWorkspace_35AA5D58": {
     "en-US": "Cloud workspace",
@@ -708,8 +708,8 @@
     "zh-CN": "列"
   },
   "Controls_CombineCopyAndControlsWithImagesIllustrationsOrGroupsOfIconsInOn_3FA3ADBF": {
-    "en-US": "Combine copy and controls with images, illustrations, or groups of icons in one full-width presentation layout.",
-    "zh-CN": "在一个全宽展示布局中，将文案和控件与图像、插图或图标组组合起来。"
+    "en-US": "Combine copy, controls, and visuals in one full-width layout.",
+    "zh-CN": "在全宽布局中组合文案、控件和视觉内容。"
   },
   "Controls_Comfortable_459A23A5": {
     "en-US": "Comfortable",
@@ -752,7 +752,7 @@
     "zh-CN": "将激活操作连接到窗口自身的行为。"
   },
   "Controls_ConnectsActivationToApplicationOwnedBehavior_A9E29329": {
-    "en-US": "Connects activation to application-owned behavior.",
+    "en-US": "Connects activation to app-owned behavior.",
     "zh-CN": "将激活操作连接到应用自身的行为。"
   },
   "Controls_ConnectsKeyboardGesturesSuchAsEnterToApplicationSearch_537F6EA1": {
@@ -884,20 +884,20 @@
     "zh-CN": "数据项会自动包装，仅在需要项目局部状态时才需显式声明容器。"
   },
   "Controls_DeclareAShortStaticListInXAMLOrBindItemsSourceToApplicationOwned_11F057C7": {
-    "en-US": "Declare a short static list in XAML or bind ItemsSource to application-owned data. The closed selector uses HoverReveal for pointer feedback.",
-    "zh-CN": "在 XAML 中声明简短的静态列表，或将 ItemsSource 绑定到应用自有数据。关闭的选择器使用 HoverReveal 提供指针反馈。"
+    "en-US": "Declare a short static list in XAML or bind ItemsSource to app-owned data.",
+    "zh-CN": "在 XAML 中声明简短的静态列表，或将 ItemsSource 绑定到应用自有数据。"
   },
   "Controls_DeclareChunkDirectlyUnderPageBodyGiveItAConciseTitleAndPlaceTheS_27E63969": {
-    "en-US": "Declare Chunk directly under PageBody, give it a concise Title, and place the section's real content inside it. Content is optional supporting copy and may use several sentences when the section needs more context. Use one HeaderChunk first, then add full-width Chunk siblings; do not place layout content directly under PageBody or arrange multiple Chunks on one row.",
-    "zh-CN": "在 PageBody 下直接声明 Chunk，为其设置简洁的 Title，并将区块的实际内容放入其中。Content 是可选的辅助文案；当区块需要更多上下文时，可以使用多个句子。先放置一个 HeaderChunk，再添加全宽的同级 Chunk；不要在 PageBody 下直接放置布局内容，也不要将多个 Chunk 排列在同一行。"
+    "en-US": "Place each Chunk directly under PageBody with a short Title. Put a HeaderChunk first.",
+    "zh-CN": "将 Chunk 直接放在 PageBody 下并使用短标题。首项应为 HeaderChunk。"
   },
-  "Controls_DeclareFlourishComboBoxItemChildrenForAShortFixedListWhoseEntrie_C333712A": {
-    "en-US": "Declare FlourishComboBoxItem children for a short fixed list whose entries need individual content, enabled state, or tooltips. Use SelectedIndex for a simple initial choice; for application data, prefer the collection-binding pattern above.",
-    "zh-CN": "对于条目需要单独内容、启用状态或工具提示的简短固定列表，请声明 FlourishComboBoxItem 子项。简单的初始选择可使用 SelectedIndex；对于应用数据，应优先使用上述集合绑定模式。"
+  "Controls_DeclareComboBoxItemChildrenForAShortFixedListWhoseEntrie_C333712A": {
+    "en-US": "Declare ComboBoxItem for fixed options with custom state.",
+    "zh-CN": "固定选项需自定义状态时，声明 ComboBoxItem。"
   },
-  "Controls_DeclareFlourishToolTipExplicitlyWhenTheContentNeedsAControlInsta_6D46B98B": {
-    "en-US": "Declare FlourishToolTip explicitly when the content needs a control instance. A plain ToolTip string is upgraded by the enabled shell tip policy.",
-    "zh-CN": "当内容需要控件实例时，请显式声明 FlourishToolTip。启用的 Shell 提示策略会将普通 ToolTip 字符串升级。"
+  "Controls_DeclareToolTipExplicitlyWhenTheContentNeedsAControlInsta_6D46B98B": {
+    "en-US": "Declare ToolTip when its content needs a control instance.",
+    "zh-CN": "内容需要控件实例时，声明 ToolTip。"
   },
   "Controls_DeclareTheOutputSurface_329F5B5B": {
     "en-US": "Declare the output surface",
@@ -960,8 +960,8 @@
     "zh-CN": "关闭行为"
   },
   "Controls_DismissesWhenPointerTrackingLeavesTheSurfaceAndItsAnchor_2A2A9009": {
-    "en-US": "Dismisses when pointer tracking leaves the surface and its anchor.",
-    "zh-CN": "当指针跟踪离开界面及其锚点时关闭。"
+    "en-US": "Dismisses when the pointer leaves the surface and anchor.",
+    "zh-CN": "指针离开界面和锚点时关闭。"
   },
   "Controls_DisplayName_AA37B12F": {
     "en-US": "_Display name",
@@ -972,32 +972,32 @@
     "zh-CN": "查询为空且控件未聚焦时，在控件内显示提示。"
   },
   "Controls_DoNotAddAPreviewMouseWheelHandlerThatMarksEveryEventHandledFlour_BA4F024F": {
-    "en-US": "Do not add a PreviewMouseWheel handler that marks every event handled. Flourish lets outward wheel events bubble at the top and bottom.",
-    "zh-CN": "不要添加会将所有事件都标记为已处理的 PreviewMouseWheel 处理程序。Flourish 允许向外滚动的滚轮事件在顶部和底部继续冒泡。"
+    "en-US": "Do not add a PreviewMouseWheel handler that marks every event handled.",
+    "zh-CN": "不要添加会将所有事件都标记为已处理的 PreviewMouseWheel 处理程序。"
   },
   "Controls_DoNotCreateATooltipForNullEmptyOrWhitespaceOnlyContentTheSharedP_62053DDB": {
-    "en-US": "Do not create a tooltip for null, empty, or whitespace-only content. The shared policy suppresses empty popup surfaces.",
-    "zh-CN": "不要为空值、空字符串或仅含空白的内容创建工具提示。共享策略会抑制空的弹出表面。"
+    "en-US": "Do not create a tooltip for null, empty, or whitespace-only content.",
+    "zh-CN": "不要为空值、空字符串或仅含空白的内容创建工具提示。"
   },
   "Controls_DocumentDocumentation_C499786E": {
     "en-US": "Document documentation",
     "zh-CN": "Document 文档"
   },
   "Controls_DocumentIsIntendedForSustainedReadingRatherThanAShortSummaryItsT_6DB3FAD3": {
-    "en-US": "Document is intended for sustained reading rather than a short summary. Its transparent surface uses a rounded, thin, low-contrast outline without adding a title, content field, or visual variant.",
-    "zh-CN": "Document 适用于持续阅读，而不是简短摘要。其透明界面使用圆角、细且低对比度的边框，不额外添加标题、内容字段或视觉变体。"
+    "en-US": "Document is intended for sustained reading rather than a short summary.",
+    "zh-CN": "Document 适用于持续阅读，而不是简短摘要。"
   },
   "Controls_DynamicRoute_06578B41": {
     "en-US": "Dynamic route",
     "zh-CN": "动态路由"
   },
   "Controls_EachCompactDiagramIdentifiesThePresentationRegionThePageLeadingP_E716254E": {
-    "en-US": "Each compact diagram identifies the Presentation region; the page-leading preview above renders the actual HeaderChunk.",
-    "zh-CN": "每个简图都标示 Presentation 区域；上方的页首预览呈现了实际的 HeaderChunk。"
+    "en-US": "Each diagram marks Presentation; the preview shows the result.",
+    "zh-CN": "简图标示 Presentation，预览显示结果。"
   },
   "Controls_EachDiagramSummarizesACompositionTheFullWidthLiveExamplesFollowT_952A6319": {
-    "en-US": "Each diagram summarizes a composition. The full-width live examples follow the member table.",
-    "zh-CN": "每张图都概括一种组合方式。成员表后方提供全宽实时示例。"
+    "en-US": "Each diagram summarizes a composition.",
+    "zh-CN": "每张图都概括一种组合方式。"
   },
   "Controls_EachParagraphItemReceivesTheStandardIndentationSpacingAndLargeRe_3CEF698D": {
     "en-US": "Each Paragraph item receives the standard indentation, spacing, and Large reading size.",
@@ -1064,8 +1064,8 @@
     "zh-CN": "输入"
   },
   "Controls_EveryParagraphAddedToDocumentReceivesTheStandardFirstLineInsetAn_FB47A902": {
-    "en-US": "Every Paragraph added to Document receives the standard first-line inset and the gap between adjacent paragraphs.",
-    "zh-CN": "添加到 Document 的每个 Paragraph 都会获得标准首行缩进和相邻段落间距。"
+    "en-US": "Document applies standard indentation and spacing to each Paragraph.",
+    "zh-CN": "Document 为每个 Paragraph 应用标准缩进和间距。"
   },
   "Controls_Example_D029F87E": {
     "en-US": "Example",
@@ -1119,53 +1119,53 @@
     "en-US": "Fixed-style code text with clipboard copy support.",
     "zh-CN": "采用固定样式并支持复制到剪贴板的代码文本。"
   },
-  "Controls_FlourishComboBoxDocumentation_C7A61837": {
-    "en-US": "FlourishComboBox documentation",
-    "zh-CN": "FlourishComboBox 文档"
+  "Controls_ComboBoxDocumentation_C7A61837": {
+    "en-US": "ComboBox documentation",
+    "zh-CN": "ComboBox 文档"
   },
-  "Controls_FlourishComboBoxGeneratesFlourishComboBoxItemContainersExplicitI_7C64B62F": {
-    "en-US": "FlourishComboBox generates FlourishComboBoxItem containers. Explicit items may set Content, IsEnabled, and ToolTip locally.",
-    "zh-CN": "FlourishComboBox 会生成 FlourishComboBoxItem 容器。显式项目可在局部设置 Content、IsEnabled 和 ToolTip。"
+  "Controls_ComboBoxGeneratesComboBoxItemContainersExplicitI_7C64B62F": {
+    "en-US": "ComboBox generates ComboBoxItem containers.",
+    "zh-CN": "ComboBox 会生成 ComboBoxItem 容器。"
   },
   "Controls_FlourishGitHubRepository_52730F6E": {
     "en-US": "Flourish GitHub repository",
     "zh-CN": "Flourish GitHub 仓库"
   },
-  "Controls_FlourishGridSplitterDocumentation_1825574B": {
-    "en-US": "FlourishGridSplitter documentation",
-    "zh-CN": "FlourishGridSplitter 文档"
+  "Controls_GridSplitterDocumentation_1825574B": {
+    "en-US": "GridSplitter documentation",
+    "zh-CN": "GridSplitter 文档"
   },
-  "Controls_FlourishLabelDocumentation_D7C69726": {
-    "en-US": "FlourishLabel documentation",
-    "zh-CN": "FlourishLabel 文档"
+  "Controls_LabelDocumentation_D7C69726": {
+    "en-US": "Label documentation",
+    "zh-CN": "Label 文档"
   },
-  "Controls_FlourishPasswordBoxDocumentation_CA2A8B17": {
-    "en-US": "FlourishPasswordBox documentation",
-    "zh-CN": "FlourishPasswordBox 文档"
+  "Controls_PasswordBoxDocumentation_CA2A8B17": {
+    "en-US": "PasswordBox documentation",
+    "zh-CN": "PasswordBox 文档"
   },
-  "Controls_FlourishRadioButtonDocumentation_83BEED9E": {
-    "en-US": "FlourishRadioButton documentation",
-    "zh-CN": "FlourishRadioButton 文档"
+  "Controls_RadioButtonDocumentation_83BEED9E": {
+    "en-US": "RadioButton documentation",
+    "zh-CN": "RadioButton 文档"
   },
-  "Controls_FlourishScrollBarDocumentation_33F8BEA7": {
-    "en-US": "FlourishScrollBar documentation",
-    "zh-CN": "FlourishScrollBar 文档"
+  "Controls_ScrollBarDocumentation_33F8BEA7": {
+    "en-US": "ScrollBar documentation",
+    "zh-CN": "ScrollBar 文档"
   },
-  "Controls_FlourishSearchBoxDocumentation_08AB34C9": {
-    "en-US": "FlourishSearchBox documentation",
-    "zh-CN": "FlourishSearchBox 文档"
+  "Controls_SearchBoxDocumentation_08AB34C9": {
+    "en-US": "SearchBox documentation",
+    "zh-CN": "SearchBox 文档"
   },
-  "Controls_FlourishTextBlockDocumentation_F6F69AA9": {
-    "en-US": "FlourishTextBlock documentation",
-    "zh-CN": "FlourishTextBlock 文档"
+  "Controls_TextBlockDocumentation_F6F69AA9": {
+    "en-US": "TextBlock documentation",
+    "zh-CN": "TextBlock 文档"
   },
-  "Controls_FlourishTextBoxDocumentation_07D8D1EF": {
-    "en-US": "FlourishTextBox documentation",
-    "zh-CN": "FlourishTextBox 文档"
+  "Controls_TextBoxDocumentation_07D8D1EF": {
+    "en-US": "TextBox documentation",
+    "zh-CN": "TextBox 文档"
   },
-  "Controls_FlourishToolTipDocumentation_0F2F4561": {
-    "en-US": "FlourishToolTip documentation",
-    "zh-CN": "FlourishToolTip 文档"
+  "Controls_ToolTipDocumentation_0F2F4561": {
+    "en-US": "ToolTip documentation",
+    "zh-CN": "ToolTip 文档"
   },
   "Controls_Function_C8037103": {
     "en-US": "Function",
@@ -1232,16 +1232,16 @@
     "zh-CN": "GitHub 仓库"
   },
   "Controls_GiveEveryOptionForOneDecisionTheSameGroupNameAndStartWithOneVali_DA92DB97": {
-    "en-US": "Give every option for one decision the same GroupName and start with one valid selection. Bind IsChecked when selection is application state. Use RadioButton only when the complete choice set is small enough to remain visible.",
-    "zh-CN": "为同一项决策的所有选项设置相同的 GroupName，并提供一个初始有效选择。当选择属于应用状态时绑定 IsChecked。只有当完整选项集足够少、能够全部保持可见时，才使用 RadioButton。"
+    "en-US": "Share GroupName and start with one valid selection.",
+    "zh-CN": "共享 GroupName，并提供一个初始选择。"
   },
   "Controls_GiveOutputCardANameWhenCodeBehindWillWriteToItItIntentionallyHas_2FE99BD0": {
-    "en-US": "Give OutputCard a name when code-behind will write to it. It intentionally has no Title, Content, Icon, or Body; place explanatory copy on the surrounding Chunk and reserve this compact scrolling surface for raw output.",
-    "zh-CN": "当后台代码需要写入 OutputCard 时，请为其命名。它有意不提供 Title、Content、Icon 或 Body；请将说明文案放在外层 Chunk 中，并将这个紧凑的滚动界面留给原始输出。"
+    "en-US": "Give OutputCard a name when code-behind will write to it.",
+    "zh-CN": "当后台代码需要写入 OutputCard 时，请为其命名。"
   },
   "Controls_GridOwnsRowAndColumnConstraintsDraggingTheSplitterUpdatesAdjacen_D8EB9697": {
-    "en-US": "Grid owns row and column constraints. Dragging the splitter updates adjacent GridLength values continuously, while the thin visible highlight stays centered inside the interaction surface.",
-    "zh-CN": "Grid 负责行列约束。拖动拆分器会持续更新相邻的 GridLength 值，同时细窄的可见高亮线保持位于交互表面中央。"
+    "en-US": "Grid owns row and column constraints.",
+    "zh-CN": "Grid 负责行列约束。"
   },
   "Controls_GroupHeader_13304922": {
     "en-US": "Group header",
@@ -1256,12 +1256,12 @@
     "zh-CN": "处理关闭请求"
   },
   "Controls_HandlePasswordChangedAndReadPasswordOrSecurePasswordOnlyWhenTheA_DC244C81": {
-    "en-US": "Handle PasswordChanged and read Password or SecurePassword only when the application must process the value. Password is not a dependency property, so avoid normal binding and do not retain plaintext longer than necessary. MaxLength limits input, PasswordChar changes only the visible mask, and Clear removes an obsolete secret after processing or cancellation.",
-    "zh-CN": "仅当应用必须处理该值时，才处理 PasswordChanged 并读取 Password 或 SecurePassword。Password 不是依赖属性，因此应避免常规绑定，并且明文的保留时间不应超过必要时长。MaxLength 限制输入；PasswordChar 只改变可见掩码；Clear 则在处理或取消后移除已无用的密码。"
+    "en-US": "Read passwords only when needed, then clear plaintext.",
+    "zh-CN": "仅按需读取密码，并及时清除明文。"
   },
   "Controls_HandleTextChangedWhenEachEditMustTriggerViewOwnedBehaviorThatIsN_7963AEB1": {
-    "en-US": "Handle TextChanged when each edit must trigger view-owned behavior that is not represented by the binding alone, such as a local character counter. The event fires for both user and application changes, so keep its handler lightweight. AcceptsReturn and TextWrapping can independently turn the same control into a bounded multiline editor.",
-    "zh-CN": "当每次编辑都必须触发仅靠绑定无法表达的视图行为（例如本地字符计数器）时，请处理 TextChanged。用户修改和应用修改都会触发该事件，因此处理程序应保持轻量。AcceptsReturn 和 TextWrapping 可分别将同一个控件变为有边界的多行编辑器。"
+    "en-US": "Use TextChanged only for lightweight local behavior.",
+    "zh-CN": "TextChanged 仅用于轻量局部行为。"
   },
   "Controls_HeaderChunkDocumentation_00F1735F": {
     "en-US": "HeaderChunk documentation",
@@ -1276,20 +1276,20 @@
     "zh-CN": "横向内容"
   },
   "Controls_HorizontalIsTheDefaultBindIsCheckedInTwoWayModeForAStandardSetti_923DEB45": {
-    "en-US": "Horizontal is the default. Bind IsChecked in TwoWay mode for a standard setting and enable IsThreeState only when null represents inherited, mixed, or unknown state.",
-    "zh-CN": "Horizontal 为默认布局。对于标准设置，以 TwoWay 模式绑定 IsChecked；仅当 null 表示继承、混合或未知状态时才启用 IsThreeState。"
+    "en-US": "Horizontal is the default.",
+    "zh-CN": "Horizontal 为默认布局。"
   },
   "Controls_HorizontalIsTheDefaultForStandardSettingsVerticalAddsAnOptionalI_8F273260": {
-    "en-US": "Horizontal is the default for standard settings. Vertical adds an optional icon and uses a card-shaped layout.",
-    "zh-CN": "Horizontal 是标准设置的默认布局。Vertical 会添加可选图标并使用卡片式布局。"
+    "en-US": "Horizontal is the default for standard settings.",
+    "zh-CN": "Horizontal 是标准设置的默认布局。"
   },
   "Controls_HorizontalIsTheDefaultVariantIconAppearsFirstTitleAndContentForm_FD27D0FC": {
-    "en-US": "Horizontal is the default Variant: Icon appears first, Title and Content form the middle copy group, and the single interactive Body is aligned on the right. Prefer this compact structure for settings arranged in a list.",
-    "zh-CN": "Horizontal 是默认 Variant：Icon 首先显示，Title 和 Content 组成中间的文案组，唯一的交互式 Body 则在右侧对齐。对于按列表排列的设置，应优先采用这种紧凑结构。"
+    "en-US": "Horizontal keeps the icon and copy left and Body right.",
+    "zh-CN": "Horizontal 将图标和文案置于左侧，Body 置于右侧。"
   },
-  "Controls_HostScrollableContentWithFlourishScrollBarsBoundaryHandoffAndOpt_E3F77F47": {
-    "en-US": "Host scrollable content with Flourish scroll bars, boundary handoff, and optional smooth wheel motion.",
-    "zh-CN": "使用 Flourish 滚动条、边界传递和可选的平滑滚轮动画承载可滚动内容。"
+  "Controls_HostScrollableContentWithScrollBarsBoundaryHandoffAndOpt_E3F77F47": {
+    "en-US": "Host scrolling with boundary handoff and optional smooth motion.",
+    "zh-CN": "承载滚动内容，并支持边界传递和平滑动画。"
   },
   "Controls_Hosting_B4EC9BBA": {
     "en-US": "Hosting",
@@ -1328,20 +1328,20 @@
     "zh-CN": "悬停或激活该操作以显示临时界面。"
   },
   "Controls_HoverOrFocusTheButtonTheTooltipOwnsItsNormalRegularTipTypography_B6AFCD5B": {
-    "en-US": "Hover or focus the button. The tooltip owns its Normal, Regular Tip typography instead of inheriting the button's text treatment.",
-    "zh-CN": "将鼠标悬停在按钮上或让按钮获得焦点。工具提示使用自己的 Normal、Regular Tip 排版，而不继承按钮的文本样式。"
+    "en-US": "Hover or focus the button.",
+    "zh-CN": "将鼠标悬停在按钮上或让按钮获得焦点。"
   },
   "Controls_IconActions_EFC5AAF8": {
     "en-US": "Icon actions",
     "zh-CN": "图标操作"
   },
   "Controls_IconAndCopyStayOnTheLeftWhileTheSingleInteractiveBodyStaysOnTheR_35D15E78": {
-    "en-US": "Icon and copy stay on the left while the single interactive Body stays on the right.",
-    "zh-CN": "图标和文案位于左侧，唯一的交互式 Body 位于右侧。"
+    "en-US": "Icon and copy stay left; the interactive Body stays right.",
+    "zh-CN": "图标和文案居左，交互 Body 居右。"
   },
   "Controls_IconCopyAndTheSingleInteractiveBodyFormOneLeftAlignedVerticalSta_AA1E2065": {
-    "en-US": "Icon, copy, and the single interactive Body form one left-aligned vertical stack.",
-    "zh-CN": "图标、文案和唯一的交互式 Body 组成一个左对齐的纵向堆栈。"
+    "en-US": "Icon, copy, and Body form one left-aligned stack.",
+    "zh-CN": "图标、文案和 Body 组成左对齐堆栈。"
   },
   "Controls_IconLedOption_2EF7009E": {
     "en-US": "Icon-led option",
@@ -1380,8 +1380,8 @@
     "zh-CN": "输入关联"
   },
   "Controls_InspectAPageCreatedFromARouteThatWasRegisteredAfterApplicationSt_7864BE08": {
-    "en-US": "Inspect a page created from a route that was registered after application startup. Dynamic routes are useful for optional modules, plug-ins, and user-selected workflows that cannot be fully declared during initial shell composition.",
-    "zh-CN": "检查由应用启动后注册的路由创建的页面。动态路由适用于无法在初始 Shell 组合期间完整声明的可选模块、插件和用户选择的工作流。"
+    "en-US": "Inspect a page created from a route that was registered after application startup.",
+    "zh-CN": "检查由应用启动后注册的路由创建的页面。"
   },
   "Controls_InspectOutput_A34E9654": {
     "en-US": "Inspect output",
@@ -1404,7 +1404,7 @@
     "zh-CN": "调用一个局部操作。"
   },
   "Controls_InvokesApplicationOwnedBehaviorWhenSelected_DE302977": {
-    "en-US": "Invokes application-owned behavior when selected.",
+    "en-US": "Invokes app-owned behavior when selected.",
     "zh-CN": "选中时调用由应用负责的行为。"
   },
   "Controls_IsCommandItemKeepsHoverFeedbackButDoesNotRetainTheSelectionBackg_CA6263FD": {
@@ -1416,8 +1416,8 @@
     "zh-CN": "IsCommandItem 将条目标记为调用后不保留为活动目标的命令。"
   },
   "Controls_IsEnabledFalsePreservesTheSelectedVariantWhileCommunicatingThatT_C4607D2C": {
-    "en-US": "IsEnabled=False preserves the selected variant while communicating that the command is currently unavailable.",
-    "zh-CN": "IsEnabled=False 会保留所选变体，同时表明该命令当前不可用。"
+    "en-US": "IsEnabled=False keeps the variant but disables the command.",
+    "zh-CN": "IsEnabled=False 保留样式，但禁用命令。"
   },
   "Controls_IsGroupHeaderCreatesANonSelectableLabelInABorderlessList_66E0B299": {
     "en-US": "IsGroupHeader creates a non-selectable label in a Borderless list.",
@@ -1431,13 +1431,13 @@
     "en-US": "Is owned internally by PageBody and must not be replaced by callers.",
     "zh-CN": "由 PageBody 内部管理，调用方不得替换。"
   },
-  "Controls_ItemsSourceAutomaticallyReceivesFlourishComboBoxItemContainers_8B5CAF1F": {
-    "en-US": "ItemsSource automatically receives FlourishComboBoxItem containers.",
-    "zh-CN": "ItemsSource 会自动获得 FlourishComboBoxItem 容器。"
+  "Controls_ItemsSourceAutomaticallyReceivesComboBoxItemContainers_8B5CAF1F": {
+    "en-US": "ItemsSource creates ComboBoxItem containers automatically.",
+    "zh-CN": "ItemsSource 自动创建项目容器。"
   },
   "Controls_KeepDocumentAsTheOnlyBodyOfItsChunkAndPreserveItsDefaultOuterSpa_75D1E95F": {
-    "en-US": "Keep Document as the only Body of its Chunk and preserve its default outer spacing from the Chunk copy. Place controls, cards, and illustrations in separate Chunks so the reading flow remains predictable.",
-    "zh-CN": "让 Document 作为其 Chunk 中唯一的 Body，并保留它与 Chunk 文案之间的默认外部间距。将控件、卡片和插图放入单独的 Chunk，使阅读流程保持可预测。"
+    "en-US": "Keep Document as the only Chunk Body and retain its spacing.",
+    "zh-CN": "Document 应是 Chunk 中唯一的 Body，并保留间距。"
   },
   "Controls_KeepEveryChoiceVisibleUseOneGroupNameForOneDecisionAndBeginWithA_55C3AB43": {
     "en-US": "Keep every choice visible, use one GroupName for one decision, and begin with a valid selection.",
@@ -1448,8 +1448,8 @@
     "zh-CN": "当指针在列表项之间移动时，让悬停、按下和选中反馈保持连续。"
   },
   "Controls_KeepTooltipTextShortAndActionableIconOnlyButtonsAlsoNeedAnAutoma_563B176E": {
-    "en-US": "Keep tooltip text short and actionable. Icon-only buttons also need an AutomationProperties.Name.",
-    "zh-CN": "工具提示文本应简短且可操作。仅含图标的按钮还需要 AutomationProperties.Name。"
+    "en-US": "Keep tooltips short. Icon-only buttons also need AutomationProperties.Name.",
+    "zh-CN": "工具提示应简短；纯图标按钮还需 AutomationProperties.Name。"
   },
   "Controls_KeepsTertiaryAndToolbarActionsVisuallyQuiet_31A020C3": {
     "en-US": "Keeps tertiary and toolbar actions visually quiet.",
@@ -1476,12 +1476,12 @@
     "zh-CN": "叠层展示"
   },
   "Controls_LayersTheCopyAndBodyRegionOverPresentation_F73367E8": {
-    "en-US": "Layers the copy-and-body region over Presentation.",
-    "zh-CN": "将文案与 Body 区域叠加在 Presentation 上。"
+    "en-US": "Layers copy and Body over Presentation.",
+    "zh-CN": "文案和 Body 叠加到 Presentation 上。"
   },
   "Controls_LayersTheHeaderCopyAndBodyOverPresentation_47160C98": {
-    "en-US": "Layers the header copy and Body over Presentation.",
-    "zh-CN": "将页眉文案和 Body 叠加在 Presentation 上。"
+    "en-US": "Layers header copy and Body over Presentation.",
+    "zh-CN": "页眉文案和 Body 叠加到插图上。"
   },
   "Controls_Layout_A5119091": {
     "en-US": "Layout",
@@ -1507,9 +1507,9 @@
     "en-US": "ListBox documentation",
     "zh-CN": "ListBox 文档"
   },
-  "Controls_ListBoxGeneratesFlourishListBoxItemContainersDeclareOneExplicitl_9B2428EC": {
-    "en-US": "ListBox generates FlourishListBoxItem containers. Declare one explicitly only when a fixed entry needs item-level state.",
-    "zh-CN": "ListBox 会生成 FlourishListBoxItem 容器。仅当固定条目需要项目级状态时，才显式声明容器。"
+  "Controls_ListBoxGeneratesListBoxItemContainersDeclareOneExplicitl_9B2428EC": {
+    "en-US": "ListBox creates containers; declare one only for custom state.",
+    "zh-CN": "ListBox 自动创建容器；自定义状态时才声明。"
   },
   "Controls_LiveQuery_5AC36933": {
     "en-US": "Live query",
@@ -1532,8 +1532,8 @@
     "zh-CN": "让整张卡片可交互"
   },
   "Controls_ManageCommandSurfacesStatusFeedbackAndCustomShellContentThroughS_846997CE": {
-    "en-US": "Manage command surfaces, status feedback, and custom shell content through service-backed APIs. These features are useful when the visible shell must respond to the active page or workflow without rebuilding the window layout.",
-    "zh-CN": "通过服务支持的 API 管理命令表面、状态反馈和自定义 Shell 内容。当可见 Shell 需要响应活动页面或工作流而无需重建窗口布局时，这些功能很有用。"
+    "en-US": "Manage command surfaces, status feedback, and custom shell content through service-backed APIs.",
+    "zh-CN": "通过服务支持的 API 管理命令表面、状态反馈和自定义 Shell 内容。"
   },
   "Controls_MaskedInputForSecretValues_D979134A": {
     "en-US": "Masked input for secret values.",
@@ -1552,16 +1552,16 @@
     "zh-CN": "成员"
   },
   "Controls_MinimizeMaximizeAndRestoreChangeTheWindowStateWithoutDiscardingW_DF87D21D": {
-    "en-US": "Minimize, maximize, and restore change the window state without discarding work. Use the neutral Text variant so these routine caption actions remain visually quiet.",
-    "zh-CN": "最小化、最大化和还原会改变窗口状态，而不会丢弃工作。使用中性的 Text 变体，让这些常规标题栏操作在视觉上保持低调。"
+    "en-US": "Minimize, maximize, and restore change the window state without discarding work.",
+    "zh-CN": "最小化、最大化和还原会改变窗口状态，而不会丢弃工作。"
   },
   "Controls_Minimize_D72E311C": {
     "en-US": "Minimize",
     "zh-CN": "最小化"
   },
   "Controls_MostContentShouldUseScrollViewerWhichCreatesAndCoordinatesFlouri_90C31622": {
-    "en-US": "Most content should use ScrollViewer, which creates and coordinates FlourishScrollBar automatically.",
-    "zh-CN": "大多数内容都应使用 ScrollViewer，它会自动创建并协调 FlourishScrollBar。"
+    "en-US": "Most content should use ScrollViewer, which creates and coordinates ScrollBar automatically.",
+    "zh-CN": "大多数内容都应使用 ScrollViewer，它会自动创建并协调 ScrollBar。"
   },
   "Controls_MoveAction_0CD80107": {
     "en-US": "Move action",
@@ -1580,8 +1580,8 @@
     "zh-CN": "在状态栏顺序中移动项目。"
   },
   "Controls_MoveThePointerHereThenLeaveBothThisSurfaceAndItsTriggerToCloseIt_641FF7D2": {
-    "en-US": "Move the pointer here, then leave both this surface and its trigger to close it.",
-    "zh-CN": "将指针移到此处，然后同时离开此界面及其触发器以将其关闭。"
+    "en-US": "Leave both the surface and its trigger to close it.",
+    "zh-CN": "同时离开界面和触发器即可关闭。"
   },
   "Controls_MoveTheRegionWithinTheShellOrder_84FB6E21": {
     "en-US": "Move the region within the shell order.",
@@ -1616,8 +1616,8 @@
     "zh-CN": "为输入控件命名，并通过 WPF 原生访问键约定转移键盘焦点。"
   },
   "Controls_NameTheViewerWhenCodeMustInspectOrMoveTheViewportTheInheritedWPF_616CE67B": {
-    "en-US": "Name the viewer when code must inspect or move the viewport. The inherited WPF scrolling methods provide deliberate navigation independently of mouse-wheel behavior.",
-    "zh-CN": "当代码需要检查或移动视口时，请为查看器命名。继承的 WPF 滚动方法可独立于鼠标滚轮行为执行明确的导航。"
+    "en-US": "Name the viewer when code must inspect or move the viewport.",
+    "zh-CN": "当代码需要检查或移动视口时，请为查看器命名。"
   },
   "Controls_NamesTheIconOnlyCaptionAction_90AA1580": {
     "en-US": "Names the icon-only caption action.",
@@ -1656,8 +1656,8 @@
     "zh-CN": "Null 会用水平线替代勾号。"
   },
   "Controls_OmittingAnOptionalRegionCollapsesBothThatRegionAndItsSpacing_8A211515": {
-    "en-US": "Omitting an optional region collapses both that region and its spacing.",
-    "zh-CN": "省略可选区域时，该区域及其间距都会折叠。"
+    "en-US": "Omitted regions and their spacing collapse.",
+    "zh-CN": "省略的区域及其间距会折叠。"
   },
   "Controls_OneBlock_FFCF88B6": {
     "en-US": "One block",
@@ -1836,16 +1836,16 @@
     "zh-CN": "Overlay 文档"
   },
   "Controls_OverlayFillsTheSurfaceWithPresentationAndDrawsTheCopySideContent_8079F97D": {
-    "en-US": "Overlay fills the surface with Presentation and draws the copy-side content above it. Use it only when foreground text and controls remain legible over the visual in every theme.",
-    "zh-CN": "Overlay 使用 Presentation 填满界面，并在其上绘制文案侧内容。仅当所有主题下的前景文本和控件在视觉内容上都清晰可读时才使用它。"
+    "en-US": "Overlay fills the surface with Presentation and draws the copy-side content above it.",
+    "zh-CN": "Overlay 使用 Presentation 填满界面，并在其上绘制文案侧内容。"
   },
   "Controls_OverlayLayersCopyAndBodyOverPresentation_BCDA8D28": {
     "en-US": "Overlay layers copy and Body over Presentation.",
     "zh-CN": "Overlay 将文案和 Body 叠加在 Presentation 上。"
   },
   "Controls_OverlayRequestsDismissalButDoesNotOwnPopupVisibilityCloseTheHost_3C7C5312": {
-    "en-US": "Overlay requests dismissal but does not own Popup visibility. Close the host in DismissRequested. For Strong, an explicit action can raise the routed event so every closing path shares the same handler.",
-    "zh-CN": "Overlay 会请求关闭，但不负责 Popup 的可见性。请在 DismissRequested 中关闭宿主。对于 Strong，显式操作可以引发路由事件，使所有关闭路径共享同一处理程序。"
+    "en-US": "Overlay requests dismissal but does not control Popup.",
+    "zh-CN": "Overlay 请求关闭，但不控制 Popup。"
   },
   "Controls_OwnTheScrollingPageSurfaceAndEnforceTheHeaderChunkThenChunkHiera_72250112": {
     "en-US": "Own the scrolling page surface and enforce the HeaderChunk-then-Chunk hierarchy.",
@@ -1876,16 +1876,16 @@
     "zh-CN": "页面页眉"
   },
   "Controls_ParagraphIsTheDocumentOwnedTextElementSetTextDirectlyOrBindItToC_AEADEE97": {
-    "en-US": "Paragraph is the document-owned text element. Set Text directly or bind it to content; Document supplies paragraph spacing, first-line indentation, and reading typography.",
-    "zh-CN": "Paragraph 是归属于 Document 的文本元素。可直接设置 Text 或将其绑定到内容；Document 会提供段落间距、首行缩进和阅读排版。"
+    "en-US": "Paragraph is the document-owned text element.",
+    "zh-CN": "Paragraph 是归属于 Document 的文本元素。"
   },
   "Controls_ParentRelationship_C9CEA942": {
     "en-US": "Parent relationship",
     "zh-CN": "父级关系"
   },
   "Controls_PasswordCharAndMaxLengthRefineTheInputPolicyWithoutExposingPlain_DF3B25C8": {
-    "en-US": "PasswordChar and MaxLength refine the input policy without exposing plaintext.",
-    "zh-CN": "PasswordChar 和 MaxLength 可细化输入策略，而不会暴露明文。"
+    "en-US": "PasswordChar and MaxLength refine protected input.",
+    "zh-CN": "两项属性调整受保护输入。"
   },
   "Controls_PersistentStatus_7B711979": {
     "en-US": "Persistent status",
@@ -1900,40 +1900,40 @@
     "zh-CN": "将宽幅视觉内容置于文案上方"
   },
   "Controls_PlaceCustomWPFContentIntoANamedShellRegionThenAdjustItsAvailabil_AC0BA209": {
-    "en-US": "Place custom WPF content into a named shell region, then adjust its availability and order through a stable registration identifier. Regions are recommended for product-specific chrome that does not fit the standard toolbar or status bar; the code shows the complete add, update, reorder, and removal flow.",
-    "zh-CN": "将自定义 WPF 内容放入命名的 Shell 区域，再通过稳定的注册标识符调整其可用性和顺序。对于不适合标准工具栏或状态栏的产品专属界面元素，建议使用区域；代码展示了完整的添加、更新、重新排序和移除流程。"
+    "en-US": "Place WPF content in a named Shell region and manage it by stable ID.",
+    "zh-CN": "将 WPF 内容放入命名 Shell 区域，并用稳定 ID 管理。"
   },
   "Controls_PlaceExactlyOneHeaderChunkFirstInPageBodyTitleAndContentIdentify_6328997D": {
-    "en-US": "Place exactly one HeaderChunk first in PageBody. Title and Content identify the page, while Split with Right keeps the copy on the left and the illustration on the right—the recommended arrangement. HeaderChunk remains full-width in every mode.",
-    "zh-CN": "在 PageBody 的首位仅放置一个 HeaderChunk。Title 和 Content 用于标识页面，Split 配合 Right 会将文案置于左侧、插图置于右侧，这是推荐布局。HeaderChunk 在所有模式下都保持全宽。"
+    "en-US": "Place exactly one HeaderChunk first in PageBody.",
+    "zh-CN": "在 PageBody 的首位仅放置一个 HeaderChunk。"
   },
   "Controls_PlaceTheLabelNextToItsTargetAndMarkOneCharacterWithAnUnderscoreF_F97F62FA": {
     "en-US": "Place the label next to its target and mark one character with an underscore for keyboard access.",
     "zh-CN": "将标签放在目标旁边，并用下划线标记一个字符作为键盘访问键。"
   },
   "Controls_PlaceholderSuppliesAConciseHintBeforeTheUserEntersAQuery_2BB544F0": {
-    "en-US": "Placeholder supplies a concise hint before the user enters a query.",
-    "zh-CN": "Placeholder 会在用户输入查询前提供简短提示。"
+    "en-US": "Placeholder hints what to enter before a query is typed.",
+    "zh-CN": "Placeholder 在输入前提供简短提示。"
   },
   "Controls_PlacementTargetExtendsTemporaryHoverTrackingToTheAnchorDismissRe_C43E37F1": {
-    "en-US": "PlacementTarget extends Temporary hover tracking to the anchor. DismissRequested tells the host to close.",
-    "zh-CN": "PlacementTarget 会将 Temporary 悬停跟踪扩展到锚点。DismissRequested 用于通知宿主关闭界面。"
+    "en-US": "PlacementTarget extends Temporary tracking to its anchor.",
+    "zh-CN": "PlacementTarget 将跟踪扩展到锚点。"
   },
   "Controls_PlacesPresentationAboveALeftAlignedCopyAndBodyRegionWhileRemaini_6F58E2FF": {
-    "en-US": "Places Presentation above a left-aligned copy and Body region while remaining full-width.",
-    "zh-CN": "将 Presentation 放在左对齐的文案与 Body 区域上方，同时保持全宽。"
+    "en-US": "Presentation sits above left-aligned copy and Body.",
+    "zh-CN": "插图位于左对齐文案和 Body 上方。"
   },
   "Controls_PlacesPresentationAboveTheCopyAndBodyRegionAndMayShareARowWithPe_4926FF66": {
-    "en-US": "Places Presentation above the copy-and-body region and may share a row with peer TopDown Presenters.",
-    "zh-CN": "将 Presentation 放在文案与 Body 区域上方，并且可以与同级 TopDown Presenter 共享一行。"
+    "en-US": "Presentation sits above copy and Body; peers share a row.",
+    "zh-CN": "插图位于文案和 Body 上方；同级可共行。"
   },
   "Controls_PlacesPresentationBesideTheCopyAndBodyRegion_FF81A68E": {
-    "en-US": "Places Presentation beside the copy-and-body region.",
-    "zh-CN": "将 Presentation 放在文案与 Body 区域旁边。"
+    "en-US": "Places Presentation beside copy and Body.",
+    "zh-CN": "Presentation 位于文案和 Body 旁。"
   },
   "Controls_PlacesPresentationBesideTheCopyRightIsTheHeaderChunkDefault_03BDA535": {
-    "en-US": "Places Presentation beside the copy. Right is the HeaderChunk default.",
-    "zh-CN": "将 Presentation 放在文案旁边；Right 是 HeaderChunk 的默认位置。"
+    "en-US": "Presentation sits beside copy; Right is the default.",
+    "zh-CN": "插图位于文案旁；默认是 Right。"
   },
   "Controls_PlacesSplitPresentationContentOnTheLeftOrRightOtherModesIgnoreIt_EF642202": {
     "en-US": "Places Split presentation content on the left or right; other modes ignore it.",
@@ -1948,20 +1948,20 @@
     "zh-CN": "将图标放置在文案上方或旁边。"
   },
   "Controls_PlacesTheIconAboveTheContentAndTheSelectedIndicatorAtTheUpperRig_3FC3895A": {
-    "en-US": "Places the icon above the content and the selected indicator at the upper right. The indicator is hidden while unchecked.",
-    "zh-CN": "将图标放在内容上方，并将选中指示器放在右上角。未选中时隐藏指示器。"
+    "en-US": "Places Icon above Content and selection at upper right.",
+    "zh-CN": "Icon 位于 Content 上方，选中标记居右上。"
   },
   "Controls_PlacesTheIconOnTheLeftTopRightOrBottom_05E57661": {
     "en-US": "Places the icon on the left, top, right, or bottom.",
     "zh-CN": "将图标放置在左侧、顶部、右侧或底部。"
   },
   "Controls_PlacesTheStateIndicatorBeforeTheContentAnUncheckedOptionKeepsAnE_7062A2DC": {
-    "en-US": "Places the state indicator before the content. An unchecked option keeps an empty circular indicator.",
-    "zh-CN": "将状态指示器放在内容之前。未选中的选项会保留空心圆形指示器。"
+    "en-US": "Places the state indicator before the content.",
+    "zh-CN": "将状态指示器放在内容之前。"
   },
   "Controls_PointerMovementDoesNotCloseThisSurfaceUseTheActionEscapeOrClickE_09657B7C": {
-    "en-US": "Pointer movement does not close this surface. Use the action, Escape, or click elsewhere.",
-    "zh-CN": "移动指针不会关闭此界面。请使用操作按钮、按 Escape，或点击其他位置。"
+    "en-US": "Pointer movement does not close this surface.",
+    "zh-CN": "移动指针不会关闭此界面。"
   },
   "Controls_PowerIndicator_35AA4D23": {
     "en-US": "Power indicator",
@@ -1980,24 +1980,24 @@
     "zh-CN": "在 Flourish 界面上呈现原生 WPF 行和列。"
   },
   "Controls_PresentSeveralNormalizedParagraphElementsAsOneRoundedLightlyOutl_B6318E05": {
-    "en-US": "Present several normalized Paragraph elements as one rounded, lightly outlined, full-width reading surface.",
-    "zh-CN": "将多个标准化 Paragraph 元素呈现为一个带圆角和浅色细边框的全宽阅读界面。"
+    "en-US": "Present Paragraph items in one full-width reading surface.",
+    "zh-CN": "在一个全宽阅读界面中呈现多个 Paragraph。"
   },
   "Controls_PresentationDefaultsToTheLeftBodySharesTheCopyRegionAndStaysAlig_60DAF47E": {
-    "en-US": "Presentation defaults to the left. Body shares the copy region and stays aligned with the copy on the right.",
-    "zh-CN": "Presentation 默认位于左侧。Body 与文案共享区域，并和右侧文案保持对齐。"
+    "en-US": "Presentation defaults to the left.",
+    "zh-CN": "Presentation 默认位于左侧。"
   },
   "Controls_PresentationHostsThePageIllustrationWhileTitleContentAndBodyRema_7D5935AF": {
-    "en-US": "Presentation hosts the page illustration while Title, Content, and Body remain one copy group. HeaderChunk always owns a complete row, including TopDown mode.",
-    "zh-CN": "Presentation 承载页面插图，Title、Content 和 Body 则保持为同一个文案组。即使处于 TopDown 模式，HeaderChunk 也始终独占完整一行。"
+    "en-US": "Presentation hosts the image; copy and Body stay grouped.",
+    "zh-CN": "插图由 Presentation 承载；文案成组。"
   },
   "Controls_PresenterDocumentation_B2ED4CD5": {
     "en-US": "Presenter documentation",
     "zh-CN": "Presenter 文档"
   },
   "Controls_PresenterPositionRightMovesPresentationToTheRightWhileTitleConte_5C0E08C4": {
-    "en-US": "PresenterPosition Right moves Presentation to the right while Title, Content, and Body remain grouped and left-aligned on the left.",
-    "zh-CN": "PresenterPosition Right 会将 Presentation 移到右侧，而 Title、Content 和 Body 仍在左侧成组并左对齐。"
+    "en-US": "Right places Presentation right and the copy left.",
+    "zh-CN": "Right 将插图置右，文案置左。"
   },
   "Controls_PreventsEditsWhilePreservingSelectionAndCopying_AB44FBCC": {
     "en-US": "Prevents edits while preserving selection and copying.",
@@ -2040,8 +2040,8 @@
     "zh-CN": "提供标准的纵向页面视口和内容边距。"
   },
   "Controls_PublishPersistentOrTimedStatusMessagesControlTheirVisibilityAndO_DFE214E5": {
-    "en-US": "Publish persistent or timed status messages, control their visibility and order, and configure built-in shell indicators. Use persistent items for ongoing application state and timed items for short confirmation messages; the code lists the item, indicator, and whole-surface APIs used by this section.",
-    "zh-CN": "发布持久或定时状态消息，控制其可见性和顺序，并配置内置 Shell 指示器。持续的应用状态使用持久项目，短暂的确认消息使用定时项目；代码列出了本节所用的项目、指示器和整个表面 API。"
+    "en-US": "Publish status messages and manage order, visibility, and indicators.",
+    "zh-CN": "发布状态消息，并管理顺序、可见性和指示器。"
   },
   "Controls_PublishReport_C5FE6054": {
     "en-US": "Publish report",
@@ -2083,45 +2083,45 @@
     "en-US": "Read the Document guide.",
     "zh-CN": "阅读 Document 指南。"
   },
-  "Controls_ReadTheFlourishComboBoxAPIReference_8F90207E": {
-    "en-US": "Read the FlourishComboBox API reference.",
-    "zh-CN": "阅读 FlourishComboBox API 参考。"
+  "Controls_ReadTheComboBoxAPIReference_8F90207E": {
+    "en-US": "Read the ComboBox API reference.",
+    "zh-CN": "阅读 ComboBox API 参考。"
   },
-  "Controls_ReadTheFlourishGridSplitterAPIReference_DEC55185": {
-    "en-US": "Read the FlourishGridSplitter API reference.",
-    "zh-CN": "阅读 FlourishGridSplitter API 参考。"
+  "Controls_ReadTheGridSplitterAPIReference_DEC55185": {
+    "en-US": "Read the GridSplitter API reference.",
+    "zh-CN": "阅读 GridSplitter API 参考。"
   },
-  "Controls_ReadTheFlourishLabelAPIReference_2BDAB019": {
-    "en-US": "Read the FlourishLabel API reference.",
-    "zh-CN": "阅读 FlourishLabel API 参考。"
+  "Controls_ReadTheLabelAPIReference_2BDAB019": {
+    "en-US": "Read the Label API reference.",
+    "zh-CN": "阅读 Label API 参考。"
   },
-  "Controls_ReadTheFlourishPasswordBoxAPIReference_B6839751": {
-    "en-US": "Read the FlourishPasswordBox API reference.",
-    "zh-CN": "阅读 FlourishPasswordBox API 参考。"
+  "Controls_ReadThePasswordBoxAPIReference_B6839751": {
+    "en-US": "Read the PasswordBox API reference.",
+    "zh-CN": "阅读 PasswordBox API 参考。"
   },
-  "Controls_ReadTheFlourishRadioButtonAPIReference_80C2E3F1": {
-    "en-US": "Read the FlourishRadioButton API reference.",
-    "zh-CN": "阅读 FlourishRadioButton API 参考。"
+  "Controls_ReadTheRadioButtonAPIReference_80C2E3F1": {
+    "en-US": "Read the RadioButton API reference.",
+    "zh-CN": "阅读 RadioButton API 参考。"
   },
-  "Controls_ReadTheFlourishScrollBarAPIReference_6F96E77F": {
-    "en-US": "Read the FlourishScrollBar API reference.",
-    "zh-CN": "阅读 FlourishScrollBar API 参考。"
+  "Controls_ReadTheScrollBarAPIReference_6F96E77F": {
+    "en-US": "Read the ScrollBar API reference.",
+    "zh-CN": "阅读 ScrollBar API 参考。"
   },
-  "Controls_ReadTheFlourishSearchBoxAPIReference_BB6586CD": {
-    "en-US": "Read the FlourishSearchBox API reference.",
-    "zh-CN": "阅读 FlourishSearchBox API 参考。"
+  "Controls_ReadTheSearchBoxAPIReference_BB6586CD": {
+    "en-US": "Read the SearchBox API reference.",
+    "zh-CN": "阅读 SearchBox API 参考。"
   },
-  "Controls_ReadTheFlourishTextBlockAPIReference_CDD5FBB4": {
-    "en-US": "Read the FlourishTextBlock API reference.",
-    "zh-CN": "阅读 FlourishTextBlock API 参考。"
+  "Controls_ReadTheTextBlockAPIReference_CDD5FBB4": {
+    "en-US": "Read the TextBlock API reference.",
+    "zh-CN": "阅读 TextBlock API 参考。"
   },
-  "Controls_ReadTheFlourishTextBoxAPIReference_EA748C36": {
-    "en-US": "Read the FlourishTextBox API reference.",
-    "zh-CN": "阅读 FlourishTextBox API 参考。"
+  "Controls_ReadTheTextBoxAPIReference_EA748C36": {
+    "en-US": "Read the TextBox API reference.",
+    "zh-CN": "阅读 TextBox API 参考。"
   },
-  "Controls_ReadTheFlourishToolTipAPIReference_54CBAEF9": {
-    "en-US": "Read the FlourishToolTip API reference.",
-    "zh-CN": "阅读 FlourishToolTip API 参考。"
+  "Controls_ReadTheToolTipAPIReference_54CBAEF9": {
+    "en-US": "Read the ToolTip API reference.",
+    "zh-CN": "阅读 ToolTip API 参考。"
   },
   "Controls_ReadTheHeaderChunkGuide_2CB0923C": {
     "en-US": "Read the HeaderChunk guide.",
@@ -2172,8 +2172,8 @@
     "zh-CN": "区域顺序"
   },
   "Controls_RegisterTheDemoWPFElementInContentHeader_85398AD1": {
-    "en-US": "Register the demo WPF element in ContentHeader.",
-    "zh-CN": "在 ContentHeader 中注册演示 WPF 元素。"
+    "en-US": "Register the demo element in ContentHeader.",
+    "zh-CN": "在 ContentHeader 注册演示元素。"
   },
   "Controls_RemainsOpenUntilAnExplicitDismissalActionOccurs_4D9F538E": {
     "en-US": "Remains open until an explicit dismissal action occurs.",
@@ -2204,8 +2204,8 @@
     "zh-CN": "移除全部输出历史。"
   },
   "Controls_ReplaceThePageLevelScrollViewerAndMarginStackPanelWithOnePageBod_8401F205": {
-    "en-US": "Replace the page-level ScrollViewer and margin StackPanel with one PageBody. It owns standard margins, disables horizontal page scrolling, and enables vertical scrolling. Add one leading HeaderChunk followed by full-width Chunk siblings; scroll-aware controls such as DataGrid should remain inside a Chunk so they can hand the mouse wheel back to PageBody at their boundaries.",
-    "zh-CN": "使用一个 PageBody 替代页面级 ScrollViewer 和带边距的 StackPanel。它负责标准边距、禁用页面横向滚动并启用纵向滚动。添加一个页首 HeaderChunk，随后放置全宽的同级 Chunk；DataGrid 等滚动感知控件应保留在 Chunk 内，以便在滚动边界处将鼠标滚轮交还给 PageBody。"
+    "en-US": "Use PageBody for page margins and scrolling. Keep scroll-aware controls inside a Chunk.",
+    "zh-CN": "使用 PageBody 管理页面边距和滚动。将滚动控件放在 Chunk 内。"
   },
   "Controls_ReportsATransitionToTheCheckedState_0D8A8B08": {
     "en-US": "Reports a transition to the checked state.",
@@ -2300,8 +2300,8 @@
     "zh-CN": "查看已生成的报告。"
   },
   "Controls_ReviewThePageInstanceAndParameterProducedByDynamicNavigationTheR_22E8B0EA": {
-    "en-US": "Review the page instance and parameter produced by dynamic navigation. The route registry supplies the page factory and cache policy, while the navigation service passes context to the created page; the code below shows registration and navigation with the same route key.",
-    "zh-CN": "查看动态导航生成的页面实例和参数。路由注册表提供页面工厂和缓存策略，导航服务则将上下文传递给创建的页面；以下代码展示如何使用同一路由键完成注册和导航。"
+    "en-US": "Review the page instance and parameter produced by dynamic navigation.",
+    "zh-CN": "查看动态导航生成的页面实例和参数。"
   },
   "Controls_RichPresentation_F63DA29B": {
     "en-US": "Rich presentation",
@@ -2348,8 +2348,8 @@
     "zh-CN": "ScrollViewer 文档"
   },
   "Controls_ScrollViewerUsesOneStandardScrollBarGeometrySoPageContentNestedS_6398896F": {
-    "en-US": "ScrollViewer uses one standard scroll-bar geometry so page content, nested surfaces, and control-owned viewports share the same visual weight.",
-    "zh-CN": "ScrollViewer 使用统一的标准滚动条几何尺寸，使页面内容、嵌套表面和控件自有视口保持一致的视觉比重。"
+    "en-US": "ScrollViewer gives all viewports consistent scroll bars.",
+    "zh-CN": "ScrollViewer 为所有视口提供一致的滚动条。"
   },
   "Controls_ScrollableOutputForLogsAndDiagnosticText_F2803ED4": {
     "en-US": "Scrollable output for logs and diagnostic text.",
@@ -2376,8 +2376,8 @@
     "zh-CN": "安全输入"
   },
   "Controls_SelectItemsThroughAFlourishStyledListThatGeneratesFlourishListBo_8F517D6C": {
-    "en-US": "Select items through a Flourish-styled list that generates FlourishListBoxItem containers.",
-    "zh-CN": "通过会生成 FlourishListBoxItem 容器的 Flourish 风格列表选择项目。"
+    "en-US": "Select items through a Flourish-styled list that generates ListBoxItem containers.",
+    "zh-CN": "通过会生成 ListBoxItem 容器的 Flourish 风格列表选择项目。"
   },
   "Controls_Selectable_F84A01B2": {
     "en-US": "Selectable",
@@ -2392,16 +2392,16 @@
     "zh-CN": "选择输入"
   },
   "Controls_SelectionModeKeyboardNavigationDataBindingScrollingAndUIVirtuali_145B05F8": {
-    "en-US": "SelectionMode, keyboard navigation, data binding, scrolling, and UI virtualization continue to use the WPF ListBox implementation.",
-    "zh-CN": "SelectionMode、键盘导航、数据绑定、滚动和 UI 虚拟化仍沿用 WPF ListBox 实现。"
+    "en-US": "ListBox keeps native selection, binding, scrolling, and virtualization.",
+    "zh-CN": "ListBox 保留原生选择、绑定、滚动和虚拟化。"
   },
   "Controls_Selection_CA406707": {
     "en-US": "Selection",
     "zh-CN": "选择"
   },
-  "Controls_SelectsASemanticFlourishTextRoleAndItsTypographyResources_67B80C97": {
-    "en-US": "Selects a semantic FlourishTextRole and its typography resources.",
-    "zh-CN": "选择语义 FlourishTextRole 及其排版资源。"
+  "Controls_SelectsASemanticTextRoleAndItsTypographyResources_67B80C97": {
+    "en-US": "Selects a semantic TextRole and its typography resources.",
+    "zh-CN": "选择语义 TextRole 及其排版资源。"
   },
   "Controls_SelectsCardEmphasisAndSemanticFeedback_0A19C046": {
     "en-US": "Selects card emphasis and semantic feedback.",
@@ -2432,24 +2432,24 @@
     "zh-CN": "语义排版"
   },
   "Controls_SetResizeDirectionExplicitlyForAStandardSplitterNavigationPaneCo_11E6A483": {
-    "en-US": "Set ResizeDirection explicitly for a standard splitter. NavigationPane configures horizontal column resizing and the shell-edge affordance without changing the live-resize interaction.",
-    "zh-CN": "请为标准拆分器显式设置 ResizeDirection。NavigationPane 会配置水平列调整和 Shell 边缘提示，但不会改变实时调整交互。"
+    "en-US": "Set ResizeDirection explicitly for a standard splitter.",
+    "zh-CN": "请为标准拆分器显式设置 ResizeDirection。"
   },
   "Controls_SetRoleToSelectASemanticFlourishTypographyTreatmentInsteadOfAssi_0E7E7EF2": {
-    "en-US": "Set Role to select a semantic Flourish typography treatment instead of assigning local font resources. Supply Text through a resource or binding as with a native TextBlock, enable wrapping for localized copy, reserve prominent roles for their documented hierarchy, and keep ordinary body text at its default treatment.",
-    "zh-CN": "设置 Role 以选择 Flourish 的语义排版样式，而不是在局部指定字体资源。与原生 TextBlock 一样，通过资源或绑定提供 Text；为本地化文案启用换行；仅在文档规定的层级中使用醒目的角色；普通正文则保留默认样式。"
+    "en-US": "Set Role instead of assigning local font resources.",
+    "zh-CN": "设置 Role，不要局部指定字体资源。"
   },
   "Controls_SetTargetToTheAssociatedInputAndMarkOneCharacterInContentWithAnU_F2E2D993": {
-    "en-US": "Set Target to the associated input and mark one character in Content with an underscore. The resulting access key transfers keyboard focus and gives the field a persistent visible name. The same contract works for selectors and other focusable controls; keep each label adjacent to its target and mirror the disabled state when the input is unavailable.",
-    "zh-CN": "将 Target 设置为关联的输入控件，并在 Content 中用下划线标记一个字符。生成的访问键会转移键盘焦点，并为字段提供始终可见的名称。相同约定也适用于选择器和其他可聚焦控件；每个标签应紧邻目标，并在输入不可用时同步禁用状态。"
+    "en-US": "Set Target and mark one Content character as the access key.",
+    "zh-CN": "设置 Target，并在 Content 中标记访问键。"
   },
   "Controls_SetTheContentUsedByPersistentAndTimedStatusItems_94F25DD8": {
     "en-US": "Set the content used by persistent and timed status items.",
     "zh-CN": "设置持久和定时状态项目使用的内容。"
   },
   "Controls_SetVariantToVerticalWhenTheActionNeedsACardShapedLayoutWithBodyB_54BE98F4": {
-    "en-US": "Set Variant to Vertical when the action needs a card-shaped layout with Body below the copy. Body still accepts one interactive control and remains aligned with the Icon, Title, and Content.",
-    "zh-CN": "当操作需要卡片式布局，并将 Body 放在文案下方时，请将 Variant 设置为 Vertical。Body 仍只接受一个交互式控件，并与 Icon、Title 和 Content 保持对齐。"
+    "en-US": "Set Variant to Vertical when the action needs a card-shaped layout with Body below the copy.",
+    "zh-CN": "当操作需要卡片式布局，并将 Body 放在文案下方时，将 Variant 设置为 Vertical。"
   },
   "Controls_SetsConciseHelpContentForThePopup_5AFEF10E": {
     "en-US": "Sets concise help content for the popup.",
@@ -2548,8 +2548,8 @@
     "zh-CN": "更柔和的卡片操作。"
   },
   "Controls_SplitIsTheStandardFullWidthArrangementLeftPlacesPresentationOnTh_76F638A9": {
-    "en-US": "Split is the standard full-width arrangement. Left places Presentation on the left and the Title and Content copy group on the right; Right reverses those regions. Omit PresenterPosition to use Left.",
-    "zh-CN": "Split 是标准的全宽排列方式。Left 将 Presentation 放在左侧，将 Title 与 Content 文案组放在右侧；Right 则交换两个区域。省略 PresenterPosition 时使用 Left。"
+    "en-US": "Split is the standard full-width arrangement.",
+    "zh-CN": "Split 是标准的全宽排列方式。"
   },
   "Controls_SplitLeft_CD600A74": {
     "en-US": "Split left",
@@ -2644,16 +2644,16 @@
     "zh-CN": "提供一个可选图标。"
   },
   "Controls_SuppliesApplicationOwnedOptionData_13C18B8E": {
-    "en-US": "Supplies application-owned option data.",
+    "en-US": "Supplies app-owned option data.",
     "zh-CN": "提供由应用负责的选项数据。"
   },
   "Controls_SuppliesDataItemsAndGeneratesBunchedListBoxItemContainers_9F1AB28B": {
     "en-US": "Supplies data items and generates BunchedListBoxItem containers.",
     "zh-CN": "提供数据项并生成 BunchedListBoxItem 容器。"
   },
-  "Controls_SuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50": {
-    "en-US": "Supplies data items and generates FlourishListBoxItem containers.",
-    "zh-CN": "提供数据项并生成 FlourishListBoxItem 容器。"
+  "Controls_SuppliesDataItemsAndGeneratesListBoxItemContainers_814EAA50": {
+    "en-US": "Supplies data items and generates ListBoxItem containers.",
+    "zh-CN": "提供数据项并生成 ListBoxItem 容器。"
   },
   "Controls_SuppliesOptionalHeadingContent_BB3AF24B": {
     "en-US": "Supplies optional heading content.",
@@ -2720,8 +2720,8 @@
     "zh-CN": "不会截断页面滚轮滚动的表格数据。"
   },
   "Controls_TargetSendsFocusToTheRelatedControlWhenTheAccessKeyIsInvoked_53FBAFD1": {
-    "en-US": "Target sends focus to the related control when the access key is invoked.",
-    "zh-CN": "调用访问键时，Target 会将焦点发送至关联控件。"
+    "en-US": "Target focuses its control when the access key is used.",
+    "zh-CN": "使用访问键时，Target 聚焦关联控件。"
   },
   "Controls_TemporaryOverlay_443660DB": {
     "en-US": "Temporary Overlay",
@@ -2740,20 +2740,20 @@
     "zh-CN": "文本输入"
   },
   "Controls_TextUpdatesThroughTheRegularWPFBindingAndTextChangedContracts_B1BABA40": {
-    "en-US": "Text updates through the regular WPF binding and TextChanged contracts.",
-    "zh-CN": "文本通过常规 WPF 绑定和 TextChanged 约定进行更新。"
+    "en-US": "Text uses WPF binding and TextChanged.",
+    "zh-CN": "Text 使用 WPF 绑定和 TextChanged。"
   },
   "Controls_TextUsesTheSameBindingValidationAndChangeNotificationContractAsF_A964198E": {
-    "en-US": "Text uses the same binding, validation, and change notification contract as FlourishTextBox.",
-    "zh-CN": "Text 使用与 FlourishTextBox 相同的绑定、验证和更改通知约定。"
+    "en-US": "Text follows the TextBox binding and validation contract.",
+    "zh-CN": "Text 沿用 TextBox 的绑定和验证约定。"
   },
   "Controls_TheCanonicalScrollingRootForAFlourishPage_72F1EF80": {
     "en-US": "The canonical scrolling root for a Flourish page.",
     "zh-CN": "Flourish 页面的标准滚动根容器。"
   },
   "Controls_TheCompleteSurfaceIsOneFocusableActionSoItsIconTitleAndSupportin_464391EC": {
-    "en-US": "The complete surface is one focusable action, so its icon, title, and supporting copy share the same pointer and keyboard target.",
-    "zh-CN": "整个表面是一个可聚焦操作，因此图标、标题和辅助文案共享同一个指针及键盘目标。"
+    "en-US": "The whole surface is one keyboard and pointer action.",
+    "zh-CN": "整个表面是一个键盘和指针操作。"
   },
   "Controls_TheCopyActionPreservesEveryNewlineAndIndentationCharacterInText_0EA3E243": {
     "en-US": "The copy action preserves every newline and indentation character in Text.",
@@ -2768,16 +2768,16 @@
     "zh-CN": "默认的低强调界面。"
   },
   "Controls_TheDefaultMaskProtectsTheVisibleValueWhileTheEditorHasFocus_B9EEA84B": {
-    "en-US": "The default mask protects the visible value while the editor has focus.",
-    "zh-CN": "编辑器获得焦点时，默认掩码会保护可见值。"
+    "en-US": "The default mask protects the value while editing.",
+    "zh-CN": "编辑时，默认掩码会隐藏值。"
   },
   "Controls_TheEnabledButtonAcceptsPointerAndKeyboardFocusAndExposesItsIconA_C0F6CFFC": {
-    "en-US": "The enabled button accepts pointer and keyboard focus and exposes its icon and visible command label.",
-    "zh-CN": "已启用的按钮可接受指针和键盘焦点，并公开其图标及可见命令标签。"
+    "en-US": "An enabled button accepts pointer and keyboard input.",
+    "zh-CN": "启用的按钮接受指针和键盘输入。"
   },
   "Controls_TheGeneralPurposeRoleForRowsOrColumnsInAnApplicationGrid_D607231F": {
-    "en-US": "The general-purpose role for rows or columns in an application Grid.",
-    "zh-CN": "适用于应用 Grid 中行或列的通用角色。"
+    "en-US": "The general role for rows or columns in an app Grid.",
+    "zh-CN": "应用 Grid 行列的通用角色。"
   },
   "Controls_TheIconAppearsAboveTheCopy_A4683444": {
     "en-US": "The icon appears above the copy.",
@@ -2800,32 +2800,32 @@
     "zh-CN": "图标显示在文案旁边。"
   },
   "Controls_TheParentListOwnsTheInteractionLayerInBothAppearancesItemContain_568749F7": {
-    "en-US": "The parent list owns the interaction layer in both appearances; item containers remain visually transparent.",
-    "zh-CN": "在两种外观中，交互层均由父列表负责，项目容器在视觉上保持透明。"
+    "en-US": "The parent owns interaction; item containers stay transparent.",
+    "zh-CN": "父列表负责交互，项目容器保持透明。"
   },
   "Controls_ThePlaceholderCollapsesWhenAQueryExistsOrTheFieldReceivesFocus_4E01A3A3": {
     "en-US": "The placeholder collapses when a query exists or the field receives focus.",
     "zh-CN": "存在查询文本或字段获得焦点时，占位文本会隐藏。"
   },
   "Controls_ThePresentationFillsTheSurfaceWhileTheCopyRemainsReadableAboveIt_16A46196": {
-    "en-US": "The presentation fills the surface while the copy remains readable above its scrim.",
-    "zh-CN": "展示内容铺满界面，文案则在遮罩层上方保持清晰可读。"
+    "en-US": "Presentation fills the surface; copy remains readable.",
+    "zh-CN": "Presentation 铺满界面，文案保持清晰。"
   },
   "Controls_TheSameAssociationWorksForSelectorsAndOtherFocusableControls_546138B7": {
-    "en-US": "The same association works for selectors and other focusable controls.",
-    "zh-CN": "相同的关联方式也适用于选择器和其他可聚焦控件。"
+    "en-US": "The association also works with other focusable controls.",
+    "zh-CN": "此关联也适用于其他可聚焦控件。"
   },
   "Controls_TheShellEdgeRoleWithHorizontalColumnResizeDefaultsAndTheSameGeom_6A72AE95": {
-    "en-US": "The shell-edge role with horizontal column-resize defaults and the same geometry as Standard.",
-    "zh-CN": "位于 Shell 边缘的角色，默认水平调整列宽，并具有与 Standard 相同的几何尺寸。"
+    "en-US": "A shell-edge divider with horizontal resize defaults.",
+    "zh-CN": "默认水平调整的 Shell 边缘分隔线。"
   },
   "Controls_TheSingleEmphasizedHeaderAtTheTopOfAPage_49F0D6C3": {
     "en-US": "The single emphasized header at the top of a page.",
     "zh-CN": "页面顶部唯一的强调型页眉。"
   },
   "Controls_TheStandardScrollBarPreservesAUsablePointerTargetWhileKeepingIts_7D7D921C": {
-    "en-US": "The standard scroll bar preserves a usable pointer target while keeping its visible thumb light. Wheel input moves the deepest viewport first and bubbles to the page at a boundary.",
-    "zh-CN": "标准滚动条在保持滑块轻盈可见的同时，也保留了易于操作的指针目标。滚轮输入会先移动最深层视口，并在到达边界时冒泡至页面。"
+    "en-US": "A light scroll bar with a practical pointer target.",
+    "zh-CN": "轻量滚动条，并保留易用的指针目标。"
   },
   "Controls_Theme_EFB52E71": {
     "en-US": "Theme",
@@ -2844,12 +2844,12 @@
     "zh-CN": "此操作会刷新当前工作区。"
   },
   "Controls_ThisGalleryPageIsItselfHostedByPageBodyOneLeadingHeaderChunkIsFo_0C64A518": {
-    "en-US": "This Gallery page is itself hosted by PageBody: one leading HeaderChunk is followed by full-width Chunks.",
-    "zh-CN": "这个 Gallery 页面本身由 PageBody 承载：一个页首 HeaderChunk 后跟若干全宽 Chunk。"
+    "en-US": "PageBody hosts one HeaderChunk followed by full-width Chunks.",
+    "zh-CN": "PageBody 先承载一个 HeaderChunk，再承载全宽 Chunk。"
   },
   "Controls_ThisPageWasNotPresentInConfigureNavigationItsRouteAndMenuEntryWereR_F0B315F9": {
-    "en-US": "This page was not present in ConfigureNavigation; its route and menu entry were registered while Gallery was already running.",
-    "zh-CN": "此页面并未包含在 ConfigureNavigation 中；其路由和菜单项是在 Gallery 已运行后注册的。"
+    "en-US": "Gallery registered this page and menu item at runtime.",
+    "zh-CN": "Gallery 在运行时注册了此页面及其菜单项。"
   },
   "Controls_TimedStatus_ADE45349": {
     "en-US": "Timed status",
@@ -2892,8 +2892,8 @@
     "zh-CN": "工具栏"
   },
   "Controls_TopDownIsTheOnlyPresenterModeIntendedForMultiColumnPlacementItPu_FE61B683": {
-    "en-US": "TopDown is the only Presenter mode intended for multi-column placement. It puts Presentation first, followed by a left-aligned Title, Content, and Body group.",
-    "zh-CN": "TopDown 是唯一适用于多列放置的 Presenter 模式。它首先放置 Presentation，随后是左对齐的 Title、Content 和 Body 组。"
+    "en-US": "TopDown is the only Presenter mode intended for multi-column placement.",
+    "zh-CN": "TopDown 是唯一适用于多列放置的 Presenter 模式。"
   },
   "Controls_TopDownPlacesPresentationAboveALeftAlignedCopyAndBodyRegion_98106B33": {
     "en-US": "TopDown places Presentation above a left-aligned copy-and-body region.",
@@ -2912,8 +2912,8 @@
     "zh-CN": "顶部图标"
   },
   "Controls_TrueUsesACheckMarkAndHighlightsTheContentAndBoundary_5528B53D": {
-    "en-US": "True uses a check mark and highlights the content and boundary.",
-    "zh-CN": "True 使用勾号，并高亮内容和边界。"
+    "en-US": "True shows a check mark and highlights the item.",
+    "zh-CN": "True 显示勾号并高亮项目。"
   },
   "Controls_UnavailableItem_F920918D": {
     "en-US": "Unavailable item",
@@ -2924,108 +2924,108 @@
     "zh-CN": "用法"
   },
   "Controls_UseASimpleToolTipStringWhenNoControlLevelConfigurationIsRequired_1D40248C": {
-    "en-US": "Use a simple ToolTip string when no control-level configuration is required. Native ToolTipService attached properties on the host tune the initial delay and visible duration without changing the shared Flourish treatment.",
-    "zh-CN": "无需控件级配置时，请使用简单的 ToolTip 字符串。宿主上的原生 ToolTipService 附加属性可调整初始延迟和显示时长，而不会改变共享的 Flourish 样式。"
+    "en-US": "Use a ToolTip string when no extra configuration is needed.",
+    "zh-CN": "无需额外配置时，使用 ToolTip 字符串。"
   },
   "Controls_UseAToolTipOrAutomationNameWhenTheActionHasNoVisibleLabel_6A7A962B": {
-    "en-US": "Use a ToolTip or automation name when the action has no visible label.",
-    "zh-CN": "当操作没有可见标签时，请使用 ToolTip 或自动化名称。"
+    "en-US": "Unlabeled actions need a tooltip or automation name.",
+    "zh-CN": "无标签操作需要工具提示或自动化名称。"
   },
   "Controls_UseBorderlessWhenEntriesRepresentDestinationsOrCommandsExplicitF_916349FB": {
-    "en-US": "Use Borderless when entries represent destinations or commands. Explicit FlourishListBoxItem containers can mark group headings and command entries; IsCompact collapses their geometry without changing selection semantics.",
-    "zh-CN": "当条目代表目标或命令时使用 Borderless。显式的 FlourishListBoxItem 容器可标记分组标题和命令条目；IsCompact 会收缩其几何尺寸，但不会改变选择语义。"
+    "en-US": "Use Borderless for destinations or commands.",
+    "zh-CN": "目标或命令使用 Borderless。"
   },
   "Controls_UseButtonOrCardButtonForActivationCardIsAnInformationSurfaceAndI_545417BA": {
-    "en-US": "Use Button or CardButton for activation. Card is an information surface and is not an Overlay trigger.",
-    "zh-CN": "使用 Button 或 CardButton 进行激活。Card 是信息界面，不能作为 Overlay 触发器。"
+    "en-US": "Use Button or CardButton for activation.",
+    "zh-CN": "使用 Button 或 CardButton 进行激活。"
   },
   "Controls_UseCardButtonWhenTitleContentAndIconDescribeOneDestinationOrComm_8C1F8836": {
-    "en-US": "Use CardButton when Title, Content, and Icon describe one destination or command and the complete surface should respond to pointer, keyboard, and command activation. Each visual property is optional and collapses when omitted. Choose Standard for neutral navigation, Tonal for gentle emphasis, Filled for the principal action, or Elevated for surface separation; use ActionCard when only an embedded control should be interactive.",
-    "zh-CN": "当 Title、Content 和 Icon 共同描述一个目标或命令，且整个表面都应响应指针、键盘和命令激活时，请使用 CardButton。每个视觉属性都是可选的，省略后会自动折叠。中性导航使用 Standard，轻度强调使用 Tonal，主要操作使用 Filled，界面分层使用 Elevated；若仅嵌入的控件需要交互，请使用 ActionCard。"
+    "en-US": "Use CardButton when the whole card triggers one action.",
+    "zh-CN": "整张卡片触发单一操作时，使用 CardButton。"
   },
   "Controls_UseCardForOneOptionalTitleOneParagraphOfContentAndAtMostOneIconO_BDC5DC20": {
-    "en-US": "Use Card for one optional Title, one paragraph of Content, and at most one Icon; omitted regions collapse. Choose Standard, Tonal, Filled, or Elevated according to surface emphasis, and set IconPosition to Left, Top, Right, or Bottom. Card is terminal display content—use Presenter for composed visuals and Document for multiple paragraphs.",
-    "zh-CN": "Card 可包含一个可选的 Title、一段 Content 和至多一个 Icon；省略的区域会自动折叠。根据界面强调程度选择 Standard、Tonal、Filled 或 Elevated，并将 IconPosition 设置为 Left、Top、Right 或 Bottom。Card 是终端显示内容；组合视觉内容请使用 Presenter，多段落内容请使用 Document。"
+    "en-US": "Use Card for one title, paragraph, and icon. Use Document for multiple paragraphs.",
+    "zh-CN": "Card 用于单个标题、段落和图标；多段落使用 Document。"
   },
   "Controls_UseCardWhenATitleAndOneConciseBlockOfTextAreEnough_BB19A8B4": {
-    "en-US": "Use Card when a title and one concise block of text are enough.",
-    "zh-CN": "当一个标题和一段简洁文本已经足够时，请使用 Card。"
+    "en-US": "Use Card for one title and one short text block.",
+    "zh-CN": "一个标题加一段短文时，使用 Card。"
   },
   "Controls_UseCardWhenConciseCopyNeedsExactlyOneIconAndNoArbitraryChildCont_35E9E94E": {
-    "en-US": "Use Card when concise copy needs exactly one icon and no arbitrary child controls.",
-    "zh-CN": "当简洁文案只需要一个图标且不需要任意子控件时，请使用 Card。"
+    "en-US": "Use Card for short copy, one icon, and no child controls.",
+    "zh-CN": "短文案、单图标且无子控件时，使用 Card。"
   },
   "Controls_UseCardWhenOneConciseBlockOfCopyIsEnough_1972ABB9": {
     "en-US": "Use Card when one concise block of copy is enough.",
-    "zh-CN": "当一段简洁文案已经足够时，请使用 Card。"
+    "zh-CN": "当一段简洁文案已经足够时，使用 Card。"
   },
   "Controls_UseDocumentWhenTheContentNeedsSeveralDistinctParagraphElements_26FBBF27": {
-    "en-US": "Use Document when the content needs several distinct Paragraph elements.",
-    "zh-CN": "当内容需要多个彼此独立的 Paragraph 元素时，请使用 Document。"
+    "en-US": "Use Document for several Paragraph items.",
+    "zh-CN": "多个 Paragraph 使用 Document。"
   },
   "Controls_UseMultipleOrExtendedWhenSeveralItemsCanBeSelectedOnlyRealizedCo_81435064": {
-    "en-US": "Use Multiple or Extended when several items can be selected. Only realized containers receive indicators, preserving virtualization for long collections.",
-    "zh-CN": "需要选择多个项目时，请使用 Multiple 或 Extended。只有已实现的容器会获得指示器，从而为长集合保留虚拟化能力。"
+    "en-US": "Use Multiple or Extended for multi-selection.",
+    "zh-CN": "多选使用 Multiple 或 Extended。"
   },
   "Controls_UseOverlayOnlyWhenTheImageOrIllustrationRemainsAnAppropriateRead_2ABEE85B": {
-    "en-US": "Use Overlay only when the image or illustration remains an appropriate, readable background in every supported theme. Keep essential contrast in the foreground copy and reserve Body for a small supporting action.",
-    "zh-CN": "仅当图像或插图在所有支持的主题中都能作为合适且清晰可读的背景时，才使用 Overlay。确保前景文案具有必要的对比度，并仅将 Body 用于小型辅助操作。"
+    "en-US": "Use Overlay only with a readable background in every theme.",
+    "zh-CN": "仅当背景在所有主题下均清晰时使用 Overlay。"
   },
   "Controls_UseParagraphInsideDocumentRatherThanAsAStandalonePageLevelSurfac_35BAE916": {
     "en-US": "Use Paragraph inside Document rather than as a standalone page-level surface.",
     "zh-CN": "应在 Document 内使用 Paragraph，而不是将其作为独立的页面级界面。"
   },
   "Controls_UsePasswordChangedToMoveASecretIntoApplicationOwnedSecureProcess_37693D8E": {
-    "en-US": "Use PasswordChanged to move a secret into application-owned secure processing.",
+    "en-US": "Use PasswordChanged to move a secret into app-owned secure processing.",
     "zh-CN": "使用 PasswordChanged 将密码传递给应用自行负责的安全处理流程。"
   },
   "Controls_UsePresenterForImagesMultipleIconsIllustrationsOrControlsArrange_46DFD6A5": {
-    "en-US": "Use Presenter for images, multiple icons, illustrations, or controls arranged with copy.",
-    "zh-CN": "需要将图像、多个图标、插图或控件与文案排列时，请使用 Presenter。"
+    "en-US": "Use Presenter to arrange visuals or controls with copy.",
+    "zh-CN": "使用 Presenter 将视觉内容或控件与文案排列。"
   },
   "Controls_UseStandardBetweenOrdinaryGridDefinitionsPlaceTheSplitterInAnAut_D696E7E8": {
-    "en-US": "Use Standard between ordinary Grid definitions. Place the splitter in an Auto-sized row or column, then set ResizeDirection and ResizeBehavior explicitly so the axis and affected neighbors remain clear. The same pattern supports rows by moving the splitter to an Auto-sized Grid.Row and setting ResizeDirection=\"Rows\".",
-    "zh-CN": "在普通 Grid 定义之间使用 Standard。将拆分器放入 Auto 大小的行或列中，再显式设置 ResizeDirection 和 ResizeBehavior，以明确调整轴及受影响的相邻项。若要支持行，可将拆分器移至 Auto 大小的 Grid.Row，并设置 ResizeDirection=\"Rows\"。"
+    "en-US": "Place Standard in an Auto row or column; set direction.",
+    "zh-CN": "Standard 放入 Auto 行或列，并设置方向。"
   },
   "Controls_UseStandardForOrdinarySelectableCollectionsBindItemsSourceAndSel_FDD796FF": {
-    "en-US": "Use Standard for ordinary selectable collections. Bind ItemsSource and SelectedItem as with native WPF ListBox, using a two-way selection binding to synchronize the active view-model item. Choose Borderless when entries represent destinations or commands, and define group-header or command semantics through FlourishListBoxItem.",
-    "zh-CN": "普通可选集合使用 Standard。像原生 WPF ListBox 一样绑定 ItemsSource 和 SelectedItem，并使用双向选择绑定同步视图模型中的活动项目。当条目代表目标或命令时选择 Borderless，并通过 FlourishListBoxItem 定义分组标题或命令语义。"
+    "en-US": "Use Standard for lists and Borderless for navigation.",
+    "zh-CN": "列表用 Standard；导航用 Borderless。"
   },
   "Controls_UseStrongForASurfaceThatRemainsOpenUntilTheHostHandlesAnExplicit_7BA17DDE": {
-    "en-US": "Use Strong for a surface that remains open until the host handles an explicit dismissal request. A vertical ActionCard is the standard focused layout, while the surrounding Popup remains responsible for visibility and placement.",
-    "zh-CN": "对于在宿主处理显式关闭请求前始终保持打开的界面，请使用 Strong。纵向 ActionCard 是标准的聚焦布局，外围 Popup 则继续负责可见性和放置位置。"
+    "en-US": "Use Strong when only the host can dismiss the surface.",
+    "zh-CN": "仅宿主可关闭界面时，使用 Strong。"
   },
   "Controls_UseTemporaryForHoverAffordancesAndShortPreviewsPlacementTargetEx_F012A9C9": {
-    "en-US": "Use Temporary for hover affordances and short previews. PlacementTarget extends hover tracking across the anchor and overlay; the host opens the Popup when the pointer enters or the trigger is activated.",
-    "zh-CN": "将 Temporary 用于悬停提示和简短预览。PlacementTarget 会让悬停跟踪覆盖锚点与 Overlay；当指针进入或触发器被激活时，由宿主打开 Popup。"
+    "en-US": "Use Temporary for hover affordances and short previews.",
+    "zh-CN": "将 Temporary 用于悬停提示和简短预览。"
   },
   "Controls_UseTextForOrdinaryCaptionCommandsAndReserveDangerForTheCloseComm_CAE8A103": {
-    "en-US": "Use Text for ordinary caption commands and reserve Danger for the close command.",
-    "zh-CN": "普通标题栏命令使用 Text，并将 Danger 保留给关闭命令。"
+    "en-US": "Use Text normally; reserve Danger for Close.",
+    "zh-CN": "普通命令用 Text；关闭命令用 Danger。"
   },
   "Controls_UseTheNativeTextBoxPropertiesToSelectSingleLineReadOnlyOrMultili_F8FF545F": {
     "en-US": "Use the native TextBox properties to select single-line, read-only, or multiline behavior.",
     "zh-CN": "使用 TextBox 原生属性选择单行、只读或多行行为。"
   },
   "Controls_UseTheNormalWPFKeyboardContractWhenSearchShouldRunOnlyAfterExpli_F0AEADAD": {
-    "en-US": "Use the normal WPF keyboard contract when search should run only after explicit submission. The KeyDown handler checks Enter and passes the current Text to an application command; prefer a command binding when the same gesture must be shared across several controls.",
-    "zh-CN": "仅在明确提交后才应执行搜索时，请使用常规 WPF 键盘约定。KeyDown 处理程序检查 Enter，并将当前 Text 传给应用命令；如果多个控件需要共享同一手势，应优先使用命令绑定。"
+    "en-US": "Use standard WPF keys when search waits for submission.",
+    "zh-CN": "搜索等待提交时，使用标准 WPF 按键。"
   },
   "Controls_UseTheStandaloneControlOnlyWhenACustomViewportOwnsItsOffsetRange_A3DE4ED6": {
-    "en-US": "Use the standalone control only when a custom viewport owns its offset, range, commands, and synchronization.",
-    "zh-CN": "仅当自定义视口自行负责偏移量、范围、命令和同步时，才使用独立控件。"
+    "en-US": "Use standalone ScrollBar only for a custom viewport.",
+    "zh-CN": "仅为自定义视口使用独立 ScrollBar。"
   },
   "Controls_UseTheVerticalCompositionWhenThePresentedVisualShouldEstablishCo_4B39E373": {
-    "en-US": "Use the vertical composition when the presented visual should establish context before the supporting copy and action.",
-    "zh-CN": "当展示视觉内容需要先于辅助文案和操作建立上下文时，请使用纵向组合。"
+    "en-US": "Use vertical layout when the visual comes before the copy.",
+    "zh-CN": "视觉内容先于文案时，使用纵向布局。"
   },
   "Controls_UseTwoStateBehaviorForOrdinaryPreferencesAndEnableTheThirdStateO_A570F10E": {
-    "en-US": "Use two-state behavior for ordinary preferences and enable the third state only when null has a clear meaning.",
-    "zh-CN": "普通偏好设置使用双态行为；仅当 null 具有明确含义时才启用第三态。"
+    "en-US": "Use two states normally; add null only when it has meaning.",
+    "zh-CN": "通常使用双态；null 有明确含义时才启用第三态。"
   },
   "Controls_UseWindowCaptionButtonOnlyInTheTitleBarAndBindItToASystemCommand_5E0921E9": {
-    "en-US": "Use WindowCaptionButton only in the title bar and bind it to a SystemCommands minimize, maximize, restore, or close command. Icon-only actions need matching ToolTip and AutomationProperties.Name values, and Danger supplies the expected close-button feedback. Keep the caption group at the title-bar edge and ordinary toolbar commands outside it so Windows corner hit targets remain intact.",
-    "zh-CN": "仅在标题栏中使用 WindowCaptionButton，并将其绑定到 SystemCommands 的最小化、最大化、还原或关闭命令。纯图标操作需要一致的 ToolTip 与 AutomationProperties.Name，Danger 则提供符合预期的关闭按钮反馈。将标题栏按钮组保持在标题栏边缘，并将普通工具栏命令置于其外，以确保 Windows 窗口角落的命中区域保持完整。"
+    "en-US": "WindowCaptionButton: system commands with accessible names.",
+    "zh-CN": "WindowCaptionButton：带无障碍名称的系统命令。"
   },
   "Controls_UsesABoundaryForAMediumEmphasisSecondaryAction_A85E5E4D": {
     "en-US": "Uses a boundary for a medium-emphasis secondary action.",
@@ -3076,16 +3076,16 @@
     "zh-CN": "滚轮输入会先移动内部视口。"
   },
   "Controls_WhenContentIsOmittedGiveTheIconOnlyButtonBothAutomationPropertie_DA66544B": {
-    "en-US": "When Content is omitted, give the icon-only button both AutomationProperties.Name and a matching ToolTip. This keeps the compact Text or Danger action understandable to assistive technology and pointer users.",
-    "zh-CN": "省略 Content 时，请为纯图标按钮同时设置 AutomationProperties.Name 和一致的 ToolTip，使紧凑的 Text 或 Danger 操作能够被辅助技术和指针用户理解。"
+    "en-US": "Icon-only buttons need matching ToolTip and AutomationProperties.Name.",
+    "zh-CN": "纯图标按钮需一致的工具提示和自动化名称。"
   },
   "Controls_WindowCaptionButtonDocumentation_0D35F729": {
     "en-US": "WindowCaptionButton documentation",
     "zh-CN": "WindowCaptionButton 文档"
   },
   "Controls_WindowCaptionButtonIsSizedForTheTitleBarAndKeepsTheCaptionHitTar_C277C7B9": {
-    "en-US": "WindowCaptionButton is sized for the title bar and keeps the caption hit target separate from ordinary application buttons.",
-    "zh-CN": "WindowCaptionButton 按标题栏尺寸设计，并使标题栏命中目标与普通应用按钮相互独立。"
+    "en-US": "A title-bar button with a separate caption hit target.",
+    "zh-CN": "标题栏按钮，命中区域独立于普通按钮。"
   },
   "Controls_WindowControls_9CEA69FD": {
     "en-US": "Window controls",
@@ -3116,8 +3116,8 @@
     "zh-CN": "追加"
   },
   "Dynamic_ChooseTheApplicationLocaleFlourishTranslatesOnlyItsBuiltInInterf_E0E093E0": {
-    "en-US": "Choose the application locale. Flourish translates its built-in interface. Use Arkheide.Essential.Culture to independently translate Gallery pages and shell labels from Culture.json. Both layers observe the same selection and fall back to English when no matching translation exists. The code below demonstrates the shared locale signal.",
-    "zh-CN": "选择应用程序区域设置。Flourish 负责翻译框架内置界面，Arkheide.Essential.Culture 则从 Culture.json 独立翻译 Gallery 页面和 Shell 标签。两层共同观察同一个语言选择，并在没有匹配翻译时回退到英文。下方代码演示共享的区域设置信号。"
+    "en-US": "Choose one locale for Flourish and Gallery; missing translations fall back to English.",
+    "zh-CN": "为 Flourish 和 Gallery 选择同一语言；缺失翻译回退到英文。"
   },
   "Dynamic_EnterAConfigurationPath_7DFDBF45": {
     "en-US": "Enter a configuration path.",
@@ -3160,8 +3160,8 @@
     "zh-CN": "已于 {1:T} 重新加载 {0}。"
   },
   "Dynamic_ReloadedConfigurationProvidersSnapshotV0Contains1ValuesCaptured2_75761543": {
-    "en-US": "Reloaded configuration providers. Snapshot v{0} contains {1} values (captured {2:T}).",
-    "zh-CN": "已重新加载配置提供程序。快照 v{0} 包含 {1} 个值（捕获于 {2:T}）。"
+    "en-US": "Reloaded providers. Snapshot v{0} has {1} values from {2:T}.",
+    "zh-CN": "已重新加载配置。快照 v{0} 含 {1} 个值，捕获于 {2:T}。"
   },
   "Dynamic_Set_B6F6F3AD": {
     "en-US": "Set",
@@ -3296,8 +3296,8 @@
     "zh-CN": "计算一个值，并通过强类型句柄将其返回。"
   },
   "Runtime_CanExecute0_43748D6F": {
-    "en-US": "  |  Can execute: {0}",
-    "zh-CN": "  |  可以执行：{0}"
+    "en-US": "| Can execute: {0}",
+    "zh-CN": "|  可以执行：{0}"
   },
   "Runtime_Cancel_2374D917": {
     "en-US": "cancel",
@@ -3312,8 +3312,8 @@
     "zh-CN": "已将 Shell 窗口在屏幕上居中。"
   },
   "Runtime_ChooseARuntimeActionCustomOptionsAreReturnedAsDomainValues_7353BDBC": {
-    "en-US": "Choose a runtime action. Custom options are returned as domain values.",
-    "zh-CN": "选择一个运行时操作。自定义选项将作为领域值返回。"
+    "en-US": "Choose a runtime action.",
+    "zh-CN": "选择一个运行时操作。"
   },
   "Runtime_ClearedAllCachedPageInstances_7839F7BC": {
     "en-US": "Cleared all cached page instances.",
@@ -3340,7 +3340,7 @@
     "zh-CN": "已关闭"
   },
   "Runtime_Command0Priority1_6F653DF7": {
-    "en-US": "Command  |  {0}  |  priority {1}",
+    "en-US": "Command | {0} | priority {1}",
     "zh-CN": "命令  |  {0}  |  优先级 {1}"
   },
   "Runtime_Command_71316697": {
@@ -3348,7 +3348,7 @@
     "zh-CN": "命令"
   },
   "Runtime_Commands0Shortcuts1_EE620469": {
-    "en-US": "Commands: {0}  |  Shortcuts: {1}",
+    "en-US": "Commands: {0} | Shortcuts: {1}",
     "zh-CN": "命令：{0}  |  快捷键：{1}"
   },
   "Runtime_Companion_1DADB328": {
@@ -3444,8 +3444,8 @@
     "zh-CN": "已启用"
   },
   "Runtime_Error0_EB96953F": {
-    "en-US": "  |  Error: {0}",
-    "zh-CN": "  |  错误：{0}"
+    "en-US": "| Error: {0}",
+    "zh-CN": "|  错误：{0}"
   },
   "Runtime_EvictedTheCachedDemoPageInstance_2957A414": {
     "en-US": "Evicted the cached demo page instance.",
@@ -3640,8 +3640,8 @@
     "zh-CN": "已将 {0} 加入队列。"
   },
   "Runtime_QueuedFourTasksTheConfiguredConcurrencyLimitIs0_03B406E3": {
-    "en-US": "Queued four tasks. The configured concurrency limit is {0}.",
-    "zh-CN": "已将四个任务加入队列。配置的并发上限为 {0}。"
+    "en-US": "Queued four tasks with a concurrency limit of {0}.",
+    "zh-CN": "已将四个任务加入队列，并发上限为 {0}。"
   },
   "Runtime_QueuedTypedResultTask0_0150B8DE": {
     "en-US": "Queued typed result task {0}.",
@@ -3760,7 +3760,7 @@
     "zh-CN": "Shell 窗口置顶模式{0}。"
   },
   "Runtime_Shortcut012_B5D726B0": {
-    "en-US": "Shortcut  |  {0}  |  {1}  |  {2}",
+    "en-US": "Shortcut | {0} | {1} | {2}",
     "zh-CN": "快捷键  |  {0}  |  {1}  |  {2}"
   },
   "Runtime_Shortcut_5753EA37": {
@@ -3936,12 +3936,12 @@
     "zh-CN": "已添加或更新通知：{0}。"
   },
   "Runtime_Value0_BF1A56EF": {
-    "en-US": "  |  Value: {0}",
-    "zh-CN": "  |  值：{0}"
+    "en-US": "| Value: {0}",
+    "zh-CN": "|  值：{0}"
   },
   "Runtime_Value0_D2183E4C": {
-    "en-US": "  |  value {0}",
-    "zh-CN": "  |  值 {0}"
+    "en-US": "| value {0}",
+    "zh-CN": "|  值 {0}"
   },
   "Runtime_Waiting_80CFA3E7": {
     "en-US": "waiting",
@@ -3960,8 +3960,8 @@
     "zh-CN": "关于 Flourish"
   },
   "Shell_ActivateARegisteredProjectUpdateItsMetadataClearTheCurrentSelect_A7B1C1AF": {
-    "en-US": "Activate a registered project, update its metadata, clear the current selection, or delete it through the configured project behavior. Prefer the behavior APIs for user-facing activation and deletion because they can coordinate confirmation and persistence; direct service setters are suitable for controlled state updates. The code demonstrates both paths.",
-    "zh-CN": "激活已注册项目、更新其元数据、清除当前选择，或通过已配置的项目行为删除它。面向用户的激活和删除操作应优先使用行为 API，因为它们可以协调确认和持久化；直接服务设置器则适用于受控状态更新。代码演示了这两种路径。"
+    "en-US": "Manage project activation, metadata, selection, and deletion through its behavior.",
+    "zh-CN": "通过项目行为管理激活、元数据、选择和删除。"
   },
   "Shell_ActiveProject_B0018C91": {
     "en-US": "Active project",
@@ -3972,8 +3972,8 @@
     "zh-CN": "活动选择"
   },
   "Shell_AddAndSetProfileContentCreateApplicationElementsWhenTheShellIsC_49F55273": {
-    "en-US": "AddRegionContent and SetProfileContent create application elements when the Shell is composed, with access to registered services.",
-    "zh-CN": "AddRegionContent 和 SetProfileContent 在 Shell 组合时创建应用元素，并可访问已注册服务。"
+    "en-US": "Create region and profile content with registered services.",
+    "zh-CN": "使用已注册服务创建区域和个人资料内容。"
   },
   "Shell_AddOrReplaceAProjectOnlyWhenItsLocalFileExists_3173FA81": {
     "en-US": "Add or replace a project only when its local file exists.",
@@ -3988,8 +3988,8 @@
     "zh-CN": "添加项目"
   },
   "Shell_AddReplaceAndQueryProjectRecordsByTheirStableIdentifierProjectRe_990064D0": {
-    "en-US": "Add, replace, and query project records by their stable identifier. Project records connect a display name to an existing storage file; use this catalog when navigation, window chrome, and persistence workflows need a consistent view of the user's open projects. The code below covers the collection APIs exercised by this section.",
-    "zh-CN": "通过稳定标识符添加、替换和查询项目记录。项目记录将显示名称与现有存储文件关联；当导航、窗口框架和持久化工作流需要一致地查看用户打开的项目时，可使用此目录。下方代码涵盖本节所用的集合 API。"
+    "en-US": "Add, replace, and query project records by their stable identifier.",
+    "zh-CN": "通过稳定标识符添加、替换和查询项目记录。"
   },
   "Shell_AddStatusItemRegistersCompactNonInteractiveApplicationStateInDis_ED3FC409": {
     "en-US": "AddStatusItem registers compact, non-interactive application state in display order.",
@@ -4048,8 +4048,8 @@
     "zh-CN": "应用一组示例主色、次色和强调色调色板。"
   },
   "Shell_ApplySharedPaletteAndCornerRadiusOverridesWithoutReplacingTheAct_7D937A92": {
-    "en-US": "Apply shared palette and corner-radius overrides without replacing the active light or dark theme. Use these settings for live appearance editors and previews; passing null restores the standard theme resources.",
-    "zh-CN": "应用共享调色板和圆角覆盖，而不替换当前浅色或深色主题。这些设置适用于实时外观编辑器和预览；传入 null 可恢复标准主题资源。"
+    "en-US": "Apply shared palette and corner-radius overrides without replacing the active light or dark theme.",
+    "zh-CN": "应用共享调色板和圆角覆盖，而不替换当前浅色或深色主题。"
   },
   "Shell_AssociateCommandActionsWithThePageThatOwnsEachWorkflow_4A3E4136": {
     "en-US": "Associate command actions with the page that owns each workflow.",
@@ -4064,20 +4064,20 @@
     "zh-CN": "等待带有自定义选项的模态消息。"
   },
   "Shell_AwaitAStandardModalChoiceWithoutBlockingApplicationLogic_25C7EC17": {
-    "en-US": "Await a standard modal choice without blocking application logic.",
-    "zh-CN": "等待标准模态选择，而不阻塞应用逻辑。"
+    "en-US": "Await a modal choice without blocking app logic.",
+    "zh-CN": "等待模态选择，但不阻塞应用逻辑。"
   },
   "Shell_AwaitModalChoicesThroughIMessageServiceAndPublishNonModalReplace_FA67AE76": {
-    "en-US": "Await modal choices through IMessageService and publish non-modal, replaceable notifications through INotificationService. Use dialogs when a workflow must wait for a decision and notifications for transient status that should not block interaction; the code below demonstrates both message options and the complete notification lifecycle.",
-    "zh-CN": "通过 IMessageService 等待模态选择，并通过 INotificationService 发布非模态且可替换的通知。当工作流必须等待决定时使用对话框；对于不应阻塞交互的临时状态则使用通知。下方代码演示两种消息选项和完整通知生命周期。"
+    "en-US": "Use IMessageService for modal choices and notifications for updates.",
+    "zh-CN": "模态选择用 IMessageService，状态更新用通知。"
   },
   "Shell_BackgroundTasks_C6907E94": {
     "en-US": "Background tasks",
     "zh-CN": "后台任务"
   },
   "Shell_BindAKeyGestureToAnExistingCommandInsteadOfDuplicatingItsBehavio_4CE4763E": {
-    "en-US": "Bind a key gesture to an existing command instead of duplicating its behavior in an input handler. Application-scoped shortcuts suit commands that should work throughout the shell; the code demonstrates conflict handling, explicit dispatch for testing, and disposal when the binding is no longer owned.",
-    "zh-CN": "将按键手势绑定到现有命令，而不是在输入处理程序中重复其行为。应用作用域的快捷键适合需要在整个 Shell 中工作的命令；代码演示冲突处理、用于测试的显式分派，以及不再拥有绑定时的释放操作。"
+    "en-US": "Bind a key gesture to an existing command instead of duplicating its behavior in an input handler.",
+    "zh-CN": "将按键手势绑定到现有命令，而不是在输入处理程序中重复其行为。"
   },
   "Shell_BindTheGlobalShortcutToTheRuntimeCommand_6C67BCEF": {
     "en-US": "Bind the global shortcut to the runtime command.",
@@ -4112,8 +4112,8 @@
     "zh-CN": "将内容居中"
   },
   "Shell_CenterPageContentWithinASharedMaximumWidthAndUpdateBothTheActive_4729774F": {
-    "en-US": "Center page content within a shared maximum width and update both the active page and pages reached later through navigation. Use this for reading-focused or wide-screen layouts where long lines should remain comfortable to scan. The switch changes whether centering is active, the width field defines the shared limit, and the code demonstrates an atomic update plus state observation.",
-    "zh-CN": "在统一的最大宽度内将页面内容居中，并同时更新当前页面及之后通过导航打开的页面。它适用于注重阅读体验或宽屏布局、需要控制长文本行宽的场景。开关控制是否启用居中，宽度字段定义共享上限，代码则演示原子更新和状态观察。"
+    "en-US": "Center every page within one shared maximum width.",
+    "zh-CN": "让所有页面在统一的最大宽度内居中。"
   },
   "Shell_CenterTheShellOnItsCurrentDisplay_AB8F3215": {
     "en-US": "Center the shell on its current display.",
@@ -4128,12 +4128,12 @@
     "zh-CN": "居中内容"
   },
   "Shell_ChangeTheApplicationWideDisplayOrderUsedByTheSignedOutPlaceholde_8FFD7F5E": {
-    "en-US": "Change the application-wide display order used by the signed-out placeholder and the active profile. Use this for locale preferences or account settings; the service keeps the current login and credentials unchanged while rebuilding the visible profile.",
-    "zh-CN": "更改已退出登录占位信息和活动个人资料所使用的应用全局姓名显示顺序。它适用于区域首选项或帐户设置；服务会在重新生成可见个人资料时保持当前登录状态和凭据不变。"
+    "en-US": "Change the app-wide display order used by the signed-out placeholder and the active profile.",
+    "zh-CN": "更改已退出登录占位信息和活动个人资料所使用的应用全局姓名显示顺序。"
   },
   "Shell_ChangeTheApplicationWideTextScaleTextFamilyAndIconFamilyThroughI_5981BD80": {
-    "en-US": "Change the application-wide text scale, text family, and icon family through IFontService. Use this when typography is configurable for every page; the code below includes all defined font sizes and the separate icon font assignment.",
-    "zh-CN": "通过 IFontService 更改应用全局的文本大小、文本字体和图标字体。它适用于所有页面均可配置排版的情况；下方代码包括所有已定义的字号以及单独的图标字体设置。"
+    "en-US": "Change the app-wide text scale, text family, and icon family through IFontService.",
+    "zh-CN": "通过 IFontService 更改应用全局的文本大小、文本字体和图标字体。"
   },
   "Shell_ChangeTitleBarIdentityFeaturesAndSearchAtRuntime_1FB4DE21": {
     "en-US": "Change title-bar identity, features, and search at runtime.",
@@ -4144,8 +4144,8 @@
     "zh-CN": "选择内置或主机注册的区域设置。"
   },
   "Shell_ChooseAFeatureAreaToOpenItsInteractiveGuideStartWithConfiguratio_E9A7BC4A": {
-    "en-US": "Choose a feature area to open its interactive guide. Start with Configuration for application data, Appearance and Shell for presentation, or Commands and Background tasks for application behavior; every destination combines practical controls with the code that drives them.",
-    "zh-CN": "选择一个功能领域以打开其交互式指南。可以从用于应用数据的“配置”、用于界面呈现的“外观”和“Shell”，或用于应用行为的“命令”和“后台任务”开始；每个页面都将实用控件与驱动它们的代码结合起来。"
+    "en-US": "Choose a feature area to open its interactive guide.",
+    "zh-CN": "选择一个功能领域以打开其交互式指南。"
   },
   "Shell_ChooseAValueFromTheActiveProviderChain_C11A502F": {
     "en-US": "Choose a value from the active provider chain.",
@@ -4180,8 +4180,8 @@
     "zh-CN": "选择要更改可见性的元素。"
   },
   "Shell_ChooseTheNativeMaterialBehindTheShellAndCoordinateItsImmersiveDa_469AEA19": {
-    "en-US": "Choose the native material behind the shell and coordinate its immersive dark-mode flag with the active theme. Use this for Windows-integrated appearance where the requested effect may depend on platform support; the code below sets both material properties directly.",
-    "zh-CN": "选择 Shell 背后的原生材质，并使其沉浸式深色模式标志与当前主题保持一致。它适用于与 Windows 集成且所请求效果可能取决于平台支持的外观；下方代码会直接设置两项材质属性。"
+    "en-US": "Choose shell material and match dark mode to the active theme.",
+    "zh-CN": "选择 Shell 材质，并让深色模式匹配当前主题。"
   },
   "Shell_ChooseTheNativeShellBackdrop_832D086B": {
     "en-US": "Choose the native shell backdrop.",
@@ -4192,32 +4192,32 @@
     "zh-CN": "选择标题栏个人资料浮出控件承载的页面。"
   },
   "Shell_ChooseThePageResolvedThroughDependencyInjectionWhenTheTitleBarPr_02EBE78E": {
-    "en-US": "Choose the Page resolved through dependency injection when the title-bar profile surface opens. Use this for account details, preferences, or identity actions that belong in the shell; the code below enables the profile trigger and assigns its hosted page during application composition.",
-    "zh-CN": "选择在标题栏个人资料界面打开时通过依赖注入解析的 Page。它适用于属于 Shell 的帐户详细信息、首选项或身份操作；下方代码在应用组合期间启用个人资料入口并指定其承载页面。"
+    "en-US": "Choose the Page resolved through dependency injection when the title-bar profile surface opens.",
+    "zh-CN": "选择在标题栏个人资料界面打开时通过依赖注入解析的 Page。"
   },
   "Shell_ChooseTheRequestedApplicationColorMode_D332B194": {
     "en-US": "Choose the requested application color mode.",
     "zh-CN": "选择所需的应用颜色模式。"
   },
   "Shell_ChooseTheShellClosePolicyAndRegisterOrderedAsynchronousGuardsTha_297C245C": {
-    "en-US": "Choose the shell close policy and register ordered asynchronous guards that may cancel a close request. Use guards for unsaved changes or in-progress operations, keep their registration lease for the owning scope, and dispose it when no longer needed; the code below shows registration, evaluation, and a policy-aware close request.",
-    "zh-CN": "选择 Shell 关闭策略，并注册可取消关闭请求的有序异步守卫。对于未保存的更改或正在进行的操作可使用守卫，在所属作用域内保留其注册租约，并在不再需要时将其释放；下方代码展示注册、评估和遵循策略的关闭请求。"
+    "en-US": "Choose a close policy and add ordered guards that may cancel it.",
+    "zh-CN": "选择关闭策略，并添加可取消关闭的有序守卫。"
   },
   "Shell_ChooseTheShellSDefaultClosePolicyChangesApplyImmediately_5FF54018": {
-    "en-US": "Choose the shell's default close policy; changes apply immediately.",
-    "zh-CN": "选择 Shell 的默认关闭策略；更改立即生效。"
+    "en-US": "Choose the default close policy; changes apply immediately.",
+    "zh-CN": "选择默认关闭策略；更改立即生效。"
   },
   "Shell_ChooseTheStableIdentifierUsedForNotificationOperations_8C1F037A": {
-    "en-US": "Choose the stable identifier used for notification operations.",
-    "zh-CN": "选择通知操作使用的稳定标识符。"
+    "en-US": "Choose a stable ID for notification operations.",
+    "zh-CN": "为通知操作选择稳定 ID。"
   },
   "Shell_ChooseWhetherARegisteredRouteRetainsItsPageInstanceAndExplicitly_2360444E": {
-    "en-US": "Choose whether a registered route retains its Page instance and explicitly evict one or every cached page. Enable caching for stateful destinations that are revisited often, and disable it for short-lived or memory-heavy views; the code below keeps route metadata and the active cache policy in sync.",
-    "zh-CN": "选择已注册路由是否保留其 Page 实例，并显式逐个或全部逐出缓存页面。对于经常重新访问且有状态的目标页面应启用缓存，对于短生命周期或占用大量内存的视图则应禁用；下方代码使路由元数据与当前缓存策略保持同步。"
+    "en-US": "Choose route caching and evict one or every cached Page.",
+    "zh-CN": "选择路由缓存，并逐个或全部移除缓存页面。"
   },
   "Shell_ChooseWhetherFlourishOwnedShellNavigationAndPageViewportsSmoothM_1EA6E35D": {
-    "en-US": "Choose whether Flourish-owned Shell, navigation, and page viewports smooth mouse-wheel movement. SetSmoothScrollingEnabled sets the startup state, while IScrollService updates the active application immediately. An explicit IsSmoothScrollingEnabled value still overrides the application policy on an application-owned ScrollViewer.",
-    "zh-CN": "选择是否让 Flourish 管理的 Shell、导航和页面视口平滑响应鼠标滚轮。SetSmoothScrollingEnabled 设置启动状态，IScrollService 则立即更新当前应用。应用自有 ScrollViewer 上显式设置的 IsSmoothScrollingEnabled 仍会覆盖应用策略。"
+    "en-US": "Set smooth scrolling globally; explicit viewport settings still override it.",
+    "zh-CN": "设置全局平滑滚动；视口的显式设置仍可覆盖它。"
   },
   "Shell_ChooseWhetherTheRegisteredHandlerCanExecute_B62C2F1D": {
     "en-US": "Choose whether the registered handler can execute.",
@@ -4268,8 +4268,8 @@
     "zh-CN": "调色板"
   },
   "Shell_CommandAndShortcutRegistriesExposeImmutableSnapshotsAndChangeEve_42005CA4": {
-    "en-US": "Command and shortcut registries expose immutable snapshots and change events for diagnostic or management interfaces.",
-    "zh-CN": "命令和快捷键注册表为诊断或管理界面公开不可变快照和更改事件。"
+    "en-US": "Registries expose snapshots and events for diagnostics.",
+    "zh-CN": "注册表提供诊断所需的快照和事件。"
   },
   "Shell_CommandAvailability_00E07642": {
     "en-US": "Command availability",
@@ -4288,8 +4288,8 @@
     "zh-CN": "命令和快捷键"
   },
   "Shell_CompletionNeverFaultsFailuresAndCancellationAreRepresentedInTheR_EBEAB0E5": {
-    "en-US": "Completion never faults; failures and cancellation are represented in the result object.",
-    "zh-CN": "完成任务本身不会进入故障状态；失败和取消会在结果对象中表示。"
+    "en-US": "Completion reports failure or cancellation in its result.",
+    "zh-CN": "Completion 在结果中报告失败或取消。"
   },
   "Shell_ConceptsGuidesControlContractsAndGeneratedAPIReferencesLiveWithT_BC19BF41": {
     "en-US": "Concepts, guides, control contracts, and generated API references live with the repository.",
@@ -4328,7 +4328,7 @@
     "zh-CN": "配置共享的 Shell 外观，并探索可在运行时更改的视觉资源。"
   },
   "Shell_ConfigureTheNavigationPanelRoutesMenuEntriesAndPageCachingWhileT_9FE6DD3E": {
-    "en-US": "Configure the navigation panel, routes, menu entries, and page caching while the application is running.",
+    "en-US": "Configure the navigation panel, routes, menu entries, and page caching while the app is running.",
     "zh-CN": "在应用运行时配置导航面板、路由、菜单项和页面缓存。"
   },
   "Shell_ContentLayout_D3657AA9": {
@@ -4340,12 +4340,12 @@
     "zh-CN": "内容宽度"
   },
   "Shell_ControlTitleBarSearchTextVisibilityFocusPlaceholderAndAsynchrono_E6F24826": {
-    "en-US": "Control title-bar search text, visibility, focus, placeholder, and asynchronous query handling through ITitleBarService. Use a disposable subscription for page- or feature-scoped search behavior; the code below registers a cancellable handler and updates the visible search state.",
-    "zh-CN": "通过 ITitleBarService 控制标题栏搜索文本、可见性、焦点、占位文本和异步查询处理。页面或功能范围内的搜索行为应使用可释放订阅；下方代码注册一个可取消的处理程序并更新可见的搜索状态。"
+    "en-US": "Control title-bar search state and queries with ITitleBarService.",
+    "zh-CN": "使用 ITitleBarService 控制标题栏搜索和查询。"
   },
   "Shell_ControlWhetherTheNavigationPanelIsOpenAndEnabledChooseItsHostEdg_C1A825DC": {
-    "en-US": "Control whether the navigation panel is open and enabled, choose its host edge, and define its width constraints through INavigationService. Use these settings for responsive shell layouts or user-selected navigation placement; the code below shows the complete panel state API used by this example.",
-    "zh-CN": "通过 INavigationService 控制导航面板是否打开和启用、选择其停靠边缘并定义宽度约束。这些设置适用于响应式 Shell 布局或由用户选择导航位置的场景；下方代码展示本示例使用的完整面板状态 API。"
+    "en-US": "Use INavigationService to control the panel, edge, and width.",
+    "zh-CN": "使用 INavigationService 控制面板、边缘和宽度。"
   },
   "Shell_ControlWindowTrayProfileAndNotificationBehavior_D7E490DA": {
     "en-US": "Control window, tray, profile, and notification behavior.",
@@ -4364,16 +4364,16 @@
     "zh-CN": "自定义选项"
   },
   "Shell_CustomHandlersPlaceApplicationOwnedWPFElementsAndActionsInPredef_CC471961": {
-    "en-US": "Custom handlers place application-owned WPF elements and actions in predefined Shell regions without changing the Shell template. Use element factories when a view needs dependency injection, command-key helpers for shared dispatch, and callback helpers for local behavior; enable each owning Shell surface separately. This is recommended for profile views, application status, and cross-page actions, and the code below covers every custom-handler API.",
-    "zh-CN": "自定义处理程序无需更改 Shell 模板，即可在预定义 Shell 区域中放置应用自有的 WPF 元素和操作。当视图需要依赖注入时使用元素工厂，共享分派使用命令键辅助方法，本地行为则使用回调辅助方法；请分别启用各所属 Shell 界面。建议将其用于个人资料视图、应用状态和跨页面操作；下方代码涵盖所有自定义处理程序 API。"
+    "en-US": "Place app content and actions in Shell regions without editing the template.",
+    "zh-CN": "无需修改模板，即可在 Shell 区域放置应用内容和操作。"
   },
   "Shell_CycleTheme_4F08FD02": {
     "en-US": "Cycle theme",
     "zh-CN": "循环切换主题"
   },
   "Shell_DefineApplicationActionsIndependentlyFromTheirUIDispatchThemAsyn_186548BB": {
-    "en-US": "Define application actions independently from their UI, dispatch them asynchronously, and connect keyboard gestures to the same command pipeline. Commands are recommended when menus, toolbars, shortcuts, and background workflows must share one consistent operation.",
-    "zh-CN": "独立于界面定义应用操作，以异步方式分派这些操作，并将键盘手势连接到同一命令管道。当菜单、工具栏、快捷键和后台工作流必须共享一致操作时，建议使用命令。"
+    "en-US": "Share one command pipeline between UI actions and shortcuts.",
+    "zh-CN": "让界面操作和快捷键共用一条命令管线。"
   },
   "Shell_DefinePersistentStatusItemsAndOptionalSystemIndicatorsShownByThe_6B2BB27D": {
     "en-US": "Define persistent status items and optional system indicators shown by the shell.",
@@ -4460,8 +4460,8 @@
     "zh-CN": "元素可见性"
   },
   "Shell_EmptyOrWhitespaceOnlyTooltipContentCollapsesCompletelyWhileNativ_4FA3CAAF": {
-    "en-US": "Empty or whitespace-only tooltip content collapses completely, while native and third-party controls keep their own tooltip presentation.",
-    "zh-CN": "空白或仅包含空格的工具提示内容会完全折叠，而原生和第三方控件仍保留各自的工具提示样式。"
+    "en-US": "Empty tooltips collapse; native controls keep their own style.",
+    "zh-CN": "空工具提示会折叠；原生控件保留自身样式。"
   },
   "Shell_EnableCache_4E49AAF2": {
     "en-US": "Enable cache",
@@ -4504,16 +4504,16 @@
     "zh-CN": "启用 Flourish 工具提示样式并定义其初始显示延迟。"
   },
   "Shell_EnableTheProjectAwareTitleSelectorAndConnectItsCreateAndSaveRequ_936625AE": {
-    "en-US": "Enable the project-aware title selector and connect its create and save requests to the replaceable project behavior. This integration is recommended for multi-document shells that expose the active project in window chrome; the code includes startup composition, live display settings, and the default create/save workflow.",
-    "zh-CN": "启用项目感知标题选择器，并将其创建和保存请求连接到可替换的项目行为。对于在窗口框架中展示活动项目的多文档 Shell，建议使用这种集成；代码包括启动组合、实时显示设置以及默认创建/保存工作流。"
+    "en-US": "Enable the project selector and connect create and save requests.",
+    "zh-CN": "启用项目选择器，并连接创建和保存请求。"
   },
   "Shell_EnableTheProjectAwareTitleSelectorAndDropdown_474B91F6": {
     "en-US": "Enable the project-aware title selector and dropdown.",
     "zh-CN": "启用项目感知标题选择器和下拉菜单。"
   },
   "Shell_EnableTheWindowsNotificationAreaIconSetItsTooltipAndMoveTheShell_2A0A7F75": {
-    "en-US": "Enable the Windows notification-area icon, set its tooltip, and move the shell into or out of the tray through ITrayService. Use this for long-running desktop tools that must remain available without occupying the taskbar; the code below covers configuration and the minimize/restore flow.",
-    "zh-CN": "通过 ITrayService 启用 Windows 通知区域图标、设置其工具提示，并将 Shell 移入或移出托盘。它适用于需要保持可用但不占用任务栏的长时间运行桌面工具；下方代码涵盖配置和最小化/还原流程。"
+    "en-US": "Use ITrayService to manage the tray icon, tooltip, and window.",
+    "zh-CN": "使用 ITrayService 管理托盘图标、提示和窗口。"
   },
   "Shell_EnabledMultiProjectMode_F792C2AE": {
     "en-US": "Enabled multi-project mode",
@@ -4556,16 +4556,16 @@
     "zh-CN": "执行命令"
   },
   "Shell_ExploreFlourishThroughFocusedInteractiveExamplesEachFeaturePageE_74D8E627": {
-    "en-US": "Explore Flourish through focused, interactive examples. Each feature page explains what the API controls, where it fits in a desktop application, and lets you change live Gallery state so that the result is immediately visible.",
-    "zh-CN": "通过聚焦且可交互的示例探索 Flourish。每个功能页面都会说明 API 控制什么、它适用于桌面应用的哪些场景，并允许你实时更改 Gallery 状态，以便立即看到结果。"
+    "en-US": "Explore Flourish through focused, interactive examples.",
+    "zh-CN": "通过聚焦且可交互的示例探索 Flourish。"
   },
   "Shell_Explore_3B73900B": {
     "en-US": "Explore",
     "zh-CN": "探索"
   },
   "Shell_ExtendOrOverrideTranslationsWithUTF8LangLocaleJsonFilesAddFilesD_A991B111": {
-    "en-US": "Extend or override translations with a UTF-8 FlourishCulture.Json catalog. A catalog in the application directory is loaded automatically; additional catalogs can be registered, reloaded, and removed through IFlourishLocalization. Each file may provide only the locale-and-key cells it overrides. Use the code below to inspect the registration and manage its lifetime.",
-    "zh-CN": "使用 UTF-8 编码的 FlourishCulture.Json 目录扩展或覆盖翻译。应用目录中的同名文件会被自动加载，也可以通过 IFlourishLocalization 注册、重新加载和移除其他目录；每个文件只需提供需要覆盖的语言与键组合。使用下方代码可以检查注册信息并管理其生命周期。"
+    "en-US": "Load UTF-8 FlourishCulture.Json catalogs to add or override translations.",
+    "zh-CN": "加载 UTF-8 FlourishCulture.Json 以添加或覆盖翻译。"
   },
   "Shell_ExtraLargeTextSize_89659B30": {
     "en-US": "Extra-large text size",
@@ -4596,8 +4596,8 @@
     "zh-CN": "Flourish 示例库"
   },
   "Shell_FlourishIsAWPFApplicationFrameworkForBuildingConsistentWindowsDe_1B74E7A4": {
-    "en-US": "Flourish is a WPF application framework for building consistent Windows desktop shells, navigation, surfaces, and controls. It brings application composition and reusable visual contracts together so teams can focus on product workflows instead of repeatedly rebuilding shell infrastructure.",
-    "zh-CN": "Flourish 是一个 WPF 应用框架，用于构建一致的 Windows 桌面 Shell、导航、界面和控件。它将应用组合与可复用的视觉约定结合起来，使团队能够专注于产品工作流，而不必反复重建 Shell 基础设施。"
+    "en-US": "Flourish builds consistent WPF shells, navigation, and controls.",
+    "zh-CN": "Flourish 用于构建统一的 WPF 外壳、导航和控件。"
   },
   "Shell_FocusSearch_512C8478": {
     "en-US": "Focus search",
@@ -4632,8 +4632,8 @@
     "zh-CN": "图标字体"
   },
   "Shell_IconSize_A86CAFC7": {
-    "en-US": "Icon size",
-    "zh-CN": "图标大小"
+    "en-US": "Standard icon size",
+    "zh-CN": "标准图标大小"
   },
   "Shell_IdentifyTheHandlerRegisteredInTheRuntimeCommandRegistry_CA062EE8": {
     "en-US": "Identify the handler registered in the runtime command registry.",
@@ -4692,8 +4692,8 @@
     "zh-CN": "留空以使用全局标题字号。"
   },
   "Shell_LeaveEmptyToFollowTheGlobalIconSize_7B5D9302": {
-    "en-US": "Leave empty to follow the global icon size.",
-    "zh-CN": "留空以使用全局图标大小。"
+    "en-US": "Leave empty to follow the global standard icon size.",
+    "zh-CN": "留空以使用全局标准图标大小。"
   },
   "Shell_LeaveEmptyToFollowTheGlobalLargeSize_73A327DA": {
     "en-US": "Leave empty to follow the global large size.",
@@ -4732,8 +4732,8 @@
     "zh-CN": "徽标路径"
   },
   "Shell_ManageProjectIdentitiesStoragePathsActiveSelectionAndTitleBarInt_A8CA15F5": {
-    "en-US": "Manage project identities, storage paths, active selection, and title-bar integration through one shared catalog. Use project services in editors and document-based applications where shell state must follow the file or workspace selected by the user.",
-    "zh-CN": "通过一个共享目录管理项目标识、存储路径、活动选择和标题栏集成。在编辑器和基于文档的应用中，当 Shell 状态需要跟随用户所选文件或工作区时，可使用项目服务。"
+    "en-US": "Manage project identity, storage, selection, and title integration.",
+    "zh-CN": "统一管理项目标识、存储、选择和标题栏集成。"
   },
   "Shell_MaximizeTheLiveShellWindow_2654F007": {
     "en-US": "Maximize the live shell window.",
@@ -4784,8 +4784,8 @@
     "zh-CN": "最小宽度"
   },
   "Shell_MotionCommunicatesPageChangesNavigationPanelStateAndHoverAfforda_2E1BDAC0": {
-    "en-US": "Motion communicates page changes, navigation-panel state, and hover affordances while preserving the final layout. Enable motion at the Shell level, then choose each transition and its optional duration through ConfigureMotion. Use restrained timings where movement clarifies state, and keep the operating-system reduced-motion preference enabled; the code below covers every motion setting.",
-    "zh-CN": "动效在保持最终布局的同时传达页面变化、导航面板状态和悬停交互提示。先在 Shell 层启用动效，再通过 ConfigureMotion 选择各项过渡及其可选持续时间。当移动有助于说明状态时应使用克制的时长，并保持启用操作系统的减少动态效果首选项；下方代码涵盖所有动效设置。"
+    "en-US": "Use restrained motion to clarify state and honor reduced-motion settings.",
+    "zh-CN": "使用克制的动效说明状态，并遵循减少动态效果设置。"
   },
   "Shell_MoveKeyboardFocusToTheTitleBarSearchBox_696AD4DF": {
     "en-US": "Move keyboard focus to the title-bar search box.",
@@ -4828,8 +4828,8 @@
     "zh-CN": "通知消息"
   },
   "Shell_OnlyTheItemsRegisteredForTheActivePageAreShownAndTheirCommandKey_DBEF7827": {
-    "en-US": "Only the items registered for the active page are shown, and their command keys are dispatched through the shared command system.",
-    "zh-CN": "仅显示为活动页面注册的项目，其命令键通过共享命令系统分派。"
+    "en-US": "Show only the active page toolbar items and dispatch their commands.",
+    "zh-CN": "仅显示当前页面的工具栏项并分派其命令。"
   },
   "Shell_OpenClose_DF4437D1": {
     "en-US": "Open / close",
@@ -4856,8 +4856,8 @@
     "zh-CN": "可选择为标题栏徽标提供图像。"
   },
   "Shell_OverrideSelectedTypographyResourcesForOnePageTypeWhileAllOmitted_85813212": {
-    "en-US": "Override selected typography resources for one Page type while all omitted values continue to inherit the application defaults. Use this for a page with distinct reading or presentation needs; the code below demonstrates adding and clearing a typed page override.",
-    "zh-CN": "为某个 Page 类型覆盖选定的排版资源，未指定的值继续继承应用默认值。它适用于具有特殊阅读或呈现需求的页面；下方代码演示添加和清除强类型页面覆盖。"
+    "en-US": "Override selected typography for one Page; omitted values inherit.",
+    "zh-CN": "覆盖单个 Page 的部分排版；省略值继续继承。"
   },
   "Shell_OverrideTheTextFamilyOnThisPage_79C98EB0": {
     "en-US": "Override the text family on this page.",
@@ -4884,8 +4884,8 @@
     "zh-CN": "页面标题字号"
   },
   "Shell_PageIconSize_68EB6DAA": {
-    "en-US": "Page icon size",
-    "zh-CN": "页面图标大小"
+    "en-US": "Page standard icon size",
+    "zh-CN": "页面标准图标大小"
   },
   "Shell_PageLargeSize_D500FA22": {
     "en-US": "Page large size",
@@ -4924,11 +4924,11 @@
     "zh-CN": "通过已注册行为持久化活动的未命名项目。"
   },
   "Shell_PersistTheSelectedFlourishAppsettingsFileThroughAtomicWritesThat_F7C26977": {
-    "en-US": "Persist the selected Flourish appsettings file through atomic writes that reload host configuration. Use the single-operation methods for one preference and UpdateAsync when related edits must commit together; this is recommended for user or administrator settings that must remain consistent on disk. The code below covers the managed file path, set, merge, append, remove, batch editing, and update results.",
-    "zh-CN": "通过原子写入持久化所选 Flourish appsettings 文件，并重新加载主机配置。单个首选项可使用单操作方法，相关编辑需要一同提交时则使用 UpdateAsync；这适合必须在磁盘上保持一致的用户或管理员设置。下方代码涵盖托管文件路径、设置、合并、追加、移除、批量编辑和更新结果。"
+    "en-US": "Save appsettings atomically and use UpdateAsync for related changes.",
+    "zh-CN": "以原子方式保存 appsettings；相关更改使用 UpdateAsync。"
   },
   "Shell_PlaceApplicationOwnedWPFContentAndCommandActionsInPredefinedShel_5AB7F196": {
-    "en-US": "Place application-owned WPF content and command actions in predefined shell regions.",
+    "en-US": "Place app-owned WPF content and command actions in predefined shell regions.",
     "zh-CN": "在预定义的 Shell 区域中放置应用自有的 WPF 内容和命令操作。"
   },
   "Shell_PreviewPalette_B9C6FB33": {
@@ -5000,8 +5000,8 @@
     "zh-CN": "将四个任务加入队列，以演示有限并发。"
   },
   "Shell_QueueProgressOnlyOrTypedResultWorkWithDescriptiveMetadataThenKee_5C27DD7B": {
-    "en-US": "Queue progress-only or typed-result work with descriptive metadata, then keep the returned handle to observe or cancel that task. Use this API for imports, synchronization, report generation, and similar operations; the code below shows cooperative cancellation, progress reporting, and result retrieval.",
-    "zh-CN": "将仅报告进度或返回强类型结果的工作连同描述性元数据加入队列，然后保留返回的句柄以观察或取消该任务。此 API 适用于导入、同步、报表生成及类似操作；下方代码展示协作式取消、进度报告和结果获取。"
+    "en-US": "Queue background work and keep its handle to observe or cancel it.",
+    "zh-CN": "将工作加入后台队列，并保留句柄以观察或取消。"
   },
   "Shell_QueueWorkObserveProgressCancelAndCaptureResults_E7CAD9FD": {
     "en-US": "Queue work, observe progress, cancel, and capture results.",
@@ -5016,20 +5016,20 @@
     "zh-CN": "将返回所捕获值的工作加入队列。"
   },
   "Shell_QueuedRunningAndCancellingItemsUpdateThroughChanged_234E9419": {
-    "en-US": "Queued, running, and cancelling items update through Changed.",
-    "zh-CN": "排队、运行和取消中的项目通过 Changed 更新。"
+    "en-US": "Changed updates queued, running, and cancelling items.",
+    "zh-CN": "Changed 更新排队、运行和取消项。"
   },
   "Shell_ReadEditAppendSaveReloadAndSwitchLocale_76DF4139": {
     "en-US": "Read, edit, append, save, reload, and switch locale.",
     "zh-CN": "读取、编辑、追加、保存、重新加载并切换区域设置。"
   },
   "Shell_ReadEffectiveValuesFromTheActiveProviderChainBindTypedOptionsIns_F81E47A0": {
-    "en-US": "Read effective values from the active provider chain, bind typed options, inspect immutable snapshots, and reload providers after external changes. Use this for diagnostics, settings screens, and configuration consumed across the application; the code below demonstrates change tracking, reload, raw and typed reads, section binding, and snapshots.",
-    "zh-CN": "从活动提供程序链读取有效值、绑定强类型选项、检查不可变快照，并在外部更改后重新加载提供程序。它适用于诊断、设置界面以及应用各处使用的配置；下方代码演示了更改跟踪、重新加载、原始值和强类型读取、节绑定及快照。"
+    "en-US": "Read, bind, and reload values from active configuration providers.",
+    "zh-CN": "读取、绑定并重新加载当前配置源。"
   },
   "Shell_ReadImmutableCommandAndShortcutSnapshotsAndSubscribeToChangeNoti_4A8F9989": {
-    "en-US": "Read immutable command and shortcut snapshots and subscribe to change notifications without taking ownership of registrations. This is useful for diagnostics, command palettes, and management views; the example code refreshes a view whenever either registry changes.",
-    "zh-CN": "读取不可变的命令和快捷键快照，并订阅更改通知，而不取得注册的所有权。它适用于诊断、命令面板和管理视图；当任一注册表更改时，示例代码都会刷新视图。"
+    "en-US": "Read command and shortcut snapshots or observe later changes.",
+    "zh-CN": "读取命令和快捷键快照，或观察后续变化。"
   },
   "Shell_ReadMergedValue_6CE2FF16": {
     "en-US": "Read merged value",
@@ -5048,12 +5048,12 @@
     "zh-CN": "最近结果"
   },
   "Shell_RegisterADestinationPlaceItsItemInTheLiveNavigationMenuNavigateT_E5E68AA5": {
-    "en-US": "Register a destination, place its item in the live navigation menu, navigate to it, and remove both pieces when the feature is unloaded. Use this for plugins or optional modules discovered after startup; the code below shows the route registry and menu update that must stay coordinated.",
-    "zh-CN": "注册目标页面、将其项目放入当前导航菜单、导航到该页面，并在功能卸载时移除这两部分。它适用于启动后发现的插件或可选模块；下方代码展示必须保持协调的路由注册表和菜单更新。"
+    "en-US": "Register, show, navigate to, and remove a destination at runtime.",
+    "zh-CN": "在运行时注册、显示、导航和移除目标。"
   },
   "Shell_RegisterAKeyedHandlerProvideAnOptionalAvailabilityPredicateAndDi_0881EB95": {
-    "en-US": "Register a keyed handler, provide an optional availability predicate, and dispatch it with a source and parameter. Use this pattern for actions that may be contributed or replaced while the application is running; the code below also shows how the disposable registration controls handler lifetime.",
-    "zh-CN": "注册带键的处理程序，提供可选的可用性谓词，并通过来源和参数进行分派。对于可能在应用运行期间添加或替换的操作，可使用此模式；下方代码还展示可释放注册如何控制处理程序生命周期。"
+    "en-US": "Register a keyed handler with optional availability and context.",
+    "zh-CN": "注册带键处理程序，并提供可选状态和上下文。"
   },
   "Shell_RegisterAProjectBoundToTheExistingLocalFileAboveAndMakeItActive_164A8DA7": {
     "en-US": "Register a project bound to the existing local file above and make it active.",
@@ -5096,8 +5096,8 @@
     "zh-CN": "注册处理程序或替换其现有定义。"
   },
   "Shell_RegisterThePageWithTheServiceContainerSoItsConstructorDependenci_25A4551B": {
-    "en-US": "Register the page with the service container so its constructor dependencies are available when Flourish opens the profile surface.",
-    "zh-CN": "向服务容器注册页面，以便 Flourish 打开个人资料界面时能够提供其构造函数依赖项。"
+    "en-US": "Register the page so dependency injection can create the profile view.",
+    "zh-CN": "注册页面，让依赖注入创建个人资料视图。"
   },
   "Shell_RegisterTheRuntimeRouteAndItsNavigationItem_610ED459": {
     "en-US": "Register the runtime route and its navigation item.",
@@ -5204,8 +5204,8 @@
     "zh-CN": "请求深色原生窗口框架。"
   },
   "Shell_ResizePositionActivateShowHideMinimizeMaximizeAndRestoreTheActiv_D58415C7": {
-    "en-US": "Resize, position, activate, show, hide, minimize, maximize, and restore the active shell through IWindowService. Use these commands for workspace modes or window-management actions after startup; the code below demonstrates the principal state and visibility operations.",
-    "zh-CN": "通过 IWindowService 调整活动 Shell 的大小和位置，并执行激活、显示、隐藏、最小化、最大化和还原。可将这些命令用于启动后的工作区模式或窗口管理操作；下方代码演示主要的状态和可见性操作。"
+    "en-US": "Manage active shell size, position, visibility, and state.",
+    "zh-CN": "管理活动 Shell 的大小、位置、可见性和状态。"
   },
   "Shell_ResizeTheLiveShellToTheGalleryDemonstrationSize_BA9D8509": {
     "en-US": "Resize the live shell to the Gallery demonstration size.",
@@ -5252,8 +5252,8 @@
     "zh-CN": "路由"
   },
   "Shell_RunApplicationWorkOutsideTheUIThreadWhileRetainingStructuredProg_5EBC59B1": {
-    "en-US": "Run application work outside the UI thread while retaining structured progress, cancellation, and completion results. The background task service is recommended for user-visible operations that must remain observable and responsive rather than for short, fire-and-forget callbacks.",
-    "zh-CN": "在 UI 线程之外运行应用工作，同时保留结构化进度、取消状态和完成结果。后台任务服务适合必须保持可观察和响应的用户可见操作，而不适合短暂且无需等待结果的回调。"
+    "en-US": "Run work off the UI thread with progress, cancellation, and results.",
+    "zh-CN": "在 UI 线程外运行工作，并保留进度、取消和结果。"
   },
   "Shell_SaveActiveProject_A1E813A3": {
     "en-US": "Save active project",
@@ -5288,8 +5288,8 @@
     "zh-CN": "选择页面进入和导航面板过渡类型，并分别设置可选持续时间。"
   },
   "Shell_SelectTheApplicationColorThemeAndSwitchAmongTheSupportedModesWit_C1EDC9B6": {
-    "en-US": "Select the application color theme and switch among the supported modes without restarting the shell. Use this for a user-facing appearance preference or a theme preview; the code below shows direct selection, cycling, and the state-change event used to refresh dependent UI.",
-    "zh-CN": "选择应用颜色主题，并在无需重启 Shell 的情况下切换受支持的模式。它适用于面向用户的外观首选项或主题预览；下方代码展示直接选择、循环切换以及用于刷新相关界面的状态更改事件。"
+    "en-US": "Select the app color theme and switch among the supported modes without restarting the shell.",
+    "zh-CN": "选择应用颜色主题，并在无需重启 Shell 的情况下切换受支持的模式。"
   },
   "Shell_SelectedTask_1A3F175B": {
     "en-US": "Selected task",
@@ -5300,8 +5300,8 @@
     "zh-CN": "设为 1100 × 760"
   },
   "Shell_SetOneSharedRadiusOrLeaveTheFieldEmptyToRestoreTheStandardHierar_79220300": {
-    "en-US": "Set one shared radius or leave the field empty to restore the standard hierarchy.",
-    "zh-CN": "设置统一圆角半径，或将字段留空以恢复标准层级。"
+    "en-US": "Set one radius, or leave it empty to restore defaults.",
+    "zh-CN": "设置统一圆角，留空则恢复默认值。"
   },
   "Shell_SetSave_FA0BA9B1": {
     "en-US": "Set & save",
@@ -5312,15 +5312,15 @@
     "zh-CN": "设置徽标界面中显示的辅助应用文本。"
   },
   "Shell_SetTheApplicationNameUsedByTheTitleAndLogoSurfaces_56A6B884": {
-    "en-US": "Set the application name used by the title and logo surfaces.",
+    "en-US": "Set the app name used by the title and logo surfaces.",
     "zh-CN": "设置标题和徽标界面使用的应用名称。"
   },
   "Shell_SetTheApplicationTitleSubtitleLogoFallbackTextAndUnnamedProjectL_FF5B197B": {
-    "en-US": "Set the application title, subtitle, logo, fallback text, and unnamed-project label shown by the shell. Configure stable defaults during startup and use ITitleBarService when identity must follow the active workspace; the code below demonstrates both approaches.",
-    "zh-CN": "设置 Shell 显示的应用标题、副标题、徽标、回退文本和未命名项目标签。在启动时配置稳定的默认值；当标识需要随活动工作区变化时使用 ITitleBarService。下方代码演示这两种方式。"
+    "en-US": "Set the app title, subtitle, logo, fallback text, and unnamed-project label shown by the shell.",
+    "zh-CN": "设置 Shell 显示的应用标题、副标题、徽标、回退文本和未命名项目标签。"
   },
   "Shell_SetTheApplicationWideTextFamily_51BED724": {
-    "en-US": "Set the application-wide text family.",
+    "en-US": "Set the app-wide text family.",
     "zh-CN": "设置应用全局文本字体。"
   },
   "Shell_SetTheBoldExtraLargeTypographyTier_3089CFA2": {
@@ -5428,8 +5428,8 @@
     "zh-CN": "显示通知"
   },
   "Shell_ShowOrHideIndividualTitleBarElementsAndChooseWhenBreadcrumbsAreV_3C80D8A0": {
-    "en-US": "Show or hide individual title-bar elements and choose when breadcrumbs are visible. Use these focused settings when a workflow needs to simplify chrome without disabling the whole title bar; the code below applies an element switch and breadcrumb policy.",
-    "zh-CN": "显示或隐藏各个标题栏元素，并选择何时显示面包屑导航。当工作流需要简化窗口框架但不希望禁用整个标题栏时，可使用这些针对性设置；下方代码会应用元素开关和面包屑策略。"
+    "en-US": "Show or hide individual title-bar elements and choose when breadcrumbs are visible.",
+    "zh-CN": "显示或隐藏各个标题栏元素，并选择何时显示面包屑导航。"
   },
   "Shell_ShowOrHideTheSelectedTitleBarElement_2FA93747": {
     "en-US": "Show or hide the selected title-bar element.",
@@ -5488,8 +5488,8 @@
     "zh-CN": "通过已配置的策略提交关闭请求。"
   },
   "Shell_SubscribeToTaskChangesAndInspectActiveSnapshotsWhileWorkIsQueued_F7BBAB1C": {
-    "en-US": "Subscribe to task changes and inspect active snapshots while work is queued, running, or cancelling. Combine the service snapshot with each handle's completion result when building status panels, activity centers, or diagnostics that must distinguish active work from recently completed outcomes.",
-    "zh-CN": "在工作处于排队、运行或取消状态时订阅任务更改并检查活动快照。构建需要区分活动工作与最近完成结果的状态面板、活动中心或诊断界面时，可将服务快照与各句柄的完成结果结合使用。"
+    "en-US": "Subscribe to task changes and inspect active snapshots while work is queued, running, or cancelling.",
+    "zh-CN": "在工作处于排队、运行或取消状态时订阅任务更改并检查活动快照。"
   },
   "Shell_SystemIndicators_F2F8C292": {
     "en-US": "System indicators",
@@ -5520,16 +5520,16 @@
     "zh-CN": "文本字体"
   },
   "Shell_TheDynamicToolbarChangesItsCommandsWithTheActivePageKeepingPageS_B6361E4C": {
-    "en-US": "The dynamic toolbar changes its commands with the active page, keeping page-specific actions close to their workflow. Enable the surface once, then associate each WPF Page type with FlourishToolbarItem values that provide display text, a glyph, and a stable command key. Use it for actions such as refresh, export, or preview; the code below demonstrates both registration overloads, including the text-only option.",
-    "zh-CN": "动态工具栏会随活动页面更改其命令，使页面专属操作靠近对应工作流。只需启用一次该界面，然后将各 WPF Page 类型与提供显示文本、字形和稳定命令键的 FlourishToolbarItem 值关联。它适用于刷新、导出或预览等操作；下方代码演示两种注册重载，包括纯文本选项。"
+    "en-US": "Show toolbar commands for the active page and give each a stable key.",
+    "zh-CN": "显示当前页面的工具栏命令，并为每项设置稳定键。"
   },
   "Shell_TheSettingUpdatesExistingFlourishViewportsThroughTheSharedDynami_4D207F2C": {
-    "en-US": "The setting updates existing Flourish viewports through the shared dynamic resource.",
-    "zh-CN": "此设置通过共享动态资源更新现有 Flourish 视口。"
+    "en-US": "Updates existing viewports through a shared resource.",
+    "zh-CN": "通过共享资源更新现有视口。"
   },
   "Shell_TheStatusBarKeepsApplicationStateAndBuiltInSystemDetailsVisibleW_B3D10F2D": {
-    "en-US": "The status bar keeps application state and built-in system details visible without interrupting the current workflow. Enable the persistent surface and configure non-interactive text, glyphs, and the consolidated network and power indicator through ConfigureStatusBar. This pattern is recommended for synchronization, workspace, connectivity, and power information; the code below covers every status-bar configuration API.",
-    "zh-CN": "状态栏可持续显示应用状态和内置系统详细信息，而不会打断当前工作流。通过 ConfigureStatusBar 启用持久界面，并配置非交互文本、字形以及整合的网络与电源指示器。建议将此模式用于同步、工作区、连接和电源信息；下方代码涵盖所有状态栏配置 API。"
+    "en-US": "Keep concise app, network, and power status visible without interruption.",
+    "zh-CN": "持续显示简短的应用、网络和电源状态。"
   },
   "Shell_ThemeTypographyPageOverridesAndMaterialEffects_492AA572": {
     "en-US": "Theme, typography, page overrides, and material effects.",
@@ -5580,8 +5580,8 @@
     "zh-CN": "工具提示行为"
   },
   "Shell_TooltipsLabelCompactOrIconOnlyFlourishControlsWithoutAddingPerma_7ADF66F8": {
-    "en-US": "Tooltips label compact or icon-only Flourish controls without adding permanent visual noise. ConfigureToolTips selects the Flourish presentation and sets the initial hover delay, while each control continues to provide its own ToolTip content and accessible name. This is recommended for unfamiliar icons and secondary actions; the code below configures the host and shows the corresponding XAML.",
-    "zh-CN": "工具提示可为紧凑型或仅图标的 Flourish 控件提供说明，而不会增加永久的视觉干扰。ConfigureToolTips 选择 Flourish 样式并设置初始悬停延迟，同时每个控件仍提供自己的 ToolTip 内容和无障碍名称。建议将它用于不熟悉的图标和次要操作；下方代码配置宿主并展示相应 XAML。"
+    "en-US": "Use tooltips to label compact or icon-only controls.",
+    "zh-CN": "使用工具提示说明紧凑或纯图标控件。"
   },
   "Shell_Topmost_73EC388A": {
     "en-US": "Topmost",
@@ -5652,8 +5652,8 @@
     "zh-CN": "添加或更新"
   },
   "Shell_UseITitleBarServiceWhenAnApplicationModeShouldSwitchTheCompleteF_0F9CB8CF": {
-    "en-US": "Use ITitleBarService when an application mode should switch the complete Flourish title bar on or off, rather than hide one title-bar element. SetEnabled updates the authoritative title-bar state and Changed keeps the checkbox synchronized. Configure navigation, toolbar, status, tooltips, motion, and profile availability through their own domain services.",
-    "zh-CN": "当某种应用模式需要启用或禁用整个 Flourish 标题栏，而不只是隐藏某个标题栏元素时，请使用 ITitleBarService。SetEnabled 更新权威标题栏状态，Changed 则使复选框保持同步。导航、工具栏、状态、工具提示、动效和个人资料的可用性应通过各自的领域服务配置。"
+    "en-US": "Use ITitleBarService to enable or disable the entire title bar.",
+    "zh-CN": "使用 ITitleBarService 启用或禁用整个标题栏。"
   },
   "Shell_UseTheActiveProjectBehaviorToConfirmDeletionAndRemoveAManagedTxt_50260BA4": {
     "en-US": "Use the active project behavior to confirm deletion and remove a managed .txt file.",

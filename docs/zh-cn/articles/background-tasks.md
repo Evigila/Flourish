@@ -5,14 +5,14 @@ description: 使用元信息、取消、进度、结果和状态栏集成运行�
 
 # 后台任务
 
-Flourish 将 `IBackgroundTaskService` 注册为单例运行时服务，并随 Generic Host 一同启动。应用通过依赖注入解析该服务，使用 `QueueTask` 提交工作；需要取消任务或读取最终结果时，应保留返回的 handle。
+使用单例 `IBackgroundTaskService` 在 WPF UI 线程外排队、取消和观察任务，并保留 `QueueTask` 返回的 handle 以取消任务或读取结果。
 
 ```csharp
 public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 {
-    public FlourishBackgroundTaskHandle Export()
+    public BackgroundTaskHandle Export()
     {
-        var metadata = new FlourishBackgroundTaskMetadata(
+        var metadata = new BackgroundTaskMetadata(
             name: "导出报表",
             description: "将当前报表写入磁盘。",
             iconGlyph: "\uE74E");
@@ -33,7 +33,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 
 ## 元信息与状态栏集成
 
-每次提交都必须提供 `FlourishBackgroundTaskMetadata`。`Name` 不可为空，`Description` 和 `IconGlyph` 可省略。Shell 会把这些信息用于提示、任务行、自动化名称和状态图标，因此应在提交任务前填写面向用户的元信息。
+每次提交都必须提供 `BackgroundTaskMetadata`。`Name` 不可为空，`Description` 和 `IconGlyph` 可省略。Shell 会把这些信息用于提示、任务行、自动化名称和状态图标，因此应在提交任务前填写面向用户的元信息。
 
 存在活动任务时，状态栏左侧会为每个正在运行或正在取消的任务显示一个图标。悬停图标可查看元信息、状态和已报告进度；点击会打开后台任务浮层。所有执行槽都被占用后，后续任务进入等待队列，状态栏直接显示不带图标和角标的等待数量。队列提供取消等待中或运行中任务的操作。
 
@@ -47,7 +47,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 
 `Current` 返回等待中、运行中和正在取消任务的不可变快照。活动集合、任务状态或进度变化时，`Changed` 会通过 `args.Current` 发布同一份缓存列表。该事件可能从非 UI 线程触发；事件处理器若要更新应用 UI，必须切换到 UI dispatcher。
 
-`FlourishBackgroundTaskState` 描述完整生命周期：
+`BackgroundTaskState` 描述完整生命周期：
 
 | 状态 | 含义 |
 | --- | --- |
@@ -64,14 +64,14 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 
 两个提交重载分别接收：
 
-- `Func<FlourishBackgroundTaskContext, ValueTask>`：没有返回值的工作。
-- `Func<FlourishBackgroundTaskContext, ValueTask<TResult>>`：产生返回值的工作。
+- `Func<BackgroundTaskContext, ValueTask>`：没有返回值的工作。
+- `Func<BackgroundTaskContext, ValueTask<TResult>>`：产生返回值的工作。
 
 异步 lambda 可以直接匹配这些重载。异步 I/O 不需要额外包装在 `Task.Run` 中，应直接等待，并把 `context.CancellationToken` 传给支持取消的 API。
 
 ## 取消与 Host 停止
 
-调用 `handle.Cancel()`、`CancelTask(handle.Id)` 或停止 Host 时，`FlourishBackgroundTaskContext.CancellationToken` 会收到取消请求。
+调用 `handle.Cancel()`、`CancelTask(handle.Id)` 或停止 Host 时，`BackgroundTaskContext.CancellationToken` 会收到取消请求。
 
 - 取消等待任务会直接移出队列，不会调用任务委托。
 - 取消运行任务会先进入 `Cancelling` 状态。取消是协作式的，委托应观察 token 并尽快结束。
@@ -82,11 +82,11 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 
 ## 进度
 
-使用 `context.ReportProgress(value)` 报告 `0` 到 `1` 之间的有限数值。最新进度可从 `FlourishBackgroundTaskInfo.Progress` 读取；首次报告前为 `null`。超出范围的值会抛出 `ArgumentOutOfRangeException`。
+使用 `context.ReportProgress(value)` 报告 `0` 到 `1` 之间的有限数值。最新进度可从 `BackgroundTaskInfo.Progress` 读取；首次报告前为 `null`。超出范围的值会抛出 `ArgumentOutOfRangeException`。
 
 ## 返回值与异常
 
-`handle.Completion` 始终正常完成并返回 `FlourishBackgroundTaskResult`。任务委托失败不会使 `Completion` fault；应检查 `Succeeded`、`Canceled`、`Exception` 和最终的 `Info` 快照。
+`handle.Completion` 始终正常完成并返回 `BackgroundTaskResult`。任务委托失败不会使 `Completion` fault；应检查 `Succeeded`、`Canceled`、`Exception` 和最终的 `Info` 快照。
 
 泛型重载还会携带成功返回值：
 
@@ -94,7 +94,7 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
 {
     var handle = backgroundTasks.QueueTask<int>(
-        new FlourishBackgroundTaskMetadata(
+        new BackgroundTaskMetadata(
             "统计文件",
             "统计所选工作区中的文件数量。",
             "\uE8B7"),
@@ -105,7 +105,7 @@ public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
             return files.Count;
         });
 
-    FlourishBackgroundTaskResult<int> result = await handle.Completion;
+    BackgroundTaskResult<int> result = await handle.Completion;
     if (result.Succeeded)
     {
         return result.Value;
@@ -124,6 +124,6 @@ public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
 
 ## 相关功能
 
-- [状态栏](status-bar.md)说明运行图标、等待队列和系统状态浮层。
-- [依赖注入](configure-services.md)说明如何解析应用服务和 `IBackgroundTaskService`。
-- [应用数据](configure-data.md)列出内置任务界面的本地化键。
+- [状态栏](status-bar.md)
+- [依赖注入](configure-services.md)
+- [应用数据](configure-data.md)

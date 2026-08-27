@@ -3,8 +3,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Layout;
 
-internal sealed class LayoutBuilder(FlourishLayoutOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class LayoutBuilder(LayoutOptions options)
+    : BuilderMutationGuard,
         ILayoutBuilder
 {
     public ILayoutBuilder SetCenterContent(

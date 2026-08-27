@@ -7,19 +7,19 @@ using ArkheideSystem.Flourish.Shell.Regions;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
-internal sealed class CustomContentBuilder(FlourishRegionOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class CustomContentBuilder(ShellRegionOptions options)
+    : BuilderMutationGuard,
         ICustomContentBuilder
 {
     public ICustomContentBuilder AddRegionContent(
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
     )
     {
         ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(contentFactory);
-        options.RegionContents.Add(new FlourishRegionContent(region, contentFactory, order));
+        options.RegionContents.Add(new ShellRegionRegistration(region, contentFactory, order));
         return this;
     }
 
@@ -30,10 +30,10 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         ThrowIfFrozen();
         ArgumentNullException.ThrowIfNull(contentFactory);
         options.RegionContents.RemoveAll(existing =>
-            existing.Region == FlourishRegion.TitleBarProfile
+            existing.Region == ShellRegion.TitleBarProfile
         );
         options.RegionContents.Add(
-            new FlourishRegionContent(FlourishRegion.TitleBarProfile, contentFactory)
+            new ShellRegionRegistration(ShellRegion.TitleBarProfile, contentFactory)
         );
         return this;
     }
@@ -48,9 +48,9 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         ThrowIfFrozen();
         displayName = ValidateNotBlank(displayName, nameof(displayName));
         return AddRegionContent(
-            FlourishRegion.TitleBarEnd,
+            ShellRegion.TitleBarEnd,
             services =>
-                FlourishRegionElementFactory.CreateTitlebarActionButton(
+                ShellRegionElementFactory.CreateTitlebarActionButton(
                     services,
                     displayName,
                     iconGlyph,
@@ -72,9 +72,9 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         displayName = ValidateNotBlank(displayName, nameof(displayName));
         ArgumentNullException.ThrowIfNull(action);
         return AddRegionContent(
-            FlourishRegion.TitleBarEnd,
+            ShellRegion.TitleBarEnd,
             services =>
-                FlourishRegionElementFactory.CreateTitlebarActionButton(
+                ShellRegionElementFactory.CreateTitlebarActionButton(
                     services,
                     displayName,
                     iconGlyph,
@@ -86,7 +86,7 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
     }
 
     public ICustomContentBuilder AddFooterCommand(
-        FlourishRegion region,
+        ShellRegion region,
         string displayText,
         string iconGlyph,
         string? commandKey,
@@ -99,7 +99,7 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         return AddRegionContent(
             region,
             services =>
-                FlourishRegionElementFactory.CreateFooterCommandButton(
+                ShellRegionElementFactory.CreateFooterCommandButton(
                     services,
                     displayText,
                     iconGlyph,
@@ -111,7 +111,7 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
     }
 
     public ICustomContentBuilder AddFooterCommandHandler(
-        FlourishRegion region,
+        ShellRegion region,
         string displayText,
         string iconGlyph,
         Action<IServiceProvider> action,
@@ -125,7 +125,7 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         return AddRegionContent(
             region,
             services =>
-                FlourishRegionElementFactory.CreateFooterCommandButton(
+                ShellRegionElementFactory.CreateFooterCommandButton(
                     services,
                     displayText,
                     iconGlyph,
@@ -136,9 +136,9 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         );
     }
 
-    private static void ValidateFooterRegion(FlourishRegion region, string parameterName)
+    private static void ValidateFooterRegion(ShellRegion region, string parameterName)
     {
-        if (region is FlourishRegion.FooterStart or FlourishRegion.FooterEnd)
+        if (region is ShellRegion.FooterStart or ShellRegion.FooterEnd)
         {
             return;
         }
@@ -146,7 +146,7 @@ internal sealed class CustomContentBuilder(FlourishRegionOptions options)
         throw new ArgumentOutOfRangeException(
             parameterName,
             region,
-            "Footer content must use FlourishRegion.FooterStart or FlourishRegion.FooterEnd."
+            "Footer content must use ShellRegion.FooterStart or ShellRegion.FooterEnd."
         );
     }
 

@@ -5,8 +5,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Motion;
 
-internal sealed class MotionBuilder(FlourishMotionOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class MotionBuilder(MotionOptions options)
+    : BuilderMutationGuard,
         IMotionBuilder
 {
     public IMotionBuilder SetEnabled(
@@ -23,14 +23,14 @@ internal sealed class MotionBuilder(FlourishMotionOptions options)
 
     public IMotionBuilder SetPageTransition(
         bool enabled = true,
-        FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom,
+        PageTransition transition = PageTransition.EntranceFromBottom,
         TimeSpan? duration = null,
         bool usePersistedPreference = true
     )
     {
         ThrowIfFrozen();
         ValidateEnum(transition, nameof(transition));
-        options.PageTransition = enabled ? transition : FlourishPageTransition.None;
+        options.PageTransition = enabled ? transition : PageTransition.None;
         if (duration is { } value)
         {
             options.PageTransitionDuration = ValidateDuration(value, nameof(duration));
@@ -42,7 +42,7 @@ internal sealed class MotionBuilder(FlourishMotionOptions options)
 
     public IMotionBuilder SetNavigationPanelTransition(
         bool enabled = true,
-        FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize,
+        NavigationPanelTransition transition = NavigationPanelTransition.Resize,
         TimeSpan? duration = null,
         bool usePersistedPreference = true
     )
@@ -51,7 +51,7 @@ internal sealed class MotionBuilder(FlourishMotionOptions options)
         ValidateEnum(transition, nameof(transition));
         options.NavigationPanelTransition = enabled
             ? transition
-            : FlourishNavigationPanelTransition.None;
+            : NavigationPanelTransition.None;
         if (duration is { } value)
         {
             options.NavigationPanelTransitionDuration = ValidateDuration(value, nameof(duration));

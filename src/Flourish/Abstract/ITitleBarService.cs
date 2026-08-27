@@ -8,10 +8,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface ITitleBarService
 {
     /// <summary>Gets an immutable snapshot of the current title bar configuration.</summary>
-    FlourishTitleBarState Current { get; }
+    TitleBarState Current { get; }
 
     /// <summary>Occurs synchronously after title bar content or visibility changes.</summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarState>>? Changed;
+    event EventHandler<StateChangedEventArgs<TitleBarState>>? Changed;
 
     /// <summary>Enables or disables the complete title bar surface.</summary>
     void SetEnabled(bool enabled);
@@ -69,7 +69,7 @@ public interface ITitleBarService
 
     /// <summary>Registers an asynchronous handler for user-entered search queries.</summary>
     IRegistration SubscribeSearch(
-        Func<FlourishTitleBarSearchQuery, CancellationToken, ValueTask> handler
+        Func<TitleBarSearchQuery, CancellationToken, ValueTask> handler
     );
 
     /// <summary>Shows or hides one title bar element without changing its content.</summary>

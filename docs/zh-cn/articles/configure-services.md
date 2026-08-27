@@ -5,7 +5,7 @@ description: 注册应用服务、可导航页面和可替换的 Flourish 服务
 
 # 依赖注入
 
-Flourish 使用其 .NET Generic Host 中的 `IServiceCollection`。通过 `ConfigureServices` 注册应用服务、WPF 页面和可替换的 Flourish 服务。
+通过 Generic Host 的 `IServiceCollection` 和 `ConfigureServices` 注册应用服务、WPF 页面及可替换服务。
 
 ## 注册服务
 
@@ -35,7 +35,7 @@ ViewModel 可以使用生成的键导航，例如 `navigation.Navigate("Settings
 
 ## 提供命令依赖项
 
-通过 `ConfigureServices` 注册命令处理程序依赖的应用服务。需要在整个 Host 生命周期内保持有效的命令映射应实现 `ICommandParser`，并通过 `AddCommandParser<TParser>` 添加；Flourish 会随 Host 注册和移除这些映射。生命周期较短或需要动态变化的处理程序仍直接使用 `ICommandRegistry`。[命令调度](commands.md)说明两种注册方式、可用性与结果。
+通过 `ConfigureServices` 注册命令依赖。Host 生命周期映射实现 `ICommandParser` 并用 `AddCommandParser<TParser>` 添加；短期或动态处理程序直接使用 `ICommandRegistry`。两种方式见[命令调度](commands.md)。
 
 ## 替换 Profile 服务
 
@@ -50,15 +50,15 @@ builder.ConfigureServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 
-启用多项目模式时，Shell 会调用替换实现中的五个异步布尔操作：`CreateProjectAsync`、`SaveActiveProjectAsync`、`ActivateProjectAsync`、`DeleteProjectAsync` 与 `CanCloseAsync`。返回 `false` 可取消对应的 Shell 操作。标题选择、右键删除、Ctrl+S 和项目关闭守卫都会使用该服务。未启用项目模式时，这些 Shell 入口保持停用，由应用管理单项目保存行为。
+多项目模式调用替换实现的 `CreateProjectAsync`、`SaveActiveProjectAsync`、`ActivateProjectAsync`、`DeleteProjectAsync` 和 `CanCloseAsync`；返回 `false` 取消操作。标题选择、右键删除、Ctrl+S 和关闭守卫均使用该服务。未启用时，应用自行管理单项目保存。
 
 替换 `IProjectBehavior` 只会改变对话框和项目文件处理，不会替换项目目录。替换实现应通过 `IProjectService` 发布元数据与活动选择变更；Flourish 仍会将每次目录变更原子写入 `SetProjectCatalogFilePath` 选择的路径。完整生命周期契约参见[项目](projects.md)。
 
 ## 相关功能
 
-- [导航](navigation.md)说明显式导航分组与固定项。
-- [动态工具栏](dynamic-toolbar.md)将命令附加到已注册页面类型。
-- [用户资料（Profile）](configure-profile.md)说明认证和 Profile 服务替换。
-- [项目](projects.md)说明项目行为替换与目录持久化。
-- [后台任务](background-tasks.md)说明异步工作、取消、进度和结果。
-- [命令调度](commands.md)说明命令键路由。
+- [导航](navigation.md)
+- [动态工具栏](dynamic-toolbar.md)
+- [用户资料（Profile）](configure-profile.md)
+- [项目](projects.md)
+- [后台任务](background-tasks.md)
+- [命令调度](commands.md)

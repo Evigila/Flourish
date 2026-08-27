@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Controls;
+using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -69,7 +70,7 @@ public partial class ToolbarStatusPage : Page
             {
                 toolbar.SetEnabled(true);
                 toolbar.SetItem(
-                    new FlourishToolbarItem(
+                    new ToolbarItem(
                         Localizer.Parse(CKey.Runtime_RunLiveCommand_7352E4E7),
                         "\uE768",
                         ToolbarCommandKey
@@ -80,7 +81,7 @@ public partial class ToolbarStatusPage : Page
                     typeof(ToolbarStatusPage)
                 );
                 toolbar.SetItem(
-                    new FlourishToolbarItem(
+                    new ToolbarItem(
                         Localizer.Parse(CKey.Runtime_Companion_1DADB328),
                         "\uE8EF",
                         ToolbarCommandKey
@@ -237,7 +238,7 @@ public partial class ToolbarStatusPage : Page
             Dispatcher.Invoke(() => ToolbarOutput.WriteLine(message));
         }
 
-        status.SetItem(new FlourishStatusItem(StatusItemId, message, "\uE930"));
+        status.SetItem(new StatusBarItem(StatusItemId, message, "\uE930"));
         return ValueTask.FromResult(CommandResult.HandledWith(message));
     }
 
@@ -246,7 +247,7 @@ public partial class ToolbarStatusPage : Page
             () =>
             {
                 status.SetEnabled(true);
-                status.SetItem(new FlourishStatusItem(StatusItemId, StatusTextBox.Text, "\uE946"));
+                status.SetItem(new StatusBarItem(StatusItemId, StatusTextBox.Text, "\uE946"));
             },
             StatusOutput,
             Localizer.Parse(CKey.Runtime_AddedOrUpdatedThePersistentStatusItem_D8C174F7)
@@ -380,7 +381,7 @@ public partial class ToolbarStatusPage : Page
             () =>
                 regions.Set(
                     RegionId,
-                    FlourishRegion.ContentHeader,
+                    ShellRegion.ContentHeader,
                     _ => CreateRegionContent(),
                     order: 50
                 ),
@@ -450,7 +451,7 @@ public partial class ToolbarStatusPage : Page
 
     private FrameworkElement CreateRegionContent()
     {
-        var text = new FlourishTextBlock
+        var text = new TextBlock
         {
             Text = Localizer.Parse(
                 CKey.Runtime_ContentHeaderRegisteredAt0HHMmSs_52D12698,
@@ -459,7 +460,7 @@ public partial class ToolbarStatusPage : Page
             VerticalAlignment = VerticalAlignment.Center,
         };
         text.SetResourceReference(
-            FlourishTextBlock.ForegroundProperty,
+            TextBlock.ForegroundProperty,
             "FlourishAccentForegroundBrush"
         );
 
@@ -479,7 +480,7 @@ public partial class ToolbarStatusPage : Page
         return border;
     }
 
-    private FlourishToolbarItem? GetToolbarItem() =>
+    private ToolbarItem? GetToolbarItem() =>
         toolbar
             .Current.Pages.GetValueOrDefault(typeof(ToolbarStatusPage))
             ?.Items.FirstOrDefault(item => item.Id == ToolbarItemId);

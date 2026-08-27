@@ -1,7 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.ProjectRuntimePage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -36,7 +36,7 @@
             Content="{culture:Localize Key=Shell_EnterTheStableCaseSensitiveProjectIdentifier_A60DBC3F}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox
+              <flourish:TextBox
                 x:Name="ProjectIdBox"
                 Width="220"
                 AutomationProperties.Name="{culture:Localize Key=Shell_ProjectID_E511470B}"
@@ -51,7 +51,7 @@
             Content="{culture:Localize Key=Shell_EnterTheProjectNameDisplayedByTheTitleBar_38CC29E6}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox
+              <flourish:TextBox
                 x:Name="ProjectNameBox"
                 Width="220"
                 AutomationProperties.Name="{culture:Localize Key=Shell_ProjectName_25498193}"
@@ -66,7 +66,7 @@
             Content="{culture:Localize Key=Shell_ChooseAnExistingLocalFileBeforeAddingReplacingOrUpdatingAProject_12893AAE}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox
+              <flourish:TextBox
                 x:Name="StoragePathBox"
                 Width="220"
                 AutomationProperties.Name="{culture:Localize Key=Shell_ProjectStoragePath_0C226131}"
@@ -106,7 +106,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CollectionOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
         </Grid>
-        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var project = new FlourishProject(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AddProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var project = new ProjectDescriptor(&#10;    &quot;gallery&quot;, &quot;Flourish Gallery&quot;, storagePath);&#10;&#10;projects.AddProject(project);&#10;projects.SetProject(project);&#10;&#10;var registered = projects.GetProject(&quot;gallery&quot;);&#10;if (registered is not null)&#10;{&#10;    var projectName = registered.Name;&#10;}&#10;&#10;var allProjects = projects.Current.Projects;" />
       </StackPanel>
     </flourish:Chunk>
 
@@ -132,7 +132,7 @@
             Content="{culture:Localize Key=Shell_SelectARegisteredProjectToMakeItActive_72BEEE16}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishComboBox
+              <flourish:ComboBox
                 x:Name="ActiveProjectBox"
                 Width="220"
                 AutomationProperties.Name="{culture:Localize Key=Shell_ActiveProject_B0018C91}"
@@ -214,7 +214,7 @@
               Content="{culture:Localize Key=Shell_SetTheDisplayNameUsedForProjectsThatDoNotYetHaveAStoragePath_1E44D004}"
             >
               <flourish:ActionCard.Body>
-                <flourish:FlourishTextBox
+                <flourish:TextBox
                   x:Name="UnnamedProjectPlaceholderBox"
                   Width="220"
                   AutomationProperties.Name="{culture:Localize Key=Shell_UnnamedProjectPlaceholder_1BA00AA9}"

@@ -1,19 +1,17 @@
 ---
 title: Design principles
-description: Apply Flourish page hierarchy, typography, spacing, presentation, interaction, theming, and accessibility rules consistently.
+description: Apply Flourish page and control composition rules.
 ---
 
 # Page and control design principles
 
-Flourish treats layout and control selection as part of an application's meaning. A page should communicate hierarchy before decoration: chunks define subjects, content controls present information, and buttons communicate actions. These rules are the default design contract for main-navigation content pages.
+Use hierarchy before decoration: chunks define subjects, content controls present information, and buttons express actions.
 
 ## Establish one page hierarchy
 
-Use `PageBody` as the page root. Its direct children are limited to `HeaderChunk` and `Chunk`; cards, panels, presenters, and other content belong inside a chunk body.
+Use `PageBody` with one leading `HeaderChunk` and full-width `Chunk` sections. Other content belongs inside their bodies. Split and Overlay Presenters are full-width; only TopDown may share a row.
 
-A standard page has one leading `HeaderChunk` followed by one or more `Chunk` controls. `PageBody` rejects a second header, a header that is not first, and every other direct child. HeaderChunk and Chunk always occupy a complete row. Split and Overlay Presenters are also full-width; only TopDown Presenter may place readable peer presentations in columns.
-
-Shell-owned transient surfaces—including the profile flyout, popups, and dialogs—are not main-navigation content pages. They do not require a PageBody or oversized HeaderChunk. Their internal content still follows the typography, spacing, content-control, interaction, theming, and accessibility rules in this article.
+Transient Shell surfaces do not require `PageBody` or `HeaderChunk`, but still follow these control and accessibility rules.
 
 Use the three `Chunk` regions deliberately:
 
@@ -23,17 +21,17 @@ Use the three `Chunk` regions deliberately:
 | `Content` | Optional. Add only essential context that a good title cannot cover. |
 | `Body` | Required. Put the actual content control or layout tree here. `Chunk` does not present content itself. |
 
-`HeaderChunk` inherits the [Presenter](../controls/presenter.md) fields. Explicitly supply `Title`, `Content`, `PresenterMode`, and `PresenterPosition`. `Body` supports the copy while `Presentation` supplies the visual without creating another section hierarchy.
+`HeaderChunk` inherits [Presenter](../controls/presenter.md). Supply `Title`, `Content`, `PresenterMode`, and `PresenterPosition`; use `Body` for controls and `Presentation` for visuals.
 
 ## Use typography by role
 
-Flourish has six font-size tiers. When a control or text element does not explicitly select a tier, it uses `Standard`.
+Unspecified text uses `Standard`; use the other five tiers only for their roles.
 
 | Tier | Intended role |
 | --- | --- |
 | `Small` | Compact supporting text, including navigation group labels and `OutputCard` output. |
 | `Standard` | Default body and control text. Use this whenever no specialized role applies. |
-| `Icon` | General icon glyphs. A specialized icon control may set a local size required by its geometry. |
+| `StandardIcon` | Ordinary icon glyphs, including button icons. Card and display icons use `LargeIcon`. |
 | `Large` | Card-title-level emphasis and Document paragraphs. |
 | `ExtraLarge` | The section-title family, including `Chunk.Title`. |
 | `HeaderSize` | The page title in `HeaderChunk` only. |
@@ -51,11 +49,11 @@ Do not select a larger tier merely to make content more noticeable. Express hier
 | Raw output, logs, progress, results, or failures | `OutputCard` |
 | One action whose complete card surface is clickable | `CardButton` |
 
-One surface should communicate one subject or behavior. Split unrelated subjects into peer controls instead of building a large nested surface.
+Give each surface one subject or behavior.
 
 ## Apply spacing and collapse consistently
 
-Use the layout control's resources and defaults instead of accumulating unrelated local margins.
+Use layout defaults instead of unrelated local margins.
 
 - Keep the large standard separation between every pair of chunks and between `HeaderChunk` and the first `Chunk`.
 - Keep related ActionCards closer together with `FlourishActionCardPeerMargin` so they read as one group.
@@ -66,37 +64,37 @@ Use the layout control's resources and defaults instead of accumulating unrelate
 
 ## Keep cards focused
 
-`Card` has optional `Title`, `Content`, and `Icon` fields. It presents one paragraph and one icon at most, and it has no arbitrary `Body`. Images, icon groups, overlays, and composed controls belong in `Presenter`. Cards may be arranged in two or more columns when space allows.
+`Card` presents optional `Title`, one paragraph, and one icon, with no arbitrary `Body`. Use `Presenter` for composed visuals.
 
-`ActionCard` adds one local interactive `Body` to a fixed structure. `Horizontal` places the icon on the left, stacked title and content next, and body on the right. `Vertical` stacks icon, title, content, and body from top to bottom with shared left alignment. Keep `Body` to one button, combo box, check box, text box, or comparable control.
+`ActionCard` adds one interactive `Body`. `Horizontal` places it beside the copy; `Vertical` stacks it below. Keep `Body` to one control.
 
-`OutputCard` has no title, content, icon, or arbitrary body. Append messages with `WriteLine`; do not replace earlier progress or results. Its compact scrolling viewport uses the Small tier and should not determine the height of an adjacent ActionCard column.
+`OutputCard` has no copy regions or arbitrary body. Append with `WriteLine`, and let adjacent actions determine row height.
 
-Use `CardButton` when the complete card surface is the action. It supports the same optional title, content, and icon regions and the `Standard`, `Tonal`, `Filled`, and `Elevated` card treatments. Use `ActionCard` when only a contained control should be interactive.
+Use `CardButton` for a whole-surface action and `ActionCard` for one contained action.
 
 ## Use Document for continuous prose
 
-`Document` is a rounded, thinly outlined reading surface with no title or variants. Add one `Paragraph` child per paragraph; other item types are not accepted. Each Paragraph uses the Large tier, standard wrapping, Regular weight, and the common foreground.
+`Document` accepts only `Paragraph` children and supplies the `Large` reading style.
 
-`Document` supplies a gap between paragraphs and a first-line indentation of four ordinary spaces. Do not add literal leading spaces or per-paragraph margins. Use Document as a chunk's only body. If the content is one paragraph, use Card; if it needs controls or visual composition, choose ActionCard or Presenter.
+`Document` owns paragraph gaps and four-space first-line indentation. Use it as a chunk's only body; choose Card for one paragraph and ActionCard or Presenter for controls or visuals.
 
-Use `CodeSpace` for exact copyable source or command text. It shares Document's rounded outlined surface and Large size, uses the fixed Bold Consolas blue presentation, and provides its own upper-right copy action. Its copy tooltip follows the shared Tip typography.
+Use `CodeSpace` for exact copyable source or commands; it supplies its own style and copy action.
 
 ## Use Presenter for rich presentation
 
-`Presenter` separates three concerns: required `Title` and `Content` provide copy, `Body` holds supporting controls with that copy, and `Presentation` holds an image, icon group, illustration, or composed visual. Explicitly declare `PresenterMode` and `PresenterPosition`.
+`Presenter` separates copy, supporting `Body` controls, and rich `Presentation` content. Declare `PresenterMode` and `PresenterPosition`.
 
 - `Split` places copy plus body on one side and the presentation surface on the other. `PresenterPosition="Left"` is the default arrangement; `Right` reverses the regions.
 - `TopDown` places presentation above a left-aligned copy-and-body region and is the only ordinary Presenter mode that may share a multi-column row.
 - `Overlay` fills the Presenter with presentation content and draws copy plus body above it.
 
-The `Presentation` region fills its allocated space and centers its child content. Only that region receives the adaptive neutral rounded background; the copy-and-body side stays transparent. In every mode, title, content, and body keep one shared left alignment.
+Only `Presentation` supplies the neutral rounded background. Copy and `Body` remain transparent and left-aligned.
 
-`Presentation` is the default XAML content property. Assign `Body` through an explicit `Presenter.Body` property element. `HeaderChunk` is the page-level Presenter specialization; unlike Presenter, its default XAML content property is `Body`. HeaderChunk never participates in multi-column layout, including when its mode is TopDown.
+`Presentation` is Presenter's default XAML content; assign `Body` explicitly. `HeaderChunk` defaults to `Body` and is always full-width.
 
 ## Use the button family by action
 
-Every button's complete visual boundary is interactive.
+Every button's complete boundary is interactive.
 
 | Control | Rule |
 | --- | --- |
@@ -104,21 +102,21 @@ Every button's complete visual boundary is interactive.
 | `CardButton` | Whole-card action with Card-like content and surface variants. |
 | `WindowCaptionButton` | Window caption and title-bar actions only. |
 
-Empty Button, CardButton, and Card regions collapse with their spacing. Do not add pointer handlers to a Card or ActionCard to imitate a button. Give every icon-only button a visible tooltip and a meaningful `AutomationProperties.Name`.
+Empty regions collapse. Do not imitate buttons with pointer handlers on cards. Give icon-only buttons a tooltip and `AutomationProperties.Name`.
 
-Button variants express action hierarchy: normally use one `Filled` primary action per group, lower-emphasis variants for supporting actions, and `Danger` for destructive actions. Card variants express surface emphasis and never imply clickability.
+Use one `Filled` primary action per group and `Danger` for destructive actions. Card variants do not imply clickability.
 
 ## Compose floating and scrollable content
 
-`Overlay` supplies floating surface chrome and dismissal semantics. A vertical ActionCard is the standard composition for an icon, copy, and one bottom action. Custom layouts remain valid when the floating view needs a different structure, such as a profile surface with several coordinated regions.
+`Overlay` supplies floating chrome and dismissal. Use a vertical ActionCard for icon, copy, and one action; use a custom layout when necessary.
 
 `DataGrid` consumes mouse-wheel input only while its internal viewport can move in the requested direction. At a vertical boundary—or when no internal range exists—the wheel continues to the containing PageBody. Do not add another ScrollViewer around the grid.
 
 ## Preserve themes and accessibility
 
-Use Flourish theme resources through `DynamicResource` for local overrides. Avoid colors that work in only one theme, and never use color, position, or an icon as the only carrier of meaning. In Overlay Presenter mode, verify text against the brightest and darkest parts of the visual in both themes.
+Use Flourish `DynamicResource` values. Do not rely on color, position, or icon alone, and verify Overlay text contrast in both themes.
 
-Keep keyboard focus, reading order, and visual order consistent. Avoid fixed heights that clip localized or enlarged text. Give OutputCard an accessible name when its surrounding chunk and action labels do not already identify its history.
+Align focus, reading, and visual order. Avoid clipping localized or enlarged text, and name OutputCard when surrounding labels are insufficient.
 
 ## Consistency checklist
 
@@ -136,10 +134,10 @@ Before considering a page complete, verify that:
 
 ## Related content
 
-- [PageBody](../controls/page-body.md) documents the page root contract.
-- [Chunk](../controls/chunk.md) documents HeaderChunk and ordinary sections.
-- [Card](../controls/card.md) documents Card and ActionCard.
-- [Document](../controls/document.md) documents multi-paragraph text layout.
-- [Presenter](../controls/presenter.md) documents Split, TopDown, and Overlay presentation.
-- [Button](../controls/button.md) documents action controls.
-- [Typography](../articles/configure-font.md) documents the six font-size tiers.
+- [PageBody](../controls/page-body.md)
+- [Chunk](../controls/chunk.md)
+- [Card](../controls/card.md)
+- [Document](../controls/document.md)
+- [Presenter](../controls/presenter.md)
+- [Button](../controls/button.md)
+- [Typography](../articles/configure-font.md)

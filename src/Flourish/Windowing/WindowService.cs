@@ -6,16 +6,16 @@ using System.Windows;
 
 namespace ArkheideSystem.Flourish.Windowing;
 
-internal sealed class WindowService(FlourishWindowOptions options) : IWindowService
+internal sealed class WindowService(WindowOptions options) : IWindowService
 {
     private readonly Lock gate = new();
     private Window? owner;
-    private FlourishWindowState? lastPublishedState;
+    private WindowStateSnapshot? lastPublishedState;
     private int ownerChangeSuppression;
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishWindowState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<WindowStateSnapshot>>? Changed;
 
-    public FlourishWindowState Current
+    public WindowStateSnapshot Current
     {
         get
         {
@@ -239,7 +239,7 @@ internal sealed class WindowService(FlourishWindowOptions options) : IWindowServ
     private void Apply(Action<Window> action)
     {
         Window? current;
-        FlourishWindowState? unattachedState = null;
+        WindowStateSnapshot? unattachedState = null;
         lock (gate)
         {
             current = owner;
@@ -299,7 +299,7 @@ internal sealed class WindowService(FlourishWindowOptions options) : IWindowServ
 
     private void OwnerClosed(object? sender, EventArgs e)
     {
-        FlourishWindowState state;
+        WindowStateSnapshot state;
         lock (gate)
         {
             DetachCore();
@@ -342,7 +342,7 @@ internal sealed class WindowService(FlourishWindowOptions options) : IWindowServ
         Publish(state);
     }
 
-    private void SynchronizeOptionsLocked(FlourishWindowState state)
+    private void SynchronizeOptionsLocked(WindowStateSnapshot state)
     {
         options.WindowState = state.WindowState;
         options.WindowResizeMode = state.ResizeMode;
@@ -357,7 +357,7 @@ internal sealed class WindowService(FlourishWindowOptions options) : IWindowServ
         }
     }
 
-    private void Publish(FlourishWindowState state)
+    private void Publish(WindowStateSnapshot state)
     {
         lock (gate)
         {
@@ -369,21 +369,21 @@ internal sealed class WindowService(FlourishWindowOptions options) : IWindowServ
             lastPublishedState = state;
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishWindowState>(state));
+        Changed?.Invoke(this, new StateChangedEventArgs<WindowStateSnapshot>(state));
     }
 
-    private static FlourishWindowState ReadOwnerThreadSafe(Window window)
+    private static WindowStateSnapshot ReadOwnerThreadSafe(Window window)
     {
         return window.Dispatcher.CheckAccess()
             ? ReadOwner(window)
             : window.Dispatcher.Invoke(() => ReadOwner(window));
     }
 
-    private static FlourishWindowState ReadOwner(Window window)
+    private static WindowStateSnapshot ReadOwner(Window window)
     {
         var width = window.ActualWidth > 0 ? window.ActualWidth : window.Width;
         var height = window.ActualHeight > 0 ? window.ActualHeight : window.Height;
-        return new FlourishWindowState(
+        return new WindowStateSnapshot(
             new Rect(window.Left, window.Top, Math.Max(0, width), Math.Max(0, height)),
             new System.Windows.Size(window.MinWidth, window.MinHeight),
             new System.Windows.Size(window.MaxWidth, window.MaxHeight),
@@ -396,9 +396,9 @@ internal sealed class WindowService(FlourishWindowOptions options) : IWindowServ
         );
     }
 
-    private FlourishWindowState CreateOptionsSnapshot()
+    private WindowStateSnapshot CreateOptionsSnapshot()
     {
-        return new FlourishWindowState(
+        return new WindowStateSnapshot(
             new Rect(
                 options.WindowLeft ?? 0,
                 options.WindowTop ?? 0,

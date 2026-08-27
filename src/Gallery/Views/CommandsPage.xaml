@@ -1,7 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.CommandsPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -27,7 +27,7 @@
             Content="{culture:Localize Key=Shell_IdentifyTheHandlerRegisteredInTheRuntimeCommandRegistry_CA062EE8}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="CommandKeyBox" Width="220" Text="cmd_gallery_runtime_greet" />
+              <flourish:TextBox x:Name="CommandKeyBox" Width="220" Text="cmd_gallery_runtime_greet" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -37,7 +37,7 @@
             Content="{culture:Localize Key=Shell_ProvideTheValuePassedToTheDemoHandler_98A7B4E9}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="CommandParameterBox" Width="220" Text="Flourish user" />
+              <flourish:TextBox x:Name="CommandParameterBox" Width="220" Text="Flourish user" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -145,7 +145,7 @@
           <StackPanel
             VerticalAlignment="Center"
           >
-            <flourish:FlourishTextBlock x:Name="RegistrySummaryText" Role="Status" />
+            <flourish:TextBlock x:Name="RegistrySummaryText" Role="Status" />
             <flourish:ListBox x:Name="RegistryList" MinHeight="90" MaxHeight="220" Margin="0,10,0,0" />
           </StackPanel>
         </flourish:Presenter.Presentation>

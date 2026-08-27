@@ -5,7 +5,7 @@ description: 使用 Document 组合多个规范化 Paragraph，并以统一的 L
 
 # Document
 
-`Document` 用于呈现多段连续正文。它提供透明背景、圆角和细而低对比度的边框，并统一管理段落字号、间距、换行与首行缩进。正文只有一段时使用 [Card](card.md)；需要组合控件或视觉内容时使用 [Presenter](presenter.md)。
+`Document` 以统一字号、间距、换行和首行缩进呈现多段正文。单段正文使用 [Card](card.md)，组合控件或视觉内容使用 [Presenter](presenter.md)。
 
 应将 Document 作为 Chunk 的唯一 Body，不要在同一正文表面中混入卡片、按钮或其他控件。
 
@@ -43,9 +43,9 @@ Document 始终使用已定义的 Large 字号层级，跟随全局和页面级 
 
 ## 相关内容
 
-- [Chunk](chunk.md)定义承载 Document 的页面区块。
-- [Card](card.md)在卡片表面呈现标题和单段正文。
-- [CodeSpace](code-space.md)在相近的描边表面中呈现可精确复制的代码文本。
-- [Presenter](presenter.md)组合文案、控件和视觉展示内容。
-- [排版](../articles/configure-font.md)说明 Large 字号层级。
-- [Document API](xref:ArkheideSystem.Flourish.Controls.Document) 和 [Paragraph API](xref:ArkheideSystem.Flourish.Controls.Paragraph) 列出完整成员。
+- [Chunk](chunk.md)
+- [Card](card.md)
+- [CodeSpace](code-space.md)
+- [Presenter](presenter.md)
+- [排版](../articles/configure-font.md)
+- [Document API](xref:ArkheideSystem.Flourish.Controls.Document) 和 [Paragraph API](xref:ArkheideSystem.Flourish.Controls.Paragraph)

@@ -49,7 +49,7 @@ internal sealed class NavigationService
         }
     }
 
-    public event EventHandler<FlourishNavigatedEventArgs>? Navigated;
+    public event EventHandler<NavigatedEventArgs>? Navigated;
 
     public event EventHandler<EventArgs>? StateChanged;
 
@@ -346,7 +346,7 @@ internal sealed class NavigationService
             currentParameter = parameter;
 
             notifications = new NavigationNotifications(
-                new FlourishNavigatedEventArgs(navigationKey, sourcePageType, page, parameter),
+                new NavigatedEventArgs(navigationKey, sourcePageType, page, parameter),
                 CreateStateChangedEventArgsLocked()
             );
             return true;
@@ -362,14 +362,14 @@ internal sealed class NavigationService
         }
     }
 
-    private FlourishPageStackEntry? CreateCurrentEntry()
+    private NavigationStackEntry? CreateCurrentEntry()
     {
         return currentNavigationKey is null
             ? null
-            : new FlourishPageStackEntry(currentNavigationKey, currentParameter);
+            : new NavigationStackEntry(currentNavigationKey, currentParameter);
     }
 
-    private void RouteRegistry_Changed(object? sender, FlourishNavigationRoutesChangedEventArgs e)
+    private void RouteRegistry_Changed(object? sender, NavigationRoutesChangedEventArgs e)
     {
         EventArgs? stateChanged = null;
         lock (navigationGate)
@@ -383,7 +383,7 @@ internal sealed class NavigationService
             var historyChanged = pageHistoryService.RemoveWhere(entry =>
                 !e.Current.Routes.ContainsKey(entry.NavigationKey)
             );
-            if (historyChanged || e.ChangeKind == FlourishRuntimeChangeKind.Removed)
+            if (historyChanged || e.ChangeKind == CollectionChangeKind.Removed)
             {
                 stateChanged = CreateStateChangedEventArgsLocked();
             }
@@ -412,7 +412,7 @@ internal sealed class NavigationService
     }
 
     private sealed record NavigationNotifications(
-        FlourishNavigatedEventArgs Navigated,
+        NavigatedEventArgs Navigated,
         EventArgs StateChanged
     );
 }

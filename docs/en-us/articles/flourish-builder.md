@@ -1,16 +1,16 @@
 ---
-title: IFlourishBuilder
+title: IApplicationBuilder
 description: Configure and build a Flourish application with focused feature builders.
 ---
 
-# IFlourishBuilder
+# IApplicationBuilder
 
-`IFlourishBuilder` is the one-shot composition entry point. It records startup defaults and service registrations, then `Build()` creates an `IFlourish` runtime backed by the .NET Generic Host. Every public Flourish contract is in `ArkheideSystem.Flourish.Abstract`.
+`IApplicationBuilder` records startup configuration, then `Build()` creates a Generic Host-backed `IApplicationRuntime`. Public contracts are in `ArkheideSystem.Flourish.Abstract`.
 
 ```csharp
 using ArkheideSystem.Flourish.Abstract;
 
-using var flourish = FlourishBuilder
+using var flourish = ApplicationBuilder
     .CreateDefaultBuilder(args)
     .ConfigureServices((context, services) => services.AddSingleton<App>())
     .ConfigureTitleBar(titleBar =>
@@ -40,16 +40,14 @@ return flourish.Run<App>();
 | `ConfigureWindow` | `IWindowBuilder` | Initial window bounds and behavior. |
 | `ConfigureStatusBar` | `IStatusBarBuilder` | Status surface and built-in indicators. |
 
-Nested builders use domain verbs such as `SetEnabled`, `SetFont`, `SetSize`, and `SetPanelWidth`. Optional behavior and persisted-preference choices use the same `Set...` convention.
-
 Builder callbacks may be registered more than once before `Build()` and run in registration order. `Build()` consumes the builder; later configuration, a second build, or use of a captured nested builder throws `InvalidOperationException`.
 
 ## Host configuration
 
 `CreateDefaultBuilder` retains standard .NET Host configuration. `ConfigureConfiguration` receives Microsoft `IConfigurationBuilder`, while `ConfigureServices` receives `HostBuilderContext` and `IServiceCollection`. Read effective configuration by injecting `IConfiguration`.
 
-`appsettings.Flourish.json` remains the default writable Flourish settings file. `IFlourishSettingsStore` owns atomic writes under `Flourish:` and reloads the same standard `IConfiguration`; it does not replace Microsoft configuration.
+`appsettings.Flourish.json` remains the default writable Flourish settings file. `ISettingsStore` owns atomic writes under `Flourish:` and reloads the same standard `IConfiguration`; it does not replace Microsoft configuration.
 
 ## Runtime services
 
-Builders define the initial draft. After `Build()`, resolve the corresponding service through dependency injection. For example, `ITitleBarBuilder` defines startup title-bar state while `ITitleBarService` changes the built title bar. Stateful services consistently expose `Current` and `Changed`.
+After `Build()`, resolve the corresponding runtime service through dependency injection. Stateful services expose `Current` and `Changed`.

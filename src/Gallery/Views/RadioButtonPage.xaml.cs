@@ -1,4 +1,4 @@
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -35,11 +35,11 @@ public partial class RadioButtonPage : Page
     public string UsageCode { get; } =
         """
             <StackPanel>
-              <flourish:FlourishRadioButton
+              <flourish:RadioButton
                 Content="Light"
                 GroupName="Theme"
                 IsChecked="{Binding UseLightTheme}" />
-              <flourish:FlourishRadioButton
+              <flourish:RadioButton
                 Content="Dark"
                 GroupName="Theme"
                 IsChecked="{Binding UseDarkTheme}" />

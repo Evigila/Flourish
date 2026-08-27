@@ -16,9 +16,9 @@ internal sealed class PageCacheService : INavigationPageProvider
     private readonly IPageFactory pageFactory;
     private readonly NavigationRouteRegistry routeRegistry;
     private readonly Dictionary<Type, Page> cachedPages = [];
-    private readonly Dictionary<Type, FlourishPageCacheMode> cacheModesByPageType = [];
-    private readonly Dictionary<Type, FlourishNavigationRoute> routesByPageType = [];
-    private FlourishPageCacheSnapshot current = null!;
+    private readonly Dictionary<Type, PageCacheMode> cacheModesByPageType = [];
+    private readonly Dictionary<Type, NavigationRoute> routesByPageType = [];
+    private PageCacheSnapshot current = null!;
     private long lastAppliedRouteVersion = -1;
     private long version;
 
@@ -38,20 +38,20 @@ internal sealed class PageCacheService : INavigationPageProvider
         }
     }
 
-    public event EventHandler<FlourishPageCacheChangedEventArgs>? Changed;
+    public event EventHandler<PageCacheChangedEventArgs>? Changed;
 
-    public FlourishPageCacheSnapshot Current => Volatile.Read(ref current);
+    public PageCacheSnapshot Current => Volatile.Read(ref current);
 
     public Page GetPage(Type sourcePageType)
     {
         ArgumentNullException.ThrowIfNull(sourcePageType);
-        FlourishPageCacheSnapshot? snapshot = null;
+        PageCacheSnapshot? snapshot = null;
         Page? page;
         lock (gate)
         {
             if (
                 cacheModesByPageType.TryGetValue(sourcePageType, out var cacheMode)
-                && cacheMode == FlourishPageCacheMode.Enabled
+                && cacheMode == PageCacheMode.Enabled
                 && cachedPages.TryGetValue(sourcePageType, out page)
             )
             {
@@ -64,7 +64,7 @@ internal sealed class PageCacheService : INavigationPageProvider
         {
             if (
                 cacheModesByPageType.TryGetValue(sourcePageType, out var currentCacheMode)
-                && currentCacheMode == FlourishPageCacheMode.Enabled
+                && currentCacheMode == PageCacheMode.Enabled
                 && creationRouteVersion == lastAppliedRouteVersion
             )
             {
@@ -85,9 +85,9 @@ internal sealed class PageCacheService : INavigationPageProvider
         {
             Changed?.Invoke(
                 this,
-                new FlourishPageCacheChangedEventArgs(
+                new PageCacheChangedEventArgs(
                     snapshot,
-                    FlourishRuntimeChangeKind.Added,
+                    CollectionChangeKind.Added,
                     sourcePageType
                 )
             );
@@ -96,7 +96,7 @@ internal sealed class PageCacheService : INavigationPageProvider
         return page;
     }
 
-    public void SetCacheMode(Type pageType, FlourishPageCacheMode cacheMode)
+    public void SetCacheMode(Type pageType, PageCacheMode cacheMode)
     {
         ValidatePageType(pageType);
         ValidateCacheMode(cacheMode);
@@ -106,11 +106,11 @@ internal sealed class PageCacheService : INavigationPageProvider
             return;
         }
 
-        FlourishPageCacheSnapshot snapshot;
+        PageCacheSnapshot snapshot;
         lock (gate)
         {
             if (
-                cacheModesByPageType.GetValueOrDefault(pageType, FlourishPageCacheMode.Disabled)
+                cacheModesByPageType.GetValueOrDefault(pageType, PageCacheMode.Disabled)
                 == cacheMode
             )
             {
@@ -118,7 +118,7 @@ internal sealed class PageCacheService : INavigationPageProvider
             }
 
             cacheModesByPageType[pageType] = cacheMode;
-            if (cacheMode == FlourishPageCacheMode.Disabled)
+            if (cacheMode == PageCacheMode.Disabled)
             {
                 cachedPages.Remove(pageType);
             }
@@ -129,9 +129,9 @@ internal sealed class PageCacheService : INavigationPageProvider
 
         Changed?.Invoke(
             this,
-            new FlourishPageCacheChangedEventArgs(
+            new PageCacheChangedEventArgs(
                 snapshot,
-                FlourishRuntimeChangeKind.Updated,
+                CollectionChangeKind.Updated,
                 pageType
             )
         );
@@ -140,7 +140,7 @@ internal sealed class PageCacheService : INavigationPageProvider
     public bool Evict(Type pageType)
     {
         ValidatePageType(pageType);
-        FlourishPageCacheSnapshot? snapshot = null;
+        PageCacheSnapshot? snapshot = null;
         lock (gate)
         {
             if (!cachedPages.Remove(pageType))
@@ -154,9 +154,9 @@ internal sealed class PageCacheService : INavigationPageProvider
 
         Changed?.Invoke(
             this,
-            new FlourishPageCacheChangedEventArgs(
+            new PageCacheChangedEventArgs(
                 snapshot,
-                FlourishRuntimeChangeKind.Removed,
+                CollectionChangeKind.Removed,
                 pageType
             )
         );
@@ -165,7 +165,7 @@ internal sealed class PageCacheService : INavigationPageProvider
 
     public void Clear()
     {
-        FlourishPageCacheSnapshot snapshot;
+        PageCacheSnapshot snapshot;
         lock (gate)
         {
             if (cachedPages.Count == 0)
@@ -180,9 +180,9 @@ internal sealed class PageCacheService : INavigationPageProvider
 
         Changed?.Invoke(
             this,
-            new FlourishPageCacheChangedEventArgs(
+            new PageCacheChangedEventArgs(
                 snapshot,
-                FlourishRuntimeChangeKind.Reset,
+                CollectionChangeKind.Reset,
                 pageType: null
             )
         );
@@ -202,9 +202,9 @@ internal sealed class PageCacheService : INavigationPageProvider
         return routeRegistry.CreatePage(sourcePageType, pageFactory, out routeVersion);
     }
 
-    private void RouteRegistry_Changed(object? sender, FlourishNavigationRoutesChangedEventArgs e)
+    private void RouteRegistry_Changed(object? sender, NavigationRoutesChangedEventArgs e)
     {
-        FlourishPageCacheSnapshot? snapshot;
+        PageCacheSnapshot? snapshot;
         lock (gate)
         {
             if (!ApplyRouteSnapshotLocked(e.Current, incrementVersion: true))
@@ -217,7 +217,7 @@ internal sealed class PageCacheService : INavigationPageProvider
 
         Changed?.Invoke(
             this,
-            new FlourishPageCacheChangedEventArgs(
+            new PageCacheChangedEventArgs(
                 snapshot,
                 e.ChangeKind,
                 e.Route?.PageType ?? e.PreviousRoute?.PageType
@@ -226,7 +226,7 @@ internal sealed class PageCacheService : INavigationPageProvider
     }
 
     private bool ApplyRouteSnapshotLocked(
-        FlourishNavigationRouteSnapshot routeSnapshot,
+        NavigationRouteSnapshot routeSnapshot,
         bool incrementVersion
     )
     {
@@ -252,7 +252,7 @@ internal sealed class PageCacheService : INavigationPageProvider
                 !routesByPageType.TryGetValue(pageType, out var previousRoute)
                 || previousRoute != route;
             cacheModesByPageType[pageType] = route.CacheMode;
-            if (routeChanged || route.CacheMode == FlourishPageCacheMode.Disabled)
+            if (routeChanged || route.CacheMode == PageCacheMode.Disabled)
             {
                 cachedPages.Remove(pageType);
             }
@@ -273,18 +273,18 @@ internal sealed class PageCacheService : INavigationPageProvider
         return true;
     }
 
-    private FlourishPageCacheSnapshot PublishSnapshot()
+    private PageCacheSnapshot PublishSnapshot()
     {
         var snapshot = CreateSnapshot();
         Volatile.Write(ref current, snapshot);
         return snapshot;
     }
 
-    private FlourishPageCacheSnapshot CreateSnapshot()
+    private PageCacheSnapshot CreateSnapshot()
     {
-        return new FlourishPageCacheSnapshot(
-            new ReadOnlyDictionary<Type, FlourishPageCacheMode>(
-                new Dictionary<Type, FlourishPageCacheMode>(cacheModesByPageType)
+        return new PageCacheSnapshot(
+            new ReadOnlyDictionary<Type, PageCacheMode>(
+                new Dictionary<Type, PageCacheMode>(cacheModesByPageType)
             ),
             Array.AsReadOnly(cachedPages.Keys.ToArray()),
             version
@@ -303,7 +303,7 @@ internal sealed class PageCacheService : INavigationPageProvider
         }
     }
 
-    private static void ValidateCacheMode(FlourishPageCacheMode cacheMode)
+    private static void ValidateCacheMode(PageCacheMode cacheMode)
     {
         if (!Enum.IsDefined(cacheMode))
         {

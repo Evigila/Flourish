@@ -216,11 +216,11 @@
     <Setter Property="Foreground" Value="{DynamicResource FlourishPrimaryForegroundBrush}" />
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
-    <Setter Property="IconSize" Value="{DynamicResource FlourishFontSizeIcon}" />
+    <Setter Property="IconSize" Value="{DynamicResource FlourishFontSizeStandardIcon}" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisualStyle}" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
-    <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
+    <Setter Property="controls:ToolTipPolicy.IsEnabled" Value="{DynamicResource ToolTipsEnabled}" />
     <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
     <Setter Property="controls:HoverReveal.IsMotionEnabled" Value="{DynamicResource FlourishHoverRevealEnabled}" />
     <Setter Property="controls:HoverReveal.IsParticipant" Value="True" />
@@ -285,8 +285,8 @@
         <Setter Property="MinHeight" Value="{DynamicResource FlourishButtonHeight}" />
         <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
       </MultiTrigger>
-      <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+      <Trigger Property="controls:ToolTipPolicy.IsEnabled" Value="True">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource ToolTipInitialShowDelay}" />
         <Setter Property="ToolTipService.BetweenShowDelay" Value="0" />
         <Setter Property="ToolTipService.ShowDuration" Value="10000" />
         <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />

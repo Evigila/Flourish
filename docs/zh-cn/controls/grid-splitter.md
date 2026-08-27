@@ -5,7 +5,7 @@ description: 使用细窄的 Flourish 交互高亮和连续布局更新调整相
 
 # GridSplitter
 
-`FlourishGridSplitter` 沿用原生 WPF `GridSplitter` 的布局模型。当用户需要调整相邻 `Grid` 行或列的相对尺寸时使用该控件。Flourish 在透明指针交互表面中提供居中的细窄高亮。
+`GridSplitter` 沿用 WPF 布局模型，用于调整相邻 `Grid` 行或列，并在透明交互表面中显示居中高亮。
 
 ## 调整列宽
 
@@ -20,7 +20,7 @@ description: 使用细窄的 Flourish 交互高亮和连续布局更新调整相
   </Grid.ColumnDefinitions>
 
   <local:EditorPane />
-  <flourish:FlourishGridSplitter
+  <flourish:GridSplitter
     Grid.Column="1"
     ResizeBehavior="PreviousAndNext"
     ResizeDirection="Columns" />
@@ -44,6 +44,6 @@ description: 使用细窄的 Flourish 交互高亮和连续布局更新调整相
 
 ## 相关内容
 
-- [ScrollViewer 与 ScrollBar](scroll-viewer.md) 说明标准视口和滚动条几何结构。
-- [FlourishGridSplitter API](xref:ArkheideSystem.Flourish.Controls.FlourishGridSplitter) 列出 Flourish 特有成员。
-- [WPF GridSplitter 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/how-to-resize-rows-with-a-gridsplitter) 介绍原生 Grid 尺寸调整行为。
+- [ScrollViewer 与 ScrollBar](scroll-viewer.md)
+- [GridSplitter API](xref:ArkheideSystem.Flourish.Controls.GridSplitter)
+- [WPF GridSplitter 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/how-to-resize-rows-with-a-gridsplitter)

@@ -5,14 +5,14 @@ description: Run bounded asynchronous work with metadata, cancellation, progress
 
 # Background tasks
 
-Flourish registers `IBackgroundTaskService` as a singleton runtime service and starts it with the Generic Host. Resolve it through dependency injection, submit work with `QueueTask`, and keep the returned handle when the caller needs to cancel the work or observe its final outcome.
+Use the singleton `IBackgroundTaskService` to queue, cancel, and observe work outside the WPF UI thread.
 
 ```csharp
 public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 {
-    public FlourishBackgroundTaskHandle Export()
+    public BackgroundTaskHandle Export()
     {
-        var metadata = new FlourishBackgroundTaskMetadata(
+        var metadata = new BackgroundTaskMetadata(
             name: "Export report",
             description: "Writes the current report to disk.",
             iconGlyph: "\uE74E");
@@ -33,21 +33,21 @@ public sealed class ExportViewModel(IBackgroundTaskService backgroundTasks)
 
 ## Metadata and status-bar integration
 
-Every submission requires `FlourishBackgroundTaskMetadata`. `Name` must contain text; `Description` and `IconGlyph` are optional. Supply user-facing metadata before submitting the task because the Shell uses it for tooltips, task rows, automation names, and status icons.
+Every task requires `BackgroundTaskMetadata`: `Name` must contain text, while `Description` and `IconGlyph` are optional. The Shell uses this metadata for task UI and automation names.
 
-While work is active, the left side of the status bar shows one icon for each running or cancelling task. Hovering an icon shows its metadata, state, and reported progress; clicking it opens the background-task flyout. If all execution slots are occupied, later submissions remain queued and a plain number displays the waiting count without an icon or badge. The queue provides cancellation actions for queued or running work.
+The status bar shows each running or cancelling task. Hover for metadata, state, and progress; click to open the task flyout. When all slots are occupied, a number shows the queued count, and the flyout can cancel queued or running work.
 
-Task status and queue details remain available when the application omits `ConfigureToolTips`. The task and queue buttons support pointer and keyboard interaction.
+Task details remain available without `ConfigureToolTips`, and task controls support pointer and keyboard input.
 
-Active work temporarily reveals the status bar even when `IStatusBarBuilder.SetEnabled()` was not configured. Completed, failed, and cancelled tasks leave the active list and their icons are removed; use the returned handle when an application needs the final outcome or its own completed-task record.
+Active work temporarily reveals the status bar even without `IStatusBarBuilder.SetEnabled()`. Terminal tasks leave the active list; use the handle for their outcome.
 
 ## Concurrency and the waiting queue
 
 `MaxConcurrency` reports how many delegates can run concurrently. Additional tasks remain in the waiting queue in submission order until an execution slot is available.
 
-`Current` returns immutable snapshots of queued, running, and cancelling tasks. `Changed` publishes the same cached list through `args.Current` when collection membership, task state, or progress changes. The event can be raised from a non-UI thread, so event handlers that update application UI must dispatch back to the UI thread.
+`Current` is an immutable snapshot of queued, running, and cancelling tasks. `Changed` publishes it through `args.Current` after membership, state, or progress changes. The event may run off the UI thread.
 
-`FlourishBackgroundTaskState` reports the lifecycle:
+`BackgroundTaskState` reports the lifecycle:
 
 | State | Meaning |
 | --- | --- |
@@ -64,14 +64,14 @@ Only the first three states appear in `Current`; terminal state remains availabl
 
 The two submission overloads accept:
 
-- `Func<FlourishBackgroundTaskContext, ValueTask>` for work without a return value.
-- `Func<FlourishBackgroundTaskContext, ValueTask<TResult>>` for work that produces a value.
+- `Func<BackgroundTaskContext, ValueTask>` for work without a return value.
+- `Func<BackgroundTaskContext, ValueTask<TResult>>` for work that produces a value.
 
-Async lambdas bind naturally to these overloads. Do not wrap asynchronous I/O in `Task.Run`; await it directly and pass `context.CancellationToken` to APIs that support cancellation.
+Await asynchronous I/O directly and pass `context.CancellationToken` to cancellable APIs.
 
 ## Cancellation and Host shutdown
 
-`FlourishBackgroundTaskContext.CancellationToken` is cancelled when `handle.Cancel()`, `CancelTask(handle.Id)`, or Host shutdown requests cancellation.
+`BackgroundTaskContext.CancellationToken` is cancelled when `handle.Cancel()`, `CancelTask(handle.Id)`, or Host shutdown requests cancellation.
 
 - Cancelling queued work removes it without invoking its delegate.
 - Cancelling running work changes its state to `Cancelling`. Cancellation is cooperative, so the delegate should observe the token and finish promptly.
@@ -82,11 +82,11 @@ Async lambdas bind naturally to these overloads. Do not wrap asynchronous I/O in
 
 ## Progress
 
-Call `context.ReportProgress(value)` with a finite value from `0` through `1`. The latest value appears in `FlourishBackgroundTaskInfo.Progress`; it is `null` until progress is first reported. Values outside that range throw `ArgumentOutOfRangeException`.
+Call `context.ReportProgress(value)` with a finite value from `0` through `1`. The latest value appears in `BackgroundTaskInfo.Progress`; it is `null` until progress is first reported. Values outside that range throw `ArgumentOutOfRangeException`.
 
 ## Results and exceptions
 
-`handle.Completion` always completes successfully with a `FlourishBackgroundTaskResult` object. A task delegate failure does not fault `Completion`; inspect `Succeeded`, `Canceled`, `Exception`, and the final `Info` snapshot instead.
+`handle.Completion` returns `BackgroundTaskResult` even when the delegate fails. Inspect `Succeeded`, `Canceled`, `Exception`, and the final `Info` snapshot.
 
 The generic overload also carries the successful return value:
 
@@ -94,7 +94,7 @@ The generic overload also carries the successful return value:
 public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
 {
     var handle = backgroundTasks.QueueTask<int>(
-        new FlourishBackgroundTaskMetadata(
+        new BackgroundTaskMetadata(
             "Count files",
             "Counts files in the selected workspace.",
             "\uE8B7"),
@@ -105,7 +105,7 @@ public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
             return files.Count;
         });
 
-    FlourishBackgroundTaskResult<int> result = await handle.Completion;
+    BackgroundTaskResult<int> result = await handle.Completion;
     if (result.Succeeded)
     {
         return result.Value;
@@ -124,6 +124,6 @@ public async Task<int?> CountFilesAsync(IBackgroundTaskService backgroundTasks)
 
 ## Related features
 
-- [Status bar](status-bar.md) describes running indicators, the waiting queue, and the system-status flyout.
-- [Dependency injection](configure-services.md) explains how application services and `IBackgroundTaskService` are resolved.
-- [Application data](configure-data.md) lists the built-in task UI localization keys.
+- [Status bar](status-bar.md)
+- [Dependency injection](configure-services.md)
+- [Application data](configure-data.md)

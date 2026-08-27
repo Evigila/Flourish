@@ -17,13 +17,13 @@ public interface IBackgroundTaskService
     /// <summary>
     /// Gets immutable snapshots of all queued, running, and cancelling tasks.
     /// </summary>
-    IReadOnlyList<FlourishBackgroundTaskInfo> Current { get; }
+    IReadOnlyList<BackgroundTaskInfo> Current { get; }
 
     /// <summary>
     /// Occurs when the active task collection, a task state, or task progress changes.
     /// </summary>
     event EventHandler<
-        FlourishStateChangedEventArgs<IReadOnlyList<FlourishBackgroundTaskInfo>>
+        StateChangedEventArgs<IReadOnlyList<BackgroundTaskInfo>>
     >? Changed;
 
     /// <summary>
@@ -32,9 +32,9 @@ public interface IBackgroundTaskService
     /// <param name="metadata">The metadata displayed while the task is active.</param>
     /// <param name="task">The asynchronous task delegate.</param>
     /// <returns>A handle used to cancel the task and await its captured outcome.</returns>
-    FlourishBackgroundTaskHandle QueueTask(
-        FlourishBackgroundTaskMetadata metadata,
-        Func<FlourishBackgroundTaskContext, ValueTask> task
+    BackgroundTaskHandle QueueTask(
+        BackgroundTaskMetadata metadata,
+        Func<BackgroundTaskContext, ValueTask> task
     );
 
     /// <summary>
@@ -44,9 +44,9 @@ public interface IBackgroundTaskService
     /// <param name="metadata">The metadata displayed while the task is active.</param>
     /// <param name="task">The asynchronous task delegate.</param>
     /// <returns>A handle used to cancel the task and await its captured outcome and value.</returns>
-    FlourishBackgroundTaskHandle<TResult> QueueTask<TResult>(
-        FlourishBackgroundTaskMetadata metadata,
-        Func<FlourishBackgroundTaskContext, ValueTask<TResult>> task
+    BackgroundTaskHandle<TResult> QueueTask<TResult>(
+        BackgroundTaskMetadata metadata,
+        Func<BackgroundTaskContext, ValueTask<TResult>> task
     );
 
     /// <summary>

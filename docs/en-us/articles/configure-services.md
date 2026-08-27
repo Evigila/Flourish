@@ -5,7 +5,7 @@ description: Register application services, navigable pages, and replaceable Flo
 
 # Dependency injection
 
-Flourish uses the `IServiceCollection` from its .NET Generic Host. Register application services, WPF pages, and replaceable Flourish services through `ConfigureServices`.
+Use `ConfigureServices` to register application services, WPF pages, and replaceable Flourish services with the Generic Host.
 
 ## Register services
 
@@ -21,7 +21,7 @@ builder.ConfigureServices((context, services) =>
 });
 ```
 
-The callback receives `HostBuilderContext`, so registrations can use the active environment and the same Host configuration that supplies Flourish settings. View models, repositories, and other application services use the standard .NET dependency injection patterns.
+The callback receives `HostBuilderContext`, including the active environment and Host configuration.
 
 `IBackgroundTaskService` is already registered and can be received through constructor injection. See [Background tasks](background-tasks.md).
 
@@ -35,7 +35,7 @@ View models can navigate with the generated key, for example `navigation.Navigat
 
 ## Supply command dependencies
 
-Register the application services used by command handlers through `ConfigureServices`. Implement `ICommandParser` to define command-key mappings that should remain active for the complete Host lifetime, then add it with `AddCommandParser<TParser>`. Flourish registers and removes those mappings with the Host. Use `ICommandRegistry` directly for handlers with a shorter or dynamic lifetime. [Command dispatch](commands.md) explains both registration models, availability, and results.
+Add host-lifetime `ICommandParser` mappings with `AddCommandParser<TParser>`. Use `ICommandRegistry` for shorter or dynamic lifetimes; see [Command dispatch](commands.md).
 
 ## Replace profile services
 
@@ -50,15 +50,15 @@ builder.ConfigureServices((_, services) =>
     services.AddSingleton<IProjectBehavior, WorkspaceProjectBehavior>());
 ```
 
-While multi-project mode is enabled, the Shell calls the replacement's five asynchronous Boolean operations: `CreateProjectAsync`, `SaveActiveProjectAsync`, `ActivateProjectAsync`, `DeleteProjectAsync`, and `CanCloseAsync`. Return `false` to cancel the corresponding Shell operation. Title selection, right-click deletion, Ctrl+S, and the project close guard use this service. Outside project mode these Shell entry points remain inactive so the application owns its single-project save behavior.
+In multi-project mode, the Shell calls `CreateProjectAsync`, `SaveActiveProjectAsync`, `ActivateProjectAsync`, `DeleteProjectAsync`, and `CanCloseAsync`. Return `false` to cancel the operation. These entry points are inactive outside project mode.
 
-Replacing `IProjectBehavior` changes dialog and project-file handling; it does not replace the project catalog. The replacement should publish metadata and active-selection changes through `IProjectService`. Flourish continues to write mappings to existing local files atomically to the path selected by `SetProjectCatalogFilePath`; transient and stale mappings are excluded. See [Projects](projects.md) for the lifecycle contract.
+Replacing `IProjectBehavior` changes dialogs and files, not the catalog. Publish metadata and selection through `IProjectService`; Flourish writes valid existing-file mappings atomically to `SetProjectCatalogFilePath`. See [Projects](projects.md).
 
 ## Related features
 
-- [Navigation](navigation.md) explains explicit navigation groups and fixed items.
-- [Dynamic toolbar](dynamic-toolbar.md) attaches commands to registered page types.
-- [Profile](configure-profile.md) explains authentication and profile service replacement.
-- [Projects](projects.md) explains project behavior replacement and catalog persistence.
-- [Background tasks](background-tasks.md) explains asynchronous work, cancellation, progress, and results.
-- [Command dispatch](commands.md) explains command-key routing.
+- [Navigation](navigation.md)
+- [Dynamic toolbar](dynamic-toolbar.md)
+- [Profile](configure-profile.md)
+- [Projects](projects.md)
+- [Background tasks](background-tasks.md)
+- [Command dispatch](commands.md)

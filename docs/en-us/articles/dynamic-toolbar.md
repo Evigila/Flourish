@@ -5,9 +5,7 @@ description: Configure page-specific toolbar items and connect them to command d
 
 # Dynamic toolbar
 
-The dynamic toolbar is a shell surface whose items change with the active page. Use it for page-scoped commands such as open, save, import, or refresh.
-
-Use `ConfigureToolbar` both to enable the surface and to register page-specific toolbar items.
+Use `ConfigureToolbar` to enable a Shell toolbar whose commands follow the active page.
 
 ## Enable the surface
 
@@ -30,8 +28,8 @@ builder.ConfigureToolbar(toolbar =>
     toolbar
         .SetEnabled()
         .Set<ReportsPage>(
-        new FlourishToolbarItem("Refresh", "\uE72C", "cmd_reports_refresh"),
-        new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
+        new ToolbarItem("Refresh", "\uE72C", "cmd_reports_refresh"),
+        new ToolbarItem("Export", "\uE898", "cmd_reports_export"));
 });
 ```
 
@@ -42,12 +40,12 @@ The overload with `iconOnly: false` keeps text-only toolbar items.
 ```csharp
 toolbar.Set<EditorPage>(
     iconOnly: false,
-    new FlourishToolbarItem("Preview", "\uE8A7", "cmd_editor_preview"));
+    new ToolbarItem("Preview", "\uE8A7", "cmd_editor_preview"));
 ```
 
 ## Toolbar item fields
 
-`FlourishToolbarItem` contains three values:
+`ToolbarItem` contains:
 
 | Value | Purpose |
 | --- | --- |
@@ -71,4 +69,4 @@ IRegistration exportCommand = commands.Register(
     });
 ```
 
-[Command dispatch](commands.md) explains registration ownership, availability, duplicate policies, and results. [Custom shell content](configure-custom-handler.md) can use the same command keys for title bar and status bar commands.
+See [Command dispatch](commands.md) and [Custom shell content](configure-custom-handler.md).

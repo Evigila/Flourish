@@ -61,7 +61,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
                 );
             }
 
-            var changeKind = FlourishRuntimeChangeKind.Added;
+            var changeKind = CollectionChangeKind.Added;
             if (conflictGroup.Count > 0 && options.ConflictPolicy == ShortcutConflictPolicy.Replace)
             {
                 foreach (var conflict in conflictGroup.ToArray())
@@ -69,7 +69,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
                     RemoveEntryLocked(conflict, gestureKey, gestureIndex, removeEmptyIndex: false);
                 }
 
-                changeKind = FlourishRuntimeChangeKind.Updated;
+                changeKind = CollectionChangeKind.Updated;
             }
 
             entry = new ShortcutEntry(
@@ -218,7 +218,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
 
             var removed = entry.CreateSnapshot();
             changed = CreateChangedEventArgsLocked(
-                FlourishRuntimeChangeKind.Removed,
+                CollectionChangeKind.Removed,
                 removed
             );
         }
@@ -260,7 +260,7 @@ internal sealed class ShortcutService(ICommandDispatcher commandDispatcher) : IS
     }
 
     private ShortcutRegistryChangedEventArgs CreateChangedEventArgsLocked(
-        FlourishRuntimeChangeKind changeKind,
+        CollectionChangeKind changeKind,
         ShortcutRegistrationInfo affectedShortcut
     )
     {

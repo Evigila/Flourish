@@ -19,16 +19,16 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface IProjectService
 {
     /// <summary>Occurs after project metadata, selection, or multi-project mode changes.</summary>
-    event EventHandler<FlourishProjectsChangedEventArgs>? Changed;
+    event EventHandler<ProjectCatalogChangedEventArgs>? Changed;
 
     /// <summary>Occurs when the title-bar selector requests creation of a project.</summary>
-    event EventHandler<FlourishNewProjectRequestedEventArgs>? NewProjectRequested;
+    event EventHandler<ProjectCreationRequestedEventArgs>? NewProjectRequested;
 
     /// <summary>Occurs when the title-bar selector requests activation of a project.</summary>
-    event EventHandler<FlourishProjectActivationRequestedEventArgs>? ProjectActivationRequested;
+    event EventHandler<ProjectActivationRequestedEventArgs>? ProjectActivationRequested;
 
     /// <summary>Gets an immutable snapshot of the current project display state.</summary>
-    FlourishProjectSnapshot Current { get; }
+    ProjectCatalogSnapshot Current { get; }
 
     /// <summary>Appends a project identity to the project catalog.</summary>
     /// <param name="project">The project metadata to append.</param>
@@ -36,14 +36,14 @@ public interface IProjectService
     /// <exception cref="ArgumentNullException"><paramref name="project" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The project ID or name is empty or whitespace.</exception>
     /// <exception cref="InvalidOperationException">A project with the same case-sensitive ID already exists.</exception>
-    void AddProject(FlourishProject project, bool activate = true);
+    void AddProject(ProjectDescriptor project, bool activate = true);
 
     /// <summary>Adds a project or replaces the project with the same case-sensitive ID.</summary>
     /// <param name="project">The project metadata to add or replace.</param>
     /// <param name="activate">Whether the project becomes active.</param>
     /// <exception cref="ArgumentNullException"><paramref name="project" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The project ID or name is empty or whitespace.</exception>
-    void SetProject(FlourishProject project, bool activate = true);
+    void SetProject(ProjectDescriptor project, bool activate = true);
 
     /// <summary>Changes the display metadata for an existing project.</summary>
     /// <param name="projectId">The case-sensitive project ID.</param>
@@ -71,7 +71,7 @@ public interface IProjectService
     /// <param name="projectId">The case-sensitive project ID.</param>
     /// <returns>The matching project, or <see langword="null" /> when it is not registered.</returns>
     /// <exception cref="ArgumentException"><paramref name="projectId" /> is empty or whitespace.</exception>
-    FlourishProject? GetProject(string projectId);
+    ProjectDescriptor? GetProject(string projectId);
 
     /// <summary>Enables or disables the project-aware title-bar display at runtime.</summary>
     /// <param name="enabled">Whether the title bar uses the active project identity.</param>
@@ -79,7 +79,7 @@ public interface IProjectService
 }
 
 /// <summary>Describes one application project represented by the Flourish shell.</summary>
-public sealed record FlourishProject
+public sealed record ProjectDescriptor
 {
     /// <summary>Creates project display metadata.</summary>
     /// <param name="id">The stable, case-sensitive project ID.</param>
@@ -88,7 +88,7 @@ public sealed record FlourishProject
     /// The optional local storage path represented by the project. A missing path identifies an
     /// unpersisted project.
     /// </param>
-    public FlourishProject(string id, string name, string? storagePath = null)
+    public ProjectDescriptor(string id, string name, string? storagePath = null)
     {
         Id = id;
         Name = name;
@@ -113,9 +113,9 @@ public sealed record FlourishProject
 /// <param name="ActiveProject">The active project, or <see langword="null" /> when none is selected.</param>
 /// <param name="IsMultiProjectEnabled">Whether the title bar uses project-aware display semantics.</param>
 /// <param name="Version">The monotonically increasing project-state version.</param>
-public sealed record FlourishProjectSnapshot(
-    IReadOnlyList<FlourishProject> Projects,
-    FlourishProject? ActiveProject,
+public sealed record ProjectCatalogSnapshot(
+    IReadOnlyList<ProjectDescriptor> Projects,
+    ProjectDescriptor? ActiveProject,
     bool IsMultiProjectEnabled,
     long Version
 );
@@ -125,18 +125,18 @@ public sealed record FlourishProjectSnapshot(
 /// <param name="changeKind">The kind of mutation.</param>
 /// <param name="projectId">The affected project ID, if applicable.</param>
 /// <param name="activeProjectChanged">Whether the active identity or its displayed metadata changed.</param>
-public sealed class FlourishProjectsChangedEventArgs(
-    FlourishProjectSnapshot current,
-    FlourishRuntimeChangeKind changeKind,
+public sealed class ProjectCatalogChangedEventArgs(
+    ProjectCatalogSnapshot current,
+    CollectionChangeKind changeKind,
     string? projectId,
     bool activeProjectChanged
 ) : EventArgs
 {
     /// <summary>Gets the state after the change.</summary>
-    public FlourishProjectSnapshot Current { get; } = current;
+    public ProjectCatalogSnapshot Current { get; } = current;
 
     /// <summary>Gets the mutation kind.</summary>
-    public FlourishRuntimeChangeKind ChangeKind { get; } = changeKind;
+    public CollectionChangeKind ChangeKind { get; } = changeKind;
 
     /// <summary>Gets the affected project ID, if applicable.</summary>
     public string? ProjectId { get; } = projectId;
@@ -147,24 +147,24 @@ public sealed class FlourishProjectsChangedEventArgs(
 
 /// <summary>Provides project state when the title bar requests a new project.</summary>
 /// <param name="current">The project state at the time of the request.</param>
-public sealed class FlourishNewProjectRequestedEventArgs(FlourishProjectSnapshot current)
+public sealed class ProjectCreationRequestedEventArgs(ProjectCatalogSnapshot current)
     : EventArgs
 {
     /// <summary>Gets the project state at the time of the request.</summary>
-    public FlourishProjectSnapshot Current { get; } = current;
+    public ProjectCatalogSnapshot Current { get; } = current;
 }
 
 /// <summary>Provides the requested project and current state for a title-bar activation request.</summary>
 /// <param name="project">The project selected by the user.</param>
 /// <param name="current">The project state at the time of the request.</param>
-public sealed class FlourishProjectActivationRequestedEventArgs(
-    FlourishProject project,
-    FlourishProjectSnapshot current
+public sealed class ProjectActivationRequestedEventArgs(
+    ProjectDescriptor project,
+    ProjectCatalogSnapshot current
 ) : EventArgs
 {
     /// <summary>Gets the project the user selected.</summary>
-    public FlourishProject Project { get; } = project;
+    public ProjectDescriptor Project { get; } = project;
 
     /// <summary>Gets the project state at the time of the request.</summary>
-    public FlourishProjectSnapshot Current { get; } = current;
+    public ProjectCatalogSnapshot Current { get; } = current;
 }

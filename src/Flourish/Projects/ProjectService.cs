@@ -12,15 +12,15 @@ namespace ArkheideSystem.Flourish.Projects;
 internal sealed class ProjectService : IProjectService
 {
     private readonly Lock gate = new();
-    private readonly Dictionary<string, FlourishProject> projects = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, ProjectDescriptor> projects = new(StringComparer.Ordinal);
     private readonly List<string> projectOrder = [];
-    private readonly FlourishProjectOptions options;
+    private readonly ProjectOptions options;
     private readonly IProjectCatalogStore? catalogStore;
     private string? activeProjectId;
-    private FlourishProjectSnapshot current = null!;
+    private ProjectCatalogSnapshot current = null!;
     private long version;
 
-    public ProjectService(FlourishProjectOptions options, IProjectCatalogStore catalogStore)
+    public ProjectService(ProjectOptions options, IProjectCatalogStore catalogStore)
     {
         this.options = options ?? throw new ArgumentNullException(nameof(options));
         this.catalogStore = catalogStore ?? throw new ArgumentNullException(nameof(catalogStore));
@@ -32,25 +32,25 @@ internal sealed class ProjectService : IProjectService
         current = CreateSnapshot();
     }
 
-    internal ProjectService(FlourishProjectOptions options)
+    internal ProjectService(ProjectOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         this.options = options;
         current = CreateSnapshot();
     }
 
-    public event EventHandler<FlourishProjectsChangedEventArgs>? Changed;
+    public event EventHandler<ProjectCatalogChangedEventArgs>? Changed;
 
-    public event EventHandler<FlourishNewProjectRequestedEventArgs>? NewProjectRequested;
+    public event EventHandler<ProjectCreationRequestedEventArgs>? NewProjectRequested;
 
-    public event EventHandler<FlourishProjectActivationRequestedEventArgs>? ProjectActivationRequested;
+    public event EventHandler<ProjectActivationRequestedEventArgs>? ProjectActivationRequested;
 
-    public FlourishProjectSnapshot Current => Volatile.Read(ref current);
+    public ProjectCatalogSnapshot Current => Volatile.Read(ref current);
 
-    public void AddProject(FlourishProject project, bool activate = true)
+    public void AddProject(ProjectDescriptor project, bool activate = true)
     {
         project = NormalizeProject(project);
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         bool activeChanged;
         lock (gate)
         {
@@ -73,14 +73,14 @@ internal sealed class ProjectService : IProjectService
             });
         }
 
-        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Added, project.Id, activeChanged);
+        RaiseChanged(snapshot, CollectionChangeKind.Added, project.Id, activeChanged);
     }
 
-    public void SetProject(FlourishProject project, bool activate = true)
+    public void SetProject(ProjectDescriptor project, bool activate = true)
     {
         project = NormalizeProject(project);
-        FlourishProjectSnapshot snapshot;
-        FlourishRuntimeChangeKind changeKind;
+        ProjectCatalogSnapshot snapshot;
+        CollectionChangeKind changeKind;
         bool activeChanged;
         lock (gate)
         {
@@ -93,8 +93,8 @@ internal sealed class ProjectService : IProjectService
             }
 
             changeKind = exists
-                ? FlourishRuntimeChangeKind.Updated
-                : FlourishRuntimeChangeKind.Added;
+                ? CollectionChangeKind.Updated
+                : CollectionChangeKind.Added;
             activeChanged =
                 (exists && wasActive && previous != project) || (activate && !wasActive);
             snapshot = CommitCatalogMutation(() =>
@@ -120,7 +120,7 @@ internal sealed class ProjectService : IProjectService
         projectId = ValidateRequired(projectId, nameof(projectId));
         name = ValidateRequired(name, nameof(name));
         storagePath = NormalizeOptional(storagePath);
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         bool activeProjectChanged;
         lock (gate)
         {
@@ -139,13 +139,13 @@ internal sealed class ProjectService : IProjectService
             snapshot = CommitCatalogMutation(() => projects[projectId] = current);
         }
 
-        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Updated, projectId, activeProjectChanged);
+        RaiseChanged(snapshot, CollectionChangeKind.Updated, projectId, activeProjectChanged);
     }
 
     public void SetActiveProject(string? projectId)
     {
         projectId = NormalizeOptional(projectId);
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         lock (gate)
         {
             if (projectId is not null && !projects.ContainsKey(projectId))
@@ -163,7 +163,7 @@ internal sealed class ProjectService : IProjectService
 
         RaiseChanged(
             snapshot,
-            FlourishRuntimeChangeKind.Updated,
+            CollectionChangeKind.Updated,
             projectId,
             activeProjectChanged: true
         );
@@ -172,7 +172,7 @@ internal sealed class ProjectService : IProjectService
     public bool RemoveProject(string projectId)
     {
         projectId = ValidateRequired(projectId, nameof(projectId));
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         bool activeChanged;
         lock (gate)
         {
@@ -193,14 +193,14 @@ internal sealed class ProjectService : IProjectService
             });
         }
 
-        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Removed, projectId, activeChanged);
+        RaiseChanged(snapshot, CollectionChangeKind.Removed, projectId, activeChanged);
         return true;
     }
 
     internal bool RemoveProjectAndEnsureActive(string projectId)
     {
         projectId = ValidateRequired(projectId, nameof(projectId));
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         bool activeChanged;
         lock (gate)
         {
@@ -240,11 +240,11 @@ internal sealed class ProjectService : IProjectService
             );
         }
 
-        RaiseChanged(snapshot, FlourishRuntimeChangeKind.Removed, projectId, activeChanged);
+        RaiseChanged(snapshot, CollectionChangeKind.Removed, projectId, activeChanged);
         return true;
     }
 
-    public FlourishProject? GetProject(string projectId)
+    public ProjectDescriptor? GetProject(string projectId)
     {
         projectId = ValidateRequired(projectId, nameof(projectId));
         lock (gate)
@@ -255,7 +255,7 @@ internal sealed class ProjectService : IProjectService
 
     public void SetMultiProjectEnabled(bool enabled)
     {
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         lock (gate)
         {
             if (options.IsMultiProjectEnabled == enabled)
@@ -270,7 +270,7 @@ internal sealed class ProjectService : IProjectService
 
         RaiseChanged(
             snapshot,
-            FlourishRuntimeChangeKind.Updated,
+            CollectionChangeKind.Updated,
             projectId: null,
             activeProjectChanged: false
         );
@@ -278,13 +278,13 @@ internal sealed class ProjectService : IProjectService
 
     internal void RequestNewProject()
     {
-        FlourishProjectSnapshot snapshot;
+        ProjectCatalogSnapshot snapshot;
         lock (gate)
         {
             snapshot = CreateSnapshot();
         }
 
-        NewProjectRequested?.Invoke(this, new FlourishNewProjectRequestedEventArgs(snapshot));
+        NewProjectRequested?.Invoke(this, new ProjectCreationRequestedEventArgs(snapshot));
     }
 
     internal void RequestProjectActivation(string projectId)
@@ -300,8 +300,8 @@ internal sealed class ProjectService : IProjectService
     internal bool TryRequestProjectActivation(string projectId)
     {
         projectId = ValidateRequired(projectId, nameof(projectId));
-        FlourishProject project;
-        FlourishProjectSnapshot snapshot;
+        ProjectDescriptor project;
+        ProjectCatalogSnapshot snapshot;
         lock (gate)
         {
             if (!projects.TryGetValue(projectId, out project!))
@@ -314,7 +314,7 @@ internal sealed class ProjectService : IProjectService
 
         ProjectActivationRequested?.Invoke(
             this,
-            new FlourishProjectActivationRequestedEventArgs(project, snapshot)
+            new ProjectActivationRequestedEventArgs(project, snapshot)
         );
         return true;
     }
@@ -372,12 +372,12 @@ internal sealed class ProjectService : IProjectService
         }
     }
 
-    private FlourishProject CreateUnnamedProject()
+    private ProjectDescriptor CreateUnnamedProject()
     {
         var name = string.IsNullOrWhiteSpace(options.UnnamedProjectPlaceholder)
             ? "Unnamed project"
             : options.UnnamedProjectPlaceholder.Trim();
-        return new FlourishProject(Guid.NewGuid().ToString("N"), name);
+        return new ProjectDescriptor(Guid.NewGuid().ToString("N"), name);
     }
 
     private void PersistCatalog()
@@ -400,10 +400,10 @@ internal sealed class ProjectService : IProjectService
         catalogStore?.Save(new ProjectCatalog(persistedProjects, persistedActiveProjectId));
     }
 
-    private static bool IsPersistableProject(FlourishProject project) =>
+    private static bool IsPersistableProject(ProjectDescriptor project) =>
         project.StoragePath is not null && File.Exists(project.StoragePath);
 
-    private FlourishProjectSnapshot CommitCatalogMutation(Action mutation)
+    private ProjectCatalogSnapshot CommitCatalogMutation(Action mutation)
     {
         var backup = CaptureState();
         try
@@ -442,7 +442,7 @@ internal sealed class ProjectService : IProjectService
         version = backup.Version;
     }
 
-    private FlourishProjectSnapshot CreateSnapshot()
+    private ProjectCatalogSnapshot CreateSnapshot()
     {
         var published = current;
         if (published is not null && published.Version == version)
@@ -454,7 +454,7 @@ internal sealed class ProjectService : IProjectService
         var activeProject = activeProjectId is not null
             ? projects.GetValueOrDefault(activeProjectId)
             : null;
-        var snapshot = new FlourishProjectSnapshot(
+        var snapshot = new ProjectCatalogSnapshot(
             orderedProjects,
             activeProject,
             options.IsMultiProjectEnabled,
@@ -465,15 +465,15 @@ internal sealed class ProjectService : IProjectService
     }
 
     private void RaiseChanged(
-        FlourishProjectSnapshot snapshot,
-        FlourishRuntimeChangeKind changeKind,
+        ProjectCatalogSnapshot snapshot,
+        CollectionChangeKind changeKind,
         string? projectId,
         bool activeProjectChanged
     )
     {
         Changed?.Invoke(
             this,
-            new FlourishProjectsChangedEventArgs(
+            new ProjectCatalogChangedEventArgs(
                 snapshot,
                 changeKind,
                 projectId,
@@ -482,7 +482,7 @@ internal sealed class ProjectService : IProjectService
         );
     }
 
-    private static FlourishProject NormalizeProject(FlourishProject project)
+    private static ProjectDescriptor NormalizeProject(ProjectDescriptor project)
     {
         ArgumentNullException.ThrowIfNull(project);
         return project with
@@ -509,7 +509,7 @@ internal sealed class ProjectService : IProjectService
     }
 
     private sealed record ProjectStateBackup(
-        IReadOnlyDictionary<string, FlourishProject> Projects,
+        IReadOnlyDictionary<string, ProjectDescriptor> Projects,
         IReadOnlyList<string> ProjectOrder,
         string? ActiveProjectId,
         long Version

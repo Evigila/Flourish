@@ -8,16 +8,17 @@
     <UseWPF>true</UseWPF>
     <StartupObject>ArkheideSystem.Gallery.Program</StartupObject>
     <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
-    <UserSecretsId>ArkheideSystem.Flourish.Gallery</UserSecretsId>
+    <UserSecretsId>Flourish.Gallery</UserSecretsId>
     <ShouldUnsetParentConfigurationAndPlatform>false</ShouldUnsetParentConfigurationAndPlatform>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Arkheide.Essential.Culture.Wpf" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Flourish\Arkheide.Flourish.csproj" />
-    <ProjectReference Include="..\..\..\Arkheide.Extension\src\Arkheide.Flourish.Extension.Culture\Arkheide.Flourish.Extension.Culture.csproj">
+    <ProjectReference Include="..\Flourish\Flourish.csproj" />
+    <ProjectReference Include="..\..\..\Extension\src\Extension.Culture\Extension.Culture.csproj">
       <AdditionalProperties>UseLocalFlourish=true</AdditionalProperties>
     </ProjectReference>
   </ItemGroup>

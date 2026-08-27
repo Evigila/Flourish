@@ -13,7 +13,7 @@ public interface IFontService
     /// <summary>
     /// Gets an immutable snapshot of the current global fonts and page-specific overrides.
     /// </summary>
-    FlourishFontState Current { get; }
+    FontState Current { get; }
 
     /// <summary>
     /// Raised after the runtime font settings change.
@@ -22,7 +22,7 @@ public interface IFontService
     /// When the Flourish application resource scope is attached, the event is raised on
     /// that application's dispatcher after the corresponding resources are updated.
     /// </remarks>
-    event EventHandler<FlourishFontChangedEventArgs>? Changed;
+    event EventHandler<FontChangedEventArgs>? Changed;
 
     /// <summary>
     /// Changes the text font family and the explicit text and icon size scale together.
@@ -30,7 +30,7 @@ public interface IFontService
     /// <param name="fontFamily">The font family name.</param>
     /// <param name="smallFontSize">The small font size.</param>
     /// <param name="standardFontSize">The standard font size.</param>
-    /// <param name="iconFontSize">The icon font size.</param>
+    /// <param name="iconFontSize">The standard icon font size.</param>
     /// <param name="largeFontSize">The large font size.</param>
     /// <param name="extraLargeFontSize">The extra-large font size.</param>
     /// <param name="headerSizeFontSize">The header-size font size.</param>
@@ -56,7 +56,7 @@ public interface IFontService
     /// <param name="fontFamily">The page-specific font family name.</param>
     /// <param name="smallFontSize">The page-specific small size, or <see langword="null"/> to follow the global size.</param>
     /// <param name="standardFontSize">The page-specific standard size, or <see langword="null"/> to follow the global size.</param>
-    /// <param name="iconFontSize">The page-specific icon size, or <see langword="null"/> to follow the global size.</param>
+    /// <param name="iconFontSize">The page-specific standard icon size, or <see langword="null"/> to follow the global size.</param>
     /// <param name="largeFontSize">The page-specific large size, or <see langword="null"/> to follow the global size.</param>
     /// <param name="extraLargeFontSize">The page-specific extra-large size, or <see langword="null"/> to follow the global size.</param>
     /// <param name="headerSizeFontSize">The page-specific header size, or <see langword="null"/> to follow the global size.</param>
@@ -104,7 +104,7 @@ public interface IFontService
 }
 
 /// <summary>Represents an immutable snapshot of the active runtime font configuration.</summary>
-public sealed record FlourishFontState(
+public sealed record FontState(
     string FontFamily,
     string IconFontFamily,
     double SmallFontSize,
@@ -113,5 +113,5 @@ public sealed record FlourishFontState(
     double LargeFontSize,
     double ExtraLargeFontSize,
     double HeaderSizeFontSize,
-    IReadOnlyDictionary<Type, FlourishPageFontOverride> PageOverrides
+    IReadOnlyDictionary<Type, PageFontOverride> PageOverrides
 );

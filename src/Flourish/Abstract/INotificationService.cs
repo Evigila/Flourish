@@ -9,13 +9,13 @@ public interface INotificationService
     /// <summary>
     /// Gets the current immutable notification state.
     /// </summary>
-    FlourishNotificationState Current { get; }
+    NotificationState Current { get; }
 
     /// <summary>
     /// Occurs synchronously after the active notification collection changes.
     /// </summary>
     /// <remarks>The event may be raised on a non-UI thread.</remarks>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishNotificationState>>? Changed;
+    event EventHandler<StateChangedEventArgs<NotificationState>>? Changed;
 
     /// <summary>
     /// Publishes a new notification with a unique identifier.
@@ -27,7 +27,7 @@ public interface INotificationService
     /// <exception cref="ArgumentOutOfRangeException">The severity or duration is invalid.</exception>
     /// <exception cref="InvalidOperationException">A notification with the same identifier is already active.</exception>
     /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
-    FlourishNotificationHandle Show(FlourishNotification notification);
+    NotificationHandle Show(Notification notification);
 
     /// <summary>
     /// Publishes a notification or atomically replaces the active notification with the same identifier.
@@ -38,7 +38,7 @@ public interface INotificationService
     /// <exception cref="ArgumentException">Required notification content is empty.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The severity or duration is invalid.</exception>
     /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
-    FlourishNotificationHandle Upsert(FlourishNotification notification);
+    NotificationHandle Upsert(Notification notification);
 
     /// <summary>
     /// Dismisses an active notification by identifier.

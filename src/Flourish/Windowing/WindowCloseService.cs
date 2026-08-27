@@ -9,7 +9,7 @@ using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Windowing;
 
-internal sealed class WindowCloseService(FlourishWindowOptions options, IServiceProvider services)
+internal sealed class WindowCloseService(WindowOptions options, IServiceProvider services)
     : IWindowCloseService
 {
     private readonly Lock gate = new();
@@ -18,15 +18,15 @@ internal sealed class WindowCloseService(FlourishWindowOptions options, IService
     private WindowCloseBehavior behavior = options.IsTrayExitEnabled
         ? WindowCloseBehavior.MinimizeToTray
         : WindowCloseBehavior.Prompt;
-    private FlourishWindowCloseState current = new(
+    private WindowCloseState current = new(
         options.IsTrayExitEnabled
             ? WindowCloseBehavior.MinimizeToTray
             : WindowCloseBehavior.Prompt
     );
 
-    public FlourishWindowCloseState Current => Volatile.Read(ref current);
+    public WindowCloseState Current => Volatile.Read(ref current);
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishWindowCloseState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<WindowCloseState>>? Changed;
 
     public void SetBehavior(WindowCloseBehavior behavior)
     {
@@ -39,7 +39,7 @@ internal sealed class WindowCloseService(FlourishWindowOptions options, IService
             );
         }
 
-        FlourishWindowCloseState current;
+        WindowCloseState current;
         lock (gate)
         {
             if (this.behavior == behavior)
@@ -49,13 +49,13 @@ internal sealed class WindowCloseService(FlourishWindowOptions options, IService
 
             this.behavior = behavior;
             options.IsTrayExitEnabled = behavior == WindowCloseBehavior.MinimizeToTray;
-            current = new FlourishWindowCloseState(behavior);
+            current = new WindowCloseState(behavior);
             Volatile.Write(ref this.current, current);
         }
 
         Changed?.Invoke(
             this,
-            new FlourishStateChangedEventArgs<FlourishWindowCloseState>(current)
+            new StateChangedEventArgs<WindowCloseState>(current)
         );
     }
 

@@ -3,9 +3,10 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Themes/Layout.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Themes/Typography.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Themes/Colors/Colors.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Themes/Controls.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Themes/Layout.xaml" />
+    <!-- Typography owns the text, standard-icon, and large-icon scales. -->
+    <ResourceDictionary Source="/Flourish;component/Themes/Typography.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Themes/Colors/Colors.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Themes/Controls.xaml" />
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

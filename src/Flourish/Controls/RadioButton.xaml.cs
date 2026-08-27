@@ -5,13 +5,13 @@ using WpfRadioButton = System.Windows.Controls.RadioButton;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled mutually exclusive option.</summary>
-public class FlourishRadioButton : WpfRadioButton
+public class RadioButton : WpfRadioButton
 {
-    static FlourishRadioButton()
+    static RadioButton()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishRadioButton),
-            new FrameworkPropertyMetadata(typeof(FlourishRadioButton))
+            typeof(RadioButton),
+            new FrameworkPropertyMetadata(typeof(RadioButton))
         );
     }
 }

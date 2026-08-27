@@ -8,28 +8,28 @@
     "zh-CN": "前进"
   },
   "TitleBar.ToggleNavigation": {
-    "en-US": "Toggle navigation",
-    "zh-CN": "切换导航"
+    "en-US": "Toggle menu",
+    "zh-CN": "切换菜单"
   },
   "TitleBar.Theme": {
     "en-US": "Theme",
     "zh-CN": "主题"
   },
   "TitleBar.ThemeSystem": {
-    "en-US": "Theme: System ({0})",
-    "zh-CN": "主题：跟随系统（{0}）"
+    "en-US": "System ({0})",
+    "zh-CN": "跟随系统（{0}）"
   },
   "TitleBar.ThemeCurrent": {
-    "en-US": "Theme: {0}",
-    "zh-CN": "主题：{0}"
+    "en-US": "Current: {0}",
+    "zh-CN": "当前：{0}"
   },
   "TitleBar.Profile": {
     "en-US": "Profile",
     "zh-CN": "个人资料"
   },
   "TitleBar.ApplicationInfo": {
-    "en-US": "Application information",
-    "zh-CN": "应用信息"
+    "en-US": "About",
+    "zh-CN": "关于"
   },
   "TitleBar.ProjectMenu": {
     "en-US": "Projects",
@@ -40,8 +40,8 @@
     "zh-CN": "新建项目"
   },
   "Project.Delete": {
-    "en-US": "Delete project",
-    "zh-CN": "删除项目"
+    "en-US": "Delete",
+    "zh-CN": "删除"
   },
   "Project.Save": {
     "en-US": "Save",
@@ -56,24 +56,24 @@
     "zh-CN": "保存项目"
   },
   "Project.TextFileFilter": {
-    "en-US": "Text project files (*.txt)|*.txt",
-    "zh-CN": "文本项目文件 (*.txt)|*.txt"
+    "en-US": "Text files (*.txt)|*.txt",
+    "zh-CN": "文本文件 (*.txt)|*.txt"
   },
   "Project.UnsavedTitle": {
     "en-US": "Save project",
     "zh-CN": "保存项目"
   },
   "Project.UnsavedPrompt": {
-    "en-US": "\"{0}\" has not been saved. Save it before continuing?",
-    "zh-CN": "“{0}”尚未保存。是否先保存再继续？"
+    "en-US": "\"{0}\" isn't saved. Save now?",
+    "zh-CN": "“{0}”未保存。现在保存吗？"
   },
   "Project.DeleteTitle": {
-    "en-US": "Delete project",
-    "zh-CN": "删除项目"
+    "en-US": "Delete",
+    "zh-CN": "删除"
   },
   "Project.DeletePrompt": {
-    "en-US": "Delete \"{0}\"? Its managed project file is also deleted when no other project uses it.\n{1}",
-    "zh-CN": "是否删除“{0}”？没有其他项目使用同一路径时，也会删除其受管理的项目文件。\n{1}"
+    "en-US": "Delete \"{0}\"? Its file is also deleted if unused.\n{1}",
+    "zh-CN": "删除“{0}”？若无其他项目使用，其文件也会被删除。\n{1}"
   },
   "TitleBar.Minimize": {
     "en-US": "Minimize",
@@ -112,24 +112,24 @@
     "zh-CN": "退出登录"
   },
   "Profile.FirstName": {
-    "en-US": "First Name",
+    "en-US": "First name",
     "zh-CN": "名"
   },
   "Profile.LastName": {
-    "en-US": "Last Name",
+    "en-US": "Last name",
     "zh-CN": "姓"
   },
   "Profile.Image": {
-    "en-US": "Profile image",
-    "zh-CN": "个人资料图片"
+    "en-US": "Photo",
+    "zh-CN": "头像"
   },
   "Profile.ChooseImage": {
-    "en-US": "Choose profile image",
-    "zh-CN": "选择个人资料图片"
+    "en-US": "Choose photo",
+    "zh-CN": "选择头像"
   },
   "Profile.UploadImage": {
-    "en-US": "Upload image",
-    "zh-CN": "上传图片"
+    "en-US": "Upload photo",
+    "zh-CN": "上传头像"
   },
   "Profile.Password": {
     "en-US": "Password",
@@ -140,8 +140,8 @@
     "zh-CN": "取消"
   },
   "Profile.RememberLogin": {
-    "en-US": "Remember login",
-    "zh-CN": "记住登录状态"
+    "en-US": "Stay signed in",
+    "zh-CN": "保持登录"
   },
   "Profile.SignedIn": {
     "en-US": "Signed in",
@@ -152,44 +152,44 @@
     "zh-CN": "未登录"
   },
   "Profile.ImageFiles": {
-    "en-US": "Image files",
-    "zh-CN": "图片文件"
+    "en-US": "Images",
+    "zh-CN": "图片"
   },
   "Profile.AllFiles": {
     "en-US": "All files",
     "zh-CN": "所有文件"
   },
   "Profile.ImageLoadFailed": {
-    "en-US": "The selected image could not be loaded.",
-    "zh-CN": "无法加载所选图片。"
+    "en-US": "Can't load the image.",
+    "zh-CN": "无法加载图片。"
   },
   "Profile.SignInFailed": {
     "en-US": "Sign in failed.",
     "zh-CN": "登录失败。"
   },
   "Profile.EnterName": {
-    "en-US": "Enter a first or last name.",
-    "zh-CN": "请输入名字或姓氏。"
+    "en-US": "Enter a name.",
+    "zh-CN": "请输入姓名。"
   },
   "Profile.EnterPassword": {
     "en-US": "Enter a password.",
     "zh-CN": "请输入密码。"
   },
   "Profile.RememberLoginRequiresSignIn": {
-    "en-US": "Remember login can only be changed while a profile is signed in.",
-    "zh-CN": "仅可在个人资料已登录时更改记住登录状态。"
+    "en-US": "Sign in to change this option.",
+    "zh-CN": "请先登录，再更改此选项。"
   },
   "BackgroundTask.Title": {
-    "en-US": "Background tasks",
-    "zh-CN": "后台任务"
+    "en-US": "Tasks",
+    "zh-CN": "任务"
   },
   "BackgroundTask.Running": {
     "en-US": "Running",
     "zh-CN": "运行中"
   },
   "BackgroundTask.Queued": {
-    "en-US": "Waiting",
-    "zh-CN": "等待中"
+    "en-US": "Queued",
+    "zh-CN": "排队中"
   },
   "BackgroundTask.Cancelling": {
     "en-US": "Cancelling",
@@ -200,16 +200,16 @@
     "zh-CN": "取消"
   },
   "BackgroundTask.WaitingCount": {
-    "en-US": "{0} task(s) waiting",
-    "zh-CN": "{0} 个任务等待中"
+    "en-US": "{0} queued",
+    "zh-CN": "{0} 个排队中"
   },
   "BackgroundTask.NoActiveTasks": {
-    "en-US": "No active background tasks",
-    "zh-CN": "没有活动的后台任务"
+    "en-US": "No active tasks",
+    "zh-CN": "没有活动任务"
   },
   "SystemStatus.Title": {
-    "en-US": "System status",
-    "zh-CN": "系统状态"
+    "en-US": "Status",
+    "zh-CN": "状态"
   },
   "SystemStatus.Network": {
     "en-US": "Network",
@@ -220,12 +220,12 @@
     "zh-CN": "电源"
   },
   "SystemStatus.AC": {
-    "en-US": "AC power",
+    "en-US": "AC",
     "zh-CN": "外接电源"
   },
   "SystemStatus.Battery": {
     "en-US": "Battery",
-    "zh-CN": "电池供电"
+    "zh-CN": "电池"
   },
   "SystemStatus.Unknown": {
     "en-US": "Unknown",
@@ -252,24 +252,24 @@
     "zh-CN": "关闭"
   },
   "Window.ClosePrompt": {
-    "en-US": "Are you sure you want to close this window?",
-    "zh-CN": "确定要关闭此窗口吗？"
+    "en-US": "Close this window?",
+    "zh-CN": "关闭此窗口？"
   },
   "Window.BackgroundTasksCloseTitle": {
-    "en-US": "Stop background tasks?",
-    "zh-CN": "中止后台任务？"
+    "en-US": "Stop tasks?",
+    "zh-CN": "中止任务？"
   },
   "Window.BackgroundTasksClosePrompt": {
-    "en-US": "Active background tasks: {0}. Closing the window will cancel them. Stop the tasks and exit?",
-    "zh-CN": "仍有 {0} 个后台任务正在进行。关闭窗口将取消这些任务。是否中止任务并退出？"
+    "en-US": "{0} background task(s) active. Stop them and exit?",
+    "zh-CN": "有 {0} 个后台任务。是否中止并退出？"
   },
   "Window.BackgroundTasksKeepRunning": {
     "en-US": "Keep running",
     "zh-CN": "继续运行"
   },
   "Window.BackgroundTasksStopAndExit": {
-    "en-US": "Stop tasks and exit",
-    "zh-CN": "中止任务并退出"
+    "en-US": "Stop and exit",
+    "zh-CN": "中止并退出"
   },
   "Tray.Show": {
     "en-US": "Show",

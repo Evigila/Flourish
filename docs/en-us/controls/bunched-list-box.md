@@ -1,11 +1,11 @@
 ---
 title: BunchedListBox
-description: Present a selectable collection with one parent-owned interaction layer that moves continuously between items.
+description: Present selectable items with one shared interaction layer.
 ---
 
 # BunchedListBox
 
-`BunchedListBox` is the recommended list control when adjacent items should feel like one coordinated collection. It preserves the native WPF `ListBox` selection, keyboard, automation, data binding, scrolling, and virtualization behavior, while moving hover, pressed, and selection backgrounds out of each item container and into one parent-owned display layer.
+`BunchedListBox` preserves native `ListBox` behavior while moving hover, pressed, and selection feedback into one parent-owned layer.
 
 Use `ListBox` when every item deliberately needs an independent interaction surface. Use `BunchedListBox` when pointer feedback or the single-selection indicator should travel continuously from one item to the next.
 
@@ -23,7 +23,7 @@ The control accepts data templates, item container styles, `SelectedValuePath`, 
 
 ## Shared interaction layer
 
-The default template contains one non-interactive layer for hover, pressed, and selection feedback. Moving between items retargets the existing indicator instead of ending one item animation and starting another. Its geometry is calculated from the realized container, so unequal item sizes, margins, horizontal panels, right-to-left layouts, and scrolling remain supported.
+The non-interactive layer retargets existing indicators as the active item changes. It follows realized containers across unequal sizes, margins, horizontal or right-to-left layouts, and scrolling.
 
 The layer is clipped to the actual scroll viewport and sits behind item content. Keep custom `BunchedListBoxItem` backgrounds transparent if the shared feedback must remain visible.
 
@@ -54,15 +54,15 @@ Usually the parent should generate `BunchedListBoxItem`. Declare a container dir
 </flourish:BunchedListBox>
 ```
 
-An explicit `FlourishListBoxItem` is treated as data and wrapped in a `BunchedListBoxItem`; use the Bunched container type when supplying a container directly.
+An explicit `ListBoxItem` is treated as data and wrapped in a `BunchedListBoxItem`; use the Bunched container type when supplying a container directly.
 
 ## Customize the template
 
-The default control template supplies `PART_InteractionViewport`, `PART_IndicatorLayer`, `PART_SelectionChrome`, `PART_HoverChrome`, `PART_PressedChrome`, and `PART_ScrollViewer`. A custom template may omit these parts and retain ordinary `ListBox` selection behavior, but coordinated interaction feedback requires the matching parts. The indicator layer must remain non-interactive and must not wrap the items presenter, so it does not interrupt hit testing, logical scrolling, or virtualization.
+Shared feedback requires `PART_InteractionViewport`, `PART_IndicatorLayer`, `PART_SelectionChrome`, `PART_HoverChrome`, `PART_PressedChrome`, and `PART_ScrollViewer`. Keep the indicator layer non-interactive and outside the items presenter to preserve hit testing, scrolling, and virtualization.
 
 ## Related content
 
-- The [BunchedListBox API](xref:ArkheideSystem.Flourish.Controls.BunchedListBox) lists inherited and declared members.
-- The [BunchedListBoxItem API](xref:ArkheideSystem.Flourish.Controls.BunchedListBoxItem) describes the generated container.
-- [Motion](../articles/configure-motion.md) configures hover reveal and reduced-motion behavior.
-- The [WPF ListBox documentation](https://learn.microsoft.com/dotnet/desktop/wpf/controls/listbox) explains the native selection model.
+- [BunchedListBox API](xref:ArkheideSystem.Flourish.Controls.BunchedListBox)
+- [BunchedListBoxItem API](xref:ArkheideSystem.Flourish.Controls.BunchedListBoxItem)
+- [Motion](../articles/configure-motion.md)
+- [WPF ListBox documentation](https://learn.microsoft.com/dotnet/desktop/wpf/controls/listbox)

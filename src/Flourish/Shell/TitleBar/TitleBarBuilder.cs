@@ -10,12 +10,12 @@ using ArkheideSystem.Flourish.Projects;
 namespace ArkheideSystem.Flourish.Shell.TitleBar;
 
 internal sealed class TitleBarBuilder(
-    FlourishTitleBarOptions options,
-    FlourishProjectOptions projectOptions,
-    FlourishAppearanceOptions appearanceOptions,
-    FlourishProfileOptions profileOptions
+    TitleBarOptions options,
+    ProjectOptions projectOptions,
+    AppearanceOptions appearanceOptions,
+    ProfileOptions profileOptions
 )
-    : FlourishBuilderMutationGuard,
+    : BuilderMutationGuard,
         ITitleBarBuilder
 {
     public ITitleBarBuilder SetEnabled(bool enabled = true)
@@ -123,7 +123,7 @@ internal sealed class TitleBarBuilder(
 
     public ITitleBarBuilder SetThemeToggle(
         bool enabled = true,
-        FlourishTheme mode = FlourishTheme.System,
+        ApplicationTheme mode = ApplicationTheme.System,
         bool usePersistedPreference = true
     )
     {

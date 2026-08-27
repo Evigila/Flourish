@@ -11,15 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ArkheideSystem.Flourish.Navigation;
 
 internal sealed class NavigationBuilder(
-    FlourishNavigationOptions options,
+    NavigationOptions options,
     IServiceCollection services
 )
-    : FlourishBuilderMutationGuard,
+    : BuilderMutationGuard,
         INavigationBuilder
 {
     private const int FixedItemsGroupId = int.MaxValue;
 
-    internal NavigationBuilder(FlourishNavigationOptions options)
+    internal NavigationBuilder(NavigationOptions options)
         : this(options, new ServiceCollection()) { }
 
     public INavigationBuilder SetEnabled(bool enabled = true)
@@ -32,7 +32,7 @@ internal sealed class NavigationBuilder(
     public INavigationBuilder AddNavigable<TPage>(
         string displayName,
         string iconGlyph,
-        FlourishPageCacheMode cacheMode = FlourishPageCacheMode.Enabled,
+        PageCacheMode cacheMode = PageCacheMode.Enabled,
         bool isInitial = false,
         int groupId = 0,
         string? groupName = null,
@@ -55,7 +55,7 @@ internal sealed class NavigationBuilder(
         );
         if (group is null)
         {
-            group = new FlourishNavigationGroup(groupId, groupName);
+            group = new NavigationGroupDefinition(groupId, groupName);
             options.NavigationGroups.Add(group);
         }
         else if (
@@ -175,7 +175,7 @@ internal sealed class NavigationBuilder(
             );
         }
 
-        var group = new FlourishNavigationGroup(groupId, displayName);
+        var group = new NavigationGroupDefinition(groupId, displayName);
         options.NavigationGroups.Add(group);
         if (configureGroup is not null)
         {
@@ -236,7 +236,7 @@ internal sealed class NavigationBuilder(
     }
 
     private static void AddPageItem(
-        List<FlourishNavigationItem> items,
+        List<NavigationItemDefinition> items,
         int groupId,
         bool isFixed,
         Type pageType,
@@ -246,17 +246,17 @@ internal sealed class NavigationBuilder(
     )
     {
         ValidateParentChild(items, parentId, childId);
-        var navigationKey = FlourishServiceCollectionExtensions.CreateDefaultNavigationKey(
+        var navigationKey = ServiceCollectionExtensions.CreateDefaultNavigationKey(
             pageType
         );
 
         items.Add(
-            new FlourishNavigationItem(
+            new NavigationItemDefinition(
                 navigationKey,
                 pageType.Name,
                 null,
                 groupId,
-                FlourishNavigationItemKind.Page,
+                NavigationItemKind.Page,
                 pageType,
                 isInitial: isInitial,
                 isFixed: isFixed,
@@ -267,7 +267,7 @@ internal sealed class NavigationBuilder(
     }
 
     private static void AddCommandItem(
-        List<FlourishNavigationItem> items,
+        List<NavigationItemDefinition> items,
         int groupId,
         bool isFixed,
         string displayName,
@@ -288,12 +288,12 @@ internal sealed class NavigationBuilder(
         ValidateParentChild(items, parentId, childId);
 
         items.Add(
-            new FlourishNavigationItem(
+            new NavigationItemDefinition(
                 $"command:{groupId}:{items.Count}:{commandKey ?? displayName}",
                 displayName,
                 iconGlyph,
                 groupId,
-                FlourishNavigationItemKind.Command,
+                NavigationItemKind.Command,
                 commandKey: commandKey,
                 isFixed: isFixed,
                 parentId: parentId,
@@ -303,7 +303,7 @@ internal sealed class NavigationBuilder(
     }
 
     private static void ValidateParentChild(
-        IEnumerable<FlourishNavigationItem> items,
+        IEnumerable<NavigationItemDefinition> items,
         int parentId,
         int childId
     )
@@ -322,10 +322,10 @@ internal sealed class NavigationBuilder(
     }
 
     private sealed class NavigationGroupBuilder(
-        List<FlourishNavigationItem> items,
+        List<NavigationItemDefinition> items,
         int groupId,
         bool isFixed
-    ) : FlourishBuilderMutationGuard, INavigationGroupBuilder
+    ) : BuilderMutationGuard, INavigationGroupBuilder
     {
         public INavigationGroupBuilder AddNavigableViewItem<TPage>(
             bool isInitial = false,

@@ -10,7 +10,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// builder.ConfigureMotion(motion =>
 /// {
 ///     motion.SetPageTransition(
-///         transition: FlourishPageTransition.EntranceFromBottom,
+///         transition: PageTransition.EntranceFromBottom,
 ///         duration: TimeSpan.FromMilliseconds(180));
 /// });
 /// ]]></code>
@@ -30,12 +30,12 @@ public interface IMotionBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <example>
     /// <code><![CDATA[
-    /// motion.SetPageTransition(transition: FlourishPageTransition.Fade);
+    /// motion.SetPageTransition(transition: PageTransition.Fade);
     /// ]]></code>
     /// </example>
     IMotionBuilder SetPageTransition(
         bool enabled = true,
-        FlourishPageTransition transition = FlourishPageTransition.EntranceFromBottom,
+        PageTransition transition = PageTransition.EntranceFromBottom,
         TimeSpan? duration = null,
         bool usePersistedPreference = true
     );
@@ -51,12 +51,12 @@ public interface IMotionBuilder
     /// <example>
     /// <code><![CDATA[
     /// motion.SetNavigationPanelTransition(
-    ///     transition: FlourishNavigationPanelTransition.Resize);
+    ///     transition: NavigationPanelTransition.Resize);
     /// ]]></code>
     /// </example>
     IMotionBuilder SetNavigationPanelTransition(
         bool enabled = true,
-        FlourishNavigationPanelTransition transition = FlourishNavigationPanelTransition.Resize,
+        NavigationPanelTransition transition = NavigationPanelTransition.Resize,
         TimeSpan? duration = null,
         bool usePersistedPreference = true
     );

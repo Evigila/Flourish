@@ -5,7 +5,7 @@ description: 使用 Flourish 样式展示表格数据，同时保留原生 WPF D
 
 # DataGrid
 
-`DataGrid` 继承自原生 WPF `DataGrid`。数据继续使用标准 `ItemsSource` 与 `Columns`，选择、排序、编辑和滚动属性也保持不变；Flourish 负责提供主题表面、分隔线、Regular 字重与首列强调色。
+`DataGrid` 保留 WPF 的 `ItemsSource`、`Columns`、选择、排序、编辑和滚动模型，并提供主题表面、分隔线、Regular 字重与首列强调色。
 
 ## 定义行与列
 
@@ -47,7 +47,7 @@ DataGrid 位于可滚动页面中时，不会无条件截留鼠标滚轮。只�
 
 ## 相关内容
 
-- [Card](card.md) 说明信息容器共享的表面语言。
-- [PageBody](page-body.md) 说明页面根滚动容器。
-- [ScrollViewer](scroll-viewer.md) 说明边界滚轮交接行为。
-- [WPF DataGrid 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/datagrid) 介绍列、编辑、排序与选择功能。
+- [Card](card.md)
+- [PageBody](page-body.md)
+- [ScrollViewer](scroll-viewer.md)
+- [WPF DataGrid 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/datagrid)

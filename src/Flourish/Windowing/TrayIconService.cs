@@ -15,14 +15,14 @@ using Forms = System.Windows.Forms;
 namespace ArkheideSystem.Flourish.Windowing;
 
 internal sealed class TrayIconService(
-    FlourishWindowOptions options,
-    FlourishLocalizationService localizationService,
+    WindowOptions options,
+    LocalizationService localizationService,
     WindowCloseService windowCloseService,
     ILogger<TrayIconService> logger
 ) : ITrayService, IDisposable
 {
     private const string DefaultIconUri =
-        "pack://application:,,,/Arkheide.Flourish;component/Assets/favicon.ico";
+        "pack://application:,,,/Flourish;component/Assets/favicon.ico";
 
     private readonly Lock gate = new();
     private Forms.NotifyIcon? notifyIcon;
@@ -34,17 +34,17 @@ internal sealed class TrayIconService(
     private bool isWindowHidden;
     private bool isLocalizationSubscribed;
     private string toolTipText = "Flourish";
-    private FlourishTrayState? lastPublishedState;
+    private TrayState? lastPublishedState;
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishTrayState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<TrayState>>? Changed;
 
-    public FlourishTrayState Current
+    public TrayState Current
     {
         get
         {
             lock (gate)
             {
-                return new FlourishTrayState(
+                return new TrayState(
                     options.IsTrayExitEnabled,
                     isIconVisible,
                     isWindowHidden,
@@ -356,12 +356,12 @@ internal sealed class TrayIconService(
     {
         var contextMenu = new Forms.ContextMenuStrip();
         contextMenu.Items.Add(
-            localizationService.Get(FlourishLocaleKeys.TrayShow),
+            localizationService.Get(LocaleKeys.TrayShow),
             null,
             (_, _) => Restore()
         );
         contextMenu.Items.Add(
-            localizationService.Get(FlourishLocaleKeys.TrayExit),
+            localizationService.Get(LocaleKeys.TrayExit),
             null,
             (_, _) => Exit()
         );
@@ -383,13 +383,13 @@ internal sealed class TrayIconService(
         RaiseChanged();
     }
 
-    private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
+    private void LocalizationService_Changed(object? sender, LocalizationChangedEventArgs e)
     {
         if (
-            e.Kind != FlourishLocalizationChangeKind.LocaleChanged
+            e.Kind != LocalizationChangeKind.LocaleChanged
             && !e.AffectedLocales.Contains(e.CurrentLocale, StringComparer.OrdinalIgnoreCase)
             && !e.AffectedLocales.Contains(
-                FlourishLocalizationService.DefaultLocale,
+                LocalizationService.DefaultLocale,
                 StringComparer.OrdinalIgnoreCase
             )
         )
@@ -474,10 +474,10 @@ internal sealed class TrayIconService(
 
     private void RaiseChanged()
     {
-        FlourishTrayState state;
+        TrayState state;
         lock (gate)
         {
-            state = new FlourishTrayState(
+            state = new TrayState(
                 options.IsTrayExitEnabled,
                 isIconVisible,
                 isWindowHidden,
@@ -492,6 +492,6 @@ internal sealed class TrayIconService(
             lastPublishedState = state;
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishTrayState>(state));
+        Changed?.Invoke(this, new StateChangedEventArgs<TrayState>(state));
     }
 }

@@ -9,14 +9,14 @@ namespace ArkheideSystem.Flourish.Shell.TitleBar;
 internal sealed class TitleBarService
 {
     private readonly Lock gate = new();
-    private readonly FlourishTitleBarOptions options;
-    private readonly FlourishProjectOptions projectOptions;
-    private FlourishTitleBarState current;
+    private readonly TitleBarOptions options;
+    private readonly ProjectOptions projectOptions;
+    private TitleBarState current;
     private long version;
 
     public TitleBarService(
-        FlourishTitleBarOptions options,
-        FlourishProjectOptions projectOptions
+        TitleBarOptions options,
+        ProjectOptions projectOptions
     )
     {
         this.options = options ?? throw new ArgumentNullException(nameof(options));
@@ -25,11 +25,11 @@ internal sealed class TitleBarService
         current = CreateSnapshot();
     }
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<TitleBarState>>? Changed;
 
     internal long CurrentVersion => Volatile.Read(ref current).Version;
 
-    public FlourishTitleBarState Current => Volatile.Read(ref current);
+    public TitleBarState Current => Volatile.Read(ref current);
 
     public void SetEnabled(bool enabled)
     {
@@ -155,7 +155,7 @@ internal sealed class TitleBarService
 
     private void Update(Action update)
     {
-        FlourishTitleBarState state;
+        TitleBarState state;
         lock (gate)
         {
             var previous = current;
@@ -170,12 +170,12 @@ internal sealed class TitleBarService
             Volatile.Write(ref current, state);
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishTitleBarState>(state));
+        Changed?.Invoke(this, new StateChangedEventArgs<TitleBarState>(state));
     }
 
-    private FlourishTitleBarState CreateSnapshot()
+    private TitleBarState CreateSnapshot()
     {
-        return new FlourishTitleBarState(
+        return new TitleBarState(
             options.ApplicationTitle,
             options.ApplicationSubtitle,
             projectOptions.UnnamedProjectPlaceholder,
@@ -200,7 +200,7 @@ internal sealed class TitleBarService
         };
     }
 
-    private bool MatchesOptions(FlourishTitleBarState state)
+    private bool MatchesOptions(TitleBarState state)
     {
         return state.ApplicationTitle == options.ApplicationTitle
             && state.ApplicationSubtitle == options.ApplicationSubtitle

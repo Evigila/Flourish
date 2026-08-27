@@ -5,7 +5,7 @@ description: 将操作消息追加到紧凑滚动历史中，同时避免输出�
 
 # OutputCard
 
-`OutputCard` 在同一份只读历史中显示原始消息、持续进度、完成结果与失败信息。适配主题的中性视口会铺满整个表面，使用紧凑文字，并在历史超过布局高度时滚动。
+`OutputCard` 在可滚动的只读历史中显示消息、进度、结果与失败信息。
 
 > [!IMPORTANT]
 > `OutputCard` 没有 `Title`、`Content`、`Icon` 或任意 `Body`。解释文案应放在所属 `Chunk` 中，操作应放在专用操作控件中，再将每个可观察结果追加为一条消息。
@@ -83,7 +83,7 @@ private void ClearOutput_Click(object sender, RoutedEventArgs e) =>
 
 使用自动高度时，输出历史不会增加 `OutputCard` 的期望高度。控件的最小高度仍参与测量，拉伸父级或显式高度则决定视口的最终布局尺寸。
 
-对于 ActionCard 加输出的布局，应将完整 ActionCard 列与 `OutputCard` 放在同一个自动高度 `Grid` 行中，并保持 `OutputCard.VerticalAlignment="Stretch"`。此时由 ActionCard 列决定行高，新增输出留在内部视口中并使用纵向滚动条，不会迫使 ActionCard 变高。不要根据 `Output` 重新计算 `Height`，也不要在 `OutputCard` 外再嵌套滚动容器。
+ActionCard 与 `OutputCard` 应位于同一自动高度 `Grid` 行，并设置 `OutputCard.VerticalAlignment="Stretch"`。ActionCard 决定行高，新增输出在内部滚动，不会撑高同级内容。不要根据 `Output` 计算 `Height`，也不要外套滚动容器。
 
 长行不会换行，并会在需要时使用横向滚动条。视口使用标准 Flourish 滚动条；其较窄的可见滑块使两个方向的滚动能力不会增加过多视觉重量。
 
@@ -91,13 +91,13 @@ private void ClearOutput_Click(object sender, RoutedEventArgs e) =>
 
 ## 视口与排版
 
-输出视口使用更深的圆角中性灰色背景且没有外层 Padding，因此它本身就是完整可见的卡片表面。输出文字使用紧凑的 Small 字号层级、独立的 `FlourishOutputFontFamily` 等宽字体（默认为 Consolas）以及随主题变化的绿色前景。需要不同输出样式时，可以在单个 `OutputCard` 上设置 `FontFamily` 或 `Foreground`。
+输出视口使用无外层 Padding 的深色圆角中性背景。文字使用 Small、`FlourishOutputFontFamily` 等宽字体（默认 Consolas）和主题绿色前景；可在单个 `OutputCard` 上覆盖 `FontFamily` 或 `Foreground`。
 
 当周围章节和操作标签仍不足以明确输出含义时，应为控件设置 `AutomationProperties.Name`。
 
 ## 相关内容
 
-- [Card](card.md) 说明解释型和展示型信息表面。
-- [Chunk](chunk.md) 说明如何在同一页面章节中组合操作与输出。
-- [ScrollViewer](scroll-viewer.md) 说明底层 Flourish 滚动行为。
-- [OutputCard API](xref:ArkheideSystem.Flourish.Controls.OutputCard) 列出完整成员签名。
+- [Card](card.md)
+- [Chunk](chunk.md)
+- [ScrollViewer](scroll-viewer.md)
+- [OutputCard API](xref:ArkheideSystem.Flourish.Controls.OutputCard)

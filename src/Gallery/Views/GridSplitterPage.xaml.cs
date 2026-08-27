@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -32,7 +32,7 @@ public partial class GridSplitterPage : Page
         + "    <ColumnDefinition Width=\"*\" MinWidth=\"320\" />\n"
         + "  </Grid.ColumnDefinitions>\n"
         + "  <local:NavigationPane />\n"
-        + "  <flourish:FlourishGridSplitter\n"
+        + "  <flourish:GridSplitter\n"
         + "    Grid.Column=\"1\"\n"
         + "    Variant=\"NavigationPane\" />\n"
         + "  <Frame Grid.Column=\"2\" />\n"

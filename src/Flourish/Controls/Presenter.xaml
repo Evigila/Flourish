@@ -61,14 +61,14 @@
             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
           >
             <StackPanel x:Name="CopyHost" HorizontalAlignment="Stretch">
-              <controls:FlourishTextBlock
+              <controls:TextBlock
                 x:Name="TitleHost"
                 Foreground="{TemplateBinding Foreground}"
                 Role="CardTitle"
                 Text="{TemplateBinding Title}"
                 TextAlignment="Left"
               />
-              <controls:FlourishTextBlock
+              <controls:TextBlock
                 x:Name="ContentHost"
                 Margin="{DynamicResource FlourishPresenterContentSpacing}"
                 Foreground="{TemplateBinding Foreground}"

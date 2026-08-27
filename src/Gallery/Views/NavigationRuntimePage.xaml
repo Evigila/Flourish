@@ -1,7 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.NavigationRuntimePage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -51,7 +51,7 @@
             Content="{culture:Localize Key=Shell_ChooseTheEdgeThatHostsTheNavigationPanel_6C830F8C}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishComboBox x:Name="DirectionBox" Width="120" SelectionChanged="DirectionBox_SelectionChanged" />
+              <flourish:ComboBox x:Name="DirectionBox" Width="120" SelectionChanged="DirectionBox_SelectionChanged" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -61,7 +61,7 @@
             Content="{culture:Localize Key=Shell_SetThePanelWidthWhileNavigationIsOpen_8E0CD5D7}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="OpenWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="240" />
+              <flourish:TextBox x:Name="OpenWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="240" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -71,7 +71,7 @@
             Content="{culture:Localize Key=Shell_SetThePanelWidthWhileNavigationIsClosed_B90A29E1}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="64" />
+              <flourish:TextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="64" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -81,7 +81,7 @@
             Content="{culture:Localize Key=Shell_SetTheMinimumAllowedPanelWidth_15E7AE7F}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="MinWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="150" />
+              <flourish:TextBox x:Name="MinWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="150" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
           <flourish:ActionCard
@@ -91,7 +91,7 @@
             Content="{culture:Localize Key=Shell_SetTheMaximumAllowedPanelWidth_6585BF24}"
           >
             <flourish:ActionCard.Body>
-              <flourish:FlourishTextBox x:Name="MaxWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="480" />
+              <flourish:TextBox x:Name="MaxWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="480" />
             </flourish:ActionCard.Body>
           </flourish:ActionCard>
         </StackPanel>
@@ -154,7 +154,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="RouteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Register the destination before publishing its menu item.&#10;using var route = navigation.SetNavigable(new FlourishNavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    FlourishPageCacheMode.Enabled));&#10;&#10;navigation.SetMenu(editor =&gt;&#10;{&#10;    editor.AddGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.SetItem(&quot;reports&quot;, FlourishNavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;navigation.SetMenu(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;// Disposing route unregisters the runtime destination." />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Register the destination before publishing its menu item.&#10;using var route = navigation.SetNavigable(new NavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    PageCacheMode.Enabled));&#10;&#10;navigation.SetMenu(editor =&gt;&#10;{&#10;    editor.AddGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.SetItem(&quot;reports&quot;, NavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;navigation.SetMenu(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;// Disposing route unregisters the runtime destination." />
       </StackPanel>
     </flourish:Chunk>
 
@@ -211,7 +211,7 @@
         </StackPanel>
         <flourish:OutputCard x:Name="CacheOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
       </Grid>
-      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Route policy and cache operations share one navigation service.&#10;navigation.SetCacheMode(typeof(ReportsPage), FlourishPageCacheMode.Enabled);&#10;navigation.Evict(typeof(ReportsPage));&#10;navigation.ClearCache();" />
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Route policy and cache operations share one navigation service.&#10;navigation.SetCacheMode(typeof(ReportsPage), PageCacheMode.Enabled);&#10;navigation.Evict(typeof(ReportsPage));&#10;navigation.ClearCache();" />
       </StackPanel>
     </flourish:Chunk>
     <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">

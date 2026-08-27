@@ -5,7 +5,7 @@ description: 配置按页面变化的工具栏项，并连接到命令调度。
 
 # 动态工具栏
 
-动态工具栏是 Shell 中会随当前页面变化的命令区域。它用于打开、保存、导入或刷新等页面范围的命令。
+动态工具栏随当前页面切换，用于打开、保存、导入或刷新等页面命令。
 
 使用 `ConfigureToolbar` 同时启用工具栏区域并注册页面对应的工具栏项。
 
@@ -30,8 +30,8 @@ builder.ConfigureToolbar(toolbar =>
     toolbar
         .SetEnabled()
         .Set<ReportsPage>(
-        new FlourishToolbarItem("刷新", "\uE72C", "cmd_reports_refresh"),
-        new FlourishToolbarItem("导出", "\uE898", "cmd_reports_export"));
+        new ToolbarItem("刷新", "\uE72C", "cmd_reports_refresh"),
+        new ToolbarItem("导出", "\uE898", "cmd_reports_export"));
 });
 ```
 
@@ -42,12 +42,12 @@ builder.ConfigureToolbar(toolbar =>
 ```csharp
 toolbar.Set<EditorPage>(
     iconOnly: false,
-    new FlourishToolbarItem("预览", "\uE8A7", "cmd_editor_preview"));
+    new ToolbarItem("预览", "\uE8A7", "cmd_editor_preview"));
 ```
 
 ## 工具栏项字段
 
-`FlourishToolbarItem` 包含三个值：
+`ToolbarItem` 包含三个值：
 
 | 值 | 作用 |
 | --- | --- |

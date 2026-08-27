@@ -22,21 +22,21 @@ public interface INavigationMenuEditor
     void SetGroupTitle(string id, string? title);
 
     /// <summary>Appends an item to the end of a scrollable navigation group.</summary>
-    void AddItem(string groupId, FlourishNavigationMenuItem item);
+    void AddItem(string groupId, NavigationMenuItem item);
 
     /// <summary>Inserts an item at a zero-based index in a scrollable navigation group.</summary>
-    void SetItemIndex(string groupId, FlourishNavigationMenuItem item, int index);
+    void SetItemIndex(string groupId, NavigationMenuItem item, int index);
 
     /// <summary>Appends an item to the end of the fixed bottom section.</summary>
-    void AddFixedItem(FlourishNavigationMenuItem item);
+    void AddFixedItem(NavigationMenuItem item);
 
     /// <summary>Inserts an item at a zero-based index in the fixed bottom section.</summary>
-    void SetFixedItemIndex(FlourishNavigationMenuItem item, int index);
+    void SetFixedItemIndex(NavigationMenuItem item, int index);
 
     /// <summary>Adds the item or replaces the existing item with the same stable ID.</summary>
     void SetItem(
         string? groupId,
-        FlourishNavigationMenuItem item,
+        NavigationMenuItem item,
         bool isFixed = false,
         int? index = null
     );
@@ -50,7 +50,7 @@ public interface INavigationMenuEditor
     /// <summary>Replaces an item using a transformation callback.</summary>
     void SetItem(
         string id,
-        Func<FlourishNavigationMenuItem, FlourishNavigationMenuItem> update
+        Func<NavigationMenuItem, NavigationMenuItem> update
     );
 
     /// <summary>Shows or hides an item without changing its tree expansion state.</summary>
@@ -64,7 +64,7 @@ public interface INavigationMenuEditor
 }
 
 /// <summary>Identifies the behavior of a navigation menu item.</summary>
-public enum FlourishNavigationMenuItemKind
+public enum NavigationMenuItemKind
 {
     /// <summary>The item navigates to a registered Flourish route.</summary>
     Page,
@@ -74,13 +74,13 @@ public enum FlourishNavigationMenuItemKind
 }
 
 /// <summary>Describes a runtime navigation menu item.</summary>
-public sealed record FlourishNavigationMenuItem
+public sealed record NavigationMenuItem
 {
     /// <summary>Creates a navigation menu item.</summary>
-    public FlourishNavigationMenuItem(
+    public NavigationMenuItem(
         string id,
         string label,
-        FlourishNavigationMenuItemKind kind,
+        NavigationMenuItemKind kind,
         string? iconGlyph = null,
         string? navigationKey = null,
         string? commandKey = null,
@@ -97,7 +97,7 @@ public sealed record FlourishNavigationMenuItem
     }
 
     /// <summary>Creates an item that navigates to a registered route.</summary>
-    public static FlourishNavigationMenuItem Page(
+    public static NavigationMenuItem Page(
         string id,
         string navigationKey,
         string label,
@@ -106,14 +106,14 @@ public sealed record FlourishNavigationMenuItem
     ) => new(
         id,
         label,
-        FlourishNavigationMenuItemKind.Page,
+        NavigationMenuItemKind.Page,
         iconGlyph,
         navigationKey,
         parentId: parentId
     );
 
     /// <summary>Creates an item that dispatches a command.</summary>
-    public static FlourishNavigationMenuItem Command(
+    public static NavigationMenuItem Command(
         string id,
         string label,
         string? iconGlyph = null,
@@ -122,7 +122,7 @@ public sealed record FlourishNavigationMenuItem
     ) => new(
         id,
         label,
-        FlourishNavigationMenuItemKind.Command,
+        NavigationMenuItemKind.Command,
         iconGlyph,
         commandKey: commandKey,
         parentId: parentId
@@ -135,7 +135,7 @@ public sealed record FlourishNavigationMenuItem
     public string Label { get; init; }
 
     /// <summary>Gets the item behavior.</summary>
-    public FlourishNavigationMenuItemKind Kind { get; init; }
+    public NavigationMenuItemKind Kind { get; init; }
 
     /// <summary>Gets the optional icon glyph.</summary>
     public string IconGlyph { get; init; }
@@ -160,15 +160,15 @@ public sealed record FlourishNavigationMenuItem
 }
 
 /// <summary>Represents a navigation group in a menu snapshot.</summary>
-public sealed record FlourishNavigationMenuGroup(
+public sealed record NavigationMenuGroup(
     string Id,
     string? Title,
-    IReadOnlyList<FlourishNavigationMenuItem> Items
+    IReadOnlyList<NavigationMenuItem> Items
 );
 
 /// <summary>Represents an immutable navigation menu snapshot.</summary>
-public sealed record FlourishNavigationMenuSnapshot(
-    IReadOnlyList<FlourishNavigationMenuGroup> Groups,
-    IReadOnlyList<FlourishNavigationMenuItem> FixedItems,
+public sealed record NavigationMenuSnapshot(
+    IReadOnlyList<NavigationMenuGroup> Groups,
+    IReadOnlyList<NavigationMenuItem> FixedItems,
     long Version
 );

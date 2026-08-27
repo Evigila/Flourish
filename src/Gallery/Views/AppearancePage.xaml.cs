@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
 using System.Globalization;
@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ArkheideSystem.Flourish.Controls;
+using ComboBoxItem = ArkheideSystem.Flourish.Controls.ComboBoxItem;
 
 namespace ArkheideSystem.Gallery.Views;
 
@@ -23,7 +24,7 @@ public partial class AppearancePage : Page
     private readonly IScrollService scroll;
     private readonly IAppearanceService appearance;
     private readonly IContentLayoutService contentLayout;
-    private readonly IReadOnlyList<FlourishComboBoxItem> materialOptions;
+    private readonly IReadOnlyList<ComboBoxItem> materialOptions;
     private bool isRefreshing;
 
     public AppearancePage(
@@ -51,7 +52,7 @@ public partial class AppearancePage : Page
         ];
         InitializeComponent();
 
-        ThemeBox.ItemsSource = Enum.GetValues<FlourishTheme>();
+        ThemeBox.ItemsSource = Enum.GetValues<ApplicationTheme>();
         MaterialBox.ItemsSource = materialOptions;
 
         Loaded += Page_Loaded;
@@ -95,7 +96,7 @@ public partial class AppearancePage : Page
 
     private void ApplyTheme_Click(object sender, RoutedEventArgs e)
     {
-        if (ThemeBox.SelectedItem is FlourishTheme selected)
+        if (ThemeBox.SelectedItem is ApplicationTheme selected)
         {
             Execute(() => theme.SetTheme(selected), ThemeOutput, FormatThemeOutput);
         }
@@ -123,7 +124,7 @@ public partial class AppearancePage : Page
                     FontFamilyBox.Text,
                     ParseDouble(SmallFontSizeBox.Text, "small font size"),
                     ParseDouble(StandardFontSizeBox.Text, "standard font size"),
-                    ParseDouble(IconFontSizeBox.Text, "icon font size"),
+                    ParseDouble(IconFontSizeBox.Text, "standard icon font size"),
                     ParseDouble(LargeFontSizeBox.Text, "large font size"),
                     ParseDouble(ExtraLargeFontSizeBox.Text, "extra-large font size"),
                     ParseDouble(HeaderSizeFontSizeBox.Text, "header font size")
@@ -165,7 +166,7 @@ public partial class AppearancePage : Page
                     ),
                     ParseNullableDouble(
                         PageOverrideIconFontSizeBox.Text,
-                        "page override icon font size"
+                        "page override standard icon font size"
                     ),
                     ParseNullableDouble(
                         PageOverrideLargeFontSizeBox.Text,
@@ -216,7 +217,7 @@ public partial class AppearancePage : Page
     {
         if (
             !CanApplyImmediately
-            || MaterialBox.SelectedItem is not FlourishComboBoxItem { Tag: MaterialEffect effect }
+            || MaterialBox.SelectedItem is not ComboBoxItem { Tag: MaterialEffect effect }
         )
         {
             return;
@@ -250,7 +251,7 @@ public partial class AppearancePage : Page
         Execute(
             () =>
                 appearance.SetThemeColors(
-                    new FlourishThemeColors(
+                    new ThemeColors(
                         Color.FromRgb(0x3B, 0x82, 0xF6),
                         Color.FromRgb(0x8B, 0x5C, 0xF6),
                         Color.FromRgb(0x06, 0xB6, 0xD4)
@@ -486,10 +487,10 @@ public partial class AppearancePage : Page
             material.Current.IsDarkMode
         );
 
-    private FlourishComboBoxItem CreateMaterialOption(MaterialEffect effect)
+    private ComboBoxItem CreateMaterialOption(MaterialEffect effect)
     {
         var isSupported = material.IsSupported(effect);
-        var option = new FlourishComboBoxItem { Tag = effect, IsEnabled = isSupported };
+        var option = new ComboBoxItem { Tag = effect, IsEnabled = isSupported };
         ApplyMaterialOptionText(option, effect, isSupported);
         return option;
     }
@@ -506,7 +507,7 @@ public partial class AppearancePage : Page
     }
 
     private void ApplyMaterialOptionText(
-        FlourishComboBoxItem option,
+        ComboBoxItem option,
         MaterialEffect effect,
         bool isSupported
     )

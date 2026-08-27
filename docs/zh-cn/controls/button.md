@@ -5,7 +5,7 @@ description: 使用 Flourish Button、CardButton 与 WindowCaptionButton 表达�
 
 # Button
 
-Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模板与自动化行为，并提供统一的主题和指针反馈。按钮的完整视觉边界都可交互。
+Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模板与自动化行为，并统一主题和指针反馈。完整视觉边界均可交互。
 
 | 控件 | 用于 |
 | --- | --- |
@@ -42,7 +42,7 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 | 属性 | 类型 | 默认值 | 用途 |
 | --- | --- | --- | --- |
 | `Icon` | `object?` | `null` | 可选图标或其他图标内容。 |
-| `IconSize` | `double` | `22` | 图标尺寸；紧凑操作可局部覆盖。 |
+| `IconSize` | `double` | `14` | 默认使用 StandardIcon；紧凑操作可局部覆盖。 |
 | `Content` | `object?` | `null` | 继承的可选按钮内容。 |
 | `Variant` | `ButtonVariant` | `Outlined` | 选择操作的视觉强调层级。 |
 
@@ -61,11 +61,11 @@ Flourish 按钮保留 WPF `Button` 的命令、点击、键盘焦点、内容模
 
 `IsEnabled` 为 `false` 时，所有 Button 变体都会使用统一的淡灰禁用背景、边框与前景。禁用状态会覆盖 Filled、Danger 等启用状态颜色，使不可用操作保持一致。
 
-仅图标按钮应同时设置可见的 `ToolTip` 和能够说明操作意图的 `AutomationProperties.Name`。通过 `ConfigureToolTips` 或 `IToolTipService` 启用 Flourish Tooltip 呈现后，Flourish 按钮提示使用统一的 Temporary Overlay 表面；未启用时，同一提示内容使用原生 WPF Tooltip 行为。
+仅图标按钮必须设置可见 `ToolTip` 和有意义的 `AutomationProperties.Name`。启用 `ConfigureToolTips` 或 `IToolTipService` 时使用 Temporary Overlay；否则使用原生 WPF Tooltip。
 
 ## CardButton
 
-`CardButton` 是具有 Card 视觉语言的按钮。它支持可选的 `Title`、`Content` 和 `Icon`，三者为空时各自的区域与间距都会折叠。文本 `Content` 会自动换行，默认最多显示三行；可将 `ContentMaxLines` 设置为其他正整数以调整上限，最后一个可见行中溢出的内容会以省略号截断。`IconPosition` 可将图标放在 `Left`、`Top`、`Right` 或 `Bottom`，默认位于上方。
+`CardButton` 支持可选 `Title`、`Content` 和 `Icon`，空区域及间距会折叠。文本自动换行，默认最多三行；`ContentMaxLines` 接受其他正整数，溢出在末行显示省略号。`IconPosition` 可为 `Left`、`Top`、`Right` 或 `Bottom`，默认 `Top`。
 
 CardButton 图标在中性表面使用自适应主色前景，在 Filled 表面使用主色背景上的对比前景，禁用时使用统一的弱化前景。
 
@@ -87,7 +87,7 @@ CardButton 图标在中性表面使用自适应主色前景，在 Filled 表面�
 | `IconPosition` | `Dock` | `Top` | 图标相对于文案的位置。 |
 | `Variant` | `ButtonVariant` | `Standard` | 交互卡片的表面样式。 |
 
-`CardButton` 支持 Card 的 `Standard`、`Elevated`、`Tonal` 和 `Filled` 视觉变体。`IsEnabled` 为 `false` 时，所有变体统一使用禁用背景、边框与前景色，并停用阴影和指针反馈。整个卡片都应执行同一项操作时使用它；只有卡片中的局部控件需要交互时，使用 [ActionCard](card.md#actioncard)。
+`CardButton` 支持 `Standard`、`Elevated`、`Tonal` 和 `Filled`。`IsEnabled=false` 时统一使用禁用颜色，并关闭阴影和指针反馈。整卡执行一个操作时使用它；局部控件交互使用 [ActionCard](card.md#actioncard)。
 
 ## WindowCaptionButton
 
@@ -122,7 +122,7 @@ Danger 只为启用状态的关闭操作提供警示强调；关闭操作被禁�
 
 ## 相关内容
 
-- [Card](card.md)区分非交互 Card、带局部操作的 ActionCard 和整卡交互。
-- [Chunk](chunk.md)说明如何在页面区块中组织按钮。
-- [动效](../articles/configure-motion.md)配置悬停显示与减少动态效果。
-- [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant)、[Button API](xref:ArkheideSystem.Flourish.Controls.Button)、[CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton) 与 [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton) 列出完整成员。
+- [Card](card.md)
+- [Chunk](chunk.md)
+- [动效](../articles/configure-motion.md)
+- [ButtonVariant API](xref:ArkheideSystem.Flourish.Controls.ButtonVariant)、[Button API](xref:ArkheideSystem.Flourish.Controls.Button)、[CardButton API](xref:ArkheideSystem.Flourish.Controls.CardButton) 与 [WindowCaptionButton API](xref:ArkheideSystem.Flourish.Controls.WindowCaptionButton)

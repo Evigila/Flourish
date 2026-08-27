@@ -5,7 +5,7 @@ description: 使用统一主题表面、Vertical ActionCard 和明确的关闭�
 
 # Overlay
 
-`Overlay` 是承载锚定浮动内容的主题化容器。它负责表面样式与关闭请求约定；Popup、Canvas 或 Shell 宿主负责定位、打开状态和最终关闭操作。
+`Overlay` 为锚定浮动内容提供主题表面和关闭请求；Popup、Canvas 或 Shell 宿主管理定位、打开状态与最终关闭。
 
 Overlay 通常与 `ActionCard Variant="Vertical"` 组合，使图标、标题、文案和局部操作从上到下靠左排列。内容需要不同结构时也可以直接提供自定义布局；Profile 浮层就是适合自定义排版的典型场景。
 
@@ -119,13 +119,13 @@ Flourish Shell 功能将 Overlay 托管在窗口范围内的浮层中，而不�
 
 ## Tooltip 集成
 
-通过 `ConfigureToolTips` 或 `IToolTipService` 启用 Flourish Tooltip 呈现后，Flourish 控件使用包含单个 Temporary Overlay 的 `FlourishToolTip` 模板呈现自有提示。打开、延迟、Popup 定位与关闭仍由 WPF `ToolTipService` 负责，因此嵌套 Overlay 不设置 `PlacementTarget`。
+启用 `ConfigureToolTips` 或 `IToolTipService` 后，控件用含一个 Temporary Overlay 的模板显示提示。打开、延迟、定位和关闭仍由 WPF `ToolTipService` 管理，嵌套 Overlay 不设置 `PlacementTarget`。
 
 省略 `ConfigureToolTips` 或在运行时调用 `IToolTipService.SetEnabled(false)` 时，Flourish 控件会使用原生 WPF Tooltip 外观和默认行为呈现同一份提示内容。附加到原生 WPF 与第三方控件的 Tooltip 保留各自模板和行为。
 
 ## 相关控件
 
-- [ActionCard](card.md#actioncard)提供常见的 Vertical 浮窗内容结构。
-- [Button](button.md)可作为 Overlay 触发器或内部操作。
-- [ScrollViewer](scroll-viewer.md)可承载超出 Overlay 可用高度的内容。
-- [Overlay API](xref:ArkheideSystem.Flourish.Controls.Overlay) 与 [OverlayVariant API](xref:ArkheideSystem.Flourish.Controls.OverlayVariant) 列出完整成员。
+- [ActionCard](card.md#actioncard)
+- [Button](button.md)
+- [ScrollViewer](scroll-viewer.md)
+- [Overlay API](xref:ArkheideSystem.Flourish.Controls.Overlay) 与 [OverlayVariant API](xref:ArkheideSystem.Flourish.Controls.OverlayVariant)

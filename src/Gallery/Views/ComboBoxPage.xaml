@@ -2,7 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.ComboBoxPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -14,7 +14,7 @@
       Content="{culture:Localize Key=Controls_ChooseOneValueFromACompactCollectionUsingFlourishItemContainers_1BCC40CE}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishComboBox"
+      Title="ComboBox"
     />
 
     <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
@@ -43,28 +43,28 @@
           Title="{culture:Localize Key=Controls_DeclaredItems_637C98BD}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishComboBox
+            <flourish:ComboBox
                 Width="240"
                 Height="40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 SelectedIndex="0"
               >
-                <flourish:FlourishComboBoxItem Content="{culture:Localize Key=Runtime_System_6725E7BB}" />
-                <flourish:FlourishComboBoxItem Content="Light" />
-                <flourish:FlourishComboBoxItem Content="Dark" />
-            </flourish:FlourishComboBox>
+                <flourish:ComboBoxItem Content="{culture:Localize Key=Runtime_System_6725E7BB}" />
+                <flourish:ComboBoxItem Content="Light" />
+                <flourish:ComboBoxItem Content="Dark" />
+            </flourish:ComboBox>
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
           Margin="8,0,0,0"
-          Content="{culture:Localize Key=Controls_ItemsSourceAutomaticallyReceivesFlourishComboBoxItemContainers_8B5CAF1F}"
+          Content="{culture:Localize Key=Controls_ItemsSourceAutomaticallyReceivesComboBoxItemContainers_8B5CAF1F}"
           PresenterMode="TopDown"
           PresenterPosition="Left"
           Title="{culture:Localize Key=Controls_GeneratedItems_88FD720E}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishComboBox
+            <flourish:ComboBox
                 Width="240"
                 Height="40"
                 HorizontalAlignment="Center"
@@ -78,7 +78,7 @@
     </flourish:Chunk>
 
     <flourish:Chunk
-      Content="{culture:Localize Key=Controls_FlourishComboBoxGeneratesFlourishComboBoxItemContainersExplicitI_7C64B62F}"
+      Content="{culture:Localize Key=Controls_ComboBoxGeneratesComboBoxItemContainersExplicitI_7C64B62F}"
       Title="ComboBoxItem"
     >
       <flourish:Presenter
@@ -88,10 +88,10 @@
         Title="{culture:Localize Key=Controls_UnavailableItem_F920918D}"
       >
         <flourish:Presenter.Presentation>
-          <flourish:FlourishComboBox Width="240" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="0">
-            <flourish:FlourishComboBoxItem Content="{culture:Localize Key=Controls_StableChannel_D95A55C4}" />
-            <flourish:FlourishComboBoxItem Content="{culture:Localize Key=Controls_PreviewChannel_42D3F713}" IsEnabled="False" ToolTip="{culture:Localize Key=Controls_PreviewUpdatesAreNotConfigured_89C03B8C}" />
-          </flourish:FlourishComboBox>
+          <flourish:ComboBox Width="240" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="0">
+            <flourish:ComboBoxItem Content="{culture:Localize Key=Controls_StableChannel_D95A55C4}" />
+            <flourish:ComboBoxItem Content="{culture:Localize Key=Controls_PreviewChannel_42D3F713}" IsEnabled="False" ToolTip="{culture:Localize Key=Controls_PreviewUpdatesAreNotConfigured_89C03B8C}" />
+          </flourish:ComboBox>
         </flourish:Presenter.Presentation>
       </flourish:Presenter>
     </flourish:Chunk>
@@ -110,13 +110,13 @@
         </flourish:Presenter>
         <flourish:Presenter
           Margin="{DynamicResource FlourishPresenterPeerMargin}"
-          Content="{culture:Localize Key=Controls_DeclareFlourishComboBoxItemChildrenForAShortFixedListWhoseEntrie_C333712A}"
+          Content="{culture:Localize Key=Controls_DeclareComboBoxItemChildrenForAShortFixedListWhoseEntrie_C333712A}"
           PresenterMode="Split"
           PresenterPosition="Left"
           Title="{culture:Localize Key=Controls_DeclaredChoices_66BD7A74}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishComboBox SelectedIndex=&quot;0&quot;&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;System&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Light&quot; /&gt;&#xA;  &lt;flourish:FlourishComboBoxItem Content=&quot;Dark&quot; /&gt;&#xA;&lt;/flourish:FlourishComboBox&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ComboBox SelectedIndex=&quot;0&quot;&gt;&#xA;  &lt;flourish:ComboBoxItem Content=&quot;System&quot; /&gt;&#xA;  &lt;flourish:ComboBoxItem Content=&quot;Light&quot; /&gt;&#xA;  &lt;flourish:ComboBoxItem Content=&quot;Dark&quot; /&gt;&#xA;&lt;/flourish:ComboBox&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
@@ -134,10 +134,10 @@
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="{culture:Localize Key=Controls_ReadTheFlourishComboBoxAPIReference_8F90207E}"
+          Content="{culture:Localize Key=Controls_ReadTheComboBoxAPIReference_8F90207E}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="{culture:Localize Key=Controls_FlourishComboBoxDocumentation_C7A61837}"
+          Title="{culture:Localize Key=Controls_ComboBoxDocumentation_C7A61837}"
           ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>

@@ -5,7 +5,7 @@ description: Show Flourish-styled modal messages with standard or custom options
 
 # Message service
 
-Flourish registers `IMessageService` in the application service provider. Inject it into view models, command handlers, or application services when you need a modal message that follows the Flourish window style.
+Inject `IMessageService` to show modal messages with Flourish window styling.
 
 ## Standard messages
 
@@ -23,19 +23,19 @@ if (messages.Show(
 }
 ```
 
-`MessageBoxButton.YesNo` displays the negative action before the affirmative action, so the affirmative action appears on the right. `MessageBoxButton.YesNoCancel` places cancel first, followed by the negative and affirmative actions. Standard button labels follow the locale selected through [Application data](configure-data.md). When no default result is provided, `Yes` remains the default result for these standard button sets.
+`YesNo` orders negative then affirmative; `YesNoCancel` orders cancel, negative, then affirmative. Labels follow [Application data](configure-data.md), and `Yes` is the default when none is supplied.
 
 ## Custom options
 
-Use the custom option overload when the result is not one of the standard `MessageBoxResult` values. The method returns the selected `FlourishMessageOption`, or `null` if the dialog is dismissed and no cancel option was configured.
+Use custom options for results outside `MessageBoxResult`. The method returns the selection, or `null` when dismissed without a cancel option.
 
 ```csharp
 var selected = messages.Show(
     "The import target already contains matching files.",
     "Import",
     [
-        new FlourishMessageOption("skip", "Skip") { IsCancel = true },
-        new FlourishMessageOption("replace", "Replace")
+        new MessageDialogOption("skip", "Skip") { IsCancel = true },
+        new MessageDialogOption("replace", "Replace")
         {
             IsDefault = true,
             IsPrimary = true,
@@ -49,9 +49,9 @@ if (selected?.Id == "replace")
 }
 ```
 
-Options are displayed in the order provided. The last option appears on the right side of the dialog footer. `IsDefault` controls the Enter key, `IsCancel` controls Escape and the title bar close button, and `IsPrimary` applies the accent button style. Each custom option must have a unique non-empty `Id` and non-empty `Text`.
+Options appear in supplied order, with the last on the right. `IsDefault` handles Enter, `IsCancel` handles Escape and close, and `IsPrimary` applies accent styling. Every option needs unique non-empty `Id` and `Text`.
 
-Message text, captions, and `FlourishMessageOption.Text` values are supplied by the application and are not translated automatically.
+Message text, captions, and `MessageDialogOption.Text` values are supplied by the application and are not translated automatically.
 
 ## Owner window
 
@@ -63,8 +63,8 @@ var selected = messages.Show(
     "Apply changes to every open item?",
     "Apply",
     [
-        new FlourishMessageOption("current", "Current only") { IsCancel = true },
-        new FlourishMessageOption("all", "All items")
+        new MessageDialogOption("current", "Current only") { IsCancel = true },
+        new MessageDialogOption("all", "All items")
         {
             IsDefault = true,
             IsPrimary = true,

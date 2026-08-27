@@ -5,8 +5,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.ToolTips;
 
-internal sealed class ToolTipBuilder(FlourishTipOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class ToolTipBuilder(ToolTipOptions options)
+    : BuilderMutationGuard,
         IToolTipBuilder
 {
     public IToolTipBuilder SetEnabled(bool enabled = true)

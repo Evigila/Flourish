@@ -5,7 +5,7 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 
 # Presenter
 
-`Presenter` 是用于高级呈现的布局控件。需要呈现图片、多个图标、插图、预览或其他组合视觉内容时使用它。Split 与 Overlay Presenter 必须全宽独占一行；只有 TopDown 模式允许多个同级 Presenter 分列。只需要标题、单段正文和单个图标时使用 [Card](card.md)。
+`Presenter` 用于图片、图标、插图、预览等组合内容。Split 与 Overlay 必须全宽独占一行，只有 TopDown 允许同级 Presenter 分列；标题、单段正文和单个图标使用 [Card](card.md)。
 
 每个 Presenter 声明都应显式提供 `Title`、`Content`、`PresenterMode` 和 `PresenterPosition`。运行时回退值是 `Split` 与 `Left`，但显式声明能够让组合方式保持清晰一致。
 
@@ -21,7 +21,7 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 | `PresenterMode` | `PresenterMode` | `Split` | `Split`、`TopDown` 或 `Overlay` 组合模式。 |
 | `PresenterPosition` | `PresenterPosition` | `Left` | Split 模式中的 Presentation 位置。 |
 
-可选区域为 `null` 或空字符串时，对应区域及相关间距会完全折叠。Title、Content 与 Body 共用同一条左侧对齐线。文案和 Body 一侧保持透明；Presentation 区域使用随主题变化的浅灰色圆角背景。该内置表面取代额外的装饰性 Border；当一组 Presenter 需要更高的统一骨架时，为同级实例设置相同的 `PresentationMinHeight`，内容仍可超过该最小值继续增长。固定尺寸的展示内容保持居中；可拉伸内容会填满区域，并自行控制内部对齐。
+可选区域为 `null` 或空字符串时会连同间距折叠。Title、Content 和 Body 左对齐且背景透明；Presentation 使用主题浅灰圆角背景，无需装饰 Border。同级实例可用相同 `PresentationMinHeight` 统一骨架，内容仍可增长；固定内容居中，可拉伸内容填满区域。
 
 `Presentation` 是默认 XAML 内容属性。为避免辅助控件进入展示区域，应始终通过显式的 `<flourish:Presenter.Body>` 属性元素设置 Body。
 
@@ -55,7 +55,7 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 
 ## TopDown 模式
 
-`TopDown` 将 Presentation 放在上方，将 Title、Content 和 Body 放在下方并统一靠左。它适合宽幅预览、图表或需要在视觉内容之后继续说明和操作的布局。当每个展示与说明仍保持可读时，多个同级 TopDown Presenter 可以分列。
+`TopDown` 将 Presentation 置顶，Title、Content 和 Body 在下方左对齐，适合宽幅预览和图表。各列仍可读时，同级 TopDown Presenter 可以分列。
 
 ```xml
 <flourish:Presenter
@@ -93,11 +93,11 @@ description: 使用 Presenter 的 Split、TopDown 与 Overlay 模式组合文案
 </flourish:Presenter>
 ```
 
-应选择能让叠加文案在浅色和深色主题下都保持可读的展示内容。必要时，可在分配给 Presentation 的 Grid 中组合图片与对比度遮罩。
+叠加文案必须在亮色和暗色主题下可读；必要时在 Presentation 的 Grid 中加入对比度遮罩。
 
 ## 展示多个元素
 
-Presentation 接受一个 WPF 内容树，其宿主始终占满完整展示区域。普通自动尺寸表面沿横纵双轴填满。默认的纵向 `StackPanel` 会填满横向交叉轴，使列表类子项能够使用完整宽度，同时整组内容仍按期望高度保持纵向居中；若纵向分组需要保留自然宽度，可显式设置 `HorizontalAlignment="Center"`。文本、横向 `StackPanel` 分组、`WrapPanel` 和 `UniformGrid` 仍按期望尺寸整体居中；显式固定尺寸的内容也保持居中。不要为了制造预览画布而给文本或分组容器添加大块空白 Width/Height，因为 WPF 仍会从该内部容器的起始边缘排列可见文字或子项。需要填满展示区域的 `CodeSpace` 必须设置 `IsExpanded="True"`，其默认折叠状态仍保持 72 DIP 高度。`HeaderChunk` 与 Presenter 共享同一套 Presentation 布局契约。Overlay 内容及其所有叠加层都会被裁剪到共享表面的圆角内。不要在普通 `Presenter.Presentation` 内额外添加装饰性 `Border`，Presenter 已经提供了展示表面。
+Presentation 接受一个填满展示区的 WPF 内容树。纵向 `StackPanel` 填满横向并按内容高度居中；要保留自然宽度，设置 `HorizontalAlignment="Center"`。文本、横向 `StackPanel`、`WrapPanel`、`UniformGrid` 和固定尺寸内容按期望尺寸居中，不要用空白 Width/Height 模拟画布。填满区域的 `CodeSpace` 必须设置 `IsExpanded="True"`，否则保持 72 DIP 折叠高度。`HeaderChunk` 共用此布局契约；Overlay 内容会裁剪到圆角内，普通 Presentation 无需额外装饰 `Border`。
 
 ```xml
 <flourish:Presenter
@@ -109,21 +109,21 @@ Presentation 接受一个 WPF 内容树，其宿主始终占满完整展示区�
     Columns="3"
     HorizontalAlignment="Center"
     VerticalAlignment="Center">
-    <flourish:FlourishTextBlock Role="Icon" Text="&#xE8A5;" />
-    <flourish:FlourishTextBlock Role="Icon" Text="&#xE7C3;" />
-    <flourish:FlourishTextBlock Role="Icon" Text="&#xE8B7;" />
+    <flourish:TextBlock Role="Icon" Text="&#xE8A5;" />
+    <flourish:TextBlock Role="Icon" Text="&#xE7C3;" />
+    <flourish:TextBlock Role="Icon" Text="&#xE8B7;" />
   </UniformGrid>
 </flourish:Presenter>
 ```
 
 ## HeaderChunk
 
-[HeaderChunk](chunk.md#headerchunk) 是页面级 Presenter 特化。它使用相同的字段与三种模式，但具有强调背景、HeaderSize 标题和页面开头语义。无论使用 Split、Overlay 还是 TopDown，HeaderChunk 都必须全宽独占一行；TopDown 分列例外只适用于普通 Presenter。它具有独立的 `Right` Split 回退值，使文案保持在左、Presentation 保持在右。HeaderChunk 与 Chunk 同级；普通 Presenter 则放在 Chunk 的 Body 中。
+[HeaderChunk](chunk.md#headerchunk) 使用相同字段和三种模式，并提供强调背景、HeaderSize 标题和页面开头语义。它始终全宽，TopDown 分列只适用于普通 Presenter；其 Split 回退值为 `Right`，文案在左、Presentation 在右。HeaderChunk 与 Chunk 同级，普通 Presenter 位于 Chunk Body。
 
 ## 相关内容
 
-- [Chunk](chunk.md)定义页面层级和专用 HeaderChunk。
-- [Card](card.md)说明何时使用简洁文本或单图标卡片。
-- [Document](document.md)呈现多段连续文本。
-- [Button](button.md)定义可放在 Body 中的控件。
-- [Presenter API](xref:ArkheideSystem.Flourish.Controls.Presenter)、[PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode) 和 [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition) 列出全部成员。
+- [Chunk](chunk.md)
+- [Card](card.md)
+- [Document](document.md)
+- [Button](button.md)
+- [Presenter API](xref:ArkheideSystem.Flourish.Controls.Presenter)、[PresenterMode API](xref:ArkheideSystem.Flourish.Controls.PresenterMode) 和 [PresenterPosition API](xref:ArkheideSystem.Flourish.Controls.PresenterPosition)

@@ -22,19 +22,19 @@ builder.ConfigureAppearance(appearance =>
 | `MaterialEffect.Acrylic` | Uses Desktop Acrylic through the Windows 11 system backdrop or the Windows 10 compatibility backend. |
 | `MaterialEffect.MicaAlt` | Uses the stronger Mica Alt backdrop on Windows 11 build 22621 or later. |
 
-`MaterialEffect.Auto` is the default request, and material effects are enabled by default. Its effective value is Mica on Windows 11 build 22000 or later, Acrylic on Windows 10 build 17134 or later, and `None` elsewhere. Windows 11 build 22621 or later uses the documented DWM system-backdrop API. Initial Windows 11 builds use the legacy Mica attribute, while Windows 10 Acrylic uses the isolated AccentPolicy compatibility backend.
+Materials are enabled with `Auto` by default: Mica on Windows 11 build 22000 or later, Acrylic on Windows 10 build 17134 or later, and `None` elsewhere.
 
 Pass `enabled: false` or select `MaterialEffect.None` to use the opaque Shell background. `IsSupported` reports whether a concrete material is available. `SetEffect` throws `PlatformNotSupportedException` before changing state when a concrete unsupported material is requested; `Auto` never throws and safely resolves to `None` when necessary.
 
-Material is applied to the shell window. The built-in page host remains transparent so the backdrop continues through the content area. Pages can still add local backgrounds when their design requires one. At runtime, `IMaterialEffectService.Current.RequestedEffect` reports the requested value and `Current.EffectiveEffect` reports the concrete platform result. Subscribe to `Changed` to observe a new immutable state snapshot.
+Material applies to the Shell window while the page host stays transparent. `IMaterialEffectService.Current` reports requested and effective values; `Changed` publishes updates.
 
-The runtime material selection is restored from and written to the selected Flourish settings file by default. Pass `usePersistedPreference: false` to keep the configured material authoritative. A missing, invalid, or incomplete saved group leaves the configured arguments intact. When a concrete saved material is moved to a platform that does not support it, Flourish changes that saved request to `Auto` and uses the new platform default instead of failing Shell startup.
+Material persists by default. Pass `usePersistedPreference: false` to keep configuration authoritative. Invalid saved data leaves the fallback unchanged; an unsupported saved material becomes `Auto` instead of failing startup.
 
 > [!NOTE]
 > Windows can replace Acrylic with a solid fallback when transparency is disabled, battery saver is active, or system rendering policy requires it. A successful native call therefore does not guarantee visible blur in every system state.
 
 ## Related features
 
-- [Window](configure-window.md) configures the window that receives the material.
-- [Themes](configure-themes.md) control light and dark resources used with the material.
-- [DWM system backdrop types](https://learn.microsoft.com/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type) define the Windows 11 mappings.
+- [Window](configure-window.md)
+- [Themes](configure-themes.md)
+- [DWM system backdrop types](https://learn.microsoft.com/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type)

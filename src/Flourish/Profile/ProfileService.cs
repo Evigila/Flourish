@@ -11,18 +11,18 @@ internal sealed class ProfileService : IProfileService
 {
     private readonly IProfileAuthService authService;
     private readonly ProfileSecretStore secretStore;
-    private readonly FlourishLocalizationService localizationService;
+    private readonly LocalizationService localizationService;
     private ProfileUser defaultProfile;
     private readonly SemaphoreSlim gate = new(1, 1);
-    private FlourishProfileState current;
+    private ProfileState current;
     private StoredProfileCredentials? currentCredentials;
     private bool isInitialized;
 
     public ProfileService(
         IProfileAuthService authService,
         ProfileSecretStore secretStore,
-        FlourishProfileOptions options,
-        FlourishLocalizationService localizationService
+        ProfileOptions options,
+        LocalizationService localizationService
     )
     {
         this.authService = authService;
@@ -31,22 +31,22 @@ internal sealed class ProfileService : IProfileService
         var nameOrder = options.NameOrder;
         defaultProfile = new ProfileUser(
             string.IsNullOrWhiteSpace(options.DefaultFirstName)
-                ? localizationService.Get(FlourishLocaleKeys.ProfileDefaultName)
+                ? localizationService.Get(LocaleKeys.ProfileDefaultName)
                 : options.DefaultFirstName,
             options.DefaultLastName,
             nameOrder,
             options.DefaultImagePath
         );
-        current = new FlourishProfileState(defaultProfile, ProfileLoginState.SignedOut);
+        current = new ProfileState(defaultProfile, ProfileLoginState.SignedOut);
     }
 
-    public FlourishProfileState Current => Volatile.Read(ref current);
+    public ProfileState Current => Volatile.Read(ref current);
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishProfileState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<ProfileState>>? Changed;
 
     internal async Task RestoreAsync(CancellationToken cancellationToken = default)
     {
-        FlourishStateChangedEventArgs<FlourishProfileState>? changed = null;
+        StateChangedEventArgs<ProfileState>? changed = null;
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -131,7 +131,7 @@ internal sealed class ProfileService : IProfileService
         if (string.IsNullOrWhiteSpace(normalizedRequest.DisplayName))
         {
             return ProfileAuthenticationResult.Failure(
-                localizationService.Get(FlourishLocaleKeys.ProfileEnterName)
+                localizationService.Get(LocaleKeys.ProfileEnterName)
             );
         }
 
@@ -143,7 +143,7 @@ internal sealed class ProfileService : IProfileService
             return result;
         }
 
-        FlourishStateChangedEventArgs<FlourishProfileState>? changed;
+        StateChangedEventArgs<ProfileState>? changed;
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -179,7 +179,7 @@ internal sealed class ProfileService : IProfileService
         CancellationToken cancellationToken = default
     )
     {
-        FlourishStateChangedEventArgs<FlourishProfileState>? changed = null;
+        StateChangedEventArgs<ProfileState>? changed = null;
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -187,7 +187,7 @@ internal sealed class ProfileService : IProfileService
             if (currentCredentials is null || state.LoginState == ProfileLoginState.SignedOut)
             {
                 throw new InvalidOperationException(
-                    localizationService.Get(FlourishLocaleKeys.ProfileRememberLoginRequiresSignIn)
+                    localizationService.Get(LocaleKeys.ProfileRememberLoginRequiresSignIn)
                 );
             }
 
@@ -231,7 +231,7 @@ internal sealed class ProfileService : IProfileService
             throw new ArgumentOutOfRangeException(nameof(nameOrder), nameOrder, null);
         }
 
-        FlourishStateChangedEventArgs<FlourishProfileState>? changed = null;
+        StateChangedEventArgs<ProfileState>? changed = null;
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -281,7 +281,7 @@ internal sealed class ProfileService : IProfileService
             signOutError = error;
         }
 
-        FlourishStateChangedEventArgs<FlourishProfileState>? changed;
+        StateChangedEventArgs<ProfileState>? changed;
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -301,20 +301,20 @@ internal sealed class ProfileService : IProfileService
         }
     }
 
-    private FlourishStateChangedEventArgs<FlourishProfileState>? PublishState(
+    private StateChangedEventArgs<ProfileState>? PublishState(
         ProfileUser profile,
         ProfileLoginState loginState
     )
     {
         var previous = Current;
-        var next = new FlourishProfileState(profile, loginState);
+        var next = new ProfileState(profile, loginState);
         if (next == previous)
         {
             return null;
         }
 
         Volatile.Write(ref current, next);
-        return new FlourishStateChangedEventArgs<FlourishProfileState>(next);
+        return new StateChangedEventArgs<ProfileState>(next);
     }
 
     private static ProfileUser WithNameOrder(ProfileUser profile, NameOrder nameOrder)
@@ -322,7 +322,7 @@ internal sealed class ProfileService : IProfileService
         return new ProfileUser(profile.FirstName, profile.LastName, nameOrder, profile.ImagePath);
     }
 
-    private void RaiseChanged(FlourishStateChangedEventArgs<FlourishProfileState>? changed)
+    private void RaiseChanged(StateChangedEventArgs<ProfileState>? changed)
     {
         if (changed is not null)
         {

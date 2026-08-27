@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using ArkheideSystem.Flourish.Abstract;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -45,7 +45,7 @@ public partial class BackgroundTasksPage : Page
 
     private void BackgroundTasks_Changed(
         object? sender,
-        FlourishStateChangedEventArgs<IReadOnlyList<FlourishBackgroundTaskInfo>> e
+        StateChangedEventArgs<IReadOnlyList<BackgroundTaskInfo>> e
     )
     {
         Dispatcher.BeginInvoke(() => RefreshActiveTasks(e.Current));
@@ -72,7 +72,7 @@ public partial class BackgroundTasksPage : Page
         {
             var sequence = Interlocked.Increment(ref taskSequence);
             var handle = backgroundTasks.QueueTask(
-                new FlourishBackgroundTaskMetadata(
+                new BackgroundTaskMetadata(
                     Localizer.Parse(CKey.Runtime_ResultTask0_3715E242, sequence),
                     Localizer.Parse(
                         CKey.Runtime_CalculatesAValueAndReturnsItThroughTheTypedHandle_CB4074C6
@@ -182,7 +182,7 @@ public partial class BackgroundTasksPage : Page
     {
         var sequence = Interlocked.Increment(ref taskSequence);
         var handle = backgroundTasks.QueueTask(
-            new FlourishBackgroundTaskMetadata(
+            new BackgroundTaskMetadata(
                 Localizer.Parse(nameFormatKey, sequence),
                 Localizer.Parse(
                     CKey.Runtime_ReportsProgressAndObservesCooperativeCancellation_11E9A330
@@ -204,19 +204,19 @@ public partial class BackgroundTasksPage : Page
         return handle.Snapshot.Metadata.Name;
     }
 
-    private async Task ObserveTaskAsync(FlourishBackgroundTaskHandle handle)
+    private async Task ObserveTaskAsync(BackgroundTaskHandle handle)
     {
         var result = await handle.Completion;
         await Dispatcher.InvokeAsync(() => AddOutcome(result.Info, null));
     }
 
-    private async Task ObserveResultTaskAsync(FlourishBackgroundTaskHandle<int> handle)
+    private async Task ObserveResultTaskAsync(BackgroundTaskHandle<int> handle)
     {
         var result = await handle.Completion;
         await Dispatcher.InvokeAsync(() => AddOutcome(result.Info, result.Value));
     }
 
-    private void AddOutcome(FlourishBackgroundTaskInfo info, object? value)
+    private void AddOutcome(BackgroundTaskInfo info, object? value)
     {
         var valueText = value is null
             ? string.Empty
@@ -229,7 +229,7 @@ public partial class BackgroundTasksPage : Page
         }
     }
 
-    private void RefreshActiveTasks(IReadOnlyList<FlourishBackgroundTaskInfo> tasks)
+    private void RefreshActiveTasks(IReadOnlyList<BackgroundTaskInfo> tasks)
     {
         ActiveTaskList.ItemsSource = tasks
             .Select(info => new ActiveTaskRow(info))
@@ -244,11 +244,11 @@ public partial class BackgroundTasksPage : Page
     private sealed record ActiveTaskRow(
         Guid Id,
         string Name,
-        FlourishBackgroundTaskState State,
+        BackgroundTaskState State,
         double? Progress
     )
     {
-        public ActiveTaskRow(FlourishBackgroundTaskInfo info)
+        public ActiveTaskRow(BackgroundTaskInfo info)
             : this(info.Id, info.Metadata.Name, info.State, info.Progress) { }
 
         public override string ToString()

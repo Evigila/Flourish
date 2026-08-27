@@ -5,7 +5,7 @@ description: 将每个启动 Builder 对应到运行时 Service。
 
 # 功能配置
 
-Flourish 不再提供包揽全部功能的 Shell Builder。每项功能都有聚焦的启动 Builder；允许启动后修改的功能同时提供对应的运行时 Service。
+每项功能都有独立的启动 Builder；可在启动后修改的功能还提供对应运行时 Service。
 
 | 启动入口 | 常用启动调用 | 运行时 Service |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ builder
     .ConfigureAppearance(appearance =>
         appearance.SetEffect(effect: MaterialEffect.Auto))
     .ConfigureFont(font =>
-        font.SetFont("Segoe UI", 12, 14, 22, 16, 24, 32))
+        font.SetFont("Segoe UI", 11, 13, 14, 14, 18, 25))
     .ConfigureLayout(layout =>
         layout.SetCenterContent(contentWidth: 1200).SetSmoothScrollingEnabled())
     .ConfigureToolTips(toolTips =>

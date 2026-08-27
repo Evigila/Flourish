@@ -34,7 +34,7 @@
           Grid.Row="0"
           Grid.Column="0"
           Margin="{DynamicResource FlourishActionCardHorizontalIconSpacing}"
-          Width="{DynamicResource FlourishFontSizeIcon}"
+          Width="{DynamicResource FlourishFontSizeLargeIcon}"
           Style="{DynamicResource FlourishIconContentPresenterStyle}"
           HorizontalAlignment="Left"
           VerticalAlignment="Center"
@@ -50,7 +50,7 @@
           HorizontalAlignment="Stretch"
           VerticalAlignment="Center"
         >
-          <controls:FlourishTextBlock
+          <controls:TextBlock
             x:Name="TitleHost"
             Foreground="{TemplateBinding Foreground}"
             Role="CardTitle"
@@ -58,7 +58,7 @@
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
           />
-          <controls:FlourishTextBlock
+          <controls:TextBlock
             x:Name="ContentHost"
             Margin="{DynamicResource FlourishCardTextSpacing}"
             Foreground="{TemplateBinding Foreground}"

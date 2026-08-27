@@ -20,9 +20,9 @@ namespace ArkheideSystem.Flourish.Configuration;
 
 internal sealed class AppPreferenceService(
     IConfiguration configuration,
-    FlourishDataOptions dataOptions,
+    ApplicationDataOptions dataOptions,
     ILogger<AppPreferenceService> logger
-) : IFlourishSettingsStore, IHostedService, IDisposable
+) : ISettingsStore, IHostedService, IDisposable
 {
     private const string AppSettingsFileName = "appsettings.Flourish.json";
     private const string ThemeConfigurationKey = "Flourish:Preferences:Theme";
@@ -33,12 +33,12 @@ internal sealed class AppPreferenceService(
     };
     private readonly IConfiguration configuration =
         configuration ?? throw new ArgumentNullException(nameof(configuration));
-    private readonly FlourishAppSettingsConfigurationProvider? appSettingsProvider = (
+    private readonly AppSettingsConfigurationProvider? appSettingsProvider = (
         configuration as IConfigurationRoot
     )
-        ?.Providers.OfType<FlourishAppSettingsConfigurationProvider>()
+        ?.Providers.OfType<AppSettingsConfigurationProvider>()
         .FirstOrDefault();
-    private readonly FlourishDataOptions dataOptions =
+    private readonly ApplicationDataOptions dataOptions =
         dataOptions ?? throw new ArgumentNullException(nameof(dataOptions));
     private readonly ILogger<AppPreferenceService> logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
@@ -53,7 +53,7 @@ internal sealed class AppPreferenceService(
     internal AppPreferenceService(IConfiguration configuration, IHostEnvironment hostEnvironment)
         : this(
             configuration,
-            new FlourishDataOptions
+            new ApplicationDataOptions
             {
                 AppSettingsFilePath = Path.Combine(
                     hostEnvironment.ContentRootPath,
@@ -67,12 +67,12 @@ internal sealed class AppPreferenceService(
 
     private string ManagedFileName => Path.GetFileName(FilePath);
 
-    public FlourishTheme? ReadTheme()
+    public ApplicationTheme? ReadTheme()
     {
         var value = configuration[ThemeConfigurationKey];
         if (
             string.IsNullOrWhiteSpace(value)
-            || !Enum.TryParse(value, ignoreCase: true, out FlourishTheme theme)
+            || !Enum.TryParse(value, ignoreCase: true, out ApplicationTheme theme)
             || !Enum.IsDefined(theme)
         )
         {
@@ -82,12 +82,12 @@ internal sealed class AppPreferenceService(
         return theme;
     }
 
-    public void SaveTheme(FlourishTheme theme)
+    public void SaveTheme(ApplicationTheme theme)
     {
         QueueThemeSave(theme, Task.FromResult(true));
     }
 
-    internal void QueueThemeSave(FlourishTheme theme, Task<bool> runtimeApplied)
+    internal void QueueThemeSave(ApplicationTheme theme, Task<bool> runtimeApplied)
     {
         if (!Enum.IsDefined(theme))
         {
@@ -117,8 +117,8 @@ internal sealed class AppPreferenceService(
         await completion.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public ValueTask<FlourishSettingsUpdateResult> UpdateAsync(
-        Action<IFlourishSettingsEditor> update,
+    public ValueTask<SettingsUpdateResult> UpdateAsync(
+        Action<ISettingsEditor> update,
         CancellationToken cancellationToken = default
     )
     {
@@ -131,7 +131,7 @@ internal sealed class AppPreferenceService(
             );
         }
 
-        var completion = new TaskCompletionSource<FlourishSettingsUpdateResult>(
+        var completion = new TaskCompletionSource<SettingsUpdateResult>(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         lock (lifecycleGate)
@@ -140,10 +140,10 @@ internal sealed class AppPreferenceService(
             EnqueueCore(new UpdatePreferenceWorkItem(update, cancellationToken, completion));
         }
 
-        return new ValueTask<FlourishSettingsUpdateResult>(completion.Task);
+        return new ValueTask<SettingsUpdateResult>(completion.Task);
     }
 
-    public ValueTask<FlourishSettingsUpdateResult> SetAsync<T>(
+    public ValueTask<SettingsUpdateResult> SetAsync<T>(
         string path,
         T value,
         CancellationToken cancellationToken = default
@@ -152,7 +152,7 @@ internal sealed class AppPreferenceService(
         return UpdateAsync(editor => editor.Set(path, value), cancellationToken);
     }
 
-    public ValueTask<FlourishSettingsUpdateResult> RemoveAsync(
+    public ValueTask<SettingsUpdateResult> RemoveAsync(
         string path,
         CancellationToken cancellationToken = default
     )
@@ -160,7 +160,7 @@ internal sealed class AppPreferenceService(
         return UpdateAsync(editor => editor.Remove(path), cancellationToken);
     }
 
-    public ValueTask<FlourishSettingsUpdateResult> MergeAsync<T>(
+    public ValueTask<SettingsUpdateResult> MergeAsync<T>(
         string path,
         T value,
         CancellationToken cancellationToken = default
@@ -169,7 +169,7 @@ internal sealed class AppPreferenceService(
         return UpdateAsync(editor => editor.Merge(path, value), cancellationToken);
     }
 
-    public ValueTask<FlourishSettingsUpdateResult> AppendAsync<T>(
+    public ValueTask<SettingsUpdateResult> AppendAsync<T>(
         string path,
         T value,
         CancellationToken cancellationToken = default
@@ -376,8 +376,8 @@ internal sealed class AppPreferenceService(
         }
     }
 
-    private async ValueTask<FlourishSettingsUpdateResult> ExecuteUpdateAsync(
-        Action<IFlourishSettingsEditor> update,
+    private async ValueTask<SettingsUpdateResult> ExecuteUpdateAsync(
+        Action<ISettingsEditor> update,
         CancellationToken cancellationToken
     )
     {
@@ -399,14 +399,14 @@ internal sealed class AppPreferenceService(
 
             if (!editor.IsChanged)
             {
-                return new FlourishSettingsUpdateResult(FilePath, false, false);
+                return new SettingsUpdateResult(FilePath, false, false);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
             var content = await WriteAppSettingsAsync(root, cancellationToken)
                 .ConfigureAwait(false);
             var reloaded = ReloadConfiguration(content);
-            return new FlourishSettingsUpdateResult(FilePath, true, reloaded);
+            return new SettingsUpdateResult(FilePath, true, reloaded);
         }
         finally
         {
@@ -543,18 +543,18 @@ internal sealed class AppPreferenceService(
     private abstract record PreferenceWorkItem;
 
     private sealed record UpdatePreferenceWorkItem(
-        Action<IFlourishSettingsEditor> Update,
+        Action<ISettingsEditor> Update,
         CancellationToken CancellationToken,
-        TaskCompletionSource<FlourishSettingsUpdateResult> Completion
+        TaskCompletionSource<SettingsUpdateResult> Completion
     ) : PreferenceWorkItem;
 
-    private sealed record ThemePreferenceWorkItem(FlourishTheme Theme, Task<bool> RuntimeApplied)
+    private sealed record ThemePreferenceWorkItem(ApplicationTheme Theme, Task<bool> RuntimeApplied)
         : PreferenceWorkItem;
 
     private sealed record FlushThemePreferenceWorkItem(TaskCompletionSource<bool> Completion)
         : PreferenceWorkItem;
 
-    private sealed class AppSettingsEditor(JsonObject root) : IFlourishSettingsEditor
+    private sealed class AppSettingsEditor(JsonObject root) : ISettingsEditor
     {
         private bool isActive = true;
 
@@ -681,7 +681,7 @@ internal sealed class AppPreferenceService(
                 );
             }
 
-            if (!FlourishConfigurationPath.IsOwnedDescendant(string.Join(':', segments)))
+            if (!ApplicationConfigurationPath.IsOwnedDescendant(string.Join(':', segments)))
             {
                 throw new ArgumentException(
                     "An appsettings path must start with 'Flourish:' and identify a child value.",
@@ -689,7 +689,7 @@ internal sealed class AppPreferenceService(
                 );
             }
 
-            segments[0] = FlourishConfigurationPath.Root;
+            segments[0] = ApplicationConfigurationPath.Root;
             return segments;
         }
 

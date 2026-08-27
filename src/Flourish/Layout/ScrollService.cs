@@ -16,24 +16,24 @@ internal sealed class ScrollService : IScrollService
     private bool isSmoothScrollingEnabled;
     private Dispatcher? applicationDispatcher;
     private ResourceDictionary? applicationResources;
-    private FlourishScrollSettings current;
+    private ScrollSettings current;
     private long version;
 
-    public ScrollService(FlourishLayoutOptions options)
+    public ScrollService(LayoutOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         isSmoothScrollingEnabled = options.IsSmoothScrollingEnabled;
         current = CreateSnapshot();
     }
 
-    public event EventHandler<FlourishStateTransitionEventArgs<FlourishScrollSettings>>? Changed;
+    public event EventHandler<StateTransitionEventArgs<ScrollSettings>>? Changed;
 
-    public FlourishScrollSettings Current => Volatile.Read(ref current);
+    public ScrollSettings Current => Volatile.Read(ref current);
 
     public void SetSmoothScrollingEnabled(bool enabled)
     {
-        FlourishScrollSettings previous;
-        FlourishScrollSettings current;
+        ScrollSettings previous;
+        ScrollSettings current;
         Dispatcher? dispatcher;
         ResourceDictionary? resources;
         lock (gate)
@@ -59,7 +59,7 @@ internal sealed class ScrollService : IScrollService
                 resources[SmoothScrollingResourceKey] = enabled;
             }
 
-            Changed?.Invoke(this, new FlourishStateTransitionEventArgs<FlourishScrollSettings>(previous, current));
+            Changed?.Invoke(this, new StateTransitionEventArgs<ScrollSettings>(previous, current));
         }
 
         if (dispatcher is null || dispatcher.CheckAccess())
@@ -105,5 +105,5 @@ internal sealed class ScrollService : IScrollService
         dispatcher.Invoke(AttachCore);
     }
 
-    private FlourishScrollSettings CreateSnapshot() => new(isSmoothScrollingEnabled, version);
+    private ScrollSettings CreateSnapshot() => new(isSmoothScrollingEnabled, version);
 }

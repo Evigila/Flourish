@@ -3,8 +3,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Projects;
 
-internal sealed class ProjectBuilder(FlourishProjectOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class ProjectBuilder(ProjectOptions options)
+    : BuilderMutationGuard,
         IProjectBuilder
 {
     public IProjectBuilder SetMultiProjectEnabled(bool enabled = true)

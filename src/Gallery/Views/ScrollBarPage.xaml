@@ -2,7 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.ScrollBarPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -14,7 +14,7 @@
       Content="{culture:Localize Key=Controls_ExposeAStandaloneFlourishStyledWPFScrollBarForACustomScrollingSu_9724412C}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishScrollBar"
+      Title="ScrollBar"
     />
 
     <flourish:Chunk
@@ -30,7 +30,7 @@
           Title="Vertical"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishScrollBar
+            <flourish:ScrollBar
               Width="20"
               Height="150"
               HorizontalAlignment="Center"
@@ -50,7 +50,7 @@
           Title="Horizontal"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishScrollBar
+            <flourish:ScrollBar
               Width="260"
               Height="20"
               HorizontalAlignment="Center"
@@ -99,7 +99,7 @@
     <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
       <UniformGrid Columns="2">
         <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
-        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheFlourishScrollBarAPIReference_6F96E77F}" Icon="&#xE8A5;" IsEnabled="False" Title="{culture:Localize Key=Controls_FlourishScrollBarDocumentation_33F8BEA7}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheScrollBarAPIReference_6F96E77F}" Icon="&#xE8A5;" IsEnabled="False" Title="{culture:Localize Key=Controls_ScrollBarDocumentation_33F8BEA7}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
       </UniformGrid>
     </flourish:Chunk>
   </flourish:PageBody>

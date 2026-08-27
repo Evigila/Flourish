@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
 using System.Globalization;
@@ -147,10 +147,10 @@ public partial class NavigationRuntimePage : Page
         try
         {
             navigation.SetNavigable(
-                new FlourishNavigationRoute(
+                new NavigationRoute(
                     RuntimeRouteKey,
                     typeof(RuntimeRoutePage),
-                    FlourishPageCacheMode.Enabled,
+                    PageCacheMode.Enabled,
                     static provider => new RuntimeRoutePage(
                         provider.GetRequiredService<INavigationService>()
                     )
@@ -170,7 +170,7 @@ public partial class NavigationRuntimePage : Page
 
                 editor.SetItem(
                     RuntimeGroupId,
-                    FlourishNavigationMenuItem.Page(
+                    NavigationMenuItem.Page(
                         RuntimeItemId,
                         RuntimeRouteKey,
                         Localizer.Parse(CKey.Runtime_RuntimeRouteInstance_9BC2A49C),
@@ -252,10 +252,10 @@ public partial class NavigationRuntimePage : Page
     }
 
     private void EnableCache_Click(object sender, RoutedEventArgs e) =>
-        SetCacheMode(FlourishPageCacheMode.Enabled);
+        SetCacheMode(PageCacheMode.Enabled);
 
     private void DisableCache_Click(object sender, RoutedEventArgs e) =>
-        SetCacheMode(FlourishPageCacheMode.Disabled);
+        SetCacheMode(PageCacheMode.Disabled);
 
     private void EvictCache_Click(object sender, RoutedEventArgs e)
     {
@@ -274,7 +274,7 @@ public partial class NavigationRuntimePage : Page
         );
     }
 
-    private void SetCacheMode(FlourishPageCacheMode mode)
+    private void SetCacheMode(PageCacheMode mode)
     {
         try
         {

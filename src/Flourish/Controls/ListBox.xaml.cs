@@ -76,20 +76,20 @@ public class ListBox : WpfListBox
     /// <inheritdoc />
     protected override DependencyObject GetContainerForItemOverride()
     {
-        return new FlourishListBoxItem();
+        return new ListBoxItem();
     }
 
     /// <inheritdoc />
     protected override bool IsItemItsOwnContainerOverride(object item)
     {
-        return item is FlourishListBoxItem;
+        return item is ListBoxItem;
     }
 
     /// <inheritdoc />
     protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
     {
         base.PrepareContainerForItemOverride(element, item);
-        if (element is FlourishListBoxItem container)
+        if (element is ListBoxItem container)
         {
             ConfigureContainerPresentation(container, item);
         }
@@ -98,7 +98,7 @@ public class ListBox : WpfListBox
     /// <inheritdoc />
     protected override void ClearContainerForItemOverride(DependencyObject element, object item)
     {
-        if (element is FlourishListBoxItem container)
+        if (element is ListBoxItem container)
         {
             ClearBorderlessPresentation(container);
         }
@@ -112,7 +112,7 @@ public class ListBox : WpfListBox
         {
             if (
                 ItemContainerGenerator.ContainerFromIndex(index)
-                is FlourishListBoxItem container
+                is ListBoxItem container
             )
             {
                 ConfigureContainerPresentation(container, Items[index]);
@@ -120,7 +120,7 @@ public class ListBox : WpfListBox
         }
     }
 
-    private void ConfigureContainerPresentation(FlourishListBoxItem container, object item)
+    private void ConfigureContainerPresentation(ListBoxItem container, object item)
     {
         ClearBorderlessPresentation(container);
         if (Appearance != ListBoxAppearance.Borderless)
@@ -128,7 +128,7 @@ public class ListBox : WpfListBox
             return;
         }
 
-        // A caller may provide a FlourishListBoxItem directly instead of a data item.
+        // A caller may provide a ListBoxItem directly instead of a data item.
         // Its local values and bindings are already the presentation contract and must not
         // be replaced with bindings whose source would be the container itself.
         if (ReferenceEquals(container, item))
@@ -136,25 +136,25 @@ public class ListBox : WpfListBox
             return;
         }
 
-        Bind(container, FlourishListBoxItem.IsItemVisibleProperty, item, "IsVisible");
-        Bind(container, FlourishListBoxItem.IsGroupHeaderProperty, item, "IsGroupHeader");
-        Bind(container, FlourishListBoxItem.IsCommandItemProperty, item, "IsCommandItem");
+        Bind(container, ListBoxItem.IsItemVisibleProperty, item, "IsVisible");
+        Bind(container, ListBoxItem.IsGroupHeaderProperty, item, "IsGroupHeader");
+        Bind(container, ListBoxItem.IsCommandItemProperty, item, "IsCommandItem");
         Bind(container, IsEnabledProperty, item, "IsEnabled");
 
         Bind(container, ToolTipProperty, item, "Label");
         container.SetValue(IsBorderlessPreparedProperty, true);
     }
 
-    private static void ClearBorderlessPresentation(FlourishListBoxItem container)
+    private static void ClearBorderlessPresentation(ListBoxItem container)
     {
         if (!(bool)container.GetValue(IsBorderlessPreparedProperty))
         {
             return;
         }
 
-        BindingOperations.ClearBinding(container, FlourishListBoxItem.IsItemVisibleProperty);
-        BindingOperations.ClearBinding(container, FlourishListBoxItem.IsGroupHeaderProperty);
-        BindingOperations.ClearBinding(container, FlourishListBoxItem.IsCommandItemProperty);
+        BindingOperations.ClearBinding(container, ListBoxItem.IsItemVisibleProperty);
+        BindingOperations.ClearBinding(container, ListBoxItem.IsGroupHeaderProperty);
+        BindingOperations.ClearBinding(container, ListBoxItem.IsCommandItemProperty);
         BindingOperations.ClearBinding(container, IsEnabledProperty);
         container.ClearValue(ToolTipProperty);
         container.ClearValue(IsBorderlessPreparedProperty);

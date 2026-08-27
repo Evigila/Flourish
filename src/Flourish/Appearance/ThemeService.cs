@@ -20,16 +20,16 @@ using Colors = System.Windows.Media.Colors;
 namespace ArkheideSystem.Flourish.Appearance;
 
 internal sealed class ThemeService(
-    FlourishAppearanceOptions appearanceOptions,
+    AppearanceOptions appearanceOptions,
     AppPreferenceService preferenceService,
     AppearanceService appearanceService
 ) : IThemeService
 {
     private const int WmSettingChange = 0x001A;
     private const int WmThemeChanged = 0x031A;
-    private const string LightThemeSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Light.xaml";
-    private const string DarkThemeSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.Dark.xaml";
-    private const string PaletteHostSource = "/Arkheide.Flourish;component/Themes/Colors/Colors.xaml";
+    private const string LightThemeSource = "/Flourish;component/Themes/Colors/Colors.Light.xaml";
+    private const string DarkThemeSource = "/Flourish;component/Themes/Colors/Colors.Dark.xaml";
+    private const string PaletteHostSource = "/Flourish;component/Themes/Colors/Colors.xaml";
     private const string PersonalizeRegistryPath =
         @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
     private const string AppsUseLightThemeValue = "AppsUseLightTheme";
@@ -38,21 +38,21 @@ internal sealed class ThemeService(
     private readonly Dictionary<Window, HwndSource> hooksByWindow = [];
     private readonly HashSet<Window> attachedWindows = [];
     private readonly HashSet<Window> pendingHookWindows = [];
-    private FlourishTheme currentTheme = FlourishTheme.Light;
-    private FlourishTheme effectiveTheme = FlourishTheme.Light;
-    private FlourishThemeState current = new(FlourishTheme.Light, FlourishTheme.Light);
+    private ApplicationTheme currentTheme = ApplicationTheme.Light;
+    private ApplicationTheme effectiveTheme = ApplicationTheme.Light;
+    private ThemeState current = new(ApplicationTheme.Light, ApplicationTheme.Light);
     private bool isInitialized;
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishThemeState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<ThemeState>>? Changed;
 
-    public FlourishThemeState Current => Volatile.Read(ref current);
+    public ThemeState Current => Volatile.Read(ref current);
 
     public void Attach(Application application)
     {
         ArgumentNullException.ThrowIfNull(application);
 
-        FlourishTheme initialTheme;
-        FlourishTheme initialEffectiveTheme;
+        ApplicationTheme initialTheme;
+        ApplicationTheme initialEffectiveTheme;
         lock (gate)
         {
             if (isInitialized)
@@ -64,7 +64,7 @@ internal sealed class ThemeService(
                 ? appearanceOptions.UsePersistedTheme
                     ? preferenceService.ReadTheme() ?? appearanceOptions.DefaultTheme
                     : appearanceOptions.DefaultTheme
-                : FlourishTheme.Light;
+                : ApplicationTheme.Light;
             currentTheme = initialTheme;
             effectiveTheme = ResolveTheme(initialTheme);
             PublishStateLocked();
@@ -122,16 +122,16 @@ internal sealed class ThemeService(
         var current = Current;
         var nextTheme = current.RequestedTheme switch
         {
-            FlourishTheme.System => current.IsDark ? FlourishTheme.Light : FlourishTheme.Dark,
-            FlourishTheme.Light => FlourishTheme.Dark,
-            FlourishTheme.Dark => FlourishTheme.System,
-            _ => FlourishTheme.System,
+            ApplicationTheme.System => current.IsDark ? ApplicationTheme.Light : ApplicationTheme.Dark,
+            ApplicationTheme.Light => ApplicationTheme.Dark,
+            ApplicationTheme.Dark => ApplicationTheme.System,
+            _ => ApplicationTheme.System,
         };
 
         SetTheme(nextTheme);
     }
 
-    public void SetTheme(FlourishTheme theme)
+    public void SetTheme(ApplicationTheme theme)
     {
         ValidateTheme(theme, nameof(theme));
         bool requestedThemeChanged;
@@ -227,7 +227,7 @@ internal sealed class ThemeService(
         bool followsSystem;
         lock (gate)
         {
-            followsSystem = currentTheme == FlourishTheme.System;
+            followsSystem = currentTheme == ApplicationTheme.System;
         }
 
         if (IsThemeChangeMessage(msg, lParam) && followsSystem)
@@ -243,9 +243,9 @@ internal sealed class ThemeService(
         var application = Application.Current;
         void ApplyCore()
         {
-            FlourishTheme requested;
-            FlourishTheme effective;
-            FlourishThemeState state;
+            ApplicationTheme requested;
+            ApplicationTheme effective;
+            ThemeState state;
             bool changed;
             lock (gate)
             {
@@ -271,7 +271,7 @@ internal sealed class ThemeService(
             {
                 Changed?.Invoke(
                     this,
-                    new FlourishStateChangedEventArgs<FlourishThemeState>(state)
+                    new StateChangedEventArgs<ThemeState>(state)
                 );
             }
         }
@@ -285,12 +285,12 @@ internal sealed class ThemeService(
         application.Dispatcher.Invoke(ApplyCore);
     }
 
-    private FlourishThemeState CaptureState()
+    private ThemeState CaptureState()
     {
-        return new FlourishThemeState(currentTheme, effectiveTheme);
+        return new ThemeState(currentTheme, effectiveTheme);
     }
 
-    private FlourishThemeState PublishStateLocked()
+    private ThemeState PublishStateLocked()
     {
         var state = CaptureState();
         Volatile.Write(ref current, state);
@@ -318,37 +318,37 @@ internal sealed class ThemeService(
             );
     }
 
-    private FlourishTheme ResolveTheme(FlourishTheme theme)
+    private ApplicationTheme ResolveTheme(ApplicationTheme theme)
     {
         return theme switch
         {
-            FlourishTheme.Dark => FlourishTheme.Dark,
-            FlourishTheme.Light => FlourishTheme.Light,
-            FlourishTheme.System => IsSystemDarkTheme() ? FlourishTheme.Dark : FlourishTheme.Light,
-            _ => FlourishTheme.Light,
+            ApplicationTheme.Dark => ApplicationTheme.Dark,
+            ApplicationTheme.Light => ApplicationTheme.Light,
+            ApplicationTheme.System => IsSystemDarkTheme() ? ApplicationTheme.Dark : ApplicationTheme.Light,
+            _ => ApplicationTheme.Light,
         };
     }
 
-    private static void ApplyApplicationResources(Application application, FlourishTheme theme)
+    private static void ApplyApplicationResources(Application application, ApplicationTheme theme)
     {
-        FlourishThemeResources.EnsureMerged(application.Resources);
+        ThemeResources.EnsureMerged(application.Resources);
         ApplyThemePalette(application.Resources, theme);
     }
 
-    internal static void ApplyThemePalette(ResourceDictionary resources, FlourishTheme theme)
+    internal static void ApplyThemePalette(ResourceDictionary resources, ApplicationTheme theme)
     {
         ArgumentNullException.ThrowIfNull(resources);
         var themeRoot =
-            FlourishThemeResources.FindThemeRoot(resources)
+            ThemeResources.FindThemeRoot(resources)
             ?? throw new InvalidOperationException(
-                $"The resource graph does not contain {FlourishThemeResources.GenericThemeSource}."
+                $"The resource graph does not contain {ThemeResources.GenericThemeSource}."
             );
         var paletteHost =
             FindPaletteHost(themeRoot)
             ?? throw new InvalidOperationException(
                 $"The Flourish theme graph does not contain a canonical Flourish palette."
             );
-        var source = theme == FlourishTheme.Dark ? DarkThemeSource : LightThemeSource;
+        var source = theme == ApplicationTheme.Dark ? DarkThemeSource : LightThemeSource;
         if (IsSource(paletteHost, source))
         {
             return;
@@ -364,9 +364,9 @@ internal sealed class ThemeService(
 
     internal static void ApplyStyleOverrides(
         ResourceDictionary resources,
-        FlourishThemeColors? themeColors,
+        ThemeColors? themeColors,
         double? cornerRadius,
-        FlourishTheme effectiveTheme = FlourishTheme.Light
+        ApplicationTheme effectiveTheme = ApplicationTheme.Light
     )
     {
         ArgumentNullException.ThrowIfNull(resources);
@@ -393,11 +393,11 @@ internal sealed class ThemeService(
 
     private static void ApplyColorOverrides(
         ResourceDictionary resources,
-        FlourishThemeColors colors,
-        FlourishTheme effectiveTheme
+        ThemeColors colors,
+        ApplicationTheme effectiveTheme
     )
     {
-        var isDark = effectiveTheme == FlourishTheme.Dark;
+        var isDark = effectiveTheme == ApplicationTheme.Dark;
         var neutralBackground = isDark ? Color.FromRgb(0x29, 0x29, 0x29) : Colors.White;
         var controlBackground = neutralBackground;
         var neutralForeground = isDark ? Colors.White : Color.FromRgb(0x24, 0x24, 0x24);
@@ -498,7 +498,7 @@ internal sealed class ThemeService(
         resources[key] = brush;
     }
 
-    private static void SetHeroBackground(ResourceDictionary resources, FlourishThemeColors colors)
+    private static void SetHeroBackground(ResourceDictionary resources, ThemeColors colors)
     {
         var primary = CreateSurface(colors.Primary);
         var secondary = CreateSurface(colors.Secondary);
@@ -683,7 +683,7 @@ internal sealed class ThemeService(
 
     private static ResourceDictionary? FindPaletteHost(ResourceDictionary dictionary)
     {
-        return FlourishThemeResources.FindInGraph(
+        return ThemeResources.FindInGraph(
             dictionary,
             static candidate =>
                 IsSource(candidate, PaletteHostSource)
@@ -723,7 +723,7 @@ internal sealed class ThemeService(
         }
     }
 
-    private static void ValidateTheme(FlourishTheme theme, string parameterName)
+    private static void ValidateTheme(ApplicationTheme theme, string parameterName)
     {
         if (!Enum.IsDefined(theme))
         {

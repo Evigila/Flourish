@@ -11,15 +11,15 @@ namespace ArkheideSystem.Flourish.Appearance;
 internal sealed class AppearanceService : IAppearanceService
 {
     private readonly Lock gate = new();
-    private FlourishThemeColors? themeColors;
+    private ThemeColors? themeColors;
     private double? cornerRadius;
-    private FlourishTheme effectiveTheme = FlourishTheme.Light;
+    private ApplicationTheme effectiveTheme = ApplicationTheme.Light;
     private Dispatcher? applicationDispatcher;
     private ResourceDictionary? overrideResources;
-    private FlourishAppearanceSettings current;
+    private AppearanceSettings current;
     private long version;
 
-    public AppearanceService(FlourishAppearanceOptions options)
+    public AppearanceService(AppearanceOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         themeColors = options.ThemeColors;
@@ -27,11 +27,11 @@ internal sealed class AppearanceService : IAppearanceService
         current = CreateSnapshot();
     }
 
-    public FlourishAppearanceSettings Current => Volatile.Read(ref current);
+    public AppearanceSettings Current => Volatile.Read(ref current);
 
-    public event EventHandler<FlourishStateTransitionEventArgs<FlourishAppearanceSettings>>? Changed;
+    public event EventHandler<StateTransitionEventArgs<AppearanceSettings>>? Changed;
 
-    public void SetThemeColors(FlourishThemeColors? colors)
+    public void SetThemeColors(ThemeColors? colors)
     {
         Update(current => (colors, current.CornerRadius));
     }
@@ -41,20 +41,20 @@ internal sealed class AppearanceService : IAppearanceService
         Update(current => (current.ThemeColors, radius));
     }
 
-    public void SetAppearance(FlourishThemeColors? colors, double? cornerRadius)
+    public void SetAppearance(ThemeColors? colors, double? cornerRadius)
     {
         Update(_ => (colors, cornerRadius));
     }
 
     private void Update(
-        Func<FlourishAppearanceSettings, (FlourishThemeColors? Colors, double? CornerRadius)> update
+        Func<AppearanceSettings, (ThemeColors? Colors, double? CornerRadius)> update
     )
     {
-        FlourishAppearanceSettings previous;
-        FlourishAppearanceSettings current;
+        AppearanceSettings previous;
+        AppearanceSettings current;
         Dispatcher? dispatcher;
         ResourceDictionary? resources;
-        FlourishTheme theme;
+        ApplicationTheme theme;
         lock (gate)
         {
             previous = Volatile.Read(ref this.current);
@@ -83,7 +83,7 @@ internal sealed class AppearanceService : IAppearanceService
                 Apply(resources, current, theme);
             }
 
-            Changed?.Invoke(this, new FlourishStateTransitionEventArgs<FlourishAppearanceSettings>(previous, current));
+            Changed?.Invoke(this, new StateTransitionEventArgs<AppearanceSettings>(previous, current));
         }
 
         if (dispatcher is null || dispatcher.CheckAccess())
@@ -96,7 +96,7 @@ internal sealed class AppearanceService : IAppearanceService
         }
     }
 
-    internal void Attach(Application application, FlourishTheme theme)
+    internal void Attach(Application application, ApplicationTheme theme)
     {
         ArgumentNullException.ThrowIfNull(application);
         Attach(application.Dispatcher, application.Resources, theme);
@@ -105,7 +105,7 @@ internal sealed class AppearanceService : IAppearanceService
     internal void Attach(
         Dispatcher dispatcher,
         ResourceDictionary applicationResources,
-        FlourishTheme theme
+        ApplicationTheme theme
     )
     {
         ArgumentNullException.ThrowIfNull(dispatcher);
@@ -114,7 +114,7 @@ internal sealed class AppearanceService : IAppearanceService
 
         void AttachCore()
         {
-            FlourishAppearanceSettings snapshot;
+            AppearanceSettings snapshot;
             lock (gate)
             {
                 applicationDispatcher = dispatcher;
@@ -137,11 +137,11 @@ internal sealed class AppearanceService : IAppearanceService
         }
     }
 
-    internal void Reapply(FlourishTheme theme)
+    internal void Reapply(ApplicationTheme theme)
     {
         Dispatcher? dispatcher;
         ResourceDictionary? resources;
-        FlourishAppearanceSettings snapshot;
+        AppearanceSettings snapshot;
         lock (gate)
         {
             effectiveTheme = theme;
@@ -168,8 +168,8 @@ internal sealed class AppearanceService : IAppearanceService
 
     private static void Apply(
         ResourceDictionary resources,
-        FlourishAppearanceSettings settings,
-        FlourishTheme theme
+        AppearanceSettings settings,
+        ApplicationTheme theme
     )
     {
         resources.Clear();
@@ -181,7 +181,7 @@ internal sealed class AppearanceService : IAppearanceService
         );
     }
 
-    private FlourishAppearanceSettings CreateSnapshot() => new(themeColors, cornerRadius, version);
+    private AppearanceSettings CreateSnapshot() => new(themeColors, cornerRadius, version);
 
     private static void ValidateCornerRadius(double? radius)
     {

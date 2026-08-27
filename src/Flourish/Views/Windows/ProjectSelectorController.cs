@@ -14,6 +14,8 @@ using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Localization;
 using ArkheideSystem.Flourish.Messaging;
 using ArkheideSystem.Flourish.Projects;
+using ComboBox = ArkheideSystem.Flourish.Controls.ComboBox;
+using ComboBoxItem = ArkheideSystem.Flourish.Controls.ComboBoxItem;
 using WpfContextMenu = System.Windows.Controls.ContextMenu;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMenuItem = System.Windows.Controls.MenuItem;
@@ -22,21 +24,21 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal sealed class ProjectSelectorController : IDisposable
 {
-    private readonly FlourishTitlebar titlebar;
-    private readonly FlourishComboBox selector;
+    private readonly TitleBarView titlebar;
+    private readonly ComboBox selector;
     private readonly ProjectService projectService;
     private readonly IProjectBehavior projectBehavior;
-    private readonly FlourishLocalizationService localizationService;
+    private readonly LocalizationService localizationService;
     private readonly NotificationService notificationService;
     private readonly Dispatcher dispatcher;
     private readonly CancellationTokenSource lifetimeCancellation = new();
-    private readonly Dictionary<string, FlourishComboBoxItem> projectItemsById = new(
+    private readonly Dictionary<string, ComboBoxItem> projectItemsById = new(
         StringComparer.Ordinal
     );
-    private FlourishTitleBarState titleState = null!;
-    private FlourishComboBoxItem? applicationTitleItem;
-    private FlourishComboBoxItem? projectPlaceholderItem;
-    private FlourishComboBoxItem? newProjectItem;
+    private TitleBarState titleState = null!;
+    private ComboBoxItem? applicationTitleItem;
+    private ComboBoxItem? projectPlaceholderItem;
+    private ComboBoxItem? newProjectItem;
     private long appliedProjectVersion;
     private bool suppressSelectionChanged;
     private bool isProjectBehaviorPending;
@@ -44,10 +46,10 @@ internal sealed class ProjectSelectorController : IDisposable
     private volatile bool isDisposed;
 
     internal ProjectSelectorController(
-        FlourishTitlebar titlebar,
+        TitleBarView titlebar,
         ProjectService projectService,
         IProjectBehavior projectBehavior,
-        FlourishLocalizationService localizationService,
+        LocalizationService localizationService,
         NotificationService notificationService
     )
     {
@@ -66,16 +68,16 @@ internal sealed class ProjectSelectorController : IDisposable
 
     internal event EventHandler? Opening;
 
-    internal event EventHandler<FlourishProjectsChangedEventArgs>? Changed;
+    internal event EventHandler<ProjectCatalogChangedEventArgs>? Changed;
 
-    internal FlourishProjectSnapshot Current => projectService.Current;
+    internal ProjectCatalogSnapshot Current => projectService.Current;
 
     internal bool CanSave =>
         !isDisposed
         && projectService.Current.IsMultiProjectEnabled
         && projectService.Current.ActiveProject is not null;
 
-    internal void ApplyInitialState(FlourishTitleBarState initialTitleState)
+    internal void ApplyInitialState(TitleBarState initialTitleState)
     {
         ArgumentNullException.ThrowIfNull(initialTitleState);
         ObjectDisposedException.ThrowIf(isDisposed, this);
@@ -94,7 +96,7 @@ internal sealed class ProjectSelectorController : IDisposable
         Refresh();
     }
 
-    internal void SetTitleState(FlourishTitleBarState state)
+    internal void SetTitleState(TitleBarState state)
     {
         ArgumentNullException.ThrowIfNull(state);
         if (isDisposed)
@@ -116,8 +118,8 @@ internal sealed class ProjectSelectorController : IDisposable
     }
 
     internal string GetDisplayedTitle(
-        FlourishTitleBarState? state = null,
-        FlourishProjectSnapshot? projectState = null
+        TitleBarState? state = null,
+        ProjectCatalogSnapshot? projectState = null
     )
     {
         state ??= titleState;
@@ -225,7 +227,7 @@ internal sealed class ProjectSelectorController : IDisposable
         lifetimeCancellation.Dispose();
     }
 
-    private void Refresh(FlourishProjectSnapshot? projectState = null)
+    private void Refresh(ProjectCatalogSnapshot? projectState = null)
     {
         if (isDisposed)
         {
@@ -263,9 +265,9 @@ internal sealed class ProjectSelectorController : IDisposable
         );
     }
 
-    private void BuildItems(FlourishProjectSnapshot projectState)
+    private void BuildItems(ProjectCatalogSnapshot projectState)
     {
-        FlourishComboBoxItem? selectedItem = null;
+        ComboBoxItem? selectedItem = null;
         var desiredItems = new List<UIElement>(projectState.Projects.Count + 2);
         suppressSelectionChanged = true;
         try
@@ -313,7 +315,7 @@ internal sealed class ProjectSelectorController : IDisposable
 
                 newProjectItem ??= CreateNewProjectItem();
                 var newProjectLabel = localizationService.Get(
-                    FlourishLocaleKeys.TitleBarNewProject
+                    LocaleKeys.TitleBarNewProject
                 );
                 newProjectItem.Content = newProjectLabel;
                 AutomationProperties.SetName(newProjectItem, newProjectLabel);
@@ -338,7 +340,7 @@ internal sealed class ProjectSelectorController : IDisposable
         AutomationProperties.SetName(selector, GetDisplayedTitle(titleState, projectState));
     }
 
-    private void UpdateProjectItem(FlourishComboBoxItem item, FlourishProject project)
+    private void UpdateProjectItem(ComboBoxItem item, ProjectDescriptor project)
     {
         var displayTitle = GetProjectDisplayTitle(project, titleState);
         if (!StringComparer.Ordinal.Equals(item.Content as string, displayTitle))
@@ -362,14 +364,14 @@ internal sealed class ProjectSelectorController : IDisposable
             && item.ContextMenu.Items[0] is WpfMenuItem deleteItem
         )
         {
-            deleteItem.Header = localizationService.Get(FlourishLocaleKeys.ProjectDelete);
+            deleteItem.Header = localizationService.Get(LocaleKeys.ProjectDelete);
             deleteItem.Tag = project.Id;
         }
     }
 
-    private FlourishComboBoxItem CreateApplicationTitleItem()
+    private ComboBoxItem CreateApplicationTitleItem()
     {
-        var item = new FlourishComboBoxItem
+        var item = new ComboBoxItem
         {
             Content = titleState.ApplicationTitle,
             Tag = new ProjectMenuItemTag(ProjectMenuItemKind.Application),
@@ -379,10 +381,10 @@ internal sealed class ProjectSelectorController : IDisposable
         return item;
     }
 
-    private FlourishComboBoxItem CreateProjectItem(FlourishProject project)
+    private ComboBoxItem CreateProjectItem(ProjectDescriptor project)
     {
         var displayTitle = GetProjectDisplayTitle(project, titleState);
-        var item = new FlourishComboBoxItem
+        var item = new ComboBoxItem
         {
             Content = displayTitle,
             Tag = new ProjectMenuItemTag(ProjectMenuItemKind.Project, project.Id),
@@ -392,7 +394,7 @@ internal sealed class ProjectSelectorController : IDisposable
 
         var deleteItem = new WpfMenuItem
         {
-            Header = localizationService.Get(FlourishLocaleKeys.ProjectDelete),
+            Header = localizationService.Get(LocaleKeys.ProjectDelete),
             Tag = project.Id,
         };
         deleteItem.SetResourceReference(WpfControl.FontSizeProperty, "FlourishFontSizeStandard");
@@ -402,9 +404,9 @@ internal sealed class ProjectSelectorController : IDisposable
         return item;
     }
 
-    private FlourishComboBoxItem CreateProjectPlaceholderItem()
+    private ComboBoxItem CreateProjectPlaceholderItem()
     {
-        var item = new FlourishComboBoxItem
+        var item = new ComboBoxItem
         {
             Content = titleState.UnnamedProjectPlaceholder,
             IsEnabled = false,
@@ -414,10 +416,10 @@ internal sealed class ProjectSelectorController : IDisposable
         return item;
     }
 
-    private FlourishComboBoxItem CreateNewProjectItem()
+    private ComboBoxItem CreateNewProjectItem()
     {
-        var label = localizationService.Get(FlourishLocaleKeys.TitleBarNewProject);
-        var item = new FlourishComboBoxItem
+        var label = localizationService.Get(LocaleKeys.TitleBarNewProject);
+        var item = new ComboBoxItem
         {
             Content = label,
             Tag = new ProjectMenuItemTag(ProjectMenuItemKind.NewProject),
@@ -427,7 +429,7 @@ internal sealed class ProjectSelectorController : IDisposable
         return item;
     }
 
-    private static void ConfigureDropDownItem(FlourishComboBoxItem item)
+    private static void ConfigureDropDownItem(ComboBoxItem item)
     {
         item.SetResourceReference(WpfControl.FontSizeProperty, "FlourishFontSizeStandard");
         item.FontWeight = FontWeights.Normal;
@@ -437,7 +439,7 @@ internal sealed class ProjectSelectorController : IDisposable
     {
         if (
             suppressSelectionChanged
-            || selector.SelectedItem is not FlourishComboBoxItem selectedItem
+            || selector.SelectedItem is not ComboBoxItem selectedItem
             || selectedItem.Tag is not ProjectMenuItemTag selection
         )
         {
@@ -530,18 +532,18 @@ internal sealed class ProjectSelectorController : IDisposable
         DispatchIfActive(() =>
         {
             notificationService.Upsert(
-                new FlourishNotification(
+                new Notification(
                     $"flourish.project.{operationId}.error",
                     failureTitle,
                     error.Message,
-                    FlourishNotificationSeverity.Error,
+                    NotificationSeverity.Error,
                     Duration: TimeSpan.FromSeconds(8)
                 )
             );
         });
     }
 
-    private void ProjectService_Changed(object? sender, FlourishProjectsChangedEventArgs e)
+    private void ProjectService_Changed(object? sender, ProjectCatalogChangedEventArgs e)
     {
         DispatchIfActive(() =>
         {
@@ -556,7 +558,7 @@ internal sealed class ProjectSelectorController : IDisposable
         });
     }
 
-    private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
+    private void LocalizationService_Changed(object? sender, LocalizationChangedEventArgs e)
     {
         DispatchIfActive(() => Refresh());
     }
@@ -591,11 +593,11 @@ internal sealed class ProjectSelectorController : IDisposable
     }
 
     private static string GetProjectDisplayTitle(
-        FlourishProject project,
-        FlourishTitleBarState titleState
+        ProjectDescriptor project,
+        TitleBarState titleState
     ) => project.StoragePath is null ? titleState.UnnamedProjectPlaceholder : project.Name;
 
-    private void RemoveDeleteHandler(FlourishComboBoxItem item)
+    private void RemoveDeleteHandler(ComboBoxItem item)
     {
         if (
             item.ContextMenu?.Items.Count > 0

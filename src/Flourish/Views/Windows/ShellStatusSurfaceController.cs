@@ -16,16 +16,16 @@ using ColumnDefinition = System.Windows.Controls.ColumnDefinition;
 using Grid = System.Windows.Controls.Grid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using StackPanel = System.Windows.Controls.StackPanel;
-using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
+using TextBlock = ArkheideSystem.Flourish.Controls.TextBlock;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal sealed class ShellStatusSurfaceController : IDisposable
 {
-    private readonly FlourishStatusService statusService;
+    private readonly StatusBarService statusService;
     private readonly IBackgroundTaskService backgroundTaskService;
-    private readonly FlourishLocalizationService localizationService;
-    private readonly FlourishStatusBar statusBar;
+    private readonly LocalizationService localizationService;
+    private readonly StatusBarView statusBar;
     private readonly StatusOverlay overlay;
     private readonly Dispatcher dispatcher;
     private readonly StatusItemViewCache statusItemViews;
@@ -34,10 +34,10 @@ internal sealed class ShellStatusSurfaceController : IDisposable
     private readonly Lock backgroundTaskRefreshGate = new();
     private readonly Lock statusRefreshGate = new();
     private readonly DispatcherTimer backgroundTaskRefreshTimer;
-    private FlourishStatusBarSnapshot statusBarSnapshot;
-    private IReadOnlyList<FlourishBackgroundTaskInfo> backgroundTasks = [];
-    private IReadOnlyList<FlourishBackgroundTaskInfo> pendingBackgroundTasks = [];
-    private FlourishStatusBarChangedEventArgs? pendingStatusChange;
+    private StatusBarSnapshot statusBarSnapshot;
+    private IReadOnlyList<BackgroundTaskInfo> backgroundTasks = [];
+    private IReadOnlyList<BackgroundTaskInfo> pendingBackgroundTasks = [];
+    private StatusBarChangedEventArgs? pendingStatusChange;
     private TextBlock? backgroundTaskEmptyText;
     private FrameworkElement? anchor;
     private Guid? anchorTaskId;
@@ -49,10 +49,10 @@ internal sealed class ShellStatusSurfaceController : IDisposable
     private int disposed;
 
     internal ShellStatusSurfaceController(
-        FlourishStatusService statusService,
+        StatusBarService statusService,
         IBackgroundTaskService backgroundTaskService,
-        FlourishLocalizationService localizationService,
-        FlourishStatusBar statusBar,
+        LocalizationService localizationService,
+        StatusBarView statusBar,
         StatusOverlay overlay,
         Dispatcher dispatcher
     )
@@ -241,7 +241,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private bool IsDisposed => Volatile.Read(ref disposed) != 0;
 
-    private void StatusService_Changed(object? sender, FlourishStatusBarChangedEventArgs e)
+    private void StatusService_Changed(object? sender, StatusBarChangedEventArgs e)
     {
         lock (statusRefreshGate)
         {
@@ -278,7 +278,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void FlushPendingStatusChange()
     {
-        FlourishStatusBarChangedEventArgs? change;
+        StatusBarChangedEventArgs? change;
         lock (statusRefreshGate)
         {
             change = pendingStatusChange;
@@ -302,7 +302,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void BackgroundTaskService_Changed(
         object? sender,
-        FlourishStateChangedEventArgs<IReadOnlyList<FlourishBackgroundTaskInfo>> e
+        StateChangedEventArgs<IReadOnlyList<BackgroundTaskInfo>> e
     )
     {
         var shouldStartRefreshLoop = false;
@@ -348,7 +348,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void BackgroundTaskRefreshTimer_Tick(object? sender, EventArgs e)
     {
-        IReadOnlyList<FlourishBackgroundTaskInfo> tasks;
+        IReadOnlyList<BackgroundTaskInfo> tasks;
         lock (backgroundTaskRefreshGate)
         {
             if (IsDisposed)
@@ -396,7 +396,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         }
     }
 
-    private void RefreshBackgroundTaskStatus(IReadOnlyList<FlourishBackgroundTaskInfo> tasks)
+    private void RefreshBackgroundTaskStatus(IReadOnlyList<BackgroundTaskInfo> tasks)
     {
         if (IsDisposed)
         {
@@ -409,7 +409,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         var queuedTaskCount = 0;
         foreach (var task in backgroundTasks)
         {
-            if (task.State == FlourishBackgroundTaskState.Queued)
+            if (task.State == BackgroundTaskState.Queued)
             {
                 queuedTaskCount++;
                 continue;
@@ -418,8 +418,8 @@ internal sealed class ShellStatusSurfaceController : IDisposable
             if (
                 task.State
                 is not (
-                    FlourishBackgroundTaskState.Running
-                    or FlourishBackgroundTaskState.Cancelling
+                    BackgroundTaskState.Running
+                    or BackgroundTaskState.Cancelling
                 )
             )
             {
@@ -442,7 +442,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         statusBar.SetQueueState(
             queuedTaskCount,
             localizationService.Format(
-                FlourishLocaleKeys.BackgroundTaskWaitingCount,
+                LocaleKeys.BackgroundTaskWaitingCount,
                 queuedTaskCount
             )
         );
@@ -486,7 +486,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         VisualStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private BackgroundTaskIconView CreateBackgroundTaskIconView(FlourishBackgroundTaskInfo task)
+    private BackgroundTaskIconView CreateBackgroundTaskIconView(BackgroundTaskInfo task)
     {
         var icon = new TextBlock
         {
@@ -540,7 +540,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void UpdateBackgroundTaskIconView(
         BackgroundTaskIconView view,
-        FlourishBackgroundTaskInfo task
+        BackgroundTaskInfo task
     )
     {
         view.Icon.Text = task.Metadata.IconGlyph ?? "\uE895";
@@ -590,14 +590,14 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void BuildBackgroundTaskFlyoutContent()
     {
-        overlay.SetTitle(localizationService.Get(FlourishLocaleKeys.BackgroundTaskTitle));
+        overlay.SetTitle(localizationService.Get(LocaleKeys.BackgroundTaskTitle));
         var activeTaskIds = new HashSet<Guid>(backgroundTasks.Count);
         var desiredRows = new List<UIElement>(Math.Max(1, backgroundTasks.Count));
         if (backgroundTasks.Count == 0)
         {
             backgroundTaskEmptyText ??= new TextBlock();
             backgroundTaskEmptyText.Text = localizationService.Get(
-                FlourishLocaleKeys.BackgroundTaskNoActiveTasks
+                LocaleKeys.BackgroundTaskNoActiveTasks
             );
             backgroundTaskEmptyText.SetResourceReference(
                 TextBlock.ForegroundProperty,
@@ -625,7 +625,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         RemoveStaleBackgroundTaskViews(backgroundTaskRowsById, activeTaskIds);
     }
 
-    private BackgroundTaskRowView CreateBackgroundTaskRowView(FlourishBackgroundTaskInfo task)
+    private BackgroundTaskRowView CreateBackgroundTaskRowView(BackgroundTaskInfo task)
     {
         var row = new Border
         {
@@ -680,7 +680,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
             MinWidth = 58,
             Padding = new Thickness(10, 0, 10, 0),
             Tag = task.Id,
-            Content = localizationService.Get(FlourishLocaleKeys.BackgroundTaskCancel),
+            Content = localizationService.Get(LocaleKeys.BackgroundTaskCancel),
         };
         Grid.SetColumn(cancelButton, 2);
         cancelButton.Click += CancelBackgroundTaskButton_Click;
@@ -691,7 +691,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void UpdateBackgroundTaskRowView(
         BackgroundTaskRowView view,
-        FlourishBackgroundTaskInfo task
+        BackgroundTaskInfo task
     )
     {
         view.Icon.Text = task.Metadata.IconGlyph ?? "\uE895";
@@ -702,13 +702,13 @@ internal sealed class ShellStatusSurfaceController : IDisposable
             : Visibility.Visible;
         view.State.Text = FormatBackgroundTaskState(task);
         view.CancelButton.Tag = task.Id;
-        view.CancelButton.IsEnabled = task.State != FlourishBackgroundTaskState.Cancelling;
+        view.CancelButton.IsEnabled = task.State != BackgroundTaskState.Cancelling;
         view.CancelButton.Content = localizationService.Get(
-            FlourishLocaleKeys.BackgroundTaskCancel
+            LocaleKeys.BackgroundTaskCancel
         );
         AutomationProperties.SetName(
             view.CancelButton,
-            $"{localizationService.Get(FlourishLocaleKeys.BackgroundTaskCancel)} {task.Metadata.Name}"
+            $"{localizationService.Get(LocaleKeys.BackgroundTaskCancel)} {task.Metadata.Name}"
         );
     }
 
@@ -720,20 +720,20 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         }
     }
 
-    private string FormatBackgroundTaskState(FlourishBackgroundTaskInfo task)
+    private string FormatBackgroundTaskState(BackgroundTaskInfo task)
     {
         var text = GetBackgroundTaskStateText(task.State);
         return task.Progress is { } progress ? $"{text} · {progress:P0}" : text;
     }
 
-    private string GetBackgroundTaskStateText(FlourishBackgroundTaskState state) =>
+    private string GetBackgroundTaskStateText(BackgroundTaskState state) =>
         localizationService.Get(
             state switch
             {
-                FlourishBackgroundTaskState.Queued => FlourishLocaleKeys.BackgroundTaskQueued,
-                FlourishBackgroundTaskState.Cancelling =>
-                    FlourishLocaleKeys.BackgroundTaskCancelling,
-                _ => FlourishLocaleKeys.BackgroundTaskRunning,
+                BackgroundTaskState.Queued => LocaleKeys.BackgroundTaskQueued,
+                BackgroundTaskState.Cancelling =>
+                    LocaleKeys.BackgroundTaskCancelling,
+                _ => LocaleKeys.BackgroundTaskRunning,
             }
         );
 
@@ -751,17 +751,17 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private void BuildSystemStatusFlyoutContent()
     {
-        overlay.SetTitle(localizationService.Get(FlourishLocaleKeys.SystemStatusTitle));
+        overlay.SetTitle(localizationService.Get(LocaleKeys.SystemStatusTitle));
         overlay.ClearItems();
         if (statusBarSnapshot.IsLanStatusEnabled)
         {
-            var networkState = localizationService.Get(FlourishLocaleKeys.SystemStatusUnknown);
+            var networkState = localizationService.Get(LocaleKeys.SystemStatusUnknown);
             try
             {
                 networkState = localizationService.Get(
                     System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()
-                        ? FlourishLocaleKeys.StatusConnected
-                        : FlourishLocaleKeys.StatusDisconnected
+                        ? LocaleKeys.StatusConnected
+                        : LocaleKeys.StatusDisconnected
                 );
             }
             catch (Exception error)
@@ -774,7 +774,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
             overlay.AppendItem(
                 CreateStatusDetailRow(
                     "\uE701",
-                    localizationService.Get(FlourishLocaleKeys.SystemStatusNetwork),
+                    localizationService.Get(LocaleKeys.SystemStatusNetwork),
                     networkState
                 )
             );
@@ -786,7 +786,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
             overlay.AppendItem(
                 CreateStatusDetailRow(
                     "\uE850",
-                    localizationService.Get(FlourishLocaleKeys.SystemStatusPower),
+                    localizationService.Get(LocaleKeys.SystemStatusPower),
                     powerSource
                 )
             );
@@ -795,19 +795,19 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private string GetPowerStatusText()
     {
-        var powerSource = localizationService.Get(FlourishLocaleKeys.SystemStatusUnknown);
+        var powerSource = localizationService.Get(LocaleKeys.SystemStatusUnknown);
         try
         {
             var powerStatus = System.Windows.Forms.SystemInformation.PowerStatus;
             powerSource = powerStatus.PowerLineStatus switch
             {
                 System.Windows.Forms.PowerLineStatus.Online => localizationService.Get(
-                    FlourishLocaleKeys.SystemStatusAC
+                    LocaleKeys.SystemStatusAC
                 ),
                 System.Windows.Forms.PowerLineStatus.Offline => localizationService.Get(
-                    FlourishLocaleKeys.SystemStatusBattery
+                    LocaleKeys.SystemStatusBattery
                 ),
-                _ => localizationService.Get(FlourishLocaleKeys.SystemStatusUnknown),
+                _ => localizationService.Get(LocaleKeys.SystemStatusUnknown),
             };
             var batteryStatus = powerStatus.BatteryChargeStatus;
             var hasNoSystemBattery = batteryStatus.HasFlag(
@@ -821,7 +821,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
                 && powerStatus.PowerLineStatus != System.Windows.Forms.PowerLineStatus.Online
             )
             {
-                powerSource = localizationService.Get(FlourishLocaleKeys.SystemStatusUnknown);
+                powerSource = localizationService.Get(LocaleKeys.SystemStatusUnknown);
             }
 
             if (hasUsableBattery && powerStatus.BatteryLifePercent is >= 0 and <= 1)
@@ -873,7 +873,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         return row;
     }
 
-    private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
+    private void LocalizationService_Changed(object? sender, LocalizationChangedEventArgs e)
     {
         if (!dispatcher.CheckAccess())
         {
@@ -892,7 +892,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
         }
 
         statusBar.SetSystemAutomationName(
-            localizationService.Get(FlourishLocaleKeys.SystemStatusTitle)
+            localizationService.Get(LocaleKeys.SystemStatusTitle)
         );
         RefreshBackgroundTaskStatus(backgroundTaskService.Current);
         if (kind == StatusSurfaceKind.System && overlay.IsOpen)
@@ -958,7 +958,7 @@ internal sealed class ShellStatusSurfaceController : IDisposable
 
     private static void BindIconTypography(TextBlock element, string fontSizeResource)
     {
-        element.Role = FlourishTextRole.Icon;
+        element.Role = TextRole.Icon;
         element.SetResourceReference(TextBlock.FontFamilyProperty, "FlourishIconFontFamily");
         element.SetResourceReference(TextBlock.FontSizeProperty, fontSizeResource);
         element.SetResourceReference(TextBlock.LineHeightProperty, fontSizeResource);

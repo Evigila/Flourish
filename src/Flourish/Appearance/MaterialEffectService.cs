@@ -30,7 +30,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
     private const int DarkAcrylicTint = unchecked((int)0xCC202020);
 
     private readonly Lock stateGate = new();
-    private readonly FlourishAppearanceOptions? options;
+    private readonly AppearanceOptions? options;
     private readonly MaterialEffectPlatform platform;
     private Window? owner;
     private HwndSource? hwndSource;
@@ -42,13 +42,13 @@ internal sealed class MaterialEffectService : IMaterialEffectService
     private MaterialEffect currentEffect;
     private bool isApplied;
     private bool isDarkMode;
-    private FlourishMaterialEffectState current = null!;
+    private MaterialEffectState current = null!;
 
-    public MaterialEffectService(FlourishAppearanceOptions? options = null)
+    public MaterialEffectService(AppearanceOptions? options = null)
         : this(options, MaterialEffectPlatform.Current, initialize: true) { }
 
     private MaterialEffectService(
-        FlourishAppearanceOptions? options,
+        AppearanceOptions? options,
         MaterialEffectPlatform platform,
         bool initialize
     )
@@ -63,13 +63,13 @@ internal sealed class MaterialEffectService : IMaterialEffectService
     }
 
     internal MaterialEffectService(
-        FlourishAppearanceOptions? options,
+        AppearanceOptions? options,
         MaterialEffectPlatform platform
     ) : this(options, platform, initialize: true) { }
 
-    public FlourishMaterialEffectState Current => Volatile.Read(ref current);
+    public MaterialEffectState Current => Volatile.Read(ref current);
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishMaterialEffectState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<MaterialEffectState>>? Changed;
 
     public bool IsSupported(MaterialEffect effect)
     {
@@ -484,7 +484,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
 
             Changed?.Invoke(
                 this,
-                new FlourishStateChangedEventArgs<FlourishMaterialEffectState>(current)
+                new StateChangedEventArgs<MaterialEffectState>(current)
             );
         }
 
@@ -498,9 +498,9 @@ internal sealed class MaterialEffectService : IMaterialEffectService
         attachedOwner.Dispatcher.Invoke(RaiseCore);
     }
 
-    private FlourishMaterialEffectState CaptureState()
+    private MaterialEffectState CaptureState()
     {
-        return new FlourishMaterialEffectState(
+        return new MaterialEffectState(
             currentEffect,
             platform.Resolve(currentEffect),
             platform.IsSupported(currentEffect),
@@ -509,7 +509,7 @@ internal sealed class MaterialEffectService : IMaterialEffectService
         );
     }
 
-    private FlourishMaterialEffectState PublishStateLocked()
+    private MaterialEffectState PublishStateLocked()
     {
         var state = CaptureState();
         Volatile.Write(ref current, state);

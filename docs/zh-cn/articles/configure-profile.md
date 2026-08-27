@@ -5,7 +5,7 @@ description: 配置用户资料、登录状态、已记住的凭据和自定义�
 
 # 用户资料（Profile）
 
-Profile 从标题栏提供账户入口。调用 `SetProfile` 可显示入口并使用内置 Profile 页面。
+调用 `SetProfile` 在标题栏显示账户入口并启用内置 Profile 页面。
 
 ```csharp
 builder
@@ -120,6 +120,6 @@ builder
 
 ## 相关功能
 
-- [Shell 配置](shell-configuration.md)说明按功能划分的 Builder 与 Service 模型。
-- [标题栏](configure-title-bar.md)显示 Profile 入口并选择启动时名称顺序。
-- [依赖注入](configure-services.md)注册自定义 Profile 服务和页面。
+- [Shell 配置](shell-configuration.md)
+- [标题栏](configure-title-bar.md)
+- [依赖注入](configure-services.md)

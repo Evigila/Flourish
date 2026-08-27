@@ -5,7 +5,7 @@ description: 在标题栏中配置应用标识、项目选择、搜索、导航�
 
 # 标题栏
 
-使用 `ConfigureTitleBar` 启用标题栏、提供应用标识并选择其中的控件。标题本身就是下拉选择器：未启用项目模式时表示应用，启用后表示活动项目。Logo 会打开独立的信息视图来展示应用标识。
+使用 `ConfigureTitleBar` 启用标题栏、设置应用标识并选择控件。标题下拉框在普通模式表示应用，在项目模式表示活动项目；Logo 打开应用信息视图。
 
 ## 配置标识与控件
 
@@ -28,11 +28,11 @@ builder
             .SetBreadcrumbMode(option: BreadcrumbShowOption.Auto)
             .SetNavigationToggle()
             .SetProfile(nameOrder: NameOrder.FirstLast)
-            .SetThemeToggle(mode: FlourishTheme.System);
+            .SetThemeToggle(mode: ApplicationTheme.System);
     });
 ```
 
-必须在 `ITitleBarBuilder` 上调用 `SetEnabled()`。只有同时启用[导航](navigation.md)时，`SetNavigationToggle` 才会显示。项目模式是可选功能且默认禁用，可通过 `ConfigureProjects(projects => projects.SetMultiProjectEnabled())` 启用。
+必须调用 `ITitleBarBuilder.SetEnabled()`。`SetNavigationToggle` 仅在[导航](navigation.md)也启用时显示。项目模式默认禁用，通过 `ConfigureProjects(projects => projects.SetMultiProjectEnabled())` 启用。
 
 | 方法 | 结果 |
 | --- | --- |
@@ -58,7 +58,7 @@ builder
 | 启用且活动项目已持久化 | 活动项目名称 | 全部已注册项目与“新建项目” |
 | 启用且活动项目未持久化或不存在 | 未命名项目占位文本 | 全部已注册项目与“新建项目” |
 
-未启用项目模式时，该选择器不具有项目标题语义，选择唯一的应用标题不会执行项目操作。启用项目模式后，选择项目会调用 `IProjectBehavior.ActivateProjectAsync`；选择“新建项目”会调用 `CreateProjectAsync`；右键单击项目则通过 `DeleteProjectAsync` 执行删除。[项目](projects.md)说明生命周期行为、目录持久化与运行时更新。
+项目模式关闭时，选择器只显示应用标题，不执行项目操作。启用后，选择项目调用 `IProjectBehavior.ActivateProjectAsync`，“新建项目”调用 `CreateProjectAsync`，右键删除调用 `DeleteProjectAsync`；见[项目](projects.md)。
 
 应用副标题不直接显示在标题栏中。它与应用标题一起显示在 Logo 信息视图；`SetLogo` 也可以让该视图显示当前项目标题。判断项目是否未持久化时应使用 `StoragePath == null`，而不是占位文本。
 
@@ -81,7 +81,7 @@ titleBar.SetLogo(
 ```csharp
 builder.ConfigureContent(custom =>
     custom.AddRegionContent(
-        FlourishRegion.TitleBarApplicationInfo,
+        ShellRegion.TitleBarApplicationInfo,
         services => new ApplicationSummaryView()));
 ```
 
@@ -127,9 +127,9 @@ builder.ConfigureTitleBar(titleBar =>
 
 ## 相关功能
 
-- [项目](projects.md)管理持久化项目目录与标题栏生命周期行为。
-- [自定义 Shell 内容](configure-custom-handler.md)向标题栏区域与 Logo 信息视图添加应用内容。
-- [用户资料（Profile）](configure-profile.md)配置 Profile 内容、认证与持久化。
-- [导航](navigation.md)提供 `SetNavigationToggle` 控制的导航栏。
-- [主题](configure-themes.md)说明 `SetThemeToggle` 控制的主题。
-- [窗口](configure-window.md)配置窗口调整大小与托盘关闭行为。
+- [项目](projects.md)
+- [自定义 Shell 内容](configure-custom-handler.md)
+- [用户资料（Profile）](configure-profile.md)
+- [导航](navigation.md)
+- [主题](configure-themes.md)
+- [窗口](configure-window.md)

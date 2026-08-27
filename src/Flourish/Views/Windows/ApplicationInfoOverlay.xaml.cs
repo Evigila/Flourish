@@ -40,8 +40,8 @@ internal partial class ApplicationInfoOverlay : UserControl
     }
 
     internal void SetState(
-        FlourishTitleBarState titleState,
-        FlourishProjectSnapshot projectState,
+        TitleBarState titleState,
+        ProjectCatalogSnapshot projectState,
         ImageSource? logoSource
     )
     {

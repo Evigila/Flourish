@@ -29,7 +29,7 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
     private readonly Lock gate = new();
     private ProjectCatalog? lastPersistedCatalog;
 
-    public ProjectCatalogStore(FlourishDataOptions dataOptions)
+    public ProjectCatalogStore(ApplicationDataOptions dataOptions)
     {
         ArgumentNullException.ThrowIfNull(dataOptions);
         filePath = string.IsNullOrWhiteSpace(dataOptions.ProjectCatalogFilePath)
@@ -184,13 +184,13 @@ internal sealed class ProjectCatalogStore : IProjectCatalogStore
     }
 
     private sealed record ProjectCatalogDocument(
-        FlourishProject[] Projects,
+        ProjectDescriptor[] Projects,
         string? ActiveProjectId
     );
 }
 
 internal sealed record ProjectCatalog(
-    IReadOnlyList<FlourishProject> Projects,
+    IReadOnlyList<ProjectDescriptor> Projects,
     string? ActiveProjectId
 )
 {

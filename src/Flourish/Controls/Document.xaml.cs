@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 using WpfBinding = System.Windows.Data.Binding;
+using WpfTextBlock = System.Windows.Controls.TextBlock;
 
 namespace ArkheideSystem.Flourish.Controls;
 
@@ -56,11 +57,11 @@ public class Document : ItemsControl
 
         if (
             item is Paragraph paragraph
-            && paragraph.ReadLocalValue(TextBlock.TextWrappingProperty)
+            && paragraph.ReadLocalValue(WpfTextBlock.TextWrappingProperty)
                 == DependencyProperty.UnsetValue
         )
         {
-            paragraph.SetCurrentValue(TextBlock.TextWrappingProperty, TextWrapping.Wrap);
+            paragraph.SetCurrentValue(WpfTextBlock.TextWrappingProperty, TextWrapping.Wrap);
         }
 
         if (element is ContentPresenter container && item is Paragraph source)
@@ -86,37 +87,37 @@ public class Document : ItemsControl
         base.ClearContainerForItemOverride(element, item);
     }
 
-    private TextBlock CreateTextProxy(Paragraph source)
+    private WpfTextBlock CreateTextProxy(Paragraph source)
     {
-        var proxy = new TextBlock { Name = "DocumentParagraphTextProxy" };
+        var proxy = new WpfTextBlock { Name = "DocumentParagraphTextProxy" };
 
         Bind(
             proxy,
-            TextBlock.TextProperty,
+            WpfTextBlock.TextProperty,
             source,
-            TextBlock.TextProperty,
+            WpfTextBlock.TextProperty,
             PrefixFirstLineConverter.Instance
         );
-        Bind(proxy, TextBlock.FontFamilyProperty, source, TextBlock.FontFamilyProperty);
-        Bind(proxy, TextBlock.FontSizeProperty, this, FontSizeProperty);
-        Bind(proxy, TextBlock.FontStretchProperty, source, TextBlock.FontStretchProperty);
-        Bind(proxy, TextBlock.FontStyleProperty, source, TextBlock.FontStyleProperty);
-        Bind(proxy, TextBlock.FontWeightProperty, source, TextBlock.FontWeightProperty);
-        Bind(proxy, TextBlock.ForegroundProperty, source, TextBlock.ForegroundProperty);
-        Bind(proxy, TextBlock.BackgroundProperty, source, TextBlock.BackgroundProperty);
-        Bind(proxy, TextBlock.PaddingProperty, source, TextBlock.PaddingProperty);
-        Bind(proxy, TextBlock.BaselineOffsetProperty, source, TextBlock.BaselineOffsetProperty);
-        Bind(proxy, TextBlock.LineHeightProperty, source, TextBlock.LineHeightProperty);
+        Bind(proxy, WpfTextBlock.FontFamilyProperty, source, WpfTextBlock.FontFamilyProperty);
+        Bind(proxy, WpfTextBlock.FontSizeProperty, this, FontSizeProperty);
+        Bind(proxy, WpfTextBlock.FontStretchProperty, source, WpfTextBlock.FontStretchProperty);
+        Bind(proxy, WpfTextBlock.FontStyleProperty, source, WpfTextBlock.FontStyleProperty);
+        Bind(proxy, WpfTextBlock.FontWeightProperty, source, WpfTextBlock.FontWeightProperty);
+        Bind(proxy, WpfTextBlock.ForegroundProperty, source, WpfTextBlock.ForegroundProperty);
+        Bind(proxy, WpfTextBlock.BackgroundProperty, source, WpfTextBlock.BackgroundProperty);
+        Bind(proxy, WpfTextBlock.PaddingProperty, source, WpfTextBlock.PaddingProperty);
+        Bind(proxy, WpfTextBlock.BaselineOffsetProperty, source, WpfTextBlock.BaselineOffsetProperty);
+        Bind(proxy, WpfTextBlock.LineHeightProperty, source, WpfTextBlock.LineHeightProperty);
         Bind(
             proxy,
-            TextBlock.LineStackingStrategyProperty,
+            WpfTextBlock.LineStackingStrategyProperty,
             source,
-            TextBlock.LineStackingStrategyProperty
+            WpfTextBlock.LineStackingStrategyProperty
         );
-        Bind(proxy, TextBlock.TextAlignmentProperty, source, TextBlock.TextAlignmentProperty);
-        Bind(proxy, TextBlock.TextDecorationsProperty, source, TextBlock.TextDecorationsProperty);
-        Bind(proxy, TextBlock.TextTrimmingProperty, source, TextBlock.TextTrimmingProperty);
-        Bind(proxy, TextBlock.TextWrappingProperty, source, TextBlock.TextWrappingProperty);
+        Bind(proxy, WpfTextBlock.TextAlignmentProperty, source, WpfTextBlock.TextAlignmentProperty);
+        Bind(proxy, WpfTextBlock.TextDecorationsProperty, source, WpfTextBlock.TextDecorationsProperty);
+        Bind(proxy, WpfTextBlock.TextTrimmingProperty, source, WpfTextBlock.TextTrimmingProperty);
+        Bind(proxy, WpfTextBlock.TextWrappingProperty, source, WpfTextBlock.TextWrappingProperty);
         Bind(proxy, FlowDirectionProperty, source, FlowDirectionProperty);
         Bind(proxy, LanguageProperty, source, LanguageProperty);
         Bind(

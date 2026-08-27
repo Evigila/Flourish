@@ -7,7 +7,7 @@ using ArkheideSystem.Flourish.Abstract;
 using ArkheideSystem.Flourish.Localization;
 namespace ArkheideSystem.Flourish.Profile;
 
-internal sealed class SimpleProfileAuthService(FlourishLocalizationService localizationService)
+internal sealed class SimpleProfileAuthService(LocalizationService localizationService)
     : IProfileAuthService
 {
     public Task<ProfileAuthenticationResult> AuthenticateAsync(
@@ -22,7 +22,7 @@ internal sealed class SimpleProfileAuthService(FlourishLocalizationService local
         {
             return Task.FromResult(
                 ProfileAuthenticationResult.Failure(
-                    localizationService.Get(FlourishLocaleKeys.ProfileEnterName)
+                    localizationService.Get(LocaleKeys.ProfileEnterName)
                 )
             );
         }
@@ -31,7 +31,7 @@ internal sealed class SimpleProfileAuthService(FlourishLocalizationService local
         {
             return Task.FromResult(
                 ProfileAuthenticationResult.Failure(
-                    localizationService.Get(FlourishLocaleKeys.ProfileEnterPassword)
+                    localizationService.Get(LocaleKeys.ProfileEnterPassword)
                 )
             );
         }

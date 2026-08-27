@@ -5,11 +5,11 @@ description: Register asynchronous command handlers and dispatch command keys fr
 
 # Command dispatch
 
-Flourish UI surfaces send stable command keys through `ICommandDispatcher`. Register handlers with `ICommandRegistry`; both interfaces are available from the Flourish service provider after `Build()`.
+Use `ICommandRegistry` to register handlers and `ICommandDispatcher` to send stable command keys after `Build()`.
 
 ## Register handlers
 
-`ICommandRegistry.Register` associates a command key with an asynchronous handler and returns an `IRegistration`. Keep the registration for as long as the handler should remain active, then dispose it to unregister the command.
+`ICommandRegistry.Register` returns an `IRegistration`. Dispose it to unregister the asynchronous handler.
 
 ```csharp
 ICommandRegistry commands = flourish.GetRequiredService<ICommandRegistry>();
@@ -27,7 +27,7 @@ Handlers receive a `CommandContext` containing the command key, optional paramet
 
 ## Define startup mappings
 
-A command parser defines host-lifetime mappings between command keys and handlers without exposing their registration leases. Flourish invokes each parser when the host starts and removes its mappings in reverse order when the host stops.
+A command parser owns host-lifetime mappings. Flourish invokes parsers at startup and removes their mappings in reverse order at shutdown.
 
 ```csharp
 internal sealed class ReportCommands(ReportService reports)
@@ -54,7 +54,7 @@ internal sealed class ReportCommands(ReportService reports)
 }
 ```
 
-Register the parser and its dependencies during service configuration. The application does not need to resolve the parser or implement `IDisposable`:
+Register the parser and its dependencies during service configuration:
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -64,7 +64,7 @@ builder.ConfigureServices((_, services) =>
 });
 ```
 
-`ICommandRegistrar.Register` returns no lease because the host owns it. Parsers must define their mappings synchronously inside `RegisterCommands` and must not retain the registrar. Use `ICommandRegistry` directly when a handler must be added or removed while the host remains running.
+`ICommandRegistrar.Register` returns no lease. Define mappings synchronously inside `RegisterCommands`, do not retain the registrar, and use `ICommandRegistry` for dynamic lifetimes.
 
 ## Control availability
 
@@ -114,10 +114,10 @@ Toolbar, navigation, title-bar, status-bar, notification, and shortcut APIs acce
 
 ```csharp
 toolbar.Set<ReportsPage>(
-    new FlourishToolbarItem("Export", "\uE898", "cmd_reports_export"));
+    new ToolbarItem("Export", "\uE898", "cmd_reports_export"));
 ```
 
-Command items do not need to know which service handles the key. This keeps display text localizable and lets registrations change without rebuilding the UI model.
+Command keys keep display text localizable and handlers replaceable without rebuilding the UI model.
 
 ## Command key conventions
 

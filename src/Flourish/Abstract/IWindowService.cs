@@ -12,12 +12,12 @@ public interface IWindowService
     /// <summary>
     /// Gets an immutable snapshot of the shell window or, before attachment, its configured initial state.
     /// </summary>
-    FlourishWindowState Current { get; }
+    WindowStateSnapshot Current { get; }
 
     /// <summary>
     /// Occurs synchronously after a requested window change or an observed native window state change.
     /// </summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishWindowState>>? Changed;
+    event EventHandler<StateChangedEventArgs<WindowStateSnapshot>>? Changed;
 
     /// <summary>
     /// Sets the shell window position and size in device-independent pixels.

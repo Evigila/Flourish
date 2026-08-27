@@ -6,21 +6,21 @@ namespace ArkheideSystem.Flourish.Controls;
 /// <summary>
 /// A compact search text box with a search glyph and an in-control placeholder.
 /// </summary>
-public class FlourishSearchBox : FlourishTextBox
+public class SearchBox : TextBox
 {
     /// <summary>Identifies the <see cref="Placeholder" /> dependency property.</summary>
     public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(
         nameof(Placeholder),
         typeof(string),
-        typeof(FlourishSearchBox),
+        typeof(SearchBox),
         new FrameworkPropertyMetadata(string.Empty)
     );
 
-    static FlourishSearchBox()
+    static SearchBox()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishSearchBox),
-            new FrameworkPropertyMetadata(typeof(FlourishSearchBox))
+            typeof(SearchBox),
+            new FrameworkPropertyMetadata(typeof(SearchBox))
         );
     }
 

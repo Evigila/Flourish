@@ -6,8 +6,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Windowing;
 
-internal sealed class WindowBuilder(FlourishWindowOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class WindowBuilder(WindowOptions options)
+    : BuilderMutationGuard,
         IWindowBuilder
 {
     public IWindowBuilder SetSize(

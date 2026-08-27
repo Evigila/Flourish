@@ -7,7 +7,7 @@ namespace ArkheideSystem.Flourish.Controls;
 /// A normalized Large-size text paragraph intended for use as a direct child of a
 /// <see cref="Document" />.
 /// </summary>
-public class Paragraph : FlourishTextBlock
+public class Paragraph : TextBlock
 {
     static Paragraph()
     {

@@ -5,9 +5,9 @@ description: Manage project identities, catalog persistence, title-bar selection
 
 # Projects
 
-Project support gives the title bar a changing application-view identity, such as a solution, workspace, or document set. `IProjectService` owns the ordered project catalog and active selection. `IProjectBehavior` owns the user-facing create, save, activate, delete, and close workflow and can be replaced by the application.
+`IProjectService` owns the ordered project catalog and active selection. Replaceable `IProjectBehavior` owns create, save, activate, delete, and close workflows.
 
-These APIs provide Shell state and a default placeholder-file workflow. Activating a project updates the active metadata and title; it does not load, unload, or switch application business content.
+Activating a project updates Shell metadata and title, not application business content.
 
 ## Enable project mode
 
@@ -28,7 +28,7 @@ builder
 
 ## Project metadata and persistence
 
-Resolve the singleton `IProjectService` through dependency injection. Each `FlourishProject` has a stable, case-sensitive ID, a display name, and an optional local storage path.
+Resolve the singleton `IProjectService` through dependency injection. Each `ProjectDescriptor` has a stable, case-sensitive ID, a display name, and an optional local storage path.
 
 ```csharp
 public sealed class WorkspaceCatalog(IProjectService projects)
@@ -36,21 +36,21 @@ public sealed class WorkspaceCatalog(IProjectService projects)
     public void Register()
     {
         projects.AddProject(
-            new FlourishProject(
+            new ProjectDescriptor(
                 "reports",
                 "Reports",
                 @"C:\Work\Reports.txt"));
 
         projects.SetProject(
-            new FlourishProject("samples", "Samples", @"C:\Work\Samples.txt"),
+            new ProjectDescriptor("samples", "Samples", @"C:\Work\Samples.txt"),
             activate: false);
     }
 }
 ```
 
-`StoragePath == null` means that a project is unpersisted. Unpersisted projects may exist in the current process, but they are excluded from `projects.json`. The unnamed-project placeholder is display text only; do not compare a project name with the placeholder to determine persistence. Names are not required to be unique and the placeholder can be changed or localized.
+`StoragePath == null` means unpersisted; such projects remain process-local and are excluded from `projects.json`. The configurable placeholder is display text only, and names need not be unique.
 
-Flourish loads the ordered catalog and active project ID from the file selected by `SetProjectCatalogFilePath`; the default is application-root `projects.json`. This path is independent of the writable settings file. Only mappings whose `StoragePath` refers to an existing local file are retained. On startup, entries with an empty path or a missing target file are removed and the repaired catalog is written back atomically. Every catalog mutation through `IProjectService` also rewrites the valid mappings atomically. If the write fails, the in-memory mutation is rolled back and the change event is not published.
+`SetProjectCatalogFilePath` selects the catalog; the default is application-root `projects.json`, independent of settings. Startup removes entries without an existing local `StoragePath`, and every mutation writes valid mappings atomically. Failed writes roll back memory and suppress the change event.
 
 Catalog persistence belongs to `IProjectService` and remains active when the application replaces `IProjectBehavior`. The catalog stores metadata only; `IProjectService` checks whether the represented file exists but does not read or write its contents.
 
@@ -58,7 +58,7 @@ When no persisted catalog entries exist, Flourish creates and activates one proc
 
 ## Runtime catalog operations
 
-`IProjectService.Current` returns an immutable `FlourishProjectSnapshot` containing the ordered projects, active project, project-mode state, and version.
+`IProjectService.Current` returns an immutable `ProjectCatalogSnapshot` containing the ordered projects, active project, project-mode state, and version.
 
 | Operation | Behavior |
 | --- | --- |
@@ -107,11 +107,11 @@ While project mode is enabled, the Shell routes lifecycle entry points to five a
 | `DeleteProjectAsync` | Right-click deletion. |
 | `CanCloseAsync` | The project close guard. |
 
-Each method returns `true` when the requested operation may continue and `false` when it is canceled or cannot be completed. A replacement owns its dialogs and project-file lifecycle. It should use `IProjectService` to publish metadata and active-selection changes; those catalog mutations continue to be written atomically to `projects.json` by Flourish.
+Each method returns whether the operation may continue. A replacement owns dialogs and files but uses `IProjectService` to publish metadata and selection changes.
 
 ## Related features
 
-- [Title bar](configure-title-bar.md) explains application identity, Logo details, and project-dropdown behavior.
-- [Runtime APIs](runtime-apis.md) summarizes the complete runtime service surface.
-- [Dependency injection](configure-services.md) explains how to replace `IProjectBehavior`.
-- [Application data](configure-data.md) explains the shared appsettings location used by the project catalog.
+- [Title bar](configure-title-bar.md)
+- [Runtime APIs](runtime-apis.md)
+- [Dependency injection](configure-services.md)
+- [Application data](configure-data.md)

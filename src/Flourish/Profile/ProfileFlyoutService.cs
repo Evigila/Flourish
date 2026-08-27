@@ -7,12 +7,12 @@ using System.Windows.Controls;
 namespace ArkheideSystem.Flourish.Profile;
 
 internal sealed class ProfileFlyoutService(
-    FlourishProfileOptions profileOptions
+    ProfileOptions profileOptions
 ) : IProfileFlyoutService
 {
     private readonly Lock gate = new();
     private bool isVisible;
-    private FlourishProfileFlyoutState current = new(
+    private ProfileFlyoutState current = new(
         profileOptions.IsProfileEnabled,
         false,
         profileOptions.PageType,
@@ -20,9 +20,9 @@ internal sealed class ProfileFlyoutService(
     );
     private long version;
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishProfileFlyoutState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<ProfileFlyoutState>>? Changed;
 
-    public FlourishProfileFlyoutState Current => Volatile.Read(ref current);
+    public ProfileFlyoutState Current => Volatile.Read(ref current);
 
     public void SetEnabled(bool enabled)
     {
@@ -84,7 +84,7 @@ internal sealed class ProfileFlyoutService(
 
     internal void SynchronizeVisibility(bool visible)
     {
-        FlourishProfileFlyoutState snapshot;
+        ProfileFlyoutState snapshot;
         lock (gate)
         {
             if (isVisible == visible)
@@ -98,12 +98,12 @@ internal sealed class ProfileFlyoutService(
             Volatile.Write(ref current, snapshot);
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishProfileFlyoutState>(snapshot));
+        Changed?.Invoke(this, new StateChangedEventArgs<ProfileFlyoutState>(snapshot));
     }
 
     private void Update(Action update)
     {
-        FlourishProfileFlyoutState snapshot;
+        ProfileFlyoutState snapshot;
         lock (gate)
         {
             var previousEnabled = profileOptions.IsProfileEnabled;
@@ -124,12 +124,12 @@ internal sealed class ProfileFlyoutService(
             Volatile.Write(ref current, snapshot);
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishProfileFlyoutState>(snapshot));
+        Changed?.Invoke(this, new StateChangedEventArgs<ProfileFlyoutState>(snapshot));
     }
 
-    private FlourishProfileFlyoutState CreateSnapshot()
+    private ProfileFlyoutState CreateSnapshot()
     {
-        return new FlourishProfileFlyoutState(
+        return new ProfileFlyoutState(
             profileOptions.IsProfileEnabled,
             isVisible,
             profileOptions.PageType,

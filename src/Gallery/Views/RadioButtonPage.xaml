@@ -2,7 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.RadioButtonPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -14,7 +14,7 @@
       Content="{culture:Localize Key=Controls_ChooseOneValueFromASmallVisibleMutuallyExclusiveOptionSet_4AA853D5}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishRadioButton"
+      Title="RadioButton"
     />
 
     <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
@@ -47,17 +47,17 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
             >
-                <flourish:FlourishRadioButton
+                <flourish:RadioButton
                   Content="{culture:Localize Key=Runtime_System_6725E7BB}"
                   GroupName="ThemeExample"
                   IsChecked="True"
                 />
-                <flourish:FlourishRadioButton
+                <flourish:RadioButton
                   Margin="0,8,0,0"
                   Content="Light"
                   GroupName="ThemeExample"
                 />
-                <flourish:FlourishRadioButton
+                <flourish:RadioButton
                   Margin="0,8,0,0"
                   Content="Dark"
                   GroupName="ThemeExample"
@@ -77,12 +77,12 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
             >
-                <flourish:FlourishRadioButton
+                <flourish:RadioButton
                   Content="{culture:Localize Key=Controls_Comfortable_459A23A5}"
                   GroupName="DensityExample"
                   IsChecked="True"
                 />
-                <flourish:FlourishRadioButton
+                <flourish:RadioButton
                   Margin="0,8,0,0"
                   Content="{culture:Localize Key=Controls_Compact_99452646}"
                   GroupName="DensityExample"
@@ -113,7 +113,7 @@
           Title="{culture:Localize Key=Controls_CommandSelection_133BE884}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishRadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:RadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
       </StackPanel>
@@ -131,10 +131,10 @@
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="{culture:Localize Key=Controls_ReadTheFlourishRadioButtonAPIReference_80C2E3F1}"
+          Content="{culture:Localize Key=Controls_ReadTheRadioButtonAPIReference_80C2E3F1}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="{culture:Localize Key=Controls_FlourishRadioButtonDocumentation_83BEED9E}"
+          Title="{culture:Localize Key=Controls_RadioButtonDocumentation_83BEED9E}"
           ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>

@@ -1,4 +1,4 @@
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -32,10 +32,10 @@ public partial class LabelPage : Page
     public string UsageCode { get; } =
         """
             <StackPanel>
-              <flourish:FlourishLabel
+              <flourish:Label
                 Content="_Display name"
                 Target="{Binding ElementName=DisplayNameBox}" />
-              <flourish:FlourishTextBox
+              <flourish:TextBox
                 x:Name="DisplayNameBox"
                 Text="{Binding DisplayName, Mode=TwoWay}" />
             </StackPanel>

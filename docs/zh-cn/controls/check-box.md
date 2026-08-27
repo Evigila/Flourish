@@ -5,7 +5,7 @@ description: 使用紧凑横向布局或图标卡片布局呈现布尔值及可�
 
 # CheckBox
 
-`CheckBox` 表示一项独立选择。它沿用原生 WPF `CheckBox` 的状态与事件模型，并增加固定的 Horizontal 和 Vertical 布局。
+`CheckBox` 沿用 WPF 状态与事件模型，并提供 Horizontal 和 Vertical 布局。
 
 ## 选择布局
 
@@ -31,7 +31,7 @@ description: 使用紧凑横向布局或图标卡片布局呈现布尔值及可�
 
 ## 悬停反馈
 
-两种布局默认都参与公共 `HoverReveal` 行为。CheckBox 遵循 Outlined 按钮的交互颜色：悬停使用共享的弱化揭示色，按下使用共享的更深按下色。这些交互层绘制在图标、内容和状态标识符下方，因此不会遮盖选中或第三状态的高亮。关闭悬停动画或 Windows 请求减少动态效果时，控件会以无动画方式保留相同反馈。父级设置 `HoverReveal.IsEnabled="False"` 后会由子树继承，并使用该静态回退。
+两种布局默认使用 `HoverReveal` 和 Outlined 按钮交互色，反馈层位于图标、内容和状态标识下方。关闭动画或 Windows 请求减少动态效果时保留静态反馈。父级 `HoverReveal.IsEnabled="False"` 由子树继承。
 
 ## 三态选择
 
@@ -51,7 +51,7 @@ description: 使用紧凑横向布局或图标卡片布局呈现布尔值及可�
 
 ## 相关内容
 
-- [CheckBox API](xref:ArkheideSystem.Flourish.Controls.CheckBox) 列出继承成员与声明成员。
-- [CheckBoxVariant API](xref:ArkheideSystem.Flourish.Controls.CheckBoxVariant) 列出固定布局。
-- [动效](../articles/configure-motion.md)配置悬停揭示与减少动态效果行为。
-- [WPF CheckBox 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/checkbox) 介绍原生选择模型。
+- [CheckBox API](xref:ArkheideSystem.Flourish.Controls.CheckBox)
+- [CheckBoxVariant API](xref:ArkheideSystem.Flourish.Controls.CheckBoxVariant)
+- [动效](../articles/configure-motion.md)
+- [WPF CheckBox 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/checkbox)

@@ -13,6 +13,7 @@ using WpfOrientation = System.Windows.Controls.Orientation;
 using WpfPanel = System.Windows.Controls.Panel;
 using WpfSize = System.Windows.Size;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
+using WpfTextBlock = System.Windows.Controls.TextBlock;
 
 namespace ArkheideSystem.Flourish.Controls;
 
@@ -376,7 +377,7 @@ internal sealed class PresenterPresentationHost : FrameworkElement
 
     private static bool UsesNaturalSizeOnAxis(FrameworkElement element, bool horizontal)
     {
-        if (element is TextBlock or WrapPanel or UniformGrid)
+        if (element is WpfTextBlock or WrapPanel or UniformGrid)
         {
             return true;
         }

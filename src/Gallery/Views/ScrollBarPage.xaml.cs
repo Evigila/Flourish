@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -17,7 +17,7 @@ public partial class ScrollBarPage : Page
     ];
 
     public string UsageCode { get; } =
-        "<flourish:FlourishScrollBar\n"
+        "<flourish:ScrollBar\n"
         + "  Minimum=\"0\"\n"
         + "  Maximum=\"{Binding ScrollableHeight}\"\n"
         + "  Orientation=\"Vertical\"\n"

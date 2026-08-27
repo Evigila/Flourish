@@ -13,7 +13,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <remarks>
 /// Standard overloads mirror WPF <see cref="System.Windows.MessageBox"/> button and result enums. Custom
-/// option overloads return the selected <see cref="FlourishMessageOption"/>, or <see langword="null"/>
+/// option overloads return the selected <see cref="MessageDialogOption"/>, or <see langword="null"/>
 /// when the dialog is dismissed without a cancel option.
 /// </remarks>
 /// <example>
@@ -89,10 +89,10 @@ public interface IMessageService
     /// <returns>A task that completes with the selected option, or <see langword="null"/> when the dialog is dismissed without a cancel option.</returns>
     /// <remarks>Cancellation cannot close a dialog after it has opened.</remarks>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> is canceled before the dialog opens.</exception>
-    Task<FlourishMessageOption?> ShowAsync(
+    Task<MessageDialogOption?> ShowAsync(
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None,
         CancellationToken cancellationToken = default
@@ -111,11 +111,11 @@ public interface IMessageService
     /// <returns>A task that completes with the selected option, or <see langword="null"/> when the dialog is dismissed without a cancel option.</returns>
     /// <remarks>Cancellation cannot close a dialog after it has opened.</remarks>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> is canceled before the dialog opens.</exception>
-    Task<FlourishMessageOption?> ShowAsync(
+    Task<MessageDialogOption?> ShowAsync(
         Window? owner,
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None,
         CancellationToken cancellationToken = default
@@ -172,10 +172,10 @@ public interface IMessageService
     /// <returns>
     /// The selected option, or <see langword="null"/> when the dialog is dismissed without a cancel option.
     /// </returns>
-    FlourishMessageOption? Show(
+    MessageDialogOption? Show(
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None
     );
@@ -192,11 +192,11 @@ public interface IMessageService
     /// <returns>
     /// The selected option, or <see langword="null"/> when the dialog is dismissed without a cancel option.
     /// </returns>
-    FlourishMessageOption? Show(
+    MessageDialogOption? Show(
         Window? owner,
         string messageBoxText,
         string caption,
-        IReadOnlyList<FlourishMessageOption> choices,
+        IReadOnlyList<MessageDialogOption> choices,
         MessageBoxImage icon = MessageBoxImage.None,
         MessageBoxOptions options = MessageBoxOptions.None
     );

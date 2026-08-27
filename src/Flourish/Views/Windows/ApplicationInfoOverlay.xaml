@@ -47,7 +47,7 @@
                 RenderOptions.BitmapScalingMode="HighQuality"
                 Stretch="Uniform"
               />
-              <control:FlourishTextBlock
+              <control:TextBlock
                 x:Name="ApplicationInfoLogoFallback"
                 Style="{DynamicResource FlourishControlTextBlockStyle}"
                 HorizontalAlignment="Center"
@@ -58,19 +58,19 @@
             </Grid>
           </Border>
           <StackPanel Grid.Column="1" VerticalAlignment="Center">
-            <control:FlourishTextBlock
+            <control:TextBlock
               x:Name="ApplicationInfoTitle"
               FontWeight="Bold"
               Role="CardTitle"
               TextWrapping="Wrap"
             />
-            <control:FlourishTextBlock
+            <control:TextBlock
               x:Name="ApplicationInfoSubTitle"
               Margin="0,3,0,0"
               Role="Description"
               TextWrapping="Wrap"
             />
-            <control:FlourishTextBlock
+            <control:TextBlock
               x:Name="ApplicationInfoProjectTitle"
               Margin="0,8,0,0"
               Role="Status"

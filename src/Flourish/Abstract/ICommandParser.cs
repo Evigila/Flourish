@@ -5,7 +5,7 @@ namespace ArkheideSystem.Flourish.Abstract;
 /// </summary>
 /// <remarks>
 /// Register implementations with
-/// <see cref="FlourishServiceCollectionExtensions.AddCommandParser{TParser}" />.
+/// <see cref="ServiceCollectionExtensions.AddCommandParser{TParser}" />.
 /// Flourish activates each parser at startup and removes all mapped handlers when the
 /// host stops.
 /// </remarks>

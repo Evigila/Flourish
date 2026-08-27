@@ -4,7 +4,7 @@
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/ScrollViewer.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ScrollViewer.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <Style

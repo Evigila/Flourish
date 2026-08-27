@@ -3,8 +3,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Shell.StatusBar;
 
-internal sealed class StatusBarBuilder(FlourishStatusBarOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class StatusBarBuilder(StatusBarOptions options)
+    : BuilderMutationGuard,
         IStatusBarBuilder
 {
     public IStatusBarBuilder SetEnabled(bool enabled = true)
@@ -20,7 +20,7 @@ internal sealed class StatusBarBuilder(FlourishStatusBarOptions options)
     )
     {
         ThrowIfFrozen();
-        options.StatusItems.Add(new FlourishStatusItem(displayText, iconGlyph));
+        options.StatusItems.Add(new StatusBarItem(displayText, iconGlyph));
         return this;
     }
 

@@ -4,7 +4,7 @@
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
   <!-- ComboBox template mechanics are deliberately named native primitives. -->
-  <Style x:Key="FlourishComboBoxToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+  <Style x:Key="ComboBoxToggleButtonStyle" TargetType="{x:Type ToggleButton}">
     <Setter Property="Focusable" Value="False" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="ClickMode" Value="Press" />
@@ -49,7 +49,7 @@
     </Setter>
   </Style>
 
-  <Style x:Key="FlourishComboBoxEditableTextBoxStyle" TargetType="{x:Type TextBox}">
+  <Style x:Key="ComboBoxEditableTextBoxStyle" TargetType="{x:Type TextBox}">
     <Setter Property="MinWidth" Value="0" />
     <Setter Property="MinHeight" Value="0" />
     <Setter Property="Padding" Value="0" />
@@ -81,7 +81,7 @@
     </Setter>
   </Style>
 
-  <Style TargetType="{x:Type controls:FlourishComboBox}">
+  <Style TargetType="{x:Type controls:ComboBox}">
     <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
     <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
     <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
@@ -92,7 +92,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
+    <Setter Property="controls:ToolTipPolicy.IsEnabled" Value="{DynamicResource ToolTipsEnabled}" />
     <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
     <Setter
       Property="controls:HoverReveal.IsMotionEnabled"
@@ -106,7 +106,7 @@
     <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:FlourishComboBox}">
+        <ControlTemplate TargetType="{x:Type controls:ComboBox}">
           <Grid x:Name="Root" SnapsToDevicePixels="True">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -153,7 +153,7 @@
               Margin="{TemplateBinding Padding}"
               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
               IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
-              Style="{StaticResource FlourishComboBoxEditableTextBoxStyle}"
+              Style="{StaticResource ComboBoxEditableTextBoxStyle}"
               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
               Visibility="Hidden"
             />
@@ -161,13 +161,13 @@
               x:Name="DropDownToggle"
               Grid.ColumnSpan="2"
               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-              Style="{StaticResource FlourishComboBoxToggleButtonStyle}"
+              Style="{StaticResource ComboBoxToggleButtonStyle}"
             />
             <ToggleButton
               x:Name="EditableDropDownToggle"
               Grid.Column="1"
               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-              Style="{StaticResource FlourishComboBoxToggleButtonStyle}"
+              Style="{StaticResource ComboBoxToggleButtonStyle}"
               Visibility="Collapsed"
             />
             <Popup
@@ -238,8 +238,8 @@
       </Setter.Value>
     </Setter>
     <Style.Triggers>
-      <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+      <Trigger Property="controls:ToolTipPolicy.IsEnabled" Value="True">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource ToolTipInitialShowDelay}" />
       </Trigger>
     </Style.Triggers>
   </Style>

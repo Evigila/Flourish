@@ -5,7 +5,7 @@ description: 使用平滑像素滚动与标准 Flourish 滚动条承载超出视
 
 # ScrollViewer 与 ScrollBar
 
-`ScrollViewer` 用于承载可能超出可用视口的内容。其水平与垂直 `ScrollBar` 部件统一使用标准 Flourish 外观：可见滑块较窄，并保留更大的透明交互区域。鼠标滚轮输入可以平滑呈现，同时不必在每个动画帧触发布局计算。
+`ScrollViewer` 承载超出视口的内容。水平与垂直 `ScrollBar` 使用窄滑块和较大的透明交互区，鼠标滚轮可平滑滚动而无需每帧重新布局。
 
 通过 Flourish XML 命名空间区分该控件与同名的 WPF 类型：
 
@@ -37,7 +37,7 @@ builder.ConfigureLayout(layout =>
 ```csharp
 scrollService.SetSmoothScrollingEnabled(false);
 
-FlourishScrollSettings current = scrollService.Current;
+ScrollSettings current = scrollService.Current;
 scrollService.Changed += OnScrollSettingsChanged;
 ```
 
@@ -74,4 +74,4 @@ Flourish 为页面、Shell、导航和控件内部视口统一使用一种标准
 
 - [控件](index.md)
 - [Chunk](chunk.md)
-- [DataGrid](data-grid.md) 在内部滚动边界使用相同的滚轮交接规则。
+- [DataGrid](data-grid.md)

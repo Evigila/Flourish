@@ -8,14 +8,19 @@
 
   <!-- Standard is the implicit text size. Other tiers require a semantic role or an explicit use. -->
   <sys:Double x:Key="FlourishFontSizeSmall" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    12
+    11
   </sys:Double>
   <sys:Double x:Key="FlourishFontSizeStandard" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    13
+  </sys:Double>
+  <sys:Double x:Key="FlourishFontSizeStandardIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     14
   </sys:Double>
+  <!-- Compatibility alias for themes built against the original Icon key. -->
   <sys:Double x:Key="FlourishFontSizeIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    22
+    14
   </sys:Double>
+  <sys:Double x:Key="FlourishIconFontSizeToolbar" xmlns:sys="clr-namespace:System;assembly=mscorlib">13</sys:Double>
   <sys:Double x:Key="FlourishIconFontSizeNavigation" xmlns:sys="clr-namespace:System;assembly=mscorlib">18</sys:Double>
   <sys:Double x:Key="FlourishIconFontSizeTitlebar" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
   <sys:Double x:Key="FlourishIconFontSizeWindowCaption" xmlns:sys="clr-namespace:System;assembly=mscorlib">12</sys:Double>
@@ -25,37 +30,48 @@
   <sys:Double x:Key="FlourishIconFontSizeBackgroundTaskView" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
   <sys:Double x:Key="FlourishIconFontSizeSystemStatusView" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
   <sys:Double x:Key="FlourishFontSizeLarge" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    16
-  </sys:Double>
-  <sys:Double x:Key="FlourishFontSizeExtraLarge" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    24
-  </sys:Double>
-  <sys:Double x:Key="FlourishFontSizeHeaderSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    32
-  </sys:Double>
-  <sys:Double x:Key="FlourishLineHeightSmall" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     14
   </sys:Double>
-  <sys:Double x:Key="FlourishLineHeightStandard" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    16
+  <sys:Double x:Key="FlourishFontSizeExtraLarge" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    18
   </sys:Double>
-  <sys:Double x:Key="FlourishLineHeightIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:Double x:Key="FlourishFontSizeLargeIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     22
   </sys:Double>
+  <sys:Double x:Key="FlourishFontSizeHeaderSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    25
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightSmall" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    13
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightStandard" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    15
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightStandardIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    14
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    14
+  </sys:Double>
   <sys:Double x:Key="FlourishLineHeightLarge" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    20
+    18
   </sys:Double>
   <sys:Double x:Key="FlourishLineHeightExtraLarge" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    29
+    23
+  </sys:Double>
+  <sys:Double x:Key="FlourishLineHeightLargeIcon" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    22
   </sys:Double>
   <sys:Double x:Key="FlourishLineHeightHeaderSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    37
+    30
   </sys:Double>
 
   <Thickness x:Key="FlourishTypographyBottomSpaceSmall">0,0,0,1</Thickness>
   <Thickness x:Key="FlourishTypographyBottomSpaceStandard">0,0,0,1</Thickness>
+  <Thickness x:Key="FlourishTypographyBottomSpaceStandardIcon">0</Thickness>
   <Thickness x:Key="FlourishTypographyBottomSpaceIcon">0</Thickness>
   <Thickness x:Key="FlourishTypographyBottomSpaceLarge">0,0,0,2</Thickness>
   <Thickness x:Key="FlourishTypographyBottomSpaceExtraLarge">0,0,0,3</Thickness>
+  <Thickness x:Key="FlourishTypographyBottomSpaceLargeIcon">0</Thickness>
   <Thickness x:Key="FlourishTypographyBottomSpaceHeaderSize">0,0,0,4</Thickness>
 </ResourceDictionary>

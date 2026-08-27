@@ -13,7 +13,7 @@ public interface IAppearanceBuilder
     /// <summary>Sets or clears the shared theme color override.</summary>
     IAppearanceBuilder SetThemeColors(
         bool enabled,
-        FlourishThemeColors colors,
+        ThemeColors colors,
         bool usePersistedPreference = true
     );
 

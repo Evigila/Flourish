@@ -5,44 +5,39 @@ description: 配置 Flourish 本地化、持久化设置路径与项目目录。
 
 # 应用数据
 
-`ConfigureData` 用于配置 Flourish 内置界面的语言、自定义翻译文件与持久化设置路径。即使没有调用 `ConfigureData` 或 `SetLocale`，Flourish 也会使用内置英文（`en-US`），因此内置界面始终具有可用文案。偏好与受保护的 Profile 凭据使用 .NET Generic Host 管理的配置；项目元数据使用可独立配置的目录文件。
+`ConfigureData` 配置内置界面语言、翻译文件和持久化路径。未调用 `ConfigureData` 或 `SetLocale` 时使用内置英文（`en-US`）；偏好和 Profile 凭据使用 Generic Host 配置，项目元数据使用独立目录文件。
 
 ## 选择内置语言
 
-Flourish 内置 `en-US` 和 `zh-CN`。语言标识不区分大小写，并以规范的 BCP 47 形式返回。建议使用连字符；下划线输入也会被接受并转换为连字符。
+Flourish 内置 `en-US` 和 `zh-CN`。语言标识不区分大小写，返回规范 BCP 47 形式；下划线输入会转换为连字符。
 
 ```csharp
 builder.ConfigureData(data => data.SetLocale("en-US"));
 ```
 
-省略 `ConfigureData` 时，Flourish 默认使用 `en-US`。持久化默认启用，因此有效配置中的合法 `Flourish:Preferences:Locale` 会优先，后续 `SetLocale` 变更也会写回。代码配置的语言必须始终优先时，传入 `usePersistedPreference: false`。单独使用 Flourish 时，应用传入的标题、搜索占位文本、导航标签、自定义状态项标签、对话框消息和自定义选项文本不会自动翻译。
+省略 `ConfigureData` 时默认使用 `en-US`。持久化默认启用：合法的 `Flourish:Preferences:Locale` 优先，`SetLocale` 变更会写回；传入 `usePersistedPreference: false` 可让代码值始终优先。Flourish 不会自动翻译应用传入的标题、占位文本、标签、消息或选项。
 
 ## 接入 Essential Culture
 
-需要使用 `Arkheide.Essential.Culture` 翻译应用文案时，只安装
-`Arkheide.Flourish.Extension.Culture`，不要再单独安装 Culture 包。扩展包会传递
-Culture Core、WPF 适配器和 Generator，并隐藏双方的事件、生命周期、Dispatcher 与
-Shell 状态同步细节。
+使用 `Arkheide.Essential.Culture` 翻译应用文案时，只安装 `Arkheide.Extension.Culture`；它会传递 Culture Core、WPF 适配器和 Generator，并处理事件、生命周期、Dispatcher 与 Shell 状态同步。
 
 ```bash
-dotnet add package Arkheide.Flourish.Extension.Culture
+dotnet add package Arkheide.Extension.Culture
 ```
 
-应用只需调用一次无泛型入口：
+调用一次无泛型入口：
 
 ```csharp
-using ArkheideSystem.Flourish.Extension.Culture;
+using ArkheideSystem.Extension.Culture;
 
-var flourish = FlourishBuilder
+var flourish = ApplicationBuilder
     .CreateDefaultBuilder(args)
     .UseEssentialCulture()
     .ConfigureData(data => data.SetLocale("en-US"))
     .Build();
 ```
 
-`IFlourishLocalization` 仍然是 Flourish 对外唯一的文化访问点。通过它切换文化时，
-扩展包会在首帧前和运行期间同步 Essential Culture，并刷新导航、标题栏、搜索占位、
-工具栏和状态栏中保存的 Culture 稳定键：
+`ILocalizationService` 是 Flourish 的文化访问点。切换文化时，扩展包会在首帧前和运行期间同步 Essential Culture，并刷新导航、标题栏、搜索占位、工具栏和状态栏中的稳定键：
 
 ```csharp
 localization.SetLocale("zh-CN");
@@ -52,12 +47,11 @@ IReadOnlyList<string> available = localization.Current.AvailableLocales;
 localization.Changed += OnLocalizationChanged;
 ```
 
-应用继续维护自己的 `Culture.json`。XAML 使用传递提供的 `Localize`，临时弹窗、通知和
-带运行时参数的业务文本则在创建时解析。用户输入、项目名称和搜索内容不会被自动翻译。
+应用维护自己的 `Culture.json`；XAML 使用传递的 `Localize`，临时弹窗、通知和含运行时参数的文本在创建时解析。用户输入、项目名称和搜索内容不会自动翻译。
 
 ## 覆盖内置文化目录
 
-Flourish 内嵌一份 `FlourishCulture.Json` 目录。应用输出目录存在同名文件时，Flourish 会自动加载，并按照“语言与键”的单元覆盖内置目录。应用文件不需要重复所有语言或所有键。
+Flourish 内嵌 `FlourishCulture.Json`。输出目录中的同名文件会自动按“语言与键”覆盖内置单元，无需重复全部语言或键。
 
 还可以通过 `AddCultureFile(path)` 注册其他目录。所有目录文件仍必须命名为 `FlourishCulture.Json`；组合多个目录时将它们放在不同文件夹中。
 
@@ -70,7 +64,7 @@ builder.ConfigureData(data =>
 });
 ```
 
-Flourish 在 `Build()` 应用配置时读取已注册目录。文件不存在时抛出 `FileNotFoundException`；文件名无效时抛出 `ArgumentException`；文件不可读、JSON 无效、对象为空、键重复或为空、规范化后重复的语言标识，以及空白或非字符串译文会抛出 `InvalidDataException`。
+Flourish 在 `Build()` 时读取目录。文件不存在抛出 `FileNotFoundException`，文件名无效抛出 `ArgumentException`；文件不可读、JSON 无效、对象为空、键重复或为空、规范化后语言重复，以及译文空白或非字符串时抛出 `InvalidDataException`。
 
 格式与 Essential Culture 一致：翻译键位于最外层，语言是内层属性。用户目录只需要提供待覆盖的单元：
 
@@ -94,7 +88,7 @@ Flourish 在 `Build()` 应用配置时读取已注册目录。文件不存在时
 4. 内置 `en-US` 值。
 5. 键本身。
 
-因此，用户可以只覆盖一个英文键而保留其余内置英文，也可以只增加新语言的一部分键，其余内容继续回退到英文。
+因此可以只覆盖单个英文键，或只补充新语言的部分键，其余内容继续回退到英文。
 
 ## 翻译键
 
@@ -177,15 +171,11 @@ Flourish 在 `Build()` 应用配置时读取已注册目录。文件不存在时
 
 ## Host 配置
 
-`FlourishBuilder.CreateDefaultBuilder(args)` 使用标准 Generic Host 配置管线。Flourish 从应用通过 `HostBuilderContext.Configuration` 和依赖注入获得的同一个 `IConfiguration` 中读取设置。
+`ApplicationBuilder.CreateDefaultBuilder(args)` 使用标准 Generic Host 配置管线；Flourish 从同一个 `IConfiguration` 读取设置。
 
-Flourish 的可写偏好配置源默认为 `appsettings.Flourish.json`。它会在 Host
-基础 appsettings 配置源之前显式注册，并在首次写入偏好时创建。该专用配置源只发布
-JSON 结构中真正位于顶级的 `Flourish` 对象；文件中的其他顶级属性不会通过 Flourish
-Provider 进入 Host 配置。不要在每次构建或部署时用种子文件覆盖它。
+可写偏好源默认为 `appsettings.Flourish.json`，位于 Host 基础 appsettings 源之前，并在首次写入时创建。它只发布顶级 `Flourish` 对象；其他顶级属性不进入 Host 配置。不要在构建或部署时用种子文件覆盖它。
 
-普通回退值应通过 Builder 参数配置。只有应用策略必须覆盖已持久化的用户偏好时，
-才在应用的基础 `appsettings.json` 中设置对应值：
+普通回退值使用 Builder 参数；只有应用策略必须覆盖已保存偏好时，才在基础 `appsettings.json` 中设置：
 
 ```json
 {
@@ -219,13 +209,13 @@ builder.ConfigureConfiguration((_, configuration) =>
         reloadOnChange: true));
 ```
 
-回调直接接收标准 Microsoft `IConfigurationBuilder`，因此可以使用 `AddJsonFile`，也可以使用其他已安装配置 provider 提供的扩展。Flourish 会把这些应用来源插入 appsettings 与 User Secrets 之后、环境变量与命令行之前。注册顺序会被保留，因此后注册的应用源可以覆盖先注册的应用源，但不会覆盖环境变量或命令行策略。
+回调接收标准 `IConfigurationBuilder`，可使用 `AddJsonFile` 或其他 provider。应用源位于 appsettings 与 User Secrets 之后、环境变量与命令行之前；后注册源覆盖先注册源，但不能覆盖环境变量或命令行。
 
-`IFlourishSettingsStore` 只接受以 `Flourish:` 开头的后代路径，不能创建、替换或删除其他顶级节。Flourish 会保留所选文件中已有无关节的值，但会重新序列化整个 JSON 对象，因此文档可能被重新格式化，注释也会被移除。若另一个进程也会管理应用配置，建议使用默认的独立文件。所选目录必须可写；已有文件必须是根节点为对象的有效 JSON，其中已有的 `Flourish` 属性必须是对象。
+`ISettingsStore` 只接受 `Flourish:` 后代路径，不能修改其他顶级节。它保留无关节，但会重新序列化整个 JSON，可能改变格式并移除注释；其他进程也管理配置时应使用独立文件。目录必须可写，已有文件必须是有效 JSON 对象，已有 `Flourish` 属性也必须是对象。
 
 ## 用户偏好
 
-界面用户偏好默认会恢复并更新，因此正常调用已经足够：
+界面偏好默认会恢复并更新：
 
 ```csharp
 builder
@@ -243,11 +233,11 @@ builder
             .SetLastNavigationPersistence());
 ```
 
-对于每个逻辑偏好，最后一次 Builder 调用同时决定回退值和持久化策略。代码必须始终采用本次调用值并停止写回运行时变更时，传入 `usePersistedPreference: false`；这不会删除旧的存储值。持久化启用时，完整且合法的有效 Host 配置值优先，缺失、不完整或无效的值则保留 Builder 回退值。窗口大小、位置、字体比例、配色和动效时长等复合设置会整组恢复，不会把部分保存字段与部分回退字段混合。
+每个偏好的最后一次 Builder 调用决定回退值和持久化策略。`usePersistedPreference: false` 让代码值优先并停止写回，但不删除旧值。启用持久化时，完整合法的 Host 值优先；缺失、不完整或无效时使用 Builder 回退，复合设置按整组恢复。
 
-可持久化范围包括：语言；主题模式；窗口还原大小、位置、状态、置顶和关闭到通知区域行为；导航栏方向、开合状态、用户调整后的宽度与最后路由；Profile 姓名顺序；各类动效；平滑滚动；全局字体；居中内容布局；材质；主题配色；圆角。运行时变更会先合并再原子更新 appsettings，并在 Host 停止期间刷新待写入内容。Flourish 不会恢复最小化状态；窗口最大化时会保留正常还原边界；完全移出屏幕的持久化位置会被移回当前虚拟桌面的可触达范围。
+可持久化项包括语言、主题、窗口还原状态、导航状态、Profile 姓名顺序、动效、滚动、全局字体、内容布局、材质、配色和圆角。运行时变更会合并后原子写入，并在 Host 停止时刷新。最小化状态不恢复；最大化会保留正常还原边界；完全离屏的位置会移回可触达范围。
 
-应用能力和结构不属于用户偏好。Flourish 不会持久化标题栏、导航、Profile、项目、工具栏或状态栏的能力开关，也不会持久化页面类型与路由、处理程序与工厂、品牌信息、窗口最小/最大约束、ResizeMode、任务栏可见性、文化文件注册或页面专用字体覆盖。因此，保存的数据不能重新启用应用代码已经关闭的能力。
+应用能力和结构不会持久化，包括功能开关、页面类型与路由、处理程序与工厂、品牌信息、窗口约束、`ResizeMode`、任务栏可见性、文化文件和页面字体覆盖。保存数据不能重新启用代码已关闭的能力。
 
 Flourish 通过最终有效的 `IConfiguration` 读取偏好，并保留 Host 的正常优先级。默认写入应用根目录中的 `appsettings.Flourish.json`。可在 `ConfigureData` 中选择其他 JSON 文件以及独立的项目目录文件：
 
@@ -257,15 +247,15 @@ builder.ConfigureData(data => data
     .SetProjectCatalogFilePath("Data/projects.json"));
 ```
 
-相对路径以 `AppContext.BaseDirectory` 为基准，也可以传入绝对路径。所选设置文件与基础 `appsettings.json` 不同时，Flourish 会把仅发布 `Flourish` 节的 Provider 插入该基础配置源之前，并保留应用的全部 Host appsettings 配置源；User Secrets、环境变量与命令行仍保持正常的更高优先级。显式选择基础 `appsettings.json` 时，该文件仍保持正常的完整 Host Provider 行为，但 Flourish 只能写入其 `Flourish` 节下的后代路径。两个路径必须指向不同的 `.json` 文件，首次写入时会创建父目录。
+相对路径基于 `AppContext.BaseDirectory`，也可使用绝对路径。自定义设置文件只发布 `Flourish` 节并位于基础 `appsettings.json` 之前；User Secrets、环境变量和命令行仍有更高优先级。选择基础 `appsettings.json` 时保留完整 Host provider 行为，但 Flourish 只能写入 `Flourish` 后代路径。设置与项目目录路径必须是不同的 `.json` 文件，首次写入会创建父目录。
 
-需要重置某个已保存偏好时，使用 `IFlourishSettingsStore.RemoveAsync` 并传入完整的 `Flourish:` 路径。传入 `usePersistedPreference: false` 只表示忽略并停止更新该值，不会隐式删除已有用户选择。
+使用 `ISettingsStore.RemoveAsync` 和完整 `Flourish:` 路径重置偏好；`usePersistedPreference: false` 只会忽略并停止更新，不会删除旧值。
 
 ## 项目目录
 
-`IProjectService` 将有序项目元数据与活动项目 ID 存储在 `SetProjectCatalogFilePath` 选择的文件中，默认是应用根目录下的 `projects.json`。该路径独立于 `IFlourishSettingsStore.FilePath`，不是 Host 配置源，也不参与配置优先级。
+`IProjectService` 将有序项目元数据与活动项目 ID 存储在 `SetProjectCatalogFilePath` 选择的文件中，默认是应用根目录下的 `projects.json`。该路径独立于 `ISettingsStore.FilePath`，不是 Host 配置源，也不参与配置优先级。
 
-项目服务启动时会加载该目录，并在每次目录变更时执行原子写入。注册替换的 `IProjectBehavior` 只会改变项目对话框与文件生命周期，不会禁用目录持久化。目录必须可写。未持久化项目与生命周期行为参见[项目](projects.md)。
+项目服务启动时加载目录，并在每次变更时原子写入。替换 `IProjectBehavior` 不会禁用目录持久化；目录必须可写。未持久化项目与生命周期见[项目](projects.md)。
 
 ## User Secrets
 
@@ -273,8 +263,8 @@ builder.ConfigureData(data => data
 
 ## 相关功能
 
-- [标题栏](configure-title-bar.md)、[窗口](configure-window.md)、[后台任务](background-tasks.md)、[状态栏](status-bar.md)和[消息服务](message-service.md)使用已本地化的内置文案。
-- [主题](configure-themes.md)通过 Host 配置持久化用户选择的主题。
-- [用户资料（Profile）](configure-profile.md)说明已记住凭据与 User Secrets 配置。
-- [项目](projects.md)说明持久化项目目录与可替换生命周期行为。
-- [`IFlourishBuilder`](flourish-builder.md)说明配置回调的应用时机。
+- [标题栏](configure-title-bar.md)、[窗口](configure-window.md)、[后台任务](background-tasks.md)、[状态栏](status-bar.md)和[消息服务](message-service.md)
+- [主题](configure-themes.md)
+- [用户资料（Profile）](configure-profile.md)
+- [项目](projects.md)
+- [`IApplicationBuilder`](flourish-builder.md)

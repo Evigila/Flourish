@@ -5,9 +5,9 @@ description: 管理项目标识、目录持久化、标题栏选择与可替换�
 
 # 项目
 
-项目功能为标题栏提供可变化的应用内视图标识，例如解决方案、工作区或文档集合。`IProjectService` 管理有序项目目录与活动选择；`IProjectBehavior` 管理面向用户的新建、保存、激活、删除和关闭流程，应用可以替换该行为。
+项目功能在标题栏表示解决方案、工作区或文档集合。`IProjectService` 管理目录与活动选择；可替换的 `IProjectBehavior` 管理新建、保存、激活、删除和关闭流程。
 
-这些 API 提供 Shell 状态和默认的占位文件流程。激活项目只会更新活动元数据与标题，不会加载、卸载或切换应用的业务内容。
+这些 API 提供 Shell 状态和默认占位文件流程；激活项目只更新元数据与标题，不切换业务内容。
 
 ## 启用项目模式
 
@@ -24,11 +24,11 @@ builder
             .SetLogo(showProjectTitle: true));
 ```
 
-调用 `IProjectBuilder.SetMultiProjectEnabled()` 时默认启用；省略 `ConfigureProjects` 时则默认禁用。未启用项目模式时，标题选择器只显示并列出应用标题，Flourish 不公开项目标题、项目保存或项目关闭语义。启用项目模式后，选择器显示活动项目名称；活动项目未持久化或没有活动选择时显示未命名项目占位文本，下拉框中包含全部项目以及“新建项目”。
+`IProjectBuilder.SetMultiProjectEnabled()` 默认启用项目模式；省略 `ConfigureProjects` 则禁用。禁用时标题选择器只显示应用标题，不提供项目保存或关闭语义；启用后显示活动项目、未命名占位文本、全部项目和“新建项目”。
 
 ## 项目元数据与持久化
 
-通过依赖注入解析单例 `IProjectService`。每个 `FlourishProject` 都有稳定且区分大小写的 ID、显示名称和可选的本地存储路径。
+通过依赖注入解析单例 `IProjectService`。每个 `ProjectDescriptor` 都有稳定且区分大小写的 ID、显示名称和可选的本地存储路径。
 
 ```csharp
 public sealed class WorkspaceCatalog(IProjectService projects)
@@ -36,29 +36,29 @@ public sealed class WorkspaceCatalog(IProjectService projects)
     public void Register()
     {
         projects.AddProject(
-            new FlourishProject(
+            new ProjectDescriptor(
                 "reports",
                 "报表",
                 @"C:\Work\Reports.txt"));
 
         projects.SetProject(
-            new FlourishProject("samples", "示例"),
+            new ProjectDescriptor("samples", "示例"),
             activate: false);
     }
 }
 ```
 
-`StoragePath == null` 表示项目尚未持久化。未命名项目占位文本只用于显示；不要通过比较项目名称与占位文本来判断持久化状态。项目名称不要求唯一，占位文本也可以修改或本地化。
+`StoragePath == null` 表示尚未持久化；不要比较项目名与占位文本。名称可重复，占位文本可修改或本地化。
 
-Flourish 从 `SetProjectCatalogFilePath` 选择的文件加载有序目录与活动项目 ID，默认路径是应用根目录下的 `projects.json`，且独立于可写设置文件。每次通过 `IProjectService` 修改目录时，Flourish 都会原子重写该文件。写入失败时会回滚内存变更，并且不会发布变更事件。
+Flourish 从 `SetProjectCatalogFilePath` 指定的文件加载目录与活动 ID，默认是应用根目录的 `projects.json`，并独立于可写设置文件。目录变更会原子写入；失败时回滚内存且不发布事件。
 
-目录持久化属于 `IProjectService`；即使应用替换 `IProjectBehavior`，该行为也会继续生效。目录只保存元数据；`IProjectService` 不会读取或写入项目所表示的路径。
+目录持久化由 `IProjectService` 管理，替换 `IProjectBehavior` 不影响它。目录只保存元数据，不读写项目指向的内容。
 
 持久化目录中没有项目时，Flourish 会创建并激活一个未持久化项目，并使用配置的占位文本显示它。
 
 ## 运行时目录操作
 
-`IProjectService.Current` 返回不可变的 `FlourishProjectSnapshot`，其中包含有序项目、活动项目、项目模式状态与版本号。
+`IProjectService.Current` 返回不可变的 `ProjectCatalogSnapshot`，其中包含有序项目、活动项目、项目模式状态与版本号。
 
 | 操作 | 行为 |
 | --- | --- |
@@ -107,11 +107,11 @@ builder.ConfigureServices((_, services) =>
 | `DeleteProjectAsync` | 右键删除。 |
 | `CanCloseAsync` | 项目关闭守卫。 |
 
-请求的操作可以继续时，每个方法返回 `true`；操作被取消或无法完成时返回 `false`。替换实现负责自身的对话框和项目文件生命周期，并应使用 `IProjectService` 发布元数据与活动选择变更；这些目录变更仍由 Flourish 原子写入 `projects.json`。
+操作继续时返回 `true`，取消或失败时返回 `false`。替换实现负责对话框和文件生命周期，并通过 `IProjectService` 发布变更；Flourish 仍原子写入 `projects.json`。
 
 ## 相关功能
 
-- [标题栏](configure-title-bar.md)说明应用标识、Logo 详情与项目下拉框行为。
-- [运行时 API](runtime-apis.md)汇总完整的运行时服务。
-- [依赖注入](configure-services.md)说明如何替换 `IProjectBehavior`。
-- [应用数据](configure-data.md)说明项目目录所使用的共享 appsettings 位置。
+- [标题栏](configure-title-bar.md)
+- [运行时 API](runtime-apis.md)
+- [依赖注入](configure-services.md)
+- [应用数据](configure-data.md)

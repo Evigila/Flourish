@@ -5,7 +5,7 @@ items:
   href: control-library.md
 - name: 运行时 API
   href: runtime-apis.md
-- name: IFlourishBuilder
+- name: IApplicationBuilder
   href: flourish-builder.md
 - name: 应用数据
   href: configure-data.md

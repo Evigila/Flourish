@@ -1,11 +1,11 @@
 ---
 title: GridSplitter
-description: Resize adjacent Grid regions with a thin Flourish interaction highlight and continuous layout updates.
+description: Resize adjacent Grid regions with live Flourish feedback.
 ---
 
 # GridSplitter
 
-`FlourishGridSplitter` inherits the native WPF `GridSplitter` layout model. Use it between adjacent `Grid` rows or columns when the user should be able to change their relative sizes. Flourish supplies a narrow centered highlight inside its transparent pointer surface.
+`GridSplitter` preserves native WPF sizing and adds a narrow highlight within a larger transparent pointer surface.
 
 ## Resize columns
 
@@ -20,7 +20,7 @@ Place the splitter in an `Auto` column between the definitions it controls. Defi
   </Grid.ColumnDefinitions>
 
   <local:EditorPane />
-  <flourish:FlourishGridSplitter
+  <flourish:GridSplitter
     Grid.Column="1"
     ResizeBehavior="PreviousAndNext"
     ResizeDirection="Columns" />
@@ -32,7 +32,7 @@ Use the same structure with rows by placing the splitter in an `Auto` row and se
 
 ## Interaction
 
-Dragging updates the affected `GridLength` values continuously. Hover, keyboard focus, and dragging use the same thin highlight; Flourish does not switch to a wider preview overlay. This keeps the visible divider consistent with the final layout while the transparent input surface remains large enough for pointer interaction.
+Dragging updates `GridLength` continuously. Hover, focus, and drag use the same thin highlight within the larger input surface.
 
 The surrounding `Grid` owns minimum and maximum constraints. Set `ResizeDirection` and `ResizeBehavior` explicitly for application layouts so both the axis and the affected definitions are clear.
 
@@ -44,6 +44,6 @@ Align a neighboring viewport and splitter through their Grid columns. Do not use
 
 ## Related content
 
-- [ScrollViewer and ScrollBar](scroll-viewer.md) describes the standard viewport and scroll-bar geometry.
-- The [FlourishGridSplitter API](xref:ArkheideSystem.Flourish.Controls.FlourishGridSplitter) lists the Flourish-specific members.
-- The [WPF GridSplitter documentation](https://learn.microsoft.com/dotnet/desktop/wpf/controls/how-to-resize-rows-with-a-gridsplitter) explains native Grid sizing behavior.
+- [ScrollViewer and ScrollBar](scroll-viewer.md)
+- [GridSplitter API](xref:ArkheideSystem.Flourish.Controls.GridSplitter)
+- [WPF GridSplitter documentation](https://learn.microsoft.com/dotnet/desktop/wpf/controls/how-to-resize-rows-with-a-gridsplitter)

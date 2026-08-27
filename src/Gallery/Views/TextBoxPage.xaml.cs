@@ -1,4 +1,4 @@
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -37,7 +37,7 @@ public partial class TextBoxPage : Page
 
     public string UsageCode { get; } =
         """
-            <flourish:FlourishTextBox
+            <flourish:TextBox
               Text="{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
               MaxLength="80" />
 

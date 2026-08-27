@@ -7,10 +7,10 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface IStatusBarService
 {
     /// <summary>Occurs after status content or visibility changes.</summary>
-    event EventHandler<FlourishStatusBarChangedEventArgs>? Changed;
+    event EventHandler<StatusBarChangedEventArgs>? Changed;
 
     /// <summary>Gets an immutable snapshot of the status bar state.</summary>
-    FlourishStatusBarSnapshot Current { get; }
+    StatusBarSnapshot Current { get; }
 
     /// <summary>Enables or disables application-provided status content.</summary>
     void SetEnabled(bool enabled);
@@ -22,10 +22,10 @@ public interface IStatusBarService
     void SetPowerStatusEnabled(bool enabled);
 
     /// <summary>Adds a status item.</summary>
-    void AddStatusItem(FlourishStatusItem item, int? index = null);
+    void AddStatusItem(StatusBarItem item, int? index = null);
 
     /// <summary>Adds or replaces a status item by stable ID.</summary>
-    void SetItem(FlourishStatusItem item, int? index = null);
+    void SetItem(StatusBarItem item, int? index = null);
 
     /// <summary>Updates the text of a status item.</summary>
     void SetItemText(string id, string text);
@@ -70,14 +70,14 @@ public interface IStatusBarItemHandle : IRegistration
 }
 
 /// <summary>Describes a status item.</summary>
-public sealed record FlourishStatusItem
+public sealed record StatusBarItem
 {
     /// <summary>Creates a status item with an automatically derived ID.</summary>
-    public FlourishStatusItem(string text, string iconGlyph)
+    public StatusBarItem(string text, string iconGlyph)
         : this(CreateDefaultId(text), text, iconGlyph) { }
 
     /// <summary>Creates a status item with a stable ID.</summary>
-    public FlourishStatusItem(string id, string text, string iconGlyph)
+    public StatusBarItem(string id, string text, string iconGlyph)
     {
         Id = id;
         Text = text;
@@ -104,26 +104,26 @@ public sealed record FlourishStatusItem
 }
 
 /// <summary>Represents the current status bar state.</summary>
-public sealed record FlourishStatusBarSnapshot(
+public sealed record StatusBarSnapshot(
     bool IsEnabled,
     bool IsLanStatusEnabled,
     bool IsPowerStatusEnabled,
-    IReadOnlyList<FlourishStatusItem> Items,
+    IReadOnlyList<StatusBarItem> Items,
     long Version
 );
 
 /// <summary>Provides data for <see cref="IStatusBarService.Changed" />.</summary>
-public sealed class FlourishStatusBarChangedEventArgs(
-    FlourishStatusBarSnapshot current,
-    FlourishRuntimeChangeKind changeKind,
+public sealed class StatusBarChangedEventArgs(
+    StatusBarSnapshot current,
+    CollectionChangeKind changeKind,
     string? itemId
 ) : EventArgs
 {
     /// <summary>Gets the new state.</summary>
-    public FlourishStatusBarSnapshot Current { get; } = current;
+    public StatusBarSnapshot Current { get; } = current;
 
     /// <summary>Gets the mutation kind.</summary>
-    public FlourishRuntimeChangeKind ChangeKind { get; } = changeKind;
+    public CollectionChangeKind ChangeKind { get; } = changeKind;
 
     /// <summary>Gets the affected item ID, if applicable.</summary>
     public string? ItemId { get; } = itemId;

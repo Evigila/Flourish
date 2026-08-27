@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -17,7 +17,7 @@ public partial class ListBoxPage : Page
         ),
         new(
             "ItemsSource",
-            CKey.Controls_SuppliesDataItemsAndGeneratesFlourishListBoxItemContainers_814EAA50
+            CKey.Controls_SuppliesDataItemsAndGeneratesListBoxItemContainers_814EAA50
         ),
         new("SelectedItem", CKey.Controls_GetsOrSetsTheCurrentSelection_1F2CA123),
     ];

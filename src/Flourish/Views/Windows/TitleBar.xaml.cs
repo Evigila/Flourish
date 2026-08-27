@@ -18,16 +18,16 @@ using WpfPanel = System.Windows.Controls.Panel;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
 
-internal partial class FlourishTitlebar : UserControl
+internal partial class TitleBarView : UserControl
 {
     private readonly TitleBarBreadcrumbVisibilityState breadcrumbVisibility = new();
     private readonly ProfileImageBrushCache profileImageCache = new();
-    private FlourishLocalizationService? localizationService;
+    private LocalizationService? localizationService;
     private bool hasProfileRegionContent;
     private bool isApplyingSearchText;
     private bool isProfileEnabled;
 
-    public FlourishTitlebar()
+    public TitleBarView()
     {
         InitializeComponent();
         UpdateBreadcrumbNavigationVisibility();
@@ -65,35 +65,35 @@ internal partial class FlourishTitlebar : UserControl
 
     public event EventHandler<string>? SearchTextChanged;
 
-    public void ApplyLocale(FlourishLocalizationService localization)
+    public void ApplyLocale(LocalizationService localization)
     {
         localizationService = localization ?? throw new ArgumentNullException(nameof(localization));
-        BackButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarBack));
+        BackButton.ToolTip = GetToolTipContent(localization.Get(LocaleKeys.TitleBarBack));
         ForwardButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarForward)
+            localization.Get(LocaleKeys.TitleBarForward)
         );
         NavigationToggleButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarToggleNavigation)
+            localization.Get(LocaleKeys.TitleBarToggleNavigation)
         );
         ThemeToggleButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarTheme)
+            localization.Get(LocaleKeys.TitleBarTheme)
         );
         ProfileButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarProfile)
+            localization.Get(LocaleKeys.TitleBarProfile)
         );
         LogoButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarApplicationInfo)
+            localization.Get(LocaleKeys.TitleBarApplicationInfo)
         );
         TitleComboBox.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarProjectMenu)
+            localization.Get(LocaleKeys.TitleBarProjectMenu)
         );
         MinimizeButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarMinimize)
+            localization.Get(LocaleKeys.TitleBarMinimize)
         );
         MaximizeButton.ToolTip = GetToolTipContent(
-            localization.Get(FlourishLocaleKeys.TitleBarMaximize)
+            localization.Get(LocaleKeys.TitleBarMaximize)
         );
-        CloseButton.ToolTip = GetToolTipContent(localization.Get(FlourishLocaleKeys.TitleBarClose));
+        CloseButton.ToolTip = GetToolTipContent(localization.Get(LocaleKeys.TitleBarClose));
     }
 
     public void SetDisplayTitle(string title)
@@ -101,7 +101,7 @@ internal partial class FlourishTitlebar : UserControl
         AutomationProperties.SetName(TitleComboBox, title);
     }
 
-    internal FlourishComboBox TitleSelector => TitleComboBox;
+    internal ComboBox TitleSelector => TitleComboBox;
 
     public void SetSearchPlaceholder(string placeholder)
     {
@@ -171,17 +171,17 @@ internal partial class FlourishTitlebar : UserControl
             MaximizeButton.ToolTip = GetToolTipContent(
                 localizationService.Get(
                     isMaximized
-                        ? FlourishLocaleKeys.TitleBarRestore
-                        : FlourishLocaleKeys.TitleBarMaximize
+                        ? LocaleKeys.TitleBarRestore
+                        : LocaleKeys.TitleBarMaximize
                 )
             );
         }
     }
 
-    public void SetThemeToggleState(FlourishTheme requestedTheme, FlourishTheme effectiveTheme)
+    public void SetThemeToggleState(ApplicationTheme requestedTheme, ApplicationTheme effectiveTheme)
     {
         ThemeToggleButtonIcon.Data =
-            effectiveTheme == FlourishTheme.Dark
+            effectiveTheme == ApplicationTheme.Dark
                 ? TitleBarVisualAssets.MoonIconGeometry
                 : TitleBarVisualAssets.SunIconGeometry;
 
@@ -191,18 +191,18 @@ internal partial class FlourishTitlebar : UserControl
         }
 
         var effectiveThemeText = localizationService.Get(
-            effectiveTheme == FlourishTheme.Dark
-                ? FlourishLocaleKeys.ThemeDark
-                : FlourishLocaleKeys.ThemeLight
+            effectiveTheme == ApplicationTheme.Dark
+                ? LocaleKeys.ThemeDark
+                : LocaleKeys.ThemeLight
         );
         ThemeToggleButton.ToolTip = GetToolTipContent(
-            requestedTheme == FlourishTheme.System
+            requestedTheme == ApplicationTheme.System
                 ? localizationService.Format(
-                    FlourishLocaleKeys.TitleBarThemeSystem,
+                    LocaleKeys.TitleBarThemeSystem,
                     effectiveThemeText
                 )
                 : localizationService.Format(
-                    FlourishLocaleKeys.TitleBarThemeCurrent,
+                    LocaleKeys.TitleBarThemeCurrent,
                     effectiveThemeText
                 )
         );
@@ -275,20 +275,20 @@ internal partial class FlourishTitlebar : UserControl
         NavigationToggleButton.Visibility = ToVisibility(isVisible);
     }
 
-    public void SetRegionContent(FlourishRegion region, IReadOnlyList<FrameworkElement> elements)
+    public void SetRegionContent(ShellRegion region, IReadOnlyList<FrameworkElement> elements)
     {
         switch (region)
         {
-            case FlourishRegion.TitleBarStart:
+            case ShellRegion.TitleBarStart:
                 SetPanelContent(TitlebarStartRegionHost, elements);
                 break;
-            case FlourishRegion.TitleBarCenter:
+            case ShellRegion.TitleBarCenter:
                 SetPanelContent(TitlebarCenterRegionHost, elements);
                 break;
-            case FlourishRegion.TitleBarEnd:
+            case ShellRegion.TitleBarEnd:
                 SetPanelContent(TitlebarEndRegionHost, elements);
                 break;
-            case FlourishRegion.TitleBarProfile:
+            case ShellRegion.TitleBarProfile:
                 SetPanelContent(TitlebarProfileRegionHost, elements);
                 hasProfileRegionContent = elements.Count > 0;
                 UpdateProfileRegionVisibility();

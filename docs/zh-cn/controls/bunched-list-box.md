@@ -5,7 +5,7 @@ description: 使用一个由父控件管理、可在项目之间连续移动的�
 
 # BunchedListBox
 
-当相邻项目需要表现为一个协调的集合时，推荐使用 `BunchedListBox`。它保留原生 WPF `ListBox` 的选择、键盘、自动化、数据绑定、滚动和虚拟化行为，同时把悬停、按下与选中背景从每个项目容器移到父控件统一管理的显示层。
+`BunchedListBox` 保留 WPF `ListBox` 的选择、键盘、自动化、绑定、滚动和虚拟化，并由父控件统一呈现悬停、按下与选中背景。
 
 每个项目确实需要独立交互表面时使用 `ListBox`。需要让指针反馈或单选指示器在项目之间连续移动时使用 `BunchedListBox`。
 
@@ -54,15 +54,15 @@ description: 使用一个由父控件管理、可在项目之间连续移动的�
 </flourish:BunchedListBox>
 ```
 
-显式提供的 `FlourishListBoxItem` 会被视为数据，并由 `BunchedListBoxItem` 包装；直接提供容器时请使用 Bunched 容器类型。
+显式提供的 `ListBoxItem` 会被视为数据，并由 `BunchedListBoxItem` 包装；直接提供容器时请使用 Bunched 容器类型。
 
 ## 自定义模板
 
-默认控件模板提供 `PART_InteractionViewport`、`PART_IndicatorLayer`、`PART_SelectionChrome`、`PART_HoverChrome`、`PART_PressedChrome` 和 `PART_ScrollViewer`。自定义模板可以省略这些部件并保留普通 `ListBox` 选择行为，但统一交互反馈需要相应部件。显示层必须保持不参与命中测试，并且不能包装项目呈现器，以免中断命中测试、逻辑滚动或虚拟化。
+默认模板提供 `PART_InteractionViewport`、`PART_IndicatorLayer`、`PART_SelectionChrome`、`PART_HoverChrome`、`PART_PressedChrome` 和 `PART_ScrollViewer`。自定义模板可省略部件并保留普通选择，但统一反馈需要对应部件。显示层不得参与命中测试或包装项目呈现器，以免破坏命中、逻辑滚动和虚拟化。
 
 ## 相关内容
 
-- [BunchedListBox API](xref:ArkheideSystem.Flourish.Controls.BunchedListBox) 列出继承成员与声明成员。
-- [BunchedListBoxItem API](xref:ArkheideSystem.Flourish.Controls.BunchedListBoxItem) 说明生成的容器。
-- [动效](../articles/configure-motion.md)配置悬停揭示与减少动态效果行为。
-- [WPF ListBox 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/listbox)介绍原生选择模型。
+- [BunchedListBox API](xref:ArkheideSystem.Flourish.Controls.BunchedListBox)
+- [BunchedListBoxItem API](xref:ArkheideSystem.Flourish.Controls.BunchedListBoxItem)
+- [动效](../articles/configure-motion.md)
+- [WPF ListBox 文档](https://learn.microsoft.com/dotnet/desktop/wpf/controls/listbox)

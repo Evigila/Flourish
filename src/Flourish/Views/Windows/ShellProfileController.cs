@@ -15,7 +15,7 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal sealed class ShellProfileController : IDisposable
 {
-    private readonly FlourishTitlebar titlebar;
+    private readonly TitleBarView titlebar;
     private readonly ProfileOverlay overlay;
     private readonly ProfileFlyoutService flyoutService;
     private readonly IProfileService profileService;
@@ -29,7 +29,7 @@ internal sealed class ShellProfileController : IDisposable
     private volatile bool isDisposed;
 
     internal ShellProfileController(
-        FlourishTitlebar titlebar,
+        TitleBarView titlebar,
         ProfileOverlay overlay,
         ProfileFlyoutService flyoutService,
         IProfileService profileService,
@@ -145,7 +145,7 @@ internal sealed class ShellProfileController : IDisposable
         SetProfileSubscription(enabled: false);
     }
 
-    private void ConfigureSurface(FlourishProfileFlyoutState? state = null)
+    private void ConfigureSurface(ProfileFlyoutState? state = null)
     {
         if (isDisposed)
         {
@@ -186,7 +186,7 @@ internal sealed class ShellProfileController : IDisposable
         isProfileServiceSubscribed = enabled;
     }
 
-    private void EnsureProfileContent(FlourishProfileFlyoutState state)
+    private void EnsureProfileContent(ProfileFlyoutState state)
     {
         if (overlay.HasMaterializedContent(state.ContentPageType))
         {
@@ -213,7 +213,7 @@ internal sealed class ShellProfileController : IDisposable
         }
     }
 
-    private void ApplyFlyoutState(FlourishProfileFlyoutState state, bool isAvailable)
+    private void ApplyFlyoutState(ProfileFlyoutState state, bool isAvailable)
     {
         overlay.Close();
         if (!isAvailable)
@@ -238,11 +238,11 @@ internal sealed class ShellProfileController : IDisposable
                 $"Flourish profile content initialization failed: {error}"
             );
             notificationService.Upsert(
-                new FlourishNotification(
+                new Notification(
                     "flourish.profile.content.error",
                     "Profile unavailable",
                     error.Message,
-                    FlourishNotificationSeverity.Error,
+                    NotificationSeverity.Error,
                     Duration: TimeSpan.FromSeconds(8)
                 )
             );
@@ -261,7 +261,7 @@ internal sealed class ShellProfileController : IDisposable
 
     private void ProfileService_Changed(
         object? sender,
-        FlourishStateChangedEventArgs<FlourishProfileState> e
+        StateChangedEventArgs<ProfileState> e
     )
     {
         DispatchIfActive(() =>
@@ -273,19 +273,19 @@ internal sealed class ShellProfileController : IDisposable
         });
     }
 
-    private void FlyoutService_Changed(object? sender, FlourishStateChangedEventArgs<FlourishProfileFlyoutState> e)
+    private void FlyoutService_Changed(object? sender, StateChangedEventArgs<ProfileFlyoutState> e)
     {
         DispatchIfActive(() => ConfigureSurface(e.Current));
     }
 
-    private void TitleBarService_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e)
+    private void TitleBarService_Changed(object? sender, StateChangedEventArgs<TitleBarState> e)
     {
         DispatchIfActive(() => ConfigureSurface());
     }
 
-    private void FontService_Changed(object? sender, FlourishFontChangedEventArgs e)
+    private void FontService_Changed(object? sender, FontChangedEventArgs e)
     {
-        if (e.ChangeKind == FlourishFontChangeKind.Icon)
+        if (e.ChangeKind == FontChangeKind.Icon)
         {
             return;
         }

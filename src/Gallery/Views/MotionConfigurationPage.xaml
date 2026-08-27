@@ -1,7 +1,7 @@
 <Page
   x:Class="ArkheideSystem.Gallery.Views.MotionConfigurationPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -35,7 +35,7 @@
         </UniformGrid>
         <flourish:CodeSpace
           Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
-          Text="builder&#10;    .ConfigureMotion(motion =&gt; motion&#10;        .SetEnabled()&#10;        // Durations are optional; Flourish supplies defaults when omitted.&#10;        .SetPageTransition(&#10;            transition: FlourishPageTransition.Fade,&#10;            duration: TimeSpan.FromMilliseconds(180))&#10;        .SetNavigationPanelTransition(&#10;            transition: FlourishNavigationPanelTransition.Resize,&#10;            duration: TimeSpan.FromMilliseconds(180))&#10;        .SetHoverReveal(&#10;            duration: TimeSpan.FromMilliseconds(140))&#10;        // Preserve the user's operating-system accessibility preference.&#10;        .SetRespectSystemReducedMotion());"
+          Text="builder&#10;    .ConfigureMotion(motion =&gt; motion&#10;        .SetEnabled()&#10;        // Durations are optional; Flourish supplies defaults when omitted.&#10;        .SetPageTransition(&#10;            transition: PageTransition.Fade,&#10;            duration: TimeSpan.FromMilliseconds(180))&#10;        .SetNavigationPanelTransition(&#10;            transition: NavigationPanelTransition.Resize,&#10;            duration: TimeSpan.FromMilliseconds(180))&#10;        .SetHoverReveal(&#10;            duration: TimeSpan.FromMilliseconds(140))&#10;        // Preserve the user's operating-system accessibility preference.&#10;        .SetRespectSystemReducedMotion());"
         />
       </StackPanel>
     </flourish:Chunk>

@@ -6,22 +6,22 @@
     "es-ES": "Adelante"
   },
   "TitleBar.ToggleNavigation": {
-    "es-ES": "Alternar navegación"
+    "es-ES": "Alternar menú"
   },
   "TitleBar.Theme": {
     "es-ES": "Tema"
   },
   "TitleBar.ThemeSystem": {
-    "es-ES": "Tema: Sistema ({0})"
+    "es-ES": "Sistema ({0})"
   },
   "TitleBar.ThemeCurrent": {
-    "es-ES": "Tema: {0}"
+    "es-ES": "Actual: {0}"
   },
   "TitleBar.Profile": {
     "es-ES": "Perfil"
   },
   "TitleBar.ApplicationInfo": {
-    "es-ES": "Información de la aplicación"
+    "es-ES": "Acerca de"
   },
   "TitleBar.ProjectMenu": {
     "es-ES": "Proyectos"
@@ -30,7 +30,7 @@
     "es-ES": "Nuevo proyecto"
   },
   "Project.Delete": {
-    "es-ES": "Eliminar proyecto"
+    "es-ES": "Eliminar"
   },
   "Project.Save": {
     "es-ES": "Guardar"
@@ -42,19 +42,19 @@
     "es-ES": "Guardar proyecto"
   },
   "Project.TextFileFilter": {
-    "es-ES": "Archivos de proyecto de texto (*.txt)|*.txt"
+    "es-ES": "Archivos de texto (*.txt)|*.txt"
   },
   "Project.UnsavedTitle": {
     "es-ES": "Guardar proyecto"
   },
   "Project.UnsavedPrompt": {
-    "es-ES": "\"{0}\" no se ha guardado. ¿Quieres guardarlo antes de continuar?"
+    "es-ES": "\"{0}\" no está guardado. ¿Guardar ahora?"
   },
   "Project.DeleteTitle": {
-    "es-ES": "Eliminar proyecto"
+    "es-ES": "Eliminar"
   },
   "Project.DeletePrompt": {
-    "es-ES": "¿Eliminar \"{0}\"? Su archivo administrado también se elimina cuando ningún otro proyecto usa la misma ruta.\n{1}"
+    "es-ES": "¿Eliminar \"{0}\"? Su archivo también se elimina si no está en uso.\n{1}"
   },
   "TitleBar.Minimize": {
     "es-ES": "Minimizar"
@@ -90,13 +90,13 @@
     "es-ES": "Apellido"
   },
   "Profile.Image": {
-    "es-ES": "Imagen de perfil"
+    "es-ES": "Foto"
   },
   "Profile.ChooseImage": {
-    "es-ES": "Elegir imagen"
+    "es-ES": "Elegir foto"
   },
   "Profile.UploadImage": {
-    "es-ES": "Subir imagen"
+    "es-ES": "Subir foto"
   },
   "Profile.Password": {
     "es-ES": "Contraseña"
@@ -105,43 +105,43 @@
     "es-ES": "Cancelar"
   },
   "Profile.RememberLogin": {
-    "es-ES": "Recordar inicio de sesión"
+    "es-ES": "Mantener sesión"
   },
   "Profile.SignedIn": {
-    "es-ES": "Sesión iniciada"
+    "es-ES": "Sesión activa"
   },
   "Profile.SignedOut": {
-    "es-ES": "Sesión cerrada"
+    "es-ES": "Sin sesión"
   },
   "Profile.ImageFiles": {
-    "es-ES": "Archivos de imagen"
+    "es-ES": "Imágenes"
   },
   "Profile.AllFiles": {
-    "es-ES": "Todos los archivos"
+    "es-ES": "Todos"
   },
   "Profile.ImageLoadFailed": {
-    "es-ES": "No se pudo cargar la imagen seleccionada."
+    "es-ES": "No se puede cargar la imagen."
   },
   "Profile.SignInFailed": {
-    "es-ES": "No se pudo iniciar sesión."
+    "es-ES": "Error al iniciar sesión."
   },
   "Profile.EnterName": {
-    "es-ES": "Introduce un nombre o apellido."
+    "es-ES": "Introduce un nombre."
   },
   "Profile.EnterPassword": {
     "es-ES": "Introduce una contraseña."
   },
   "Profile.RememberLoginRequiresSignIn": {
-    "es-ES": "Solo se puede recordar el inicio con una sesión activa."
+    "es-ES": "Inicia sesión para cambiar esta opción."
   },
   "BackgroundTask.Title": {
-    "es-ES": "Tareas en segundo plano"
+    "es-ES": "Tareas"
   },
   "BackgroundTask.Running": {
     "es-ES": "En ejecución"
   },
   "BackgroundTask.Queued": {
-    "es-ES": "En espera"
+    "es-ES": "En cola"
   },
   "BackgroundTask.Cancelling": {
     "es-ES": "Cancelando"
@@ -150,13 +150,13 @@
     "es-ES": "Cancelar"
   },
   "BackgroundTask.WaitingCount": {
-    "es-ES": "{0} tarea(s) en espera"
+    "es-ES": "{0} en cola"
   },
   "BackgroundTask.NoActiveTasks": {
-    "es-ES": "No hay tareas activas"
+    "es-ES": "Sin tareas activas"
   },
   "SystemStatus.Title": {
-    "es-ES": "Estado del sistema"
+    "es-ES": "Estado"
   },
   "SystemStatus.Network": {
     "es-ES": "Red"
@@ -165,7 +165,7 @@
     "es-ES": "Energía"
   },
   "SystemStatus.AC": {
-    "es-ES": "Corriente alterna"
+    "es-ES": "CA"
   },
   "SystemStatus.Battery": {
     "es-ES": "Batería"
@@ -189,7 +189,7 @@
     "es-ES": "Cerrar"
   },
   "Window.ClosePrompt": {
-    "es-ES": "¿Seguro que quieres cerrar esta ventana?"
+    "es-ES": "¿Cerrar esta ventana?"
   },
   "Tray.Show": {
     "es-ES": "Mostrar"

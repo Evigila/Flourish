@@ -1,10 +1,9 @@
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
 using System;
 using System.Threading.Tasks;
-
-using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
+using ArkheideSystem.Flourish.Abstract;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 
 namespace ArkheideSystem.Gallery;
 
@@ -22,15 +21,12 @@ internal sealed class GalleryCommandParser(
         ArgumentNullException.ThrowIfNull(messages);
         ArgumentNullException.ThrowIfNull(backgroundTasks);
 
-        commands.Register(
-            DemoHello,
-            () => ShowCommandOutput(CKey.Runtime_Hello_185F8DB3)
-        );
+        commands.Register(DemoHello, () => ShowCommandOutput(CKey.Runtime_Hello_185F8DB3));
         commands.Register(
             DemoBackground,
             () =>
                 backgroundTasks.QueueTask(
-                    new FlourishBackgroundTaskMetadata(
+                    new BackgroundTaskMetadata(
                         Localizer.Parse(CKey.Runtime_GalleryBackgroundTask_26C68541),
                         Localizer.Parse(
                             CKey.Runtime_ACancellableTenSecondTaskThatReportsProgress_C83A0037

@@ -5,7 +5,7 @@ description: 配置页面过渡、导航栏过渡、悬停动画和减少动态�
 
 # 动效
 
-Flourish 可以为页面切换、导航栏展开和支持的悬停状态提供动画。使用 `ConfigureMotion` 启用该功能并选择具体效果。
+使用 `ConfigureMotion` 配置页面切换、导航栏展开和悬停动画。
 
 ## 配置动效
 
@@ -16,10 +16,10 @@ builder
         motion
             .SetEnabled()
             .SetPageTransition(
-                transition: FlourishPageTransition.EntranceFromBottom,
+                transition: PageTransition.EntranceFromBottom,
                 duration: TimeSpan.FromMilliseconds(180))
             .SetNavigationPanelTransition(
-                transition: FlourishNavigationPanelTransition.Resize,
+                transition: NavigationPanelTransition.Resize,
                 duration: TimeSpan.FromMilliseconds(180))
             .SetHoverReveal(duration: TimeSpan.FromMilliseconds(140))
             .SetRespectSystemReducedMotion();
@@ -32,9 +32,9 @@ Shell 总动效开关与每一种动效类别默认独立持久化。只有代�
 builder
     .ConfigureMotion(motion => motion
         .SetEnabled()
-        .SetPageTransition(transition: FlourishPageTransition.Fade)
+        .SetPageTransition(transition: PageTransition.Fade)
         .SetNavigationPanelTransition(
-            transition: FlourishNavigationPanelTransition.Resize)
+            transition: NavigationPanelTransition.Resize)
         .SetHoverReveal()
         .SetRespectSystemReducedMotion());
 ```
@@ -65,5 +65,5 @@ builder
 
 ## 相关功能
 
-- [控件库](control-library.md)说明标准控件模板与公共 HoverReveal 附加行为。
-- [导航](navigation.md)使用导航栏过渡。
+- [控件库](control-library.md)
+- [导航](navigation.md)

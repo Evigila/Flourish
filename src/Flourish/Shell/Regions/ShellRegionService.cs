@@ -12,25 +12,25 @@ namespace ArkheideSystem.Flourish.Shell.Regions;
 internal sealed class ShellRegionService : IShellRegionService
 {
     private readonly Lock gate = new();
-    private readonly FlourishRegionOptions options;
+    private readonly ShellRegionOptions options;
     private readonly Dictionary<string, Guid> leases = new(StringComparer.Ordinal);
-    private FlourishShellRegionSnapshot current;
+    private ShellRegionSnapshot current;
     private long version;
 
-    public ShellRegionService(FlourishRegionOptions options)
+    public ShellRegionService(ShellRegionOptions options)
     {
         this.options = options ?? throw new ArgumentNullException(nameof(options));
         ValidateUniqueIds(options.RegionContents);
         current = CreateSnapshot();
     }
 
-    public event EventHandler<FlourishShellRegionChangedEventArgs>? Changed;
+    public event EventHandler<ShellRegionChangedEventArgs>? Changed;
 
-    public FlourishShellRegionSnapshot Current => Volatile.Read(ref current);
+    public ShellRegionSnapshot Current => Volatile.Read(ref current);
 
     public IRegistration Add(
         string id,
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
     )
@@ -48,12 +48,12 @@ internal sealed class ShellRegionService : IShellRegionService
                 }
 
                 options.RegionContents.Add(
-                    new FlourishRegionContent(region, contentFactory, order, id)
+                    new ShellRegionRegistration(region, contentFactory, order, id)
                 );
                 leases[id] = lease;
                 return true;
             },
-            FlourishRuntimeChangeKind.Added,
+            CollectionChangeKind.Added,
             region,
             id
         );
@@ -63,15 +63,15 @@ internal sealed class ShellRegionService : IShellRegionService
 
     public IRegistration Set(
         string id,
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
     )
     {
         ValidateRegistration(id, region, contentFactory);
         var lease = Guid.NewGuid();
-        FlourishRegion? previousRegion = null;
-        FlourishShellRegionSnapshot snapshot;
+        ShellRegion? previousRegion = null;
+        ShellRegionSnapshot snapshot;
         lock (gate)
         {
             var index = FindIndex(id);
@@ -90,7 +90,7 @@ internal sealed class ShellRegionService : IShellRegionService
                 }
 
                 previousRegion = current.Region;
-                options.RegionContents[index] = new FlourishRegionContent(
+                options.RegionContents[index] = new ShellRegionRegistration(
                     region,
                     contentFactory,
                     order,
@@ -100,7 +100,7 @@ internal sealed class ShellRegionService : IShellRegionService
             else
             {
                 options.RegionContents.Add(
-                    new FlourishRegionContent(region, contentFactory, order, id)
+                    new ShellRegionRegistration(region, contentFactory, order, id)
                 );
             }
 
@@ -114,9 +114,9 @@ internal sealed class ShellRegionService : IShellRegionService
         {
             Changed?.Invoke(
                 this,
-                new FlourishShellRegionChangedEventArgs(
+                new ShellRegionChangedEventArgs(
                     snapshot,
-                    FlourishRuntimeChangeKind.Removed,
+                    CollectionChangeKind.Removed,
                     oldRegion,
                     id
                 )
@@ -125,11 +125,11 @@ internal sealed class ShellRegionService : IShellRegionService
 
         Changed?.Invoke(
             this,
-            new FlourishShellRegionChangedEventArgs(
+            new ShellRegionChangedEventArgs(
                 snapshot,
                 previousRegion is null
-                    ? FlourishRuntimeChangeKind.Added
-                    : FlourishRuntimeChangeKind.Updated,
+                    ? CollectionChangeKind.Added
+                    : CollectionChangeKind.Updated,
                 region,
                 id
             )
@@ -140,7 +140,7 @@ internal sealed class ShellRegionService : IShellRegionService
     public void SetEnabled(string id, bool enabled)
     {
         id = ValidateId(id, nameof(id));
-        FlourishRegion region = default;
+        ShellRegion region = default;
         Mutate(
             () =>
             {
@@ -152,7 +152,7 @@ internal sealed class ShellRegionService : IShellRegionService
                     return false;
                 }
 
-                options.RegionContents[index] = new FlourishRegionContent(
+                options.RegionContents[index] = new ShellRegionRegistration(
                     current.Region,
                     current.ContentFactory,
                     current.Order,
@@ -161,7 +161,7 @@ internal sealed class ShellRegionService : IShellRegionService
                 );
                 return true;
             },
-            FlourishRuntimeChangeKind.Updated,
+            CollectionChangeKind.Updated,
             () => region,
             id
         );
@@ -170,7 +170,7 @@ internal sealed class ShellRegionService : IShellRegionService
     public void SetOrder(string id, int order)
     {
         id = ValidateId(id, nameof(id));
-        FlourishRegion region = default;
+        ShellRegion region = default;
         Mutate(
             () =>
             {
@@ -182,7 +182,7 @@ internal sealed class ShellRegionService : IShellRegionService
                     return false;
                 }
 
-                options.RegionContents[index] = new FlourishRegionContent(
+                options.RegionContents[index] = new ShellRegionRegistration(
                     current.Region,
                     current.ContentFactory,
                     order,
@@ -191,7 +191,7 @@ internal sealed class ShellRegionService : IShellRegionService
                 );
                 return true;
             },
-            FlourishRuntimeChangeKind.Moved,
+            CollectionChangeKind.Moved,
             () => region,
             id
         );
@@ -203,7 +203,7 @@ internal sealed class ShellRegionService : IShellRegionService
         return RemoveCore(id, lease: null);
     }
 
-    public void RemoveAll(FlourishRegion region)
+    public void RemoveAll(ShellRegion region)
     {
         ValidateRegion(region);
         Mutate(
@@ -226,13 +226,13 @@ internal sealed class ShellRegionService : IShellRegionService
 
                 return true;
             },
-            FlourishRuntimeChangeKind.Reset,
+            CollectionChangeKind.Reset,
             region,
             registrationId: null
         );
     }
 
-    internal IReadOnlyList<FlourishRegionContent> GetContents(FlourishRegion region)
+    internal IReadOnlyList<ShellRegionRegistration> GetContents(ShellRegion region)
     {
         lock (gate)
         {
@@ -246,7 +246,7 @@ internal sealed class ShellRegionService : IShellRegionService
     private bool RemoveCore(string id, Guid? lease)
     {
         var removed = false;
-        FlourishRegion region = default;
+        ShellRegion region = default;
         Mutate(
             () =>
             {
@@ -270,7 +270,7 @@ internal sealed class ShellRegionService : IShellRegionService
                 removed = true;
                 return true;
             },
-            FlourishRuntimeChangeKind.Removed,
+            CollectionChangeKind.Removed,
             () => region,
             id
         );
@@ -279,8 +279,8 @@ internal sealed class ShellRegionService : IShellRegionService
 
     private void Mutate(
         Func<bool> mutation,
-        FlourishRuntimeChangeKind changeKind,
-        FlourishRegion region,
+        CollectionChangeKind changeKind,
+        ShellRegion region,
         string? registrationId
     )
     {
@@ -289,13 +289,13 @@ internal sealed class ShellRegionService : IShellRegionService
 
     private void Mutate(
         Func<bool> mutation,
-        FlourishRuntimeChangeKind changeKind,
-        Func<FlourishRegion> region,
+        CollectionChangeKind changeKind,
+        Func<ShellRegion> region,
         string? registrationId
     )
     {
-        FlourishShellRegionSnapshot snapshot;
-        FlourishRegion affectedRegion;
+        ShellRegionSnapshot snapshot;
+        ShellRegion affectedRegion;
         lock (gate)
         {
             if (!mutation())
@@ -311,7 +311,7 @@ internal sealed class ShellRegionService : IShellRegionService
 
         Changed?.Invoke(
             this,
-            new FlourishShellRegionChangedEventArgs(
+            new ShellRegionChangedEventArgs(
                 snapshot,
                 changeKind,
                 affectedRegion,
@@ -320,19 +320,19 @@ internal sealed class ShellRegionService : IShellRegionService
         );
     }
 
-    private FlourishShellRegionSnapshot CreateSnapshot()
+    private ShellRegionSnapshot CreateSnapshot()
     {
         var entries = options
             .RegionContents.OrderBy(content => content.Region)
             .ThenBy(content => content.Order)
-            .Select(content => new FlourishShellRegionEntry(
+            .Select(content => new ShellRegionEntry(
                 content.Id,
                 content.Region,
                 content.Order,
                 content.IsEnabled
             ))
             .ToArray();
-        return new FlourishShellRegionSnapshot(Array.AsReadOnly(entries), version);
+        return new ShellRegionSnapshot(Array.AsReadOnly(entries), version);
     }
 
     private int FindIndex(string id)
@@ -352,7 +352,7 @@ internal sealed class ShellRegionService : IShellRegionService
 
     private static void ValidateRegistration(
         string id,
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory
     )
     {
@@ -371,7 +371,7 @@ internal sealed class ShellRegionService : IShellRegionService
         return id;
     }
 
-    private static void ValidateRegion(FlourishRegion region)
+    private static void ValidateRegion(ShellRegion region)
     {
         if (!Enum.IsDefined(region))
         {
@@ -379,7 +379,7 @@ internal sealed class ShellRegionService : IShellRegionService
         }
     }
 
-    private static void ValidateUniqueIds(IEnumerable<FlourishRegionContent> contents)
+    private static void ValidateUniqueIds(IEnumerable<ShellRegionRegistration> contents)
     {
         var duplicate = contents
             .GroupBy(content => content.Id, StringComparer.Ordinal)
@@ -395,7 +395,7 @@ internal sealed class ShellRegionService : IShellRegionService
     private sealed class Registration(
         ShellRegionService owner,
         string id,
-        FlourishRegion region,
+        ShellRegion region,
         Guid lease
     ) : IRegistration
     {
@@ -403,7 +403,7 @@ internal sealed class ShellRegionService : IShellRegionService
 
         public string Id { get; } = id;
 
-        public FlourishRegion Region { get; } = region;
+        public ShellRegion Region { get; } = region;
 
         public bool IsRegistered => Volatile.Read(ref owner) is not null;
 

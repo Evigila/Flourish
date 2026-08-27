@@ -1,6 +1,6 @@
 ---
 title: Typography
-description: Configure the font family and six Flourish font-size tiers, with Standard as the default when no tier is selected explicitly.
+description: Configure the font family and six Flourish size tiers.
 ---
 
 # Typography
@@ -11,33 +11,31 @@ Use `SetFont` inside `ConfigureFont` to set the font family and six size tiers f
 
 ```csharp
 builder.ConfigureFont(font =>
-    font.SetFont("Segoe UI", 12, 14, 22, 16, 24, 32));
+    font.SetFont("Segoe UI", 11, 13, 14, 14, 18, 25));
 ```
 
-The global text family, icon family, and complete six-size scale are restored and updated as one preference group by default. Pass `usePersistedPreference: false` to keep the configured global scale authoritative. Page-specific overrides remain application-owned and are not persisted.
+The global families and size scale persist as one preference group by default. Pass `usePersistedPreference: false` to keep configuration authoritative. Page overrides are not persisted.
 
-The seven parameters are the font family followed by Small, Standard, Icon, Large, ExtraLarge, and HeaderSize. Each size must be positive and finite. The tiers are independent and may use equal values; Flourish does not impose a relative size order. When `SetFont` is not called, Flourish uses `Segoe UI` with `12`, `14`, `16`, `16`, `24`, and `32` DIP.
+The parameters are the font family, then Small, Standard, StandardIcon, Large, ExtraLarge, and HeaderSize. Sizes must be positive and finite but need not be ordered. Defaults are `Segoe UI` with `11`, `13`, `14`, `14`, `18`, and `25` DIP.
 
 ## Size tier roles
 
-When a text element or control does not explicitly select a font-size tier, it uses Standard. Treat that as the universal default rather than choosing another tier for visual emphasis.
+Unspecified text uses `Standard`; choose another tier only for its defined role.
 
 | Tier | Role |
 | --- | --- |
 | `Small` | Navigation group labels, OutputCard output, and other compact status or caption text owned by a control. |
 | `Standard` | All ordinary body and control text, including unspecified text. |
-| `Icon` | General icon glyphs. Specialized icon controls may apply a local correction for their geometry. |
+| `StandardIcon` | Ordinary icon glyphs, including button icons. |
 | `Large` | Card titles and the selected title-bar title. |
 | `ExtraLarge` | The section-title family, including `Chunk.Title`. |
 | `HeaderSize` | Reserved for the page title in `HeaderChunk`. |
 
-`Document` paragraphs and `CodeSpace` explicitly use the Large tier. They therefore follow global and page-specific Large changes instead of deriving another size from Standard.
+`Document` paragraphs and `CodeSpace` use `Large` and follow its global or page override.
 
 Large, ExtraLarge, and HeaderSize title roles use `Bold`. Choices in the title dropdown and built-in text inside the logo information surface use Standard. Application-provided content in `TitleBarApplicationInfo` retains its own WPF typography choices.
 
-Small and Standard have compact line spacing and bottom space; Large, ExtraLarge, and HeaderSize progressively add more, while Icon adds none.
-
-Icon is the default glyph size. Flourish applies fixed visual corrections where the Segoe MDL2 glyph bounds differ substantially: navigation `18`, title-bar commands `16`, window captions `12`, search `14`, status-bar items `14`, status-bar background tasks `12`, background-task detail rows `16`, and system-status detail rows `16` DIP. These contextual corrections do not change the configured default Icon value.
+`StandardIcon` is the configurable default at 14 DIP. Card and display icons use the fixed `LargeIcon` size of 22 DIP. Toolbar, navigation, title-bar, search, status, and window controls keep their geometry-specific corrections.
 
 Choose a font family that supports every language displayed by the application and provides `Regular` and `Bold` faces.
 
@@ -51,7 +49,7 @@ Use `SetOverrideFont<TPage>` when one page needs a different initial text family
 builder.ConfigureFont(font =>
 {
     font
-        .SetFont("Segoe UI", 12, 14, 22, 16, 24, 32)
+        .SetFont("Segoe UI", 11, 13, 14, 14, 18, 25)
         .SetOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,
@@ -79,7 +77,7 @@ Every supplied page tier must be positive and finite. Tiers are otherwise indepe
 `IFontService` applies the same atomic seven-value model after startup. Overrides are matched by configured page type and are reapplied when cached or dynamically registered pages are displayed.
 
 ```csharp
-fontService.SetFont("Segoe UI", 12, 14, 16, 16, 24, 32);
+fontService.SetFont("Segoe UI", 11, 13, 14, 14, 18, 25);
 
 fontService.SetOverrideFont<CodeEditorPage>(
     "Cascadia Mono",
@@ -100,7 +98,7 @@ fontService.SetOverrideFont(
     22,
     28);
 
-IReadOnlyDictionary<Type, FlourishPageFontOverride> overrides =
+IReadOnlyDictionary<Type, PageFontOverride> overrides =
     fontService.Current.PageOverrides;
 
 fontService.RemoveOverrideFont<CodeEditorPage>();
@@ -110,6 +108,6 @@ Clearing an override immediately returns the active page to the latest global fo
 
 ## Related features
 
-- [Window](configure-window.md) controls the available space for shell text.
-- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md) display text affected by the configured font.
-- [Themes](configure-themes.md) provide resources for text and background colors.
+- [Window](configure-window.md)
+- [Title bar](configure-title-bar.md), [Navigation](navigation.md), and [Status bar](status-bar.md)
+- [Themes](configure-themes.md)

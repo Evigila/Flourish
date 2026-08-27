@@ -12,12 +12,12 @@ public interface IProfileFlyoutService
     /// <summary>
     /// Gets an immutable snapshot of the profile flyout state.
     /// </summary>
-    FlourishProfileFlyoutState Current { get; }
+    ProfileFlyoutState Current { get; }
 
     /// <summary>
     /// Occurs synchronously after the profile flyout state changes.
     /// </summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishProfileFlyoutState>>? Changed;
+    event EventHandler<StateChangedEventArgs<ProfileFlyoutState>>? Changed;
 
     /// <summary>
     /// Enables or disables the profile feature, closing its flyout when disabled.

@@ -7,7 +7,7 @@ namespace ArkheideSystem.Flourish.Controls;
 /// A list-box item whose background interaction states are coordinated by a
 /// <see cref="BunchedListBox" />.
 /// </summary>
-public class BunchedListBoxItem : FlourishListBoxItem
+public class BunchedListBoxItem : ListBoxItem
 {
     static BunchedListBoxItem()
     {

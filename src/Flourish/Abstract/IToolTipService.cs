@@ -10,7 +10,7 @@ public interface IToolTipService
     /// <summary>
     /// Gets the current tooltip settings.
     /// </summary>
-    FlourishToolTipSettings Current { get; }
+    ToolTipSettings Current { get; }
 
     /// <summary>
     /// Raised after the tooltip settings change.
@@ -18,7 +18,7 @@ public interface IToolTipService
     /// <remarks>
     /// When application resources are attached, the event is raised on their dispatcher.
     /// </remarks>
-    event EventHandler<FlourishStateTransitionEventArgs<FlourishToolTipSettings>>? Changed;
+    event EventHandler<StateTransitionEventArgs<ToolTipSettings>>? Changed;
 
     /// <summary>
     /// Enables or disables the Flourish presentation for tooltips owned by Flourish controls.

@@ -1,11 +1,11 @@
 ---
 title: Overlay
-description: Present temporary hover details or strong floating content with a shared themed surface and explicit dismissal semantics.
+description: Present themed floating content with explicit dismissal behavior.
 ---
 
 # Overlay
 
-`Overlay` is a themed content surface for floating information anchored to another element. Its `Variant` communicates whether pointer movement dismisses the surface or whether the host must keep it open until a deliberate close action.
+`Overlay` is a themed floating surface. Its `Variant` defines pointer-driven or deliberate dismissal.
 
 `Overlay` supplies the surface chrome and lifetime contract; place it in the popup, canvas, or other host that owns positioning and open state.
 
@@ -82,24 +82,24 @@ For a `Strong` Overlay, the host must also provide deliberate dismissal, such as
 </flourish:Overlay>
 ```
 
-The ActionCard pattern is a recommendation, not an Overlay restriction. Use a custom `Grid`, panel, or purpose-built view when the floating surface needs a different composition. For example, a profile view may arrange identity information, account actions, and status content without placing them in an ActionCard. The host still owns positioning, open state, and dismissal.
+Use a custom layout when `ActionCard` does not fit. The host still owns position, open state, and dismissal.
 
 ## Shell integration
 
-Flourish Shell features host their Overlays in a window-bounded layer instead of an application Popup. The Shell calculates the anchored position, changes the host visibility when a feature is invoked, and handles `DismissRequested`, outside clicks, and <kbd>Esc</kbd>. Code that adds a Shell feature therefore invokes the feature's Shell integration point; it does not ask `Overlay` to open itself.
+Shell Overlays use a window-bounded layer that owns position, visibility, outside clicks, <kbd>Esc</kbd>, and `DismissRequested`. Shell features invoke their integration point rather than opening `Overlay` directly.
 
 Use an interactive control such as [Button](button.md) or `CardButton` as the trigger. These controls provide click or command activation, keyboard focus, and automation semantics. `Card` and `ActionCard` are presentation surfaces; do not attach pointer handlers to them to imitate a trigger.
 
 ## Tooltip integration
 
-When Flourish tooltip presentation is enabled through `ConfigureToolTips` or `IToolTipService`, Flourish controls present their own hints with a `FlourishToolTip` template containing one `Temporary` Overlay. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
+When Flourish tooltip presentation is enabled through `ConfigureToolTips` or `IToolTipService`, Flourish controls present their own hints with a `ToolTip` template containing one `Temporary` Overlay. WPF `ToolTipService` continues to own opening, delay, popup placement, and closure, so the nested Overlay does not set `PlacementTarget`.
 
-When `ConfigureToolTips` is omitted or `IToolTipService.SetEnabled(false)` is used at runtime, Flourish controls present the same hint content with the native WPF tooltip appearance and default behavior. Tooltips attached to native WPF controls and tooltips owned by third-party controls always keep their own templates and default behavior; Flourish does not globally re-template them.
+Without `ConfigureToolTips`, or after `IToolTipService.SetEnabled(false)`, Flourish hints use native WPF presentation. Native and third-party tooltips remain unchanged.
 
 ## Related controls
 
-- [Card](card.md) is an in-layout information surface rather than floating content.
-- [ActionCard](card.md#actioncard) supplies the standard vertical floating-card composition.
-- [Button](button.md) provides common Overlay triggers.
-- [ScrollViewer](scroll-viewer.md) contains content that can exceed the available Overlay height.
-- The [Overlay API](xref:ArkheideSystem.Flourish.Controls.Overlay) and [OverlayVariant API](xref:ArkheideSystem.Flourish.Controls.OverlayVariant) list the complete member signatures.
+- [Card](card.md)
+- [ActionCard](card.md#actioncard)
+- [Button](button.md)
+- [ScrollViewer](scroll-viewer.md)
+- [Overlay API](xref:ArkheideSystem.Flourish.Controls.Overlay) and [OverlayVariant API](xref:ArkheideSystem.Flourish.Controls.OverlayVariant)

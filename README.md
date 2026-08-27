@@ -1,6 +1,6 @@
-# Arkheide.Flourish
+# Flourish
 
-Arkheide.Flourish is a WPF application shell and control library for the Arkheide ecosystem. It combines a .NET Generic Host, dependency injection, navigation, title bar, toolbar, status, appearance, localization, projects, notifications, and background-task services behind a compact public API.
+Flourish is a WPF application shell and control library. It combines a .NET Generic Host, dependency injection, navigation, title bar, toolbar, status, appearance, localization, projects, notifications, and background-task services behind a compact public API.
 
 All Flourish public contracts use one namespace:
 
@@ -11,7 +11,7 @@ using ArkheideSystem.Flourish.Abstract;
 ## Quick start
 
 ```csharp
-return FlourishBuilder
+return ApplicationBuilder
     .CreateDefaultBuilder(args)
     .ConfigureServices((_, services) => services.AddSingleton<App>())
     .ConfigureTitleBar(titleBar =>
@@ -23,7 +23,7 @@ return FlourishBuilder
     .Run<App>();
 ```
 
-Startup configuration is organized by feature. `IFlourishBuilder.ConfigureAppearance`, `ConfigureFont`, `ConfigureLayout`, `ConfigureToolTips`, `ConfigureProjects`, `ConfigureTitleBar`, `ConfigureNavigation`, `ConfigureContent`, `ConfigureToolbar`, `ConfigureMotion`, `ConfigureWindow`, and `ConfigureStatusBar` each expose a focused feature builder.
+Startup configuration is organized by feature. `IApplicationBuilder.ConfigureAppearance`, `ConfigureFont`, `ConfigureLayout`, `ConfigureToolTips`, `ConfigureProjects`, `ConfigureTitleBar`, `ConfigureNavigation`, `ConfigureContent`, `ConfigureToolbar`, `ConfigureMotion`, `ConfigureWindow`, and `ConfigureStatusBar` each expose a focused feature builder.
 
 After startup, resolve the matching service from dependency injection. Stateful services expose an immutable `Current` snapshot and a `Changed` event; methods such as `SetTheme`, `SetFont`, `SetEnabled`, and `SetPanelWidth` update the live application.
 
@@ -42,10 +42,10 @@ Startup and runtime use the same feature vocabulary while remaining lifecycle-sa
 Flourish uses the standard Microsoft `IConfiguration` produced by the Generic Host. The default writable Flourish settings file is `appsettings.Flourish.json` and can be changed with `IDataBuilder.SetAppSettingsFilePath`.
 
 - Inject `IConfiguration` to read the effective configuration from appsettings, User Secrets, environment variables, command-line arguments, and sources added through `ConfigureConfiguration`.
-- Inject `IFlourishSettingsStore` to update values owned by the `Flourish:` section atomically. Its writes reload the standard configuration pipeline.
+- Inject `ISettingsStore` to update values owned by the `Flourish:` section atomically. Its writes reload the standard configuration pipeline.
 
 See the [English documentation](docs/en-us/articles/getting-started.md) or [简体中文文档](docs/zh-cn/articles/getting-started.md).
 
 ## License
 
-Arkheide.Flourish is licensed under the MIT License. See [LICENSE.txt](LICENSE.txt).
+Flourish is licensed under the MIT License. See [LICENSE.txt](LICENSE.txt).

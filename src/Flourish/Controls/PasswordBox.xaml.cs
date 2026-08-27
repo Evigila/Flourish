@@ -9,7 +9,7 @@ namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled password input control.</summary>
 [TemplatePart(Name = PartPasswordBox, Type = typeof(WpfPasswordBox))]
-public class FlourishPasswordBox : WpfControl
+public class PasswordBox : WpfControl
 {
     private const string PartPasswordBox = "PART_PasswordBox";
     private WpfPasswordBox? editor;
@@ -18,28 +18,28 @@ public class FlourishPasswordBox : WpfControl
 
     /// <summary>Identifies the <see cref="PasswordChar" /> dependency property.</summary>
     public static readonly DependencyProperty PasswordCharProperty =
-        WpfPasswordBox.PasswordCharProperty.AddOwner(typeof(FlourishPasswordBox));
+        WpfPasswordBox.PasswordCharProperty.AddOwner(typeof(PasswordBox));
 
     /// <summary>Identifies the <see cref="MaxLength" /> dependency property.</summary>
     public static readonly DependencyProperty MaxLengthProperty =
-        WpfPasswordBox.MaxLengthProperty.AddOwner(typeof(FlourishPasswordBox));
+        WpfPasswordBox.MaxLengthProperty.AddOwner(typeof(PasswordBox));
 
     /// <summary>Identifies the routed event raised when the password changes.</summary>
     public static readonly RoutedEvent PasswordChangedEvent = EventManager.RegisterRoutedEvent(
         nameof(PasswordChanged),
         RoutingStrategy.Bubble,
         typeof(RoutedEventHandler),
-        typeof(FlourishPasswordBox)
+        typeof(PasswordBox)
     );
 
-    static FlourishPasswordBox()
+    static PasswordBox()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishPasswordBox),
-            new FrameworkPropertyMetadata(typeof(FlourishPasswordBox))
+            typeof(PasswordBox),
+            new FrameworkPropertyMetadata(typeof(PasswordBox))
         );
         FocusableProperty.OverrideMetadata(
-            typeof(FlourishPasswordBox),
+            typeof(PasswordBox),
             new FrameworkPropertyMetadata(true)
         );
     }

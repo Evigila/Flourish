@@ -10,12 +10,12 @@ public interface ITrayService
     /// <summary>
     /// Gets an immutable snapshot of notification-area and shell visibility state.
     /// </summary>
-    FlourishTrayState Current { get; }
+    TrayState Current { get; }
 
     /// <summary>
     /// Occurs synchronously after notification-area state changes.
     /// </summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishTrayState>>? Changed;
+    event EventHandler<StateChangedEventArgs<TrayState>>? Changed;
 
     /// <summary>
     /// Enables or disables notification-area behavior at runtime.

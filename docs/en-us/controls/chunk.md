@@ -5,7 +5,7 @@ description: Use HeaderChunk and Chunk as the full-width section hierarchy insid
 
 # Chunk
 
-`HeaderChunk` and `Chunk` are the direct layout units of a Flourish content page. A standard page begins with one `HeaderChunk` and continues with one or more `Chunk` controls. Both fill their row, so do not arrange them side by side.
+Pages begin with one full-width `HeaderChunk`, followed by full-width `Chunk` sections.
 
 Place them directly in [PageBody](page-body.md). `PageBody` rejects every other direct child, more than one `HeaderChunk`, and a `HeaderChunk` that is not first.
 
@@ -16,7 +16,7 @@ Place them directly in [PageBody](page-body.md). `PageBody` rejects every other 
 
 Every `Chunk` needs a concise `Title` and a real `Body`. `Content` is optional: add it only when the title cannot communicate the section's essential context on its own.
 
-`Body` is the default XAML content property. Write one child directly inside `Chunk`, or use a layout container when the section needs several peer controls.
+`Body` is the default XAML content property. Add one control or a layout of peer controls.
 
 ```xml
 <flourish:Chunk
@@ -86,7 +86,7 @@ Unlike an ordinary `Presenter`, direct XAML content is assigned to `HeaderChunk.
 | `PresenterMode` | `PresenterMode` | `Split` | Explicit composition choice: `Split`, `TopDown`, or `Overlay`. |
 | `PresenterPosition` | `PresenterPosition` | `Right` | Explicit presentation-side choice for `Split`. |
 
-An absent `Body` or `Presentation` leaves no placeholder or spacing. `Split` keeps title, content, and body together on one side and presentation content on the other. `TopDown` places the presentation above a left-aligned copy-and-body region. `Overlay` places copy and body over the presentation. HeaderChunk remains full-width and alone in its row in every mode, including TopDown. Continue to declare `PresenterPosition` in every mode even though `TopDown` and `Overlay` do not use it for placement.
+Absent `Body` or `Presentation` regions collapse. `Split`, `TopDown`, and `Overlay` follow the Presenter layout, but `HeaderChunk` stays full-width in every mode. Always declare `PresenterPosition`.
 
 ## Complete page structure
 
@@ -113,9 +113,9 @@ Do not add a second `HeaderChunk`, place it after a `Chunk`, or put peer content
 
 ## Related content
 
-- [PageBody](page-body.md) enforces the page root and direct-child contract.
-- [Presenter](presenter.md) defines the composition model inherited by `HeaderChunk`.
-- [Document](document.md) presents several text paragraphs as a chunk's sole body.
-- [Card](card.md) presents concise information inside a chunk.
-- [Typography](../articles/configure-font.md) describes the font-size tiers.
-- The [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) and [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk) list all members.
+- [PageBody](page-body.md)
+- [Presenter](presenter.md)
+- [Document](document.md)
+- [Card](card.md)
+- [Typography](../articles/configure-font.md)
+- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) and [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk)

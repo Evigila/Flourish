@@ -5,7 +5,7 @@ description: 配置 Flourish Shell 窗口的尺寸、位置和 WPF 窗口行为�
 
 # 窗口
 
-每个 Flourish Shell 都具有一个 WPF 窗口。使用 `ConfigureWindow` 可以设置初始尺寸、尺寸约束、启动位置、窗口状态、置顶行为、任务栏可见性和托盘关闭流程。
+使用 `ConfigureWindow` 设置 Shell 窗口的初始尺寸、约束、位置、状态、置顶、任务栏可见性和托盘关闭流程。
 
 ## 配置窗口
 
@@ -60,7 +60,7 @@ Shell 根窗口默认启用设备像素对齐和布局取整，并保持 WPF 默
 
 ## 项目关闭守卫
 
-启用多项目模式后，实际关闭请求会通过窗口关闭守卫管线调用 `IProjectBehavior.CanCloseAsync`。使用默认行为时，如果活动项目的 `StoragePath` 为 `null`，界面会提供“保存”“不保存”和“取消”。保存完成后才能继续关闭；选择“不保存”会在不创建项目文件的情况下关闭；选择“取消”或取消保存对话框会让应用保持打开。未启用多项目模式时，Flourish 不运行项目关闭守卫，也不会显示项目保存提示。
+多项目模式下，关闭请求通过守卫调用 `IProjectBehavior.CanCloseAsync`。默认行为在活动项目 `StoragePath == null` 时提供“保存”“不保存”和“取消”：保存成功或不保存可关闭，取消则保持打开。未启用多项目模式时不运行项目守卫，也不显示保存提示。
 
 该守卫适用于标题栏关闭命令、直接关闭窗口、应用关闭请求以及通知区域菜单中的“退出”。应用提供的 `IProjectBehavior` 可以替换该决定与保存流程。参见[项目](projects.md)。
 
@@ -78,7 +78,7 @@ builder.ConfigureWindow(window => window.SetTrayExit());
 
 ## 相关功能
 
-- [快速开始](getting-started.md)演示如何从 `App.xaml.cs` 启动窗口。
-- [标题栏](configure-title-bar.md)控制窗口内显示的标题栏界面。
-- [项目](projects.md)说明多项目模式下实际关闭前的保存、不保存与取消处理。
-- [材质特效](configure-material-effect.md)更改窗口背景材质。
+- [快速开始](getting-started.md)
+- [标题栏](configure-title-bar.md)
+- [项目](projects.md)
+- [材质特效](configure-material-effect.md)

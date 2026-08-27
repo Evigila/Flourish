@@ -5,18 +5,18 @@ description: 配置字体系列和 Flourish 六种字号层级；未显式选择
 
 # 排版
 
-在 `ConfigureFont` 中调用 `SetFont`，可以同时设置 Shell 区域、已导航页面和 Profile 页面使用的字体系列与六种字号层级。
+在 `ConfigureFont` 中调用 `SetFont`，设置 Shell、导航页面和 Profile 页面的字体系列与六种字号层级。
 
 ## 配置全局字体
 
 ```csharp
 builder.ConfigureFont(font =>
-    font.SetFont("Segoe UI", 12, 14, 22, 16, 24, 32));
+    font.SetFont("Segoe UI", 11, 13, 14, 14, 18, 25));
 ```
 
 全局文本字体族、图标字体族与完整的六档字号默认作为同一偏好组恢复和更新。需要代码配置的全局比例始终优先时，传入 `usePersistedPreference: false`。页面专属覆盖仍由应用拥有，不会持久化。
 
-七个参数依次是字体系列、Small、Standard、Icon、Large、ExtraLarge 与 HeaderSize。每个字号都必须是有限正数，各档彼此独立，可以使用相同数值；Flourish 不限制它们的相对大小。未调用 `SetFont` 时，Flourish 默认使用 `Segoe UI` 与 `12`、`14`、`16`、`16`、`24`、`32` DIP。
+七个参数依次为字体系列、Small、Standard、StandardIcon、Large、ExtraLarge 和 HeaderSize。字号必须是有限正数，各档独立且可相同。未调用 `SetFont` 时，默认使用 `Segoe UI` 和 `11`、`13`、`14`、`14`、`18`、`25` DIP。
 
 ## 字号层级角色
 
@@ -26,7 +26,7 @@ builder.ConfigureFont(font =>
 | --- | --- |
 | `Small` | 导航栏分组标签、OutputCard 输出，以及由控件管理的其他紧凑状态或说明文字。 |
 | `Standard` | 所有普通正文和控件文字，包括未指定层级的文本。 |
-| `Icon` | 通用图标字形。专用图标控件可根据自身几何应用局部校正。 |
+| `StandardIcon` | 普通图标字形，包括按钮图标。 |
 | `Large` | 卡片标题和标题栏当前标题。 |
 | `ExtraLarge` | 区块标题一族，包括 `Chunk.Title`。 |
 | `HeaderSize` | 仅保留给 `HeaderChunk` 中的页面标题。 |
@@ -35,9 +35,9 @@ builder.ConfigureFont(font =>
 
 Large、ExtraLarge 和 HeaderSize 标题角色使用 `Bold`。标题下拉选项与 Logo 信息视图中的内置文本使用 Standard。应用向 `TitleBarApplicationInfo` 提供的内容仍保留自身的 WPF 排版设置。
 
-Small 与 Standard 使用紧凑行高和最小下方空间，Large、ExtraLarge 与 HeaderSize 逐级增大，Icon 不增加下方空间。
+Small 与 Standard 使用紧凑行高和最小下方空间，Large、ExtraLarge 与 HeaderSize 逐级增大，图标不增加下方空间。
 
-Icon 是默认图标字号。由于 Segoe MDL2 的不同字形拥有不同的天然边界，Flourish 会进行固定的视觉校正：导航栏 `18`、标题栏命令 `16`、窗口标题按钮 `12`、搜索图标 `14`、状态栏项目 `14`、状态栏后台任务 `12`、后台任务详情 `16`、系统状态详情 `16` DIP。这些场景校正不会改变配置的默认 Icon 值。
+StandardIcon 是可配置的默认图标字号，为 `14` DIP。卡片与展示图标使用固定的 LargeIcon `22` DIP。工具栏、导航栏、标题栏、搜索、状态栏和窗口控件继续使用针对几何的固定校正。
 
 字体系列应覆盖应用显示的全部语言，并提供 `Regular` 与 `Bold` 字形。
 
@@ -51,7 +51,7 @@ Icon 是默认图标字号。由于 Segoe MDL2 的不同字形拥有不同的天
 builder.ConfigureFont(font =>
 {
     font
-        .SetFont("Segoe UI", 12, 14, 22, 16, 24, 32)
+        .SetFont("Segoe UI", 11, 13, 14, 14, 18, 25)
         .SetOverrideFont<CodeEditorPage>(
             "Cascadia Mono",
             null,
@@ -79,7 +79,7 @@ builder.ConfigureFont(font =>
 `IFontService` 在应用启动后提供相同的原子七参数模型。页面覆盖会按配置时的页面类型匹配，并在缓存页面或动态注册页面显示时重新应用。
 
 ```csharp
-fontService.SetFont("Segoe UI", 12, 14, 16, 16, 24, 32);
+fontService.SetFont("Segoe UI", 11, 13, 14, 14, 18, 25);
 
 fontService.SetOverrideFont<CodeEditorPage>(
     "Cascadia Mono",
@@ -100,7 +100,7 @@ fontService.SetOverrideFont(
     22,
     28);
 
-IReadOnlyDictionary<Type, FlourishPageFontOverride> overrides =
+IReadOnlyDictionary<Type, PageFontOverride> overrides =
     fontService.Current.PageOverrides;
 
 fontService.RemoveOverrideFont<CodeEditorPage>();
@@ -110,6 +110,6 @@ fontService.RemoveOverrideFont<CodeEditorPage>();
 
 ## 相关功能
 
-- [窗口](configure-window.md)定义排版需要适配的可用空间。
-- [标题栏](configure-title-bar.md)、[导航](navigation.md)与[状态栏](status-bar.md)会显示受全局排版影响的 Shell 文字。
-- [主题](configure-themes.md)提供文字与背景颜色资源。
+- [窗口](configure-window.md)
+- [标题栏](configure-title-bar.md)、[导航](navigation.md)与[状态栏](status-bar.md)
+- [主题](configure-themes.md)

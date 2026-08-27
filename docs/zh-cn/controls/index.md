@@ -5,7 +5,7 @@ description: 了解 Flourish 控件的页面层级、内容职责、交互、间
 
 # 控件
 
-Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体系统和交互语言。它们不会为 WPF 基础类型安装隐式样式。
+Flourish 显式 WPF 控件共享主题、字体和交互，但不为 WPF 基础类型安装隐式样式。
 
 导航内容页面使用 [PageBody](page-body.md) 作为根容器。其直接子项只能是一个位于最前方的 [HeaderChunk](chunk.md#headerchunk) 和后续全宽 [Chunk](chunk.md)。所有实际页面内容都应位于这些区块中。控件或文本角色没有显式选择其他字号层级时，使用 Standard 字号。
 
@@ -32,7 +32,7 @@ Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体
 
 ## 开始使用
 
-应用程序通过 `FlourishBuilder` 启动 Shell 时，Flourish 会在显示 Shell 前将控件和主题资源加入 `Application.Resources`。需要让控件在 WPF 设计器中呈现、在 Shell 启动前创建，或不使用 Flourish Shell 时，请在应用级显式加载资源：
+应用程序通过 `ApplicationBuilder` 启动 Shell 时，Flourish 会在显示 Shell 前将控件和主题资源加入 `Application.Resources`。需要让控件在 WPF 设计器中呈现、在 Shell 启动前创建，或不使用 Flourish Shell 时，请在应用级显式加载资源：
 
 ```xml
 <Application
@@ -43,7 +43,7 @@ Flourish 提供一组显式 WPF 自定义控件，共享统一的主题、字体
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <flourish:FlourishThemeResources />
+        <flourish:ThemeResources />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

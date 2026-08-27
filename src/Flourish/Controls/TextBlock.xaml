@@ -4,7 +4,7 @@
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
 
-  <Style TargetType="{x:Type controls:FlourishTextBlock}">
+  <Style TargetType="{x:Type controls:TextBlock}">
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="FontWeight" Value="Regular" />
@@ -70,21 +70,21 @@
       </Trigger>
       <Trigger Property="Role" Value="Icon">
         <Setter Property="FontFamily" Value="{DynamicResource FlourishIconFontFamily}" />
-        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeIcon}" />
-        <Setter Property="LineHeight" Value="{DynamicResource FlourishLineHeightIcon}" />
-        <Setter Property="Padding" Value="{DynamicResource FlourishTypographyBottomSpaceIcon}" />
+        <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandardIcon}" />
+        <Setter Property="LineHeight" Value="{DynamicResource FlourishLineHeightStandardIcon}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishTypographyBottomSpaceStandardIcon}" />
         <Setter Property="TextAlignment" Value="Center" />
       </Trigger>
       <Trigger Property="LayoutMode" Value="Control">
-        <Setter Property="Padding" Value="{DynamicResource FlourishTypographyBottomSpaceIcon}" />
+        <Setter Property="Padding" Value="{DynamicResource FlourishTypographyBottomSpaceStandardIcon}" />
       </Trigger>
     </Style.Triggers>
   </Style>
 
   <Style
     x:Key="FlourishControlTextBlockStyle"
-    TargetType="{x:Type controls:FlourishTextBlock}"
-    BasedOn="{StaticResource {x:Type controls:FlourishTextBlock}}"
+    TargetType="{x:Type controls:TextBlock}"
+    BasedOn="{StaticResource {x:Type controls:TextBlock}}"
   >
     <Setter Property="LayoutMode" Value="Control" />
   </Style>
@@ -96,8 +96,8 @@
 
   <Style x:Key="FlourishIconContentPresenterStyle" TargetType="{x:Type ContentPresenter}">
     <Setter Property="TextElement.FontFamily" Value="{DynamicResource FlourishIconFontFamily}" />
-    <Setter Property="TextElement.FontSize" Value="{DynamicResource FlourishFontSizeIcon}" />
-    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightIcon}" />
+    <Setter Property="TextElement.FontSize" Value="{DynamicResource FlourishFontSizeLargeIcon}" />
+    <Setter Property="TextBlock.LineHeight" Value="{DynamicResource FlourishLineHeightLargeIcon}" />
     <Setter Property="TextBlock.LineStackingStrategy" Value="BlockLineHeight" />
   </Style>
 

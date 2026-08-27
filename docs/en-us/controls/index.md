@@ -1,13 +1,13 @@
 ---
 title: Controls
-description: Learn the layout, content, interaction, spacing, and typography contracts of Flourish controls.
+description: Choose and load Flourish controls.
 ---
 
 # Controls
 
-Flourish provides explicit WPF custom controls that share one theme, typography system, and interaction language. They do not install implicit styles for WPF base types.
+Flourish controls share theming, typography, and interaction without styling WPF base types implicitly.
 
-Use [PageBody](page-body.md) as the root of every content page. Its direct children are one leading [HeaderChunk](chunk.md#headerchunk) and the full-width [Chunk](chunk.md) sections that follow. Put all other content inside those sections. When no control or text role selects another font tier, Flourish uses the Standard size.
+Use [PageBody](page-body.md) as the root, with one leading [HeaderChunk](chunk.md#headerchunk) and full-width [Chunk](chunk.md) sections. Put other content inside those sections; unspecified text uses `Standard`.
 
 ## Choose a control
 
@@ -28,11 +28,11 @@ Use [PageBody](page-body.md) as the root of every content page. Its direct child
 | [Overlay](overlay.md) | Temporary or strong floating surfaces, commonly composed with a vertical ActionCard. |
 | [ScrollViewer](scroll-viewer.md) | Smooth page scrolling, logical scrolling, and Flourish scroll bars. |
 
-Use `Card` for one paragraph and optionally one icon, `Document` for several prose paragraphs, and `CodeSpace` for exact copyable code. Use `Presenter` for an image, several icons, or another composed visual. `Card` has no arbitrary body; `ActionCard.Body` provides exactly one local action region. Use a member of the Button family whenever the complete visual surface is interactive.
+Use `Card` for one paragraph, `Document` for prose, `CodeSpace` for code, and `Presenter` for composed visuals. Use a Button-family control when the complete surface is interactive.
 
 ## Get started
 
-When an application starts its Shell through `FlourishBuilder`, Flourish adds the control and theme resources to `Application.Resources` before showing the Shell. Load the resources explicitly at application scope when controls must render in the WPF designer, be created before Shell startup, or work without the Flourish Shell:
+When an application starts its Shell through `ApplicationBuilder`, Flourish adds the control and theme resources to `Application.Resources` before showing the Shell. Load the resources explicitly at application scope when controls must render in the WPF designer, be created before Shell startup, or work without the Flourish Shell:
 
 ```xml
 <Application
@@ -43,11 +43,11 @@ When an application starts its Shell through `FlourishBuilder`, Flourish adds th
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <flourish:FlourishThemeResources />
+        <flourish:ThemeResources />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
 </Application>
 ```
 
-Reference controls in XAML through the `http://schemas.arkheide.system/flourish` namespace. See the [Controls API](xref:ArkheideSystem.Flourish.Controls) for complete type and member signatures, and the [design principles](../conception/index.md) for application-wide composition rules.
+Reference controls through `http://schemas.arkheide.system/flourish`. See the [Controls API](xref:ArkheideSystem.Flourish.Controls) and [design principles](../conception/index.md).

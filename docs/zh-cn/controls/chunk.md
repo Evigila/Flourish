@@ -5,7 +5,7 @@ description: 使用 PageBody、HeaderChunk 和 Chunk 建立 Flourish 页面必�
 
 # Chunk
 
-`HeaderChunk` 与 `Chunk` 是 Flourish 页面布局的两个基础元素。它们应作为 [PageBody](page-body.md) 的直接子项并各自占满一行。标准内容页面以一个 `HeaderChunk` 开头，随后放置一个或多个 `Chunk`。
+`HeaderChunk` 与 `Chunk` 是 [PageBody](page-body.md) 的全宽直接子项。标准页面以一个 `HeaderChunk` 开头，后接一个或多个 `Chunk`。
 
 > [!IMPORTANT]
 > 不要在 `PageBody` 下直接放置文本、卡片、面板或 Presenter。所有实际内容都应位于 HeaderChunk 或 Chunk 中；同一页面不得出现第二个 HeaderChunk。
@@ -84,7 +84,7 @@ Shell 自有的 Profile 浮出层、Popup 和 Dialog 不是导航内容页面，
 | `PresenterMode` | `PresenterMode` | `Split` | `Split`、`TopDown` 或 `Overlay` 组合模式。 |
 | `PresenterPosition` | `PresenterPosition` | `Right` | Split 模式中的展示侧。 |
 
-`Split` 默认将文案与 Body 放在左侧、Presentation 放在右侧；`PresenterPosition="Left"` 会交换两侧。`TopDown` 将 Presentation 放在上方，并把 Title、Content 与 Body 放在下方靠左。`Overlay` 将文案与 Body 叠加在 Presentation 上方。HeaderChunk 在任何模式下都必须全宽独占一行，包括 TopDown；普通 Presenter 的 TopDown 分列例外不适用于 HeaderChunk。TopDown 与 Overlay 不使用 `PresenterPosition` 的视觉位置，但仍建议显式声明完整展示契约。
+`Split` 默认文案与 Body 在左、Presentation 在右；`PresenterPosition="Left"` 交换两侧。`TopDown` 将 Presentation 置顶，`Overlay` 将文案与 Body 叠加其上。HeaderChunk 在所有模式下均全宽；TopDown 和 Overlay 虽不使用 `PresenterPosition`，仍应显式声明。
 
 ## 页面结构
 
@@ -111,10 +111,10 @@ Shell 自有的 Profile 浮出层、Popup 和 Dialog 不是导航内容页面，
 
 ## 相关内容
 
-- [PageBody](page-body.md)定义页面根容器及其直接子项限制。
-- [Presenter](presenter.md)定义 HeaderChunk 使用的展示模型。
-- [Document](document.md)将多段文本作为区块唯一主体呈现。
-- [Card](card.md)在区块中呈现简洁信息。
-- [Button](button.md)定义区块和头部主体中使用的操作。
-- [字体](../articles/configure-font.md)说明六种字号层级。
-- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) 和 [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk) 列出全部成员。
+- [PageBody](page-body.md)
+- [Presenter](presenter.md)
+- [Document](document.md)
+- [Card](card.md)
+- [Button](button.md)
+- [字体](../articles/configure-font.md)
+- [Chunk API](xref:ArkheideSystem.Flourish.Controls.Chunk) 和 [HeaderChunk API](xref:ArkheideSystem.Flourish.Controls.HeaderChunk)

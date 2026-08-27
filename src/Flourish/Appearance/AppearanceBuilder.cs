@@ -5,8 +5,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Appearance;
 
-internal sealed class AppearanceBuilder(FlourishAppearanceOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class AppearanceBuilder(AppearanceOptions options)
+    : BuilderMutationGuard,
         IAppearanceBuilder
 {
     public IAppearanceBuilder SetEffect(
@@ -25,7 +25,7 @@ internal sealed class AppearanceBuilder(FlourishAppearanceOptions options)
 
     public IAppearanceBuilder SetThemeColors(
         bool enabled,
-        FlourishThemeColors colors,
+        ThemeColors colors,
         bool usePersistedPreference = true
     )
     {

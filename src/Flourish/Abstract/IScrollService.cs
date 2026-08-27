@@ -10,12 +10,12 @@ public interface IScrollService
     /// <summary>
     /// Gets an immutable snapshot of the active scrolling settings.
     /// </summary>
-    FlourishScrollSettings Current { get; }
+    ScrollSettings Current { get; }
 
     /// <summary>
     /// Occurs synchronously after the application-wide scrolling settings change.
     /// </summary>
-    event EventHandler<FlourishStateTransitionEventArgs<FlourishScrollSettings>>? Changed;
+    event EventHandler<StateTransitionEventArgs<ScrollSettings>>? Changed;
 
     /// <summary>
     /// Enables or disables smooth mouse-wheel scrolling for Flourish scroll viewers.
@@ -35,9 +35,9 @@ public interface IScrollService
 /// <summary>
 /// Describes the current application-wide Flourish scrolling settings.
 /// </summary>
-public sealed class FlourishScrollSettings
+public sealed class ScrollSettings
 {
-    internal FlourishScrollSettings(bool isSmoothScrollingEnabled, long version)
+    internal ScrollSettings(bool isSmoothScrollingEnabled, long version)
     {
         IsSmoothScrollingEnabled = isSmoothScrollingEnabled;
         Version = version;

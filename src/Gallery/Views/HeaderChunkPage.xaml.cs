@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows;
 using System.Windows.Controls;
 using ArkheideSystem.Flourish.Controls;

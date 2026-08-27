@@ -28,7 +28,7 @@ Organize conceptual documentation by user-visible feature or task, not by builde
 - Give each capability one canonical conceptual article. Document its `Configure...` method, enabling switch, workflow, observable behavior, and constraints together in that article.
 - Use feature names such as **Navigation**, **Profile**, **Motion**, or **Application data** for article titles and TOC entries. Do not create a **Configuration APIs** category or use `Configure...` as the conceptual page title.
 - Keep canonical article filenames aligned with their feature titles. Update every TOC and cross-link in the same change when a page is renamed.
-- Keep a type-named overview such as **IFlourishBuilder** only when the type itself is the concept being taught. It may summarize and link to feature articles, but must not duplicate their tutorials.
+- Keep a type-named overview such as **IApplicationBuilder** only when the type itself is the concept being taught. It may summarize and link to feature articles, but must not duplicate their tutorials.
 - When a feature overview and a `Configure...` page both exist, merge the useful details into the feature overview, remove the duplicate page, and update every TOC entry and cross-link.
 - Keep overview pages concise. For example, **Shell configuration** explains `ConfigureShell` and links to feature articles; it does not repeat the complete title bar, navigation, toolbar, or motion tutorials.
 - Put exhaustive signatures, parameters, overloads, and member lists in the generated API reference. Use conceptual articles to teach when and how to use the feature.
@@ -121,7 +121,7 @@ Common sandbox failures:
 
 - `dotnet tool restore` can fail with `Access to the path '%APPDATA%\NuGet\NuGet.Config' is denied`.
 - `dotnet tool run docfx ...` can fail because the restored local tool is invisible inside the sandbox or because DocFX needs the user NuGet package cache.
-- `dotnet build .\Arkheide.Flourish.slnx` can fail with the same `NuGet.Config` access error.
+- `dotnet build .\Flourish.slnx` can fail with the same `NuGet.Config` access error.
 
 When those commands are required and fail for those reasons, rerun the same command with elevated permissions and a narrow prefix rule:
 

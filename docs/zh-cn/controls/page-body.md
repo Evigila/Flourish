@@ -5,7 +5,7 @@ description: 使用 PageBody 作为导航页面的严格滚动根容器，并直
 
 # PageBody
 
-`PageBody` 是 Flourish 导航页面的根内容容器。它封装 Flourish [ScrollViewer](scroll-viewer.md)、纵向内容堆栈和标准页面外边距，因此页面不需要重复声明外层 ScrollViewer 与 StackPanel。
+`PageBody` 封装 [ScrollViewer](scroll-viewer.md)、纵向堆栈和标准页边距，作为导航页面根容器。
 
 `PageBody` 的直接子项只能是 [HeaderChunk](chunk.md#headerchunk) 或 [Chunk](chunk.md)。HeaderChunk 最多出现一次，并且只能位于第一个位置。标准内容页面以一个 HeaderChunk 开头，随后放置一个或多个 Chunk。
 
@@ -39,7 +39,7 @@ Shell 启用 `SetCenterContent` 后，会限制并居中 PageBody 内部的内�
 
 ## 相关功能
 
-- [Chunk](chunk.md)定义 PageBody 内的 HeaderChunk 与 Chunk 页面层级。
-- [ScrollViewer](scroll-viewer.md)说明继承的滚动行为。
-- [Shell 配置](../articles/shell-configuration.md#自定义内容对齐)配置页面内容的居中宽度。
-- [PageBody API](xref:ArkheideSystem.Flourish.Controls.PageBody)列出完整成员。
+- [Chunk](chunk.md)
+- [ScrollViewer](scroll-viewer.md)
+- [功能配置](../articles/shell-configuration.md)
+- [PageBody API](xref:ArkheideSystem.Flourish.Controls.PageBody)

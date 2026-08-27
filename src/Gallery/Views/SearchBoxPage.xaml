@@ -2,7 +2,7 @@
   x:Class="ArkheideSystem.Gallery.Views.SearchBoxPage"
   x:Name="RootPage"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:culture="clr-namespace:Arkheide.Essential.Culture"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
   xmlns:flourish="http://schemas.arkheide.system/flourish"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Background="Transparent"
@@ -14,7 +14,7 @@
       Content="{culture:Localize Key=Controls_CollectCompactQueryTextWithASearchGlyphAndAnInControlPlaceholder_53FB208B}"
       PresenterMode="Split"
       PresenterPosition="Right"
-      Title="FlourishSearchBox"
+      Title="SearchBox"
     />
 
     <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
@@ -43,7 +43,7 @@
           Title="{culture:Localize Key=Controls_EmptyQuery_F1E2C7E8}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishSearchBox
+            <flourish:SearchBox
               Width="260"
               Height="40"
               HorizontalAlignment="Center"
@@ -60,7 +60,7 @@
           Title="{culture:Localize Key=Controls_ActiveQuery_6DC1590A}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:FlourishSearchBox
+            <flourish:SearchBox
               Width="260"
               Height="40"
               HorizontalAlignment="Center"
@@ -82,7 +82,7 @@
           Title="{culture:Localize Key=Controls_LiveQuery_5AC36933}"
         >
           <flourish:Presenter.Presentation>
-            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:FlourishSearchBox&#xA;  Placeholder=&quot;Search controls&quot;&#xA;  MaxLength=&quot;120&quot;&#xA;  Text=&quot;{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;" />
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:SearchBox&#xA;  Placeholder=&quot;Search controls&quot;&#xA;  MaxLength=&quot;120&quot;&#xA;  Text=&quot;{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;" />
           </flourish:Presenter.Presentation>
         </flourish:Presenter>
         <flourish:Presenter
@@ -111,10 +111,10 @@
         />
         <flourish:CardButton
           Margin="8,0,0,0"
-          Content="{culture:Localize Key=Controls_ReadTheFlourishSearchBoxAPIReference_BB6586CD}"
+          Content="{culture:Localize Key=Controls_ReadTheSearchBoxAPIReference_BB6586CD}"
           Icon="&#xE8A5;"
           IsEnabled="False"
-          Title="{culture:Localize Key=Controls_FlourishSearchBoxDocumentation_08AB34C9}"
+          Title="{culture:Localize Key=Controls_SearchBoxDocumentation_08AB34C9}"
           ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
         />
       </UniformGrid>

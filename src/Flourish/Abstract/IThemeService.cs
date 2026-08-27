@@ -10,7 +10,7 @@ public interface IThemeService
     /// <summary>
     /// Gets an immutable snapshot of the requested and resolved theme.
     /// </summary>
-    FlourishThemeState Current { get; }
+    ThemeState Current { get; }
 
     /// <summary>
     /// Raised after either the requested or effective theme changes.
@@ -18,7 +18,7 @@ public interface IThemeService
     /// <remarks>
     /// After WPF is initialized, the event is raised on the application dispatcher.
     /// </remarks>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishThemeState>>? Changed;
+    event EventHandler<StateChangedEventArgs<ThemeState>>? Changed;
 
     /// <summary>
     /// Selects the next System, Light, or Dark theme mode.
@@ -28,15 +28,15 @@ public interface IThemeService
     /// <summary>
     /// Selects a theme mode immediately and schedules its persistence.
     /// </summary>
-    void SetTheme(FlourishTheme theme);
+    void SetTheme(ApplicationTheme theme);
 }
 
 /// <summary>Represents the requested and resolved runtime theme.</summary>
-public sealed record FlourishThemeState(
-    FlourishTheme RequestedTheme,
-    FlourishTheme EffectiveTheme
+public sealed record ThemeState(
+    ApplicationTheme RequestedTheme,
+    ApplicationTheme EffectiveTheme
 )
 {
     /// <summary>Gets whether the resolved theme is dark.</summary>
-    public bool IsDark => EffectiveTheme == FlourishTheme.Dark;
+    public bool IsDark => EffectiveTheme == ApplicationTheme.Dark;
 }

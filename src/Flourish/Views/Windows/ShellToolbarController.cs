@@ -15,8 +15,8 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 
 internal sealed class ShellToolbarController : IDisposable
 {
-    private readonly FlourishToolbar view;
-    private readonly FlourishToolbarService service;
+    private readonly ToolbarView view;
+    private readonly ToolbarService service;
     private readonly ICommandRegistry commandRegistry;
     private readonly ICommandDispatcher commandDispatcher;
     private readonly ToolbarCommandButtonIndex commandButtons;
@@ -31,8 +31,8 @@ internal sealed class ShellToolbarController : IDisposable
     private bool isDisposed;
 
     internal ShellToolbarController(
-        FlourishToolbar view,
-        FlourishToolbarService service,
+        ToolbarView view,
+        ToolbarService service,
         ICommandRegistry commandRegistry,
         ICommandDispatcher commandDispatcher
     )
@@ -145,7 +145,7 @@ internal sealed class ShellToolbarController : IDisposable
     }
 
     private IReadOnlyList<Button> CreateButtons(
-        IReadOnlyList<FlourishToolbarItem> items,
+        IReadOnlyList<ToolbarItem> items,
         bool showIconOnly
     )
     {
@@ -160,6 +160,13 @@ internal sealed class ShellToolbarController : IDisposable
             var hasIcon = !string.IsNullOrWhiteSpace(item.IconGlyph);
             var useIconOnly = showIconOnly && hasIcon;
             Button button = hasIcon ? new Button { Icon = item.IconGlyph } : new Button();
+            if (hasIcon)
+            {
+                button.SetResourceReference(
+                    Button.IconSizeProperty,
+                    "FlourishIconFontSizeToolbar"
+                );
+            }
             button.Content = useIconOnly ? null : item.DisplayName;
             button.Margin = buttons.Count > 0 ? new Thickness(2, 0, 0, 0) : new Thickness();
             button.ToolTip = item.DisplayName;
@@ -181,7 +188,7 @@ internal sealed class ShellToolbarController : IDisposable
     private async void Button_Click(object sender, RoutedEventArgs e)
     {
         if (
-            sender is Button { Tag: FlourishToolbarItem { CommandKey: string commandKey } }
+            sender is Button { Tag: ToolbarItem { CommandKey: string commandKey } }
             && !string.IsNullOrWhiteSpace(commandKey)
         )
         {
@@ -189,7 +196,7 @@ internal sealed class ShellToolbarController : IDisposable
         }
     }
 
-    private void Service_Changed(object? sender, FlourishToolbarChangedEventArgs e)
+    private void Service_Changed(object? sender, ToolbarChangedEventArgs e)
     {
         Dispatch(() =>
         {
@@ -282,7 +289,7 @@ internal sealed class ShellToolbarController : IDisposable
         isDefaultToolbarActive = false;
     }
 
-    private void InvalidateButtonCache(Type? pageType, FlourishToolbarSnapshot snapshot)
+    private void InvalidateButtonCache(Type? pageType, ToolbarSnapshot snapshot)
     {
         if (pageType is not null)
         {

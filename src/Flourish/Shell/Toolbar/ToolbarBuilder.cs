@@ -7,8 +7,8 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Shell.Toolbar;
 
-internal sealed class ToolbarBuilder(FlourishToolbarOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class ToolbarBuilder(ToolbarOptions options)
+    : BuilderMutationGuard,
         IToolbarBuilder
 {
     public IToolbarBuilder SetEnabled(bool enabled = true)
@@ -20,7 +20,7 @@ internal sealed class ToolbarBuilder(FlourishToolbarOptions options)
 
     public IToolbarBuilder Set<TPage>(
         bool iconOnly,
-        params FlourishToolbarItem[] items
+        params ToolbarItem[] items
     )
         where TPage : Page
     {

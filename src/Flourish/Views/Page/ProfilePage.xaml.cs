@@ -10,19 +10,19 @@ using WpfPage = System.Windows.Controls.Page;
 
 namespace ArkheideSystem.Flourish.Views.Page;
 
-internal partial class FlourishProfilePage : WpfPage
+internal partial class ProfilePage : WpfPage
 {
     private readonly IProfileService profileService;
-    private readonly FlourishLocalizationService localizationService;
+    private readonly LocalizationService localizationService;
     private readonly ProfileImageBrushCache profileImageCache = new();
     private string? selectedImagePath;
     private bool isEditingLogin;
     private bool isUpdatingState;
     private bool isSubscribed;
 
-    public FlourishProfilePage(
+    public ProfilePage(
         IProfileService profileService,
-        FlourishLocalizationService localizationService
+        LocalizationService localizationService
     )
     {
         this.profileService = profileService;
@@ -36,18 +36,18 @@ internal partial class FlourishProfilePage : WpfPage
 
     private void ApplyLocale()
     {
-        LoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignIn);
-        FirstNameLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileFirstName);
-        LastNameLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileLastName);
-        ProfileImageLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfileImage);
-        UploadImageText.Text = localizationService.Get(FlourishLocaleKeys.ProfileUploadImage);
-        PasswordLabel.Text = localizationService.Get(FlourishLocaleKeys.ProfilePassword);
-        CancelLoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileCancel);
-        SubmitLoginButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignIn);
+        LoginButton.Content = localizationService.Get(LocaleKeys.ProfileSignIn);
+        FirstNameLabel.Text = localizationService.Get(LocaleKeys.ProfileFirstName);
+        LastNameLabel.Text = localizationService.Get(LocaleKeys.ProfileLastName);
+        ProfileImageLabel.Text = localizationService.Get(LocaleKeys.ProfileImage);
+        UploadImageText.Text = localizationService.Get(LocaleKeys.ProfileUploadImage);
+        PasswordLabel.Text = localizationService.Get(LocaleKeys.ProfilePassword);
+        CancelLoginButton.Content = localizationService.Get(LocaleKeys.ProfileCancel);
+        SubmitLoginButton.Content = localizationService.Get(LocaleKeys.ProfileSignIn);
         RememberLoginCheckBox.Content = localizationService.Get(
-            FlourishLocaleKeys.ProfileRememberLogin
+            LocaleKeys.ProfileRememberLogin
         );
-        LogoutButton.Content = localizationService.Get(FlourishLocaleKeys.ProfileSignOut);
+        LogoutButton.Content = localizationService.Get(LocaleKeys.ProfileSignOut);
     }
 
     private void ProfilePage_Loaded(object sender, RoutedEventArgs e)
@@ -77,7 +77,7 @@ internal partial class FlourishProfilePage : WpfPage
 
     private void ProfileService_Changed(
         object? sender,
-        FlourishStateChangedEventArgs<FlourishProfileState> e
+        StateChangedEventArgs<ProfileState> e
     )
     {
         if (!Dispatcher.CheckAccess())
@@ -89,7 +89,7 @@ internal partial class FlourishProfilePage : WpfPage
         UpdateState();
     }
 
-    private void LocalizationService_Changed(object? sender, FlourishLocalizationChangedEventArgs e)
+    private void LocalizationService_Changed(object? sender, LocalizationChangedEventArgs e)
     {
         if (!Dispatcher.CheckAccess())
         {
@@ -145,13 +145,13 @@ internal partial class FlourishProfilePage : WpfPage
     {
         var dialog = new OpenFileDialog
         {
-            Title = localizationService.Get(FlourishLocaleKeys.ProfileChooseImage),
+            Title = localizationService.Get(LocaleKeys.ProfileChooseImage),
             CheckFileExists = true,
             Multiselect = false,
             Filter =
-                $"{localizationService.Get(FlourishLocaleKeys.ProfileImageFiles)}"
+                $"{localizationService.Get(LocaleKeys.ProfileImageFiles)}"
                 + "|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp|"
-                + $"{localizationService.Get(FlourishLocaleKeys.ProfileAllFiles)}|*.*",
+                + $"{localizationService.Get(LocaleKeys.ProfileAllFiles)}|*.*",
         };
 
         if (dialog.ShowDialog(Window.GetWindow(this)) != true)
@@ -162,7 +162,7 @@ internal partial class FlourishProfilePage : WpfPage
         var imageSource = ProfileImageLoader.Load(dialog.FileName);
         if (imageSource is null)
         {
-            ErrorText.Text = localizationService.Get(FlourishLocaleKeys.ProfileImageLoadFailed);
+            ErrorText.Text = localizationService.Get(LocaleKeys.ProfileImageLoadFailed);
             return;
         }
 
@@ -201,7 +201,7 @@ internal partial class FlourishProfilePage : WpfPage
             {
                 ErrorText.Text =
                     result.ErrorMessage
-                    ?? localizationService.Get(FlourishLocaleKeys.ProfileSignInFailed);
+                    ?? localizationService.Get(LocaleKeys.ProfileSignInFailed);
                 return;
             }
 
@@ -286,8 +286,8 @@ internal partial class FlourishProfilePage : WpfPage
             var isSignedIn = state.LoginState != ProfileLoginState.SignedOut;
             LoginStateText.Text = localizationService.Get(
                 isSignedIn
-                    ? FlourishLocaleKeys.ProfileSignedIn
-                    : FlourishLocaleKeys.ProfileSignedOut
+                    ? LocaleKeys.ProfileSignedIn
+                    : LocaleKeys.ProfileSignedOut
             );
             LoginButton.Visibility =
                 !isSignedIn && !isEditingLogin ? Visibility.Visible : Visibility.Collapsed;
@@ -315,7 +315,7 @@ internal partial class FlourishProfilePage : WpfPage
         var lastName = LastNameInput.Text.Trim();
         if (firstName.Length == 0 && lastName.Length == 0)
         {
-            firstName = localizationService.Get(FlourishLocaleKeys.ProfileDefaultName);
+            firstName = localizationService.Get(LocaleKeys.ProfileDefaultName);
         }
 
         SetAvatar(

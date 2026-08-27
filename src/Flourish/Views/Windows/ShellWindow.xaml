@@ -1,0 +1,104 @@
+<Window
+  x:Class="ArkheideSystem.Flourish.Views.Windows.ShellWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:control="clr-namespace:ArkheideSystem.Flourish.Controls"
+  xmlns:view="clr-namespace:ArkheideSystem.Flourish.Views.Windows"
+  Width="1100"
+  Height="720"
+  MinWidth="820"
+  MinHeight="560"
+  x:ClassModifier="internal"
+  Background="{DynamicResource FlourishShellBackgroundBrush}"
+  FontFamily="{DynamicResource FlourishFontFamily}"
+  FontSize="{DynamicResource FlourishFontSizeStandard}"
+  Foreground="{DynamicResource FlourishNeutralForeground1Brush}"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+  WindowStartupLocation="CenterScreen"
+  mc:Ignorable="d"
+>
+  <Border
+    x:Name="ShellBorder"
+    BorderBrush="{DynamicResource FlourishDividerBrush}"
+    BorderThickness="1"
+  >
+    <Grid x:Name="ShellRootGrid" SizeChanged="ShellRootGrid_SizeChanged">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <view:TitleBarView x:Name="Titlebar" Grid.Row="0" Panel.ZIndex="150" Height="40" />
+
+      <Border
+        Grid.Row="1"
+        Margin="0"
+        Background="Transparent"
+        BorderThickness="0"
+        ClipToBounds="True"
+      >
+        <Grid x:Name="WorkAreaGrid">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="PaneColumn" Width="220" />
+            <ColumnDefinition x:Name="ContentColumn" Width="*" />
+          </Grid.ColumnDefinitions>
+
+          <view:NavigationPaneView
+            x:Name="NavigationPane"
+            Grid.Column="0"
+            Panel.ZIndex="10"
+          />
+
+          <view:ShellContentHost
+            x:Name="ContentHost"
+            Grid.Column="1"
+          />
+
+          <control:GridSplitter
+            x:Name="NavigationPaneSplitter"
+            Grid.Column="0"
+            Panel.ZIndex="20"
+            DragCompleted="NavigationPaneSplitter_DragCompleted"
+            DragStarted="NavigationPaneSplitter_DragStarted"
+            Variant="NavigationPane"
+            Visibility="Collapsed"
+          />
+        </Grid>
+      </Border>
+
+      <view:StatusBarView
+        x:Name="StatusBar"
+        Grid.Row="2"
+        Panel.ZIndex="120"
+      />
+
+      <view:NotificationHost
+        x:Name="NotificationHost"
+        Grid.RowSpan="3"
+        Panel.ZIndex="200"
+      />
+
+      <view:ApplicationInfoOverlay
+        x:Name="ApplicationInfoOverlay"
+        Grid.RowSpan="3"
+        Panel.ZIndex="145"
+        />
+
+      <view:ProfileOverlay
+        x:Name="ProfileOverlay"
+        Grid.RowSpan="3"
+        Panel.ZIndex="130"
+      />
+
+      <view:StatusOverlay
+        x:Name="StatusOverlay"
+        Grid.RowSpan="3"
+        Panel.ZIndex="110"
+      />
+    </Grid>
+  </Border>
+</Window>

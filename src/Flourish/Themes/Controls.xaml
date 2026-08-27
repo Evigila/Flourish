@@ -4,43 +4,43 @@
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
 >
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/ScrollBar.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ScrollBar.xaml" />
     <!-- PageBody is the terminal dictionary in the ScrollViewer dependency chain. -->
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/PageBody.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/TextBlock.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/Label.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/PageBody.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/TextBlock.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Label.xaml" />
     <!-- CardButton is the terminal dictionary in the Button-family dependency chain. -->
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/CardButton.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/Paragraph.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/Document.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/CodeSpace.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/Presenter.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/Chunk.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/HeaderChunk.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/TextBox.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/PasswordBox.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/SearchBox.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/CheckBox.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/RadioButton.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/ComboBoxItem.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/ComboBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/CardButton.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Paragraph.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Document.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/CodeSpace.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Presenter.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Chunk.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/HeaderChunk.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/TextBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/PasswordBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/SearchBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/CheckBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/RadioButton.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ComboBoxItem.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ComboBox.xaml" />
     <!-- BunchedListBox is the terminal dictionary in the ListBox-family dependency chain. -->
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/BunchedListBox.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/DataGrid.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/BunchedListBox.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/DataGrid.xaml" />
     <!-- OutputCard is the terminal dictionary in the Card-family dependency chain. -->
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/OutputCard.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/Overlay.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/ToolTip.xaml" />
-    <ResourceDictionary Source="/Arkheide.Flourish;component/Controls/GridSplitter.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/OutputCard.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/Overlay.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/ToolTip.xaml" />
+    <ResourceDictionary Source="/Flourish;component/Controls/GridSplitter.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <!-- Runtime services may override these public interaction defaults. -->
   <sys:Boolean x:Key="FlourishHoverRevealEnabled">True</sys:Boolean>
   <sys:Boolean x:Key="FlourishSmoothScrollingEnabled">True</sys:Boolean>
   <sys:TimeSpan x:Key="FlourishHoverRevealDuration">0:0:0.140</sys:TimeSpan>
-  <sys:Boolean x:Key="FlourishToolTipsEnabled">False</sys:Boolean>
-  <sys:Int32 x:Key="FlourishToolTipInitialShowDelay">200</sys:Int32>
-  <sys:Double x:Key="FlourishToolTipSpawnableMargin">5</sys:Double>
+  <sys:Boolean x:Key="ToolTipsEnabled">False</sys:Boolean>
+  <sys:Int32 x:Key="ToolTipInitialShowDelay">200</sys:Int32>
+  <sys:Double x:Key="ToolTipSpawnableMargin">5</sys:Double>
 
   <!-- Compact Flourish geometry with light borders and a layered surface hierarchy. -->
   <sys:Double x:Key="FlourishControlHeight">30</sys:Double>
@@ -49,7 +49,7 @@
   <sys:Double x:Key="FlourishButtonMinWidth">72</sys:Double>
   <sys:Double x:Key="FlourishButtonIconOnlySize">32</sys:Double>
   <CornerRadius x:Key="FlourishControlCornerRadius">6</CornerRadius>
-  <CornerRadius x:Key="FlourishScrollBarThumbCornerRadius">2</CornerRadius>
+  <CornerRadius x:Key="ScrollBarThumbCornerRadius">2</CornerRadius>
   <CornerRadius x:Key="FlourishSurfaceCornerRadius">8</CornerRadius>
   <CornerRadius x:Key="FlourishOverlayCornerRadius">10</CornerRadius>
   <CornerRadius x:Key="FlourishDialogCornerRadius">12</CornerRadius>

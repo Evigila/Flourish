@@ -1,7 +1,7 @@
 using System;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 

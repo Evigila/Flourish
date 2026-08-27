@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CKey = Arkheide.Essential.Culture.Key;
-using Localizer = Arkheide.Essential.Culture.Localizer;
+using CKey = ArkheideSystem.Essential.Culture.Key;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 using InputKey = System.Windows.Input.Key;
 using ArkheideSystem.Flourish.Abstract;
 using System.Windows;
@@ -59,7 +59,7 @@ public partial class TitleBarRuntimePage : Page
         searchSubscription = null;
     }
 
-    private void TitleBar_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e)
+    private void TitleBar_Changed(object? sender, StateChangedEventArgs<TitleBarState> e)
     {
         Dispatcher.BeginInvoke(RefreshState);
     }
@@ -70,7 +70,7 @@ public partial class TitleBarRuntimePage : Page
     }
 
     private async ValueTask HandleSearchQueryAsync(
-        FlourishTitleBarSearchQuery args,
+        TitleBarSearchQuery args,
         CancellationToken cancellationToken
     )
     {
@@ -407,7 +407,7 @@ public partial class TitleBarRuntimePage : Page
     }
 
     private static bool IsTitleBarElementVisible(
-        FlourishTitleBarState state,
+        TitleBarState state,
         TitleBarElement element
     ) =>
         element switch

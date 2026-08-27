@@ -5,13 +5,13 @@ using WpfTextBox = System.Windows.Controls.TextBox;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled editable text field.</summary>
-public class FlourishTextBox : WpfTextBox
+public class TextBox : WpfTextBox
 {
-    static FlourishTextBox()
+    static TextBox()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishTextBox),
-            new FrameworkPropertyMetadata(typeof(FlourishTextBox))
+            typeof(TextBox),
+            new FrameworkPropertyMetadata(typeof(TextBox))
         );
     }
 }

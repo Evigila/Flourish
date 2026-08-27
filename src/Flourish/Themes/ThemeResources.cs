@@ -1,0 +1,84 @@
+using System;
+
+using ArkheideSystem.Flourish.Abstract;
+using System.Collections.Generic;
+
+using System.Windows;
+
+namespace ArkheideSystem.Flourish.Themes;
+
+/// <summary>
+/// Loads Flourish control and theme resources.
+/// </summary>
+/// <remarks>
+/// Add one instance to <see cref="ResourceDictionary.MergedDictionaries" /> when Flourish
+/// controls must be available in the WPF designer, before the shell starts, or independently
+/// from the Flourish shell.
+/// </remarks>
+public sealed class ThemeResources : ResourceDictionary
+{
+    internal const string GenericThemeSource =
+        "/Flourish;component/Themes/Generic.xaml";
+
+    /// <summary>
+    /// Initializes a Flourish control and theme resource dictionary.
+    /// </summary>
+    public ThemeResources()
+    {
+        Source = new Uri(GenericThemeSource, UriKind.Relative);
+    }
+
+    internal static void EnsureMerged(ResourceDictionary resources)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+        if (FindThemeRoot(resources) is not null)
+        {
+            return;
+        }
+
+        resources.MergedDictionaries.Add(new ThemeResources());
+    }
+
+    internal static ResourceDictionary? FindThemeRoot(ResourceDictionary resources)
+    {
+        return FindInGraph(
+            resources,
+            static dictionary => dictionary is ThemeResources
+        );
+    }
+
+    internal static ResourceDictionary? FindInGraph(
+        ResourceDictionary resources,
+        Func<ResourceDictionary, bool> predicate
+    )
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var pending = new Stack<ResourceDictionary>();
+        var visited = new HashSet<ResourceDictionary>(ReferenceEqualityComparer.Instance);
+        pending.Push(resources);
+
+        while (pending.TryPop(out var current))
+        {
+            if (!visited.Add(current))
+            {
+                continue;
+            }
+
+            if (predicate(current))
+            {
+                return current;
+            }
+
+            // WPF resolves later merged dictionaries first, so traverse the graph in the
+            // same effective precedence order when more than one theme root is present.
+            for (var index = 0; index < current.MergedDictionaries.Count; index++)
+            {
+                pending.Push(current.MergedDictionaries[index]);
+            }
+        }
+
+        return null;
+    }
+}

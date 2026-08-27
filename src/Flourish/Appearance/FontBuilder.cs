@@ -4,18 +4,18 @@ using ArkheideSystem.Flourish.Configuration;
 
 namespace ArkheideSystem.Flourish.Appearance;
 
-internal sealed class FontBuilder(FlourishAppearanceOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class FontBuilder(AppearanceOptions options)
+    : BuilderMutationGuard,
         IFontBuilder
 {
     public IFontBuilder SetFont(
         string fontFamily = "Microsoft Yahei",
-        double smallFontSize = 12,
-        double standardFontSize = 14,
-        double iconFontSize = 22,
-        double largeFontSize = 16,
-        double extraLargeFontSize = 24,
-        double headerSizeFontSize = 32,
+        double smallFontSize = 11,
+        double standardFontSize = 13,
+        double iconFontSize = 14,
+        double largeFontSize = 14,
+        double extraLargeFontSize = 18,
+        double headerSizeFontSize = 25,
         bool usePersistedPreference = true
     )
     {
@@ -69,7 +69,7 @@ internal sealed class FontBuilder(FlourishAppearanceOptions options)
             headerSizeFontSize ?? options.FontSizeHeaderSize
         );
 
-        options.PageFontOverridesByPageType[typeof(TPage)] = new FlourishPageFontOverride(
+        options.PageFontOverridesByPageType[typeof(TPage)] = new PageFontOverride(
             fontFamily,
             smallFontSize,
             standardFontSize,

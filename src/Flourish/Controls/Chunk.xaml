@@ -9,7 +9,7 @@
       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
     >
       <StackPanel>
-        <controls:FlourishTextBlock
+        <controls:TextBlock
           x:Name="TitleHost"
           FontSize="{DynamicResource FlourishFontSizeExtraLarge}"
           FontWeight="Bold"
@@ -17,7 +17,7 @@
           Text="{TemplateBinding Title}"
           TextWrapping="Wrap"
         />
-        <controls:FlourishTextBlock
+        <controls:TextBlock
           x:Name="ContentHost"
           Margin="{TemplateBinding ChunkSpacing}"
           Role="Description"

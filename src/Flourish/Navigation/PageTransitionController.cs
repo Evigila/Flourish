@@ -25,7 +25,7 @@ internal sealed class PageTransitionController
 
     internal bool Start(
         PageTransitionTarget target,
-        FlourishPageTransition transition,
+        PageTransition transition,
         TimeSpan duration,
         IEasingFunction easing,
         Action completed
@@ -37,7 +37,7 @@ internal sealed class PageTransitionController
 
         if (
             transition
-                is not (FlourishPageTransition.Fade or FlourishPageTransition.EntranceFromBottom)
+                is not (PageTransition.Fade or PageTransition.EntranceFromBottom)
             || duration <= TimeSpan.Zero
         )
         {
@@ -59,7 +59,7 @@ internal sealed class PageTransitionController
                 FillBehavior = FillBehavior.Stop,
             }
         );
-        if (transition == FlourishPageTransition.EntranceFromBottom)
+        if (transition == PageTransition.EntranceFromBottom)
         {
             timeline.Children.Add(
                 new DoubleAnimation(PageEntranceOffset, 0, new Duration(duration))
@@ -79,7 +79,7 @@ internal sealed class PageTransitionController
         try
         {
             target.Presenter.SetCurrentValue(UIElement.CacheModeProperty, state.TransitionCache);
-            if (transition == FlourishPageTransition.EntranceFromBottom)
+            if (transition == PageTransition.EntranceFromBottom)
             {
                 target.Presenter.SetCurrentValue(
                     UIElement.RenderTransformProperty,
@@ -92,7 +92,7 @@ internal sealed class PageTransitionController
                 (AnimationClock)clock.Children[0],
                 HandoffBehavior.SnapshotAndReplace
             );
-            if (transition == FlourishPageTransition.EntranceFromBottom)
+            if (transition == PageTransition.EntranceFromBottom)
             {
                 state.Translation.ApplyAnimationClock(
                     TranslateTransform.YProperty,
@@ -156,7 +156,7 @@ internal sealed class PageTransitionController
         try
         {
             state.Target.Presenter.ApplyAnimationClock(UIElement.OpacityProperty, null);
-            if (state.Transition == FlourishPageTransition.EntranceFromBottom)
+            if (state.Transition == PageTransition.EntranceFromBottom)
             {
                 state.Translation.ApplyAnimationClock(TranslateTransform.YProperty, null);
             }
@@ -176,7 +176,7 @@ internal sealed class PageTransitionController
             UIElement.OpacityProperty,
             state.OriginalOpacityLocalValue
         );
-        if (state.Transition == FlourishPageTransition.EntranceFromBottom)
+        if (state.Transition == PageTransition.EntranceFromBottom)
         {
             target.Presenter.SetCurrentValue(
                 UIElement.RenderTransformProperty,
@@ -224,12 +224,12 @@ internal sealed class PageTransitionController
 
     private sealed class TransitionState(
         PageTransitionTarget target,
-        FlourishPageTransition transition
+        PageTransition transition
     )
     {
         internal PageTransitionTarget Target { get; } = target;
 
-        internal FlourishPageTransition Transition { get; } = transition;
+        internal PageTransition Transition { get; } = transition;
 
         internal double OriginalOpacity { get; } = target.Presenter.Opacity;
 

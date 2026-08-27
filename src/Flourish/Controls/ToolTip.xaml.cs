@@ -5,13 +5,13 @@ using WpfToolTip = System.Windows.Controls.ToolTip;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled tooltip with shell-region-aware placement.</summary>
-public class FlourishToolTip : WpfToolTip
+public class ToolTip : WpfToolTip
 {
-    static FlourishToolTip()
+    static ToolTip()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishToolTip),
-            new FrameworkPropertyMetadata(typeof(FlourishToolTip))
+            typeof(ToolTip),
+            new FrameworkPropertyMetadata(typeof(ToolTip))
         );
     }
 }

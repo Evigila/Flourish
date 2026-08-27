@@ -22,7 +22,7 @@ public interface IDataBuilder
     /// <param name="locale">The locale identifier.</param>
     /// <remarks>
     /// Flourish uses the built-in English locale when this method and
-    /// <see cref="IFlourishBuilder.ConfigureData(Action{IDataBuilder})" /> are omitted.
+    /// <see cref="IApplicationBuilder.ConfigureData(Action{IDataBuilder})" /> are omitted.
     /// Built-in locale identifiers are <c>en-US</c> and <c>zh-CN</c>. Identifiers are
     /// case-insensitive and are returned in canonical BCP 47 form.
     /// </remarks>
@@ -40,7 +40,7 @@ public interface IDataBuilder
     /// <returns>The current builder for chained configuration.</returns>
     /// <remarks>
     /// <para>
-    /// The file is read while <see cref="IFlourishBuilder.Build" /> applies configuration. It
+    /// The file is read while <see cref="IApplicationBuilder.Build" /> applies configuration. It
     /// must be a UTF-8, non-empty JSON object named <c>FlourishCulture.Json</c>. Each top-level
     /// property is a translation key whose value is an object of locale/value pairs. Keys,
     /// locale identifiers, and translated values cannot be empty. Locale identifiers are
@@ -149,7 +149,7 @@ public interface IDataBuilder
 
     /// <summary>
     /// Selects the JSON file that supplies the <c>Flourish</c> configuration section and receives
-    /// updates through <see cref="IFlourishSettingsStore" />.
+    /// updates through <see cref="ISettingsStore" />.
     /// </summary>
     /// <param name="path">
     /// An absolute path, or a path relative to <see cref="AppContext.BaseDirectory" />.

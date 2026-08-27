@@ -5,13 +5,13 @@ using WpfScrollBar = System.Windows.Controls.Primitives.ScrollBar;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled scroll bar.</summary>
-public class FlourishScrollBar : WpfScrollBar
+public class ScrollBar : WpfScrollBar
 {
-    static FlourishScrollBar()
+    static ScrollBar()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishScrollBar),
-            new FrameworkPropertyMetadata(typeof(FlourishScrollBar))
+            typeof(ScrollBar),
+            new FrameworkPropertyMetadata(typeof(ScrollBar))
         );
     }
 }

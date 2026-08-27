@@ -12,22 +12,22 @@ internal sealed class NavigationRouteRegistry
 {
     private readonly Lock gate = new();
     private readonly IServiceProvider? serviceProvider;
-    private readonly Dictionary<string, FlourishNavigationRoute> routes = new(
+    private readonly Dictionary<string, NavigationRoute> routes = new(
         StringComparer.Ordinal
     );
-    private readonly Dictionary<Type, FlourishNavigationRoute> routesByPageType = [];
+    private readonly Dictionary<Type, NavigationRoute> routesByPageType = [];
     private readonly Dictionary<string, Guid> leases = new(StringComparer.Ordinal);
     private RouteRegistrySnapshot current;
     private long version;
 
-    public NavigationRouteRegistry(IServiceProvider serviceProvider, FlourishNavigationOptions options)
+    public NavigationRouteRegistry(IServiceProvider serviceProvider, NavigationOptions options)
         : this(options)
     {
         this.serviceProvider =
             serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-    internal NavigationRouteRegistry(FlourishNavigationOptions options)
+    internal NavigationRouteRegistry(NavigationOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         foreach (var route in options.InitialNavigationRoutes)
@@ -41,15 +41,15 @@ internal sealed class NavigationRouteRegistry
         current = CreateSnapshot();
     }
 
-    public event EventHandler<FlourishNavigationRoutesChangedEventArgs>? Changed;
+    public event EventHandler<NavigationRoutesChangedEventArgs>? Changed;
 
-    public FlourishNavigationRouteSnapshot Current => Volatile.Read(ref current).Routes;
+    public NavigationRouteSnapshot Current => Volatile.Read(ref current).Routes;
 
-    public IRegistration Append(FlourishNavigationRoute route)
+    public IRegistration Append(NavigationRoute route)
     {
         ValidateRoute(route);
         var lease = Guid.NewGuid();
-        FlourishNavigationRouteSnapshot snapshot;
+        NavigationRouteSnapshot snapshot;
         lock (gate)
         {
             if (routes.ContainsKey(route.NavigationKey))
@@ -69,9 +69,9 @@ internal sealed class NavigationRouteRegistry
 
         Changed?.Invoke(
             this,
-            new FlourishNavigationRoutesChangedEventArgs(
+            new NavigationRoutesChangedEventArgs(
                 snapshot,
-                FlourishRuntimeChangeKind.Added,
+                CollectionChangeKind.Added,
                 previousRoute: null,
                 route
             )
@@ -79,12 +79,12 @@ internal sealed class NavigationRouteRegistry
         return new Registration(this, route.NavigationKey, lease);
     }
 
-    public IRegistration Set(FlourishNavigationRoute route)
+    public IRegistration Set(NavigationRoute route)
     {
         ValidateRoute(route);
         var lease = Guid.NewGuid();
-        FlourishNavigationRoute? previous;
-        FlourishNavigationRouteSnapshot snapshot;
+        NavigationRoute? previous;
+        NavigationRouteSnapshot snapshot;
         lock (gate)
         {
             routes.TryGetValue(route.NavigationKey, out previous);
@@ -103,11 +103,11 @@ internal sealed class NavigationRouteRegistry
 
         Changed?.Invoke(
             this,
-            new FlourishNavigationRoutesChangedEventArgs(
+            new NavigationRoutesChangedEventArgs(
                 snapshot,
                 previous is null
-                    ? FlourishRuntimeChangeKind.Added
-                    : FlourishRuntimeChangeKind.Updated,
+                    ? CollectionChangeKind.Added
+                    : CollectionChangeKind.Updated,
                 previous,
                 route
             )
@@ -121,13 +121,13 @@ internal sealed class NavigationRouteRegistry
         return RemoveCore(navigationKey, lease: null);
     }
 
-    public void SetCacheMode(string navigationKey, FlourishPageCacheMode cacheMode)
+    public void SetCacheMode(string navigationKey, PageCacheMode cacheMode)
     {
         navigationKey = ValidateKey(navigationKey, nameof(navigationKey));
         ValidateCacheMode(cacheMode);
-        FlourishNavigationRoute previous;
-        FlourishNavigationRoute current;
-        FlourishNavigationRouteSnapshot snapshot;
+        NavigationRoute previous;
+        NavigationRoute current;
+        NavigationRouteSnapshot snapshot;
         lock (gate)
         {
             if (!routes.TryGetValue(navigationKey, out previous!))
@@ -151,27 +151,27 @@ internal sealed class NavigationRouteRegistry
 
         Changed?.Invoke(
             this,
-            new FlourishNavigationRoutesChangedEventArgs(
+            new NavigationRoutesChangedEventArgs(
                 snapshot,
-                FlourishRuntimeChangeKind.Updated,
+                CollectionChangeKind.Updated,
                 previous,
                 current
             )
         );
     }
 
-    public FlourishNavigationRoute? Get(string navigationKey)
+    public NavigationRoute? Get(string navigationKey)
     {
         navigationKey = ValidateKey(navigationKey, nameof(navigationKey));
         return Volatile.Read(ref current).Routes.Routes.GetValueOrDefault(navigationKey);
     }
 
-    internal bool TryGet(string navigationKey, out FlourishNavigationRoute route)
+    internal bool TryGet(string navigationKey, out NavigationRoute route)
     {
         return Volatile.Read(ref current).Routes.Routes.TryGetValue(navigationKey, out route!);
     }
 
-    internal bool TryGet(Type pageType, out FlourishNavigationRoute route)
+    internal bool TryGet(Type pageType, out NavigationRoute route)
     {
         return Volatile.Read(ref current).RoutesByPageType.TryGetValue(pageType, out route!);
     }
@@ -200,8 +200,8 @@ internal sealed class NavigationRouteRegistry
 
     private bool RemoveCore(string navigationKey, Guid? lease)
     {
-        FlourishNavigationRoute? removed = null;
-        FlourishNavigationRouteSnapshot? snapshot = null;
+        NavigationRoute? removed = null;
+        NavigationRouteSnapshot? snapshot = null;
         lock (gate)
         {
             if (
@@ -228,9 +228,9 @@ internal sealed class NavigationRouteRegistry
 
         Changed?.Invoke(
             this,
-            new FlourishNavigationRoutesChangedEventArgs(
+            new NavigationRoutesChangedEventArgs(
                 snapshot,
-                FlourishRuntimeChangeKind.Removed,
+                CollectionChangeKind.Removed,
                 removed,
                 route: null
             )
@@ -251,7 +251,7 @@ internal sealed class NavigationRouteRegistry
         }
     }
 
-    private FlourishNavigationRouteSnapshot PublishSnapshot()
+    private NavigationRouteSnapshot PublishSnapshot()
     {
         var snapshot = CreateSnapshot();
         Volatile.Write(ref current, snapshot);
@@ -260,18 +260,18 @@ internal sealed class NavigationRouteRegistry
 
     private RouteRegistrySnapshot CreateSnapshot()
     {
-        var routesSnapshot = new ReadOnlyDictionary<string, FlourishNavigationRoute>(
-            new Dictionary<string, FlourishNavigationRoute>(routes, StringComparer.Ordinal)
+        var routesSnapshot = new ReadOnlyDictionary<string, NavigationRoute>(
+            new Dictionary<string, NavigationRoute>(routes, StringComparer.Ordinal)
         );
         return new RouteRegistrySnapshot(
-            new FlourishNavigationRouteSnapshot(routesSnapshot, version),
-            new ReadOnlyDictionary<Type, FlourishNavigationRoute>(
-                new Dictionary<Type, FlourishNavigationRoute>(routesByPageType)
+            new NavigationRouteSnapshot(routesSnapshot, version),
+            new ReadOnlyDictionary<Type, NavigationRoute>(
+                new Dictionary<Type, NavigationRoute>(routesByPageType)
             )
         );
     }
 
-    private static void ValidateRoute(FlourishNavigationRoute route)
+    private static void ValidateRoute(NavigationRoute route)
     {
         ArgumentNullException.ThrowIfNull(route);
         ValidateKey(route.NavigationKey, nameof(route.NavigationKey));
@@ -297,7 +297,7 @@ internal sealed class NavigationRouteRegistry
         return navigationKey;
     }
 
-    private static void ValidateCacheMode(FlourishPageCacheMode cacheMode)
+    private static void ValidateCacheMode(PageCacheMode cacheMode)
     {
         if (!Enum.IsDefined(cacheMode))
         {
@@ -328,7 +328,7 @@ internal sealed class NavigationRouteRegistry
     }
 
     private sealed record RouteRegistrySnapshot(
-        FlourishNavigationRouteSnapshot Routes,
-        IReadOnlyDictionary<Type, FlourishNavigationRoute> RoutesByPageType
+        NavigationRouteSnapshot Routes,
+        IReadOnlyDictionary<Type, NavigationRoute> RoutesByPageType
     );
 }

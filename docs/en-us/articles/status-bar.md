@@ -5,7 +5,7 @@ description: Configure custom status items, background-task indicators, and cons
 
 # Status bar
 
-The status bar is the compact Shell surface for active background work, application-defined status items, and built-in system details. Use `ConfigureStatusBar` to enable its persistent surface and add optional custom or system items.
+Use `ConfigureStatusBar` for background work, custom status, and system details.
 
 ```csharp
 builder
@@ -31,7 +31,7 @@ Use `AddStatusItem` for non-interactive text-and-icon state. Use a [custom foote
 - queued tasks share one plain numeric count without an icon or badge
 - hovering or clicking the queue count opens the waiting list and its cancellation controls
 
-The Shell takes task names, descriptions, and glyphs from `FlourishBackgroundTaskMetadata`. A task that has not supplied an icon uses the built-in task glyph.
+The Shell takes task names, descriptions, and glyphs from `BackgroundTaskMetadata`. A task that has not supplied an icon uses the built-in task glyph.
 
 Active work temporarily shows the status bar even when `SetEnabled()` was omitted. When no active tasks remain, the bar returns to its configured visibility. See [Background tasks](background-tasks.md) for submission, bounded concurrency, cancellation, progress, and results.
 
@@ -44,7 +44,7 @@ statusBar.AddStatusItem("Online", "\uE774");
 statusBar.AddStatusItem("Synced", "\uE73E");
 ```
 
-Use custom items for application-specific state such as account state, workspace name, synchronization state, or current mode. The supplied text is application content and is not translated automatically.
+Custom-item text is application content and is not translated automatically.
 
 ## Consolidated network and power status
 
@@ -56,7 +56,7 @@ statusBar
     .SetPowerStatusEnabled();
 ```
 
-Hover or click the icon to open its temporary [Overlay](../controls/overlay.md). It closes after the pointer leaves both the icon and surface. The network row reads current network availability when the overlay opens. The power row reports AC, battery, or unknown power source and includes the battery percentage when Windows supplies a valid value. These are current snapshots taken when the surface opens, not a continuous connectivity or battery monitor.
+Hover or click the icon to open a temporary [Overlay](../controls/overlay.md). It shows point-in-time network availability and power source, plus battery percentage when available; it is not a continuous monitor.
 
 Built-in labels follow the locale selected through [Application data](configure-data.md).
 
@@ -68,7 +68,7 @@ Use [Custom shell content](configure-custom-handler.md) for application-provided
 builder.ConfigureContent(custom =>
 {
     custom.AddFooterCommand(
-        FlourishRegion.FooterEnd,
+        ShellRegion.FooterEnd,
         "Sync",
         "\uE895",
         "cmd_sync_run");

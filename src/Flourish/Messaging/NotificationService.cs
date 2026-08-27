@@ -16,18 +16,18 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
 {
     private readonly Lock gate = new();
     private readonly Dictionary<string, NotificationEntry> entries = new(StringComparer.Ordinal);
-    private FlourishNotificationState current = new(
-        Array.Empty<FlourishNotificationInfo>(),
+    private NotificationState current = new(
+        Array.Empty<ActiveNotificationInfo>(),
         0
     );
     private long version;
     private bool isDisposed;
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishNotificationState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<NotificationState>>? Changed;
 
-    public FlourishNotificationState Current => Volatile.Read(ref current);
+    public NotificationState Current => Volatile.Read(ref current);
 
-    public FlourishNotificationHandle Show(FlourishNotification notification)
+    public NotificationHandle Show(Notification notification)
     {
         Validate(notification);
         lock (gate)
@@ -47,7 +47,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
         return CreateHandle(notification.Id);
     }
 
-    public FlourishNotificationHandle Upsert(FlourishNotification notification)
+    public NotificationHandle Upsert(Notification notification)
     {
         Validate(notification);
         lock (gate)
@@ -124,7 +124,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
             version++;
             Volatile.Write(
                 ref current,
-                new FlourishNotificationState(Array.Empty<FlourishNotificationInfo>(), version)
+                new NotificationState(Array.Empty<ActiveNotificationInfo>(), version)
             );
         }
 
@@ -135,7 +135,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
         }
     }
 
-    private void AddOrReplaceLocked(FlourishNotification notification)
+    private void AddOrReplaceLocked(Notification notification)
     {
         if (entries.Remove(notification.Id, out var previous))
         {
@@ -195,7 +195,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
         }
     }
 
-    private void Update(FlourishNotification notification)
+    private void Update(Notification notification)
     {
         Validate(notification);
         lock (gate)
@@ -211,28 +211,28 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
         NotifyChanged();
     }
 
-    private FlourishNotificationHandle CreateHandle(string id)
+    private NotificationHandle CreateHandle(string id)
     {
-        return new FlourishNotificationHandle(id, Update, () => Dismiss(id));
+        return new NotificationHandle(id, Update, () => Dismiss(id));
     }
 
     private void NotifyChanged()
     {
-        FlourishNotificationState state;
+        NotificationState state;
         lock (gate)
         {
-            state = new FlourishNotificationState(CreateSnapshotLocked(), version);
+            state = new NotificationState(CreateSnapshotLocked(), version);
             Volatile.Write(ref current, state);
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishNotificationState>(state));
+        Changed?.Invoke(this, new StateChangedEventArgs<NotificationState>(state));
     }
 
-    private IReadOnlyList<FlourishNotificationInfo> CreateSnapshotLocked()
+    private IReadOnlyList<ActiveNotificationInfo> CreateSnapshotLocked()
     {
         return entries
             .Values.OrderBy(entry => entry.CreatedAt)
-            .Select(entry => new FlourishNotificationInfo(
+            .Select(entry => new ActiveNotificationInfo(
                 entry.Notification,
                 entry.CreatedAt,
                 entry.Version
@@ -240,7 +240,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
             .ToArray();
     }
 
-    private static void Validate(FlourishNotification notification)
+    private static void Validate(Notification notification)
     {
         ArgumentNullException.ThrowIfNull(notification);
         if (string.IsNullOrWhiteSpace(notification.Id))
@@ -276,7 +276,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
     }
 
     private sealed record NotificationEntry(
-        FlourishNotification Notification,
+        Notification Notification,
         DateTimeOffset CreatedAt,
         long Version,
         CancellationTokenSource Cancellation

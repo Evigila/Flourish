@@ -20,13 +20,13 @@ internal sealed class ShellTitleBarController : IDisposable
     private const double EdgeSafeMargin = 14;
     private const double AnchorGap = 6;
 
-    private readonly FlourishTitlebar titlebar;
+    private readonly TitleBarView titlebar;
     private readonly ApplicationInfoOverlay applicationInfo;
     private readonly FrameworkElement shellRoot;
     private readonly TitleBarService titleBarService;
     private readonly TitleBarSearchService searchService;
     private readonly ProjectSelectorController projectSelector;
-    private readonly FlourishLocalizationService localization;
+    private readonly LocalizationService localization;
     private readonly Func<bool> isNavigationEnabled;
     private readonly Func<bool> isThemeEnabled;
     private readonly Func<bool> isProfileAvailable;
@@ -37,20 +37,20 @@ internal sealed class ShellTitleBarController : IDisposable
     private IInputElement? restoreFocusTarget;
     private ImageSource? currentLogoSource;
     private string currentLogoFallbackText = "F";
-    private FlourishTitleBarState state;
+    private TitleBarState state;
     private long appliedVersion;
     private bool openedWithFocus;
     private bool isInitialized;
     private bool isDisposed;
 
     internal ShellTitleBarController(
-        FlourishTitlebar titlebar,
+        TitleBarView titlebar,
         ApplicationInfoOverlay applicationInfo,
         FrameworkElement shellRoot,
         TitleBarService titleBarService,
         TitleBarSearchService searchService,
         ProjectSelectorController projectSelector,
-        FlourishLocalizationService localization,
+        LocalizationService localization,
         Func<bool> isNavigationEnabled,
         Func<bool> isThemeEnabled,
         Func<bool> isProfileAvailable
@@ -81,11 +81,11 @@ internal sealed class ShellTitleBarController : IDisposable
 
     internal event EventHandler<ShellTitleBarStateChangedEventArgs>? StateChanged;
 
-    internal event EventHandler<FlourishProjectsChangedEventArgs>? ProjectChanged;
+    internal event EventHandler<ProjectCatalogChangedEventArgs>? ProjectChanged;
 
     internal event EventHandler<ShellTitleBarIconChangedEventArgs>? IconChanged;
 
-    internal FlourishTitleBarState CurrentState => state;
+    internal TitleBarState CurrentState => state;
 
     internal bool IsApplicationInfoOpen => applicationInfo.IsOpen;
 
@@ -233,7 +233,7 @@ internal sealed class ShellTitleBarController : IDisposable
         IconChanged = null;
     }
 
-    private void TitleBarService_Changed(object? sender, FlourishStateChangedEventArgs<FlourishTitleBarState> e)
+    private void TitleBarService_Changed(object? sender, StateChangedEventArgs<TitleBarState> e)
     {
         Dispatch(() =>
         {
@@ -250,7 +250,7 @@ internal sealed class ShellTitleBarController : IDisposable
         });
     }
 
-    private void ProjectSelector_Changed(object? sender, FlourishProjectsChangedEventArgs e)
+    private void ProjectSelector_Changed(object? sender, ProjectCatalogChangedEventArgs e)
     {
         Dispatch(() =>
         {
@@ -275,7 +275,7 @@ internal sealed class ShellTitleBarController : IDisposable
 
     private void SearchService_ProgrammaticStateChanged(
         object? sender,
-        FlourishStateChangedEventArgs<FlourishTitleBarSearchState> e
+        StateChangedEventArgs<TitleBarSearchState> e
     )
     {
         Dispatch(() =>
@@ -287,7 +287,7 @@ internal sealed class ShellTitleBarController : IDisposable
         });
     }
 
-    private void ApplySearchState(FlourishTitleBarSearchState searchState)
+    private void ApplySearchState(TitleBarSearchState searchState)
     {
         titlebar.SetSearchPlaceholder(searchState.Placeholder);
         titlebar.SetSearchText(searchState.Text);
@@ -299,7 +299,7 @@ internal sealed class ShellTitleBarController : IDisposable
         }
     }
 
-    private void ApplyState(FlourishTitleBarState current, FlourishTitleBarState? previous)
+    private void ApplyState(TitleBarState current, TitleBarState? previous)
     {
         state = current;
         projectSelector.SetTitleState(current);
@@ -486,7 +486,7 @@ internal sealed class ShellTitleBarController : IDisposable
     private void ApplicationInfo_PlacementInvalidated(object? sender, EventArgs e) =>
         UpdateApplicationInfoPosition();
 
-    private void Localization_Changed(object? sender, FlourishLocalizationChangedEventArgs e) =>
+    private void Localization_Changed(object? sender, LocalizationChangedEventArgs e) =>
         Dispatch(() => titlebar.ApplyLocale(localization));
 
     private void Dispatch(Action action)
@@ -515,13 +515,13 @@ internal sealed class ShellTitleBarController : IDisposable
 }
 
 internal sealed class ShellTitleBarStateChangedEventArgs(
-    FlourishTitleBarState previous,
-    FlourishTitleBarState current
+    TitleBarState previous,
+    TitleBarState current
 ) : EventArgs
 {
-    internal FlourishTitleBarState Previous { get; } = previous;
+    internal TitleBarState Previous { get; } = previous;
 
-    internal FlourishTitleBarState Current { get; } = current;
+    internal TitleBarState Current { get; } = current;
 }
 
 internal sealed class ShellTitleBarIconChangedEventArgs(ImageSource? icon) : EventArgs

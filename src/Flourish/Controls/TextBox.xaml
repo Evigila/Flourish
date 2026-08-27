@@ -3,7 +3,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
-  <Style TargetType="{x:Type controls:FlourishTextBox}">
+  <Style TargetType="{x:Type controls:TextBox}">
     <Setter Property="MinWidth" Value="{DynamicResource FlourishControlMinWidth}" />
     <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
     <Setter Property="Padding" Value="{DynamicResource FlourishControlPadding}" />
@@ -23,7 +23,7 @@
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:FlourishTextBox}">
+        <ControlTemplate TargetType="{x:Type controls:TextBox}">
           <Border
             x:Name="Chrome"
             Padding="{TemplateBinding Padding}"

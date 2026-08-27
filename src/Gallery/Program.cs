@@ -1,22 +1,18 @@
 using System;
-
+using ArkheideSystem.Extension.Culture;
 using ArkheideSystem.Flourish.Abstract;
-using ArkheideSystem.Flourish.Extension.Culture;
 using ArkheideSystem.Gallery.Views;
 using Microsoft.Extensions.DependencyInjection;
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 
 namespace ArkheideSystem.Gallery;
 
 internal static class Program
 {
-    private static IFlourish? flourish;
-    public static IFlourish Flourish => flourish ?? throw new InvalidOperationException();
-
     [STAThread]
     public static int Main(string[] args)
     {
-        flourish = FlourishBuilder
+        using var application = ApplicationBuilder
             .CreateDefaultBuilder(args) //Create default builder as hosting
             .UseEssentialCulture()
             .ConfigureData( // Configure data as hosting
@@ -137,7 +133,8 @@ internal static class Program
             )
             .ConfigureNavigation(nav => // configure navigation panel and its functionality
             {
-                nav.SetEnabled().AddGroup( // Create basic essential structure for navigation tree
+                nav.SetEnabled()
+                    .AddGroup( // Create basic essential structure for navigation tree
                         null, // The group with ID 0 can create without name, using null instead of String.Empty
                         0, // Unique ID for group, should not repeat
                         group =>
@@ -233,29 +230,23 @@ internal static class Program
             })
             .ConfigureToolbar(toolbar =>
             {
-                toolbar.SetEnabled().Set<HomePage>( //Create toolbar items only for HomePage view
-                    new FlourishToolbarItem(
-                        CKey.Application_SayHello_6D995DBA,
-                        "\uE8F2",
-                        GalleryCommandParser.DemoHello
-                    ),
-                    new FlourishToolbarItem(
-                        CKey.Application_QueueTask_229EFD6E,
-                        "\uE895",
-                        GalleryCommandParser.DemoBackground
-                    )
-                );
+                toolbar
+                    .SetEnabled()
+                    .Set<HomePage>( //Create toolbar items only for HomePage view
+                        new ToolbarItem(
+                            CKey.Application_SayHello_6D995DBA,
+                            "\uE8F2",
+                            GalleryCommandParser.DemoHello
+                        ),
+                        new ToolbarItem(
+                            CKey.Application_QueueTask_229EFD6E,
+                            "\uE895",
+                            GalleryCommandParser.DemoBackground
+                        )
+                    );
             })
             .Build();
 
-        try
-        {
-            return flourish.Run<App>(); // Run application as WPF one
-        }
-        finally
-        {
-            flourish.Dispose();
-            flourish = null;
-        }
+        return application.Run<App>(); // Run application as WPF one
     }
 }

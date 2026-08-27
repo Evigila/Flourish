@@ -84,24 +84,24 @@
             </ScrollContentPresenter.Content>
           </ScrollContentPresenter>
         </Grid>
-        <controls:FlourishScrollBar
+        <controls:ScrollBar
           x:Name="PART_VerticalScrollBar"
           Grid.Row="0"
           Grid.Column="1"
           Maximum="{TemplateBinding ScrollableHeight}"
           Orientation="Vertical"
-          Width="{DynamicResource FlourishScrollBarWidth}"
+          Width="{DynamicResource ScrollBarWidth}"
           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportHeight}"
           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
         />
-        <controls:FlourishScrollBar
+        <controls:ScrollBar
           x:Name="PART_HorizontalScrollBar"
           Grid.Row="1"
           Grid.Column="0"
           Maximum="{TemplateBinding ScrollableWidth}"
           Orientation="Horizontal"
-          Height="{DynamicResource FlourishScrollBarWidth}"
+          Height="{DynamicResource ScrollBarWidth}"
           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportWidth}"
           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
@@ -146,24 +146,24 @@
             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
           />
         </Grid>
-        <controls:FlourishScrollBar
+        <controls:ScrollBar
           x:Name="PART_VerticalScrollBar"
           Grid.Row="0"
           Grid.Column="1"
           Maximum="{TemplateBinding ScrollableHeight}"
           Orientation="Vertical"
-          Width="{DynamicResource FlourishScrollBarWidth}"
+          Width="{DynamicResource ScrollBarWidth}"
           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportHeight}"
           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
         />
-        <controls:FlourishScrollBar
+        <controls:ScrollBar
           x:Name="PART_HorizontalScrollBar"
           Grid.Row="1"
           Grid.Column="0"
           Maximum="{TemplateBinding ScrollableWidth}"
           Orientation="Horizontal"
-          Height="{DynamicResource FlourishScrollBarWidth}"
+          Height="{DynamicResource ScrollBarWidth}"
           Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
           ViewportSize="{TemplateBinding ViewportWidth}"
           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"

@@ -5,7 +5,7 @@ description: Configure application identity, project selection, search, navigati
 
 # Title bar
 
-Use `ConfigureTitleBar` to enable the title bar, provide application identity, and select its controls. The visible title is itself a dropdown selector: it represents the application when project mode is disabled and the active project when project mode is enabled. The logo opens a separate information surface for the application identity.
+Use `ConfigureTitleBar` to enable application identity and title-bar controls. The title selects the application or active project, and the logo opens application information.
 
 ## Configure identity and controls
 
@@ -28,7 +28,7 @@ builder
             .SetBreadcrumbMode(option: BreadcrumbShowOption.Auto)
             .SetNavigationToggle()
             .SetProfile(nameOrder: NameOrder.FirstLast)
-            .SetThemeToggle(mode: FlourishTheme.System);
+            .SetThemeToggle(mode: ApplicationTheme.System);
     });
 ```
 
@@ -50,7 +50,7 @@ Built-in tooltips and theme labels follow the locale selected through [Applicati
 
 ## Application title and project dropdown
 
-The application identity remains stable while the active project can change during a session. The project-mode switch controls both the selected title and the choices exposed by the title selector.
+Project mode controls the selected title and its choices.
 
 | Project mode | Selected title | Dropdown choices |
 | --- | --- | --- |
@@ -60,13 +60,13 @@ The application identity remains stable while the active project can change duri
 
 When project mode is disabled, the selector has no project-title semantics and selecting its only application-title entry performs no project operation. When project mode is enabled, selecting a project invokes `IProjectBehavior.ActivateProjectAsync`, selecting **New project** invokes `CreateProjectAsync`, and right-clicking a project exposes deletion through `DeleteProjectAsync`. [Projects](projects.md) explains lifecycle behavior, catalog persistence, and runtime updates.
 
-The application subtitle is not displayed directly in the title bar. It belongs to the logo information surface together with the application title and, when requested by `SetLogo`, the current project title. `StoragePath == null`, rather than the placeholder text, identifies an unpersisted project.
+The subtitle appears only in logo information with the application title and optional project title. `StoragePath == null`, not placeholder text, identifies an unpersisted project.
 
 The selected title uses the configured Large typography tier. Choices in its dropdown and built-in text in the logo information surface use Standard. See [Typography](configure-font.md).
 
 ## Logo information surface
 
-`SetLogo()` uses the built-in Flourish icon. To replace it, pass a relative URI, absolute URI, or WPF pack URI. The effective image is also assigned to the shell window icon. The title-bar and information-surface presentations preserve the image aspect ratio, keep the complete artwork within their bounds, and leave transparent pixels unfilled.
+`SetLogo()` uses the built-in icon. A relative, absolute, or WPF pack URI replaces it and also sets the Shell window icon while preserving aspect ratio and transparency.
 
 ```csharp
 titleBar.SetLogo(
@@ -81,11 +81,11 @@ The three display arguments default to `true`, `true`, and `false`. Clicking or 
 ```csharp
 builder.ConfigureContent(custom =>
     custom.AddRegionContent(
-        FlourishRegion.TitleBarApplicationInfo,
+        ShellRegion.TitleBarApplicationInfo,
         services => new ApplicationSummaryView()));
 ```
 
-The body is application-owned. Flourish only hosts it and does not define its data or behavior; content that exceeds the window-bounded surface scrolls vertically.
+The application owns this body; overflowing content scrolls vertically within the window.
 
 ## Search
 
@@ -127,9 +127,9 @@ The built-in title bar provides minimize, maximize or restore, and close command
 
 ## Related features
 
-- [Projects](projects.md) manages the persistent project catalog and title-bar lifecycle behavior.
-- [Custom shell content](configure-custom-handler.md) adds application content to title bar regions and the logo information surface.
-- [Profile](configure-profile.md) configures profile content, authentication, and persistence.
-- [Navigation](navigation.md) provides the panel controlled by `SetNavigationToggle`.
-- [Themes](configure-themes.md) explains the theme controlled by `SetThemeToggle`.
-- [Window](configure-window.md) configures resize behavior and close-to-tray handling.
+- [Projects](projects.md)
+- [Custom shell content](configure-custom-handler.md)
+- [Profile](configure-profile.md)
+- [Navigation](navigation.md)
+- [Themes](configure-themes.md)
+- [Window](configure-window.md)

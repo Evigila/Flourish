@@ -17,7 +17,7 @@ internal sealed class ToolbarCommandButtonIndex(ICommandDispatcher commandDispat
         StringComparer.Ordinal
     );
 
-    internal void Track(WpfButton button, FlourishToolbarItem item)
+    internal void Track(WpfButton button, ToolbarItem item)
     {
         ArgumentNullException.ThrowIfNull(button);
         ArgumentNullException.ThrowIfNull(item);
@@ -94,7 +94,7 @@ internal sealed class ToolbarCommandButtonIndex(ICommandDispatcher commandDispat
         }
     }
 
-    private bool CanExecute(FlourishToolbarItem item)
+    private bool CanExecute(ToolbarItem item)
     {
         return item.IsEnabled
             && (
@@ -103,5 +103,5 @@ internal sealed class ToolbarCommandButtonIndex(ICommandDispatcher commandDispat
             );
     }
 
-    private readonly record struct Entry(WpfButton Button, FlourishToolbarItem Item);
+    private readonly record struct Entry(WpfButton Button, ToolbarItem Item);
 }

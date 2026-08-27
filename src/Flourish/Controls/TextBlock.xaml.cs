@@ -4,13 +4,14 @@ using ArkheideSystem.Flourish.Abstract;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using WpfTextBlock = System.Windows.Controls.TextBlock;
 
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>
-/// Describes the semantic typography role of a <see cref="FlourishTextBlock" />.
+/// Describes the semantic typography role of a <see cref="TextBlock" />.
 /// </summary>
-public enum FlourishTextRole
+public enum TextRole
 {
     /// <summary>Regular body copy.</summary>
     Body,
@@ -52,8 +53,8 @@ public enum FlourishTextRole
     Icon,
 }
 
-/// <summary>Describes how a <see cref="FlourishTextBlock" /> participates in layout.</summary>
-public enum FlourishTextLayoutMode
+/// <summary>Describes how a <see cref="TextBlock" /> participates in layout.</summary>
+public enum TextLayoutMode
 {
     /// <summary>Preserves the role-specific spacing used by flowing text.</summary>
     Flow,
@@ -65,7 +66,7 @@ public enum FlourishTextLayoutMode
 /// <summary>
 /// A Flourish-styled text element with a semantic typography role.
 /// </summary>
-public class FlourishTextBlock : TextBlock
+public class TextBlock : WpfTextBlock
 {
     private static readonly DependencyPropertyDescriptor[] LineMetricDescriptors =
     {
@@ -83,7 +84,7 @@ public class FlourishTextBlock : TextBlock
     public static readonly DependencyProperty MaxLinesProperty = DependencyProperty.Register(
         nameof(MaxLines),
         typeof(int),
-        typeof(FlourishTextBlock),
+        typeof(TextBlock),
         new FrameworkPropertyMetadata(
             0,
             FrameworkPropertyMetadataOptions.AffectsMeasure,
@@ -97,9 +98,9 @@ public class FlourishTextBlock : TextBlock
     /// </summary>
     public static readonly DependencyProperty RoleProperty = DependencyProperty.Register(
         nameof(Role),
-        typeof(FlourishTextRole),
-        typeof(FlourishTextBlock),
-        new FrameworkPropertyMetadata(FlourishTextRole.Body),
+        typeof(TextRole),
+        typeof(TextBlock),
+        new FrameworkPropertyMetadata(TextRole.Body),
         IsRoleValid
     );
 
@@ -108,20 +109,20 @@ public class FlourishTextBlock : TextBlock
     /// </summary>
     public static readonly DependencyProperty LayoutModeProperty = DependencyProperty.Register(
         nameof(LayoutMode),
-        typeof(FlourishTextLayoutMode),
-        typeof(FlourishTextBlock),
-        new FrameworkPropertyMetadata(FlourishTextLayoutMode.Flow),
+        typeof(TextLayoutMode),
+        typeof(TextBlock),
+        new FrameworkPropertyMetadata(TextLayoutMode.Flow),
         IsLayoutModeValid
     );
 
-    static FlourishTextBlock()
+    static TextBlock()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishTextBlock),
-            new FrameworkPropertyMetadata(typeof(FlourishTextBlock))
+            typeof(TextBlock),
+            new FrameworkPropertyMetadata(typeof(TextBlock))
         );
         MaxHeightProperty.OverrideMetadata(
-            typeof(FlourishTextBlock),
+            typeof(TextBlock),
             new FrameworkPropertyMetadata(
                 double.PositiveInfinity,
                 null,
@@ -133,23 +134,23 @@ public class FlourishTextBlock : TextBlock
     /// <summary>
     /// Gets or sets the semantic typography role of the text.
     /// </summary>
-    public FlourishTextRole Role
+    public TextRole Role
     {
-        get => (FlourishTextRole)GetValue(RoleProperty);
+        get => (TextRole)GetValue(RoleProperty);
         set => SetValue(RoleProperty, value);
     }
 
     /// <summary>
     /// Gets or sets whether the text uses flowing typography spacing or a control-centered line box.
     /// </summary>
-    public FlourishTextLayoutMode LayoutMode
+    public TextLayoutMode LayoutMode
     {
-        get => (FlourishTextLayoutMode)GetValue(LayoutModeProperty);
+        get => (TextLayoutMode)GetValue(LayoutModeProperty);
         set => SetValue(LayoutModeProperty, value);
     }
 
-    /// <summary>Initializes a new instance of the <see cref="FlourishTextBlock" /> class.</summary>
-    public FlourishTextBlock()
+    /// <summary>Initializes a new instance of the <see cref="TextBlock" /> class.</summary>
+    public TextBlock()
     {
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
@@ -212,7 +213,7 @@ public class FlourishTextBlock : TextBlock
         object baseValue
     )
     {
-        var textBlock = (FlourishTextBlock)dependencyObject;
+        var textBlock = (TextBlock)dependencyObject;
         var maximumHeight = (double)baseValue;
         if (textBlock.MaxLines == 0)
         {
@@ -231,11 +232,11 @@ public class FlourishTextBlock : TextBlock
 
     private static bool IsRoleValid(object value)
     {
-        return value is FlourishTextRole role && Enum.IsDefined(role);
+        return value is TextRole role && Enum.IsDefined(role);
     }
 
     private static bool IsLayoutModeValid(object value)
     {
-        return value is FlourishTextLayoutMode mode && Enum.IsDefined(mode);
+        return value is TextLayoutMode mode && Enum.IsDefined(mode);
     }
 }

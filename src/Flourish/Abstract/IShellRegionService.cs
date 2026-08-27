@@ -9,15 +9,15 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface IShellRegionService
 {
     /// <summary>Occurs after region registrations change.</summary>
-    event EventHandler<FlourishShellRegionChangedEventArgs>? Changed;
+    event EventHandler<ShellRegionChangedEventArgs>? Changed;
 
     /// <summary>Gets an immutable snapshot of region registrations.</summary>
-    FlourishShellRegionSnapshot Current { get; }
+    ShellRegionSnapshot Current { get; }
 
     /// <summary>Adds a registration and returns a handle that removes it when disposed.</summary>
     IRegistration Add(
         string id,
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
     );
@@ -25,7 +25,7 @@ public interface IShellRegionService
     /// <summary>Adds or replaces a registration by stable ID.</summary>
     IRegistration Set(
         string id,
-        FlourishRegion region,
+        ShellRegion region,
         Func<IServiceProvider, FrameworkElement> contentFactory,
         int order = 0
     );
@@ -40,39 +40,39 @@ public interface IShellRegionService
     bool Remove(string id);
 
     /// <summary>Removes all registrations in a region.</summary>
-    void RemoveAll(FlourishRegion region);
+    void RemoveAll(ShellRegion region);
 }
 
 /// <summary>Describes the state of one region registration.</summary>
-public sealed record FlourishShellRegionEntry(
+public sealed record ShellRegionEntry(
     string Id,
-    FlourishRegion Region,
+    ShellRegion Region,
     int Order,
     bool IsEnabled
 );
 
 /// <summary>Represents all current region registrations.</summary>
-public sealed record FlourishShellRegionSnapshot(
-    IReadOnlyList<FlourishShellRegionEntry> Entries,
+public sealed record ShellRegionSnapshot(
+    IReadOnlyList<ShellRegionEntry> Entries,
     long Version
 );
 
 /// <summary>Provides data for <see cref="IShellRegionService.Changed" />.</summary>
-public sealed class FlourishShellRegionChangedEventArgs(
-    FlourishShellRegionSnapshot current,
-    FlourishRuntimeChangeKind changeKind,
-    FlourishRegion region,
+public sealed class ShellRegionChangedEventArgs(
+    ShellRegionSnapshot current,
+    CollectionChangeKind changeKind,
+    ShellRegion region,
     string? registrationId
 ) : EventArgs
 {
     /// <summary>Gets the new state.</summary>
-    public FlourishShellRegionSnapshot Current { get; } = current;
+    public ShellRegionSnapshot Current { get; } = current;
 
     /// <summary>Gets the mutation kind.</summary>
-    public FlourishRuntimeChangeKind ChangeKind { get; } = changeKind;
+    public CollectionChangeKind ChangeKind { get; } = changeKind;
 
     /// <summary>Gets the affected region.</summary>
-    public FlourishRegion Region { get; } = region;
+    public ShellRegion Region { get; } = region;
 
     /// <summary>Gets the affected registration ID, if applicable.</summary>
     public string? RegistrationId { get; } = registrationId;

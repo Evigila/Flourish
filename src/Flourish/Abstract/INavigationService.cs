@@ -10,13 +10,13 @@ namespace ArkheideSystem.Flourish.Abstract;
 public interface INavigationService
 {
     /// <summary>Gets the current navigation, route, menu, panel, and cache state atomically.</summary>
-    FlourishNavigationState Current { get; }
+    NavigationState Current { get; }
 
     /// <summary>Occurs after any runtime navigation state changes.</summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishNavigationState>>? Changed;
+    event EventHandler<StateChangedEventArgs<NavigationState>>? Changed;
 
     /// <summary>Occurs after Flourish navigates to a registered page.</summary>
-    event EventHandler<FlourishNavigatedEventArgs>? Navigated;
+    event EventHandler<NavigatedEventArgs>? Navigated;
 
     /// <summary>Returns whether a route with the specified navigation key is registered.</summary>
     bool CanNavigate(string navigationKey);
@@ -54,18 +54,18 @@ public interface INavigationService
     /// <summary>Adds or replaces a runtime page route.</summary>
     IRegistration AddNavigable<TPage>(
         string? navigationKey = null,
-        FlourishPageCacheMode cacheMode = FlourishPageCacheMode.Enabled
+        PageCacheMode cacheMode = PageCacheMode.Enabled
     )
         where TPage : Page;
 
     /// <summary>Adds or replaces a runtime route definition.</summary>
-    IRegistration SetNavigable(FlourishNavigationRoute route);
+    IRegistration SetNavigable(NavigationRoute route);
 
     /// <summary>Removes a runtime route by navigation key.</summary>
     bool RemoveNavigable(string navigationKey);
 
     /// <summary>Gets a runtime route by navigation key.</summary>
-    FlourishNavigationRoute? GetNavigable(string navigationKey);
+    NavigationRoute? GetNavigable(string navigationKey);
 
     /// <summary>Applies a runtime navigation-menu transaction.</summary>
     void SetMenu(Action<INavigationMenuEditor> update);
@@ -89,7 +89,7 @@ public interface INavigationService
     void Toggle(bool animate = true);
 
     /// <summary>Changes the cache mode used by a page type and its route.</summary>
-    void SetCacheMode(Type pageType, FlourishPageCacheMode cacheMode);
+    void SetCacheMode(Type pageType, PageCacheMode cacheMode);
 
     /// <summary>Evicts a page instance from the navigation cache.</summary>
     bool Evict(Type pageType);

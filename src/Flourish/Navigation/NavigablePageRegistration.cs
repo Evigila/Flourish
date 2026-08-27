@@ -8,5 +8,5 @@ internal sealed record NavigablePageRegistration(
     Type PageType,
     string DisplayName,
     string IconGlyph,
-    FlourishPageCacheMode CacheMode
+    PageCacheMode CacheMode
 );

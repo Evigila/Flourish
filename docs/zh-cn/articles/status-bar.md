@@ -5,7 +5,7 @@ description: 配置自定义状态项、后台任务指示器以及合并的系�
 
 # 状态栏
 
-状态栏是 Shell 中用于显示活动后台任务、应用自定义状态和系统详情的紧凑区域。使用 `ConfigureStatusBar` 启用常驻界面，并配置可选的自定义项和系统状态。
+使用 `ConfigureStatusBar` 显示活动后台任务、自定义状态项和系统详情。
 
 ```csharp
 builder
@@ -31,7 +31,7 @@ builder
 - 等待任务共用一个不带图标和角标的纯数字计数
 - 悬停或点击队列数字会打开等待列表及取消操作
 
-Shell 从 `FlourishBackgroundTaskMetadata` 读取任务名称、描述和图标；未提供图标时使用内置任务字形。
+Shell 从 `BackgroundTaskMetadata` 读取任务名称、描述和图标；未提供图标时使用内置任务字形。
 
 即使省略了 `SetEnabled()`，活动任务也会临时显示状态栏。所有活动任务结束后，状态栏恢复到配置决定的可见性。任务提交、并发上限、取消、进度和结果参见[后台任务](background-tasks.md)。
 
@@ -68,7 +68,7 @@ statusBar
 builder.ConfigureContent(custom =>
 {
     custom.AddFooterCommand(
-        FlourishRegion.FooterEnd,
+        ShellRegion.FooterEnd,
         "同步",
         "\uE895",
         "cmd_sync_run");

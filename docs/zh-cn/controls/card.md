@@ -5,7 +5,7 @@ description: 使用 Card、ActionCard 和 OutputCard 构建职责清晰的信息
 
 # Card
 
-卡片是 Flourish 布局系统的基础内容表面。`Card` 呈现可选标题、单段正文和单个图标；`ActionCard` 在固定布局中增加一个局部交互区域；[OutputCard](output-card.md)用于日志与输出历史。
+`Card` 呈现可选标题、单段正文和图标；`ActionCard` 增加局部交互区域；[OutputCard](output-card.md)呈现日志与输出历史。
 
 | 需求 | 控件 |
 | --- | --- |
@@ -78,7 +78,7 @@ Card 与 ActionCard 的图标使用随主题变化的主色前景，与中性文
   Icon="&#xE790;"
   Title="主题"
   Content="选择应用程序外观。">
-  <flourish:FlourishComboBox
+  <flourish:ComboBox
     Width="160"
     ItemsSource="{Binding Themes}"
     SelectedItem="{Binding Theme, Mode=TwoWay}" />
@@ -109,9 +109,9 @@ Card 与 ActionCard 的图标使用随主题变化的主色前景，与中性文
 
 ## 相关内容
 
-- [Chunk](chunk.md) 定义承载卡片的页面区块。
-- [Document](document.md) 呈现多个连续段落。
-- [Presenter](presenter.md) 呈现图片、图标组和组合视觉内容。
-- [OutputCard](output-card.md) 呈现可滚动的操作历史。
-- [Button](button.md) 说明何时应让整个表面具备交互性。
-- [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant)、[Card API](xref:ArkheideSystem.Flourish.Controls.Card)、[ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant) 和 [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard) 列出全部成员。
+- [Chunk](chunk.md)
+- [Document](document.md)
+- [Presenter](presenter.md)
+- [OutputCard](output-card.md)
+- [Button](button.md)
+- [CardVariant API](xref:ArkheideSystem.Flourish.Controls.CardVariant)、[Card API](xref:ArkheideSystem.Flourish.Controls.Card)、[ActionCardVariant API](xref:ArkheideSystem.Flourish.Controls.ActionCardVariant) 和 [ActionCard API](xref:ArkheideSystem.Flourish.Controls.ActionCard)

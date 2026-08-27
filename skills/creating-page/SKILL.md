@@ -21,7 +21,7 @@ Build every content page as one explicit hierarchy: one page-leading header, sev
 Every `Chunk` has these semantic fields:
 
 - `Title` is required and names the section's subject.
-- `Content` is optional supporting copy. Add it only when the title cannot communicate essential context by itself. It is not restricted to the former Description convention of one short line: use multiple sentences or naturally wrapped lines whenever that makes the explanation easier to read. Choose its length and source formatting by clarity, not by a single-line layout rule.
+- `Content` is optional supporting copy. Add it only when the title cannot communicate essential context by itself. Use one short sentence that states the purpose, constraint, or outcome; move details to the body, example, or canonical documentation.
 - `Body` is required and contains the actual content control or layout tree. It is the default XAML content property.
 
 Empty or `null` optional regions must collapse together with their spacing. Keep the default large gap between chunks and between `HeaderChunk` and the first ordinary chunk.
@@ -75,7 +75,7 @@ Use `ActionCard` for one independent setting or local action. Its optional `Icon
 
 - `Variant="Horizontal"` is the default. It places Icon on the left, vertically stacked Title and Content in the middle, and Body on the right. The row is vertically centered.
 - `Variant="Vertical"` stacks Icon, Title, Content, and Body from top to bottom. Every region is left-aligned, including the Body at the bottom.
-- Keep Title and Content concise. Use the Body for one `FlourishComboBox`, `CheckBox`, `FlourishTextBox`, `FlourishRadioButton`, or Button as appropriate.
+- Keep Title and Content concise. Use the Body for one `ComboBox`, `CheckBox`, `TextBox`, `RadioButton`, or Button as appropriate.
 - Apply selections, toggles, and edits immediately. Do not add a separate Apply action unless the workflow itself requires transactional confirmation.
 - Stack related ActionCards in their own column and use `FlourishActionCardPeerMargin` only between consecutive cards.
 
@@ -144,7 +144,7 @@ Do not wrap DataGrid in another wheel-handling ScrollViewer or add a preview-whe
 
 ## Resize Grid regions
 
-Use `FlourishGridSplitter` between adjacent Grid rows or columns. Flourish GridSplitters always update the affected definitions continuously while dragging and use the same thin centered highlight for hover, keyboard focus, and drag feedback. Do not enable or document the inherited WPF preview-resize mode.
+Use `GridSplitter` between adjacent Grid rows or columns. Flourish GridSplitters always update the affected definitions continuously while dragging and use the same thin centered highlight for hover, keyboard focus, and drag feedback. Do not enable or document the inherited WPF preview-resize mode.
 
 - Use `Variant="Standard"` for application-owned Grid layouts. Set `ResizeDirection` and `ResizeBehavior` explicitly so the axis and affected definitions remain clear.
 - Use `Variant="NavigationPane"` only at the Shell navigation edge. It supplies horizontal resizing, shell-edge alignment, cursor, and layer defaults without changing the Standard interaction-surface or highlight geometry.
@@ -186,7 +186,7 @@ On every Gallery page, ordinary `PresenterMode="Split"` examples explicitly use 
 
 For an API-oriented Gallery page whose topic Chunks teach distinct service or builder families, place one CodeSpace at the bottom of each topic Chunk Body and show the complete relevant public API beside the controls that exercise it. Include both startup configuration and runtime service calls when the topic supports both phases. Omit a centralized Usage Chunk when it would detach those calls from their topics; do not duplicate the same snippet in both places. This exception does not change the centralized Usage requirement for control Gallery pages.
 
-Give API topic Chunks short, familiar industry titles that name the user-facing capability. Avoid lifecycle qualifiers such as `Runtime` when the behavior is already clear from context. Use Chunk Content to explain what the capability does, how consumers use it, the scenarios where it is recommended, and what the accompanying CodeSpace demonstrates. Content may use several sentences or lines when that improves scanning; do not compress a complete explanation into one line merely to resemble a Description field. Keep CodeSpace comments sparse: mark phase boundaries, transaction intent, or non-obvious outcomes, but do not narrate self-explanatory calls line by line.
+Give API topic Chunks short, familiar industry titles that name the user-facing capability. Avoid lifecycle qualifiers such as `Runtime` when the behavior is already clear from context. Use one short Content sentence for the purpose or essential constraint; let the controls and CodeSpace demonstrate usage. Keep CodeSpace comments sparse: mark phase boundaries, transaction intent, or non-obvious outcomes, but do not narrate self-explanatory calls line by line.
 
 Keep Table content selective rather than duplicating the generated API reference. Use a public member or option name in the first column and one short functional summary in the second. Use purpose-built controls directly in the chunk body or within a Presenter; do not put arbitrary demonstrations inside a terminal Card.
 
@@ -226,7 +226,7 @@ Use adaptive color to enrich semantic icons without coloring ordinary copy. Navi
           Title="Sync mode"
           Content="Choose when workspace changes synchronize."
           Variant="Horizontal">
-          <flourish:FlourishComboBox
+          <flourish:ComboBox
             Width="160"
             ItemsSource="{Binding SynchronizationModes}"
             SelectedItem="{Binding SynchronizationMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -265,7 +265,7 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 
 - Confirm `PageBody` is the root content container and its direct children are only HeaderChunk or Chunk.
 - Confirm exactly one HeaderChunk is the first direct child and every other page element belongs inside it or a full-width Chunk.
-- Confirm every Chunk has a concise Title and real Body; Content is optional and omitted when redundant, but may span multiple sentences or lines when readability benefits.
+- Confirm every Chunk has a concise Title and real Body; Content is optional, omitted when redundant, and limited to one short sentence.
 - Confirm empty optional regions leave no placeholder or spacing.
 - Confirm unspecified typography uses Standard and specialized tiers follow their assigned roles.
 - Confirm Card uses only optional Title, Content, and one Icon, and never receives a general Body.
@@ -283,7 +283,7 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm CardButton is used only when the whole card is interactive; use ActionCard when interaction belongs to one contained control.
 - Confirm ScrollViewer and ScrollBar use the standard appearance, and use `UseSmoothScroll` rather than template access to configure built-in scrolling surfaces.
 - Confirm DataGrid scrolls internally before handing the wheel to PageBody at both vertical boundaries.
-- Confirm every FlourishGridSplitter uses live resizing and a thin centered highlight; use NavigationPane only for shell-edge placement and never re-enable the WPF preview-resize mode.
+- Confirm every GridSplitter uses live resizing and a thin centered highlight; use NavigationPane only for shell-edge placement and never re-enable the WPF preview-resize mode.
 - Confirm Overlay normally hosts a vertical ActionCard and custom content remains a deliberate, accessible layout.
 - Confirm output is appended through `WriteLine`, uses no title or body, and scrolls without driving adjacent layout height.
 - Confirm card grids use consistent row and column gaps and peer cards have compatible arranged heights.
@@ -297,7 +297,7 @@ private void Refresh_Click(object sender, RoutedEventArgs e)
 - Confirm visualizable Interaction contract states use live controls in equal-height Body-free TopDown Presenters rather than text-only Cards.
 - Confirm WindowCaptionButton Interaction compares neutral minimize/maximize/restore actions with one Danger close action instead of using a disabled-state comparison.
 - Confirm API-oriented pages colocate each CodeSpace at the bottom of its topic Chunk and omit detached or duplicate centralized Usage.
-- Confirm API topic titles use concise industry terms, Content covers purpose, usage, recommended scenarios, and code intent, and CodeSpace comments explain only meaningful boundaries or outcomes.
+- Confirm API topic titles use concise industry terms, Content states only the purpose or essential constraint, and CodeSpace comments explain only meaningful boundaries or outcomes.
 - Confirm multi-column peers stretch to one row height and Variant Presentation examples share a sufficient minimum height.
 - Confirm navigation and card icons use adaptive semantic foregrounds while ordinary copy remains neutral.
 - Recommend manual checks for light and dark themes, keyboard focus order, enlarged or localized text, collapsed optional regions, Document and CodeSpace surfaces, CodeSpace copying, all Presenter modes, both ActionCard variants, DataGrid boundary scrolling, Overlay dismissal, and output scrolling.

@@ -1,8 +1,7 @@
 using System;
-
-using Localizer = Arkheide.Essential.Culture.Localizer;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Localizer = ArkheideSystem.Essential.Culture.Localizer;
 
 namespace ArkheideSystem.Gallery.Models;
 

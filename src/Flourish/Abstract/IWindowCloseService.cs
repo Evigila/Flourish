@@ -12,10 +12,10 @@ public interface IWindowCloseService
     /// <summary>
     /// Gets an immutable snapshot of the active close policy.
     /// </summary>
-    FlourishWindowCloseState Current { get; }
+    WindowCloseState Current { get; }
 
     /// <summary>Occurs after the active close policy changes.</summary>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishWindowCloseState>>? Changed;
+    event EventHandler<StateChangedEventArgs<WindowCloseState>>? Changed;
 
     /// <summary>
     /// Changes the action taken after all registered guards allow closing.
@@ -68,4 +68,4 @@ public interface IWindowCloseService
 }
 
 /// <summary>Represents the active shell close policy.</summary>
-public sealed record FlourishWindowCloseState(WindowCloseBehavior Behavior);
+public sealed record WindowCloseState(WindowCloseBehavior Behavior);

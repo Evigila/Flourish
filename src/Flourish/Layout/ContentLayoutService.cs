@@ -10,10 +10,10 @@ internal sealed class ContentLayoutService : IContentLayoutService
     private readonly Lock gate = new();
     private bool isCenterContentEnabled;
     private double contentWidth;
-    private FlourishContentLayoutSettings current;
+    private ContentLayoutSettings current;
     private long version;
 
-    public ContentLayoutService(FlourishLayoutOptions options)
+    public ContentLayoutService(LayoutOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         isCenterContentEnabled = options.IsCenterContentEnabled;
@@ -24,16 +24,16 @@ internal sealed class ContentLayoutService : IContentLayoutService
         current = CreateSnapshot();
     }
 
-    public FlourishContentLayoutSettings Current => Volatile.Read(ref current);
+    public ContentLayoutSettings Current => Volatile.Read(ref current);
 
-    public event EventHandler<FlourishStateTransitionEventArgs<FlourishContentLayoutSettings>>? Changed;
+    public event EventHandler<StateTransitionEventArgs<ContentLayoutSettings>>? Changed;
 
     public void SetCenterContent(bool enabled, double contentWidth = 1200)
     {
         ValidateContentWidth(contentWidth);
 
-        FlourishContentLayoutSettings previous;
-        FlourishContentLayoutSettings current;
+        ContentLayoutSettings previous;
+        ContentLayoutSettings current;
         lock (gate)
         {
             if (isCenterContentEnabled == enabled && this.contentWidth.Equals(contentWidth))
@@ -49,10 +49,10 @@ internal sealed class ContentLayoutService : IContentLayoutService
             Volatile.Write(ref this.current, current);
         }
 
-        Changed?.Invoke(this, new FlourishStateTransitionEventArgs<FlourishContentLayoutSettings>(previous, current));
+        Changed?.Invoke(this, new StateTransitionEventArgs<ContentLayoutSettings>(previous, current));
     }
 
-    private FlourishContentLayoutSettings CreateSnapshot() =>
+    private ContentLayoutSettings CreateSnapshot() =>
         new(isCenterContentEnabled, contentWidth, version);
 
     private static void ValidateContentWidth(double contentWidth)

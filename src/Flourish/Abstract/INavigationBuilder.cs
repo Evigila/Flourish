@@ -43,7 +43,7 @@ public interface INavigationBuilder
     INavigationBuilder AddNavigable<TPage>(
         string displayName,
         string iconGlyph,
-        FlourishPageCacheMode cacheMode = FlourishPageCacheMode.Enabled,
+        PageCacheMode cacheMode = PageCacheMode.Enabled,
         bool isInitial = false,
         int groupId = 0,
         string? groupName = null,

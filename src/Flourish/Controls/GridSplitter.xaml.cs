@@ -6,8 +6,8 @@ using WpfGridSplitter = System.Windows.Controls.GridSplitter;
 
 namespace ArkheideSystem.Flourish.Controls;
 
-/// <summary>Describes the layout role of a <see cref="FlourishGridSplitter" />.</summary>
-public enum FlourishGridSplitterVariant
+/// <summary>Describes the layout role of a <see cref="GridSplitter" />.</summary>
+public enum GridSplitterVariant
 {
     /// <summary>A standard splitter.</summary>
     Standard,
@@ -19,21 +19,21 @@ public enum FlourishGridSplitterVariant
 /// <summary>
 /// A Flourish-styled grid splitter that resizes its target live behind a thin indicator.
 /// </summary>
-public class FlourishGridSplitter : WpfGridSplitter
+public class GridSplitter : WpfGridSplitter
 {
     /// <summary>Identifies the <see cref="Variant" /> dependency property.</summary>
     public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(
         nameof(Variant),
-        typeof(FlourishGridSplitterVariant),
-        typeof(FlourishGridSplitter),
-        new FrameworkPropertyMetadata(FlourishGridSplitterVariant.Standard),
-        value => value is FlourishGridSplitterVariant variant && Enum.IsDefined(variant)
+        typeof(GridSplitterVariant),
+        typeof(GridSplitter),
+        new FrameworkPropertyMetadata(GridSplitterVariant.Standard),
+        value => value is GridSplitterVariant variant && Enum.IsDefined(variant)
     );
 
-    static FlourishGridSplitter()
+    static GridSplitter()
     {
         ShowsPreviewProperty.OverrideMetadata(
-            typeof(FlourishGridSplitter),
+            typeof(GridSplitter),
             new FrameworkPropertyMetadata(
                 false,
                 null,
@@ -41,15 +41,15 @@ public class FlourishGridSplitter : WpfGridSplitter
             )
         );
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishGridSplitter),
-            new FrameworkPropertyMetadata(typeof(FlourishGridSplitter))
+            typeof(GridSplitter),
+            new FrameworkPropertyMetadata(typeof(GridSplitter))
         );
     }
 
     /// <summary>Gets or sets the splitter's layout role.</summary>
-    public FlourishGridSplitterVariant Variant
+    public GridSplitterVariant Variant
     {
-        get => (FlourishGridSplitterVariant)GetValue(VariantProperty);
+        get => (GridSplitterVariant)GetValue(VariantProperty);
         set => SetValue(VariantProperty, value);
     }
 }

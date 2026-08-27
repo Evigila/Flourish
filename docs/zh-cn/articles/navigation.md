@@ -5,11 +5,11 @@ description: 注册并导航到 Flourish 页面。
 
 # 导航
 
-在[依赖注入](configure-services.md)配置中使用 `AddNavigable` 注册 WPF 页面，再使用 `ConfigureNavigation` 启用导航区域并把页面和命令项放入明确的位置。
+在[依赖注入](configure-services.md)中使用 `AddNavigable` 注册 WPF 页面，再用 `ConfigureNavigation` 启用导航区域并排列页面与命令项。
 
 ## 注册页面
 
-`AddNavigable` 会把 `Page` 类型注册到依赖注入，并记录导航使用的显示名称、图标字形和缓存模式。注册后页面可供导航使用；若要在面板中显示它，还需添加对应的 ViewItem。
+`AddNavigable` 将 `Page` 注册到依赖注入，并记录显示名称、图标和缓存模式。页面注册后可导航；要显示在面板中，还须添加 ViewItem。
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -17,30 +17,30 @@ builder.ConfigureServices((_, services) =>
     services.AddNavigable<HomePage>(
         displayName: "首页",
         iconGlyph: "\uE80F",
-        cacheMode: FlourishPageCacheMode.Enabled);
+        cacheMode: PageCacheMode.Enabled);
 
     services.AddNavigable<SettingsPage>(
         displayName: "设置",
         iconGlyph: "\uE713",
-        cacheMode: FlourishPageCacheMode.Enabled);
+        cacheMode: PageCacheMode.Enabled);
 });
 ```
 
-页面类型必须派生自 `System.Windows.Controls.Page`。Flourish 从简单类名生成导航键，并移除一个末尾、区分大小写的 `Page` 后缀：`SettingsPage` 生成 `Settings`，`ReportPagePage` 生成 `ReportPage`，`Page1` 仍生成 `Page1`。显示名称不会影响 key。这里设置的显示名称和图标会被 `AddNavigableViewItem` 复用，因此 ViewItem 不会再次要求传入这些值。
+页面必须派生自 `System.Windows.Controls.Page`。导航键来自简单类名，并移除一个区分大小写的末尾 `Page`：`SettingsPage` → `Settings`，`ReportPagePage` → `ReportPage`，`Page1` 不变。显示名称不影响 key；`AddNavigableViewItem` 会复用注册时的名称和图标。
 
-标准 Shell 使用随主题变化的主色前景呈现导航图标，同时让标签保持中性色，从而在浅色与深色主题中提供一致的视觉强调。
+导航图标使用主题主色，标签保持中性色，以兼容亮色和暗色主题。
 
 ```csharp
 services.AddNavigable<ReportsPage>("报表", "\uE9D2");
 services.AddNavigable<EditorPage>(
     "编辑",
     "\uE70F",
-    cacheMode: FlourishPageCacheMode.Disabled);
+    cacheMode: PageCacheMode.Disabled);
 ```
 
-需要在离开页面后保留局部状态时，使用 `FlourishPageCacheMode.Enabled`。希望离开后再次进入页面时重新创建实例，则使用 `Disabled`。
+需要在离开页面后保留局部状态时，使用 `PageCacheMode.Enabled`。希望离开后再次进入页面时重新创建实例，则使用 `Disabled`。
 
-方向、初始开合状态、用户调整后的展开宽度与最后一次成功导航的路由默认都会持久化；只有该路由仍已注册时才会恢复它。为某个方法传入 `usePersistedPreference: false` 会保留代码回退值并停止更新对应存储值，但不会删除它。
+方向、开合状态、展开宽度和最后成功路由默认持久化；路由仍已注册时才恢复。`usePersistedPreference: false` 使用代码回退值并停止更新，但不删除旧值。
 
 ```csharp
 navigation
@@ -120,7 +120,7 @@ nav.AddGroup("命令", groupId: 2, group =>
 
 ## 添加固定项
 
-固定项显示在导航栏底部区域，不受上半部分滚动视角影响，适合放置设置、关于、用户资料或其他持久操作。
+固定项位于导航栏底部且不随上半区滚动，适合设置、关于、用户资料等持久操作。
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
@@ -166,13 +166,13 @@ nav.AddGroup("树", groupId: 3, group =>
 > [!CAUTION]
 > 树 ID 只在当前分组或固定项区域内生效。同一范围内复用 `parentId`，或让 `childId` 指向不存在的父节点，都会在构建阶段失败。
 
-页面项可以作为父节点。点击页面父节点时，会跳转到该页面并展开或折叠子项。命令项也可以作为父节点，但命令父节点只负责展开或折叠子项，不会执行 `commandKey`；不需要命令键时传入 `null`。
+页面父节点会导航并切换子项；命令父节点只切换子项，不执行 `commandKey`，不需要命令键时传入 `null`。
 
-选中页面子项时，Flourish 会展开对应父节点，并标记父节点名称。导航栏折叠时不显示子项；在折叠状态下点击父节点会先展开导航栏。页面父节点随后导航到对应页面，命令父节点只展开或折叠子项。
+选中页面子项会展开并标记父节点。折叠导航栏不显示子项；点击父节点会先展开，再由页面父节点导航，或由命令父节点切换子项。
 
 ## 校验规则
 
-Flourish 会在构建阶段校验导航模型，让错误配置尽早失败。
+Flourish 在构建阶段校验导航模型。
 
 ```csharp
 nav.AddGroup("One", groupId: 1, group =>
@@ -187,7 +187,7 @@ nav.AddGroup("Two", groupId: 2, group =>
 });
 ```
 
-常见校验错误包括：重复的生成导航键、重复的分组 ID、非 0 分组没有名称、同一页面被加入多个导航位置、ViewItem 页面未通过 `AddNavigable` 注册、同一范围内 `parentId` 重复，以及子项的 `childId` 找不到对应父节点。即使命名空间不同，两个简单类名相同的页面仍会生成相同 key；`Build()` 会拒绝它们，并报告重复 key 和两个页面的完整类型名。
+构建会拒绝重复导航键或分组 ID、无名称的非 0 组、页面重复放置、未注册的 ViewItem 页面、同范围重复 `parentId`，以及找不到父项的 `childId`。不同命名空间中的同名页面仍会生成相同 key；错误会报告重复 key 和两个完整类型名。
 
 ## 从代码导航
 

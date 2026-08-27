@@ -5,7 +5,7 @@ description: 为 Flourish UI 区域注册异步命令处理程序并调度命令
 
 # 命令调度
 
-Flourish UI 区域通过 `ICommandDispatcher` 发送稳定的命令键。使用 `ICommandRegistry` 注册处理程序；`Build()` 完成后，可以从 Flourish 服务提供程序获取这两个接口。
+使用 `ICommandRegistry` 注册处理程序，并在 `Build()` 后通过 `ICommandDispatcher` 发送稳定命令键。
 
 ## 注册处理程序
 
@@ -114,7 +114,7 @@ if (result.Status == CommandExecutionStatus.Failed)
 
 ```csharp
 toolbar.Set<ReportsPage>(
-    new FlourishToolbarItem("导出", "\uE898", "cmd_reports_export"));
+    new ToolbarItem("导出", "\uE898", "cmd_reports_export"));
 ```
 
 命令项无需了解由哪个服务处理命令键。这样既能独立本地化显示文本，也能在不重建 UI 模型的情况下变更注册。

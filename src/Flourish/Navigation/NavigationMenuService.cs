@@ -12,16 +12,16 @@ internal sealed class NavigationMenuService
 {
     private const int FixedGroupId = int.MaxValue;
     private readonly Lock gate = new();
-    private readonly FlourishNavigationOptions options;
+    private readonly NavigationOptions options;
     private readonly NavigationRouteRegistry routeRegistry;
     private List<GroupState> groups;
-    private List<FlourishNavigationMenuItem> fixedItems;
-    private FlourishNavigationMenuSnapshot current;
+    private List<NavigationMenuItem> fixedItems;
+    private NavigationMenuSnapshot current;
     private long lastAppliedRouteVersion = -1;
     private long version;
 
     public NavigationMenuService(
-        FlourishNavigationOptions options,
+        NavigationOptions options,
         NavigationRouteRegistry routeRegistry
     )
     {
@@ -42,20 +42,20 @@ internal sealed class NavigationMenuService
         }
     }
 
-    public event EventHandler<FlourishStateTransitionEventArgs<FlourishNavigationMenuSnapshot>>? Changed;
+    public event EventHandler<StateTransitionEventArgs<NavigationMenuSnapshot>>? Changed;
 
-    public FlourishNavigationMenuSnapshot Current => Volatile.Read(ref current);
+    public NavigationMenuSnapshot Current => Volatile.Read(ref current);
 
     public void Set(Action<INavigationMenuEditor> update)
     {
         ArgumentNullException.ThrowIfNull(update);
-        FlourishNavigationMenuSnapshot previous;
-        FlourishNavigationMenuSnapshot current;
+        NavigationMenuSnapshot previous;
+        NavigationMenuSnapshot current;
         lock (gate)
         {
             previous = this.current;
             var workingGroups = CloneGroups(groups);
-            var workingFixedItems = new List<FlourishNavigationMenuItem>(fixedItems);
+            var workingFixedItems = new List<NavigationMenuItem>(fixedItems);
             var editor = new NavigationMenuEditor(workingGroups, workingFixedItems);
 
             update(editor);
@@ -75,7 +75,7 @@ internal sealed class NavigationMenuService
             Volatile.Write(ref this.current, current);
         }
 
-        Changed?.Invoke(this, new FlourishStateTransitionEventArgs<FlourishNavigationMenuSnapshot>(previous, current));
+        Changed?.Invoke(this, new StateTransitionEventArgs<NavigationMenuSnapshot>(previous, current));
     }
 
     internal void RecordExpansion(string itemId, bool expanded)
@@ -98,18 +98,18 @@ internal sealed class NavigationMenuService
         }
     }
 
-    private void RouteRegistry_Changed(object? sender, FlourishNavigationRoutesChangedEventArgs e)
+    private void RouteRegistry_Changed(object? sender, NavigationRoutesChangedEventArgs e)
     {
         SynchronizeRoutes(e.Current, publishChange: true);
     }
 
     private void SynchronizeRoutes(
-        FlourishNavigationRouteSnapshot routeSnapshot,
+        NavigationRouteSnapshot routeSnapshot,
         bool publishChange
     )
     {
-        FlourishNavigationMenuSnapshot? previous = null;
-        FlourishNavigationMenuSnapshot? current = null;
+        NavigationMenuSnapshot? previous = null;
+        NavigationMenuSnapshot? current = null;
         lock (gate)
         {
             if (routeSnapshot.Version <= lastAppliedRouteVersion)
@@ -118,7 +118,7 @@ internal sealed class NavigationMenuService
             }
 
             var workingGroups = CloneGroups(groups);
-            var workingFixedItems = new List<FlourishNavigationMenuItem>(fixedItems);
+            var workingFixedItems = new List<NavigationMenuItem>(fixedItems);
             var menuChanged = false;
             foreach (var group in workingGroups)
             {
@@ -163,18 +163,18 @@ internal sealed class NavigationMenuService
 
         if (previous is not null && current is not null)
         {
-            Changed?.Invoke(this, new FlourishStateTransitionEventArgs<FlourishNavigationMenuSnapshot>(previous, current));
+            Changed?.Invoke(this, new StateTransitionEventArgs<NavigationMenuSnapshot>(previous, current));
         }
     }
 
     private static bool RemoveMissingRouteItemsAndDescendants(
-        List<FlourishNavigationMenuItem> items,
-        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+        List<NavigationMenuItem> items,
+        IReadOnlyDictionary<string, NavigationRoute> routes
     )
     {
         var removedIds = items
             .Where(item =>
-                item.Kind == FlourishNavigationMenuItemKind.Page
+                item.Kind == NavigationMenuItemKind.Page
                 && (
                     string.IsNullOrWhiteSpace(item.NavigationKey)
                     || !routes.ContainsKey(item.NavigationKey)
@@ -206,8 +206,8 @@ internal sealed class NavigationMenuService
 
     private bool InternalPageItemsMatchRoutes(
         IReadOnlyList<GroupState> sourceGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> sourceFixedItems,
-        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+        IReadOnlyList<NavigationMenuItem> sourceFixedItems,
+        IReadOnlyDictionary<string, NavigationRoute> routes
     )
     {
         var expected = new Dictionary<string, (string NavigationKey, Type PageType, bool IsFixed)>(
@@ -240,9 +240,9 @@ internal sealed class NavigationMenuService
             && item.IsFixed == route.IsFixed
         );
 
-        void AddExpectedPageItem(FlourishNavigationMenuItem item, bool isFixed)
+        void AddExpectedPageItem(NavigationMenuItem item, bool isFixed)
         {
-            if (item.Kind != FlourishNavigationMenuItemKind.Page)
+            if (item.Kind != NavigationMenuItemKind.Page)
             {
                 return;
             }
@@ -254,23 +254,23 @@ internal sealed class NavigationMenuService
 
     private void RebuildOptions(
         IReadOnlyList<GroupState> newGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> newFixedItems,
-        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+        IReadOnlyList<NavigationMenuItem> newFixedItems,
+        IReadOnlyDictionary<string, NavigationRoute> routes
     )
     {
-        var navigationItems = new List<FlourishNavigationItem>();
+        var navigationItems = new List<NavigationItemDefinition>();
         for (var groupIndex = 0; groupIndex < newGroups.Count; groupIndex++)
         {
             var group = newGroups[groupIndex];
             if (!string.IsNullOrWhiteSpace(group.Title))
             {
                 navigationItems.Add(
-                    new FlourishNavigationItem(
+                    new NavigationItemDefinition(
                         $"group:{group.Id}",
                         group.Title,
                         iconGlyph: null,
                         groupIndex,
-                        FlourishNavigationItemKind.GroupHeader,
+                        NavigationItemKind.GroupHeader,
                         id: $"group-header:{group.Id}"
                     )
                 );
@@ -294,11 +294,11 @@ internal sealed class NavigationMenuService
         options.FixedNavigationItems.AddRange(fixedNavigationItems);
     }
 
-    private IReadOnlyList<FlourishNavigationItem> CreateInternalItems(
-        IReadOnlyList<FlourishNavigationMenuItem> source,
+    private IReadOnlyList<NavigationItemDefinition> CreateInternalItems(
+        IReadOnlyList<NavigationMenuItem> source,
         int groupId,
         bool isFixed,
-        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+        IReadOnlyDictionary<string, NavigationRoute> routes
     )
     {
         var parentRelationshipIds = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -316,10 +316,10 @@ internal sealed class NavigationMenuService
         }
 
         var publicItemsById = source.ToDictionary(item => item.Id, StringComparer.Ordinal);
-        var result = new List<FlourishNavigationItem>(source.Count);
+        var result = new List<NavigationItemDefinition>(source.Count);
         foreach (var item in source)
         {
-            var isPage = item.Kind == FlourishNavigationMenuItemKind.Page;
+            var isPage = item.Kind == NavigationMenuItemKind.Page;
             var navigationKey = isPage ? item.NavigationKey! : item.Id;
             Type? pageType = null;
             if (isPage)
@@ -335,12 +335,12 @@ internal sealed class NavigationMenuService
             }
             var parentId = parentRelationshipIds.GetValueOrDefault(item.Id);
             var childId = item.ParentId is null ? 0 : parentRelationshipIds[item.ParentId];
-            var internalItem = new FlourishNavigationItem(
+            var internalItem = new NavigationItemDefinition(
                 navigationKey,
                 item.Label,
                 item.IconGlyph,
                 groupId,
-                isPage ? FlourishNavigationItemKind.Page : FlourishNavigationItemKind.Command,
+                isPage ? NavigationItemKind.Page : NavigationItemKind.Command,
                 pageType,
                 item.CommandKey,
                 isFixed: isFixed,
@@ -367,8 +367,8 @@ internal sealed class NavigationMenuService
         return result;
     }
 
-    private static (List<GroupState>, List<FlourishNavigationMenuItem>) CreateSeedState(
-        FlourishNavigationOptions options
+    private static (List<GroupState>, List<NavigationMenuItem>) CreateSeedState(
+        NavigationOptions options
     )
     {
         var groups = new List<GroupState>();
@@ -403,12 +403,12 @@ internal sealed class NavigationMenuService
         return (groups, fixedItems);
     }
 
-    private static List<FlourishNavigationMenuItem> ConvertSeedItems(
-        IReadOnlyList<FlourishNavigationItem> source,
+    private static List<NavigationMenuItem> ConvertSeedItems(
+        IReadOnlyList<NavigationItemDefinition> source,
         HashSet<string> usedItemIds
     )
     {
-        var publicIdsByInternalItem = new Dictionary<FlourishNavigationItem, string>();
+        var publicIdsByInternalItem = new Dictionary<NavigationItemDefinition, string>();
         foreach (var item in source)
         {
             var baseId = string.IsNullOrWhiteSpace(item.Id) ? item.Key : item.Id;
@@ -425,7 +425,7 @@ internal sealed class NavigationMenuService
         var parentsByRelationshipId = source
             .Where(item => item.ParentId != 0)
             .ToDictionary(item => item.ParentId);
-        var result = new List<FlourishNavigationMenuItem>(source.Count);
+        var result = new List<NavigationMenuItem>(source.Count);
         foreach (var item in source)
         {
             string? parentId = null;
@@ -438,12 +438,12 @@ internal sealed class NavigationMenuService
             }
 
             result.Add(
-                new FlourishNavigationMenuItem(
+                new NavigationMenuItem(
                     publicIdsByInternalItem[item],
                     item.Label,
                     item.IsPageItem
-                        ? FlourishNavigationMenuItemKind.Page
-                        : FlourishNavigationMenuItemKind.Command,
+                        ? NavigationMenuItemKind.Page
+                        : NavigationMenuItemKind.Command,
                     item.IconGlyph,
                     navigationKey: item.IsPageItem ? item.Key : null,
                     commandKey: item.CommandKey,
@@ -462,8 +462,8 @@ internal sealed class NavigationMenuService
 
     private void ValidateState(
         IReadOnlyList<GroupState> newGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> newFixedItems,
-        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+        IReadOnlyList<NavigationMenuItem> newFixedItems,
+        IReadOnlyDictionary<string, NavigationRoute> routes
     )
     {
         var groupIds = new HashSet<string>(StringComparer.Ordinal);
@@ -487,14 +487,14 @@ internal sealed class NavigationMenuService
     }
 
     private void ValidateItems(
-        IReadOnlyList<FlourishNavigationMenuItem> items,
+        IReadOnlyList<NavigationMenuItem> items,
         string scope,
         HashSet<string> globalItemIds,
         HashSet<string> navigationKeys,
-        IReadOnlyDictionary<string, FlourishNavigationRoute> routes
+        IReadOnlyDictionary<string, NavigationRoute> routes
     )
     {
-        var itemsById = new Dictionary<string, FlourishNavigationMenuItem>(StringComparer.Ordinal);
+        var itemsById = new Dictionary<string, NavigationMenuItem>(StringComparer.Ordinal);
         foreach (var item in items)
         {
             ValidateId(item.Id, "item ID");
@@ -519,7 +519,7 @@ internal sealed class NavigationMenuService
                 );
             }
 
-            if (item.Kind == FlourishNavigationMenuItemKind.Page)
+            if (item.Kind == NavigationMenuItemKind.Page)
             {
                 if (string.IsNullOrWhiteSpace(item.NavigationKey))
                 {
@@ -575,20 +575,20 @@ internal sealed class NavigationMenuService
         }
     }
 
-    private static FlourishNavigationMenuSnapshot CreateSnapshot(
+    private static NavigationMenuSnapshot CreateSnapshot(
         IReadOnlyList<GroupState> sourceGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> sourceFixedItems,
+        IReadOnlyList<NavigationMenuItem> sourceFixedItems,
         long snapshotVersion
     )
     {
         var snapshotGroups = sourceGroups
-            .Select(group => new FlourishNavigationMenuGroup(
+            .Select(group => new NavigationMenuGroup(
                 group.Id,
                 group.Title,
                 Array.AsReadOnly(group.Items.ToArray())
             ))
             .ToArray();
-        return new FlourishNavigationMenuSnapshot(
+        return new NavigationMenuSnapshot(
             Array.AsReadOnly(snapshotGroups),
             Array.AsReadOnly(sourceFixedItems.ToArray()),
             snapshotVersion
@@ -604,9 +604,9 @@ internal sealed class NavigationMenuService
 
     private static bool MenuEquals(
         IReadOnlyList<GroupState> leftGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> leftFixedItems,
+        IReadOnlyList<NavigationMenuItem> leftFixedItems,
         IReadOnlyList<GroupState> rightGroups,
-        IReadOnlyList<FlourishNavigationMenuItem> rightFixedItems
+        IReadOnlyList<NavigationMenuItem> rightFixedItems
     )
     {
         if (leftGroups.Count != rightGroups.Count || !leftFixedItems.SequenceEqual(rightFixedItems))
@@ -633,7 +633,7 @@ internal sealed class NavigationMenuService
 
     private static bool TryFindItem(
         IReadOnlyList<GroupState> sourceGroups,
-        List<FlourishNavigationMenuItem> sourceFixedItems,
+        List<NavigationMenuItem> sourceFixedItems,
         string id,
         out ItemLocation location
     )
@@ -664,18 +664,18 @@ internal sealed class NavigationMenuService
     private sealed class GroupState(
         string id,
         string? title,
-        List<FlourishNavigationMenuItem> items
+        List<NavigationMenuItem> items
     )
     {
         public string Id { get; } = id;
 
         public string? Title { get; set; } = title;
 
-        public List<FlourishNavigationMenuItem> Items { get; } = items;
+        public List<NavigationMenuItem> Items { get; } = items;
     }
 
     private readonly record struct ItemLocation(
-        List<FlourishNavigationMenuItem> Items,
+        List<NavigationMenuItem> Items,
         int Index,
         string? GroupId,
         bool IsFixed
@@ -683,7 +683,7 @@ internal sealed class NavigationMenuService
 
     private sealed class NavigationMenuEditor(
         List<GroupState> groups,
-        List<FlourishNavigationMenuItem> fixedItems
+        List<NavigationMenuItem> fixedItems
     ) : INavigationMenuEditor
     {
         public void AddGroup(string id, string? title = null)
@@ -744,34 +744,34 @@ internal sealed class NavigationMenuService
             groups[RequireGroupIndex(id)].Title = title;
         }
 
-        public void AddItem(string groupId, FlourishNavigationMenuItem item)
+        public void AddItem(string groupId, NavigationMenuItem item)
         {
             InsertItemCore(groupId, item, index: null);
         }
 
-        public void SetItemIndex(string groupId, FlourishNavigationMenuItem item, int index)
+        public void SetItemIndex(string groupId, NavigationMenuItem item, int index)
         {
             InsertItemCore(groupId, item, index);
         }
 
-        private void InsertItemCore(string groupId, FlourishNavigationMenuItem item, int? index)
+        private void InsertItemCore(string groupId, NavigationMenuItem item, int? index)
         {
             ArgumentNullException.ThrowIfNull(item);
             EnsureItemIdAvailable(item.Id);
             Insert(groups[RequireGroupIndex(groupId)].Items, item, index);
         }
 
-        public void AddFixedItem(FlourishNavigationMenuItem item)
+        public void AddFixedItem(NavigationMenuItem item)
         {
             InsertFixedItemCore(item, index: null);
         }
 
-        public void SetFixedItemIndex(FlourishNavigationMenuItem item, int index)
+        public void SetFixedItemIndex(NavigationMenuItem item, int index)
         {
             InsertFixedItemCore(item, index);
         }
 
-        private void InsertFixedItemCore(FlourishNavigationMenuItem item, int? index)
+        private void InsertFixedItemCore(NavigationMenuItem item, int? index)
         {
             ArgumentNullException.ThrowIfNull(item);
             EnsureItemIdAvailable(item.Id);
@@ -780,7 +780,7 @@ internal sealed class NavigationMenuService
 
         public void SetItem(
             string? groupId,
-            FlourishNavigationMenuItem item,
+            NavigationMenuItem item,
             bool isFixed = false,
             int? index = null
         )
@@ -841,7 +841,7 @@ internal sealed class NavigationMenuService
 
         public void SetItem(
             string id,
-            Func<FlourishNavigationMenuItem, FlourishNavigationMenuItem> update
+            Func<NavigationMenuItem, NavigationMenuItem> update
         )
         {
             ArgumentNullException.ThrowIfNull(update);
@@ -878,7 +878,7 @@ internal sealed class NavigationMenuService
             SetItem(id, item => item with { IsExpanded = expanded });
         }
 
-        private List<FlourishNavigationMenuItem> GetTarget(string? groupId, bool isFixed)
+        private List<NavigationMenuItem> GetTarget(string? groupId, bool isFixed)
         {
             if (isFixed)
             {

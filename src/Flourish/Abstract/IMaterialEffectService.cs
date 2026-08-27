@@ -10,7 +10,7 @@ public interface IMaterialEffectService
     /// <summary>
     /// Gets an immutable snapshot of the requested and effective material state.
     /// </summary>
-    FlourishMaterialEffectState Current { get; }
+    MaterialEffectState Current { get; }
 
     /// <summary>
     /// Raised after material or immersive dark mode state changes.
@@ -18,7 +18,7 @@ public interface IMaterialEffectService
     /// <remarks>
     /// When a shell window is attached, the event is raised on its dispatcher.
     /// </remarks>
-    event EventHandler<FlourishStateChangedEventArgs<FlourishMaterialEffectState>>? Changed;
+    event EventHandler<StateChangedEventArgs<MaterialEffectState>>? Changed;
 
     /// <summary>
     /// Gets whether an effect is supported on the current operating system.
@@ -40,7 +40,7 @@ public interface IMaterialEffectService
 }
 
 /// <summary>Represents the active runtime material and immersive dark-mode state.</summary>
-public sealed record FlourishMaterialEffectState(
+public sealed record MaterialEffectState(
     MaterialEffect RequestedEffect,
     MaterialEffect EffectiveEffect,
     bool IsSupported,

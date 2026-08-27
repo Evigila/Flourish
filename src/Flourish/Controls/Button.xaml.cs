@@ -43,7 +43,7 @@ public class Button : WpfButton
         nameof(IconSize),
         typeof(double),
         typeof(Button),
-        new FrameworkPropertyMetadata(22d),
+        new FrameworkPropertyMetadata(14d),
         IsIconSizeValid
     );
 

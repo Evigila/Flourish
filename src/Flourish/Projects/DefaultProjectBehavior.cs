@@ -18,7 +18,7 @@ internal sealed class DefaultProjectBehavior(
     ProjectService projectService,
     IProjectSaveFileDialog saveFileDialog,
     IMessageService messageService,
-    IFlourishLocalization localization
+    ILocalizationService localization
 ) : IProjectBehavior
 {
     private const string DefaultProjectFileName = "NewProject";
@@ -31,7 +31,7 @@ internal sealed class DefaultProjectBehavior(
         saveFileDialog ?? throw new ArgumentNullException(nameof(saveFileDialog));
     private readonly IMessageService messageService =
         messageService ?? throw new ArgumentNullException(nameof(messageService));
-    private readonly IFlourishLocalization localization =
+    private readonly ILocalizationService localization =
         localization ?? throw new ArgumentNullException(nameof(localization));
     private readonly SemaphoreSlim operationGate = new(1, 1);
 
@@ -66,7 +66,7 @@ internal sealed class DefaultProjectBehavior(
                         cancellationToken
                     )
                     .ConfigureAwait(false);
-                var project = new FlourishProject(
+                var project = new ProjectDescriptor(
                     Guid.NewGuid().ToString("N"),
                     GetProjectName(storagePath),
                     storagePath
@@ -180,11 +180,11 @@ internal sealed class DefaultProjectBehavior(
             var result = await messageService
                 .ShowAsync(
                     localization.Format(
-                        FlourishLocaleKeys.ProjectDeletePrompt,
+                        LocaleKeys.ProjectDeletePrompt,
                         project.Name,
                         project.StoragePath ?? string.Empty
                     ),
-                    localization.Get(FlourishLocaleKeys.ProjectDeleteTitle),
+                    localization.Get(LocaleKeys.ProjectDeleteTitle),
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning,
                     MessageBoxResult.No,
@@ -272,14 +272,14 @@ internal sealed class DefaultProjectBehavior(
             return true;
         }
 
-        IReadOnlyList<FlourishMessageOption> choices =
+        IReadOnlyList<MessageDialogOption> choices =
         [
-            new(CancelOptionId, localization.Get(FlourishLocaleKeys.MessageBoxCancel))
+            new(CancelOptionId, localization.Get(LocaleKeys.MessageBoxCancel))
             {
                 IsCancel = true,
             },
-            new(DontSaveOptionId, localization.Get(FlourishLocaleKeys.ProjectDontSave)),
-            new(SaveOptionId, localization.Get(FlourishLocaleKeys.ProjectSave))
+            new(DontSaveOptionId, localization.Get(LocaleKeys.ProjectDontSave)),
+            new(SaveOptionId, localization.Get(LocaleKeys.ProjectSave))
             {
                 IsDefault = true,
                 IsPrimary = true,
@@ -287,8 +287,8 @@ internal sealed class DefaultProjectBehavior(
         ];
         var result = await messageService
             .ShowAsync(
-                localization.Format(FlourishLocaleKeys.ProjectUnsavedPrompt, activeProject.Name),
-                localization.Get(FlourishLocaleKeys.ProjectUnsavedTitle),
+                localization.Format(LocaleKeys.ProjectUnsavedPrompt, activeProject.Name),
+                localization.Get(LocaleKeys.ProjectUnsavedTitle),
                 choices,
                 MessageBoxImage.Warning,
                 MessageBoxOptions.None,
@@ -314,13 +314,13 @@ internal sealed class DefaultProjectBehavior(
             return true;
         }
 
-        IReadOnlyList<FlourishMessageOption> choices =
+        IReadOnlyList<MessageDialogOption> choices =
         [
-            new(CancelOptionId, localization.Get(FlourishLocaleKeys.MessageBoxCancel))
+            new(CancelOptionId, localization.Get(LocaleKeys.MessageBoxCancel))
             {
                 IsCancel = true,
             },
-            new(SaveOptionId, localization.Get(FlourishLocaleKeys.ProjectSave))
+            new(SaveOptionId, localization.Get(LocaleKeys.ProjectSave))
             {
                 IsDefault = true,
                 IsPrimary = true,
@@ -328,8 +328,8 @@ internal sealed class DefaultProjectBehavior(
         ];
         var result = await messageService
             .ShowAsync(
-                localization.Format(FlourishLocaleKeys.ProjectUnsavedPrompt, activeProject.Name),
-                localization.Get(FlourishLocaleKeys.ProjectUnsavedTitle),
+                localization.Format(LocaleKeys.ProjectUnsavedPrompt, activeProject.Name),
+                localization.Get(LocaleKeys.ProjectUnsavedTitle),
                 choices,
                 MessageBoxImage.Warning,
                 MessageBoxOptions.None,
@@ -417,7 +417,7 @@ internal sealed class DefaultProjectBehavior(
             StringComparison.OrdinalIgnoreCase
         );
 
-    private static bool IsPersistedProject(FlourishProject project) =>
+    private static bool IsPersistedProject(ProjectDescriptor project) =>
         project.StoragePath is not null && File.Exists(project.StoragePath);
 
     private static async ValueTask<bool> EnsurePlaceholderFileExistsAsync(
@@ -457,7 +457,7 @@ internal sealed class DefaultProjectBehavior(
     }
 
     private static bool ProjectCatalogReferencesPath(
-        FlourishProjectSnapshot snapshot,
+        ProjectCatalogSnapshot snapshot,
         string storagePath,
         string? excludedProjectId = null
     )

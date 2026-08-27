@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
 
@@ -25,7 +25,7 @@ public partial class ToolTipPage : Page
     public string UsageCode { get; } =
         "<flourish:Button Content=\"Refresh\">\n"
         + "  <flourish:Button.ToolTip>\n"
-        + "    <flourish:FlourishToolTip\n"
+        + "    <flourish:ToolTip\n"
         + "      Content=\"Refresh the current workspace.\" />\n"
         + "  </flourish:Button.ToolTip>\n"
         + "</flourish:Button>\n\n"

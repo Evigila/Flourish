@@ -5,13 +5,13 @@ using WpfListBoxItem = System.Windows.Controls.ListBoxItem;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled list-box item container.</summary>
-public class FlourishListBoxItem : WpfListBoxItem
+public class ListBoxItem : WpfListBoxItem
 {
     /// <summary>Identifies the navigation visibility state.</summary>
     public static readonly DependencyProperty IsItemVisibleProperty = DependencyProperty.Register(
         nameof(IsItemVisible),
         typeof(bool),
-        typeof(FlourishListBoxItem),
+        typeof(ListBoxItem),
         new FrameworkPropertyMetadata(true)
     );
 
@@ -19,7 +19,7 @@ public class FlourishListBoxItem : WpfListBoxItem
     public static readonly DependencyProperty IsGroupHeaderProperty = DependencyProperty.Register(
         nameof(IsGroupHeader),
         typeof(bool),
-        typeof(FlourishListBoxItem),
+        typeof(ListBoxItem),
         new FrameworkPropertyMetadata(false)
     );
 
@@ -27,15 +27,15 @@ public class FlourishListBoxItem : WpfListBoxItem
     public static readonly DependencyProperty IsCommandItemProperty = DependencyProperty.Register(
         nameof(IsCommandItem),
         typeof(bool),
-        typeof(FlourishListBoxItem),
+        typeof(ListBoxItem),
         new FrameworkPropertyMetadata(false)
     );
 
-    static FlourishListBoxItem()
+    static ListBoxItem()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishListBoxItem),
-            new FrameworkPropertyMetadata(typeof(FlourishListBoxItem))
+            typeof(ListBoxItem),
+            new FrameworkPropertyMetadata(typeof(ListBoxItem))
         );
     }
 

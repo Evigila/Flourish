@@ -10,7 +10,7 @@ internal sealed class TitleBarRuntimeFacade : ITitleBarService, IDisposable
     private readonly Lock gate = new();
     private readonly TitleBarService titleBar;
     private readonly TitleBarSearchService search;
-    private FlourishTitleBarState current;
+    private TitleBarState current;
     private long version;
     private bool isDisposed;
 
@@ -23,7 +23,7 @@ internal sealed class TitleBarRuntimeFacade : ITitleBarService, IDisposable
         search.Changed += Source_Changed;
     }
 
-    public FlourishTitleBarState Current
+    public TitleBarState Current
     {
         get
         {
@@ -32,7 +32,7 @@ internal sealed class TitleBarRuntimeFacade : ITitleBarService, IDisposable
         }
     }
 
-    public event EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarState>>? Changed;
+    public event EventHandler<StateChangedEventArgs<TitleBarState>>? Changed;
 
     public void SetEnabled(bool enabled) => titleBar.SetEnabled(enabled);
     public void SetApplicationTitle(string title) => titleBar.SetApplicationTitle(title);
@@ -60,7 +60,7 @@ internal sealed class TitleBarRuntimeFacade : ITitleBarService, IDisposable
     public void ClearSearch() => search.Clear();
     public void FocusSearch() => search.Focus();
     public IRegistration SubscribeSearch(
-        Func<FlourishTitleBarSearchQuery, CancellationToken, ValueTask> handler
+        Func<TitleBarSearchQuery, CancellationToken, ValueTask> handler
     ) => search.Subscribe(handler);
     public void SetElementVisible(TitleBarElement element, bool visible)
     {
@@ -92,7 +92,7 @@ internal sealed class TitleBarRuntimeFacade : ITitleBarService, IDisposable
 
     private void Source_Changed(object? sender, EventArgs args)
     {
-        FlourishTitleBarState snapshot;
+        TitleBarState snapshot;
         lock (gate)
         {
             if (isDisposed)
@@ -105,10 +105,10 @@ internal sealed class TitleBarRuntimeFacade : ITitleBarService, IDisposable
             Volatile.Write(ref current, snapshot);
         }
 
-        Changed?.Invoke(this, new FlourishStateChangedEventArgs<FlourishTitleBarState>(snapshot));
+        Changed?.Invoke(this, new StateChangedEventArgs<TitleBarState>(snapshot));
     }
 
-    private FlourishTitleBarState CaptureCurrent()
+    private TitleBarState CaptureCurrent()
     {
         var titleBarState = titleBar.Current;
         var searchState = search.Current;

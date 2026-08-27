@@ -5,7 +5,7 @@ description: Set the Flourish shell window size, position, and WPF window behavi
 
 # Window
 
-Every Flourish shell has a WPF window. Use `ConfigureWindow` to choose its initial dimensions, placement, state, taskbar visibility, topmost behavior, and close-to-tray behavior.
+Use `ConfigureWindow` to set the Shell window's size, placement, state, taskbar visibility, topmost state, and close behavior.
 
 ## Configure the window
 
@@ -52,7 +52,7 @@ window
 
 `SetResizeMode` controls whether the custom title bar maximize command is available. `SetShownInTaskbar` and `SetTopmost` map to normal WPF window behavior.
 
-When the custom window is maximized, its caption buttons extend to the screen edges so the close command remains available from the upper-right corner. Restoring the window also restores its resizable edge.
+When maximized, caption buttons extend to the screen edges; restoring the window restores its resizable edge.
 
 ## Text and pixel defaults
 
@@ -60,13 +60,13 @@ The shell root enables device-pixel snapping and layout rounding. Flourish does 
 
 ## Project close guard
 
-When multi-project mode is enabled, an actual close request runs `IProjectBehavior.CanCloseAsync` through the window close-guard pipeline. With the default behavior, an active project whose `StoragePath` is `null` offers **Save**, **Don't save**, and **Cancel**. Saving must complete before closing can continue; choosing **Don't save** closes without creating a project file, while **Cancel** or canceling the Save dialog keeps the application open. When multi-project mode is disabled, Flourish does not run the project close guard or display a project-save prompt.
+In multi-project mode, actual close requests run `IProjectBehavior.CanCloseAsync`. The default behavior offers **Save**, **Don't save**, and **Cancel** for an active project with `StoragePath == null`; outside project mode no project prompt appears.
 
 This guard applies to the title-bar close command, a direct window close, application close requests, and **Exit** from the notification-area menu. An application-provided `IProjectBehavior` can replace the decision and save workflow. See [Projects](projects.md).
 
 ## Close to the notification area
 
-`SetTrayExit(true)` changes the close command into a minimize-to-tray action. Clicking the title bar close button hides the window in the Windows notification area immediately and does not open the close confirmation or project-save dialogs because the application is not closing. Double-clicking the tray icon or selecting Show restores the window; selecting Exit starts the actual close flow, including the project close guard.
+`SetTrayExit(true)` makes the close command hide the window without running close guards. Double-click the tray icon or select Show to restore it; Exit runs the actual close flow.
 
 ```csharp
 builder.ConfigureWindow(window => window.SetTrayExit());
@@ -78,7 +78,7 @@ The close confirmation and tray menu use the locale selected through [Applicatio
 
 ## Related features
 
-- [Getting started](getting-started.md) shows window startup from `App.xaml.cs`.
-- [Title bar](configure-title-bar.md) controls the chrome displayed inside the window.
-- [Projects](projects.md) explains multi-project save, don't-save, and cancel handling before an actual close.
-- [Material effects](configure-material-effect.md) change the window background material.
+- [Getting started](getting-started.md)
+- [Title bar](configure-title-bar.md)
+- [Projects](projects.md)
+- [Material effects](configure-material-effect.md)

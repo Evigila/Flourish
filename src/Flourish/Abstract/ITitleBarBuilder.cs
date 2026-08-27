@@ -133,7 +133,7 @@ public interface ITitleBarBuilder
     /// <returns>The current builder for chained configuration.</returns>
     ITitleBarBuilder SetThemeToggle(
         bool enabled = true,
-        FlourishTheme mode = FlourishTheme.System,
+        ApplicationTheme mode = ApplicationTheme.System,
         bool usePersistedPreference = true
     );
 }

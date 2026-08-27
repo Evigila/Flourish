@@ -5,7 +5,7 @@ description: Build and run a basic WPF application with Flourish.
 
 # Getting started
 
-Install or reference `Arkheide.Flourish`, then import the single public namespace:
+Install `Arkheide.Flourish` and import its public namespace:
 
 ```csharp
 using ArkheideSystem.Flourish.Abstract;
@@ -14,7 +14,7 @@ using ArkheideSystem.Flourish.Abstract;
 Do not set `StartupUri` when the Flourish shell is the main window. Register the WPF application, configure the title bar and navigation, then run the host:
 
 ```csharp
-return FlourishBuilder
+return ApplicationBuilder
     .CreateDefaultBuilder(args)
     .ConfigureServices((_, services) => services.AddSingleton<App>())
     .ConfigureTitleBar(titleBar =>
@@ -42,8 +42,8 @@ builder.ConfigureData(data =>
         .AddCultureFile("Locales/FlourishCulture.Json"));
 ```
 
-After startup, resolve runtime services through dependency injection. Builders define initial state; services update live state. For example, read `theme.Current`, observe `theme.Changed`, and call `theme.SetTheme(...)`.
+After startup, resolve runtime services through dependency injection. Read `Current`, observe `Changed`, and call service methods to update live state.
 
-Flourish uses standard Microsoft `IConfiguration`. Inject it to read effective values. Inject `IFlourishSettingsStore` when the application must atomically update the `Flourish:` section in `appsettings.Flourish.json`.
+Flourish uses standard Microsoft `IConfiguration`. Inject it to read effective values. Inject `ISettingsStore` when the application must atomically update the `Flourish:` section in `appsettings.Flourish.json`.
 
-Continue with [IFlourishBuilder](flourish-builder.md), [feature configuration](shell-configuration.md), and [runtime APIs](runtime-apis.md).
+Continue with [IApplicationBuilder](flourish-builder.md), [feature configuration](shell-configuration.md), and [runtime APIs](runtime-apis.md).

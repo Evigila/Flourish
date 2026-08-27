@@ -11,8 +11,8 @@ internal sealed class PageHistoryService
 {
     internal const int DefaultMaximumEntries = 100;
 
-    private readonly LinkedList<FlourishPageStackEntry> backStack = new();
-    private readonly LinkedList<FlourishPageStackEntry> forwardStack = new();
+    private readonly LinkedList<NavigationStackEntry> backStack = new();
+    private readonly LinkedList<NavigationStackEntry> forwardStack = new();
     private readonly Lock gate = new();
     private readonly int maximumEntries;
 
@@ -55,7 +55,7 @@ internal sealed class PageHistoryService
         }
     }
 
-    public IReadOnlyCollection<FlourishPageStackEntry> BackStack
+    public IReadOnlyCollection<NavigationStackEntry> BackStack
     {
         get
         {
@@ -66,7 +66,7 @@ internal sealed class PageHistoryService
         }
     }
 
-    public IReadOnlyCollection<FlourishPageStackEntry> ForwardStack
+    public IReadOnlyCollection<NavigationStackEntry> ForwardStack
     {
         get
         {
@@ -77,7 +77,7 @@ internal sealed class PageHistoryService
         }
     }
 
-    public void Push(FlourishPageStackEntry entry)
+    public void Push(NavigationStackEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
         lock (gate)
@@ -86,7 +86,7 @@ internal sealed class PageHistoryService
         }
     }
 
-    public void PushForward(FlourishPageStackEntry entry)
+    public void PushForward(NavigationStackEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
         lock (gate)
@@ -95,7 +95,7 @@ internal sealed class PageHistoryService
         }
     }
 
-    public bool TryPopBack(out FlourishPageStackEntry entry)
+    public bool TryPopBack(out NavigationStackEntry entry)
     {
         lock (gate)
         {
@@ -111,7 +111,7 @@ internal sealed class PageHistoryService
         }
     }
 
-    public bool TryPopForward(out FlourishPageStackEntry entry)
+    public bool TryPopForward(out NavigationStackEntry entry)
     {
         lock (gate)
         {
@@ -160,7 +160,7 @@ internal sealed class PageHistoryService
         );
     }
 
-    public bool RemoveWhere(Func<FlourishPageStackEntry, bool> predicate)
+    public bool RemoveWhere(Func<NavigationStackEntry, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
         lock (gate)
@@ -171,8 +171,8 @@ internal sealed class PageHistoryService
     }
 
     private void Push(
-        LinkedList<FlourishPageStackEntry> history,
-        FlourishPageStackEntry entry
+        LinkedList<NavigationStackEntry> history,
+        NavigationStackEntry entry
     )
     {
         history.AddFirst(entry);
@@ -183,8 +183,8 @@ internal sealed class PageHistoryService
     }
 
     private static bool RemoveFromHistory(
-        LinkedList<FlourishPageStackEntry> history,
-        Func<FlourishPageStackEntry, bool> predicate
+        LinkedList<NavigationStackEntry> history,
+        Func<NavigationStackEntry, bool> predicate
     )
     {
         var removed = false;

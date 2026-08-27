@@ -3,7 +3,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:ArkheideSystem.Flourish.Controls"
 >
-  <Style TargetType="{x:Type controls:FlourishListBoxItem}">
+  <Style TargetType="{x:Type controls:ListBoxItem}">
     <Setter Property="MinHeight" Value="{DynamicResource FlourishControlHeight}" />
     <Setter Property="Padding" Value="{DynamicResource FlourishCompactControlPadding}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -15,7 +15,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource FlourishFontFamily}" />
     <Setter Property="FontSize" Value="{DynamicResource FlourishFontSizeStandard}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="controls:FlourishToolTipPolicy.IsEnabled" Value="{DynamicResource FlourishToolTipsEnabled}" />
+    <Setter Property="controls:ToolTipPolicy.IsEnabled" Value="{DynamicResource ToolTipsEnabled}" />
     <Setter Property="controls:HoverReveal.OverrideColor" Value="{DynamicResource FlourishHoverRevealBrush}" />
     <Setter
       Property="controls:HoverReveal.IsMotionEnabled"
@@ -25,7 +25,7 @@
     <Setter Property="controls:HoverReveal.TemplateHandlesInteraction" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type controls:FlourishListBoxItem}">
+        <ControlTemplate TargetType="{x:Type controls:ListBoxItem}">
           <Grid ClipToBounds="True" SnapsToDevicePixels="True">
             <Border
               x:Name="Chrome"
@@ -86,8 +86,8 @@
       </Setter.Value>
     </Setter>
     <Style.Triggers>
-      <Trigger Property="controls:FlourishToolTipPolicy.IsEnabled" Value="True">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource FlourishToolTipInitialShowDelay}" />
+      <Trigger Property="controls:ToolTipPolicy.IsEnabled" Value="True">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{DynamicResource ToolTipInitialShowDelay}" />
       </Trigger>
       <DataTrigger
         Binding="{Binding Appearance, RelativeSource={RelativeSource AncestorType={x:Type controls:ListBox}}}"

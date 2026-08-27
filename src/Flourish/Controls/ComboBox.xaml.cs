@@ -5,13 +5,13 @@ using WpfComboBox = System.Windows.Controls.ComboBox;
 namespace ArkheideSystem.Flourish.Controls;
 
 /// <summary>A Flourish-styled selector that generates Flourish item containers.</summary>
-public class FlourishComboBox : WpfComboBox
+public class ComboBox : WpfComboBox
 {
-    static FlourishComboBox()
+    static ComboBox()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
-            typeof(FlourishComboBox),
-            new FrameworkPropertyMetadata(typeof(FlourishComboBox))
+            typeof(ComboBox),
+            new FrameworkPropertyMetadata(typeof(ComboBox))
         );
     }
 
@@ -25,12 +25,12 @@ public class FlourishComboBox : WpfComboBox
     /// <inheritdoc />
     protected override DependencyObject GetContainerForItemOverride()
     {
-        return new FlourishComboBoxItem();
+        return new ComboBoxItem();
     }
 
     /// <inheritdoc />
     protected override bool IsItemItsOwnContainerOverride(object item)
     {
-        return item is FlourishComboBoxItem;
+        return item is ComboBoxItem;
     }
 }

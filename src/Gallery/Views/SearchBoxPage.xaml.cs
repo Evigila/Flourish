@@ -1,4 +1,4 @@
-using CKey = Arkheide.Essential.Culture.Key;
+using CKey = ArkheideSystem.Essential.Culture.Key;
 using InputKey = System.Windows.Input.Key;
 using System.Windows.Controls;
 using ArkheideSystem.Gallery.Models;
@@ -32,7 +32,7 @@ public partial class SearchBoxPage : Page
 
     public string UsageCode { get; } =
         """
-            <flourish:FlourishSearchBox
+            <flourish:SearchBox
               x:Name="ControlSearch"
               Placeholder="Search controls"
               Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

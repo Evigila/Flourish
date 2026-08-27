@@ -10,7 +10,7 @@ public sealed class ShortcutRegistryChangedEventArgs : EventArgs
 {
     internal ShortcutRegistryChangedEventArgs(
         long version,
-        FlourishRuntimeChangeKind changeKind,
+        CollectionChangeKind changeKind,
         ShortcutRegistrationInfo affectedShortcut,
         IReadOnlyList<ShortcutRegistrationInfo> current
     )
@@ -29,7 +29,7 @@ public sealed class ShortcutRegistryChangedEventArgs : EventArgs
     /// <summary>
     /// Gets the kind of structural change.
     /// </summary>
-    public FlourishRuntimeChangeKind ChangeKind { get; }
+    public CollectionChangeKind ChangeKind { get; }
 
     /// <summary>
     /// Gets the shortcut added or removed by the change.

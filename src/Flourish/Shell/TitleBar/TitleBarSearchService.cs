@@ -13,22 +13,22 @@ namespace ArkheideSystem.Flourish.Shell.TitleBar;
 internal sealed class TitleBarSearchService : IDisposable
 {
     private readonly Lock gate = new();
-    private readonly FlourishTitleBarOptions options;
+    private readonly TitleBarOptions options;
     private readonly IServiceProvider serviceProvider;
     private readonly ILogger<TitleBarSearchService> logger;
     private readonly Dictionary<
         Guid,
-        Func<FlourishTitleBarSearchQuery, CancellationToken, ValueTask>
+        Func<TitleBarSearchQuery, CancellationToken, ValueTask>
     > handlers = [];
     private QueryDispatch? activeQueryDispatch;
-    private FlourishTitleBarSearchState current;
+    private TitleBarSearchState current;
     private string text = string.Empty;
     private bool focusRequested;
     private long version;
     private bool isDisposed;
 
     public TitleBarSearchService(
-        FlourishTitleBarOptions options,
+        TitleBarOptions options,
         IServiceProvider serviceProvider,
         ILogger<TitleBarSearchService> logger
     )
@@ -40,11 +40,11 @@ internal sealed class TitleBarSearchService : IDisposable
         current = CreateSnapshot();
     }
 
-    internal event EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarSearchState>>? Changed;
+    internal event EventHandler<StateChangedEventArgs<TitleBarSearchState>>? Changed;
 
-    internal event EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarSearchState>>? ProgrammaticStateChanged;
+    internal event EventHandler<StateChangedEventArgs<TitleBarSearchState>>? ProgrammaticStateChanged;
 
-    public FlourishTitleBarSearchState Current => Volatile.Read(ref current);
+    public TitleBarSearchState Current => Volatile.Read(ref current);
 
     public void SetVisible(bool visible)
     {
@@ -75,7 +75,7 @@ internal sealed class TitleBarSearchService : IDisposable
     }
 
     public IRegistration Subscribe(
-        Func<FlourishTitleBarSearchQuery, CancellationToken, ValueTask> handler
+        Func<TitleBarSearchQuery, CancellationToken, ValueTask> handler
     )
     {
         ArgumentNullException.ThrowIfNull(handler);
@@ -92,9 +92,9 @@ internal sealed class TitleBarSearchService : IDisposable
     internal void PublishFromView(string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        Func<FlourishTitleBarSearchQuery, CancellationToken, ValueTask>[]? subscribers;
-        EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarSearchState>>? stateChanged;
-        FlourishTitleBarSearchState? state;
+        Func<TitleBarSearchQuery, CancellationToken, ValueTask>[]? subscribers;
+        EventHandler<StateChangedEventArgs<TitleBarSearchState>>? stateChanged;
+        TitleBarSearchState? state;
         QueryDispatch? dispatch = null;
         QueryDispatch? previousDispatch;
         long sequence;
@@ -139,12 +139,12 @@ internal sealed class TitleBarSearchService : IDisposable
             logger.LogError(error, "The configured title bar search handler failed.");
         }
 
-        var args = new FlourishTitleBarSearchQuery(value, sequence);
+        var args = new TitleBarSearchQuery(value, sequence);
         try
         {
             if (stateChanged is not null)
             {
-                stateChanged(this, new FlourishStateChangedEventArgs<FlourishTitleBarSearchState>(state!));
+                stateChanged(this, new StateChangedEventArgs<TitleBarSearchState>(state!));
             }
 
         }
@@ -204,9 +204,9 @@ internal sealed class TitleBarSearchService : IDisposable
 
     private async Task DispatchAsync(
         IReadOnlyList<
-            Func<FlourishTitleBarSearchQuery, CancellationToken, ValueTask>
+            Func<TitleBarSearchQuery, CancellationToken, ValueTask>
         > subscribers,
-        FlourishTitleBarSearchQuery args,
+        TitleBarSearchQuery args,
         QueryDispatch dispatch
     )
     {
@@ -238,9 +238,9 @@ internal sealed class TitleBarSearchService : IDisposable
 
     private void UpdateState(Action update)
     {
-        EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarSearchState>>? programmaticStateChanged;
-        EventHandler<FlourishStateChangedEventArgs<FlourishTitleBarSearchState>>? stateChanged;
-        FlourishTitleBarSearchState? state;
+        EventHandler<StateChangedEventArgs<TitleBarSearchState>>? programmaticStateChanged;
+        EventHandler<StateChangedEventArgs<TitleBarSearchState>>? stateChanged;
+        TitleBarSearchState? state;
         lock (gate)
         {
             ObjectDisposedException.ThrowIf(isDisposed, this);
@@ -277,7 +277,7 @@ internal sealed class TitleBarSearchService : IDisposable
             return;
         }
 
-        var args = new FlourishStateChangedEventArgs<FlourishTitleBarSearchState>(state);
+        var args = new StateChangedEventArgs<TitleBarSearchState>(state);
         programmaticStateChanged?.Invoke(this, args);
         stateChanged?.Invoke(this, args);
     }
@@ -312,9 +312,9 @@ internal sealed class TitleBarSearchService : IDisposable
         dispatch.Complete();
     }
 
-    private FlourishTitleBarSearchState CreateSnapshot()
+    private TitleBarSearchState CreateSnapshot()
     {
-        return new FlourishTitleBarSearchState(
+        return new TitleBarSearchState(
             text,
             options.SearchPlaceholder,
             options.IsTitlebarSearchEnabled,

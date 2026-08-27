@@ -5,8 +5,8 @@ using System.IO;
 
 namespace ArkheideSystem.Flourish.Configuration;
 
-internal sealed class DataBuilder(FlourishDataOptions options)
-    : FlourishBuilderMutationGuard,
+internal sealed class DataBuilder(ApplicationDataOptions options)
+    : BuilderMutationGuard,
         IDataBuilder
 {
     public IDataBuilder SetLocale(

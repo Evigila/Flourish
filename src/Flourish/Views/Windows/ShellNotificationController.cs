@@ -12,7 +12,7 @@ using System.Windows.Threading;
 using ArkheideSystem.Flourish.Controls;
 using ArkheideSystem.Flourish.Messaging;
 using Button = ArkheideSystem.Flourish.Controls.Button;
-using TextBlock = ArkheideSystem.Flourish.Controls.FlourishTextBlock;
+using TextBlock = ArkheideSystem.Flourish.Controls.TextBlock;
 using WpfPanel = System.Windows.Controls.Panel;
 
 namespace ArkheideSystem.Flourish.Views.Windows;
@@ -20,21 +20,21 @@ namespace ArkheideSystem.Flourish.Views.Windows;
 internal sealed class ShellNotificationController : IDisposable
 {
     private readonly Lock refreshGate = new();
-    private readonly FlourishNotificationHost host;
+    private readonly NotificationHost host;
     private readonly NotificationService notificationService;
     private readonly ICommandDispatcher commandDispatcher;
     private readonly Dispatcher dispatcher;
     private readonly Dictionary<string, NotificationItemView> viewsById = new(
         StringComparer.Ordinal
     );
-    private IReadOnlyList<FlourishNotificationInfo> pendingNotifications = [];
+    private IReadOnlyList<ActiveNotificationInfo> pendingNotifications = [];
     private long pendingVersion;
     private long appliedVersion;
     private bool refreshPending;
     private bool isDisposed;
 
     internal ShellNotificationController(
-        FlourishNotificationHost host,
+        NotificationHost host,
         NotificationService notificationService,
         ICommandDispatcher commandDispatcher
     )
@@ -77,7 +77,7 @@ internal sealed class ShellNotificationController : IDisposable
 
     private void NotificationService_Changed(
         object? sender,
-        FlourishStateChangedEventArgs<FlourishNotificationState> e
+        StateChangedEventArgs<NotificationState> e
     )
     {
         var current = e.Current;
@@ -115,7 +115,7 @@ internal sealed class ShellNotificationController : IDisposable
 
     private void FlushPendingNotifications()
     {
-        IReadOnlyList<FlourishNotificationInfo> notifications;
+        IReadOnlyList<ActiveNotificationInfo> notifications;
         lock (refreshGate)
         {
             if (isDisposed)
@@ -137,7 +137,7 @@ internal sealed class ShellNotificationController : IDisposable
         BuildNotifications(notifications);
     }
 
-    private void BuildNotifications(IReadOnlyList<FlourishNotificationInfo> notifications)
+    private void BuildNotifications(IReadOnlyList<ActiveNotificationInfo> notifications)
     {
         var activeIds = notifications
             .Select(info => info.Notification.Id)
@@ -184,15 +184,15 @@ internal sealed class ShellNotificationController : IDisposable
             Margin = new Thickness(0, 2, 10, 0),
             VerticalAlignment = VerticalAlignment.Top,
         };
-        BindIconTypography(icon, "FlourishFontSizeIcon");
+        BindIconTypography(icon, "FlourishFontSizeLargeIcon");
         icon.SetResourceReference(TextBlock.ForegroundProperty, "FlourishPrimaryForegroundBrush");
         layout.Children.Add(icon);
 
-        var title = new FlourishTextBlock { Role = FlourishTextRole.CardTitle };
-        var message = new FlourishTextBlock
+        var title = new TextBlock { Role = TextRole.CardTitle };
+        var message = new TextBlock
         {
             Margin = new Thickness(0, 4, 0, 0),
-            Role = FlourishTextRole.Description,
+            Role = TextRole.Description,
         };
         var action = new Button
         {
@@ -248,7 +248,7 @@ internal sealed class ShellNotificationController : IDisposable
 
     private static void UpdateNotificationView(
         NotificationItemView view,
-        FlourishNotificationInfo info
+        ActiveNotificationInfo info
     )
     {
         if (view.Version == info.Version)
@@ -273,7 +273,7 @@ internal sealed class ShellNotificationController : IDisposable
     {
         if (
             isDisposed
-            || sender is not Button { Tag: FlourishNotificationInfo info }
+            || sender is not Button { Tag: ActiveNotificationInfo info }
             || string.IsNullOrWhiteSpace(info.Notification.CommandKey)
         )
         {
@@ -295,12 +295,12 @@ internal sealed class ShellNotificationController : IDisposable
         }
     }
 
-    private static string GetNotificationGlyph(FlourishNotificationSeverity severity) =>
+    private static string GetNotificationGlyph(NotificationSeverity severity) =>
         severity switch
         {
-            FlourishNotificationSeverity.Success => "\uE930",
-            FlourishNotificationSeverity.Warning => "\uE7BA",
-            FlourishNotificationSeverity.Error => "\uEA39",
+            NotificationSeverity.Success => "\uE930",
+            NotificationSeverity.Warning => "\uE7BA",
+            NotificationSeverity.Error => "\uEA39",
             _ => "\uE946",
         };
 
@@ -309,10 +309,10 @@ internal sealed class ShellNotificationController : IDisposable
         var icon = new TextBlock
         {
             VerticalAlignment = VerticalAlignment.Center,
-            Role = FlourishTextRole.Icon,
+            Role = TextRole.Icon,
             Text = iconGlyph,
         };
-        BindIconTypography(icon, "FlourishFontSizeIcon");
+        BindIconTypography(icon, "FlourishFontSizeStandardIcon");
         return icon;
     }
 

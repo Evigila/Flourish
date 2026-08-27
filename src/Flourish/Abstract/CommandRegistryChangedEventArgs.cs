@@ -10,7 +10,7 @@ public sealed class CommandRegistryChangedEventArgs : EventArgs
 {
     internal CommandRegistryChangedEventArgs(
         long version,
-        FlourishRuntimeChangeKind changeKind,
+        CollectionChangeKind changeKind,
         string commandKey,
         IReadOnlyList<CommandRegistrationInfo> current
     )
@@ -29,7 +29,7 @@ public sealed class CommandRegistryChangedEventArgs : EventArgs
     /// <summary>
     /// Gets the kind of structural change.
     /// </summary>
-    public FlourishRuntimeChangeKind ChangeKind { get; }
+    public CollectionChangeKind ChangeKind { get; }
 
     /// <summary>
     /// Gets the command key affected by the change.

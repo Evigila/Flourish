@@ -63,7 +63,7 @@ internal sealed class CommandDispatcher : ICommandRegistry, ICommandDispatcher
                 );
             }
 
-            var changeKind = FlourishRuntimeChangeKind.Added;
+            var changeKind = CollectionChangeKind.Added;
             if (hasExisting && options.DuplicatePolicy == CommandDuplicatePolicy.Replace)
             {
                 foreach (var replaced in existing!)
@@ -72,7 +72,7 @@ internal sealed class CommandDispatcher : ICommandRegistry, ICommandDispatcher
                 }
 
                 existing!.Clear();
-                changeKind = FlourishRuntimeChangeKind.Updated;
+                changeKind = CollectionChangeKind.Updated;
             }
 
             if (existing is null)
@@ -276,7 +276,7 @@ internal sealed class CommandDispatcher : ICommandRegistry, ICommandDispatcher
             }
 
             changed = CreateChangedEventArgsLocked(
-                FlourishRuntimeChangeKind.Removed,
+                CollectionChangeKind.Removed,
                 entry.CommandKey
             );
         }
@@ -309,7 +309,7 @@ internal sealed class CommandDispatcher : ICommandRegistry, ICommandDispatcher
     }
 
     private CommandRegistryChangedEventArgs CreateChangedEventArgsLocked(
-        FlourishRuntimeChangeKind changeKind,
+        CollectionChangeKind changeKind,
         string commandKey
     )
     {

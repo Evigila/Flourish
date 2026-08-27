@@ -23,10 +23,10 @@ internal interface IProjectSaveFileDialog
     );
 }
 
-internal sealed class ProjectSaveFileDialog(IFlourishLocalization localization)
+internal sealed class ProjectSaveFileDialog(ILocalizationService localization)
     : IProjectSaveFileDialog
 {
-    private readonly IFlourishLocalization localization =
+    private readonly ILocalizationService localization =
         localization ?? throw new ArgumentNullException(nameof(localization));
 
     public ValueTask<string?> ShowAsync(
@@ -46,10 +46,10 @@ internal sealed class ProjectSaveFileDialog(IFlourishLocalization localization)
             CheckPathExists = true,
             DefaultExt = ".txt",
             FileName = GetSafeSuggestedFileName(request.SuggestedFileName),
-            Filter = localization.Get(FlourishLocaleKeys.ProjectTextFileFilter),
+            Filter = localization.Get(LocaleKeys.ProjectTextFileFilter),
             OverwritePrompt = true,
             RestoreDirectory = true,
-            Title = localization.Get(FlourishLocaleKeys.ProjectSaveDialogTitle),
+            Title = localization.Get(LocaleKeys.ProjectSaveDialogTitle),
             ValidateNames = true,
         };
         var owner = GetActiveOwner();

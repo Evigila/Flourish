@@ -5,13 +5,13 @@ using ArkheideSystem.Flourish.Abstract;
 
 namespace ArkheideSystem.Flourish.Navigation;
 
-internal sealed class NavigationPanelService(FlourishNavigationOptions options)
+internal sealed class NavigationPanelService(NavigationOptions options)
 {
     private readonly Lock gate = new();
-    private readonly FlourishNavigationOptions options =
+    private readonly NavigationOptions options =
         options ?? throw new ArgumentNullException(nameof(options));
     private bool isOpen = options.IsNavigationPanelInitiallyOpen;
-    private FlourishNavigationPanelState current = new(
+    private NavigationPanelState current = new(
         options.IsNavigationPanelEnabled,
         options.IsNavigationPanelInitiallyOpen,
         options.NavigationPanelDirection,
@@ -23,9 +23,9 @@ internal sealed class NavigationPanelService(FlourishNavigationOptions options)
     );
     private long version;
 
-    public event EventHandler<FlourishNavigationPanelChangedEventArgs>? Changed;
+    public event EventHandler<NavigationPanelChangedEventArgs>? Changed;
 
-    public FlourishNavigationPanelState Current => Volatile.Read(ref current);
+    public NavigationPanelState Current => Volatile.Read(ref current);
 
     public void SetEnabled(bool enabled)
     {
@@ -112,8 +112,8 @@ internal sealed class NavigationPanelService(FlourishNavigationOptions options)
 
     private void Mutate(Action mutation, bool animate)
     {
-        FlourishNavigationPanelState previous;
-        FlourishNavigationPanelState current;
+        NavigationPanelState previous;
+        NavigationPanelState current;
         lock (gate)
         {
             previous = Volatile.Read(ref this.current);
@@ -131,13 +131,13 @@ internal sealed class NavigationPanelService(FlourishNavigationOptions options)
 
         Changed?.Invoke(
             this,
-            new FlourishNavigationPanelChangedEventArgs(previous, current, animate)
+            new NavigationPanelChangedEventArgs(previous, current, animate)
         );
     }
 
-    private FlourishNavigationPanelState CreateSnapshot()
+    private NavigationPanelState CreateSnapshot()
     {
-        return new FlourishNavigationPanelState(
+        return new NavigationPanelState(
             options.IsNavigationPanelEnabled,
             isOpen,
             options.NavigationPanelDirection,

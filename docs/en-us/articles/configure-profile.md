@@ -5,7 +5,7 @@ description: Configure profile identity, sign-in state, remembered credentials, 
 
 # Profile
 
-The profile surface provides account access from the title bar. Call `SetProfile` to display the profile trigger and use the built-in profile page.
+Call `SetProfile` to show account access in the title bar.
 
 ```csharp
 builder
@@ -37,8 +37,7 @@ var state = profile.Current;
 var currentOrder = state.NameOrder;
 ```
 
-The service rebuilds the signed-out placeholder or active profile and raises
-`Changed`. The login state, credentials, names, and image path remain unchanged.
+The service refreshes the profile and raises `Changed` without changing login state, credentials, names, or image path.
 
 The user's last name-order choice takes precedence and later changes are written back by default. Pass `usePersistedPreference: false` when the configured order must always win. This persists only `NameOrder`; credentials remain in User Secrets.
 
@@ -46,7 +45,7 @@ Labels, status text, file-picker filters, and validation messages on the built-i
 
 ## Interaction behavior
 
-Profile uses a strong [Overlay](../controls/overlay.md), so pointer movement does not dismiss it. Use the profile trigger, click outside the profile card, or press <kbd>Esc</kbd> to close it. Opening the native Windows file picker does not close the profile surface; selecting or cancelling an image returns to the same sign-in form.
+Profile uses a strong [Overlay](../controls/overlay.md). Close it with the trigger, an outside click, or <kbd>Esc</kbd>; the native image picker does not dismiss it.
 
 The host does not provide a scrolling region. If custom content can exceed the available height, include a `ScrollViewer` or another scrolling region in the custom page.
 
@@ -68,7 +67,7 @@ An unremembered login remains active until the application exits. A remembered l
 
 ## Remembered credentials
 
-The default profile service keeps an ordinary login in memory. When remembered login is enabled, Flourish protects the credential for the current Windows user and stores it through the application's User Secrets configuration. Signing out or disabling remembered login removes the stored credential.
+Ordinary login stays in memory. Remembered credentials are protected for the current Windows user and stored through User Secrets; sign-out or disabling remembrance removes them.
 
 Give the application project a stable User Secrets identity:
 
@@ -121,6 +120,6 @@ When `SetProfilePage` is omitted, `SetProfile` uses the built-in page.
 
 ## Related features
 
-- [Shell configuration](shell-configuration.md) explains the feature-specific Builder and Service model.
-- [Title bar](configure-title-bar.md) displays the profile trigger and selects the startup name order.
-- [Dependency injection](configure-services.md) registers custom profile services and pages.
+- [Shell configuration](shell-configuration.md)
+- [Title bar](configure-title-bar.md)
+- [Dependency injection](configure-services.md)

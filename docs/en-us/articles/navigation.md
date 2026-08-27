@@ -5,11 +5,11 @@ description: Register and navigate between Flourish pages.
 
 # Navigation
 
-Register WPF pages through [Dependency injection](configure-services.md), then use `ConfigureNavigation` to enable the navigation surface and place pages and command items in explicit positions.
+Register WPF pages through [Dependency injection](configure-services.md), then use `ConfigureNavigation` to place pages and commands in the navigation panel.
 
 ## Register pages
 
-`AddNavigable` registers a `Page` type in dependency injection and records the display name, icon glyph, and cache mode used by navigation. Registration makes the page available to navigation; add a corresponding view item to make it visible in the panel.
+`AddNavigable` registers a `Page` with its display name, icon, and cache mode. Add a view item to show it in the panel.
 
 ```csharp
 builder.ConfigureServices((_, services) =>
@@ -17,28 +17,26 @@ builder.ConfigureServices((_, services) =>
     services.AddNavigable<HomePage>(
         displayName: "Home",
         iconGlyph: "\uE80F",
-        cacheMode: FlourishPageCacheMode.Enabled);
+        cacheMode: PageCacheMode.Enabled);
 
     services.AddNavigable<SettingsPage>(
         displayName: "Settings",
         iconGlyph: "\uE713",
-        cacheMode: FlourishPageCacheMode.Enabled);
+        cacheMode: PageCacheMode.Enabled);
 });
 ```
 
-Pages must derive from `System.Windows.Controls.Page`. Flourish generates the navigation key from the simple class name by removing one trailing, case-sensitive `Page` suffix: `SettingsPage` becomes `Settings`, `ReportPagePage` becomes `ReportPage`, and `Page1` remains `Page1`. Display names do not affect keys. The display name and icon set here are reused by `AddNavigableViewItem`, so view items do not ask for those values again.
-
-The standard shell renders navigation icon glyphs with the adaptive primary foreground while keeping labels neutral, providing a consistent visual accent in light and dark themes.
+Pages must derive from `System.Windows.Controls.Page`. The key removes one trailing, case-sensitive `Page` suffix from the simple class name: `SettingsPage` becomes `Settings`, `ReportPagePage` becomes `ReportPage`, and `Page1` stays unchanged. Display names do not affect keys, and view items reuse the registered name and icon.
 
 ```csharp
 services.AddNavigable<ReportsPage>("Reports", "\uE9D2");
 services.AddNavigable<EditorPage>(
     "Editor",
     "\uE70F",
-    cacheMode: FlourishPageCacheMode.Disabled);
+    cacheMode: PageCacheMode.Disabled);
 ```
 
-Use `FlourishPageCacheMode.Enabled` for pages that should keep state while the user navigates away. Use `Disabled` for pages that should be recreated when revisited after navigating away.
+Use `PageCacheMode.Enabled` for pages that should keep state while the user navigates away. Use `Disabled` for pages that should be recreated when revisited after navigating away.
 
 Direction, initial open state, user-adjusted open width, and the last successfully navigated route are persisted by default. Flourish restores the last route only while it remains registered. Passing `usePersistedPreference: false` to a method keeps its configured fallback and stops updating that stored value without deleting it.
 
@@ -52,7 +50,7 @@ navigation
 
 ## Configure groups
 
-Use `ConfigureNavigation` to define the visible navigation model. `AddGroup` creates a scrollable group, and `AddNavigableViewItem<TPage>` places a registered page in that group.
+`AddGroup` creates a scrollable group; `AddNavigableViewItem<TPage>` places a registered page in it.
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
@@ -102,7 +100,7 @@ Use `SetPanelWidth` to configure the expanded width, collapsed width, and resize
 nav.SetPanelWidth(openWidth: 260, closedWidth: 64, maxWidth: 480, minWidth: 180);
 ```
 
-The default widths are `250` expanded and `64` collapsed. Set `closedWidth` to `0` to hide the collapsed panel completely; otherwise it must be at least `64`. The default resize range is `180` to `520`. User resizing updates the expanded width within that range.
+Widths default to `250` expanded and `64` collapsed, with a resize range of `180` to `520`. Set `closedWidth` to `0` to hide the collapsed panel; other values must be at least `64`.
 
 ## Add command items
 
@@ -120,7 +118,7 @@ Command items do not remain selected. After a command is invoked, the navigation
 
 ## Add fixed items
 
-Fixed items are displayed in the bottom section of the navigation panel. They are not affected by the scrollable group area, which is useful for settings, about, profile, or other persistent actions.
+Fixed items appear below the scrollable groups for persistent actions.
 
 ```csharp
 builder.ConfigureNavigation(navigation =>
@@ -172,7 +170,7 @@ When a page child is selected, Flourish expands and highlights its parent. Child
 
 ## Validation rules
 
-Flourish validates the navigation model during build so invalid configuration fails early.
+Flourish validates navigation during build.
 
 ```csharp
 nav.AddGroup("One", groupId: 1, group =>
@@ -187,7 +185,7 @@ nav.AddGroup("Two", groupId: 2, group =>
 });
 ```
 
-Common validation failures include duplicate generated navigation keys, duplicate group IDs, non-zero groups without names, duplicate page display positions, unregistered view item pages, duplicate `parentId` values in the same scope, and child IDs that do not match any parent. Two pages with the same simple class name generate the same key even when their namespaces differ; `Build()` rejects them and reports the key and both full type names.
+Validation rejects duplicate generated keys or group IDs, unnamed non-zero groups, duplicate page positions, unregistered pages, duplicate scoped `parentId` values, and unmatched `childId` values. Same-named page classes in different namespaces still generate duplicate keys.
 
 ## Navigate from code
 
