@@ -1,0 +1,14 @@
+<Project>
+  <!--
+    Packable libraries publish their managed assembly into a TFM-wide lib folder,
+    not a RID-specific asset folder. Refuse architecture-specific pack outputs so
+    x64 validation builds cannot silently produce packages that fail on x86/ARM64.
+  -->
+  <Target Name="RequireArchitectureNeutralLibraryPackage"
+          BeforeTargets="GenerateNuspec"
+          Condition="'$(IsPackable)' == 'true'
+                     and '$(IncludeBuildOutput)' != 'false'
+                     and '$(Platform)' != 'AnyCPU'">
+    <Error Text="$(PackageId) must be packed with Platform=AnyCPU because its lib assets are architecture-neutral." />
+  </Target>
+</Project>

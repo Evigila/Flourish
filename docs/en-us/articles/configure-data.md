@@ -19,35 +19,37 @@ Persistence is enabled by default: a valid `Flourish:Preferences:Locale` value w
 
 ## Connect Essential Culture
 
-To translate application text with `Arkheide.Essential.Culture`, install only `Arkheide.Extension.Culture`. It supplies Culture Core, the WPF adapter, and the Generator transitively.
+To translate application text with `Arkheide.Essential.Culture`, install its WPF package directly. The independent `Extension.Culture` project is not part of this repository and is not currently a published Flourish dependency.
 
 ```bash
-dotnet add package Arkheide.Extension.Culture
+dotnet add package Arkheide.Essential.Culture.Wpf
 ```
 
-Call the non-generic entry point:
+Set the initial Essential Culture locale before composing the application:
 
 ```csharp
-using ArkheideSystem.Extension.Culture;
+using ArkheideSystem.Essential.Culture;
+
+Localizer.Current.SetCulture("en-US");
 
 var flourish = ApplicationBuilder
     .CreateDefaultBuilder(args)
-    .UseEssentialCulture()
     .ConfigureData(data => data.SetLocale("en-US"))
     .Build();
 ```
 
-`ILocalizationService` is the public Flourish culture endpoint. Locale changes synchronize Essential Culture before the first frame and at runtime, then refresh culture tokens stored in Shell state:
+`ILocalizationService` remains the public Flourish culture endpoint. Until the independent extension is published, synchronize the application-owned Essential Culture locale explicitly when the selection changes:
 
 ```csharp
 localization.SetLocale("zh-CN");
+Localizer.Current.SetCulture("zh-CN");
 
 string locale = localization.Current.Locale;
 IReadOnlyList<string> available = localization.Current.AvailableLocales;
 localization.Changed += OnLocalizationChanged;
 ```
 
-The application owns `Culture.json`; XAML uses the supplied `Localize` extension. Resolve transient or parameterized text when created. User input, project names, and search text are never translated implicitly.
+The application owns `Culture.json`; XAML uses Essential.Culture's `Localize` extension and `KeyBinding`. Shell text captured as ordinary strings must be resolved by the application when it is created. User input, project names, and search text are never translated implicitly.
 
 ## Override the built-in culture catalog
 

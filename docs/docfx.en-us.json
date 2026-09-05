@@ -6,14 +6,14 @@
         {
           "src": "..",
           "files": [
-            "src/Flourish/Flourish.csproj"
+            "src/Flourish.Core/Flourish.Core.csproj",
+            "src/Flourish.WPF/Flourish.WPF.csproj"
           ]
         }
       ],
       "dest": "en-us/api",
       "properties": {
-        "Configuration": "Release",
-        "TargetFramework": "net10.0-windows"
+        "Configuration": "Release"
       },
       "filter": "filterConfig.yml",
       "memberLayout": "samePage",
@@ -40,7 +40,7 @@
     ],
     "resource": [
       {
-        "src": "../src/Flourish/Assets",
+        "src": "../src/Flourish.WPF/Assets",
         "files": [
           "favicon.ico"
         ],

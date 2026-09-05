@@ -1,11 +1,11 @@
 ---
-title: 快速开始
+title: WPF 快速开始
 description: 使用 Flourish 构建并运行基础 WPF 应用。
 ---
 
-# 快速开始
+# WPF 快速开始
 
-安装或引用 `Arkheide.Flourish` 后，只需导入唯一的公共命名空间：
+安装或引用 `Arkheide.Flourish.WPF` 后，导入共享契约命名空间即可。WPF 包依赖 `Arkheide.Flourish.Core`，用于提供共享契约和服务。
 
 ```csharp
 using ArkheideSystem.Flourish.Abstract;

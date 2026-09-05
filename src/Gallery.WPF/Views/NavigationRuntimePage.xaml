@@ -1,0 +1,224 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.NavigationRuntimePage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Shell_ConfigureTheNavigationPanelRoutesMenuEntriesAndPageCachingWhileT_9FE6DD3E}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="{culture:Localize Key=Application_Navigation_3DB65F8C}"
+    />
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_ControlWhetherTheNavigationPanelIsOpenAndEnabledChooseItsHostEdg_C1A825DC}"
+      Title="{culture:Localize Key=Shell_NavigationPanel_12D56584}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE700;"
+            Title="{culture:Localize Key=Shell_PanelState_5763B01F}"
+            Content="{culture:Localize Key=Shell_OpenOrCloseTheLiveNavigationPanel_959EBFA5}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="TogglePanel_Click" Content="{culture:Localize Key=Shell_OpenClose_DF4437D1}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE713;"
+            Title="{culture:Localize Key=Shell_PanelAvailability_462759FF}"
+            Content="{culture:Localize Key=Shell_EnableOrDisableNavigationWithoutRecreatingTheShell_521DD99A}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="TogglePanelEnabled_Click" Content="{culture:Localize Key=Controls_EnableDisable_3A6366CC}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72A;"
+            Title="{culture:Localize Key=Shell_PanelDirection_150D2CAF}"
+            Content="{culture:Localize Key=Shell_ChooseTheEdgeThatHostsTheNavigationPanel_6C830F8C}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:ComboBox x:Name="DirectionBox" Width="120" SelectionChanged="DirectionBox_SelectionChanged" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE713;"
+            Title="{culture:Localize Key=Shell_OpenWidth_997A3170}"
+            Content="{culture:Localize Key=Shell_SetThePanelWidthWhileNavigationIsOpen_8E0CD5D7}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="OpenWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="240" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE713;"
+            Title="{culture:Localize Key=Shell_ClosedWidth_DEABFB0F}"
+            Content="{culture:Localize Key=Shell_SetThePanelWidthWhileNavigationIsClosed_B90A29E1}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="ClosedWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="64" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE713;"
+            Title="{culture:Localize Key=Shell_MinimumWidth_B4AEEC2F}"
+            Content="{culture:Localize Key=Shell_SetTheMinimumAllowedPanelWidth_15E7AE7F}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="MinWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="150" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE713;"
+            Title="{culture:Localize Key=Shell_MaximumWidth_BA98BED4}"
+            Content="{culture:Localize Key=Shell_SetTheMaximumAllowedPanelWidth_6585BF24}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="MaxWidthBox" Width="110" KeyDown="WidthBox_KeyDown" LostFocus="WidthBox_LostFocus" Text="480" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="PanelOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Panel changes apply immediately to the active shell.&#10;navigation.SetEnabled(true);&#10;navigation.SetDirection(NavigationPanelDirection.Left);&#10;navigation.SetPanelWidth(&#10;    openWidth: 240,&#10;    closedWidth: 64,&#10;    maxWidth: 480,&#10;    minWidth: 150);&#10;navigation.Toggle();" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_RegisterADestinationPlaceItsItemInTheLiveNavigationMenuNavigateT_E5E68AA5}"
+      Title="{culture:Localize Key=Shell_Routes_2C5B669B}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE710;"
+            Title="{culture:Localize Key=Shell_InstallDemoRoute_5A42223E}"
+            Content="{culture:Localize Key=Shell_RegisterTheRuntimeRouteAndItsNavigationItem_610ED459}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="InstallRoute_Click" Content="{culture:Localize Key=Shell_InstallDemoRoute_5A42223E}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72A;"
+            Title="{culture:Localize Key=Shell_NavigateToRoute_42496C7F}"
+            Content="{culture:Localize Key=Shell_OpenTheRegisteredRuntimeDestination_EABB5FB7}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="NavigateRoute_Click" Content="{culture:Localize Key=Shell_NavigateToRoute_42496C7F}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE713;"
+            Title="{culture:Localize Key=Shell_NavigationItem_91D6947F}"
+            Content="{culture:Localize Key=Shell_EnableOrDisableTheInstalledMenuItem_12306729}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ToggleMenuItem_Click" Content="{culture:Localize Key=Shell_EnableDisableItem_CAF0B6C0}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="{culture:Localize Key=Shell_RemoveDemoRoute_00244984}"
+            Content="{culture:Localize Key=Shell_RemoveTheRouteAndItsNavigationItem_C13E6D77}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveRoute_Click" Content="{culture:Localize Key=Shell_RemoveRoute_11A79956}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="RouteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Register the destination before publishing its menu item.&#10;using var route = navigation.SetNavigable(new NavigationRoute(&#10;    &quot;Reports&quot;,&#10;    typeof(ReportsPage),&#10;    PageCacheMode.Enabled));&#10;&#10;navigation.SetMenu(editor =&gt;&#10;{&#10;    editor.AddGroup(&quot;reports&quot;, &quot;Reports&quot;);&#10;    editor.SetItem(&quot;reports&quot;, NavigationMenuItem.Page(&#10;        &quot;reports.summary&quot;, &quot;Reports&quot;, &quot;Summary&quot;, &quot;\uE9D2&quot;));&#10;});&#10;&#10;navigation.Navigate(&quot;Reports&quot;);&#10;navigation.SetMenu(editor =&gt; editor.RemoveItem(&quot;reports.summary&quot;));&#10;// Disposing route unregisters the runtime destination." />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_ChooseWhetherARegisteredRouteRetainsItsPageInstanceAndExplicitly_2360444E}"
+      Title="{culture:Localize Key=Shell_PageCache_23B71E17}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE74E;"
+            Title="{culture:Localize Key=Shell_EnableCache_4E49AAF2}"
+            Content="{culture:Localize Key=Shell_RetainPageInstancesForSubsequentNavigation_870E2E69}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="EnableCache_Click" Content="{culture:Localize Key=Shell_EnableCache_4E49AAF2}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE711;"
+            Title="{culture:Localize Key=Shell_DisableCache_00033C6B}"
+            Content="{culture:Localize Key=Shell_StopRetainingPageInstancesForThisRoute_33D97E35}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="DisableCache_Click" Content="{culture:Localize Key=Shell_DisableCache_00033C6B}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="{culture:Localize Key=Shell_EvictDemoPage_C77EA9F7}"
+            Content="{culture:Localize Key=Shell_RemoveTheDemoInstanceWhilePreservingItsRoute_B77CA904}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="EvictCache_Click" Content="{culture:Localize Key=Shell_EvictDemoPage_C77EA9F7}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="{culture:Localize Key=Shell_ClearPageCache_DB04B343}"
+            Content="{culture:Localize Key=Shell_RemoveEveryActiveCachedPageInstance_423F4EDB}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ClearCache_Click" Content="{culture:Localize Key=Shell_ClearAll_29A390F9}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="CacheOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Route policy and cache operations share one navigation service.&#10;navigation.SetCacheMode(typeof(ReportsPage), PageCacheMode.Enabled);&#10;navigation.Evict(typeof(ReportsPage));&#10;navigation.ClearCache();" />
+      </StackPanel>
+    </flourish:Chunk>
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

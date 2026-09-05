@@ -1,18 +1,19 @@
 ---
 title: Flourish
-description: Documentation for the Flourish WPF shell composition library.
+description: Documentation for Flourish Core and WPF, with a roadmap for the future WinUI 3 implementation.
 ---
 
 # Flourish
 
-Flourish is an open-source WPF Shell and control library with Host-based startup, navigation, commands, status, themes, motion, and public controls. Configure it from the application entry point with fluent builders.
+Flourish is a Windows application shell and control library. Platform-neutral contracts and services live in Core, and the complete UI implementation targets WPF. The WinUI 3 projects are currently standard blank Windows App SDK baselines whose future work is tracked in the roadmap.
 
 > [!NOTE]
-> Flourish targets WPF and therefore supports Windows desktop applications only. Projects should use a Windows target framework such as `net10.0-windows` and enable WPF.
+> WPF is the current UI implementation. WinUI 3 does not yet expose a Flourish Shell, control library, or supported package.
 
 ## What Flourish provides
 
-- Host-based startup with `ApplicationBuilder` and `IApplicationRuntime`
+- Platform-neutral commands, background tasks, localization, settings, projects, notifications, navigation menu state, and Shell state
+- WPF Host-based startup with `ApplicationBuilder` and `IApplicationRuntime`
 - Explicit `Flourish*` controls that leave native and third-party controls unchanged
 - Shell window configuration for title bar, navigation panel, material effect, font, and window sizing
 - Page registration and navigation through dependency injection
@@ -23,7 +24,8 @@ Flourish is an open-source WPF Shell and control library with Host-based startup
 
 ## Start here
 
-- [Getting started](articles/getting-started.md)
+- [WPF getting started](articles/getting-started.md)
+- [WinUI 3 implementation roadmap](https://github.com/Evigila/Flourish/blob/master/docs/roadmap.md)
 - [Control library](articles/control-library.md)
 - [Shell configuration](articles/shell-configuration.md)
 - [Navigation](articles/navigation.md)

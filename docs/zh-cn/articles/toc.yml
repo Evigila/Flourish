@@ -1,5 +1,5 @@
 items:
-- name: 快速开始
+- name: WPF 快速开始
   href: getting-started.md
 - name: 控件库
   href: control-library.md

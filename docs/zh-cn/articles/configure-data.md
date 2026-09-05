@@ -19,35 +19,37 @@ builder.ConfigureData(data => data.SetLocale("en-US"));
 
 ## 接入 Essential Culture
 
-使用 `Arkheide.Essential.Culture` 翻译应用文案时，只安装 `Arkheide.Extension.Culture`；它会传递 Culture Core、WPF 适配器和 Generator，并处理事件、生命周期、Dispatcher 与 Shell 状态同步。
+使用 `Arkheide.Essential.Culture` 翻译应用文案时，直接安装其 WPF 包。独立的 `Extension.Culture` 项目不属于本仓库，目前也不是 Flourish 的已发布依赖。
 
 ```bash
-dotnet add package Arkheide.Extension.Culture
+dotnet add package Arkheide.Essential.Culture.Wpf
 ```
 
-调用一次无泛型入口：
+在组合应用前设置 Essential Culture 的初始语言：
 
 ```csharp
-using ArkheideSystem.Extension.Culture;
+using ArkheideSystem.Essential.Culture;
+
+Localizer.Current.SetCulture("en-US");
 
 var flourish = ApplicationBuilder
     .CreateDefaultBuilder(args)
-    .UseEssentialCulture()
     .ConfigureData(data => data.SetLocale("en-US"))
     .Build();
 ```
 
-`ILocalizationService` 是 Flourish 的文化访问点。切换文化时，扩展包会在首帧前和运行期间同步 Essential Culture，并刷新导航、标题栏、搜索占位、工具栏和状态栏中的稳定键：
+`ILocalizationService` 仍是 Flourish 的文化访问点。在独立扩展发布前，应用需要在语言选择变化时显式同步 Essential Culture：
 
 ```csharp
 localization.SetLocale("zh-CN");
+Localizer.Current.SetCulture("zh-CN");
 
 string locale = localization.Current.Locale;
 IReadOnlyList<string> available = localization.Current.AvailableLocales;
 localization.Changed += OnLocalizationChanged;
 ```
 
-应用维护自己的 `Culture.json`；XAML 使用传递的 `Localize`，临时弹窗、通知和含运行时参数的文本在创建时解析。用户输入、项目名称和搜索内容不会自动翻译。
+应用维护自己的 `Culture.json`；XAML 使用 Essential.Culture 的 `Localize` 与 `KeyBinding`。Shell 中以普通字符串保存的文案应由应用在创建时解析。用户输入、项目名称和搜索内容不会自动翻译。
 
 ## 覆盖内置文化目录
 

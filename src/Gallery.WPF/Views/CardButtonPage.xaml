@@ -1,0 +1,230 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.CardButtonPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_ACardShapedActionWhoseCompleteSurfaceParticipatesInButtonInterac_C962A9EF}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="CardButton"
+    />
+
+    <flourish:Chunk Title="Variant">
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,8"
+          Content="{culture:Localize Key=Controls_UsesTheNeutralInteractiveCardSurface_6C73F194}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Standard"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="{culture:Localize Key=Controls_DefaultCardAction_96C30CFC}"
+              Icon="&#xE8A5;"
+              Title="Standard"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,8"
+          Content="{culture:Localize Key=Controls_AddsElevationWhileTheCompleteSurfaceRemainsInteractive_FAFF88DD}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Elevated"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="{culture:Localize Key=Controls_RaisedCardAction_7F3D2158}"
+              Icon="&#xE8A5;"
+              Title="Elevated"
+              Variant="Elevated"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="0,8,8,0"
+          Content="{culture:Localize Key=Controls_UsesPrimaryColorEmphasisForAProminentCardAction_B196B2B8}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Filled"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="{culture:Localize Key=Controls_ProminentCardAction_724047C7}"
+              Icon="&#xE8A5;"
+              Title="Filled"
+              Variant="Filled"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,8,0,0"
+          Content="{culture:Localize Key=Controls_ProvidesAQuieterFilledCardAction_1D28DB5C}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+          Title="Tonal"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="{culture:Localize Key=Controls_SofterCardAction_68A005B7}"
+              Icon="&#xE8A5;"
+              Title="Tonal"
+              Variant="Tonal"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid
+        x:Name="PropertiesGrid"
+        AutoGenerateColumns="False"
+        CanUserAddRows="False"
+        CanUserDeleteRows="False"
+        CanUserReorderColumns="False"
+        FontWeight="Regular"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_PROPERTY_638D02E6}" Width="220" />
+          <DataGridTextColumn Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_PURPOSE_D31A37AD}" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Layout_A5119091}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_TheIconAppearsAboveTheCopy_A4683444}"
+          Icon="&#xE8A5;"
+          Title="{culture:Localize Key=Controls_VerticalContent_DC438A62}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_TheIconAppearsBesideTheCopy_0BA01E02}"
+          Icon="&#xE946;"
+          IconPosition="Left"
+          Title="{culture:Localize Key=Controls_HorizontalContent_3AB51649}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_InteractionContract_BCA9C747}">
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Title="{culture:Localize Key=Controls_EnabledCardAction_AC20B24B}"
+          Content="{culture:Localize Key=Controls_TheCompleteSurfaceIsOneFocusableActionSoItsIconTitleAndSupportin_464391EC}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              AutomationProperties.Name="{culture:Localize Key=Controls_OpenReports_2324B585}"
+              Content="{culture:Localize Key=Controls_ReviewGeneratedReports_6BF67309}"
+              Icon="&#xE8A5;"
+              Title="{culture:Localize Key=Controls_Reports_DACCA3CB}"
+              ToolTip="{culture:Localize Key=Controls_OpenReports_2324B585}"
+              Variant="Elevated"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Title="{culture:Localize Key=Controls_DisabledCardAction_06E56758}"
+          Content="{culture:Localize Key=Controls_ADisabledCardButtonKeepsTheCompleteCardUnavailableAndPresentsThe_5708B614}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="220"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CardButton
+              Width="200"
+              Height="120"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Content="{culture:Localize Key=Controls_AvailableAfterValidation_FDC00A50}"
+              Icon="&#xE73E;"
+              IsEnabled="False"
+              Title="{culture:Localize Key=Controls_PublishReport_C5FE6054}"
+              Variant="Elevated"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Title="{culture:Localize Key=Controls_MakeTheWholeCardInteractive_1674A0C9}"
+          Content="{culture:Localize Key=Controls_UseCardButtonWhenTitleContentAndIconDescribeOneDestinationOrComm_8C1F8836}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:CardButton&#xA;  Command=&quot;{Binding OpenReportsCommand}&quot;&#xA;  Title=&quot;Reports&quot;&#xA;  Content=&quot;Review generated reports.&quot;&#xA;  Icon=&quot;&amp;#xE8A5;&quot;&#xA;  Variant=&quot;Elevated&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="{culture:Localize Key=Controls_FlourishGitHubRepository_52730F6E}"
+          Content="{culture:Localize Key=Controls_RepositoryLinkPlaceholder_ACCB5690}"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="{culture:Localize Key=Controls_CardButtonDocumentation_4D293570}"
+          Content="{culture:Localize Key=Controls_CanonicalDocumentationLinkPlaceholder_90AB4F65}"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_CardButtonDocumentation_4D293570}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

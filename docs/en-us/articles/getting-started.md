@@ -1,11 +1,11 @@
 ---
-title: Getting started
+title: WPF getting started
 description: Build and run a basic WPF application with Flourish.
 ---
 
-# Getting started
+# WPF getting started
 
-Install `Arkheide.Flourish` and import its public namespace:
+Install `Arkheide.Flourish.WPF` and import its public namespace. The WPF package depends on `Arkheide.Flourish.Core` for shared contracts and services.
 
 ```csharp
 using ArkheideSystem.Flourish.Abstract;

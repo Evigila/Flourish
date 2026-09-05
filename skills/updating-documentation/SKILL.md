@@ -78,7 +78,7 @@ Do not force a section when the article is too small to need it. Keep English an
 - If you change shared templates or assets such as `docs/material/material/public/main.css` or `docs/templates/flourish/public/main.js`, rebuild both English and Chinese sites before previewing.
 - If you change only English conceptual docs, rebuild and preview English.
 - If you change only Chinese conceptual docs or API overwrites, rebuild and preview Chinese.
-- If you change public API XML comments or public types in `src/Flourish/Abstract`, `src/Flourish/Controls`, or `src/Flourish/Themes`, rebuild both language sites because both configs regenerate API pages from the project metadata.
+- If you change public API XML comments or public types in `src/Flourish.WPF/Abstract`, `src/Flourish.WPF/Controls`, or `src/Flourish.WPF/Themes`, rebuild both language sites because both configs regenerate API pages from the project metadata.
 - Read Markdown, YAML, and skill files with UTF-8 explicitly in PowerShell, especially Chinese content:
 
 ```powershell

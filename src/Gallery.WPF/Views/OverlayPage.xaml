@@ -1,0 +1,256 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.OverlayPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  PreviewKeyDown="Page_PreviewKeyDown"
+  SnapsToDevicePixels="True"
+  Unloaded="Page_Unloaded"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_AnchoredFloatingContentWithTwoDismissalContracts_4D6EC85B}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Overlay"
+    />
+
+    <flourish:Chunk Title="Variant">
+      <UniformGrid Columns="2">
+        <flourish:Presenter Margin="0,0,8,0" Content="{culture:Localize Key=Controls_DismissesWhenPointerTrackingLeavesTheSurfaceAndItsAnchor_2A2A9009}" PresenterMode="TopDown" PresentationMinHeight="240" PresenterPosition="Left" Title="Temporary">
+          <flourish:Presenter.Presentation>
+            <flourish:Overlay
+              Width="320"
+              Height="200"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Padding="16"
+              Variant="Temporary"
+            >
+              <flourish:ActionCard Content="{culture:Localize Key=Controls_ClosesAfterPointerExit_9EA1D9FD}" Icon="&#xE823;" Title="Temporary" Variant="Vertical" />
+            </flourish:Overlay>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter Margin="8,0,0,0" Content="{culture:Localize Key=Controls_RemainsOpenUntilAnExplicitDismissalActionOccurs_4D9F538E}" PresenterMode="TopDown" PresentationMinHeight="240" PresenterPosition="Left" Title="Strong">
+          <flourish:Presenter.Presentation>
+            <flourish:Overlay
+              Width="320"
+              Height="200"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Padding="16"
+              Variant="Strong"
+            >
+              <flourish:ActionCard Content="{culture:Localize Key=Controls_WaitsForAnExplicitAction_6E6D94FF}" Icon="&#xE77B;" Title="Strong" Variant="Vertical" />
+            </flourish:Overlay>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" />
+          <DataGridTextColumn Width="*" Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_Function_C8037103}" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Example_D029F87E}">
+      <StackPanel>
+        <flourish:ActionCard
+          Content="{culture:Localize Key=Controls_HoverOrActivateTheActionToShowATemporarySurface_7F46F322}"
+          Icon="&#xE823;"
+          Title="{culture:Localize Key=Controls_TemporaryPreview_68667262}"
+          Variant="Horizontal"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:Button
+              x:Name="TemporaryTrigger"
+              Click="TemporaryTrigger_Click"
+              Content="{culture:Localize Key=Controls_ShowTemporaryOverlay_B9DA9404}"
+              MouseEnter="TemporaryTrigger_MouseEnter"
+            />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:ActionCard
+          Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          Content="{culture:Localize Key=Controls_OpenUntilExplicitlyDismissed_F6EFDE2E}"
+          Icon="&#xE77B;"
+          Title="{culture:Localize Key=Controls_StrongPreview_7EF1AC01}"
+          Variant="Horizontal"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:Button
+              x:Name="StrongTrigger"
+              Click="StrongTrigger_Click"
+              Content="{culture:Localize Key=Controls_ShowStrongOverlay_A3D14DDE}"
+            />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+
+        <Popup
+          x:Name="TemporaryPopup"
+          AllowsTransparency="True"
+          Placement="Bottom"
+          PopupAnimation="Fade"
+          StaysOpen="True"
+        >
+          <flourish:Overlay
+            x:Name="TemporaryOverlay"
+            Width="300"
+            Margin="0,6,0,0"
+            DismissRequested="Overlay_DismissRequested"
+            Variant="Temporary"
+          >
+            <flourish:ActionCard
+              Content="{culture:Localize Key=Controls_MoveThePointerHereThenLeaveBothThisSurfaceAndItsTriggerToCloseIt_641FF7D2}"
+              Icon="&#xE823;"
+              Title="{culture:Localize Key=Controls_TemporaryOverlay_443660DB}"
+              Variant="Vertical"
+            />
+          </flourish:Overlay>
+        </Popup>
+
+        <Popup
+          x:Name="StrongPopup"
+          AllowsTransparency="True"
+          Opened="StrongPopup_Opened"
+          Placement="Bottom"
+          PopupAnimation="Fade"
+          StaysOpen="False"
+        >
+          <flourish:Overlay
+            x:Name="StrongOverlay"
+            Width="320"
+            Margin="0,6,0,0"
+            DismissRequested="Overlay_DismissRequested"
+            PreviewKeyDown="Page_PreviewKeyDown"
+            Variant="Strong"
+          >
+            <flourish:ActionCard
+              Content="{culture:Localize Key=Controls_PointerMovementDoesNotCloseThisSurfaceUseTheActionEscapeOrClickE_09657B7C}"
+              Icon="&#xE77B;"
+              Title="{culture:Localize Key=Controls_StrongOverlay_6B17CDBA}"
+              Variant="Vertical"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button
+                  x:Name="StrongCloseButton"
+                  Click="StrongCloseButton_Click"
+                  Content="{culture:Localize Key=Controls_CloseOverlay_FB8C40C3}"
+                />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+          </flourish:Overlay>
+        </Popup>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_CustomLayout_2EA938E4}">
+      <flourish:Overlay x:Name="CustomLayoutOverlay" Variant="Strong">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Border
+            Width="48"
+            Height="48"
+            Background="{DynamicResource FlourishPrimarySurfaceBrush}"
+            CornerRadius="24"
+          >
+            <flourish:TextBlock
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Role="CardTitle"
+              Text="FL"
+            />
+          </Border>
+          <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+            <flourish:TextBlock Role="CardTitle" Text="{culture:Localize Key=Controls_CustomProfileLayout_F7C97973}" />
+            <flourish:TextBlock
+              Margin="0,4,0,0"
+              Role="Description"
+              Text="{culture:Localize Key=Controls_OverlayAlsoAcceptsAPurposeBuiltLayoutWhenActionCardIsNotSufficie_3036558F}"
+              TextWrapping="Wrap"
+            />
+          </StackPanel>
+        </Grid>
+      </flourish:Overlay>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Dismissal_453BCFE0}">
+      <flourish:Card Content="{culture:Localize Key=Controls_PlacementTargetExtendsTemporaryHoverTrackingToTheAnchorDismissRe_C43E37F1}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_InteractiveTriggers_C4FCFBCC}">
+      <flourish:Card Content="{culture:Localize Key=Controls_UseButtonOrCardButtonForActivationCardIsAnInformationSurfaceAndI_545417BA}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Content="{culture:Localize Key=Controls_UseStrongForASurfaceThatRemainsOpenUntilTheHostHandlesAnExplicit_7BA17DDE}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_StrongOverlay_AEEE0B2F}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;Popup x:Name=&quot;ProfilePopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;ProfileOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Strong&quot;&gt;&#xA;    &lt;flourish:ActionCard&#xA;      Title=&quot;Profile&quot;&#xA;      Content=&quot;Manage account details.&quot;&#xA;      Variant=&quot;Vertical&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;ProfilePopup.PlacementTarget = trigger;&#xA;ProfileOverlay.PlacementTarget = trigger;&#xA;ProfilePopup.IsOpen = true;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="{culture:Localize Key=Controls_UseTemporaryForHoverAffordancesAndShortPreviewsPlacementTargetEx_F012A9C9}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_TemporaryOverlay_D6B7FCAD}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;Popup x:Name=&quot;PreviewPopup&quot; Placement=&quot;Bottom&quot;&gt;&#xA;  &lt;flourish:Overlay&#xA;    x:Name=&quot;PreviewOverlay&quot;&#xA;    DismissRequested=&quot;Overlay_DismissRequested&quot;&#xA;    Variant=&quot;Temporary&quot;&gt;&#xA;    &lt;TextBlock Text=&quot;Preview details&quot; /&gt;&#xA;  &lt;/flourish:Overlay&gt;&#xA;&lt;/Popup&gt;&#xA;&#xA;PreviewPopup.PlacementTarget = previewButton;&#xA;PreviewOverlay.PlacementTarget = previewButton;&#xA;PreviewPopup.IsOpen = true;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="{culture:Localize Key=Controls_OverlayRequestsDismissalButDoesNotOwnPopupVisibilityCloseTheHost_3C7C5312}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_HandleDismissal_46AF1ACE}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="private void Close_Click(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfileOverlay.RaiseEvent(new RoutedEventArgs(&#xA;        Overlay.DismissRequestedEvent, ProfileOverlay));&#xA;}&#xA;&#xA;private void Overlay_DismissRequested(object sender, RoutedEventArgs e)&#xA;{&#xA;    ProfilePopup.IsOpen = false;&#xA;    e.Handled = true;&#xA;}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="{culture:Localize Key=Controls_FlourishGitHubRepository_52730F6E}"
+          Content="https://github.com/Evigila/Flourish"
+          Icon="&#xE8A7;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="{culture:Localize Key=Controls_OverlayDocumentation_3AAA678B}"
+          Content="docs/en-us/controls/overlay.md"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_OverlayDocumentation_3AAA678B}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

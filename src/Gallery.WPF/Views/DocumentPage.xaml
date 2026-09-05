@@ -1,0 +1,102 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.DocumentPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_PresentSeveralNormalizedParagraphElementsAsOneRoundedLightlyOutl_B6318E05}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="Document"
+    />
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid
+        ItemsSource="{Binding Properties, ElementName=RootPage}"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" />
+          <DataGridTextColumn Width="*" Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Controls_EachParagraphItemReceivesTheStandardIndentationSpacingAndLargeRe_3CEF698D}"
+      Title="{culture:Localize Key=Controls_Example_D029F87E}"
+    >
+      <flourish:Document>
+        <flourish:Paragraph Text="{culture:Localize Key=Controls_DocumentIsIntendedForSustainedReadingRatherThanAShortSummaryItsT_6DB3FAD3}" />
+        <flourish:Paragraph Text="{culture:Localize Key=Controls_EveryParagraphAddedToDocumentReceivesTheStandardFirstLineInsetAn_FB47A902}" />
+        <flourish:Paragraph Text="{culture:Localize Key=Controls_KeepDocumentAsTheOnlyBodyOfItsChunkAndPreserveItsDefaultOuterSpa_75D1E95F}" />
+      </flourish:Document>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Controls_ParagraphIsTheDocumentOwnedTextElementSetTextDirectlyOrBindItToC_AEADEE97}"
+      Title="Paragraph"
+    >
+      <flourish:Card Title="{culture:Localize Key=Controls_ParentRelationship_C9CEA942}" Content="{culture:Localize Key=Controls_UseParagraphInsideDocumentRatherThanAsAStandalonePageLevelSurfac_35BAE916}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="Card or Document">
+      <UniformGrid Columns="2">
+        <flourish:Card
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_UseCardWhenOneConciseBlockOfCopyIsEnough_1972ABB9}"
+          Title="{culture:Localize Key=Controls_OneBlock_FFCF88B6}"
+        />
+        <flourish:Card
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_UseDocumentWhenTheContentNeedsSeveralDistinctParagraphElements_26FBBF27}"
+          Title="{culture:Localize Key=Controls_SeveralParagraphs_3B88CC6C}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Content="{culture:Localize Key=Controls_AddParagraphElementsDirectlyToDocumentEachParagraphTextAlsoSuppo_647251CC}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_ComposeADocument_C5F50FE8}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:Document&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The first paragraph introduces the subject.&quot; /&gt;&#xA;  &lt;flourish:Paragraph Text=&quot;The second paragraph continues the explanation.&quot; /&gt;&#xA;&lt;/flourish:Document&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_ReadTheDocumentGuide_349298DB}"
+          Icon="&#xE946;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_DocumentDocumentation_C499786E}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

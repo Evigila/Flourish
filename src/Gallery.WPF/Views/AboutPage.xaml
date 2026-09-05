@@ -1,0 +1,37 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.AboutPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="{culture:Localize Key=Shell_AboutFlourish_EDBF2761}"
+      Content="{culture:Localize Key=Shell_FlourishIsAWPFApplicationFrameworkForBuildingConsistentWindowsDe_1B74E7A4}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Project_98595978}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Shell_Repository_13D6FF07}"
+          Content="{culture:Localize Key=Shell_SourceReleasesIssuesAndContributionHistoryAreHostedOnGitHub_11128004}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Shell_Documentation_C205924D}"
+          Content="{culture:Localize Key=Shell_ConceptsGuidesControlContractsAndGeneratedAPIReferencesLiveWithT_BC19BF41}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+
+  </flourish:PageBody>
+</Page>

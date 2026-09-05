@@ -8,7 +8,8 @@ on:
     - .config/dotnet-tools.json
     - .github/workflows/docs.yml
     - docs/**
-    - src/Flourish/**
+    - src/Flourish.Core/**
+    - src/Flourish.WPF/**
   workflow_dispatch:
 
 permissions:
@@ -36,8 +37,11 @@ jobs:
     - name: Setup Pages
       uses: actions/configure-pages@v6
 
-    - name: Restore project
-      run: dotnet restore src/Flourish/Flourish.csproj
+    - name: Restore Core project
+      run: dotnet restore src/Flourish.Core/Flourish.Core.csproj
+
+    - name: Restore WPF project
+      run: dotnet restore src/Flourish.WPF/Flourish.WPF.csproj
 
     - name: Restore tools
       run: dotnet tool restore

@@ -1,0 +1,243 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.TitleBarRuntimePage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Shell_ChangeTitleBarIdentityFeaturesAndSearchAtRuntime_1FB4DE21}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="{culture:Localize Key=Shell_TitleBarSearch_89590FBD}"
+    />
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_SetTheApplicationTitleSubtitleLogoFallbackTextAndUnnamedProjectL_FF5B197B}"
+      Title="{culture:Localize Key=Shell_ApplicationIdentity_E9FD20C2}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE8D2;"
+            Title="{culture:Localize Key=Shell_ApplicationTitle_F4FE57F0}"
+            Content="{culture:Localize Key=Shell_SetTheApplicationNameUsedByTheTitleAndLogoSurfaces_56A6B884}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="TitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Title="{culture:Localize Key=Shell_ApplicationSubtitle_FE7B0522}"
+            Content="{culture:Localize Key=Shell_SetSupportingApplicationTextShownInTheLogoSurface_24161E54}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="SubtitleBox" Width="220" KeyDown="IdentityBox_KeyDown" LostFocus="IdentityBox_LostFocus" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8B9;"
+            Title="{culture:Localize Key=Shell_LogoPath_F51D0186}"
+            Content="{culture:Localize Key=Shell_OptionallyProvideAnImageForTheTitleBarLogo_56145BA4}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="LogoPathBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Title="{culture:Localize Key=Shell_LogoFallbackText_A2E53199}"
+            Content="{culture:Localize Key=Shell_ProvideTextToUseWhenAnImageIsUnavailable_B4C814C7}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="LogoFallbackBox" Width="220" KeyDown="LogoBox_KeyDown" LostFocus="LogoBox_LostFocus" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Title="{culture:Localize Key=Shell_UnnamedProject_EDBA1E38}"
+            Content="{culture:Localize Key=Shell_SetTheTitleShownWhenNoProjectIsActive_46CCE245}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="UnnamedProjectBox" Width="220" KeyDown="UnnamedProjectBox_KeyDown" LostFocus="UnnamedProjectBox_LostFocus" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="IdentityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Configure stable identity fields when composing the application.&#10;builder.ConfigureTitleBar(titleBar =&gt; titleBar&#10;    .SetApplicationTitle(&quot;Flourish Gallery&quot;)&#10;    .SetApplicationSubtitle(&quot;Component reference&quot;)&#10;    .SetLogo(logoPath: &quot;Assets/AppLogo.png&quot;)&#10;    .SetUnnamedProjectPlaceholder(&quot;Untitled&quot;));&#10;&#10;// Update identity atomically when the active context changes.&#10;titleBar.SetApplicationIdentity(&quot;Flourish Gallery&quot;, &quot;Reports&quot;);&#10;titleBar.SetLogo(null, fallbackText: &quot;FG&quot;);" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_ShowOrHideIndividualTitleBarElementsAndChooseWhenBreadcrumbsAreV_3C80D8A0}"
+      Title="{culture:Localize Key=Shell_ElementVisibility_413A04FE}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+        <flourish:ActionCard
+          Icon="&#xE713;"
+          Title="{culture:Localize Key=Shell_TitleBarElement_495AA820}"
+          Content="{culture:Localize Key=Shell_ChooseTheElementWhoseVisibilityWillChange_B16AA8C7}"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:ComboBox x:Name="TitleBarElementBox" Width="220" SelectionChanged="TitleBarElementBox_SelectionChanged" />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:ActionCard
+          Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          Icon="&#xE7B3;"
+          Title="{culture:Localize Key=Shell_ElementVisibility_413A04FE}"
+          Content="{culture:Localize Key=Shell_ShowOrHideTheSelectedTitleBarElement_2FA93747}"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:CheckBox
+              x:Name="TitleBarElementVisibleBox"
+              VerticalAlignment="Center"
+              Checked="TitleBarElementVisibleBox_Changed"
+              Content="{culture:Localize Key=Shell_Visible_8411F5AB}"
+              Unchecked="TitleBarElementVisibleBox_Changed"
+            />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:ActionCard
+          Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          Icon="&#xE72A;"
+          Title="{culture:Localize Key=Shell_BreadcrumbDisplay_7D3097FB}"
+          Content="{culture:Localize Key=Shell_ChooseTheBreadcrumbVisibilityPolicy_CFFDC73C}"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:ComboBox x:Name="BreadcrumbModeBox" Width="220" SelectionChanged="BreadcrumbModeBox_SelectionChanged" />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="ElementOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Change one surface without rebuilding the title bar.&#10;titleBar.SetElementVisible(TitleBarElement.Search, visible: true);&#10;titleBar.SetBreadcrumbMode(BreadcrumbShowOption.Auto);" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_ControlTitleBarSearchTextVisibilityFocusPlaceholderAndAsynchrono_E6F24826}"
+      Title="{culture:Localize Key=Controls_Search_49C266BA}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE721;"
+            Title="{culture:Localize Key=Shell_SearchQuery_9EEF0523}"
+            Content="{culture:Localize Key=Shell_SetTheTextSharedWithTheTitleBarSearchBox_06B8BDCC}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="SearchTextBox" Width="220" KeyDown="SearchTextBox_KeyDown" LostFocus="SearchTextBox_LostFocus" Text="runtime API" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8A7;"
+            Title="{culture:Localize Key=Shell_SearchFocus_A8926AED}"
+            Content="{culture:Localize Key=Shell_MoveKeyboardFocusToTheTitleBarSearchBox_696AD4DF}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="FocusSearch_Click" Content="{culture:Localize Key=Shell_FocusSearch_512C8478}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="{culture:Localize Key=Shell_ClearQuery_48A1982C}"
+            Content="{culture:Localize Key=Shell_RemoveTheCurrentTitleBarSearchText_16391DC5}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ClearSearch_Click" Content="{culture:Localize Key=Controls_Clear_83B12C22}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8D2;"
+            Title="{culture:Localize Key=Shell_SearchPlaceholder_74D10369}"
+            Content="{culture:Localize Key=Shell_SetTheHintShownWhenTheSearchBoxIsEmpty_1B7B9E76}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="SearchPlaceholderBox" Width="220" KeyDown="SearchPlaceholderBox_KeyDown" LostFocus="SearchPlaceholderBox_LostFocus" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE7B3;"
+            Title="{culture:Localize Key=Shell_SearchVisibility_AE99D472}"
+            Content="{culture:Localize Key=Shell_ShowOrHideTheTitleBarSearchFeature_2BDD2B1A}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button x:Name="ToggleSearchVisibilityButton" Click="ToggleSearchVisibility_Click" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="SearchOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Dispose the subscription when its owning page or feature unloads.&#10;using var subscription = titleBar.SubscribeSearch(async (query, cancellationToken) =&gt;&#10;{&#10;    await FindMatchesAsync(query.Text, cancellationToken);&#10;});&#10;&#10;titleBar.SetSearchPlaceholder(&quot;Search reports&quot;);&#10;titleBar.SetSearchText(&quot;quarterly&quot;);&#10;titleBar.SetSearchVisible(true);&#10;titleBar.FocusSearch();&#10;titleBar.ClearSearch();" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_UseITitleBarServiceWhenAnApplicationModeShouldSwitchTheCompleteF_0F9CB8CF}"
+      Title="{culture:Localize Key=Shell_TitleBarAvailability_0EBAD517}"
+    >
+      <StackPanel>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE74E;"
+            Title="{culture:Localize Key=Application_TitleBar_11BCA4AC}"
+            Content="{culture:Localize Key=Shell_EnableOrDisableTheCompleteTitleBarSurface_85810844}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:CheckBox
+                x:Name="TitleBarEnabledBox"
+                VerticalAlignment="Center"
+                Checked="TitleBarEnabledBox_Changed"
+                Content="{culture:Localize Key=Shell_Enabled_92C1CDFD}"
+                Unchecked="TitleBarEnabledBox_Changed"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard x:Name="TitleBarAvailabilityOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+      </Grid>
+      <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Each domain service owns its availability state.&#10;titleBar.SetEnabled(true);&#10;var isEnabled = titleBar.Current.IsEnabled;" />
+      </StackPanel>
+    </flourish:Chunk>
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

@@ -1,0 +1,168 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.WPF.Views.ActionCardPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_AFixedCardLayoutForOneSettingOrLocalActionWithOneInteractiveBody_EC041C89}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="ActionCard"
+    />
+
+    <flourish:Chunk Title="Variant">
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_IconAndCopyStayOnTheLeftWhileTheSingleInteractiveBodyStaysOnTheR_35D15E78}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="240"
+          PresenterPosition="Left"
+          Title="Horizontal"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:ActionCard
+              Width="360"
+              Height="180"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Icon="&#xE790;"
+              Content="{culture:Localize Key=Controls_ChooseAThemeValue_3AF1852C}"
+              Title="{culture:Localize Key=Controls_ApplicationTheme_E230A4DB}"
+              Variant="Horizontal"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:ComboBox Width="144" SelectedIndex="0">
+                  <flourish:ComboBoxItem Content="{culture:Localize Key=Runtime_System_6725E7BB}" />
+                  <flourish:ComboBoxItem Content="Light" />
+                  <flourish:ComboBoxItem Content="Dark" />
+                </flourish:ComboBox>
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_IconCopyAndTheSingleInteractiveBodyFormOneLeftAlignedVerticalSta_AA1E2065}"
+          PresenterMode="TopDown"
+          PresentationMinHeight="240"
+          PresenterPosition="Left"
+          Title="Vertical"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:ActionCard
+              Width="360"
+              Height="180"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Icon="&#xE946;"
+              Content="{culture:Localize Key=Controls_OpenTheDetailedConfiguration_5C63C5D5}"
+              Title="{culture:Localize Key=Application_Configuration_B332C349}"
+              Variant="Vertical"
+            >
+              <flourish:ActionCard.Body>
+                <flourish:Button Content="{culture:Localize Key=Controls_ViewDetails_D1BF045B}" />
+              </flourish:ActionCard.Body>
+            </flourish:ActionCard>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid
+        x:Name="ActionCardMemberGrid"
+        AutoGenerateColumns="False"
+        CanUserAddRows="False"
+        CanUserDeleteRows="False"
+        CanUserReorderColumns="False"
+        FontWeight="Regular"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_PROPERTY_638D02E6}" Width="224" />
+          <DataGridTextColumn Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_PURPOSE_D31A37AD}" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_BodyControls_B4C6B4D8}">
+      <StackPanel>
+        <flourish:ActionCard
+          Icon="&#xE838;"
+          Content="{culture:Localize Key=Controls_InvokeOneLocalAction_E97D66FA}"
+          Title="{culture:Localize Key=Controls_OpenConfiguration_0215A141}"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:Button Content="{culture:Localize Key=Controls_Open_ED077F3D}" />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+        <flourish:ActionCard
+          Margin="{DynamicResource FlourishActionCardPeerMargin}"
+          Icon="&#xE8D2;"
+          Content="{culture:Localize Key=Controls_EditOneSettingValue_837E41EB}"
+          Title="{culture:Localize Key=Controls_ConfigurationKey_DF69947E}"
+        >
+          <flourish:ActionCard.Body>
+            <flourish:TextBox Width="200" Text="Flourish:Theme" />
+          </flourish:ActionCard.Body>
+        </flourish:ActionCard>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Title="{culture:Localize Key=Controls_CreateAnActionableSetting_B03FC968}"
+          Content="{culture:Localize Key=Controls_HorizontalIsTheDefaultVariantIconAppearsFirstTitleAndContentForm_FD27D0FC}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Theme&quot;&#xA;  Content=&quot;Choose the application theme.&quot;&#xA;  Icon=&quot;&amp;#xE790;&quot;&#xA;  Variant=&quot;Horizontal&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:ComboBox&#xA;      ItemsSource=&quot;{Binding Themes}&quot;&#xA;      SelectedItem=&quot;{Binding Theme}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Title="{culture:Localize Key=Controls_StackALargerActionVertically_31B0D9B1}"
+          Content="{culture:Localize Key=Controls_SetVariantToVerticalWhenTheActionNeedsACardShapedLayoutWithBodyB_54BE98F4}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ActionCard&#xA;  Title=&quot;Workspace name&quot;&#xA;  Content=&quot;Change the name shown in navigation.&quot;&#xA;  Icon=&quot;&amp;#xE8AC;&quot;&#xA;  Variant=&quot;Vertical&quot;&gt;&#xA;  &lt;flourish:ActionCard.Body&gt;&#xA;    &lt;flourish:TextBox&#xA;      Width=&quot;220&quot;&#xA;      Text=&quot;{Binding WorkspaceName}&quot; /&gt;&#xA;  &lt;/flourish:ActionCard.Body&gt;&#xA;&lt;/flourish:ActionCard&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          AutomationProperties.Name="{culture:Localize Key=Controls_FlourishGitHubRepository_52730F6E}"
+          Content="{culture:Localize Key=Controls_RepositoryLinkPlaceholder_ACCB5690}"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          AutomationProperties.Name="{culture:Localize Key=Controls_ActionCardDocumentation_F9BA6D42}"
+          Content="{culture:Localize Key=Controls_CanonicalDocumentationLinkPlaceholder_90AB4F65}"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_ActionCardDocumentation_F9BA6D42}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

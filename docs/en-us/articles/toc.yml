@@ -1,5 +1,5 @@
 items:
-- name: Getting started
+- name: WPF getting started
   href: getting-started.md
 - name: Control library
   href: control-library.md

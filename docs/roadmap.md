@@ -1,20 +1,22 @@
 # WPF / WinUI 3 迁移路线图
 
-> 文档状态：迁移前基线
+> 文档状态：R2 Core 首轮拆分与 WPF 回接已落地；此前的 WinUI 3 Shell 原型已撤销，当前只保留标准空白项目并从 R3 重新实施
 > 基线日期：2026-08-29
-> 当前实现：`src/Flourish` 中的 WPF 单体程序集
-> 目标：在不破坏 WPF 版本的前提下，逐步提取平台无关 Core，并以 WinUI 3 原生能力优先的方式还原和扩展全部功能。
+> 当前实现：`src/Flourish.Core` 为 `net10.0` 平台无关程序集，`src/Flourish.WPF` 为引用 Core 的完整 WPF 平台程序集；`src/Flourish.WinUI3` 与 `src/Gallery.WinUI3` 是不含 Flourish 功能的标准空白 Windows App SDK 基线
+> 当前自动化门禁：Core 367 个用例、WPF 901 个用例，共 1268 个用例通过，失败 0；WinUI 3 当前只验证空白工程能够构建，不把模板启动计作功能完成
+> 当前范围：本轮状态覆盖下表标记为 `[~]` 的 Core 拆分、WPF 回接、最终公共边界和 Core/WPF 打包；全部 WinUI 3 功能从未开始状态按原子项推进
+> 目标：在保持 WPF 功能完整的前提下提取平台无关 Core，并以 WinUI 3 原生能力优先的方式还原和扩展全部功能。项目尚未发布，不建立旧包、旧程序集或旧 API 的兼容层。
 
 ## 1. 文档用途
 
 本文是持续维护的功能总账，不是一次性的迁移说明。实现、替换或放弃任何功能时，都应更新对应原子项的状态、决策和验收结果；新增功能也应先登记再实现。
 
-当前基线约有 296 个手写 C# 文件、51 个 XAML、32 个公开视觉控件、47 个 Gallery 页面、93 个测试文件和 23 篇中文功能文章。现有文档没有覆盖全部控件，因此清单同时以源码、Gallery 和测试为依据。
+迁移前基线约有 296 个手写 C# 文件、51 个 XAML、32 个公开视觉控件、47 个 Gallery 页面、93 个测试文件和 23 篇中文功能文章。现有文档没有覆盖全部控件，因此清单同时以源码、Gallery 和测试为依据。
 
 状态：
 
 - `[ ]`：未开始。
-- `[~]`：进行中。
+- `[~]`：实现和自动化门禁已通过，但仍缺人工验收，或尚未满足完整完成定义。
 - `[x]`：已完成并通过自动化及手动验收。
 - `[!]`：被外部依赖、技术限制或产品决策阻塞。
 - `[-]`：经记录决策后不迁移。
@@ -42,18 +44,18 @@ UI 实现类型：
 
 ```text
 Flourish.Core
-├── Flourish.Wpf
-│   └── Gallery.Wpf
+├── Flourish.WPF
+│   └── Gallery.WPF
 └── Flourish.WinUI3
     └── Gallery.WinUI3
 ```
 
 - `Flourish.Core` 初始目标框架使用 `net10.0`，从编译层面阻止 Windows UI 类型进入。
-- `Flourish.Wpf` 使用 `net10.0-windows` 和 `UseWPF`。
+- `Flourish.WPF` 使用 `net10.0-windows` 和 `UseWPF`。
 - `Flourish.WinUI3` 使用与所选稳定版 Windows App SDK 相匹配的 Windows TFM 和 `UseWinUI`。
-- NuGet 包名使用 `Arkheide.Flourish.Core`、`Arkheide.Flourish.Wpf`、`Arkheide.Flourish.WinUI3`。
+- 当前 NuGet 包名使用 `Arkheide.Flourish.Core` 与 `Arkheide.Flourish.WPF`；`Arkheide.Flourish.WinUI3` 是待首个完整功能切片通过后启用的预留身份。
 - 命名空间继续使用 `ArkheideSystem.Flourish...`；类型名直接表达语义，不添加项目或品牌前缀。
-- 当前 `Arkheide.Flourish` 可在过渡期继续发布为 WPF 兼容包或元包；移除时机另行记录。
+- Core 与 WPF 两个包是当前首次发布候选身份；不创建 `Arkheide.Flourish` 旧 ID 元包，也不在 WPF 程序集中添加 Core 类型转发。空白 WinUI 3 项目不作为可用包发布。
 
 不建议在同一程序集同时启用 WPF 与 WinUI。两套 XAML 编译链、`Application` / `Window` / `Page` 类型、资源字典和线程模型并不兼容，这会让所谓“共享”退化为条件编译和平台泄漏。
 
@@ -120,39 +122,64 @@ Core 完成的最低门槛：
 | 阶段 | 目标 | 进入下一阶段的门槛 |
 | --- | --- | --- |
 | R0 基线冻结 | 登记功能、测试和视觉基线 | 本文覆盖现有 Builder、Service、Shell、控件、Gallery 和测试 |
-| R1 契约中立化 | 定义平台无关值对象和接口 | 公共 Core API 不含 WPF 类型；兼容层方案已记录 |
-| R2 提取 Core | 移动纯逻辑并拆分测试 | Core 独立构建；WPF 行为和现有测试无回归 |
-| R3 WinUI 垂直切片 | App、Window、Host、主题、标题栏、路由和一个页面 | 尽早验证 Window/Dialog/Route 的契约边界 |
-| R4 Shell 还原 | 导航、内容、工具栏、状态栏、浮层 | 关键应用流程在 WinUI Gallery 走通 |
+| R1 契约中立化 | 定义平台无关值对象和接口 | 公共 Core API 不含 WPF 类型；最终 Core/UI 边界已记录 |
+| [~] R2 提取 Core | 移动纯逻辑并拆分测试 | 首轮拆分与回归门禁通过；剩余 Core 规划项和人工验收继续按原子项推进 |
+| R3 WinUI 垂直切片 | App、Window、Host、主题、标题栏、路由和一个页面 | 从标准空白项目开始；完成一个可人工验收的原生端到端切片后进入 R4 |
+| R4 Shell 还原 | 导航、内容、工具栏、状态栏、浮层 | R3 通过后再逐项实现，不复用已撤销原型 |
 | R5 控件还原 | 先原生样式，后组合和自定义控件 | 每个控件有 Gallery、状态和无障碍验收 |
 | R6 平台能力 | Picker、凭据、托盘、窗口细节 | 打包/非打包、Win10/Win11 降级路径明确 |
 | R7 风险项 | DataGrid、右侧可调导航、复杂动效 | 技术验证通过并形成决策记录 |
 | R8 发布 | 文档、包、迁移指南、版本策略 | 两平台包可独立引用，自动化与手动验收通过 |
 
+### 4.1 实施日志与自动化门禁
+
+| 日期 | 实施切片 | 结果 | 状态 |
+| --- | --- | --- | --- |
+| 2026-08-29 | R2 Core 拆分与 WPF 回接：建立 Core 与独立测试项目，将中立契约、状态、配置和服务移入 Core；WPF 通过项目引用与平台适配直接消费 Core | Core 367 + WPF 902 = 1269 个用例通过，失败 0 | 自动化通过；人工验收未执行，相关原子项保持 `[~]` |
+| 2026-08-29 | 发布身份拆分：建立 Core、WPF 与 WinUI 3 的初始包结构 | 当时三个 AnyCPU 包可生成，依赖方向与程序集结构已核验 | WinUI 3 包结构随后随原型撤销；当前只保留 Core/WPF 发布候选 |
+| 2026-08-29 | R3/R4 WinUI 3 原型：尝试 TitleBar、NavigationView/Frame、CommandBar、StatusBar、InfoBar、ThemeAdapter/Mica 与 Gallery 命令闭环 | 当时 38 个 WinUI 3 用例及多架构构建通过，但实际运行效果未达到要求 | 该原型于 2026-09-05 完整撤销，不再作为当前完成证据 |
+| 2026-08-29 | WPF 身份标准化与仓库解耦：项目、程序集、Gallery、测试及资源 URI 统一为 `.WPF`；Gallery 改用 Essential.Culture `KeyBinding`；移除 Extension 源码耦合 | 自动化结果见下方当前门禁 | WPF 使用最终项目、程序集和包身份，不保留未发布旧身份 |
+| 2026-08-30 | 移除未发布兼容脚手架：删除 `Flourish.WPF.Compatibility`、旧 `Arkheide.Flourish` 元包、WPF→Core 类型转发、旧字体配置迁移和资源键别名 | Core 367 + WPF 901 = 1268 个当前保留用例通过 | 无 forwarded types 与无旧资源键由自动化守护 |
+| 2026-09-05 | 撤销 WinUI 3 功能原型：删除 Shell、导航、通知、主题适配和对应测试，将平台项目与 Gallery 恢复为标准空白 Windows App SDK 工程 | Core 与 WPF 保持不变；WinUI 3 只保留空白构建基线 | R3 及全部 WinUI 3 功能原子项回退为未开始，后续按清单逐项实现 |
+
+当前门禁及证据：
+
+| 门禁 | 当前结果 | 证据 |
+| --- | --- | --- |
+| Core 独立测试 | 367 个用例通过 | `tests/Flourish.Core.Test`；覆盖 Core 边界、配置、命令、后台任务、本地化、项目、Profile、通知、导航历史、导航菜单事务、布局、动效、Shell 状态、DI 和关闭协调 |
+| WPF 回归测试 | 901 个用例通过 | `tests/Flourish.WPF.Test`；覆盖 WPF 直接消费 Core、最终发布身份、独立 Gallery 依赖图和既有 UI/运行时行为 |
+| WinUI 3 空白基线 | 构建验证 | `src/Flourish.WinUI3` 与 `src/Gallery.WinUI3` 只验证标准 Windows App SDK 工程结构；没有 Flourish 功能或适配测试 |
+| NuGet 包结构 | Core/WPF 两个 AnyCPU 包 | Core/WPF 为 `I386 + ILOnly` 中立程序集；空白 WinUI 3 项目不作为可用包发布 |
+| NuGet 隔离消费 | Core/WPF 两类临时消费者 Release 通过 | 使用独立 package cache 从本地包源安装 Core 与 WPF；WPF XAML namespace、控件及共享契约均编译通过 |
+| 中英文文档 | DocFX warnings-as-errors 通过 | Core/WPF 两项目 API 元数据共同生成；WinUI 3 在具有公共 API 前不进入 DocFX metadata |
+| 平台边界 | 自动化通过 | `CoreBoundaryTests` 验证 Core 不引用 WPF、Windows Forms 或 WinUI 程序集 |
+| 最终程序集边界 | 自动化通过 | Core 独占共享契约，WPF 直接引用 Core；仓库中不存在兼容项目或 `TypeForwardedTo`，当前可用包精确限定为 Core/WPF |
+| 人工验收 | 未执行 | 第 25 节保持未勾选；完成前不得把本轮 `[~]` 改为 `[x]` |
+
 ## 5. 架构、工程与公共契约
 
-当前依据：`Flourish.slnx`、`src/Flourish/Flourish.csproj`、`src/Flourish/Abstract`、`src/Flourish/Hosting`。
+当前依据：`Flourish.slnx`、`src/Flourish.Core/Flourish.Core.csproj`、`src/Flourish.WPF/Flourish.WPF.csproj`、空白 `src/Flourish.WinUI3/Flourish.WinUI3.csproj`、Core/WPF 测试项目及 `src/Flourish.WPF/Hosting`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | A01 | Core 项目与目标框架 | Core | 不适用 | 可独立构建且无 Windows Desktop SDK |
-| [ ] | A02 | WPF 平台项目 | UI | WPF 保持现有实现 | 现有应用只需受控的包名/API 迁移 |
-| [ ] | A03 | WinUI 3 平台项目 | UI | Windows App SDK 原生项目模板 | 支持目标架构并能创建空窗口 |
-| [ ] | A04 | WPF Gallery 拆分 | UI | 保留现有 Gallery | 全部现有示例仍可运行 |
-| [ ] | A05 | WinUI Gallery | UI | WinUI 原生应用 | 每个迁移功能都有可发现入口 |
-| [ ] | A06 | Core 测试项目 | Core | 不适用 | 测试不需要 STA、窗口或 XAML |
-| [ ] | A07 | WPF 契约/UI 测试 | UI | 保留 WPF 测试基础设施 | 原有契约保持通过 |
-| [ ] | A08 | WinUI 契约/UI 测试 | UI | WinUI/XAML 编译与组件测试 | 覆盖公开控件、资源和平台适配器 |
-| [ ] | A09 | 包依赖方向 | Core | 不适用 | 无 WPF↔WinUI、Core→UI 引用 |
-| [ ] | A10 | 公共 API 兼容策略 | Core | 不适用 | 每个破坏性变更有 shim 或主版本说明 |
-| [ ] | A11 | 语义命名规范 | Core | 不适用 | 新类型不带项目/品牌前缀 |
-| [ ] | A12 | NuGet 包元数据 | UI | SDK 打包能力 | 三个包的依赖、TFM、README 和符号正确 |
-| [ ] | A13 | Windows App SDK 基线 | UI | 实施前固定稳定版及最低版 | 记录 Windows、SDK、.NET、打包模式 |
+| [~] | A01 | Core 项目与目标框架 | Core | 不适用 | 可独立构建且无 Windows Desktop SDK |
+| [~] | A02 | WPF 平台项目 | UI | WPF 保持现有实现 | 最终 WPF 功能、程序集和资源结构通过构建与回归测试 |
+| [~] | A03 | WinUI 3 平台项目 | UI | 标准空白 Windows App SDK 项目模板 | 当前只验证空白项目构建；人工启动后方可标记完成 |
+| [~] | A04 | WPF Gallery 拆分 | UI | 保留现有 Gallery | 全部现有示例仍可运行 |
+| [ ] | A05 | WinUI Gallery | UI | 从标准空白 WinUI 应用开始 | 每个后续迁移功能都有可发现入口；空白窗口不计为功能场景 |
+| [~] | A06 | Core 测试项目 | Core | 不适用 | 测试不需要 STA、窗口或 XAML |
+| [~] | A07 | WPF 契约/UI 测试 | UI | 保留 WPF 测试基础设施 | 最终公共契约和既有功能保持通过 |
+| [ ] | A08 | WinUI 契约/UI 测试 | UI | WinUI/XAML 编译与组件测试 | 首个功能切片建立后覆盖公开控件、资源和平台适配器 |
+| [~] | A09 | 包依赖方向 | Core | 不适用 | 无 WPF↔WinUI、Core→UI 引用 |
+| [~] | A10 | 首发公共 API 定稿 | Core | 不适用 | 首次发布前直接收敛最终 API，不引入 shim、转发或 obsolete 过渡层 |
+| [~] | A11 | 语义命名规范 | Core | 不适用 | 新类型不带项目/品牌前缀 |
+| [~] | A12 | NuGet 包元数据 | UI | SDK 打包能力 | Core/WPF 当前包的依赖、TFM、README 与资产正确；WinUI 包在首个完整切片后启用，符号包仍待补齐 |
+| [~] | A13 | Windows App SDK 基线 | UI | 实施前固定稳定版及最低版 | 空白工程固定 .NET SDK 10.0.400、Windows App SDK 2.3.1、目标 26100/最低 17763 与 unpackaged Gallery；实际 OS 矩阵待验收 |
 | [ ] | A14 | 功能开关与能力检测 | Core | UI 注入平台能力快照 | 缺失 API 时可预测降级 |
 | [ ] | A15 | UI 调度端口 | UI | WPF Dispatcher / WinUI DispatcherQueue | Core 不捕获 UI SynchronizationContext |
 | [ ] | A16 | 日志与诊断 | Core | Logging 抽象，UI 记录平台细节 | 失败含模块 ID、平台和降级原因 |
-| [ ] | A17 | 稳定 XAML URI 兼容 | UI | WPF 保持现有 XmlnsDefinition；WinUI 独立 URI 决策 | 拆包不静默破坏消费者 XAML |
-| [ ] | A18 | 外部 Extension 依赖 | Core | 决定包引用或同仓协调 | Solution/CI 不依赖未声明兄弟仓库状态 |
+| [~] | A17 | 最终 XAML URI | UI | WPF 使用 `Flourish.WPF` AssemblyName 与现有 XmlnsDefinition；WinUI 独立 URI 决策 | WPF 程序集/资源身份已有自动化；WinUI 资源 URI 仍待定 |
+| [~] | A18 | 外部 Extension 依赖 | Core | Gallery 与 Solution 不引用兄弟仓库源码；扩展发布后再通过包选择性集成 | 独立克隆可还原和构建，不要求固定相对路径的 Extension 仓库 |
 
 ## 6. Hosting、生命周期与依赖注入
 
@@ -163,9 +190,9 @@ Core 完成的最低门槛：
 | [ ] | H01 | 默认 Host 配置管线 | Core | `Microsoft.Extensions.Hosting` | appsettings、环境变量、命令行顺序一致 |
 | [ ] | H02 | `ConfigureConfiguration` | Core | 不适用 | 两平台得到同一 IConfiguration |
 | [ ] | H03 | `ConfigureServices` | Core | 不适用 | 用户服务注册与生命周期一致 |
-| [ ] | H04 | 功能 Builder 草稿 | Core | 不适用 | Build 前可配置，Build 后拒绝修改 |
+| [~] | H04 | 功能 Builder 草稿 | Core | 不适用 | Build 前可配置，Build 后拒绝修改 |
 | [ ] | H05 | Builder 校验聚合 | Core | 不适用 | 报告前置条件、重复键和非法值 |
-| [ ] | H06 | Core 服务注册 | Core | 不适用 | 注册表、状态服务、存储只注册一次 |
+| [~] | H06 | Core 服务注册 | Core | 不适用 | 注册表、状态服务、存储只注册一次 |
 | [ ] | H07 | 平台服务注册 | UI | 各 UI 项目拥有 composition root | 同一 Core 契约解析到正确平台实现 |
 | [ ] | H08 | WPF Application 启动 | UI | 保留 WPF Application/Startup | 原有 `Run<TApplication>` 不回归 |
 | [ ] | H09 | WinUI Application 启动 | UI | 原生 `Microsoft.UI.Xaml.Application` | OnLaunched 完成 Host/主窗口连接 |
@@ -179,30 +206,30 @@ Core 完成的最低门槛：
 
 ## 7. 配置、数据、本地化与偏好
 
-当前依据：`Configuration`、`Localization`、`PreferenceLoader.cs`、`PreferencePersistenceService.cs`、`Assets/FlourishCulture.Json`。
+当前依据：`src/Flourish.Core/Configuration`、`src/Flourish.Core/Localization`、`src/Flourish.Core/Assets/FlourishCulture.Json`，以及 WPF 的 `PreferenceLoader.cs`、`PreferencePersistenceService.cs`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
 | [ ] | D01 | 应用数据路径解析 | Core | BCL 文件系统 API | 相对路径、绝对路径和空路径规则正确 |
-| [ ] | D02 | appsettings 文件路径 | Core | 不适用 | 自定义与默认路径行为一致 |
-| [ ] | D03 | 定向 JSON 配置源 | Core | 不适用 | Flourish 根/完整文件模式与优先级正确 |
-| [ ] | D04 | 非对象根与重复根校验 | Core | 不适用 | 坏结构不产生部分配置 |
-| [ ] | D05 | 外部文件监视/恢复 | Core | 不适用 | 外部修改后定向 reload |
+| [~] | D02 | appsettings 文件路径 | Core | 不适用 | 自定义与默认路径行为一致 |
+| [~] | D03 | 定向 JSON 配置源 | Core | 不适用 | Flourish 根/完整文件模式与优先级正确 |
+| [~] | D04 | 非对象根与重复根校验 | Core | 不适用 | 坏结构不产生部分配置 |
+| [~] | D05 | 外部文件监视/恢复 | Core | 不适用 | 外部修改后定向 reload |
 | [ ] | D06 | User Secrets | Core | 不适用 | 仅在合适环境加载 |
-| [ ] | D07 | 可写设置事务 | Core | 不适用 | Set/Remove/Merge/Append 一次原子写 |
-| [ ] | D08 | 设置根边界 | Core | 不适用 | 只允许拥有的配置根 |
-| [ ] | D09 | 设置并发 | Core | 不适用 | 串行更新，排队事务可取消 |
-| [ ] | D10 | 禁止事务重入 | Core | 不适用 | 嵌套更新可预测失败 |
-| [ ] | D11 | 无变化写入 | Core | 不适用 | 无变化不重写文件 |
-| [ ] | D12 | 损坏 JSON 防护 | Core | 不适用 | 坏文件不被覆盖且有诊断 |
-| [ ] | D13 | 配置重载通知 | Core | 不适用 | 写入后 IConfiguration 立即可见 |
+| [~] | D07 | 可写设置事务 | Core | 不适用 | Set/Remove/Merge/Append 一次原子写 |
+| [~] | D08 | 设置根边界 | Core | 不适用 | 只允许拥有的配置根 |
+| [~] | D09 | 设置并发 | Core | 不适用 | 串行更新，排队事务可取消 |
+| [~] | D10 | 禁止事务重入 | Core | 不适用 | 嵌套更新可预测失败 |
+| [~] | D11 | 无变化写入 | Core | 不适用 | 无变化不重写文件 |
+| [~] | D12 | 损坏 JSON 防护 | Core | 不适用 | 坏文件不被覆盖且有诊断 |
+| [~] | D13 | 配置重载通知 | Core | 不适用 | 写入后 IConfiguration 立即可见 |
 | [ ] | D14 | 偏好键目录 | Core | 不适用 | 每个功能的键、类型、默认值登记 |
 | [ ] | D15 | 偏好加载编排 | Core | 模块 `ISettingsContributor` | 中央服务不直接依赖全部 UI Service |
-| [ ] | D16 | 偏好批量持久化 | Core | UI 提交平台状态 DTO | 快速变化合并为最新值 |
+| [~] | D16 | 偏好批量持久化 | Core | UI 提交平台状态 DTO | 快速变化合并为最新值 |
 | [ ] | D17 | 偏好版本迁移 | Core | 不适用 | 旧键迁移可重复执行 |
 | [ ] | D18 | Locale 初始选择 | Core | 不适用 | 配置、持久、系统、默认优先级明确 |
-| [ ] | D19 | 内置文化资源 | Core | 不适用 | en-US/zh-CN 与键名回退完整 |
-| [ ] | D20 | 外部文化文件注册 | Core | 不适用 | 注册、覆盖、Reload、Dispose 正确 |
+| [~] | D19 | 内置文化资源 | Core | 不适用 | en-US/zh-CN 与键名回退完整 |
+| [~] | D20 | 外部文化文件注册 | Core | 不适用 | 注册、覆盖、Reload、Dispose 正确 |
 | [ ] | D21 | 可用语言快照 | Core | 不适用 | 文件变化后版本和事件正确 |
 | [ ] | D22 | 运行时语言切换 | Core | UI 订阅变化 | 当前文化格式化正确 |
 | [ ] | D23 | UI 文本刷新 | UI | 静态资源原生；动态切换用绑定/适配 | 已打开 Shell 与页面同步刷新 |
@@ -213,21 +240,21 @@ Core 完成的最低门槛：
 
 ## 8. 命令、快捷键与注册生命周期
 
-当前依据：`Commands`、`Command*`、`IShortcutService`、`IRegistration`。
+当前依据：`src/Flourish.Core/Commands`、`src/Flourish.Core/Abstract/CommandContracts.cs`、`StateContracts.cs`，以及 WPF 的 `IShortcutService` 与按键适配。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | C01 | 命令键规则 | Core | 不适用 | 空白、重复和大小写规则固定 |
-| [ ] | C02 | Reject/Replace/Append | Core | 不适用 | 三种重复策略均可测试 |
-| [ ] | C03 | 优先级与注册顺序 | Core | 不适用 | 同优先级顺序稳定 |
-| [ ] | C04 | 命令执行委托 | Core | 不适用 | 同步完成与 ValueTask 正确 |
-| [ ] | C05 | CanExecute | Core | UI 只投影 Enabled | 失效通知到全部观察者 |
+| [~] | C01 | 命令键规则 | Core | 不适用 | 空白、重复和大小写规则固定 |
+| [~] | C02 | Reject/Replace/Append | Core | 不适用 | 三种重复策略均可测试 |
+| [~] | C03 | 优先级与注册顺序 | Core | 不适用 | 同优先级顺序稳定 |
+| [~] | C04 | 命令执行委托 | Core | 不适用 | 同步完成与 ValueTask 正确 |
+| [~] | C05 | CanExecute | Core | UI 只投影 Enabled | 失效通知到全部观察者 |
 | [ ] | C06 | CommandContext | Core | 不适用 | 参数、来源、服务、取消完整 |
-| [ ] | C07 | NotHandled 链 | Core | 不适用 | 处理器链短路规则正确 |
+| [~] | C07 | NotHandled 链 | Core | 不适用 | 处理器链短路规则正确 |
 | [ ] | C08 | 调度结果 | Core | 不适用 | Disabled/Failed/Canceled/NotFound 可区分 |
 | [ ] | C09 | 异常隔离 | Core | 不适用 | 处理器异常形成结果并记录 |
-| [ ] | C10 | Parser HostedService | Core | 不适用 | 失败完整回滚，Registrar 及时失效 |
-| [ ] | C11 | 注册租约 | Core | 不适用 | Dispose 幂等，旧租约不删替代注册 |
+| [~] | C10 | Parser HostedService | Core | 不适用 | 失败完整回滚，Registrar 及时失效 |
+| [~] | C11 | 注册租约 | Core | 不适用 | Dispose 幂等，旧租约不删替代注册 |
 | [ ] | C12 | `ShortcutChord` 值对象 | Core | 不使用 KeyGesture/VirtualKey | key/modifiers 可序列化 |
 | [ ] | C13 | 快捷键作用域 | Core | 不适用 | Page→Window→Application 优先级准确 |
 | [ ] | C14 | 快捷键冲突策略 | Core | 不适用 | 精确 scope 与 fallback 可测试 |
@@ -236,76 +263,76 @@ Core 完成的最低门槛：
 | [ ] | C17 | WinUI 按键映射 | UI | **框架直用** `KeyboardAccelerator` | 常见组合键不依赖全局 KeyDown |
 | [ ] | C18 | 特殊按键路径 | UI | 键盘事件 + InputKeyboardSource | AltGr、纯修饰键、系统键正确 |
 | [ ] | C19 | 快捷键可发现性 | UI | Accelerator tooltip/AccessKey | 菜单、按钮和 UIA 显示组合键 |
-| [ ] | C20 | Command 与 UI 连接 | UI | ICommand/Click/Invoked 薄适配 | Toolbar、导航、按钮共享 command key |
+| [ ] | C20 | Command 与 UI 连接 | UI | ICommand/Click/Invoked 薄适配 | 各 WinUI 表面共享 command key/source，且通用按钮与快捷键行为一致 |
 
 ## 9. 后台任务
 
-当前依据：`BackgroundTasks`、`IBackgroundTaskService`、`BackgroundTask*`。
+当前依据：`src/Flourish.Core/BackgroundTasks`、`src/Flourish.Core/Abstract/BackgroundTaskContracts.cs` 与 `tests/Flourish.Core.Test/BackgroundTasks`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
 | [ ] | B01 | 任务元数据 | Core | 不适用 | ID、名称、描述、可取消、显示策略稳定 |
-| [ ] | B02 | 任务状态机 | Core | 不适用 | Queued/Running/Cancelling/终态转换合法 |
-| [ ] | B03 | 有界并发 | Core | 不适用 | 上限和公平排队可测试 |
-| [ ] | B04 | 等待队列 | Core | 不适用 | 取消排队项不占执行槽 |
+| [~] | B02 | 任务状态机 | Core | 不适用 | Queued/Running/Cancelling/终态转换合法 |
+| [~] | B03 | 有界并发 | Core | 不适用 | 上限和公平排队可测试 |
+| [~] | B04 | 等待队列 | Core | 不适用 | 取消排队项不占执行槽 |
 | [ ] | B05 | CancellationToken 联动 | Core | 不适用 | 用户、Host、内部取消可区分 |
-| [ ] | B06 | 进度报告 | Core | UI 订阅快照 | 已知/未知进度均有定义 |
-| [ ] | B07 | 时间戳 | Core | 不适用 | 排队、开始、结束时间一致 |
-| [ ] | B08 | 无返回值结果 | Core | 不适用 | 完成、取消、异常完整 |
-| [ ] | B09 | 泛型返回值 | Core | 不适用 | 结果类型与异常传播正确 |
+| [~] | B06 | 进度报告 | Core | UI 订阅快照 | 已知/未知进度均有定义 |
+| [~] | B07 | 时间戳 | Core | 不适用 | 排队、开始、结束时间一致 |
+| [~] | B08 | 无返回值结果 | Core | 不适用 | 完成、取消、异常完整 |
+| [~] | B09 | 泛型返回值 | Core | 不适用 | 结果类型与异常传播正确 |
 | [ ] | B10 | 活动任务快照 | Core | 不适用 | 不可变列表、版本和事件原子 |
-| [ ] | B11 | 任务句柄 | Core | 不适用 | Cancel、Completion 与泛型结果一致 |
-| [ ] | B12 | Host 停止排空 | Core | 不适用 | 活动任务取消并等待结束 |
+| [~] | B11 | 任务句柄 | Core | 不适用 | Cancel、Completion 与泛型结果一致 |
+| [~] | B12 | Host 停止排空 | Core | 不适用 | 活动任务取消并等待结束 |
 | [ ] | B13 | 状态栏任务投影 | UI | ProgressRing/ProgressBar + Flyout | 排队计数、详情、逐项/全部取消正确 |
 | [ ] | B14 | 状态 UI 刷新节流 | UI | DispatcherQueue + 差量更新 | 高频进度不重建全部视图 |
 | [ ] | B15 | 关闭窗口任务守卫 | Core | UI 负责对话框 | 继续运行/中止退出决策完整 |
 
 ## 10. 项目与文件操作
 
-当前依据：`Projects`、`IProjectBuilder`、`IProjectService`、`IProjectBehavior`、`ProjectSaveFileDialog.cs`。
+当前依据：`src/Flourish.Core/Projects`、`src/Flourish.Core/Abstract/ProjectContracts.cs`，以及 WPF 的 `ProjectBuilder.cs`、`DefaultProjectBehavior.cs`、`ProjectSaveFileDialog.cs`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | P01 | 单/多项目模式 | Core | 不适用 | 模式切换后的活动项目规则明确 |
+| [~] | P01 | 单/多项目模式 | Core | 不适用 | 模式切换后的活动项目规则明确 |
 | [ ] | P02 | 项目描述模型 | Core | 不适用 | ID、名称、路径、扩展元数据可序列化 |
-| [ ] | P03 | 项目目录快照 | Core | 不适用 | 有序列表、活动 ID、版本原子 |
+| [~] | P03 | 项目目录快照 | Core | 不适用 | 有序列表、活动 ID、版本原子 |
 | [ ] | P04 | 项目 Add | Core | 不适用 | 重复 ID/路径策略可测试 |
-| [ ] | P05 | 项目 Set | Core | 不适用 | 替换不破坏活动状态 |
-| [ ] | P06 | 项目元数据修改 | Core | 不适用 | 名称/路径更新只发布一次 |
+| [~] | P05 | 项目 Set | Core | 不适用 | 替换不破坏活动状态 |
+| [~] | P06 | 项目元数据修改 | Core | 不适用 | 名称/路径更新只发布一次 |
 | [ ] | P07 | 活动项目切换 | Core | 不适用 | 请求、拒绝、成功事件顺序固定 |
-| [ ] | P08 | 项目 Remove | Core | 不适用 | 移除活动项后的选择规则明确 |
-| [ ] | P09 | 项目查询 | Core | 不适用 | ID 区分大小写和缺失结果稳定 |
-| [ ] | P10 | Catalog 持久化 | Core | BCL 文件系统 API | 原子保存和损坏恢复正确 |
-| [ ] | P11 | 失效路径清理 | Core | 不适用 | 启动清理并修复活动项 |
-| [ ] | P12 | 持久化失败回滚 | Core | 不适用 | 内存状态与文件保持一致 |
+| [~] | P08 | 项目 Remove | Core | 不适用 | 移除活动项后的选择规则明确 |
+| [~] | P09 | 项目查询 | Core | 不适用 | ID 区分大小写和缺失结果稳定 |
+| [~] | P10 | Catalog 持久化 | Core | BCL 文件系统 API | 原子保存和损坏恢复正确 |
+| [~] | P11 | 失效路径清理 | Core | 不适用 | 启动清理并修复活动项 |
+| [~] | P12 | 持久化失败回滚 | Core | 不适用 | 内存状态与文件保持一致 |
 | [ ] | P13 | 创建项目编排 | Core | Dialog/Picker 端口 | 可替换行为且支持取消 |
 | [ ] | P14 | 保存项目编排 | Core | Dialog/Picker 端口 | 无活动项、另存、覆盖规则明确 |
 | [ ] | P15 | 切换/删除/关闭编排 | Core | Dialog 端口 | 未保存状态和 veto 完整 |
 | [ ] | P16 | WPF 保存文件适配器 | UI | 现有桌面对话框 | owner、筛选器和取消正确 |
 | [ ] | P17 | WinUI 保存文件适配器 | UI | **框架直用** Windows App SDK FileSavePicker + WindowId | 路径、扩展、取消和异常正确 |
 | [ ] | P18 | 文件/目录事务 | Core | BCL API | 失败不误删共享路径 |
-| [ ] | P19 | 项目选择器状态 | Core | 不适用 | 标题栏只消费投影 |
+| [~] | P19 | 项目选择器状态 | Core | 不适用 | 标题栏只消费投影 |
 | [ ] | P20 | WinUI 项目选择器 | UI | DropDownButton/MenuFlyout 或 ComboBox | 空项、单项、多项和 active 勾选正确 |
-| [ ] | P21 | 未命名项目占位 | Core | UI 本地化显示 | 各表面文本一致 |
+| [~] | P21 | 未命名项目占位 | Core | UI 本地化显示 | 各表面文本一致 |
 
 ## 11. Profile、认证与凭据
 
-当前依据：`Profile`、`IProfileService`、`IProfileAuthService`、`IProfileFlyoutService`、`Views/Page/ProfilePage.xaml`。
+当前依据：`src/Flourish.Core/Profile`、`src/Flourish.Core/Abstract/ProfileContracts.cs`，以及 WPF 的 `ProfileSecretStore.cs`、`IProfileFlyoutService`、`Views/Page/ProfilePage.xaml`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
 | [ ] | U01 | Profile 用户模型 | Core | 不适用 | 姓名、图片和扩展数据可序列化 |
 | [ ] | U02 | 登录状态机 | Core | 不适用 | SignedOut/SigningIn/SignedIn/Failed 合法 |
-| [ ] | U03 | 名称顺序 | Core | 不适用 | FirstLast/LastFirst 正确 |
-| [ ] | U04 | DisplayName | Core | 不适用 | 空字段、单字段和 Unicode 正确 |
-| [ ] | U05 | Unicode 首字母 | Core | 不适用 | grapheme、CJK、空名称正确 |
-| [ ] | U06 | 默认用户资料 | Core | 不适用 | 未登录/已登录快照不混淆 |
+| [~] | U03 | 名称顺序 | Core | 不适用 | FirstLast/LastFirst 正确 |
+| [~] | U04 | DisplayName | Core | 不适用 | 空字段、单字段和 Unicode 正确 |
+| [~] | U05 | Unicode 首字母 | Core | 不适用 | grapheme、CJK、空名称正确 |
+| [~] | U06 | 默认用户资料 | Core | 不适用 | 未登录/已登录快照不混淆 |
 | [ ] | U07 | 认证请求/结果 | Core | 不适用 | 成功、拒绝、取消、错误可区分 |
-| [ ] | U08 | 可替换认证服务 | Core | 不适用 | 自定义认证不依赖 XAML |
-| [ ] | U09 | 默认简单认证 | Core | 不适用 | 姓名/密码校验与错误本地化 key 正确 |
+| [~] | U08 | 可替换认证服务 | Core | 不适用 | 自定义认证不依赖 XAML |
+| [~] | U09 | 默认简单认证 | Core | 不适用 | 姓名/密码校验与错误本地化 key 正确 |
 | [ ] | U10 | 登录/登出编排 | Core | 不适用 | busy、失败回滚和事件顺序正确 |
-| [ ] | U11 | 记住登录策略 | Core | `ISecretStore` 端口 | 开关变化立即更新状态 |
-| [ ] | U12 | 凭据 Schema 版本 | Core | 不适用 | 失效版本可识别并清理 |
+| [~] | U11 | 记住登录策略 | Core | `ISecretStore` 端口 | 开关变化立即更新状态 |
+| [~] | U12 | 凭据 Schema 版本 | Core | 不适用 | 失效版本可识别并清理 |
 | [ ] | U13 | WPF 凭据实现 | UI | Windows DPAPI CurrentUser | 旧凭据可读取或有迁移说明 |
 | [ ] | U14 | WinUI 凭据实现 | UI | Windows 凭据/DPAPI 薄适配 | 明文不落盘，删除幂等 |
 | [ ] | U15 | 图片路径/回退策略 | Core | UI 负责解码 | 空、缺失、损坏得到回退 |
@@ -320,7 +347,7 @@ Core 完成的最低门槛：
 
 ## 12. 消息、通知与临时状态
 
-当前依据：`Messaging`、`IMessageService`、`INotificationService`、`MessageBoxWindow.xaml`、`NotificationHost.xaml`。
+当前依据：`src/Flourish.Core/Messaging`、`src/Flourish.Core/Abstract/NotificationContracts.cs`，以及 WPF 的 `IMessageService`、`MessageBoxWindow.xaml`、`NotificationHost.xaml`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
@@ -329,27 +356,27 @@ Core 完成的最低门槛：
 | [ ] | M03 | `DialogResult` | Core | 不使用 MessageBoxResult | 标准与自定义选项统一 |
 | [ ] | M04 | 选项校验 | Core | 不适用 | 唯一 default/cancel/primary 规则正确 |
 | [ ] | M05 | 异步消息端口 | Core | UI presenter | Core 不依赖 XamlRoot/Window |
-| [ ] | M06 | WPF 同步兼容 API | UI | 仅 WPF 过渡期保留 | 不进入 Core/WinUI 主 API |
+| [ ] | M06 | WPF 同步便捷 API | UI | 仅在 WPF 平台语义需要时提供 | 不进入 Core/WinUI 主 API |
 | [ ] | M07 | WPF 消息窗口 | UI | 保留自定义 WPF Window | 视觉、RTL、owner 无回归 |
 | [ ] | M08 | WinUI 消息窗口 | UI | **框架直用** ContentDialog | XamlRoot、默认键、取消正确 |
 | [ ] | M09 | 每窗口 Dialog 队列 | UI | 原生组合 | 同一 XamlRoot 不并发显示两个 Dialog |
 | [ ] | M10 | 任意数量 actions | UI | 三按钮内原生；超出时收敛或自定义 footer | 产品决策和差异文档明确 |
 | [ ] | M11 | owner/XamlRoot 解析 | UI | Window 注册表薄适配 | 多窗口显示到正确 owner |
 | [ ] | M12 | 打开前取消 | Core | 不适用 | 与现有取消契约一致 |
-| [ ] | M13 | 通知模型/严重级别 | Core | 不适用 | Info/Success/Warning/Error 稳定 |
-| [ ] | M14 | 通知 Show/Upsert/Update | Core | 不适用 | 替换时重置超时 |
-| [ ] | M15 | Dismiss/DismissAll | Core | 不适用 | 幂等且版本准确 |
-| [ ] | M16 | 通知句柄 | Core | 不适用 | Update/Dispose 只影响自身 |
-| [ ] | M17 | 自动消失计时 | Core | UI 仅呈现 | 取消/替换/关闭无竞态 |
+| [~] | M13 | 通知模型/严重级别 | Core | 不适用 | Info/Success/Warning/Error 稳定 |
+| [~] | M14 | 通知 Show/Upsert/Update | Core | 不适用 | 替换时重置超时 |
+| [~] | M15 | Dismiss/DismissAll | Core | 不适用 | 幂等且版本准确 |
+| [~] | M16 | 通知句柄 | Core | 不适用 | Update/Dispose 只影响自身 |
+| [~] | M17 | 自动消失计时 | Core | UI 仅呈现 | 取消/替换/关闭无竞态 |
 | [ ] | M18 | 通知命令 | Core | command key | Action 通过统一 dispatcher |
-| [ ] | M19 | WinUI 通知单项 | UI | **框架直用** InfoBar | severity、close、action、UIA 正确 |
-| [ ] | M20 | NotificationHost | UI | InfoBar 集合 host | 最新 5 条、复用、live region 正确 |
+| [ ] | M19 | WinUI 通知单项 | UI | **框架直用** InfoBar | 四级 severity、关闭回写、同 ID 更新、action 和 UIA 完整 |
+| [ ] | M20 | NotificationHost | UI | InfoBar 集合 host | 集合投影、复用、Core timeout、数量策略与 live region 完整 |
 | [ ] | M21 | 系统 AppNotification | UI | Windows App SDK 原生，可选扩展 | 与应用内通知分开建模 |
 | [ ] | M22 | Status Overlay | UI | Flyout/Popup/ContentPresenter | 不混用 Dialog/ToolTip 语义 |
 
 ## 13. 导航、路由、历史与缓存
 
-当前依据：`Navigation`、`INavigationBuilder`、`INavigationService`、`NavigationMenu*`、`NavigationPaneView.xaml`。
+当前依据：`src/Flourish.Core/Navigation` 中的历史原语，以及 WPF 的 `INavigationBuilder`、`INavigationService`、路由、缓存、`NavigationMenu*` 和 `NavigationPaneView.xaml`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
@@ -360,9 +387,9 @@ Core 完成的最低门槛：
 | [ ] | N05 | 初始路由 | Core | 不适用 | 显式、首项、空路由回退明确 |
 | [ ] | N06 | 导航请求 | Core | UI 执行 view 切换 | 参数、历史策略、取消可表达 |
 | [ ] | N07 | 当前导航快照 | Core | 不保存 Page 实例 | key、parameter、CanGoBack/Forward 原子 |
-| [ ] | N08 | 有界 Back 栈 | Core | 不适用 | 超限逐出最旧项 |
+| [~] | N08 | 有界 Back 栈 | Core | 不适用 | 超限逐出最旧项 |
 | [ ] | N09 | Forward 栈 | Core | 不适用 | 新导航后按规则清空 |
-| [ ] | N10 | 清理 Back/Forward/All | Core | 不适用 | 三个操作各自准确 |
+| [~] | N10 | 清理 Back/Forward/All | Core | 不适用 | 三个操作各自准确 |
 | [ ] | N11 | 相同 key/parameter 去重 | Core | 不适用 | 无操作不发布事件 |
 | [ ] | N12 | 路由删除清理历史 | Core | 不适用 | 不留下不可达项 |
 | [ ] | N13 | 上次导航持久化 | Core | 不适用 | 路由缺失时安全回退 |
@@ -375,42 +402,42 @@ Core 完成的最低门槛：
 | [ ] | N20 | 导航宿主拒绝回滚 | Core | UI 返回结果 | 历史和当前项恢复 |
 | [ ] | N21 | 并发导航串行化 | Core | 不适用 | 只提交最新合法状态 |
 | [ ] | N22 | 导航完成事件 | Core | 不返回具体 Page | route/view/parameter 和时机正确 |
-| [ ] | N23 | 菜单分组 | Core | 不适用 | Add/Remove/Title/Order 事务化 |
-| [ ] | N24 | 页面项 | Core | 不适用 | route、icon、visible、enabled 完整 |
-| [ ] | N25 | 命令项 | Core | 不适用 | command 与 page item 不混淆 |
-| [ ] | N26 | 固定项 | Core | 不适用 | Footer 顺序稳定 |
-| [ ] | N27 | 一层父子树 | Core | UI 投影层级 | move/expand/selection 正确 |
-| [ ] | N28 | 菜单事务编辑器 | Core | 不适用 | 批量编辑只发布一次 |
+| [~] | N23 | 菜单分组 | Core | 不适用 | Add/Remove/Title/Order 已事务化并测试 |
+| [~] | N24 | 页面项 | Core | 不适用 | navigation key、icon glyph、visible、enabled 已建模并校验 |
+| [~] | N25 | 命令项 | Core | 不适用 | command 与 page item 的种类及必需键已分离 |
+| [~] | N26 | 固定项 | Core | 不适用 | 固定区插入、移动、删除和稳定顺序已测试 |
+| [~] | N27 | 一层父子树 | Core | UI 投影层级 | 同分区父子校验与 move/expand 已实现；WinUI 投影待实现 |
+| [~] | N28 | 菜单事务编辑器 | Core | 不适用 | 批量编辑一次提交/事件、无变化、回滚、重入和逃逸失效已测试 |
 | [ ] | N29 | 面板开关状态 | Core | 不适用 | Enable/Open/Close/Toggle 一致 |
-| [ ] | N30 | 面板方向 | Core | 不适用 | Left/Right 是布局语义 |
+| [~] | N30 | 面板方向 | Core | 不适用 | Left/Right 中立枚举和状态已提取；运行时面板服务尚未完整迁移 |
 | [ ] | N31 | 面板宽度约束 | Core | 不适用 | open/closed/min/max 校验完整 |
 | [ ] | N32 | 面板偏好 | Core | 不适用 | 方向、开关、宽度独立 |
-| [ ] | N33 | 标准左/顶导航 | UI | **框架直用** NavigationView + Frame | 自适应、选择和 Back 同步 |
+| [ ] | N33 | 标准左/顶导航 | UI | **框架直用** NavigationView + Frame | 原生选择、页面呈现、自适应和 Back 同步正确 |
 | [ ] | N34 | Breadcrumb | UI | **框架直用** BreadcrumbBar | 路径、溢出、键盘正确 |
 | [ ] | N35 | 右侧可调导航 | UI | **原生组合/风险** SplitView + ListView + GridSplitter | 不用 RTL；拖宽和折叠正确 |
-| [ ] | N36 | 导航组/固定项 UI | UI | NavigationView/ListView/TreeView | 滚动组和底部固定区正确 |
-| [ ] | N37 | 导航图标 | UI | FontIcon/SymbolIcon/IconSource | glyph 与未来 icon source 可扩展 |
-| [ ] | N38 | Frame 导航适配 | UI | 原生 Frame.Navigate/GoBack | NavigationView 不承担历史规则 |
+| [ ] | N36 | 导航组/固定项 UI | UI | NavigationView/ListView/TreeView | group header/separator、FooterMenuItems 与一层子项正确投影 |
+| [ ] | N37 | 导航图标 | UI | FontIcon/SymbolIcon/IconSource | Core glyph、页面 Symbol 与通用 IconSource 正确投影 |
+| [ ] | N38 | Frame 导航适配 | UI | 原生 Frame.Navigate/GoBack | 稳定键到 Page type 的 Navigate、历史与 GoBack 完整 |
 | [ ] | N39 | 页面过渡投影 | UI | 原生 transition/Composition | 遵守 Core 动效策略 |
 | [ ] | N40 | 导航失败恢复 | UI | 失败结果回传 Core | View、selection、history 一致 |
 
 ## 14. 外观、主题、字体与材质
 
-当前依据：`Appearance`、`Themes`、`IAppearance*`、`IFont*`、`IThemeService`、`IMaterialEffectService`。
+当前依据：Core 的 `ApplicationTheme` 与主题偏好持久化，以及 WPF 的 `Appearance`、`Themes`、`IAppearance*`、`IFont*`、`IThemeService`、`IMaterialEffectService`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | T01 | 主题选择 | Core | 不适用 | System/Light/Dark 语义一致 |
-| [ ] | T02 | 请求/有效主题 | Core | UI 回报系统有效值 | 两者不混淆 |
+| [~] | T01 | 主题选择 | Core | 不适用 | System/Light/Dark 中立语义已提取并测试 |
+| [~] | T02 | 请求/有效主题 | Core | UI 回报系统有效值 | `ThemeState` 已区分 Requested/Effective；WinUI 投影与有效主题监听待实现 |
 | [ ] | T03 | Toggle 算法 | Core | 不适用 | System 状态的切换规则明确 |
-| [ ] | T04 | 主题偏好 | Core | 不适用 | runtime 先应用后持久化 |
+| [~] | T04 | 主题偏好 | Core | 不适用 | runtime 先应用后持久化 |
 | [ ] | T05 | `ArgbColor` | Core | 不使用 WPF Color | 解析、相等、序列化正确 |
 | [ ] | T06 | Primary/Secondary/Accent | Core | UI 映射 ThemeResource | 只接受不透明色 |
 | [ ] | T07 | 派生颜色算法 | Core | 不适用 | hover/pressed/surface/on-color 可读 |
 | [ ] | T08 | 语义颜色角色 | Core | UI 映射资源 | Neutral/Danger/Warning/Selection 等全覆盖 |
 | [ ] | T09 | 圆角 Token | Core | UI 映射 CornerRadius | 默认、统一覆盖、恢复正确 |
 | [ ] | T10 | 外观原子更新 | Core | 不适用 | 颜色+圆角只发布一次 |
-| [ ] | T11 | WinUI RequestedTheme | UI | **框架直用** | Window、Popup、新页面同步 |
+| [ ] | T11 | WinUI RequestedTheme | UI | **框架直用** | Window、FrameworkElement、Popup 与系统变化监听完整 |
 | [ ] | T12 | ThemeDictionaries | UI | **框架直用** ResourceDictionary | Light/Dark/HighContrast 完整 |
 | [ ] | T13 | 系统主题监听 | UI | 原生设置事件薄适配 | 不轮询且可释放 |
 | [ ] | T14 | 高对比度 | UI | 系统 ThemeResource/UISettings | 自定义色不覆盖系统可读性 |
@@ -422,8 +449,8 @@ Core 完成的最低门槛：
 | [ ] | T20 | 图标字体 | UI | FontIcon；平台推荐图标优先 | 缺失 glyph 有回退 |
 | [ ] | T21 | 材质请求 | Core | 不适用 | None/Mica/Acrylic/MicaAlt/Auto 完整 |
 | [ ] | T22 | 材质有效状态 | Core | UI 回报支持/应用结果 | requested/effective/supported/applied 分离 |
-| [ ] | T23 | WinUI Mica | UI | **框架直用** Window.SystemBackdrop + MicaBackdrop | Win11 与 fallback 正确 |
-| [ ] | T24 | WinUI MicaAlt | UI | MicaKind.BaseAlt | 视觉与能力降级明确 |
+| [ ] | T23 | WinUI Mica | UI | **框架直用** Window.SystemBackdrop + MicaBackdrop | Base Mica 启用/禁用、Win11 实机与 fallback 完整 |
+| [ ] | T24 | WinUI MicaAlt | UI | MicaKind.BaseAlt | BaseAlt 映射、视觉与能力降级正确 |
 | [ ] | T25 | Desktop Acrylic | UI | **框架直用** DesktopAcrylicBackdrop | 节能/失焦/不支持状态正确 |
 | [ ] | T26 | 局部材质 | UI | SystemBackdropElement/FlyoutBase.SystemBackdrop 或 AcrylicBrush | 不混淆桌面与应用内 backdrop |
 | [ ] | T27 | WPF 材质后端 | UI | 保留现有 DWM/Accent 实现 | 不搬入 WinUI 默认路径 |
@@ -433,11 +460,11 @@ Core 完成的最低门槛：
 
 ## 15. 布局、滚动、动效与 ToolTip
 
-当前依据：`Layout`、`Motion`、`ToolTips`、`Controls/HoverReveal*`、`RoundedClipCoordinator.cs`。
+当前依据：`src/Flourish.Core/Layout`、`src/Flourish.Core/Motion`，以及 WPF 的 `ToolTips`、`Controls/HoverReveal*`、`RoundedClipCoordinator.cs`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | L01 | 内容居中状态 | Core | 不适用 | enabled/width 校验和无操作行为正确 |
+| [~] | L01 | 内容居中状态 | Core | 不适用 | enabled/width 校验和无操作行为正确 |
 | [ ] | L02 | 内容居中算法 | Core | 纯几何 | 窄视口使用可用宽度 |
 | [ ] | L03 | 内容居中 UI | UI | Grid MaxWidth/HorizontalAlignment | 只限制页面主体，滚动条仍在视口边缘 |
 | [ ] | L04 | 平滑滚动策略 | Core | 不适用 | app 默认与控件本地覆盖明确 |
@@ -447,7 +474,7 @@ Core 完成的最低门槛：
 | [ ] | L08 | 精密滚轮 | UI | 原生输入优先 | 不把精密滚轮离散化 |
 | [ ] | L09 | 虚拟化滚动 | UI | ListView/ItemsRepeater | 外层无限测量不破坏虚拟化 |
 | [ ] | L10 | 动效总开关 | Core | 不适用 | 所有自定义动效消费同一有效状态 |
-| [ ] | L11 | 页面过渡类型/时长 | Core | 不适用 | Fade/Entrance/None 等语义固定 |
+| [~] | L11 | 页面过渡类型/时长 | Core | 不适用 | Fade/Entrance/None 等语义固定 |
 | [ ] | L12 | 面板过渡类型/时长 | Core | 不适用 | Resize/Overlay 等语义固定 |
 | [ ] | L13 | Hover Reveal 策略 | Core | 不适用 | enabled/duration/persistence 正确 |
 | [ ] | L14 | Reduce Motion 策略 | Core | UI 提供系统偏好 | 系统禁用动画时 effective=false |
@@ -460,7 +487,7 @@ Core 完成的最低门槛：
 | [ ] | L21 | ToolTip delay/margin 状态 | Core | 不适用 | 非法值拒绝、快照正确 |
 | [ ] | L22 | WinUI ToolTip | UI | **框架直用** ToolTip/ToolTipService | pointer/focus/touch/UIA 原生 |
 | [ ] | L23 | InitialShowDelay 差异 | UI | WinUI 无等价公共 API；默认记录平台差异 | 不为像素一致重写完整生命周期 |
-| [ ] | L24 | 严格延迟兼容扩展 | UI | 仅硬需求时 opt-in custom overlay | 不影响第三方控件和原生 ToolTip |
+| [ ] | L24 | 严格延迟扩展 | UI | 仅硬需求时 opt-in custom overlay | 不影响第三方控件和原生 ToolTip |
 | [ ] | L25 | 放置计算 | Core | 仅纯几何可共享 | 四边、角落、DPI 测试 |
 | [ ] | L26 | WinUI 放置/夹紧 | UI | 原生 Placement 优先 | 不越窗口/显示区域 |
 | [ ] | L27 | Accelerator ToolTip | UI | 原生自动呈现 | 自定义内容不丢组合键 |
@@ -468,63 +495,63 @@ Core 完成的最低门槛：
 
 ## 16. Shell 状态、标题栏、工具栏、状态栏与区域
 
-当前依据：`Shell`、`TitleBar*`、`Toolbar*`、`StatusBar*`、`ShellRegion*`。
+当前依据：`src/Flourish.Core/Shell` 中的 TitleBar、Toolbar、StatusBar 状态与服务，以及 WPF 的运行时 facade、视图和 `ShellRegion*`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | S01 | 标题栏启用状态 | Core | 不适用 | Builder/Runtime 状态一致 |
-| [ ] | S02 | 应用标题/副标题 | Core | 不适用 | 空值、更新、本地化规则明确 |
-| [ ] | S03 | 未命名项目文本 | Core | 不适用 | 项目和 TitleBar 使用同一值 |
+| [~] | S01 | 标题栏启用状态 | Core | 不适用 | Builder/Runtime 状态一致 |
+| [~] | S02 | 应用标题/副标题 | Core | 不适用 | 空值、更新、本地化规则明确 |
+| [~] | S03 | 未命名项目文本 | Core | 不适用 | 项目和 TitleBar 使用同一值 |
 | [ ] | S04 | Logo 路径/回退文本 | Core | UI 解码图片 | 损坏资源安全回退 |
-| [ ] | S05 | Logo 信息字段开关 | Core | 不适用 | app title/subtitle/project 独立 |
-| [ ] | S06 | 标题栏元素可见性 | Core | 不适用 | Search/Breadcrumb/Nav/Logo/Title/Theme/Profile 全覆盖 |
+| [~] | S05 | Logo 信息字段开关 | Core | 不适用 | app title/subtitle/project 独立 |
+| [~] | S06 | 标题栏元素可见性 | Core | 不适用 | Search/Breadcrumb/Nav/Logo/Title/Theme/Profile 全覆盖 |
 | [ ] | S07 | Breadcrumb 模式 | Core | UI 投影 Auto/Always/Never | 尺寸变化结果明确 |
-| [ ] | S08 | Search placeholder | Core | 不适用 | runtime 更新立即投影 |
-| [ ] | S09 | Search text | Core | 不适用 | 编程设置不触发用户查询 |
-| [ ] | S10 | Search sequence | Core | 不适用 | 用户查询序号递增 |
-| [ ] | S11 | Search 取消旧工作 | Core | CancellationToken | 新查询取消旧查询 |
-| [ ] | S12 | Search 订阅租约 | Core | 不适用 | 无订阅不分配 CTS，Dispose 精确 |
-| [ ] | S13 | Search focus request | Core | UI 消费一次性请求 | 不重复聚焦 |
+| [~] | S08 | Search placeholder | Core | 不适用 | runtime 更新立即投影 |
+| [~] | S09 | Search text | Core | 不适用 | 编程设置不触发用户查询 |
+| [~] | S10 | Search sequence | Core | 不适用 | 用户查询序号递增 |
+| [~] | S11 | Search 取消旧工作 | Core | CancellationToken | 新查询取消旧查询 |
+| [~] | S12 | Search 订阅租约 | Core | 不适用 | 无订阅不分配 CTS，Dispose 精确 |
+| [~] | S13 | Search focus request | Core | UI 消费一次性请求 | 不重复聚焦 |
 | [ ] | S14 | 标题/项目投影 | Core | 不适用 | 项目切换后标题一致 |
-| [ ] | S15 | WinUI TitleBar 控件 | UI | **框架直用** Windows App SDK 1.7+ `TitleBar` | Back/Pane/Icon/Title/Header/Content 可用 |
-| [ ] | S16 | 标题栏接管 | UI | ExtendsContentIntoTitleBar/SetTitleBar | 拖动区与交互区准确 |
+| [ ] | S15 | WinUI TitleBar 控件 | UI | **框架直用** Windows App SDK 1.7+ `TitleBar` | Pane/Title/Subtitle/Content/Back/Icon 按能力正确接入 |
+| [ ] | S16 | 标题栏接管 | UI | ExtendsContentIntoTitleBar/SetTitleBar | 原生接管、拖动区与交互区实机行为正确 |
 | [-] | S17 | 自绘 caption buttons | UI | **不迁移** | 使用系统按钮，保留 Snap/菜单/UIA |
-| [ ] | S18 | AppWindowTitleBar | UI | **系统原生** caption buttons/颜色/insets | 系统最小/最大/关闭完整 |
+| [ ] | S18 | AppWindowTitleBar | UI | **系统原生** caption buttons/颜色/insets | 保留系统 caption buttons，颜色、inset 和实机行为正确 |
 | [ ] | S19 | Win10/能力降级 | UI | IsCustomizationSupported | 不支持时回到安全系统标题栏 |
 | [ ] | S20 | inset/DPI/RTL | UI | LeftInset/RightInset | 内容不被 caption 遮挡 |
 | [ ] | S21 | Back/Forward UI | UI | TitleBar BackRequested + 导航状态 | 可用性、历史、快捷键同步 |
-| [ ] | S22 | PaneToggle UI | UI | TitleBar PaneToggleRequested | 与面板状态同步 |
-| [ ] | S23 | 标题栏搜索 UI | UI | AutoSuggestBox 放入 Content/RightHeader | IME、清除、提交正确 |
+| [ ] | S22 | PaneToggle UI | UI | TitleBar PaneToggleRequested | 切换原生 NavigationView pane，并与 Core 面板状态同步 |
+| [ ] | S23 | 标题栏搜索 UI | UI | AutoSuggestBox 放入 Content/RightHeader | Core 搜索文本、placeholder、用户输入、focus request、IME 与提交完整 |
 | [ ] | S24 | Logo 信息表面 | UI | Button + Flyout | pack/URI/文件 Logo、焦点回归正确 |
 | [ ] | S25 | 窗口图标同步 | UI | AppWindow SetIcon/TitleBar IconSource | 失败不影响标题栏 |
 | [ ] | S26 | Theme 入口 | UI | Button/MenuFlyout | System/Light/Dark 状态和图标同步 |
 | [ ] | S27 | Profile 入口 | UI | PersonPicture + Flyout | 登录状态和图片同步 |
-| [ ] | S28 | Toolbar 总开关 | Core | 不适用 | 隐藏不丢注册项 |
-| [ ] | S29 | 默认 Toolbar items | Core | 不适用 | ID/text/icon/command/visible/enabled 完整 |
-| [ ] | S30 | route-specific Toolbar | Core | 使用 route/view key | 不用 WPF Page Type |
-| [ ] | S31 | Toolbar 增删改排 | Core | 不适用 | 集合事件和版本准确 |
-| [ ] | S32 | icon-only | Core | 不适用 | 默认/页面覆盖分离 |
-| [ ] | S33 | WinUI Toolbar | UI | CommandBar/AppBarButton/AppBarElementContainer | overflow、键盘、UIA 正确 |
+| [~] | S28 | Toolbar 总开关 | Core | 不适用 | 隐藏不丢注册项 |
+| [~] | S29 | 默认 Toolbar items | Core | 不适用 | ID/text/icon/command/visible/enabled 完整 |
+| [~] | S30 | route-specific Toolbar | Core | 使用 route/view key | 不用 WPF Page Type |
+| [~] | S31 | Toolbar 增删改排 | Core | 不适用 | 集合事件和版本准确 |
+| [~] | S32 | icon-only | Core | 不适用 | 默认/页面覆盖分离 |
+| [ ] | S33 | WinUI Toolbar | UI | CommandBar/AppBarButton/AppBarElementContainer | route-specific item、command、CanExecute、overflow、键盘与 UIA 完整 |
 | [ ] | S34 | CanExecute 差量刷新 | UI | 原生控件状态更新 | 不全量重建 |
-| [ ] | S35 | Toolbar 元素缓存 | UI | 缓存 descriptor/template，不缓存挂载 UIElement | 无 parent 冲突 |
-| [ ] | S36 | StatusBar 总开关 | Core | 不适用 | 内置/自定义状态分别保留 |
-| [ ] | S37 | Status items | Core | 不适用 | Add/Set/Text/Icon/Visible/Order/Remove |
-| [ ] | S38 | 临时状态句柄 | Core | 不适用 | Update/Timeout/Dispose 竞态正确 |
+| [ ] | S35 | Toolbar 元素缓存 | UI | 缓存 descriptor/template，不缓存挂载 UIElement | 差量更新与模板缓存正确，不复用已挂载 UIElement |
+| [~] | S36 | StatusBar 总开关 | Core | 不适用 | 内置/自定义状态分别保留 |
+| [~] | S37 | Status items | Core | 不适用 | Add/Set/Text/Icon/Visible/Order/Remove |
+| [~] | S38 | 临时状态句柄 | Core | 不适用 | Update/Timeout/Dispose 竞态正确 |
 | [ ] | S39 | LAN 状态端口 | Core | 平台 provider 回报 | Online/Offline/Unknown 语义明确 |
 | [ ] | S40 | WinUI LAN 观察器 | UI | Windows 网络 API 薄适配 | 合并事件、线程切换、释放正确 |
 | [ ] | S41 | Power 状态端口 | Core | 平台 provider 回报 | AC/Battery/Unknown/percentage 完整 |
 | [ ] | S42 | WinUI Power 观察器 | UI | Windows 电源 API 薄适配 | 状态及时且无轮询泄漏 |
-| [ ] | S43 | WinUI StatusBar | UI | 自定义布局 + InfoBadge/ProgressRing/Flyout | item/task/network/power 正确 |
+| [ ] | S43 | WinUI StatusBar | UI | 自定义布局 + InfoBadge/ProgressRing/Flyout | Core item、task、network、power 与 Flyout 正确投影 |
 | [ ] | S44 | Shell Region 元数据 | Core | id/region/order/enabled/content key | 不保存 UIElement factory |
 | [ ] | S45 | 14 个 Shell Region | Core | 不适用 | TitleBar/Navigation/Content/Toolbar/Footer 全覆盖 |
 | [ ] | S46 | Region Add/Set/Enable/Order/Remove | Core | 不适用 | 租约、替换和 RemoveAll 正确 |
-| [ ] | S47 | WPF Region factory | UI | FrameworkElement factory | 兼容现有扩展 |
+| [ ] | S47 | WPF Region factory | UI | FrameworkElement factory | WPF 扩展点可组合且生命周期明确 |
 | [ ] | S48 | WinUI Region factory | UI | DataTemplate/view factory + DI | 单 parent、异常和释放正确 |
-| [ ] | S49 | 快捷 TitleBar/Footer action | UI | command key 优先，callback 兼容 | CommandSource 与 UIA 正确 |
+| [ ] | S49 | 快捷 TitleBar/Footer action | UI | command key 优先，callback 仅在明确需求时提供 | CommandSource 与 UIA 正确 |
 
 ## 17. 窗口、关闭流程与通知区域
 
-当前依据：`Windowing`、`IWindowBuilder`、`IWindowService`、`IWindowCloseService`、`ITrayService`、`ShellWindow.xaml`。
+当前依据：`src/Flourish.Core/Windowing/WindowCloseService.cs`、`WindowCloseContracts.cs`，以及 WPF 的 `IWindowBuilder`、`IWindowService`、`ITrayService`、平台窗口服务与 `ShellWindow.xaml`。
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
@@ -546,9 +573,9 @@ Core 完成的最低门槛：
 | [ ] | W16 | Show/Hide/Activate | UI | Window/AppWindow 原生 API | 激活失败可诊断 |
 | [ ] | W17 | Minimize/Maximize/Restore | UI | OverlappedPresenter | 状态事件一致 |
 | [ ] | W18 | Window changed 观察 | UI | AppWindow.Changed + XAML 事件 | 去重并封送 UI 队列 |
-| [ ] | W19 | 关闭行为 | Core | 不适用 | Prompt/Close/MinimizeToTray 完整 |
-| [ ] | W20 | 关闭原因 | Core | 不适用 | TitleBar/Window/Tray/Application 可区分 |
-| [ ] | W21 | 关闭守卫注册/顺序 | Core | 不适用 | order 后 ID，异步/veto/Dispose 正确 |
+| [~] | W19 | 关闭行为 | Core | 不适用 | Prompt/Close/MinimizeToTray 完整 |
+| [~] | W20 | 关闭原因 | Core | 不适用 | TitleBar/Window/Tray/Application 可区分 |
+| [~] | W21 | 关闭守卫注册/顺序 | Core | 不适用 | order 后 ID，异步/veto/Dispose 正确 |
 | [ ] | W22 | 项目关闭守卫 | Core | Dialog 端口 | 保存/放弃/取消完整 |
 | [ ] | W23 | 后台任务关闭守卫 | Core | Dialog 端口 | keep running/stop and exit 完整 |
 | [ ] | W24 | WinUI Closing 桥接 | UI | AppWindow.Closing + 异步协调 | 无重入、双关闭、失去取消机会 |
@@ -566,28 +593,28 @@ Core 完成的最低门槛：
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
-| [ ] | V01 | ShellWindow 骨架 | UI | Window + Grid + TitleBar + 内容层 | 尺寸变化区域不重叠 |
-| [ ] | V02 | ShellContentHost | UI | ContentPresenter/Grid | 页面、导航、Overlay 层级正确 |
-| [ ] | V03 | NavigationPaneView | UI | NavigationView 或 SplitView 方案 | 只消费 Core 快照 |
-| [ ] | V04 | TitleBar view | UI | 原生 TitleBar 主体 | 不复制非客户区系统行为 |
-| [ ] | V05 | ToolbarView | UI | CommandBar/ItemsRepeater | 页面切换即时更新 |
-| [ ] | V06 | StatusBarView | UI | Grid/ItemsRepeater | 系统项/应用项顺序稳定 |
-| [ ] | V07 | NotificationHost | UI | InfoBar 集合 | queue/upsert/timeout 正确 |
+| [ ] | V01 | ShellWindow 骨架 | UI | Window + Grid + TitleBar + 内容层 | Shell 布局与尺寸变化通过实机验收 |
+| [ ] | V02 | ShellContentHost | UI | ContentPresenter/Grid | Frame、导航、Toolbar、通知与状态层级正确 |
+| [ ] | V03 | NavigationPaneView | UI | NavigationView 或 SplitView 方案 | 原生导航表面正确消费 Core 菜单快照 |
+| [ ] | V04 | TitleBar view | UI | 原生 TitleBar 主体 | 使用系统 caption 与原生 TitleBar，不复制非客户区按钮 |
+| [ ] | V05 | ToolbarView | UI | CommandBar/ItemsRepeater | 页面切换正确刷新 route-specific CommandBar |
+| [ ] | V06 | StatusBarView | UI | Grid/ItemsRepeater | Core items 与系统项按快照顺序投影 |
+| [ ] | V07 | NotificationHost | UI | InfoBar 集合 | Upsert、timeout、手动关闭、容量与 UIA 完整 |
 | [ ] | V08 | ApplicationInfoOverlay | UI | Flyout/ContentPresenter | Logo、标题、项目按状态显示 |
 | [ ] | V09 | ProfileOverlay | UI | Flyout + Profile content | 自定义内容可替换 |
 | [ ] | V10 | StatusOverlay | UI | Flyout | 锚点、边界、Esc、焦点循环/恢复正确 |
 | [ ] | V11 | ProfilePage | UI | WinUI Page/UserControl | 输入、认证、图片、本地化完整 |
-| [ ] | V12 | ShellNavigationController | UI | Core↔view adapter | 无领域规则复制到 code-behind |
-| [ ] | V13 | ShellTitleBarController | UI | 原生 TitleBar event adapter | 订阅可释放，无状态双写 |
-| [ ] | V14 | ShellToolbarController | UI | descriptor→control | 定向刷新，无挂载元素缓存 |
-| [ ] | V15 | ShellStatusSurfaceController | UI | 状态聚合→view | 节流、复用、差量更新 |
-| [ ] | V16 | ShellNotificationController | UI | queue→InfoBar | timeout/手动关闭无竞态 |
+| [ ] | V12 | ShellNavigationController | UI | Core↔view adapter | projection/action helper 隔离菜单决策，历史 controller 完整 |
+| [ ] | V13 | ShellTitleBarController | UI | 原生 TitleBar event adapter | 状态订阅、搜索、pane 事件、释放与能力检测完整 |
+| [ ] | V14 | ShellToolbarController | UI | descriptor→control | Core descriptor→AppBarButton 与差量刷新完整 |
+| [ ] | V15 | ShellStatusSurfaceController | UI | 状态聚合→view | Core items、节流、复用与系统聚合正确 |
+| [ ] | V16 | ShellNotificationController | UI | queue→InfoBar | timeout、Upsert、close 回写、关闭清理、action 与 UIA 完整 |
 | [ ] | V17 | ShellProfileController | UI | state→PersonPicture/Flyout | 登录切换无旧 view |
 | [ ] | V18 | ProjectSelectorController | UI | state→menu | active/check 同步 |
 | [ ] | V19 | ShellRegionElementFactory | UI | content key→DataTemplate/factory | DI、异常、parent 安全 |
 | [ ] | V20 | Frame/边框修复 | UI | 先验证 WinUI 原生 | 仅已复现平台缺陷保留补丁 |
 | [ ] | V21 | 焦点恢复 | UI | FocusManager | 导航/Flyout/Dialog 后合理 |
-| [ ] | V22 | UI 线程封送 | UI | DispatcherQueue | 后台事件不跨线程更新 XAML |
+| [ ] | V22 | UI 线程封送 | UI | DispatcherQueue | 所有平台状态事件统一封送且释放后不再投递 |
 | [ ] | V23 | 浮层尺寸夹紧 | UI | Flyout placement/Popup helper | 锚点消失和窗口缩放正确 |
 | [ ] | V24 | 浮层 light-dismiss/Esc | UI | 原生行为优先 | 模态性与焦点契约明确 |
 
@@ -698,7 +725,7 @@ DataGrid 决策规则：
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
 | [ ] | R01 | 语义 Token 目录 | Core | 纯数据/文档，不共享 XAML | 颜色、字号、间距、圆角、时长稳定 |
-| [ ] | R02 | WPF ResourceDictionary | UI | 保留 WPF XAML | 资源键兼容 |
+| [ ] | R02 | WPF ResourceDictionary | UI | 保留 WPF XAML | 最终资源键唯一、语义明确且有自动化守卫 |
 | [ ] | R03 | WinUI ResourceDictionary | UI | WinUI 原生 XAML | 不复制 WPF Trigger/Setter 限制 |
 | [ ] | R04 | 资源总入口 | UI | WinUI Generic.xaml/MergedDictionaries | 单一入口，重复挂载幂等 |
 | [ ] | R05 | 字典图循环防护 | UI | 加载器测试 | 嵌套引用不会死循环 |
@@ -724,32 +751,32 @@ DataGrid 决策规则：
 | [ ] | R25 | 消费者资源覆盖 | UI | MergedDictionaries/ThemeResource | 无需重模板即可换 Token |
 | [ ] | R26 | 独立控件资源 | UI | 可手动加载 ThemeResources | 不启 Shell 也能使用控件 |
 
-## 21. 扩展点与兼容面
+## 21. 扩展点与公共边界
 
 | 状态 | ID | 原子模块 | 归属 | WinUI 3 实现 / 原生性 | 验收点 |
 | --- | --- | --- | --- | --- | --- |
 | [ ] | E01 | DI command parser 扩展 | Core | 不适用 | 同类型去重并按注册顺序启动 |
 | [ ] | E02 | route metadata 扩展 | Core | 不适用 | 默认 key 与显式 key 规则一致 |
-| [ ] | E03 | WPF Page 注册扩展 | UI | 强类型 WPF Page overload | 兼容现有调用 |
+| [ ] | E03 | WPF Page 注册扩展 | UI | 强类型 WPF Page overload | 最终调用方式强类型且不泄漏至 Core |
 | [ ] | E04 | WinUI Page 注册扩展 | UI | 强类型 WinUI Page overload | 编译期类型约束和 DI 生命周期正确 |
 | [ ] | E05 | Essential Culture bridge | Core | 独立扩展包/adapter | 首帧前及运行时同步 locale |
 | [ ] | E06 | 自定义 Shell Region | Core | metadata registry | Builder/Runtime 使用同一 ID/order 语义 |
-| [ ] | E07 | WPF Region content | UI | FrameworkElement factory | 兼容现有扩展 |
+| [ ] | E07 | WPF Region content | UI | FrameworkElement factory | 最终扩展契约和释放语义明确 |
 | [ ] | E08 | WinUI Region content | UI | UIElement/DataTemplate factory | 单 parent 和 UI thread 正确 |
 | [ ] | E09 | TitleBar action 扩展 | UI | AppBarButton/Button 投影 | command key 优先，callback 有迁移策略 |
 | [ ] | E10 | Footer command 扩展 | UI | 原生 Button/CommandBar element | CommandSource 和 UIA 正确 |
 | [ ] | E11 | 可替换 Project behavior | Core | Dialog/Picker/FileSystem ports | UI 不拥有业务事务 |
-| [ ] | E12 | 可替换 Profile auth | Core | 不适用 | Profile UI 不知道认证实现 |
+| [~] | E12 | 可替换 Profile auth | Core | 不适用 | Profile UI 不知道认证实现 |
 | [ ] | E13 | 可替换 Secret store | Core | 契约在 Core，Windows 实现在 UI/平台包 | 测试可使用内存实现 |
 | [ ] | E14 | 可替换 Dialog presenter | Core | 契约在 Core，UI 实现 | 测试无需显示窗口 |
 | [ ] | E15 | 可替换 File picker | Core | 契约在 Core，UI 实现 | 取消/异常可测试 |
 | [ ] | E16 | 多窗口 owner scope | UI | Window/XamlRoot registry | Dialog/Flyout/Picker 不依赖全局 MainWindow |
-| [ ] | E17 | 稳定 XAML namespace | UI | 两平台分别声明映射 | 类型迁移有 obsolete 周期 |
+| [ ] | E17 | 最终 XAML namespace | UI | 两平台分别声明映射 | 首次发布前固定唯一映射，不保留别名或过渡类型 |
 | [ ] | E18 | API XML documentation | Core | 平台扩展各自注释 | Core 注释不出现 WPF 类型 |
 
 ## 22. Gallery、文档、测试与发布
 
-当前依据：`src/Gallery/Views`、`docs`、`tests/Flourish.Test`、`.github/workflows/docs.yml`。
+当前依据：`src/Gallery.WPF/Views`、空白 `src/Gallery.WinUI3`、`docs`、Core/WPF 测试项目及 `.github/workflows/docs.yml`。
 
 ### 22.1 现有 Gallery 覆盖映射
 
@@ -773,38 +800,38 @@ DataGrid 决策规则：
 
 | 状态 | ID | 原子模块 | 归属 | 验收点 |
 | --- | --- | --- | --- | --- |
-| [ ] | Q01 | Core Gallery 场景 | UI | 两平台页面消费同一 Core 服务 |
-| [ ] | Q02 | Shell Gallery 场景 | UI | TitleBar/Navigation/Toolbar/Status/Window 全覆盖 |
+| [~] | Q01 | Core Gallery 场景 | UI | 当前由 WPF Gallery 消费 Core；WinUI 场景随对应功能逐项添加 |
+| [ ] | Q02 | Shell Gallery 场景 | UI | 首个 WinUI Shell 切片覆盖 TitleBar/Navigation/Toolbar/Status/Notification 与窗口能力 |
 | [ ] | Q03 | 原生控件状态页 | UI | normal/hover/pressed/focus/disabled 覆盖 |
 | [ ] | Q04 | 自定义控件边界页 | UI | 空/长/大量数据、主题、响应式覆盖 |
 | [ ] | Q05 | 平台能力页 | UI | AppWindow/backdrop/picker/tray 降级可见 |
-| [ ] | Q06 | Core 单元测试迁移 | Core | Core 测试不启用 WPF |
+| [~] | Q06 | Core 单元测试迁移 | Core | Core 测试不启用 WPF |
 | [ ] | Q07 | 跨平台契约测试 | Core | WPF/WinUI adapter 通过同一用例 |
-| [ ] | Q08 | WPF 回归 | UI | 当前测试全部恢复，非预期失败为零 |
-| [ ] | Q09 | WinUI XAML 架构测试 | UI | 默认样式、资源、模板可解析 |
-| [ ] | Q10 | WinUI adapter 测试 | UI | Window/Frame/XamlRoot/DispatcherQueue 可控 |
+| [~] | Q08 | WPF 回归 | UI | 当前测试全部恢复，非预期失败为零 |
+| [ ] | Q09 | WinUI XAML 架构测试 | UI | 首个功能切片建立后覆盖原生元素、事件、项目边界、样式、资源与模板 |
+| [ ] | Q10 | WinUI adapter 测试 | UI | 各适配器优先进行无窗口测试，并为 Window/XamlRoot 建立必要 harness |
 | [ ] | Q11 | 导航并发/回滚测试 | Core | 乱序版本、失败回滚、取消全覆盖 |
-| [ ] | Q12 | 注册租约测试 | Core | 旧租约不删除替代注册 |
-| [ ] | Q13 | 持久化并发/损坏测试 | Core | 取消、重入、坏 JSON、外部修改覆盖 |
+| [~] | Q12 | 注册租约测试 | Core | 旧租约不删除替代注册 |
+| [~] | Q13 | 持久化并发/损坏测试 | Core | 取消、重入、坏 JSON、外部修改覆盖 |
 | [ ] | Q14 | 视觉基线 | UI | 关键尺寸/主题/状态有人工对照 |
 | [ ] | Q15 | 无障碍验收 | UI | Narrator/Accessibility Insights 无关键错误 |
-| [ ] | Q16 | WPF 文档 | UI | 标注平台和正确包名 |
-| [ ] | Q17 | WinUI 文档 | UI | 原生映射、限制、示例完整 |
+| [~] | Q16 | WPF 文档 | UI | 快速开始已标注 WPF 包、Core 依赖与 Flourish.WPF 程序集名；完整使用指南待补 |
+| [ ] | Q17 | WinUI 文档 | UI | 首个功能切片具有中英文用法、包/TFM/模式、限制与人工验收说明 |
 | [ ] | Q18 | Core 文档 | Core | 不出现平台类型 |
-| [ ] | Q19 | WPF→分层迁移指南 | UI | 包、命名空间、API 替换表完整 |
+| [ ] | Q19 | WPF 分层架构指南 | UI | 包、命名空间、Core/UI 依赖和 API 使用表完整 |
 | [ ] | Q20 | WPF↔WinUI 差异表 | UI | 每项有原因、替代和降级 |
-| [ ] | Q21 | DocFX 多项目输入 | UI | Core/WPF/WinUI API 不互相污染 |
+| [~] | Q21 | DocFX 多项目输入 | UI | 当前仅生成 Core/WPF API；WinUI 出现公共 API 后再加入 metadata，发布站点人工检视待执行 |
 | [ ] | Q22 | 页面创建指南更新 | UI | PageBody/Chunk 层级和平台差异正确 |
 | [ ] | Q23 | CI Core build/test | Core | 每次提交自动执行 |
 | [ ] | Q24 | CI WPF build/test | UI | AnyCPU/x86/x64/ARM64 支持矩阵明确 |
 | [ ] | Q25 | CI WinUI build/test | UI | 受支持架构全部构建 |
-| [ ] | Q26 | CI package validation | UI | 空白消费项目可安装三个包 |
+| [~] | Q26 | CI package validation | UI | Core/WPF 两类隔离消费 smoke test 已通过；WinUI 包在首个完整切片后加入，仍需固化为 CI |
 | [ ] | Q27 | packaged 验证 | UI | 安装、更新、资源、通知、picker 正确 |
-| [ ] | Q28 | unpackaged 验证 | UI | bootstrap/deployment、资源、平台 API 正确 |
-| [ ] | Q29 | NuGet 依赖检查 | UI | Core 无 UI 传递依赖 |
-| [ ] | Q30 | API/程序集兼容 | UI | AssemblyName、pack URI、Xmlns、obsolete 周期记录 |
+| [ ] | Q28 | unpackaged 验证 | UI | 首个 WinUI 功能切片完成后验证 framework-dependent/self-contained、启动与架构实机行为 |
+| [~] | Q29 | NuGet 依赖检查 | UI | Core/WPF nuspec 和资产已核验且 Core 无 UI 传递依赖；WinUI 包待实现，隔离消费需固化 |
+| [~] | Q30 | 首发 API/程序集基线 | UI | WPF AssemblyName/Xmlns 与 Core/WPF 包身份已有自动化；WinUI 公共 API 尚未建立 |
 | [ ] | Q31 | 版本/发布说明 | Core | 破坏变化、差异、已知限制公开 |
-| [ ] | Q32 | Roadmap 回写 | Core | 每个相关 PR 同步状态和证据 |
+| [~] | Q32 | Roadmap 回写 | Core | Core/WPF 拆分及 WinUI 空白基线已回写；后续每个原子模块继续维护 |
 
 ## 23. WinUI 3 原生能力决策摘要
 
@@ -904,10 +931,16 @@ DataGrid 决策规则：
 ### Shell 与服务
 
 - [ ] 首次启动、偏好恢复、损坏设置和旧版本设置迁移。
+- [ ] WinUI 首个页面只自动导航一次，NavigationView 选中项与 Frame 内容一致。
+- [ ] WinUI 菜单分组、无标题组分隔、固定项、一层父子项、隐藏/禁用和展开回写正确。
+- [ ] WinUI 页面项只导航；命令项以 Navigation 来源执行且不产生错误选择。
 - [ ] 导航分组、命令项、固定项、Back/Forward、历史、缓存和失败回滚。
 - [ ] 左侧导航、右侧可调导航、折叠/展开和快速反向动画。
 - [ ] 标题栏搜索、Breadcrumb、项目选择、主题、Profile、Logo 信息。
 - [ ] 页面 Toolbar、状态项增删、LAN/Power 变化和后台任务详情。
+- [ ] Gallery Refresh 更新 StatusBar，并显示约 4 秒后消失的 Success InfoBar。
+- [ ] 连续 Refresh 复用同一通知并重置超时；手动关闭会同步移除 Core 通知。
+- [ ] Information、Success、Warning、Error 四级 InfoBar 映射正确。
 - [ ] 多通知、自动消失、手动关闭和关闭窗口竞态。
 - [ ] 标准/自定义 Dialog、取消、默认按钮和多窗口 owner。
 - [ ] 后台任务排队、并发、进度、取消、异常及关闭处理。
@@ -924,17 +957,17 @@ DataGrid 决策规则：
 - [ ] DataGrid 选型后检查选择、编辑、排序、列宽、虚拟化、滚轮和 UIA。
 - [ ] Narrator/Accessibility Insights 检查 name、role、value、label 和焦点顺序。
 
-## 26. 首批实施切片
+## 26. 后续实施切片
 
-在创建 Core 前先完成 R0 基线冻结；随后按以下顺序推进，避免一次移动整个 `Abstract`：
+R0–R2 已经落地，WinUI 3 已重置为标准空白项目。以下顺序作为从 R3 开始的细粒度队列；`[~]` 仍表示缺少完整功能定义或人工验收，不得把空白工程基线理解为任何 WinUI 功能已经完成。
 
-1. **基础值对象**：`IRegistration`、状态事件、集合变化、`ArgbColor`、`WindowSize`、`WindowBounds`、窗口状态和 `ShortcutChord`。
-2. **纯逻辑服务**：命令、后台任务、本地化状态、设置事务、项目目录、Profile 状态、通知队列。
-3. **导航逻辑**：路由、菜单事务、历史、缓存元数据；页面类型和实例仍留 WPF UI。
-4. **Shell 状态**：标题栏、Toolbar、StatusBar、Region metadata、关闭守卫。
-5. **外观策略**：主题、字体、材质、动效、滚动和 ToolTip 的 requested/effective 状态。
-6. **WPF 回接**：让现有 WPF 项目消费 Core，恢复全部测试和 Gallery。
-7. **WinUI 垂直切片**：Application、Window、Host、资源、DispatcherQueue、原生 TitleBar、一个 route 和一个 Page。
-8. **WinUI Shell 与控件**：按“框架直用→原生组合→自定义→待选型”的顺序实现。
+1. **补齐 Core 中立模型**：继续完成 `ArgbColor`、窗口 bounds/state、`ShortcutChord`、Dialog/Picker 端口、路由元数据和 requested/effective 平台能力状态。
+2. **完成 Hosting 边界**：公开且稳定的 Core/平台 composition、WinUI `Application.OnLaunched` 与 Generic Host Start/Stop/Dispose、失败回滚和页面 DI 工厂。
+3. **完成导航闭环**：从原生 `NavigationView` 与 `Frame` 开始接入 Core 菜单事务，并实现中立 route、Back/Forward、历史、缓存、导航失败回滚和焦点恢复。
+4. **扩展 Shell 原生表面**：补齐项目选择、Profile、Dialog、后台任务、Region、窗口状态与能力降级；继续只把状态和策略放入 Core。
+5. **实现平台适配器**：WinUI Picker、凭据、关闭协调、AppWindow、托盘与多窗口 owner；packaged/unpackaged 分开验证。
+6. **迁移控件与资源**：严格按“框架直用→原生组合→自定义→待选型”，先语义 Token/ThemeDictionary 和原生控件样式，再处理 BunchedListBox、GridSplitter、DataGrid 等风险项。
+7. **完成发布门禁**：先固化 Core/WPF 的隔离 NuGet 消费 smoke test；WinUI 首个完整切片完成后再加入第三包，并共同完成首次发布 API 基线、符号/SourceLink、CI 架构矩阵、DocFX 多项目输入和正式版本说明。
+8. **人工验收**：按第 25 节覆盖 Windows/架构、主题、输入、DPI、无障碍与平台降级；通过前保持 `[~]`。
 
-第一批不得包含 XAML 控件、`Application`、`Window`、`Page`、`FrameworkElement`、`KeyGesture`、标题栏或托盘 Win32 代码。这样 Core 边界能在最早阶段由编译器和测试验证。
+Core 继续禁止 XAML 控件、`Application`、`Window`、`Page`、`FrameworkElement`、`KeyGesture`、Dispatcher、WindowId/HWND 和平台标题栏/托盘代码。该边界由 `net10.0` TFM、源码检索与架构测试共同守护。
