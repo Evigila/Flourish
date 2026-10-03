@@ -42,7 +42,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITitleBarBuilder
         configure(group);
         var items = group.Complete();
         if (items.Count == 0) throw new ArgumentException("A navigation group needs at least one item.");
-        navigation.Add(new(key, label, icon, items)); return this;
+        navigation.Add(new(key, label, icon, items, group.SecondaryNavigation)); return this;
     }
     public IAppearanceBuilder SetColors(string primary, string accent)
     {
@@ -64,6 +64,12 @@ internal sealed class NavigationGroupBuilder : INavigationGroupBuilder
 {
     private bool completed;
     private readonly List<NavigationItem> items = [];
+    internal bool SecondaryNavigation { get; private set; } = true;
+    public INavigationGroupBuilder SetSecondaryNavigation(bool enabled = true)
+    {
+        if (completed) throw new InvalidOperationException("Navigation group configuration has been completed.");
+        SecondaryNavigation = enabled; return this;
+    }
     public INavigationGroupBuilder AddItem(string label, string href, string icon = "page", bool exact = false, bool disabled = false)
     {
         if (completed) throw new InvalidOperationException("Navigation group configuration has been completed.");

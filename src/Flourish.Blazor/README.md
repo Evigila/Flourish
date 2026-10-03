@@ -40,7 +40,11 @@ Use `<body class="f-document">` when the full-height shell owns document scrolli
 </ApplicationShell>
 ```
 
-The shell creates the top bar, primary/secondary navigation, content scroll track, mobile navigation and heading compaction. `UseTitleBar()` opts in; consumers do not assemble these regions from HTML borders. Keep the shell and pages inside the same interactive render boundary. The stylesheet is a static web asset; no extra script tag is needed because components import their own modules. This first release is verified on Blazor Web App Interactive Server with prerendering. Other hosting modes require their own acceptance checks.
+Use `TitleBarBrand` for a host-owned logo/glyph and `TitleBarStart` for a service menu. The shell owns their alignment and dividers. `Button IconOnly="true"` supplies a 48px target; always give it an accessible name. `ActionMenu.TriggerContent` supplies a text trigger while its default remains the record ellipsis.
+
+A group can call `SetSecondaryNavigation(false)` for an overview module with only the primary rail. This also suppresses its mobile expansion trigger. `PageHeading Compact="true"` requests a compact heading independently of the normal 96/24px scroll hysteresis. `FactList` supplies one/two-column definition facts with responsive stacking; use one `div` per `dt`/`dd` pair.
+
+The shell creates the top bar, primary/secondary navigation, content scroll track, mobile navigation and heading compaction. `UseTitleBar()` opts in; consumers do not assemble these regions from HTML borders. Keep the shell and pages inside the same interactive render boundary. The host Router may keep `FocusOnNavigate` with `Selector="h1"`: the library suppresses only the programmatically focused route title outline, while keyboard controls keep theirs. The stylesheet is a static web asset; no extra script tag is needed because components import their own modules. This first release is verified on Blazor Web App Interactive Server with prerendering. Other hosting modes require their own acceptance checks.
 
 ## Pages and forms
 

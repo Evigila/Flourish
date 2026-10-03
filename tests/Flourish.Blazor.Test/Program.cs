@@ -100,6 +100,7 @@ Test("captured startup and nested builders cannot mutate completed options", () 
     Throws<InvalidOperationException>(() => appearance!.SetTheme(ApplicationTheme.Dark));
     Throws<InvalidOperationException>(() => layout!.SetContentWidth(900));
     Throws<InvalidOperationException>(() => group!.AddItem("Late", "/late"));
+    Throws<InvalidOperationException>(() => group!.SetSecondaryNavigation(false));
 });
 Test("navigation rejects external/scheme-relative routes and duplicate keys", () => {
     foreach (var href in new[] { "https://example.test", "//example.test", "javascript:alert(1)", "/a\\b" }) {
@@ -124,9 +125,9 @@ Test("invalid colors and CSS font declarations cannot reach theme variables", ()
     var services = new ServiceCollection(); Throws<ArgumentException>(() => services.AddFlourish(builder => builder.ConfigureAppearance(appearance => appearance.SetFont("Segoe UI; color:red"))));
 });
 
-async Task<string> Render<TComponent>(Dictionary<string, object?>? parameters = null, Action<IApplicationBuilder>? configure = null) where TComponent : IComponent {
+async Task<string> Render<TComponent>(Dictionary<string, object?>? parameters = null, Action<IApplicationBuilder>? configure = null, string path = "/records") where TComponent : IComponent {
     var services = new ServiceCollection();
-    services.AddLogging(); services.AddSingleton<NavigationManager>(new TestNavigation()); services.AddSingleton<IJSRuntime>(new FakeJs());
+    services.AddLogging(); services.AddSingleton<NavigationManager>(new TestNavigation(path)); services.AddSingleton<IJSRuntime>(new FakeJs());
     services.AddFlourish(configure ?? (builder => builder.UseTitleBar(title => title.SetApplicationTitle("Test Application")).UseNavigation(nav => nav.AddGroup("records", "Records", "list", group => group.AddItem("List", "/records", exact: true).AddItem("Unavailable", "/disabled", disabled: true)))));
     using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
     await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
@@ -255,6 +256,26 @@ AsyncTest("host-supplied navigation and title override configured shell data", a
     var empty = await Render<ApplicationShell>(new() { ["NavigationGroups"] = Array.Empty<NavigationGroup>(), ["ApplicationTitle"] = "Account" });
     Check(empty.Contains("f-no-navigation") && !empty.Contains("f-primary-navigation"), "An empty host navigation leaked startup routes.");
 });
+AsyncTest("nested routes select only the most specific secondary item", async () => {
+    IReadOnlyList<NavigationGroup> runtime = [new("records", "Records", "list", [new("List", "/records"), new("Detail", "/records/sample")])];
+    var detail = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime }, path: "/records/sample");
+    Equal(1, detail.Split("aria-current=\"page\"", StringSplitOptions.None).Length - 1);
+    Check(detail.Contains("href=\"/records/sample\" class=\"f-secondary-item is-selected\""), "The parent route displaced the specific detail page.");
+    var other = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime }, path: "/records/other");
+    Equal(1, other.Split("aria-current=\"page\"", StringSplitOptions.None).Length - 1);
+    Check(other.Contains("href=\"/records\" class=\"f-secondary-item is-selected\""), "The parent stopped matching an unlisted record.");
+});
+AsyncTest("rail-only navigation omits secondary chrome while keeping the module", async () => {
+    IReadOnlyList<NavigationGroup> runtime = [new("overview", "Overview", "home", [new("Home", "/", Exact: true)], SecondaryNavigation: false)];
+    var html = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime });
+    Check(html.Contains("f-no-secondary") && html.Contains("f-primary-navigation") && !html.Contains("f-secondary-navigation"), "A module without secondary pages reserved a phantom rail.");
+});
+AsyncTest("shell brand and start slots render without host-owned layout markup", async () => {
+    RenderFragment brand = b => b.AddContent(0, "Brand glyph");
+    RenderFragment start = b => b.AddContent(0, "Service menu");
+    var html = await Render<ApplicationShell>(new() { ["TitleBarBrand"] = brand, ["TitleBarStart"] = start });
+    Check(html.Contains("f-application-logo") && html.Contains("Brand glyph") && html.Contains("f-titlebar-start") && html.Contains("Service menu"), "Shell slots lost their library-owned tracks.");
+});
 AsyncTest("unknown progress stays indeterminate while actual values expose progress semantics", async () => {
     var unknown = await Render<ProgressBar>(new() { ["StatusText"] = "Waiting for server" });
     Check(unknown.Contains("role=\"progressbar\"") && unknown.Contains("f-progress-indeterminate") && !unknown.Contains("aria-valuenow") && !unknown.Contains("0%"), "Unknown progress fabricated a zero value.");
@@ -286,7 +307,7 @@ return passed == tests.Count ? 0 : 1;
 
 internal sealed record Record(int Id, string? Name, string Email, decimal? Amount, DateOnly? Date);
 internal sealed class TestNavigation : NavigationManager {
-    internal TestNavigation() { Initialize("https://test.example/", "https://test.example/records"); }
+    internal TestNavigation(string path = "/records") { Initialize("https://test.example/", new Uri(new Uri("https://test.example/"), path).ToString()); }
     protected override void NavigateToCore(string uri, bool forceLoad) { Uri = ToAbsoluteUri(uri).ToString(); NotifyLocationChanged(false); }
 }
 internal sealed class FakeJs : IJSRuntime {

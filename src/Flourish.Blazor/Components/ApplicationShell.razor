@@ -5,15 +5,19 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<div @ref="root" class="f-root f-shell f-theme-@Appearance.Current.Theme.ToString().ToLowerInvariant() @(!Options.TitleBar.Enabled ? "f-no-titlebar" : "") @(!Groups.Any() ? "f-no-navigation" : "")"
+<div @ref="root" class="f-root f-shell f-theme-@Appearance.Current.Theme.ToString().ToLowerInvariant() @(!Options.TitleBar.Enabled ? "f-no-titlebar" : "") @(!Groups.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
      style="@RootStyle" data-navigation-open="@navigationOpen.ToString().ToLowerInvariant()">
     <a class="f-skip-link" href="#@contentId">@SkipLabel</a>
     @if (Options.TitleBar.Enabled) {
         <header class="f-titlebar">
-            @if (Options.TitleBar.NavigationToggle && Groups.Any()) {
+            @if (Options.TitleBar.NavigationToggle && HasSecondary) {
                 <button type="button" class="f-icon-button" aria-label="@MenuLabel" aria-expanded="@navigationOpen.ToString().ToLowerInvariant()" aria-controls="@navigationId" @onclick="ToggleNavigation"><Icon Name="menu" /></button>
             }
-            <a class="f-application-title" href="@HomeHref">@(ApplicationTitle ?? Options.TitleBar.Title)</a>
+            <a class="f-application-brand" href="@HomeHref" aria-label="@(ApplicationTitle ?? Options.TitleBar.Title)">
+                @if (TitleBarBrand is not null) { <span class="f-application-logo">@TitleBarBrand</span> }
+                <span class="f-application-title">@(ApplicationTitle ?? Options.TitleBar.Title)</span>
+            </a>
+            @if (TitleBarStart is not null) { <div class="f-titlebar-start">@TitleBarStart</div> }
             @if (Options.TitleBar.Search) {
                 <form class="f-title-search" role="search" @onsubmit="SubmitSearch" @onsubmit:preventDefault>
                     <label class="f-sr-only" for="@searchId">@Options.TitleBar.SearchLabel</label>
@@ -36,12 +40,11 @@
                     </a>
                 }
             </nav>
-            @if (ActiveGroup is { } active) {
+            @if (HasSecondary && ActiveGroup is { } active) {
                 <nav class="f-secondary-navigation" aria-label="@SecondaryNavigationLabel">
-                    <div class="f-navigation-heading">@active.Label</div>
                     @foreach (var item in active.Items) {
-                        <a href="@(item.Disabled ? null : item.Href)" class="f-secondary-item @(Matches(item) ? "is-selected" : "")" aria-current="@(Matches(item) ? "page" : null)"
-                           aria-disabled="@(item.Disabled ? "true" : null)" tabindex="@(item.Disabled ? -1 : 0)" @onclick="CloseNavigation"><Icon Name="@item.Icon" /><span>@item.Label</span></a>
+                        <a href="@(item.Disabled ? null : item.Href)" class="f-secondary-item @(item == ActiveItem ? "is-selected" : "")" aria-current="@(item == ActiveItem ? "page" : null)"
+                           aria-disabled="@(item.Disabled ? "true" : null)" tabindex="@(item.Disabled ? -1 : 0)" @onclick="CloseNavigation"><span>@item.Label</span></a>
                     }
                 </nav>
             }
@@ -57,6 +60,8 @@
     [Parameter] public string? ApplicationTitle { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? TitleBarEnd { get; set; }
+    [Parameter] public RenderFragment? TitleBarBrand { get; set; }
+    [Parameter] public RenderFragment? TitleBarStart { get; set; }
     [Parameter] public EventCallback<string> OnSearch { get; set; }
     [Parameter] public string HomeHref { get; set; } = "/";
     [Parameter] public string SkipLabel { get; set; } = "Skip to content";
@@ -73,6 +78,8 @@
     private string search = string.Empty;
     private IReadOnlyList<NavigationGroup>? previousGroups;
     private IReadOnlyList<NavigationGroup> Groups => NavigationGroups ?? Options.Navigation;
+    private bool HasSecondary => ActiveGroup?.SecondaryNavigation == true;
+    private NavigationItem? ActiveItem => ActiveGroup?.Items.Where(Matches).OrderByDescending(item => item.Href.Length).FirstOrDefault();
     protected override void OnParametersSet() { if (!ReferenceEquals(previousGroups, Groups)) { previousGroups = Groups; navigationChanged = true; } }
     private string Path => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/');
     private bool Matches(NavigationItem item) => !item.Disabled && (string.Equals(Path, item.Href.TrimEnd('/') is "" ? "/" : item.Href.TrimEnd('/'), StringComparison.OrdinalIgnoreCase)

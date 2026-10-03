@@ -25,6 +25,7 @@ public interface INavigationBuilder
 
 public interface INavigationGroupBuilder
 {
+    INavigationGroupBuilder SetSecondaryNavigation(bool enabled = true);
     INavigationGroupBuilder AddItem(string label, string href, string icon = "page", bool exact = false, bool disabled = false);
 }
 
@@ -43,7 +44,7 @@ public interface ILayoutBuilder
 }
 
 public sealed record NavigationItem(string Label, string Href, string Icon = "page", bool Exact = false, bool Disabled = false);
-public sealed record NavigationGroup(string Key, string Label, string Icon, IReadOnlyList<NavigationItem> Items);
+public sealed record NavigationGroup(string Key, string Label, string Icon, IReadOnlyList<NavigationItem> Items, bool SecondaryNavigation = true);
 public sealed record AppearanceState(string Primary, string Accent, string FontFamily, ApplicationTheme Theme);
 
 /// <summary>Per-user runtime appearance. State is scoped to a server circuit or client host.</summary>

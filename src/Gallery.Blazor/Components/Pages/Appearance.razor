@@ -36,13 +36,13 @@
         </ThemeScope>
     </Section>
     <Section Title="标准令牌">
-        <dl>
-            <dt>正文、标签、按钮与网格</dt><dd>17px，沿用系统已安装字体</dd>
-            <dt>标准控件</dt><dd>48px 高，12px 圆角</dd>
-            <dt>导航</dt><dd>68px 顶栏，76px 主导航，232px 子导航；窄窗口适配</dd>
-            <dt>业务内容</dt><dd>1180px 基线，宽窗口使用流式轨道</dd>
-            <dt>常用间距</dt><dd>4、8、12、16、24、32、44、56、72、84px</dd>
-        </dl>
+        <FactList>
+            <div><dt>正文、标签、按钮与网格</dt><dd>17px，沿用系统已安装字体</dd></div>
+            <div><dt>标准控件</dt><dd>48px 高，12px 圆角</dd></div>
+            <div><dt>导航</dt><dd>68px 顶栏，76px 主导航，232px 子导航；窄窗口适配</dd></div>
+            <div><dt>业务内容</dt><dd>1180px 基线，宽窗口使用流式轨道</dd></div>
+            <div><dt>常用间距</dt><dd>4、8、12、16、24、32、44、56、72、84px</dd></div>
+        </FactList>
     </Section>
     <Section Title="项目文件">
         <CodeBlock Text="@ProjectExample" Language="xml" />
@@ -52,6 +52,9 @@
     </Section>
     <Section Title="页面外壳">
         <CodeBlock Text="@LayoutExample" Language="razor" />
+    </Section>
+    <Section Title="事实布局">
+        <CodeBlock Text="@FactsExample" Language="razor" />
     </Section>
     <Section Title="页面组成">
         <CodeBlock Text="@PageExample" Language="razor" />
@@ -116,6 +119,19 @@
             <ChildContent>@Body</ChildContent>
         </ApplicationShell>
         """;
+    private const string FactsExample = """
+        <FactList Columns="2">
+            <div><dt>名称</dt><dd>演示组织</dd></div>
+            <div><dt>编号</dt><dd>DEMO-001</dd></div>
+        </FactList>
+
+        <IdentityCard>
+            <dl>
+                <div><dt>名称</dt><dd class="f-identity-primary">演示组织</dd></div>
+                <div><dt>编号</dt><dd>DEMO-001</dd></div>
+            </dl>
+        </IdentityCard>
+        """;
     private const string PageExample = """
         @page "/"
         @using ArkheideSystem.Flourish.Blazor.Components
@@ -129,9 +145,13 @@
         """;
     private const string ResourceExample = """
         <!-- App.razor: InteractiveServer 默认包含预渲染。 -->
-        <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor/flourish.css" />
-        <HeadOutlet @rendermode="InteractiveServer" />
-        <Routes @rendermode="InteractiveServer" />
-        <script src="_framework/blazor.web.js"></script>
+        <head>
+            <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor/flourish.css" />
+            <HeadOutlet @rendermode="InteractiveServer" />
+        </head>
+        <body class="f-document">
+            <Routes @rendermode="InteractiveServer" />
+            <script src="_framework/blazor.web.js"></script>
+        </body>
         """;
 }

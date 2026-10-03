@@ -1,6 +1,6 @@
 # Blazor manual acceptance
 
-Run `dotnet run --project src/Gallery.Blazor` from the repository. Open the printed local URL. Tests below complement builds, pure-data/DI/SSR checks and HTTP/static-asset checks; browser visual/focus checks must be performed manually, never claimed from SSR alone.
+Run `dotnet run --project src/Gallery.Blazor` from the repository. Open the printed local URL. Tests below complement builds, pure-data/DI/SSR checks, HTTP/static-asset checks and recorded real-browser checks. Visual/focus conclusions require an actual renderer; SSR alone does not establish them. The manual checks cover user acceptance, OS scaling, assistive technology and compatibility beyond the automated Edge samples.
 
 ## Workspace shell and layout
 
@@ -38,3 +38,17 @@ Run `dotnet run --project src/Gallery.Blazor` from the repository. Open the prin
 
 - Create a separate .NET 10 Blazor Web App using only the library's ProjectReference/packed package, AddFlourish and ApplicationLayout. It must render its own title/navigation/page without copying Gallery CSS or any Colligere services.
 - Override render slots, TableText/Culture and appearance through public API; verify the implementation does not require access to internal types.
+
+## Pending navigation destination regression
+
+- From `/forms`, change a field, select 控件 (`/controls`), and confirm 放弃修改并离开. The app must open `/controls`, not fall back to `/records`, with no second dirty-form prompt. Repeat with 继续编辑: the form and edited value stay in place; a later confirmed navigation follows that new target rather than the cancelled one.
+
+
+## Rendered alignment acceptance
+
+- Hard refresh `/` and navigate between modules: the real H1 receives focus without a field rectangle. Tab to an input/button/link: its focus remains visible.
+- Compare Gallery and the real Workspace in the same browser at wide, 980, 760, 520 and 320px widths; check full-stage title border, section whitespace, selected rails, 48px controls, large form action type and right-aligned select arrows.
+- Check primary-only overview, brand glyph, page menu and theme button. On narrow windows, open/close navigation with pointer and Escape, then continue tabbing in content.
+- Check one, even and odd fact counts; odd final facts span the full track. On narrow windows all facts stack with continuous outer boundaries.
+- Switch Light/Dark/System and configured pale/bright palettes. Check Subtle notice, progress percentages, popup menus and bottom-sheet full-width divider, including nested theme scopes.
+- Verify Windows display scaling and browser zoom at 100%, 125%, 150% and 200%, reduced motion, screen-reader heading announcement, Firefox/native select fallback and keyboard-only modal/menu use. The automated Edge samples do not replace these checks.

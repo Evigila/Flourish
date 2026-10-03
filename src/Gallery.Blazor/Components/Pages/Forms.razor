@@ -95,9 +95,11 @@
     private void KeepEditing() { DiscardOpen = false; PendingTarget = null; }
     private void DiscardAndNavigate()
     {
-        Dirty = false; DiscardOpen = false; PendingTarget = null; Context.MarkAsUnmodified(); DiscardOpen = false;
         var target = PendingTarget ?? "/records";
         PendingTarget = null;
+        Dirty = false;
+        DiscardOpen = false;
+        Context.MarkAsUnmodified();
         Navigation.NavigateTo(target);
     }
     public void Dispose() { if (Context is not null) Context.OnFieldChanged -= FieldChanged; }

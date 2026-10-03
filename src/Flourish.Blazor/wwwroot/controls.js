@@ -30,7 +30,7 @@ function menuItems(panel) { return [...panel.querySelectorAll('[role="menuitem"]
 function copyTheme(trigger, panel) {
     const style = getComputedStyle(trigger);
     const saved = [];
-    for (const name of ['--f-primary','--f-accent','--f-primary-ink','--f-accent-ink','--f-accent-text','--f-focus','--f-focus-width','--f-canvas','--f-surface','--f-text','--f-muted','--f-border','--f-soft','--f-danger','--f-font','--f-body-size','color-scheme']) {
+    for (const name of ['--f-primary','--f-accent','--f-primary-ink','--f-accent-ink','--f-accent-text','--f-focus','--f-focus-width','--f-canvas','--f-surface','--f-text','--f-muted','--f-border','--f-soft','--f-danger','--f-font','--f-body-size','--f-ink-soft','--f-border-strong','--f-surface-alternate','--f-surface-raised','--f-row-hover','--f-shadow-card','--f-disabled','--f-page-gutter','--f-notice-subtle-background','--f-notice-subtle-foreground','--f-progress-text','color-scheme']) {
         const value = style.getPropertyValue(name);
         if (!value) continue;
         saved.push([name,panel.style.getPropertyValue(name),panel.style.getPropertyPriority(name)]);

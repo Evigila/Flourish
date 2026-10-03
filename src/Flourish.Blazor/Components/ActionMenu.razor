@@ -3,8 +3,11 @@
 @inject IJSRuntime JS
 
 <span class="f-action-menu">
-    <button @ref="Trigger" type="button" class="f-menu-trigger" aria-label="@Label" disabled="@(Disabled || Executing)"
-            aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="false" @onclick="ToggleAsync">•••</button>
+    <button @ref="Trigger" type="button" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@Label" disabled="@(Disabled || Executing)"
+            aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="false" @onclick="ToggleAsync">
+        @if (TriggerContent is not null) { @TriggerContent }
+        else { <span aria-hidden="true">•••</span> }
+    </button>
     <div @ref="Panel" id="@MenuId" class="f-menu-panel" role="menu" aria-label="@Label" popover="manual"
          aria-busy="@(Executing ? "true" : "false")">
         @for (var index = 0; index < Actions.Count; index++)
@@ -27,6 +30,7 @@
     [Parameter] public string Label { get; set; } = "Record actions";
     [Parameter] public IReadOnlyList<MenuAction> Actions { get; set; } = Array.Empty<MenuAction>();
     [Parameter] public bool Disabled { get; set; }
+    [Parameter] public RenderFragment? TriggerContent { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender || Disposed) return;

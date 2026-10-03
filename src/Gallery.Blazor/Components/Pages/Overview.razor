@@ -3,21 +3,20 @@
 <PageTitle>概览 · 组件演示</PageTitle>
 <PageBody>
     <PageHeading Title="概览" />
-    <p>这是 Workspace 交互演示。记录仅保存在当前连接的内存中，重新连接后恢复演示数据。</p>
-    <Section Title="工作区">
-        <dl>
-            <dt>演示记录</dt><dd>@Store.Records.Count</dd>
-            <dt>已启用</dt><dd>@Store.Records.Count(record => record.Status == "启用")</dd>
-            <dt>展示规范</dt><dd>17px 正文 · 48px 控件 · 流式内容轨道</dd>
-        </dl>
+    <Notice Subtle="true" Announce="false">演示数据仅存于当前连接；重新连接后重置。</Notice>
+    <Section Title="记录">
+        <FactList>
+            <div><dt>演示记录</dt><dd>@Store.Records.Count</dd></div>
+            <div><dt>已启用</dt><dd>@Store.Records.Count(record => record.Status == "启用")</dd></div>
+        </FactList>
     </Section>
-    <Section Title="开始体验">
+    <Section Title="快捷入口">
         <ul>
-            <li><a href="/records">搜索、排序、分页并操作记录</a></li>
-            <li><a href="/forms">填写表单并检查验证与未保存保护</a></li>
-            <li><a href="/records/sample">查看记录详情及返回父列表</a></li>
-            <li><a href="/controls">操作公共控件</a></li>
-            <li><a href="/appearance">切换主题并查看开发接入示例</a></li>
+            <li><a href="/records">列表</a></li>
+            <li><a href="/forms">创建记录</a></li>
+            <li><a href="/records/sample">记录详情</a></li>
+            <li><a href="/controls">控件</a></li>
+            <li><a href="/appearance">样式与接入</a></li>
         </ul>
     </Section>
 </PageBody>

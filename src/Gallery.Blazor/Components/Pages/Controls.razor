@@ -75,8 +75,13 @@
         <p aria-live="polite">已确认 @ConfirmationCount 次。</p>
     </Section>
     <Section Title="内容组成">
-        <Card Title="有真实用途的卡片"><p>用于演示选择或摘要表面。列表与长表单保持在平坦的内容轨道上。</p></Card>
-        <IdentityCard Title="演示身份"><dl><dt>名称</dt><dd>演示工作区成员</dd><dt>访问范围</dt><dd>当前组件演示</dd></dl></IdentityCard>
+        <Card Title="操作摘要"><p>本页已完成 @ActivationCount 次操作。</p></Card>
+        <IdentityCard>
+            <dl>
+                <div><dt>名称</dt><dd class="f-identity-primary">演示工作区成员</dd></div>
+                <div><dt>访问范围</dt><dd>当前组件演示</dd></div>
+            </dl>
+        </IdentityCard>
     </Section>
     <Section Title="空结果">
         @if (AttachmentAdded) { <Notice Severity="NotificationSeverity.Success">已添加内存中的演示附件条目。</Notice> }

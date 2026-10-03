@@ -48,3 +48,15 @@ Default font is the existing Segoe UI/system stack. Noto Sans/CJK was approved f
 6. Migrate custom search/select/masks and advanced editing as separate complete components with their current behavioral checks, then remove redundant CSS/JS only after consumers no longer use it.
 
 No Colligere runtime ProjectReference or wholesale UI replacement has been performed in this initial delivery. Its prior unrelated uncommitted product work is preserved. Its existing prose contract remains effective until the library is adopted and accepted; do not change that authority merely because a new package exists.
+
+## Rendered Workspace alignment, 2026-10-03
+
+The initial delivery is checkpointed as `1fcc922`. The follow-up used installed Edge and the existing bundled Playwright runtime, without installing packages or using Computer Use. The user logged into an isolated review window; read-only samples covered the real Workspace dashboard, product/customer lists, product/customer creation forms, Workspace information and customization, plus Account directory navigation. No business data was edited.
+
+The library now uses primary-derived canvas, alternate/raised surfaces, foreground and borders; full-stage sticky headings; 84/52/44px section rhythm; the source primary selected treatment; secondary labels without an extra group heading; and source search/table/view/pager geometry. CSS reset specificity no longer overrides control type. Programmatic H1 focus stays intact with no input-like outline. Native inputs and keyboard controls retain visible focus. Base-select alignment, identity primary hierarchy, dark Subtle/progress roles, portal token propagation and full-width bottom-sheet dividers are corrected.
+
+New public presentation options are `TitleBarBrand`, `TitleBarStart`, `INavigationGroupBuilder.SetSecondaryNavigation`, `PageHeading.Compact`, `Button.IconOnly`, `ActionMenu.TriggerContent` and `FactList`. Gallery exercises brand/service tracks, primary-only overview, definitions and identity facts. Its dirty-form discard now follows the saved navigation target instead of always falling back to the record list. Authentication, remote query boundaries and Colligere runtime adoption remain consumer work.
+
+Validation: Debug Gallery/library build succeeded with no warnings or errors; 35 C# checks, 15 mocked DOM checks and 6 data DOM checks passed. Installed Edge passed 79 rendered checks across six Gallery routes and 1440/980/760/520/320px, including heading/control focus, navigation protection, menu top layer, dark Subtle, select alignment, identity type, view geometry, scrolling hysteresis and document/stage overflow. These browser results do not establish OS DPI/zoom, assistive technology or other browser compatibility; those remain in the manual checklist.
+
+The final visible-browser review additionally found parent and child secondary routes selected together. The shell now selects only the most specific enabled match; an unlisted record falls back to its parent. This is covered by a focused C# case and the rendered detail-page check. Odd final facts span the full definition track.
