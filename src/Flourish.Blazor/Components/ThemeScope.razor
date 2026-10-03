@@ -1,0 +1,13 @@
+@implements IDisposable
+@inject IAppearanceService Appearance
+<div class="f-root f-theme-@((Theme ?? Appearance.Current.Theme).ToString().ToLowerInvariant())" style="@Style">@ChildContent</div>
+@code {
+    [Parameter] public string? Primary { get; set; }
+    [Parameter] public string? Accent { get; set; }
+    [Parameter] public ApplicationTheme? Theme { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    private string Style => AppearancePalette.Create(Primary ?? Appearance.Current.Primary, Accent ?? Appearance.Current.Accent).CssVariables + $";--f-font:{Appearance.Current.FontFamily}";
+    protected override void OnInitialized() => Appearance.Changed += Changed;
+    private void Changed(object? sender, EventArgs e) => _ = InvokeAsync(StateHasChanged);
+    public void Dispose() => Appearance.Changed -= Changed;
+}

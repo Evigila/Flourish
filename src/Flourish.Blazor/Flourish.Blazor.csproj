@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <VersionPrefix>1.1.0</VersionPrefix>
+    <AssemblyName>Flourish.Blazor</AssemblyName>
+    <RootNamespace>ArkheideSystem.Flourish.Blazor</RootNamespace>
+    <PackageId>Arkheide.Flourish.Blazor</PackageId>
+    <Authors>ArkheideSystem</Authors>
+    <Description>Encapsulated Blazor application shell, accessible controls and shared web styles.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <StaticWebAssetBasePath>_content/Arkheide.Flourish.Blazor</StaticWebAssetBasePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Flourish.Core/Flourish.Core.csproj" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

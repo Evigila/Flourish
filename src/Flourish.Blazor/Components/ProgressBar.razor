@@ -1,0 +1,23 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@using System.Globalization
+
+<div class="f-progress" role="progressbar" aria-label="@Label" aria-valuemin="0" aria-valuemax="100"
+     aria-valuenow="@NumericValue" aria-valuetext="@StatusText">
+    <div class="f-progress-track @(Value is null ? "f-progress-indeterminate" : null)">
+        <span class="f-progress-fill" style="@(Value is null ? null : "width:" + NumericValue + "%")"></span>
+    </div>
+    @if (Value is not null) { <p class="f-progress-percent" aria-hidden="true">@Value.Value.ToString("0", CultureInfo.CurrentCulture)%</p> }
+    @if (!string.IsNullOrWhiteSpace(StatusText)) { <p class="f-progress-status">@StatusText</p> }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Progress";
+    [Parameter] public double? Value { get; set; }
+    [Parameter] public string? StatusText { get; set; }
+    private string? NumericValue => Value?.ToString("0.##", CultureInfo.InvariantCulture);
+    protected override void OnParametersSet()
+    {
+        if (Value is { } value && (double.IsNaN(value) || double.IsInfinity(value) || value is < 0 or > 100))
+            throw new ArgumentOutOfRangeException(nameof(Value), "Progress must be between 0 and 100, or null when unknown.");
+    }
+}

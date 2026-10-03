@@ -1,0 +1,23 @@
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject IAppearanceService Appearance
+
+<ApplicationShell OnSearch="SearchAsync" MenuLabel="打开导航" CloseMenuLabel="关闭导航"
+                  MainNavigationLabel="工作区模块" SecondaryNavigationLabel="模块页面" SkipLabel="跳到正文">
+    <TitleBarEnd>
+        <Button Variant="ButtonVariant.Quiet" OnClick="ToggleTheme" aria-label="切换浅色或深色主题" title="切换主题">
+            <Icon Name="palette" />
+        </Button>
+    </TitleBarEnd>
+    <ChildContent>@Body</ChildContent>
+</ApplicationShell>
+
+@code {
+    private Task SearchAsync(string query)
+    {
+        Navigation.NavigateTo("/records?search=" + Uri.EscapeDataString(query));
+        return Task.CompletedTask;
+    }
+    private void ToggleTheme() => Appearance.SetTheme(Appearance.Current.Theme == ApplicationTheme.Dark
+        ? ApplicationTheme.Light : ApplicationTheme.Dark);
+}

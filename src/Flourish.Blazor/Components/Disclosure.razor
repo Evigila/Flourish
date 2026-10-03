@@ -1,0 +1,14 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<details @attributes="AdditionalAttributes" class="f-disclosure @Class" open="@InitiallyOpen">
+    <summary><span class="f-toggle-track" aria-hidden="true"><span class="f-toggle-thumb"></span></span><span>@Title</span></summary>
+    <div class="f-disclosure-content">@ChildContent</div>
+</details>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public bool InitiallyOpen { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

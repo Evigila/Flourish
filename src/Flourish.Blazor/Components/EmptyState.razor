@@ -1,0 +1,14 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<div class="f-empty-state @Class">
+    @if (!string.IsNullOrWhiteSpace(Title)) { <p class="f-empty-title">@Title</p> }
+    @ChildContent
+    @if (Actions is not null) { <div class="f-inline-actions">@Actions</div> }
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+}

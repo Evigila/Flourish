@@ -1,0 +1,41 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@using System.Linq.Expressions
+@using System.Linq
+@implements IDisposable
+
+<div @attributes="AdditionalAttributes" class="f-field @(FullWidth ? "f-field-full" : null) @Class">
+    <label class="f-field-label" for="@Id">@Label@if (Required) { <span class="f-required" aria-label="Required">*</span> }</label>
+    <div class="f-field-control"><CascadingValue Value="@Context">@ChildContent</CascadingValue></div>
+    @if (Messages.Count > 0)
+    {
+        <div class="f-field-errors" id="@(Id + "-error")" role="alert">
+            @foreach (var message in Messages) { <span>@message</span> }
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter] private EditContext? FormContext { get; set; }
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+    [Parameter, EditorRequired] public string Id { get; set; } = "";
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public bool FullWidth { get; set; }
+    [Parameter] public Expression<Func<object?>>? For { get; set; }
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private EditContext? SubscribedContext;
+    private FieldContext Context => new(Id, Required, Messages.Count > 0);
+    private IReadOnlyList<string> Messages => !string.IsNullOrWhiteSpace(Error) ? new[] { Error! }
+        : FormContext is not null && For is not null ? FormContext.GetValidationMessages(FieldIdentifier.Create(For)).ToArray() : Array.Empty<string>();
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(SubscribedContext, FormContext)) return;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged;
+        SubscribedContext = FormContext;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged += ValidationChanged;
+    }
+    private void ValidationChanged(object? sender, ValidationStateChangedEventArgs args) => _ = InvokeAsync(StateHasChanged);
+    public void Dispose() { if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged; }
+}

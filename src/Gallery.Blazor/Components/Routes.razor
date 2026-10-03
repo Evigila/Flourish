@@ -1,0 +1,15 @@
+<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="typeof(MainLayout)">
+            <PageBody>
+                <PageHeading Title="页面不存在" />
+                <p>这条演示路径没有对应页面。</p>
+                <a href="/">返回概览</a>
+            </PageBody>
+        </LayoutView>
+    </NotFound>
+</Router>

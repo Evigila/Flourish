@@ -1,0 +1,137 @@
+@page "/appearance"
+@implements IDisposable
+@inject IAppearanceService AppearanceService
+<PageTitle>样式 · 组件演示</PageTitle>
+<PageBody>
+    <PageHeading Title="样式" />
+    <Section Title="主题">
+        <FormActions Columns="3">
+            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.System)" OnClick="() => ChangeTheme(ApplicationTheme.System)">跟随系统</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Light)" OnClick="() => ChangeTheme(ApplicationTheme.Light)">浅色</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Dark)" OnClick="() => ChangeTheme(ApplicationTheme.Dark)">深色</Button>
+        </FormActions>
+        <p role="status">当前选择：@ThemeLabel</p>
+    </Section>
+    <Section Title="组织颜色">
+        <EditForm @key="Palette" novalidate OnInvalidSubmit="InvalidSubmit" Model="Palette" OnValidSubmit="ApplyPalette" FormName="palette-example">
+            <DataAnnotationsValidator />
+            <FormLayout>
+                <Field Label="主色" Id="palette-primary" Required="true" For="@(() => Palette.Primary)">
+                    <TextBox Id="palette-primary" @bind-Value="Palette.Primary" MaxLength="7" />
+                </Field>
+                <Field Label="强调色" Id="palette-accent" Required="true" For="@(() => Palette.Accent)">
+                    <TextBox Id="palette-accent" @bind-Value="Palette.Accent" MaxLength="7" />
+                </Field>
+            </FormLayout>
+            <FormActions><Button Type="submit">应用颜色</Button><Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette">恢复默认</Button></FormActions>
+        </EditForm>
+        @if (Message is not null) { <Notice Severity="NotificationSeverity.Success">@Message</Notice> }
+    </Section>
+    <Section Title="局部主题">
+        <ThemeScope Theme="ApplicationTheme.Dark">
+            <Card Title="独立深色区域"><p>本区域始终使用深色主题。全局主题仍由上方选择控制。</p></Card>
+        </ThemeScope>
+        <ThemeScope Theme="ApplicationTheme.Light">
+            <Card Title="独立浅色区域"><p>嵌套内容从相同的库令牌获取字体、边界、表面和间距。</p></Card>
+        </ThemeScope>
+    </Section>
+    <Section Title="标准令牌">
+        <dl>
+            <dt>正文、标签、按钮与网格</dt><dd>17px，沿用系统已安装字体</dd>
+            <dt>标准控件</dt><dd>48px 高，12px 圆角</dd>
+            <dt>导航</dt><dd>68px 顶栏，76px 主导航，232px 子导航；窄窗口适配</dd>
+            <dt>业务内容</dt><dd>1180px 基线，宽窗口使用流式轨道</dd>
+            <dt>常用间距</dt><dd>4、8、12、16、24、32、44、56、72、84px</dd>
+        </dl>
+    </Section>
+    <Section Title="项目文件">
+        <CodeBlock Text="@ProjectExample" Language="xml" />
+    </Section>
+    <Section Title="完整启动示例">
+        <CodeBlock Text="@StartupExample" Language="csharp" />
+    </Section>
+    <Section Title="页面外壳">
+        <CodeBlock Text="@LayoutExample" Language="razor" />
+    </Section>
+    <Section Title="页面组成">
+        <CodeBlock Text="@PageExample" Language="razor" />
+    </Section>
+    <Section Title="资源接入">
+        <CodeBlock Text="@ResourceExample" Language="html" />
+        <p>动态主题与演示记录属于当前连接的状态。组件库不安装字体、图标包或业务服务。</p>
+    </Section>
+</PageBody>
+
+@code {
+    private void InvalidSubmit(EditContext _) => Message = null;
+    private PaletteDraft Palette = new();
+    private string? Message;
+    private string ThemeLabel => AppearanceService.Current.Theme switch { ApplicationTheme.Dark => "深色", ApplicationTheme.Light => "浅色", _ => "跟随系统" };
+    protected override void OnInitialized()
+    {
+        Palette.Primary = AppearanceService.Current.Primary; Palette.Accent = AppearanceService.Current.Accent;
+        AppearanceService.Changed += AppearanceChanged;
+    }
+    private void AppearanceChanged(object? sender, EventArgs args) => _ = InvokeAsync(StateHasChanged);
+    private void ChangeTheme(ApplicationTheme theme) => AppearanceService.SetTheme(theme);
+    private void ApplyPalette() { AppearanceService.SetColors(Palette.Primary, Palette.Accent); Message = "主题颜色已应用于当前演示连接。"; }
+    private void ResetPalette() { Palette = new(); ApplyPalette(); }
+    public void Dispose() => AppearanceService.Changed -= AppearanceChanged;
+    private const string ProjectExample = """
+        <Project Sdk="Microsoft.NET.Sdk.Web">
+          <PropertyGroup>
+            <TargetFramework>net10.0</TargetFramework>
+          </PropertyGroup>
+          <ItemGroup>
+            <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.csproj" />
+          </ItemGroup>
+        </Project>
+        """;
+    private const string StartupExample = """
+        using ArkheideSystem.Flourish.Blazor;
+        using ArkheideSystem.Flourish.Blazor.Abstract;
+        using MyApplication.Components;
+
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+        builder.Services.AddFlourish(ui => ui
+            .UseTitleBar(bar => bar.SetApplicationTitle("Workspace"))
+            .UseNavigation(nav => nav.AddGroup("workspace", "Workspace", "home",
+                group => group.AddItem("概览", "/", "home", exact: true)))
+            .ConfigureAppearance(appearance => appearance
+                .SetColors("#153A32", "#16745F")));
+
+        var app = builder.Build();
+        app.UseHttpsRedirection();
+        app.UseAntiforgery();
+        app.MapStaticAssets();
+        app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+        app.Run();
+        """;
+    private const string LayoutExample = """
+        @inherits LayoutComponentBase
+        @using ArkheideSystem.Flourish.Blazor.Components
+
+        <ApplicationShell>
+            <ChildContent>@Body</ChildContent>
+        </ApplicationShell>
+        """;
+    private const string PageExample = """
+        @page "/"
+        @using ArkheideSystem.Flourish.Blazor.Components
+
+        <PageBody>
+            <PageHeading Title="概览" />
+            <Section Title="当前工作">
+                <p>应用提供实际数据；库拥有布局、主题与控件呈现。</p>
+            </Section>
+        </PageBody>
+        """;
+    private const string ResourceExample = """
+        <!-- App.razor: InteractiveServer 默认包含预渲染。 -->
+        <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor/flourish.css" />
+        <HeadOutlet @rendermode="InteractiveServer" />
+        <Routes @rendermode="InteractiveServer" />
+        <script src="_framework/blazor.web.js"></script>
+        """;
+}

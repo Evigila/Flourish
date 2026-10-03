@@ -1,0 +1,14 @@
+@page "/not-found"
+@inject NavigationManager Navigation
+<PageTitle>页面不存在 · 组件演示</PageTitle>
+<PageBody>
+    <PageHeading Title="页面不存在" />
+    <EmptyState Title="这条路径没有对应页面">
+        <ChildContent><p>从工作区导航继续，或返回概览浏览组件与交互示例。</p></ChildContent>
+        <Actions><Button OnClick="GoHome">返回概览</Button></Actions>
+    </EmptyState>
+</PageBody>
+
+@code {
+    private void GoHome() => Navigation.NavigateTo("/");
+}

@@ -1,0 +1,13 @@
+<header class="f-page-heading" data-page-heading>
+    <div class="f-heading-title">
+        @if (!string.IsNullOrEmpty(ParentHref)) { <a class="f-parent-link" href="@ParentHref">@ParentLabel</a> }
+        <h1>@Title</h1>
+    </div>
+    @if (Actions is not null) { <div class="f-heading-actions">@Actions</div> }
+</header>
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public string? ParentHref { get; set; }
+    [Parameter] public string? ParentLabel { get; set; }
+}

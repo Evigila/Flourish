@@ -1,0 +1,33 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@using System.Globalization
+@typeparam TValue
+@inherits InputBase<TValue>
+
+<select @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input f-select @CssClass" value="@CurrentValueAsString"
+        disabled="@Disabled" required="@InputSemantics.Required(Field, AdditionalAttributes)" aria-invalid="@InputSemantics.Invalid(EditContext, FieldIdentifier, Field, AdditionalAttributes)" aria-describedby="@Description" @onchange="Change">
+    @if (ChildContent is not null) { @ChildContent }
+    else
+    {
+        @foreach (var option in Options)
+        {
+            <option value="@BindConverter.FormatValue(option.Value, CultureInfo.CurrentCulture)" disabled="@option.Disabled">@option.Text</option>
+        }
+    }
+</select>
+
+@code {
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    private string? Description => InputSemantics.Description(Field, AdditionalAttributes);
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public IReadOnlyList<SelectOption<TValue>> Options { get; set; } = Array.Empty<SelectOption<TValue>>();
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string ParsingErrorMessage { get; set; } = "Select a valid option.";
+    private void Change(ChangeEventArgs args) { if (!Disabled) CurrentValueAsString = args.Value?.ToString(); }
+    protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
+    {
+        if (BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsed))
+        { result = parsed!; validationErrorMessage = ""; return true; }
+        result = default!; validationErrorMessage = ParsingErrorMessage; return false;
+    }
+}

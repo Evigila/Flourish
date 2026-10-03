@@ -1,0 +1,18 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<section @attributes="AdditionalAttributes" class="f-identity-card @Class">
+    @if (!string.IsNullOrWhiteSpace(Title)) { <h2>@Title</h2> }
+    <div class="f-identity-layout @(SideContent is not null ? "f-identity-with-sidebar" : null)">
+        <div class="f-identity-content @(Columns ? "f-identity-columns" : null)">@ChildContent</div>
+        @if (SideContent is not null) { <aside class="f-identity-content">@SideContent</aside> }
+    </div>
+</section>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public bool Columns { get; set; } = true;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? SideContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

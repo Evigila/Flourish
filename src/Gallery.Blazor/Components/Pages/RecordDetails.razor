@@ -1,0 +1,44 @@
+@page "/records/{Id}"
+@inject RecordStore Store
+@inject NavigationManager Navigation
+<PageTitle>记录 · 组件演示</PageTitle>
+<PageBody>
+    <PageHeading Title="@DetailTitle" ParentHref="/records" ParentLabel="列表">
+        <Actions>
+            @if (Record is not null) { <Button OnClick="Edit">编辑记录</Button> }
+        </Actions>
+    </PageHeading>
+    @if (Record is { } record)
+    {
+        <IdentityCard Title="记录身份">
+            <dl>
+                <dt>名称</dt><dd>@record.Name</dd>
+                <dt>编号</dt><dd>@record.Code</dd>
+                <dt>分类</dt><dd>@record.Category</dd>
+                <dt>状态</dt><dd>@record.Status</dd>
+            </dl>
+        </IdentityCard>
+        <Section Title="联系信息">
+            <dl>
+                <dt>联系人</dt><dd>@record.Contact</dd>
+                <dt>邮箱</dt><dd><a href="mailto:@record.Email">@record.Email</a></dd>
+                <dt>更新日期</dt><dd>@record.UpdatedOn.ToString("yyyy-MM-dd")</dd>
+            </dl>
+        </Section>
+        <Section Title="演示边界"><p>这条记录用于检验长名称、事实布局与父列表导航，不连接真实业务服务。</p></Section>
+    }
+    else
+    {
+        <EmptyState Title="没有这条演示记录">
+            <Actions><Button Variant="ButtonVariant.Secondary" OnClick="Back">返回列表</Button></Actions>
+        </EmptyState>
+    }
+</PageBody>
+
+@code {
+    [Parameter] public string Id { get; set; } = string.Empty;
+    private BusinessRecord? Record => Store.Find(Id);
+    private string DetailTitle => Record?.Name ?? "记录不存在";
+    private void Edit() => Navigation.NavigateTo("/forms?id=" + Uri.EscapeDataString(Id));
+    private void Back() => Navigation.NavigateTo("/records");
+}

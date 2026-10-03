@@ -1,0 +1,7 @@
+# Complete overlay and final HTTP verification
+
+This supplements the initial Blazor extraction delivery record without modifying historical entries. Preserved the additional menu/dialog/validation DOM-substitute test in tests/Flourish.Blazor.Test/controls-dom.mjs and made its source module lookup repository-relative. All 15 checks passed: menu arrow/home/end/escape, disabled/outside behavior, per-scope theme and cleanup, dialog busy/controlled close/focus containment-return, first-invalid filtering and old-browser menu/modal fallback with restored inert/theme state. Together with 32 C# and 6 data-module checks, 53 automated checks pass. These are contract/SSR/mocked-DOM checks, not real-browser acceptance.
+
+Final Gallery HTTP checks cover all primary routes, edit query, missing record, source examples, live progress markup, direct not-found page and unknown URLs. The latter returns HTTP404 while rendering a complete library shell. All six static assets return HTTP200. The local development service runs at http://127.0.0.1:5187 for user manual acceptance. The configured default launch profile otherwise uses http://localhost:5188.
+
+Library and Gallery builds passed without warnings/errors. The local Arkheide.Flourish.Blazor.1.1.0 package contains assembly and static assets; the package was not published. A prior development-server DLL lock was resolved by stopping only this task's server, rebuilding, then restarting. No application behavior or schema outside the requested UI-library work was changed.

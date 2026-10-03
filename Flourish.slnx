@@ -47,4 +47,7 @@
     <Platform Solution="*|x64" Project="AnyCPU" />
     <Platform Solution="*|x86" Project="AnyCPU" />
   </Project>
+  <Project Path="src/Flourish.Blazor/Flourish.Blazor.csproj" />
+  <Project Path="src/Gallery.Blazor/Gallery.Blazor.csproj" />
+  <Project Path="tests/Flourish.Blazor.Test/Flourish.Blazor.Test.csproj" />
 </Solution>
