@@ -1,0 +1,581 @@
+/* Reusable surface layout and content flow. */
+.navigation-surface {
+--topbar-height: auto; --primary-rail-width: max-content; --secondary-rail-width: max-content; --surface-content-width: 100%; --surface-page-gutter: 0px;
+}
+
+.navigation-surface {
+--surface-content-gutter: max(var(--surface-page-gutter), calc((100% - var(--surface-content-width)) / 6));
+    display: grid;
+    grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.navigation-surface .skip-link {
+position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    transform: translateY(-180%);
+}
+
+.navigation-surface .skip-link:focus {
+transform: translateY(0);
+}
+
+.navigation-surface .app-topbar {
+position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    width: 100%;
+    height: var(--topbar-height);
+    min-height: var(--topbar-height);
+}
+
+.navigation-surface .topbar-product,
+.navigation-surface .topbar-actions,
+.navigation-surface .surface-brand {
+display: flex;
+    align-items: center;
+}
+
+.navigation-surface .topbar-product {
+min-width: 0;
+    flex: 1;
+}
+
+.navigation-surface .surface-brand {
+align-self: stretch;
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.navigation-surface .surface-logo {
+display: grid;
+    align-self: stretch;
+    place-items: center;
+    overflow: hidden;
+}
+
+.navigation-surface .surface-logo img {
+display: block;
+    max-width: 100%;
+}
+
+.navigation-surface .surface-title {
+display: flex;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navigation-surface .surface-title strong {
+display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navigation-surface .topbar-actions {
+min-width: 0;
+    flex: 0 0 auto;
+}
+
+.navigation-surface .topbar-actions  .content-identity {
+display: flex;
+    align-items: center;
+}
+
+.navigation-surface .topbar-actions  .content-identity strong {
+display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navigation-surface .topbar-actions form {
+display: flex;
+    align-items: center;
+}
+
+.navigation-surface .topbar-actions  .topbar-tool {
+display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.navigation-surface .topbar-actions  .navigation-logout {
+display: grid;
+    place-items: center;
+}
+
+.navigation-surface .app-body {
+position: relative;
+    display: grid;
+    grid-template-columns: var(--primary-rail-width) minmax(0, 1fr);
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    overflow: clip;
+}
+
+.navigation-surface .app-body.has-secondary-navigation {
+grid-template-columns: var(--primary-rail-width) var(--secondary-rail-width) minmax(0, 1fr);
+}
+
+.navigation-surface .primary-rail {
+position: relative;
+    z-index: 20;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.navigation-surface .primary-rail nav {
+display: grid;
+}
+
+.navigation-surface .primary-rail  .primary-nav-item {
+position: relative;
+    display: grid;
+    place-items: center;
+}
+
+.navigation-surface .primary-rail  .primary-nav-item.is-active::before {
+position: absolute;
+    top: 50%;
+    left: -10px;
+    content: "";
+    transform: translateY(-50%);
+}
+
+.navigation-surface .primary-rail  .primary-nav-item.is-disabled {
+cursor: not-allowed;
+}
+
+.navigation-surface .primary-rail  .primary-nav-item.is-disabled .primary-nav-symbol {
+opacity: .42;
+}
+
+.navigation-surface .secondary-rail {
+position: relative;
+    z-index: 18;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.navigation-surface .secondary-rail nav {
+display: grid;
+}
+
+.navigation-surface .secondary-rail  a {
+display: flex;
+    align-items: center;
+}
+
+.navigation-surface .application-stage {
+container-name: surface-stage;
+    container-type: inline-size;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-anchor: none;
+    overscroll-behavior: contain;
+}
+
+.navigation-surface  .page-root {
+min-width: 0;
+    min-height: 100%;
+}
+
+.navigation-surface  .page-heading {
+position: sticky;
+    top: 0;
+    z-index: 15;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.navigation-surface  .page-heading > div {
+min-width: 0;
+}
+
+.navigation-surface  .page-heading h1 {
+overflow-wrap: anywhere;
+}
+
+.navigation-surface  .page-content-frame {
+display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.navigation-surface  .page-content-frame > .module-group {
+grid-area: 1 / 1;
+    min-width: 0;
+}
+
+.navigation-surface  .page-content-frame section[id] {
+scroll-margin-top: 132px;
+}
+
+.navigation-surface  .page-contents {
+position: sticky;
+    top: 50%;
+    display: grid;
+    grid-area: 1 / 1;
+    align-self: start;
+    justify-self: start;
+    z-index: 20;
+    width: 20px;
+    transform: translateY(-50%);
+}
+
+.navigation-surface  .page-contents ul {
+display: grid;
+}
+
+.navigation-surface  .page-contents a {
+position: relative;
+    display: grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+}
+
+.navigation-surface  .page-contents a::before {
+width: 8px;
+    height: 8px;
+    content: "";
+}
+
+.navigation-surface  .page-contents-label {
+position: absolute;
+    top: 50%;
+    right: calc(100% + 12px);
+    width: max-content;
+    max-width: min(260px, calc(100vw - 92px));
+    opacity: 0;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.navigation-surface  .page-contents a:is(:hover, :focus-visible) .page-contents-label {
+opacity: 1;
+    pointer-events: auto;
+}
+
+.navigation-surface  .page-module {
+--module-background: transparent;
+    min-width: 0;
+}
+
+.navigation-surface  .module-group > .page-module:nth-child(even) {
+--module-background: transparent;
+}
+
+.navigation-surface  .section-heading {
+display: flex;
+    min-height: 0;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.navigation-surface  .section-heading > div {
+display: block;
+    min-width: 0;
+}
+
+.navigation-surface  .section-heading p,
+.navigation-surface  .section-heading > span {
+max-width: 680px;
+}
+
+.navigation-surface  .module-content {
+min-width: 0;
+    overflow: visible;
+}
+
+.navigation-surface  .record-grid {
+display: grid;
+}
+
+.navigation-surface  .record-grid.compact {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.navigation-surface  .record-grid > div,
+.navigation-surface  .record-grid.compact > div {
+min-height: 106px;
+}
+
+.navigation-surface  .record-grid dd {
+overflow-wrap: anywhere;
+}
+
+.navigation-surface  .summary-strip {
+display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: hidden;
+}
+
+.navigation-surface  .summary-strip > div {
+min-width: 0;
+    min-height: 170px;
+}
+
+.navigation-surface  .summary-strip span,
+.navigation-surface  .summary-strip strong {
+display: block;
+}
+
+.navigation-surface  .summary-strip .summary-text {
+white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.navigation-surface  .primary-action,
+.navigation-surface  .secondary-action,
+.navigation-surface  .table-action,
+.navigation-surface  .text-action {
+display: inline-flex;
+    min-height: var(--control-height);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.navigation-surface  .primary-action:disabled,
+.navigation-surface  .secondary-action:disabled,
+.navigation-surface  .table-action:disabled {
+cursor: not-allowed;
+}
+
+.navigation-surface  .table-action {
+min-height: var(--control-height-compact);
+}
+
+.navigation-surface  .heading-control {
+display: grid;
+    min-width: min(380px, 100%);
+}
+
+.navigation-surface .scroll-to-top {
+position: absolute;
+    right: clamp(20px, 3vw, 38px);
+    bottom: clamp(20px, 3vw, 34px);
+    z-index: 35;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.navigation-surface .scroll-to-top[hidden] {
+display: none;
+}
+
+.navigation-surface .scroll-to-top:hover {
+transform: translateY(-3px);
+}
+
+.navigation-surface  .form-surface .form-fieldset {
+display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.navigation-surface  .form-surface .form-fieldset > label {
+display: grid;
+    align-content: start;
+    min-width: 0;
+}
+
+.navigation-surface  .form-surface .form-fieldset > .notice-trigger {
+grid-column: 1 / -1;
+}
+
+.navigation-surface  .table-scroll {
+width: 100%;
+    overflow-x: auto;
+}
+
+.navigation-surface  .data-table {
+width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.navigation-surface  .data-table th,
+.navigation-surface  .data-table td {
+vertical-align: top;
+}
+
+.navigation-surface  .data-table .secondary-value {
+display: block;
+}
+
+.navigation-surface  .empty-row {
+height: 112px;
+    vertical-align: middle !important;
+}
+
+.navigation-surface  .section-actions {
+display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.navigation-surface  .status-badge {
+min-height: 28px;
+}
+
+.navigation-surface  .identifier {
+overflow-wrap: anywhere;
+}
+
+.navigation-surface .visually-hidden {
+position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+}
+
+.navigation-surface #blazor-error-ui {
+display: none;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    min-height: 44px;
+}
+
+.navigation-surface #blazor-error-ui .dismiss {
+position: absolute;
+    top: 0;
+    right: 0;
+    width: 44px;
+    height: 43px;
+    cursor: pointer;
+}
+
+@media (max-width: 980px) {
+    .navigation-surface  .summary-strip > div {
+    min-height: 150px;
+    }
+}
+
+@media (max-width: 760px) {
+    .navigation-surface .topbar-actions  .content-identity {
+    justify-content: center;
+    }
+
+    .navigation-surface .topbar-actions  .content-identity strong {
+    position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+    }
+
+    .navigation-surface .primary-rail  .primary-nav-item.is-active::before {
+    left: -6px;
+    }
+
+    .navigation-surface .app-body.has-secondary-navigation {
+    grid-template-columns: var(--primary-rail-width) minmax(0, 1fr);
+            grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .navigation-surface .app-body.has-secondary-navigation > .primary-rail {
+    grid-row: 1 / -1;
+    }
+
+    .navigation-surface .secondary-rail {
+    grid-column: 2;
+            grid-row: 1;
+            overflow-x: auto;
+            overflow-y: hidden;
+    }
+
+    .navigation-surface .secondary-rail nav {
+    display: flex;
+            width: max-content;
+            min-width: 100%;
+            align-items: center;
+    }
+
+    .navigation-surface .secondary-rail  a {
+    flex: 0 0 auto;
+            white-space: nowrap;
+    }
+
+    .navigation-surface .app-body.has-secondary-navigation > .application-stage {
+    grid-column: 2;
+            grid-row: 2;
+    }
+
+    .navigation-surface  .page-heading {
+    display: block;
+    }
+
+    .navigation-surface  .page-heading .secondary-action,
+    .navigation-surface  .page-heading > .primary-action,
+    .navigation-surface  .heading-control {
+    width: 100%;
+            min-width: 0;
+    }
+
+    .navigation-surface  .section-heading {
+    display: block;
+    }
+
+    .navigation-surface  .record-grid,
+    .navigation-surface  .record-grid.compact,
+    .navigation-surface  .summary-strip {
+    grid-template-columns: 1fr;
+    }
+
+    .navigation-surface  .record-grid.compact > div,
+    .navigation-surface  .record-grid.compact > div:nth-last-child(-n + 2) {
+    min-height: 0;
+    }
+
+    .navigation-surface  .summary-strip > div {
+    min-height: 126px;
+    }
+
+    .navigation-surface  .form-surface .form-fieldset {
+    grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .navigation-surface .surface-title {
+    display: none;
+    }
+
+    .navigation-surface  .primary-action,
+    .navigation-surface  .secondary-action {
+    width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navigation-surface .application-stage {
+    scroll-behavior: auto;
+    }
+}
+
+.navigation-surface .surface-logo {
+width: max-content; flex: 0 0 auto;
+}

@@ -1,0 +1,19 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+<div class="toggle-section @Class">
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleSwitch Label="@Label" Value="@Value" ValueChanged="@ValueChanged" Disabled="@Disabled" Controls="@ContentId" />
+    <div id="@ContentId" class="toggle-section-content" hidden="@(!Value)">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+    [Parameter] public bool Value { get; set; }
+    [Parameter] public EventCallback<bool> ValueChanged { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
+
+    private readonly string ContentId = $"toggle-section-{Guid.NewGuid():N}";
+}

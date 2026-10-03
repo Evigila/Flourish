@@ -1,0 +1,295 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@using System.Globalization
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div @ref="Grid" class="spreadsheet-scroll" tabindex="0" aria-label="@Label" hidden="@Hidden"
+     data-edit-disabled="@(EditDisabled ? "true" : "false")" data-has-more="@(HasMore ? "true" : "false")">
+    <table class="editing-grid-table @TableClass" role="grid" aria-multiselectable="true"
+           data-resizable-table data-column-minimum-width="@MinimumWidth" style="@TableWidthStyle"
+           aria-colcount="@Columns.Count" aria-rowcount="@(Rows.Count + 1)" aria-label="@TableLabel">
+        <colgroup>
+            @foreach (var column in Columns)
+            {
+                <col @key="column.Key" data-column-key="@column.Key" data-column-width-mode="@(Widths.ContainsKey(column.Key) ? "manual" : "auto")"
+                     style="@ColumnWidthStyle(column.Key)" />
+            }
+            <col data-column-fill />
+        </colgroup>
+        <thead><tr role="row">
+            @foreach (var column in Columns)
+            {
+                <th scope="col" role="columnheader" class="@(column.Identity ? "identity-column" : null) @(Widths.ContainsKey(column.Key) ? "is-manual-column" : null)">
+                    <span class="data-column-label @(column.Required ? "required-field" : null)" title="@column.Label">@column.Label</span>
+                    <span class="data-column-resizer" data-column-resize="@column.Key" role="separator" tabindex="0"
+                          aria-orientation="vertical" aria-label="@string.Format(CultureInfo.CurrentCulture, Text.ColumnWidth, column.Label)"
+                          aria-valuemin="@MinimumWidth" aria-valuemax="@MaximumWidth" aria-valuenow="@ColumnWidth(column.Key)"
+                          aria-valuetext="@string.Format(CultureInfo.CurrentCulture, Text.Pixels, ColumnWidth(column.Key))" title="@Text.ResizeHint"></span>
+                </th>
+            }
+            <th class="spreadsheet-fill" aria-hidden="true"></th>
+        </tr></thead>
+        <tbody>
+            @for (var rowIndex = 0; rowIndex < Rows.Count; rowIndex++)
+            {
+                var currentRow = rowIndex;
+                var row = Rows[rowIndex];
+                <tr @key="row.Key" role="row" class="@(row.Dirty ? "is-dirty" : null)" aria-label="@row.Label">
+                    @for (var columnIndex = 0; columnIndex < Columns.Count; columnIndex++)
+                    {
+                        var currentColumn = columnIndex;
+                        var column = Columns[columnIndex];
+                        var cell = row.Cells[columnIndex];
+                        var disabled = EditDisabled || cell.Disabled;
+                        var errorId = $"{Identifier}-error-{rowIndex}-{columnIndex}";
+                        var secondaryErrorId = errorId + "-row";
+                        var describedBy = string.Join(" ", new[] { cell.Error is not null ? errorId : null, cell.SecondaryError is not null ? secondaryErrorId : null }.Where(id => id is not null));
+                        var label = cell.AriaLabel ?? column.Label;
+                        var hasError = cell.Error is not null || cell.SecondaryError is not null;
+                        var hasOptions = cell.Editor == GridEditorKind.Select;
+                        var multiline = cell.Editor == GridEditorKind.Multiline;
+                        <td data-row="@currentRow" data-column="@currentColumn" data-label="@column.Label" data-readonly="@(cell.ReadOnly ? "true" : "false")"
+                            role="gridcell" tabindex="-1" aria-selected="false" aria-readonly="@(disabled || cell.ReadOnly ? "true" : "false")" aria-invalid="@(hasError ? "true" : null)"
+                            class="@CellClass(column, cell)" aria-label="@($"{label}: {cell.Display}")" aria-describedby="@describedBy">
+                            <div class="spreadsheet-cell-surface @(hasOptions ? "has-options" : null) @(multiline ? "is-long-text" : null)">
+                                @if (!multiline)
+                                {
+                                    <span class="spreadsheet-cell-display data-cell-content" data-measurement-padding="20" title="@cell.Display">@cell.Display</span>
+                                }
+                                else
+                                {
+                                    <span class="spreadsheet-measurement data-cell-content" data-measurement-padding="20" aria-hidden="true">@cell.Value</span>
+                                }
+                                @if (hasOptions)
+                                {
+                                    <span class="cell-select-marker" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2 4h8L6 8z" /></svg></span>
+                                }
+                                <div class="spreadsheet-cell-editor">
+                                    @if (cell.Editor == GridEditorKind.Link)
+                                    {
+                                        <a tabindex="-1" href="@cell.LinkHref" title="@cell.Hint" aria-label="@cell.LinkLabel" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)">@cell.Display</a>
+                                    }
+                                    else if (cell.Editor == GridEditorKind.Masked)
+                                    {
+                                        <StandaloneMaskedInput Value="@cell.Value" ValueChanged="value => ChangeAsync(currentRow, currentColumn, value)"
+                                                               Mask="@(cell.Mask ?? "")" disabled="@disabled" readonly="@cell.ReadOnly" tabindex="-1"
+                                                               aria-required="@(cell.Required ? "true" : null)" aria-label="@label" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)" />
+                                    }
+                                    else if (hasOptions)
+                                    {
+                                        <select value="@cell.Value" @onchange="args => ChangeAsync(currentRow, currentColumn, args.Value?.ToString())"
+                                                disabled="@(disabled || cell.ReadOnly)" tabindex="-1" aria-required="@(cell.Required ? "true" : null)" aria-label="@label" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)">
+                                            @if (cell.AllowEmpty) { <option value="">@cell.EmptyText</option> }
+                                            @foreach (var option in cell.Options ?? []) { <option value="@option.Value">@option.Label</option> }
+                                        </select>
+                                    }
+                                    else if (multiline)
+                                    {
+                                        <textarea value="@cell.Value" @oninput="args => ChangeAsync(currentRow, currentColumn, args.Value?.ToString())"
+                                                  rows="1" maxlength="@cell.MaximumLength" disabled="@disabled" readonly="@cell.ReadOnly" tabindex="-1"
+                                                  aria-required="@(cell.Required ? "true" : null)" aria-label="@label" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)"></textarea>
+                                    }
+                                    else
+                                    {
+                                        <input type="@(cell.Editor == GridEditorKind.Date ? "date" : "text")" value="@cell.Value"
+                                               @oninput="args => ChangeAsync(currentRow, currentColumn, args.Value?.ToString())"
+                                               inputmode="@(cell.Editor == GridEditorKind.Decimal ? "decimal" : "text")"
+                                               maxlength="@cell.MaximumLength" disabled="@disabled" readonly="@cell.ReadOnly" tabindex="-1" title="@cell.Hint"
+                                               aria-required="@(cell.Required ? "true" : null)" aria-label="@label" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)" />
+                                    }
+                                </div>
+                            </div>
+                            @if (cell.Error is not null) { <span id="@errorId" class="cell-error">@cell.Error</span> }
+                            @if (cell.SecondaryError is not null) { <span id="@secondaryErrorId" class="cell-error">@cell.SecondaryError</span> }
+                        </td>
+                    }
+                    <td class="spreadsheet-fill" aria-hidden="true"></td>
+                </tr>
+            }
+            @if (Rows.Count == 0) { <tr><td colspan="@(Columns.Count + 1)" class="empty-grid">@EmptyMessage</td></tr> }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private const double MinimumWidth = 100, MaximumWidth = 100000, MaximumAutomaticWidth = 260;
+    private readonly string Identifier = $"editing-grid-{Guid.NewGuid():N}";
+    private readonly Dictionary<string, double> Widths = [], AutomaticWidths = [];
+    private ElementReference Grid;
+    private IJSObjectReference? Module, WidthModule;
+    private DotNetObjectReference<InteractionBridge>? Reference;
+    private bool Disposed, Connected, IsEditing, RefreshPending = true;
+    private long MeasuredRevision = long.MinValue;
+    private int MeasuredRowCount = -1;
+    private string ColumnSignature = "";
+
+    [Parameter, EditorRequired] public IReadOnlyList<GridColumn> Columns { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<GridRow> Rows { get; set; } = [];
+    [Parameter] public GridInteractions Interactions { get; set; } = new();
+    [Parameter] public EventCallback<GridCellChange> CellChanged { get; set; }
+    [Parameter] public bool EditDisabled { get; set; }
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public bool HasMore { get; set; }
+    [Parameter] public long MeasurementRevision { get; set; }
+    [Parameter] public string Label { get; set; } = "Editable grid";
+    [Parameter] public string? TableLabel { get; set; }
+    [Parameter] public string? TableClass { get; set; }
+    [Parameter] public string EmptyMessage { get; set; } = "No records found.";
+    [Parameter] public GridText Text { get; set; } = new();
+
+    private double ColumnWidth(string key) => Widths.GetValueOrDefault(key, AutomaticWidths.GetValueOrDefault(key, MinimumWidth));
+    private string ColumnWidthStyle(string key) => $"width:{ColumnWidth(key).ToString(CultureInfo.InvariantCulture)}px";
+    private string TableWidthStyle => $"width:{Columns.Sum(column => ColumnWidth(column.Key)).ToString(CultureInfo.InvariantCulture)}px";
+    private string CellClass(GridColumn column, GridCell cell) => string.Join(" ", new[]
+    {
+        column.Identity ? "identity-column" : null,
+        Widths.ContainsKey(column.Key) ? "is-manual-column" : null,
+        cell.Changed ? "is-changed" : null,
+        cell.Error is not null ? "has-error" : null,
+        cell.ReadOnlyAppearance ? "read-only-cell" : null
+    }.Where(value => value is not null));
+
+    protected override void OnParametersSet()
+    {
+        if (Columns.Select(column => column.Key).Distinct(StringComparer.Ordinal).Count() != Columns.Count)
+            throw new ArgumentException("Grid column keys must be unique.", nameof(Columns));
+        if (Rows.Any(row => row.Cells.Count != Columns.Count))
+            throw new ArgumentException("Every row must contain one cell for each column.", nameof(Rows));
+        var signature = string.Join("\0", Columns.Select(column => column.Key));
+        if (signature != ColumnSignature)
+        {
+            ColumnSignature = signature;
+            Widths.Clear(); AutomaticWidths.Clear(); RefreshPending = true;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Disposed) return;
+        try
+        {
+            if (Hidden)
+            {
+                await DisconnectAsync(); IsEditing = false; RefreshPending = true; return;
+            }
+            Reference ??= DotNetObjectReference.Create(new InteractionBridge(this));
+            if (Module is null)
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/editing-grid.js");
+                if (Disposed) { await module.DisposeAsync(); return; }
+                Module = module;
+            }
+            if (WidthModule is null)
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/data-table-columns.js");
+                if (Disposed) { await module.DisposeAsync(); return; }
+                WidthModule = module;
+            }
+            await Module.InvokeVoidAsync("connect", Grid, Reference);
+            Connected = true;
+            if (!IsEditing && (RefreshPending || MeasuredRevision != MeasurementRevision || MeasuredRowCount != Rows.Count))
+            {
+                var measured = await WidthModule.InvokeAsync<Dictionary<string, double>>("connect", Grid, Reference);
+                if (Disposed) return;
+                var changed = false;
+                foreach (var pair in measured ?? [])
+                {
+                    if (!double.IsFinite(pair.Value) || Widths.ContainsKey(pair.Key)) continue;
+                    var width = Math.Clamp(Math.Round(pair.Value), MinimumWidth, MaximumAutomaticWidth);
+                    changed |= !AutomaticWidths.TryGetValue(pair.Key, out var previous) || previous != width;
+                    AutomaticWidths[pair.Key] = width;
+                }
+                MeasuredRevision = MeasurementRevision; MeasuredRowCount = Rows.Count; RefreshPending = false;
+                if (changed) await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    /// <summary>Requests the native confirmation surface without changing host data.</summary>
+    public ValueTask<bool> ConfirmAsync(string message) => Disposed
+        ? ValueTask.FromResult(false)
+        : JS.InvokeAsync<bool>("confirm", message);
+    private Task ChangeAsync(int row, int column, string? value) =>
+        Disposed || Hidden || EditDisabled || Rows[row].Cells[column].Disabled || Rows[row].Cells[column].ReadOnly ? Task.CompletedTask : CellChanged.InvokeAsync(new(row, column, value));
+
+    private async Task BeginCellEdit(int row, int column)
+    {
+        if (Disposed || Hidden) return;
+        IsEditing = true;
+        await (Interactions.Begin?.Invoke(row, column) ?? Task.CompletedTask);
+    }
+    private async Task EndCellEdit()
+    {
+        if (Disposed) return;
+        await (Interactions.End?.Invoke() ?? Task.CompletedTask);
+        IsEditing = false; RefreshPending = true;
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task CancelCellEdit()
+    {
+        if (Disposed || Hidden) return;
+        await (Interactions.Cancel?.Invoke() ?? Task.CompletedTask);
+        IsEditing = false; RefreshPending = true;
+        await InvokeAsync(StateHasChanged);
+    }
+    private Task UndoEdits() => Disposed || Hidden ? Task.CompletedTask : Interactions.Undo?.Invoke() ?? Task.CompletedTask;
+    private Task RedoEdits() => Disposed || Hidden ? Task.CompletedTask : Interactions.Redo?.Invoke() ?? Task.CompletedTask;
+    private Task SaveFromKeyboard() => Disposed || Hidden ? Task.CompletedTask : Interactions.Save?.Invoke() ?? Task.CompletedTask;
+    private Task<bool> LoadMoreRows() => Disposed || Hidden ? Task.FromResult(false) : Interactions.LoadMore?.Invoke() ?? Task.FromResult(false);
+    private Task<bool> ApplyCellEdits(IJSStreamReference stream) => Disposed || Hidden ? Task.FromResult(false) : Interactions.ApplyCells?.Invoke(stream) ?? Task.FromResult(false);
+    private Task PasteCells(int row, int column, IJSStreamReference stream) => Disposed || Hidden ? Task.CompletedTask : Interactions.Paste?.Invoke(row, column, stream) ?? Task.CompletedTask;
+    private Task ReportPasteError(string message) => Disposed || Hidden ? Task.CompletedTask : Interactions.ReportError?.Invoke(message) ?? Task.CompletedTask;
+    private Task SetColumnWidth(string key, double width) => InvokeAsync(() =>
+    {
+        if (Disposed || !double.IsFinite(width) || !Columns.Any(column => column.Key == key)) return;
+        Widths[key] = Math.Clamp(Math.Round(width), MinimumWidth, MaximumWidth); StateHasChanged();
+    });
+    private Task ResetColumnWidth(string key) => InvokeAsync(() =>
+    {
+        if (Disposed || !Columns.Any(column => column.Key == key)) return;
+        Widths.Remove(key); AutomaticWidths.Remove(key); RefreshPending = true; StateHasChanged();
+    });
+
+    // JS receives this private proxy rather than the component's public API.
+    private sealed class InteractionBridge(EditingGrid owner)
+    {
+        [JSInvokable] public Task BeginCellEdit(int row, int column) => owner.BeginCellEdit(row, column);
+        [JSInvokable] public Task EndCellEdit() => owner.EndCellEdit();
+        [JSInvokable] public Task CancelCellEdit() => owner.CancelCellEdit();
+        [JSInvokable] public Task UndoEdits() => owner.UndoEdits();
+        [JSInvokable] public Task RedoEdits() => owner.RedoEdits();
+        [JSInvokable] public Task SaveFromKeyboard() => owner.SaveFromKeyboard();
+        [JSInvokable] public Task<bool> LoadMoreRows() => owner.LoadMoreRows();
+        [JSInvokable] public Task<bool> ApplyCellEdits(IJSStreamReference stream) => owner.ApplyCellEdits(stream);
+        [JSInvokable] public Task PasteCells(int row, int column, IJSStreamReference stream) => owner.PasteCells(row, column, stream);
+        [JSInvokable] public Task ReportPasteError(string message) => owner.ReportPasteError(message);
+        [JSInvokable] public Task SetColumnWidth(string key, double width) => owner.SetColumnWidth(key, width);
+        [JSInvokable] public Task ResetColumnWidth(string key) => owner.ResetColumnWidth(key);
+    }
+    private async Task DisconnectAsync()
+    {
+        if (!Connected) return;
+        Connected = false;
+        if (Module is not null) await Module.InvokeVoidAsync("disconnect", Grid);
+        if (WidthModule is not null) await WidthModule.InvokeVoidAsync("dispose", Grid);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Disposed = true;
+        try { await DisconnectAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        if (Module is not null)
+        {
+            try { await Module.DisposeAsync(); }
+            catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        }
+        if (WidthModule is not null)
+        {
+            try { await WidthModule.DisposeAsync(); }
+            catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        }
+        Reference?.Dispose();
+    }
+}

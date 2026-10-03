@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <VersionPrefix>1.1.0</VersionPrefix>
+    <AssemblyName>Flourish.Blazor.Framework</AssemblyName>
+    <RootNamespace>ArkheideSystem.Flourish.Blazor</RootNamespace>
+    <PackageId>Arkheide.Flourish.Blazor.Framework</PackageId>
+    <Authors>ArkheideSystem</Authors>
+    <Description>Native Blazor components and functional browser behavior without a visual skin.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <StaticWebAssetBasePath>_content/Arkheide.Flourish.Blazor.Framework</StaticWebAssetBasePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
+    <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  <PropertyGroup>
+    <CssBundleEntry>framework.css</CssBundleEntry>
+  </PropertyGroup>
+  <Import Project="../../../build/CssBundle.targets" />
+</Project>

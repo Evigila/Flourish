@@ -44,11 +44,14 @@ document.createComment=()=>({isConnected:true,replaceWith(){}});
 document.createElement=()=>new Node();
 globalThis.window=new Node();window.innerHeight=600;
 globalThis.MutationObserver=class{observe(){}disconnect(){this.disconnected=true;}};
-globalThis.getComputedStyle=node=>({getPropertyValue:name=>node.style.getPropertyValue(name)||node.computedTheme?.[name]||''});
+globalThis.getComputedStyle=node=>{
+  const keys=[...new Set([...node.style.values.keys(),...Object.keys(node.computedTheme??{})])];
+  return Object.assign({length:keys.length,getPropertyValue:name=>node.style.getPropertyValue(name)||node.computedTheme?.[name]||''},keys);
+};
 globalThis.CSS={escape:value=>value};
 globalThis.HTMLInputElement=Node;
 globalThis.requestAnimationFrame=fn=>{fn();return 1;};globalThis.cancelAnimationFrame=()=>{};
-const code=await fs.readFile(new URL('../../src/Flourish.Blazor/wwwroot/controls.js',import.meta.url),'utf8');
+const code=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/controls.js',import.meta.url),'utf8');
 const api=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 const event=key=>({key,defaultPrevented:false,preventDefault(){this.defaultPrevented=true;},stopPropagation(){}});
 const trigger=new Node();const panel=new Node();const first=new Node(),second=new Node();panel.children=[first,second];

@@ -1,0 +1,45 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@implements IAsyncDisposable
+@inject IJSRuntime InputJavascript
+<span class="masked-input">
+    <span class="masked-input-display" aria-hidden="true">
+        @for (var index = 0; index < Mask.Length; index++)
+        {
+            var isEntered = index < FormattedValue.Length;
+            <span class="@(isEntered ? "is-entered" : "is-mask")">@(isEntered ? FormattedValue[index] : Mask[index])</span>
+        }
+    </span>
+    <input @attributes="AdditionalAttributes"
+           class="masked-input-control"
+           value="@FormattedValue"
+           data-input-mask="@Mask"
+           inputmode="@InputMode"
+           @oninput="HandleInputAsync" />
+</span>
+
+@code {
+    [Parameter, EditorRequired] public string Mask { get; set; } = string.Empty;
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public string InputMode { get; set; } = "numeric";
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string FormattedValue => InputMaskFormatter.Format(Mask, Value);
+
+    private Task HandleInputAsync(ChangeEventArgs args) => ValueChanged.InvokeAsync(
+        InputMaskFormatter.Normalize(Mask, args.Value?.ToString()));
+
+    private InputBehaviorBinding? InputBehaviors;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        InputBehaviors ??= new(InputJavascript);
+        await InputBehaviors.EnsureAsync();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (InputBehaviors is not null) await InputBehaviors.DisposeAsync();
+
+    }
+}

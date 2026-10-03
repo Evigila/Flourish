@@ -8,8 +8,8 @@ globalThis.document = {
     addEventListener: (name, handler) => { const handlers = documentListeners.get(name) ?? new Set(); handlers.add(handler); documentListeners.set(name, handlers); },
     removeEventListener: (name, handler) => documentListeners.get(name)?.delete(handler)
 };
-globalThis.getComputedStyle = () => ({ fontWeight: '400', fontSize: '17px', fontFamily: 'Segoe UI' });
-const source = await readFile(new URL('../../src/Flourish.Blazor/wwwroot/data.js', import.meta.url), 'utf8');
+globalThis.getComputedStyle = node => ({ fontWeight: '400', fontSize: '17px', fontFamily: 'Segoe UI', paddingLeft: node.tagName ? '16px' : '0px', paddingRight: node.tagName ? '16px' : '0px' });
+const source = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js', import.meta.url), 'utf8');
 const { synchronize, detach } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
 function table(text = 'Alpha', withActions = true) {
@@ -19,10 +19,10 @@ function table(text = 'Alpha', withActions = true) {
         getAttribute(name) { return this.attributes.get(name); },
         setAttribute(name, value) { this.attributes.set(name, value); },
         closest(selector) { return selector === '[data-f-resize]' ? this : null; },
-        focus() {}, setPointerCapture(id) { this.capture = id; },
+        getBoundingClientRect() { return { width: 8 }; }, focus() {}, setPointerCapture(id) { this.capture = id; },
         hasPointerCapture(id) { return this.capture === id; }, releasePointerCapture() { this.capture = null; }
     };
-    const cell = (tagName, textContent) => ({ tagName, dataset: { fColumn: 'name' }, querySelector: () => ({ textContent }) });
+    const cell = (tagName, textContent) => ({ tagName, dataset: { fColumn: 'name' }, querySelector: selector => selector === '[data-f-resize]' ? button : ({ textContent }) });
     const cells = [cell('TH', 'Name'), cell('TD', text)];
     return {
         col, button, style: {}, attributes: new Map(),
@@ -32,7 +32,7 @@ function table(text = 'Alpha', withActions = true) {
             if (selector === '[data-f-resize]') return [button];
             return [];
         },
-        querySelector(selector) { return selector === '.f-data-action-column' && withActions ? {} : null; },
+        querySelector(selector) { return selector === 'th.f-data-actions' && withActions ? { getBoundingClientRect: () => ({ width: 80 }) } : null; },
         setAttribute(name, value) { this.attributes.set(name, value); }
     };
 }

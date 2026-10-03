@@ -1,0 +1,110 @@
+.masked-input-display {
+    display: none;
+}
+.masked-input-control,
+.editing-grid-table .masked-input-control {
+    color: FieldText !important;
+    background-color: Field !important;
+    caret-color: FieldText;
+}
+
+
+.visually-hidden,
+.data-card-label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+@media (max-width: 760px) {
+    .shell-header-identity strong {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: -1px !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip-path: inset(50%) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+    }
+}
+
+
+.app-icon,
+.shell-glyph {
+    width: 1em;
+    height: 1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+}
+.app-icon--solid {
+    fill: currentColor;
+    stroke: none;
+}
+.data-pagination-previous svg,
+.data-pagination-next svg {
+    width: 1em;
+    height: 1em;
+    flex: 0 0 auto;
+}
+
+
+.filled-identity-card {
+    container-name: filled-identity-card;
+    container-type: inline-size;
+}
+
+
+.disclosure-section > summary {
+    display: list-item;
+}
+.disclosure-section > summary::-webkit-details-marker {
+    display: initial;
+}
+.disclosure-section > summary > .toggle-indicator-track {
+    display: none;
+}
+.toggle-indicator-track {
+    flex-basis: auto;
+}
+.toggle-indicator-track::before {
+    content: "\2610";
+}
+.toggle-switch[aria-checked="true"] .toggle-indicator-track::before {
+    content: "\2611";
+}
+.toggle-indicator-thumb {
+    display: none;
+}
+
+
+.notice-trigger-content {
+    visibility: hidden;
+    clip-path: inset(100%);
+    width: max-content;
+    max-width: calc(100vw - 2em);
+    overflow-wrap: anywhere;
+    color: CanvasText;
+    background: Canvas;
+}
+.notice-trigger:hover .notice-trigger-content,
+.notice-trigger:focus-within .notice-trigger-content {
+    visibility: visible;
+    clip-path: none;
+}
+.selection-dropdown-surface .selection-panel,
+.table-column-selector > fieldset,
+.table-advanced-selector > fieldset,
+.row-action-menu-panel {
+    max-height: calc(100dvh - 2em);
+    overflow: auto;
+    color: CanvasText;
+    background: Canvas;
+}

@@ -1,0 +1,23 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<p class="notice @NoticePresentation.CssClass(Severity) @Class"
+   role="@(Role ?? (Announce ? NoticePresentation.Role(Severity) : null))" @attributes="AdditionalAttributes">@ChildContent</p>
+
+@code {
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    public NoticeSeverity Severity { get; set; } = NoticeSeverity.Information;
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? Role { get; set; }
+
+    [Parameter]
+    public bool Announce { get; set; } = true;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

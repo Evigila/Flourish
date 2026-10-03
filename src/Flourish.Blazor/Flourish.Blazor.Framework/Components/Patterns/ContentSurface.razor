@@ -1,0 +1,33 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Patterns
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div @ref="root" class="content-surface @CssClass" style="@Style">
+    <a class="skip-link" href="#@ContentId">@SkipLabel</a>
+    @TitleBar
+    <main @ref="stage" @key="DocumentKey" class="content-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
+</div>
+@code {
+    [Parameter] public RenderFragment? TitleBar { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? ContentClass { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public object? DocumentKey { get; set; }
+    [Parameter] public string ContentId { get; set; } = "application-content";
+    [Parameter] public string SkipLabel { get; set; } = "Skip to content";
+    private ElementReference root, stage;
+    private IJSObjectReference? module;
+    private bool disposed;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (disposed) return;
+        module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/patterns/surfaces.js");
+        await module.InvokeVoidAsync("synchronize", root, stage, null);
+    }
+    public async ValueTask DisposeAsync() {
+        disposed = true;
+        if (module is null) return;
+        try { await module.InvokeVoidAsync("dispose", root); await module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

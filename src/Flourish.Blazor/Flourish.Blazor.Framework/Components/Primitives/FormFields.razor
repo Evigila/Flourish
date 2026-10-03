@@ -1,0 +1,26 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@implements IAsyncDisposable
+@inject IJSRuntime InputJavascript
+
+<div class="form-controls form-field-grid @Class" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private InputBehaviorBinding? InputBehaviors;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        InputBehaviors ??= new(InputJavascript);
+        await InputBehaviors.EnsureAsync();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (InputBehaviors is not null) await InputBehaviors.DisposeAsync();
+
+    }
+}

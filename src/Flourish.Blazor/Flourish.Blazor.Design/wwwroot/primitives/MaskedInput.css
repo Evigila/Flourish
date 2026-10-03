@@ -1,0 +1,27 @@
+.masked-input {
+    width: 100%;
+    background: var(--surface);
+    border-radius: var(--control-radius);
+}
+.masked-input-display,
+.masked-input-control {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: normal;
+}
+.masked-input-display {
+    font-weight: 400;
+    padding: 0 var(--masked-input-inline-padding, 12px);
+}
+.masked-input-display .is-entered {
+    color: var(--ink);
+}
+.masked-input-display .is-mask {
+    color: var(--muted);
+    opacity: 0.52;
+}
+.masked-input-control {
+    caret-color: var(--ink);
+}
+.masked-input-control::selection {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+}

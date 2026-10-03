@@ -1,0 +1,170 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@typeparam TValue where TValue : struct
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<SelectionDropdownSurface>
+<div class="reference-dropdown" @ref="Root" @onkeydown="HandleKeyDownAsync" @onfocusout="CloseIfFocusLeftAsync">
+    <button @ref="Trigger" id="@(Id + "-trigger")" class="reference-trigger selection-trigger" type="button"
+            aria-haspopup="listbox" aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(Id + "-options")"
+            aria-labelledby="@LabelledBy" disabled="@(Disabled || Creating)" @onclick="Toggle">
+        <span>@SelectedName</span><span class="reference-chevron selection-chevron" aria-hidden="true"></span>
+    </button>
+    @if (IsOpen)
+    {
+        <div class="reference-panel selection-panel">
+            <input @ref="SearchInput" class="reference-search selection-search" type="search"
+                   form="@(Id + "-popup-search")" value="@Search" maxlength="@MaximumLength"
+                   aria-label="@SearchLabel" autocomplete="off" disabled="@Creating"
+                   @oninput="SearchChanged" @oninput:stopPropagation @onkeydown="HandleSearchKeyDownAsync" />
+            <div id="@(Id + "-options")" class="reference-options" role="listbox" aria-labelledby="@LabelledBy">
+                @if (AllowNone)
+                {
+                    <button type="button" role="option" aria-selected="@((SelectedId is null && string.IsNullOrWhiteSpace(UnlistedName)) ? "true" : "false")"
+                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(null)">@EmptySelectionText</button>
+                }
+                @if (ShowUnlisted)
+                {
+                    <span class="selection-option reference-option reference-unlisted" role="option" aria-selected="true">@UnlistedName</span>
+                }
+                @foreach (var item in Matches)
+                {
+                    <button type="button" role="option" aria-selected="@(EqualityComparer<TValue?>.Default.Equals(SelectedId, item.Id) ? "true" : "false")"
+                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(item.Id)">@item.Name</button>
+                }
+                @if (Matches.Count == 0 && !ShowUnlisted && !AllowNone)
+                {
+                    <span class="reference-empty">Nenhum item cadastrado.</span>
+                }
+            </div>
+            @if (CanCreate)
+            {
+                <button type="button" class="reference-create selection-create" disabled="@Creating" @onclick="CreateAsync">
+                    @(Creating ? "Adicionando..." : $"Adicionar \"{Search.Trim()}\"")
+                </button>
+            }
+        </div>
+    }
+</div>
+
+</SelectionDropdownSurface>
+
+@code {
+    [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string LabelledBy { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public IReadOnlyList<ReferenceItem<TValue>> Items { get; set; } = [];
+    [Parameter] public TValue? SelectedId { get; set; }
+    [Parameter] public string? UnlistedName { get; set; }
+    [Parameter] public EventCallback<TValue?> SelectionChanged { get; set; }
+    [Parameter] public Func<string, Task<TValue?>>? CreateRequested { get; set; }
+    [Parameter] public string EmptySelectionText { get; set; } = "Nenhum";
+    [Parameter] public string SearchLabel { get; set; } = "Buscar ou adicionar";
+    [Parameter] public int MaximumLength { get; set; } = 120;
+    [Parameter] public bool AllowNone { get; set; } = true;
+    [Parameter] public bool Disabled { get; set; }
+
+    private ElementReference Root;
+    private ElementReference Trigger;
+    private ElementReference SearchInput;
+    private IJSObjectReference? Module;
+    private bool IsOpen;
+    private bool FocusSearch;
+    private bool Creating;
+    private string Search = string.Empty;
+    private string SelectedName => Items.FirstOrDefault(item => EqualityComparer<TValue?>.Default.Equals(item.Id, SelectedId))?.Name
+        ?? (string.IsNullOrWhiteSpace(UnlistedName) ? EmptySelectionText : UnlistedName);
+    private IReadOnlyList<ReferenceItem<TValue>> Matches => Items
+        .Where(item => string.IsNullOrWhiteSpace(Search)
+            || item.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase))
+        .Take(50).ToArray();
+    private bool CanCreate => CreateRequested is not null && !string.IsNullOrWhiteSpace(Search)
+        && !Items.Any(item => string.Equals(item.Name.Trim(), Search.Trim(), StringComparison.OrdinalIgnoreCase));
+    private bool ShowUnlisted => SelectedId is null && !string.IsNullOrWhiteSpace(UnlistedName)
+        && (string.IsNullOrWhiteSpace(Search) || UnlistedName.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase))
+        && !Items.Any(item => string.Equals(item.Name, UnlistedName, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!FocusSearch) return;
+        FocusSearch = false;
+        await SearchInput.FocusAsync();
+    }
+
+    private void Toggle()
+    {
+        if (Disabled || Creating) return;
+        IsOpen = !IsOpen;
+        Search = string.Empty;
+        FocusSearch = IsOpen;
+    }
+
+    private void SearchChanged(ChangeEventArgs args) => Search = args.Value?.ToString() ?? string.Empty;
+
+    private async Task HandleSearchKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (args.Key != "Enter") return;
+        var existing = Items.FirstOrDefault(item =>
+            string.Equals(item.Name.Trim(), Search.Trim(), StringComparison.OrdinalIgnoreCase));
+        if (existing is not null) await SelectAsync(existing.Id);
+        else if (CanCreate) await CreateAsync();
+    }
+
+    private async Task SelectAsync(TValue? id)
+    {
+        if (Disabled || Creating) return;
+        IsOpen = false;
+        Search = string.Empty;
+        await SelectionChanged.InvokeAsync(id);
+        await Trigger.FocusAsync();
+    }
+
+    private async Task CreateAsync()
+    {
+        if (Disabled || Creating || !CanCreate || CreateRequested is null) return;
+        Creating = true;
+        try
+        {
+            var id = await CreateRequested(Search.Trim());
+            if (id is null) return;
+            IsOpen = false;
+            Search = string.Empty;
+            await SelectionChanged.InvokeAsync(id);
+            await Trigger.FocusAsync();
+        }
+        finally { Creating = false; }
+    }
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (args.Key != "Escape" || !IsOpen) return;
+        IsOpen = false;
+        Search = string.Empty;
+        await Trigger.FocusAsync();
+    }
+
+    private async Task CloseIfFocusLeftAsync()
+    {
+        if (!IsOpen) return;
+        await Task.Yield();
+        try
+        {
+            Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/reference-dropdown.js");
+            if (!await Module.InvokeAsync<bool>("containsFocus", Root))
+            {
+                IsOpen = false;
+                Search = string.Empty;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (JSDisconnectedException) { IsOpen = false; }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Module is not null)
+        {
+            try { await Module.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+    }
+}

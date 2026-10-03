@@ -1,0 +1,18 @@
+.form-field-grid :is(.reference-field, .tag-field) {
+    gap: var(--field-label-gap);
+    color: var(--ink-soft);
+    font-size: 17px;
+}
+.form-field-grid :is(.reference-field, .tag-field) > :is(strong, .field-label) {
+    font-weight: var(--field-label-weight);
+}
+
+
+.reference-field {
+    gap: var(--field-label-gap);
+    color: var(--ink-soft);
+    font-size: 17px;
+}
+.field-label {
+    font-weight: var(--field-label-weight);
+}

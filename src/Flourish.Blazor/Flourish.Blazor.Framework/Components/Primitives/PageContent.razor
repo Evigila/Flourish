@@ -1,0 +1,16 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<div class="page-content-frame">
+    @if (Contents is not null)
+    {
+        <PageContents>@Contents</PageContents>
+    }
+    <div class="module-group">@ChildContent</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment? Contents { get; set; }
+}

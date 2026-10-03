@@ -1,0 +1,215 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@typeparam TItem
+
+<span class="search-autocomplete" @onfocusout="CloseAsync">
+    <input id="@Id"
+           type="search"
+           form="@Form"
+           value="@Value"
+           maxlength="@MaximumLength"
+           placeholder="@Placeholder"
+           autocomplete="off"
+           role="combobox"
+           aria-autocomplete="list"
+           aria-expanded="@IsOpen"
+           aria-controls="@ListboxId"
+           aria-activedescendant="@ActiveOptionId"
+           disabled="@Disabled"
+           @oninput="InputAsync"
+           @oninput:stopPropagation
+           @onchange:stopPropagation
+           @onfocus="Open"
+           @onkeydown="HandleKeyDownAsync" />
+    @if (IsOpen)
+    {
+        <span id="@ListboxId" class="search-autocomplete-options" role="listbox" aria-label="@ResultsLabel">
+            @if (Matches.Count == 0)
+            {
+                <span class="search-autocomplete-empty" role="status">@EmptyText</span>
+            }
+            else
+            {
+                @for (var index = 0; index < Matches.Count; index++)
+                {
+                    var optionIndex = index;
+                    var item = Matches[index];
+                    <span id="@OptionId(optionIndex)"
+                          class="search-autocomplete-option @(optionIndex == ActiveIndex ? "is-active" : null)"
+                          role="option"
+                          aria-selected="@(optionIndex == ActiveIndex)"
+                          @onmousedown:preventDefault
+                          @onclick:preventDefault
+                          @onclick="() => SelectAsync(item)">
+                        @TextSelector(item)
+                    </span>
+                }
+            }
+        </span>
+    }
+</span>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<TItem> Items { get; set; } = [];
+
+    [Parameter, EditorRequired]
+    public Func<TItem, string> ValueSelector { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<TItem, string> TextSelector { get; set; } = default!;
+
+    [Parameter]
+    public Func<TItem, string>? SearchTextSelector { get; set; }
+
+    [Parameter]
+    public Func<TItem, string>? KeySelector { get; set; }
+
+    [Parameter]
+    public bool FilterItems { get; set; } = true;
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> InputChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> ItemSelected { get; set; }
+
+    [Parameter]
+    public EventCallback SearchCleared { get; set; }
+
+    [Parameter]
+    public int MaximumLength { get; set; } = 200;
+
+    [Parameter]
+    public int MaximumResults { get; set; } = 8;
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public string? Form { get; set; }
+
+    [Parameter]
+    public string ResultsLabel { get; set; } = "Sugestões da busca";
+
+    [Parameter]
+    public string EmptyText { get; set; } = "Nenhum resultado encontrado.";
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    private bool HasFocus;
+    private int ActiveIndex = -1;
+    private IReadOnlyList<TItem> Matches = [];
+    private string ListboxId => $"{Id}-suggestions";
+    private string? ActiveOptionId => ActiveIndex >= 0 && ActiveIndex < Matches.Count
+        ? OptionId(ActiveIndex)
+        : null;
+    private bool IsOpen => HasFocus && !Disabled && !string.IsNullOrWhiteSpace(Value);
+    protected override void OnParametersSet()
+    {
+        RebuildMatches();
+        if (Disabled || ActiveIndex >= Matches.Count) ActiveIndex = -1;
+    }
+
+    private bool MatchesValue(TItem item)
+    {
+        var query = Value.Trim();
+        var searchable = SearchTextSelector?.Invoke(item) ?? TextSelector(item);
+        return searchable.Contains(query, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task InputAsync(ChangeEventArgs args)
+    {
+        var input = args.Value?.ToString() ?? string.Empty;
+        var wasCleared = !string.IsNullOrEmpty(Value) && string.IsNullOrEmpty(input);
+        HasFocus = true;
+        ActiveIndex = -1;
+        await ValueChanged.InvokeAsync(input);
+        await InputChanged.InvokeAsync(input);
+        if (wasCleared)
+        {
+            HasFocus = false;
+            await SearchCleared.InvokeAsync();
+        }
+    }
+
+    private void Open()
+    {
+        HasFocus = true;
+        RebuildMatches();
+    }
+
+    private async Task CloseAsync()
+    {
+        await Task.Yield();
+        HasFocus = false;
+        ActiveIndex = -1;
+        Matches = [];
+    }
+
+    private async Task HandleKeyDownAsync(KeyboardEventArgs args)
+    {
+        if (!IsOpen) return;
+        if (args.Key == "Escape")
+        {
+            HasFocus = false;
+            ActiveIndex = -1;
+            return;
+        }
+
+        if (Matches.Count == 0) return;
+        if (args.Key == "ArrowDown")
+        {
+            ActiveIndex = (ActiveIndex + 1) % Matches.Count;
+        }
+        else if (args.Key == "ArrowUp")
+        {
+            ActiveIndex = ActiveIndex <= 0 ? Matches.Count - 1 : ActiveIndex - 1;
+        }
+        else if (args.Key == "Enter" && ActiveIndex >= 0)
+        {
+            await SelectAsync(Matches[ActiveIndex]);
+        }
+    }
+
+    private async Task SelectAsync(TItem item)
+    {
+        var selectedValue = ValueSelector(item);
+        HasFocus = false;
+        ActiveIndex = -1;
+        await ValueChanged.InvokeAsync(selectedValue);
+        await ItemSelected.InvokeAsync(item);
+    }
+
+    private string OptionId(int index) => $"{ListboxId}-{index}";
+
+    private void RebuildMatches()
+    {
+        if (!IsOpen)
+        {
+            Matches = [];
+            return;
+        }
+
+        var maximum = Math.Max(1, MaximumResults);
+        var matches = new List<TItem>(maximum);
+        var values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in Items)
+        {
+            if ((FilterItems && !MatchesValue(item)) || !values.Add(KeySelector?.Invoke(item) ?? ValueSelector(item))) continue;
+            matches.Add(item);
+            if (matches.Count == maximum) break;
+        }
+
+        Matches = matches;
+    }
+}

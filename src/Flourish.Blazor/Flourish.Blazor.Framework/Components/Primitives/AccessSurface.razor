@@ -1,0 +1,7 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<main class="access-surface @(Emphasized ? "themed-access-surface" : null)">@ChildContent</main>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Emphasized { get; set; }
+}

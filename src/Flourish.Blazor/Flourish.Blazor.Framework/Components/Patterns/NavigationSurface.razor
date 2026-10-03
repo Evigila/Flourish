@@ -1,0 +1,51 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Patterns
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div @ref="root" class="navigation-surface @CssClass" style="@Style">
+    <a class="skip-link" href="#@ContentId">@SkipLabel</a>
+    @TitleBar
+    <div class="app-body @(ShowSecondary && SecondaryNavigation is not null ? "has-secondary-navigation" : null)">
+        @if (PrimaryNavigation is not null) {
+            <aside class="primary-rail"><nav aria-label="@PrimaryLabel">@PrimaryNavigation</nav></aside>
+        }
+        @if (ShowSecondary && SecondaryNavigation is not null) {
+            <aside class="secondary-rail"><nav aria-label="@SecondaryLabel">@SecondaryNavigation</nav></aside>
+        }
+        <main @ref="stage" @key="DocumentKey" class="application-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
+        <button @ref="top" class="scroll-to-top" type="button" hidden aria-label="@TopLabel" title="@TopLabel" @onclick="ScrollToTop">
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.AppIcon Name="arrow-up" />
+        </button>
+    </div>
+</div>
+@code {
+    [Parameter] public RenderFragment? TitleBar { get; set; }
+    [Parameter] public RenderFragment? PrimaryNavigation { get; set; }
+    [Parameter] public bool ShowSecondary { get; set; } = true;
+    [Parameter] public RenderFragment? SecondaryNavigation { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? ContentClass { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public object? DocumentKey { get; set; }
+    [Parameter] public string ContentId { get; set; } = "application-content";
+    [Parameter] public string SkipLabel { get; set; } = "Skip to content";
+    [Parameter] public string PrimaryLabel { get; set; } = "Modules";
+    [Parameter] public string SecondaryLabel { get; set; } = "Pages";
+    [Parameter] public string TopLabel { get; set; } = "Back to top";
+    private ElementReference root, stage, top;
+    private IJSObjectReference? module;
+    private bool disposed;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (disposed) return;
+        module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/patterns/surfaces.js");
+        await module.InvokeVoidAsync("synchronize", root, stage, top);
+    }
+    private async Task ScrollToTop() { if (module is not null) await module.InvokeVoidAsync("scrollToTop", stage); }
+    public async ValueTask DisposeAsync() {
+        disposed = true;
+        if (module is null) return;
+        try { await module.InvokeVoidAsync("dispose", root); await module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

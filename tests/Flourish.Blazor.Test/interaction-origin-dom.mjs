@@ -1,0 +1,21 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const root = new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/', import.meta.url);
+const originCode = await fs.readFile(new URL('interaction-origin.js', root), 'utf8');
+const originUrl = 'data:text/javascript;base64,' + Buffer.from(originCode).toString('base64');
+const origin = await import(originUrl);
+let count = 0;
+function check(name, action) { action(); count++; console.log('PASS ' + name); }
+const element = (inMenu = false) => ({ isConnected: true, closest: () => inMenu ? {} : null, focus() { document.activeElement = this; } });
+globalThis.document = { body: element(), documentElement: element(), activeElement: null, querySelector: () => null };
+globalThis.MutationObserver = class { observe() {} disconnect() {} };
+const rowTrigger = element();
+check('Transient row-menu invoker survives menu dismissal', () => { origin.rememberInvoker(rowTrigger); assert.equal(origin.resolveInvoker(document.body), rowTrigger); });
+check('Connected ordinary dialog invoker takes precedence', () => { const direct = element(); origin.rememberInvoker(rowTrigger); assert.equal(origin.resolveInvoker(direct), direct); });
+check('Removed menu item resolves to its row trigger once', () => { origin.rememberInvoker(rowTrigger); assert.equal(origin.resolveInvoker(element(true)), rowTrigger); assert.equal(origin.resolveInvoker(document.body), null); });
+check('Disconnected row does not receive focus', () => { rowTrigger.isConnected = false; origin.rememberInvoker(rowTrigger); assert.equal(origin.resolveInvoker(document.body), null); rowTrigger.isConnected = true; });
+const sheetCode = (await fs.readFile(new URL('bottom-sheet.js', root), 'utf8')).replace('./interaction-origin.js', originUrl);
+const sheet = await import('data:text/javascript;base64,' + Buffer.from(sheetCode).toString('base64'));
+const dialog = { open: false, isConnected: true, id: 'test-sheet', addEventListener() {}, querySelector: () => null, getAttribute: () => null, showModal() { this.open = true; document.activeElement = element(); }, close() { this.open = false; } };
+check('Closing async sheet returns focus to originating row action', () => { origin.rememberInvoker(rowTrigger); document.activeElement = document.body; sheet.synchronize(dialog, true, {}); sheet.synchronize(dialog, false, {}); assert.equal(document.activeElement, rowTrigger); });
+console.log(count + ' interaction-origin checks passed.');

@@ -1,0 +1,24 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+<div class="service-menu">
+    <button class="service-menu-trigger" type="button" aria-haspopup="true" aria-controls="@MenuId">
+        <span>@Label</span>
+        <span class="service-menu-chevron" aria-hidden="true"></span>
+    </button>
+    <div class="service-menu-view" id="@MenuId">
+        <nav aria-label="@Label">
+            @foreach (var item in Items)
+            {
+                <a href="@item.Href"><strong>@item.Label</strong></a>
+            }
+        </nav>
+    </div>
+</div>
+
+@code {
+    private readonly string GeneratedId = $"services-{Guid.NewGuid():N}";
+    private string MenuId => Id ?? GeneratedId;
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string Label { get; set; } = "Services";
+    [Parameter] public IReadOnlyList<ServiceLink> Items { get; set; } = [];
+}

@@ -1,0 +1,97 @@
+<Project>
+  <!-- Inline compilation uses the installed .NET SDK; no package, executable or runtime service is required. -->
+  <UsingTask TaskName="BundleCss" TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <Task>
+      <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)BundleCss.cs" />
+    </Task>
+  </UsingTask>
+
+  <ItemGroup>
+    <Content Remove="wwwroot/**/*.css" />
+    <None Remove="wwwroot/**/*.css" />
+    <None Include="wwwroot/**/*.css" />
+    <UpToDateCheckInput Include="$(MSBuildProjectDirectory)/wwwroot/**/*.css" />
+    <UpToDateCheckInput Include="$(MSBuildThisFileDirectory)BundleCss.cs;$(MSBuildThisFileFullPath)" />
+    <UpToDateCheckBuilt Include="$(IntermediateOutputPath)bundled-css/$(CssBundleEntry)" />
+  </ItemGroup>
+
+  <Target Name="GenerateCssBundle"
+          BeforeTargets="ResolveProjectStaticWebAssets"
+          DependsOnTargets="ResolveStaticWebAssetsConfiguration"
+          Condition="'$(CssBundleEntry)' != '' and '$(NoBuild)' != 'true'">
+    <PropertyGroup>
+      <_CssBundleOutputRoot>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)bundled-css/'))</_CssBundleOutputRoot>
+      <_CssBundleOutputPath>$([System.IO.Path]::GetFullPath('$(_CssBundleOutputRoot)/$(CssBundleEntry)'))</_CssBundleOutputPath>
+    </PropertyGroup>
+    <BundleCss SourceRoot="$(MSBuildProjectDirectory)/wwwroot"
+               EntryFile="$(MSBuildProjectDirectory)/wwwroot/$(CssBundleEntry)"
+               OutputFile="$(_CssBundleOutputPath)" />
+    <ItemGroup>
+      <!-- Sources remain modular in Git but are never runtime or NuGet CSS assets. -->
+      <Content Remove="wwwroot/**/*.css" />
+      <_CssBundleCandidate Include="$(_CssBundleOutputPath)">
+        <RelativePath>$(CssBundleEntry)</RelativePath>
+        <OriginalItemSpec>$(_CssBundleOutputPath)</OriginalItemSpec>
+      </_CssBundleCandidate>
+      <FileWrites Include="$(_CssBundleOutputPath)" />
+    </ItemGroup>
+    <DefineStaticWebAssets CandidateAssets="@(_CssBundleCandidate)"
+      FingerprintCandidates="true" FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+      SourceType="Computed" SourceId="$(PackageId)" ContentRoot="$(_CssBundleOutputRoot)/"
+      BasePath="$(StaticWebAssetBasePath)" AssetKind="All" AssetMode="All"
+      AssetRole="Primary" RelatedAsset="" AssetTraitName="" AssetTraitValue=""
+      CopyToOutputDirectory="Never" CopyToPublishDirectory="PreserveNewest">
+      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+      <Output TaskParameter="Assets" ItemName="_CssBundleCandidateAsset" />
+    </DefineStaticWebAssets>
+    <DefineStaticWebAssetEndpoints CandidateAssets="@(_CssBundleCandidateAsset)"
+      ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
+      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+    </DefineStaticWebAssetEndpoints>
+  </Target>
+
+  <Target Name="RestrictCssSourceDiscovery" AfterTargets="ResolveProjectStaticWebAssets"
+          Condition="'$(CssBundleEntry)' != ''">
+    <ItemGroup>
+      <!-- Explicit static asset mappings already expose JS/images and the generated bundle.
+           Do not let development directory discovery expose unbundled internal CSS. -->
+      <StaticWebAssetDiscoveryPattern Remove="$(PackageId)\wwwroot;$(PackageId)/wwwroot" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Keep SDK build gzip metadata for package consumers. Ordinary builds retain the SDK
+       default formats; Brotli is generated only by the SDK publish pipeline. -->
+  <Target Name="KeepCssBundleCompressionInPackage"
+          AfterTargets="ResolveBuildCompressedStaticWebAssetsConfiguration"
+          Condition="'$(CssBundleEntry)' != '' and '$(IsPackable)' == 'true'">
+    <ItemGroup>
+      <_StaticWebAssetExcludedFromPack Remove="@(_CompressedStaticWebAssets)"
+        Condition="'%(SourceId)' == '$(PackageId)' and '%(AssetTraitName)' == 'Content-Encoding' and '%(RelatedAsset)' == '$(_CssBundleOutputPath)'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="NormalizeCssPackageCompressionLinks"
+          AfterTargets="GenerateStaticWebAssetsPackFiles"
+          Condition="'$(CssBundleEntry)' != '' and Exists('$(_GeneratedStaticWebAssetsPropsFile)')">
+    <ItemGroup>
+      <_CssPackagePrimary Include="@(_PackStaticWebAssets)"
+        Condition="'%(SourceId)' == '$(PackageId)' and '%(AssetRole)' == 'Primary' and '%(Filename)%(Extension)' == '$(CssBundleEntry)'" />
+      <_CssPackageCompression Include="@(_PackStaticWebAssets)"
+        Condition="'%(SourceId)' == '$(PackageId)' and '%(AssetTraitName)' == 'Content-Encoding' and '%(RelatedAsset)' == '$(_CssBundleOutputPath)'" />
+    </ItemGroup>
+    <!-- Keep the producer's fingerprint expression in package metadata. The SDK otherwise
+         flattens it to a physical path and Publish creates br endpoints only for the stable alias. -->
+    <XmlPoke Condition="'@(_CssPackagePrimary)' != ''"
+      XmlInputPath="$(_GeneratedStaticWebAssetsPropsFile)"
+      Query="/Project/ItemGroup/StaticWebAsset[SourceId='$(PackageId)' and AssetRole='Primary' and RelativePath='$(CssBundleEntry)']/RelativePath"
+      Value="@(_CssPackagePrimary->'%(RelativePath)')" />
+    <!-- SDK package props keep computed RelatedAsset paths pointing at the producer's obj.
+         Relocate only our compression links using a literal consumer-side MSBuild expression. -->
+    <XmlPoke Condition="'@(_CssPackageCompression)' != ''"
+      XmlInputPath="$(_GeneratedStaticWebAssetsPropsFile)"
+      Query="/Project/ItemGroup/StaticWebAsset[SourceId='$(PackageId)' and AssetTraitName='Content-Encoding']/RelatedAsset"
+      Value="%24([System.IO.Path]::GetFullPath('%24(MSBuildThisFileDirectory)../staticwebassets/$(CssBundleEntry)'))" />
+  </Target>
+</Project>
+

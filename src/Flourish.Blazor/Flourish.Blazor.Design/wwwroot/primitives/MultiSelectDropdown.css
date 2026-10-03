@@ -1,0 +1,9 @@
+.multi-select-options {
+    gap: 4px;
+}
+.multi-select-options p {
+    margin: 0;
+    padding: 10px;
+    color: var(--muted);
+    font-size: 17px;
+}

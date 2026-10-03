@@ -5,49 +5,66 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="src/Flourish.Core/Flourish.Core.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="AnyCPU" />
-    <Platform Solution="*|x64" Project="AnyCPU" />
-    <Platform Solution="*|x86" Project="AnyCPU" />
-  </Project>
-  <Project Path="src/Flourish.WPF/Flourish.WPF.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="*|x86" Project="x86" />
-  </Project>
-  <Project Path="src/Flourish.WinUI3/Flourish.WinUI3.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="AnyCPU" />
-    <Platform Solution="*|x64" Project="AnyCPU" />
-    <Platform Solution="*|x86" Project="AnyCPU" />
-  </Project>
-  <Project Path="src/Gallery.WPF/Gallery.WPF.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="*|x86" Project="x86" />
-  </Project>
-  <Project Path="src/Gallery.WinUI3/Gallery.WinUI3.csproj">
-    <Platform Solution="*|Any CPU" Project="x64" />
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="*|x86" Project="x86" />
-  </Project>
-  <Project Path="tests/Flourish.WPF.Test/Flourish.WPF.Test.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="*|x86" Project="x86" />
-  </Project>
-  <Project Path="tests/Flourish.Core.Test/Flourish.Core.Test.csproj">
-    <Platform Solution="*|Any CPU" Project="AnyCPU" />
-    <Platform Solution="*|ARM64" Project="AnyCPU" />
-    <Platform Solution="*|x64" Project="AnyCPU" />
-    <Platform Solution="*|x86" Project="AnyCPU" />
-  </Project>
-  <Project Path="src/Flourish.Blazor/Flourish.Blazor.csproj" />
-  <Project Path="src/Gallery.Blazor/Gallery.Blazor.csproj" />
-  <Project Path="tests/Flourish.Blazor.Test/Flourish.Blazor.Test.csproj" />
+  <Folder Name="/Shared/">
+    <Project Path="src/Flourish.Core/Flourish.Core.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="AnyCPU" />
+      <Platform Solution="*|x64" Project="AnyCPU" />
+      <Platform Solution="*|x86" Project="AnyCPU" />
+    </Project>
+    <Project Path="tests/Flourish.Core.Test/Flourish.Core.Test.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="AnyCPU" />
+      <Platform Solution="*|x64" Project="AnyCPU" />
+      <Platform Solution="*|x86" Project="AnyCPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/Flourish.WPF/">
+    <Project Path="src/Flourish.WPF/Flourish.WPF.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Gallery.WPF/Gallery.WPF.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="tests/Flourish.WPF.Test/Flourish.WPF.Test.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Flourish.WINUI3/">
+    <Project Path="src/Flourish.WinUI3/Flourish.WinUI3.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="AnyCPU" />
+      <Platform Solution="*|x64" Project="AnyCPU" />
+      <Platform Solution="*|x86" Project="AnyCPU" />
+    </Project>
+    <Project Path="src/Gallery.WinUI3/Gallery.WinUI3.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Flourish.Blazor/">
+    <Project Path="src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
+    <Project Path="src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+    <Project Path="src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
+    <Project Path="src/Flourish.Blazor/Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
+    <Project Path="src/Gallery.Blazor/Gallery.Blazor.csproj" />
+    <Project Path="tests/Flourish.Blazor.Test/Flourish.Blazor.Test.csproj" />
+    <Project Path="tests/Flourish.Blazor.Native/Flourish.Blazor.Native.csproj" />
+  </Folder>
+  <Folder Name="/Solutions/">
+    <File Path="src/Flourish.Blazor/Flourish.Blazor.slnx" />
+    <File Path="src/Flourish.WPF/Flourish.WPF.slnx" />
+    <File Path="src/Flourish.WinUI3/Flourish.WINUI3.slnx" />
+  </Folder>
 </Solution>

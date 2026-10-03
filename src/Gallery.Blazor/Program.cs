@@ -6,7 +6,7 @@ using ArkheideSystem.Gallery.Blazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddFlourish(ui =>
-    ui.UseTitleBar(bar => bar.SetApplicationTitle("Workspace"))
+    ui.UseTitleBar(bar => bar.SetApplicationTitle("Gallery"))
         .UseNavigation(nav =>
             nav.AddGroup(
                     "overview",
@@ -35,9 +35,11 @@ builder.Services.AddFlourish(ui =>
                         group
                             .AddItem("控件", "/controls", "grid")
                             .AddItem("样式", "/appearance", "palette")
+                            .AddItem("组合布局", "/patterns", "list")
                 )
         )
 );
+builder.Services.AddFlourishDesign();
 builder.Services.AddScoped<RecordStore>();
 
 var app = builder.Build();
@@ -45,10 +47,10 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/error", createScopeForErrors: true);
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
-app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/not-found");
 app.UseAntiforgery();
-app.MapStaticAssets();
+app.MapStaticAssets().ShortCircuit();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.Run();

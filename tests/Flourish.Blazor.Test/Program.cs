@@ -69,7 +69,7 @@ Test("page bounds survive deletion, empty results, and invalid input", () => {
     Throws<ArgumentOutOfRangeException>(() => TableData<Record>.ClampPage(1, 8, 0));
 });
 Test("runtime appearance is scoped to the user circuit", () => {
-    var services = new ServiceCollection(); services.AddFlourish();
+    var services = new ServiceCollection(); services.AddFlourish(); services.AddFlourishDesign();
     using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     using var first = provider.CreateScope(); using var second = provider.CreateScope();
     var a = first.ServiceProvider.GetRequiredService<IAppearanceService>(); var b = second.ServiceProvider.GetRequiredService<IAppearanceService>();
@@ -78,23 +78,24 @@ Test("runtime appearance is scoped to the user circuit", () => {
     Equal("#153A32", b.Current.Primary); Equal(ApplicationTheme.Light, b.Current.Theme);
 });
 Test("unchanged appearance does not emit duplicate state notifications", () => {
-    var services = new ServiceCollection(); services.AddFlourish(); using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
+    var services = new ServiceCollection(); services.AddFlourish(); services.AddFlourishDesign(); using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
     var appearance = scope.ServiceProvider.GetRequiredService<IAppearanceService>(); var count = 0;
     appearance.Changed += (_, _) => count++;
     appearance.SetColors("#153a32", "#16745f"); appearance.SetTheme(ApplicationTheme.Light); Equal(0, count);
     appearance.SetTheme(ApplicationTheme.Dark); appearance.SetTheme(ApplicationTheme.Dark); Equal(1, count);
 });
-Test("duplicate host registration is rejected", () => { var services = new ServiceCollection(); services.AddFlourish(); Throws<InvalidOperationException>(() => services.AddFlourish()); });
+Test("duplicate host registration is rejected", () => { var services = new ServiceCollection(); services.AddFlourish(); services.AddFlourishDesign(); Throws<InvalidOperationException>(() => services.AddFlourish()); });
 Test("captured startup and nested builders cannot mutate completed options", () => {
     IApplicationBuilder? app = null; ITitleBarBuilder? title = null; IAppearanceBuilder? appearance = null; ILayoutBuilder? layout = null; INavigationGroupBuilder? group = null;
     var services = new ServiceCollection();
     services.AddFlourish(builder => {
         app = builder;
         builder.UseTitleBar(value => { title = value; value.SetApplicationTitle("Test"); });
-        builder.ConfigureAppearance(value => appearance = value);
+
         builder.ConfigureLayout(value => layout = value);
         builder.UseNavigation(value => value.AddGroup("pages", "Pages", "page", value => { group = value; value.AddItem("Home", "/"); }));
     });
+    services.AddFlourishDesign(value => appearance = value);
     Throws<InvalidOperationException>(() => app!.UseTitleBar());
     Throws<InvalidOperationException>(() => title!.SetApplicationTitle("Late"));
     Throws<InvalidOperationException>(() => appearance!.SetTheme(ApplicationTheme.Dark));
@@ -122,7 +123,7 @@ Test("arbitrary palettes provide AA text on primary/accent and both reference su
 });
 Test("invalid colors and CSS font declarations cannot reach theme variables", () => {
     foreach (var value in new[] { "red", "#fff", "#GG0000", "#000000;background:red" }) Throws<ArgumentException>(() => AppearancePalette.Create(value, "#000000"));
-    var services = new ServiceCollection(); Throws<ArgumentException>(() => services.AddFlourish(builder => builder.ConfigureAppearance(appearance => appearance.SetFont("Segoe UI; color:red"))));
+    var services = new ServiceCollection(); Throws<ArgumentException>(() => services.AddFlourishDesign(appearance => appearance.SetFont("Segoe UI; color:red")));
 });
 
 async Task<string> Render<TComponent>(Dictionary<string, object?>? parameters = null, Action<IApplicationBuilder>? configure = null, string path = "/records") where TComponent : IComponent {
@@ -296,6 +297,10 @@ AsyncTest("native numeric values remain invariant under a decimal-comma locale",
         Check(html.Contains("type=\"number\"") && html.Contains("value=\"12.5\"") && !html.Contains("value=\"12,5\""), "Localized numeric formatting invalidated a native number input.");
     } finally { CultureInfo.CurrentCulture = previous; }
 });
+
+GridChecks.Register(tests);
+DropdownChecks.Register(tests);
+LifecycleChecks.Register(tests);
 
 var passed = 0;
 foreach (var test in tests) {

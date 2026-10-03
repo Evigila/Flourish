@@ -1,0 +1,59 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<span class="row-action-menu">
+    <button @ref="Trigger"
+            id="@TriggerId"
+            class="row-action-menu-trigger"
+            type="button"
+            aria-label="@Label"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="@MenuId"
+            @onclick="ToggleAsync">•••</button>
+    <div @ref="Menu"
+         id="@MenuId"
+         class="row-action-menu-panel"
+         role="menu"
+         aria-labelledby="@TriggerId"
+         popover="manual">
+        @ChildContent
+    </div>
+</span>
+
+@code {
+    private readonly string Id = $"row-actions-{Guid.NewGuid():N}";
+    private ElementReference Trigger;
+    private ElementReference Menu;
+    private IJSObjectReference? Module;
+    private string TriggerId => $"{Id}-trigger";
+    private string MenuId => $"{Id}-menu";
+
+    [Parameter]
+    public string Label { get; set; } = "Abrir ações do registro";
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    private async Task ToggleAsync()
+    {
+        Module ??= await JS.InvokeAsync<IJSObjectReference>(
+            "import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/row-action-menu.js");
+        await Module.InvokeVoidAsync("toggle", Trigger, Menu);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Module is null) return;
+        try
+        {
+            await Module.InvokeVoidAsync("dispose", Trigger, Menu);
+            await Module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // The document already closed its top-layer popovers.
+        }
+    }
+}

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Flourish.WPF.csproj" />
+  <Project Path="../Flourish.Core/Flourish.Core.csproj" />
+  <Project Path="../Gallery.WPF/Gallery.WPF.csproj" />
+  <Project Path="../../tests/Flourish.WPF.Test/Flourish.WPF.Test.csproj" />
+  <Project Path="../../tests/Flourish.Core.Test/Flourish.Core.Test.csproj" />
+</Solution>

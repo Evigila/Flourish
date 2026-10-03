@@ -4,11 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <base href="/" />
-    <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor/flourish.css" />
+    <link rel="icon" type="image/svg+xml" href="@Assets["gallery.svg"]" />
+    <link rel="stylesheet" href="@Assets["_content/Arkheide.Flourish.Blazor.Framework/framework.css"]" />
+    <link rel="stylesheet" href="@Assets["_content/Arkheide.Flourish.Blazor.Design/design.css"]" />
+    <ImportMap />
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 <body class="f-document">
     <Routes @rendermode="InteractiveServer" />
-    <script src="_framework/blazor.web.js"></script>
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 </html>

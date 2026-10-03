@@ -1,0 +1,48 @@
+.form-action-bar {
+    width: 100%;
+    margin: 44px auto 0;
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a) {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 24px 16px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--chrome-ink);
+    font: inherit;
+    font-size: clamp(28px, 3.4vw, 40px);
+    font-weight: 740;
+    letter-spacing: -.035em;
+    line-height: 1.14;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a) + :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a) {
+    border-left: 1px solid color-mix(in srgb, var(--chrome-ink) 24%, transparent);
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a):hover:not(:disabled) {
+    background: color-mix(in srgb, var(--chrome-ink) 12%, transparent);
+    color: var(--chrome-ink);
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a):active:not(:disabled) {
+    background: color-mix(in srgb, var(--chrome-ink) 20%, transparent);
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a):focus-visible {
+    outline: 3px solid var(--chrome-ink);
+    outline-offset: -6px;
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button:disabled, a[aria-disabled="true"]) {
+    opacity: .55;
+    cursor: not-allowed;
+}
+@media (max-width: 760px) {
+.form-action-bar .uniform-grid.uniform-grid-filled.uniform-grid-narrow-2 > :nth-child(2n+1) {
+    border-left: 0;
+}
+.form-action-bar .uniform-grid.uniform-grid-filled.uniform-grid-narrow-2 > :nth-child(n+3) {
+    border-top: 1px solid color-mix(in srgb, var(--chrome-ink) 24%, transparent);
+}
+}

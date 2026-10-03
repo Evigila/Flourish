@@ -1,0 +1,71 @@
+.row-action-menu-trigger {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--control-radius);
+    cursor: pointer;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+.row-action-menu-trigger:hover,
+.row-action-menu-trigger[aria-expanded="true"] {
+    background: var(--row-hover);
+    border-color: var(--line);
+}
+.row-action-menu-trigger:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+.row-action-menu-panel {
+    width: max-content;
+    max-width: min(320px, calc(100vw - 24px));
+    margin: 0;
+    padding: 6px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-card);
+}
+.row-action-menu-panel::backdrop {
+    background: transparent;
+}
+.row-action-menu-panel .table-action,
+.row-action-menu-panel a,
+.row-action-menu-panel button {
+    width: 100%;
+    padding: 8px 10px;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 650;
+    text-align: left;
+    text-decoration: none;
+}
+.row-action-menu-panel .table-action:hover,
+.row-action-menu-panel a:hover,
+.row-action-menu-panel button:hover,
+.row-action-menu-panel [role="menuitem"]:focus-visible {
+    background: var(--row-hover);
+    outline: 0;
+}
+.row-action-menu-panel .danger-action {
+    color: var(--danger);
+}
+.row-action-menu-panel .menu-section-label {
+    padding: 8px 10px 4px;
+    color: var(--muted);
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}

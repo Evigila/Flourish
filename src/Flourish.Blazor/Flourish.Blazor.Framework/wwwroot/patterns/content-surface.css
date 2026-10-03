@@ -1,0 +1,230 @@
+/* Reusable surface layout and content flow. */
+.content-surface {
+--topbar-height: auto; --surface-content-width: 100%; --surface-page-gutter: 0px;
+}
+
+.content-surface {
+--surface-content-gutter: max(var(--surface-page-gutter), calc((100% - var(--surface-content-width)) / 2));
+    display: grid;
+    grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.content-surface .skip-link {
+position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    transform: translateY(-180%);
+}
+
+.content-surface .skip-link:focus {
+transform: translateY(0);
+}
+
+.content-surface .content-topbar {
+position: relative;
+    z-index: 50;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: var(--topbar-height);
+}
+
+.content-surface .content-product,
+.content-surface .content-actions,
+.content-surface .surface-brand {
+display: flex;
+    align-items: center;
+}
+
+.content-surface .content-product {
+min-width: 0;
+    flex: 1;
+}
+
+.content-surface .surface-brand {
+align-self: stretch;
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.content-surface .surface-logo {
+display: grid;
+    align-self: stretch;
+    place-items: center;
+    overflow: hidden;
+}
+
+.content-surface .surface-logo img {
+display: block;
+    max-width: 100%;
+}
+
+.content-surface .surface-title {
+display: flex;
+    min-width: 0;
+    align-items: baseline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.content-surface .content-actions {
+min-width: 0;
+    flex: 0 0 auto;
+}
+
+.content-surface .content-actions  .content-identity,
+.content-surface .content-actions  .content-logout {
+display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-surface .content-actions  .content-identity strong {
+display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.content-surface .content-stage {
+min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-anchor: none;
+    overscroll-behavior: contain;
+}
+
+.content-surface  .page-root {
+min-width: 0;
+    min-height: 100%;
+}
+
+.content-surface  .page-heading {
+position: sticky;
+    top: 0;
+    z-index: 15;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.content-surface  .page-heading > div {
+min-width: 0;
+}
+
+.content-surface  .page-heading h1 {
+overflow-wrap: anywhere;
+}
+
+.content-surface  .page-module {
+min-width: 0;
+}
+
+.content-surface  .section-heading {
+display: flex;
+    min-height: 0;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.content-surface  .primary-action,
+.content-surface  .secondary-action,
+.content-surface  .table-action,
+.content-surface  .text-action {
+min-height: var(--control-height);
+}
+
+.content-surface  .form-surface {
+max-width: 820px;
+}
+
+.content-surface  .form-surface .form-fieldset {
+display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.content-surface  .form-surface .form-fieldset > label {
+display: grid;
+    align-content: start;
+    min-width: 0;
+}
+
+.content-surface  .table-scroll {
+width: 100%;
+    overflow-x: auto;
+}
+
+.content-surface  .data-table {
+border-collapse: separate;
+    border-spacing: 0;
+}
+
+.content-surface  .record-grid,
+.content-surface  .record-grid.compact {
+display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.content-surface  .record-grid > div {
+min-height: 98px;
+}
+
+.content-surface  .module-content {
+overflow: visible;
+}
+
+.content-surface  .empty-state {
+max-width: 760px;
+}
+
+@media (max-width: 760px) {
+    .content-surface .content-actions  .content-identity strong {
+    position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+    }
+
+    .content-surface  .page-heading {
+    display: block;
+    }
+
+    .content-surface  .page-heading .secondary-action,
+    .content-surface  .page-heading > .primary-action {
+    width: 100%;
+    }
+
+    .content-surface  .section-heading {
+    display: block;
+    }
+
+    .content-surface  .form-surface .form-fieldset,
+    .content-surface  .record-grid,
+    .content-surface  .record-grid.compact {
+    grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .content-surface .surface-context {
+    display: none;
+    }
+
+    .content-surface  .primary-action,
+    .content-surface  .secondary-action {
+    width: 100%;
+    }
+}
+
+.content-surface .surface-logo {
+width: max-content; flex: 0 0 auto;
+}

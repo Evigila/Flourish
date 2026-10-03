@@ -1,0 +1,101 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+@code {
+    [Parameter]
+    public bool HasUnsavedChanges { get; set; }
+
+    [Parameter]
+    public string Message { get; set; } = "Há alterações não salvas. Deseja sair e descartar o que foi preenchido?";
+
+    private IDisposable? LocationChangingRegistration;
+    private IJSObjectReference? Module;
+    private string? ApprovedDestination;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                LocationChangingRegistration = Navigation.RegisterLocationChangingHandler(ConfirmInternalNavigationAsync);
+            }
+            catch (NotSupportedException)
+            {
+                // Static HTML rendering has no interactive navigation lifecycle to protect.
+            }
+        }
+
+        try
+        {
+            await (await GetModuleAsync()).InvokeVoidAsync("setUnsavedChanges", HasUnsavedChanges);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException)
+        {
+            // The page is already leaving, so the browser owns the remaining lifecycle.
+        }
+    }
+
+    public async Task NavigateToAsync(string destination, bool forceLoad = false, bool replace = false)
+    {
+        ApprovedDestination = Normalize(destination);
+        if (forceLoad)
+            await (await GetModuleAsync()).InvokeVoidAsync("allowNextExternalNavigation");
+
+        Navigation.NavigateTo(destination, forceLoad, replace);
+    }
+
+    private async ValueTask<IJSObjectReference> GetModuleAsync() =>
+        Module ??= await JS.InvokeAsync<IJSObjectReference>(
+            "import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/navigation-guard.js");
+
+    private async ValueTask ConfirmInternalNavigationAsync(LocationChangingContext context)
+    {
+        var target = Normalize(context.TargetLocation);
+        if (string.Equals(ApprovedDestination, target, StringComparison.OrdinalIgnoreCase))
+        {
+            ApprovedDestination = null;
+            return;
+        }
+
+        if (!HasUnsavedChanges || IsCurrentLocation(target))
+            return;
+
+        if (!await JS.InvokeAsync<bool>("confirm", Message))
+            context.PreventNavigation();
+    }
+
+    private bool IsCurrentLocation(string target) =>
+        string.Equals(WithoutFragment(Normalize(Navigation.Uri)), WithoutFragment(target),
+            StringComparison.OrdinalIgnoreCase);
+
+    private static string WithoutFragment(string location)
+    {
+        var fragmentStart = location.IndexOf('#', StringComparison.Ordinal);
+        return fragmentStart < 0 ? location : location[..fragmentStart];
+    }
+
+    private string Normalize(string destination)
+    {
+        var absolute = Navigation.ToAbsoluteUri(destination);
+        return absolute.GetLeftPart(UriPartial.Path) + absolute.Query + absolute.Fragment;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        LocationChangingRegistration?.Dispose();
+        if (Module is null) return;
+
+        try
+        {
+            await Module.InvokeVoidAsync("dispose");
+            await Module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // The browser already released the external-navigation listener.
+        }
+    }
+}

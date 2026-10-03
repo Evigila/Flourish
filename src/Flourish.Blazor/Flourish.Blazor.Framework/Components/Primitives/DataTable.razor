@@ -1,0 +1,981 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@typeparam TItem
+@inject NavigationManager Navigation
+@inject ArkheideSystem.Flourish.Blazor.Abstract.ITablePreferences Preferences
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+@using System.Globalization
+
+<div @ref="GridRoot" class="data-grid">
+    @if (ShowSearch && Columns.Any(column => column.CanSearch))
+    {
+        <DataSearch TItem="TItem" Columns="Columns" ColumnKey="@LocalSearchColumn" Value="@LocalSearchText"
+                             Changed="ChangeLocalSearchAsync" Disabled="@(BulkEditing || EditingBusy)" />
+    }
+    <div class="table-column-tools">
+        <DataPager TotalCount="Pagination.TotalCount" CurrentPage="Pagination.CurrentPage" PageSize="Pagination.PageSize"
+                            PageChanged="ChangePageAsync" IsLimited="IsLimited" Disabled="EditingBusy" />
+        @if (Purpose == TablePurpose.Registry && Columns.Count > 0)
+        {
+            <div class="table-view-tools">
+                <div class="data-view-switch" role="radiogroup" aria-label="Modo de exibição">
+                    <button type="button" role="radio" aria-checked="@(ViewMode == DataViewMode.List ? "true" : "false")"
+                            aria-label="Lista" title="Lista"
+                            class="data-view-option @(ViewMode == DataViewMode.List ? "is-selected" : null)"
+                            @onclick="() => SetViewMode(DataViewMode.List)">
+                        <svg class="data-view-icon" aria-hidden="true" viewBox="0 0 490.667 490.667"><path d="M469.333,224h-448C9.551,224,0,233.551,0,245.333c0,11.782,9.551,21.333,21.333,21.333h448c11.782,0,21.333-9.551,21.333-21.333C490.667,233.551,481.115,224,469.333,224z M21.333,117.333h448c11.782,0,21.333-9.551,21.333-21.333s-9.551-21.333-21.333-21.333h-448C9.551,74.667,0,84.218,0,96S9.551,117.333,21.333,117.333z M469.333,373.333h-448C9.551,373.333,0,382.885,0,394.667C0,406.449,9.551,416,21.333,416h448c11.782,0,21.333-9.551,21.333-21.333C490.667,382.885,481.115,373.333,469.333,373.333z" /></svg>
+                        @if (ViewMode == DataViewMode.List) { <span>Lista</span> }
+                    </button>
+                    <button type="button" role="radio" aria-checked="@(ViewMode == DataViewMode.Grid ? "true" : "false")"
+                            aria-label="Grade" title="Grade"
+                            class="data-view-option @(ViewMode == DataViewMode.Grid ? "is-selected" : null)"
+                            disabled="@BulkEditing" @onclick="() => SetViewMode(DataViewMode.Grid)">
+                        <svg class="data-view-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M0,3v8H11V0H3A3,3,0,0,0,0,3Z M21,0H13V11H24V3A3,3,0,0,0,21,0Z M0,21a3,3,0,0,0,3,3h8V13H0Z M13,24h8a3,3,0,0,0,3-3V13H13Z" /></svg>
+                        @if (ViewMode == DataViewMode.Grid) { <span>Grade</span> }
+                    </button>
+                </div>
+                <details class="table-column-selector" name="@ToolGroupName">
+                    <summary class="secondary-action">Exibição</summary>
+                    <fieldset aria-label="@(ViewMode == DataViewMode.List ? "Visibilidade e ordem das colunas" : "Visibilidade das informações")">
+                        @foreach (var column in OrderedColumns)
+                        {
+                            <div class="column-option @(CanReorder(column) ? "is-reorderable" : "is-reorder-disabled") @(!column.CanHide ? "is-fixed" : null)"
+                                 draggable="@(CanReorder(column) ? "true" : "false")"
+                                 data-column-drag-key="@column.Key"
+                                 @ondragstart="() => StartDragging(column)"
+                                 @ondragend="StopDragging"
+                                 @ondragover:preventDefault
+                                 @ondrop="() => DropColumn(column.Key)">
+                                <button class="column-drag-handle" type="button"
+                                        disabled="@(!CanReorder(column))"
+                                        aria-label="@($"Reordenar {column.Label}")"
+                                        aria-pressed="@(KeyboardMovingKey == column.Key)"
+                                        @onkeydown:preventDefault="@(KeyboardMovingKey == column.Key)"
+                                        @onkeydown="eventArgs => ReorderColumnWithKeyboard(eventArgs, column)">
+                                    <span aria-hidden="true">⠿</span>
+                                </button>
+                                <label>
+                                    <input type="checkbox"
+                                           checked="@IsVisible(column)"
+                                           disabled="@(!column.CanHide)"
+                                           @onchange:stopPropagation
+                                           @onchange="eventArgs => SetVisibility(column, eventArgs.Value as bool? == true)" />
+                                    <span aria-hidden="true">✓</span>
+                                    <span class="column-option-name">@column.Label</span>
+                                </label>
+                            </div>
+                        }
+                    </fieldset>
+                    <span class="visually-hidden" aria-live="polite">@KeyboardReorderStatus</span>
+                </details>
+                @if (BulkEditRequested.HasDelegate || SpreadsheetEditHref is not null)
+                {
+                    <details class="table-advanced-selector" name="@ToolGroupName" @key="BulkEditing">
+                        <summary class="secondary-action">Edição avançada</summary>
+                        <div class="table-popup-panel advanced-edit-options">
+                            @if (BulkEditRequested.HasDelegate)
+                            {
+                                <button class="table-popup-item" type="button" disabled="@(EditingBusy || BulkEditing)"
+                                        @onclick="BeginBulkEditAsync">Edição em massa</button>
+                            }
+                            @if (SpreadsheetEditHref is not null)
+                            {
+                                <a class="table-popup-item" href="@SpreadsheetEditHref">Edição em tabela</a>
+                            }
+                        </div>
+                    </details>
+                }
+            </div>
+        }
+    </div>
+    @if (BulkEditing && BulkEditActions is not null)
+    {
+        <div class="bulk-edit-actions" aria-live="polite">@BulkEditActions</div>
+    }
+    @if (BulkEditing || Purpose != TablePurpose.Registry || ViewMode == DataViewMode.List)
+    {
+        <div class="table-scroll" tabindex="0" role="region" aria-label="@Label">
+            <table class="data-table" data-resizable-table style="@TableWidthStyle">
+                <colgroup>
+                    @if (BulkEditing) { <col style="width:44px" /> }
+                    @foreach (var column in VisibleColumns)
+                    {
+                        <col @key="column.Key" data-column-key="@column.Key" data-column-width-mode="@(ColumnWidths.ContainsKey(column.Key) ? "manual" : "auto")"
+                             style="@ColumnWidthStyle(column.Key)" />
+                    }
+                    <col data-column-fill />
+                    @if (HasActions) { <col style="width:80px" /> }
+                </colgroup>
+                <thead>
+                    <tr>
+                        @if (BulkEditing)
+                        {
+                            <th scope="col" class="edit-selection">
+                                <input type="checkbox" aria-label="Selecionar todos os registros carregados"
+                                       checked="@AllEditSelected" disabled="@EditingBusy"
+                                       @onchange="() => ToggleAllEditSelection.InvokeAsync()" />
+                            </th>
+                        }
+                        @foreach (var column in VisibleColumns)
+                        {
+                            <th @key="column.Key" scope="col" class="data-column-header" aria-sort="@ColumnSortState(column)">
+                                @if (CanSort(column))
+                                {
+                                    <button type="button" class="data-column-sort" disabled="@EditingBusy"
+                                            aria-label="@ColumnSortAction(column)" title="@ColumnSortAction(column)"
+                                            @onclick="() => CycleSort(column)">
+                                        <span class="data-column-label" title="@column.Label">@column.Label</span>
+                                        @if (SortKey == column.Key)
+                                        {
+                                            <svg class="data-sort-arrow" aria-hidden="true" viewBox="0 0 12 12"><path d="@(SortDirection == SortDirection.Descending ? "M1 3h10L6 9z" : "M1 9h10L6 3z")" /></svg>
+                                        }
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="data-column-label" title="@column.Label">@column.Label</span>
+                                }
+                                <span class="data-column-resizer" data-column-resize="@column.Key"
+                                      role="separator" tabindex="0" aria-orientation="vertical"
+                                      aria-label="@($"Largura de {column.Label}")" aria-valuemin="72" aria-valuemax="100000"
+                                      aria-valuenow="@ColumnWidth(column.Key)"
+                                      aria-valuetext="@($"{ColumnWidth(column.Key)} pixels")"
+                                      title="Arraste para ajustar a largura; use as setas para ajustar pelo teclado"></span>
+                            </th>
+                        }
+                        <th class="table-fill" aria-hidden="true"></th>
+                        @if (HasActions)
+                        {
+                            <th scope="col" class="table-actions"><span class="visually-hidden">Ações</span></th>
+                        }
+                    </tr>
+                    @if (BulkEditing && BulkEditCell is not null)
+                    {
+                        <tr class="bulk-edit-row">
+                            <td class="edit-selection"><span class="visually-hidden">Valores a aplicar aos registros selecionados</span></td>
+                            @foreach (var column in VisibleColumns)
+                            {
+                                <td @key="column.Key">@BulkEditCell(column)</td>
+                            }
+                            <td class="table-fill" aria-hidden="true"></td>
+                            @if (HasActions) { <td class="table-actions"></td> }
+                        </tr>
+                    }
+                </thead>
+                <tbody>
+                    @for (var rowIndex = 0; rowIndex < ListItems.Count; rowIndex++)
+                    {
+                        var item = ListItems[rowIndex];
+                        var hasDefaultAction = !BulkEditing && HasDefaultAction(item);
+                        <tr @key="ItemKeyFor(item)"
+                            hidden="@(RetainsEditingRows && (rowIndex < Pagination.Offset || rowIndex >= Pagination.Offset + Pagination.PageSize))"
+                            class="@(hasDefaultAction ? "is-interactive" : null)"
+                            @ondblclick="@(hasDefaultAction ? EventCallback.Factory.Create<MouseEventArgs>(this, () => InvokeDefaultActionAsync(item)) : default(EventCallback<MouseEventArgs>))">
+                            @if (BulkEditing)
+                            {
+                                <td class="edit-selection" @ondblclick:stopPropagation>
+                                    <input type="checkbox" aria-label="@($"Selecionar {EditSelectionLabel?.Invoke(item) ?? "registro"}")"
+                                           checked="@(IsSelectedForEditing?.Invoke(item) == true)" disabled="@EditingBusy"
+                                           @onchange="() => ToggleEditSelection.InvokeAsync(item)" />
+                                </td>
+                            }
+                            @foreach (var column in VisibleColumns)
+                            {
+                                <td @key="column.Key" class="data-cell">
+                                    <div class="data-cell-content" title="@(column.CardField == CardField.Image ? null : column.Value(item))">
+                                        @if (column.CardField == CardField.Image)
+                                        {
+                                            var source = column.Value(item);
+                                            @if (!string.IsNullOrWhiteSpace(source))
+                                            {
+                                                <img class="data-table-image" src="@source" alt="" loading="lazy" />
+                                            }
+                                            else
+                                            {
+                                                <span class="muted">Sem imagem</span>
+                                            }
+                                        }
+                                        else if (column.UsesTemplate && CellTemplate is not null)
+                                        {
+                                            @CellTemplate(new DataCellContext<TItem>(item, column))
+                                        }
+                                        else
+                                        {
+                                            @column.Value(item)
+                                        }
+                                    </div>
+                                </td>
+                            }
+                            <td class="table-fill" aria-hidden="true"></td>
+                            @if (HasActions)
+                            {
+                                <td class="table-actions" @ondblclick:stopPropagation>
+                                    @if (HasRowActions(item)) { @RowActionsFor(item) }
+                                </td>
+                            }
+                        </tr>
+                    }
+                    @if (RenderedItems.Count == 0)
+                    {
+                        <tr><td class="empty-row" title="@EmptyMessage" colspan="@ColumnCount">@EmptyMessage</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="data-card-grid" role="list" aria-label="@Label">
+            @foreach (var item in RenderedItems)
+            {
+                var hasDefaultAction = HasDefaultAction(item);
+                <article @key="ItemKeyFor(item)"
+                         class="data-card @(hasDefaultAction ? "is-interactive" : null)"
+                         role="listitem"
+                         @ondblclick="@(hasDefaultAction ? EventCallback.Factory.Create<MouseEventArgs>(this, () => InvokeDefaultActionAsync(item)) : default(EventCallback<MouseEventArgs>))">
+                    @if (HasStructuredCardShape)
+                    {
+                        @if (ShowCardMedia)
+                        {
+                            var imageColumn = CardColumns(CardField.Image).FirstOrDefault();
+                            var source = imageColumn?.Value(item);
+                            <div class="data-card-media">
+                            @if (imageColumn is not null && !string.IsNullOrWhiteSpace(source))
+                            {
+                                <img class="data-card-image" src="@source" alt="" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="data-card-image-placeholder">
+                                    <span>Sem imagem</span>
+                                </div>
+                            }
+                            </div>
+                        }
+                        @if (HasVisibleStructuredContent)
+                        {
+                            <div class="data-card-content">
+                                @foreach (var column in CardColumns(CardField.Title))
+                                {
+                                    <div class="@CardFieldClass(column)">
+                                        <span class="data-card-label">@column.Label</span>
+                                        <div class="data-card-field-value" title="@column.Value(item)">
+                                        @if (column.UsesTemplate && CellTemplate is not null)
+                                        {
+                                            @CellTemplate(new DataCellContext<TItem>(item, column))
+                                        }
+                                        else
+                                        {
+                                            @column.Value(item)
+                                        }
+                                        </div>
+                                    </div>
+                                }
+                                @foreach (var column in CardColumns(CardField.Identifier))
+                                {
+                                    <div class="@CardFieldClass(column)">
+                                        <span class="data-card-label">@column.Label</span>
+                                        <div class="data-card-field-value" title="@column.Value(item)">
+                                            @if (column.UsesTemplate && CellTemplate is not null)
+                                            {
+                                                @CellTemplate(new DataCellContext<TItem>(item, column))
+                                            }
+                                            else
+                                            {
+                                                @column.Value(item)
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                @foreach (var column in CardColumns(CardField.Metric))
+                                {
+                                    <div class="@CardFieldClass(column)">
+                                        <span class="data-card-label">@column.Label</span>
+                                        <div class="data-card-field-value" title="@column.Value(item)">
+                                            @if (column.UsesTemplate && CellTemplate is not null)
+                                            {
+                                                @CellTemplate(new DataCellContext<TItem>(item, column))
+                                            }
+                                            else
+                                            {
+                                                @column.Value(item)
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        @if (HasVisibleStructuredDetails)
+                        {
+                            <dl class="data-card-details">
+                                @foreach (var column in CardColumns(CardField.Detail))
+                                {
+                                    <div class="@CardFieldClass(column)">
+                                        <dt class="data-card-label">@column.Label</dt>
+                                        <dd class="data-card-field-value" title="@column.Value(item)">
+                                            @if (column.UsesTemplate && CellTemplate is not null)
+                                            {
+                                                @CellTemplate(new DataCellContext<TItem>(item, column))
+                                            }
+                                            else
+                                            {
+                                                @column.Value(item)
+                                            }
+                                        </dd>
+                                    </div>
+                                }
+                            </dl>
+                        }
+                    }
+                    else
+                    {
+                        <dl class="data-card-details">
+                            @foreach (var column in VisibleCardColumns)
+                            {
+                                <div class="@CardFieldClass(column)">
+                                    <dt class="data-card-label">@column.Label</dt>
+                                    <dd class="data-card-field-value" title="@column.Value(item)">
+                                        @if (column.UsesTemplate && CellTemplate is not null)
+                                        {
+                                            @CellTemplate(new DataCellContext<TItem>(item, column))
+                                        }
+                                        else
+                                        {
+                                            @column.Value(item)
+                                        }
+                                    </dd>
+                                </div>
+                            }
+                        </dl>
+                    }
+                    @if (HasActions)
+                    {
+                        <footer class="data-card-actions" @ondblclick:stopPropagation>
+                            @if (HasRowActions(item)) { @RowActionsFor(item) }
+                        </footer>
+                    }
+                </article>
+            }
+            @if (RenderedItems.Count == 0)
+            {
+                <p class="data-card-empty">@EmptyMessage</p>
+            }
+        </div>
+    }
+    <div class="data-table-pagination-bottom">
+        <DataPager TotalCount="Pagination.TotalCount" CurrentPage="Pagination.CurrentPage" PageSize="Pagination.PageSize"
+                            PageChanged="ChangePageAsync" IsLimited="IsLimited" Disabled="EditingBusy" />
+    </div>
+</div>
+
+@code {
+    private const double DefaultColumnWidth = 72;
+    private const double MaximumAutomaticColumnWidth = 260;
+    private const double MinimumColumnWidth = 72;
+    private const double MaximumColumnWidth = 100000;
+    private readonly Dictionary<string, double> ColumnWidths = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> AutomaticColumnWidths = new(StringComparer.Ordinal);
+    private readonly DataPagination Pagination = new();
+    private IReadOnlyList<object?> ItemKeySnapshot = [];
+    private object? PreviousPaginationResetKey;
+    private bool HasPaginationSnapshot;
+    private string? LocalSearchColumn;
+    private string LocalSearchText = string.Empty;
+    private ElementReference GridRoot;
+    private IJSObjectReference? ColumnModule;
+    private DotNetObjectReference<DataTable<TItem>>? ColumnReference;
+    private bool IsDisposed;
+    private readonly List<string> OrderedKeys = [];
+    private readonly HashSet<string> VisibleKeys = new(StringComparer.Ordinal);
+    private readonly HashSet<string> KnownKeys = new(StringComparer.Ordinal);
+    private readonly string ToolGroupName = $"data-tools-{Guid.NewGuid():N}";
+    private IReadOnlyList<DataColumn<TItem>> ColumnDefinitionSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> OrderedColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> VisibleColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> VisibleCardColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> SortableColumnSnapshot = [];
+    private IReadOnlyList<TItem> RenderedItemSnapshot = [];
+    private IReadOnlyList<TItem> ListItemSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> ImageCardColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> TitleCardColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> IdentifierCardColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> MetricCardColumnSnapshot = [];
+    private IReadOnlyList<DataColumn<TItem>> DetailCardColumnSnapshot = [];
+    private bool HasStructuredCardShapeSnapshot;
+    private bool ShowCardMediaSnapshot;
+    private bool HasVisibleStructuredContentSnapshot;
+    private bool HasVisibleStructuredDetailsSnapshot;
+    private string? PrimaryCardColumnKey;
+    private string? DraggingKey;
+    private string? KeyboardMovingKey;
+    private string? KeyboardReorderStatus;
+    private string? RestoredPreferenceKey;
+    private string SortKey = string.Empty;
+    private SortDirection SortDirection = SortDirection.Ascending;
+    private DataViewMode ViewMode = DataViewMode.List;
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<TItem> Items { get; set; } = [];
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<DataColumn<TItem>> Columns { get; set; } = [];
+
+    [Parameter]
+    public RenderFragment<TItem>? Actions { get; set; }
+
+    [Parameter]
+    public bool ShowActions { get; set; } = true;
+
+    [Parameter]
+    public Func<TItem, string>? ActionLabel { get; set; }
+
+    [Parameter]
+    public Func<TItem, string?>? DefaultActionHref { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> DefaultAction { get; set; }
+
+    [Parameter]
+    public Func<TItem, bool>? DefaultActionAvailable { get; set; }
+
+    // Native GET/POST entry keeps its browser activation and server-rendered form.
+    [Parameter]
+    public RenderFragment<TItem>? DefaultActionContent { get; set; }
+
+    [Parameter]
+    public Func<TItem, object>? ItemKey { get; set; }
+
+    [Parameter]
+    public RenderFragment<DataCellContext<TItem>>? CellTemplate { get; set; }
+
+    [Parameter]
+    public string EmptyMessage { get; set; } = "Nenhum registro encontrado.";
+
+    [Parameter]
+    public TablePurpose Purpose { get; set; } = TablePurpose.Registry;
+
+    [Parameter] public bool ShowSearch { get; set; }
+    [Parameter] public bool IsLimited { get; set; }
+    // A changed external query resets pagination without changing record selection or edit state.
+    [Parameter] public object? PaginationResetKey { get; set; }
+
+    [Parameter]
+    public string? PreferenceKey { get; set; }
+
+    // Editing capabilities are opt-in. Read-only registries and object pools keep their existing behavior.
+    [Parameter] public EventCallback BulkEditRequested { get; set; }
+    [Parameter] public string? SpreadsheetEditHref { get; set; }
+    [Parameter] public bool BulkEditing { get; set; }
+    [Parameter] public bool EditingBusy { get; set; }
+    [Parameter] public RenderFragment<DataColumn<TItem>>? BulkEditCell { get; set; }
+    [Parameter] public RenderFragment? BulkEditActions { get; set; }
+    [Parameter] public Func<TItem, bool>? IsSelectedForEditing { get; set; }
+    [Parameter] public Func<TItem, string>? EditSelectionLabel { get; set; }
+    [Parameter] public EventCallback<TItem> ToggleEditSelection { get; set; }
+    [Parameter] public EventCallback ToggleAllEditSelection { get; set; }
+    [Parameter] public bool AllEditSelected { get; set; }
+
+    private async Task BeginBulkEditAsync()
+    {
+        if (EditingBusy || BulkEditing) return;
+        SetViewMode(DataViewMode.List);
+        await BulkEditRequested.InvokeAsync();
+    }
+
+    private IReadOnlyList<DataColumn<TItem>> OrderedColumns => OrderedColumnSnapshot;
+
+    private IReadOnlyList<DataColumn<TItem>> VisibleColumns => Purpose != TablePurpose.Registry
+        ? OrderedColumnSnapshot
+        : VisibleColumnSnapshot;
+
+    private IReadOnlyList<DataColumn<TItem>> VisibleCardColumns => Purpose != TablePurpose.Registry
+        ? Columns
+        : VisibleCardColumnSnapshot;
+
+    private IReadOnlyList<DataColumn<TItem>> SortableColumns => SortableColumnSnapshot;
+    private IReadOnlyList<TItem> RenderedItems => RenderedItemSnapshot;
+    private IReadOnlyList<TItem> ListItems => ListItemSnapshot;
+    private bool RetainsEditingRows => Purpose is TablePurpose.Pool or TablePurpose.Worklist;
+
+    private bool HasActions => ShowActions && (Actions is not null || DefaultAction.HasDelegate || DefaultActionHref is not null);
+    private int ColumnCount => VisibleColumns.Count + (HasActions ? 1 : 0) + (BulkEditing ? 1 : 0) + 1;
+    private string TableWidthStyle => WidthStyle(VisibleColumns.Sum(column => ColumnWidth(column.Key))
+        + (HasActions ? 80 : 0) + (BulkEditing ? 44 : 0));
+    private double ColumnWidth(string key) => ColumnWidths.GetValueOrDefault(key,
+        AutomaticColumnWidths.GetValueOrDefault(key, DefaultColumnWidth));
+    private string ColumnWidthStyle(string key) => WidthStyle(ColumnWidth(key));
+    private static string WidthStyle(double width) => $"width:{width.ToString(CultureInfo.InvariantCulture)}px";
+    private bool HasStructuredCardShape => HasStructuredCardShapeSnapshot;
+    private bool ShowCardMedia => ShowCardMediaSnapshot;
+    private bool HasVisibleStructuredContent => HasVisibleStructuredContentSnapshot;
+    private bool HasVisibleStructuredDetails => HasVisibleStructuredDetailsSnapshot;
+    private string CardFieldClass(DataColumn<TItem> column) =>
+        $"data-card-field data-card-field-slot{(column.Key == PrimaryCardColumnKey ? " is-primary" : string.Empty)}";
+
+    private IEnumerable<DataColumn<TItem>> CardColumns(CardField field) =>
+        field switch
+        {
+            CardField.Image => ImageCardColumnSnapshot,
+            CardField.Title => TitleCardColumnSnapshot,
+            CardField.Identifier => IdentifierCardColumnSnapshot,
+            CardField.Metric => MetricCardColumnSnapshot,
+            CardField.Detail => DetailCardColumnSnapshot,
+            _ => []
+        };
+
+    protected override void OnParametersSet()
+    {
+        if (DefaultAction.HasDelegate && DefaultActionHref is not null)
+            throw new InvalidOperationException("Declare only one opening action: DefaultAction or DefaultActionHref.");
+        if (Purpose == TablePurpose.Registry && string.IsNullOrWhiteSpace(PreferenceKey))
+        {
+            throw new InvalidOperationException(
+                $"{nameof(DataTable<TItem>)} requires a stable {nameof(PreferenceKey)} for Registry lists.");
+        }
+
+        if (!ColumnDefinitionsUnchanged())
+        {
+            ColumnDefinitionSnapshot = Columns.ToArray();
+            var currentKeys = Columns.Select(column => column.Key).ToHashSet(StringComparer.Ordinal);
+            foreach (var key in ColumnWidths.Keys.Where(key => !currentKeys.Contains(key)).ToArray())
+                ColumnWidths.Remove(key);
+            foreach (var key in AutomaticColumnWidths.Keys.Where(key => !currentKeys.Contains(key)).ToArray())
+                AutomaticColumnWidths.Remove(key);
+            OrderedKeys.RemoveAll(key => !currentKeys.Contains(key));
+            foreach (var column in Columns)
+            {
+                if (!OrderedKeys.Contains(column.Key, StringComparer.Ordinal))
+                {
+                    OrderedKeys.Add(column.Key);
+                }
+
+                if (KnownKeys.Add(column.Key) && (column.DefaultVisible || !column.CanHide))
+                {
+                    VisibleKeys.Add(column.Key);
+                }
+
+                if (!column.CanHide)
+                {
+                    VisibleKeys.Add(column.Key);
+                }
+            }
+
+            KnownKeys.IntersectWith(Columns.Select(column => column.Key));
+            VisibleKeys.IntersectWith(Columns.Select(column => column.Key));
+            RebuildColumnSnapshots();
+        }
+
+        RestoreSortPreference();
+        if (LocalSearchColumn is null || Columns.All(column => column.Key != LocalSearchColumn || !column.CanSearch))
+        {
+            LocalSearchColumn = Columns.FirstOrDefault(column => column.CanSearch)?.Key;
+            LocalSearchText = string.Empty;
+        }
+        var itemKeys = Items.Select(ItemKeyFor).ToArray();
+        var changedQuery = HasPaginationSnapshot && !Equals(PaginationResetKey, PreviousPaginationResetKey);
+        var replacedItems = HasPaginationSnapshot && itemKeys.Length == ItemKeySnapshot.Count
+            && !itemKeys.SequenceEqual(ItemKeySnapshot);
+        if (changedQuery || replacedItems && !BulkEditing) Pagination.GoToPage(1);
+        ItemKeySnapshot = itemKeys;
+        PreviousPaginationResetKey = PaginationResetKey;
+        HasPaginationSnapshot = true;
+        RebuildRenderedItems();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsDisposed) return;
+        if (ColumnModule is null)
+        {
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/data-table-columns.js");
+            if (IsDisposed) { await module.DisposeAsync(); return; }
+            ColumnModule = module;
+        }
+        ColumnReference ??= DotNetObjectReference.Create(this);
+        var measured = await ColumnModule.InvokeAsync<Dictionary<string, double>>("connect", GridRoot, ColumnReference);
+        ApplyMeasuredWidths(measured);
+    }
+
+    private void ApplyMeasuredWidths(IReadOnlyDictionary<string, double>? measured)
+    {
+        if (measured is null) return;
+        foreach (var (key, width) in measured)
+            if (double.IsFinite(width) && Columns.Any(column => column.Key == key) && !ColumnWidths.ContainsKey(key))
+                AutomaticColumnWidths[key] = Math.Clamp(Math.Round(width), MinimumColumnWidth, MaximumAutomaticColumnWidth);
+    }
+
+    [JSInvokable]
+    public Task SetColumnWidth(string key, double width) => InvokeAsync(() =>
+    {
+        if (IsDisposed || !double.IsFinite(width) || Columns.All(column => column.Key != key)) return;
+        ColumnWidths[key] = Math.Clamp(Math.Round(width), MinimumColumnWidth, MaximumColumnWidth);
+        StateHasChanged();
+    });
+
+    [JSInvokable]
+    public Task ResetColumnWidth(string key) => InvokeAsync(() =>
+    {
+        if (IsDisposed || Columns.All(column => column.Key != key)) return;
+        ColumnWidths.Remove(key);
+        AutomaticColumnWidths.Remove(key);
+        StateHasChanged();
+    });
+
+    public async ValueTask DisposeAsync()
+    {
+        IsDisposed = true;
+        try
+        {
+            if (ColumnModule is not null)
+            {
+                await ColumnModule.InvokeVoidAsync("dispose", GridRoot);
+                await ColumnModule.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // The browser owns event cleanup after its circuit disconnects.
+        }
+        finally { ColumnReference?.Dispose(); }
+    }
+
+    private bool IsVisible(DataColumn<TItem> column) =>
+        !column.CanHide || VisibleKeys.Contains(column.Key);
+
+    private void SetVisibility(DataColumn<TItem> column, bool visible)
+    {
+        if (!column.CanHide)
+        {
+            return;
+        }
+
+        if (visible)
+        {
+            VisibleKeys.Add(column.Key);
+        }
+        else
+        {
+            VisibleKeys.Remove(column.Key);
+        }
+
+        RebuildColumnSnapshots();
+    }
+
+    private bool ColumnDefinitionsUnchanged()
+    {
+        if (Columns.Count != ColumnDefinitionSnapshot.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < Columns.Count; index++)
+        {
+            if (!ReferenceEquals(Columns[index], ColumnDefinitionSnapshot[index]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void SetViewMode(DataViewMode value)
+    {
+        ViewMode = value;
+        DraggingKey = null;
+        KeyboardMovingKey = null;
+        KeyboardReorderStatus = null;
+    }
+
+    private bool CanSort(DataColumn<TItem> column) =>
+        Purpose == TablePurpose.Registry && column.CanSort;
+
+    private string? ColumnSortState(DataColumn<TItem> column) => !CanSort(column) ? null
+        : SortKey != column.Key ? "none"
+        : SortDirection == SortDirection.Descending ? "descending" : "ascending";
+
+    private string ColumnSortAction(DataColumn<TItem> column) => SortKey != column.Key
+        ? $"{column.Label}: ordenar decrescente"
+        : SortDirection == SortDirection.Descending
+            ? $"{column.Label}: ordenar crescente"
+            : $"{column.Label}: restaurar ordem padrão";
+
+    private void CycleSort(DataColumn<TItem> column)
+    {
+        if (!CanSort(column) || EditingBusy || !SortableColumns.Any(candidate => candidate.Key == column.Key)) return;
+        if (SortKey != column.Key)
+        {
+            SortKey = column.Key;
+            SortDirection = SortDirection.Descending;
+        }
+        else if (SortDirection == SortDirection.Descending)
+        {
+            SortDirection = SortDirection.Ascending;
+        }
+        else
+        {
+            SortKey = string.Empty;
+            SortDirection = SortDirection.Ascending;
+        }
+        SaveSortPreference();
+        Pagination.GoToPage(1);
+        RebuildRenderedItems();
+    }
+
+    private void RestoreSortPreference()
+    {
+        if (Purpose != TablePurpose.Registry || string.IsNullOrWhiteSpace(PreferenceKey))
+        {
+            RestoredPreferenceKey = null;
+            SortKey = string.Empty;
+            SortDirection = SortDirection.Ascending;
+            return;
+        }
+
+        if (string.Equals(RestoredPreferenceKey, PreferenceKey, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        RestoredPreferenceKey = PreferenceKey;
+        SortKey = string.Empty;
+        SortDirection = SortDirection.Ascending;
+        if (!Preferences.TryGetSort(PreferenceKey, out var preference))
+        {
+            return;
+        }
+
+        if (SortableColumns.Any(column => column.Key == preference.SortKey))
+        {
+            SortKey = preference.SortKey;
+            SortDirection = preference.Descending
+                ? SortDirection.Descending
+                : SortDirection.Ascending;
+            return;
+        }
+
+        Preferences.RemoveSort(PreferenceKey);
+    }
+
+    private void SaveSortPreference()
+    {
+        if (Purpose != TablePurpose.Registry || string.IsNullOrWhiteSpace(PreferenceKey))
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(SortKey))
+        {
+            Preferences.RemoveSort(PreferenceKey);
+            return;
+        }
+
+        Preferences.SetSort(
+            PreferenceKey,
+            new ArkheideSystem.Flourish.Blazor.Abstract.TableSortPreference(
+                SortKey,
+                SortDirection == SortDirection.Descending));
+    }
+
+    private void RebuildRenderedItems()
+    {
+        var matching = ShowSearch ? DataFilter.Filter(Items, Columns, LocalSearchColumn, LocalSearchText) : Items;
+        var sorted = Purpose == TablePurpose.Registry && !string.IsNullOrEmpty(SortKey)
+            && SortableColumns.FirstOrDefault(column => column.Key == SortKey) is { } sortColumn
+                ? DataSorter.Sort(matching, sortColumn, SortDirection) : matching;
+        Pagination.UpdateTotal(sorted.Count);
+        RenderedItemSnapshot = sorted.Skip(Pagination.Offset).Take(Pagination.PageSize).ToArray();
+        // Editing inputs own unparsed text and validation messages; page changes must not dispose them.
+        ListItemSnapshot = RetainsEditingRows ? sorted : RenderedItemSnapshot;
+    }
+
+    public async Task<bool> CanLeavePageAsync()
+    {
+        if (EditingBusy || IsDisposed) return false;
+        return !RetainsEditingRows || ColumnModule is null
+            || await ColumnModule.InvokeAsync<bool>("canChangePage", GridRoot);
+    }
+
+    private async Task ChangePageAsync(int page)
+    {
+        if (!await CanLeavePageAsync()) return;
+        Pagination.GoToPage(page);
+        RebuildRenderedItems();
+    }
+
+    private async Task ChangeLocalSearchAsync(DataSearchRequest request)
+    {
+        if (BulkEditing || !Columns.Any(column => column.CanSearch && column.Key == request.ColumnKey)
+            || !await CanLeavePageAsync()) return;
+        LocalSearchColumn = request.ColumnKey;
+        LocalSearchText = request.Value;
+        Pagination.GoToPage(1);
+        RebuildRenderedItems();
+    }
+
+    private bool CanReorder(DataColumn<TItem> column) =>
+        Purpose == TablePurpose.Registry && ViewMode == DataViewMode.List && column.CanReorder;
+
+    private string ActionLabelFor(TItem item) =>
+        ActionLabel?.Invoke(item) ?? "Abrir ações do registro";
+
+    private object? ItemKeyFor(TItem item) => ItemKey?.Invoke(item) ?? item;
+
+    private bool HasDefaultAction(TItem item) =>
+        ShowActions && !BulkEditing && (DefaultActionAvailable?.Invoke(item) ?? true)
+        && (DefaultAction.HasDelegate || !string.IsNullOrWhiteSpace(DefaultActionHref?.Invoke(item)));
+
+    private bool HasRowActions(TItem item) => Actions is not null || HasDefaultAction(item);
+
+    private RenderFragment RowActionsFor(TItem item) => @<RowActionMenu Label="@ActionLabelFor(item)">
+        @if (HasDefaultAction(item))
+        {
+            @if (DefaultActionContent is not null) { @DefaultActionContent(item) }
+            else if (DefaultActionHref?.Invoke(item) is { } href)
+            {
+                <a class="table-popup-item" href="@href" data-record-open>Abrir</a>
+            }
+            else
+            {
+                <button class="table-popup-item" type="button" data-record-open @onclick="() => InvokeDefaultActionAsync(item)">Abrir</button>
+            }
+        }
+        @if (Actions is not null) { @Actions(item) }
+    </RowActionMenu>;
+
+    private async Task InvokeDefaultActionAsync(TItem item)
+    {
+        if (BulkEditing || !HasDefaultAction(item)) return;
+        if (DefaultAction.HasDelegate)
+        {
+            await DefaultAction.InvokeAsync(item);
+            return;
+        }
+
+        if (DefaultActionHref?.Invoke(item) is { } href && !string.IsNullOrWhiteSpace(href))
+        {
+            Navigation.NavigateTo(href);
+        }
+    }
+
+    private void StartDragging(DataColumn<TItem> column)
+    {
+        DraggingKey = CanReorder(column) ? column.Key : null;
+    }
+
+    private void StopDragging() => DraggingKey = null;
+
+    private void DropColumn(string targetKey)
+    {
+        if (Purpose != TablePurpose.Registry || ViewMode != DataViewMode.List || DraggingKey is not { } sourceKey)
+        {
+            return;
+        }
+
+        DraggingKey = null;
+        MoveColumnTo(sourceKey, targetKey);
+    }
+
+    private void MoveColumnTo(string sourceKey, string targetKey)
+    {
+        var sourceIndex = OrderedKeys.IndexOf(sourceKey);
+        var targetIndex = OrderedKeys.IndexOf(targetKey);
+        if (sourceIndex < 0 || targetIndex < 0 || sourceIndex == targetIndex)
+        {
+            return;
+        }
+
+        OrderedKeys.RemoveAt(sourceIndex);
+        OrderedKeys.Insert(Math.Min(targetIndex, OrderedKeys.Count), sourceKey);
+        RebuildColumnSnapshots();
+    }
+
+    private void ReorderColumnWithKeyboard(KeyboardEventArgs eventArgs, DataColumn<TItem> column)
+    {
+        if (!CanReorder(column)) return;
+        if (eventArgs.Key is " " or "Spacebar")
+        {
+            if (KeyboardMovingKey == column.Key)
+            {
+                KeyboardMovingKey = null;
+                KeyboardReorderStatus = $"Posição de {column.Label} confirmada.";
+            }
+            else
+            {
+                KeyboardMovingKey = column.Key;
+                KeyboardReorderStatus = $"Reordenando {column.Label}. Use as setas para mover e Enter ou Espaço para concluir.";
+            }
+
+            return;
+        }
+
+        if (KeyboardMovingKey != column.Key) return;
+        if (eventArgs.Key == "Enter")
+        {
+            KeyboardMovingKey = null;
+            KeyboardReorderStatus = $"Posição de {column.Label} confirmada.";
+            return;
+        }
+
+        if (eventArgs.Key == "Escape")
+        {
+            KeyboardMovingKey = null;
+            KeyboardReorderStatus = $"Reordenação de {column.Label} encerrada.";
+            return;
+        }
+
+        var offset = eventArgs.Key is "ArrowLeft" or "ArrowUp" ? -1
+            : eventArgs.Key is "ArrowRight" or "ArrowDown" ? 1
+            : 0;
+        if (offset == 0) return;
+        var sourceIndex = OrderedKeys.IndexOf(column.Key);
+        var targetIndex = Math.Clamp(sourceIndex + offset, 0, OrderedKeys.Count - 1);
+        if (sourceIndex == targetIndex) return;
+        OrderedKeys.RemoveAt(sourceIndex);
+        OrderedKeys.Insert(targetIndex, column.Key);
+        RebuildColumnSnapshots();
+        KeyboardReorderStatus = $"{column.Label} movida para a posição {targetIndex + 1}.";
+    }
+
+    private void RebuildColumnSnapshots()
+    {
+        var columnsByKey = Columns.ToDictionary(column => column.Key, StringComparer.Ordinal);
+        OrderedColumnSnapshot = OrderedKeys
+            .Where(columnsByKey.ContainsKey)
+            .Select(key => columnsByKey[key])
+            .ToArray();
+        VisibleColumnSnapshot = OrderedColumnSnapshot.Where(IsVisible).ToArray();
+        VisibleCardColumnSnapshot = Columns.Where(IsVisible).ToArray();
+        SortableColumnSnapshot = Columns.Where(column => column.CanSort).ToArray();
+        if (!string.IsNullOrEmpty(SortKey) && SortableColumnSnapshot.All(column => column.Key != SortKey))
+        {
+            SortKey = string.Empty;
+        }
+        ImageCardColumnSnapshot = VisibleCardColumnSnapshot.Where(column => column.CardField == CardField.Image).ToArray();
+        TitleCardColumnSnapshot = VisibleCardColumnSnapshot.Where(column => column.CardField == CardField.Title).ToArray();
+        IdentifierCardColumnSnapshot = VisibleCardColumnSnapshot.Where(column => column.CardField == CardField.Identifier).ToArray();
+        MetricCardColumnSnapshot = VisibleCardColumnSnapshot.Where(column => column.CardField == CardField.Metric).ToArray();
+        DetailCardColumnSnapshot = VisibleCardColumnSnapshot.Where(column => column.CardField == CardField.Detail).ToArray();
+        HasStructuredCardShapeSnapshot = Columns.Any(column =>
+            column.CardField is CardField.Image or CardField.Identifier or CardField.Metric);
+        ShowCardMediaSnapshot = !Columns.Any(column => column.CardField == CardField.Image)
+            || ImageCardColumnSnapshot.Count > 0;
+        HasVisibleStructuredContentSnapshot = TitleCardColumnSnapshot.Count > 0
+            || IdentifierCardColumnSnapshot.Count > 0
+            || MetricCardColumnSnapshot.Count > 0;
+        HasVisibleStructuredDetailsSnapshot = DetailCardColumnSnapshot.Count > 0;
+        PrimaryCardColumnKey = (HasStructuredCardShapeSnapshot
+            ? TitleCardColumnSnapshot.Concat(IdentifierCardColumnSnapshot).Concat(MetricCardColumnSnapshot).Concat(DetailCardColumnSnapshot)
+            : VisibleCardColumnSnapshot.Where(column => column.CardField != CardField.Image))
+            .FirstOrDefault()?.Key;
+    }
+
+    private enum DataViewMode
+    {
+        List,
+        Grid
+    }
+}

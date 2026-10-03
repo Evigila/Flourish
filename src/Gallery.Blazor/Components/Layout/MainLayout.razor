@@ -2,6 +2,7 @@
 @inject NavigationManager Navigation
 @inject IAppearanceService Appearance
 
+<ThemeScope>
 <ApplicationShell MenuLabel="打开导航" CloseMenuLabel="关闭导航"
                   MainNavigationLabel="工作区模块" SecondaryNavigationLabel="模块页面" SkipLabel="跳到正文">
     <TitleBarBrand><Icon Name="home" /></TitleBarBrand>
@@ -17,6 +18,7 @@
     </TitleBarEnd>
     <ChildContent>@Body</ChildContent>
 </ApplicationShell>
+</ThemeScope>
 
 @code {
     private IReadOnlyList<MenuAction> PageActions => [

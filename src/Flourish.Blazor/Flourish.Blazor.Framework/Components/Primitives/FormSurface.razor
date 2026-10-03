@@ -1,0 +1,12 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<div class="form-surface-frame form-controls page-content-frame @CssClass">
+    @if (ShowContents && Contents is not null) { <PageContents>@Contents</PageContents> }
+    <div class="module-group">@ChildContent</div>
+</div>
+
+@code {
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Contents { get; set; }
+    [Parameter] public bool ShowContents { get; set; }
+}

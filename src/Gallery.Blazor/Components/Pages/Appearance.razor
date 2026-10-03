@@ -86,7 +86,8 @@
             <TargetFramework>net10.0</TargetFramework>
           </PropertyGroup>
           <ItemGroup>
-            <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.csproj" />
+            <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+            <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
           </ItemGroup>
         </Project>
         """;
@@ -100,9 +101,9 @@
         builder.Services.AddFlourish(ui => ui
             .UseTitleBar(bar => bar.SetApplicationTitle("Workspace"))
             .UseNavigation(nav => nav.AddGroup("workspace", "Workspace", "home",
-                group => group.AddItem("概览", "/", "home", exact: true)))
-            .ConfigureAppearance(appearance => appearance
-                .SetColors("#153A32", "#16745F")));
+                group => group.AddItem("概览", "/", "home", exact: true))));
+        builder.Services.AddFlourishDesign(appearance => appearance
+            .SetColors("#153A32", "#16745F"));
 
         var app = builder.Build();
         app.UseHttpsRedirection();
@@ -115,9 +116,11 @@
         @inherits LayoutComponentBase
         @using ArkheideSystem.Flourish.Blazor.Components
 
+        <ThemeScope>
         <ApplicationShell>
             <ChildContent>@Body</ChildContent>
         </ApplicationShell>
+        </ThemeScope>
         """;
     private const string FactsExample = """
         <FactList Columns="2">
@@ -146,7 +149,8 @@
     private const string ResourceExample = """
         <!-- App.razor: InteractiveServer 默认包含预渲染。 -->
         <head>
-            <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor/flourish.css" />
+            <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Framework/framework.css" />
+            <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Design/design.css" />
             <HeadOutlet @rendermode="InteractiveServer" />
         </head>
         <body class="f-document">

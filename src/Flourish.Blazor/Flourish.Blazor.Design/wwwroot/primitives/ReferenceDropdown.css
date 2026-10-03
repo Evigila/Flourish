@@ -1,0 +1,11 @@
+.reference-panel {
+    gap: 8px;
+}
+.reference-options {
+    gap: 2px;
+}
+.reference-empty {
+    padding: 10px;
+    color: var(--muted);
+    font-size: 17px;
+}

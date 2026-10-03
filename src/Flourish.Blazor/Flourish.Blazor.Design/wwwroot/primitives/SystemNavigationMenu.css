@@ -1,0 +1,106 @@
+.system-menu {
+    align-self: stretch;
+    color: var(--chrome-ink);
+}
+.system-menu-trigger {
+    height: 100%;
+    gap: 9px;
+    padding: 0 16px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-right: 1px solid var(--chrome-line);
+    cursor: pointer;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 400;
+}
+.system-menu-chevron {
+    width: 8px;
+    height: 5px;
+    background: currentColor;
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    transform: rotate(0deg);
+    transform-origin: 50% 50%;
+    transition: transform 140ms ease;
+}
+.system-menu:hover > .system-menu-trigger,
+.system-menu-trigger:focus-visible,
+.system-menu:has(.system-menu-view:focus-within) > .system-menu-trigger {
+    color: var(--chrome-ink);
+    background: var(--chrome-hover);
+}
+.system-menu:hover .system-menu-chevron,
+.system-menu-trigger:focus-visible .system-menu-chevron,
+.system-menu:has(.system-menu-view:focus-within) .system-menu-chevron {
+    transform: rotate(180deg);
+}
+.system-menu-trigger:focus-visible {
+    outline: 2px solid var(--chrome-ink);
+    outline-offset: -3px;
+}
+.system-menu-view {
+    width: min(320px, calc(100vw - 24px));
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgb(27 24 38 / 18%);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 120ms ease, transform 120ms ease, visibility 0s linear 120ms;
+}
+.system-menu:hover > .system-menu-view,
+.system-menu-trigger:focus-visible + .system-menu-view,
+.system-menu-view:focus-within {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+.system-menu-view nav {
+    gap: 4px;
+}
+.system-menu-view a {
+    padding: 10px 12px;
+    color: var(--ink);
+    border-radius: var(--radius-small);
+    text-decoration: none;
+}
+.system-menu-view a strong {
+    font-size: 17px;
+}
+.system-menu-view a:hover,
+.system-menu-view a.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+.system-menu-view a:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+}
+@media (max-width: 760px) {
+.system-menu-trigger {
+    padding-inline: 10px;
+    font-size: 17px;
+}
+}
+@media (hover: none) {
+.system-menu:focus-within > .system-menu-trigger {
+    color: var(--accent);
+    background: var(--chrome-hover);
+}
+.system-menu:focus-within .system-menu-chevron {
+    transform: rotate(180deg);
+}
+.system-menu:focus-within > .system-menu-view {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.system-menu-chevron,
+    .system-menu-view {
+    transition: none;
+}
+}

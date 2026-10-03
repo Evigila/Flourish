@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.csproj" />
+    <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+    <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
   </ItemGroup>
 </Project>

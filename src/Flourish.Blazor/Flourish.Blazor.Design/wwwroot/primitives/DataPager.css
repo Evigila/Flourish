@@ -1,0 +1,108 @@
+.data-pagination {
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 700;
+}
+.data-pagination-range {
+    gap: 8px;
+    padding: 3px 18px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--control-radius);
+    line-height: 24px;
+}
+.data-pagination-range-total {
+    height: calc(var(--control-height) - 10px);
+    padding: 0 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: calc(var(--control-radius) - 3px);
+    font-variant-numeric: tabular-nums;
+}
+.data-pagination-controls {
+    gap: 6px;
+    height: var(--control-height);
+    padding: 3px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--control-radius);
+}
+.data-pagination-previous,
+.data-pagination-next {
+    width: 40px;
+    height: calc(var(--control-height) - 8px);
+    padding: 0;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-radius: calc(var(--control-radius) - 3px);
+    cursor: pointer;
+    font: inherit;
+}
+.data-pagination-previous svg,
+.data-pagination-next svg {
+    width: 20.3px;
+    height: 20.3px;
+}
+.data-pagination-previous:hover:not(:disabled),
+.data-pagination-next:hover:not(:disabled) {
+    color: var(--accent);
+    background: var(--row-hover);
+}
+.data-pagination-previous:focus-visible,
+.data-pagination-next:focus-visible,
+.data-pagination-input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+.data-pagination-previous:disabled,
+.data-pagination-next:disabled,
+.data-pagination-input:disabled {
+    cursor: default;
+    opacity: .5;
+}
+.data-pagination-page {
+    gap: 8px;
+    margin: 0;
+    font-weight: inherit;
+}
+.data-pagination-input {
+    width: 64px;
+    height: calc(var(--control-height) - 10px);
+    padding: 0 8px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: calc(var(--control-radius) - 3px);
+    font: inherit;
+    font-weight: inherit;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    appearance: textfield;
+}
+.data-pagination-input::-webkit-inner-spin-button,
+.data-pagination-input::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+}
+.data-pagination-total {
+    font-weight: inherit;
+}
+.visually-hidden {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+@media (max-width: 520px) {
+.data-pagination {
+    gap: 8px;
+}
+.data-pagination-controls {
+    column-gap: 6px;
+}
+.data-pagination-page {
+    gap: 6px;
+}
+}

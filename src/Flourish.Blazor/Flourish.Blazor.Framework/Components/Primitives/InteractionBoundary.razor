@@ -1,0 +1,22 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<div class="@(Locked ? "interaction-content-locked" : null)"
+     inert="@(Locked ? "" : null)" aria-hidden="@(Locked ? "true" : null)">
+    @ChildContent
+</div>
+@if (Locked)
+{
+    <div class="interaction-lock" role="alertdialog" aria-modal="true" aria-labelledby="@TitleId" tabindex="-1">
+        <div class="interaction-message">
+            <h2 id="@TitleId">@Title</h2>
+            @Message
+        </div>
+    </div>
+}
+
+@code {
+    private readonly string TitleId = $"interaction-lock-{Guid.NewGuid():N}";
+    [Parameter] public bool Locked { get; set; }
+    [Parameter] public string Title { get; set; } = "Interaction unavailable";
+    [Parameter] public RenderFragment? Message { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

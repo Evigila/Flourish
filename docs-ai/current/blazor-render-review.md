@@ -1,34 +1,57 @@
-# Rendered Workspace alignment
+# Blazor rendering review and acceptance boundaries
 
-## Method and scope
+## Current source baseline
 
-On 2026-10-03, local Colligere was started through its existing Aspire AppHost. The user logged into an isolated, visible Edge window. Existing Account directory navigation opened an existing Workspace. The review visited dashboard, products, new product, customers, new customer, Workspace information and customization through GET navigation. No business create/update/delete action was performed. Gallery was rendered with installed Edge using the existing bundled Playwright tool, then opened in the same visible browser for final screenshot comparison. No browser, package, font or icon dependency was installed; Computer Use was not used.
+This active review now applies to the four-project split and Colligere's actual local consumption. Framework owns functional layout/visibility/scroll/resize and browser JS; Design owns visual foundations and skin and is an explicit opt-in. Shared/Abstract provide data and interfaces. The initial single-library rendering report does not by itself verify this final structure.
 
-## Findings and resulting behavior
+Colligere Web currently references Framework and Design and loads their styles in that order. MainLayout/UserLayout compose NavigationSurface/ContentSurface. Shared/Presentation adapters consume Primitives, and ProductSpreadsheet/RegistrySpreadsheet consume EditingGrid while retaining business drafts, validation, permissions, API operations and history. Gallery includes the Design shell plus the generic `/patterns` example. `tests/Flourish.Blazor.Native` is a separate Framework-only Web host.
 
-| Area | Initial finding | Result |
+The user clarified the universal-library boundary after this review. Earlier rendering observations remain historical; business page skins and scripts have returned to their host. The current library exposes only generic controls, surface patterns, tokens and browser interactions. Subsequent performance work uses source, build, automated and HTTP checks plus the manual checklist; the earlier browser evidence does not certify the changed asset boundary.
+
+## Earlier rendered alignment context
+
+The earlier 2026-10-03 review sampled real Workspace dashboard/list/form/identity/customization surfaces and the standalone Gallery. It identified useful source-correspondence requirements that remain acceptance targets:
+
+| Area | Established correction/contract | Current owner |
 | --- | --- | --- |
-| Heading focus | H1 had a solid 3px field-like outline | H1 remains focused; outline-style is none; keyboard field remains solid 3px |
-| Control cascade | Global font reset forced action cells to 17px/400 | Low-specificity reset preserves 40px/740 action type at 1440px and 28px/740 on narrow windows |
-| Native enhanced select | Block layout put picker arrow beneath its text | Base-select uses a horizontal flex row; fallback remains native |
-| Shell | Extra secondary group title; weak selected rail; bare title | Source-size selected rail, text-only secondary links, optional brand/service tracks and rail-only overview |
-| Page rhythm | Title limited to padded content; fixed section gaps | Full-stage sticky title, 84/52/44px section rhythm and source-derived tinted surfaces/borders |
-| Local list | Different search/view/pager geometry | 240px search selector, 16px gap, 36/14px spacing, 40px inset accent view switch and source-size pagination controls |
-| Facts/identity | Native dd indentation, ungrouped dt/dd and lost primary scale | Shared FactList with continuous boundaries, correctly grouped identity facts and 40px/740 primary value |
-| Dark/floating surfaces | Light Subtle values and dark progress text; partial sheet divider | Theme-scoped Subtle/progress roles, inherited popup tokens and full-width bottom-sheet divider |
-| Dirty navigation | Discard cleared target before reading it | Discard follows the original requested page; keep-editing still preserves the draft |
+| Heading focus | Navigation H1 focus avoids a field rectangle while actionable controls retain keyboard focus | Framework behavior + Design focus presentation |
+| Typography/cascade | Control reset must not override large action-cell typography | Design |
+| Native/enhanced select | Picker arrow aligns horizontally; native fallback remains usable | Framework markup/browser behavior + Design |
+| Shell/rails | Source selected treatment, no phantom secondary rail, brand/service slots and host-supplied navigation | Framework shell/Patterns + Design skin |
+| Page/list rhythm | Full-stage title, accepted section spacing and source search/view/pager geometry | Design |
+| Identity/facts | Grouped dt/dd, primary value hierarchy, complete wrapping and odd final fact spanning | Framework composition + Design |
+| Floating surfaces | Correct role-token propagation, readable popup layers and full-width sheet divider | Framework browser behavior + Design |
+| Dirty navigation | Discard follows the requested destination; keep-editing retains the draft | Gallery demonstration / Colligere host adapter |
 
-## Verification
+The old report's 35 console checks, 79 Edge rendered checks and six-asset package inspection described the earlier single-library state. They must not be reused as counts or certification for the split packages or migrated Colligere grid. Historical evidence remains in change records; current source and acceptance scope are described here.
 
-- Gallery/library Debug build: 0 warnings, 0 errors.
-- C# contract/DI/SSR/data checks: 35 passed.
-- Mocked controls DOM checks: 15 passed; data DOM checks: 6 passed.
-- Installed Edge rendered checks: 79 passed, no page errors, six routes at 1440/980/760/520/320px; both document and main-stage horizontal overflow are zero. Wide table overflow stays inside its own region.
-- Release package generated; all six packaged CSS/JS assets are nonempty and SHA-256-equal to final sources.
-- Final visible Edge screenshots cover form, list and details alongside the authenticated Workspace. Captures and local runner scripts stay outside the repositories; browser profile/session files are not product assets.
+## Source review corrections in the split
 
-## Remaining acceptance
+- Framework has no Design project reference and AddFlourish registers no appearance service. The separate native host references Framework alone and loads only framework.css.
+- Framework native CSS preserves real masked-input text without the decorative layer, hides assistive labels correctly, paints icons at relative sizes, establishes identity containers and retains disclosure/switch state. Design native-overrides explicitly restores decorative layers.
+- Functional shell layout retains intrinsic tracks and actual stage overflow. The accepted fixed optical dimensions belong to Design. Table scroll/resizer hit areas remain functional assets.
+- Design theme-aliases maps ThemeScope `--f-*` to the extracted workspace/account/semantic variables on the pattern roots, including color-scheme. Consumers can still provide explicit inline roles.
+- EditingGrid rejects ambiguous column keys and mismatched cell counts. Its readonly/disabled and primary/secondary error metadata appear in native controls and grid ARIA; host parsing, business history and persistence remain outside the renderer.
 
-Use blazor-manual-tests.md for OS scaling, browser zoom, wrapped long names, screen-reader/forced-colors use, reduced motion, Firefox/native select fallback, modal/menu keyboard acceptance and older-browser fallback. Real-browser sampling does not claim full cross-browser acceptance or authenticated Colligere adoption. Existing business/API/session boundaries remain consumer-owned.
+These are implementation/source-review facts. They do not replace a browser check of CSS cascade, focus, clipboard, geometry or lifetime behavior.
 
-The final visible-browser review additionally found parent and child secondary routes selected together. The shell now selects only the most specific enabled match; an unlisted record falls back to its parent. This is covered by a focused C# case and the rendered detail-page check. Odd final facts span the full definition track.
+## Verified non-browser evidence
+
+The console suite currently passes 47/47 checks, including eight EditingGrid/native composition additions and four dropdown state checks. It checks typed/localized table processing, DI state/configuration, contrast, encoded text, controls/shell/dialog semantics, grid shape/editor/error/lock contracts and Framework-only Patterns/Primitives rendering with no IAppearanceService. HtmlRenderer does not run interactive post-render JS, and the JS mock does not prove a live browser's API behavior.
+
+The [completion record](currentproject-changelogs/2026-10-03_170436_split-blazor-ui-and-integrate-consumer.md) records final Debug/Release and consumer builds, package contents, independent offline PackageReference restore/build, live browser observations and screenshots. It also records the final dropdown recheck awaiting an authenticated document. Hover/held intermediate frames, clipboard acceptance, CRUD and cross-browser results are not claimed. The focus/ARIA repair is documented in its [bug report](bugfix-reports/2026-10-03_blazor-sheet-origin-and-dropdown-aria.md).
+
+## Current browser-review limits
+
+Current browser automation supports click, keyboard input and drag. Independent hover and holding an intermediate animation frame are unavailable. Focus-triggered tooltip behavior can be checked independently; it is not proof of hover delay, hover corridors or animation timing. Final screenshots capture a state and cannot establish the behavior between states.
+
+Use [blazor-manual-tests.md](blazor-manual-tests.md) for acceptance of:
+
+- Framework-only mask/icon/tooltip/container behavior and the corresponding Design opt-in cascade.
+- Gallery `/patterns` and authenticated Colligere navigation/forms/lists, including authorized menu/route boundaries and intact host business behavior.
+- EditingGrid selection/edit/copy/paste/undo/redo, cursor loading, resizing, error announcement and readonly/busy policy in an authorized test workspace.
+- Menu-to-dialog focus return, outside/Escape handling, disconnect/disposal and repeated navigation without stale callbacks.
+- Pure pointer hover, intermediate animation states, OS DPI/zoom, forced colors/reduced motion, screen readers and additional browsers.
+- A packed Framework-only third-party host followed by explicit Design adoption, with no sibling source requirement.
+
+Known compatibility differences remain visible: extracted RowActionMenu calls native Popover directly; enhanced Components ActionMenu has fallback behavior. Extracted Primitives include retained Portuguese labels. Default preferences and Gallery demonstration state are in-memory. No generic remote-query, virtualized grid, universal localization or public NuGet publication is claimed.

@@ -1,0 +1,1035 @@
+/* AppIcon.css */
+.app-icon {
+    display: block;
+    flex: 0 0 auto;
+}
+
+/* BottomSheet.css */
+.bottom-sheet {
+    position: fixed;
+    inset: auto 0 0;
+    max-height: calc(100dvh - 24px);
+    overflow: hidden;
+}
+.bottom-sheet[open] {
+    display: flex;
+    flex-direction: column;
+}
+.bottom-sheet-header {
+    flex: 0 0 auto;
+}
+.bottom-sheet-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.bottom-sheet-close {
+    display: grid;
+    flex: 0 0 38px;
+    place-items: center;
+}
+.bottom-sheet-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+@media (max-width: 760px) {
+.bottom-sheet {
+    max-height: calc(100dvh - 12px);
+}
+}
+
+/* DisclosureSection.css */
+.disclosure-section {
+    min-width: 0;
+}
+.disclosure-section > summary {
+    display: flex;
+    align-items: center;
+    min-height: var(--control-height);
+}
+.disclosure-section > summary::-webkit-details-marker {
+    display: none;
+}
+.disclosure-section-content {
+    display: grid;
+    min-width: 0;
+}
+
+/* FilledIdentityCard.css */
+.filled-identity-card {
+    min-width: 0;
+}
+.identity-card-layout {
+    display: grid;
+    min-width: 0;
+    align-items: start;
+}
+.identity-card-with-sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
+}
+.identity-card-facts {
+    display: grid;
+    min-width: 0;
+}
+.identity-card-facts-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.identity-card-facts > div {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+}
+.identity-card-facts dd {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.identity-card-facts .identity-card-primary-value {
+    display: block;
+}
+@container filled-identity-card (max-width: 680px) {
+.identity-card-with-sidebar,
+    .identity-card-facts-columns {
+    grid-template-columns: minmax(0, 1fr);
+}
+}
+
+/* FormActionBar.css */
+.form-action-bar {
+    min-width: 0;
+    grid-column: 1 / -1;
+}
+.form-action-bar .uniform-grid.uniform-grid-filled > :is(button.primary-action, button.secondary-action, a.primary-action, a.secondary-action, button, a) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 96px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+/* FormFields.css */
+.form-field-grid :is(.reference-field, .tag-field) {
+    display: grid;
+    align-content: start;
+    min-width: 0;
+}
+.form-field-grid .field-label {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+/* MaskedInput.css */
+.masked-input {
+    display: grid;
+    position: relative;
+}
+.masked-input-display,
+.masked-input-control {
+    grid-area: 1 / 1;
+}
+.masked-input-display {
+    align-items: center;
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre;
+    z-index: 1;
+}
+.masked-input-control {
+    background-color: transparent !important;
+    color: transparent !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* MultiSelectDropdown.css */
+.multi-select-dropdown {
+    position: relative;
+    min-width: 0;
+}
+.multi-select-options {
+    max-height: min(320px, 48vh);
+    overflow-y: auto;
+}
+
+/* NoticeTrigger.css */
+.notice-trigger {
+    position: relative;
+    z-index: 4;
+    display: inline-flex;
+}
+.notice-trigger-button {
+    min-height: 40px;
+}
+.notice-trigger-content {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 80;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+}
+.notice-trigger:hover,
+.notice-trigger:focus-within {
+    z-index: 90;
+}
+
+/* PrimaryNavigationItem.css */
+.primary-navigation-entry {
+    position: relative;
+}
+.primary-nav-symbol {
+    display: grid;
+    place-items: center;
+}
+.primary-navigation-tooltip {
+    position: fixed;
+    inset: auto;
+    z-index: 100;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+    overflow: visible;
+}
+.primary-navigation-tooltip::before {
+    position: absolute;
+    top: 0;
+    right: 100%;
+    content: "";
+}
+.primary-navigation-tooltip:not([data-open]) {
+    display: none;
+}
+
+/* AccessSurface.css */
+.access-surface {
+    display: grid;
+    min-height: 100vh;
+    min-height: 100dvh;
+    place-items: center;
+}
+.access-surface .access-panel,
+.access-surface .access-panel {
+    min-width: 0;
+}
+.access-surface .access-brand,
+.access-surface .access-brand {
+    display: grid;
+    justify-items: start;
+}
+.access-surface .access-logo,
+.access-surface .access-logo {
+    display: grid;
+    place-items: center;
+}
+.access-surface .access-logo img,
+.access-surface .access-logo img {
+    display: block;
+    object-fit: contain;
+}
+.access-surface .access-brand h1,
+.access-surface .access-brand h1 {
+    overflow-wrap: anywhere;
+}
+.access-surface .access-brand h1 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.access-surface .access-form,
+.access-surface .access-form {
+    display: grid;
+}
+.access-surface .access-form input:not([type="hidden"]),
+.access-surface .access-form input:not([type="hidden"]):not([type="checkbox"]) {
+    min-width: 0;
+    min-height: var(--control-height);
+}
+.access-surface .access-form button,
+.access-surface .access-form button,
+.access-surface .access-panel > .primary-action {
+    min-height: var(--control-height);
+}
+.access-surface .access-links,
+.access-surface .access-links {
+    display: flex;
+    flex-wrap: wrap;
+}
+.access-surface .access-actions {
+    display: flex;
+    flex-wrap: wrap;
+}
+.access-surface .access-actions a {
+    display: inline-flex;
+    min-height: var(--control-height);
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 760px) {
+.access-surface {
+    place-items: start stretch;
+}
+}
+
+/* FieldControl.css */
+.field-control {
+    position: relative;
+    display: block;
+    min-width: 0;
+}
+.field-control .validation-message {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 45;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+.field-control .validation-message {
+    position: static;
+}
+}
+
+/* ReferenceDropdown.css */
+.reference-dropdown {
+    position: relative;
+    min-width: 0;
+}
+.reference-options {
+    display: grid;
+    max-height: min(280px, 40vh);
+    overflow-y: auto;
+}
+
+/* ServiceMenu.css */
+.service-menu {
+    position: relative;
+    flex: 0 0 auto;
+}
+.service-menu-trigger {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    user-select: none;
+}
+.service-menu-chevron {
+    flex: 0 0 8px;
+}
+.service-menu-view {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 60;
+    pointer-events: none;
+    visibility: hidden;
+}
+.service-menu:hover > .service-menu-view,
+.service-menu-trigger:focus-visible + .service-menu-view,
+.service-menu-view:focus-within {
+    pointer-events: auto;
+    visibility: visible;
+}
+.service-menu-view nav {
+    display: grid;
+}
+.service-menu-view a {
+    display: flex;
+    min-height: 52px;
+    align-items: center;
+}
+@media (max-width: 760px) {
+.service-menu-view {
+    right: 6px;
+    left: auto;
+}
+}
+@media (hover: none) {
+.service-menu:focus-within > .service-menu-view {
+    pointer-events: auto;
+    visibility: visible;
+}
+}
+
+/* ShellHeader.css */
+.shell-header {
+    position: relative;
+    z-index: 50;
+    display: flex;
+    min-width: 0;
+    min-height: var(--topbar-height, 68px);
+}
+.shell-header-start,
+.shell-header-actions,
+.shell-header-brand,
+.shell-header-title,
+.shell-header-identity {
+    display: flex;
+    align-items: center;
+}
+.shell-header-start {
+    min-width: 0;
+    flex: 1;
+}
+.shell-header-brand {
+    min-width: 0;
+    flex: 0 1 auto;
+}
+.shell-header-logo {
+    display: grid;
+    flex: 0 0 76px;
+    place-items: center;
+    overflow: hidden;
+}
+.shell-header-logo img {
+    display: block;
+    object-fit: contain;
+}
+.shell-header-title {
+    min-width: 0;
+    align-items: baseline;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.shell-header-title strong,
+.shell-header-context {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.shell-header-actions {
+    min-width: 0;
+    flex: 0 0 auto;
+}
+.shell-header-identity {
+    min-width: 48px;
+    justify-content: center;
+}
+.shell-header-identity strong {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.shell-header-actions form {
+    display: flex;
+    align-items: center;
+}
+.shell-header-actions .shell-header-action {
+    position: relative;
+    display: grid;
+    min-width: 48px;
+    place-items: center;
+}
+.shell-header-actions .shell-header-action[data-tooltip]::after {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 80;
+    content: attr(data-tooltip);
+    white-space: nowrap;
+    pointer-events: none;
+    visibility: hidden;
+}
+.shell-header-actions .shell-header-action[data-tooltip]:hover::after,
+.shell-header-actions .shell-header-action[data-tooltip]:focus-visible::after {
+    visibility: visible;
+}
+.shell-header-actions .shell-header-text-action {
+    display: flex;
+    min-width: 48px;
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 760px) {
+.shell-header-logo {
+    flex-basis: 60px;
+}
+.shell-header-identity strong {
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+}
+}
+
+/* RecordPageHeading.css */
+.record-heading-copy {
+    display: grid;
+}
+.record-page-actions {
+    display: flex;
+    align-items: center;
+}
+.record-parent-link {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* RowActionMenu.css */
+.row-action-menu {
+    display: inline-flex;
+}
+.row-action-menu-trigger {
+    display: inline-grid;
+    place-items: center;
+}
+.row-action-menu-panel {
+    position: fixed;
+    min-width: 190px;
+}
+.row-action-menu-panel .table-action,
+.row-action-menu-panel a,
+.row-action-menu-panel button {
+    display: flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: nowrap;
+}
+.row-action-menu-panel .menu-section-label {
+    display: block;
+}
+
+/* SearchAutocomplete.css */
+.search-autocomplete {
+    position: relative;
+    display: block;
+    min-width: 0;
+}
+.search-autocomplete-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: 0;
+    z-index: 45;
+    display: grid;
+    max-height: min(320px, 48vh);
+    overflow-y: auto;
+}
+.search-autocomplete-option,
+.search-autocomplete-empty {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+}
+
+/* SelectionDropdownSurface.css */
+.selection-dropdown-surface {
+    min-width: 0;
+}
+.selection-dropdown-surface .selection-trigger {
+    display: flex;
+    min-height: var(--control-height);
+    align-items: center;
+    justify-content: space-between;
+}
+.selection-dropdown-surface .selection-chevron {
+    flex: 0 0 10px;
+}
+.selection-dropdown-surface .selection-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: 0;
+    z-index: 50;
+    display: grid;
+}
+.selection-dropdown-surface .selection-search {
+    box-sizing: border-box;
+}
+.selection-dropdown-surface :is(.selection-option, .selection-create) {
+    min-height: 44px;
+}
+.selection-dropdown-surface .selection-create {
+    overflow-wrap: anywhere;
+}
+.selection-dropdown-surface label.selection-option {
+    display: flex;
+    align-items: center;
+}
+
+/* InteractionBoundary.css */
+.interaction-content-locked {
+    visibility: hidden;
+}
+.interaction-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+}
+
+/* Glyph.css */
+.shell-glyph {
+    display: block;
+    flex: 0 0 auto;
+}
+
+/* StandaloneMaskedInput.css */
+.masked-input {
+    display: grid;
+    position: relative;
+}
+.masked-input-display,
+.masked-input-control {
+    grid-area: 1 / 1;
+}
+.masked-input-display {
+    z-index: 1;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre;
+}
+.masked-input-control {
+    z-index: 2;
+    position: relative;
+    color: transparent !important;
+    background-color: transparent !important;
+}
+
+/* SystemNavigationMenu.css */
+.system-menu {
+    position: relative;
+    flex: 0 0 auto;
+}
+.system-menu-trigger {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    user-select: none;
+}
+.system-menu-chevron {
+    flex: 0 0 8px;
+}
+.system-menu-view {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 60;
+    pointer-events: none;
+    visibility: hidden;
+}
+.system-menu:hover > .system-menu-view,
+.system-menu-trigger:focus-visible + .system-menu-view,
+.system-menu-view:focus-within {
+    pointer-events: auto;
+    visibility: visible;
+}
+.system-menu-view nav {
+    display: grid;
+}
+.system-menu-view a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+}
+@media (max-width: 760px) {
+.system-menu-view {
+    right: 6px;
+    left: auto;
+}
+}
+@media (hover: none) {
+.system-menu:focus-within > .system-menu-view {
+    pointer-events: auto;
+    visibility: visible;
+}
+}
+
+/* ToggleIndicator.css */
+.toggle-indicator-track {
+    display: flex;
+    align-items: center;
+    flex: 0 0 52px;
+}
+
+/* ToggleSection.css */
+.toggle-section {
+    display: grid;
+    min-width: 0;
+}
+.toggle-section-content {
+    display: grid;
+    min-width: 0;
+}
+.toggle-section-content[hidden] {
+    display: none;
+}
+
+/* ToggleSwitch.css */
+.toggle-switch {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-height);
+}
+
+/* UniformGrid.css */
+.uniform-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--uniform-grid-columns), minmax(0, 1fr));
+    min-width: 0;
+    overflow: hidden;
+}
+.uniform-grid > * {
+    min-width: 0;
+}
+@media (max-width: 760px) {
+.uniform-grid {
+    grid-template-columns: repeat(var(--uniform-grid-narrow-columns), minmax(0, 1fr));
+}
+}
+
+/* DataPager.css */
+.data-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+}
+.data-pagination-range {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: var(--control-height);
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+}
+.data-pagination-range-total {
+    display: inline-flex;
+    align-items: center;
+}
+.data-pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.data-pagination-previous,
+.data-pagination-next {
+    display: inline-flex;
+    min-width: 40px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+.data-pagination-page {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+.data-pagination-input {
+    min-width: 64px;
+    box-sizing: border-box;
+}
+.data-pagination-total {
+    min-width: 0;
+    white-space: nowrap;
+}
+.visually-hidden {
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+}
+@media (max-width: 520px) {
+.data-pagination {
+    justify-content: flex-end;
+}
+}
+
+/* DataSearch.css */
+.data-search .search-column-field {
+    flex: 0 1 240px;
+}
+.data-search .search-value-field {
+    min-width: 0;
+}
+.data-search .search-value-field input {
+    min-width: 0;
+}
+@media (max-width: 760px) {
+.data-search {
+    align-items: stretch;
+    flex-direction: column;
+}
+.data-search .quick-filter-field {
+    flex: auto;
+}
+}
+
+/* DataGrid.css */
+.data-grid {
+    display: grid;
+    min-width: 0;
+}
+.table-column-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    min-width: 0;
+}
+.table-column-tools .data-pagination {
+    justify-content: flex-start;
+}
+.table-view-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+}
+.data-table-pagination-bottom {
+    display: flex;
+    min-width: 0;
+    justify-content: flex-end;
+}
+.data-table tbody tr[hidden] {
+    display: none;
+}
+.data-view-switch {
+    display: grid;
+    grid-template-columns: auto auto;
+    min-height: var(--control-height);
+}
+.data-view-option {
+    display: flex;
+    min-width: 40px;
+    align-items: center;
+    justify-content: center;
+}
+.data-view-icon {
+    flex: 0 0 23px;
+}
+.table-column-selector,
+.table-advanced-selector {
+    position: relative;
+}
+.table-column-selector > summary,
+.table-advanced-selector > summary {
+    min-width: 132px;
+}
+.table-column-selector > summary::-webkit-details-marker,
+.table-advanced-selector > summary::-webkit-details-marker {
+    display: none;
+}
+.table-column-selector > fieldset,
+.table-popup-panel {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 8px);
+    right: 0;
+    display: grid;
+    min-width: 240px;
+}
+.table-popup-item {
+    display: flex;
+    min-height: 52px;
+    align-items: center;
+}
+.column-option {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: center;
+    min-height: var(--control-height);
+}
+.column-option label {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    align-items: center;
+}
+.column-option label > input {
+    position: absolute;
+}
+.column-option label > span[aria-hidden="true"] {
+    display: grid;
+    place-items: center;
+}
+.column-drag-handle {
+    display: grid;
+    place-items: center;
+}
+.data-table {
+    min-width: 100%;
+}
+.empty-row {
+    overflow: hidden;
+}
+.data-grid .data-table > thead > tr > th,
+.data-grid .data-table > tbody > tr > td {
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+.data-column-header {
+    position: relative;
+}
+.data-column-sort {
+    display: flex;
+    min-width: 0;
+    min-height: var(--control-height);
+    align-items: center;
+}
+.data-column-sort .data-column-label {
+    flex: 0 1 auto;
+}
+.data-sort-arrow {
+    flex: 0 0 12px;
+}
+.data-column-label,
+.data-cell-content {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.data-cell-content > * {
+    max-height: 48px;
+    white-space: nowrap;
+}
+.data-grid .data-cell-content input:not([type="checkbox"]),
+.data-grid .data-cell-content select {
+    min-width: 0;
+    box-sizing: border-box;
+}
+.data-grid .data-table .data-cell-content .secondary-value {
+    display: inline;
+}
+.data-table .table-actions {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+    min-width: 80px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+.data-table th.table-actions,
+.data-table .bulk-edit-row .table-actions {
+    z-index: 3;
+}
+.data-table-image {
+    display: block;
+    object-fit: cover;
+}
+.data-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 248px), 1fr));
+}
+.data-card {
+    display: flex;
+    min-width: 0;
+    min-height: 190px;
+    flex-direction: column;
+    overflow: hidden;
+}
+.bulk-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.data-card-image {
+    object-fit: cover;
+}
+.data-card-image-placeholder {
+    display: grid;
+    place-content: center;
+    place-items: center;
+}
+.data-card-content,
+.data-card-details {
+    display: grid;
+}
+.data-card-content h3 {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.data-card-field,
+.data-card-details > div {
+    display: grid;
+}
+.data-card-label {
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.data-card-details dd {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.data-card .data-card-field-slot {
+    display: grid;
+    grid-template-rows: 24px;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.data-card .data-card-field-value {
+    display: block;
+    grid-row: 1;
+    min-width: 0;
+    max-height: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.data-card-field-value * {
+    min-width: 0;
+    max-height: 24px;
+    white-space: nowrap;
+}
+.data-card-field-value :is(div, span, p, strong, b, a, h1, h2, h3, h4, h5, h6) {
+    display: inline;
+}
+.data-card-field-value img {
+    object-fit: contain;
+}
+.data-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+.visually-hidden {
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.data-card-empty {
+    grid-column: 1 / -1;
+}
+@media (max-width: 760px) {
+.table-column-selector > fieldset {
+    right: 0;
+    box-sizing: border-box;
+}
+.table-column-tools .data-pagination {
+    flex-basis: 100%;
+}
+}
+
+
+.masked-input-control { caret-color: CanvasText; }
+.bottom-sheet { width: 100%; max-width: none; margin: 0; padding: 0; }
+.bottom-sheet-content { box-sizing: border-box; }
+.primary-navigation-tooltip { width: max-content; max-width: calc(100vw - 24px); margin: 0; }
+.row-action-menu-panel { width: max-content; max-width: calc(100vw - 24px); margin: 0; }
+.data-grid .data-action-cell { background: Canvas; }
+
+
+.spreadsheet-scroll[hidden] { display: none !important; }
+
+/* ReferenceField.css */
+.reference-field {
+    display: grid;
+    align-content: start;
+    min-width: 0;
+}
+.field-label {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+/* FormSurface.css */
+.form-surface-frame { min-width: 0; }

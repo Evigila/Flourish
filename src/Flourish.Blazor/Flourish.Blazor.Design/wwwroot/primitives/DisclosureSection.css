@@ -1,0 +1,33 @@
+.disclosure-section {
+    margin: 24px 0;
+}
+.disclosure-section > summary {
+    --toggle-track-color: var(--muted);
+    --toggle-thumb-offset: 0;
+    gap: 12px;
+    padding: 8px 0;
+    border-radius: var(--control-radius);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+}
+.disclosure-section > summary:hover {
+    color: var(--accent-strong);
+}
+.disclosure-section > summary:active {
+    filter: brightness(.9);
+}
+.disclosure-section > summary:focus-visible {
+    outline: 3px solid var(--accent-strong);
+    outline-offset: 4px;
+}
+.disclosure-section[open] > summary {
+    --toggle-track-color: var(--accent);
+    --toggle-thumb-offset: 22px;
+}
+.disclosure-section-content {
+    gap: 24px;
+    padding-top: 16px;
+}

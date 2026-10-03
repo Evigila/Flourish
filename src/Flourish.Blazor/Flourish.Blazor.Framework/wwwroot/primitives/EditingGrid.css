@@ -1,0 +1,263 @@
+.spreadsheet-scroll {
+position: relative;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+    isolation: isolate;
+}
+
+.editing-grid-table {
+--spreadsheet-cell-height: 48px;
+    width: max-content;
+    min-width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.editing-grid-table th,
+.editing-grid-table td {
+box-sizing: border-box;
+    min-width: 100px;
+    vertical-align: middle;
+}
+
+.editing-grid-table th {
+position: sticky;
+    top: 0;
+    z-index: 3;
+    height: 56px;
+    vertical-align: middle;
+}
+
+.editing-grid-table th .data-column-label {
+display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+}
+
+.editing-grid-table th.is-manual-column .data-column-label {
+display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
+.editing-grid-table td {
+height: var(--spreadsheet-cell-height);
+}
+
+.editing-grid-table .identity-column {
+position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+.editing-grid-table th.identity-column {
+z-index: 4;
+}
+
+.editing-grid-table .spreadsheet-fill {
+width: auto;
+    min-width: 0;
+}
+
+.editing-grid-table td.is-active-cell {
+z-index: 1;
+}
+
+.editing-grid-table td.identity-column.is-active-cell {
+z-index: 2;
+}
+
+.spreadsheet-cell-surface {
+position: relative;
+    display: flex;
+    min-height: var(--spreadsheet-cell-height);
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.spreadsheet-cell-display {
+display: -webkit-box;
+    width: 100%;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+}
+
+.is-manual-column .spreadsheet-cell-display {
+display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
+.spreadsheet-measurement {
+display: none;
+}
+
+.spreadsheet-cell-editor {
+position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.is-editing-cell .spreadsheet-cell-editor,
+.is-long-text .spreadsheet-cell-editor,
+.read-only-cell .spreadsheet-cell-editor {
+opacity: 1;
+}
+
+.is-editing-cell .spreadsheet-cell-editor,
+.is-long-text .spreadsheet-cell-editor {
+pointer-events: auto;
+}
+
+.is-editing-cell .spreadsheet-cell-display,
+.read-only-cell .spreadsheet-cell-display {
+visibility: hidden;
+}
+
+.cell-select-marker {
+position: absolute;
+    right: 8px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.cell-select-marker svg {
+display: block;
+    width: 16px;
+    height: 16px;
+}
+
+.editing-grid-table input,
+.editing-grid-table select,
+.editing-grid-table textarea,
+.editing-grid-table .masked-input {
+display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: var(--spreadsheet-cell-height);
+}
+
+.editing-grid-table input,
+.editing-grid-table select,
+.editing-grid-table textarea,
+.editing-grid-table .masked-input-control {
+box-sizing: border-box;
+    min-height: var(--spreadsheet-cell-height);
+    height: 100%;
+    outline: none;
+}
+
+.editing-grid-table select {
+display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.editing-grid-table select::picker-icon {
+display: none;
+}
+
+.editing-grid-table .masked-input-control {
+color: transparent !important;
+}
+
+.editing-grid-table textarea {
+resize: none;
+    overflow: auto;
+}
+
+.editing-grid-table input:disabled,
+.editing-grid-table select:disabled,
+.editing-grid-table textarea:disabled {
+opacity: 1;
+    cursor: default;
+}
+
+.editing-grid-table .read-only-cell .spreadsheet-cell-editor {
+display: flex;
+    align-items: center;
+}
+
+.editing-grid-table .read-only-cell a {
+display: -webkit-box;
+    box-sizing: border-box;
+    width: 100%;
+    max-height: var(--spreadsheet-cell-height);
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+}
+
+.editing-grid-table .read-only-cell.is-manual-column a {
+display: block;
+    max-height: none;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
+.editing-grid-table .cell-error {
+display: block;
+    overflow-wrap: anywhere;
+}
+
+.editing-grid-table .data-column-resizer {
+position: absolute;
+    inset-block: 0;
+    right: -5px;
+    z-index: 6;
+    width: 10px;
+    cursor: col-resize;
+    touch-action: none;
+}
+
+.editing-grid-table .data-column-resizer::after {
+content: "";
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 4px;
+    width: 2px;
+    opacity: 0;
+}
+
+.editing-grid-table .data-column-resizer:hover::after,
+.editing-grid-table .data-column-resizer:focus-visible::after,
+.editing-grid-table .data-column-resizer.is-resizing::after {
+opacity: 1;
+}
+
+.spreadsheet-scroll.is-resizing-columns {
+cursor: col-resize;
+    user-select: none;
+}
+
+@media (max-width: 760px) {
+    .editing-grid-table .identity-column {
+    position: static;
+    }
+
+    .editing-grid-table th.identity-column {
+    position: sticky;
+                top: 0;
+                z-index: 3;
+    }
+}

@@ -1,0 +1,66 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@implements IAsyncDisposable
+@inject IJSRuntime InputJavascript
+@inherits InputBase<string?>
+
+<span class="masked-input">
+    <span class="masked-input-display" aria-hidden="true">
+        @for (var index = 0; index < EffectiveMask.Length; index++)
+        {
+            var currentIndex = index;
+            var isEntered = currentIndex < FormattedValue.Length;
+            <span class="@(isEntered ? "is-entered" : "is-mask")">@(isEntered ? FormattedValue[currentIndex] : EffectiveMask[currentIndex])</span>
+        }
+    </span>
+    <input @attributes="AdditionalAttributes"
+           class="@($"masked-input-control {CssClass}")"
+           value="@FormattedValue"
+           data-input-mask="@EffectiveMask"
+           inputmode="@InputMode"
+           @oninput="HandleInput" />
+</span>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Mask { get; set; } = string.Empty;
+
+    [Parameter]
+    public string InputMode { get; set; } = "numeric";
+
+    private string EffectiveMask => Mask ?? string.Empty;
+    private string FormattedValue => string.IsNullOrEmpty(EffectiveMask)
+        ? CurrentValue ?? string.Empty
+        : InputMaskFormatter.Format(EffectiveMask, CurrentValue);
+
+    private void HandleInput(ChangeEventArgs args) =>
+        CurrentValueAsString = args.Value?.ToString();
+
+    protected override string? FormatValueAsString(string? value) =>
+        string.IsNullOrEmpty(EffectiveMask) ? value : InputMaskFormatter.Format(EffectiveMask, value);
+
+    protected override bool TryParseValueFromString(
+        string? value,
+        out string? result,
+        out string validationErrorMessage)
+    {
+        result = string.IsNullOrEmpty(EffectiveMask) ? value : InputMaskFormatter.Normalize(EffectiveMask, value);
+        validationErrorMessage = string.Empty;
+        return true;
+    }
+
+    private InputBehaviorBinding? InputBehaviors;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        InputBehaviors ??= new(InputJavascript);
+        await InputBehaviors.EnsureAsync();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (InputBehaviors is not null) await InputBehaviors.DisposeAsync();
+        }
+        finally { ((IDisposable)this).Dispose(); }
+    }
+}

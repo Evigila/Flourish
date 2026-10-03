@@ -1,0 +1,30 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<header class="access-brand">
+    @if (!string.IsNullOrWhiteSpace(LogoPath))
+    {
+        <span class="access-logo" aria-hidden="true">
+            <img src="@LogoPath" alt="" width="72" height="72" />
+        </span>
+    }
+    <div>
+        <h1 id="@TitleId">
+            <span>@BrandName</span>
+            @if (!string.IsNullOrWhiteSpace(ContextName))
+            {
+                <span class="access-context">@ContextName</span>
+            }
+        </h1>
+        @if (!string.IsNullOrWhiteSpace(Description))
+        {
+            <p>@Description</p>
+        }
+    </div>
+</header>
+
+@code {
+    [Parameter] public string? LogoPath { get; set; }
+    [Parameter, EditorRequired] public string BrandName { get; set; } = string.Empty;
+    [Parameter] public string? ContextName { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string TitleId { get; set; } = "access-title";
+}

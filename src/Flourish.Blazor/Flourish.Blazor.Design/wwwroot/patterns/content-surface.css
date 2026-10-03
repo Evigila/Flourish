@@ -1,0 +1,514 @@
+/* Reusable surface layout and content flow. */
+.content-surface {
+    --surface-theme-primary: var(--f-primary, #153a32);
+    --surface-theme-accent: var(--f-accent, #16745f);
+    --surface-theme-primary-ink: var(--f-primary-ink, #fff);
+    --surface-theme-accent-ink: var(--f-accent-ink, #fff);
+    --surface-theme-accent-text: var(--f-accent-text, #0e5748);
+    --surface-theme-focus: var(--f-focus, #0e5748);
+    --canvas: color-mix(in srgb, var(--surface-theme-primary) 5%, #fff);
+    --surface: #fff;
+    --surface-alternate: color-mix(in srgb, var(--surface-theme-primary) 7%, #fff);
+    --surface-raised: color-mix(in srgb, var(--surface-theme-primary) 11%, #fff);
+    --ink: color-mix(in srgb, var(--surface-theme-primary) 22%, #102033);
+    --ink-soft: color-mix(in srgb, var(--surface-theme-primary) 16%, #34485c);
+    --muted: color-mix(in srgb, var(--surface-theme-primary) 7%, #526579);
+    --disabled: #8793a0;
+    --line: color-mix(in srgb, var(--surface-theme-primary) 16%, #e8ecf0);
+    --line-strong: color-mix(in srgb, var(--surface-theme-primary) 28%, #d4dce4);
+    --row-hover: color-mix(in srgb, var(--surface-theme-accent) 11%, #fff);
+    --accent: var(--surface-theme-accent);
+    --accent-strong: var(--surface-theme-accent-text);
+    --accent-fill-hover: color-mix(in srgb, var(--surface-theme-accent) 82%, #000);
+    --accent-soft: color-mix(in srgb, var(--surface-theme-accent) 15%, #fff);
+    --focus: var(--surface-theme-focus);
+    --chrome: var(--surface-theme-primary);
+    --chrome-hover: color-mix(in srgb, var(--surface-theme-primary-ink) 11%, var(--surface-theme-primary));
+    --chrome-line: color-mix(in srgb, var(--surface-theme-primary-ink) 16%, transparent);
+    --chrome-ink: var(--surface-theme-primary-ink);
+    --surface-context: color-mix(in srgb, var(--surface-theme-primary-ink) 72%, transparent);
+    --radius-small: 10px;
+    --radius-medium: 16px;
+    --radius-large: 28px;
+    color: var(--ink);
+    background: var(--canvas);
+    color-scheme: light;
+    accent-color: var(--surface-theme-accent);
+}
+
+.content-surface .skip-link {
+padding: 10px 14px;
+    color: var(--surface-theme-accent-ink);
+    background: var(--surface-theme-accent);
+    border-radius: var(--radius-small);
+    font-weight: 750;
+}
+
+.content-surface .content-topbar {
+color: var(--chrome-ink);
+    background: var(--chrome);
+    border-bottom: 1px solid var(--chrome-line);
+}
+
+.content-surface .surface-brand {
+color: inherit;
+    border-right: 1px solid var(--chrome-line);
+    text-decoration: none;
+}
+
+.content-surface .surface-logo {
+padding: 8px;
+}
+
+.content-surface .surface-logo img {
+object-fit: contain;
+}
+
+.content-surface .surface-title {
+gap: 7px;
+    padding: 0 22px 0 10px;
+    font-size: 17px;
+    letter-spacing: -.01em;
+}
+
+.content-surface .surface-title strong {
+font-weight: 760;
+}
+
+.content-surface .surface-context {
+color: var(--surface-context);
+    font-weight: 650;
+}
+
+.content-surface .content-actions {
+margin-left: auto;
+    padding-right: 10px;
+}
+
+.content-surface .content-actions  .content-identity,
+.content-surface .content-actions  .content-logout {
+gap: 10px;
+    color: var(--chrome-ink);
+    background: transparent;
+    border: 0;
+    border-radius: 14px;
+    text-decoration: none;
+}
+
+.content-surface .content-actions  .content-identity {
+padding: 0 15px;
+}
+
+.content-surface .content-actions  .content-identity strong {
+font-size: 17px;
+}
+
+.content-surface .content-actions  .content-logout {
+padding: 0;
+}
+
+.content-surface .content-actions  .content-identity:hover,
+.content-surface .content-actions  .content-identity.active,
+.content-surface .content-actions  .content-logout:hover {
+background: var(--chrome-hover);
+}
+
+.content-surface .content-actions  .content-identity:focus-visible,
+.content-surface .content-actions  .content-logout:focus-visible {
+outline: 3px solid var(--surface-theme-primary-ink);
+    outline-offset: -3px;
+}
+
+.content-surface .content-stage {
+background: var(--canvas);
+    scrollbar-gutter: stable;
+}
+
+.content-surface  .page-root {
+color: var(--ink);
+    background: var(--canvas);
+    font-size: 17px;
+    line-height: 1.55;
+}
+
+.content-surface  .page-heading {
+gap: 32px;
+    padding: 48px var(--surface-content-gutter) 36px;
+    background: var(--canvas);
+    border-bottom: 1px solid var(--line);
+}
+
+.content-surface  .page-heading h1 {
+margin: 0;
+    color: var(--ink);
+    font-size: clamp(42px, 5vw, 68px);
+    font-weight: 780;
+    letter-spacing: -.055em;
+    line-height: 1.08;
+}
+
+.content-surface  .page-heading p {
+margin: 16px 0 0;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.content-surface  .page-root > .notice,
+.content-surface  .page-root > .loading-state {
+margin: 24px var(--surface-content-gutter) 0;
+}
+
+.content-surface  .notice {
+padding: 13px 16px;
+    border-radius: var(--radius-small);
+    font-size: 17px;
+}
+
+.content-surface  .module-group {
+padding-bottom: clamp(64px, 9vw, 120px);
+}
+
+.content-surface  .page-module {
+padding: clamp(44px, 7vw, 84px) var(--surface-content-gutter) 0;
+    background: transparent;
+    border: 0;
+}
+
+.content-surface  .page-root > .page-module:last-of-type,
+.content-surface  .module-group > .page-module:last-child {
+padding-bottom: clamp(64px, 9vw, 120px);
+}
+
+.content-surface  .section-heading {
+gap: 24px;
+    margin-bottom: 24px;
+    padding: 0;
+    background: transparent;
+}
+
+.content-surface  .section-heading h2 {
+margin: 0;
+    color: var(--ink);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 760;
+    letter-spacing: -.035em;
+    line-height: 1.08;
+}
+
+.content-surface  .section-heading > span,
+.content-surface  .page-module > p,
+.content-surface  .loading-state {
+color: var(--muted);
+    font-size: 17px;
+}
+
+.content-surface  .primary-action,
+.content-surface  .secondary-action,
+.content-surface  .table-action,
+.content-surface  .text-action {
+padding: 10px 16px;
+    border-radius: var(--control-radius);
+    font-size: 17px;
+    font-weight: 740;
+}
+
+.content-surface  .primary-action {
+color: var(--surface-theme-accent-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.content-surface  .primary-action:hover:not(:disabled) {
+color: var(--surface-theme-accent-ink);
+    background: var(--accent-fill-hover);
+    border-color: var(--accent-fill-hover);
+}
+
+.content-surface  .secondary-action {
+color: var(--accent-strong);
+    background: var(--surface);
+    border-color: var(--line-strong);
+}
+
+.content-surface  .secondary-action:hover:not(:disabled),
+.content-surface  .table-action:hover:not(:disabled) {
+background: var(--accent-soft);
+}
+
+.content-surface  .form-surface {
+padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.content-surface  .form-surface .form-fieldset {
+gap: 22px 20px;
+}
+
+.content-surface  .form-surface .form-fieldset > label {
+gap: 8px;
+    color: var(--ink-soft);
+    font-size: 17px;
+    font-weight: var(--field-label-weight);
+}
+
+.content-surface  .table-scroll {
+background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-medium);
+    box-shadow: none;
+}
+
+.content-surface  .data-table {
+color: var(--ink);
+    background: var(--surface);
+}
+
+.content-surface  .data-table th,
+.content-surface  .data-table td {
+padding: 18px 16px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 17px;
+}
+
+.content-surface  .data-table th:first-child,
+.content-surface  .data-table td:first-child {
+padding-left: 20px;
+}
+
+.content-surface  .data-table th:last-child,
+.content-surface  .data-table td:last-child {
+padding-right: 20px;
+}
+
+.content-surface  .data-table th {
+color: var(--muted);
+    background: var(--surface-raised);
+    font-weight: 760;
+}
+
+.content-surface  .data-table tbody tr:last-child td {
+border-bottom: 0;
+}
+
+.content-surface  .record-grid,
+.content-surface  .record-grid.compact {
+margin: 0;
+    background: transparent;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+}
+
+.content-surface  .record-grid > div {
+padding: 22px 20px;
+    border-right: 1px solid var(--line);
+}
+
+.content-surface  .record-grid > div:last-child {
+border-right: 0;
+}
+
+.content-surface  .record-grid dt,
+.content-surface  .record-grid dd,
+.content-surface  .identifier {
+font-size: 17px;
+}
+
+.content-surface  .record-grid dt {
+margin-bottom: 8px;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.content-surface  .module-content {
+background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.content-surface  .empty-state {
+padding: 26px 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+}
+
+.content-surface  .empty-state p {
+margin-bottom: 24px;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.content-surface  .validation-message,
+.content-surface  .validation-errors {
+font-size: 17px;
+    border-radius: 10px;
+}
+
+@media (max-width: 760px) {
+.content-surface .surface-logo {
+    padding: 7px;
+    }
+
+    .content-surface .surface-title {
+    padding: 0 12px 0 7px;
+            font-size: 17px;
+    }
+
+    .content-surface .content-actions {
+    padding-right: 4px;
+    }
+
+    .content-surface .content-actions  .content-identity {
+    padding: 0;
+    }
+
+    .content-surface .content-actions  .content-identity strong {
+    padding: 0 !important;
+            margin: -1px !important;
+            border: 0 !important;
+    }
+
+    .content-surface  .page-heading {
+    padding-top: 36px;
+            padding-bottom: 28px;
+    }
+
+    .content-surface  .page-heading h1 {
+    font-size: clamp(38px, 12vw, 54px);
+    }
+
+    .content-surface  .page-heading .secondary-action,
+    .content-surface  .page-heading > .primary-action {
+    margin-top: 22px;
+    }
+
+    .content-surface  .section-heading > .secondary-action {
+    margin-top: 18px;
+    }
+
+    .content-surface  .record-grid > div {
+    border-right: 0;
+            border-bottom: 1px solid var(--line);
+    }
+
+    .content-surface  .record-grid > div:last-child {
+    border-bottom: 0;
+    }
+}
+
+.content-surface[data-compact-heading]  .page-heading {
+padding-top: 22px;
+    padding-bottom: 20px;
+}
+
+.content-surface[data-compact-heading]  .page-heading h1 {
+font-size: clamp(34px, 4vw, 48px);
+}
+
+@media (max-width: 760px) {
+.content-surface[data-compact-heading]  .page-heading {
+    padding-top: 18px;
+            padding-bottom: 18px;
+    }
+
+    .content-surface[data-compact-heading]  .page-heading h1 {
+    font-size: 34px;
+    }
+}
+
+.content-surface {
+    --topbar-height: 68px;
+    --surface-content-width: 1180px;
+    --surface-page-gutter: clamp(24px, 5vw, 72px);
+}
+
+.content-surface .surface-brand {
+max-width: min(58vw, 420px);
+}
+
+.content-surface .surface-logo {
+width: 68px;
+    flex: 0 0 68px;
+}
+
+.content-surface .surface-logo img {
+width: 48px;
+    height: 48px;
+}
+
+.content-surface .content-actions  .content-identity,
+.content-surface .content-actions  .content-logout {
+min-width: 48px;
+    height: 48px;
+}
+
+.content-surface .content-actions  .content-identity {
+max-width: 290px;
+}
+
+.content-surface .content-actions  .content-identity strong {
+max-width: 190px;
+}
+
+.content-surface .content-actions  .content-logout {
+width: 48px;
+}
+
+.content-surface  .page-heading {
+min-height: 190px;
+}
+
+.content-surface  .page-heading h1 {
+max-width: 920px;
+}
+
+@media (max-width: 760px) {
+.content-surface {
+    --topbar-height: 60px;
+            --surface-page-gutter: 20px;
+    }
+
+    .content-surface .surface-logo {
+    width: 58px;
+            flex-basis: 58px;
+    }
+
+    .content-surface .surface-logo img {
+    width: 43px;
+            height: 43px;
+    }
+
+    .content-surface .surface-title {
+    max-width: 170px;
+    }
+
+    .content-surface .content-actions  .content-identity {
+    width: 46px;
+            min-width: 46px;
+            height: 46px;
+    }
+
+    .content-surface .content-actions  .content-logout {
+    width: 46px;
+            min-width: 46px;
+            height: 46px;
+    }
+
+    .content-surface  .page-heading {
+    min-height: 154px;
+    }
+}
+
+.content-surface[data-compact-heading]  .page-heading {
+min-height: 104px;
+}
+
+@media (max-width: 760px) {
+.content-surface[data-compact-heading]  .page-heading {
+    min-height: 96px;
+    }
+}

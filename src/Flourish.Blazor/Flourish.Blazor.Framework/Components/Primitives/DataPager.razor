@@ -1,0 +1,97 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@using System.Globalization
+
+<nav class="data-pagination" data-page-controls aria-label="@Label" data-page-count="@Pagination.PageCount"
+     data-page-current="@Pagination.CurrentPage" data-page-size="@PageSize" data-page-total-records="@TotalCount">
+    @if (ShowRange)
+    {
+        <span class="data-pagination-range" data-page-range title="Registros carregados" aria-live="polite">
+            <span data-page-range-text>Itens @Pagination.FirstItem–@Pagination.LastItem de</span>
+            <span class="data-pagination-range-total" data-page-range-total>@Pagination.TotalCount</span>
+            @if (IsLimited) { <span>carregados</span> }
+        </span>
+    }
+    <div class="data-pagination-controls">
+        <button type="button" class="data-pagination-previous" data-page-previous
+                aria-label="Página anterior" title="Página anterior" disabled="@(Disabled || !Pagination.HasPrevious)"
+                @onclick="() => RequestPageAsync(Pagination.CurrentPage - 1)">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
+        </button>
+        <button type="button" class="data-pagination-next" data-page-next
+                aria-label="Próxima página" title="Próxima página" disabled="@(Disabled || !Pagination.HasNext)"
+                @onclick="() => RequestPageAsync(Pagination.CurrentPage + 1)">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
+        </button>
+        <label class="data-pagination-page">
+            <span class="visually-hidden">Página atual</span>
+            <input class="data-pagination-input" data-page-input type="number" inputmode="numeric" step="1"
+                   min="1" max="@Pagination.PageCount" value="@PageText" disabled="@Disabled" aria-label="Página atual"
+                   @oninput="UpdatePageText" @oninput:stopPropagation
+                   @onchange="CommitPageAsync" @onchange:stopPropagation @onkeydown="PageKeyDownAsync" />
+        </label>
+        <span class="data-pagination-total" data-page-total aria-label="@($"{Pagination.PageCount} páginas")">/ @Pagination.PageCount</span>
+    </div>
+</nav>
+
+@code {
+    private DataPagination Pagination = new();
+    private string PageText = "1";
+
+    [Parameter] public int TotalCount { get; set; }
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter] public int PageSize { get; set; } = DataPagination.DefaultPageSize;
+    [Parameter] public EventCallback<int> PageChanged { get; set; }
+    [Parameter] public bool ShowRange { get; set; } = true;
+    [Parameter] public bool IsLimited { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string Label { get; set; } = "Paginação dos registros";
+
+    protected override void OnParametersSet()
+    {
+        if (Pagination.PageSize != PageSize) Pagination = new(PageSize);
+        Pagination.UpdateTotal(TotalCount);
+        Pagination.GoToPage(CurrentPage);
+        PageText = Pagination.CurrentPage.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private void UpdatePageText(ChangeEventArgs args)
+    {
+        if (!Disabled) PageText = args.Value?.ToString() ?? string.Empty;
+    }
+
+    private async Task CommitPageAsync(ChangeEventArgs args)
+    {
+        if (Disabled) return;
+        PageText = args.Value?.ToString() ?? string.Empty;
+        await CommitPageTextAsync();
+    }
+
+    private Task PageKeyDownAsync(KeyboardEventArgs args) => args.Key switch
+    {
+        "Enter" => CommitPageTextAsync(),
+        "Escape" => RestorePageTextAsync(),
+        _ => Task.CompletedTask
+    };
+
+    private async Task CommitPageTextAsync()
+    {
+        if (Disabled) return;
+        if (int.TryParse(PageText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var requested))
+            await RequestPageAsync(requested);
+        PageText = Pagination.CurrentPage.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private Task RestorePageTextAsync()
+    {
+        PageText = Pagination.CurrentPage.ToString(CultureInfo.InvariantCulture);
+        return Task.CompletedTask;
+    }
+
+    private Task RequestPageAsync(int page)
+    {
+        if (Disabled) return Task.CompletedTask;
+        Pagination.GoToPage(page);
+        PageText = Pagination.CurrentPage.ToString(CultureInfo.InvariantCulture);
+        return Pagination.CurrentPage == CurrentPage ? Task.CompletedTask : PageChanged.InvokeAsync(Pagination.CurrentPage);
+    }
+}

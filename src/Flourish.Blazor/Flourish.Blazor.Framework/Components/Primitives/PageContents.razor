@@ -1,0 +1,11 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+<nav class="page-contents" aria-label="Nesta página">
+    <ul>
+        @ChildContent
+    </ul>
+</nav>
+
+@code {
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+}

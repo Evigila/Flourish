@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
+  <Project Path="Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
+  <Project Path="Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+  <Project Path="Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
+  <Project Path="../Flourish.Core/Flourish.Core.csproj" />
+  <Project Path="../Gallery.Blazor/Gallery.Blazor.csproj" />
+  <Project Path="../../tests/Flourish.Blazor.Test/Flourish.Blazor.Test.csproj" />
+  <Project Path="../../tests/Flourish.Blazor.Native/Flourish.Blazor.Native.csproj" />
+</Solution>

@@ -1,0 +1,32 @@
+.toggle-switch {
+    --toggle-track-color: var(--muted);
+    --toggle-thumb-offset: 0;
+    gap: 12px;
+    padding: 8px 0;
+    border: 0;
+    border-radius: var(--control-radius);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-weight: var(--field-label-weight);
+    text-align: start;
+    cursor: pointer;
+}
+.toggle-switch[aria-checked="true"] {
+    --toggle-track-color: var(--accent);
+    --toggle-thumb-offset: 22px;
+}
+.toggle-switch:hover:not(:disabled) {
+    color: var(--accent-strong);
+}
+.toggle-switch:active:not(:disabled) .toggle-indicator-track {
+    filter: brightness(.9);
+}
+.toggle-switch:focus-visible {
+    outline: 3px solid var(--accent-strong);
+    outline-offset: 4px;
+}
+.toggle-switch:disabled {
+    opacity: .55;
+    cursor: default;
+}

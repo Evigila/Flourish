@@ -8,6 +8,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Flourish.Blazor\Flourish.Blazor.csproj" />
+    <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+    <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
   </ItemGroup>
 </Project>

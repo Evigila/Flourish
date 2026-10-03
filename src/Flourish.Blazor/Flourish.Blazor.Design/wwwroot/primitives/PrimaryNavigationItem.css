@@ -1,0 +1,23 @@
+.primary-navigation-tooltip {
+    width: max-content;
+    max-width: min(22rem, calc(100vw - 90px));
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-small, 4px);
+    color: var(--ink);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    font: 400 17px/1.4 "Segoe UI", sans-serif;
+    text-align: left;
+}
+.primary-navigation-tooltip::before {
+    width: 8px;
+    height: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+.primary-navigation-tooltip {
+    animation: none;
+    transition: none;
+}
+}

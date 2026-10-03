@@ -1,0 +1,54 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div @ref="Element" @attributes="AdditionalAttributes" class="f-form-layout @Class" style="--f-form-columns:@Columns">@ChildContent</div>
+
+@code {
+    private ElementReference Element;
+    private IJSObjectReference? Module;
+    private bool Disposed;
+    private bool PendingFocus;
+    private EditContext? SubscribedContext;
+    [CascadingParameter] private EditContext? FormContext { get; set; }
+    [Parameter] public int Columns { get; set; } = 2;
+    [Parameter] public bool FocusInvalidFields { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (Columns is < 1 or > 5) throw new ArgumentOutOfRangeException(nameof(Columns));
+        if (ReferenceEquals(SubscribedContext, FormContext)) return;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationRequested -= ValidationRequested;
+        SubscribedContext = FormContext;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationRequested += ValidationRequested;
+    }
+    private void ValidationRequested(object? sender, ValidationRequestedEventArgs args)
+    {
+        if (!FocusInvalidFields || Disposed) return;
+        PendingFocus = true;
+        _ = InvokeAsync(StateHasChanged);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Disposed) return;
+        if (Module is null)
+        {
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
+            if (Disposed) { await module.DisposeAsync(); return; }
+            Module = module;
+        }
+        if (!PendingFocus || !FocusInvalidFields) return;
+        PendingFocus = false;
+        await Module.InvokeAsync<bool>("focusFirstInvalid", Element);
+    }
+    public async ValueTask DisposeAsync()
+    {
+        Disposed = true;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationRequested -= ValidationRequested;
+        if (Module is null) return;
+        try { await Module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

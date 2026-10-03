@@ -1,0 +1,158 @@
+.spreadsheet-scroll {
+background: var(--surface);
+}
+
+.editing-grid-table {
+font-size: 17px;
+    line-height: 24px;
+}
+
+.editing-grid-table th,
+.editing-grid-table td {
+border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    text-align: left;
+    background: var(--surface);
+}
+
+.editing-grid-table th {
+padding: 8px 12px;
+    background: var(--canvas);
+    font-weight: 700;
+}
+
+.editing-grid-table td {
+padding: 0;
+}
+
+.editing-grid-table td:last-child,
+.editing-grid-table th:last-child {
+border-right: 0;
+}
+
+.editing-grid-table .identity-column {
+box-shadow: 1px 0 0 var(--line);
+}
+
+.editing-grid-table .spreadsheet-fill {
+padding: 0;
+    border-right: 0;
+}
+
+.editing-grid-table td.is-changed {
+background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+}
+
+.editing-grid-table td.is-selected-cell {
+background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+}
+
+.editing-grid-table td.is-active-cell {
+outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.editing-grid-table td.is-editing-cell {
+outline: 2px solid var(--focus);
+    outline-offset: -2px;
+}
+
+.editing-grid-table td.has-error {
+box-shadow: inset 0 0 0 2px var(--danger, #b42318);
+}
+
+.spreadsheet-cell-surface {
+padding: 0 10px;
+}
+
+.spreadsheet-cell-surface.has-options {
+padding-right: 32px;
+}
+
+.spreadsheet-cell-display {
+line-height: 24px;
+}
+
+.cell-select-marker {
+color: var(--accent-strong);
+}
+
+.cell-select-marker svg {
+fill: currentColor;
+}
+
+.editing-grid-table input,
+.editing-grid-table select,
+.editing-grid-table textarea,
+.editing-grid-table .masked-input {
+background: transparent;
+    color: var(--ink);
+    font: inherit;
+}
+
+.editing-grid-table input,
+.editing-grid-table select,
+.editing-grid-table textarea,
+.editing-grid-table .masked-input-control {
+margin: 0;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--ink);
+    font: inherit;
+}
+
+.editing-grid-table select {
+appearance: none;
+    padding-right: 32px;
+}
+
+.editing-grid-table .masked-input {
+--masked-input-inline-padding: 10px;
+    border: 0;
+    border-radius: 0;
+}
+
+.editing-grid-table .masked-input-control {
+background-color: transparent !important;
+}
+
+.editing-grid-table textarea {
+padding-block: 0;
+    line-height: 24px;
+}
+
+.editing-grid-table input:disabled,
+.editing-grid-table select:disabled,
+.editing-grid-table textarea:disabled {
+color: var(--muted);
+}
+
+.editing-grid-table .read-only-cell {
+color: var(--muted);
+}
+
+.editing-grid-table .read-only-cell a {
+line-height: 24px;
+    padding: 0 10px;
+}
+
+.editing-grid-table .cell-error {
+padding: 6px 10px;
+    color: var(--danger, #b42318);
+    font-size: 17px;
+}
+
+.editing-grid-table .empty-grid {
+padding: 24px;
+}
+
+.editing-grid-table .data-column-resizer::after {
+background: var(--accent);
+}
+
+.editing-grid-table .data-column-resizer:focus-visible {
+outline: 2px solid var(--focus);
+    outline-offset: -2px;
+}
