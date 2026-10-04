@@ -1,0 +1,29 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.PageHeading")]
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading Title="页面标题" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading Title="带操作标题"><Actions><ArkheideSystem.Flourish.Blazor.Components.Button>操作</ArkheideSystem.Flourish.Blazor.Components.Button></Actions></ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading Title="@(Editing ? "编辑资料（虚构）" : "资料总览（虚构）")"><Actions><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Toggle">@(Editing ? "完成编辑" : "编辑资料")</ArkheideSystem.Flourish.Blazor.Components.Button></Actions></ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading>
+    <p role="status">@(Editing ? "示例已进入编辑状态。" : "示例处于查看状态。")</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Editing;
+    private void Toggle() => Editing = !Editing;
+}

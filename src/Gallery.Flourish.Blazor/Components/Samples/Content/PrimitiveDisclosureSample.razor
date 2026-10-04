@@ -1,0 +1,22 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DisclosureSection")]
+@using Microsoft.AspNetCore.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection Label="初始关闭"><ChildContent></ChildContent></ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection Label="初始打开" InitiallyOpen="true"><ChildContent></ChildContent></ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection Label="虚构项目的附加信息"><p>负责人：演示成员；内部标识：DEMO-001。</p></ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection Label="使用前提" InitiallyOpen="true"><p>这是原生 details 区域，适合辅助内容；关键信息应直接显示。</p></ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection>
+}
+@code { [Parameter] public bool Preview { get; set; } }

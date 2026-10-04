@@ -1,0 +1,155 @@
+@page "/foundations"
+@page "/foundations/{Topic}"
+@implements IDisposable
+@inject IAppearanceService AppearanceService
+<PageTitle>@Title · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="@Title" />
+    @if (TopicKey == "colors")
+    {
+    <Section Title="主题">
+        <FormActions Columns="3">
+            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.System)" OnClick="() => ChangeTheme(ApplicationTheme.System)">跟随系统</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Light)" OnClick="() => ChangeTheme(ApplicationTheme.Light)">浅色</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Dark)" OnClick="() => ChangeTheme(ApplicationTheme.Dark)">深色</Button>
+        </FormActions>
+        <p role="status">当前选择：@ThemeLabel</p>
+    </Section>
+    }
+    @if (TopicKey == "colors")
+    {
+    <Section Title="颜色">
+        <EditForm @key="Palette" novalidate OnInvalidSubmit="InvalidSubmit" Model="Palette" OnValidSubmit="ApplyPalette" FormName="palette-example">
+            <DataAnnotationsValidator />
+            <FormLayout>
+                <Field Label="主色" Id="palette-primary" Required="true" For="@(() => Palette.Primary)">
+                    <TextBox Id="palette-primary" @bind-Value="Palette.Primary" MaxLength="7" />
+                </Field>
+                <Field Label="强调色" Id="palette-accent" Required="true" For="@(() => Palette.Accent)">
+                    <TextBox Id="palette-accent" @bind-Value="Palette.Accent" MaxLength="7" />
+                </Field>
+            </FormLayout>
+            <FormActions><Button Type="submit">应用颜色</Button><Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette">恢复默认</Button></FormActions>
+        </EditForm>
+        @if (Message is not null) { <Notice Severity="NotificationSeverity.Success">@Message</Notice> }
+        <UniformGrid>
+            @foreach (var token in Colors)
+            {
+                <UniformGridItem Title="@token.Label"><span aria-hidden="true" style="@($"display:inline-block;width:24px;height:24px;vertical-align:middle;background:var({token.Name});border:1px solid var(--f-border);border-radius:6px")"></span> @token.Name</UniformGridItem>
+            }
+        </UniformGrid>
+        <p>色块显示整个应用当前模式的标准颜色。焦点使用强调色；边界与描边使用边框色；点击色比对应预览色深，危险操作使用危险色。</p>
+    </Section>
+    }
+    @if (TopicKey == "typography")
+    {
+    <Section Title="字体 Typography">
+        <p>Noto Sans · 中文 日本語 한국어 · ABC abc 0123456789 · g j p q y</p>
+        <UniformGrid>
+            <UniformGridItem Title="当前字体栈">@AppearanceService.Current.FontFamily</UniformGridItem>
+            <UniformGridItem Title="正文、标签和控件">--f-body-size: 17px；行高 1.55</UniformGridItem>
+            <UniformGridItem Title="标签字重">--f-label-weight: 400</UniformGridItem>
+            <UniformGridItem Title="页面大标题">--f-type-page: 50px；字重 780</UniformGridItem>
+            <UniformGridItem Title="语义标题">H1：34px；H2：28px；H3：20px</UniformGridItem>
+        </UniformGrid>
+        <p>Gallery 配置 Noto Sans 与 Noto Sans CJK SC，使用设备已安装的字体；未安装时按字体栈回退。应用可在 SetFont 中加入 Noto Sans CJK TC、JP、KR 等对应语言的字体。</p>
+    </Section>
+    }
+    @if (TopicKey == "spacing")
+    {
+    <Section Title="间距 Spacing">
+        <UniformGrid>
+            @foreach (var token in Spacing) { <UniformGridItem Title="@token.Name">@token.Value</UniformGridItem> }
+        </UniformGrid>
+    </Section>
+    }
+    @if (TopicKey == "shape")
+    {
+    <Section Title="圆角 Radius 与阴影 Shadows">
+        <UniformGrid>
+            <UniformGridItem Title="--f-radius-small">10px</UniformGridItem>
+            <UniformGridItem Title="--f-radius-control">12px</UniformGridItem>
+            <UniformGridItem Title="--f-radius-panel">16px</UniformGridItem>
+            <UniformGridItem Title="--f-radius-emphasis">28px</UniformGridItem>
+            <UniformGridItem Title="--f-shadow-control">0 2px 6px；使用主色的 16% 透明度</UniformGridItem>
+            <UniformGridItem Title="--f-shadow-popup">0 16px 48px；使用主色的 16% 透明度</UniformGridItem>
+            <UniformGridItem Title="--f-shadow-card">0 18px 52px；使用主色的 16% 透明度</UniformGridItem>
+            <UniformGridItem Title="--f-focus-width">3px</UniformGridItem>
+        </UniformGrid>
+    </Section>
+    }
+    @if (TopicKey == "dimensions")
+    {
+    <Section Title="布局尺寸">
+        <UniformGrid>
+            <UniformGridItem Title="--f-control-height / --f-dense-height">48px / 36px</UniformGridItem>
+            <UniformGridItem Title="--f-topbar-height">68px</UniformGridItem>
+            <UniformGridItem Title="--f-primary-width / --f-secondary-width">76px / 232px</UniformGridItem>
+            <UniformGridItem Title="--f-content-width">1180px 基线；ConfigureLayout 可配置</UniformGridItem>
+            <UniformGridItem Title="--f-page-gutter">24px 基础值；随窗口和流式布局调整</UniformGridItem>
+            <UniformGridItem Title="常用断点">980px / 760px / 520px</UniformGridItem>
+        </UniformGrid>
+    </Section>
+    }
+    @if (TopicKey == "colors")
+    {
+    <Section Title="配置 Design">
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@DesignExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@DesignExample" Language="csharp" /></DisplayBoard>
+        <p>基础令牌由 Design 的 foundation.css 集中定义。应用外壳通过 IThemeProvider 获取整个应用的主题状态。</p>
+        <p><a href="/framework">查看框架接入</a></p>
+    </Section>
+    }
+    @if (!Topics.ContainsKey(TopicKey))
+    {
+        <EmptyState Title="没有此主题"><Actions><a href="/foundations">返回目录</a></Actions></EmptyState>
+    }
+</PageBody>
+@code {
+    [Parameter] public string? Topic { get; set; }
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Topic = null;
+        return base.SetParametersAsync(parameters);
+    }
+    private string TopicKey => Topic?.ToLowerInvariant() ?? "colors";
+    private string Title => Topics.GetValueOrDefault(TopicKey, "页面不存在");
+    private static readonly IReadOnlyDictionary<string, string> Topics = new Dictionary<string, string>
+    {
+        ["colors"] = "颜色与主题",
+        ["typography"] = "字体 Typography",
+        ["spacing"] = "间距 Spacing",
+        ["shape"] = "圆角与阴影",
+        ["dimensions"] = "布局尺寸",
+    };
+
+    private PaletteDraft Palette = new();
+    private string? Message;
+    private string ThemeLabel => AppearanceService.Current.Theme switch { ApplicationTheme.Dark => "深色", ApplicationTheme.Light => "浅色", _ => "跟随系统" };
+    private static readonly (string Label, string Name)[] Colors =
+    [ ("主色", "--f-primary"), ("强调色", "--f-accent"), ("画布", "--f-canvas"), ("表面", "--f-surface"),
+      ("正文", "--f-text"), ("辅助文字", "--f-muted"), ("背景板", "--f-display-board"),
+      ("浅目标预览", "--f-preview-light"), ("深目标预览", "--f-preview-dark"),
+      ("浅目标点击", "--f-click-light"), ("深目标点击", "--f-click-dark"),
+      ("危险", "--f-danger"), ("Info正文色", "--f-info-text"), ("Warning背景色", "--f-warning-background"), ("边框", "--f-border") ];
+    private static readonly (string Name, string Value)[] Spacing =
+    [ ("--f-space-1", "4px"), ("--f-space-2", "8px"), ("--f-space-3", "12px"), ("--f-space-4", "16px"),
+      ("--f-space-5", "20px"), ("--f-space-6", "24px"), ("--f-space-8", "32px"), ("--f-space-11", "44px"),
+      ("--f-space-16", "64px"), ("--f-space-21", "84px") ];
+    protected override void OnInitialized()
+    {
+        Palette.Primary = AppearanceService.Current.Primary; Palette.Accent = AppearanceService.Current.Accent;
+        AppearanceService.Changed += AppearanceChanged;
+    }
+    private void InvalidSubmit(EditContext _) => Message = null;
+    private void AppearanceChanged(object? sender, EventArgs args) => _ = InvokeAsync(StateHasChanged);
+    private void ChangeTheme(ApplicationTheme theme) => AppearanceService.SetTheme(theme);
+    private void ApplyPalette() { AppearanceService.SetColors(Palette.Primary, Palette.Accent); Message = "主题颜色已应用于当前演示连接。"; }
+    private void ResetPalette() { Palette = new(); ApplyPalette(); }
+    public void Dispose() => AppearanceService.Changed -= AppearanceChanged;
+    private const string DesignExample = """
+        builder.Services.AddFlourishDesign(design => design
+            .SetColors("#153A32", "#16745F")
+            .SetTheme(ApplicationTheme.System)
+            .SetFont("'Noto Sans', 'Noto Sans CJK SC', system-ui, sans-serif"));
+        """;
+}

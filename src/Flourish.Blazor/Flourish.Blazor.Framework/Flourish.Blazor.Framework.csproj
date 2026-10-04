@@ -7,8 +7,7 @@
     <PackageId>Arkheide.Flourish.Blazor.Framework</PackageId>
     <Authors>ArkheideSystem</Authors>
     <Description>Native Blazor components and functional browser behavior without a visual skin.</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT AND Apache-2.0</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -18,9 +17,9 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <EmbeddedResource Include="Icons/MaterialSymbolsOutlined.codepoints" LogicalName="Flourish.Blazor.Icons.Codepoints" />
     <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
     <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
   <PropertyGroup>
     <CssBundleEntry>framework.css</CssBundleEntry>

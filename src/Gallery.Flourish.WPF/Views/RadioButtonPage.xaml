@@ -1,0 +1,143 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.RadioButtonPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_ChooseOneValueFromASmallVisibleMutuallyExclusiveOptionSet_4AA853D5}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="RadioButton"
+    />
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid
+        x:Name="MemberGrid"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <flourish:DataGrid.Columns>
+          <DataGridTextColumn Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" Width="220" />
+          <DataGridTextColumn Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" Width="*" />
+        </flourish:DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Controls_KeepEveryChoiceVisibleUseOneGroupNameForOneDecisionAndBeginWithA_55C3AB43}"
+      Title="{culture:Localize Key=Controls_Selection_CA406707}"
+    >
+      <UniformGrid Columns="2">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_ASharedGroupNameGuaranteesThatOnlyOneOptionStaysChecked_5AF1D305}"
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_Theme_EFB52E71}"
+        >
+          <flourish:Presenter.Presentation>
+            <StackPanel
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+                <flourish:RadioButton
+                  Content="{culture:Localize Key=Runtime_System_6725E7BB}"
+                  GroupName="ThemeExample"
+                  IsChecked="True"
+                />
+                <flourish:RadioButton
+                  Margin="0,8,0,0"
+                  Content="Light"
+                  GroupName="ThemeExample"
+                />
+                <flourish:RadioButton
+                  Margin="0,8,0,0"
+                  Content="Dark"
+                  GroupName="ThemeExample"
+                />
+            </StackPanel>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_ASeparateGroupNameCreatesAnotherIndependentDecisionInTheSamePage_71792381}"
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_Density_77A283D6}"
+        >
+          <flourish:Presenter.Presentation>
+            <StackPanel
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            >
+                <flourish:RadioButton
+                  Content="{culture:Localize Key=Controls_Comfortable_459A23A5}"
+                  GroupName="DensityExample"
+                  IsChecked="True"
+                />
+                <flourish:RadioButton
+                  Margin="0,8,0,0"
+                  Content="{culture:Localize Key=Controls_Compact_99452646}"
+                  GroupName="DensityExample"
+                />
+            </StackPanel>
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Content="{culture:Localize Key=Controls_GiveEveryOptionForOneDecisionTheSameGroupNameAndStartWithOneVali_DA92DB97}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_ExclusiveChoice_D47F7639}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="{culture:Localize Key=Controls_BindASharedCommandWhenSelectingAnOptionMustInvokeApplicationBeha_CBA76246}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_CommandSelection_133BE884}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:RadioButton&#xA;  Content=&quot;Dark&quot;&#xA;  GroupName=&quot;Theme&quot;&#xA;  Command=&quot;{Binding SelectThemeCommand}&quot;&#xA;  CommandParameter=&quot;Dark&quot; /&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}"
+          Icon="&#xE943;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_GitHubRepository_50555492}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+        <flourish:CardButton
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_ReadTheRadioButtonAPIReference_80C2E3F1}"
+          Icon="&#xE8A5;"
+          IsEnabled="False"
+          Title="{culture:Localize Key=Controls_RadioButtonDocumentation_83BEED9E}"
+          ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}"
+        />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

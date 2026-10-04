@@ -8,7 +8,6 @@
     <Authors>ArkheideSystem</Authors>
     <Description>Shared immutable Blazor metadata and local data processing.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -18,6 +17,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Flourish.Core/Flourish.Core.csproj" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

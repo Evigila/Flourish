@@ -14,10 +14,9 @@
     </span>
     <input @attributes="AdditionalAttributes"
            class="@($"masked-input-control {CssClass}")"
-           value="@FormattedValue"
+           @bind:get="FormattedValue" @bind:set="HandleInput" @bind:event="oninput"
            data-input-mask="@EffectiveMask"
-           inputmode="@InputMode"
-           @oninput="HandleInput" />
+           inputmode="@InputMode" />
 </span>
 
 @code {
@@ -32,8 +31,7 @@
         ? CurrentValue ?? string.Empty
         : InputMaskFormatter.Format(EffectiveMask, CurrentValue);
 
-    private void HandleInput(ChangeEventArgs args) =>
-        CurrentValueAsString = args.Value?.ToString();
+    private void HandleInput(string? value) => CurrentValueAsString = value;
 
     protected override string? FormatValueAsString(string? value) =>
         string.IsNullOrEmpty(EffectiveMask) ? value : InputMaskFormatter.Format(EffectiveMask, value);

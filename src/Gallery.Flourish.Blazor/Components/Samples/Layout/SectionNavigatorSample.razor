@@ -1,0 +1,18 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Microsoft.AspNetCore.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SectionNavigator")]
+
+<div style="width:100%;min-width:0;">
+    <div id="@ContentId" class="f-page-body" style="height:340px;overflow:auto;position:relative;--f-content-gutter:32px;">
+        <Section Title="简介"><div style="min-height:@(Preview ? "120px" : "220px")">@if (!Preview) { <p>本地报告包含三段虚构数据。</p> }</div></Section>
+        <Section Title="数据"><div style="min-height:@(Preview ? "120px" : "220px")">@if (!Preview) { <UniformGrid><UniformGridItem Title="记录数" Text="24" /><UniformGridItem Title="期间" Text="示例月份" /></UniformGrid> }</div></Section>
+        <Section Title="总结"><div style="min-height:160px">@if (!Preview) { <p>全部记录已整理。</p> }</div></Section>
+    </div>
+    <SectionNavigator ContentId="@ContentId" Label="报告板块" />
+</div>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string ContentId = "section-sample-" + Guid.NewGuid().ToString("N");
+}

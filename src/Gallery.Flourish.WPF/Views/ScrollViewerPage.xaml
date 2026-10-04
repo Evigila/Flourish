@@ -1,0 +1,97 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.ScrollViewerPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_HostScrollableContentWithScrollBarsBoundaryHandoffAndOpt_E3F77F47}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="ScrollViewer"
+    />
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid ItemsSource="{Binding Properties, ElementName=RootPage}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" />
+          <DataGridTextColumn Width="*" Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Controls_ScrollViewerUsesOneStandardScrollBarGeometrySoPageContentNestedS_6398896F}"
+      Title="{culture:Localize Key=Controls_StandardScrollbar_B73A0383}"
+    >
+      <flourish:Presenter
+        Content="{culture:Localize Key=Controls_TheStandardScrollBarPreservesAUsablePointerTargetWhileKeepingIts_7D7D921C}"
+        PresenterMode="TopDown"
+        PresenterPosition="Left"
+        Title="Standard"
+      >
+        <flourish:Presenter.Presentation>
+          <flourish:ScrollViewer
+            Width="260"
+            Height="160"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalScrollBarVisibility="Visible"
+          >
+              <StackPanel>
+                <flourish:Card Margin="0,0,0,8" Title="{culture:Localize Key=Controls_First_A151CEB1}" Content="{culture:Localize Key=Controls_ScrollThroughABoundedSurface_DD5A009B}" />
+                <flourish:Card Margin="0,0,0,8" Title="{culture:Localize Key=Controls_Second_8B88A850}" Content="{culture:Localize Key=Controls_WheelInputMovesTheInnerViewportFirst_8EC6BB6C}" />
+                <flourish:Card Title="{culture:Localize Key=Controls_Third_5E7425D7}" Content="{culture:Localize Key=Controls_AtTheBoundaryInputMayBubbleToPageBody_EF7CA01D}" />
+              </StackPanel>
+          </flourish:ScrollViewer>
+        </flourish:Presenter.Presentation>
+      </flourish:Presenter>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Controls_TheDeepestScrollableViewportConsumesWheelInputOnlyWhileItCanMove_3AA94F74}"
+      Title="{culture:Localize Key=Controls_BoundaryScrolling_4D944AD8}"
+    >
+      <flourish:Card Title="{culture:Localize Key=Controls_NestedViewports_86E59515}" Content="{culture:Localize Key=Controls_DoNotAddAPreviewMouseWheelHandlerThatMarksEveryEventHandledFlour_BA4F024F}" />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Content="{culture:Localize Key=Controls_ChooseScrollBarVisibilityWithTheNativeWPFPropertiesAndUseIsSmoot_745213BA}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_ConfigureTheViewport_C5E1E1E9}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="&lt;flourish:ScrollViewer&#xA;  x:Name=&quot;ContentViewport&quot;&#xA;  IsSmoothScrollingEnabled=&quot;True&quot;&#xA;  VerticalScrollBarVisibility=&quot;Auto&quot;&gt;&#xA;  &lt;StackPanel&gt;&#xA;    &lt;!-- Scrollable content --&gt;&#xA;  &lt;/StackPanel&gt;&#xA;&lt;/flourish:ScrollViewer&gt;" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="{culture:Localize Key=Controls_NameTheViewerWhenCodeMustInspectOrMoveTheViewportTheInheritedWPF_616CE67B}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_ControlScrolling_991E410F}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="// Move to a known section after navigation.&#xA;ContentViewport.ScrollToVerticalOffset(240);&#xA;&#xA;// Or return to the start.&#xA;ContentViewport.ScrollToTop();" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheScrollViewerAPIReference_AC9D5447}" Icon="&#xE8A5;" IsEnabled="False" Title="{culture:Localize Key=Controls_ScrollViewerDocumentation_6EC19E41}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

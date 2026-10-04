@@ -1,6 +1,6 @@
 .system-menu {
     align-self: stretch;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
 }
 .system-menu-trigger {
     height: 100%;
@@ -9,43 +9,31 @@
     color: inherit;
     background: transparent;
     border: 0;
-    border-right: 1px solid var(--chrome-line);
+    border-right: 1px solid var(--f-border);
     cursor: pointer;
     font: inherit;
     font-size: 17px;
     font-weight: 400;
 }
-.system-menu-chevron {
-    width: 8px;
-    height: 5px;
-    background: currentColor;
-    clip-path: polygon(0 0, 50% 100%, 100% 0);
-    transform: rotate(0deg);
-    transform-origin: 50% 50%;
-    transition: transform 140ms ease;
-}
 .system-menu:hover > .system-menu-trigger,
 .system-menu-trigger:focus-visible,
 .system-menu:has(.system-menu-view:focus-within) > .system-menu-trigger {
-    color: var(--chrome-ink);
-    background: var(--chrome-hover);
-}
-.system-menu:hover .system-menu-chevron,
-.system-menu-trigger:focus-visible .system-menu-chevron,
-.system-menu:has(.system-menu-view:focus-within) .system-menu-chevron {
-    transform: rotate(180deg);
+    color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-preview-dark);
 }
 .system-menu-trigger:focus-visible {
-    outline: 2px solid var(--chrome-ink);
+    outline: 2px solid var(--f-accent);
     outline-offset: -3px;
 }
 .system-menu-view {
+    --f-target-preview: var(--f-surface-preview);
+    --f-target-click: var(--f-surface-click);
     width: min(320px, calc(100vw - 24px));
     padding: 12px;
-    background: var(--surface);
-    border: 1px solid var(--line);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: 16px;
-    box-shadow: 0 12px 28px rgb(27 24 38 / 18%);
+    box-shadow: 0 12px 28px rgb(from var(--f-primary) r g b / 18%);
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity 120ms ease, transform 120ms ease, visibility 0s linear 120ms;
@@ -62,20 +50,23 @@
 }
 .system-menu-view a {
     padding: 10px 12px;
-    color: var(--ink);
+    color: var(--f-text);
     border-radius: var(--radius-small);
     text-decoration: none;
 }
 .system-menu-view a strong {
     font-size: 17px;
 }
-.system-menu-view a:hover,
+.system-menu-view a:hover {
+    color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
+}
 .system-menu-view a.active {
-    color: var(--accent);
-    background: var(--accent-soft);
+    color: var(--f-surface);
+    background: var(--f-primary);
 }
 .system-menu-view a:focus-visible {
-    outline: 2px solid var(--focus);
+    outline: 2px solid var(--f-accent);
     outline-offset: -2px;
 }
 @media (max-width: 760px) {
@@ -86,11 +77,8 @@
 }
 @media (hover: none) {
 .system-menu:focus-within > .system-menu-trigger {
-    color: var(--accent);
-    background: var(--chrome-hover);
-}
-.system-menu:focus-within .system-menu-chevron {
-    transform: rotate(180deg);
+    color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-preview-dark);
 }
 .system-menu:focus-within > .system-menu-view {
     opacity: 1;
@@ -99,8 +87,26 @@
 }
 }
 @media (prefers-reduced-motion: reduce) {
-.system-menu-chevron,
-    .system-menu-view {
+.system-menu-view {
     transition: none;
 }
+}
+
+.system-menu:has(> .system-menu-trigger:active:not(:disabled)) > .system-menu-trigger {
+    color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-click-dark);
+}
+
+.system-menu-view a:active {
+    color: var(--f-text);
+    background: var(--f-target-click);
+}
+
+.system-menu-view a.active:is(:hover, :focus-visible) {
+    color: var(--f-surface);
+    background: var(--f-primary);
+}
+.system-menu-view a.active:active {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
 }

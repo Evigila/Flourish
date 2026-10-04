@@ -11,10 +11,9 @@
     </span>
     <input @attributes="AdditionalAttributes"
            class="masked-input-control"
-           value="@FormattedValue"
+           @bind:get="FormattedValue" @bind:set="HandleInputAsync" @bind:event="oninput"
            data-input-mask="@Mask"
-           inputmode="@InputMode"
-           @oninput="HandleInputAsync" />
+           inputmode="@InputMode" />
 </span>
 
 @code {
@@ -27,8 +26,8 @@
 
     private string FormattedValue => InputMaskFormatter.Format(Mask, Value);
 
-    private Task HandleInputAsync(ChangeEventArgs args) => ValueChanged.InvokeAsync(
-        InputMaskFormatter.Normalize(Mask, args.Value?.ToString()));
+    private Task HandleInputAsync(string? value) => ValueChanged.InvokeAsync(
+        InputMaskFormatter.Normalize(Mask, value));
 
     private InputBehaviorBinding? InputBehaviors;
     protected override async Task OnAfterRenderAsync(bool firstRender)

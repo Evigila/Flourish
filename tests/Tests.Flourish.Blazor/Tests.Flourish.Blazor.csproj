@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Tests.Flourish.Blazor</AssemblyName>
+    <RootNamespace>ArkheideSystem.Tests.Flourish.Blazor</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Gallery.Flourish.Blazor/Models/ComponentCatalog.cs" Link="Catalog/ComponentCatalog.cs" />
+    <Compile Include="../../src/Gallery.Flourish.Blazor/Models/ParameterMeaning.cs" Link="Catalog/ParameterMeaning.cs" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+    <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,60 @@
+@using ArkheideSystem.Flourish.Abstract
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("UniformGrid")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview)
+{
+    <UniformGrid>
+        <UniformGridItem Variant="UniformGridVariant.Elevated" aria-label="空矩形悬浮格面" />
+        <UniformGridItem Variant="UniformGridVariant.Filled" aria-label="空矩形填充格面" />
+        <UniformGridItem Variant="UniformGridVariant.Outlined" aria-label="空矩形描边格面" />
+        <UniformGridItem Variant="UniformGridVariant.Danger" aria-label="空矩形危险操作格面" />
+    </UniformGrid>
+    <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.Filled">
+        <UniformGridItem aria-label="空方形格面" />
+        <UniformGridItem aria-label="空方形格面" />
+        <UniformGridItem aria-label="空方形格面" />
+    </UniformGrid>
+}
+else
+{
+    <div class="f-inline-actions">
+        <Button Text="@(Shape == UniformGridShape.Square ? "切换为矩形" : "切换为方形")" OnClick="ToggleShape" />
+        <Button Variant="ButtonVariant.Outlined" Text="@($"切换外观 · {Variant}")" OnClick="ToggleVariant" />
+        <Button Variant="ButtonVariant.Outlined" Text="@(Columns.HasValue ? "自动分列" : "固定三列")" OnClick="ToggleColumns" />
+        <Button Variant="ButtonVariant.Outlined" Text="@(Rows.HasValue ? "自动行数" : "固定两行")" OnClick="ToggleRows" />
+        <Button Variant="ButtonVariant.Outlined" Text="@(IconSupport == false ? "启用图标分区" : "使用连续布局")" OnClick="ToggleIconSupport" />
+    </div>
+    <UniformGrid Shape="Shape" Variant="Variant" Columns="Columns" Rows="Rows" IconSupport="IconSupport">
+        <UniformGridItem Title="草稿" Icon="palette" Text="待检查" />
+        <UniformGridItem Title="资料" Icon="folder" Text="已归档" />
+        <UniformGridButton Title="打开" Icon="edit" Text="更新次数" OnClick="() => OpenedCount++" />
+    </UniformGrid>
+    <p role="status">已打开演示草稿 @OpenedCount 次。</p>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int? Columns, Rows;
+    private bool? IconSupport;
+    private int OpenedCount;
+    private UniformGridShape Shape = UniformGridShape.Rectangle;
+    private UniformGridVariant Variant = UniformGridVariant.Elevated;
+    private void ToggleShape() => Shape = Shape == UniformGridShape.Rectangle ? UniformGridShape.Square : UniformGridShape.Rectangle;
+    private void ToggleVariant() => Variant = Variant switch
+    {
+        UniformGridVariant.Elevated => UniformGridVariant.Filled,
+        UniformGridVariant.Filled => UniformGridVariant.Outlined,
+        UniformGridVariant.Outlined => UniformGridVariant.Danger,
+        _ => UniformGridVariant.Elevated
+    };
+    private void ToggleColumns() => Columns = Columns.HasValue ? null : 3;
+    private void ToggleRows() => Rows = Rows.HasValue ? null : 2;
+    private void ToggleIconSupport() => IconSupport = IconSupport == false ? true : false;
+}

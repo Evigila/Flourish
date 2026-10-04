@@ -1,5 +1,5 @@
 .spreadsheet-scroll {
-background: var(--surface);
+background: var(--f-surface);
 }
 
 .editing-grid-table {
@@ -9,16 +9,17 @@ font-size: 17px;
 
 .editing-grid-table th,
 .editing-grid-table td {
-border-bottom: 1px solid var(--line);
-    border-right: 1px solid var(--line);
+border-bottom: 1px solid var(--f-border);
+    border-right: 1px solid var(--f-border);
     text-align: left;
-    background: var(--surface);
+    background: var(--f-surface);
 }
 
 .editing-grid-table th {
 padding: 8px 12px;
-    background: var(--canvas);
+    background: var(--f-border);
     font-weight: 700;
+    color: var(--f-text);
 }
 
 .editing-grid-table td {
@@ -31,7 +32,7 @@ border-right: 0;
 }
 
 .editing-grid-table .identity-column {
-box-shadow: 1px 0 0 var(--line);
+box-shadow: 1px 0 0 var(--f-border);
 }
 
 .editing-grid-table .spreadsheet-fill {
@@ -40,25 +41,40 @@ padding: 0;
 }
 
 .editing-grid-table td.is-changed {
-background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+background: var(--f-target-preview, var(--f-preview-light));
 }
 
 .editing-grid-table td.is-selected-cell {
-background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+background: var(--f-primary);
+    color: var(--f-surface);
+}
+
+.editing-grid-table td.is-selected-cell :is(.spreadsheet-cell-display, .masked-input-display .is-entered, input:not(.masked-input-control):not(:disabled), select:not(:disabled), textarea:not(:disabled), a) {
+    color: var(--f-surface);
+    caret-color: var(--f-surface);
+}
+.editing-grid-table td.is-selected-cell .masked-input-control {
+    caret-color: var(--f-surface);
+}
+.editing-grid-table td.is-selected-cell .cell-error {
+    color: var(--f-surface);
+}
+.editing-grid-table td.is-selected-cell.has-error {
+    box-shadow: inset 0 0 0 2px var(--f-danger);
 }
 
 .editing-grid-table td.is-active-cell {
-outline: 2px solid var(--accent);
+outline: 2px solid var(--f-accent);
     outline-offset: -2px;
 }
 
 .editing-grid-table td.is-editing-cell {
-outline: 2px solid var(--focus);
+outline: 2px solid var(--f-accent);
     outline-offset: -2px;
 }
 
 .editing-grid-table td.has-error {
-box-shadow: inset 0 0 0 2px var(--danger, #b42318);
+box-shadow: inset 0 0 0 2px var(--f-danger);
 }
 
 .spreadsheet-cell-surface {
@@ -74,7 +90,7 @@ line-height: 24px;
 }
 
 .cell-select-marker {
-color: var(--accent-strong);
+color: var(--f-accent);
 }
 
 .cell-select-marker svg {
@@ -86,7 +102,7 @@ fill: currentColor;
 .editing-grid-table textarea,
 .editing-grid-table .masked-input {
 background: transparent;
-    color: var(--ink);
+    color: var(--f-text);
     font: inherit;
 }
 
@@ -99,13 +115,43 @@ margin: 0;
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    color: var(--ink);
+    color: var(--f-text);
     font: inherit;
 }
 
 .editing-grid-table select {
 appearance: none;
     padding-right: 32px;
+}
+
+/* Selection inverts the cell editor, not the independently surfaced picker. */
+.editing-grid-table select :is(option, optgroup) {
+    color: var(--f-text);
+    background: var(--f-surface);
+}
+
+.editing-grid-table select option:checked {
+    color: var(--f-text);
+    background: var(--f-surface);
+}
+
+@supports (appearance: base-select) {
+    .editing-grid-table select::picker(select) {
+        --f-target-preview: var(--f-surface-preview);
+        --f-target-click: var(--f-surface-click);
+        color: var(--f-text);
+        background: var(--f-surface);
+    }
+
+    .editing-grid-table select option:is(:hover, :focus-visible) {
+        color: var(--f-text);
+        background: var(--f-surface-preview);
+    }
+
+    .editing-grid-table select option:active {
+        color: var(--f-text);
+        background: var(--f-surface-click);
+    }
 }
 
 .editing-grid-table .masked-input {
@@ -126,11 +172,11 @@ padding-block: 0;
 .editing-grid-table input:disabled,
 .editing-grid-table select:disabled,
 .editing-grid-table textarea:disabled {
-color: var(--muted);
+color: var(--f-muted);
 }
 
 .editing-grid-table .read-only-cell {
-color: var(--muted);
+color: var(--f-muted);
 }
 
 .editing-grid-table .read-only-cell a {
@@ -140,7 +186,7 @@ line-height: 24px;
 
 .editing-grid-table .cell-error {
 padding: 6px 10px;
-    color: var(--danger, #b42318);
+    color: var(--f-danger);
     font-size: 17px;
 }
 
@@ -149,10 +195,19 @@ padding: 24px;
 }
 
 .editing-grid-table .data-column-resizer::after {
-background: var(--accent);
+background: var(--f-accent);
 }
 
 .editing-grid-table .data-column-resizer:focus-visible {
-outline: 2px solid var(--focus);
+outline: 2px solid var(--f-accent);
     outline-offset: -2px;
+}
+
+.editing-grid-table td:active {
+    color: var(--f-text);
+    background: var(--f-target-click);
+}
+.editing-grid-table td.is-selected-cell:active {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
 }

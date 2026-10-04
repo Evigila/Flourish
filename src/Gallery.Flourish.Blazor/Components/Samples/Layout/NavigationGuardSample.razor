@@ -1,0 +1,41 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.NavigationGuard")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inject NavigationManager Navigation
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.NavigationGuard HasUnsavedChanges="false" />
+    <p>此行为组件不生成可见内容。空白草稿不会阻止离开。</p>
+}
+else
+{
+    <p>虚构的本地草稿。明确启用后，此组件会保护当前 Gallery 页面，包括刷新和离开；保存或停用后解除。</p>
+    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="启用当前页面的离开确认" @bind-Value="Enabled" />
+    @if (Enabled)
+    {
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.NavigationGuard HasUnsavedChanges="Dirty" Message="示例草稿未保存，是否离开并丢弃？" />
+    }
+    <label>草稿标题<input value="@Draft" @oninput="Edit" /></label>
+    <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Save">保存示例草稿</ArkheideSystem.Flourish.Blazor.Components.Button>
+    <a href="@TestHref">测试离开确认（保留同一控件页面）</a>
+    <p role="status">@(Dirty ? "存在未保存的虚构草稿。" : "没有未保存的修改。")</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Enabled, Dirty;
+    private string Draft = "虚构草稿";
+    private string TestHref => new UriBuilder(Navigation.Uri) { Query = $"guardTest={Guid.NewGuid():N}" }.Uri.AbsoluteUri;
+    private void Edit(ChangeEventArgs args) { Draft = args.Value?.ToString() ?? string.Empty; Dirty = true; }
+    private void Save() => Dirty = false;
+}

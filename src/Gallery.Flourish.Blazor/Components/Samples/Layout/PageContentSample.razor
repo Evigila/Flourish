@@ -1,0 +1,34 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.PageContent")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+@using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示页内目录" @bind-Value="ShowContents" /> }
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:420px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="false" ContentId="@(Id + "-body")">
+    <TitleBar><header class="app-topbar"><strong>@(Preview ? "正文布局" : "文档内容（虚构）")</strong></header></TitleBar>
+    <PrimaryNavigation><ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-nav")" Label="资料" Icon="description" Href="@($"#{Id}-body")" IsCurrent="true" /></PrimaryNavigation>
+    <ChildContent>
+        <div class="page-root">
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.PageContent Contents="@(ShowContents ? Contents : null)">
+                <section class="page-module" id="@(Id + "-details")"><h2>资料详情</h2>@if (!Preview) { <p>森林观察笔记（虚构）用于记录徒步见闻。</p> }</section>
+                <section class="page-module" id="@(Id + "-history")"><h2>修订历史</h2>@if (!Preview) { <p>虚构的上次修订添加了路线说明。</p> }</section>
+            </ArkheideSystem.Flourish.Blazor.Components.Primitives.PageContent>
+        </div>
+    </ChildContent>
+</ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"page-content-sample-{Guid.NewGuid():N}";
+    private bool ShowContents = true;
+    private RenderFragment Contents => @<text><li><a href="@($"#{Id}-details")"><span class="page-contents-label">资料详情</span></a></li><li><a href="@($"#{Id}-history")"><span class="page-contents-label">修订历史</span></a></li></text>;
+}

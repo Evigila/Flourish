@@ -8,7 +8,6 @@
     <Authors>ArkheideSystem</Authors>
     <Description>Explicit optional visual foundations and theme runtime for Blazor components.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -21,7 +20,6 @@
     <ProjectReference Include="../Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
     <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
   <PropertyGroup>
     <CssBundleEntry>design.css</CssBundleEntry>

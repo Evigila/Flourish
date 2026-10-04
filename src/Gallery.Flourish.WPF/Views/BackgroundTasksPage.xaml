@@ -1,0 +1,133 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.BackgroundTasksPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Shell_RunApplicationWorkOutsideTheUIThreadWhileRetainingStructuredProg_5EBC59B1}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="{culture:Localize Key=Shell_BackgroundTasks_C6907E94}"
+    />
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_QueueProgressOnlyOrTypedResultWorkWithDescriptiveMetadataThenKee_5C27DD7B}"
+      Title="{culture:Localize Key=Shell_TaskQueue_6DAED5B2}"
+    >
+      <StackPanel>
+        <UniformGrid VerticalAlignment="Stretch" Columns="2">
+        <StackPanel Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE768;"
+            Content="{culture:Localize Key=Shell_QueueWorkThatReportsProgressWhileItRuns_0B85D081}"
+            Title="{culture:Localize Key=Shell_ProgressTask_0641C591}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddProgressTask_Click" Content="{culture:Localize Key=Shell_AddTask_BA423A46}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8F1;"
+            Content="{culture:Localize Key=Shell_QueueWorkThatReturnsACapturedValue_5EDE3D0A}"
+            Title="{culture:Localize Key=Shell_ResultTask_74EBDDE6}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddResultTask_Click" Content="{culture:Localize Key=Shell_AddTask_BA423A46}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE8FD;"
+            Content="{culture:Localize Key=Shell_QueueFourTasksToDemonstrateBoundedConcurrency_741BBD33}"
+            Title="{culture:Localize Key=Shell_TaskBurst_372EACE8}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AddBurst_Click" Content="{culture:Localize Key=Shell_Queue4Tasks_45E2269C}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE711;"
+            Content="{culture:Localize Key=Shell_CancelTheMostRecentlySubmittedTask_AE008190}"
+            Title="{culture:Localize Key=Shell_LastTask_096AAD39}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="CancelLast_Click" Content="{culture:Localize Key=Shell_CancelLast_913C9883}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Content="{culture:Localize Key=Shell_CancelTheTaskSelectedInTheLiveTaskList_67B2E735}"
+            Title="{culture:Localize Key=Shell_SelectedTask_1A3F175B}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="CancelSelected_Click" Content="{culture:Localize Key=Shell_CancelSelected_34E18E5E}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+        </StackPanel>
+        <flourish:OutputCard
+          x:Name="ServiceOutput"
+          Margin="8,0,0,0"
+          VerticalAlignment="Stretch"
+        />
+        </UniformGrid>
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="var handle = backgroundTasks.QueueTask(&#10;    new BackgroundTaskMetadata(&#10;        &quot;Refresh reports&quot;, &quot;Downloads the latest report data.&quot;, &quot;\uE895&quot;),&#10;    async context =&gt;&#10;    {&#10;        for (var step = 1; step &lt;= 10; step++)&#10;        {&#10;            await RefreshBatchAsync(step, context.CancellationToken);&#10;            context.ReportProgress(step / 10d);&#10;        }&#10;&#10;        return await LoadReportCountAsync(context.CancellationToken);&#10;    });&#10;&#10;// Completion represents success, failure, or cancellation without faulting.&#10;var result = await handle.Completion;&#10;var count = result.Value;&#10;var cancelRequested = backgroundTasks.CancelTask(handle.Id);" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_SubscribeToTaskChangesAndInspectActiveSnapshotsWhileWorkIsQueued_F7BBAB1C}"
+      Title="{culture:Localize Key=Shell_TaskState_6511171D}"
+    >
+      <StackPanel>
+        <flourish:Presenter
+          Content="{culture:Localize Key=Shell_QueuedRunningAndCancellingItemsUpdateThroughChanged_234E9419}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Shell_LiveTasks_6CB0A11C}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:ListBox
+              x:Name="ActiveTaskList"
+              Width="480"
+              Height="220"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="{DynamicResource FlourishPresenterPeerMargin}"
+          Content="{culture:Localize Key=Shell_CompletionNeverFaultsFailuresAndCancellationAreRepresentedInTheR_EBEAB0E5}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Shell_RecentOutcomes_5605F097}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:ListBox
+              x:Name="OutcomeList"
+              Width="480"
+              Height="220"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="backgroundTasks.Changed += (_, change) =&gt;&#10;    RefreshTaskList(change.Current);&#10;&#10;var activeTasks = backgroundTasks.Current;&#10;var concurrencyLimit = backgroundTasks.MaxConcurrency;&#10;&#10;var completion = await handle.Completion;&#10;var finalState = completion.Info.State;&#10;var error = completion.Info.Exception;" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

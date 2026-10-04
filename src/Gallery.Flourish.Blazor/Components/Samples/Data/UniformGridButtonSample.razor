@@ -1,0 +1,47 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Microsoft.AspNetCore.Components
+@using System.Threading.Tasks
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("UniformGridButton")]
+
+@if (Preview)
+{
+    <UniformGrid Columns="6" NarrowColumns="2">
+        <UniformGridButton Variant="UniformGridVariant.Elevated" aria-label="空矩形悬浮操作格面" />
+        <UniformGridButton Variant="UniformGridVariant.Filled" aria-label="空矩形填充操作格面" />
+        <UniformGridButton Variant="UniformGridVariant.Outlined" aria-label="空矩形描边操作格面" />
+        <UniformGridButton Variant="UniformGridVariant.Danger" aria-label="空矩形危险操作格面" />
+        <UniformGridButton aria-label="不可用长方形操作格面" Disabled="true" Variant="UniformGridVariant.Outlined" />
+        <UniformGridButton Title="保存" aria-label="处理中长方形操作格面" Busy="true" BusyLabel="处理中" Variant="UniformGridVariant.Filled" />
+    </UniformGrid>
+    <UniformGrid Shape="UniformGridShape.Square" Columns="6" NarrowColumns="2">
+        <UniformGridButton Variant="UniformGridVariant.Elevated" aria-label="空悬浮操作格面" />
+        <UniformGridButton Variant="UniformGridVariant.Filled" aria-label="空填充操作格面" />
+        <UniformGridButton Variant="UniformGridVariant.Outlined" aria-label="空描边操作格面" />
+        <UniformGridButton Variant="UniformGridVariant.Danger" aria-label="空危险操作格面" />
+        <UniformGridButton aria-label="不可用正方形操作格面" Disabled="true" Variant="UniformGridVariant.Outlined" />
+        <UniformGridButton aria-label="处理中正方形操作格面" Busy="true" BusyLabel="处理中" Variant="UniformGridVariant.Filled" />
+    </UniformGrid>
+}
+else
+{
+    <UniformGrid>
+        <UniformGridButton Title="保存" Icon="save" Text="保存演示状态" Busy="Saving" BusyLabel="正在保存" OnClick="SaveAsync" Variant="UniformGridVariant.Filled" />
+        <UniformGridButton Title="重置" Icon="restart_alt" Text="清除演示记录" Disabled="Saving" OnClick="Reset" Variant="UniformGridVariant.Outlined" />
+    </UniformGrid>
+    <p role="status">已保存 @SavedCount 次。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Saving;
+    private int SavedCount;
+    private async Task SaveAsync()
+    {
+        if (Saving) return;
+        Saving = true;
+        try { await Task.Delay(600); SavedCount++; }
+        finally { Saving = false; }
+    }
+    private void Reset() => SavedCount = 0;
+}

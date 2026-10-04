@@ -1,0 +1,41 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ReferenceDropdown<TValue>")]
+@using System
+@using System.Collections.Generic
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <label id="@(Prefix + "-empty-label")">空选项</label>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-empty")" LabelledBy="@(Prefix + "-empty-label")" Items="EmptyItems" SelectedId="EmptyId" SelectionChanged="SelectEmpty" EmptySelectionText="未选择" SearchLabel="搜索选项" />
+    <label id="@(Prefix + "-disabled-label")">禁用</label>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-disabled")" LabelledBy="@(Prefix + "-disabled-label")" Items="EmptyItems" Disabled="true" EmptySelectionText="未选择" />
+}
+else
+{
+    <ToggleSwitch Label="禁止修改场地" @bind-Value="Locked" OnLabel="禁止" OffLabel="允许" />
+    <label id="@(Prefix + "-venue-label")">场地</label>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-venue")" LabelledBy="@(Prefix + "-venue-label")" Items="Venues" SelectedId="VenueId"
+                         SelectionChanged="Select" CreateRequested="Create" Disabled="Locked" EmptySelectionText="未选择场地" SearchLabel="搜索或新增场地" />
+    <p role="status">当前场地 ID：@(VenueId?.ToString() ?? "未选择")。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-reference-" + Guid.NewGuid().ToString("N");
+    private static readonly P.ReferenceItem<int>[] EmptyItems = [];
+    private readonly List<ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceItem<int>> Venues = [new(1, "甲"), new(2, "河畔社区阅读与交流活动室（虚构）")];
+    private int? EmptyId, VenueId = 1;
+    private bool Locked;
+    private void SelectEmpty(int? id) => EmptyId = id;
+    private void Select(int? id) => VenueId = id;
+    private Task<int?> Create(string name) { var id = Venues.Count + 1; Venues.Add(new(id, name)); return Task.FromResult<int?>(id); }
+}

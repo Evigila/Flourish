@@ -1,0 +1,35 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ShellHeader")]
+@using System
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示示例身份" @bind-Value="Identity" /> }
+<div id="@Id" @onclick:preventDefault>
+    @if (Preview)
+    {
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="Logo" BrandName="应用名称" />
+    }
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="Logo" BrandName="@(Preview ? "应用名称" : "资料中心（虚构）")" ContextName="@(Preview ? null : "共享资料")" IdentityName="@(Preview || !Identity ? null : "示例访客")" IdentityAriaLabel="虚构的演示身份">
+        <Services>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Label="资料" Items="Links" /> }</Services>
+        <EndActions><ArkheideSystem.Flourish.Blazor.Components.Button Icon="refresh" OnClick="Refresh" aria-label="刷新示例" /></EndActions>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader>
+    @if (!Preview) { <p role="status">已刷新 @Count 次。顶部的品牌和菜单链接保持在本示例中。</p> }
+</div>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"shell-header-sample-{Guid.NewGuid():N}";
+    private bool Identity = true;
+    private int Count;
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceLink> Links => [new("说明文档", $"#{Id}"), new("参考资料", $"#{Id}")];
+    private void Refresh() => Count++;
+    private const string Logo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23153A32'/%3E%3Cpath d='M13 13h22v22H13z' fill='%23FFFFFF'/%3E%3C/svg%3E";
+}

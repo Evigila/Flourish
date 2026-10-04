@@ -1,0 +1,64 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataTable<TItem>")]
+
+@if (Preview)
+{
+    @foreach (var purpose in Enum.GetValues<ArkheideSystem.Flourish.Blazor.Components.Primitives.TablePurpose>())
+    {
+        <p>@purpose</p>
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable TItem="Entry" Label="空白数据表" Items="Array.Empty<Entry>()" Columns="Columns" Purpose="purpose" PreferenceKey="@($"{PreferenceId}-{purpose}")" EmptyMessage="暂无数据" />
+    }
+}
+else
+{
+    <p>所有用品为虚构数据。Registry 提供列表／卡片切换、列显示与排列；Pool 和 Worklist 使用列表。</p>
+    <div class="f-inline-actions">
+        @foreach (var purpose in Enum.GetValues<ArkheideSystem.Flourish.Blazor.Components.Primitives.TablePurpose>())
+        {
+            <Button Variant="ButtonVariant.Secondary" OnClick="() => Purpose = purpose">@purpose</Button>
+        }
+    </div>
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Quiet" OnClick="() => State = DemoState.Loaded">有数据</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="() => State = DemoState.Empty">空数据</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="() => State = DemoState.Loading">加载中</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="() => State = DemoState.Error">失败</Button>
+    </div>
+    @if (State == DemoState.Loading) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.PageLoading>正在加载虚构用品…</ArkheideSystem.Flourish.Blazor.Components.Primitives.PageLoading> }
+    @if (State == DemoState.Error) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.StatusNotice Severity="Primitives.NoticeSeverity.Error">模拟请求失败，选择“有数据”重试。</ArkheideSystem.Flourish.Blazor.Components.Primitives.StatusNotice> }
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable TItem="Entry" Label="虚构用品目录" Items="ShownItems" Columns="Columns" Purpose="Purpose" ShowSearch="true" PreferenceKey="@PreferenceId"
+                          DefaultAction="Inspect" ItemKey="@(item => item.Id)" ActionLabel="@(item => "操作：" + item.Name)" EmptyMessage="没有虚构记录">
+        <Actions Context="item"><button class="table-popup-item" type="button" @onclick="() => Inspect(item)">查看虚构记录</button></Actions>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable>
+    <p role="status">@Message</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string PreferenceId = $"table-sample-{Guid.NewGuid():N}";
+    private enum DemoState { Loaded, Empty, Loading, Error }
+    private sealed record Entry(int Id, string Name, string Code, decimal Price);
+    private DemoState State = DemoState.Loaded;
+    private Primitives.TablePurpose Purpose = Primitives.TablePurpose.Registry;
+    private string Message = "尚未选择记录。";
+    private static readonly IReadOnlyList<Entry> Items = Enumerable.Range(1, 24)
+        .Select(index => new Entry(index, $"演示用品 {index:00}", $"DEMO-{index:000}", 4.5m + index)).ToArray();
+    private IReadOnlyList<Entry> ShownItems => State == DemoState.Loaded ? Items : Array.Empty<Entry>();
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.DataColumn<Entry>> Columns =
+    [
+        new("name", "名称", item => item.Name, canHide: false, cardField: Primitives.CardField.Title),
+        new("code", "编号", item => item.Code, cardField: Primitives.CardField.Identifier),
+        new("price", "单价", item => item.Price.ToString("0.00"), cardField: Primitives.CardField.Metric, sortValue: item => item.Price)
+    ];
+    private void Inspect(Entry item) => Message = $"虚构记录：{item.Name} · {item.Code} · {item.Price:0.00}。";
+}

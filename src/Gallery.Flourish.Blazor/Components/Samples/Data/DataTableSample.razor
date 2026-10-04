@@ -1,0 +1,60 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DataTable<TItem>")]
+
+@if (Preview)
+{
+    <p>列表模式</p>
+    <DataTable TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" View="TableView.Table" Text="Captions" Label="空白列表" EmptyMessage="暂无数据" />
+    <p>卡片模式</p>
+    <DataTable TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" View="TableView.Cards" Text="Captions" Label="空白卡片" EmptyMessage="暂无数据" />
+}
+else
+{
+    <p>全部记录为虚构数据。使用搜索、表头排序、分页和列表／卡片切换；双击记录或通过菜单执行操作。</p>
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loaded">有数据</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Empty">空数据</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loading">加载中</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Error">加载失败</Button>
+    </div>
+    <DataTable TItem="Entry" Items="ShownItems" Columns="Columns" Actions="Actions" @bind-PageSize="PageSize" @bind-View="View"
+               ItemKey="@(item => item.Id)" RowLabel="@(item => item.Name)" OnRowOpen="Open"
+               Loading="@(State == DemoState.Loading)" Error="@(State == DemoState.Error ? "模拟加载失败，请选择有数据重试。" : null)"
+               Label="虚构用品目录" Text="Captions" LoadingMessage="正在加载虚构记录…" EmptyMessage="没有虚构记录" />
+    <p role="status">@Message</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private enum DemoState { Loaded, Empty, Loading, Error }
+    private sealed record Entry(int Id, string Name, string Group, decimal Price);
+    private DemoState State = DemoState.Loaded;
+    private TableView View;
+    private int PageSize = 10;
+    private string Message = "尚未执行行操作。";
+    private readonly IReadOnlyList<Entry> Items = Enumerable.Range(1, 23)
+        .Select(index => new Entry(index, $"演示用品 {index:00}", index % 2 == 0 ? "文具" : "日用品", 3.5m + index)).ToArray();
+    private IReadOnlyList<Entry> ShownItems => State == DemoState.Loaded ? Items : Array.Empty<Entry>();
+    private static readonly IReadOnlyList<TableColumn<Entry>> Columns =
+    [
+        new("name", "名称", item => item.Name, CanHide: false),
+        new("group", "分类", item => item.Group),
+        new("price", "单价", item => item.Price, Format: item => item.Price.ToString("0.00"))
+    ];
+    private static readonly TableText Captions = new(SearchBy: "搜索字段", AllColumns: "全部字段", SearchContent: "搜索内容",
+        List: "列表", Cards: "卡片", Display: "显示", Actions: "操作", Open: "查看", Items: "项", Of: "/", Page: "页码",
+        PreviousPage: "上一页", NextPage: "下一页", Width: "宽度", SortDescending: "降序", SortAscending: "升序", SortDefault: "恢复顺序", ResizeHint: "拖动或使用方向键调整列宽", ItemsPerPage: "每页数量", Total: "共", ItemRangeFormat: "{0}{1}-{2} / {3}{4}");
+    private IReadOnlyList<RowAction<Entry>> Actions =>
+    [new("加入本地收藏", item => { Message = $"已收藏虚构记录：{item.Name}"; return InvokeAsync(StateHasChanged); })];
+    private void Open(Entry item) => Message = $"打开虚构记录：{item.Name}，分类 {item.Group}，单价 {item.Price:0.00}。";
+}

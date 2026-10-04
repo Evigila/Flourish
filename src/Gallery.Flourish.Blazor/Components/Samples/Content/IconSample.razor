@@ -1,0 +1,31 @@
+@using ArkheideSystem.Flourish.Abstract
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Icon")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview)
+{
+    <span aria-label="默认图标"><Icon /></span>
+    <Icon Name="home" /><Icon Name="search" /><Icon Name="menu" /><Icon Name="close" />
+}
+else
+{
+    <Field Label="演示图标" Id="@Id"><SelectBox TValue="string" Options="Names" @bind-Value="Name" /></Field>
+    <Button Icon="@Name" aria-label="执行模拟图标操作" OnClick="() => Count++" />
+    <p role="status">模拟操作次数：@Count</p>
+    <p>图标是装饰性内容，可访问名称由按钮提供。官方图标总数：@IconCatalog.Names.Count。</p>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly SelectOption<string>[] Names = new[] { "home", "search", "settings", "inventory_2" }
+        .Select(name => new SelectOption<string>(name, name)).ToArray();
+    private readonly string Id = $"icon-choice-{Guid.NewGuid():N}";
+    private string Name = "settings";
+    private int Count;
+}

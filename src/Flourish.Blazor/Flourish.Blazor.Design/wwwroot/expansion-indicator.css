@@ -1,0 +1,13 @@
+.f-expansion-indicator::before { font:400 var(--f-type-body,17px)/1.2 var(--f-font,sans-serif); transition:transform 140ms ease; }
+.service-menu:hover .f-expansion-indicator::before,
+.service-menu:has(> .service-menu-trigger:focus-visible, .service-menu-view:focus-within) .f-expansion-indicator::before,
+.system-menu:hover .f-expansion-indicator::before,
+.system-menu:has(> .system-menu-trigger:focus-visible, .system-menu-view:focus-within) .f-expansion-indicator::before { transform:rotate(180deg); }
+@media(hover:none) {
+    .service-menu:focus-within .f-expansion-indicator::before,
+    .system-menu:focus-within .f-expansion-indicator::before { transform:rotate(180deg); }
+}
+@supports(appearance:base-select) {
+    .f-select::picker-icon { content:counter(f-expansion,disclosure-open); display:inline-flex; align-items:center; justify-content:center; width:1em; height:1.2em; font:400 var(--f-type-body,17px)/1.2 var(--f-font,sans-serif); transition:transform 140ms ease; }
+}
+@media(prefers-reduced-motion:reduce) { .f-expansion-indicator::before { transition:none; } .f-select::picker-icon { transition:none; } }

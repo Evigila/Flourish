@@ -44,6 +44,8 @@ public interface INavigationBuilder
 public interface ISubNavigationBuilder
 {
     ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, bool exact = false, bool disabled = false);
+    /// <summary>Adds a destination with children displayed in the same navigation tree.</summary>
+    ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
 }
 
 /// <summary>Legacy shell configuration retained for source migration.</summary>

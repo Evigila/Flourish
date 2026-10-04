@@ -1,0 +1,22 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Microsoft.AspNetCore.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ExpansionIndicator")]
+
+@if (Preview)
+{
+    <div class="f-inline-actions"><ExpansionIndicator /><ExpansionIndicator Expanded="true" /></div>
+}
+else
+{
+    <Button Variant="ButtonVariant.Quiet" OnClick="() => Expanded = !Expanded" aria-expanded="@(Expanded ? "true" : "false")" aria-controls="@PanelId">
+        示例详情 <ExpansionIndicator Expanded="Expanded" />
+    </Button>
+    <div id="@PanelId" hidden="@(!Expanded)"><p>示例名称：演示条目 A；状态：待处理。</p></div>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Expanded;
+    private readonly string PanelId = "sample-expansion-" + System.Guid.NewGuid().ToString("N");
+}

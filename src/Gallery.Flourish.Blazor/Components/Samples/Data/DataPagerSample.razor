@@ -1,0 +1,42 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Collections.Generic
+@using System
+@using System.Linq
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataPager")]
+
+@if (Preview)
+{
+    <p>带范围</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" Label="空列表分页" />
+    <p>紧凑模式</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" ShowRange="false" Label="紧凑分页" />
+    <p>不可用状态</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" Disabled="true" Label="不可用分页" />
+}
+else
+{
+    <p>23 条虚构记录按页展示。页码输入会自动限制到有效范围。</p>
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(5)">每页 5 条</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(10)">每页 10 条</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Limited = !Limited">@(Limited ? "完整集合" : "模拟受限集合")</Button>
+    </div>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="23" CurrentPage="Page" PageSize="PageSize" PageChanged="page => Page = page" IsLimited="Limited" Label="虚构记录分页" />
+    <ol start="@((Page - 1) * PageSize + 1)">
+        @foreach (var value in Enumerable.Range(1, 23).Skip((Page - 1) * PageSize).Take(PageSize))
+        {
+            <li>虚构记录 @value.ToString("00")</li>
+        }
+    </ol>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int Page = 1, PageSize = 5;
+    private bool Limited;
+    private void SetPageSize(int size) { PageSize = size; Page = 1; }
+}

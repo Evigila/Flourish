@@ -1,0 +1,37 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.UniformGrid")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@if (Preview)
+{
+    @foreach (var count in Enumerable.Range(1, 5))
+    {
+        <p>@count 列</p>
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.UniformGrid Columns="count" NarrowColumns="1" Filled="true">
+            @for (var index = 0; index < count; index++) { <UniformGridButton Disabled="true" aria-label="空网格位置"></UniformGridButton> }
+        </ArkheideSystem.Flourish.Blazor.Components.Primitives.UniformGrid>
+    }
+}
+else
+{
+    <Field Label="演示任务列数" Id="@Id"><SelectBox TValue="int" Options="ColumnOptions" @bind-Value="Columns" /></Field>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.UniformGrid Columns="Columns" NarrowColumns="1" Filled="true">
+        @foreach (var name in new[] { "模拟任务 A", "模拟任务 B", "模拟任务 C" }) { <div>@name</div> }
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.UniformGrid>
+    <p>窄窗口切换为一列。此内容全部为虚构数据。</p>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly SelectOption<int>[] ColumnOptions = Enumerable.Range(1, 5)
+        .Select(count => new SelectOption<int>(count, $"{count} 列")).ToArray();
+    private readonly string Id = $"primitive-grid-{Guid.NewGuid():N}";
+    private int Columns = 3;
+}

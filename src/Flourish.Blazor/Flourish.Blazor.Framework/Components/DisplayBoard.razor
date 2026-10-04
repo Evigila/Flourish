@@ -1,0 +1,110 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div @attributes="AdditionalAttributes" class="f-display-board @(Dotted ? "f-display-board-dotted" : null) @(Centered ? "f-display-board-centered" : "f-display-board-start") @(CopyText is not null ? "f-display-board-copyable" : null) @Class">
+    @if (CopyText is not null)
+    {
+        <Button Variant="ButtonVariant.Elevated" Icon="@(Copied ? "check" : "content_copy")"
+                aria-label="@(Copied ? CopiedLabel : CopyLabel)" title="@(Copied ? CopiedLabel : CopyLabel)"
+                Class="f-display-board-copy" Busy="Copying" BusyLabel="@CopyingLabel" OnClick="CopyAsync" />
+        <span class="f-sr-only" role="status">@CopyStatus</span>
+    }
+    <div class="f-display-board-viewport"><div class="f-display-board-content">@ChildContent</div></div>
+    @if (CopyFailed) { <p class="f-display-board-error" role="alert">@CopyFailedLabel</p> }
+</div>
+
+@code {
+    [Parameter] public bool Dotted { get; set; } = true;
+    [Parameter] public bool Centered { get; set; } = true;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? CopyText { get; set; }
+    [Parameter] public string CopyLabel { get; set; } = "Copy";
+    [Parameter] public string CopiedLabel { get; set; } = "Copied";
+    [Parameter] public string CopyingLabel { get; set; } = "Copying…";
+    [Parameter] public string CopyFailedLabel { get; set; } = "Unable to copy. Select the code and copy it manually.";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private IJSObjectReference? Module;
+    private bool Copying;
+    private bool Copied;
+    private bool CopyFailed;
+    private bool Disposed;
+    private string? LastText;
+    private CancellationTokenSource? FeedbackCancellation;
+    private Task? FeedbackTask;
+    private string CopyStatus => Copied ? CopiedLabel : string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (LastText == CopyText) return;
+        LastText = CopyText;
+        FeedbackCancellation?.Cancel();
+        Copied = CopyFailed = false;
+    }
+
+    private async Task CopyAsync()
+    {
+        if (Disposed || Copying || CopyText is null) return;
+        Copying = true;
+        Copied = CopyFailed = false;
+        var text = CopyText;
+        try
+        {
+            // A board does not load browser code until its copy action is used.
+            if (Module is null)
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/clipboard.js");
+                if (Disposed) { await module.DisposeAsync(); return; }
+                Module = module;
+            }
+            var success = await Module.InvokeAsync<bool>("copyText", text);
+            if (!Disposed && CopyText == text)
+            {
+                Copied = success; CopyFailed = !success;
+                if (success)
+                {
+                    FeedbackCancellation?.Cancel();
+                    FeedbackCancellation = new CancellationTokenSource();
+                    FeedbackTask = ResetFeedbackAsync(FeedbackCancellation);
+                }
+            }
+        }
+        catch (Exception exception) when (exception is JSException or TaskCanceledException or ObjectDisposedException)
+        {
+            if (!Disposed && CopyText == text) CopyFailed = true;
+        }
+        finally { Copying = false; }
+    }
+
+    private async Task ResetFeedbackAsync(CancellationTokenSource cancellation)
+    {
+        try
+        {
+            await Task.Delay(1600, cancellation.Token);
+            await InvokeAsync(() =>
+            {
+                if (Disposed || cancellation.IsCancellationRequested) return;
+                Copied = false;
+                StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            if (ReferenceEquals(FeedbackCancellation, cancellation)) FeedbackCancellation = null;
+            cancellation.Dispose();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Disposed = true;
+        FeedbackCancellation?.Cancel();
+        if (FeedbackTask is not null) await FeedbackTask;
+        if (Module is null) return;
+        try { await Module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

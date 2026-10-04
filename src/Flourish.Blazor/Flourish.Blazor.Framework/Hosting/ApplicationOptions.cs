@@ -201,7 +201,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         Check();
         ValidateLabelAndIcon(label, icon);
         var route = AddRoute(navTarget);
-        var children = new SubNavigationBuilder(AddRoute);
+        var children = new SubNavigationBuilder(AddRoute, route);
         configure?.Invoke(children);
         primaryNavigation.Add(new(label, icon, NavigationEntryKind.Route, Href: route, Children: children.Complete(), Exact: exact));
         return this;
@@ -270,7 +270,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         return normalized;
     }
 
-    private static string NormalizeRoute(string route)
+    internal static string NormalizeRoute(string route)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(route);
         route = route.Trim();
@@ -319,18 +319,38 @@ internal sealed class TopBarMenuBuilder : ITopBarMenuBuilder
     }
 }
 
-internal sealed class SubNavigationBuilder(Func<string, string> addRoute) : ISubNavigationBuilder
+internal sealed class SubNavigationBuilder(Func<string, string> addRoute, string? parentRoute = null) : ISubNavigationBuilder
 {
     private bool completed;
     private readonly List<NavigationItem> items = [];
+    private readonly HashSet<string> routes = new(StringComparer.OrdinalIgnoreCase);
 
     public ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, bool exact = false, bool disabled = false)
     {
-        if (completed) throw new InvalidOperationException("Secondary navigation configuration has already been completed.");
+        var route = AddItemRoute(label, icon, navTarget);
+        items.Add(new(label, route, icon, exact, disabled));
+        return this;
+    }
+
+    public ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+        var route = AddItemRoute(label, icon, navTarget);
+        var children = new SubNavigationBuilder(addRoute, route);
+        configure(children);
+        items.Add(new(label, route, icon, exact, disabled, children.Complete()));
+        return this;
+    }
+
+    private string AddItemRoute(string label, string icon, string navTarget)
+    {
+        if (completed) throw new InvalidOperationException("Sub-navigation configuration has already been completed.");
         ArgumentException.ThrowIfNullOrWhiteSpace(label);
         ArgumentException.ThrowIfNullOrWhiteSpace(icon);
-        items.Add(new(label, addRoute(navTarget), icon, exact, disabled));
-        return this;
+        var route = ApplicationBuilder.NormalizeRoute(navTarget);
+        if (!routes.Add(route)) throw new ArgumentException($"Sub-navigation route '{route}' is already configured.", nameof(navTarget));
+        // A destination may also be its own first child, as with a primary landing page.
+        return string.Equals(route, parentRoute, StringComparison.OrdinalIgnoreCase) ? route : addRoute(route);
     }
 
     internal IReadOnlyList<NavigationItem> Complete()

@@ -1,17 +1,55 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 
-<div @attributes="AdditionalAttributes" class="f-uniform-grid @(Filled ? "f-uniform-filled" : null) @Class"
-     style="--f-grid-columns:@Columns;--f-grid-narrow-columns:@(NarrowColumns ?? Columns)">@ChildContent</div>
+<CascadingValue Name="UniformGridIconSupport" Value="@IconSupport">
+    <div @attributes="AdditionalAttributes" class="f-uniform-grid f-uniform-grid-@Shape.ToString().ToLowerInvariant() f-uniform-grid-variant-@AppearanceName @LayoutClasses @(Filled ? "f-uniform-filled" : null) @Class"
+         style="@GridStyle" data-grid-layout="@Layout">@ChildContent</div>
+</CascadingValue>
 
 @code {
-    [Parameter] public int Columns { get; set; } = 3;
+    [Parameter] public int? Columns { get; set; }
+    [Parameter] public int? Rows { get; set; }
     [Parameter] public int? NarrowColumns { get; set; }
+    [Parameter] public UniformGridShape Shape { get; set; } = UniformGridShape.Rectangle;
+    [Parameter] public UniformGridVariant Variant { get; set; } = UniformGridVariant.Elevated;
+    [Parameter] public int MaxCellSize { get; set; } = 280;
+    [Parameter] public int MaxCellHeight { get; set; } = 260;
+    [Parameter] public bool? IconSupport { get; set; }
     [Parameter] public bool Filled { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private string Layout => (Columns, Rows) switch
+    {
+        (not null, not null) => "explicit",
+        (not null, null) => "columns",
+        (null, not null) => "rows",
+        _ => "auto"
+    };
+    private string LayoutClasses => $"{(Columns.HasValue ? "f-uniform-grid-columns" : null)} {(Rows.HasValue ? "f-uniform-grid-rows" : null)} {(NarrowColumns.HasValue ? "f-uniform-grid-narrow-columns" : null)}";
+    private string AppearanceName => (Filled ? UniformGridVariant.Filled : Variant) switch
+    {
+        UniformGridVariant.Elevated => "elevated",
+        UniformGridVariant.Filled => "filled",
+        UniformGridVariant.Outlined => "outlined",
+        UniformGridVariant.Danger => "danger",
+        _ => throw new ArgumentOutOfRangeException(nameof(Variant))
+    };
+    private string GridStyle => string.Join(';', new[]
+    {
+        Columns.HasValue ? FormattableString.Invariant($"--f-grid-columns:{Columns.Value}") : null,
+        Rows.HasValue ? FormattableString.Invariant($"--f-grid-rows:{Rows.Value}") : null,
+        NarrowColumns.HasValue ? FormattableString.Invariant($"--f-grid-narrow-columns:{NarrowColumns.Value}") : null,
+        Shape == UniformGridShape.Square ? FormattableString.Invariant($"--f-grid-cell-max:{MaxCellSize}px") : null,
+        Shape == UniformGridShape.Rectangle ? FormattableString.Invariant($"--f-grid-cell-max-height:{MaxCellHeight}px") : null
+    }.Where(value => value is not null));
     protected override void OnParametersSet()
     {
-        if (Columns is < 1 or > 5 || NarrowColumns is < 1 or > 5) throw new ArgumentOutOfRangeException(nameof(Columns));
+        if (Columns is <= 0) throw new ArgumentOutOfRangeException(nameof(Columns));
+        if (Rows is <= 0) throw new ArgumentOutOfRangeException(nameof(Rows));
+        if (NarrowColumns is <= 0) throw new ArgumentOutOfRangeException(nameof(NarrowColumns));
+        if (MaxCellSize <= 0) throw new ArgumentOutOfRangeException(nameof(MaxCellSize));
+        if (MaxCellHeight <= 0) throw new ArgumentOutOfRangeException(nameof(MaxCellHeight));
+        if (!Enum.IsDefined(Shape)) throw new ArgumentOutOfRangeException(nameof(Shape));
+        if (!Enum.IsDefined(Variant)) throw new ArgumentOutOfRangeException(nameof(Variant));
     }
 }

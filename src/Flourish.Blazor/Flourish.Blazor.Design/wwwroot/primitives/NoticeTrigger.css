@@ -1,48 +1,51 @@
 .notice-trigger {
     width: max-content;
     max-width: 100%;
-    margin: 14px 0 0;
-    --trigger-ink: var(--accent-strong, #176b55);
-    --trigger-fill: var(--accent-soft, #e2f3ec);
+    margin: 0;
+    font-size: var(--f-body-size, 17px);
+    --trigger-ink: var(--f-info-text);
+    --trigger-fill: var(--f-surface);
+    --trigger-border: var(--f-border);
 }
 .notice-trigger-button {
-    padding: 7px 13px;
     color: var(--trigger-ink);
     background: var(--trigger-fill);
-    border: 1px solid color-mix(in srgb, var(--trigger-ink) 42%, transparent);
-    border-radius: 12px;
+    border: 1px solid var(--trigger-border);
     cursor: help;
-    font: inherit;
-    font-size: 17px;
-    font-weight: 800;
-    letter-spacing: .025em;
 }
-.notice-error {
-    --trigger-ink: var(--danger, #a13935);
-    --trigger-fill: #f8e8e7;
+.notice-trigger.notice-error {
+    --trigger-ink: var(--f-surface);
+    --trigger-fill: var(--f-danger);
+    --trigger-border: var(--f-danger);
 }
-.notice-warning {
-    --trigger-ink: #735719;
-    --trigger-fill: #f4eddc;
+.notice-trigger.notice-warning {
+    --trigger-ink: var(--f-warning-ink);
+    --trigger-fill: var(--f-warning-background);
+    --trigger-border: var(--f-warning-background);
+}
+.notice-trigger.notice-success {
+    --trigger-ink: var(--f-surface);
+    --trigger-fill: var(--f-primary);
+    --trigger-border: var(--f-primary);
 }
 .notice-trigger-button:hover,
 .notice-trigger-button:focus-visible {
-    color: #fff;
-    background: var(--trigger-ink);
+    color: var(--trigger-ink);
+    background: var(--trigger-fill);
 }
 .notice-trigger-button:focus-visible {
-    outline: 3px solid var(--focus, #88e0c3);
+    outline: 3px solid var(--f-accent);
     outline-offset: 3px;
 }
 .notice-trigger-content {
     width: max-content;
     max-width: min(620px, calc(100vw - 112px));
     padding: 17px 19px;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    color: var(--f-text);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: 16px;
-    box-shadow: 0 18px 42px rgb(13 35 29 / 22%);
+    box-shadow: 0 18px 42px rgb(from var(--f-primary) r g b / 22%);
     clip-path: inset(100%);
     opacity: 0;
     transform: translateY(-5px);
@@ -63,4 +66,9 @@
 .notice-trigger-content {
     transition: none;
 }
+}
+
+.notice-trigger-button:active {
+    color: var(--trigger-ink);
+    background: var(--trigger-fill);
 }

@@ -5,7 +5,7 @@
     @if (SearchColumns.Count > 0)
     {
         <label class="quick-filter-field search-column-field" for="@(FieldId + "-column")">Buscar por
-            <select id="@(FieldId + "-column")" @bind:get="SelectedColumn.Key" @bind:set="ChangeColumnAsync"
+            <select class="f-input f-select" id="@(FieldId + "-column")" @bind:get="SelectedColumn.Key" @bind:set="ChangeColumnAsync"
                     disabled="@Disabled" @onchange:stopPropagation @oninput:stopPropagation>
                 @foreach (var column in SearchColumns)
                 {

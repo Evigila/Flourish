@@ -1,0 +1,40 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.ToolTipsConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="{culture:Localize Key=Application_ToolTips_53998699}"
+      Content="{culture:Localize Key=Shell_EnableTheFlourishTooltipPresentationAndDefineItsInitialDisplayDe_89D4F34B}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk
+      Title="{culture:Localize Key=Shell_TooltipBehavior_F4A58DCF}"
+      Content="{culture:Localize Key=Shell_TooltipsLabelCompactOrIconOnlyFlourishControlsWithoutAddingPerma_7ADF66F8}"
+    >
+      <StackPanel>
+        <flourish:Card
+          Icon="&#xE823;"
+          Title="{culture:Localize Key=Shell_SharedPresentation_09447183}"
+          Content="{culture:Localize Key=Shell_EmptyOrWhitespaceOnlyTooltipContentCollapsesCompletelyWhileNativ_4FA3CAAF}"
+        />
+        <flourish:CodeSpace
+          Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
+          Text="// Delay is measured in milliseconds and must be non-negative.&#10;builder.ConfigureToolTips(toolTips =&gt; toolTips&#10;    .SetEnabled()&#10;    .SetSettings(initialShowDelayMilliseconds: 200));&#10;&#10;// Supply a visible hint and an accessible action name.&#10;&lt;flourish:Button&#10;  AutomationProperties.Name=&quot;Refresh&quot;&#10;  Content=&quot;Refresh&quot;&#10;  ToolTip=&quot;Reload the current data.&quot; /&gt;"
+        />
+      </StackPanel>
+    </flourish:Chunk>
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

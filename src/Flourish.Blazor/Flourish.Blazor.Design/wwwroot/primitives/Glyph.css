@@ -1,10 +1,1 @@
-.shell-glyph {
-    width: 23px;
-    height: 23px;
-    color: inherit;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-    stroke-width: 1.8;
-}
+.shell-glyph { --f-icon-size:var(--f-icon-tool-size,26px); width:1em; height:1em; color:inherit; }

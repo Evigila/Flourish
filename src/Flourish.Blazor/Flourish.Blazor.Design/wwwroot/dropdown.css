@@ -1,0 +1,31 @@
+/* Action menus and selection menus share the same popup and option surface. */
+.f-dropdown-trigger,.selection-dropdown-surface .selection-trigger,:is(.table-column-selector,.table-advanced-selector) > summary { box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:var(--f-control-height,48px); padding:0 16px; border:1px solid var(--f-border); border-radius:12px; color:var(--f-text); background:var(--f-surface); font:inherit; font-weight:400; list-style:none; cursor:pointer; }
+.f-dropdown-trigger::-webkit-details-marker { display:none; }
+.f-select,.f-dropdown-trigger,.selection-dropdown-surface .selection-trigger,:is(.table-column-selector,.table-advanced-selector) > summary { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); }
+.f-select:hover:not(:disabled),.f-dropdown-trigger:hover,details[open] > .f-dropdown-trigger { color:var(--f-text); background:var(--f-target-preview); }
+.f-select:active:not(:disabled),.f-dropdown-trigger:active { color:var(--f-text); background:var(--f-target-click); }
+.f-dropdown-trigger:focus-visible { outline:3px solid var(--f-accent); outline-offset:3px; }
+.f-dropdown-panel,.selection-dropdown-surface .selection-panel,.search-autocomplete-options,.service-menu-view,.row-action-menu-panel,.table-column-selector > fieldset,.table-popup-panel { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); }
+/* Keep each primitive's layout, keyboard state, filtering and selection semantics. */
+:is(.f-dropdown-panel .f-dropdown-item,.selection-dropdown-surface .selection-option,.search-autocomplete-option,.service-menu-view a,.row-action-menu-panel .table-action,.row-action-menu-panel a,.row-action-menu-panel button,.table-popup-item) { box-sizing:border-box; min-height:40px; padding:8px 10px; border:0; border-radius:10px; }
+.table-column-selector .column-option { box-sizing:border-box; min-height:40px; padding:8px 10px; border-radius:10px; }
+.f-dropdown-panel .f-dropdown-item { box-sizing:border-box; display:flex; align-items:center; gap:12px; min-height:40px; padding:8px 10px; border:0; border-radius:10px; color:var(--f-text); background:transparent; cursor:pointer; }
+.f-dropdown-panel .f-dropdown-item:hover:not(:disabled):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:focus-visible,.f-dropdown-panel .f-dropdown-item:has(:focus-visible) { background:var(--f-target-preview); }
+.f-dropdown-panel .f-dropdown-item.is-selected { color:var(--f-text); background:transparent; }
+.f-dropdown-panel .f-dropdown-item.is-selected:hover:not(:active):not(:disabled):not(:has(input:disabled)) { background:var(--f-target-preview); }
+.f-dropdown-panel .f-menu-danger { color:var(--f-danger); }
+.f-dropdown-panel .f-dropdown-item:disabled,.f-dropdown-panel .f-dropdown-item:has(input:disabled) { opacity:.5; cursor:not-allowed; }
+
+.f-dropdown-panel .f-dropdown-item:active:not(:disabled):not(:has(input:disabled)) { color:var(--f-text); background:var(--f-target-click); }
+
+/* Native SelectBox pickers use the same geometry and colors as menu panels. */
+@supports (appearance:base-select) {
+    /* A grid keeps its dense borderless editor and separate decorative marker. */
+    .editing-grid-table .f-select,.editing-grid-table .f-select::picker(select) { appearance:base-select; }
+    .editing-grid-table .f-select::picker-icon { display:none; }
+    .f-select::picker(select) { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); }
+    .f-select option { box-sizing:border-box; display:flex; align-items:center; gap:12px; min-height:40px; padding:8px 10px; border:0; border-radius:10px; color:var(--f-text); background:transparent; cursor:pointer; }
+    .f-select option:is(:hover,:focus-visible):not(:disabled) { background:var(--f-surface-preview); }
+    .f-select option:active:not(:disabled) { color:var(--f-text); background:var(--f-surface-click); }
+    .f-select option:disabled { opacity:.5; cursor:not-allowed; }
+}

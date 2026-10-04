@@ -1,0 +1,28 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ToggleSwitch")]
+@using Microsoft.AspNetCore.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleSwitch Label="关闭" @bind-Value="Off" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleSwitch Label="开启" @bind-Value="On" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleSwitch Label="禁用" @bind-Value="DisabledValue" Disabled="true" />
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleSwitch Label="允许远程参加" @bind-Value="Remote" />
+    <p role="status">@(Remote ? "示例活动允许线上参与。" : "示例活动仅允许现场参与。")</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Off, On = true, DisabledValue, Remote = true;
+}

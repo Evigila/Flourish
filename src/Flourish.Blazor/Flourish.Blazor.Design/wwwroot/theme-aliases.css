@@ -7,29 +7,31 @@
 .f-root.content-surface {
     --canvas: var(--f-canvas);
     --surface: var(--f-surface);
-    --surface-alternate: var(--f-surface-alternate);
-    --surface-raised: var(--f-surface-raised);
+    --surface-alternate: var(--f-canvas);
+    --surface-raised: var(--f-surface);
     --ink: var(--f-text);
-    --ink-soft: var(--f-ink-soft);
+    --ink-soft: var(--f-muted);
     --ink-muted: var(--f-muted);
     --muted: var(--f-muted);
-    --disabled: var(--f-disabled);
+    --disabled: var(--f-muted);
     --line: var(--f-border);
-    --line-strong: var(--f-border-strong);
+    --line-strong: var(--f-border);
     --row-hover: var(--f-row-hover);
+    --row-active: var(--f-row-active);
     --accent: var(--f-accent);
-    --accent-strong: var(--f-accent-text);
-    --accent-fill-hover: var(--f-accent-hover);
-    --accent-soft: var(--f-soft);
-    --focus: var(--f-focus);
+    --accent-strong: var(--f-accent);
+    --accent-fill-hover: var(--f-primary-preview);
+    --accent-soft: var(--f-target-preview);
+    --focus: var(--f-accent);
     --danger: var(--f-danger);
-    --notice-subtle-background: var(--f-soft);
-    --notice-subtle-foreground: var(--f-ink-soft);
-    --chrome: var(--f-primary);
-    --chrome-ink: var(--f-primary-ink);
+    --notice-subtle-background: var(--f-display-board);
+    --notice-subtle-foreground: var(--f-text);
+    --chrome: var(--f-chrome);
+    --chrome-ink: var(--f-chrome-ink);
     --chrome-accent: var(--f-accent);
-    --chrome-hover: color-mix(in srgb, var(--f-primary-ink) 11%, var(--f-primary));
-    --chrome-line: color-mix(in srgb, var(--f-primary-ink) 16%, transparent);
+    --chrome-hover: var(--f-preview-dark);
+    --chrome-click: var(--f-click-dark);
+    --chrome-line: var(--f-border);
     --radius-small: var(--f-radius-small);
     --radius-medium: var(--f-radius-panel);
     --radius-large: var(--f-radius-emphasis);
@@ -39,35 +41,26 @@
 }
 
 .f-root .navigation-surface,
-.f-root.navigation-surface {
-    --surface-theme-primary: var(--f-primary);
-    --surface-theme-accent: var(--f-accent);
-    --surface-theme-primary-ink: var(--f-primary-ink);
-    --surface-theme-accent-ink: var(--f-accent-ink);
-    --surface-theme-accent-text: var(--f-accent-text);
-    --surface-theme-focus: var(--f-focus);
-    --topbar-height: var(--f-topbar-height);
-    --primary-rail-width: var(--f-primary-width);
-    --secondary-rail-width: var(--f-secondary-width);
-    --surface-content-width: var(--f-content-width);
-    --surface-page-gutter: var(--f-page-gutter);
-    color-scheme: inherit;
-}
-
+.f-root.navigation-surface,
 .f-root .content-surface,
 .f-root.content-surface {
     --surface-theme-primary: var(--f-primary);
     --surface-theme-accent: var(--f-accent);
     --surface-theme-primary-ink: var(--f-primary-ink);
     --surface-theme-accent-ink: var(--f-accent-ink);
-    --surface-theme-accent-text: var(--f-accent-text);
-    --surface-theme-focus: var(--f-focus);
+    --surface-theme-accent-text: var(--f-accent);
+    --surface-theme-focus: var(--f-accent);
     --topbar-height: var(--f-topbar-height);
     --surface-content-width: var(--f-content-width);
     --surface-page-gutter: var(--f-page-gutter);
     color-scheme: inherit;
 }
 
+.f-root .navigation-surface,
+.f-root.navigation-surface {
+    --primary-rail-width: var(--f-primary-width);
+    --secondary-rail-width: var(--f-secondary-width);
+}
 
 @media (max-width: 760px) {
     .f-root .navigation-surface,

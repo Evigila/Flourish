@@ -8,7 +8,6 @@
     <Authors>ArkheideSystem</Authors>
     <Description>Public contracts for the Blazor application shell and optional design.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -19,6 +18,5 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

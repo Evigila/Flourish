@@ -1,0 +1,32 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Patterns.ContentSurface")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+@using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface Style="height:420px; min-height:0; position:relative; contain:layout paint;" ContentId="@Id" DocumentKey="Document" SkipLabel="跳到示例正文">
+    <TitleBar><header class="content-topbar"><strong>@(Preview ? "顶部栏" : "帮助中心（虚构）")</strong>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="ChangeDocument">切换文章</ArkheideSystem.Flourish.Blazor.Components.Button> }</header></TitleBar>
+    <ChildContent>
+        @if (!Preview)
+        {
+            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading Title="@(Document == 0 ? "快速开始（虚构）" : "常见问题（虚构）")" /><p>DocumentKey 变化会替换正文滚动节点。</p>
+                @for (var row = 1; row <= 6; row++) { <section class="page-module"><h2>说明 @row</h2><p>这是一段虚构的帮助说明，用来体验固定顶部栏与正文滚动。</p></section> }
+            </div>
+        }
+    </ChildContent>
+</ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"content-sample-{Guid.NewGuid():N}";
+    private int Document;
+    private void ChangeDocument() => Document = 1 - Document;
+}

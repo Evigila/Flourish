@@ -1,0 +1,32 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ToggleSection")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <ToggleSection Label="关闭的可选区域" @bind-Value="Off"><div style="min-height:48px"></div></ToggleSection>
+    <ToggleSection Label="开启的可选区域" @bind-Value="On"><div style="min-height:48px"></div></ToggleSection>
+    <ToggleSection Label="禁用区域" @bind-Value="DisabledValue" Disabled="true"><div style="min-height:48px"></div></ToggleSection>
+}
+else
+{
+    <ToggleSection Label="提供补充说明" @bind-Value="Enabled">
+        <Field Label="说明" Id="@(Prefix + "-note")"><TextBox @bind-Value="Note" Multiline="true" Rows="3" /></Field>
+    </ToggleSection>
+    <p role="status">@(Enabled ? "当前将提供补充说明。" : "当前不提供补充说明。")</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-toggle-section-" + Guid.NewGuid().ToString("N");
+    private bool Off, On = true, DisabledValue, Enabled = true;
+    private string? Note = "虚构示例：请携带一本想分享的书。";
+}

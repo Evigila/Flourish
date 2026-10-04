@@ -77,7 +77,7 @@ export function attach(root, content) {
     listen(root,'keydown', e => {
         if(e.key==='Escape') { state.activeTip?.hide(); root.querySelector('.f-navigation-backdrop')?.click(); }
         if(e.key==='Tab' && state.content.inert) {
-            const targets = [...root.querySelectorAll('.f-titlebar > .f-icon-button, .f-secondary-item:not([aria-disabled=true]), .f-navigation-backdrop')].filter(item => item.getClientRects().length);
+            const targets = [...root.querySelectorAll('.f-titlebar > .f-icon-button, .f-secondary-item:not([aria-disabled=true]), .f-secondary-toggle:not(:disabled), .f-navigation-backdrop')].filter(item => item.getClientRects().length);
             const first = targets[0], last = targets.at(-1);
             if(e.shiftKey && (document.activeElement === first || !targets.includes(document.activeElement))) { e.preventDefault(); last?.focus(); }
             else if(!e.shiftKey && (document.activeElement === last || !targets.includes(document.activeElement))) { e.preventDefault(); first?.focus(); }
@@ -94,7 +94,7 @@ export function synchronize(root, open, resetScroll) {
     state.content.inert=expanded;
     if(expanded && !state.returnFocus) {
         state.returnFocus=document.activeElement;
-        root.querySelector('.f-secondary-item:not([aria-disabled=true])')?.focus();
+        [...root.querySelectorAll('.f-secondary-item:not([aria-disabled=true]), .f-secondary-toggle:not(:disabled)')].find(item => item.getClientRects().length)?.focus();
     } else if(!expanded && state.returnFocus) {
         state.returnFocus?.focus(); state.returnFocus=null;
     }

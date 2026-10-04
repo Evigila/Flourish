@@ -1,0 +1,38 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataSearch<TItem>")]
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataSearch TItem="Entry" Columns="Columns" Value="" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataSearch TItem="Entry" Columns="Columns" Value="" Disabled="true" />
+}
+else
+{
+    <p>虚构目录：搜索名称或分类。Changed 回调更新列与搜索值，然后调用公共 DataFilter。</p>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataSearch TItem="Entry" Columns="Columns" ColumnKey="@ColumnKey" Value="@Query" Changed="Search" />
+    <p role="status">匹配 @Results.Count / @Items.Count 条虚构记录。</p>
+    <ul>
+        @foreach (var item in Results) { <li>@item.Name · @item.Group</li> }
+    </ul>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private sealed record Entry(string Name, string Group);
+    private string ColumnKey = "name", Query = "";
+    private static readonly IReadOnlyList<Entry> Items =
+    [new("演示笔记本", "文具"), new("演示水杯", "日用品"), new("演示铅笔", "文具")];
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.DataColumn<Entry>> Columns =
+    [new("name", "名称", item => item.Name), new("group", "分类", item => item.Group)];
+    private IReadOnlyList<Entry> Results => Primitives.DataFilter.Filter(Items, Columns, ColumnKey, Query);
+    private void Search(Primitives.DataSearchRequest request) { ColumnKey = request.ColumnKey; Query = request.Value; }
+}

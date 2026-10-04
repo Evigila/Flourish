@@ -1,0 +1,135 @@
+@page "/examples"
+@page "/examples/{Topic}"
+<PageTitle>@Title · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="@Title" />
+    @if (TopicKey == "index")
+    {
+    <Section Title="完整页面">
+        <UniformGrid>
+            <UniformGridButton Title="表单页面" Href="/forms" Text="EditForm 验证、字段布局、保存与未保存修改确认。" />
+            <UniformGridButton Title="记录列表" Href="/records" Text="搜索、排序、分页、列显示、列表和卡片切换、行操作。" />
+            <UniformGridButton Title="记录详情" Href="/records/sample" Text="身份与联系信息、编辑入口和删除确认。" />
+            <UniformGridButton Title="组合布局" Href="/patterns" Text="列表页面、底部面板、表单区域和动作区组合。" />
+            <UniformGridButton Title="创建表单页面" Href="/examples/form" Text="从 EditForm、字段和操作区建立可验证的页面。" />
+            <UniformGridButton Title="下拉框与枚举" Href="/examples/enum" Text="将枚举值转换为选项并绑定当前选择。" />
+            <UniformGridButton Title="搜索框与列表" Href="/examples/search" Text="按输入查询筛选集合，并处理空结果。" />
+        </UniformGrid>
+        <p>案例数据只存于当前连接，重新连接后重置。</p>
+    </Section>
+    }
+    @if (TopicKey == "form")
+    {
+    <Section Title="创建表单页面">
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@FormExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@FormExample" Language="razor" /></DisplayBoard>
+        <p>表单模型负责验证规则，应用负责保存。Field 关联标签与验证消息，FormLayout 和 FormActions 管理字段与按钮排列。</p>
+    </Section>
+    }
+    @if (TopicKey == "enum")
+    {
+    <Section Title="下拉框与枚举">
+        <Field Label="任务状态" Id="example-state">
+            <SelectBox TValue="TaskState" Id="example-state" Options="States" @bind-Value="SelectedState" />
+        </Field>
+        <p aria-live="polite">当前值：@StateLabel(SelectedState)（@SelectedState）</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@EnumExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@EnumExample" Language="razor" /></DisplayBoard>
+    </Section>
+    }
+    @if (TopicKey == "search")
+    {
+    <Section Title="搜索框与列表">
+        <SearchBox Label="搜索示例名称" @bind-Value="Query" SearchChanged="Filter" DebounceMilliseconds="300" />
+        @if (FilteredEntries.Count == 0)
+        {
+            <EmptyState Title="没有匹配的示例"><Actions><Button Variant="ButtonVariant.Secondary" OnClick="ClearSearch">清除搜索</Button></Actions></EmptyState>
+        }
+        else
+        {
+            <ul aria-label="匹配的示例">
+                @foreach (var entry in FilteredEntries) { <li>@entry</li> }
+            </ul>
+        }
+        <p role="status">找到 @FilteredEntries.Count 项</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@SearchExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@SearchExample" Language="razor" /></DisplayBoard>
+        <p>ValueChanged 更新输入值，SearchChanged 在延迟后筛选列表。远程查询可使用带 CancellationToken 的 SearchRequested，页面负责应用查询结果。</p>
+    </Section>
+    }
+    @if (!Topics.ContainsKey(TopicKey))
+    {
+        <EmptyState Title="没有此主题"><Actions><a href="/examples">返回目录</a></Actions></EmptyState>
+    }
+</PageBody>
+@code {
+    [Parameter] public string? Topic { get; set; }
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Topic = null;
+        return base.SetParametersAsync(parameters);
+    }
+    private string TopicKey => Topic?.ToLowerInvariant() ?? "index";
+    private string Title => Topics.GetValueOrDefault(TopicKey, "页面不存在");
+    private static readonly IReadOnlyDictionary<string, string> Topics = new Dictionary<string, string>
+    {
+        ["index"] = "案例目录",
+        ["form"] = "创建表单页面",
+        ["enum"] = "下拉框与枚举",
+        ["search"] = "搜索框与列表",
+    };
+
+    private enum TaskState { Planned, Active, Completed }
+    private TaskState SelectedState = TaskState.Planned;
+    private static string StateLabel(TaskState state) => state switch
+    { TaskState.Planned => "待开始", TaskState.Active => "进行中", _ => "已完成" };
+    private static readonly IReadOnlyList<SelectOption<TaskState>> States = Enum.GetValues<TaskState>()
+        .Select(state => new SelectOption<TaskState>(state, StateLabel(state))).ToArray();
+    private static readonly IReadOnlyList<string> Entries = ["表单 Form", "记录列表 Records", "下拉框 Enum", "搜索 Search", "布局 Layout"];
+    private string Query = "";
+    private IReadOnlyList<string> FilteredEntries = Entries;
+    private void Filter(string query) => FilteredEntries = Entries
+        .Where(entry => entry.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+    private void ClearSearch() { Query = ""; Filter(""); }
+    private const string FormExample = """
+        <PageBody>
+            <PageHeading Title="创建记录" />
+            <EditForm Model="Draft" OnValidSubmit="SaveAsync" FormName="record" novalidate>
+                <DataAnnotationsValidator />
+                <FormLayout>
+                    <Field Label="名称" Id="name" Required="true" For="@(() => Draft.Name)">
+                        <TextBox Id="name" @bind-Value="Draft.Name" />
+                    </Field>
+                </FormLayout>
+                <FormActions>
+                    <UniformGridButton Title="保存" Type="submit" Busy="Saving" />
+                    <UniformGridButton Title="取消" OnClick="Cancel" />
+                </FormActions>
+            </EditForm>
+        </PageBody>
+        """;
+    private const string EnumExample = """
+        <Field Label="状态" Id="state">
+            <SelectBox TValue="TaskState" Id="state" Options="States" @bind-Value="SelectedState" />
+        </Field>
+
+        @code {
+            private enum TaskState { Planned, Active, Completed }
+            private TaskState SelectedState;
+            private static readonly IReadOnlyList<SelectOption<TaskState>> States =
+                Enum.GetValues<TaskState>().Select(state =>
+                    new SelectOption<TaskState>(state, state.ToString())).ToArray();
+        }
+        """;
+    private const string SearchExample = """
+        <SearchBox Label="搜索" @bind-Value="Query" SearchChanged="Filter" DebounceMilliseconds="300" />
+        <ul>
+            @foreach (var item in Filtered) { <li>@item</li> }
+        </ul>
+
+        @code {
+            private string Query = "";
+            private readonly string[] Items = ["Form", "List", "Search"];
+            private IReadOnlyList<string> Filtered = ["Form", "List", "Search"];
+            private void Filter(string query) => Filtered = Items.Where(item =>
+                item.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+        }
+        """;
+}

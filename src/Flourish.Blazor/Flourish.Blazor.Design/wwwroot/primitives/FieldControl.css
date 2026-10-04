@@ -2,10 +2,10 @@
     width: max-content;
     max-width: min(360px, calc(100vw - 48px));
     padding: 9px 12px;
-    color: #fff;
-    background: var(--danger);
+    color: var(--f-surface);
+    background: var(--f-danger);
     border-radius: 10px;
-    box-shadow: 0 12px 28px rgb(16 36 31 / 22%);
+    box-shadow: 0 12px 28px rgb(from var(--f-primary) r g b / 22%);
     font-size: 17px;
     font-weight: 650;
 }

@@ -8,7 +8,11 @@ public enum NavigationEntryKind
     Command,
 }
 
-public sealed record NavigationItem(string Label, string Href, string Icon = "page", bool Exact = false, bool Disabled = false);
+public sealed record NavigationItem(string Label, string Href, string Icon = "page", bool Exact = false, bool Disabled = false,
+    IReadOnlyList<NavigationItem>? Children = null)
+{
+    public IReadOnlyList<NavigationItem> ChildItems => Children ?? Array.Empty<NavigationItem>();
+}
 public sealed record NavigationGroup(string Key, string Label, string Icon, IReadOnlyList<NavigationItem> Items, bool SecondaryNavigation = true);
 
 public sealed record NavigationEntry(

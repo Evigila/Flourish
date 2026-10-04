@@ -1,0 +1,25 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Card")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview)
+{
+    <Card />
+    <Card Title="带标题的空卡片" />
+}
+else
+{
+    <Button Variant="ButtonVariant.Secondary" OnClick="() => Selected = !Selected">切换虚构项目</Button>
+    <Card Title="@(Selected ? "模拟项目 B" : "模拟项目 A")">
+        <p>适用于选择、摘要或预览；这是虚构的项目描述。</p>
+        <p>演示状态：@(Selected ? "处理中" : "草稿")</p>
+    </Card>
+}
+@code { [Parameter] public bool Preview { get; set; } private bool Selected; }

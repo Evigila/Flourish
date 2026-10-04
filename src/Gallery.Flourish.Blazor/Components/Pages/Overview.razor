@@ -1,0 +1,25 @@
+@page "/"
+<PageTitle>主页 · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="主页" />
+    <Section Title="从这里开始">
+        <UniformGrid>
+            <UniformGridButton Title="框架 Framework" Icon="dashboard_customize" Href="/framework" Text="配置顶部栏、导航、命令和页面外壳。" />
+            <UniformGridButton Title="控件 Controls" Icon="widgets" Href="/controls" Text="查看控件目录、变体、用法和交互演示。" />
+            <UniformGridButton Title="基础 Foundations" Icon="palette" Href="/foundations" Text="查看字体、颜色、间距、圆角和主题。" />
+            <UniformGridButton Title="案例 Examples" Icon="auto_awesome_mosaic" Href="/examples" Text="组合表单、列表、枚举选择和搜索。" />
+        </UniformGrid>
+    </Section>
+    <Section Title="最小配置">
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Startup" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Startup" Language="csharp" /></DisplayBoard>
+        <p>将路由的默认布局设置为 ApplicationLayout，再创建自己的页面。Design 是可选主题；Framework 提供布局和交互行为。</p>
+    </Section>
+</PageBody>
+@code {
+    private const string Startup = """
+        builder.Services.AddFlourishFramework(framework => framework
+            .ConfigureTopBar(top => top.SetAppName("My application"))
+            .ConfigureNavigation(nav => nav.AddNav("主页", "home", "/", exact: true)));
+        builder.Services.AddFlourishDesign();
+        """;
+}

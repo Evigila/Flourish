@@ -1,0 +1,45 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.AccessSurface")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+<style>@((MarkupString)ScopedStyles)</style>
+<div id="@Id">
+    @if (Preview)
+    {
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface><p>默认访问表面</p></ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface>
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="true"><p>强调访问表面</p></ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface>
+    }
+    else
+    {
+        <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="强调背景" @bind-Value="Emphasized" />
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="Emphasized">
+            <div class="access-panel">
+                <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="访客资料（虚构）" TitleId="@(Id + "-title")" />
+                <form class="access-form" @onsubmit="Enter" @onsubmit:preventDefault>
+                    <label for="@(Id + "-email")">演示邮箱</label>
+                    <input id="@(Id + "-email")" type="email" @bind="Email" required />
+                    <button type="submit">进入演示</button>
+                </form>
+                @if (Entered) { <p class="access-message" role="status">已模拟 @Email 的访问；此示例不执行身份验证。</p> }
+            </div>
+        </ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface>
+    }
+</div>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"access-surface-sample-{Guid.NewGuid():N}";
+    private bool Emphasized, Entered;
+    private string Email = "visitor@example.invalid";
+    private void Enter() => Entered = true;
+    private string ScopedStyles => $"#{Id} .access-surface {{ min-height:240px; padding:24px; }}";
+}

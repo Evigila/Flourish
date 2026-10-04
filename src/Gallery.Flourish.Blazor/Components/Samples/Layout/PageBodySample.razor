@@ -1,0 +1,33 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("PageBody")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="false"><p>居中正文区域</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="true"><p>流动正文区域</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody FullWidth="true"><p>完整宽度正文区域</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+}
+else
+{
+    <Field Label="正文布局" Id="@Id"><SelectBox TValue="string" Options="Modes" @bind-Value="Mode" /></Field>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")">
+        <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="资料设置（虚构）" />
+        <ArkheideSystem.Flourish.Blazor.Components.Section Title="说明"><p>这个页面采用所选布局。调整窗口宽度可查看正文轨道与边距。</p></ArkheideSystem.Flourish.Blazor.Components.Section>
+    </ArkheideSystem.Flourish.Blazor.Components.PageBody>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly SelectOption<string>[] Modes = [new("centered", "居中"), new("fluid", "流动"), new("full", "完整宽度")];
+    private readonly string Id = $"page-body-mode-{Guid.NewGuid():N}";
+    private string Mode = "centered";
+}

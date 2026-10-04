@@ -1,0 +1,42 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SplitButton")]
+
+@if (Preview)
+{
+    <div class="f-inline-actions">
+        <SplitButton Text="操作" Icon="download" SecondaryLabel="打开选项" />
+        <SplitButton Text="已选中" Icon="check" Selected="true" SecondaryLabel="打开选项" />
+        <SplitButton Text="不可用" Disabled="true" SecondaryLabel="打开选项" />
+    </div>
+}
+else
+{
+    <div class="f-inline-actions">
+        <SplitButton Text="@($"导出 {Format}")" Icon="download" Selected="Selected" Disabled="Disabled"
+                     SecondaryLabel="@(OptionsVisible ? "收起导出选项" : "展开导出选项")" Expanded="OptionsVisible"
+                     SecondaryControls="split-scenario-options" OnClick="Export" OnSecondaryClick="() => OptionsVisible = !OptionsVisible" />
+        <CheckBox Label="选中" @bind-Value="Selected" />
+        <CheckBox Label="禁用" @bind-Value="Disabled" />
+    </div>
+    <div id="split-scenario-options" role="region" aria-label="导出格式" hidden="@(!OptionsVisible)">
+        <div class="f-inline-actions">
+            <Button Variant="ButtonVariant.Quiet" OnClick="ChooseCsv">CSV</Button>
+            <Button Variant="ButtonVariant.Quiet" OnClick="ChooseJson">JSON</Button>
+        </div>
+    </div>
+    <p role="status">导出 @ExportCount 次；上次格式：@LastFormat</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Selected, Disabled, OptionsVisible;
+    private int ExportCount;
+    private string Format = "CSV", LastFormat = "暂无";
+    private void Export() { ExportCount++; LastFormat = Format; }
+    private void ChooseCsv() => ChooseFormat("CSV");
+    private void ChooseJson() => ChooseFormat("JSON");
+    private void ChooseFormat(string format) { Format = format; OptionsVisible = false; }
+}

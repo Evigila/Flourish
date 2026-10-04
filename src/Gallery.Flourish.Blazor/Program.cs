@@ -1,0 +1,619 @@
+using ArkheideSystem.Flourish.Blazor;
+using ArkheideSystem.Gallery.Flourish.Blazor.Commands;
+using ArkheideSystem.Gallery.Flourish.Blazor.Components;
+using ArkheideSystem.Gallery.Flourish.Blazor.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddFlourishFramework(framework =>
+    framework
+        .ConfigureTopBar(top =>
+            top.SetAppName("Gallery")
+                .SetIcon("gallery.svg", "")
+                .AddMenu(
+                    "页面",
+                    menu =>
+                        menu.AddMenuItem("框架", GalleryCommandParser.OpenFramework)
+                            .AddMenuItem("控件", GalleryCommandParser.OpenControls)
+                            .AddMenuItem("基础", GalleryCommandParser.OpenFoundations)
+                            .AddMenuItem("案例", GalleryCommandParser.OpenExamples)
+                )
+        )
+        .ConfigureNavigation(navigation =>
+            navigation
+                .AddNav("主页", "home", "/", exact: true)
+                .AddNav(
+                    "框架",
+                    "dashboard_customize",
+                    "/framework",
+                    secondary =>
+                        secondary
+                            .AddSubNav("接入应用", "start", "/framework", exact: true)
+                            .AddSubNav("顶部栏", "web_asset", "/framework/topbar")
+                            .AddSubNav("导航", "menu", "/framework/navigation")
+                            .AddSubNav("命令处理", "terminal", "/framework/commands")
+                            .AddSubNav("页面布局", "view_quilt", "/framework/layout")
+                            .AddSubNav("内置交互", "touch_app", "/framework/interactions")
+                )
+                .AddNav(
+                    "控件",
+                    "widgets",
+                    "/controls",
+                    secondary =>
+                        secondary
+                            .AddSubNav(
+                                "按钮与菜单",
+                                "smart_button",
+                                "/controls",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "Button",
+                                            "smart_button",
+                                            "/controls/actions/buttonsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "UniformGridButton",
+                                            "grid_view",
+                                            "/controls/actions/uniformgridbuttonsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "SplitButton",
+                                            "splitscreen",
+                                            "/controls/actions/splitbuttonsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "ActionMenu",
+                                            "smart_button",
+                                            "/controls/actions/actionmenusample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "ExpansionIndicator",
+                                            "arrow_drop_down",
+                                            "/controls/actions/expansionindicatorsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.RowActionMenu",
+                                            "smart_button",
+                                            "/controls/actions/rowactionmenusample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "输入与选择",
+                                "input",
+                                "/controls/inputs",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "TextBox",
+                                            "input",
+                                            "/controls/inputs/textboxsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "NumberBox<TValue>",
+                                            "input",
+                                            "/controls/inputs/numberboxsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "SelectBox<TValue>",
+                                            "input",
+                                            "/controls/inputs/selectboxsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "CheckBox",
+                                            "input",
+                                            "/controls/inputs/checkboxsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "ToggleSwitch",
+                                            "input",
+                                            "/controls/inputs/toggleswitchsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "SearchBox",
+                                            "input",
+                                            "/controls/inputs/searchboxsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Field",
+                                            "input",
+                                            "/controls/inputs/fieldsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "FormLayout",
+                                            "input",
+                                            "/controls/inputs/formlayoutsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "FormActions",
+                                            "input",
+                                            "/controls/inputs/formactionssample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.MaskedInput",
+                                            "input",
+                                            "/controls/inputs/maskedinputsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.StandaloneMaskedInput",
+                                            "input",
+                                            "/controls/inputs/standalonemaskedinputsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.SearchAutocomplete<TItem>",
+                                            "input",
+                                            "/controls/inputs/searchautocompletesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.MultiSelectDropdown<TItem, TValue>",
+                                            "input",
+                                            "/controls/inputs/multiselectdropdownsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.ReferenceDropdown<TValue>",
+                                            "input",
+                                            "/controls/inputs/referencedropdownsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.FormSurface",
+                                            "input",
+                                            "/controls/inputs/formsurfacesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.FormFields",
+                                            "input",
+                                            "/controls/inputs/formfieldssample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.FormActionBar",
+                                            "input",
+                                            "/controls/inputs/formactionbarsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.ToggleSwitch",
+                                            "input",
+                                            "/controls/inputs/primitivetoggleswitchsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.SelectionDropdownSurface",
+                                            "input",
+                                            "/controls/inputs/selectiondropdownsurfacesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.ToggleIndicator",
+                                            "input",
+                                            "/controls/inputs/toggleindicatorsample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "数据与列表",
+                                "table_chart",
+                                "/controls/data",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "DataTable<TItem>",
+                                            "table_chart",
+                                            "/controls/data/datatablesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.DataTable<TItem>",
+                                            "table_chart",
+                                            "/controls/data/primitivedatatablesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.DataSearch<TItem>",
+                                            "table_chart",
+                                            "/controls/data/datasearchsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.DataPager",
+                                            "table_chart",
+                                            "/controls/data/datapagersample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.EditingGrid",
+                                            "table_chart",
+                                            "/controls/data/editinggridsample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "对话框与弹层",
+                                "web_asset",
+                                "/controls/overlays",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "Dialog",
+                                            "web_asset",
+                                            "/controls/overlays/dialogsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "BottomSheet",
+                                            "web_asset",
+                                            "/controls/overlays/bottomsheetsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.BottomSheet",
+                                            "web_asset",
+                                            "/controls/overlays/primitivebottomsheetsample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "状态反馈",
+                                "notifications",
+                                "/controls/feedback",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "Notice",
+                                            "notifications",
+                                            "/controls/feedback/noticesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "EmptyState",
+                                            "notifications",
+                                            "/controls/feedback/emptystatesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "LoadingState",
+                                            "notifications",
+                                            "/controls/feedback/loadingstatesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.StatusNotice",
+                                            "notifications",
+                                            "/controls/feedback/statusnoticesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.NoticeTrigger",
+                                            "notifications",
+                                            "/controls/feedback/noticetriggersample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.PageLoading",
+                                            "notifications",
+                                            "/controls/feedback/pageloadingsample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "进度",
+                                "hourglass_empty",
+                                "/controls/progress",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "ProgressBar",
+                                            "hourglass_empty",
+                                            "/controls/progress/progressbarsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "ProgressRing",
+                                            "hourglass_empty",
+                                            "/controls/progress/progressringsample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "内容与组合",
+                                "view_agenda",
+                                "/controls/content",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "ToggleSection",
+                                            "view_agenda",
+                                            "/controls/content/togglesectionsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "UniformGrid",
+                                            "view_agenda",
+                                            "/controls/content/uniformgridsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "UniformGridItem",
+                                            "grid_view",
+                                            "/controls/content/uniformgriditemsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Disclosure",
+                                            "view_agenda",
+                                            "/controls/content/disclosuresample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Section",
+                                            "view_agenda",
+                                            "/controls/content/sectionsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Card",
+                                            "view_agenda",
+                                            "/controls/content/cardsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "IdentityCard",
+                                            "view_agenda",
+                                            "/controls/content/identitycardsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Icon",
+                                            "view_agenda",
+                                            "/controls/content/iconsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "DisplayBoard",
+                                            "view_in_ar",
+                                            "/controls/content/displayboardsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "CodeBlock",
+                                            "view_agenda",
+                                            "/controls/content/codeblocksample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.AppIcon",
+                                            "view_agenda",
+                                            "/controls/content/appiconsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.Glyph",
+                                            "view_agenda",
+                                            "/controls/content/glyphsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.FilledIdentityCard",
+                                            "view_agenda",
+                                            "/controls/content/filledidentitycardsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.DisclosureSection",
+                                            "view_agenda",
+                                            "/controls/content/primitivedisclosuresample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.ToggleSection",
+                                            "view_agenda",
+                                            "/controls/content/primitivetogglesectionsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.UniformGrid",
+                                            "view_agenda",
+                                            "/controls/content/primitiveuniformgridsample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                            .AddSubNav(
+                                "外壳与布局",
+                                "view_quilt",
+                                "/controls/layout",
+                                third =>
+                                    third
+                                        .AddSubNav(
+                                            "ApplicationLayout",
+                                            "view_quilt",
+                                            "/controls/layout/applicationlayoutsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "ApplicationShell",
+                                            "view_quilt",
+                                            "/controls/layout/applicationshellsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "PageBody",
+                                            "view_quilt",
+                                            "/controls/layout/pagebodysample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "SectionNavigator",
+                                            "more_vert",
+                                            "/controls/layout/sectionnavigatorsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "PageHeading",
+                                            "view_quilt",
+                                            "/controls/layout/pageheadingsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Patterns.ContentSurface",
+                                            "view_quilt",
+                                            "/controls/layout/contentsurfacesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Patterns.NavigationSurface",
+                                            "view_quilt",
+                                            "/controls/layout/navigationsurfacesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Patterns.RecordListPage",
+                                            "view_quilt",
+                                            "/controls/layout/recordlistpagesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.NavigationGuard",
+                                            "view_quilt",
+                                            "/controls/layout/navigationguardsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.InteractionBoundary",
+                                            "view_quilt",
+                                            "/controls/layout/interactionboundarysample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.AccessBrand",
+                                            "view_quilt",
+                                            "/controls/layout/accessbrandsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.AccessSurface",
+                                            "view_quilt",
+                                            "/controls/layout/accesssurfacesample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.ShellHeader",
+                                            "view_quilt",
+                                            "/controls/layout/shellheadersample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.ServiceMenu",
+                                            "view_quilt",
+                                            "/controls/layout/servicemenusample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.PrimaryNavigationItem",
+                                            "view_quilt",
+                                            "/controls/layout/primarynavigationitemsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.PageHeading",
+                                            "view_quilt",
+                                            "/controls/layout/primitivepageheadingsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.RecordPageHeading",
+                                            "view_quilt",
+                                            "/controls/layout/recordpageheadingsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.PageContent",
+                                            "view_quilt",
+                                            "/controls/layout/pagecontentsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
+                                            "Primitives.PageContents",
+                                            "view_quilt",
+                                            "/controls/layout/pagecontentssample",
+                                            exact: true
+                                        ),
+                                exact: true
+                            )
+                )
+                .AddNav(
+                    "基础",
+                    "palette",
+                    "/foundations",
+                    secondary =>
+                        secondary
+                            .AddSubNav("颜色与主题", "palette", "/foundations", exact: true)
+                            .AddSubNav("字体", "text_fields", "/foundations/typography")
+                            .AddSubNav("间距", "space_bar", "/foundations/spacing")
+                            .AddSubNav("圆角与阴影", "rounded_corner", "/foundations/shape")
+                            .AddSubNav("布局尺寸", "aspect_ratio", "/foundations/dimensions")
+                            .AddSubNav("图标", "emoji_symbols", "/foundations/icons")
+                )
+                .AddNav(
+                    "案例",
+                    "auto_awesome_mosaic",
+                    "/examples",
+                    secondary =>
+                        secondary
+                            .AddSubNav("案例目录", "view_list", "/examples", exact: true)
+                            .AddSubNav("创建表单页面", "description", "/examples/form")
+                            .AddSubNav("表单演示", "edit", "/forms")
+                            .AddSubNav("记录列表", "list", "/records")
+                            .AddSubNav("记录详情", "person", "/records/sample")
+                            .AddSubNav("组合布局", "view_quilt", "/patterns")
+                            .AddSubNav("枚举下拉框", "arrow_drop_down", "/examples/enum")
+                            .AddSubNav("搜索与列表", "search", "/examples/search")
+                )
+                .AddFixedNavButton("切换主题", "palette", GalleryCommandParser.ToggleTheme)
+        )
+        .SetCommandParser<GalleryCommandParser>()
+);
+builder.Services.AddFlourishDesign(appearance =>
+    appearance.SetFont("'Noto Sans', 'Noto Sans CJK SC', system-ui, sans-serif")
+);
+builder.Services.AddScoped<RecordStore>();
+
+var app = builder.Build();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/error", createScopeForErrors: true);
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
+app.UseStatusCodePagesWithReExecute("/not-found");
+app.UseAntiforgery();
+app.MapStaticAssets().ShortCircuit();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.Run();

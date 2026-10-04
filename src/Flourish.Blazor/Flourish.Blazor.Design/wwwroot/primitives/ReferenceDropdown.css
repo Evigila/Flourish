@@ -6,6 +6,6 @@
 }
 .reference-empty {
     padding: 10px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
 }

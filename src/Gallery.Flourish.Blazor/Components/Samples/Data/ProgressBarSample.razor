@@ -1,0 +1,36 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ProgressBar")]
+
+@if (Preview)
+{
+    <ProgressBar Label="确定进度" Value="0" StatusText="尚未开始" />
+    <ProgressBar Label="未知进度" Value="null" StatusText="正在处理…" />
+}
+else
+{
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Change(-10)">减少 10%</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Change(10)">增加 10%</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Unknown = !Unknown">@(Unknown ? "显示确定进度" : "模拟未知进度")</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="Reset">重置</Button>
+    </div>
+    <ProgressBar Label="演示文件导出" Value="@(Unknown ? null : (double?)Percent)" StatusText="@Status" />
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int Percent = 30;
+    private bool Unknown;
+    private string Status => Unknown ? "正在估算导出任务…" : Percent == 100 ? "虚构文件导出完成。" : $"正在导出演示文件：{Percent}%";
+    private void Change(int amount) { Unknown = false; Percent = Math.Clamp(Percent + amount, 0, 100); }
+    private void Reset() { Percent = 30; Unknown = false; }
+}

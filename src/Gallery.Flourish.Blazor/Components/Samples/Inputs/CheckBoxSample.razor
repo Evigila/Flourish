@@ -1,0 +1,33 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("CheckBox")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <CheckBox Label="未选中" @bind-Value="Empty" />
+        <CheckBox Label="已选中" @bind-Value="Checked" />
+        <CheckBox Label="禁用" @bind-Value="Disabled" Disabled="true" />
+    </div>
+}
+else
+{
+    <CheckBox Label="投影仪" @bind-Value="Projector" />
+    <CheckBox Label="音箱" @bind-Value="Speaker" />
+    <CheckBox Label="白板" @bind-Value="Whiteboard" />
+    <p role="status">当前选择了 @((Projector ? 1 : 0) + (Speaker ? 1 : 0) + (Whiteboard ? 1 : 0)) 项设备。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Empty, Checked = true, Disabled;
+    private bool Projector = true, Speaker, Whiteboard;
+}

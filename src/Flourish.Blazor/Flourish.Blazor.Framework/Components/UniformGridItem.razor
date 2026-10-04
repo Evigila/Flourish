@@ -1,0 +1,26 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<div @attributes="AdditionalAttributes" class="f-uniform-cell f-uniform-grid-item @(SupportsIcon ? "f-uniform-icon-support" : null) @VariantClass @Class">@Contents</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string Icon { get; set; } = string.Empty;
+    [Parameter] public bool? IconSupport { get; set; }
+    [CascadingParameter(Name = "UniformGridIconSupport")] private bool? InheritedIconSupport { get; set; }
+    [Parameter] public string Text { get; set; } = string.Empty;
+    [Parameter] public UniformGridVariant? Variant { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private bool SupportsIcon => IconSupport ?? InheritedIconSupport ?? !string.IsNullOrWhiteSpace(Icon);
+    private RenderFragment Contents => Internal.UniformGridContent.Create(Title, Icon, Text, ChildContent, SupportsIcon);
+    private string? VariantClass => Variant switch
+    {
+        null => null,
+        UniformGridVariant.Elevated => "f-uniform-variant-elevated",
+        UniformGridVariant.Filled => "f-uniform-variant-filled",
+        UniformGridVariant.Outlined => "f-uniform-variant-outlined",
+        UniformGridVariant.Danger => "f-uniform-variant-danger",
+        _ => throw new ArgumentOutOfRangeException(nameof(Variant))
+    };
+}

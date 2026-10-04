@@ -1,0 +1,30 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Microsoft.AspNetCore.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("UniformGridItem")]
+
+@if (Preview)
+{
+    <UniformGrid Shape="UniformGridShape.Square">
+        <UniformGridItem Variant="UniformGridVariant.Elevated" aria-label="空悬浮信息格面" />
+        <UniformGridItem Variant="UniformGridVariant.Filled" aria-label="空填充信息格面" />
+        <UniformGridItem Variant="UniformGridVariant.Outlined" aria-label="空描边信息格面" />
+        <UniformGridItem Variant="UniformGridVariant.Danger" aria-label="空危险信息格面" />
+    </UniformGrid>
+}
+else
+{
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Outlined" Text="@(ShowArchived ? "查看活动项目" : "查看归档项目")" OnClick="() => ShowArchived = !ShowArchived" />
+    </div>
+    <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.Filled">
+        <UniformGridItem Title="设计" Icon="palette" Text="@(ShowArchived ? "已归档" : "进行中")" />
+        <UniformGridItem Title="文档" Icon="description" Text="@(ShowArchived ? "已归档" : "待检查")" />
+        <UniformGridItem Title="组件" Icon="widgets" Text="@(ShowArchived ? "已归档" : "待发布")" Variant="UniformGridVariant.Outlined" />
+    </UniformGrid>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool ShowArchived;
+}

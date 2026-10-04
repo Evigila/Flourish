@@ -1,0 +1,17 @@
+.f-split-button:not(.f-secondary-row) > :is(.f-split-button-primary,.f-split-button-secondary) {
+    min-height:48px; padding:0 14px; border:1px solid var(--f-border);
+    border-radius:var(--f-radius-control,12px); background:var(--f-surface); color:var(--f-text);
+    font:650 var(--f-type-body,17px)/1.55 var(--f-font,"Segoe UI",sans-serif); text-decoration:none; cursor:pointer;
+}
+.f-split-button:not(.f-secondary-row) > .f-split-button-secondary { min-width:48px; padding:0 10px; }
+.f-split-button:not(.f-secondary-row) > :is(.f-split-button-primary,.f-split-button-secondary):hover:not(:disabled):not([aria-disabled=true]) { background:var(--f-row-hover); }
+.f-split-button:not(.f-secondary-row) > :is(.f-split-button-primary,.f-split-button-secondary):active:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-click); }
+.f-split-button:not(.f-secondary-row) > .is-selected { background:var(--f-primary); color:var(--f-surface); }
+.f-split-button:not(.f-secondary-row):has(> .is-selected):hover > .is-selected:not(:disabled):not([aria-disabled=true]) { background:var(--f-primary); color:var(--f-surface); }
+.f-split-button:not(.f-secondary-row):has(> .is-selected) > .is-selected:active:not(:disabled):not([aria-disabled=true]) { background:var(--f-primary-click); color:var(--f-surface); }
+.f-split-button:not(.f-secondary-row) > :is(.f-split-button-primary,.f-split-button-secondary):is(:disabled,[aria-disabled=true]) { opacity:.55; cursor:not-allowed; }
+.f-split-button > :is(.f-split-button-primary,.f-split-button-secondary):focus-visible { outline:3px solid var(--f-accent); outline-offset:-3px; }
+.f-split-button:not(.f-secondary-row) > .f-split-button-primary { border-top-right-radius:3px; border-bottom-right-radius:3px; }
+.f-split-button:not(.f-secondary-row) > .f-split-button-secondary { border-top-left-radius:3px; border-bottom-left-radius:3px; }
+.f-split-button.f-secondary-row > .f-split-button-primary { border-radius:var(--f-radius-control,12px) 3px 3px var(--f-radius-control,12px); }
+.f-split-button.f-secondary-row > .f-split-button-secondary { border-radius:3px var(--f-radius-control,12px) var(--f-radius-control,12px) 3px; }

@@ -1,0 +1,34 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.FormFields")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        <Field Label="字段一" Id="@(Prefix + "-empty-one")"><TextBox @bind-Value="EmptyOne" /></Field>
+        <Field Label="字段二" Id="@(Prefix + "-empty-two")"><TextBox @bind-Value="EmptyTwo" /></Field>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        <Field Label="参与人" Id="@(Prefix + "-name")"><TextBox @bind-Value="Name" /></Field>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-contact")">联系电话（虚构）</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.StandaloneMaskedInput id="@(Prefix + "-contact")" Mask="0000-0000" @bind-Value="Contact" /></div>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+    <p role="status">示例参与人：@Name；联系电话模型值：@Contact。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-form-fields-" + Guid.NewGuid().ToString("N");
+    private string? EmptyOne, EmptyTwo, Name = "许宁（虚构）", Contact = "12345678";
+}

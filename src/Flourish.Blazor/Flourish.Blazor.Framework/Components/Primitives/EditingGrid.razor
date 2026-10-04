@@ -77,7 +77,7 @@
                                     }
                                     else if (hasOptions)
                                     {
-                                        <select value="@cell.Value" @onchange="args => ChangeAsync(currentRow, currentColumn, args.Value?.ToString())"
+                                        <select class="f-select" value="@cell.Value" @onchange="args => ChangeAsync(currentRow, currentColumn, args.Value?.ToString())"
                                                 disabled="@(disabled || cell.ReadOnly)" tabindex="-1" aria-required="@(cell.Required ? "true" : null)" aria-label="@label" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)">
                                             @if (cell.AllowEmpty) { <option value="">@cell.EmptyText</option> }
                                             @foreach (var option in cell.Options ?? []) { <option value="@option.Value">@option.Label</option> }

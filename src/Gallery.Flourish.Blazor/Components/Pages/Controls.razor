@@ -1,0 +1,58 @@
+@page "/controls"
+@page "/controls/{Category}"
+@page "/controls/{Category}/{ComponentKey}"
+@using ArkheideSystem.Gallery.Flourish.Blazor.Components.Catalog
+<PageTitle>@Title · Controls · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="@Title" ParentHref="@(SelectedEntry is null ? null : CategoryHref)" ParentLabel="@($"返回 {CategoryTitle}")" />
+    @if (SelectedEntry is not null)
+    {
+        <ComponentGuide Entry="@SelectedEntry" Category="@CategoryKey" ShowDetailLink="false" />
+    }
+    else if (ComponentKey is not null || !CatalogSections.Titles.ContainsKey(CategoryKey))
+    {
+        <EmptyState Title="没有此控件或分类"><Actions><a href="/controls">返回控件</a></Actions></EmptyState>
+    }
+    else
+    {
+        <UniformGrid Shape="UniformGridShape.Square">
+            @foreach (var entry in CatalogSections.EntriesFor(CategoryKey))
+            {
+                <UniformGridButton @key="entry.Name" Title="@ShortName(entry.Name)" Icon="@CategoryIcon"
+                                   Href="@CatalogSections.ComponentHref(entry)" AdditionalAttributes="@EntryAttributes(entry)" />
+            }
+        </UniformGrid>
+    }
+</PageBody>
+@code {
+    [Parameter] public string? Category { get; set; }
+    [Parameter] public string? ComponentKey { get; set; }
+    private string CategoryKey => Category?.ToLowerInvariant() ?? "actions";
+    private string CategoryTitle => CatalogSections.Titles.GetValueOrDefault(CategoryKey, "控件");
+    private string CategoryHref => CatalogSections.HrefFor(CategoryKey);
+    private ComponentEntry? SelectedEntry => ComponentKey is null ? null
+        : SampleCatalog.Find(ComponentKey) is { } entry && CatalogSections.CategoryOf(entry) == CategoryKey ? entry : null;
+    private string Title => SelectedEntry?.Name ?? CategoryTitle;
+    private static IReadOnlyDictionary<string, object> EntryAttributes(ComponentEntry entry) =>
+        new Dictionary<string, object> { ["title"] = $"{entry.Name} · {entry.Purpose}", ["aria-label"] = entry.Name };
+    private static string ShortName(string name)
+    {
+        var title = name.StartsWith("Primitives.", StringComparison.Ordinal) ? name[11..]
+            : name.StartsWith("Patterns.", StringComparison.Ordinal) ? name[9..] : name;
+        var genericStart = title.IndexOf('<');
+        return genericStart < 0 ? title : title[..genericStart];
+    }
+    private string CategoryIcon => CategoryKey switch
+    {
+        "actions" => "smart_button", "inputs" => "input", "data" => "table_chart",
+        "overlays" => "picture_in_picture", "feedback" => "notifications",
+        "progress" => "progress_activity", "layout" => "view_quilt", _ => "view_module"
+    };
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Category = null;
+        ComponentKey = null;
+        return base.SetParametersAsync(parameters);
+    }
+}

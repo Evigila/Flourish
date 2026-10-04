@@ -1,0 +1,23 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Disclosure")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview)
+{
+    <Disclosure Title="初始关闭" />
+    <Disclosure Title="初始打开" InitiallyOpen="true" />
+}
+else
+{
+    <p>适用于按需查看的辅助说明。示例内容为虚构规则。</p>
+    <Disclosure Title="模拟订单的运输说明"><p>演示订单预计于下一个工作日处理；没有发起任何真实配送。</p></Disclosure>
+    <Disclosure Title="模拟订单的退回条件" InitiallyOpen="true"><p>示例允许在状态为草稿时取消。</p></Disclosure>
+}
+@code { [Parameter] public bool Preview { get; set; } }

@@ -1,0 +1,50 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Dialog")]
+
+<div class="f-inline-actions">
+    <Button Variant="ButtonVariant.Secondary" OnClick="() => Open(DialogPresentation.Centered)">打开居中对话框</Button>
+    <Button Variant="ButtonVariant.Secondary" OnClick="() => Open(DialogPresentation.BottomSheet)">打开底部样式</Button>
+</div>
+@if (!Preview)
+{
+    <CheckBox Label="模拟未完成输入，阻止关闭" @bind-Value="PreventClose" />
+    <p role="status">已归档 @CompletedCount 次。</p>
+}
+<Dialog Title="@(Preview ? "空白对话框" : "归档演示草稿")" @bind-IsOpen="IsOpen" Presentation="Presentation" Busy="Busy" CanClose="CanCloseAsync" CloseLabel="关闭">
+    <ChildContent>
+        @if (!Preview) { <p>示例草稿 A 为虚构数据。确认只更新本地计数。</p> }
+    </ChildContent>
+    <Actions>
+        @if (!Preview)
+        {
+            <Button Busy="Busy" BusyLabel="正在归档" OnClick="CompleteAsync">确认归档</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="Busy" OnClick="() => IsOpen = false">取消</Button>
+        }
+    </Actions>
+</Dialog>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool IsOpen, Busy, PreventClose;
+    private int CompletedCount;
+    private DialogPresentation Presentation;
+    private void Open(DialogPresentation presentation) { Presentation = presentation; IsOpen = true; }
+    private Task<bool> CanCloseAsync() => Task.FromResult(!PreventClose || Preview);
+    private async Task CompleteAsync()
+    {
+        if (Busy) return;
+        Busy = true;
+        try { await Task.Delay(600); CompletedCount++; PreventClose = false; IsOpen = false; }
+        finally { Busy = false; }
+    }
+}

@@ -1,0 +1,237 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.ConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Shell_EditConfigurationAndLocalizationWhileTheAppRuns_15ABD8C0}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="{culture:Localize Key=Shell_ConfigurationLocalization_AAF9B9AC}"
+    />
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_ReadEffectiveValuesFromTheActiveProviderChainBindTypedOptionsIns_F81E47A0}"
+      Title="{culture:Localize Key=Shell_ConfigurationValues_39D4360A}"
+    >
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE721;"
+            Title="{culture:Localize Key=Controls_ConfigurationKey_DF69947E}"
+            Content="{culture:Localize Key=Shell_ChooseAValueFromTheActiveProviderChain_C11A502F}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="ReadKeyBox" Width="220" Text="Flourish:Preferences:Theme" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE721;"
+            Title="{culture:Localize Key=Shell_ReadMergedValue_6CE2FF16}"
+            Content="{culture:Localize Key=Shell_ResolveTheSelectedConfigurationKey_5DC7ADC2}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ReadValue_Click" Content="{culture:Localize Key=Shell_ReadValue_BEAED839}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72C;"
+            Title="{culture:Localize Key=Shell_ConfigurationProviders_F8A3093D}"
+            Content="{culture:Localize Key=Shell_ReloadEveryRegisteredProvider_60E47FC2}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="Reload_Click" Content="{culture:Localize Key=Shell_ReloadProviders_0C783486}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          </StackPanel>
+          <flourish:OutputCard x:Name="ReadOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+        </Grid>
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Flourish uses the standard Microsoft configuration pipeline.&#10;if (configuration is IConfigurationRoot root)&#10;{&#10;    root.Reload();&#10;}&#10;&#10;// Read raw, converted, and bound values with standard extensions.&#10;var raw = configuration[&quot;Flourish:Preferences:Theme&quot;];&#10;var timeout = configuration.GetValue&lt;int&gt;(&quot;Network:Timeout&quot;);&#10;var reports = configuration.GetSection(&quot;Reports&quot;).Get&lt;ReportOptions&gt;();" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_PersistTheSelectedFlourishAppsettingsFileThroughAtomicWritesThat_F7C26977}"
+      Title="{culture:Localize Key=Shell_AppSettings_D43FB8A9}"
+    >
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE71B;"
+            Title="{culture:Localize Key=Shell_ConfigurationPath_18B85882}"
+            Content="{culture:Localize Key=Shell_ChooseTheAppsettingsKeyToEdit_BCD25047}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="WriteKeyBox" Width="220" Text="Flourish:Gallery:Runtime:Message" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE70F;"
+            Title="{culture:Localize Key=Shell_StringValue_A48D9FCC}"
+            Content="{culture:Localize Key=Shell_ProvideTheValueUsedByWriteOperations_FFCF2C72}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="WriteValueBox" Width="220" Text="Hello from runtime" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74E;"
+            Title="{culture:Localize Key=Shell_SetValue_58BF3410}"
+            Content="{culture:Localize Key=Shell_ReplaceTheSelectedValueAndSaveAtomically_AB4487A6}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="SetValue_Click" Content="{culture:Localize Key=Shell_SetSave_FA0BA9B1}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72D;"
+            Title="{culture:Localize Key=Shell_MergeValue_3FED15FE}"
+            Content="{culture:Localize Key=Shell_MergeTheValueIntoItsParentObject_72311D03}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="MergeValue_Click" Content="{culture:Localize Key=Shell_MergeIntoParent_92C0410E}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE710;"
+            Title="{culture:Localize Key=Shell_AppendValue_C9D4F684}"
+            Content="{culture:Localize Key=Shell_AppendTheValueToTheSelectedArray_2F8836F4}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="AppendValue_Click" Content="{culture:Localize Key=Shell_AppendToArray_F729D627}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="{culture:Localize Key=Shell_RemoveValue_12920E9D}"
+            Content="{culture:Localize Key=Shell_RemoveTheSelectedKeyFromTheManagedSettingsFile_64C8F4C9}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RemoveValue_Click" Content="{culture:Localize Key=Controls_Remove_C3812FC4}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          </StackPanel>
+          <flourish:OutputCard x:Name="WriteOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+        </Grid>
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Every managed path belongs to the Flourish top-level section.&#10;var filePath = settings.FilePath;&#10;await settings.SetAsync(&quot;Flourish:Gallery:Theme&quot;, &quot;Dark&quot;);&#10;await settings.MergeAsync(&quot;Flourish:Gallery:Reports&quot;, new { PageSize = 50 });&#10;await settings.AppendAsync(&quot;Flourish:Gallery:Reports:Formats&quot;, &quot;PDF&quot;);&#10;await settings.RemoveAsync(&quot;Flourish:Gallery:Reports:Legacy&quot;);&#10;&#10;// Batch related edits into one write and one reload.&#10;var result = await settings.UpdateAsync(editor =&gt;&#10;{&#10;    editor.Set(&quot;Flourish:Gallery:Theme&quot;, &quot;Light&quot;);&#10;    editor.Merge(&quot;Flourish:Gallery:Reports&quot;, new { PageSize = 100 });&#10;    editor.Append(&quot;Flourish:Gallery:Reports:Formats&quot;, &quot;CSV&quot;);&#10;    editor.Remove(&quot;Flourish:Gallery:Reports:Legacy&quot;);&#10;});&#10;&#10;// Inspect the transaction outcome.&#10;var changed = result.Changed;&#10;var savedPath = result.FilePath;&#10;var reloaded = result.ConfigurationReloaded;" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Dynamic_ChooseTheApplicationLocaleFlourishTranslatesOnlyItsBuiltInInterf_E0E093E0}"
+      Title="{culture:Localize Key=Shell_Localization_031C2D79}"
+    >
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <flourish:ActionCard
+            Grid.Column="0"
+            Margin="0,0,8,0"
+            VerticalAlignment="Stretch"
+            Icon="&#xE774;"
+            Title="{culture:Localize Key=Shell_ApplicationLocale_454E98E6}"
+            Content="{culture:Localize Key=Shell_ChooseABuiltInOrHostRegisteredLocale_90F691AB}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:ComboBox
+                x:Name="LocaleBox"
+                Width="220"
+                SelectionChanged="LocaleBox_SelectionChanged"
+              />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:OutputCard x:Name="LocaleOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+        </Grid>
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// Select the initial language during application composition.&#10;builder.ConfigureData(data =&gt; data.SetLocale(&quot;en-US&quot;));&#10;&#10;// Observe and change the selected language while the app is running.&#10;localization.Changed += (_, change) =&gt;&#10;{&#10;    var kind = change.Kind;&#10;    var previous = change.PreviousLocale;&#10;    var current = change.CurrentLocale;&#10;};&#10;localization.SetLocale(&quot;zh-CN&quot;);&#10;&#10;// Inspect locales and resolve localized text.&#10;var selected = localization.Current.Locale;&#10;var available = localization.Current.AvailableLocales;&#10;var title = localization.Get(&quot;TitleBar.Back&quot;);&#10;var status = localization.Format(&quot;TitleBar.ThemeSystem&quot;, &quot;Dark&quot;);" />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Shell_ExtendOrOverrideTranslationsWithUTF8LangLocaleJsonFilesAddFilesD_A991B111}"
+      Title="{culture:Localize Key=Shell_LocaleFiles_66483B15}"
+    >
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Stretch">
+          <flourish:ActionCard
+            Icon="&#xE8A5;"
+            Title="{culture:Localize Key=Shell_LocaleFilePath_9B6FF179}"
+            Content="{culture:Localize Key=Shell_ChooseAnExternalLangLocaleJsonSource_A4EE0621}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:TextBox x:Name="CultureFilePathBox" Width="220" Text="FlourishCulture.Json" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE710;"
+            Title="{culture:Localize Key=Shell_RegisterLocaleFile_E5F5A5EA}"
+            Content="{culture:Localize Key=Shell_RegisterTheSelectedSourceWithLocalization_C659B5B7}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="RegisterCultureFile_Click" Content="{culture:Localize Key=Shell_RegisterFile_04EED623}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE72C;"
+            Title="{culture:Localize Key=Shell_ReloadLocaleFile_B942D119}"
+            Content="{culture:Localize Key=Shell_ReloadEditsFromTheRegisteredSource_B9F123C3}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="ReloadCultureFile_Click" Content="{culture:Localize Key=Shell_ReloadFile_7E2434B6}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          <flourish:ActionCard
+            Margin="{DynamicResource FlourishActionCardPeerMargin}"
+            Icon="&#xE74D;"
+            Title="{culture:Localize Key=Shell_RemoveLocaleFile_8391B6C7}"
+            Content="{culture:Localize Key=Shell_UnregisterTheCurrentExternalSource_84D0CA5A}"
+          >
+            <flourish:ActionCard.Body>
+              <flourish:Button Click="UnregisterCultureFile_Click" Content="{culture:Localize Key=Shell_Unregister_BE01AA28}" />
+            </flourish:ActionCard.Body>
+          </flourish:ActionCard>
+          </StackPanel>
+          <flourish:OutputCard x:Name="CultureFileOutput" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Stretch" />
+        </Grid>
+        <flourish:CodeSpace Margin="{DynamicResource FlourishCodeSpacePeerMargin}" Text="// FlourishCulture.Json in the application directory is loaded automatically.&#10;// Additional catalogs can still be registered explicitly.&#10;builder.ConfigureData(data =&gt;&#10;    data.AddCultureFile(&quot;Locales/FlourishCulture.Json&quot;));&#10;&#10;using var registration = localization.RegisterFile(&quot;Locales/FlourishCulture.Json&quot;);&#10;var id = registration.Id;&#10;var locales = registration.Locales;&#10;var filePath = registration.FilePath;&#10;registration.Reload();&#10;// Dispose unregisters only this catalog registration." />
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

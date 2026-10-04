@@ -1,58 +1,58 @@
 /* Reusable surface layout and content flow. */
 .content-surface {
-    --surface-theme-primary: var(--f-primary, #153a32);
-    --surface-theme-accent: var(--f-accent, #16745f);
-    --surface-theme-primary-ink: var(--f-primary-ink, #fff);
-    --surface-theme-accent-ink: var(--f-accent-ink, #fff);
-    --surface-theme-accent-text: var(--f-accent-text, #0e5748);
-    --surface-theme-focus: var(--f-focus, #0e5748);
-    --canvas: color-mix(in srgb, var(--surface-theme-primary) 5%, #fff);
-    --surface: #fff;
-    --surface-alternate: color-mix(in srgb, var(--surface-theme-primary) 7%, #fff);
-    --surface-raised: color-mix(in srgb, var(--surface-theme-primary) 11%, #fff);
-    --ink: color-mix(in srgb, var(--surface-theme-primary) 22%, #102033);
-    --ink-soft: color-mix(in srgb, var(--surface-theme-primary) 16%, #34485c);
-    --muted: color-mix(in srgb, var(--surface-theme-primary) 7%, #526579);
-    --disabled: #8793a0;
-    --line: color-mix(in srgb, var(--surface-theme-primary) 16%, #e8ecf0);
-    --line-strong: color-mix(in srgb, var(--surface-theme-primary) 28%, #d4dce4);
-    --row-hover: color-mix(in srgb, var(--surface-theme-accent) 11%, #fff);
-    --accent: var(--surface-theme-accent);
-    --accent-strong: var(--surface-theme-accent-text);
-    --accent-fill-hover: color-mix(in srgb, var(--surface-theme-accent) 82%, #000);
-    --accent-soft: color-mix(in srgb, var(--surface-theme-accent) 15%, #fff);
-    --focus: var(--surface-theme-focus);
-    --chrome: var(--surface-theme-primary);
-    --chrome-hover: color-mix(in srgb, var(--surface-theme-primary-ink) 11%, var(--surface-theme-primary));
-    --chrome-line: color-mix(in srgb, var(--surface-theme-primary-ink) 16%, transparent);
-    --chrome-ink: var(--surface-theme-primary-ink);
-    --surface-context: color-mix(in srgb, var(--surface-theme-primary-ink) 72%, transparent);
+    --surface-theme-primary: var(--f-primary);
+    --surface-theme-accent: var(--f-accent);
+    --surface-theme-primary-ink: var(--f-surface);
+    --surface-theme-accent-ink: var(--f-surface);
+    --surface-theme-accent-text: var(--f-accent);
+    --surface-theme-focus: var(--f-accent);
+    --canvas: var(--f-canvas);
+    --surface: var(--f-surface);
+    --surface-alternate: var(--f-display-board);
+    --surface-raised: var(--f-surface);
+    --ink: var(--f-text);
+    --ink-soft: var(--f-muted);
+    --muted: var(--f-muted);
+    --disabled: var(--f-muted);
+    --line: var(--f-border);
+    --line-strong: var(--f-border);
+    --row-hover: var(--f-target-preview, var(--f-preview-light));
+    --accent: var(--f-accent);
+    --accent-strong: var(--f-accent);
+    --accent-fill-hover: var(--f-primary-preview, var(--f-preview-dark));
+    --accent-soft: var(--f-target-preview, var(--f-preview-light));
+    --focus: var(--f-accent);
+    --chrome: var(--f-chrome, var(--f-primary));
+    --chrome-hover: var(--f-preview-dark);
+    --chrome-line: var(--f-border);
+    --chrome-ink: var(--f-chrome-ink, var(--f-surface));
+    --surface-context: var(--f-chrome-ink, var(--f-surface));
     --radius-small: 10px;
     --radius-medium: 16px;
     --radius-large: 28px;
-    color: var(--ink);
-    background: var(--canvas);
+    color: var(--f-text);
+    background: var(--f-canvas);
     color-scheme: light;
-    accent-color: var(--surface-theme-accent);
+    accent-color: var(--f-accent);
 }
 
 .content-surface .skip-link {
 padding: 10px 14px;
-    color: var(--surface-theme-accent-ink);
-    background: var(--surface-theme-accent);
+    color: var(--f-surface);
+    background: var(--f-accent);
     border-radius: var(--radius-small);
     font-weight: 750;
 }
 
 .content-surface .content-topbar {
-color: var(--chrome-ink);
-    background: var(--chrome);
-    border-bottom: 1px solid var(--chrome-line);
+color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-chrome, var(--f-primary));
+    border-bottom: 1px solid var(--f-border);
 }
 
 .content-surface .surface-brand {
 color: inherit;
-    border-right: 1px solid var(--chrome-line);
+    border-right: 1px solid var(--f-border);
     text-decoration: none;
 }
 
@@ -76,7 +76,7 @@ font-weight: 760;
 }
 
 .content-surface .surface-context {
-color: var(--surface-context);
+color: var(--f-chrome-ink, var(--f-surface));
     font-weight: 650;
 }
 
@@ -88,7 +88,7 @@ margin-left: auto;
 .content-surface .content-actions  .content-identity,
 .content-surface .content-actions  .content-logout {
 gap: 10px;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
     background: transparent;
     border: 0;
     border-radius: 14px;
@@ -108,25 +108,29 @@ padding: 0;
 }
 
 .content-surface .content-actions  .content-identity:hover,
-.content-surface .content-actions  .content-identity.active,
 .content-surface .content-actions  .content-logout:hover {
-background: var(--chrome-hover);
+background: var(--f-preview-dark);
+}
+.content-surface .content-actions .content-identity.active {
+    color: var(--f-surface);
+    background: var(--f-accent);
+    box-shadow: inset 0 0 0 2px var(--f-accent);
 }
 
 .content-surface .content-actions  .content-identity:focus-visible,
 .content-surface .content-actions  .content-logout:focus-visible {
-outline: 3px solid var(--surface-theme-primary-ink);
+outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 
 .content-surface .content-stage {
-background: var(--canvas);
+background: var(--f-canvas);
     scrollbar-gutter: stable;
 }
 
 .content-surface  .page-root {
-color: var(--ink);
-    background: var(--canvas);
+color: var(--f-text);
+    background: var(--f-canvas);
     font-size: 17px;
     line-height: 1.55;
 }
@@ -134,14 +138,14 @@ color: var(--ink);
 .content-surface  .page-heading {
 gap: 32px;
     padding: 48px var(--surface-content-gutter) 36px;
-    background: var(--canvas);
-    border-bottom: 1px solid var(--line);
+    background: var(--f-canvas);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .content-surface  .page-heading h1 {
 margin: 0;
-    color: var(--ink);
-    font-size: clamp(42px, 5vw, 68px);
+    color: var(--f-text);
+    font-size: var(--f-type-page, 50px);
     font-weight: 780;
     letter-spacing: -.055em;
     line-height: 1.08;
@@ -149,7 +153,7 @@ margin: 0;
 
 .content-surface  .page-heading p {
 margin: 16px 0 0;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
 }
 
@@ -188,8 +192,8 @@ gap: 24px;
 
 .content-surface  .section-heading h2 {
 margin: 0;
-    color: var(--ink);
-    font-size: clamp(28px, 3vw, 40px);
+    color: var(--f-text);
+    font-size: var(--f-type-h2, 28px);
     font-weight: 760;
     letter-spacing: -.035em;
     line-height: 1.08;
@@ -198,7 +202,7 @@ margin: 0;
 .content-surface  .section-heading > span,
 .content-surface  .page-module > p,
 .content-surface  .loading-state {
-color: var(--muted);
+color: var(--f-muted);
     font-size: 17px;
 }
 
@@ -213,26 +217,26 @@ padding: 10px 16px;
 }
 
 .content-surface  .primary-action {
-color: var(--surface-theme-accent-ink);
-    background: var(--accent);
-    border-color: var(--accent);
+color: var(--f-surface);
+    background: var(--f-primary);
+    border-color: var(--f-border);
 }
 
 .content-surface  .primary-action:hover:not(:disabled) {
-color: var(--surface-theme-accent-ink);
-    background: var(--accent-fill-hover);
-    border-color: var(--accent-fill-hover);
+color: var(--f-surface);
+    background: var(--f-primary-preview, var(--f-preview-dark));
+    border-color: var(--f-border);
 }
 
 .content-surface  .secondary-action {
-color: var(--accent-strong);
-    background: var(--surface);
-    border-color: var(--line-strong);
+color: var(--f-accent);
+    background: var(--f-surface);
+    border-color: var(--f-border);
 }
 
 .content-surface  .secondary-action:hover:not(:disabled),
 .content-surface  .table-action:hover:not(:disabled) {
-background: var(--accent-soft);
+background: var(--f-target-preview, var(--f-preview-light));
 }
 
 .content-surface  .form-surface {
@@ -249,28 +253,28 @@ gap: 22px 20px;
 
 .content-surface  .form-surface .form-fieldset > label {
 gap: 8px;
-    color: var(--ink-soft);
+    color: var(--f-muted);
     font-size: 17px;
     font-weight: var(--field-label-weight);
 }
 
 .content-surface  .table-scroll {
-background: var(--surface);
-    border: 1px solid var(--line-strong);
+background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: var(--radius-medium);
     box-shadow: none;
 }
 
 .content-surface  .data-table {
-color: var(--ink);
-    background: var(--surface);
+color: var(--f-text);
+    background: var(--f-surface);
 }
 
 .content-surface  .data-table th,
 .content-surface  .data-table td {
 padding: 18px 16px;
     border: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--f-border);
     font-size: 17px;
 }
 
@@ -285,8 +289,8 @@ padding-right: 20px;
 }
 
 .content-surface  .data-table th {
-color: var(--muted);
-    background: var(--surface-raised);
+color: var(--f-text);
+    background: var(--f-border);
     font-weight: 760;
 }
 
@@ -298,13 +302,13 @@ border-bottom: 0;
 .content-surface  .record-grid.compact {
 margin: 0;
     background: transparent;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line);
+    border-top: 1px solid var(--f-border);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .content-surface  .record-grid > div {
 padding: 22px 20px;
-    border-right: 1px solid var(--line);
+    border-right: 1px solid var(--f-border);
 }
 
 .content-surface  .record-grid > div:last-child {
@@ -319,7 +323,7 @@ font-size: 17px;
 
 .content-surface  .record-grid dt {
 margin-bottom: 8px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-weight: 700;
 }
 
@@ -332,13 +336,13 @@ background: transparent;
 
 .content-surface  .empty-state {
 padding: 26px 0;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line);
+    border-top: 1px solid var(--f-border);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .content-surface  .empty-state p {
 margin-bottom: 24px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
 }
 
@@ -378,13 +382,16 @@ font-size: 17px;
     }
 
     .content-surface  .page-heading h1 {
-    font-size: clamp(38px, 12vw, 54px);
+    font-size: var(--f-type-page, 50px);
     }
 
     .content-surface  .page-heading .secondary-action,
     .content-surface  .page-heading > .primary-action {
     margin-top: 22px;
-    }
+    background: var(--f-primary);
+    border-color: var(--f-border);
+    color: var(--f-surface);
+}
 
     .content-surface  .section-heading > .secondary-action {
     margin-top: 18px;
@@ -392,7 +399,7 @@ font-size: 17px;
 
     .content-surface  .record-grid > div {
     border-right: 0;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid var(--f-border);
     }
 
     .content-surface  .record-grid > div:last-child {
@@ -405,8 +412,9 @@ padding-top: 22px;
     padding-bottom: 20px;
 }
 
-.content-surface[data-compact-heading]  .page-heading h1 {
-font-size: clamp(34px, 4vw, 48px);
+.content-surface[data-compact-heading]  .page-heading h1,
+.content-surface .page-heading[data-heading-mode="compact"] h1 {
+font-size: var(--f-type-page-compact, 38px);
 }
 
 @media (max-width: 760px) {
@@ -415,8 +423,9 @@ font-size: clamp(34px, 4vw, 48px);
             padding-bottom: 18px;
     }
 
-    .content-surface[data-compact-heading]  .page-heading h1 {
-    font-size: 34px;
+    .content-surface[data-compact-heading]  .page-heading h1,
+    .content-surface .page-heading[data-heading-mode="compact"] h1 {
+    font-size: var(--f-type-page-compact, 38px);
     }
 }
 
@@ -511,4 +520,52 @@ min-height: 104px;
 .content-surface[data-compact-heading]  .page-heading {
     min-height: 96px;
     }
+}
+
+.content-surface .content-actions  .content-identity:active,
+.content-surface .content-actions  .content-logout:active {
+    background: var(--f-click-dark);
+}
+
+.content-surface  .primary-action:active:not(:disabled) {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
+    border-color: var(--f-border);
+}
+
+.content-surface  .secondary-action:active:not(:disabled),
+.content-surface  .table-action:active:not(:disabled) {
+    background: var(--f-target-click);
+}
+
+.content-surface .content-actions .content-identity.active:is(:hover, :focus-visible) {
+    color: var(--f-surface);
+    background: var(--f-accent);
+}
+.content-surface .content-actions .content-identity.active:active {
+    color: var(--f-surface);
+    background: var(--f-accent-click);
+}
+
+.content-surface .data-table tbody tr.is-selected:is(:hover, :focus-within) {
+    color: var(--f-surface);
+    background: var(--f-primary);
+}
+.content-surface .data-table tbody tr:active {
+    background: var(--f-target-click);
+}
+.content-surface .data-table tbody tr.is-selected:active {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
+}
+
+.content-surface a.surface-brand:hover {
+    background: var(--f-preview-dark);
+}
+.content-surface a.surface-brand:focus-visible {
+    outline: 3px solid var(--f-accent);
+    outline-offset: -3px;
+}
+.content-surface a.surface-brand:active {
+    background: var(--f-click-dark);
 }

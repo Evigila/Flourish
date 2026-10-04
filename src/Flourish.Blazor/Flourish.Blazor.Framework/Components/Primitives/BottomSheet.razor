@@ -20,6 +20,10 @@
             @if (HasOpened) { @ChildContent }
         </div>
     </div>
+    @if (HasOpened && Actions is not null)
+    {
+        <footer class="bottom-sheet-actions f-dialog-actions">@Actions</footer>
+    }
 </dialog>
 
 @code {
@@ -40,6 +44,10 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>Optional actions arranged at the end of the sheet below its scrollable content.</summary>
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
 
     private ElementReference Dialog;
     private IJSObjectReference? Module;

@@ -1,0 +1,40 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ApplicationLayout")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+
+<p>ApplicationLayout 读取 Program 的应用配置；真实应用通过 Router 的 DefaultLayout 使用它。此局部预览阻止链接离开当前页面。</p>
+<style>@((MarkupString)ScopedStyles)</style>
+<div id="@Id" style="position:relative; overflow:hidden; isolation:isolate;" @onclick:preventDefault>
+    <ArkheideSystem.Flourish.Blazor.Components.ApplicationLayout OwnsDocument="false">
+        <Body>
+            <ArkheideSystem.Flourish.Blazor.Components.PageBody>
+                <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Preview ? "" : "文档工作台（虚构）")" />
+                @if (!Preview)
+                {
+                    <ArkheideSystem.Flourish.Blazor.Components.Section Title="共享资料">
+                        <p>使用宿主配置的顶部栏、导航、主题和正文滚动区域。</p>
+                        <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="AddDocument">添加示例文档</ArkheideSystem.Flourish.Blazor.Components.Button>
+                        <p role="status">已添加 @Documents 份虚构文档。</p>
+                    </ArkheideSystem.Flourish.Blazor.Components.Section>
+                }
+            </ArkheideSystem.Flourish.Blazor.Components.PageBody>
+        </Body>
+    </ArkheideSystem.Flourish.Blazor.Components.ApplicationLayout>
+</div>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"layout-sample-{Guid.NewGuid():N}";
+    private int Documents;
+    private void AddDocument() => Documents++;
+    // The application layout normally owns the viewport. Limit only this embedded preview.
+    private string ScopedStyles => $"#{Id} > .f-shell {{ height:420px; min-height:0; }} #{Id} .f-titlebar-center, #{Id} .f-primary-navigation-fixed {{ display:none; }} #{Id} .f-skip-link {{ position:absolute; }} #{Id} .f-secondary-navigation {{ position:relative; }} #{Id} .f-navigation-backdrop {{ position:absolute; }}";
+}

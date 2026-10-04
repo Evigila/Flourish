@@ -1,0 +1,59 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inject NavigationManager Navigation
+
+<div class="f-split-button @Class">
+    @if (!string.IsNullOrWhiteSpace(Href))
+    {
+        <a @attributes="LinkAttributes" href="@(Disabled ? null : LinkHref)" class="@PrimaryCss"
+           role="@(Disabled ? "link" : null)" aria-disabled="@(Disabled ? "true" : null)" tabindex="@(Disabled ? -1 : 0)"
+           @onclick="ClickAsync" @onclick:preventDefault="Disabled">@PrimaryContent</a>
+    }
+    else
+    {
+        <button @attributes="PrimaryAttributes" type="@Type" class="@PrimaryCss" disabled="@Disabled"
+                aria-disabled="@(Disabled ? "true" : null)" @onclick="ClickAsync">@PrimaryContent</button>
+    }
+    <button @attributes="SecondaryAttributes" type="button" class="@SecondaryCss" disabled="@Disabled"
+            aria-disabled="@(Disabled ? "true" : null)" aria-label="@SecondaryLabel"
+            aria-expanded="@(Expanded?.ToString().ToLowerInvariant())" aria-controls="@SecondaryControls" @onclick="SecondaryClickAsync">
+        @if (SecondaryContent is not null) { @SecondaryContent }
+        else if (SecondaryIcon is "arrow_drop_down" or "expand_more" or "arrow_right") { <ExpansionIndicator Expanded="@(Expanded == true)" /> }
+        else if (!string.IsNullOrWhiteSpace(SecondaryIcon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@SecondaryIcon" /> }
+    </button>
+</div>
+
+@code {
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public string Text { get; set; } = string.Empty;
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string SecondaryIcon { get; set; } = "arrow_drop_down";
+    [Parameter] public string SecondaryLabel { get; set; } = "More actions";
+    [Parameter] public string? SecondaryControls { get; set; }
+    [Parameter] public string Type { get; set; } = "button";
+    [Parameter] public bool? Expanded { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool Selected { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? PrimaryClass { get; set; }
+    [Parameter] public string? SecondaryClass { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? SecondaryContent { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnSecondaryClick { get; set; }
+    [Parameter] public IReadOnlyDictionary<string, object>? PrimaryAttributes { get; set; }
+    [Parameter] public IReadOnlyDictionary<string, object>? SecondaryAttributes { get; set; }
+
+    private string PrimaryCss => $"f-split-button-primary {PrimaryClass}{(Selected ? " is-selected" : null)}";
+    private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
+    private string SecondaryCss => $"f-split-button-secondary {SecondaryClass}{(Selected ? " is-selected" : null)}";
+    private IReadOnlyDictionary<string, object>? LinkAttributes => PrimaryAttributes is null ? null
+        : PrimaryAttributes.Where(attribute => !string.Equals(attribute.Key, "href", StringComparison.OrdinalIgnoreCase))
+            .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
+    private RenderFragment PrimaryContent => @<text>
+        @if (!string.IsNullOrWhiteSpace(Icon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" /> }
+        @if (!string.IsNullOrWhiteSpace(Text)) { <span class="f-split-button-label">@Text</span> }
+        @ChildContent
+    </text>;
+    private Task ClickAsync(MouseEventArgs args) => Disabled ? Task.CompletedTask : OnClick.InvokeAsync(args);
+    private Task SecondaryClickAsync(MouseEventArgs args) => Disabled ? Task.CompletedTask : OnSecondaryClick.InvokeAsync(args);
+}

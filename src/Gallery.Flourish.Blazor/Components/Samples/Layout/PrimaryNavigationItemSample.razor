@@ -1,0 +1,31 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.PrimaryNavigationItem")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Routing
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+<div id="@Id" style="display:flex; flex-wrap:wrap; gap:12px;" @onclick:preventDefault>
+    <div @onclick="SelectDocuments"><ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-documents")" Label="资料" Icon="folder" Href="@($"#{Id}")" IsCurrent="@(Selected == "documents")" Match="NavLinkMatch.All" /></div>
+    <div @onclick="SelectArchive"><ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-archive")" Label="归档" Icon="archive" Href="@($"#{Id}")" IsCurrent="@(Selected == "archive")" Match="NavLinkMatch.All" /></div>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-disabled")" Label="管理" Icon="settings" Disabled="true" DisabledMessage="演示访客没有管理权限。" />
+</div>
+@if (!Preview)
+{
+    <p>虚构访客的模块导航。悬停或键盘聚焦可查看名称和禁用原因；点击可切换示例选中状态。</p>
+    <p role="status">当前模块：@(Selected == "documents" ? "资料" : "归档")（虚构）。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"primary-nav-sample-{Guid.NewGuid():N}";
+    private string Selected = "documents";
+    private void SelectDocuments() => Selected = "documents";
+    private void SelectArchive() => Selected = "archive";
+}

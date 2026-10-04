@@ -1,7 +1,7 @@
 .filled-identity-card {
     padding: clamp(24px, 4vw, 38px);
-    color: var(--chrome-ink);
-    background: var(--chrome);
+    color: var(--f-surface);
+    background: var(--f-primary);
     border: 0;
     border-radius: var(--radius-large);
     box-shadow: none;
@@ -19,7 +19,7 @@
     gap: 6px;
 }
 .identity-card-facts dt {
-    color: color-mix(in srgb, var(--chrome-ink) 78%, transparent);
+    color: var(--f-surface);
     font-size: 17px;
     font-weight: 740;
 }
@@ -30,7 +30,7 @@
     font-weight: 680;
 }
 .identity-card-facts .identity-card-primary-value {
-    font-size: clamp(28px, 3.4vw, 40px);
+    font-size: var(--f-type-h1, 34px);
     font-weight: 740;
     letter-spacing: -.035em;
     line-height: 1.14;

@@ -1,0 +1,37 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.StandaloneMaskedInput")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-normal")">独立掩码输入</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.StandaloneMaskedInput id="@(Prefix + "-normal")" Mask="000-000" @bind-Value="Empty" /></div>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-readonly")">只读</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.StandaloneMaskedInput id="@(Prefix + "-readonly")" Mask="000-000" @bind-Value="EmptyReadOnly" readonly /></div>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-disabled")">禁用</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.StandaloneMaskedInput id="@(Prefix + "-disabled")" Mask="000-000" @bind-Value="EmptyDisabled" disabled /></div>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-pickup")">示例取件码</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.StandaloneMaskedInput id="@(Prefix + "-pickup")" Mask="000-000" @bind-Value="Code" /></div>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+    <Button OnClick="Confirm">检查格式</Button>
+    <p role="status">@Message</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-standalone-mask-" + Guid.NewGuid().ToString("N");
+    private string? Empty, EmptyReadOnly, EmptyDisabled, Code = "246810";
+    private string Message = "示例代码不会触发真实取件。";
+    private void Confirm() => Message = Code?.Length == 6 ? "示例格式正确，模型保留六位数字。" : "请输入完整的六位示例取件码。";
+}

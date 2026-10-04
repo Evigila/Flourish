@@ -1,0 +1,51 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System.ComponentModel.DataAnnotations
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Field")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <FormLayout>
+        <Field Label="普通字段" Id="@(Prefix + "-empty")"><TextBox @bind-Value="EmptyValue" /></Field>
+        <Field Label="必填字段" Id="@(Prefix + "-required")" Required="true"><TextBox @bind-Value="EmptyRequired" /></Field>
+        <Field Label="跨列字段" Id="@(Prefix + "-wide")" FullWidth="true"><TextBox @bind-Value="EmptyWide" /></Field>
+    </FormLayout>
+}
+else
+{
+    <EditForm Model="Model" FormName="Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
+        <DataAnnotationsValidator />
+        <FormLayout Columns="1">
+            <Field Label="邮箱" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)">
+                <TextBox @bind-Value="Model.Email" @bind-Value:after="ClearResult" Type="email" />
+            </Field>
+        </FormLayout>
+        <Button Type="submit" Icon="check" Text="验证邮箱" />
+    </EditForm>
+    @if (Message is not null) { <p role="status">@Message</p> }
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-field-" + Guid.NewGuid().ToString("N");
+    private string? EmptyValue, EmptyRequired, EmptyWide;
+    private readonly EmailAddressModel Model = new();
+    private string? Message;
+    private void ClearResult() => Message = null;
+    private void Submit() => Message = "邮箱已通过本地验证。";
+    private void Invalid() => Message = null;
+    private sealed class EmailAddressModel
+    {
+        [Required(ErrorMessage = "请输入邮箱。")]
+        [EmailAddress(ErrorMessage = "请输入有效的邮箱地址。")]
+        public string Email { get; set; } = "";
+    }
+}

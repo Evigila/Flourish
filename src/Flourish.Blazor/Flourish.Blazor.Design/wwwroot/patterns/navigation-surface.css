@@ -1,64 +1,63 @@
 /* Reusable surface layout and content flow. */
 .navigation-surface {
-    --surface-theme-primary: var(--f-primary, #153a32);
-    --surface-theme-accent: var(--f-accent, #16745f);
-    --surface-theme-primary-ink: var(--f-primary-ink, #fff);
-    --surface-theme-accent-ink: var(--f-accent-ink, #fff);
-    --surface-theme-accent-text: var(--f-accent-text, #0e5748);
-    --surface-theme-focus: var(--f-focus, #0e5748);
-    --canvas: color-mix(in srgb, var(--surface-theme-primary) 5%, #fff);
-    --surface: #ffffff;
-    --surface-alternate: color-mix(in srgb, var(--surface-theme-primary) 7%, #fff);
-    --surface-raised: color-mix(in srgb, var(--surface-theme-primary) 11%, #fff);
-    --ink: color-mix(in srgb, var(--surface-theme-primary) 24%, #10241f);
-    --ink-soft: color-mix(in srgb, var(--surface-theme-primary) 16%, #314c45);
-    --muted: color-mix(in srgb, var(--surface-theme-primary) 5%, #52665f);
-    --disabled: #87968f;
-    --line: color-mix(in srgb, var(--surface-theme-primary) 16%, #e8ece9);
-    --line-strong: color-mix(in srgb, var(--surface-theme-primary) 28%, #d4ddd8);
-    --row-hover: color-mix(in srgb, var(--surface-theme-accent) 11%, #fff);
-    --accent: var(--surface-theme-accent);
-    --accent-strong: var(--surface-theme-accent-text);
-    --accent-fill-hover: color-mix(in srgb, var(--surface-theme-accent) 82%, #000);
-    --accent-soft: color-mix(in srgb, var(--surface-theme-accent) 15%, #fff);
-    --success: #17684f;
-    --danger: #a43d37;
-    --focus: var(--surface-theme-focus);
-    --notice-subtle-background: #e5ebe7;
-    --notice-subtle-foreground: #31564c;
-    --chrome: var(--surface-theme-primary);
-    --chrome-hover: color-mix(in srgb, var(--surface-theme-primary-ink) 11%, var(--surface-theme-primary));
-    --chrome-line: color-mix(in srgb, var(--chrome-ink) 16%, transparent);
-    --chrome-ink: var(--surface-theme-primary-ink);
-    --chrome-accent: var(--surface-theme-accent);
-    --surface-context: color-mix(in srgb, var(--surface-theme-primary-ink) 68%, transparent);
-    --surface-accent-context: var(--surface-theme-accent);
+    --surface-theme-primary: var(--f-primary);
+    --surface-theme-accent: var(--f-accent);
+    --surface-theme-primary-ink: var(--f-surface);
+    --surface-theme-accent-ink: var(--f-surface);
+    --surface-theme-accent-text: var(--f-accent);
+    --surface-theme-focus: var(--f-accent);
+    --canvas: var(--f-canvas);
+    --surface: var(--f-surface);
+    --surface-alternate: var(--f-display-board);
+    --surface-raised: var(--f-surface);
+    --ink: var(--f-text);
+    --ink-soft: var(--f-muted);
+    --muted: var(--f-muted);
+    --disabled: var(--f-muted);
+    --line: var(--f-border);
+    --line-strong: var(--f-border);
+    --row-hover: var(--f-target-preview, var(--f-preview-light));
+    --accent: var(--f-accent);
+    --accent-strong: var(--f-accent);
+    --accent-fill-hover: var(--f-primary-preview, var(--f-preview-dark));
+    --accent-soft: var(--f-target-preview, var(--f-preview-light));
+    --success: var(--f-accent);
+    --danger: var(--f-danger);
+    --focus: var(--f-accent);
+    --notice-subtle-background: var(--f-display-board);
+    --notice-subtle-foreground: var(--f-muted);
+    --chrome: var(--f-chrome, var(--f-primary));
+    --chrome-hover: var(--f-preview-dark);
+    --chrome-line: var(--f-border);
+    --chrome-ink: var(--f-chrome-ink, var(--f-surface));
+    --chrome-accent: var(--f-accent);
+    --surface-context: var(--f-chrome-ink, var(--f-surface));
+    --surface-accent-context: var(--f-accent);
     --radius-small: 10px;
     --radius-medium: 16px;
     --radius-large: 28px;
-    color: var(--ink);
-    background: var(--canvas);
+    color: var(--f-text);
+    background: var(--f-canvas);
     color-scheme: light;
-    accent-color: var(--surface-theme-accent);
+    accent-color: var(--f-accent);
 }
 
 .navigation-surface .skip-link {
 padding: 10px 14px;
-    color: var(--surface-theme-accent-ink);
-    background: var(--chrome-accent);
+    color: var(--f-surface);
+    background: var(--f-accent);
     border-radius: var(--radius-small);
     font-weight: 750;
 }
 
 .navigation-surface .app-topbar {
-color: var(--chrome-ink);
-    background: var(--chrome);
-    border-bottom: 1px solid var(--chrome-line);
+color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-chrome, var(--f-primary));
+    border-bottom: 1px solid var(--f-border);
 }
 
 .navigation-surface .surface-brand {
 color: inherit;
-    border-right: 1px solid var(--chrome-line);
     text-decoration: none;
 }
 
@@ -88,7 +87,7 @@ margin-left: auto;
 .navigation-surface .topbar-actions  .content-identity {
 gap: 10px;
     padding: 0 15px;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
     background: transparent;
     border: 0;
     border-radius: 14px;
@@ -101,7 +100,7 @@ font-size: 17px;
 
 .navigation-surface .topbar-actions  .topbar-tool {
 padding: 0;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
     background: transparent;
     border: 0;
     border-radius: 14px;
@@ -113,24 +112,29 @@ padding: 0;
 }
 
 .navigation-surface .topbar-actions  .topbar-tool:hover,
+.navigation-surface .topbar-actions  .content-identity:hover {
+color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-preview-dark);
+}
+
 .navigation-surface .topbar-actions  .topbar-tool.active,
-.navigation-surface .topbar-actions  .content-identity:hover,
 .navigation-surface .topbar-actions  .content-identity.active {
-color: var(--chrome-ink);
-    background: var(--chrome-hover);
+    color: var(--f-surface);
+    background: var(--f-accent);
+    box-shadow: inset 0 0 0 2px var(--f-accent);
 }
 
 .navigation-surface .topbar-actions  .topbar-tool:focus-visible,
 .navigation-surface .topbar-actions  .content-identity:focus-visible {
-outline: 3px solid var(--chrome-ink);
+outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 
 .navigation-surface .primary-rail {
-color: var(--chrome-ink);
-    background: var(--chrome);
-    border-right: 1px solid var(--chrome-line);
-    scrollbar-width: thin;
+color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-chrome, var(--f-primary));
+    border-right: 1px solid var(--f-border);
+    scrollbar-width: none;
 }
 
 .navigation-surface .primary-rail nav {
@@ -139,46 +143,46 @@ gap: 8px;
 }
 
 .navigation-surface .primary-rail  .primary-nav-item {
-color: var(--chrome-ink);
+color: var(--f-chrome-ink, var(--f-surface));
     border-radius: 18px;
     text-decoration: none;
 }
 
 .navigation-surface .primary-rail  .primary-nav-item:hover {
-color: var(--chrome-ink);
-    background: var(--chrome-hover);
+color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-preview-dark);
 }
 
 .navigation-surface .primary-rail  .primary-nav-item.is-active {
-color: var(--surface-theme-accent-ink);
-    background: var(--chrome-accent);
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--chrome-ink) 28%, transparent);
+color: var(--f-surface);
+    background: var(--f-accent);
+    box-shadow: inset 0 0 0 2px var(--f-accent);
 }
 
 .navigation-surface .primary-rail  .primary-nav-item.is-active::before {
-background: var(--chrome-accent);
+background: var(--f-accent);
     border-radius: 0 4px 4px 0;
 }
 
 .navigation-surface .primary-rail  .primary-nav-item.is-disabled {
-color: var(--surface-context);
+color: var(--f-muted);
 }
 
 .navigation-surface .primary-rail  .primary-nav-item:focus-visible {
-outline: 3px solid var(--chrome-ink);
+outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 
 .navigation-surface .primary-rail  .primary-nav-item.is-disabled:hover {
-color: var(--surface-context);
+color: var(--f-muted);
     background: transparent;
 }
 
 .navigation-surface .secondary-rail {
-color: var(--ink);
-    background: var(--surface-alternate);
-    border-right: 1px solid var(--line);
-    scrollbar-width: thin;
+color: var(--f-text);
+    background: var(--f-display-board);
+    border-right: 1px solid var(--f-border);
+    scrollbar-width: none;
 }
 
 .navigation-surface .secondary-rail nav {
@@ -188,7 +192,7 @@ gap: 6px;
 
 .navigation-surface .secondary-rail  a {
 padding: 9px 12px;
-    color: var(--ink-soft);
+    color: var(--f-muted);
     border-radius: 12px;
     font-size: 17px;
     font-weight: 650;
@@ -196,29 +200,29 @@ padding: 9px 12px;
 }
 
 .navigation-surface .secondary-rail  a:hover {
-color: var(--ink);
-    background: var(--row-hover);
+color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
 }
 
 .navigation-surface .secondary-rail  a.is-active {
-color: var(--accent-strong);
-    background: var(--accent-soft);
+color: var(--f-surface);
+    background: var(--f-primary);
     font-weight: 780;
 }
 
 .navigation-surface .secondary-rail  a:focus-visible {
-outline: 3px solid var(--focus);
+outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 
 .navigation-surface .application-stage {
-background: var(--canvas);
+background: var(--f-canvas);
     scrollbar-gutter: stable;
 }
 
 .navigation-surface  .page-root {
-color: var(--ink);
-    background: var(--canvas);
+color: var(--f-text);
+    background: var(--f-canvas);
     font-size: 17px;
     line-height: 1.55;
 }
@@ -226,14 +230,14 @@ color: var(--ink);
 .navigation-surface  .page-heading {
 gap: 32px;
     padding: 42px var(--surface-content-gutter) 32px;
-    background: var(--canvas);
-    border-bottom: 1px solid var(--line);
+    background: var(--f-canvas);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .navigation-surface  .page-heading h1 {
 margin: 0;
-    color: var(--ink);
-    font-size: clamp(42px, 5vw, 68px);
+    color: var(--f-text);
+    font-size: var(--f-type-page, 50px);
     font-weight: 780;
     letter-spacing: -.055em;
     line-height: 1.08;
@@ -241,7 +245,7 @@ margin: 0;
 
 .navigation-surface  .page-heading p {
 margin: 16px 0 0;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
     line-height: 1.4;
 }
@@ -253,7 +257,7 @@ margin: 24px var(--surface-content-gutter) 0;
 }
 
 .navigation-surface  .loading-state {
-color: var(--muted);
+color: var(--f-muted);
     font-size: 17px;
     font-weight: 700;
 }
@@ -301,19 +305,19 @@ text-decoration: none;
 }
 
 .navigation-surface  .page-contents a::before {
-background: var(--muted);
+background: var(--f-muted);
     border-radius: 50%;
 }
 
 .navigation-surface  .page-contents a:is(:hover, :focus-visible)::before {
-background: var(--accent);
+background: var(--f-accent);
 }
 
 .navigation-surface  .page-contents-label {
 padding: 10px 14px;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    color: var(--f-text);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: var(--radius-small);
     font-size: 17px;
     font-weight: 650;
@@ -321,7 +325,7 @@ padding: 10px 14px;
 }
 
 .navigation-surface  .page-contents a:focus-visible {
-outline: 3px solid var(--focus);
+outline: 3px solid var(--f-accent);
     outline-offset: 0;
     border-radius: 50%;
 }
@@ -349,8 +353,8 @@ gap: 24px;
 
 .navigation-surface  .section-heading h2 {
 margin: 0;
-    color: var(--ink);
-    font-size: clamp(28px, 3vw, 40px);
+    color: var(--f-text);
+    font-size: var(--f-type-h2, 28px);
     font-weight: 760;
     letter-spacing: -.035em;
     line-height: 1.08;
@@ -359,7 +363,7 @@ margin: 0;
 .navigation-surface  .section-heading p,
 .navigation-surface  .section-heading > span {
 margin: 10px 0 0;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
 }
 
@@ -373,15 +377,15 @@ background: transparent;
 .navigation-surface  .record-grid {
 gap: 0 40px;
     margin: 0;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line);
+    border-top: 1px solid var(--f-border);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .navigation-surface  .record-grid > div,
 .navigation-surface  .record-grid.compact > div {
 padding: 24px 0;
     border: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .navigation-surface  .record-grid.compact > div:nth-last-child(-n + 2) {
@@ -390,21 +394,21 @@ border-bottom: 0;
 
 .navigation-surface  .record-grid dt {
 margin-bottom: 8px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
     font-weight: 730;
 }
 
 .navigation-surface  .record-grid dd {
 margin: 0;
-    color: var(--ink);
+    color: var(--f-text);
     font-size: 17px;
     font-weight: 680;
 }
 
 .navigation-surface  .summary-strip {
-color: var(--chrome-ink);
-    background: var(--chrome);
+color: var(--f-surface);
+    background: var(--f-primary);
     border: 0;
     border-radius: var(--radius-large);
 }
@@ -412,7 +416,7 @@ color: var(--chrome-ink);
 .navigation-surface  .summary-strip > div {
 padding: 30px;
     border: 0;
-    border-right: 1px solid var(--chrome-line);
+    border-right: 1px solid var(--f-border);
 }
 
 .navigation-surface  .summary-strip > div:last-child {
@@ -421,14 +425,15 @@ border-right: 0;
 
 .navigation-surface  .summary-strip span {
 margin-bottom: 20px;
-    color: color-mix(in srgb, var(--chrome-ink) 78%, transparent);
+    color: var(--f-surface);
     font-size: 17px;
     font-weight: 700;
 }
 
 .navigation-surface  .summary-strip strong {
 color: inherit;
-    font-size: clamp(38px, 4vw, 58px);
+    /* Artistic metric display: this value intentionally uses the display tier. */
+    font-size: var(--f-type-page, 50px);
     font-weight: 730;
     letter-spacing: -.045em;
     line-height: 1;
@@ -452,36 +457,37 @@ padding: 0 17px;
 }
 
 .navigation-surface  .primary-action {
-color: var(--surface-theme-accent-ink);
-    background: var(--accent);
-    border: 1px solid var(--accent);
+color: var(--f-surface);
+    background: var(--f-primary);
+    border: 1px solid var(--f-border);
+    border-color: var(--f-border);
 }
 
 .navigation-surface  .primary-action:hover:not(:disabled) {
-background: var(--accent-fill-hover);
-    border-color: var(--accent-fill-hover);
+background: var(--f-primary-preview, var(--f-preview-dark));
+    border-color: var(--f-border);
 }
 
 .navigation-surface  .secondary-action,
 .navigation-surface  .table-action {
-color: var(--ink);
+color: var(--f-text);
     background: transparent;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--f-border);
 }
 
 .navigation-surface  .secondary-action:hover:not(:disabled),
 .navigation-surface  .table-action:hover:not(:disabled) {
-color: var(--accent-strong);
-    background: var(--row-hover);
-    border-color: var(--accent);
+color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
+    border-color: var(--f-border);
 }
 
 .navigation-surface  .primary-action:disabled,
 .navigation-surface  .secondary-action:disabled,
 .navigation-surface  .table-action:disabled {
-color: var(--disabled);
+color: var(--f-muted);
     background: transparent;
-    border-color: var(--line);
+    border-color: var(--f-border);
 }
 
 .navigation-surface  .table-action {
@@ -491,7 +497,7 @@ padding: 0 12px;
 
 .navigation-surface  .heading-control {
 gap: 7px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
     font-weight: var(--field-label-weight);
 }
@@ -505,11 +511,11 @@ gap: 7px;
 
     .navigation-surface  select::picker(select) {
     appearance: base-select;
-            color: var(--ink);
-            background: var(--surface);
-            border: 1px solid var(--line-strong);
+            color: var(--f-text);
+            background: var(--f-surface);
+            border: 1px solid var(--f-border);
             border-radius: 14px;
-            box-shadow: 0 12px 28px rgb(16 36 31 / 15%);
+            box-shadow: 0 12px 28px rgb(from var(--f-primary) r g b / 15%);
     }
 
     .navigation-surface  select option {
@@ -520,22 +526,22 @@ gap: 7px;
 
 .navigation-surface .scroll-to-top {
 padding: 0;
-    color: var(--surface-theme-accent-ink);
-    background: var(--accent);
+    color: var(--f-surface);
+    background: var(--f-primary);
     border: 0;
     border-radius: 22px;
-    box-shadow: 0 14px 32px rgb(16 36 31 / 22%);
+    box-shadow: 0 14px 32px rgb(from var(--f-primary) r g b / 22%);
     transition: box-shadow 140ms ease, transform 140ms ease;
 }
 
 .navigation-surface .scroll-to-top:hover {
-color: var(--surface-theme-accent-ink);
-    background: var(--accent);
-    box-shadow: 0 18px 38px rgb(16 36 31 / 28%);
+color: var(--f-surface);
+    background: var(--f-primary-preview, var(--f-preview-dark));
+    box-shadow: 0 18px 38px rgb(from var(--f-primary) r g b / 28%);
 }
 
 .navigation-surface .scroll-to-top:focus-visible {
-outline: 3px solid var(--focus);
+outline: 3px solid var(--f-accent);
     outline-offset: 4px;
 }
 
@@ -553,21 +559,21 @@ gap: 22px 20px;
 
 .navigation-surface  .form-surface .form-fieldset > label {
 gap: 8px;
-    color: var(--ink-soft);
+    color: var(--f-muted);
     font-size: 17px;
     font-weight: var(--field-label-weight);
 }
 
 .navigation-surface  .table-scroll {
-background: var(--surface);
-    border: 1px solid var(--line-strong);
+background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: var(--radius-medium);
     box-shadow: none;
 }
 
 .navigation-surface  .data-table {
-color: var(--ink);
-    background: var(--surface);
+color: var(--f-text);
+    background: var(--f-surface);
 }
 
 .navigation-surface  .data-table th,
@@ -575,7 +581,7 @@ color: var(--ink);
 padding: 18px 16px;
     text-align: left;
     border: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--f-border);
 }
 
 .navigation-surface  .data-table th:first-child,
@@ -593,16 +599,20 @@ border-bottom: 0;
 }
 
 .navigation-surface  .data-table th {
-color: var(--muted);
-    background: var(--surface-raised);
+color: var(--f-text);
+    background: var(--f-border);
     font-size: 17px;
     font-weight: 760;
     letter-spacing: .025em;
 }
 
-.navigation-surface  .data-table tbody tr:hover,
-.navigation-surface  .data-table tbody tr.is-selected {
-background: var(--row-hover);
+.navigation-surface  .data-table tbody tr:hover {
+background: var(--f-target-preview, var(--f-preview-light));
+}
+
+.navigation-surface .data-table tbody tr.is-selected {
+    color: var(--f-surface);
+    background: var(--f-primary);
 }
 
 .navigation-surface  .data-table strong {
@@ -611,12 +621,12 @@ font-size: 17px;
 
 .navigation-surface  .data-table .secondary-value {
 margin-top: 4px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
 }
 
 .navigation-surface  .empty-row {
-color: var(--muted);
+color: var(--f-muted);
 }
 
 .navigation-surface  .section-actions {
@@ -624,14 +634,14 @@ gap: 14px;
 }
 
 .navigation-surface  .section-actions > span {
-color: var(--muted);
+color: var(--f-muted);
     font-size: 17px;
 }
 
 .navigation-surface  .status-badge {
 padding: 3px 10px;
-    color: var(--accent-strong);
-    background: var(--accent-soft);
+    color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
     border-radius: 999px;
     font-size: 17px;
 }
@@ -642,7 +652,7 @@ font-family: inherit;
 }
 
 .navigation-surface  .muted {
-color: var(--muted);
+color: var(--f-muted);
 }
 
 .navigation-surface .visually-hidden {
@@ -653,9 +663,9 @@ padding: 0 !important;
 
 .navigation-surface #blazor-error-ui {
 padding: 11px 52px 11px 16px;
-    color: var(--notice-foreground);
-    background: var(--notice-error-background);
-    border-top: 1px solid var(--notice-error-background);
+    color: var(--f-surface);
+    background: var(--f-danger);
+    border-top: 1px solid var(--f-border);
 }
 
 .navigation-surface #blazor-error-ui .reload {
@@ -665,7 +675,7 @@ margin-left: 10px;
 }
 
 .navigation-surface #blazor-error-ui .dismiss {
-color: #fff;
+color: var(--f-surface);
     background: transparent;
     border: 0;
 }
@@ -715,7 +725,7 @@ color: #fff;
 
     .navigation-surface .secondary-rail {
     border-right: 0;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid var(--f-border);
     }
 
     .navigation-surface .secondary-rail nav {
@@ -733,7 +743,7 @@ color: #fff;
     }
 
     .navigation-surface  .page-heading h1 {
-    font-size: clamp(36px, 12vw, 50px);
+    font-size: var(--f-type-page, 50px);
     }
 
     .navigation-surface  .page-heading p {
@@ -762,7 +772,7 @@ color: #fff;
 
     .navigation-surface  .record-grid.compact > div,
     .navigation-surface  .record-grid.compact > div:nth-last-child(-n + 2) {
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--f-border);
     }
 
     .navigation-surface  .record-grid.compact > div:last-child {
@@ -771,7 +781,7 @@ color: #fff;
 
     .navigation-surface  .summary-strip > div {
     border-right: 0;
-            border-bottom: 1px solid var(--chrome-line);
+            border-bottom: 1px solid var(--f-border);
     }
 
     .navigation-surface  .summary-strip > div:last-child {
@@ -781,7 +791,7 @@ color: #fff;
 
 @media (max-width: 520px) {
 .navigation-surface  .page-heading h1 {
-    font-size: 38px;
+    font-size: var(--f-type-page, 50px);
     }
 
     .navigation-surface  .page-module {
@@ -803,7 +813,7 @@ padding-top: 22px;
 
 .navigation-surface[data-compact-heading]  .page-heading h1,
 .navigation-surface  .page-heading[data-heading-mode="compact"] h1 {
-font-size: clamp(34px, 4vw, 48px);
+font-size: var(--f-type-page-compact, 38px);
 }
 
 @media (max-width: 760px) {
@@ -815,7 +825,7 @@ font-size: clamp(34px, 4vw, 48px);
 
     .navigation-surface[data-compact-heading]  .page-heading h1,
     .navigation-surface  .page-heading[data-heading-mode="compact"] h1 {
-    font-size: 34px;
+    font-size: var(--f-type-page-compact, 38px);
     }
 
     .navigation-surface .scroll-to-top {
@@ -984,4 +994,91 @@ min-height: 104px;
     width: 64px;
             height: 64px;
     }
+}
+
+.navigation-surface .topbar-actions  .topbar-tool:active,
+.navigation-surface .topbar-actions  .content-identity:active {
+    color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-click-dark);
+}
+
+.navigation-surface .primary-rail  .primary-nav-item:active {
+    color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-click-dark);
+}
+
+.navigation-surface .primary-rail  .primary-nav-item.is-disabled:active {
+    color: var(--f-muted);
+    background: transparent;
+}
+
+.navigation-surface .secondary-rail  a:active {
+    color: var(--f-text);
+    background: var(--f-target-click);
+}
+
+.navigation-surface .page-contents a:active::before {
+    background: var(--f-target-click);
+}
+
+.navigation-surface  .primary-action:active:not(:disabled) {
+    background: var(--f-primary-click);
+    border-color: var(--f-border);
+}
+
+.navigation-surface  .secondary-action:active:not(:disabled),
+.navigation-surface  .table-action:active:not(:disabled) {
+    color: var(--f-text);
+    background: var(--f-target-click);
+    border-color: var(--f-border);
+}
+
+.navigation-surface .scroll-to-top:active {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
+}
+
+.navigation-surface  .data-table tbody tr:active {
+    background: var(--f-target-click);
+}
+
+.navigation-surface .topbar-actions :is(.topbar-tool.active, .content-identity.active):is(:hover, :focus-visible),
+.navigation-surface .primary-rail .primary-nav-item.is-active:is(:hover, :focus-visible) {
+    color: var(--f-surface);
+    background: var(--f-accent);
+}
+.navigation-surface .topbar-actions :is(.topbar-tool.active, .content-identity.active):active,
+.navigation-surface .primary-rail .primary-nav-item.is-active:active {
+    color: var(--f-surface);
+    background: var(--f-accent-click);
+}
+.navigation-surface .secondary-rail a.is-active:is(:hover, :focus-visible) {
+    color: var(--f-surface);
+    background: var(--f-primary);
+}
+.navigation-surface .secondary-rail a.is-active:active {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
+}
+.navigation-surface .data-table tbody tr.is-selected:is(:hover, :focus-within) {
+    color: var(--f-surface);
+    background: var(--f-primary);
+}
+.navigation-surface .data-table tbody tr.is-selected:active {
+    color: var(--f-surface);
+    background: var(--f-primary-click);
+}
+.navigation-surface .data-table tbody tr.is-selected .secondary-value {
+    color: var(--f-surface);
+}
+
+.navigation-surface a.surface-brand:hover {
+    background: var(--f-preview-dark);
+}
+.navigation-surface a.surface-brand:focus-visible {
+    outline: 3px solid var(--f-accent);
+    outline-offset: -3px;
+}
+.navigation-surface a.surface-brand:active {
+    background: var(--f-click-dark);
 }

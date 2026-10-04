@@ -1,0 +1,106 @@
+@page "/forms"
+@implements IDisposable
+@inject RecordStore Store
+@inject NavigationManager Navigation
+<PageTitle>表单 · 组件演示</PageTitle>
+<NavigationLock ConfirmExternalNavigation="Dirty" OnBeforeInternalNavigation="BeforeNavigation" />
+<PageBody>
+    <PageHeading Title="@FormTitle" ParentHref="/records" ParentLabel="列表" />
+    @if (MissingRecord)
+    {
+        <EmptyState Title="记录已不存在"><Actions><Button OnClick="Cancel">返回列表</Button></Actions></EmptyState>
+    }
+    else
+    {
+        <EditForm @key="Context" novalidate EditContext="Context" OnValidSubmit="SaveAsync" FormName="demo-record">
+            <DataAnnotationsValidator />
+            <Section Title="基本信息">
+                <FormLayout>
+                    <Field Label="名称" Id="record-name" Required="true" For="@(() => Draft.Name)">
+                        <TextBox Id="record-name" @bind-Value="Draft.Name" MaxLength="120" Disabled="Busy" />
+                    </Field>
+                    <Field Label="分类" Id="record-category" Required="true" For="@(() => Draft.Category)">
+                        <SelectBox TValue="string" Id="record-category" @bind-Value="Draft.Category" Options="Categories" Disabled="Busy" />
+                    </Field>
+                    <Field Label="联系人" Id="record-contact" Required="true" For="@(() => Draft.Contact)">
+                        <TextBox Id="record-contact" @bind-Value="Draft.Contact" MaxLength="80" Disabled="Busy" />
+                    </Field>
+                    <Field Label="邮箱" Id="record-email" Required="true" For="@(() => Draft.Email)">
+                        <TextBox Id="record-email" Type="email" @bind-Value="Draft.Email" Disabled="Busy" />
+                    </Field>
+                    <CheckBox Id="record-active" Label="启用这条记录" @bind-Value="Draft.Active" Disabled="Busy" />
+                </FormLayout>
+            </Section>
+            <FormActions>
+                <UniformGridButton Title="保存" Type="submit" Busy="Busy" />
+                <UniformGridButton Title="取消" Disabled="Busy" OnClick="Cancel" />
+            </FormActions>
+        </EditForm>
+    }
+</PageBody>
+<Dialog Title="放弃未保存的修改" @bind-IsOpen="DiscardOpen" OnClose="KeepEditing" CloseLabel="继续编辑">
+    <ChildContent><p>当前表单的修改尚未保存。继续离开将放弃这些修改。</p></ChildContent>
+    <Actions>
+        <Button Variant="ButtonVariant.Danger" OnClick="DiscardAndNavigate">放弃修改并离开</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="KeepEditing">继续编辑</Button>
+    </Actions>
+</Dialog>
+
+@code {
+    [SupplyParameterFromQuery] public string? Id { get; set; }
+    private RecordDraft Draft = new();
+    private string FormTitle => Id is null ? "创建记录" : "编辑记录";
+    private EditContext Context = default!;
+    private string? BoundId;
+    private bool Initialized, Dirty, Busy, DiscardOpen, MissingRecord;
+    private string? PendingTarget;
+    private static readonly IReadOnlyList<SelectOption<string>> Categories =
+    [ new("", "请选择"), new("客户", "客户"), new("供应商", "供应商"), new("内部部门", "内部部门") ];
+
+    protected override void OnParametersSet()
+    {
+        if (Initialized && BoundId == Id) return;
+        if (Context is not null) Context.OnFieldChanged -= FieldChanged;
+        Initialized = true; BoundId = Id;
+        var record = Id is null ? null : Store.Find(Id);
+        MissingRecord = Id is not null && record is null;
+        Draft = record is null ? new() : new() { Name = record.Name, Category = record.Category,
+            Contact = record.Contact, Email = record.Email, Active = record.Status == "启用" };
+        Context = new(Draft);
+        Context.OnFieldChanged += FieldChanged;
+        Dirty = false; DiscardOpen = false; PendingTarget = null;
+    }
+    private void FieldChanged(object? sender, FieldChangedEventArgs args) => Dirty = Context.IsModified();
+    private void BeforeNavigation(LocationChangingContext args)
+    {
+        if (!Dirty) return;
+        args.PreventNavigation();
+        PendingTarget = args.TargetLocation;
+        DiscardOpen = true;
+    }
+    private async Task SaveAsync()
+    {
+        if (Busy) return;
+        Busy = true;
+        try
+        {
+            await Task.Yield();
+            var record = Store.Save(Draft, Id);
+            Context.MarkAsUnmodified(); Dirty = false;
+            Navigation.NavigateTo("/records/" + Uri.EscapeDataString(record.Id));
+        }
+        finally { Busy = false; }
+    }
+    private void Cancel() => Navigation.NavigateTo("/records");
+    private void KeepEditing() { DiscardOpen = false; PendingTarget = null; }
+    private void DiscardAndNavigate()
+    {
+        var target = PendingTarget ?? "/records";
+        PendingTarget = null;
+        Dirty = false;
+        DiscardOpen = false;
+        Context.MarkAsUnmodified();
+        Navigation.NavigateTo(target);
+    }
+    public void Dispose() { if (Context is not null) Context.OnFieldChanged -= FieldChanged; }
+}

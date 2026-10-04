@@ -2,7 +2,7 @@
     width: 36px;
     height: 36px;
     padding: 0;
-    color: var(--ink);
+    color: var(--f-text);
     background: transparent;
     border: 1px solid transparent;
     border-radius: var(--control-radius);
@@ -13,23 +13,25 @@
     letter-spacing: 1px;
     line-height: 1;
 }
-.row-action-menu-trigger:hover,
-.row-action-menu-trigger[aria-expanded="true"] {
-    background: var(--row-hover);
-    border-color: var(--line);
+.row-action-menu-trigger:hover:not(:disabled):not([aria-disabled="true"]),
+.row-action-menu-trigger[aria-expanded="true"]:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--f-target-preview, var(--f-preview-light));
+    border-color: var(--f-border);
 }
-.row-action-menu-trigger:focus-visible {
-    outline: 3px solid var(--focus);
+.row-action-menu-trigger:focus-visible:not(:disabled):not([aria-disabled="true"]) {
+    outline: 3px solid var(--f-accent);
     outline-offset: 2px;
 }
 .row-action-menu-panel {
+    --f-target-preview: var(--f-surface-preview);
+    --f-target-click: var(--f-surface-click);
     width: max-content;
     max-width: min(320px, calc(100vw - 24px));
     margin: 0;
     padding: 6px;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    color: var(--f-text);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: var(--radius-medium);
     box-shadow: var(--shadow-card);
 }
@@ -41,7 +43,7 @@
 .row-action-menu-panel button {
     width: 100%;
     padding: 8px 10px;
-    color: var(--ink);
+    color: var(--f-text);
     background: transparent;
     border: 0;
     border-radius: var(--radius-small);
@@ -51,21 +53,39 @@
     text-align: left;
     text-decoration: none;
 }
-.row-action-menu-panel .table-action:hover,
-.row-action-menu-panel a:hover,
-.row-action-menu-panel button:hover,
-.row-action-menu-panel [role="menuitem"]:focus-visible {
-    background: var(--row-hover);
+.row-action-menu-panel .table-action:hover:not(:disabled):not([aria-disabled="true"]),
+.row-action-menu-panel a:hover:not(:disabled):not([aria-disabled="true"]),
+.row-action-menu-panel button:hover:not(:disabled):not([aria-disabled="true"]),
+.row-action-menu-panel [role="menuitem"]:focus-visible:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--f-target-preview, var(--f-preview-light));
     outline: 0;
 }
 .row-action-menu-panel .danger-action {
-    color: var(--danger);
+    color: var(--f-danger);
 }
 .row-action-menu-panel .menu-section-label {
     padding: 8px 10px 4px;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+}
+
+.row-action-menu-trigger:active:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--f-target-click);
+    border-color: var(--f-border);
+}
+
+.row-action-menu-panel .table-action:active:not(:disabled):not([aria-disabled="true"]),
+.row-action-menu-panel a:active:not([aria-disabled="true"]),
+.row-action-menu-panel button:active:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--f-target-click);
+}
+
+.row-action-menu-trigger:is(:disabled, [aria-disabled="true"]),
+.row-action-menu-panel :is(.table-action, a, button, [role="menuitem"]):is(:disabled, [aria-disabled="true"]) {
+    color: var(--f-muted);
+    background: transparent;
+    cursor: not-allowed;
 }

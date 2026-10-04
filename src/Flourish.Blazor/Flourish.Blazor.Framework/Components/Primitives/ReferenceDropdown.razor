@@ -8,11 +8,14 @@
     <button @ref="Trigger" id="@(Id + "-trigger")" class="reference-trigger selection-trigger" type="button"
             aria-haspopup="listbox" aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(Id + "-options")"
             aria-labelledby="@LabelledBy" disabled="@(Disabled || Creating)" @onclick="Toggle">
-        <span>@SelectedName</span><span class="reference-chevron selection-chevron" aria-hidden="true"></span>
+        <span title="@SelectedName">@SelectedName</span><ExpansionIndicator Expanded="IsOpen" Class="reference-chevron selection-chevron" />
     </button>
     @if (IsOpen)
     {
         <div class="reference-panel selection-panel">
+            <div class="selection-panel-width" aria-hidden="true">
+                @foreach (var item in Items) { <span class="selection-option">@item.Name</span> }
+            </div>
             <input @ref="SearchInput" class="reference-search selection-search" type="search"
                    form="@(Id + "-popup-search")" value="@Search" maxlength="@MaximumLength"
                    aria-label="@SearchLabel" autocomplete="off" disabled="@Creating"

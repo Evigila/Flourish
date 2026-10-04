@@ -1,0 +1,35 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("PageHeading")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Controls = ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="页面标题" />
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="紧凑标题" Compact="true" />
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="带操作标题"><Actions><ArkheideSystem.Flourish.Blazor.Components.Button>操作</ArkheideSystem.Flourish.Blazor.Components.Button></Actions></ArkheideSystem.Flourish.Blazor.Components.PageHeading>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="紧凑标题" @bind-Value="Compact" />
+    <div id="@Id">
+        <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Created ? "新建资料（虚构）" : "资料目录（虚构）")" Compact="Compact" ParentLabel="全部资料" ParentHref="@($"#{Id}")">
+            <Actions><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Create">新建资料</ArkheideSystem.Flourish.Blazor.Components.Button></Actions>
+        </ArkheideSystem.Flourish.Blazor.Components.PageHeading>
+        <p role="status">@(Created ? "已打开虚构的新建资料场景。" : "选择新建资料，查看标题区操作。")</p>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"heading-sample-{Guid.NewGuid():N}";
+    private bool Compact, Created;
+    private void Create() => Created = true;
+}

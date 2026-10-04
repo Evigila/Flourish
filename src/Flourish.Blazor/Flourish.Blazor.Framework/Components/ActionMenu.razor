@@ -2,19 +2,19 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<span class="f-action-menu">
+<span class="f-action-menu @(OpenOnHover ? "f-action-menu-hover" : null)">
     <button @ref="Trigger" type="button" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@Label" disabled="@(Disabled || Executing)"
             aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="false" @onclick="ToggleAsync">
         @if (TriggerContent is not null) { @TriggerContent }
         else { <span aria-hidden="true">•••</span> }
     </button>
-    <div @ref="Panel" id="@MenuId" class="f-menu-panel" role="menu" aria-label="@Label" popover="manual"
+    <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@Label" popover="manual"
          aria-busy="@(Executing ? "true" : "false")">
         @for (var index = 0; index < Actions.Count; index++)
         {
             var actionIndex = index;
             var action = Actions[index];
-            <button type="button" class="f-menu-item @(action.Destructive ? "f-menu-danger" : null)" role="menuitem"
+            <button type="button" class="f-menu-item f-dropdown-item @(action.Destructive ? "f-menu-danger" : null)" role="menuitem"
                     disabled="@(Disabled || Executing || action.Disabled)" @onclick="() => ExecuteAsync(actionIndex)">@action.Text</button>
         }
     </div>
@@ -31,18 +31,23 @@
     [Parameter] public IReadOnlyList<MenuAction> Actions { get; set; } = Array.Empty<MenuAction>();
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public RenderFragment? TriggerContent { get; set; }
+    /// <summary>Opens on mouse hover without moving focus and closes when the pointer leaves the trigger and menu.</summary>
+    [Parameter] public bool OpenOnHover { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender || Disposed) return;
-        var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
-        if (Disposed) { await module.DisposeAsync(); return; }
-        Module = module;
-        await Module.InvokeVoidAsync("attachMenu", Trigger, Panel);
+        if (Disposed) return;
+        if (Module is null)
+        {
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
+            if (Disposed) { await module.DisposeAsync(); return; }
+            Module = module;
+        }
+        await Module.InvokeVoidAsync("attachMenu", Trigger, Panel, OpenOnHover);
     }
-    private async Task ToggleAsync()
+    private async Task ToggleAsync(MouseEventArgs args)
     {
         if (Disabled || Executing || Disposed || Module is null) return;
-        await Module.InvokeVoidAsync("toggleMenu", Trigger, Panel);
+        await Module.InvokeVoidAsync("toggleMenu", Trigger, Panel, !OpenOnHover || args.Detail == 0);
     }
     private async Task ExecuteAsync(int index)
     {

@@ -1,0 +1,74 @@
+/* Layout belongs to the framework. The optional Design package supplies the cell skin. */
+.f-uniform-grid {
+    display:grid;
+    --f-grid-cell-width:calc(2 * var(--f-grid-cell-max-height,260px));
+    grid-template-columns:repeat(auto-fit,minmax(0,var(--f-grid-cell-width)));
+    grid-auto-flow:row;
+    grid-auto-rows:minmax(0,1fr);
+    justify-content:start;
+    align-items:stretch;
+    gap:var(--f-grid-gap,0);
+    min-width:0;
+    width:fit-content;
+    max-width:100%;
+}
+.f-uniform-grid-square {
+    --f-grid-cell-width:var(--f-grid-cell-max,280px);
+}
+.f-uniform-grid-columns { grid-template-columns:repeat(var(--f-grid-columns),minmax(0,var(--f-grid-cell-width))); }
+.f-uniform-grid-rows { grid-template-rows:repeat(var(--f-grid-rows),minmax(0,1fr)); }
+.f-uniform-grid-rows:not(.f-uniform-grid-columns) {
+    grid-template-columns:none;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(0,var(--f-grid-cell-width));
+}
+.f-uniform-grid > * { min-width:0; }
+.f-uniform-grid-square > * { aspect-ratio:1; min-height:0; max-width:var(--f-grid-cell-max,280px); max-height:var(--f-grid-cell-max,280px); }
+.f-uniform-grid-rectangle > * { aspect-ratio:2/1; }
+.f-uniform-cell {
+    box-sizing:border-box;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    min-width:0;
+    overflow:hidden;
+    text-align:center;
+    overflow-wrap:anywhere;
+}
+.f-uniform-grid-rectangle > .f-uniform-cell { min-height:0; max-height:var(--f-grid-cell-max-height,260px); overflow:auto; justify-content:safe center; }
+.f-uniform-cell-heading { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; min-width:0; max-width:100%; }
+.f-uniform-cell-title,.f-uniform-cell-text { display:block; min-width:0; max-width:100%; overflow-wrap:anywhere; }
+.f-uniform-cell > .f-button-text { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; max-width:100%; }
+.f-uniform-cell.f-uniform-grid-button > .f-spinner { position:absolute; inset-block-start:12px; inset-inline-end:12px; }
+.f-uniform-cell.f-uniform-icon-support {
+    display:grid;
+    grid-template-rows:minmax(0,1fr) minmax(0,1fr);
+    gap:0;
+    overflow:hidden;
+}
+.f-uniform-cell-icon,.f-uniform-cell-copy {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:safe center;
+    gap:12px;
+    min-width:0;
+    min-height:0;
+    width:100%;
+    height:100%;
+}
+.f-uniform-cell-icon { overflow:hidden; }
+.f-uniform-cell-copy { overflow:auto; }
+@media(max-width:760px) {
+    /* Let narrow content grow up to its cap instead of collapsing to half the cell width. */
+    .f-uniform-grid-rectangle > .f-uniform-cell:not(.f-uniform-icon-support):has(.f-uniform-cell-heading,.f-uniform-cell-text) { aspect-ratio:auto; }
+    .f-uniform-grid.f-uniform-grid-narrow-columns {
+        grid-template-columns:repeat(var(--f-grid-narrow-columns),minmax(0,var(--f-grid-cell-width)));
+        grid-auto-flow:row;
+        grid-auto-columns:auto;
+        max-width:100%;
+    }
+}

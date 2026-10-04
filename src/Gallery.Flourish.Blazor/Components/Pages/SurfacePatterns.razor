@@ -1,0 +1,34 @@
+@page "/patterns"
+@using ArkheideSystem.Flourish.Blazor.Components.Primitives
+@using ArkheideSystem.Flourish.Blazor.Components.Patterns
+<PageTitle>组合布局 · Examples</PageTitle>
+<RecordListPage Title="Products" SectionTitle="Catalog">
+    <Actions><Button OnClick="() => formOpen = true">Create product</Button></Actions>
+    <Status>@if (message is not null) { <StatusNotice Severity="NoticeSeverity.Subtle" Role="status">@message</StatusNotice> }</Status>
+    <ChildContent>
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable TItem="Entry" Label="Products" PreferenceKey="gallery-sample-records" Items="entries" Columns="columns" ShowSearch="true" DefaultAction="Open" ItemKey="@(item => item.Id)">
+            <Actions Context="item"><button class="table-popup-item" type="button" @onclick="() => Inspect(item)">Inspect</button></Actions>
+        </ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable>
+    </ChildContent>
+</RecordListPage>
+<ArkheideSystem.Flourish.Blazor.Components.Primitives.BottomSheet Id="preview-inspect" Title="Record details" IsOpen="inspectOpen" OnClose="() => inspectOpen = false">
+    <p>@message</p><p>This sample stores no business data.</p>
+</ArkheideSystem.Flourish.Blazor.Components.Primitives.BottomSheet>
+<ArkheideSystem.Flourish.Blazor.Components.Primitives.BottomSheet Id="preview-form" Title="Create product" IsOpen="formOpen" OnClose="() => formOpen = false">
+    <FormFields>
+        <label><span>Name</span><input @bind="name" /></label>
+        <label><span>SKU</span><input @bind="sku" /></label>
+    </FormFields>
+    <FormActionBar><button class="primary-action" type="button" @onclick="Complete">Use sample</button><button class="secondary-action" type="button" @onclick="() => formOpen = false">Cancel</button></FormActionBar>
+</ArkheideSystem.Flourish.Blazor.Components.Primitives.BottomSheet>
+@code {
+    private sealed record Entry(int Id, string Name, string Sku, decimal Price);
+    private readonly IReadOnlyList<Entry> entries = [new(1, "Notebook", "PAP-0096", 12.90m), new(2, "Detergent", "LIMP-0500", 3.49m), new(3, "Chocolate", "ALIM-0100", 5.99m)];
+    private readonly IReadOnlyList<DataColumn<Entry>> columns = [new("name", "Product", item => item.Name, cardField: CardField.Title), new("sku", "SKU", item => item.Sku, cardField: CardField.Identifier), new("price", "Price", item => item.Price.ToString("0.00"), sortValue: item => item.Price)];
+    private bool formOpen, inspectOpen;
+    private string name = "", sku = "";
+    private string? message;
+    private void Open(Entry item) => message = "Opened " + item.Name;
+    private void Inspect(Entry item) { message = item.Name + " / " + item.Sku; inspectOpen = true; }
+    private void Complete() { message = "Sample: " + name + " / " + sku; formOpen = false; }
+}

@@ -3,33 +3,39 @@ const instances = new Map();
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
 const minimum = 72;
-const naturalMaximum = 260;
+const naturalMaximum = 320;
 const manualMaximum = 100000;
 
 function bounded(value) { return Math.max(minimum, Math.min(manualMaximum, Number.isFinite(value) ? value : minimum)); }
 function columns(table) { return [...table.querySelectorAll('col[data-f-column]')]; }
 function columnCells(table, key) { return [...table.querySelectorAll('th[data-f-column],td[data-f-column]')].filter(cell => cell.dataset.fColumn === key); }
-function naturalWidth(table, key) {
+function naturalWidth(table, key, maximum = naturalMaximum) {
     let width = minimum;
     const pixels = value => Number.parseFloat(value) || 0;
     const insets = style => pixels(style.paddingLeft) + pixels(style.paddingRight)
         + pixels(style.borderLeftWidth) + pixels(style.borderRightWidth);
     for (const cell of columnCells(table, key)) {
-        const text = cell.querySelector('.f-data-sort > span:first-child,.f-data-cell') ?? cell;
+        const text = cell.querySelector('.f-data-sort-text,.f-data-cell') ?? cell;
         const style = getComputedStyle(text);
         if (context) context.font = [style.fontWeight,style.fontSize,style.fontFamily].join(' ');
         const value = text.textContent.trim();
         const measured = context ? context.measureText(value).width : value.length * 9;
-        const container = text.closest?.('.f-data-sort') ?? text;
+        const container = text.closest?.('.f-data-sort-label') ?? text;
+        const interactive = text.closest?.('.f-data-sort');
         const containerStyle = getComputedStyle(container);
         const siblings = [...(container.children ?? [])].filter(child => child !== text);
         const otherWidth = siblings.reduce((sum,child) => sum + (child.getBoundingClientRect?.().width ?? 0), 0);
         const gap = siblings.length * pixels(containerStyle.columnGap);
         const resize = cell.querySelector('[data-f-resize]')?.getBoundingClientRect?.().width ?? 0;
         const spacing = Math.max(0,value.length - 1) * pixels(style.letterSpacing);
-        width = Math.max(width, measured + spacing + insets(getComputedStyle(cell)) + insets(containerStyle) + otherWidth + gap + resize);
+        const interactiveInsets = interactive && interactive !== container ? insets(getComputedStyle(interactive)) : 0;
+        width = Math.max(width, measured + spacing + insets(getComputedStyle(cell)) + insets(containerStyle) + interactiveInsets + otherWidth + gap + resize);
     }
-    return Math.min(naturalMaximum, Math.ceil(width));
+    return Math.min(maximum, Math.ceil(width));
+}
+function automaticWidth(table, col) {
+    const maximum = col.dataset.fLastColumn === 'true' ? manualMaximum : naturalMaximum;
+    return naturalWidth(table, col.dataset.fColumn, maximum);
 }
 function refreshMinimum(table) {
     const total = columns(table).reduce((sum, col) => sum + (parseFloat(col.style.width) || minimum), 0);
@@ -111,7 +117,10 @@ function connect(root, instanceId) {
             event.preventDefault(); event.stopPropagation();
             state.widths.delete(key);
             const table = root.querySelector('[data-f-table]');
-            if (table) applyWidth(state, key, naturalWidth(table, key), false);
+            if (table) {
+                const col = columns(table).find(candidate => candidate.dataset.fColumn === key);
+                if (col) applyWidth(state, key, automaticWidth(table, col), false);
+            }
         }
     }, true);
     on(document, 'pointerdown', event => {
@@ -131,7 +140,7 @@ export function synchronize(root, instanceId) {
     // Canvas measurement avoids a forced layout for every text cell.
     for (const col of columns(table)) {
         const key = col.dataset.fColumn;
-        applyWidth(state, key, state.widths.get(key) ?? naturalWidth(table, key), false);
+        applyWidth(state, key, state.widths.get(key) ?? automaticWidth(table, col), false);
     }
     table.setAttribute('data-f-sized', '');
 }

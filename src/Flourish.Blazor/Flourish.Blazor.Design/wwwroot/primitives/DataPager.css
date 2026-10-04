@@ -6,16 +6,16 @@
 .data-pagination-range {
     gap: 8px;
     padding: 3px 18px;
-    color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    color: var(--f-muted);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: var(--control-radius);
     line-height: 24px;
 }
 .data-pagination-range-total {
     height: calc(var(--control-height) - 10px);
     padding: 0 10px;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--f-border);
     border-radius: calc(var(--control-radius) - 3px);
     font-variant-numeric: tabular-nums;
 }
@@ -23,8 +23,8 @@
     gap: 6px;
     height: var(--control-height);
     padding: 3px;
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: var(--control-radius);
 }
 .data-pagination-previous,
@@ -32,7 +32,7 @@
     width: 40px;
     height: calc(var(--control-height) - 8px);
     padding: 0;
-    color: var(--ink);
+    color: var(--f-text);
     background: transparent;
     border: 0;
     border-radius: calc(var(--control-radius) - 3px);
@@ -46,13 +46,13 @@
 }
 .data-pagination-previous:hover:not(:disabled),
 .data-pagination-next:hover:not(:disabled) {
-    color: var(--accent);
-    background: var(--row-hover);
+    color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
 }
 .data-pagination-previous:focus-visible,
 .data-pagination-next:focus-visible,
 .data-pagination-input:focus-visible {
-    outline: 3px solid var(--focus);
+    outline: 3px solid var(--f-accent);
     outline-offset: 2px;
 }
 .data-pagination-previous:disabled,
@@ -70,9 +70,9 @@
     width: 64px;
     height: calc(var(--control-height) - 10px);
     padding: 0 8px;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    color: var(--f-text);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: calc(var(--control-radius) - 3px);
     font: inherit;
     font-weight: inherit;
@@ -105,4 +105,10 @@
 .data-pagination-page {
     gap: 6px;
 }
+}
+
+.data-pagination-previous:active:not(:disabled),
+.data-pagination-next:active:not(:disabled) {
+    color: var(--f-text);
+    background: var(--f-target-click);
 }

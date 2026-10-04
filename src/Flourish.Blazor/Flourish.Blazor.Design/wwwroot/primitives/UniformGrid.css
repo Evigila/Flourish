@@ -1,13 +1,13 @@
 .uniform-grid {
     gap: 0;
     width: 100%;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--f-border);
     border-radius: var(--radius-large);
-    background: var(--surface);
+    background: var(--f-surface);
 }
 .uniform-grid-filled {
     border: 0;
     border-radius: var(--radius-medium);
-    background: var(--chrome);
-    color: var(--chrome-ink);
+    background: var(--f-primary);
+    color: var(--f-surface);
 }

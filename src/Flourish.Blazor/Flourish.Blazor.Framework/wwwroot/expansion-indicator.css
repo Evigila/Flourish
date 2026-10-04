@@ -1,0 +1,6 @@
+/* Reuse the browser's Select picker marker instead of an unrelated icon font glyph. */
+.f-expansion-indicator { display:inline-flex; flex:0 0 1em; align-items:center; justify-content:center; width:1em; height:1.2em; line-height:1.2; }
+.f-expansion-indicator::before { content:counter(f-expansion,disclosure-open); display:block; transform-origin:center; }
+.f-expansion-indicator[data-expanded=true]::before,
+[aria-expanded=true] > .f-expansion-indicator::before,
+details[open] > summary > .f-expansion-indicator::before { transform:rotate(180deg); }

@@ -1,27 +1,4 @@
-.app-icon {
-    width: 24px;
-    height: 24px;
-    color: inherit;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-    stroke-width: 1.8;
-}
-.app-icon--primary {
-    width: 20.3px;
-    height: 20.3px;
-}
-.app-icon--solid {
-    fill: currentColor;
-    stroke: none;
-}
-.app-icon--tool {
-    width: 23px;
-    height: 23px;
-}
-.app-icon--search,
-.app-icon--information {
-    width: 19px;
-    height: 19px;
-}
+.app-icon { --f-icon-size:var(--f-icon-default-size,26px); width:1em; height:1em; color:inherit; }
+.app-icon--primary { --f-icon-size:var(--f-icon-primary-size,24px); }
+.app-icon--tool { --f-icon-size:var(--f-icon-tool-size,26px); }
+.app-icon--search,.app-icon--information { --f-icon-size:var(--f-icon-information-size,22px); }

@@ -1,0 +1,65 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.ControlLibraryPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_BrowseEveryPublicFlourishControlFromOneNavigationOverview_1B8C9ECA}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="{culture:Localize Key=Application_Controls_799C2691}"
+    />
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_ControlLibrary_D820B60A}">
+      <UniformGrid Columns="3">
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenHeaderChunkPage_69B289CB}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_TheSingleEmphasizedHeaderAtTheTopOfAPage_49F0D6C3}" Icon="&#xE840;" Tag="HeaderChunk" Title="HeaderChunk" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenChunkPage_A2C59F0B}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AFullWidthSectionForOnePageTopic_54765D14}" Icon="&#xE81E;" Tag="Chunk" Title="Chunk" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenPageBodyPage_80D5F958}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_TheCanonicalScrollingRootForAFlourishPage_72F1EF80}" Icon="&#xE8A7;" Tag="PageBody" Title="PageBody" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenPresenterPage_4E20179A}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AdvancedTextAndPresentationLayouts_F0413557}" Icon="&#xE8BA;" Tag="Presenter" Title="Presenter" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenDocumentPage_33E7CCD0}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_ABorderedSurfaceForMultipleParagraphs_DB9BBCD2}" Icon="&#xE8A5;" Tag="Document" Title="Document" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenCardPage_C427A396}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_ConciseDisplayOnlyContentWithOneOptionalIcon_0175BED0}" Icon="&#xE7FB;" Tag="Card" Title="Card" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenActionCardPage_92D5C65F}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AFixedSettingRowOrVerticalLocalAction_DAD4F6F7}" Icon="&#xE7C9;" Tag="ActionCard" Title="ActionCard" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenOutputCardPage_5AA22E55}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_ScrollableOutputForLogsAndDiagnosticText_F2803ED4}" Icon="&#xE78B;" Tag="OutputCard" Title="OutputCard" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenButtonPage_CD660F9E}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AStandardActionWithOptionalContentAndIcon_582227BA}" Icon="&#xE815;" Tag="Button" Title="Button" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenCardButtonPage_5DA84751}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AnEntireCardSurfaceThatRespondsAsAButton_EBA76474}" Icon="&#xF271;" Tag="CardButton" Title="CardButton" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenWindowCaptionButtonPage_924363CC}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AWindowSpecificCaptionAction_28BFD979}" Icon="&#xE8BB;" Tag="WindowCaptionButton" Title="WindowCaptionButton" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenCodeSpacePage_8D2FD309}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_FixedStyleCodeTextWithClipboardCopySupport_064773D5}" Icon="&#xE943;" Tag="CodeSpace" Title="CodeSpace" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenDataGridPage_34896C9A}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_TabularDataWithoutTrappingPageWheelScrolling_AA070806}" Icon="&#xE80A;" Tag="DataGrid" Title="DataGrid" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenOverlayPage_0535105F}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AFloatingContainerForTransientSurfaces_1D22AB81}" Icon="&#xE89B;" Tag="Overlay" Title="Overlay" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenTextBlockPage_9A723AE0}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_RoleBasedStandardizedTextPresentation_7E546380}" Icon="&#xE8D2;" Tag="TextBlock" Title="TextBlock" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenLabelPage_B6E100FA}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_ALabelThatTargetsAnInputOrPresentsACaption_A62A11AF}" Icon="&#xE8EC;" Tag="Label" Title="Label" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenToolTipPage_F3CEA3A3}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AThemedTipSurfaceForConciseAssistance_9F267D0C}" Icon="&#xE8BD;" Tag="ToolTip" Title="ToolTip" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenTextBoxPage_AC002FED}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_SingleOrMultiLineEditableTextInput_63DC6ADC}" Icon="&#xE8D2;" Tag="TextBox" Title="TextBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenPasswordBoxPage_3D830BC5}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_MaskedInputForSecretValues_D979134A}" Icon="&#xE72E;" Tag="PasswordBox" Title="PasswordBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenSearchBoxPage_42B1E60B}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_SearchInputWithStandardAffordances_CCA85BF6}" Icon="&#xE721;" Tag="SearchBox" Title="SearchBox" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenCheckBoxPage_91108425}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_IndependentBinaryOrIndeterminateSelection_8914FBDD}" Icon="&#xE73E;" Tag="CheckBox" Title="CheckBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenRadioButtonPage_4ABB9C3D}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_OneSelectionWithinARelatedOptionGroup_B88F2623}" Icon="&#xECCA;" Tag="RadioButton" Title="RadioButton" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenComboBoxPage_1E0FFCC3}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_ACompactDropDownSelectionSurface_19C9CE7E}" Icon="&#xE70D;" Tag="ComboBox" Title="ComboBox" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenBunchedListBoxPage_97CDC675}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AListWhoseParentLayerMovesInteractionFeedbackBetweenItems_3F3F508A}" Icon="&#xE8FD;" Tag="BunchedListBox" Title="BunchedListBox" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenListBoxPage_E284DF67}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AVisibleCollectionWithSelectionBehavior_625127FC}" Icon="&#xE8FD;" Tag="ListBox" Title="ListBox" />
+
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenScrollViewerPage_20E1B8DB}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AViewportForContentLargerThanItsAvailableSpace_C322D88D}" Icon="&#xE896;" Tag="ScrollViewer" Title="ScrollViewer" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenScrollBarPage_D911E8DD}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_AThemedScrollbarForExplicitScrolling_8E1D080A}" Icon="&#xE70E;" Tag="ScrollBar" Title="ScrollBar" />
+        <flourish:CardButton Margin="8" MinHeight="150" AutomationProperties.Name="{culture:Localize Key=Controls_OpenGridSplitterPage_0D5FF0F1}" Click="ControlCard_Click" Content="{culture:Localize Key=Controls_ADraggableDividerBetweenGridRegions_F6C87FDB}" Icon="&#xE8A9;" Tag="GridSplitter" Title="GridSplitter" />
+      </UniformGrid>
+    </flourish:Chunk>
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheControlDocumentation_ADDD83C5}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Controls_ControlDocumentation_25A4107D}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

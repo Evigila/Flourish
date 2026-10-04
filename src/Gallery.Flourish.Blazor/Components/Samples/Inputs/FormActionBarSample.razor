@@ -1,0 +1,38 @@
+@using ArkheideSystem.Flourish.Abstract
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.FormActionBar")]
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor
+@using ArkheideSystem.Flourish.Blazor.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="1"><UniformGridButton Title="单个操作" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="2"><UniformGridButton Title="主操作" /><UniformGridButton Title="次操作" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="3"><UniformGridButton Title="主操作" /><UniformGridButton Title="次操作" /><UniformGridButton Title="禁用操作" Disabled="true" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="3">
+        <UniformGridButton Title="提交申请" Busy="Busy" BusyLabel="模拟提交中" OnClick="Submit" />
+        <UniformGridButton Title="保存草稿" Disabled="Busy" OnClick="Draft" />
+        <UniformGridButton Title="取消" Disabled="Busy" OnClick="Cancel" />
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+    <p role="status">@Message</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Busy;
+    private string Message = "还没有执行示例操作。";
+    private async Task Submit() { Busy = true; await Task.Delay(500); Message = "虚构申请已在本地完成提交演示。"; Busy = false; }
+    private void Draft() => Message = "虚构草稿已保存到当前示例。";
+    private void Cancel() => Message = "已取消本次示例操作。";
+}

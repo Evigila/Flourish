@@ -7,6 +7,7 @@ document.addEventListener("focusin", event => {
         || input.disabled
         || input.readOnly
         || input.value.length === 0
+        || input.dataset.inputMask !== undefined
         || input.dataset.preserveSelection === "true") return;
 
     requestAnimationFrame(() => {
@@ -14,6 +15,7 @@ document.addEventListener("focusin", event => {
     });
 });
 
+// Format before Blazor captures the event value, so its binding sees the same text as the DOM.
 document.addEventListener("input", event => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || !input.dataset.inputMask) return;
@@ -28,7 +30,7 @@ document.addEventListener("input", event => {
 
     input.value = formattedValue;
     input.setSelectionRange(formattedPrefix.length, formattedPrefix.length);
-});
+}, { capture: true });
 
 document.addEventListener("dragstart", event => {
     const option = event.target instanceof Element

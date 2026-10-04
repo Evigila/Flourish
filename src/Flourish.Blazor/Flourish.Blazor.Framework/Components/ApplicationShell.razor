@@ -6,8 +6,8 @@
 @inject IServiceProvider Services
 @inject ICommandDispatcher Commands
 
-<div @ref="root" class="f-root @Theme?.CssClass f-shell @(!Options.TopBar.Enabled ? "f-no-titlebar" : "") @(!PrimaryEntries.Any() && !FixedEntries.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
-     style="@RootStyle" data-navigation-open="@navigationOpen.ToString().ToLowerInvariant()">
+<div @ref="root" class="f-root @Theme?.CssClass f-shell @(HasNavigationTree ? "f-has-navigation-tree" : "") @(!Options.TopBar.Enabled ? "f-no-titlebar" : "") @(!PrimaryEntries.Any() && !FixedEntries.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
+     style="@RootStyle" data-navigation-open="@navigationOpen.ToString().ToLowerInvariant()" data-f-document-shell="@(OwnsDocument ? "" : null)">
     <a class="f-skip-link" href="#@contentId">@SkipLabel</a>
     @if (Options.TopBar.Enabled)
     {
@@ -39,8 +39,8 @@
                 <div class="f-titlebar-center">
                     @foreach (var menu in Options.TopBar.MenuItems)
                     {
-                        <ActionMenu Label="@menu.Label" Actions="@CreateMenuActions(menu)">
-                            <TriggerContent>@menu.Label <span aria-hidden="true">▾</span></TriggerContent>
+                        <ActionMenu Label="@menu.Label" Actions="@CreateMenuActions(menu)" OpenOnHover="true">
+                            <TriggerContent>@menu.Label <ExpansionIndicator /></TriggerContent>
                         </ActionMenu>
                     }
                     @foreach (var placement in Options.TopBar.CenterItems) { <DynamicComponent Type="@placement.ComponentType" /> }
@@ -77,11 +77,9 @@
             @if (HasSecondary && ActiveEntry is { } active)
             {
                 <nav class="f-secondary-navigation" aria-label="@SecondaryNavigationLabel">
-                    @foreach (var item in active.SecondaryItems)
-                    {
-                        <a href="@(item.Disabled ? null : item.Href)" class="f-secondary-item @(item == ActiveItem ? "is-selected" : "")" aria-current="@(item == ActiveItem ? "page" : null)"
-                           aria-disabled="@(item.Disabled ? "true" : null)" tabindex="@(item.Disabled ? -1 : 0)" @onclick="CloseNavigation"><span>@item.Label</span></a>
-                    }
+                    <ul class="f-secondary-list">
+                        @foreach (var item in active.SecondaryItems) { @RenderNavigationItem(item) }
+                    </ul>
                 </nav>
             }
         </aside>
@@ -90,9 +88,12 @@
     <main id="@contentId" class="f-content-scroll" tabindex="-1" @ref="content">
         @ChildContent
     </main>
+    <SectionNavigator ContentId="@contentId" />
 </div>
 
 @code {
+    /// <summary>Constrains a full application to the viewport; embedded shells leave this disabled.</summary>
+    [Parameter] public bool OwnsDocument { get; set; }
     [Parameter] public IReadOnlyList<NavigationGroup>? NavigationGroups { get; set; }
     [Parameter] public string? ApplicationTitle { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -106,6 +107,8 @@
     [Parameter] public string CloseMenuLabel { get; set; } = "Close navigation";
     [Parameter] public string MainNavigationLabel { get; set; } = "Main navigation";
     [Parameter] public string SecondaryNavigationLabel { get; set; } = "Secondary navigation";
+    [Parameter] public string ExpandNavigationLabel { get; set; } = "Expand";
+    [Parameter] public string CollapseNavigationLabel { get; set; } = "Collapse";
 
     private readonly string contentId = "content-" + Guid.NewGuid().ToString("N");
     private readonly string navigationId = "nav-" + Guid.NewGuid().ToString("N");
@@ -116,24 +119,108 @@
     private bool disposed, navigationOpen, resetScroll, navigationChanged;
     private string search = string.Empty;
     private IReadOnlyList<NavigationEntry>? previousPrimary;
+    private NavigationEntry? activeEntry;
+    private string? selectionPath;
+    private IReadOnlyList<NavigationItem> activeItems = Array.Empty<NavigationItem>();
+    private readonly HashSet<string> expandedItems = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> panelIds = new(StringComparer.OrdinalIgnoreCase);
 
     private IReadOnlyList<NavigationEntry> PrimaryEntries => NavigationGroups is not null
         ? ConvertLegacy(NavigationGroups)
         : Options.PrimaryNavigation.Count > 0 ? Options.PrimaryNavigation : ConvertLegacy(Options.LegacyNavigation);
     private IReadOnlyList<NavigationEntry> FixedEntries => NavigationGroups is null ? Options.FixedNavigation : Array.Empty<NavigationEntry>();
     private bool HasSecondary => ActiveEntry?.SecondaryItems.Count > 0;
-    private NavigationItem? ActiveItem => ActiveEntry?.SecondaryItems.Where(Matches).OrderByDescending(item => item.Href.Length).FirstOrDefault();
+    private bool HasNavigationTree => ActiveEntry?.SecondaryItems.Any(item => item.ChildItems.Count > 0) == true;
+    private NavigationItem? ActiveItem => activeItems.LastOrDefault();
     private string Path => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/');
     private string RootStyle => $"--f-content-width:{Options.Layout.ContentWidth}px{(Theme is null ? null : ";" + Theme.CssVariables)}";
 
-    private NavigationEntry? ActiveEntry => PrimaryEntries.Concat(FixedEntries)
-        .Where(entry => entry.Kind == NavigationEntryKind.Route)
-        .SelectMany(entry => entry.SecondaryItems.Where(Matches).Select(item => (entry, length: item.Href.Length))
-            .Append((entry, length: Matches(entry) ? entry.Href?.Length ?? 0 : -1)))
-        .Where(match => match.length >= 0)
-        .OrderByDescending(match => match.length)
-        .Select(match => match.entry)
-        .FirstOrDefault() ?? PrimaryEntries.FirstOrDefault(entry => entry.Kind == NavigationEntryKind.Route);
+    private NavigationEntry? ActiveEntry => activeEntry;
+
+    private IReadOnlyList<NavigationItem> FindActivePath(IReadOnlyList<NavigationItem> items)
+    {
+        IReadOnlyList<NavigationItem> best = Array.Empty<NavigationItem>();
+        foreach (var item in items)
+        {
+            if (item.Disabled) continue;
+            var children = FindActivePath(item.ChildItems);
+            IReadOnlyList<NavigationItem> candidate = Matches(item) ? [item] : Array.Empty<NavigationItem>();
+            if (children.Count > 0 && (candidate.Count == 0 || children[^1].Href.Length >= item.Href.Length))
+                candidate = [item, .. children];
+            if (candidate.Count > 0 && (best.Count == 0 || candidate[^1].Href.Length > best[^1].Href.Length)) best = candidate;
+        }
+        return best;
+    }
+
+    private void RefreshSelection()
+    {
+        var previousPath = activeItems.Select(item => item.Href).ToArray();
+        activeEntry = null;
+        activeItems = Array.Empty<NavigationItem>();
+        var bestLength = -1;
+        var primary = PrimaryEntries;
+        foreach (var entry in primary.Concat(FixedEntries))
+        {
+            if (entry.Kind != NavigationEntryKind.Route || entry.Disabled) continue;
+            var path = FindActivePath(entry.SecondaryItems);
+            var length = Math.Max(path.LastOrDefault()?.Href.Length ?? -1, Matches(entry) ? entry.Href?.Length ?? -1 : -1);
+            if (length <= bestLength) continue;
+            activeEntry = entry;
+            activeItems = path;
+            bestLength = length;
+        }
+        activeEntry ??= primary.FirstOrDefault(entry => entry.Kind == NavigationEntryKind.Route && !entry.Disabled);
+        if (selectionPath != Path || !previousPath.SequenceEqual(activeItems.Select(item => item.Href), StringComparer.OrdinalIgnoreCase))
+            foreach (var item in activeItems.Where(item => item.ChildItems.Count > 0)) expandedItems.Add(item.Href);
+        selectionPath = Path;
+    }
+
+    private string PanelId(NavigationItem item)
+    {
+        if (!panelIds.TryGetValue(item.Href, out var id)) panelIds.Add(item.Href, id = "nav-children-" + Guid.NewGuid().ToString("N"));
+        return id;
+    }
+
+    private void ToggleItem(NavigationItem item)
+    {
+        if (!expandedItems.Remove(item.Href)) expandedItems.Add(item.Href);
+    }
+
+    private RenderFragment RenderNavigationItem(NavigationItem item, bool third = false, bool parentDisabled = false)
+    {
+        var disabled = parentDisabled || item.Disabled;
+        var expanded = expandedItems.Contains(item.Href);
+        var selected = !disabled && activeItems.Contains(item);
+        var primaryAttributes = new Dictionary<string, object> { ["title"] = item.Label };
+        if (selected) primaryAttributes["aria-current"] = item == ActiveItem ? "page" : "true";
+        return @<li class="f-navigation-node" @key="item.Href">
+            @if (item.ChildItems.Count > 0)
+            {
+                <SplitButton Class="f-secondary-row" Href="@item.Href" Text="@item.Label" Icon="@item.Icon"
+                             PrimaryClass="@($"f-secondary-item{(third ? " f-third-item" : null)}")" SecondaryClass="f-secondary-toggle"
+                             Selected="selected" Disabled="disabled" Expanded="expanded" SecondaryControls="@PanelId(item)"
+                             SecondaryLabel="@($"{(expanded ? CollapseNavigationLabel : ExpandNavigationLabel)} {item.Label}")"
+                             PrimaryAttributes="primaryAttributes"
+                             SecondaryAttributes="@(new Dictionary<string, object> { ["title"] = item.Label, ["data-navigation-target"] = item.Href })"
+                             OnClick="CloseNavigation" OnSecondaryClick="() => ToggleItem(item)">
+                </SplitButton>
+            }
+            else
+            {
+                <div class="f-secondary-row">
+                    <a href="@(disabled ? null : item.Href)" class="@($"f-secondary-item{(third ? " f-third-item" : null)}{(selected ? " is-selected" : null)}")"
+                       aria-current="@(selected ? "page" : null)" aria-disabled="@(disabled ? "true" : null)" title="@item.Label"
+                       tabindex="@(disabled ? -1 : 0)" @onclick="() => { if (!disabled) CloseNavigation(); }"><Icon Name="@item.Icon" /><span class="f-navigation-label">@item.Label</span></a>
+                </div>
+            }
+            @if (item.ChildItems.Count > 0)
+            {
+                <ul id="@PanelId(item)" class="f-third-navigation" hidden="@(!expanded)">
+                    @foreach (var child in item.ChildItems) { @RenderNavigationItem(child, true, disabled) }
+                </ul>
+            }
+        </li>;
+    }
 
     protected override void OnInitialized()
     {
@@ -150,6 +237,7 @@
             previousPrimary = current;
             navigationChanged = true;
         }
+        RefreshSelection();
     }
 
     private RenderFragment RenderPrimaryEntry(NavigationEntry entry) => builder =>
@@ -218,7 +306,13 @@
         .ToArray();
 
     private void ThemeChanged(object? sender, EventArgs e) => _ = InvokeAsync(StateHasChanged);
-    private void LocationChanged(object? sender, LocationChangedEventArgs e) { navigationOpen = false; resetScroll = true; _ = InvokeAsync(StateHasChanged); }
+    private void LocationChanged(object? sender, LocationChangedEventArgs e) => _ = InvokeAsync(() =>
+    {
+        navigationOpen = false;
+        resetScroll = true;
+        RefreshSelection();
+        StateHasChanged();
+    });
     private void ToggleNavigation() => navigationOpen = !navigationOpen;
     private void CloseNavigation() => navigationOpen = false;
     private Task SubmitSearch() => OnSearch.InvokeAsync(search);

@@ -1,0 +1,13 @@
+.f-display-board { position:relative; box-sizing:border-box; display:flex; flex-direction:column; width:100%; min-width:0; min-height:0; }
+.f-display-board-viewport { flex:1 1 auto; min-width:0; min-height:0; overflow:auto; border-radius:inherit; }
+.f-display-board-content { display:flex; flex-direction:column; min-width:0; gap:1em; }
+.f-display-board-centered > .f-display-board-content { align-items:center; justify-content:center; }
+.f-display-board-start > .f-display-board-content { align-items:flex-start; justify-content:flex-start; }
+.f-display-board-content > * { min-width:0; max-width:100%; }
+.f-display-board-content > :is(.f-root,.f-data,.f-fields,.f-form-actions,.f-form-surface,.form-surface-frame,.form-action-bar,.uniform-grid,.filled-identity-card,.identity-card,.f-card,.f-shell,.navigation-surface,.f-content-surface) { width:100%; }
+.f-display-board-content > .f-root { background:transparent; }
+.f-display-board > .f-display-board-copy { position:absolute; inset-block-start:1em; inset-inline-end:1em; max-width:calc(100% - 2em); }
+.f-display-board-copyable { min-block-size:4em; }
+.f-display-board-content > .f-code-block { box-sizing:border-box; min-width:0; max-width:100%; overflow:visible; margin:0; text-align:start; }
+.f-display-board-content:has(> .f-code-block) { align-items:flex-start; justify-content:flex-start; min-height:0; }
+.f-display-board-error { margin-block:1em 0; overflow-wrap:anywhere; }

@@ -1,0 +1,28 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ToggleSwitch")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <ToggleSwitch Label="关闭状态" @bind-Value="Off" OnLabel="开启" OffLabel="关闭" />
+    <ToggleSwitch Label="开启状态" @bind-Value="On" OnLabel="开启" OffLabel="关闭" />
+    <ToggleSwitch Label="禁用状态" @bind-Value="DisabledValue" Disabled="true" OnLabel="开启" OffLabel="关闭" />
+}
+else
+{
+    <ToggleSwitch Label="活动提醒" @bind-Value="Reminder" OnLabel="已启用" OffLabel="已关闭" />
+    <p role="status">@(Reminder ? "示例设置：活动前 15 分钟提醒。" : "示例设置：不会发送活动提醒。")</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Off, On = true, DisabledValue, Reminder;
+}

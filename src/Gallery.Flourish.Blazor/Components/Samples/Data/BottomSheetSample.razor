@@ -1,0 +1,49 @@
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("BottomSheet")]
+
+<Button Variant="ButtonVariant.Secondary" OnClick="() => IsOpen = true">@(Preview ? "打开空白底部面板" : "编辑演示备注")</Button>
+@if (!Preview)
+{
+    @if (Saved) { <Notice Severity="NotificationSeverity.Success">保存的虚构备注：@Note</Notice> }
+}
+<BottomSheet Title="@(Preview ? "空白底部面板" : "演示备注")" @bind-IsOpen="IsOpen" Busy="Busy" CloseLabel="关闭">
+    <ChildContent>
+        @if (!Preview)
+        {
+            <Field Label="备注" Id="@(Identifier + "-note")">
+                <TextBox Id="@(Identifier + "-note")" @bind-Value="Note" Multiline="true" Rows="4" />
+            </Field>
+        }
+    </ChildContent>
+    <Actions>
+        @if (!Preview)
+        {
+            <Button Busy="Busy" BusyLabel="正在保存" OnClick="SaveAsync">保存本地备注</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="Busy" OnClick="() => IsOpen = false">关闭</Button>
+        }
+    </Actions>
+</BottomSheet>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Identifier = "sheet-sample-" + System.Guid.NewGuid().ToString("N");
+    private bool IsOpen, Busy, Saved;
+    private string? Note = "这是示例草稿的虚构备注。";
+    private async Task SaveAsync()
+    {
+        if (Busy) return;
+        Busy = true;
+        try { await Task.Delay(500); Saved = true; IsOpen = false; }
+        finally { Busy = false; }
+    }
+}

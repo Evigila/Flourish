@@ -1,0 +1,32 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ToggleIndicator")]
+@using Microsoft.AspNetCore.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <div style="display:flex;gap:24px;align-items:center">
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleIndicator />
+        <span style="--toggle-track-color:var(--f-accent);--toggle-thumb-offset:22px"><ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleIndicator /></span>
+    </div>
+}
+else
+{
+    <button type="button" class="toggle-switch" role="switch" aria-checked="@(Enabled ? "true" : "false")" @onclick="Toggle">
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ToggleIndicator /><span>启用示例提醒</span>
+    </button>
+    <p role="status">@(Enabled ? "虚构提醒已开启。" : "虚构提醒已关闭。")</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Enabled;
+    private void Toggle() => Enabled = !Enabled;
+}

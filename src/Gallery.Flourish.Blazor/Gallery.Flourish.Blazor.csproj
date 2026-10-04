@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Gallery.Flourish.Blazor</AssemblyName>
+    <RootNamespace>ArkheideSystem.Gallery.Flourish.Blazor</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Components/Samples/**/*.razor" />
+    <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
+    <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
+  </ItemGroup>
+</Project>

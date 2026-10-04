@@ -1,0 +1,48 @@
+@using ArkheideSystem.Gallery.Flourish.Blazor.Models
+<article class="component-guide" id="@Sample.Key" data-component="@Entry.Name">
+    <Section Title="简介">
+        <p>@Entry.Purpose</p>
+        <p>@Entry.Variants</p>
+    </Section>
+    <Section Title="控件示例">
+        <DisplayBoard><DynamicComponent Type="@Sample.ComponentType" Parameters="@Sample.PreviewParameters" /></DisplayBoard>
+    </Section>
+    <Section Title="API">
+        <p>命名空间：@Entry.Namespace</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Entry.Example"
+                      CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。">
+            <CodeBlock Text="@Entry.Example" Language="razor" />
+        </DisplayBoard>
+        <div class="api-parameters"><DataTable TItem="ComponentParameter" Items="Entry.ApiParameters" Columns="ApiColumns"
+                   ItemKey="@(parameter => parameter.Name)" RowLabel="@(parameter => parameter.Name)"
+                   Label="@($"{Entry.Name} API 参数")" Searchable="false" Text="ApiText"
+                   EmptyMessage="此组件没有公开组件参数。" /></div>
+    </Section>
+    <Section Title="场景示例">
+        <DisplayBoard><DynamicComponent Type="@Sample.ComponentType" /></DisplayBoard>
+    </Section>
+    <Section Title="场景代码">
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Sample.Source"
+                      CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。">
+            <CodeBlock Text="@Sample.Source" Language="razor" />
+        </DisplayBoard>
+    </Section>
+</article>
+@code {
+    [Parameter, EditorRequired] public ComponentEntry Entry { get; set; } = default!;
+    [Parameter] public string Category { get; set; } = "actions";
+    [Parameter] public bool ShowDetailLink { get; set; } = true;
+    private ComponentSample Sample => SampleCatalog.For(Entry);
+    private static readonly IReadOnlyList<TableColumn<ComponentParameter>> ApiColumns =
+    [
+        new("name", "参数", parameter => parameter.Name, CanHide: false),
+        new("type", "类型", parameter => parameter.Type),
+        new("default", "默认值", parameter => parameter.DefaultValue),
+        new("required", "声明要求", parameter => parameter.Required ? "EditorRequired" : "可选"),
+        new("description", "说明", parameter => parameter.Description)
+    ];
+    private static readonly TableText ApiText = new(List: "列表", Cards: "卡片", Display: "显示",
+        Items: "项", Of: "/", Page: "页码", PreviousPage: "上一页", NextPage: "下一页",
+        Width: "宽度", SortDescending: "降序", SortAscending: "升序", SortDefault: "恢复顺序",
+        ResizeHint: "拖动或使用方向键调整列宽", ItemsPerPage: "每页数量", Total: "共", ItemRangeFormat: "{0}{1}-{2} / {3}{4}");
+}

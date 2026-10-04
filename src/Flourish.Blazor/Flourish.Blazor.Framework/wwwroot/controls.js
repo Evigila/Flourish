@@ -18,7 +18,8 @@ export function attachTextSelection(input) {
     let frame = null;
     const focus = () => {
         if (!(input instanceof HTMLInputElement) || !['text','email','tel','url','number'].includes(input.type)
-            || input.disabled || input.readOnly || !input.value || input.dataset.preserveSelection === 'true') return;
+            || input.disabled || input.readOnly || !input.value || input.dataset.inputMask !== undefined
+            || input.dataset.preserveSelection === 'true') return;
         frame = requestAnimationFrame(() => { if (document.activeElement === input) input.select(); });
     };
     input.addEventListener('focus', focus);
@@ -37,7 +38,12 @@ function copyTheme(trigger, panel) {
     }
     const saved = [];
     for (const name of names) {
-        const value = style.getPropertyValue(name);
+        // A popup is a surface even when its trigger lives on dark chrome.
+        const value = ['--f-target-preview','--f-row-hover'].includes(name)
+            ? style.getPropertyValue('--f-surface-preview') || style.getPropertyValue(name)
+            : ['--f-target-click','--f-row-active'].includes(name)
+            ? style.getPropertyValue('--f-surface-click') || style.getPropertyValue(name)
+            : style.getPropertyValue(name);
         if (!value) continue;
         saved.push([name,panel.style.getPropertyValue(name),panel.style.getPropertyPriority(name)]);
         panel.style.setProperty(name,value);
@@ -46,17 +52,31 @@ function copyTheme(trigger, panel) {
 }
 function positionMenu(state) {
     if (!state.open) return;
-    const trigger = state.trigger.getBoundingClientRect();
+    const trigger = (state.openOnHover ? state.hoverRoot : state.trigger).getBoundingClientRect();
     const menu = state.panel.getBoundingClientRect();
     const width = document.documentElement.clientWidth;
     const height = window.innerHeight;
     state.panel.style.left = `${Math.max(12, Math.min(trigger.right - menu.width, width - menu.width - 12))}px`;
-    const below = trigger.bottom + 6;
-    state.panel.style.top = `${below + menu.height <= height - 12 ? below : Math.max(12, trigger.top - menu.height - 6)}px`;
+    // Hover surfaces meet their trigger region so crossing into the menu has no dead gap.
+    const gap = state.openOnHover ? 0 : 6;
+    const below = trigger.bottom + gap;
+    state.panel.style.top = `${below + menu.height <= height - 12 ? below : Math.max(12, trigger.top - menu.height - gap)}px`;
 }
-export function attachMenu(trigger, panel) {
-    if (!trigger || !panel || menus.has(panel)) return;
-    const state = { trigger, panel, open:false, placeholder:null, restoreTheme:null, cleanup:[] };
+export function attachMenu(trigger, panel, openOnHover=false) {
+    if (!trigger || !panel) return;
+    const existing = menus.get(panel);
+    if (existing) {
+        if (existing.openOnHover !== openOnHover || trigger.disabled) closeMenu(trigger,panel,false);
+        existing.openOnHover = openOnHover;
+        trigger.setAttribute('aria-expanded',existing.open ? 'true' : 'false');
+        if (existing.open) {
+            existing.restoreTheme?.(); existing.restoreTheme = copyTheme(trigger,panel);
+            positionMenu(existing);
+        }
+        return;
+    }
+    const state = { trigger, panel, hoverRoot:trigger.closest('.f-action-menu') ?? trigger, openOnHover,
+        open:false, placeholder:null, restoreTheme:null, cleanup:[] };
     const listen = (target, type, callback, options) => {
         target.addEventListener(type, callback, options);
         state.cleanup.push(() => target.removeEventListener(type, callback, options));
@@ -64,9 +84,20 @@ export function attachMenu(trigger, panel) {
     listen(trigger, 'keydown', event => {
         if (!['ArrowDown','ArrowUp'].includes(event.key) || trigger.disabled) return;
         event.preventDefault();
-        if (!state.open) toggleMenu(trigger, panel);
+        event.stopPropagation();
+        if (!state.open) openMenu(state,true);
         const items = menuItems(panel); (event.key === 'ArrowUp' ? items.at(-1) : items[0])?.focus();
     });
+    listen(state.hoverRoot, 'pointerenter', event => {
+        if (state.openOnHover && event.pointerType !== 'touch' && !trigger.disabled) openMenu(state,false);
+    });
+    const leave = event => {
+        if (!state.openOnHover || !state.open || event.pointerType === 'touch') return;
+        if (state.hoverRoot.contains(event.relatedTarget) || panel.contains(event.relatedTarget)) return;
+        closeMenu(trigger,panel,panel.contains(document.activeElement));
+    };
+    listen(state.hoverRoot, 'pointerleave', leave);
+    listen(panel, 'pointerleave', leave);
     listen(document, 'pointerdown', event => {
         if (state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
     }, true);
@@ -91,10 +122,9 @@ export function attachMenu(trigger, panel) {
     state.cleanup.push(()=>observer.disconnect());
     menus.set(panel,state);
 }
-export function toggleMenu(trigger, panel) {
-    attachMenu(trigger,panel);
-    const state = menus.get(panel); if (!state || trigger.disabled) return;
-    if (state.open) { closeMenu(trigger,panel,true); return; }
+function openMenu(state, focusMenu) {
+    if (state.open || state.trigger.disabled) return;
+    const {trigger,panel} = state;
     if (activeMenu) closeMenu(activeMenu.trigger,activeMenu.panel,false);
     state.restoreTheme = copyTheme(trigger,panel);
     state.open = true;
@@ -107,7 +137,17 @@ export function toggleMenu(trigger, panel) {
     }
     trigger.setAttribute('aria-expanded','true');
     positionMenu(state);
-    menuItems(panel)[0]?.focus({preventScroll:true});
+    if (focusMenu) menuItems(panel)[0]?.focus({preventScroll:true});
+}
+export function toggleMenu(trigger, panel, focusMenu=true) {
+    if (!menus.has(panel)) attachMenu(trigger,panel);
+    const state = menus.get(panel); if (!state || trigger.disabled) return;
+    if (state.open) {
+        // Pointer clicks on an already hovered top-bar trigger should not flash the menu closed.
+        if (state.openOnHover && !focusMenu) return;
+        closeMenu(trigger,panel,true); return;
+    }
+    openMenu(state,focusMenu);
 }
 export function closeMenu(trigger,panel,restoreFocus=false) {
     const state = menus.get(panel); if (!state) return;

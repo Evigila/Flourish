@@ -1,10 +1,8 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 <header class="page-heading record-page-heading" data-heading-mode="@(Compact ? "compact" : null)">
     <div class="record-heading-copy">
-        <a class="record-parent-link" href="@ParentHref" aria-label="@($"Voltar para {ParentLabel}")">
-            <span aria-hidden="true">←</span>
-            <span>@ParentLabel</span>
-        </a>
+        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref"
+            Class="record-parent-link" Icon="arrow_back" Text="@ParentLabel" aria-label="@($"Voltar para {ParentLabel}")" />
         <h1>@Title</h1>
     </div>
     @if (Actions is not null)

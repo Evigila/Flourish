@@ -2,14 +2,14 @@
     height: 30px;
     padding: 3px;
     border-radius: 15px;
-    background: var(--toggle-track-color, var(--muted));
+    background: var(--toggle-track-color, var(--f-muted));
     transition: background 160ms ease;
 }
 .toggle-indicator-thumb {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: var(--surface);
+    background: var(--f-surface);
     transform: translateX(var(--toggle-thumb-offset, 0));
     transition: transform 160ms ease;
 }

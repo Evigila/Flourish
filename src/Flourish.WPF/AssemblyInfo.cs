@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Markup;
 
-[assembly: InternalsVisibleTo("Flourish.WPF.Test")]
+[assembly: InternalsVisibleTo("Tests.Flourish.WPF")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: XmlnsDefinition(
     "http://schemas.arkheide.system/flourish",

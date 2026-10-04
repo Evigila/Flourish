@@ -1,0 +1,38 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ProgressRing")]
+
+@if (Preview)
+{
+    <div class="f-inline-actions">
+        <ProgressRing Label="确定进度" Value="0" StatusText="尚未开始" />
+        <ProgressRing Label="未知进度" Value="null" StatusText="正在处理…" />
+        <ProgressRing Label="暂停进度" Value="0" Stopped="true" StatusText="已暂停" />
+    </div>
+}
+else
+{
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Secondary" OnClick="Advance">推进 10%</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Unknown = !Unknown">@(Unknown ? "确定进度" : "未知进度")</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Stopped = !Stopped">@(Stopped ? "继续" : "暂停")</Button>
+    </div>
+    <ProgressRing Label="虚构后台任务" Value="@(Unknown ? null : (double?)Percent)" Stopped="Stopped" StatusText="@Status" />
+    <p role="status">@Status</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int Percent = 40;
+    private bool Unknown, Stopped;
+    private string Status => Stopped ? "演示任务已暂停。" : Unknown ? "正在计算剩余时间…" : $"虚构任务已完成 {Percent}%。";
+    private void Advance() { if (!Stopped) { Unknown = false; Percent = Math.Min(100, Percent + 10); } }
+}

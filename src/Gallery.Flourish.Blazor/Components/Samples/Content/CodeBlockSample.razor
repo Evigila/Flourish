@@ -1,0 +1,26 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("CodeBlock")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview) { <CodeBlock Text="" Language="razor" /> }
+else
+{
+    <Field Label="模拟代码语言" Id="@Id"><SelectBox TValue="string" Options="Languages" @bind-Value="Language" /></Field>
+    <CodeBlock Text="@(Language == "razor" ? RazorExample : CSharpExample)" Language="@Language" />
+    <p>示例文本被编码显示，不会执行。</p>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly SelectOption<string>[] Languages = [new("razor", "Razor"), new("csharp", "C#")];
+    private readonly string Id = $"code-language-{Guid.NewGuid():N}";
+    private string Language = "razor";
+    private const string RazorExample = "<Button Disabled=\"true\">示例按钮</Button>";
+    private const string CSharpExample = "var sampleNames = new[] { \"演示项目 A\", \"演示项目 B\" };";
+}

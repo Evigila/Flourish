@@ -1,0 +1,127 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Globalization
+@using System.Linq
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.EditingGrid")]
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="Array.Empty<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>()" Label="空白编辑网格" EmptyMessage="暂无数据" Text="Captions" />
+}
+else
+{
+    <p>全部单元格数据为虚构。双击或使用键盘进入编辑。展示文本、金额、日期、多行文本、选择、掩码与链接编辑器。</p>
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => ReadOnly = !ReadOnly">@(ReadOnly ? "启用编辑" : "禁用编辑")</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="UndoAsync" Disabled="@(History.Count == 0)">撤销</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="RedoAsync" Disabled="@(RedoHistory.Count == 0)">重做</Button>
+        <Button OnClick="SaveAsync">保存本地草稿</Button>
+    </div>
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Quiet" OnClick="ShowValidationError">模拟校验错误</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="Reset">恢复虚构数据</Button>
+    </div>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="Rows" CellChanged="ChangeCell" Interactions="Interactions" EditDisabled="ReadOnly"
+                            MeasurementRevision="Revision" Label="虚构用品编辑网格" TableLabel="虚构用品" Text="Captions" />
+    <p role="status">@Message</p>
+    <p id="@InfoId">本例在宿主回调中校验字段并保存本地状态。链接单元格会跳到此处。多单元格粘贴与远程事务可通过 GridInteractions 另外接入。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridColumn> Columns =
+    [
+        new("name", "名称", Required: true, Identity: true), new("price", "金额"), new("date", "日期"),
+        new("note", "备注"), new("group", "分类"), new("phone", "联系电话"), new("link", "链接")
+    ];
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridOption> Groups = [new("stationery", "文具"), new("daily", "日用品")];
+    private static readonly Primitives.GridText Captions = new("{0} 的宽度", "{0} 像素", "拖动或使用方向键调整宽度；Home 恢复自动宽度");
+    private readonly string InfoId = "grid-info-" + Guid.NewGuid().ToString("N");
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow> Rows = Array.Empty<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>();
+    private readonly Stack<IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>> History = new(), RedoHistory = new();
+    private bool ReadOnly;
+    private long Revision;
+    private string Message = "虚构数据仅在当前组件中保留。";
+    private Primitives.GridInteractions Interactions => new()
+    {
+        Save = SaveAsync, Cancel = ResetAsync, Undo = UndoAsync, Redo = RedoAsync,
+        ReportError = message => { Message = message; StateHasChanged(); return Task.CompletedTask; }
+    };
+    protected override void OnInitialized() => Rows = CreateRows();
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow> CreateRows() =>
+    [
+        new("demo-1",
+        [
+            new("演示笔记本", "演示笔记本", Required: true),
+            new("12.50", "12.50", Primitives.GridEditorKind.Decimal),
+            new("2026-10-01", "2026-10-01", Primitives.GridEditorKind.Date),
+            new("虚构会议用品", "虚构会议用品", Primitives.GridEditorKind.Multiline),
+            new("stationery", "文具", Primitives.GridEditorKind.Select, Options: Groups),
+            new("12345678901", "12345678901", Primitives.GridEditorKind.Masked, Mask: "000 0000 0000"),
+            new("#" + InfoId, "示例说明", Primitives.GridEditorKind.Link, ReadOnly: true, LinkHref: "#" + InfoId, LinkLabel: "跳到示例说明")
+        ], Label: "虚构用品：演示笔记本"),
+        new("demo-2",
+        [
+            new("演示水杯", "演示水杯", Required: true),
+            new("18.00", "18.00", Primitives.GridEditorKind.Decimal),
+            new("2026-10-02", "2026-10-02", Primitives.GridEditorKind.Date),
+            new("虚构茶水间用品", "虚构茶水间用品", Primitives.GridEditorKind.Multiline),
+            new("daily", "日用品", Primitives.GridEditorKind.Select, Options: Groups),
+            new("10987654321", "10987654321", Primitives.GridEditorKind.Masked, Mask: "000 0000 0000"),
+            new("#" + InfoId, "示例说明", Primitives.GridEditorKind.Link, ReadOnly: true, LinkHref: "#" + InfoId, LinkLabel: "跳到示例说明")
+        ], Label: "虚构用品：演示水杯")
+    ];
+    private void ChangeCell(Primitives.GridCellChange change)
+    {
+        if (ReadOnly || change.Row < 0 || change.Row >= Rows.Count || change.Column < 0 || change.Column >= Columns.Count) return;
+        var current = Rows[change.Row].Cells[change.Column];
+        if (current.ReadOnly || current.Disabled) return;
+        History.Push(Rows);
+        RedoHistory.Clear();
+        var cells = Rows[change.Row].Cells.ToArray();
+        var value = change.Value ?? "";
+        string? error = change.Column == 0 && string.IsNullOrWhiteSpace(value) ? "请输入名称。" : null;
+        if (change.Column == 1 && (!decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) || amount < 0))
+            error = "请输入大于等于 0 的金额。";
+        var display = current.Editor == Primitives.GridEditorKind.Select ? Groups.FirstOrDefault(option => option.Value == value)?.Label ?? value : value;
+        cells[change.Column] = current with { Value = value, Display = display, Changed = true, Error = error };
+        var updated = Rows.ToArray();
+        updated[change.Row] = Rows[change.Row] with { Cells = cells, Dirty = true };
+        Rows = updated;
+        Revision++;
+        Message = error ?? "虚构单元格已更新，尚未保存。";
+    }
+    private Task SaveAsync()
+    {
+        if (Rows.Any(row => row.Cells.Any(cell => cell.Error is not null))) { Message = "请修正演示校验错误后保存。"; StateHasChanged(); return Task.CompletedTask; }
+        Rows = Rows.Select(row => row with { Dirty = false, Cells = row.Cells.Select(cell => cell with { Changed = false }).ToArray() }).ToArray();
+        History.Clear(); RedoHistory.Clear(); Revision++;
+        Message = "虚构草稿已保存到本地状态。";
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    private Task UndoAsync()
+    {
+        if (History.TryPop(out var previous)) { RedoHistory.Push(Rows); Rows = previous; Revision++; Message = "已撤销演示修改。"; }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    private Task RedoAsync()
+    {
+        if (RedoHistory.TryPop(out var next)) { History.Push(Rows); Rows = next; Revision++; Message = "已重做演示修改。"; }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    private void ShowValidationError() => ChangeCell(new(0, 1, "-1"));
+    private Task ResetAsync() { Reset(); return Task.CompletedTask; }
+    private void Reset() { Rows = CreateRows(); History.Clear(); RedoHistory.Clear(); Revision++; ReadOnly = false; Message = "已恢复虚构数据。"; StateHasChanged(); }
+}

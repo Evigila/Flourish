@@ -1,0 +1,121 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.TextBlockPage"
+  x:Name="RootPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+  SnapsToDevicePixels="True"
+  UseLayoutRounding="True"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Content="{culture:Localize Key=Controls_ApplySemanticFlourishTypographyRolesWithoutLocallyReproducingFon_76D9B5D5}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+      Title="TextBlock"
+    />
+
+    <flourish:Chunk
+      Content="{culture:Localize Key=Controls_RepresentativeRolesShareAnEqualHeightTopDownPresentationRow_0C75D65F}"
+      Title="Variant"
+    >
+      <UniformGrid Columns="3">
+        <flourish:Presenter
+          Margin="0,0,8,0"
+          Content="{culture:Localize Key=Controls_DefaultTextForOrdinaryInterfaceCopy_1FEB5E29}"
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Body"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:TextBlock
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Role="Body"
+              Text="{culture:Localize Key=Controls_StandardBodyCopy_F38F927B}"
+              TextAlignment="Center"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0"
+          Content="{culture:Localize Key=Controls_ASemanticHeadingForACompactContentSurface_7838F92C}"
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="CardTitle"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:TextBlock
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Role="CardTitle"
+              Text="{culture:Localize Key=Controls_CardTitle_03449F68}"
+              TextAlignment="Center"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+        <flourish:Presenter
+          Margin="8,0,0,0"
+          Content="{culture:Localize Key=Controls_AnIconGlyphRenderedThroughTheConfiguredIconFamily_E889AF41}"
+          PresenterMode="TopDown"
+          PresenterPosition="Left"
+          Title="Icon"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:TextBlock
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Role="Icon"
+              Text="&#xE8A5;"
+              TextAlignment="Center"
+            />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </UniformGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Table_16D1C905}">
+      <flourish:DataGrid
+        ItemsSource="{Binding Properties, ElementName=RootPage}"
+        AutoGenerateColumns="False"
+        IsReadOnly="True"
+      >
+        <DataGrid.Columns>
+          <DataGridTextColumn Width="220" Binding="{Binding Name}" Header="{culture:Localize Key=Controls_Member_7C968FB7}" />
+          <DataGridTextColumn Width="*" Binding="{culture:Localize KeyBinding={Binding DescriptionKey}}" Header="{culture:Localize Key=Controls_Purpose_D4E8830A}" />
+        </DataGrid.Columns>
+      </flourish:DataGrid>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Roles_C2533705}">
+      <flourish:Card
+        Title="{culture:Localize Key=Controls_SemanticTypography_3595A11A}"
+        Content="{culture:Localize Key=Controls_BodyParagraphCaptionMutedFieldLabelSubtitleDescriptionCardTitleS_CB079295}"
+      />
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Usage_8D59829C}">
+      <StackPanel>
+        <flourish:Presenter
+          Content="{culture:Localize Key=Controls_SetRoleToSelectASemanticFlourishTypographyTreatmentInsteadOfAssi_0E7E7EF2}"
+          PresenterMode="Split"
+          PresenterPosition="Left"
+          Title="{culture:Localize Key=Controls_ChooseATextRole_4D349678}"
+        >
+          <flourish:Presenter.Presentation>
+            <flourish:CodeSpace CanCollapse="False" IsExpanded="True" Text="{Binding UsageCode, ElementName=RootPage}" />
+          </flourish:Presenter.Presentation>
+        </flourish:Presenter>
+      </StackPanel>
+    </flourish:Chunk>
+
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Controls_ReadTheTextBlockAPIReference_CDD5FBB4}" Icon="&#xE8A5;" IsEnabled="False" Title="{culture:Localize Key=Controls_TextBlockDocumentation_F6F69AA9}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

@@ -5,6 +5,7 @@ let openTrigger = null;
 let listenersInstalled = false;
 
 export function toggle(trigger, menu) {
+    if (isDisabled(trigger)) return;
     installListeners();
     if (menu.matches(":popover-open")) {
         close(menu, trigger, false);
@@ -41,11 +42,16 @@ function installListeners() {
     document.addEventListener("click", event => {
         if (!openMenu || !openMenu.contains(event.target)) return;
         const action = event.target.closest("a, button, [role='menuitem']");
+        if (action && isDisabled(action)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return;
+        }
         if (action) {
             rememberInvoker(openTrigger);
             queueMicrotask(() => close(openMenu, openTrigger, false));
         }
-    });
+    }, true);
 
     document.addEventListener("keydown", event => {
         if (!openMenu) return;
@@ -75,7 +81,13 @@ function prepareItems(menu) {
 }
 
 function menuItems(menu) {
-    return Array.from(menu.querySelectorAll("a[href], button:not([disabled]), [role='menuitem'][tabindex]"));
+    return Array.from(menu.querySelectorAll("a[href], button, [role='menuitem'][tabindex]"))
+        .filter(item => !isDisabled(item));
+}
+
+function isDisabled(element) {
+    return element.disabled || element.matches(":disabled")
+        || element.closest('[disabled], [aria-disabled="true"]') !== null;
 }
 
 function repositionOpenMenu() {

@@ -1,0 +1,37 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.MaskedInput")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-digits")">数字掩码</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-digits")" Mask="0000-0000" @bind-Value="EmptyDigits" /></div>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-code")">字母数字掩码</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-code")" Mask="AA-0000" InputMode="text" @bind-Value="EmptyCode" /></div>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-disabled")">禁用</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-disabled")" Mask="0000-0000" @bind-Value="EmptyDisabled" disabled /></div>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+}
+else
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        <div style="display:grid;gap:8px"><label for="@(Prefix + "-ticket")">示例票号</label><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-ticket")" Mask="AA-0000" InputMode="text" @bind-Value="Ticket" /></div>
+    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+    <p role="status">模型原值：@Ticket；格式化值：@P.InputMaskFormatter.Format("AA-0000", Ticket)。</p>
+    <Button OnClick="Clear">清空票号</Button>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-mask-" + Guid.NewGuid().ToString("N");
+    private string? EmptyDigits, EmptyCode, EmptyDisabled;
+    private string? Ticket = "AB1234";
+    private void Clear() => Ticket = "";
+}

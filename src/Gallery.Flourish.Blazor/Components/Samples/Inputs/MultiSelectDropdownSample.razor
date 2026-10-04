@@ -1,0 +1,44 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.MultiSelectDropdown<TItem, TValue>")]
+@using System
+@using System.Collections.Generic
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using P = ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Preview)
+{
+    <label id="@(Prefix + "-empty-label")">空选项</label>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.MultiSelectDropdown TItem="Tag" TValue="int" Id="@(Prefix + "-empty")" LabelledBy="@(Prefix + "-empty-label")" Items="EmptyItems" SelectedValues="EmptySelection" ValueSelector="@(item => item.Id)" TextSelector="@(item => item.Name)" SelectionChanged="Ignore" EmptyText="没有选项" EmptySelectionText="未选择" />
+    <label id="@(Prefix + "-disabled-label")">禁用</label>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.MultiSelectDropdown TItem="Tag" TValue="int" Id="@(Prefix + "-disabled")" LabelledBy="@(Prefix + "-disabled-label")" Items="EmptyItems" SelectedValues="EmptySelection" ValueSelector="@(item => item.Id)" TextSelector="@(item => item.Name)" SelectionChanged="Ignore" Disabled="true" EmptySelectionText="未选择" />
+}
+else
+{
+    <label id="@(Prefix + "-tags-label")">活动标签（最多三个）</label>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.MultiSelectDropdown TItem="Tag" TValue="int" Id="@(Prefix + "-tags")" LabelledBy="@(Prefix + "-tags-label")" Items="Tags" SelectedValues="SelectedValues"
+                          ValueSelector="@(item => item.Id)" TextSelector="@(item => item.Name)" SelectionChanged="ToggleSelection" CreateRequested="Create"
+                          MaximumSelections="3" EmptyText="没有示例标签" EmptySelectionText="未选择标签" MultipleSelectionText="个标签已选择" />
+    <p role="status">已选 @SelectedValues.Count 个示例标签。</p>
+    <Button OnClick="Clear">清空选择</Button>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-multi-select-" + Guid.NewGuid().ToString("N");
+    private static readonly Tag[] EmptyItems = [];
+    private readonly HashSet<int> EmptySelection = [];
+    private readonly List<Tag> Tags = [new(1, "读"), new(2, "摄影与影像制作交流小组（虚构）"), new(3, "交流"), new(4, "户外探索（虚构）")];
+    private readonly HashSet<int> SelectedValues = [1];
+    private sealed record Tag(int Id, string Name);
+    private void Ignore(int value) { }
+    private void ToggleSelection(int value) { if (!SelectedValues.Remove(value) && SelectedValues.Count < 3) SelectedValues.Add(value); }
+    private Task<bool> Create(string name) { var id = Tags.Count + 1; Tags.Add(new(id, name)); SelectedValues.Add(id); return Task.FromResult(true); }
+    private void Clear() => SelectedValues.Clear();
+}

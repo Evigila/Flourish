@@ -8,8 +8,10 @@
         <link rel="stylesheet" href="@Theme.StylesheetHref" />
     }
 </HeadContent>
-<ApplicationShell>@Body</ApplicationShell>
+<ApplicationShell OwnsDocument="OwnsDocument">@Body</ApplicationShell>
 
 @code {
+    /// <summary>Owns the viewport and leaves scrolling to the shell's content track. Disable for embedded demonstrations.</summary>
+    [Parameter] public bool OwnsDocument { get; set; } = true;
     private IThemeProvider? Theme => Services.GetService(typeof(IThemeProvider)) as IThemeProvider;
 }

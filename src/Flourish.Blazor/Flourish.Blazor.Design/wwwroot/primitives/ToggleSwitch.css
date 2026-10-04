@@ -1,32 +1,42 @@
 .toggle-switch {
-    --toggle-track-color: var(--muted);
+    --toggle-track-color: var(--f-muted);
     --toggle-thumb-offset: 0;
     gap: 12px;
     padding: 8px 0;
     border: 0;
     border-radius: var(--control-radius);
     background: transparent;
-    color: var(--ink);
+    color: var(--f-text);
     font: inherit;
     font-weight: var(--field-label-weight);
     text-align: start;
     cursor: pointer;
 }
 .toggle-switch[aria-checked="true"] {
-    --toggle-track-color: var(--accent);
+    --toggle-track-color: var(--f-primary);
     --toggle-thumb-offset: 22px;
 }
 .toggle-switch:hover:not(:disabled) {
-    color: var(--accent-strong);
+    color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
 }
 .toggle-switch:active:not(:disabled) .toggle-indicator-track {
-    filter: brightness(.9);
+    background: var(--f-target-click);
 }
 .toggle-switch:focus-visible {
-    outline: 3px solid var(--accent-strong);
+    outline: 3px solid var(--f-accent);
     outline-offset: 4px;
 }
 .toggle-switch:disabled {
     opacity: .55;
     cursor: default;
+}
+
+.toggle-switch:active:not(:disabled) {
+    color: var(--f-text);
+    background: var(--f-target-click);
+}
+
+.toggle-switch[aria-checked="true"]:active:not(:disabled) .toggle-indicator-track {
+    background: var(--f-primary-click);
 }

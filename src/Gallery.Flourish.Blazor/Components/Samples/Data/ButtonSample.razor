@@ -1,0 +1,53 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Button")]
+
+@if (Preview)
+{
+    <div class="f-inline-actions">
+        @foreach (var variant in Variants) { <Button Variant="variant" Text="@variant.ToString()" /> }
+    </div>
+    <div class="f-inline-actions">
+        @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" Text="@variant.ToString()" /> }
+    </div>
+    <div class="f-inline-actions">
+        @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" aria-label="@($"{variant}：新增")" /> }
+        <Button Text="不可用" Disabled="true" />
+        <Button Icon="save" Text="保存" Busy="true" BusyLabel="处理中" />
+    </div>
+}
+else
+{
+    <div class="f-inline-actions">
+        <Button Icon="save" Text="保存草稿" Busy="Saving" BusyLabel="正在保存" OnClick="SaveAsync" />
+        <Button Variant="ButtonVariant.Outlined" Icon="restart_alt" Text="重置" Disabled="Saving" OnClick="Reset" />
+        <Button Variant="ButtonVariant.Quiet" Icon="info" Text="使用说明" OnClick="() => HelpVisible = !HelpVisible" />
+    </div>
+    <p role="status">已保存 @SavedCount 次。</p>
+    @if (HelpVisible) { <p>保存使用 Filled，重置使用 Outlined，低优先级操作使用 Quiet。</p> }
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly ButtonVariant[] Variants = [ButtonVariant.Filled, ButtonVariant.Outlined,
+        ButtonVariant.Danger, ButtonVariant.Quiet, ButtonVariant.Underline, ButtonVariant.Elevated];
+    private bool Saving, HelpVisible;
+    private int SavedCount;
+    private async Task SaveAsync()
+    {
+        if (Saving) return;
+        Saving = true;
+        try { await Task.Delay(600); SavedCount++; }
+        finally { Saving = false; }
+    }
+    private void Reset() => SavedCount = 0;
+}

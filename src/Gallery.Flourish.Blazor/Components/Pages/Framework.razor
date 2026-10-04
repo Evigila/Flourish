@@ -1,0 +1,166 @@
+@page "/framework"
+@page "/framework/{Topic}"
+<PageTitle>@Title · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="@Title" />
+    @if (TopicKey == "start")
+    {
+    <Section Title="接入应用">
+        <p>引用 Framework 获得控件、布局和交互。Design 提供可选主题，Shared 和 Abstract 由项目引用自动带入。</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Startup" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Startup" Language="csharp" /></DisplayBoard>
+        <p>保留标准 Blazor App 和 Router，将 RouteView 的默认布局设为 ApplicationLayout。应用提供路由页面；框架根据 Program 的配置创建顶部栏和导航。</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Host" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Host" Language="razor" /></DisplayBoard>
+    </Section>
+    }
+    @if (TopicKey == "topbar")
+    {
+    <Section Title="顶部栏">
+        <p>SetAppName 和 SetIcon 设置名称与图标。AddMenu 创建下拉菜单；鼠标悬浮时展开，离开按钮与菜单区域时关闭，菜单项通过命令键执行。InjectToLeft、InjectToCenter、InjectToRight 接收组件类型，由 Blazor 创建组件并完成依赖注入。</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@TopBar" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@TopBar" Language="csharp" /></DisplayBoard>
+        <p>图标路径相对于应用根目录。StatusButton 是应用自己的 Razor 组件，可以注入服务并管理状态。SetNavigationToggle 控制窄窗口的二级导航入口。</p>
+    </Section>
+    }
+    @if (TopicKey == "navigation")
+    {
+    <Section Title="导航">
+        <p>AddNav 创建页面入口，并可配置二级目录。AddSubNav 的 configure 回调继续使用 ISubNavigationBuilder，创建三级页面入口。AddNavButton 直接执行命令。Fixed 版本固定在一级导航底部。按钮不能配置二级目录。</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Navigation" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Navigation" Language="csharp" /></DisplayBoard>
+        <p>导航目标使用应用内路径；根目录设置 exact: true。框架根据最具体路由选择各层入口，并自动展开所属分类。分类名称打开自己的页面；相邻三角按钮展开或收起子项，不触发导航。名称和三角共用当前路由的选中状态，展开状态另行记录。标签保持单行，超出时省略。子项在同一栏内共用表面色的圆角背景，没有额外缩进或导航列；导航保留滚动能力并隐藏滚动条。</p>
+        <p>不带回调的 AddSubNav 调用保持兼容。exact 和 disabled 参数适用于各层；禁用分类也会禁用其子项。展开状态跟随当前外壳实例；刷新后会展开当前页面所属分类。</p>
+    </Section>
+    }
+    @if (TopicKey == "commands")
+    {
+    <Section Title="命令处理">
+        <p>在 CommandParser 注册菜单和导航按钮使用的命令键。解析器通过 DI 创建，生命周期跟随当前用户连接。未注册或不可执行的命令显示为不可用。</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Commands" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Commands" Language="csharp" /></DisplayBoard>
+    </Section>
+    }
+    @if (TopicKey == "layout")
+    {
+    <Section Title="页面布局">
+        <p>ConfigureLayout 设置内容宽度与流式轨道。页面使用 PageBody、PageHeading 和 Section；标题随内容滚动收缩，框架保留顶部栏和导航。</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Layout" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Layout" Language="csharp" /></DisplayBoard>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Page" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Page" Language="razor" /></DisplayBoard>
+    </Section>
+    }
+    @if (TopicKey == "interactions")
+    {
+    <Section Title="内置交互">
+        <UniformGrid>
+            <UniformGridItem Title="导航" Icon="navigation" Text="路由选择、窄窗口展开与关闭、提示、焦点和跳转到内容。" />
+            <UniformGridItem Title="标题" Icon="title" Text="滚动时收缩，接近顶部时恢复；长标题换行。" />
+            <UniformGridItem Title="弹层" Icon="layers" Text="菜单键盘操作、外部点击关闭；对话框限制焦点并在关闭后返回触发控件。" />
+            <UniformGridItem Title="输入" Icon="input" Text="绑定值、EditForm 验证、标签与错误关联；搜索支持延迟和取消。" />
+            <UniformGridItem Title="表格" Icon="table_chart" Text="本地搜索、排序、分页、显示列、列表与卡片视图、列宽调整。" />
+        </UniformGrid>
+        <div class="f-inline-actions">
+            <Button Variant="ButtonVariant.Underline" Href="/controls" Text="查看控件参数与变体" />
+            <Button Variant="ButtonVariant.Underline" Href="/examples" Text="运行组合案例" />
+            <Button Variant="ButtonVariant.Underline" Href="/foundations" Text="配置主题" />
+        </div>
+    </Section>
+    }
+    @if (!Topics.ContainsKey(TopicKey))
+    {
+        <EmptyState Title="没有此主题"><Actions><Button Variant="ButtonVariant.Underline" Href="/framework" Text="返回目录" /></Actions></EmptyState>
+    }
+</PageBody>
+@code {
+    [Parameter] public string? Topic { get; set; }
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Topic = null;
+        return base.SetParametersAsync(parameters);
+    }
+    private string TopicKey => Topic?.ToLowerInvariant() ?? "start";
+    private string Title => Topics.GetValueOrDefault(TopicKey, "页面不存在");
+    private static readonly IReadOnlyDictionary<string, string> Topics = new Dictionary<string, string>
+    {
+        ["start"] = "接入应用",
+        ["topbar"] = "顶部栏",
+        ["navigation"] = "导航",
+        ["commands"] = "命令处理",
+        ["layout"] = "页面布局",
+        ["interactions"] = "内置交互",
+    };
+
+    private const string Startup = """
+        using ArkheideSystem.Flourish.Blazor;
+
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+        builder.Services.AddFlourishFramework(framework => framework
+            .ConfigureTopBar(top => top.SetAppName("My application"))
+            .ConfigureNavigation(nav => nav.AddNav("主页", "home", "/", exact: true)));
+        builder.Services.AddFlourishDesign(); // Optional
+
+        var app = builder.Build();
+        app.UseAntiforgery();
+        app.MapStaticAssets().ShortCircuit();
+        app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+        app.Run();
+        """;
+    private const string Host = """
+        <!-- Routes.razor: inside Router's Found fragment -->
+        <RouteView RouteData="routeData" DefaultLayout="typeof(ApplicationLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+
+        <!-- App.razor: inside the standard head/body -->
+        <HeadOutlet @rendermode="InteractiveServer" />
+        <Routes @rendermode="InteractiveServer" />
+        <script src="_framework/blazor.web.js"></script>
+        """;
+    private const string TopBar = """
+        framework.ConfigureTopBar(top => top
+            .SetAppName("My application")
+            .SetIcon("app.svg", "")
+            .AddMenu("操作", menu => menu
+                .AddMenuItem("打开案例", "open-examples")
+                .AddMenuItem("暂不可用", "unavailable", disabled: true))
+            .InjectToRight<StatusButton>());
+        """;
+    private const string Navigation = """
+        framework.ConfigureNavigation(nav => nav
+            .AddNav("主页", "home", "/", exact: true)
+            .AddNav("案例", "list", "/examples", sub => sub
+                .AddSubNav("表单", "edit", "/forms", third => third
+                    .AddSubNav("新建", "add", "/forms/create", exact: true)
+                    .AddSubNav("编辑", "edit", "/forms/edit", exact: true), exact: true))
+            .AddNavButton("刷新", "search", "refresh")
+            .AddFixedNav("设置", "settings", "/settings")
+            .AddFixedNavButton("帮助", "page", "help"));
+        """;
+    private const string Commands = """
+        // Program.cs
+        framework.SetCommandParser<CommandParser>();
+
+        // CommandParser.cs
+        using ArkheideSystem.Flourish.Abstract;
+        using Microsoft.AspNetCore.Components;
+
+        public sealed class CommandParser(NavigationManager navigation) : ICommandParser
+        {
+            public void RegisterCommands(ICommandRegistrar commands)
+            {
+                commands.Register("open-examples", () => navigation.NavigateTo("/examples"));
+            }
+        }
+        """;
+    private const string Layout = """
+        framework.ConfigureLayout(layout => layout
+            .SetContentWidth(1180)
+            .SetFluidContent(true));
+        """;
+    private const string Page = """
+        @page "/example"
+        @using ArkheideSystem.Flourish.Blazor.Components
+
+        <PageBody>
+            <PageHeading Title="案例" />
+            <Section Title="内容">
+                <p>页面提供内容和数据。</p>
+            </Section>
+        </PageBody>
+        """;
+}

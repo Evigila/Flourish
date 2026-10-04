@@ -1,6 +1,6 @@
 .form-field-grid :is(.reference-field, .tag-field) {
     gap: var(--field-label-gap);
-    color: var(--ink-soft);
+    color: var(--f-muted);
     font-size: 17px;
 }
 .form-field-grid :is(.reference-field, .tag-field) > :is(strong, .field-label) {
@@ -10,7 +10,7 @@
 
 .reference-field {
     gap: var(--field-label-gap);
-    color: var(--ink-soft);
+    color: var(--f-muted);
     font-size: 17px;
 }
 .field-label {

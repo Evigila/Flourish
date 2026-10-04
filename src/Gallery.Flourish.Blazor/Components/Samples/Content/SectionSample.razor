@@ -1,0 +1,25 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Section")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview)
+{
+    <Section />
+    <Section Title="有标题的空区域" />
+    <Section Title="带操作的空区域"><Actions><Button Disabled="true">操作</Button></Actions></Section>
+}
+else
+{
+    <Section Title="模拟联系方式">
+        <ChildContent><p>虚构联系人：演示成员；邮箱：sample@example.com。</p><p role="status">检查次数：@Checks</p></ChildContent>
+        <Actions><Button OnClick="() => Checks++">检查模拟信息</Button></Actions>
+    </Section>
+}
+@code { [Parameter] public bool Preview { get; set; } private int Checks; }

@@ -1,0 +1,47 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DisplayBoard")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@using ArkheideSystem.Flourish.Blazor.Components
+@if (Preview)
+{
+    <DisplayBoard />
+    <DisplayBoard Dotted="false" CopyText="" CopyLabel="复制代码" CopiedLabel="已复制">
+        <CodeBlock Text="" Language="razor" />
+    </DisplayBoard>
+}
+else
+{
+    <CheckBox Label="显示点阵" @bind-Value="Dotted" />
+    <CheckBox Label="内容居中" @bind-Value="Centered" />
+    <DisplayBoard Dotted="Dotted" Centered="Centered">
+        <Button Icon="add" Text="创建演示项" OnClick="() => Count++" />
+        <span role="status">已创建 @Count 个演示项</span>
+    </DisplayBoard>
+    <DisplayBoard Dotted="false" CopyText="@Example"
+                  CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…"
+                  CopyFailedLabel="未能复制，请选中代码手动复制。">
+        <CodeBlock Text="@Example" Language="razor" />
+    </DisplayBoard>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Dotted = true;
+    private bool Centered = true;
+    private int Count;
+    private const string Example = """
+        @using ArkheideSystem.Flourish.Blazor.Components
+        <CheckBox Label="显示点阵" @bind-Value="Dotted" />
+        <CheckBox Label="内容居中" @bind-Value="Centered" />
+        <DisplayBoard Dotted="Dotted" Centered="Centered">
+            <Button Icon="add" Text="创建演示项" OnClick="() => Count++" />
+            <span role="status">已创建 @Count 个演示项</span>
+        </DisplayBoard>
+        @code {
+            private bool Dotted = true;
+            private bool Centered = true;
+            private int Count;
+        }
+        """;
+}

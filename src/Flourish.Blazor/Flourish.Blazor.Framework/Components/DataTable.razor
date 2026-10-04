@@ -13,7 +13,7 @@
         <div class="f-data-search">
             <label>
                 <span>@Text.SearchBy</span>
-                <select value="@_searchColumn" @onchange="ChangeSearchColumn" aria-label="@Text.SearchBy">
+                <select class="f-input f-select" value="@_searchColumn" @onchange="ChangeSearchColumn" aria-label="@Text.SearchBy">
                     <option value="">@Text.AllColumns</option>
                     @foreach (var column in Columns.Where(column => column.Searchable))
                     {
@@ -46,12 +46,13 @@
                 </button>
             </div>
             <details class="f-data-display">
-                <summary>@Text.Display</summary>
-                <div class="f-data-display-options">
+                <summary class="f-dropdown-trigger">@Text.Display <ExpansionIndicator /></summary>
+                <div class="f-data-display-options f-dropdown-panel">
                     @foreach (var column in Columns)
                     {
-                        <label>
+                        <label class="f-dropdown-item @(!_hidden.Contains(column.Key) ? "is-selected" : null)">
                             <input type="checkbox" checked="@(!_hidden.Contains(column.Key))"
+                                   data-f-display-column="@column.Key"
                                    disabled="@(!column.CanHide || (!_hidden.Contains(column.Key) && _visibleColumns.Count == 1))"
                                    @onchange="() => ToggleColumn(column.Key)" />
                             <span>@column.Header</span>
@@ -79,27 +80,31 @@
             <table @ref="_table" class="f-data-table" data-f-table>
                 <caption class="f-data-sr-only">@Label</caption>
                 <colgroup>
-                    @foreach (var column in _visibleColumns)
+                    @for (var i = 0; i < _visibleColumns.Count; i++)
                     {
-                        <col data-f-column="@column.Key" />
+                        var column = _visibleColumns[i];
+                        <col data-f-column="@column.Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)" />
                     }
                     <col class="f-data-spacer" />
                     @if (_hasActions) { <col class="f-data-action-column" /> }
                 </colgroup>
                 <thead>
                     <tr>
-                        @foreach (var column in _visibleColumns)
+                        @for (var i = 0; i < _visibleColumns.Count; i++)
                         {
-                            <th scope="col" data-f-column="@column.Key" aria-sort="@AriaSort(column)">
+                            var column = _visibleColumns[i];
+                            <th scope="col" data-f-column="@column.Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)" aria-sort="@AriaSort(column)">
                                 @if (column.Sortable)
                                 {
-                                    <button type="button" class="f-data-sort" title="@SortHint(column)" @onclick="() => SortColumn(column)">
-                                        <span title="@column.Header">@column.Header</span>
+                                    <Button Variant="ButtonVariant.Quiet" Class="f-data-sort" title="@SortHint(column)" OnClick="@(_ => SortColumn(column))">
+                                        <span class="f-data-sort-label">
+                                            <span class="f-data-sort-text" title="@column.Header">@column.Header</span>
                                         @if (_sortKey == column.Key && _sortDirection != TableSortDirection.Default)
                                         {
                                             <span class="f-data-sort-mark" aria-hidden="true">@(_sortDirection == TableSortDirection.Descending ? "▼" : "▲")</span>
                                         }
-                                    </button>
+                                        </span>
+                                    </Button>
                                 }
                                 else
                                 {
@@ -121,7 +126,7 @@
                         <tr @key="row.Key" class="@(OnRowOpen.HasDelegate ? "f-data-openable" : null)" @ondblclick="() => Open(row.Item)">
                             @for (var i = 0; i < _visibleColumns.Count; i++)
                             {
-                                <td data-f-column="@_visibleColumns[i].Key"><span class="f-data-cell" title="@row.Values[i]">@Shown(row.Values[i])</span></td>
+                                <td data-f-column="@_visibleColumns[i].Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)"><span class="f-data-cell" title="@row.Values[i]">@Shown(row.Values[i])</span></td>
                             }
                             <td class="f-data-spacer" aria-hidden="true"></td>
                             @if (_hasActions)
@@ -169,7 +174,8 @@
     [Parameter, EditorRequired] public IReadOnlyList<TableColumn<TItem>> Columns { get; set; } = Array.Empty<TableColumn<TItem>>();
     [Parameter] public IReadOnlyList<RowAction<TItem>> Actions { get; set; } = Array.Empty<RowAction<TItem>>();
     [Parameter] public bool Searchable { get; set; } = true;
-    [Parameter] public int PageSize { get; set; } = 20;
+    [Parameter] public int PageSize { get; set; } = 10;
+    [Parameter] public EventCallback<int> PageSizeChanged { get; set; }
     [Parameter] public TableView View { get; set; } = TableView.Table;
     [Parameter] public EventCallback<TableView> ViewChanged { get; set; }
     [Parameter] public EventCallback<TItem> OnRowOpen { get; set; }
@@ -193,6 +199,8 @@
     private TableSortDirection _sortDirection;
     private TableView _view;
     private TableView _incomingView;
+    private int _pageSize;
+    private int _incomingPageSize;
     private bool _initialized;
     private bool _hasActions;
     private int _page = 1;
@@ -203,9 +211,9 @@
     private bool _disposed;
     private bool _resizeDirty = true;
     private bool ShowCounts => Items.Count > 0 || (!Loading && string.IsNullOrWhiteSpace(Error));
-    private int PageCount => Math.Max(1, (int)Math.Ceiling(_processed.Count / (double)PageSize));
-    private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * PageSize + 1;
-    private int LastItem => (int)Math.Min((long)_page * PageSize, _processed.Count);
+    private int PageCount => Math.Max(1, (int)Math.Ceiling(_processed.Count / (double)_pageSize));
+    private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * _pageSize + 1;
+    private int LastItem => (int)Math.Min((long)_page * _pageSize, _processed.Count);
     private string SearchLabel => Columns.FirstOrDefault(column => column.Key == _searchColumn)?.Header ?? Text.SearchContent;
 
     protected override void OnParametersSet()
@@ -215,6 +223,7 @@
             || Columns.Any(column => string.IsNullOrWhiteSpace(column.Key)))
             throw new ArgumentException("Each column must have a nonempty unique key.", nameof(Columns));
         if (!_initialized || _incomingView != View) { _view = View; _incomingView = View; }
+        if (!_initialized || _incomingPageSize != PageSize) { _pageSize = PageSize; _incomingPageSize = PageSize; }
         _initialized = true;
         _hidden.RemoveWhere(key => Columns.All(column => column.Key != key || !column.CanHide));
         if (!string.IsNullOrEmpty(_searchColumn) && Columns.All(column => column.Key != _searchColumn || !column.Searchable)) _searchColumn = string.Empty;
@@ -242,9 +251,9 @@
         if (_visibleColumns.Count == 0 && Columns.Count > 0) { _hidden.Remove(Columns[0].Key); _visibleColumns = new[] { Columns[0] }; }
         _processed = TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable ? _query : null, _searchColumn, Culture),
             Columns.FirstOrDefault(column => column.Key == _sortKey), _sortDirection, Culture);
-        _page = TableData<TItem>.ClampPage(_page, _processed.Count, PageSize);
-        var offset = (_page - 1) * PageSize;
-        _rows = _processed.Skip(offset).Take(PageSize).Select((item, index) =>
+        _page = TableData<TItem>.ClampPage(_page, _processed.Count, _pageSize);
+        var offset = (_page - 1) * _pageSize;
+        _rows = _processed.Skip(offset).Take(_pageSize).Select((item, index) =>
         {
             var values = _visibleColumns.Select(column => TableData<TItem>.Display(item, column, Culture)).ToArray();
             var label = RowLabel?.Invoke(item) ?? values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? $"Record {offset + index + 1}";
@@ -279,17 +288,33 @@
             ? $"{column.Header}: {Text.SortAscending}" : $"{column.Header}: {Text.SortDefault}";
     private Task Open(TItem item) => OnRowOpen.HasDelegate ? OnRowOpen.InvokeAsync(item) : Task.CompletedTask;
     private static string Shown(string value) => string.IsNullOrEmpty(value) ? "—" : value;
-    private void MovePage(int page) { _page = TableData<TItem>.ClampPage(page, _processed.Count, PageSize); Rebuild(); }
+    private void MovePage(int page) { _page = TableData<TItem>.ClampPage(page, _processed.Count, _pageSize); Rebuild(); }
     private void SetPage(ChangeEventArgs args) { if (int.TryParse(args.Value?.ToString(), out var page)) MovePage(page); }
+    private async Task ChangePageSize(ChangeEventArgs args)
+    {
+        if (!int.TryParse(args.Value?.ToString(), out var pageSize) || pageSize < 1 || pageSize == _pageSize) return;
+        _pageSize = pageSize;
+        _page = 1;
+        Rebuild();
+        await PageSizeChanged.InvokeAsync(pageSize);
+    }
+
+    private IEnumerable<int> PageSizes => new[] { 10, 20, 50, 100, _pageSize }.Distinct().Order();
 
     private RenderFragment Pager() => @<div class="f-data-pager-row">
-        <div class="f-data-count"><span>@Text.Items @FirstItem–@LastItem @Text.Of</span><strong>@_processed.Count</strong></div>
+        <div class="f-data-count"><span>@string.Format(Culture, Text.ItemRangeFormat, Text.Items, FirstItem, LastItem, Text.Total, _processed.Count)</span></div>
         <div class="f-data-pager" role="group" aria-label="@Text.Page">
             <button type="button" aria-label="@Text.PreviousPage" disabled="@(_page <= 1)" @onclick="() => MovePage(_page - 1)">‹</button>
+            <button type="button" aria-label="@Text.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
             <span class="f-data-page-input"><input type="number" aria-label="@Text.Page" min="1" max="@PageCount" value="@_page" @onchange="SetPage" data-f-page /></span>
             <span class="f-data-page-total">@Text.Of @PageCount</span>
-            <button type="button" aria-label="@Text.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
         </div>
+        <label class="f-data-page-size">
+            <span>@Text.ItemsPerPage</span>
+            <select class="f-input f-select" value="@_pageSize" @onchange="ChangePageSize" data-f-page-size>
+                @foreach (var pageSize in PageSizes) { <option value="@pageSize">@pageSize</option> }
+            </select>
+        </label>
     </div>;
 
 

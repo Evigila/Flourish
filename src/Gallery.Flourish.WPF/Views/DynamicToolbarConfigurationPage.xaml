@@ -1,0 +1,40 @@
+<Page
+  x:Class="ArkheideSystem.Gallery.Flourish.WPF.Views.DynamicToolbarConfigurationPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:culture="clr-namespace:ArkheideSystem.Essential.Culture"
+  xmlns:flourish="http://schemas.arkheide.system/flourish"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Background="Transparent"
+>
+  <flourish:PageBody>
+    <flourish:HeaderChunk
+      Title="{culture:Localize Key=Application_DynamicToolbar_2B28D7DF}"
+      Content="{culture:Localize Key=Shell_AssociateToolbarActionsWithThePageTypeThatOwnsTheirWorkflow_973E5D96}"
+      PresenterMode="Split"
+      PresenterPosition="Right"
+    />
+
+    <flourish:Chunk
+      Title="{culture:Localize Key=Shell_PageActions_ADC00F39}"
+      Content="{culture:Localize Key=Shell_TheDynamicToolbarChangesItsCommandsWithTheActivePageKeepingPageS_B6361E4C}"
+    >
+      <StackPanel>
+        <flourish:Card
+          Icon="&#xE945;"
+          Title="{culture:Localize Key=Shell_ToolbarItems_5F1CD1DF}"
+          Content="{culture:Localize Key=Shell_OnlyTheItemsRegisteredForTheActivePageAreShownAndTheirCommandKey_DBEF7827}"
+        />
+        <flourish:CodeSpace
+          Margin="{DynamicResource FlourishCodeSpacePeerMargin}"
+          Text="builder&#10;    .ConfigureToolbar(toolbar =&gt; toolbar&#10;        .SetEnabled()&#10;        // Icons are shown by default.&#10;        .Set&lt;ReportsPage&gt;(&#10;            new ToolbarItem(&quot;Refresh&quot;, &quot;\uE72C&quot;, &quot;cmd_reports_refresh&quot;),&#10;            new ToolbarItem(&quot;Export&quot;, &quot;\uE898&quot;, &quot;cmd_reports_export&quot;))&#10;        // Set iconOnly: false for actions that show text.&#10;        .Set&lt;EditorPage&gt;(&#10;            iconOnly: false,&#10;            new ToolbarItem(&quot;Preview&quot;, &quot;\uE8A7&quot;, &quot;cmd_editor_preview&quot;)));"
+        />
+      </StackPanel>
+    </flourish:Chunk>
+    <flourish:Chunk Title="{culture:Localize Key=Controls_Reference_71BF9093}">
+      <UniformGrid Columns="2">
+        <flourish:CardButton Margin="0,0,8,0" Content="{culture:Localize Key=Controls_BrowseTheFlourishSourceRepository_5CC28F39}" Icon="&#xE943;" IsEnabled="False" Title="{culture:Localize Key=Controls_GitHubRepository_50555492}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+        <flourish:CardButton Margin="8,0,0,0" Content="{culture:Localize Key=Shell_ReadTheCanonicalFlourishDocumentation_7BB05CDB}" Icon="&#xE946;" IsEnabled="False" Title="{culture:Localize Key=Shell_FlourishDocumentation_A1D1605B}" ToolTip="{culture:Localize Key=Controls_ExternalNavigationIsNotAvailableInGallery_E2F1482A}" />
+      </UniformGrid>
+    </flourish:Chunk>
+  </flourish:PageBody>
+</Page>

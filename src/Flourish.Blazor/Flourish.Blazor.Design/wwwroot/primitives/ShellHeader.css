@@ -1,15 +1,14 @@
 .shell-header {
     width: 100%;
     height: var(--topbar-height, 68px);
-    color: var(--chrome-ink);
-    background: var(--chrome);
-    border-bottom: 1px solid var(--chrome-line);
+    color: var(--f-chrome-ink, var(--f-surface));
+    background: var(--f-chrome, var(--f-primary));
+    border-bottom: 1px solid var(--f-border);
 }
 .shell-header-brand {
     align-self: stretch;
     max-width: min(58vw, 560px);
     color: inherit;
-    border-right: 1px solid var(--chrome-line);
     text-decoration: none;
 }
 .shell-header-logo {
@@ -37,7 +36,7 @@
     font-weight: 760;
 }
 .shell-header-context {
-    color: var(--shell-context-color, var(--surface-context));
+    color: var(--shell-context-color, var(--f-chrome-ink, var(--f-surface)));
     font-weight: 650;
 }
 .shell-header-actions {
@@ -49,7 +48,7 @@
     height: 48px;
     gap: 10px;
     padding: 0 15px;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
     background: transparent;
     border: 0;
     border-radius: 14px;
@@ -61,17 +60,17 @@
     text-overflow: ellipsis;
 }
 a.shell-header-identity:hover {
-    background: var(--chrome-hover);
+    background: var(--f-preview-dark);
 }
 a.shell-header-identity:focus-visible {
-    outline: 3px solid var(--chrome-ink);
+    outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 .shell-header-actions .shell-header-action {
     width: 48px;
     height: 48px;
     padding: 0;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
     background: transparent;
     border: 0;
     border-radius: 14px;
@@ -79,17 +78,17 @@ a.shell-header-identity:focus-visible {
     text-decoration: none;
 }
 .shell-header-actions .shell-header-action:hover {
-    background: var(--chrome-hover);
+    background: var(--f-preview-dark);
 }
 .shell-header-actions .shell-header-action:focus-visible {
-    outline: 3px solid var(--chrome-ink);
+    outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 .shell-header-actions .shell-header-action[data-tooltip]::after {
     padding: 8px 12px;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
+    color: var(--f-text);
+    background: var(--f-surface);
+    border: 1px solid var(--f-border);
     border-radius: 10px;
     font-size: 17px;
     font-weight: 400;
@@ -102,7 +101,7 @@ a.shell-header-identity:focus-visible {
 .shell-header-actions .shell-header-text-action {
     height: 48px;
     padding: 0 14px;
-    color: var(--chrome-ink);
+    color: var(--f-chrome-ink, var(--f-surface));
     background: transparent;
     border: 0;
     border-radius: 14px;
@@ -111,10 +110,10 @@ a.shell-header-identity:focus-visible {
     text-decoration: none;
 }
 .shell-header-actions .shell-header-text-action:hover {
-    background: var(--chrome-hover);
+    background: var(--f-preview-dark);
 }
 .shell-header-actions .shell-header-text-action:focus-visible {
-    outline: 3px solid var(--chrome-ink);
+    outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
 @media (max-width: 760px) {
@@ -145,4 +144,27 @@ a.shell-header-identity:focus-visible {
 .shell-header-actions .shell-header-text-action {
     padding-inline: 10px;
 }
+}
+
+a.shell-header-identity:active {
+    background: var(--f-click-dark);
+}
+
+.shell-header-actions .shell-header-action:active {
+    background: var(--f-click-dark);
+}
+
+.shell-header-actions .shell-header-text-action:active {
+    background: var(--f-click-dark);
+}
+
+a.shell-header-brand:hover {
+    background: var(--f-preview-dark);
+}
+a.shell-header-brand:focus-visible {
+    outline: 3px solid var(--f-accent);
+    outline-offset: -3px;
+}
+a.shell-header-brand:active {
+    background: var(--f-click-dark);
 }

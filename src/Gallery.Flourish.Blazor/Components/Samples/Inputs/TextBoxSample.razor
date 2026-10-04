@@ -1,0 +1,38 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("TextBox")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <FormLayout>
+        <Field Label="单行文本" Id="@(Prefix + "-single")"><TextBox @bind-Value="EmptyText" /></Field>
+        <Field Label="多行文本" Id="@(Prefix + "-multi")" FullWidth="true"><TextBox @bind-Value="EmptyDescription" Multiline="true" Rows="3" /></Field>
+        <Field Label="密码" Id="@(Prefix + "-password")"><TextBox @bind-Value="EmptyPassword" Type="password" /></Field>
+        <Field Label="禁用" Id="@(Prefix + "-disabled")"><TextBox @bind-Value="EmptyDisabled" Disabled="true" /></Field>
+    </FormLayout>
+}
+else
+{
+    <FormLayout>
+        <Field Label="活动名称" Id="@(Prefix + "-name")"><TextBox @bind-Value="Name" MaxLength="80" Disabled="Locked" /></Field>
+        <Field Label="活动介绍" Id="@(Prefix + "-description")" FullWidth="true"><TextBox @bind-Value="Description" Multiline="true" Rows="3" MaxLength="300" Disabled="Locked" /></Field>
+    </FormLayout>
+    <ToggleSwitch Label="模拟禁止编辑" @bind-Value="Locked" OnLabel="禁止" OffLabel="可编辑" />
+    <p role="status">当前名称：@Name；介绍长度：@(Description?.Length ?? 0) / 300。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-text-" + Guid.NewGuid().ToString("N");
+    private string? EmptyText, EmptyDescription, EmptyPassword, EmptyDisabled;
+    private string? Name = "春日阅读会", Description = "虚构示例：周五下午分享一本近期读过的书。";
+    private bool Locked;
+}

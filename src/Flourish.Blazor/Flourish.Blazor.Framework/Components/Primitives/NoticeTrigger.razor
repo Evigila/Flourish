@@ -1,6 +1,22 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 <span class="notice-trigger @NoticePresentation.CssClass(Severity)">
-    <button class="notice-trigger-button" type="button" aria-describedby="@DescriptionId">@Label</button>
+    <button class="notice-trigger-button" type="button" aria-label="@Label" aria-describedby="@DescriptionId">
+        <svg class="notice-trigger-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            @if (Severity == NoticeSeverity.Error)
+            {
+                <path d="M6 6 18 18 M18 6 6 18" />
+            }
+            else if (Severity == NoticeSeverity.Success)
+            {
+                <path d="m4 12 5 5 11-11" />
+            }
+            else
+            {
+                <path d="M12 4v10" />
+                <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+            }
+        </svg>
+    </button>
     <span id="@DescriptionId" class="notice-trigger-content" role="note">@ChildContent</span>
 </span>
 

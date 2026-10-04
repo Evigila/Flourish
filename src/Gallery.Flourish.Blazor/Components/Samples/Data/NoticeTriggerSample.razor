@@ -1,0 +1,44 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.NoticeTrigger")]
+
+@if (Preview)
+{
+    <div class="f-inline-actions">
+        @foreach (var severity in Enum.GetValues<ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity>())
+        {
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="severity">说明内容</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger>
+        }
+    </div>
+}
+else
+{
+    <div class="f-inline-actions">
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = Primitives.NoticeSeverity.Warning">待检查</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = Primitives.NoticeSeverity.Error">校验失败</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = Primitives.NoticeSeverity.Success">校验通过</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = Primitives.NoticeSeverity.Information">补充信息</Button>
+    </div>
+    <p>虚构记录 DEMO-001 <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="Severity">@Message</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger></p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private Primitives.NoticeSeverity Severity = Primitives.NoticeSeverity.Warning;
+    private string Message => Severity switch
+    {
+        Primitives.NoticeSeverity.Error => "虚构记录缺少名称，需要补充。",
+        Primitives.NoticeSeverity.Success => "虚构记录已通过本地检查。",
+        Primitives.NoticeSeverity.Information => "检查结果仅保留在当前页面；离开页面后不会保存。",
+        _ => "虚构记录尚待检查联系方式。"
+    };
+}

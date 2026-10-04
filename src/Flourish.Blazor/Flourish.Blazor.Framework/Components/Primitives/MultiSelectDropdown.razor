@@ -7,12 +7,15 @@
     <button @ref="Trigger" id="@(Id + "-trigger")" class="multi-select-trigger selection-trigger" type="button"
             aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(Id + "-options")" aria-labelledby="@TriggerLabelledBy"
             disabled="@Disabled" @onclick="Toggle">
-        <span>@SelectionText</span>
-        <span class="multi-select-chevron selection-chevron" aria-hidden="true"></span>
+        <span title="@SelectionText">@SelectionText</span>
+        <ExpansionIndicator Expanded="IsOpen" Class="multi-select-chevron selection-chevron" />
     </button>
     @if (IsOpen)
     {
         <div id="@(Id + "-options")" class="multi-select-options selection-panel" role="group" aria-labelledby="@LabelledBy">
+            <div class="selection-panel-width" aria-hidden="true">
+                @foreach (var item in Items) { <span class="selection-option">@TextSelector(item)</span> }
+            </div>
             @if (CreateRequested is not null)
             {
                 <input class="multi-select-search selection-search" type="search" form="@(Id + "-popup-search")"

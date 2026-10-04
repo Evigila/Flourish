@@ -1,0 +1,31 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.FilledIdentityCard")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@if (Preview)
+{
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FilledIdentityCard Facts="EmptyFacts" Columns="false" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FilledIdentityCard Facts="EmptyFacts" Columns="true" />
+}
+else
+{
+    <ToggleSwitch Label="显示模拟侧栏" @bind-Value="WithSidebar" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FilledIdentityCard Facts="Facts" SideFacts="@(WithSidebar ? SideFacts : EmptyFacts)" Columns="true" />
+    <p>身份事实来自本地虚构集合，主值与标识符分别标记。</p>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool WithSidebar = true;
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.IdentityFact> EmptyFacts = [];
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.IdentityFact> Facts =
+    [ new("名称", "演示成员", IsPrimary: true), new("编号", "DEMO-001", IsIdentifier: true) ];
+    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.IdentityFact> SideFacts = [ new("模拟角色", "观察员") ];
+}

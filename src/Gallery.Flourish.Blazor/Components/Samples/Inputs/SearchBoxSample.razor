@@ -1,0 +1,33 @@
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SearchBox")]
+@using System
+@using System.Linq
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <SearchBox Label="搜索" @bind-Value="EmptyQuery" />
+    <SearchBox Label="禁用搜索" @bind-Value="EmptyDisabled" Disabled="true" />
+}
+else
+{
+    <SearchBox Label="搜索示例活动" @bind-Value="Query" SearchChanged="ApplySearch" DebounceMilliseconds="300" />
+    <ul>
+        @foreach (var item in Matches) { <li>@item</li> }
+    </ul>
+    <p role="status">找到 @Matches.Length 条示例活动。已应用查询：@(AppliedQuery.Length == 0 ? "全部" : AppliedQuery)。</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private string EmptyQuery = "", EmptyDisabled = "", Query = "", AppliedQuery = "";
+    private readonly string[] Activities = ["阅读分享会", "插画工作坊", "户外摄影", "编程交流会"];
+    private string[] Matches => Activities.Where(item => item.Contains(AppliedQuery, StringComparison.OrdinalIgnoreCase)).ToArray();
+    private void ApplySearch(string query) => AppliedQuery = query;
+}

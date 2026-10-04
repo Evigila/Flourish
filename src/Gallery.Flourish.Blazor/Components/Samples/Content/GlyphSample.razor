@@ -1,0 +1,19 @@
+@using ArkheideSystem.Flourish.Abstract
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.Glyph")]
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@if (Preview) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.Glyph Name="person" /><ArkheideSystem.Flourish.Blazor.Components.Primitives.Glyph Name="search" /><ArkheideSystem.Flourish.Blazor.Components.Primitives.Glyph Name="info" /> }
+else
+{
+    <Button Variant="ButtonVariant.Secondary" OnClick="() => Active = !Active"><ArkheideSystem.Flourish.Blazor.Components.Primitives.Glyph Name="person" /> 切换模拟身份</Button>
+    <p role="status">当前虚构身份：@(Active ? "演示成员" : "模拟访客")</p>
+}
+@code { [Parameter] public bool Preview { get; set; } private bool Active; }

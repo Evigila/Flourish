@@ -5,7 +5,7 @@
 .editing-grid-table .masked-input-control {
     color: transparent !important;
     background-color: transparent !important;
-    caret-color: var(--ink, var(--f-text, CanvasText));
+    caret-color: var(--f-text);
 }
 .disclosure-section > summary {
     display: flex;

@@ -8,7 +8,6 @@
     <Authors>ArkheideSystem</Authors>
     <Description>Platform-neutral contracts and application services for Flourish.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/Evigila/Flourish</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -20,7 +19,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\FlourishCulture.Json" LogicalName="Flourish.Core.Assets.FlourishCulture.Json" />
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.8" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />

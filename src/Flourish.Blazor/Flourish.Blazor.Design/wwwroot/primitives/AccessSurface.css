@@ -1,39 +1,39 @@
 .access-surface {
-    --surface-theme-primary: var(--f-primary, #153a32);
-    --surface-theme-accent: var(--f-accent, #16745f);
-    --surface-theme-primary-ink: var(--f-primary-ink, #fff);
-    --surface-theme-accent-ink: var(--f-accent-ink, #fff);
-    --surface-theme-accent-text: var(--f-accent-text, #0e5748);
-    --canvas: color-mix(in srgb, var(--surface-theme-primary) 5%, #fff);
-    --surface: #fff;
-    --surface-alternate: color-mix(in srgb, var(--surface-theme-primary) 7%, #fff);
-    --surface-raised: color-mix(in srgb, var(--surface-theme-primary) 11%, #fff);
-    --ink: color-mix(in srgb, var(--surface-theme-primary) 22%, #102033);
-    --ink-soft: color-mix(in srgb, var(--surface-theme-primary) 16%, #34485c);
-    --muted: color-mix(in srgb, var(--surface-theme-primary) 7%, #526579);
-    --disabled: #8793a0;
-    --line: color-mix(in srgb, var(--surface-theme-primary) 16%, #e8ecf0);
-    --line-strong: color-mix(in srgb, var(--surface-theme-primary) 28%, #d4dce4);
-    --row-hover: color-mix(in srgb, var(--surface-theme-accent) 11%, #fff);
-    --accent: var(--surface-theme-accent);
-    --accent-strong: var(--surface-theme-accent-text);
-    --accent-fill-hover: color-mix(in srgb, var(--surface-theme-accent) 82%, #000);
-    --accent-soft: color-mix(in srgb, var(--surface-theme-accent) 15%, #fff);
-    --focus: var(--surface-theme-accent-text);
+    --surface-theme-primary: var(--f-primary);
+    --surface-theme-accent: var(--f-accent);
+    --surface-theme-primary-ink: var(--f-surface);
+    --surface-theme-accent-ink: var(--f-surface);
+    --surface-theme-accent-text: var(--f-accent);
+    --canvas: var(--f-canvas);
+    --surface: var(--f-surface);
+    --surface-alternate: var(--f-display-board);
+    --surface-raised: var(--f-surface);
+    --ink: var(--f-text);
+    --ink-soft: var(--f-muted);
+    --muted: var(--f-muted);
+    --disabled: var(--f-muted);
+    --line: var(--f-border);
+    --line-strong: var(--f-border);
+    --row-hover: var(--f-target-preview, var(--f-preview-light));
+    --accent: var(--f-accent);
+    --accent-strong: var(--f-accent);
+    --accent-fill-hover: var(--f-primary-preview, var(--f-preview-dark));
+    --accent-soft: var(--f-target-preview, var(--f-preview-light));
+    --focus: var(--f-accent);
     --control-height: 48px;
     --radius-small: 10px;
     --radius-medium: 16px;
     --radius-large: 28px;
     padding: clamp(40px, 7vw, 96px) clamp(20px, 5vw, 72px);
-    color: var(--ink);
-    background: var(--canvas);
+    color: var(--f-text);
+    background: var(--f-canvas);
     font-size: 17px;
     line-height: 1.55;
-    accent-color: var(--surface-theme-accent);
+    accent-color: var(--f-accent);
 }
 
 .access-surface.themed-access-surface {
-    background: var(--surface-alternate);
+    background: var(--f-display-board);
 }
 
 .access-surface .access-panel,
@@ -41,7 +41,7 @@
 width: min(100%, 560px);
     max-width: none;
     padding: 0;
-    color: var(--ink);
+    color: var(--f-text);
     background: transparent;
     border: 0;
     border-radius: 0;
@@ -70,21 +70,21 @@ width: 88px;
 .access-surface .access-brand h1,
 .access-surface .access-brand h1 {
 margin: 0;
-    color: var(--ink);
-    font-size: clamp(42px, 7vw, 68px);
+    color: var(--f-text);
+    font-size: var(--f-type-page, 50px);
     font-weight: 780;
     letter-spacing: -.055em;
     line-height: 1.08;
 }
 
 .access-surface .access-context {
-color: var(--surface-theme-accent-text);
+color: var(--f-accent);
 }
 
 .access-surface .access-brand p {
 max-width: 660px;
     margin: 10px 0 0;
-    color: var(--muted);
+    color: var(--f-muted);
     font-size: 17px;
 }
 
@@ -93,8 +93,8 @@ max-width: 660px;
 gap: 10px;
     width: 100%;
     padding: clamp(26px, 5vw, 40px);
-    color: var(--surface-theme-primary-ink);
-    background: var(--surface-theme-primary);
+    color: var(--f-surface);
+    background: var(--f-primary);
     border-radius: var(--radius-large);
 }
 
@@ -113,8 +113,8 @@ color: inherit;
 .access-surface .access-form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]) {
 width: 100%;
     padding: 10px 14px;
-    color: var(--ink);
-    background: var(--surface);
+    color: var(--f-text);
+    background: var(--f-surface);
     border: 0;
     border-radius: 12px;
     font-size: 17px;
@@ -130,19 +130,20 @@ margin-top: 12px;
 .access-surface .access-panel > .primary-action {
 margin-top: 18px;
     padding: 10px 18px;
-    color: var(--surface-theme-accent-ink);
-    background: var(--surface-theme-accent);
-    border: 1px solid var(--surface-theme-accent);
+    color: var(--f-surface);
+    background: var(--f-primary);
+    border: 1px solid var(--f-border);
     border-radius: 12px;
     font-size: 17px;
     font-weight: 740;
+    border-color: var(--f-border);
 }
 
 .access-surface .access-form button:hover:not(:disabled),
 .access-surface .access-form button:hover:not(:disabled),
 .access-surface .access-panel > .primary-action:hover:not(:disabled) {
-background: var(--accent-fill-hover);
-    border-color: var(--accent-fill-hover);
+background: var(--f-primary-preview, var(--f-preview-dark));
+    border-color: var(--f-border);
 }
 
 .access-surface .access-message,
@@ -169,7 +170,7 @@ gap: 12px 24px;
 .access-surface .access-back a,
 .access-surface .access-links a,
 .access-surface .access-links a {
-color: var(--accent-strong);
+color: var(--f-accent);
     font-weight: 700;
 }
 
@@ -180,8 +181,8 @@ gap: 12px;
 
 .access-surface .access-actions a {
 padding: 0 17px;
-    color: var(--accent-strong);
-    background: var(--accent-soft);
+    color: var(--f-text);
+    background: var(--f-target-preview, var(--f-preview-light));
     border: 0;
     border-radius: 12px;
     box-shadow: none;
@@ -191,8 +192,8 @@ padding: 0 17px;
 }
 
 .access-surface .access-actions a:hover {
-color: var(--surface-theme-accent-ink);
-    background: var(--surface-theme-accent);
+color: var(--f-primary);
+    background: var(--f-target-preview, var(--f-preview-light));
 }
 
 @media (max-width: 760px) {
@@ -211,4 +212,16 @@ color: var(--surface-theme-accent-ink);
     padding: 24px 18px;
     border-radius: 22px;
 }
+}
+
+.access-surface .access-form button:active:not(:disabled),
+.access-surface .access-form button:active:not(:disabled),
+.access-surface .access-panel > .primary-action:active:not(:disabled) {
+    background: var(--f-primary-click);
+    border-color: var(--f-border);
+}
+
+.access-surface .access-actions a:active {
+    color: var(--f-primary);
+    background: var(--f-target-click);
 }

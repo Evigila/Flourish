@@ -1,0 +1,37 @@
+@using ArkheideSystem.Flourish.Abstract
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+@using System.Collections.Generic
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("NumberBox<TValue>")]
+@using System
+@using Microsoft.AspNetCore.Components
+@using ArkheideSystem.Flourish.Blazor
+@using ArkheideSystem.Flourish.Blazor.Components
+
+@if (Preview)
+{
+    <FormLayout>
+        <Field Label="整数" Id="@(Prefix + "-integer")"><NumberBox TValue="int?" @bind-Value="EmptyInteger" Step="1" /></Field>
+        <Field Label="小数" Id="@(Prefix + "-decimal")"><NumberBox TValue="decimal?" @bind-Value="EmptyDecimal" Step="0.01" /></Field>
+        <Field Label="禁用" Id="@(Prefix + "-disabled")"><NumberBox TValue="decimal?" @bind-Value="EmptyDisabled" Disabled="true" /></Field>
+    </FormLayout>
+}
+else
+{
+    <FormLayout>
+        <Field Label="人数（1–40）" Id="@(Prefix + "-quantity")"><NumberBox TValue="int?" @bind-Value="Quantity" Step="1" Min="1" Max="40" ParsingErrorMessage="请输入整数。" /></Field>
+        <Field Label="每人材料费" Id="@(Prefix + "-price")"><NumberBox TValue="decimal?" @bind-Value="Price" Step="0.01" Min="0" ParsingErrorMessage="请输入数字。" /></Field>
+    </FormLayout>
+    <p role="status">预估合计：@((Quantity.GetValueOrDefault() * Price.GetValueOrDefault()).ToString("0.00"))。</p>
+    <Button Variant="ButtonVariant.Secondary" OnClick="Reset">恢复示例</Button>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-number-" + Guid.NewGuid().ToString("N");
+    private int? EmptyInteger, Quantity = 8;
+    private decimal? EmptyDecimal, EmptyDisabled, Price = 12.50m;
+    private void Reset() { Quantity = 8; Price = 12.50m; }
+}
