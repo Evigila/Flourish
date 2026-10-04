@@ -57,7 +57,7 @@ internal static class LifecycleChecks
         services.AddLogging();
         services.AddSingleton<IJSRuntime>(javascript);
         services.AddSingleton<IComponentActivator>(activator);
-        services.AddFlourish();
+        services.AddFlourishFramework();
         using var provider = services.BuildServiceProvider();
         using var scope = provider.CreateScope();
         await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());

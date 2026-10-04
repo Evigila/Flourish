@@ -3,6 +3,11 @@ using System.Net;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components.Forms;
 using ApplicationTheme = ArkheideSystem.Flourish.Abstract.ApplicationTheme;
+using CommandExecutionStatus = ArkheideSystem.Flourish.Abstract.CommandExecutionStatus;
+using CommandSource = ArkheideSystem.Flourish.Abstract.CommandSource;
+using ICommandDispatcher = ArkheideSystem.Flourish.Abstract.ICommandDispatcher;
+using ICommandParser = ArkheideSystem.Flourish.Abstract.ICommandParser;
+using ICommandRegistrar = ArkheideSystem.Flourish.Abstract.ICommandRegistrar;
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Abstract;
 using ArkheideSystem.Flourish.Blazor.Components;
@@ -11,6 +16,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+
+#pragma warning disable CS0618 // The suite keeps explicit migration coverage for the previous builder API.
 
 var tests = new List<(string Name, Func<Task> Run)>();
 void Test(string name, Action run) => tests.Add((name, () => { run(); return Task.CompletedTask; }));
@@ -111,6 +118,49 @@ Test("navigation rejects external/scheme-relative routes and duplicate keys", ()
     var duplicate = new ServiceCollection();
     Throws<ArgumentException>(() => duplicate.AddFlourish(app => app.UseNavigation(nav => { nav.AddGroup("same", "One", "page", group => group.AddItem("Home", "/")); nav.AddGroup("same", "Two", "page", group => group.AddItem("Next", "/next")); })));
 });
+Test("framework registration keeps commands scoped to each user circuit", () => {
+    var services = new ServiceCollection();
+    services.AddScoped<CommandState>();
+    services.AddFlourishFramework(framework => framework
+        .ConfigureTopBar(top => top.SetAppName("Test").AddMenu("Actions", menu => menu.AddMenuItem("Run", TestCommandParser.CommandKey)))
+        .ConfigureNavigation(navigation => navigation
+            .AddNav("Home", "home", "/", exact: true)
+            .AddNavButton("Run", "play", TestCommandParser.CommandKey)
+            .AddFixedNav("Settings", "settings", "/settings")
+            .AddFixedNavButton("Run fixed", "play", TestCommandParser.CommandKey))
+        .SetCommandParser<TestCommandParser>());
+    using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+    using var first = provider.CreateScope();
+    using var second = provider.CreateScope();
+    var firstDispatcher = first.ServiceProvider.GetRequiredService<ICommandDispatcher>();
+    var secondDispatcher = second.ServiceProvider.GetRequiredService<ICommandDispatcher>();
+    Check(firstDispatcher.CanExecute(TestCommandParser.CommandKey, source: CommandSource.Navigation), "Configured command was not registered in the first scope.");
+    Equal(CommandExecutionStatus.Handled, firstDispatcher.ExecuteAsync(TestCommandParser.CommandKey).AsTask().GetAwaiter().GetResult().Status);
+    Equal(1, first.ServiceProvider.GetRequiredService<CommandState>().Count);
+    Equal(0, second.ServiceProvider.GetRequiredService<CommandState>().Count);
+});
+AsyncTest("program configuration renders top bar menus, explicit navigation and fixed commands", async () => {
+    var html = await RenderFramework(framework => framework
+        .ConfigureTopBar(top => top
+            .SetAppName("Configured application")
+            .SetIcon("app.svg", "Application icon")
+            .AddMenu("Actions", menu => menu.AddMenuItem("Run action", TestCommandParser.CommandKey))
+            .InjectToLeft<TestInjectedComponent>()
+            .InjectToCenter<TestInjectedComponent>()
+            .InjectToRight<TestInjectedComponent>())
+        .ConfigureNavigation(navigation => navigation
+            .AddNav("Records", "list", "/records", secondary => secondary.AddSubNav("Detail", "page", "/records/sample"))
+            .AddNavButton("Run", "play", TestCommandParser.CommandKey)
+            .AddFixedNav("Settings", "settings", "/settings")
+            .AddFixedNavButton("Run fixed", "play", TestCommandParser.CommandKey))
+        .SetCommandParser<TestCommandParser>(), "/records/sample");
+    Check(html.Contains("Configured application"), "Configured application name was not rendered.");
+    Check(html.Contains("src=\"app.svg\""), "Configured application icon was not rendered.");
+    Check(html.Contains("Run action"), "Configured top bar menu item was not rendered.");
+    Equal(3, html.Split("Scoped injection", StringSplitOptions.None).Length - 1, "Configured top bar components were not created in all three regions.");
+    Check(html.Contains("f-secondary-navigation") && html.Contains("href=\"/records/sample\" class=\"f-secondary-item is-selected\""), "Explicit secondary navigation was not selected.");
+    Check(html.Contains("f-primary-navigation-fixed") && html.Contains("aria-label=\"Run fixed\""), "Fixed command navigation was not rendered.");
+});
 Test("arbitrary palettes provide AA text on primary/accent and both reference surfaces", () => {
     foreach (var primary in new[] { "#FFFFFF", "#000000", "#777777", "#FFEE99", "#FF00FF", "#153A32", "#55AAEE" })
     foreach (var accent in new[] { "#FFFFFF", "#000000", "#777777", "#FFEE99", "#16745F" }) {
@@ -134,6 +184,21 @@ async Task<string> Render<TComponent>(Dictionary<string, object?>? parameters = 
     await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
     return await renderer.Dispatcher.InvokeAsync(async () => {
         var output = await renderer.RenderComponentAsync<TComponent>(ParameterView.FromDictionary(parameters ?? new()));
+        return output.ToHtmlString();
+    });
+}
+async Task<string> RenderFramework(Action<IFrameworkBuilder> configure, string path) {
+    var services = new ServiceCollection();
+    services.AddLogging();
+    services.AddScoped<CommandState>();
+    services.AddSingleton<NavigationManager>(new TestNavigation(path));
+    services.AddSingleton<IJSRuntime>(new FakeJs());
+    services.AddFlourishFramework(configure);
+    using var provider = services.BuildServiceProvider();
+    using var scope = provider.CreateScope();
+    await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
+    return await renderer.Dispatcher.InvokeAsync(async () => {
+        var output = await renderer.RenderComponentAsync<ApplicationShell>();
         return output.ToHtmlString();
     });
 }
@@ -321,3 +386,15 @@ internal sealed class FakeJs : IJSRuntime {
 }
 
 internal sealed class FormModel { public string? Name { get; set; } public decimal? Amount { get; set; } }
+internal sealed class CommandState { public int Count { get; set; } }
+internal sealed class TestCommandParser(CommandState state) : ICommandParser
+{
+    internal const string CommandKey = "test.run";
+    public void RegisterCommands(ICommandRegistrar commands) => commands.Register(CommandKey, () => state.Count++);
+}
+internal sealed class TestInjectedComponent : ComponentBase
+{
+    [Inject] public CommandState State { get; set; } = null!;
+    protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder) =>
+        builder.AddContent(0, $"Scoped injection {State.Count}");
+}

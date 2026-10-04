@@ -1,2 +1,15 @@
 @inherits LayoutComponentBase
+@inject IServiceProvider Services
+
+<HeadContent>
+    <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Framework/framework.css" />
+    @if (Theme is not null)
+    {
+        <link rel="stylesheet" href="@Theme.StylesheetHref" />
+    }
+</HeadContent>
 <ApplicationShell>@Body</ApplicationShell>
+
+@code {
+    private IThemeProvider? Theme => Services.GetService(typeof(IThemeProvider)) as IThemeProvider;
+}

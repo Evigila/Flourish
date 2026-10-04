@@ -17,6 +17,7 @@
 
   </PropertyGroup>
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>

@@ -98,12 +98,21 @@
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-        builder.Services.AddFlourish(ui => ui
-            .UseTitleBar(bar => bar.SetApplicationTitle("Workspace"))
-            .UseNavigation(nav => nav.AddGroup("workspace", "Workspace", "home",
-                group => group.AddItem("概览", "/", "home", exact: true))));
+        builder.Services.AddFlourishFramework(framework => framework
+            .ConfigureTopBar(top => top
+                .SetAppName("Workspace")
+                .SetIcon("app.svg")
+                .AddMenu("Actions", menu => menu
+                    .AddMenuItem("Refresh", "workspace.refresh")))
+            .ConfigureNavigation(navigation => navigation
+                .AddNav("概览", "home", "/", exact: true)
+                .AddNav("Records", "list", "/records", secondary => secondary
+                    .AddSubNav("Create", "edit", "/records/create"))
+                .AddFixedNavButton("Sign out", "close", "session.sign-out"))
+            .SetCommandParser<WorkspaceCommandParser>());
         builder.Services.AddFlourishDesign(appearance => appearance
-            .SetColors("#153A32", "#16745F"));
+            .SetColors("#153A32", "#16745F")
+            .SetFont("'Noto Sans', 'Noto Sans CJK SC', system-ui, sans-serif"));
 
         var app = builder.Build();
         app.UseHttpsRedirection();
@@ -113,14 +122,8 @@
         app.Run();
         """;
     private const string LayoutExample = """
-        @inherits LayoutComponentBase
-        @using ArkheideSystem.Flourish.Blazor.Components
-
-        <ThemeScope>
-        <ApplicationShell>
-            <ChildContent>@Body</ChildContent>
-        </ApplicationShell>
-        </ThemeScope>
+        <RouteView RouteData="routeData"
+                   DefaultLayout="typeof(ApplicationLayout)" />
         """;
     private const string FactsExample = """
         <FactList Columns="2">
@@ -149,11 +152,9 @@
     private const string ResourceExample = """
         <!-- App.razor: InteractiveServer 默认包含预渲染。 -->
         <head>
-            <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Framework/framework.css" />
-            <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Design/design.css" />
             <HeadOutlet @rendermode="InteractiveServer" />
         </head>
-        <body class="f-document">
+        <body>
             <Routes @rendermode="InteractiveServer" />
             <script src="_framework/blazor.web.js"></script>
         </body>

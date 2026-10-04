@@ -84,7 +84,7 @@ internal static class DropdownChecks
         services.AddLogging();
         services.AddSingleton<IJSRuntime>(new FakeJs());
         services.AddSingleton<IComponentActivator>(activator);
-        services.AddFlourish();
+        services.AddFlourishFramework();
         using var provider = services.BuildServiceProvider();
         using var scope = provider.CreateScope();
         await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());

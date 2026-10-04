@@ -11,7 +11,7 @@ dotnet run --project src/Gallery.Blazor
 dotnet run --project tests/Flourish.Blazor.Native
 ```
 
-Run one host per terminal and open each printed local URL. Gallery explicitly references Framework + Design and registers both. The native fixture references Framework only, registers AddFlourish and loads only framework.css. Neither mode should need Gallery-specific styles copied into another consumer.
+Run one host per terminal and open each printed local URL. Gallery explicitly references Framework + Design and registers both. The native fixture references Framework only, registers AddFlourishFramework and loads only framework.css. Neither mode should need Gallery-specific styles copied into another consumer.
 
 Reproducible non-browser checks, when source changes justify rerunning them:
 
@@ -41,6 +41,9 @@ The console suite covers data/DI/SSR contracts; it does not execute HtmlRenderer
 
 - Visit Gallery `/`, `/controls`, `/forms`, `/records`, a record detail, `/appearance` and `/patterns`. Check 1440/980/760/520/320px windows and 200% zoom. The document has one page-content scroll track; wide tables scroll within their own region.
 - Inspect ApplicationShell and extracted NavigationSurface/ContentSurface. Header/rails remain visible; no phantom rail is reserved when a host omits secondary navigation. Check real route links, back/forward and the most-specific active secondary item.
+- Verify the Program-configured application name, logo and top-bar menu. Activate every menu command, primary command button and bottom-fixed command button by pointer and keyboard; each must execute once in the current circuit, while route items navigate without dispatching a command.
+- Verify primary navigation with and without secondary entries. A primary route must use its explicitly configured target; secondary selection must use the longest matching route. Fixed entries stay at the bottom while the main navigation region scrolls.
+- Add small test components through InjectToLeft, InjectToCenter and InjectToRight. Confirm Blazor creates them from the current scope and the configured order is preserved.
 - Supply host-filtered NavigationGroups and an organization title at runtime. Startup entries must not leak into the override. Authorization enforcement remains in the host even when a menu entry is absent.
 - Tab from skip link through navigation to page actions. H1 receives navigation focus without a field rectangle; inputs/buttons/links retain visible keyboard focus.
 - On narrow ApplicationShell, open/close expanded navigation, cycle Tab/Shift+Tab, press Escape, click outside and resize while open. Background content is inert only while expanded; focus returns appropriately.

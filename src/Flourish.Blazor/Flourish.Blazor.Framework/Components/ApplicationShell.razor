@@ -3,45 +3,82 @@
 @inject ApplicationOptions Options
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject IServiceProvider Services
+@inject ICommandDispatcher Commands
 
-<div @ref="root" class="f-shell @(!Options.TitleBar.Enabled ? "f-no-titlebar" : "") @(!Groups.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
+<div @ref="root" class="f-root @Theme?.CssClass f-shell @(!Options.TopBar.Enabled ? "f-no-titlebar" : "") @(!PrimaryEntries.Any() && !FixedEntries.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
      style="@RootStyle" data-navigation-open="@navigationOpen.ToString().ToLowerInvariant()">
     <a class="f-skip-link" href="#@contentId">@SkipLabel</a>
-    @if (Options.TitleBar.Enabled) {
+    @if (Options.TopBar.Enabled)
+    {
         <header class="f-titlebar">
-            @if (Options.TitleBar.NavigationToggle && HasSecondary) {
+            @if (Options.TopBar.NavigationToggle && HasSecondary)
+            {
                 <button type="button" class="f-icon-button" aria-label="@MenuLabel" aria-expanded="@navigationOpen.ToString().ToLowerInvariant()" aria-controls="@navigationId" @onclick="ToggleNavigation"><Icon Name="menu" /></button>
             }
-            <a class="f-application-brand" href="@HomeHref" aria-label="@(ApplicationTitle ?? Options.TitleBar.Title)">
-                @if (TitleBarBrand is not null) { <span class="f-application-logo">@TitleBarBrand</span> }
-                <span class="f-application-title">@(ApplicationTitle ?? Options.TitleBar.Title)</span>
+            <a class="f-application-brand" href="@HomeHref" aria-label="@(ApplicationTitle ?? Options.TopBar.AppName)">
+                @if (TitleBarBrand is not null)
+                {
+                    <span class="f-application-logo">@TitleBarBrand</span>
+                }
+                else if (Options.TopBar.IconPath is not null)
+                {
+                    <span class="f-application-logo"><img src="@Options.TopBar.IconPath" alt="@Options.TopBar.IconAlternativeText" /></span>
+                }
+                <span class="f-application-title">@(ApplicationTitle ?? Options.TopBar.AppName)</span>
             </a>
-            @if (TitleBarStart is not null) { <div class="f-titlebar-start">@TitleBarStart</div> }
-            @if (Options.TitleBar.Search) {
+            @if (TitleBarStart is not null || Options.TopBar.LeftItems.Count > 0)
+            {
+                <div class="f-titlebar-start">
+                    @TitleBarStart
+                    @foreach (var placement in Options.TopBar.LeftItems) { <DynamicComponent Type="@placement.ComponentType" /> }
+                </div>
+            }
+            @if (Options.TopBar.MenuItems.Count > 0 || Options.TopBar.CenterItems.Count > 0)
+            {
+                <div class="f-titlebar-center">
+                    @foreach (var menu in Options.TopBar.MenuItems)
+                    {
+                        <ActionMenu Label="@menu.Label" Actions="@CreateMenuActions(menu)">
+                            <TriggerContent>@menu.Label <span aria-hidden="true">▾</span></TriggerContent>
+                        </ActionMenu>
+                    }
+                    @foreach (var placement in Options.TopBar.CenterItems) { <DynamicComponent Type="@placement.ComponentType" /> }
+                </div>
+            }
+            @if (Options.TopBar.Search)
+            {
                 <form class="f-title-search" role="search" @onsubmit="SubmitSearch" @onsubmit:preventDefault>
-                    <label class="f-sr-only" for="@searchId">@Options.TitleBar.SearchLabel</label>
+                    <label class="f-sr-only" for="@searchId">@Options.TopBar.SearchLabel</label>
                     <input id="@searchId" type="search" @bind="search" />
-                    <button type="submit" class="f-icon-button" aria-label="@Options.TitleBar.SearchLabel"><Icon Name="search" /></button>
+                    <button type="submit" class="f-icon-button" aria-label="@Options.TopBar.SearchLabel"><Icon Name="search" /></button>
                 </form>
             }
-            <div class="f-titlebar-end">@TitleBarEnd</div>
+            <div class="f-titlebar-end">
+                @foreach (var placement in Options.TopBar.RightItems) { <DynamicComponent Type="@placement.ComponentType" /> }
+                @TitleBarEnd
+            </div>
         </header>
     }
-    @if (Groups.Any()) {
+    @if (PrimaryEntries.Any() || FixedEntries.Any())
+    {
         <aside id="@navigationId" class="f-navigation">
             <nav class="f-primary-navigation" aria-label="@MainNavigationLabel">
-                @foreach (var group in Groups) {
-                    var selected = group.Key == ActiveGroup?.Key;
-                    var first = group.Items.FirstOrDefault(item => !item.Disabled);
-                    <a class="f-primary-item @(selected ? "is-selected" : "")" href="@(first?.Href)" aria-current="@(selected ? "true" : null)" aria-disabled="@(first is null ? "true" : null)" aria-label="@group.Label"
-                       aria-describedby="@(navigationId + "-" + group.Key)" tabindex="@(first is null ? -1 : 0)" @onclick="CloseNavigation">
-                        <Icon Name="@group.Icon" /><span id="@(navigationId + "-" + group.Key)" class="f-nav-tooltip" role="tooltip">@group.Label</span>
-                    </a>
+                <div class="f-primary-navigation-main">
+                    @foreach (var entry in PrimaryEntries) { @RenderPrimaryEntry(entry) }
+                </div>
+                @if (FixedEntries.Any())
+                {
+                    <div class="f-primary-navigation-fixed">
+                        @foreach (var entry in FixedEntries) { @RenderPrimaryEntry(entry) }
+                    </div>
                 }
             </nav>
-            @if (HasSecondary && ActiveGroup is { } active) {
+            @if (HasSecondary && ActiveEntry is { } active)
+            {
                 <nav class="f-secondary-navigation" aria-label="@SecondaryNavigationLabel">
-                    @foreach (var item in active.Items) {
+                    @foreach (var item in active.SecondaryItems)
+                    {
                         <a href="@(item.Disabled ? null : item.Href)" class="f-secondary-item @(item == ActiveItem ? "is-selected" : "")" aria-current="@(item == ActiveItem ? "page" : null)"
                            aria-disabled="@(item.Disabled ? "true" : null)" tabindex="@(item.Disabled ? -1 : 0)" @onclick="CloseNavigation"><span>@item.Label</span></a>
                     }
@@ -54,6 +91,7 @@
         @ChildContent
     </main>
 </div>
+
 @code {
     [Parameter] public IReadOnlyList<NavigationGroup>? NavigationGroups { get; set; }
     [Parameter] public string? ApplicationTitle { get; set; }
@@ -68,33 +106,128 @@
     [Parameter] public string CloseMenuLabel { get; set; } = "Close navigation";
     [Parameter] public string MainNavigationLabel { get; set; } = "Main navigation";
     [Parameter] public string SecondaryNavigationLabel { get; set; } = "Secondary navigation";
+
     private readonly string contentId = "content-" + Guid.NewGuid().ToString("N");
     private readonly string navigationId = "nav-" + Guid.NewGuid().ToString("N");
     private readonly string searchId = "search-" + Guid.NewGuid().ToString("N");
     private ElementReference root, content;
     private IJSObjectReference? module;
+    private IThemeProvider? Theme;
     private bool disposed, navigationOpen, resetScroll, navigationChanged;
     private string search = string.Empty;
-    private IReadOnlyList<NavigationGroup>? previousGroups;
-    private IReadOnlyList<NavigationGroup> Groups => NavigationGroups ?? Options.Navigation;
-    private bool HasSecondary => ActiveGroup?.SecondaryNavigation == true;
-    private NavigationItem? ActiveItem => ActiveGroup?.Items.Where(Matches).OrderByDescending(item => item.Href.Length).FirstOrDefault();
-    protected override void OnParametersSet() { if (!ReferenceEquals(previousGroups, Groups)) { previousGroups = Groups; navigationChanged = true; } }
+    private IReadOnlyList<NavigationEntry>? previousPrimary;
+
+    private IReadOnlyList<NavigationEntry> PrimaryEntries => NavigationGroups is not null
+        ? ConvertLegacy(NavigationGroups)
+        : Options.PrimaryNavigation.Count > 0 ? Options.PrimaryNavigation : ConvertLegacy(Options.LegacyNavigation);
+    private IReadOnlyList<NavigationEntry> FixedEntries => NavigationGroups is null ? Options.FixedNavigation : Array.Empty<NavigationEntry>();
+    private bool HasSecondary => ActiveEntry?.SecondaryItems.Count > 0;
+    private NavigationItem? ActiveItem => ActiveEntry?.SecondaryItems.Where(Matches).OrderByDescending(item => item.Href.Length).FirstOrDefault();
     private string Path => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/');
-    private bool Matches(NavigationItem item) => !item.Disabled && (string.Equals(Path, item.Href.TrimEnd('/') is "" ? "/" : item.Href.TrimEnd('/'), StringComparison.OrdinalIgnoreCase)
-        || (!item.Exact && item.Href != "/" && Path.StartsWith(item.Href.TrimEnd('/') + "/", StringComparison.OrdinalIgnoreCase)));
-    private NavigationGroup? ActiveGroup => Groups.SelectMany(group => group.Items.Where(Matches).Select(item => (group, item)))
-        .OrderByDescending(match => match.item.Href.Length).Select(match => match.group).FirstOrDefault() ?? Groups.FirstOrDefault();
-    private string RootStyle => $"--f-content-width:{Options.Layout.ContentWidth}px";
-    protected override void OnInitialized() { Navigation.LocationChanged += LocationChanged; }
+    private string RootStyle => $"--f-content-width:{Options.Layout.ContentWidth}px{(Theme is null ? null : ";" + Theme.CssVariables)}";
+
+    private NavigationEntry? ActiveEntry => PrimaryEntries.Concat(FixedEntries)
+        .Where(entry => entry.Kind == NavigationEntryKind.Route)
+        .SelectMany(entry => entry.SecondaryItems.Where(Matches).Select(item => (entry, length: item.Href.Length))
+            .Append((entry, length: Matches(entry) ? entry.Href?.Length ?? 0 : -1)))
+        .Where(match => match.length >= 0)
+        .OrderByDescending(match => match.length)
+        .Select(match => match.entry)
+        .FirstOrDefault() ?? PrimaryEntries.FirstOrDefault(entry => entry.Kind == NavigationEntryKind.Route);
+
+    protected override void OnInitialized()
+    {
+        Theme = Services.GetService(typeof(IThemeProvider)) as IThemeProvider;
+        if (Theme is not null) Theme.Changed += ThemeChanged;
+        Navigation.LocationChanged += LocationChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        var current = PrimaryEntries;
+        if (!ReferenceEquals(previousPrimary, current))
+        {
+            previousPrimary = current;
+            navigationChanged = true;
+        }
+    }
+
+    private RenderFragment RenderPrimaryEntry(NavigationEntry entry) => builder =>
+    {
+        var selected = ReferenceEquals(entry, ActiveEntry) || entry == ActiveEntry;
+        var sequence = 0;
+        if (entry.Kind == NavigationEntryKind.Route)
+        {
+            builder.OpenElement(sequence++, "a");
+            builder.AddAttribute(sequence++, "class", $"f-primary-item {(selected ? "is-selected" : "")}");
+            builder.AddAttribute(sequence++, "href", entry.Disabled ? null : entry.Href);
+            builder.AddAttribute(sequence++, "aria-current", selected ? "true" : null);
+            builder.AddAttribute(sequence++, "aria-disabled", entry.Disabled ? "true" : null);
+            builder.AddAttribute(sequence++, "aria-label", entry.Label);
+            builder.AddAttribute(sequence++, "title", entry.Label);
+            builder.AddAttribute(sequence++, "tabindex", entry.Disabled ? -1 : 0);
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, CloseNavigation));
+        }
+        else
+        {
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "f-primary-item f-primary-command");
+            builder.AddAttribute(sequence++, "aria-label", entry.Label);
+            builder.AddAttribute(sequence++, "title", entry.Label);
+            builder.AddAttribute(sequence++, "disabled", entry.Disabled || !CanExecute(entry));
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => ExecuteAsync(entry, CommandSource.Navigation)));
+        }
+        builder.OpenComponent<Icon>(sequence++);
+        builder.AddAttribute(sequence++, "Name", entry.Icon);
+        builder.CloseComponent();
+        builder.CloseElement();
+    };
+
+    private bool Matches(NavigationItem item) => !item.Disabled && Matches(item.Href, item.Exact);
+    private bool Matches(NavigationEntry entry) => !entry.Disabled && entry.Href is not null && Matches(entry.Href, entry.Exact);
+    private bool Matches(string href, bool exact)
+    {
+        var normalized = href.TrimEnd('/') is "" ? "/" : href.TrimEnd('/');
+        return string.Equals(Path, normalized, StringComparison.OrdinalIgnoreCase)
+            || (!exact && normalized != "/" && Path.StartsWith(normalized + "/", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private bool CanExecute(NavigationEntry entry) => entry.CommandKey is not null && Commands.CanExecute(entry.CommandKey, source: CommandSource.Navigation);
+
+    private IReadOnlyList<MenuAction> CreateMenuActions(TopBarMenu menu) => menu.Items
+        .Select(item => new MenuAction(item.Label, () => ExecuteAsync(item.CommandKey, CommandSource.TitleBar),
+            item.Disabled || !Commands.CanExecute(item.CommandKey, source: CommandSource.TitleBar), item.Destructive))
+        .ToArray();
+
+    private Task ExecuteAsync(NavigationEntry entry, CommandSource source) =>
+        entry.CommandKey is null ? Task.CompletedTask : ExecuteAsync(entry.CommandKey, source);
+
+    private async Task ExecuteAsync(string commandKey, CommandSource source)
+    {
+        var result = await Commands.ExecuteAsync(commandKey, source: source);
+        if (result.Status == CommandExecutionStatus.Failed && result.Exception is not null) throw result.Exception;
+    }
+
+    private static IReadOnlyList<NavigationEntry> ConvertLegacy(IReadOnlyList<NavigationGroup> groups) => groups
+        .Select(group =>
+        {
+            var first = group.Items.FirstOrDefault(item => !item.Disabled);
+            return new NavigationEntry(group.Label, group.Icon, NavigationEntryKind.Route, first?.Href, Children: group.SecondaryNavigation ? group.Items : Array.Empty<NavigationItem>(), Exact: first?.Exact ?? false, Disabled: first is null);
+        })
+        .ToArray();
+
+    private void ThemeChanged(object? sender, EventArgs e) => _ = InvokeAsync(StateHasChanged);
     private void LocationChanged(object? sender, LocationChangedEventArgs e) { navigationOpen = false; resetScroll = true; _ = InvokeAsync(StateHasChanged); }
     private void ToggleNavigation() => navigationOpen = !navigationOpen;
     private void CloseNavigation() => navigationOpen = false;
     private Task SubmitSearch() => OnSearch.InvokeAsync(search);
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (disposed) return;
-        if (module is null) {
+        if (module is null)
+        {
             var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/shell.js");
             if (disposed) { await imported.DisposeAsync(); return; }
             module = imported;
@@ -104,10 +237,13 @@
         await module.InvokeVoidAsync("synchronize", root, navigationOpen, resetScroll);
         resetScroll = false;
     }
+
     public async ValueTask DisposeAsync()
     {
-        disposed = true; Navigation.LocationChanged -= LocationChanged;
+        disposed = true;
+        Navigation.LocationChanged -= LocationChanged;
+        if (Theme is not null) Theme.Changed -= ThemeChanged;
         try { if (module is not null) { await module.InvokeVoidAsync("detach", root); await module.DisposeAsync(); } }
-        catch (JSDisconnectedException) { }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 }

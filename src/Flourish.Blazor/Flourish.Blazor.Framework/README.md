@@ -1,44 +1,55 @@
-# Native Blazor components and behavior
+# Native Blazor framework
 
 Package: Arkheide.Flourish.Blazor.Framework. Target: .NET 10 Razor Class Library.
 
-Framework contains the application shell, native InputBase controls, forms, local data table, menus/dialogs and their functional CSS/JS. It references Abstract and Shared. It has no dependency on Design, no theme service requirement, no color palette, and no added external PackageReference.
+Framework owns the application shell, navigation behavior, native InputBase controls, forms, local data tables, menus/dialogs and their functional CSS/JS. It references Abstract and Shared. It has no dependency on Design, no color palette and no required visual-theme service.
 
-The application owns the ASP.NET host, Router, render mode, authentication, authorization, models, remote queries and persistence.
-
-## Use without a skin
-
-Register the native runtime:
+## Configure the shell in Program
 
 ~~~csharp
 using ArkheideSystem.Flourish.Blazor;
-builder.Services.AddFlourish(app => app
-    .UseTitleBar(bar => bar.SetApplicationTitle("Application"))
-    .UseNavigation(nav => nav.AddGroup("main", "Main", "home", group => group.AddItem("Home", "/", exact: true))));
+
+builder.Services.AddFlourishFramework(framework => framework
+    .ConfigureTopBar(top => top
+        .SetAppName("Application")
+        .SetIcon("app.svg", "")
+        .AddMenu("Actions", menu => menu
+            .AddMenuItem("Refresh", "application.refresh")))
+    .ConfigureNavigation(navigation => navigation
+        .AddNav("Home", "home", "/", exact: true)
+        .AddNav("Records", "list", "/records", secondary => secondary
+            .AddSubNav("Create", "edit", "/records/create"))
+        .AddNavButton("Refresh", "refresh", "application.refresh")
+        .AddFixedNav("Settings", "settings", "/settings")
+        .AddFixedNavButton("Sign out", "close", "session.sign-out"))
+    .SetCommandParser<ApplicationCommandParser>());
 ~~~
 
-Import ArkheideSystem.Flourish.Blazor.Components and ArkheideSystem.Flourish.Blazor.Abstract. Load the required functional stylesheet:
+`SetCommandParser<TParser>()` accepts a Core `ICommandParser`. The parser is created in the current Blazor scope, so handlers may depend on scoped services without crossing circuits:
 
-~~~html
-<link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Framework/framework.css" />
+~~~csharp
+public sealed class ApplicationCommandParser(NavigationManager navigation) : ICommandParser
+{
+    public void RegisterCommands(ICommandRegistrar commands)
+    {
+        commands.Register("application.refresh", Refresh);
+        commands.Register("session.sign-out", () => navigation.NavigateTo("/logout"));
+    }
+
+    private static void Refresh() { }
+}
 ~~~
 
-Use ApplicationLayout or ApplicationShell. Use body class f-document only when the full-height shell owns document scrolling. Keep shell and interactive pages inside the same render boundary.
+Use `ApplicationLayout` as the router's default layout. It creates `ApplicationShell` and adds the Framework stylesheet through `HeadContent`. When Design is registered, it also adds the Design stylesheet and applies its scoped theme automatically. The host retains its standard `App.razor`, Router, render mode, middleware, authentication and authorization configuration. Pages only provide route content.
 
-Functional CSS owns visibility, popup positioning, focus-related hiding, scroll containment, responsive navigation, column layout and resize hit areas. Native controls retain browser typography, colors, borders and focus. JS modules import themselves from this package. Framework alone does not resolve IAppearanceService.
+~~~razor
+<RouteView RouteData="routeData" DefaultLayout="typeof(ApplicationLayout)" />
+~~~
 
-## Opt into visual design
+`InjectToLeft<TComponent>()`, `InjectToCenter<TComponent>()` and `InjectToRight<TComponent>()` register component types. `DynamicComponent` creates them in the active scope; configuration never stores a component instance or captured scoped service.
 
-Reference Arkheide.Flourish.Blazor.Design, register AddFlourishDesign, load its design.css after framework.css, and wrap ApplicationShell or your interactive subtree in ThemeScope. Design is an independent explicit dependency; Framework never automatically loads it.
+`ApplicationShell` remains available as a low-level component for hosts that need runtime-filtered navigation or tenant titles. Its runtime parameters do not grant route access; the host still owns authorization.
 
-Existing component and contract namespaces remain stable. Package/assembly paths changed during the four-project split. ConfigureAppearance on the old application builder is replaced by the Design registration. Update references and static asset paths together.
+Functional CSS owns visibility, popup positioning, focus-related hiding, scroll containment, responsive navigation, column layout and resize hit areas. Framework alone keeps native browser colors, typography, borders and focus. JS modules load on demand from this package.
 
-Local DataTable owns column-based search, stable typed/null-last sorting, paging, visibility, list/card modes and column resizing. The complete supplied local Items collection is its input; remote pagination, virtualization and business actions remain host concerns. Per-user runtime table preferences use scoped ITablePreferences, which hosts can replace with their own scoped implementation.
-
-No browser storage or business persistence is implied. Interactive Server with prerendering is the current verified hosting mode; other hosts need their own acceptance checks.
-
-## Generic assets and build output
-
-Primitives.DataTable, DataColumn, DataFilter, DataSorter and DataPagination expose neutral data contracts. CardField uses Title, Identifier and Metric. FormSurface accepts host content/actions/contents and a CssClass hook; business-specific compositions and selectors stay in the consuming application.
-
-The SDK-only CSS build expands modular sources into the single public framework.css asset. Internal source CSS is not a runtime, package or publish asset. There is no consumer-specific compatibility entry. Closed primitive sheets initialize their content and browser bridge on first opening and retain used content thereafter. Automatic table measurement is invalidated by actual DOM/layout changes and releases observers on disposal.
+The SDK-only CSS build expands modular sources into one public `framework.css` asset. Internal source CSS is not a runtime or package asset. The package contains no consumer-specific page, route, DTO, service or compatibility stylesheet.

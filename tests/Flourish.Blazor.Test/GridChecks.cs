@@ -162,7 +162,7 @@ internal static class GridChecks
         services.AddLogging();
         services.AddSingleton<NavigationManager>(new TestNavigation());
         services.AddSingleton<IJSRuntime>(new FakeJs());
-        services.AddFlourish();
+        services.AddFlourishFramework();
         return services;
     }
     private static async Task<string> Render<T>(Dictionary<string, object?> parameters) where T : IComponent

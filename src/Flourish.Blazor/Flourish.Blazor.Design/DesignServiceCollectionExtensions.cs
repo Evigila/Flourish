@@ -15,7 +15,9 @@ public static class DesignServiceCollectionExtensions
         var builder = new AppearanceBuilder();
         configure?.Invoke(builder);
         services.AddSingleton(builder.Complete());
-        services.AddScoped<IAppearanceService, AppearanceService>();
+        services.AddScoped<AppearanceService>();
+        services.AddScoped<IAppearanceService>(provider => provider.GetRequiredService<AppearanceService>());
+        services.AddScoped<IThemeProvider>(provider => provider.GetRequiredService<AppearanceService>());
         return services;
     }
 }

@@ -23,7 +23,7 @@ The root `Flourish.slnx` contains platform projects and their Galleries. `src/Fl
 
 ## Native Framework and optional Design
 
-A native consumer references Framework, registers `builder.Services.AddFlourish(...)` and loads:
+A native consumer references Framework and registers `builder.Services.AddFlourishFramework(...)`. `ApplicationLayout` adds the required Framework stylesheet through `HeadContent`; a low-level custom layout that renders `ApplicationShell` directly must load:
 
 ```html
 <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Framework/framework.css" />
@@ -38,9 +38,17 @@ Design is a separate explicit opt-in:
 1. Reference Design in addition to Framework.
 2. Call `AddFlourishDesign(appearance => ...)` separately. `IAppearanceBuilder.SetColors`, `SetTheme` and `SetFont` configure startup appearance; the old `IApplicationBuilder.ConfigureAppearance` API is no longer present.
 3. Load `_content/Arkheide.Flourish.Blazor.Design/design.css` after `framework.css`.
-4. Wrap the application or selected subtree in `<ThemeScope>...</ThemeScope>`.
+4. Use `ApplicationLayout` to apply the registered Design theme automatically. Use `<ThemeScope>...</ThemeScope>` only for an intentionally independent nested subtree.
 
 A no-argument ThemeScope reads the registered scoped appearance service, subscribes to changes and emits `--f-*` tokens plus light/dark/system classes. Optional `Primary`, `Accent` and `Theme` parameters override that scope. Design's `theme-aliases.css` maps the public tokens to the extracted Primitives and NavigationSurface/ContentSurface role variables, including color-scheme. Host inline role variables retain CSS precedence. `native-overrides.css` restores decorative mask overlays and switch appearance only when Design is loaded.
+
+## Program-configured application shell
+
+`AddFlourishFramework` now exposes `ConfigureTopBar`, `ConfigureNavigation`, `ConfigureLayout` and `SetCommandParser<TParser>`. Top-bar configuration owns the application name, local logo path, command menus and optional left/center/right component types. Navigation explicitly distinguishes route entries, command buttons, secondary route entries and bottom-fixed route/command entries. A primary route always has its own target; the framework no longer infers it from the first secondary item.
+
+Configured component regions store only component types. `DynamicComponent` creates each instance in the current Blazor scope, so singleton startup options never capture a component or scoped service. The configured Core `ICommandParser` is also created per Blazor scope and registers handlers into a scope-owned dispatcher. Two server circuits therefore do not share mutable command handlers or their dependencies.
+
+`ApplicationLayout` owns the default `ApplicationShell`, emits the Framework stylesheet, and consumes the optional `IThemeProvider` registered by Design. This preserves the dependency direction: Framework never references Design. The host retains its standard Router and selects `ApplicationLayout` as the default; custom layouts and the low-level runtime override parameters remain available for advanced applications.
 
 Appearance state is scoped to a user circuit/client host. Startup navigation/layout options are immutable configuration, not current-user authorization. No new font or icon download is installed; `SetFont` selects a host-provided CSS stack.
 
