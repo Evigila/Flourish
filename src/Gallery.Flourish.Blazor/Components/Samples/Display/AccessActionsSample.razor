@@ -1,0 +1,8 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("AccessActions")]
+<AccessActions><Button Variant="ButtonVariant.Underline" Href="/examples/display">返回展示目录</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/product">查看虚构产品</Button></AccessActions>
+@if (!Preview) { <p>只排列访问页辅助动作；子项使用标准 Button，链接不代表认证或创建账号。</p> }
+@code {
+    [Parameter] public bool Preview { get; set; }
+
+}

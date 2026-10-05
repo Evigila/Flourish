@@ -73,6 +73,8 @@
     private ElementReference Trigger;
     private ElementReference SearchInput;
     private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? ModuleLoading;
+    private bool Disposed;
     private bool IsOpen;
     private bool FocusSearch;
     private bool Creating;
@@ -150,28 +152,60 @@
 
     private async Task CloseIfFocusLeftAsync()
     {
-        if (!IsOpen) return;
+        if (Disposed || !IsOpen) return;
         await Task.Yield();
+        if (Disposed) return;
         try
         {
-            Module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/reference-dropdown.js");
-            if (!await Module.InvokeAsync<bool>("containsFocus", Root))
+            var activeModule = await GetModuleAsync();
+            if (Disposed || activeModule is null) return;
+            var containsFocus = await activeModule.InvokeAsync<bool>("containsFocus", Root);
+            if (!Disposed && !containsFocus)
             {
-                IsOpen = false;
-                Search = string.Empty;
-                await InvokeAsync(StateHasChanged);
+                await InvokeAsync(() =>
+                {
+                    if (Disposed) return;
+                    IsOpen = false;
+                    Search = string.Empty;
+                    StateHasChanged();
+                });
             }
         }
-        catch (JSDisconnectedException) { IsOpen = false; }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException)
+        {
+            if (!Disposed) IsOpen = false;
+        }
+    }
+
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (Module is not null) return Module;
+        var loading = ModuleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(ModuleLoading, loading)) ModuleLoading = null; }
+    }
+
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/reference-dropdown.js");
+        if (Disposed) { await ReleaseModuleAsync(imported); return null; }
+        Module = imported;
+        return imported;
+    }
+
+    private static async ValueTask ReleaseModuleAsync(IJSObjectReference activeModule)
+    {
+        try { await activeModule.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 
     public async ValueTask DisposeAsync()
     {
+        if (Disposed) return;
+        Disposed = true;
         base.Dispose();
-        if (Module is not null)
-        {
-            try { await Module.DisposeAsync(); }
-            catch (JSDisconnectedException) { }
-        }
+        var activeModule = Module;
+        Module = null;
+        if (activeModule is not null) await ReleaseModuleAsync(activeModule);
     }
 }

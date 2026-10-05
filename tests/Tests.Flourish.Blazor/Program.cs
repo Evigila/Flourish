@@ -47,6 +47,19 @@ IReadOnlyList<Record> records = [
     new(3, "agua", "plain@example.test", null, null),
     new(4, null, "nobody@example.test", 2m, new(2025, 1, 9))];
 
+Test("contracts and framework keep one-way dependencies after Shared consolidation", () => {
+    var contracts = typeof(IFrameworkBuilder).Assembly;
+    Equal(contracts, typeof(AppearanceState).Assembly);
+    Equal(contracts, typeof(TableColumn<Record>).Assembly);
+    Equal(contracts, typeof(ArkheideSystem.Flourish.Blazor.Components.Primitives.GridCell).Assembly);
+    Equal(contracts, typeof(ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity).Assembly);
+    Equal(typeof(Button).Assembly, typeof(TableData<Record>).Assembly);
+    Equal(typeof(Button).Assembly, typeof(ArkheideSystem.Flourish.Blazor.Components.Primitives.InputMaskFormatter).Assembly);
+    Check(!contracts.GetReferencedAssemblies().Any(reference => reference.Name is "Flourish.Blazor.Framework" or "Flourish.Blazor.Design" or "Flourish.Blazor.Shared"),
+        "Contracts must not depend on rendering, optional design or the retired Shared assembly.");
+    Check(!typeof(Button).Assembly.GetReferencedAssemblies().Any(reference => reference.Name is "Flourish.Blazor.Design" or "Flourish.Blazor.Shared"),
+        "Framework must keep optional design and retired Shared outside its dependency graph.");
+});
 Test("numeric sorting uses values instead of formatted currency", () => {
     Order([1, 4, 2, 3], TableData<Record>.Sort(records, amount, TableSortDirection.Ascending, culture));
     Order([2, 1, 4, 3], TableData<Record>.Sort(records, amount, TableSortDirection.Descending, culture));
@@ -793,6 +806,7 @@ GridChecks.Register(tests);
 DropdownChecks.Register(tests);
 LifecycleChecks.Register(tests);
 DataTableChecks.Register(tests);
+ListViewChecks.Register(tests);
 SplitButtonChecks.Register(tests);
 DisplayBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
@@ -801,6 +815,11 @@ BrandingChecks.Register(tests);
 TextChecks.Register(tests);
 InputMigrationChecks.Register(tests);
 ControlTextChecks.Register(tests);
+PresentationChecks.Register(tests);
+ApiFinalAuditChecks.Register(tests);
+InteropFinalAuditChecks.Register(tests);
+AccessExampleChecks.Register(tests);
+ArkheideSystem.Tests.Flourish.Blazor.ComponentInventoryChecks.Register(tests);
 Test("catalog covers component parameters and constructor defaults", ArkheideSystem.Tests.Flourish.Blazor.CatalogChecks.Run);
 
 var passed = 0;

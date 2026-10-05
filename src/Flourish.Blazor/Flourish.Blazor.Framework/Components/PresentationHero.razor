@@ -1,0 +1,20 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+<section class="@($"f-presentation-hero {Class}".Trim())" aria-labelledby="@TitleId" @attributes="AdditionalAttributes">
+    <ContentContainer>
+        <h1 id="@TitleId">@Title</h1>
+        @if (!string.IsNullOrWhiteSpace(Subtitle)) { <p class="f-presentation-hero-subtitle">@Subtitle</p> }
+        @if (!string.IsNullOrWhiteSpace(Description)) { <p class="f-presentation-hero-description">@Description</p> }
+        @ChildContent
+        @if (Actions is not null) { <div class="f-presentation-hero-actions">@Actions</div> }
+    </ContentContainer>
+</section>
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string TitleId { get; set; } = $"presentation-hero-{Guid.NewGuid():N}";
+    [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

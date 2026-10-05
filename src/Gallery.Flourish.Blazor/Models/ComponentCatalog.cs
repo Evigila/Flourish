@@ -39,6 +39,7 @@ public static class ComponentCatalog
             new(typeof(Controls.UniformGridItem), "在等宽网格中展示没有点击行为的信息。", "与 UniformGridButton 共用 Filled、Outlined、Danger、Elevated 外观。Variant 省略时继承网格外观，独立使用时为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px；Icon 可选。没有 Href 或 OnClick。", "<UniformGrid Shape=\"UniformGridShape.Square\"><UniformGridItem Title=\"项目\" Icon=\"folder\" Text=\"12 个演示项目\" Variant=\"UniformGridVariant.Outlined\" /></UniformGrid>"),
             new(typeof(Controls.SectionNavigator), "在正文右侧显示页面板块入口，不占用正文宽度。", "默认跟随 ApplicationShell 中当前页面的 H2 标题。独立使用时指定 ContentId；Items 可显式提供标题与目标 ID。悬浮或聚焦显示标题，当前板块的圆点放大并显示主题色外圈。", "<SectionNavigator ContentId=\"page-content\" Label=\"页面板块\" />"),
             new(typeof(Controls.DataTable<>), "显示带搜索、排序、分页和行操作的数据。", "View 在 Table / Cards 间切换；Columns 使用 TableColumn<TItem>；Actions 使用 RowAction<TItem>。每页默认 10 项，可选择 20 / 50 / 100；PageSizeChanged 支持 @bind-PageSize。Loading、Error、EmptyMessage 显示真实状态。", "<DataTable TItem=\"Project\" Items=\"Projects\" Columns=\"Columns\" Actions=\"RowActions\" @bind-PageSize=\"PageSize\" />"),
+            new(typeof(Controls.ListView<>), "以与 DataTable 相同的表格样式展示静态只读内容。", "Items 按传入顺序完整展示，无搜索、排序、分页、加载状态、选中、行操作或 JavaScript 控制器。Columns 复用 TableColumn<TItem> 的标题、值和 Format；Sortable / Searchable / CanHide 不启用动态能力。RowHeaderKey 提供行标题，CellTemplate 使用 TableCellContext<TItem> 定制只读内容。Caption 提供辅助技术表格说明；省略时使用 Label。", "<ListView TItem=\"Feature\" Items=\"Features\" Columns=\"Columns\" RowHeaderKey=\"name\" Label=\"功能对照\" />"),
             new(typeof(Controls.Dialog), "打开模态对话框并管理焦点与关闭。", "Presentation 支持居中或底部面板；Busy 禁用关闭；CanClose 可异步确认；Actions 提供操作区。", "<Dialog Title=\"确认操作\" @bind-IsOpen=\"Open\"><ChildContent><p>操作说明</p></ChildContent><Actions><Button OnClick=\"Confirm\">确认</Button></Actions></Dialog>"),
             new(typeof(Controls.BottomSheet), "以底部面板呈现模态内容。", "与 Dialog 共用关闭、忙碌和内容接口；@bind-IsOpen 由页面管理状态。", "<BottomSheet Title=\"编辑项目\" @bind-IsOpen=\"Open\"><ChildContent><p>编辑内容</p></ChildContent></BottomSheet>"),
             new(typeof(Controls.Disclosure), "提供原生 details 展开区域。", "InitiallyOpen 指定初始展开；Title 是可访问触发器文字。", "<Disclosure Title=\"调用说明\" InitiallyOpen=\"false\"><p>说明内容</p></Disclosure>"),
@@ -54,6 +55,34 @@ public static class ComponentCatalog
             new(typeof(Controls.IdentityCard), "显示身份主值及关联信息。", "Columns 控制分栏；SideContent 提供侧栏；内容使用 dl / dt / dd 等语义结构。", "<IdentityCard Title=\"项目负责人\"><dl><dt>名称</dt><dd class=\"f-identity-primary\">林晓</dd></dl></IdentityCard>"),
             new(typeof(Controls.Icon), "显示自托管 Material Symbols Outlined 图标。", "Name 接受官方名称及旧名称别名；Class 可调整宿主组合。颜色继承父控件，纯图标操作需要可访问名称。", "<Icon Name=\"home\" />"),
             new(typeof(Controls.CodeBlock), "将代码以文本方式显示。", "Text 自动转义；Language 标识语言，不执行代码。", "<CodeBlock Text=\"ExampleCode\" Language=\"razor\" />")
+        ]),
+        new("展示与访问页面", "展示页面使用全宽背景与居中内容轨道，不套用业务页的粘性标题；认证、价格与品牌文案仍由宿主负责。",
+        [
+            new(typeof(Controls.ContentContainer), "为展示内容提供统一的居中限宽轨道。", "外部横幅负责全宽背景，本容器只约束内部控件与正文，不接管业务数据。", "<ContentContainer><Section Title=\"展示内容\"><p>正文</p></Section></ContentContainer>"),
+            new(typeof(Controls.PresentationBand), "将全宽背景和居中内容组合为展示页章节。", "Tone 使用 Canvas、Surface 或 Primary；Title、Actions、ChildContent 使用同一限宽轨道。", "<PresentationBand Title=\"产品能力\" Tone=\"PresentationTone.Surface\"><p>展示正文。</p></PresentationBand>"),
+            new(typeof(Controls.PresentationHero), "提供产品介绍页的艺术标题、副标题和正文。", "只适用于展示页首屏；Actions 使用标准 Button，不用于业务页面标题。", "<PresentationHero Title=\"Lumen\" Subtitle=\"Ideas in one place\" Description=\"虚构产品介绍。\"><Actions><Button Href=\"/examples/display/pricing\">查看方案</Button></Actions></PresentationHero>"),
+            new(typeof(Controls.PresentationFooter), "提供展示页品牌、版权与大字背景页脚。", "BrandName、Copyright、Watermark 由宿主提供；Actions 放标准导航按钮。", "<PresentationFooter BrandName=\"Lumen\" Watermark=\"Lumen\" Copyright=\"虚构展示\"><Actions><Button Variant=\"ButtonVariant.Elevated\" Href=\"/examples/display\">展示目录</Button></Actions></PresentationFooter>"),
+            new(typeof(Controls.OfferStage), "排列并渐进增强展示类报价卡片。", "搭配 OfferCard；AutoRotate 可关闭，减少动态效果和焦点交互暂停轮播。LinkScopeId 隔离当前页面中的报价锚点。无许可与价格计算。", "<OfferStage Id=\"sample-offers\" AutoRotate=\"false\"><OfferCard Id=\"sample-basic\" Title=\"Basic\" Description=\"虚构方案。\"><Button Disabled=\"true\">仅作展示</Button></OfferCard></OfferStage>"),
+            new(typeof(Controls.OfferCard), "展示一个方案的标题、说明和标准动作。", "仅作为 OfferStage 子项；Id 为真实锚点，价格与可用动作由宿主提供。", "<OfferStage Id=\"sample-stage\" AutoRotate=\"false\"><OfferCard Id=\"sample-plus\" Title=\"Plus\" Description=\"虚构方案。\"><Button Disabled=\"true\">仅作展示</Button></OfferCard></OfferStage>"),
+            new(typeof(Controls.AccessPanel), "为访问或登录页面提供标准面板与插槽。", "Brand、ChildContent、Actions 分别承载品牌、协议表单和辅助导航；Wide、Emphasized 是布局与表面变种。面板本身不进行认证。", "<AccessPanel><Brand><h1>演示入口</h1></Brand><ChildContent><p>访问内容。</p></ChildContent><Actions><Button Href=\"/examples/display\">返回目录</Button></Actions></AccessPanel>"),
+            new(typeof(Controls.AccessFormSurface), "排列访问协议表单中的字段和提交动作。", "外层原生 GET/POST 或 EditForm 由宿主提供；使用 Field 与标准输入，表面不创建协议或提交处理器。", "<AccessFormSurface><Field Label=\"邮箱\" Id=\"access-email\"><StandaloneTextBox Id=\"access-email\" Type=\"email\" /></Field><Button Disabled=\"true\">演示入口</Button></AccessFormSurface>"),
+            new(typeof(Controls.AccessActions), "排列访问页的辅助导航与动作。", "使用标准 Button 子项；不创建账号、不认证，也不推断权限。", "<AccessActions><Button Variant=\"ButtonVariant.Underline\" Href=\"/examples/display\">返回展示目录</Button></AccessActions>")
+        ]),
+        new("协议边界与特定宿主", "这些入口按源码用途元数据区分生产场景与构造边界，不是业务表单控件的另一套替代规范。",
+        [
+            new(typeof(Controls.DateBox<>), "绑定日期并接入 EditForm 验证。", "TValue 采用 InputDate 支持的日期类型；Type 控制日期、时间或日期时间输入。", "<Field Label=\"日期\" Id=\"date\"><DateBox TValue=\"DateTime\" Id=\"date\" @bind-Value=\"Draft.Date\" /></Field>"),
+            new(typeof(Controls.FilePicker), "选择文件并将文件信息交给宿主。", "Accept、Multiple、OnChange 仅配置文件选择；上传、大小限制和内容验证由宿主负责。", "<FilePicker Label=\"选择文件\" Accept=\".txt\" OnChange=\"ReadMetadata\" />"),
+            new(typeof(Controls.StandaloneTextBox), "在原生协议表单或无 EditContext 场景绑定文字。", "与 TextBox 共用标准样式；name 属性保留 GET/POST 字段，ChangeEvent 支持 input 或 change，不执行模型校验。", "<Field Label=\"邮箱\" Id=\"email\"><StandaloneTextBox Id=\"email\" Type=\"email\" name=\"email\" @bind-Value=\"Email\" /></Field>"),
+            new(typeof(Controls.StandaloneNumberBox), "为协议边界提供原生数值输入。", "Value 为原生提交字符串；Min、Max、Step 提供 HTML 约束，不代替业务解析和验证。", "<Field Label=\"数量\" Id=\"quantity\"><StandaloneNumberBox Id=\"quantity\" name=\"quantity\" Min=\"0\" @bind-Value=\"Quantity\" /></Field>"),
+            new(typeof(Controls.StandaloneSelectBox<>), "在协议边界或无 EditContext 场景选择一个值。", "Options 复用 SelectOption<TValue>；name 属性参与原生提交；业务表单使用 SelectBox。", "<Field Label=\"语言\" Id=\"language\"><StandaloneSelectBox TValue=\"string\" Id=\"language\" Options=\"Languages\" @bind-Value=\"Language\" /></Field>"),
+            new(typeof(Controls.StandaloneCheckBox), "在协议边界提供布尔选择与原生提交值。", "SubmissionValue 指定选中提交值；WrapLabel 配合宿主协议标记；业务模型验证使用 CheckBox。", "<StandaloneCheckBox Label=\"保留演示选择\" name=\"remember\" @bind-Value=\"Remember\" />"),
+            new(typeof(Controls.DropdownSurface), "为协议宿主提供原生 details 构造表面。", "不包含选择、菜单焦点或外部点击关闭，不能独立替代完整生产菜单；普通命令菜单使用 ActionMenu。", "<!-- 构造示例不代表完整生产菜单；普通命令菜单使用 ActionMenu。 -->\n<DropdownSurface><Trigger>静态入口</Trigger><ChildContent><Button Variant=\"ButtonVariant.Underline\" Href=\"/examples/display\">展示目录</Button></ChildContent></DropdownSurface>"),
+            new(typeof(Primitives.SecondaryNavigationItem), "在自定义导航宿主中呈现二级链接。", "常规应用由 Program 的 ConfigureNavigation 定义导航，不自行拼装外壳。", "<Primitives.SecondaryNavigationItem Label=\"展示目录\" Href=\"/examples/display\" />")
+        ]),
+        new("静态构造边界", "这些类型只为现有协议或兼容宿主提供构造入口；不应作为通用生产控件重新拼装交互。",
+        [
+            new(typeof(Controls.TableSurface), "保留手写静态表格的兼容构造边界。", "新只读列表使用 ListView；需要动态能力时使用 DataTable，不复制表格内部结构。", "<!-- 新页面使用 ListView<TItem>；此入口仅用于兼容已有静态表格。 -->"),
+            new(typeof(Controls.StaticDialog), "保留原生协议宿主的 dialog 标记边界。", "不包含打开、焦点、关闭和忙碌控制；普通交互应用使用 Dialog 或 BottomSheet。", "<!-- 交互应用使用 Dialog 或 BottomSheet；仅宿主协议拥有的原生 dialog 使用此边界。 -->")
         ]),
         new("页面组合", "Patterns 命名空间提供较低层的页面组合。通常优先使用 ApplicationLayout；以下组件适用于自定义宿主。",
         [
@@ -120,6 +149,8 @@ public sealed class ComponentEntry(Type componentType, string purpose, string va
     public string Name { get; } = DisplayName(componentType);
     public string Namespace { get; } = componentType.Namespace ?? string.Empty;
     public string Purpose { get; } = purpose;
+    public Controls.ComponentUsageInfo Usage => Controls.ComponentUsageCatalog.For(ComponentType);
+    public bool IsProductionEntry => Usage.Kind is Controls.ComponentUseKind.General or Controls.ComponentUseKind.Scenario;
     public string Variants { get; } = variants;
     public string Example { get; } = example
         .Replace("Primitives.", "ArkheideSystem.Flourish.Blazor.Components.Primitives.", StringComparison.Ordinal)
@@ -134,7 +165,7 @@ public sealed class ComponentEntry(Type componentType, string purpose, string va
         {
             // Layout belongs to the container, not to a separate shape on each child.
             var names = new HashSet<string>(StringComparer.Ordinal)
-                { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Filled" };
+                { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Filled", "Centered" };
             parameters.AddRange(OwnParameters(typeof(Controls.UniformGrid)).Where(parameter => names.Contains(parameter.Name))
                 .Select(parameter => parameter with
                 {
@@ -163,7 +194,7 @@ public sealed class ComponentEntry(Type componentType, string purpose, string va
     }
 
     public bool Matches(string query) => string.IsNullOrWhiteSpace(query)
-        || $"{Name} {Namespace} {Purpose} {Variants} {Parameters}".Contains(query.Trim(), StringComparison.OrdinalIgnoreCase);
+        || $"{Name} {Namespace} {Purpose} {Variants} {Parameters} {Usage.Kind} {Usage.Scenario} {Usage.Guidance}".Contains(query.Trim(), StringComparison.OrdinalIgnoreCase);
 
     private static string DisplayName(Type type)
     {
@@ -229,7 +260,8 @@ internal sealed class ParameterDefaults
         var value = field.GetValue(instance);
         if (value is null) return string.Empty;
         if (value is CultureInfo && parameter.DeclaringType?.IsGenericType == true
-            && parameter.DeclaringType.GetGenericTypeDefinition() == typeof(Controls.DataTable<>))
+            && (parameter.DeclaringType.GetGenericTypeDefinition() == typeof(Controls.DataTable<>)
+                || parameter.DeclaringType.GetGenericTypeDefinition() == typeof(Controls.ListView<>)))
             return "CultureInfo.CurrentCulture";
         if (value is string text) return System.Text.Json.JsonSerializer.Serialize(text);
         if (value is bool boolean) return boolean ? "true" : "false";

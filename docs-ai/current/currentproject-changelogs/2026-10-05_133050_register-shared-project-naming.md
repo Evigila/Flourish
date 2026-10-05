@@ -1,0 +1,11 @@
+# Register shared solution, project and namespace naming
+
+The user approved one naming contract for Colligere, Flourish and Essential. All three root AGENTS.md files now contain the same five rules: ordinary solutions/projects omit organization prefixes and start with their product name; project-owned namespaces always retain ArkheideSystem. or Arkheide., preferably the full former prefix; tests use Tests.<ProjectName>; Gallery projects use Gallery.<ProjectName>; bridge/extension projects use <ProjectName>.Extensions.<Integration>. Tests and Gallery are explicit role-prefix exceptions to ordinary product-first naming.
+
+The previous combined class/namespace/package bullet now points to the new section while preserving semantic class/type names. Explicit RootNamespace, AssemblyName and NuGet PackageId settings remain distinct. This registration does not rename existing solutions, projects, assemblies, public APIs or prepared/published package IDs. Existing Tests.Flourish.*, Gallery.Flourish.* and Flourish.Extensions.* project roles already follow the corresponding new naming patterns.
+
+The Culture bridge's existing project-owned Microsoft.Extensions.DependencyInjection entry is a compatibility-sensitive namespace that does not follow the organization-prefix rule. It was not migrated or silently exempted. Existing nonconforming project names/namespaces are migration debt; compatibility must be reviewed before a separately authorized migration or an explicit exception.
+
+A bounded read-only cross-repository audit confirmed that the semantic-class-name rules in Colligere/Flourish common guidance do not conflict with these project rules. Essential's missing mandatory documentation paths were reported separately; this record does not claim its documentation audit was completed.
+
+Verification is documentation-only: compare the three rule sections for exact equality and check changed files for whitespace errors. No build, runtime test, dependency change, commit, push or package upload is part of this change. Manual review should distinguish project names from organization-prefixed namespaces and confirm that test, Gallery and bridge examples follow their respective patterns.

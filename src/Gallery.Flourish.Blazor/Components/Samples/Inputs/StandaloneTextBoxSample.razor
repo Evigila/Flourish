@@ -1,0 +1,9 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [SampleFor("StandaloneTextBox")]
+<Field Label="协议边界演示邮箱" Id="@Id"><StandaloneTextBox Id="@Id" Type="email" name="email" @bind-Value="Email" /></Field>
+<p role="status">当前本地值：@Email</p>
+@if (!Preview) { <p>适用于无 EditContext 的原生 GET/POST 协议边界；不提交网络请求。模型表单优先 TextBox。</p> }
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private string? Email = "visitor@example.invalid"; private readonly string Id = "standalone-text-" + Guid.NewGuid().ToString("N");
+}

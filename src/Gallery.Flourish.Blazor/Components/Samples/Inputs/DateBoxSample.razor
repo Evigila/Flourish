@@ -1,0 +1,15 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [SampleFor("DateBox<TValue>")]
+<EditForm Model="Draft" FormName="@Id" OnValidSubmit="Submit">
+    <Field Label="演示日期" Id="@Id"><DateBox TValue="DateTime" Id="@Id" @bind-Value="Draft.Date" /></Field>
+    <Button Type="submit">使用演示日期</Button>
+</EditForm>
+@if (!Preview) { <p role="status">@Message</p> }
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private sealed class DemoDraft { public DateTime Date { get; set; } = new(2026, 10, 5); }
+    private readonly DemoDraft Draft = new();
+    private readonly string Id = "date-sample-" + Guid.NewGuid().ToString("N");
+    private string? Message;
+    private void Submit() => Message = "本地演示日期：" + Draft.Date.ToShortDateString();
+}

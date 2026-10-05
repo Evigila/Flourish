@@ -1,0 +1,15 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+<article class="@($"f-access-panel {(Wide ? "f-access-panel-wide" : null)} {(Emphasized ? "f-access-panel-emphasized" : null)} {Class}".Trim())" @attributes="AdditionalAttributes">
+    @Brand
+    @ChildContent
+    @if (Actions is not null) { <AccessActions>@Actions</AccessActions> }
+</article>
+@code {
+    [Parameter] public RenderFragment? Brand { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public bool Wide { get; set; }
+    [Parameter] public bool Emphasized { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

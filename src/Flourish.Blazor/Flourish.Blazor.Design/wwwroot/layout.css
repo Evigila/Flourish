@@ -230,7 +230,7 @@ color:var(--f-text);
 }
 
 .primary-action {
-color:var(--f-surface);
+color:var(--f-primary-ink);
     background:var(--f-primary);
     border:1px solid transparent;
 }

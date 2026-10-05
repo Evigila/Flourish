@@ -7,7 +7,7 @@
 <div class="multi-select-dropdown" @onkeydown="HandleKeyDownAsync">
     <button @ref="Trigger" id="@(Id + "-trigger")" class="multi-select-trigger selection-trigger" type="button"
             aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(Id + "-options")" aria-labelledby="@TriggerLabelledBy"
-            disabled="@Disabled" @onclick="Toggle">
+            disabled="@(Disabled || Creating)" @onclick="Toggle">
         <span title="@SelectionText">@SelectionText</span>
         <ExpansionIndicator Expanded="IsOpen" Class="multi-select-chevron selection-chevron" />
     </button>
@@ -34,7 +34,7 @@
                 var selected = SelectedValues.Contains(value);
                 <label class="form-check selection-option">
                     <input type="checkbox" checked="@selected"
-                           disabled="@(!selected && SelectedValues.Count >= MaximumSelections)"
+                           disabled="@(Creating || (!selected && SelectedValues.Count >= MaximumSelections))"
                            @onchange="args => ChangeAsync(value, args)" />
                     <span>@TextSelector(item)</span>
                 </label>
@@ -130,7 +130,7 @@
 
     private void Toggle()
     {
-        if (!Disabled) { IsOpen = !IsOpen; Search = string.Empty; }
+        if (!Disabled && !Creating) { IsOpen = !IsOpen; Search = string.Empty; }
     }
 
     private void SearchChanged(ChangeEventArgs args) => Search = args.Value?.ToString() ?? string.Empty;
@@ -153,7 +153,7 @@
 
     private async Task ChangeAsync(TValue value, ChangeEventArgs args)
     {
-        if (Disabled || args.Value is not bool) return;
+        if (Disabled || Creating || args.Value is not bool) return;
         await SelectionChanged.InvokeAsync(value);
     }
 

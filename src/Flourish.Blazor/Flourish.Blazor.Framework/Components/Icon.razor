@@ -1,6 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<span class="f-icon @Class" aria-hidden="true" data-icon="@IconCatalog.ResolveName(Name)">@IconCatalog.Glyph(Name)</span>
+<span class="f-icon @(Filled ? "f-icon-filled" : null) @Class" aria-hidden="true" data-icon="@IconCatalog.ResolveName(Name)">@IconCatalog.Glyph(Name)</span>
 @code {
     [Parameter] public string Name { get; set; } = "page";
     [Parameter] public string? Class { get; set; }
+    [Parameter] public bool Filled { get; set; }
 }

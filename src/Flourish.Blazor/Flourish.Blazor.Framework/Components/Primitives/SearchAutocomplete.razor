@@ -12,7 +12,7 @@
            autocomplete="off"
            role="combobox"
            aria-autocomplete="list"
-           aria-expanded="@IsOpen"
+           aria-expanded="@(IsOpen ? "true" : "false")"
            aria-controls="@ListboxId"
            aria-activedescendant="@ActiveOptionId"
            disabled="@Disabled"
@@ -37,7 +37,7 @@
                     <span id="@OptionId(optionIndex)"
                           class="search-autocomplete-option @(optionIndex == ActiveIndex ? "is-active" : null)"
                           role="option"
-                          aria-selected="@(optionIndex == ActiveIndex)"
+                          aria-selected="@(optionIndex == ActiveIndex ? "true" : "false")"
                           @onmousedown:preventDefault
                           @onclick:preventDefault
                           @onclick="() => SelectAsync(item)">
@@ -132,6 +132,7 @@
 
     private async Task InputAsync(ChangeEventArgs args)
     {
+        if (Disabled) return;
         var input = args.Value?.ToString() ?? string.Empty;
         var wasCleared = !string.IsNullOrEmpty(Value) && string.IsNullOrEmpty(input);
         HasFocus = true;
@@ -147,6 +148,7 @@
 
     private void Open()
     {
+        if (Disabled) return;
         HasFocus = true;
         RebuildMatches();
     }
@@ -186,6 +188,7 @@
 
     private async Task SelectAsync(TItem item)
     {
+        if (Disabled) return;
         var selectedValue = ValueSelector(item);
         HasFocus = false;
         ActiveIndex = -1;

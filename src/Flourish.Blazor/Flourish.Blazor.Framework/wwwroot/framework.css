@@ -10,6 +10,7 @@
 @import url('./uniform-grid.css');
 @import url('./section-navigator.css');
 @import url('./expansion-indicator.css');
+@import url('./presentation/layout.css');
 
 
 /* Functional layout and state only. Controls retain browser colors, typography and native focus. */
@@ -26,6 +27,7 @@
  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
  letter-spacing:normal; text-transform:none; white-space:nowrap; direction:ltr; -webkit-font-smoothing:antialiased;
 }
+.f-icon.f-icon-filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
 .f-shell { position:relative; height:100dvh; width:100%; min-width:0; min-height:0; display:grid; grid-template-columns:max-content minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); isolation:isolate; }
 .f-titlebar { grid-column:1/-1; display:flex; align-items:center; flex-wrap:wrap; min-width:0; }
 .f-titlebar > .f-icon-button { display:none; }
@@ -118,6 +120,8 @@
 .f-data-table[data-f-sized] { table-layout:fixed; }
 .f-data-table th,.f-data-table td { position:relative; }
 .f-data-cell { display:block; min-width:0; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* Static lists have no sizing controller or hover-only way to read clipped values. */
+.f-list-view .f-data-cell { min-width:8rem; white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; }
 .f-data-sort { display:flex; align-items:center; width:100%; min-width:0; text-align:start; }
 .f-data-sort > span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .f-data-resize { position:absolute; inset-block:0; inset-inline-end:0; width:.75em; padding:0; touch-action:none; cursor:col-resize; }

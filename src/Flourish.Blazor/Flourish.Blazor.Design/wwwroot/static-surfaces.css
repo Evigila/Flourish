@@ -18,9 +18,10 @@
 .f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .record-parent-link .f-button-text { display:none; }
 .f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .page-heading { min-height:72px; padding-block:12px; }
 .f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .record-parent-link { margin:0; }
-.f-root .shell-header .f-button { color:inherit; --f-target-preview:var(--f-preview-dark); --f-target-click:var(--f-click-dark); }
-.f-root .shell-header .f-button:hover { background:var(--f-target-preview); border-color:var(--f-border); }
-.f-root .shell-header .f-button:active { background:var(--f-target-click); }
+/* Only chrome Quiet actions inherit chrome colors; other variants keep their own contract. */
+.f-root .shell-header .f-button-quiet:not(:disabled):not([aria-disabled=true]) { color:inherit; --f-target-preview:var(--f-preview-dark); --f-target-click:var(--f-click-dark); }
+.f-root .shell-header .f-button-quiet:hover:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-preview); border-color:var(--f-border); }
+.f-root .shell-header .f-button-quiet:active:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-click); }
 .f-root .service-menu-view a strong { font-weight:400; }
 
 .f-root .secondary-rail .is-active { color:var(--f-surface); background:var(--f-primary); }

@@ -1,0 +1,13 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("AccessFormSurface")]
+<form @onsubmit="Simulate" @onsubmit:preventDefault>
+    <AccessFormSurface>
+        <Field Label="演示邮箱" Id="@Id" Required="true"><StandaloneTextBox Id="@Id" Type="email" @bind-Value="Email" autocomplete="off" /></Field>
+        <Button Type="submit">模拟本地提交</Button>
+    </AccessFormSurface>
+</form>
+<p role="status">本地提交次数：@Count。表面不创建 form；宿主拥有协议与验证。</p>
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int Count; private string? Email = "visitor@example.invalid"; private readonly string Id = "access-form-" + Guid.NewGuid().ToString("N"); private void Simulate() => Count++;
+}

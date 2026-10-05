@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Flourish.WinUI3.csproj" />
+  <Project Path="../Flourish.Core/Flourish.Core.csproj" />
+  <Project Path="../Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj" />
+</Solution>

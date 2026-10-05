@@ -1,0 +1,10 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("OfferCard")]
+<OfferStage Id="@Id" AutoRotate="false" Label="静态虚构报价">
+    <OfferCard Id="@(Id + "-basic")" Title="Basic" Description="只作为 OfferStage 子项使用。"><Button Variant="ButtonVariant.Outlined" Disabled="true">0 · 非商业报价</Button></OfferCard>
+    <OfferCard Id="@(Id + "-team")" Title="Team" Description="不收录许可或价格规则。"><Button Variant="ButtonVariant.Outlined" Disabled="true">10 · 非商业报价</Button></OfferCard>
+</OfferStage>
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = "offer-card-" + Guid.NewGuid().ToString("N");
+}

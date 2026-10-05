@@ -1,0 +1,12 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("PresentationBand")]
+@foreach (var tone in Enum.GetValues<PresentationTone>())
+{
+    <PresentationBand Title="@($"展示横幅 · {tone}")" Tone="tone">
+        <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/product">完整案例</Button></Actions>
+        <ChildContent><p>全宽背景与居中内容使用同一套库内布局，不需要宿主 CSS。</p></ChildContent>
+    </PresentationBand>
+}
+@code {
+    [Parameter] public bool Preview { get; set; }
+}

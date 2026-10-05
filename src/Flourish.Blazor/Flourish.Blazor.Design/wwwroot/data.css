@@ -42,8 +42,10 @@
 .f-data-table th, .f-data-table td { position:relative; height:76px; max-height:76px; padding:0; text-align:left; vertical-align:middle; border-bottom:1px solid var(--f-border); }
 .f-data-table :is(th, td)[data-f-column]:not([data-f-last-column]) { max-width:320px; }
 .f-data-table th { color:var(--f-text); background:var(--f-border); font-weight:760; letter-spacing:.025em; }
-.f-data-table tbody tr:last-child td { border-bottom:0; }
+.f-data-table tbody tr:last-child :is(th, td) { border-bottom:0; }
 .f-data-table .f-data-cell { display:block; min-width:0; max-width:100%; padding:0 16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.f-list-view .f-data-table .f-data-cell { min-width:8rem; padding-block:12px; white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; }
+.f-list-view .f-data-table tbody th { background:var(--f-surface); letter-spacing:normal; }
 .f-data-sort.f-button { display:flex; align-self:stretch; justify-self:stretch; justify-content:flex-start; gap:0; width:100%; max-width:none; height:76px; min-height:76px; min-width:0; padding:0 16px; border:1px solid transparent; border-radius:0; background:transparent; color:inherit; cursor:pointer; text-align:left; font-weight:inherit; }
 .f-data-sort-label { display:inline-flex; align-items:center; gap:8px; max-width:100%; min-width:0; padding:5px 7px; border:1px solid transparent; border-radius:9px; }
 .f-data-sort-text { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

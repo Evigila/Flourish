@@ -18,6 +18,92 @@ internal static class ControlTextChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("primitive table SSR emits explicit pressed states for sort and keyboard reorder controls", async () =>
+        {
+            using var services = Services();
+            using var scope = services.CreateScope();
+            var activator = scope.ServiceProvider.GetRequiredService<CaptureActivator>();
+            await using var renderer = Renderer(scope);
+            Primitive.DataColumn<string> name = new("name", "Name", item => item);
+            Primitive.DataColumn<string> hidden = new("hidden", "Hidden", item => item, defaultVisible: false);
+            var output = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<Primitive.DataTable<string>>(
+                ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    ["PreferenceKey"] = "aria.ssr", ["Items"] = new[] { "Record" },
+                    ["Columns"] = new[] { name, hidden }, ["ShowSortControls"] = true, ["CardValueLines"] = 2
+                })));
+            var table = activator.Components.OfType<Primitive.DataTable<string>>().Single();
+            await renderer.Dispatcher.InvokeAsync(() =>
+            {
+                var html = output.ToHtmlString();
+                Require(System.Text.RegularExpressions.Regex.Matches(html, "aria-pressed=\"(?:true|false)\"").Count == 7,
+                    "SSR must emit a valid true/false pressed state for every sort and reorder choice.");
+                Require(html.Contains("--f-card-value-lines:2;--f-card-value-height:48px", StringComparison.Ordinal),
+                    "A host's explicit two-line card geometry was lost.");
+                  Require(System.Text.RegularExpressions.Regex.Matches(html, "data-page-controls").Count == 2,
+                      "Table pagination must expose synchronized controls above and below the records.");
+                  var ranges = System.Text.RegularExpressions.Regex.Matches(html, @"<span\b[^>]*\sdata-page-range(?:\s|>)[^>]*>");
+                  Require(ranges.Count == 1 && ranges[0].Value.Contains("aria-live=\"polite\"", StringComparison.Ordinal)
+                      && html.IndexOf(" data-page-range", StringComparison.Ordinal)
+                          < html.IndexOf("data-table-pagination-bottom", StringComparison.Ordinal),
+                      "Only the upper pager may announce the range; the lower pager must not duplicate its live region.");
+                table.GetType().GetMethod("SetSortKey", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, ["hidden"]);
+                typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, null);
+                html = output.ToHtmlString();
+                Require(System.Text.RegularExpressions.Regex.IsMatch(html, "<button[^>]*aria-pressed=\"true\"[^>]*>Hidden</button>"),
+                    "Selecting a hidden sort target must expose its pressed state to assistive technology.");
+                table.GetType().GetMethod("ReorderColumnWithKeyboard", BindingFlags.Instance | BindingFlags.NonPublic)!
+                    .Invoke(table, [new KeyboardEventArgs { Key = " " }, name]);
+                typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, null);
+                html = output.ToHtmlString();
+                var handles = System.Text.RegularExpressions.Regex.Matches(html, "<button[^>]*column-drag-handle[^>]*>");
+                Require(handles[0].Value.Contains("aria-pressed=\"true\"", StringComparison.Ordinal),
+                    "Keyboard reorder activation must emit an explicit pressed state.");
+            });
+        }));
+
+        tests.Add(("offer pause and resume update pressed state with scoped defaults while explicit labels remain literal", async () =>
+        {
+            using var services = Services();
+            using var scope = services.CreateScope();
+            var provider = (TrackingTextProvider)scope.ServiceProvider.GetRequiredService<ITextProvider>();
+            var activator = scope.ServiceProvider.GetRequiredService<CaptureActivator>();
+            await using var renderer = Renderer(scope);
+            var output = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<OfferStage>(ParameterView.Empty));
+            var stage = activator.Components.OfType<OfferStage>().Single();
+            var toggle = typeof(OfferStage).GetMethod("ToggleRotation", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var render = typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            await renderer.Dispatcher.InvokeAsync(() =>
+            {
+                RequireRotationState(output.ToHtmlString(), "en-US:Flourish/Offer_PauseRotation", false);
+                typeof(OfferStage).GetField("initialized", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(stage, true);
+                toggle.Invoke(stage, null);
+                render.Invoke(stage, null);
+                RequireRotationState(output.ToHtmlString(), "en-US:Flourish/Offer_ResumeRotation", true);
+                Require(!System.Text.RegularExpressions.Regex.IsMatch(output.ToHtmlString(), @"<button\b[^>]*\sdisabled(?:=|\s|>)"),
+                    "An initialized rotation control remained unavailable.");
+            });
+            await Task.Run(() => provider.Select("pt-BR"));
+            await renderer.Dispatcher.InvokeAsync(() => RequireRotationState(output.ToHtmlString(), "pt-BR:Flourish/Offer_ResumeRotation", true));
+            await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                await stage.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    ["PauseRotationLabel"] = "Pause rotation", ["ResumeRotationLabel"] = "Resume rotation"
+                }));
+                RequireRotationState(output.ToHtmlString(), "Resume rotation", true);
+                Require(!output.ToHtmlString().Contains("Flourish/Offer_", StringComparison.Ordinal), "An explicit default-shaped resume label was translated.");
+                toggle.Invoke(stage, null);
+                render.Invoke(stage, null);
+                RequireRotationState(output.ToHtmlString(), "Pause rotation", false);
+                toggle.Invoke(stage, null);
+                render.Invoke(stage, null);
+                RequireRotationState(output.ToHtmlString(), "Resume rotation", true);
+            });
+            await renderer.DisposeAsync();
+            Require(provider.Subscribers == 0, "Asynchronous offer-stage disposal retained its text subscription.");
+        }));
+
         tests.Add(("generic control and pattern defaults refresh per scope and every subscription is released", async () =>
         {
             using var services = Services();
@@ -139,6 +225,7 @@ internal static class ControlTextChecks
         new(typeof(SplitButton), "Menu_MoreActions", "SecondaryLabel", "More actions", new()),
         new(typeof(SectionNavigator), "Shell_PageContents", "Label", "On this page", new() { ["ContentId"] = "content" }),
         new(typeof(UniformGridButton), "Button_Working", "BusyLabel", "Working...", new() { ["Busy"] = true }),
+        new(typeof(OfferStage), "Offer_PauseRotation", "PauseRotationLabel", "Pause rotation", new()),
         new(typeof(Field), "Input_Required", null, null, new() { ["Required"] = true, ["Id"] = "field", ["Label"] = "Host label" }),
         new(typeof(Primitive.BottomSheet), "Dialog_Close", "CloseLabel", "Close", new() { ["Id"] = "sheet", ["Title"] = "Sheet" }),
         new(typeof(Primitive.RowActionMenu), "Menu_RecordActions", "Label", "Record actions", new() { ["ChildContent"] = (RenderFragment)(_ => { }) }),
@@ -166,6 +253,14 @@ internal static class ControlTextChecks
         new(typeof(Pattern.NavigationSurface), "Shell_Top", "TopLabel", "Back to top", new())
     ];
 
+    private static void RequireRotationState(string html, string label, bool paused)
+    {
+        var control = System.Text.RegularExpressions.Regex.Match(html, @"<button\b[^>]*class=""[^""]*\bf-button-quiet\b[^""]*""[^>]*>.*?</button>",
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+        Require(control.Success && control.Value.Contains($"aria-pressed=\"{paused.ToString().ToLowerInvariant()}\"", StringComparison.Ordinal)
+            && WebUtility.HtmlDecode(control.Value).Contains(label, StringComparison.Ordinal),
+            "Rotation label and explicit pressed state diverged: " + html);
+    }
     private static bool HasText(Fixture fixture, HtmlRootComponent output, CaptureActivator activator, string culture)
     {
         var value = fixture.Property is null ? WebUtility.HtmlDecode(output.ToHtmlString())

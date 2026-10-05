@@ -1,0 +1,48 @@
+/* Display composition shares existing controls; this file owns layout and progressive enhancement only. */
+.f-content-container { box-sizing:border-box; width:100%; max-width:var(--f-content-width,1180px); min-width:0; margin-inline:auto; padding-inline:24px; }
+.content-surface.f-document-surface { display:flex; height:auto; min-height:100dvh; flex-direction:column; overflow:visible; }
+.f-document-surface-header { position:sticky; top:0; z-index:50; flex:0 0 auto; }
+.content-surface.f-document-surface > .content-stage { flex:1 0 auto; overflow:visible; overscroll-behavior:auto; }
+.f-document-surface .f-page-body.f-page-full { min-height:0; padding:0; }
+.f-presentation-band { box-sizing:border-box; width:100%; }
+.f-presentation-band-heading { display:flex; flex-direction:column; align-items:center; text-align:center; }
+.f-presentation-hero .f-content-container { display:grid; align-content:center; min-height:min(580px,calc(100dvh - 260px)); }
+.f-presentation-hero-actions { display:flex; flex-wrap:wrap; align-items:center; }
+.f-presentation-footer { position:relative; flex:0 0 auto; overflow:hidden; isolation:isolate; }
+.f-presentation-watermark { position:absolute; z-index:0; white-space:nowrap; pointer-events:none; }
+.f-presentation-footer-content { position:relative; z-index:1; display:flex; min-height:320px; align-items:flex-end; justify-content:space-between; }
+.f-presentation-footer-identity { display:grid; }
+.f-offer-stage { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+.f-offer-controls { display:none; }
+.f-offer-card { box-sizing:border-box; position:relative; display:flex; min-width:0; flex-direction:column; scroll-margin-top:88px; }
+.f-offer-details { display:flex; flex:1; flex-direction:column; }
+.f-offer-details > p { flex:1; }
+.f-offer-details .f-button { width:100%; white-space:normal; overflow-wrap:anywhere; }
+.f-offer-compact-title { display:none; }
+.f-access-panel { box-sizing:border-box; width:min(100%,560px); min-width:0; margin-inline:auto; }
+.f-access-panel-wide { width:min(100%,960px); }
+.f-access-form-surface { box-sizing:border-box; display:grid; width:100%; gap:16px; }
+.f-access-form-surface > form { display:grid; min-width:0; gap:16px; }
+.f-access-actions { display:flex; flex-wrap:wrap; align-items:center; }
+@media(min-width:1100px) and (prefers-reduced-motion:no-preference) {
+ .f-offer-presentation:has(.f-offer-stage[data-offer-ready]) > .f-offer-controls { display:flex; justify-content:flex-end; margin-top:12px; }
+ .f-offer-stage[data-offer-ready] { grid-template-columns:repeat(var(--f-offer-columns),minmax(0,1fr)); }
+ .f-offer-stage[data-offer-ready] .f-offer-card { grid-column:span 1; min-height:360px; height:360px; overflow:hidden; isolation:isolate; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] { grid-column:span 2; }
+ .f-offer-stage[data-offer-ready] .f-offer-card::before { position:absolute; z-index:0; inset:0; content:""; pointer-events:none; transform:scaleX(1); transform-origin:left center; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true]::before { transform:scaleX(0); }
+ .f-offer-stage[data-offer-ready] .f-offer-card h3 { opacity:0; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] h3 { opacity:1; }
+ .f-offer-stage[data-offer-ready] .f-offer-compact-title { position:absolute; z-index:1; top:18px; right:18px; display:block; writing-mode:vertical-rl; text-orientation:mixed; pointer-events:none; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] .f-offer-compact-title { opacity:0; }
+ .f-offer-stage[data-offer-ready] .f-offer-details { position:relative; z-index:1; visibility:hidden; opacity:0; pointer-events:none; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] .f-offer-details { visibility:visible; opacity:1; pointer-events:auto; }
+}
+@media(max-width:760px) {
+ .f-presentation-footer-content { align-items:flex-start; flex-direction:column; justify-content:flex-end; }
+}
+@media(max-width:600px) { .f-offer-stage { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:560px) {
+ .f-content-container { padding-inline:18px; }
+ .f-presentation-hero .f-content-container { min-height:460px; }
+}

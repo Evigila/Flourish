@@ -1,0 +1,121 @@
+@page "/examples/display"
+@page "/examples/display/{Topic}"
+@inherits LocalizedComponentBase
+
+<PageTitle>@PageTitleText · Gallery</PageTitle>
+@if (TopicKey == "index")
+{
+    <PageBody>
+        <PageHeading Title="@Localization.Parse(TextKey.Nav_DisplayPages)" />
+        <Section>
+            <p>@Localization.Parse(TextKey.Display_Intro)</p>
+            <UniformGrid>
+                <UniformGridButton Title="@Localization.Parse(TextKey.Nav_DisplayProduct)" Href="/examples/display/product" />
+                <UniformGridButton Title="@Localization.Parse(TextKey.Nav_DisplayPricing)" Href="/examples/display/pricing" />
+                <UniformGridButton Title="@Localization.Parse(TextKey.Nav_DisplayAccess)" Href="/examples/display/access" />
+            </UniformGrid>
+        </Section>
+    </PageBody>
+}
+else if (TopicKey is "product" or "pricing" or "access")
+{
+    <PageBody FullWidth="true">
+        @if (TopicKey == "product")
+        {
+            <PresentationHero Title="Lumen" Subtitle="@Localization.Parse(TextKey.Display_ProductSubtitle)"
+                              Description="@Localization.Parse(TextKey.Display_ProductDescription)" TitleId="display-product-title">
+                <Actions>
+                    <Button Variant="ButtonVariant.Elevated" Href="/examples/display/pricing">@Localization.Parse(TextKey.Display_ViewPlans)</Button>
+                    <Button Variant="ButtonVariant.Elevated" Href="/examples/display/access">@Localization.Parse(TextKey.Display_Enter)</Button>
+                </Actions>
+            </PresentationHero>
+            <PresentationBand Title="@Localization.Parse(TextKey.Display_Details)" TitleId="display-details" Tone="PresentationTone.Surface">
+                <p>@Localization.Parse(TextKey.Display_ContainerExplanation)</p>
+                <UniformGrid Centered="true" Columns="2" NarrowColumns="1">
+                    <UniformGridItem Title="Lumen" Text="@Localization.Parse(TextKey.Display_Intro)" />
+                    <UniformGridButton Title="@Localization.Parse(TextKey.Display_ViewPlans)" Href="/examples/display/pricing" />
+                </UniformGrid>
+            </PresentationBand>
+        }
+        else if (TopicKey == "pricing")
+        {
+            <PresentationBand Title="@Localization.Parse(TextKey.Display_PricingTitle)" HeadingLevel="1" TitleId="display-pricing-title">
+                <p>@Localization.Parse(TextKey.Display_Intro)</p>
+                <UniformGrid Centered="true" Columns="3" NarrowColumns="1" id="display-offer-links">
+                    @for (var index = 0; index < Offers.Count; index++)
+                    {
+                        var offerIndex = index;
+                        <UniformGridButton Title="@Offers[index]" Text="@Price(index)" Href="@($"#display-offer-{offerIndex}")" />
+                    }
+                </UniformGrid>
+            </PresentationBand>
+            <PresentationBand Title="@Localization.Parse(TextKey.Display_Comparison)" TitleId="display-comparison" Tone="PresentationTone.Surface">
+                <ListView TItem="Feature" Items="Features" Columns="ComparisonColumns" RowHeaderKey="feature"
+                          Label="@Localization.Parse(TextKey.Display_Comparison)">
+                    <CellTemplate Context="cell">
+                        @if (cell.Column.Key == "feature") { @cell.Text }
+                        else { <span aria-label="@Localization.Parse((bool)cell.Column.Value(cell.Item)! ? TextKey.Display_Yes : TextKey.Display_No)">@((bool)cell.Column.Value(cell.Item)! ? "✔" : "✘")</span> }
+                    </CellTemplate>
+                </ListView>
+            </PresentationBand>
+            <PresentationBand Title="@Localization.Parse(TextKey.Display_Offers)" TitleId="display-offers-title">
+                <OfferStage Id="display-offers" LinkScopeId="display-offer-links" Label="@Localization.Parse(TextKey.Display_Offers)">
+                    @for (var index = 0; index < Offers.Count; index++)
+                    {
+                        <OfferCard Id="@($"display-offer-{index}")" Title="@Offers[index]" Description="@Localization.Parse(TextKey.Display_OfferDescription)">
+                            <Button Variant="ButtonVariant.Outlined" Disabled="true">@Price(index) · @Localization.Parse(TextKey.Display_DemoOnly)</Button>
+                        </OfferCard>
+                    }
+                </OfferStage>
+            </PresentationBand>
+        }
+        else
+        {
+            <PresentationBand Tone="PresentationTone.Surface">
+                <AccessPanel Emphasized="true">
+                    <Brand>
+                        <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="Lumen" ContextName="@Localization.Parse(TextKey.Nav_DisplayAccess)"
+                            TitleId="display-access-title" Description="@Localization.Parse(TextKey.Access_Overview)" />
+                    </Brand>
+                    <ChildContent>
+                        <AccessFormSurface>
+                            <Notice Severity="NotificationSeverity.Information" Announce="false">@Localization.Parse(TextKey.Access_DemoOnly)</Notice>
+                            <Button Variant="ButtonVariant.Elevated" Href="/examples/display/login">@Localization.Parse(TextKey.Nav_DisplayLogin)</Button>
+                            <Button Variant="ButtonVariant.Elevated" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
+                        </AccessFormSurface>
+                    </ChildContent>
+                    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions>
+                </AccessPanel>
+            </PresentationBand>
+        }
+        <PresentationFooter BrandName="Lumen" Watermark="Lumen" Copyright="@Localization.Parse(TextKey.Display_Disclaimer)">
+            <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions>
+        </PresentationFooter>
+    </PageBody>
+}
+else
+{
+    <PageBody><EmptyState Title="@Localization.Parse(TextKey.Nav_DisplayPages)"><Actions><Button Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions></EmptyState></PageBody>
+}
+
+@code {
+    [Parameter] public string? Topic { get; set; }
+    private string TopicKey => Topic?.ToLowerInvariant() ?? "index";
+    private string PageTitleText => Localization.Parse(TopicKey switch
+    { "product" => TextKey.Nav_DisplayProduct, "pricing" => TextKey.Nav_DisplayPricing, "access" => TextKey.Nav_DisplayAccess, _ => TextKey.Nav_DisplayPages });
+    private static readonly IReadOnlyList<string> Offers = ["Basic", "Plus", "Team", "Studio", "Global"];
+    private string Price(int index) => (index * 10m).ToString("C", Localization.FormatCulture);
+    private sealed record Feature(string Key, string LabelKey, bool[] Included);
+    private static readonly IReadOnlyList<Feature> Features =
+    [new("notes", TextKey.Display_SharedNotes, [true, true, true, true, true]),
+     new("organization", TextKey.Display_Organization, [false, false, true, true, true]),
+     new("reports", TextKey.Display_Reports, [false, false, false, true, true])];
+    private IReadOnlyList<TableColumn<Feature>> ComparisonColumns =>
+        new[] { new TableColumn<Feature>("feature", Localization.Parse(TextKey.Display_Feature), item => Localization.Parse(item.LabelKey)) }
+            .Concat(Offers.Select((offer, index) => new TableColumn<Feature>("offer-" + index, offer, item => item.Included[index]))).ToArray();
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Topic = null;
+        return base.SetParametersAsync(parameters);
+    }
+}

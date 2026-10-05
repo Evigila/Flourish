@@ -17,6 +17,6 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
+    <ProjectReference Include="../../Flourish.Core/Flourish.Core.csproj" />
   </ItemGroup>
 </Project>

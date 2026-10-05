@@ -15,6 +15,7 @@
 .f-uniform-grid-square {
     --f-grid-cell-width:var(--f-grid-cell-max,280px);
 }
+.f-uniform-grid-centered { margin-inline:auto; }
 .f-uniform-grid-columns { grid-template-columns:repeat(var(--f-grid-columns),minmax(0,var(--f-grid-cell-width))); }
 .f-uniform-grid-rows { grid-template-rows:repeat(var(--f-grid-rows),minmax(0,1fr)); }
 .f-uniform-grid-rows:not(.f-uniform-grid-columns) {

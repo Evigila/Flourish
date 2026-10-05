@@ -1,6 +1,12 @@
 @using ArkheideSystem.Gallery.Flourish.Blazor.Models
-<article class="component-guide" id="@Sample.Key" data-component="@Entry.Name">
+<article class="component-guide" id="@Sample.Key" data-component="@Entry.Name" data-component-use="@Entry.Usage.Kind">
     <Section Title="简介">
+        <p><strong>@UseLabel</strong> · @Entry.Usage.Scenario</p>
+        <p>@Entry.Usage.Guidance</p>
+        @if (PreferredEntry is { } preferred)
+        {
+            <p>推荐入口：<Button Variant="ButtonVariant.Underline" Href="@CatalogSections.ComponentHref(preferred)">@preferred.Name</Button></p>
+        }
         <p>@Entry.Purpose</p>
         <p>@Entry.Variants</p>
     </Section>
@@ -33,6 +39,15 @@
     [Parameter] public string Category { get; set; } = "actions";
     [Parameter] public bool ShowDetailLink { get; set; } = true;
     private ComponentSample Sample => SampleCatalog.For(Entry);
+    private ComponentEntry? PreferredEntry => Entry.Usage.PreferredEntry is { } preferred
+        ? ComponentCatalog.Groups.SelectMany(group => group.Entries).FirstOrDefault(entry => entry.ComponentType == preferred) : null;
+    private string UseLabel => Entry.Usage.Kind switch
+    {
+        ComponentUseKind.General => "通用生产控件",
+        ComponentUseKind.Scenario => "专用场景生产控件",
+        ComponentUseKind.Compatibility => "兼容入口：迁移前核对能力差异",
+        _ => "构造基元：不作为独立生产控件"
+    };
     private static readonly IReadOnlyList<TableColumn<ComponentParameter>> ApiColumns =
     [
         new("name", "参数", parameter => parameter.Name, CanHide: false),

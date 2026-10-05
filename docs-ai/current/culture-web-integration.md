@@ -2,7 +2,7 @@
 
 ## Implemented local integration
 
-The 2026-10-05 local integration supersedes this guide's earlier proposed APIs and read-only readiness assessment. Essential.Culture now has public immutable catalogs and independent contexts plus a scoped Blazor adapter. Gallery consumes that adapter through a separate optional Flourish.Extensions.Culture.Blazor bridge. The four Flourish.Blazor libraries remain separate; no desktop localization implementation was replaced.
+The 2026-10-05 local integration supersedes this guide's earlier proposed APIs and read-only readiness assessment. Essential.Culture provides immutable catalogs, independent contexts and a scoped Blazor adapter; Gallery uses the separate optional Flourish.Extensions.Culture.Blazor bridge. The later approved package consolidation retires Shared, retaining Abstract/Framework/Design and adding a dependency-only convenience package. Desktop localization APIs remain separate.
 
 This integration targets static SSR and Interactive Server on .NET 10. Pure WASM and Interactive Auto have not been validated. Current Framework, Abstract and Culture.Blazor projects use Microsoft.AspNetCore.App FrameworkReference, so this source build does not establish a client-compatible dependency graph.
 
@@ -15,13 +15,13 @@ This integration targets static SSR and Interactive Server on .NET 10. Pure WASM
 - Essential.Culture.Blazor registers the request/circuit-local ILocalizationService; immutable parsed catalogs may be shared. Essential.Culture owns translation algorithms and formatting, without a Flourish dependency.
 - Framework supplies a literal fallback provider when no bridge is installed. Framework-only Native retains its ordinary controls and English default captions.
 
-ApplicationData.cs still belongs to Shared and is not moved in this task. Abstract already references Shared. Framework therefore stores TextReference metadata separately from the existing navigation/menu records, using reference identity and an immutable startup map. This avoids a Shared-to-Abstract cycle and preserves the public DTO signatures and assembly placement. Equal menu item records can still point to different catalogs. The wider public-contract placement recommendation remains separate future work.
+ApplicationData.cs now belongs to Abstract after the approved Shared consolidation. Framework retains reference-identity, immutable startup TextReference metadata separate from navigation/menu records, preserving their public DTO signatures and catalog distinctions. The move changes assembly identity and requires rebuilding existing consumers; no Shared assembly is shipped.
 
 ## Why the WPF bridge stays separate
 
 The desktop bridge is now src/Flourish.Extensions/Flourish.Extensions.Culture.WPF, with package ID Arkheide.Flourish.Extensions.Culture.WPF and namespace ArkheideSystem.Flourish.Extensions.Culture.WPF. It targets net10.0-windows, uses WPF Dispatcher, Singleton applicator/hosted service and static Localizer.Current. That process-wide desktop synchronization cannot represent separate Web users.
 
-The WPF implementation and UseEssentialCulture entry remain unchanged. Its project, assembly, namespace, test identity and package name were migrated into Flourish. Its existing EssentialCultureVersion=1.1.0 default was preserved. Gallery.Flourish.WPF currently consumes Culture.Wpf directly; it does not itself reference this middle-layer package. These are distinct facts, rather than a claim that the current WPF Gallery already uses the extension.
+The WPF implementation and UseEssentialCulture entry retain their established behavior after migration into Flourish. Its external Culture version now comes from the shared root 1.3.0 setting, replacing the former extension-local 1.1.0 default. Gallery.Flourish.WPF consumes Culture.Wpf directly rather than this bridge. Neither WPF package is included in the current Core/Blazor release.
 
 The new Blazor bridge is Scoped. It maps Get to TryParseFrom, forwards Changed subscriptions directly and exposes the adapter's UI/format selection. It has no hosted service, Dispatcher, static Localizer access or permanent event subscription.
 
@@ -31,7 +31,7 @@ Gallery and both extensions reference their same-repository Flourish projects. A
 
 EssentialCultureRoot, UseLocalEssentialCulture, UseLocalFlourish and UseLocalCultureIntegration are retired. The current consumer boundary is PackageReference, including WPF. Local package feeds and public NuGet feeds provide the same package identity/version boundary. See [NuGet release and integration](nuget-release-integration.md).
 
-The bridge packages are Arkheide.Flourish.Extensions.Culture.WPF and Arkheide.Flourish.Extensions.Culture.Blazor, version 1.1.0 alongside the six other Flourish packages. Essential package names, namespaces and desktop translation APIs remain unchanged. CI restores Essential 1.3.0 packages; publish Essential first. Local verification does not publish packages. See the [bridge guide](culture-extension-bridge.md) and [repository organization](solution-organization.md).
+The maintained bridge projects are WPF and Blazor, but only Arkheide.Flourish.Extensions.Culture.Blazor is in the current six-package 1.1.0 Core/Blazor release. Both use Essential packages at the root 1.3.0 version. Publish Essential first. Local verification does not publish packages. See the [bridge guide](culture-extension-bridge.md) and [release contract](nuget-release-integration.md).
 
 ## Register catalogs and the bridge
 
@@ -121,6 +121,6 @@ Verified on 2026-10-05:
 - Existing WPF extension tests: 5/5 passed; its implementation remained intact.
 - Headless installed Edge tested the published Gallery with separate English/Chinese browser contexts: SSR negotiation, independent live switching, translated home/title/chrome, Brazilian formatting, table captions, dialog/copy defaults, retained third-navigation selection/collapse and translated command routing. No page exceptions or failed framework assets were observed.
 - Framework-only Native SSR returned 200, retained fallback captions and loaded neither Design nor Culture markup. This is narrower evidence than a complete Native browser acceptance run.
-- Framework and bridge NuGet packages were created locally. Framework nuspec depends only on Abstract/Shared; the bridge nuspec depends only on Abstract/Culture.Blazor. Published dictionaries are embedded with no loose Culture.json/Texts.json.
+- Framework and bridge NuGet packages are prepared locally. Framework depends on Abstract; the bridge depends on Abstract/Culture.Blazor. Dictionaries are embedded without loose Culture.json/Texts.json. Earlier Abstract/Shared dependency evidence is superseded by the approved Shared consolidation.
 
-Remaining rollout: translate the other guides and primitive default captions, choose host preference persistence, validate any client/WASM graph, and publish/version packages in dependency order. These are separate from the completed local Server/SSR bridge experiment. See the [manual acceptance checklist](blazor-manual-tests.md) and [directory map](currentproject-architecture.md).
+Remaining rollout: translate the other guides and primitive default captions, choose host preference persistence, validate any client/WASM graph, and publish/version packages in dependency order. These are separate from the completed local Server/SSR bridge experiment. Use the actual component tests and user-run acceptance for the affected runtime boundary, and the [directory map](currentproject-architecture.md) to locate source. Retired UI guides are not runtime authority.

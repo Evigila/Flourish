@@ -1,0 +1,9 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [SampleFor("StaticDialog")]
+<p>原生 dialog 构造边界不包含打开、焦点与关闭管理，不应重新拼装通用模态交互。</p>
+<Button Variant="ButtonVariant.Underline" Href="/controls/overlays/dialogsample">查看生产控件 Dialog</Button>
+@if (!Preview) { <CodeBlock Text="<!-- 只有宿主拥有原生 dialog 协议时才使用 StaticDialog；普通应用使用 Dialog。 -->" Language="razor" /> }
+@code {
+    [Parameter] public bool Preview { get; set; }
+
+}

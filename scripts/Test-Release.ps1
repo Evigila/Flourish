@@ -23,5 +23,6 @@ try {
         Invoke-ReleaseCommand 'dotnet' @('pack', $package.Project, '-c', 'Release', '--no-build', '--no-restore', '-p:ContinuousIntegrationBuild=true')
     }
     & (Join-Path $PSScriptRoot 'Verify-PackageSet.ps1') -Version $version
+    Invoke-ReleaseCommand 'pwsh' @('-NoLogo', '-NoProfile', '-File', 'build/Test-BlazorPackageConsumers.ps1', '-Version', $version)
     Write-Host "Release preparation completed for v$version. No Git or publishing changes were made."
 } finally { Pop-Location }

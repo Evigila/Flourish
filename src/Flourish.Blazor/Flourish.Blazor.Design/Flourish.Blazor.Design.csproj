@@ -19,7 +19,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
-    <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <CssBundleEntry>design.css</CssBundleEntry>

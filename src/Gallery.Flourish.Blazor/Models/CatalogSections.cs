@@ -26,22 +26,25 @@ public static class CatalogSections
     {
         "Button" or "UniformGridButton" or "SplitButton" or "ExpansionIndicator" or "ActionMenu" or "Primitives.RowActionMenu" => "actions",
         "TextBox" or "NumberBox<TValue>" or "SelectBox<TValue>" or "CheckBox" or "ToggleSwitch"
+            or "DateBox<TValue>" or "FilePicker" or "StandaloneTextBox" or "StandaloneNumberBox"
+            or "StandaloneSelectBox<TValue>" or "StandaloneCheckBox" or "AccessFormSurface" or "AccessActions"
             or "SearchBox" or "Field" or "FormLayout" or "FormActions"
             or "Primitives.MaskedInput" or "Primitives.StandaloneMaskedInput"
             or "Primitives.SearchAutocomplete<TItem>" or "Primitives.MultiSelectDropdown<TItem, TValue>"
             or "Primitives.ReferenceDropdown<TValue>" or "Primitives.SelectionDropdownSurface"
             or "Primitives.FormSurface" or "Primitives.FormFields" or "Primitives.FormActionBar"
             or "Primitives.ToggleSwitch" or "Primitives.ToggleIndicator" => "inputs",
-        "DataTable<TItem>" or "Primitives.DataTable<TItem>" or "Primitives.DataSearch<TItem>"
+        "DataTable<TItem>" or "ListView<TItem>" or "TableSurface" or "Primitives.DataTable<TItem>" or "Primitives.DataSearch<TItem>"
             or "Primitives.DataPager" or "Primitives.EditingGrid" => "data",
-        "Dialog" or "BottomSheet" or "Primitives.BottomSheet" => "overlays",
+        "Dialog" or "BottomSheet" or "Primitives.BottomSheet" or "StaticDialog" or "DropdownSurface" => "overlays",
         "Notice" or "EmptyState" or "LoadingState" or "Primitives.StatusNotice"
             or "Primitives.NoticeTrigger" or "Primitives.PageLoading" => "feedback",
         "ProgressBar" or "ProgressRing" => "progress",
         "ApplicationLayout" or "ApplicationShell" or "PageBody" or "PageHeading" or "SectionNavigator"
             or "Patterns.ContentSurface" or "Patterns.NavigationSurface" or "Patterns.RecordListPage"
+            or "ContentContainer" or "PresentationBand" or "PresentationHero" or "PresentationFooter" or "AccessPanel"
             or "Primitives.AccessBrand" or "Primitives.AccessSurface" or "Primitives.ShellHeader"
-            or "Primitives.ServiceMenu" or "Primitives.PrimaryNavigationItem"
+            or "Primitives.ServiceMenu" or "Primitives.PrimaryNavigationItem" or "Primitives.SecondaryNavigationItem"
             or "Primitives.PageHeading" or "Primitives.RecordPageHeading"
             or "Primitives.PageContent" or "Primitives.PageContents"
             or "Primitives.NavigationGuard" or "Primitives.InteractionBoundary" => "layout",

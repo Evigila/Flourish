@@ -7,7 +7,7 @@
 @implements IAsyncDisposable
 @using System.Globalization
 
-<div @ref="GridRoot" class="data-grid">
+<div @ref="GridRoot" class="data-grid" style="@CardValueStyle">
     @if (ShowSearch && Columns.Any(column => column.CanSearch))
     {
         <DataSearch TItem="TItem" Columns="Columns" ColumnKey="@LocalSearchColumn" Value="@LocalSearchText"
@@ -35,6 +35,55 @@
                         @if (ViewMode == DataViewMode.Grid) { <span>@Ui("Table_Grid", "Grid")</span> }
                     </button>
                 </div>
+                @if (ShowSortControls && SortableColumns.Count > 0)
+                {
+                    <details class="table-sort-selector" name="@ToolGroupName">
+                        <summary class="secondary-action">@Ui("Sort_Label", "Sorting")</summary>
+                        <fieldset class="table-popup-panel table-sort-options" aria-label="@Ui("Sort_Records", "Record sorting")">
+                            <legend class="visually-hidden">@Ui("Sort_Records", "Record sorting")</legend>
+                            <div class="table-popup-group" role="group" aria-label="@Ui("Sort_By", "Sort by")">
+                                <span class="table-popup-heading">@Ui("Sort_By", "Sort by")</span>
+                                <button class="table-popup-item @(string.IsNullOrEmpty(SortKey) ? "is-selected" : null)"
+                                        type="button" aria-pressed="@(string.IsNullOrEmpty(SortKey) ? "true" : "false")" disabled="@(EditingBusy || BulkEditing)"
+                                        @onclick="() => SetSortKey(string.Empty)">@Ui("Sort_Default", "Default order")</button>
+                                @foreach (var column in SortableColumns)
+                                {
+                                    <button class="table-popup-item @(SortKey == column.Key ? "is-selected" : null)"
+                                            type="button" aria-pressed="@(SortKey == column.Key ? "true" : "false")" disabled="@(EditingBusy || BulkEditing)"
+                                            @onclick="() => SetSortKey(column.Key)">@column.Label</button>
+                                }
+                            </div>
+                            <div class="table-popup-group" role="group" aria-label="@Ui("Sort_Direction", "Direction")">
+                                <span class="table-popup-heading">@Ui("Sort_Direction", "Direction")</span>
+                                <button class="table-popup-item @(SortDirection == SortDirection.Ascending ? "is-selected" : null)" type="button"
+                                        disabled="@(EditingBusy || BulkEditing || string.IsNullOrEmpty(SortKey))"
+                                        aria-pressed="@(SortDirection == SortDirection.Ascending ? "true" : "false")"
+                                        @onclick="() => SetSortDirection(SortDirection.Ascending)">@Ui("Sort_Ascending", "Ascending")</button>
+                                <button class="table-popup-item @(SortDirection == SortDirection.Descending ? "is-selected" : null)" type="button"
+                                        disabled="@(EditingBusy || BulkEditing || string.IsNullOrEmpty(SortKey))"
+                                        aria-pressed="@(SortDirection == SortDirection.Descending ? "true" : "false")"
+                                        @onclick="() => SetSortDirection(SortDirection.Descending)">@Ui("Sort_Descending", "Descending")</button>
+                            </div>
+                        </fieldset>
+                    </details>
+                }
+                @if (BulkEditRequested.HasDelegate || SpreadsheetEditHref is not null)
+                {
+                    <details class="table-advanced-selector" name="@ToolGroupName" @key="BulkEditing">
+                        <summary class="secondary-action">@Ui("Table_AdvancedEdit", "Advanced editing")</summary>
+                        <div class="table-popup-panel advanced-edit-options">
+                            @if (BulkEditRequested.HasDelegate)
+                            {
+                                <button class="table-popup-item" type="button" disabled="@(EditingBusy || BulkEditing)"
+                                        @onclick="BeginBulkEditAsync">@Ui("Table_BulkEdit", "Bulk editing")</button>
+                            }
+                            @if (SpreadsheetEditHref is not null)
+                            {
+                                <a class="table-popup-item" href="@SpreadsheetEditHref">@Ui("Table_SpreadsheetEdit", "Edit in grid")</a>
+                            }
+                        </div>
+                    </details>
+                }
                 <details class="table-column-selector" name="@ToolGroupName">
                     <summary class="secondary-action">@Ui("Table_Display", "Display")</summary>
                     <fieldset aria-label="@(ViewMode == DataViewMode.List ? Ui("Table_ColumnVisibility", "Column visibility and order") : Ui("Table_InfoVisibility", "Information visibility"))">
@@ -50,7 +99,7 @@
                                 <button class="column-drag-handle" type="button"
                                         disabled="@(!CanReorder(column))"
                                         aria-label="@Ui("Table_Reorder", "Reorder {0}", column.Label)"
-                                        aria-pressed="@(KeyboardMovingKey == column.Key)"
+                                        aria-pressed="@(KeyboardMovingKey == column.Key ? "true" : "false")"
                                         @onkeydown:preventDefault="@(KeyboardMovingKey == column.Key)"
                                         @onkeydown="eventArgs => ReorderColumnWithKeyboard(eventArgs, column)">
                                     <span aria-hidden="true">⠿</span>
@@ -69,23 +118,6 @@
                     </fieldset>
                     <span class="visually-hidden" aria-live="polite">@KeyboardReorderStatus</span>
                 </details>
-                @if (BulkEditRequested.HasDelegate || SpreadsheetEditHref is not null)
-                {
-                    <details class="table-advanced-selector" name="@ToolGroupName" @key="BulkEditing">
-                        <summary class="secondary-action">@Ui("Table_AdvancedEdit", "Advanced editing")</summary>
-                        <div class="table-popup-panel advanced-edit-options">
-                            @if (BulkEditRequested.HasDelegate)
-                            {
-                                <button class="table-popup-item" type="button" disabled="@(EditingBusy || BulkEditing)"
-                                        @onclick="BeginBulkEditAsync">@Ui("Table_BulkEdit", "Bulk editing")</button>
-                            }
-                            @if (SpreadsheetEditHref is not null)
-                            {
-                                <a class="table-popup-item" href="@SpreadsheetEditHref">@Ui("Table_SpreadsheetEdit", "Edit in grid")</a>
-                            }
-                        </div>
-                    </details>
-                }
             </div>
         }
     </div>
@@ -365,7 +397,7 @@
     }
     <div class="data-table-pagination-bottom">
         <DataPager TotalCount="Pagination.TotalCount" CurrentPage="Pagination.CurrentPage" PageSize="Pagination.PageSize"
-                            PageChanged="ChangePageAsync" IsLimited="IsLimited" Disabled="EditingBusy" />
+                            PageChanged="ChangePageAsync" ShowRange="false" IsLimited="IsLimited" Disabled="EditingBusy" />
     </div>
 </div>
 
@@ -461,6 +493,10 @@
     public TablePurpose Purpose { get; set; } = TablePurpose.Registry;
 
     [Parameter] public bool ShowSearch { get; set; }
+    // Optional independent sorting remains reachable in cards and for hidden columns.
+    [Parameter] public bool ShowSortControls { get; set; }
+    // A host may opt into multiple fixed-height value lines without changing other consumers.
+    [Parameter] public int CardValueLines { get; set; } = 1;
     [Parameter] public bool IsLimited { get; set; }
     // A changed external query resets pagination without changing record selection or edit state.
     [Parameter] public object? PaginationResetKey { get; set; }
@@ -487,6 +523,9 @@
         SetViewMode(DataViewMode.List);
         await BulkEditRequested.InvokeAsync();
     }
+
+    private string CardValueStyle => FormattableString.Invariant(
+        $"--f-card-value-lines:{CardValueLines};--f-card-value-height:{CardValueLines * 24}px");
 
     private IReadOnlyList<DataColumn<TItem>> OrderedColumns => OrderedColumnSnapshot;
 
@@ -531,6 +570,8 @@
 
     protected override void OnParametersSet()
     {
+        if (CardValueLines is < 1 or > 8)
+            throw new ArgumentOutOfRangeException(nameof(CardValueLines), "Card values support one to eight lines.");
         if (DefaultAction.HasDelegate && DefaultActionHref is not null)
             throw new InvalidOperationException("Declare only one opening action: DefaultAction or DefaultActionHref.");
         if (Purpose == TablePurpose.Registry && string.IsNullOrWhiteSpace(PreferenceKey))
@@ -724,6 +765,25 @@
             SortKey = string.Empty;
             SortDirection = SortDirection.Ascending;
         }
+        SaveSortPreference();
+        Pagination.GoToPage(1);
+        RebuildRenderedItems();
+    }
+
+    private void SetSortKey(string requestedKey)
+    {
+        if (Purpose != TablePurpose.Registry || EditingBusy || BulkEditing) return;
+        SortKey = SortableColumns.Any(column => column.Key == requestedKey) ? requestedKey : string.Empty;
+        SaveSortPreference();
+        Pagination.GoToPage(1);
+        RebuildRenderedItems();
+    }
+
+    private void SetSortDirection(SortDirection direction)
+    {
+        if (Purpose != TablePurpose.Registry || EditingBusy || BulkEditing || string.IsNullOrEmpty(SortKey)) return;
+        if (!Enum.IsDefined(direction)) throw new ArgumentOutOfRangeException(nameof(direction));
+        SortDirection = direction;
         SaveSortPreference();
         Pagination.GoToPage(1);
         RebuildRenderedItems();

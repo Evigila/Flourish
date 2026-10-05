@@ -1,0 +1,12 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("AccessPanel")]
+@if (!Preview) { <StandaloneCheckBox Label="宽面板变种" @bind-Value="Wide" /><StandaloneCheckBox Label="强调表面" @bind-Value="Emphasized" /> }
+<AccessPanel Wide="Wide" Emphasized="Emphasized">
+    <Brand><h2>Lumen 演示入口</h2><p>品牌说明与面板布局由库承载。</p></Brand>
+    <ChildContent><AccessFormSurface><Field Label="演示邮箱" Id="@Id"><StandaloneTextBox Id="@Id" Type="email" @bind-Value="Email" /></Field><Button OnClick="() => Entered = true">模拟进入</Button></AccessFormSurface>@if (Entered) { <p role="status">本地演示完成；没有认证或网络请求。</p> }</ChildContent>
+    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">展示目录</Button></Actions>
+</AccessPanel>
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Wide, Emphasized, Entered; private string? Email = "visitor@example.invalid"; private readonly string Id = "access-panel-" + Guid.NewGuid().ToString("N");
+}

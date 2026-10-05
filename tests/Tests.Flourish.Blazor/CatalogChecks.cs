@@ -11,9 +11,21 @@ internal static class CatalogChecks
     public static void Run()
     {
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
-        Check(entries.Length == 77, "Every registered component must be covered by the API audit.");
+        var exported = typeof(Controls.Button).Assembly.GetExportedTypes()
+            .Where(type => type.IsClass && !type.IsAbstract && typeof(IComponent).IsAssignableFrom(type))
+            .OrderBy(type => type.FullName, StringComparer.Ordinal).ToArray();
+        var documentedTypes = entries.Select(entry => entry.ComponentType)
+            .OrderBy(type => type.FullName, StringComparer.Ordinal).ToArray();
+        Check(exported.SequenceEqual(documentedTypes), "Gallery must cover every exported component exactly once. Missing: "
+            + string.Join(", ", exported.Except(documentedTypes).Select(type => type.FullName)));
         foreach (var entry in entries)
         {
+            Check(entry.Usage.ComponentType == entry.ComponentType, $"Usage metadata differs for {entry.Name}.");
+            Check(!string.IsNullOrWhiteSpace(entry.Usage.Scenario) && !string.IsNullOrWhiteSpace(entry.Usage.Guidance),
+                $"Intended usage must be explicit for {entry.Name}.");
+            if (entry.Usage.PreferredEntry is { } preferred)
+                Check(entries.Any(candidate => candidate.ComponentType == preferred && candidate.IsProductionEntry),
+                    $"Preferred production entry is undocumented for {entry.Name}.");
             var declared = entry.ComponentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(property => property.IsDefined(typeof(ParameterAttribute), true)).Select(property => property.Name)
                 .Order(StringComparer.Ordinal).ToArray();
@@ -30,6 +42,13 @@ internal static class CatalogChecks
             => Check(Default(type, name) == expected, $"Unexpected {type.Name}.{name} default: {Default(type, name)}.");
 
         Equal("false", typeof(Controls.Button), "Disabled");
+        Equal("PresentationTone.Canvas", typeof(Controls.PresentationBand), "Tone");
+        Equal("2", typeof(Controls.PresentationBand), "HeadingLevel");
+        Equal("true", typeof(Controls.OfferStage), "AutoRotate");
+        Equal("2200", typeof(Controls.OfferStage), "RotationIntervalMilliseconds");
+        Equal("false", typeof(Controls.AccessPanel), "Wide");
+        Equal("false", typeof(Controls.AccessPanel), "Emphasized");
+        Equal("false", typeof(ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface), "DocumentFlow");
         Equal("ButtonVariant.Filled", typeof(Controls.Button), "Variant");
         Equal("\"button\"", typeof(Controls.Button), "Type");
         Equal("\"\"", typeof(Controls.Button), "Icon");
@@ -41,6 +60,7 @@ internal static class CatalogChecks
         Equal("UniformGridVariant.Elevated", typeof(Controls.UniformGrid), "Variant");
         Equal("280", typeof(Controls.UniformGrid), "MaxCellSize");
         Equal("260", typeof(Controls.UniformGrid), "MaxCellHeight");
+        Equal("false", typeof(Controls.UniformGrid), "Centered");
         foreach (var type in new[] { typeof(Controls.UniformGrid), typeof(Controls.UniformGridItem), typeof(Controls.UniformGridButton) })
             Equal(string.Empty, type, "IconSupport");
         Equal(string.Empty, typeof(Controls.UniformGrid), "Columns");
@@ -58,6 +78,13 @@ internal static class CatalogChecks
         Equal("CultureInfo.CurrentCulture", typeof(Controls.DataTable<>), "Culture");
         Equal("new TableText()", typeof(Controls.DataTable<>), "Text");
         Equal("[]", typeof(Controls.DataTable<>), "Items");
+        Equal("[]", typeof(Controls.ListView<>), "Items");
+        Equal("[]", typeof(Controls.ListView<>), "Columns");
+        Equal("CultureInfo.CurrentCulture", typeof(Controls.ListView<>), "Culture");
+        Equal("\"Records\"", typeof(Controls.ListView<>), "Label");
+        Equal("\"No items.\"", typeof(Controls.ListView<>), "EmptyMessage");
+        foreach (var name in new[] { "ItemKey", "RowHeaderKey", "CellTemplate", "Caption", "Class", "AdditionalAttributes" })
+            Equal(string.Empty, typeof(Controls.ListView<>), name);
         Equal(string.Empty, typeof(Primitives.ReferenceDropdown<>), "SelectedId");
         Equal("[]", typeof(Primitives.MultiSelectDropdown<,>), "SelectedValues");
         Equal("new GridInteractions()", typeof(Primitives.EditingGrid), "Interactions");
@@ -66,7 +93,7 @@ internal static class CatalogChecks
         {
             var entry = Entry(type);
             Check(entry.ApiParameters.All(parameter => parameter.Name != "Shape"), "Shape is not a child component parameter.");
-            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Filled" })
+            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Filled", "Centered" })
             {
                 var contextual = entry.ApiParameters.Single(parameter => parameter.Name == $"UniformGrid.{name}");
                 var actual = Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == name);
@@ -78,6 +105,14 @@ internal static class CatalogChecks
         Equal("2", typeof(Controls.UniformGridButton), "FormActions.Columns");
         Check(Entry(typeof(Primitives.SearchAutocomplete<>)).ApiParameters.Single(parameter => parameter.Name == "FilterItems")
             .Description.Contains("启用", StringComparison.Ordinal), "Boolean filtering must not be described as a function.");
+        var multipleSelection = Entry(typeof(Primitives.MultiSelectDropdown<,>)).ApiParameters.Single(parameter => parameter.Name == "SelectionChanged");
+        Check(multipleSelection.Description.Contains("切换单个 TValue", StringComparison.Ordinal)
+            && multipleSelection.Description.Contains("不能用于 @bind-SelectedValues", StringComparison.Ordinal),
+            "A toggle notification must not be documented as a collection binding callback.");
+        var referenceSelection = Entry(typeof(Primitives.ReferenceDropdown<>)).ApiParameters.Single(parameter => parameter.Name == "SelectionChanged");
+        Check(referenceSelection.Description.Contains("nullable TValue", StringComparison.Ordinal)
+            && referenceSelection.Description.Contains("不是 @bind-SelectedId", StringComparison.Ordinal),
+            "Reference selection must state its actual nullable-ID notification contract.");
         Console.WriteLine($"Catalog audit: {entries.Length} components, {entries.Sum(entry => entry.ApiParameters.Count)} rows, "
             + $"{entries.Sum(entry => entry.ApiParameters.Count(parameter => parameter.DefaultValue.Length > 0))} documented defaults.");
     }

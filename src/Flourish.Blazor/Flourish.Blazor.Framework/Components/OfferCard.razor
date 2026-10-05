@@ -1,0 +1,27 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@implements IDisposable
+<article @attributes="AdditionalAttributes" class="@($"f-offer-card {Class}".Trim())" id="@Id" role="listitem" tabindex="0">
+    <h3>@Title</h3>
+    <span class="f-offer-compact-title" aria-hidden="true">@Title</span>
+    <div class="f-offer-details">
+        @if (!string.IsNullOrWhiteSpace(Description)) { <p>@Description</p> }
+        @ChildContent
+    </div>
+</article>
+@code {
+    [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    [CascadingParameter] private OfferStage? Stage { get; set; }
+    private OfferStage? registeredStage;
+    protected override void OnParametersSet() {
+        if (string.IsNullOrWhiteSpace(Id) || Id.Any(char.IsWhiteSpace)) throw new ArgumentException("OfferCard requires a non-empty unique document ID without whitespace.", nameof(Id));
+        if (!ReferenceEquals(registeredStage, Stage)) registeredStage?.RemoveCard(this);
+        Stage?.RegisterCard(this, Id);
+        registeredStage = Stage;
+    }
+    public void Dispose() => registeredStage?.RemoveCard(this);
+}

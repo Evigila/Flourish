@@ -8,7 +8,7 @@
  --f-space-1:4px; --f-space-2:8px; --f-space-3:12px; --f-space-4:16px;
  --f-space-5:20px; --f-space-6:24px; --f-space-8:32px; --f-space-11:44px; --f-space-16:64px; --f-space-21:84px;
  --f-radius-small:10px; --f-radius-control:12px; --f-radius-panel:16px; --f-radius-emphasis:28px;
- --f-page-gutter:24px; --f-control-height:48px; --f-dense-height:36px; --f-topbar-height:68px; --f-primary-width:76px; --f-secondary-width:232px;
+ --f-page-gutter:24px; --f-field-label-gap:7px; --f-control-height:48px; --f-dense-height:36px; --f-topbar-height:68px; --f-primary-width:76px; --f-secondary-width:232px;
  --f-content-width:1180px; --f-shadow-control:0 2px 6px rgb(from var(--f-primary) r g b / .16); --f-shadow-popup:0 16px 48px rgb(from var(--f-primary) r g b / .16); --f-focus-width:3px;
  --f-icon-default-size:26px; --f-icon-primary-size:24px; --f-icon-tool-size:26px; --f-icon-information-size:22px;
  --f-primary-ink:var(--f-surface); --f-accent-ink:var(--f-surface); --f-accent-text:var(--f-accent); --f-accent-text-light:var(--f-accent); --f-accent-text-dark:var(--f-accent); --f-accent-hover:var(--f-accent);

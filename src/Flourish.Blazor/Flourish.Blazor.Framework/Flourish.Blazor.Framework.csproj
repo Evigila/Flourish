@@ -22,7 +22,6 @@
     <EmbeddedResource Include="Localization/Texts.json" LogicalName="Flourish.Blazor.Texts.json" />
     <EmbeddedResource Include="Icons/MaterialSymbolsOutlined.codepoints" LogicalName="Flourish.Blazor.Icons.Codepoints" />
     <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
-    <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <CssBundleEntry>framework.css</CssBundleEntry>

@@ -29,6 +29,8 @@
     private ElementReference Trigger;
     private ElementReference Menu;
     private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? ModuleLoading;
+    private bool Disposed;
     private string TriggerId => $"{Id}-trigger";
     private string MenuId => $"{Id}-menu";
 
@@ -40,23 +42,55 @@
 
     private async Task ToggleAsync()
     {
-        Module ??= await JS.InvokeAsync<IJSObjectReference>(
+        if (Disposed) return;
+        try
+        {
+            var activeModule = await GetModuleAsync();
+            if (Disposed || activeModule is null) return;
+            await activeModule.InvokeVoidAsync("toggle", Trigger, Menu);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (Module is not null) return Module;
+        var loading = ModuleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(ModuleLoading, loading)) ModuleLoading = null; }
+    }
+
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>(
             "import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/row-action-menu.js");
-        await Module.InvokeVoidAsync("toggle", Trigger, Menu);
+        if (Disposed) { await ReleaseModuleAsync(imported); return null; }
+        Module = imported;
+        return imported;
+    }
+
+    private static async ValueTask ReleaseModuleAsync(IJSObjectReference activeModule)
+    {
+        try { await activeModule.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 
     public async ValueTask DisposeAsync()
     {
+        if (Disposed) return;
+        Disposed = true;
         base.Dispose();
-        if (Module is null) return;
+        var activeModule = Module;
+        Module = null;
+        if (activeModule is null) return;
         try
         {
-            await Module.InvokeVoidAsync("dispose", Trigger, Menu);
-            await Module.DisposeAsync();
+            await activeModule.InvokeVoidAsync("dispose", Trigger, Menu);
         }
-        catch (JSDisconnectedException)
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException)
         {
             // The document already closed its top-layer popovers.
         }
+        finally { await ReleaseModuleAsync(activeModule); }
     }
 }

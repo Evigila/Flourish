@@ -1,0 +1,15 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [SampleFor("FilePicker")]
+<FilePicker Label="选择演示文本文件" Accept=".txt" Multiple="true" OnChange="Describe" />
+<p role="status">@Message</p>
+@if (!Preview) { <p>只读取文件名与长度元数据，不读取内容、不上传；生产宿主另行验证内容和大小。</p> }
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private string Message = "尚未选择文件。";
+    private const int MaximumDisplayedFiles = 100;
+    private void Describe(InputFileChangeEventArgs args)
+    {
+        if (args.FileCount > MaximumDisplayedFiles) { Message = $"演示最多显示 {MaximumDisplayedFiles} 个文件的元数据。"; return; }
+        Message = string.Join("；", args.GetMultipleFiles(MaximumDisplayedFiles).Select(file => $"{file.Name} ({file.Size} bytes)"));
+    }
+}

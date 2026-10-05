@@ -1,0 +1,89 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@using System.Globalization
+@typeparam TItem
+@inherits TextComponentBase
+
+<div @attributes="AdditionalAttributes" class="f-data f-list-view @Class">
+    <div class="f-data-scroll" role="region" tabindex="0" aria-label="@RecordsText">
+        <table class="f-data-table">
+            <caption class="f-sr-only">@(Caption ?? RecordsText)</caption>
+            <thead>
+                <tr>
+                    @foreach (var column in Columns)
+                    {
+                        <th scope="col"><span class="f-data-cell">@column.Header</span></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (Items.Count == 0)
+                {
+                    <tr><td colspan="@Math.Max(1, Columns.Count)"><span class="f-data-cell" role="status">@EmptyText</span></td></tr>
+                }
+                else
+                {
+                    @foreach (var item in Items)
+                    {
+                        <tr @key="ItemKey?.Invoke(item)">
+                            @foreach (var column in Columns)
+                            {
+                                @if (column.Key == RowHeaderKey)
+                                {
+                                    <th scope="row"><span class="f-data-cell">@CellContent(item, column)</span></th>
+                                }
+                                else
+                                {
+                                    <td><span class="f-data-cell">@CellContent(item, column)</span></td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<TItem> Items { get; set; } = Array.Empty<TItem>();
+    [Parameter, EditorRequired] public IReadOnlyList<TableColumn<TItem>> Columns { get; set; } = Array.Empty<TableColumn<TItem>>();
+    [Parameter] public Func<TItem, object>? ItemKey { get; set; }
+    [Parameter] public string? RowHeaderKey { get; set; }
+    [Parameter] public RenderFragment<TableCellContext<TItem>>? CellTemplate { get; set; }
+    [Parameter] public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+    [Parameter] public string Label { get; set; } = "Records";
+    [Parameter] public string? Caption { get; set; }
+    [Parameter] public string EmptyMessage { get; set; } = "No items.";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private CultureInfo EffectiveCulture => HasExplicitParameter(nameof(Culture)) ? Culture : Texts.FormatCulture;
+    private string RecordsText => DefaultText(nameof(Label), Label, "Table_Label", "Records");
+    private string EmptyText => DefaultText(nameof(EmptyMessage), EmptyMessage, "Table_Empty", "No items.");
+
+    private RenderFragment CellContent(TItem item, TableColumn<TItem> column)
+    {
+        var text = TableData<TItem>.Display(item, column, EffectiveCulture);
+        return CellTemplate is null
+            ? builder => builder.AddContent(0, text)
+            : CellTemplate(new TableCellContext<TItem>(item, column, text));
+    }
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Items);
+        ArgumentNullException.ThrowIfNull(Columns);
+        ArgumentNullException.ThrowIfNull(Culture);
+        if (Items.Count > 0 && Columns.Count == 0)
+            throw new ArgumentException("A populated list requires at least one column.", nameof(Columns));
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var column in Columns)
+        {
+            if (column is null || string.IsNullOrWhiteSpace(column.Key) || !keys.Add(column.Key))
+                throw new ArgumentException("Column keys must be nonempty and unique.", nameof(Columns));
+            ArgumentNullException.ThrowIfNull(column.Value);
+        }
+        if (RowHeaderKey is not null && !keys.Contains(RowHeaderKey))
+            throw new ArgumentException("The row header must name a supplied column.", nameof(RowHeaderKey));
+    }
+}

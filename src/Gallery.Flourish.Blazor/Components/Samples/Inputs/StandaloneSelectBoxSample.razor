@@ -1,0 +1,9 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [SampleFor("StandaloneSelectBox<TValue>")]
+<Field Label="协议边界演示语言" Id="@Id"><StandaloneSelectBox TValue="string" Id="@Id" name="language" Options="Languages" @bind-Value="Language" /></Field>
+<p role="status">本地选择：@Language</p>
+@if (!Preview) { <p>适用于无 EditContext 场景；复用 SelectOption 契约，不创建另一套选项模型。</p> }
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private string Language = "zh-CN"; private readonly string Id = "standalone-select-" + Guid.NewGuid().ToString("N"); private static readonly IReadOnlyList<SelectOption<string>> Languages = [new("zh-CN", "中文"), new("en-US", "English")];
+}

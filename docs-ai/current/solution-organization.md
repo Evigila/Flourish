@@ -8,7 +8,7 @@ The 2026-10-05 user-authorized migration leaves two active repository roots: Flo
 - Flourish.Extensions.Culture.WPF adapts the desktop shell to Essential.Culture.Wpf.
 - Flourish.Extensions.Culture.Blazor adapts the neutral ITextProvider contract to Essential.Culture.Blazor.
 - Essential owns independent utility modules. Culture is the first module, containing Core, Generator, Wpf, Avalonia, WinUI and Blazor projects.
-- Essential libraries have no Flourish reference. Flourish Framework, Design, Abstract and Shared have no Essential reference. Only applications and the optional extension choose the translation implementation.
+- Essential libraries have no Flourish reference. Core, Abstract, Framework, Design and the dependency-only Blazor convenience package have no Essential reference. Shared is retired; only applications and the optional extension choose the translation implementation.
 
 ## Solution entries
 
@@ -48,11 +48,13 @@ repos/
 
 The complete explanatory file inventories are in each repository's docs-ai/current/currentproject-architecture.md.
 
+The 2026-10-05 naming audit covers all 18 maintained projects and five solutions, not only the six release packages. Existing Core, Blazor, WPF, bridge and Tests/Gallery project names already follow the shared product/role conventions. The WinUI3 Gallery directory/csproj and platform solution now align their casing with Flourish.WinUI3: Gallery.Flourish.WinUI3 and Flourish.WinUI3.slnx. Explicit AssemblyName=Gallery.Flourish.WINUI3 and its existing ArkheideSystem.Gallery.Flourish.WINUI3 namespaces remain unchanged. Prepared package identities and version 1.1.0 are not renamed.
+
 ## Source and package modes
 
 The extension projects reference their same-repository Flourish projects and always consume Essential.Culture through PackageReference at 1.3.0. Gallery consumes the Culture generator as a package too. When sibling Essential/artifacts/packages exists, the root props add that folder as a local NuGet source. This is package verification rather than a cross-repository source reference. EssentialCultureRoot, UseLocalEssentialCulture, UseLocalFlourish and UseLocalCultureIntegration are retired. See [NuGet release and integration](nuget-release-integration.md).
 
-All eight Flourish packages, including both extensions, inherit VersionPrefix=1.1.0 from the root props. EssentialCultureVersion=1.3.0 sets the external Culture dependency. Essential root props hold shared organization, license, repository and package-output metadata; Culture module props own VersionPrefix=1.3.0 and the existing package README. The current Culture tests and demos explicitly import those module settings. Future modules own their own version settings rather than inheriting Culture's version from the root.
+Maintained Flourish projects inherit VersionPrefix=1.1.0, but the first release manifest now contains exactly six Core/Blazor packages. Shared is removed and the Blazor convenience package is added; WPF and its bridge remain in source for future releases. EssentialCultureVersion=1.3.0 sets external Culture dependencies. Essential module props own Culture's version; future modules retain independent version ownership. See the release guide for the authoritative current package set.
 
 New package identities:
 
@@ -75,7 +77,7 @@ Both repositories now use .github/workflows/build.yml to build, test, pack and v
 
 ## Verification and manual acceptance
 
-Both root solutions and the extension module build in Release with warnings treated as errors. Culture's five demos and six packages build after migration. All 1,492 tests/checks pass: Flourish Core 367, WPF 901, Blazor 118, WPF extension 5, Blazor extension 12 and Essential 89. Package inspection verifies the original six Culture identities and the two new extension identities. Headless browser checks verify negotiated SSR, independent live cultures, formatting, localized defaults, preserved navigation state, command routing, reload behavior and Framework-only operation, with no page or asset errors. Computer Use was not used.
+Earlier migration verification built both root solutions and the extension module with warnings as errors, passed 1,492 tests/checks and covered the desktop bridges. Those run totals are historical. Current first-release acceptance uses the Blazor-focused solution: Core 367, Blazor 134 and bridge 12 checks, existing JS/CSS checks, six-package validation and 67 isolated package-consumer checks. Desktop source is preserved but not revalidated by this release scope. See release-verification.md for current evidence; no Computer Use is used.
 
 Manual checks:
 

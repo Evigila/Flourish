@@ -329,10 +329,10 @@ public sealed class GalleryLocalizationTests
         Assert.Equal(
             new[]
             {
+                "Arkheide.Flourish.Blazor",
                 "Arkheide.Flourish.Blazor.Abstract",
                 "Arkheide.Flourish.Blazor.Design",
                 "Arkheide.Flourish.Blazor.Framework",
-                "Arkheide.Flourish.Blazor.Shared",
                 "Arkheide.Flourish.Core",
                 "Arkheide.Flourish.Extensions.Culture.Blazor",
                 "Arkheide.Flourish.Extensions.Culture.WPF",

@@ -11,6 +11,118 @@ const designCssRoot = join(blazorRoot, "Flourish.Blazor.Design/wwwroot");
 const foundationPath = join(designCssRoot, "foundation.css");
 const aliasesPath = join(designCssRoot, "theme-aliases.css");
 
+test("presentation layout separates full-width backgrounds from centered content and guards hidden offers behind enhancement", async () => {
+  const frameworkRoot = join(blazorRoot, "Flourish.Blazor.Framework/wwwroot");
+  const css = withoutComments(await readFile(join(frameworkRoot, "presentation/layout.css"), "utf8"));
+  const container = blockFor(css, ".f-content-container");
+  assert.equal(property(container, "width"), "100%");
+  assert.equal(property(container, "max-width"), "var(--f-content-width,1180px)");
+  assert.equal(property(container, "margin-inline"), "auto");
+  assert.equal(property(blockFor(css, ".f-presentation-band"), "width"), "100%");
+  const document = blockFor(css, ".content-surface.f-document-surface");
+  assert.equal(property(document, "height"), "auto");
+  assert.equal(property(document, "overflow"), "visible");
+  assert.equal(property(blockFor(css, ".content-surface.f-document-surface > .content-stage"), "overflow"), "visible");
+  assert.equal(property(blockFor(css, ".f-presentation-footer"), "flex"), "0 0 auto");
+  assert.equal(property(blockFor(css, ".f-access-panel"), "width"), "min(100%,560px)");
+  assert.equal(property(blockFor(css, ".f-access-panel-wide"), "width"), "min(100%,960px)");
+  assert.equal(property(blockFor(css, ".f-access-form-surface"), "display"), "grid");
+  assert.equal(property(blockFor(css, ".f-access-form-surface > form"), "display"), "grid");
+  assert.match(css, /@media\(min-width:1100px\) and \(prefers-reduced-motion:no-preference\)/);
+  for (const rule of rules(css)) {
+    if (/\.f-offer-(?:details|card\s+h3)\b/.test(rule.selector)
+      && (property(rule.body, "opacity") === "0" || property(rule.body, "visibility") === "hidden")) {
+      assert.ok(selectorArms(rule.selector).every(selector => selector.includes("[data-offer-ready]")),
+        `Static SSR offer text became hidden without an attached controller: ${rule.selector}`);
+    }
+  }
+  const compressed = blockFor(css, ".f-offer-stage[data-offer-ready]");
+  assert.equal(property(compressed, "grid-template-columns"), "repeat(var(--f-offer-columns),minmax(0,1fr))");
+  const baseDetails = blockFor(css, ".f-offer-details");
+  assert.equal(property(baseDetails, "visibility"), undefined);
+  assert.equal(property(baseDetails, "opacity"), undefined);
+  assert.equal(property(blockFor(css, ".f-offer-controls"), "display"), "none");
+  const rotationControls = rules(css).filter(rule => rule.selector.includes(".f-offer-controls") && property(rule.body, "display") !== "none");
+  assert.equal(rotationControls.length, 1);
+  assert.match(rotationControls[0].selector, /\.f-offer-presentation:has\(\.f-offer-stage\[data-offer-ready\]\) > \.f-offer-controls/);
+  assert.equal(property(rotationControls[0].body, "display"), "flex");
+});
+
+test("presentation and access scenes consume existing theme roles without reskinning buttons or inputs", async () => {
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const knownTokens = new Set([...foundation.matchAll(/(--f-[\w-]+)\s*:/g)].map(match => match[1]));
+  for (const path of [join(designCssRoot, "presentation.css"), join(designCssRoot, "primitives/AccessSurface.css")]) {
+    const css = withoutComments(await readFile(path, "utf8"));
+    assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|color-mix)\s*\(|f-theme-|data-theme|font-family\s*:/i,
+      `${relative(repositoryRoot, path)} introduced a local theme, color literal or separate font family.`);
+    for (const token of css.matchAll(/var\((--f-[\w-]+)/g))
+      assert.ok(knownTokens.has(token[1]), `${relative(repositoryRoot, path)} uses an undefined palette or typography token ${token[1]}.`);
+    for (const rule of rules(css)) {
+      assert.doesNotMatch(rule.selector, /\.f-button(?:-[\w-]+)?\b|\b(?:input|select|textarea|button)\b/,
+        `${relative(repositoryRoot, path)} reskins a standard action or input: ${rule.selector}`);
+    }
+  }
+  const presentation = withoutComments(await readFile(join(designCssRoot, "presentation.css"), "utf8"));
+  assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "color"), "var(--f-primary-ink)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "background"), "var(--f-primary)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-band-heading h1"), "font-size"), "var(--f-type-page,50px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-hero h1"), "font-size"), "clamp(72px,11vw,128px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-hero-description"), "font-size"), "var(--f-type-body,17px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "color"), "var(--f-primary-ink)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "background"), "var(--f-primary)");
+});
+
+test("shell chrome only adjusts available Quiet buttons, preserving explicit variants", async () => {
+  const css = withoutComments(await readFile(join(designCssRoot, "static-surfaces.css"), "utf8"));
+  const selectors = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)]
+    .map(match => match[1].trim())
+    .filter(selector => selector.includes(".shell-header") && selector.includes(".f-button"));
+  assert.equal(selectors.length, 3);
+  for (const selector of selectors) {
+    assert.match(selector, /\.f-button-quiet\b/);
+    assert.match(selector, /:not\(:disabled\)/);
+    assert.match(selector, /:not\(\[aria-disabled=true\]\)/);
+    assert.doesNotMatch(selector, /\.f-button(?:\s|:|$)/);
+  }
+  const controls = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
+  assert.match(controls, /\.f-button-elevated\{[^}]*color:var\(--f-text\);background:var\(--f-surface\);box-shadow:var\(--f-shadow-control\)/);
+});
+
+test("read-only ListView reuses the table surface and exposes complete wrapped values", async () => {
+  const design = withoutComments(await readFile(join(designCssRoot, "data.css"), "utf8"));
+  const frameworkRoot = join(blazorRoot, "Flourish.Blazor.Framework");
+  const framework = withoutComments(await readFile(join(frameworkRoot, "wwwroot/framework.css"), "utf8"));
+  const component = await readFile(join(frameworkRoot, "Components/ListView.razor"), "utf8");
+  assert.match(component, /class="f-data f-list-view/);
+  assert.match(component, /class="f-data-scroll" role="region" tabindex="0"/);
+  assert.match(component, /class="f-data-table"/);
+  assert.match(component, /TableData<TItem>\.Display/);
+  assert.doesNotMatch(component, /IJSRuntime|OnAfterRender|@onclick|data-f-table|f-data-resize|f-data-toolbar|f-data-actions|f-data-pager/);
+  const surface = blockFor(design, ".f-data-scroll");
+  assert.equal(property(surface, "border"), "1px solid var(--f-border)");
+  assert.equal(property(surface, "border-radius"), "16px");
+  assert.equal(property(surface, "background"), "var(--f-surface)");
+  const cells = blockFor(design, ".f-data-table th, .f-data-table td");
+  assert.equal(property(cells, "height"), "76px");
+  const text = blockFor(design, ".f-list-view .f-data-table .f-data-cell");
+  assert.equal(property(text, "white-space"), "normal");
+  assert.equal(property(text, "overflow"), "visible");
+  assert.equal(property(text, "padding-block"), "12px");
+  assert.equal(property(blockFor(framework, ".f-list-view .f-data-cell"), "white-space"), "normal");
+  assert.equal(property(blockFor(design, ".f-list-view .f-data-table tbody th"), "background"), "var(--f-surface)");
+  assert.equal(property(blockFor(design, ".f-data-table tbody tr:last-child :is(th, td)"), "border-bottom"), "0");
+  assert.doesNotMatch(design, /\.f-list-view[^{}]*(?:hover|active)[^{}]*\{/);
+});
+
+test("centered UniformGrid aligns the existing tile layout without creating a board skin", async () => {
+  const css = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/uniform-grid.css"), "utf8"));
+  const centered = blockFor(css, ".f-uniform-grid-centered");
+  assert.equal(centered.trim(), "margin-inline:auto;");
+  const grid = blockFor(css, ".f-uniform-grid");
+  assert.equal(property(grid, "width"), "fit-content");
+  assert.equal(property(grid, "max-width"), "100%");
+});
+
 const roles = [
   "primary",
   "accent",

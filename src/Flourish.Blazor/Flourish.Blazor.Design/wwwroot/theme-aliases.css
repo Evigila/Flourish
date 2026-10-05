@@ -35,6 +35,9 @@
     --radius-large: var(--f-radius-emphasis);
     --control-height: var(--f-control-height);
     --control-height-compact: var(--f-dense-height);
+    --page-gutter: var(--f-page-gutter);
+    --field-label-gap: var(--f-field-label-gap);
+    --checkbox-size: var(--f-control-height);
     --field-label-weight: var(--f-label-weight);
 }
 
@@ -61,6 +64,9 @@
 }
 
 @media (max-width: 760px) {
+    .f-root {
+        --f-page-gutter: 20px;
+    }
     .f-root .navigation-surface,
     .f-root.navigation-surface {
         --topbar-height: 60px;

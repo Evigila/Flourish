@@ -1,4 +1,14 @@
 {
+  "Offer_PauseRotation": {
+    "en-US": "Pause rotation",
+    "zh-CN": "暂停轮播",
+    "pt-BR": "Pausar rotação"
+  },
+  "Offer_ResumeRotation": {
+    "en-US": "Resume rotation",
+    "zh-CN": "继续轮播",
+    "pt-BR": "Retomar rotação"
+  },
   "Shell_Skip": {
     "en-US": "Skip to content",
     "zh-CN": "跳到正文",
@@ -113,6 +123,41 @@
     "en-US": "Width",
     "zh-CN": "列宽",
     "pt-BR": "Largura"
+  },
+  "Sort_Label": {
+    "en-US": "Sorting",
+    "zh-CN": "排序",
+    "pt-BR": "Ordenação"
+  },
+  "Sort_Records": {
+    "en-US": "Record sorting",
+    "zh-CN": "记录排序",
+    "pt-BR": "Ordenação dos registros"
+  },
+  "Sort_By": {
+    "en-US": "Sort by",
+    "zh-CN": "排序字段",
+    "pt-BR": "Ordenar por"
+  },
+  "Sort_Default": {
+    "en-US": "Default order",
+    "zh-CN": "默认顺序",
+    "pt-BR": "Ordem padrão"
+  },
+  "Sort_Direction": {
+    "en-US": "Direction",
+    "zh-CN": "方向",
+    "pt-BR": "Direção"
+  },
+  "Sort_Ascending": {
+    "en-US": "Ascending",
+    "zh-CN": "升序",
+    "pt-BR": "Crescente"
+  },
+  "Sort_Descending": {
+    "en-US": "Descending",
+    "zh-CN": "降序",
+    "pt-BR": "Decrescente"
   },
   "Table_SortDescending": {
     "en-US": "sort descending",

@@ -1,6 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
-<ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Name" Class="@($"app-icon app-icon--{Size}")" />
+<ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Name" Filled="@Filled" Class="@($"app-icon app-icon--{Size}")" />
 @code {
     [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
     [Parameter] public string Size { get; set; } = "standard";
+    [Parameter] public bool Filled { get; set; }
 }

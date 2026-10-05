@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="../../src/Gallery.Flourish.Blazor/Models/ComponentCatalog.cs" Link="Catalog/ComponentCatalog.cs" />
     <Compile Include="../../src/Gallery.Flourish.Blazor/Models/ParameterMeaning.cs" Link="Catalog/ParameterMeaning.cs" />
+    <Compile Include="../../src/Gallery.Flourish.Blazor/Models/AccessExampleState.cs" Link="Gallery/AccessExampleState.cs" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />

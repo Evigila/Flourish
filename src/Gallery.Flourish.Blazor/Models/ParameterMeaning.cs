@@ -19,12 +19,28 @@ internal static class ParameterMeaning
             || parameter.PropertyType.IsGenericType && parameter.PropertyType.GetGenericTypeDefinition() == typeof(RenderFragment<>)
             ? "标题或操作区的 Razor 内容插槽。" : "操作集合与回调，可包含禁用或危险标记。",
         "ChildContent" => "控件内部的 Razor 内容；业务数据由宿主提供。",
+        "Brand" => "访问面板的品牌与入口说明插槽，不生成认证行为。",
+        "Footer" => "正文后面的标准页脚插槽，适用于展示页面的文档流组合。",
+        "DocumentFlow" => "使用文档滚动与自然高度，适用于展示类宿主；false 保留业务壳单一正文滚动轨道。",
+        "Tone" => "展示横幅背景颜色角色：Canvas、Surface 或 Primary；内部内容仍使用居中限宽轨道。",
+        "TitleId" => "标题稳定 HTML 标识，用于章节或面板的可访问关联。",
+        "HeadingLevel" => "展示章节的语义标题级别 1–6，默认 2；页面首标题可设为 1，不改变横幅与内容轨道。",
+        "Watermark" => "展示页脚装饰性品牌背景字；不替代可读品牌与版权。",
+        "Copyright" => "宿主提供的版权或展示声明。",
+        "Wide" => "使用访问面板的宽布局变种，不改变表单协议与验证。",
+        "LinkScopeId" => "当前报价链接区域的稳定 ID，限制锚点交互只影响本报价舞台。",
+        "AutoRotate" => "启用展示报价渐进轮播及库内暂停/恢复按钮；减少动态效果或焦点/指针交互时暂停。false 不显示轮播控制。",
+        "RotationIntervalMilliseconds" => "报价自动轮播间隔，单位毫秒；不执行价格或许可计算。",
+        "PauseRotationLabel" => "暂停自动轮播按钮的文字；默认跟随框架作用域本地化，显式值优先，不改变报价内容或动作。",
+        "ResumeRotationLabel" => "用户暂停后恢复自动轮播按钮的文字；默认跟随框架作用域本地化，显式值优先。",
         "AdditionalAttributes" => "未匹配的原生 HTML 属性，例如 id、aria-label 和 data-*。",
         "Class" or "CssClass" or "TableClass" or "ContentClass" => "追加到目标区域的 CSS 类。",
         "Style" => "目标区域的内联 CSS 或自定义属性。",
         "Name" or "Icon" => "Google 官方图标名称或兼容别名。",
         "Size" => "图标尺寸角色：standard、primary、tool、search 或 information。",
         "Dotted" => "显示点阵背景；默认 true。与内容和复制功能独立。",
+        "Centered" when parameter.DeclaringType == typeof(Controls.UniformGrid)
+            => "将实际网格宽度在可用区域内水平居中；默认 false 保持起始对齐，不改变单元格尺寸、内容对齐或列数。仅在外层 UniformGrid 上配置。",
         "Centered" => "将背景板普通子内容居中；false 时靠左上。CodeBlock 始终从左上开始。",
         "CopyText" => "完整复制内容；null 隐藏复制动作。使用 CodeBlock 等子内容显示文本。",
         "OwnsDocument" => "默认 ApplicationLayout 独占视口并禁用文档滚动；嵌入式示例设为 false。",
@@ -44,6 +60,8 @@ internal static class ParameterMeaning
         "SecondaryIcon" => "默认箭头使用共享 ExpansionIndicator；其他名称显示对应 Google 图标。",
         "PrimaryAttributes" or "SecondaryAttributes" => "主按钮或次按钮的原生 HTML 属性。",
         "PrimaryClass" or "SecondaryClass" => "主按钮或次按钮追加的 CSS 类。",
+        "Type" when parameter.DeclaringType?.IsGenericType == true && parameter.DeclaringType.GetGenericTypeDefinition() == typeof(Controls.DateBox<>)
+            => "InputDate 的日期或时间呈现类型；宿主绑定的 TValue 必须与所选类型相适应。",
         "Type" => "原生 button/input 类型，例如 submit、button、text、email。",
         "Busy" or "IsBusy" or "EditingBusy" => "宿主提供的处理中状态，限制重复操作或关闭。",
         "Disabled" => "使控件不可交互；真实权限仍由宿主检查。",
@@ -64,6 +82,7 @@ internal static class ParameterMeaning
         "Columns" when parameter.PropertyType == typeof(bool) => "启用事实内容的多栏布局。",
         "Columns" when parameter.PropertyType == typeof(int) => "常规布局列数，按该组件允许的范围配置。",
         "Columns" when parameter.PropertyType == typeof(int?) => "显式指定网格列数；省略时自动按可用宽度分配。",
+        "Columns" when IsListView(parameter) => "复用 TableColumn<TItem> 的列顺序、标题、值选择和 Format；Sortable / Searchable / CanHide 元数据不启用动态操作。",
         "Columns" => "列元数据，定义标题、值选择、格式和可用操作。",
         "NarrowColumns" when parameter.DeclaringType == typeof(Controls.UniformGrid)
             => "在窄窗口显式覆盖列数；省略时继续使用自动分列或 Columns / Rows 配置。",
@@ -83,11 +102,17 @@ internal static class ParameterMeaning
         "Mask" => "输入掩码格式；仍需宿主业务校验。",
         "InputMode" => "原生输入键盘提示，例如 numeric。",
         "Options" => "可选择值、显示文字和禁用状态。",
+        "Items" when IsListView(parameter) => "按传入顺序完整展示所有只读记录；无内置请求、过滤、排序或分页。",
         "Items" => "传入的数据集合；组件不会自动请求远程数据。",
+        "ItemKey" when IsListView(parameter) => "宿主提供的稳定行键，仅供 Blazor 渲染识别记录，不增加选择或行操作。",
         "ValueSelector" or "KeySelector" or "ItemKey" => "获取值或稳定键的宿主函数。",
         "TextSelector" or "SearchTextSelector" => "获取显示或搜索文字的函数。",
         "SelectedId" => "当前单个引用值；null 表示没有选择。",
         "SelectedValues" => "宿主维护的已选择值集合。",
+        "SelectionChanged" when IsGenericControl(parameter, typeof(Controls.Primitives.MultiSelectDropdown<,>))
+            => "通知宿主切换单个 TValue；不是完整集合。宿主维护 SelectedValues，此回调不能用于 @bind-SelectedValues。创建期间不接受选择变更。",
+        "SelectionChanged" when IsGenericControl(parameter, typeof(Controls.Primitives.ReferenceDropdown<>))
+            => "通知宿主新的 nullable TValue 引用 ID；null 表示清除。宿主更新 SelectedId，此名称不是 @bind-SelectedId 的 Changed 配对。",
         "SelectionChanged" => "选择变化通知；按对应组件契约更新宿主状态。",
         "ItemSelected" => "候选项被选择时通知宿主。",
         "AllowNone" => "允许清除单选引用。",
@@ -114,8 +139,12 @@ internal static class ParameterMeaning
         "IsLimited" or "HasMore" => "说明当前结果受限或有后续数据。",
         "ShowRange" => "显示当前页记录范围。",
         "PaginationResetKey" => "变化时重置分页的宿主标识。",
+        "Culture" when IsListView(parameter) => "只读单元格格式化使用的 CultureInfo；省略时跟随当前作用域 ITextProvider.FormatCulture，显式值优先。",
         "Culture" => "比较和格式化使用的 CultureInfo。",
         "OnRowOpen" => "宿主明确提供的记录打开动作。",
+        "RowHeaderKey" => "指定已有列键，将该列单元格呈现为 th scope=row 的行标题；null 使用普通数据单元格。",
+        "Caption" when IsListView(parameter) => "辅助技术可读的表格说明；默认 null 使用 Label，说明在视觉上隐藏。",
+        "CellTemplate" when IsListView(parameter) => "只读单元格模板；TableCellContext<TItem> 提供原始 Item、共享 Column 和已格式化 Text。默认文本自动转义；自定义模板负责其内容与可访问语义。",
         "CellTemplate" or "BulkEditCell" => "单元格显示或批量编辑模板。",
         "PreferenceKey" => "表格偏好的隔离键。",
         "Purpose" => "表格的登记、数据池或任务列表用途。",
@@ -166,4 +195,9 @@ internal static class ParameterMeaning
         _ when typeof(RenderFragment).IsAssignableFrom(parameter.PropertyType) => "宿主提供的 Razor 内容插槽。",
         _ => "宿主配置；具体组合见完整场景源码与变体说明。"
     };
+
+    private static bool IsListView(PropertyInfo parameter) => parameter.DeclaringType?.IsGenericType == true
+        && parameter.DeclaringType.GetGenericTypeDefinition() == typeof(Controls.ListView<>);
+    private static bool IsGenericControl(PropertyInfo parameter, Type definition) => parameter.DeclaringType?.IsGenericType == true
+        && parameter.DeclaringType.GetGenericTypeDefinition() == definition;
 }

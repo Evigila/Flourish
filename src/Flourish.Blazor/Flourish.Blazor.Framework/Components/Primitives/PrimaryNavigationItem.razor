@@ -8,14 +8,14 @@
     {
         <span class="primary-nav-item is-disabled" role="link" tabindex="0" aria-disabled="true"
               aria-label="@Label" aria-describedby="@TooltipId" data-navigation-trigger>
-            <span class="primary-nav-symbol"><AppIcon Name="@Icon" Size="primary" /></span>
+            <span class="primary-nav-symbol"><AppIcon Name="@Icon" Size="primary" Filled="@Filled" /></span>
         </span>
     }
     else
     {
         <NavLink class="@NavigationClass" ActiveClass="is-active" href="@Href" Match="@Match"
                  aria-label="@Label" aria-describedby="@TooltipId" data-navigation-trigger>
-            <span class="primary-nav-symbol"><AppIcon Name="@Icon" Size="primary" /></span>
+            <span class="primary-nav-symbol"><AppIcon Name="@Icon" Size="primary" Filled="@Filled" /></span>
         </NavLink>
     }
     <span id="@TooltipId" class="primary-navigation-tooltip" role="tooltip" popover="manual"
@@ -26,6 +26,7 @@
     [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string Icon { get; set; } = string.Empty;
+    [Parameter] public bool Filled { get; set; }
     [Parameter] public string? Href { get; set; }
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public string? DisabledMessage { get; set; }

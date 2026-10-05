@@ -22,8 +22,11 @@ foreach ($package in $ReleaseSettings.Packages) {
             if ($lowerBound -ne $Version) { throw "$($package.Id) depends on $($dependency.id) at '$($dependency.version)', expected $Version." }
             if ($dependency.id -notin $ReleaseSettings.Packages.Id) { throw "Unexpected internal dependency $($dependency.id)." }
         }
-        foreach ($id in $package.Dependencies) {
-            if ($id -notin @($dependencies | ForEach-Object { $_.id })) { throw "$($package.Id) is missing dependency $id." }
+        $actualLibraryDependencies = @($dependencies | Where-Object {
+            $_.id -like "$($ReleaseSettings.PackagePrefix)*" -or $_.id -like 'Arkheide.Essential.Culture*'
+        } | Select-Object -ExpandProperty id -Unique | Sort-Object)
+        if ((@($package.Dependencies | Sort-Object) -join ',') -cne ($actualLibraryDependencies -join ',')) {
+            throw "$($package.Id) library dependencies differ from the configured package contract."
         }
         if ($ReleaseSettings.PackagePrefix -eq 'Arkheide.Flourish.' -and $package.Id -notlike 'Arkheide.Flourish.Extensions.*' -and @($dependencies | Where-Object { $_.id -like 'Arkheide.Essential.Culture*' }).Count) {
             throw "$($package.Id) must remain independent of optional Culture integration."
@@ -38,6 +41,8 @@ foreach ($package in $ReleaseSettings.Packages) {
         if ($package.Managed) {
             $assemblies = @($archive.Entries | Where-Object { $_.FullName -like 'lib/*.dll' })
             if (!$assemblies.Count) { throw "$($package.Id) contains no managed library." }
+        } elseif (@($archive.Entries | Where-Object { $_.FullName -like 'lib/*' -or $_.FullName -like 'ref/*' -or $_.FullName -like 'staticwebassets/*' }).Count) {
+            throw "$($package.Id) must remain a dependency-only package without managed output or static assets."
         }
         Write-Host "Verified $($package.Id) $Version"
     } finally { $archive.Dispose() }

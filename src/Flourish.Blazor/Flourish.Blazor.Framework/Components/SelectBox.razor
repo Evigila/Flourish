@@ -24,6 +24,7 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string ParsingErrorMessage { get; set; } = "Select a valid option.";
     private void Change(ChangeEventArgs args) { if (!Disabled) CurrentValueAsString = args.Value?.ToString(); }
+    protected override string? FormatValueAsString(TValue? value) => BindConverter.FormatValue(value, Texts.FormatCulture)?.ToString();
     protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
     {
         if (BindConverter.TryConvertTo<TValue>(value, Texts.FormatCulture, out var parsed))

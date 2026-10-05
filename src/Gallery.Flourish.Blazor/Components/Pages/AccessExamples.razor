@@ -1,0 +1,173 @@
+@page "/examples/display/login"
+@page "/examples/display/accounts"
+@layout AccessExampleLayout
+@inherits LocalizedComponentBase
+@inject NavigationManager Navigation
+@inject IAppearanceService Appearance
+
+<PageTitle>@Title · Gallery</PageTitle>
+<ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="true">
+    <AccessPanel Wide="AccountsPage" Emphasized="true" aria-labelledby="access-example-title">
+        <Brand>
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="Lumen" ContextName="@Title"
+                TitleId="access-example-title" Description="@L(AccountsPage ? TextKey.Access_AccountsDescription : TextKey.Access_LoginDescription)" />
+        </Brand>
+        <ChildContent>
+            <AccessFormSurface>
+                <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_DemoOnly)</Notice>
+                @if (AccountsPage)
+                {
+                    @if (State.Accounts.Count == 0)
+                    {
+                        <EmptyState Title="@L(TextKey.Access_Empty)">
+                            <ChildContent><p>@L(TextKey.Access_EmptyDescription)</p></ChildContent>
+                            <Actions>
+                                <Button OnClick="RestoreAccounts">@L(TextKey.Access_Restore)</Button>
+                                <Button Variant="ButtonVariant.Outlined" OnClick="OtherAccount">@L(TextKey.Access_OtherAccount)</Button>
+                            </Actions>
+                        </EmptyState>
+                    }
+                    else
+                    {
+                        <FormLayout Columns="2">
+                            @foreach (var account in State.Accounts)
+                            {
+                                <Card @key="account.Id" Title="@account.Name">
+                                    <p>@account.Email</p>
+                                    @if (account.Disabled)
+                                    {
+                                        <Notice Severity="NotificationSeverity.Warning" Announce="false">@L(TextKey.Access_DisabledAccount)</Notice>
+                                    }
+                                    <AccessActions Label="@L(TextKey.Access_AccountActions)">
+                                        <Button Disabled="@(State.Busy || account.Disabled)" OnClick="@(() => ChooseAccount(account.Id))">@L(TextKey.Access_Choose)</Button>
+                                        <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="@(() => RemoveAccount(account.Id))">@L(TextKey.Access_Remove)</Button>
+                                    </AccessActions>
+                                </Card>
+                            }
+                        </FormLayout>
+                        <AccessActions Label="@L(TextKey.Access_ListActions)">
+                            <Button Variant="ButtonVariant.Outlined" Disabled="State.Busy" OnClick="OtherAccount">@L(TextKey.Access_OtherAccount)</Button>
+                            <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="ClearAccounts">@L(TextKey.Access_Clear)</Button>
+                            <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="RestoreAccounts">@L(TextKey.Access_Restore)</Button>
+                            <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="SimulateStaleSelection">@L(TextKey.Access_StaleSelection)</Button>
+                        </AccessActions>
+                    }
+                    @if (State.SelectionRejected)
+                    {
+                        <Notice Severity="NotificationSeverity.Error">@L(TextKey.Access_SelectionRejected)</Notice>
+                    }
+                    @if (AccountsChanged)
+                    {
+                        <Notice Severity="NotificationSeverity.Information">@L(TextKey.Access_AccountsChanged)</Notice>
+                    }
+                }
+                else
+                {
+                    @if (State.SelectedAccountId is not null)
+                    {
+                        <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_Selected)</Notice>
+                    }
+                    @if (!Interactive)
+                    {
+                        <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_InteractiveRequired)</Notice>
+                    }
+                    <form method="post" novalidate @onsubmit="SubmitAsync" @onsubmit:preventDefault aria-busy="@State.Busy.ToString().ToLowerInvariant()">
+                        <AccessFormSurface>
+                            <Field Label="@L(TextKey.Display_Email)" Id="access-example-email" Required="true" Error="@EmailError">
+                                <StandaloneTextBox Id="access-example-email" Type="email" @bind-Value="State.Email" Disabled="LoginLocked" MaxLength="254" name="demo-email" autocomplete="off" />
+                            </Field>
+                            <Field Label="@L(TextKey.Display_Password)" Id="access-example-password" Required="true" Error="@PasswordError">
+                                <StandaloneTextBox Id="access-example-password" Type="password" @bind-Value="State.Password" Disabled="LoginLocked" MaxLength="120" name="demo-password" autocomplete="off" />
+                            </Field>
+                            <StandaloneCheckBox Label="@L(TextKey.Access_Remember)" @bind-Value="State.RememberEmail" Disabled="LoginLocked" />
+                            <Field Label="@L(TextKey.Access_Outcome)" Id="access-example-outcome">
+                                <StandaloneSelectBox TValue="AccessExampleOutcome" Id="access-example-outcome" @bind-Value="State.OutcomeChoice" Options="OutcomeOptions" Disabled="LoginLocked" />
+                            </Field>
+                            <Button Type="submit" Disabled="@(!Interactive)" Busy="State.Busy" BusyLabel="@L(TextKey.Access_Busy)">@L(TextKey.Display_Submit)</Button>
+                            <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" OnClick="ResetLogin">@L(TextKey.Access_Reset)</Button>
+                        </AccessFormSurface>
+                    </form>
+                    @if (State.Result is { } result)
+                    {
+                        <Notice Severity="@(result == AccessExampleOutcome.Accepted ? NotificationSeverity.Success : NotificationSeverity.Error)">
+                            @L(result switch { AccessExampleOutcome.Accepted => TextKey.Access_Accepted, AccessExampleOutcome.Rejected => TextKey.Access_Rejected, _ => TextKey.Access_Unavailable })
+                        </Notice>
+                    }
+                }
+                <Section Title="@L(TextKey.Access_Appearance)">
+                    <AccessActions Label="@L(TextKey.Access_Appearance)">
+                        <LanguagePicker />
+                        <Button Variant="ButtonVariant.Quiet" OnClick="ToggleTheme">@L(TextKey.Nav_Theme)</Button>
+                    </AccessActions>
+                </Section>
+            </AccessFormSurface>
+        </ChildContent>
+        <Actions>
+            @if (!AccountsPage)
+            {
+                <Button Variant="ButtonVariant.Underline" Href="/examples/display/accounts" Disabled="State.Busy">@L(TextKey.Nav_DisplayAccounts)</Button>
+            }
+            <Button Variant="ButtonVariant.Underline" Href="/examples/display/access" Disabled="State.Busy">@L(TextKey.Display_Back)</Button>
+        </Actions>
+    </AccessPanel>
+</ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface>
+
+@code {
+    private readonly AccessExampleState State = new();
+    private readonly CancellationTokenSource Lifetime = new();
+    private bool AccountsChanged, Disposed, Interactive;
+    private bool LoginLocked => State.Busy || !Interactive;
+    private bool AccountsPage => new Uri(Navigation.Uri).AbsolutePath.TrimEnd('/').EndsWith("/accounts", StringComparison.OrdinalIgnoreCase);
+    private string Title => L(AccountsPage ? TextKey.Nav_DisplayAccounts : TextKey.Nav_DisplayLogin);
+    private string L(string key) => Localization.Parse(key);
+    private string? EmailError => State.EmailError switch
+    {
+        AccessExampleFieldError.Required => L(TextKey.Access_RequiredEmail),
+        AccessExampleFieldError.InvalidEmail => L(TextKey.Access_InvalidEmail), _ => null
+    };
+    private string? PasswordError => State.PasswordError is null ? null : L(TextKey.Access_RequiredPassword);
+    private IReadOnlyList<SelectOption<AccessExampleOutcome>> OutcomeOptions =>
+    [new(AccessExampleOutcome.Accepted, L(TextKey.Access_OutcomeAccepted)),
+     new(AccessExampleOutcome.Rejected, L(TextKey.Access_OutcomeRejected)),
+     new(AccessExampleOutcome.Unavailable, L(TextKey.Access_OutcomeUnavailable))];
+
+    private async Task SubmitAsync()
+    {
+        if (!Interactive || !State.BeginLogin()) return;
+        try
+        {
+            // The delay demonstrates visible busy/disabled behavior, not a simulated authentication transport.
+            await Task.Delay(1200, Lifetime.Token);
+            State.CompleteLogin();
+        }
+        catch (OperationCanceledException) when (Lifetime.IsCancellationRequested) { State.CancelLogin(); }
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // SSR/non-JavaScript readers must not accidentally submit this UI-only form to a server.
+        if (!firstRender) return;
+        Interactive = true;
+        StateHasChanged();
+    }
+    private void ChooseAccount(string id)
+    {
+        AccountsChanged = false;
+        if (State.SelectAccount(id)) Navigation.NavigateTo("/examples/display/login");
+    }
+    private void OtherAccount() { State.ResetLogin(); AccountsChanged = false; Navigation.NavigateTo("/examples/display/login"); }
+    private void RemoveAccount(string id) => AccountsChanged = State.RemoveAccount(id);
+    private void ClearAccounts() { State.ClearAccounts(); AccountsChanged = true; }
+    private void RestoreAccounts() { State.RestoreAccounts(); AccountsChanged = true; }
+    private void SimulateStaleSelection() { AccountsChanged = false; State.SelectAccount("missing-example-account"); }
+    private void ResetLogin() => State.ResetLogin();
+    private void ToggleTheme() => Appearance.SetTheme(Appearance.Current.Theme == ApplicationTheme.Dark ? ApplicationTheme.Light : ApplicationTheme.Dark);
+    public override void Dispose()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        Lifetime.Cancel();
+        State.CancelLogin();
+        Lifetime.Dispose();
+        base.Dispose();
+    }
+}

@@ -1,0 +1,78 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+<section class="f-offer-presentation">
+    <div @ref="root" @attributes="AdditionalAttributes" id="@Id" class="@($"f-offer-stage {Class}".Trim())" role="list" aria-label="@Label"><CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue></div>
+    @if (AutoRotate) {
+        <div class="f-offer-controls"><Button Type="button" Variant="ButtonVariant.Quiet" OnClick="ToggleRotation" Disabled="@(!initialized)" aria-pressed="@paused.ToString().ToLowerInvariant()">@EffectiveRotationLabel</Button></div>
+    }
+</section>
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? LinkScopeId { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool AutoRotate { get; set; } = true;
+    [Parameter] public int RotationIntervalMilliseconds { get; set; } = 2200;
+    [Parameter] public string PauseRotationLabel { get; set; } = "Pause rotation";
+    [Parameter] public string ResumeRotationLabel { get; set; } = "Resume rotation";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private ElementReference root;
+    private IJSObjectReference? module;
+    private Task<IJSObjectReference?>? moduleLoading;
+    private bool disposed;
+    private bool paused, initialized;
+    private string EffectiveRotationLabel => paused
+        ? DefaultText(nameof(ResumeRotationLabel), ResumeRotationLabel, "Offer_ResumeRotation", "Resume rotation")
+        : DefaultText(nameof(PauseRotationLabel), PauseRotationLabel, "Offer_PauseRotation", "Pause rotation");
+    private void ToggleRotation() => paused = !paused;
+    private readonly Dictionary<OfferCard, string> cardIds = [];
+    internal void RegisterCard(OfferCard card, string id) {
+        if (cardIds.Any(entry => !ReferenceEquals(entry.Key, card) && entry.Value == id))
+            throw new ArgumentException("OfferCard IDs must be unique within an OfferStage.", nameof(id));
+        cardIds[card] = id;
+    }
+    internal void RemoveCard(OfferCard card) => cardIds.Remove(card);
+    protected override void OnParametersSet() {
+        if (RotationIntervalMilliseconds < 1000) throw new ArgumentOutOfRangeException(nameof(RotationIntervalMilliseconds), "Rotation must leave at least one second per offer.");
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (disposed) return;
+        try {
+            var activeModule = await GetModuleAsync();
+            if (disposed || activeModule is null) return;
+            await activeModule.InvokeVoidAsync("synchronize", root, LinkScopeId, AutoRotate && !paused, RotationIntervalMilliseconds);
+            if (!disposed && !initialized) { initialized = true; StateHasChanged(); }
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    private async Task<IJSObjectReference?> GetModuleAsync() {
+        if (module is not null) return module;
+        var loading = moduleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(moduleLoading, loading)) moduleLoading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportModuleAsync() {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/presentation/offers.js");
+        if (disposed) { await ReleaseModuleAsync(imported); return null; }
+        module = imported;
+        return imported;
+    }
+    private static async ValueTask ReleaseModuleAsync(IJSObjectReference activeModule) {
+        try { await activeModule.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    public async ValueTask DisposeAsync() {
+        if (disposed) return;
+        disposed = true;
+        base.Dispose();
+        var activeModule = module;
+        module = null;
+        if (activeModule is null) return;
+        try { await activeModule.InvokeVoidAsync("dispose", root); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally { await ReleaseModuleAsync(activeModule); }
+    }
+}

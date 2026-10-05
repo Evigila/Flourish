@@ -12,6 +12,19 @@ internal static class UniformGridChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("uniform grid centering is opt-in and preserves actual cell geometry", async () =>
+        {
+            var parameters = new Dictionary<string, object?> { [nameof(UniformGrid.Columns)] = 3, [nameof(UniformGrid.ChildContent)] = PassiveCells() };
+            var start = Tag(await Render<UniformGrid>(parameters), "div", "f-uniform-grid");
+            Require(!HasClass(start, "f-uniform-grid-centered"), "Existing grids were centered by default.");
+            parameters[nameof(UniformGrid.Centered)] = true;
+            var centered = Tag(await Render<UniformGrid>(parameters), "div", "f-uniform-grid");
+            Require(HasClass(centered, "f-uniform-grid-centered"), "The centered grid has no standard alignment hook.");
+            Require(Attribute(start, "style") == Attribute(centered, "style")
+                && Attribute(start, "data-grid-layout") == Attribute(centered, "data-grid-layout"), "Centering changed the supplied cell geometry or layout mode.");
+            parameters[nameof(UniformGrid.Centered)] = false;
+            Require(!HasClass(Tag(await Render<UniformGrid>(parameters), "div", "f-uniform-grid"), "f-uniform-grid-centered"), "Explicit false did not restore start alignment.");
+        }));
         tests.Add(("uniform grid defaults to automatic columns and rectangular cells without shaping its container", async () =>
         {
             var html = await Render<UniformGrid>(new() { [nameof(UniformGrid.ChildContent)] = PassiveCells() });

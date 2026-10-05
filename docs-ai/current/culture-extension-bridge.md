@@ -36,7 +36,7 @@ Immutable catalogs may be host singletons. Text providers and Culture selections
 
 ## Local verification
 
-Both extensions reference Flourish projects from the same repository and use Essential.Culture NuGet packages at 1.3.0. Gallery's generator is also a package reference. A sibling Essential/artifacts/packages folder supplies a local feed when present; no external source project is selected. EssentialCultureRoot, UseLocalEssentialCulture and UseLocalFlourish are retired. The current eight-package 1.1.0 release flow is defined in [NuGet release and integration](nuget-release-integration.md).
+Both maintained extensions reference Flourish projects and Essential.Culture NuGet packages at 1.3.0. Only the Blazor bridge belongs to this first six-package Core/Blazor release. A sibling Essential/artifacts/packages folder supplies a local feed when present; no external source project is selected. See [NuGet release and integration](nuget-release-integration.md) for the current scope.
 
 The independent console verification project uses actual DI scopes and catalogs without adding a test package. Run:
 
@@ -61,4 +61,4 @@ Checks cover independent users, catalog identity, fallback, explicit formatting,
 
 Historical verification before the unified package release: Release builds with TreatWarningsAsErrors passed for the combined solution. All 12 Blazor bridge checks and all five existing WPF extension tests passed against local sibling sources. That earlier packing produced Arkheide.Flourish.Extensions.Culture.Blazor.1.0.0 with exactly two package dependencies: Arkheide.Essential.Culture.Blazor 1.3.0 and Arkheide.Flourish.Blazor.Abstract 1.1.0. The package also declares Microsoft.AspNetCore.App, with no Framework, Design or WPF dependency.
 
-The console verification is explicitly executed in CI after the existing WPF test step. The migrated source CI checks out the Essential repository alongside Flourish. The Essential changes must be pushed before that CI can build the new Blazor adapter. Package mode still requires released Culture packages. New extension package IDs need Flourish repository Trusted Publishing authorization before a culture-v release tag can publish them. No package was published. NuGet emits its advisory about the intentionally omitted README during pack; no README was created.
+The current Blazor release solution includes this console verification and it is executed explicitly by Test-Release.ps1. CI restores Essential 1.3.0 from NuGet without checking out sibling source. Publish Essential first, then the six Flourish packages under a matching v1.1.0 tag, only after separately authorized publication. Former eight-package/culture-v source-checkout instructions are superseded. NuGet emits its advisory about the intentionally omitted README; no README is created.

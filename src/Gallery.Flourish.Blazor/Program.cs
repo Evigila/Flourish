@@ -256,6 +256,12 @@ builder.Services.AddFlourishFramework(framework =>
                                             exact: true
                                         )
                                         .AddSubNav(
+                                            "ListView<TItem>",
+                                            "table_chart",
+                                            "/controls/data/listviewsample",
+                                            exact: true
+                                        )
+                                        .AddSubNav(
                                             "Primitives.DataTable<TItem>",
                                             "table_chart",
                                             "/controls/data/primitivedatatablesample",
@@ -623,6 +629,16 @@ builder.Services.AddFlourishFramework(framework =>
                             .AddSubNav(Text(TextKey.Nav_Records, "记录列表"), "list", "/records")
                             .AddSubNav(Text(TextKey.Nav_RecordDetails, "记录详情"), "person", "/records/sample")
                             .AddSubNav(Text(TextKey.Nav_Patterns, "组合布局"), "view_quilt", "/patterns")
+                            .AddSubNav(
+                                Text(TextKey.Nav_DisplayPages, "展示页面"), "web", "/examples/display",
+                                display => display
+                                    .AddSubNav(Text(TextKey.Nav_DisplayProduct, "产品横幅"), "web_asset", "/examples/display/product", exact: true)
+                                    .AddSubNav(Text(TextKey.Nav_DisplayPricing, "报价与比较"), "table_chart", "/examples/display/pricing", exact: true)
+                                    .AddSubNav(Text(TextKey.Nav_DisplayAccess, "访问案例总览"), "login", "/examples/display/access", exact: true)
+                                    .AddSubNav(Text(TextKey.Nav_DisplayLogin, "完整登录页"), "login", "/examples/display/login", exact: true)
+                                    .AddSubNav(Text(TextKey.Nav_DisplayAccounts, "已保存账号选择"), "person", "/examples/display/accounts", exact: true),
+                                exact: true
+                            )
                             .AddSubNav(Text(TextKey.Nav_Enums, "枚举下拉框"), "arrow_drop_down", "/examples/enum")
                             .AddSubNav(Text(TextKey.Nav_Search, "搜索与列表"), "search", "/examples/search")
                 )

@@ -876,14 +876,17 @@
     flex: 0 0 23px;
 }
 .table-column-selector,
+.table-sort-selector,
 .table-advanced-selector {
     position: relative;
 }
 .table-column-selector > summary,
+.table-sort-selector > summary,
 .table-advanced-selector > summary {
     min-width: 132px;
 }
 .table-column-selector > summary::-webkit-details-marker,
+.table-sort-selector > summary::-webkit-details-marker,
 .table-advanced-selector > summary::-webkit-details-marker {
     display: none;
 }
@@ -900,6 +903,9 @@
     display: flex;
     min-height: 52px;
     align-items: center;
+}
+.table-popup-group {
+    display: grid;
 }
 .column-option {
     display: grid;
@@ -1032,23 +1038,26 @@
 }
 .data-card .data-card-field-slot {
     display: grid;
-    grid-template-rows: 24px;
+    grid-template-rows: var(--f-card-value-height, 24px);
     min-width: 0;
     overflow: hidden;
     box-sizing: border-box;
 }
 .data-card .data-card-field-value {
-    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--f-card-value-lines, 1);
     grid-row: 1;
     min-width: 0;
-    max-height: 24px;
+    max-height: var(--f-card-value-height, 24px);
     overflow: hidden;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 .data-card-field-value * {
     min-width: 0;
-    max-height: 24px;
-    white-space: nowrap;
+    max-height: var(--f-card-value-height, 24px);
+    white-space: normal;
 }
 .data-card-field-value :is(div, span, p, strong, b, a, h1, h2, h3, h4, h5, h6) {
     display: inline;

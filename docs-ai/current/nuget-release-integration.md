@@ -18,15 +18,15 @@ Prepare and publish Essential.Culture 1.3.0 first. Wait until all six packages a
 | Order | Flourish 1.1.0 packages |
 |---|---|
 | 1 | Arkheide.Flourish.Core |
-| 2 | Arkheide.Flourish.WPF |
-| 3 | Arkheide.Flourish.Blazor.Shared |
-| 4 | Arkheide.Flourish.Blazor.Abstract |
-| 5 | Arkheide.Flourish.Blazor.Framework |
-| 6 | Arkheide.Flourish.Blazor.Design |
-| 7 | Arkheide.Flourish.Extensions.Culture.WPF |
-| 8 | Arkheide.Flourish.Extensions.Culture.Blazor |
+| 2 | Arkheide.Flourish.Blazor.Abstract |
+| 3 | Arkheide.Flourish.Blazor.Framework |
+| 4 | Arkheide.Flourish.Blazor.Design |
+| 5 | Arkheide.Flourish.Blazor |
+| 6 | Arkheide.Flourish.Extensions.Culture.Blazor |
 
-The four Blazor projects retain the optional Design boundary. Framework references Abstract and Shared; Design references Framework. The optional Blazor Culture bridge references Abstract and Essential.Culture.Blazor, rather than Framework or Design. The WPF bridge references Flourish.WPF and Essential.Culture.Wpf. The six non-extension Flourish packages must have no Essential.Culture package dependency.
+This first public release covers Core and Blazor only. WPF and its Culture bridge remain in the source solution for future releases but are not packed or pushed by this release manifest. Shared is retired: its public contracts now live in Abstract, while processing implementations live in Framework. Abstract depends on Core, Framework on Abstract and Design on Framework/Abstract. Core is restored transitively without a separate host installation.
+
+Flourish.Blazor is a dependency-only convenience package that installs Abstract, Framework and Design. Package installation does not register any feature: native hosts call AddFlourishFramework and opt into Design with AddFlourishDesign. To omit the Design package entirely, install Framework directly. The optional Blazor Culture bridge remains separate and references Abstract plus Essential.Culture.Blazor; the five non-extension packages have no Essential dependency.
 
 Flourish root Directory.Build.props owns VersionPrefix=1.1.0 and EssentialCultureVersion=1.3.0. Essential owns its 1.3.0 version in src/Essential.Culture/Directory.Build.props. Each repository's scripts/ReleaseSettings.psd1 defines its exact package set and push order.
 
@@ -38,7 +38,7 @@ When sibling Essential/artifacts/packages exists, Flourish's RestoreAdditionalPr
 
 Essential demos default to PackageReference. Their explicit -p:UseLocalCulture=true mode builds the Culture source and generator for development. Essential's release helper uses that mode to compile the five demos; its package verifier separately inspects the six packed packages. A demo source build alone does not prove package consumption.
 
-Colligere consumes Framework, Design and the optional Culture bridge through NuGet PackageReference. Its local feed permits verification before publication. A package verified in a local feed is not proof that NuGet.org has that version. After publication, restore a clean external consumer from NuGet.org and confirm its resolved package versions and static web assets.
+Colligere's intended host integration consumes the convenience package and optional Culture bridge through NuGet PackageReference. A presentation project can reference Framework directly when it needs no Design package. Its local feed permits verification before publication. After publication, restore a clean external consumer from NuGet.org and confirm resolved versions and static assets.
 
 For repeated local work with unpublished packages at the same version, use a fresh isolated NuGet cache for the consumer validation, or explicitly retire only the affected package versions after stopping consumers. An existing global cache can otherwise retain an earlier package with the same ID and version.
 
@@ -54,11 +54,11 @@ Set-Location C:\Users\Evigila\source\repos\Flourish
 .\publish-helper.bat -Mode Prepare
 ```
 
-The batch entry forwards its arguments to scripts/Publish-Helper.ps1. Prepare is the default. It calls Test-Release.ps1, which restores, builds Release with warnings as errors and no incremental build, runs the configured tests/checks, packs the configured libraries and verifies the resulting packages. Essential additionally compiles its demo solution.
+The batch entry forwards its arguments to scripts/Publish-Helper.ps1. Prepare calls Test-Release.ps1, which restores the Blazor release solution, builds Release with warnings as errors, runs Core/Blazor/Culture/JS/CSS checks, packs exactly six configured packages, validates their metadata and runs four isolated NuGet-only consumers. Essential separately compiles its desktop/web demos. No desktop Flourish project is included in this release preparation.
 
 Preparation replaces .nupkg and .snupkg files inside that repository's artifacts/packages directory before packing. It does not change Git branches, commits, tags, remotes or NuGet.org.
 
-The verifier checks the exact .nupkg file set, package IDs and versions, internal dependency versions, required dependencies, managed assemblies and configured assets. Flourish verification also checks that only the extensions depend on Essential 1.3.0 and that Framework/Design ship their required static assets. Framework-only and styled consumers remain separate acceptance cases.
+The verifier checks the exact six-package set, IDs and versions, exact internal library dependencies, managed assemblies, dependency-only meta output and required static assets. Four isolated-cache consumers cover Framework alone, the convenience package without Design activation, explicit Design activation and the optional Culture bridge. They use no ProjectReference, publish locally and check SSR, registration, transitive Core, retired Shared absence and HTTP assets.
 
 Parameters:
 
@@ -93,7 +93,7 @@ Read-only GitHub inspection by the coordinating task found the nuget environment
 
 The coordinating task subsequently created Evigila/Flourish's nuget environment successfully. Its returned protection_rules=[] and branch_policy=null match the observed Essential environment: no required-reviewer protection or branch policy is currently configured. Flourish's NUGET_USER remains unconfigured while the user supplies its NuGet profile username. No API key was requested.
 
-The coordinating task queried every package ID in both ReleaseSettings files. None of the six Essential 1.3.0 or eight Flourish 1.1.0 target versions is publicly available. Five existing Essential platform packages have latest version 1.2.0; Culture.Blazor and all eight Flourish package IDs returned 404. All 14 target versions therefore remain pending publication; local verification is preparation, not a public release.
+A read-only 2026-10-05 query found no public target versions. The coordinating task checked all six Essential 1.3.0 versions and the newly scoped six Flourish 1.1.0 IDs; Flourish returned 404, including the new convenience ID. Prior eight-package release checks remain historical and do not define this Blazor-only manifest. Local verification is preparation, not a public release.
 
 User-owned NuGet.org policies and package ownership/scopes have not been verified. The two environments currently have no protection rules or branch policy; do not assume an environment approval gate exists. Prepare can run without this publishing configuration. Publish remains gated by user confirmation, the script's Git checks and a working Trusted Publishing configuration. See [final local verification](release-verification.md) for the completed checks and remaining release prerequisites.
 
