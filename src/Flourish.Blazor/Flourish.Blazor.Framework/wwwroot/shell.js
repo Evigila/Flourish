@@ -1,3 +1,37 @@
+const blockedLayouts = new WeakMap();
+const expandAt = 24;
+const collapseAfter = 96;
+
+export function updateCompactHeading(root, content) {
+    if (root.hasAttribute('data-compact-heading')) {
+        if (content.scrollTop < expandAt) resetCompactHeading(root);
+        return;
+    }
+    if (content.scrollTop <= collapseAfter) return;
+
+    const layout = { content, height:content.scrollHeight, viewport:content.clientHeight, width:content.clientWidth };
+    const blocked = blockedLayouts.get(root);
+    if (blocked && Object.keys(layout).every(key => blocked[key] === layout[key])) return;
+
+    const previousTop = content.scrollTop;
+    root.setAttribute('data-compact-heading', '');
+    // A short document can lose its entire scroll range when the sticky title shrinks.
+    // Measure before painting and remember unsuitable geometry so the queued scroll
+    // event cannot start another collapse/restore cycle. Do not add blank space.
+    if (content.scrollHeight - content.clientHeight < expandAt) {
+        root.removeAttribute('data-compact-heading');
+        blockedLayouts.set(root, layout);
+        content.scrollTop = previousTop;
+    } else {
+        blockedLayouts.delete(root);
+    }
+}
+
+export function resetCompactHeading(root) {
+    blockedLayouts.delete(root);
+    root.removeAttribute('data-compact-heading');
+}
+
 const instances = new WeakMap();
 
 export function attach(root, content) {
@@ -24,13 +58,12 @@ export function attach(root, content) {
     }
     const updateHeading = () => {
         state.frame = 0;
-        const compact = root.hasAttribute('data-compact-heading');
-        const next = compact ? content.scrollTop >= 24 : content.scrollTop > 96;
-        if (compact !== next) root.toggleAttribute('data-compact-heading', next);
+        updateCompactHeading(root, content);
     };
-    listen(content, 'scroll', () => {
+    state.scheduleHeading = () => {
         if (!state.frame) state.frame = requestAnimationFrame(updateHeading);
-    }, {passive:true});
+    };
+    listen(content, 'scroll', state.scheduleHeading, {passive:true});
     for (const trigger of root.querySelectorAll('.f-primary-item')) {
         const tip = trigger.querySelector('.f-nav-tooltip');
         if (!tip) continue;
@@ -88,7 +121,8 @@ export function attach(root, content) {
 }
 export function synchronize(root, open, resetScroll) {
     const state=instances.get(root); if (!state) return;
-    if (resetScroll) { state.content.scrollTop=0; root.removeAttribute('data-compact-heading'); }
+    if (resetScroll) { resetCompactHeading(root); state.content.scrollTop=0; }
+    else state.scheduleHeading();
     // Mobile expanded navigation is modal-like: move focus inside, block background and return focus.
     const expanded = open && matchMedia('(max-width:760px)').matches;
     state.content.inert=expanded;
@@ -103,5 +137,6 @@ export function detach(root) {
     const state = instances.get(root); if(!state) return;
     if(state.frame) cancelAnimationFrame(state.frame);
     state.removers.forEach(remove => remove()); state.content.inert=false;
+    resetCompactHeading(root);
     instances.delete(root);
 }

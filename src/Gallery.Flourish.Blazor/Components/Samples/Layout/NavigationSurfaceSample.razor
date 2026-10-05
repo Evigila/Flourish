@@ -15,10 +15,14 @@
 @if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示二级导航" @bind-Value="Secondary" /> }
 <ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" ContentId="@Id" DocumentKey="Page" SkipLabel="跳到示例正文" PrimaryLabel="示例模块" SecondaryLabel="示例页面" TopLabel="回到示例顶部">
     <TitleBar><header class="app-topbar"><strong>@(Preview ? "顶部栏" : "资料中心（虚构）")</strong></header></TitleBar>
-    <PrimaryNavigation><button type="button" class="primary-nav-item" aria-label="资料" @onclick="ShowDocuments"><ArkheideSystem.Flourish.Blazor.Components.Icon Name="folder" /></button></PrimaryNavigation>
+    <PrimaryNavigation>
+        <div @onclick="ShowDocuments" @onclick:preventDefault>
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-documents")" Label="资料" Icon="folder" Href="@($"#{Id}")" IsCurrent="true" />
+        </div>
+    </PrimaryNavigation>
     <SecondaryNavigation>
-        <a href="@($"#{Id}")" @onclick="ShowDocuments" @onclick:preventDefault class="@(Page == 0 ? "is-active" : null)">全部资料</a>
-        <a href="@($"#{Id}")" @onclick="ShowArchived" @onclick:preventDefault class="@(Page == 1 ? "is-active" : null)">已归档</a>
+        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 0 ? ButtonVariant.Filled : ButtonVariant.Underline)" OnClick="ShowDocuments" aria-current="@(Page == 0 ? "page" : null)">全部资料</ArkheideSystem.Flourish.Blazor.Components.Button>
+        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 1 ? ButtonVariant.Filled : ButtonVariant.Underline)" OnClick="ShowArchived" aria-current="@(Page == 1 ? "page" : null)">已归档</ArkheideSystem.Flourish.Blazor.Components.Button>
     </SecondaryNavigation>
     <ChildContent>
         @if (!Preview)

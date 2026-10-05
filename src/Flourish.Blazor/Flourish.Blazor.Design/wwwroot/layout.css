@@ -18,13 +18,6 @@ color-scheme:light;
     --accent-soft:var(--f-soft);
     --success:var(--f-primary);
     --danger:var(--f-danger);
-    --notice-error-background:var(--f-danger);
-    --notice-warning-background:var(--f-primary);
-    --notice-success-background:var(--f-primary);
-    --notice-info-background:var(--f-primary);
-    --notice-subtle-background:var(--f-display-board);
-    --notice-subtle-foreground:var(--f-muted);
-    --notice-foreground:var(--f-surface);
     --focus:var(--f-accent);
     --radius-small:4px;
     --radius-medium:8px;
@@ -41,37 +34,14 @@ font-weight:var(--field-label-weight);
 }
 
 .notice {
---notice-background:var(--notice-info-background);
-    --notice-text:var(--notice-foreground);
-    color:var(--notice-text);
-    background:var(--notice-background);
+color:var(--notice-text,var(--f-info-text));
+    background:var(--notice-background,var(--f-surface));
     border-radius:var(--radius-small);
     padding:11px 14px;
 }
 
 .page-root > .notice {
 margin:16px var(--page-gutter);
-}
-
-.notice-error {
---notice-background:var(--notice-error-background);
-}
-
-.notice-warning {
---notice-background:var(--notice-warning-background);
-}
-
-.notice-success {
---notice-background:var(--notice-success-background);
-}
-
-.notice-info {
---notice-background:var(--notice-info-background);
-}
-
-.notice-subtle {
---notice-background:var(--notice-subtle-background);
-    --notice-text:var(--notice-subtle-foreground);
 }
 
 .notice a:focus-visible,

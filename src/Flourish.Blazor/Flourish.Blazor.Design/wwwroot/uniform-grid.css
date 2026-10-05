@@ -2,6 +2,7 @@
     --f-grid-gap:1px;
     --f-uniform-cell-background:var(--f-surface);
     --f-uniform-cell-foreground:var(--f-text);
+    --f-uniform-cell-interaction-foreground:var(--f-text);
     --f-uniform-cell-border:transparent;
     --f-uniform-cell-hover:var(--f-target-preview);
     --f-uniform-cell-click:var(--f-target-click);
@@ -18,6 +19,7 @@
 .f-uniform-grid-variant-filled,.f-uniform-variant-filled {
     --f-uniform-cell-background:var(--f-primary);
     --f-uniform-cell-foreground:var(--f-primary-ink);
+    --f-uniform-cell-interaction-foreground:var(--f-primary-ink);
     --f-uniform-cell-border:transparent;
     --f-uniform-cell-hover:var(--f-primary-preview);
     --f-uniform-cell-click:var(--f-primary-click);
@@ -28,6 +30,7 @@
 .f-uniform-grid-variant-outlined,.f-uniform-variant-outlined {
     --f-uniform-cell-background:var(--f-canvas);
     --f-uniform-cell-foreground:var(--f-text);
+    --f-uniform-cell-interaction-foreground:var(--f-text);
     --f-uniform-cell-border:var(--f-border);
     --f-uniform-cell-hover:var(--f-target-preview);
     --f-uniform-cell-click:var(--f-target-click);
@@ -36,9 +39,10 @@
 .f-uniform-grid-variant-danger,.f-uniform-variant-danger {
     --f-uniform-cell-background:var(--f-danger);
     --f-uniform-cell-foreground:var(--f-surface);
+    --f-uniform-cell-interaction-foreground:var(--f-surface-light);
     --f-uniform-cell-border:transparent;
-    --f-uniform-cell-hover:var(--f-primary-preview);
-    --f-uniform-cell-click:var(--f-primary-click);
+    --f-uniform-cell-hover:var(--f-preview-danger);
+    --f-uniform-cell-click:var(--f-click-danger);
     --f-uniform-cell-shadow:none;
     border:0;
     border-radius:var(--f-radius-panel,16px);
@@ -46,6 +50,7 @@
 .f-uniform-grid-variant-elevated,.f-uniform-variant-elevated {
     --f-uniform-cell-background:var(--f-surface);
     --f-uniform-cell-foreground:var(--f-text);
+    --f-uniform-cell-interaction-foreground:var(--f-text);
     --f-uniform-cell-border:transparent;
     --f-uniform-cell-hover:var(--f-target-preview);
     --f-uniform-cell-click:var(--f-target-click);
@@ -79,12 +84,13 @@
 .f-uniform-grid-square > .f-uniform-cell { min-height:0; }
 .f-uniform-grid-rectangle > .f-uniform-cell { min-height:0; }
 .f-uniform-cell.f-uniform-grid-button:hover:not(:disabled):not([aria-disabled=true]) {
-    color:var(--f-uniform-cell-foreground,var(--f-text));
+    color:var(--f-uniform-cell-interaction-foreground,var(--f-text));
     background:var(--f-uniform-cell-hover,var(--f-target-preview));
     border-color:var(--f-border);
     box-shadow:var(--f-uniform-cell-shadow,var(--f-shadow-control));
 }
 .f-uniform-cell.f-uniform-grid-button:active:not(:disabled):not([aria-disabled=true]) {
+    color:var(--f-uniform-cell-interaction-foreground,var(--f-text));
     background:var(--f-uniform-cell-click,var(--f-target-click));
     border-color:var(--f-border);
     box-shadow:none;
@@ -106,6 +112,7 @@
 .f-form-actions,.form-action-bar .uniform-grid-filled {
     --f-uniform-cell-background:var(--f-primary);
     --f-uniform-cell-foreground:var(--f-primary-ink);
+    --f-uniform-cell-interaction-foreground:var(--f-primary-ink);
     --f-uniform-cell-border:transparent;
     --f-uniform-cell-hover:var(--f-primary-preview);
     --f-uniform-cell-click:var(--f-primary-click);

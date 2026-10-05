@@ -29,7 +29,7 @@ else
             <Field Label="邮箱" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)"><TextBox @bind-Value="Model.Email" Type="email" /></Field>
             <Field Label="备注" Id="@(Prefix + "-note")" FullWidth="true"><TextBox @bind-Value="Model.Note" Multiline="true" /></Field>
         </FormLayout>
-        <FormActions><UniformGridButton Title="提交示例" Type="submit" /><UniformGridButton Title="清空姓名" OnClick="ClearName" /></FormActions>
+        <FormActions><UniformGridButton Title="提交示例" Variant="UniformGridVariant.Filled" Type="submit" /><UniformGridButton Title="清空姓名" Variant="UniformGridVariant.Outlined" OnClick="ClearName" /></FormActions>
     </EditForm>
     <p role="status">@Message</p>
 }

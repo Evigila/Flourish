@@ -24,8 +24,6 @@
     --accent-soft: var(--f-target-preview);
     --focus: var(--f-accent);
     --danger: var(--f-danger);
-    --notice-subtle-background: var(--f-display-board);
-    --notice-subtle-foreground: var(--f-text);
     --chrome: var(--f-chrome);
     --chrome-ink: var(--f-chrome-ink);
     --chrome-accent: var(--f-accent);

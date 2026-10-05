@@ -21,7 +21,7 @@ class Node {
   getAttribute(name){ return this.attrs.get(name)??null; }
   removeAttribute(name){ this.attrs.delete(name);if(name==='open')this.open=false; }
   getClientRects(){ return this.hidden?[]:[this.rect]; }
-  getBoundingClientRect(){ return this.rect; }
+  getBoundingClientRect(){ const limits=this.style.getPropertyValue('max-height').match(/[\d.]+(?=px)/g)?.map(Number);return limits?.length?{...this.rect,height:Math.min(this.rect.height,...limits)}:this.rect; }
   contains(node){ return node===this||this.children.includes(node); }
   closest(){ return null; }
   matches(selector){ return selector===':popover-open'?this.popoverOpen===true:true; }
@@ -41,18 +41,19 @@ globalThis.document=new Node();
 document.body=new Node();document.documentElement={clientWidth:800};document.activeElement=null;
 document.body.append=function(...nodes){this.children.push(...nodes);};
 document.createComment=()=>({isConnected:true,replaceWith(){}});
-document.createElement=()=>new Node();
+document.createElement=tag=>{const node=new Node();if(tag==='canvas')node.getContext=()=>null;return node;};
 globalThis.window=new Node();window.innerHeight=600;
 globalThis.MutationObserver=class{observe(){}disconnect(){this.disconnected=true;}};
 globalThis.getComputedStyle=node=>{
   const keys=[...new Set([...node.style.values.keys(),...Object.keys(node.computedTheme??{})])];
-  return Object.assign({length:keys.length,getPropertyValue:name=>node.style.getPropertyValue(name)||node.computedTheme?.[name]||''},keys);
+  return Object.assign({length:keys.length,maxHeight:node.style.getPropertyValue('max-height')||'none',getPropertyValue:name=>node.style.getPropertyValue(name)||node.computedTheme?.[name]||''},keys);
 };
 globalThis.CSS={escape:value=>value};
 globalThis.HTMLInputElement=Node;
 globalThis.requestAnimationFrame=fn=>{fn();return 1;};globalThis.cancelAnimationFrame=()=>{};
 const code=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/controls.js',import.meta.url),'utf8');
-const api=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+const controlsUrl='data:text/javascript;base64,'+Buffer.from(code).toString('base64');
+const api=await import(controlsUrl);
 const event=key=>({key,defaultPrevented:false,propagationStopped:false,preventDefault(){this.defaultPrevented=true;},stopPropagation(){this.propagationStopped=true;}});
 const trigger=new Node();const panel=new Node();const first=new Node(),second=new Node();panel.children=[first,second];
 panel.rect={width:200,height:120};trigger.style.setProperty('--f-danger','#ffb4ab');trigger.style.setProperty('--f-body-size','17px');
@@ -75,6 +76,94 @@ check('Hover menus support keyboard entry and Escape focus return',()=>{const do
 check('Hover touch fallback opens explicitly and outside press closes',()=>{hoverTrigger.emit('pointerenter',{pointerType:'touch'});assert.equal(hoverPanel.popoverOpen,false);api.toggleMenu(hoverTrigger,hoverPanel,false);assert.equal(hoverPanel.popoverOpen,true);document.emit('pointerdown',{target:hoverOutside});assert.equal(hoverPanel.popoverOpen,false);});
 check('Disabled hover menus remain closed and mode changes clear open state',()=>{hoverTrigger.disabled=true;hoverTrigger.emit('pointerenter',{pointerType:'mouse'});assert.equal(hoverPanel.popoverOpen,false);hoverTrigger.disabled=false;hoverTrigger.emit('pointerenter',{pointerType:'mouse'});api.attachMenu(hoverTrigger,hoverPanel,false);assert.equal(hoverPanel.popoverOpen,false);hoverTrigger.emit('pointerenter',{pointerType:'mouse'});assert.equal(hoverPanel.popoverOpen,false);});
 check('Hover menu refresh preserves aria state and disposal removes pointer listeners',()=>{api.attachMenu(hoverTrigger,hoverPanel,true);hoverTrigger.emit('pointerenter',{pointerType:'mouse'});hoverTrigger.setAttribute('aria-expanded','false');api.attachMenu(hoverTrigger,hoverPanel,true);assert.equal(hoverTrigger.getAttribute('aria-expanded'),'true');api.detachMenu(hoverTrigger,hoverPanel);assert.equal(hoverTrigger.events.get('pointerenter').length,0);assert.equal(hoverPanel.events.get('pointerleave').length,0);assert.equal(hoverPanel.popoverOpen,false);});
+
+const wideHoverRoot=new Node(),anchoredTrigger=new Node(),anchoredPanel=new Node();
+wideHoverRoot.rect={left:300,right:760,top:0,bottom:136,width:460,height:136};
+anchoredTrigger.rect={left:610,right:700,top:40,bottom:88,width:90,height:48};
+anchoredTrigger.closest=selector=>selector==='.f-action-menu'?wideHoverRoot:null;
+wideHoverRoot.children=[anchoredTrigger,anchoredPanel];anchoredPanel.children=[new Node()];anchoredPanel.rect={width:180,height:140};
+api.attachMenu(anchoredTrigger,anchoredPanel,true);
+check('Hover popup anchors to the button rather than a stretched pointer region',()=>{
+  wideHoverRoot.emit('pointerenter',{pointerType:'mouse'});assert.equal(anchoredPanel.style.left,'520px');assert.equal(anchoredPanel.style.top,'88px');
+});
+check('Open hover popup follows its control through scroll and viewport resize',()=>{
+  anchoredTrigger.rect={left:720,right:810,top:530,bottom:578,width:90,height:48};
+  window.emit('resize',{});assert.equal(anchoredPanel.style.left,'608px');assert.equal(anchoredPanel.style.top,'390px');
+  anchoredTrigger.rect={left:500,right:590,top:110,bottom:158,width:90,height:48};
+  document.emit('scroll',{});assert.equal(anchoredPanel.style.left,'410px');assert.equal(anchoredPanel.style.top,'158px');api.detachMenu(anchoredTrigger,anchoredPanel);
+});
+
+const disclosure=new Node(),summary=new Node(),displayPanel=new Node(),disabledOption=new Node(),displayFirst=new Node(),displayLast=new Node();
+disclosure.open=false;disclosure.children=[summary,displayPanel];summary.rect={left:700,right:790,top:550,bottom:586,width:90,height:36};
+displayPanel.rect={width:200,height:160};disabledOption.disabled=true;displayPanel.children=[disabledOption,displayFirst,displayLast];
+displayPanel.querySelectorAll=()=>displayPanel.children.filter(item=>!item.disabled);
+displayPanel.style.setProperty('max-height','420px');
+api.attachDisclosureMenu(disclosure,summary,displayPanel);
+check('Native display disclosure uses shared top-layer positioning and flips above at the viewport bottom',()=>{
+  disclosure.open=true;disclosure.emit('toggle',{});assert.equal(displayPanel.popoverOpen,true);assert.equal(summary.getAttribute('aria-expanded'),'true');
+  assert.equal(displayPanel.style.left,'588px');assert.equal(displayPanel.style.top,'384px');
+});
+check('Display options keep native multi-selection open and keyboard navigation skips disabled controls',()=>{
+  document.emit('pointerdown',{target:displayFirst});document.activeElement=displayFirst;document.emit('focusin',{target:displayFirst});
+  assert.equal(disclosure.open,true);assert.equal(displayPanel.popoverOpen,true);
+  document.emit('keydown',event('End'));assert.equal(document.activeElement,displayLast);
+  document.emit('keydown',event('Home'));assert.equal(document.activeElement,displayFirst);
+});
+check('Display Escape restores summary focus and native open state while preserving prior height limits',()=>{
+  document.emit('keydown',event('Escape'));assert.equal(disclosure.open,false);assert.equal(displayPanel.popoverOpen,false);
+  assert.equal(document.activeElement,summary);assert.equal(summary.getAttribute('aria-expanded'),'false');assert.equal(displayPanel.style.getPropertyValue('max-height'),'420px');
+});
+check('Native summary collapse closes its shared popup without changing the current focus',()=>{
+  disclosure.open=true;disclosure.emit('toggle',{});document.activeElement=summary;
+  disclosure.open=false;disclosure.emit('toggle',{});assert.equal(displayPanel.popoverOpen,false);assert.equal(document.activeElement,summary);
+  assert.equal(summary.getAttribute('aria-expanded'),'false');
+});
+check('Tall display popup scrolls within the larger available side and can expand again after scrolling',()=>{
+  displayPanel.rect={width:200,height:900};summary.rect={left:700,right:790,top:260,bottom:308,width:90,height:48};
+  summary.emit('keydown',event('ArrowDown'));assert.equal(disclosure.open,true);assert.equal(document.activeElement,displayFirst);
+  assert.equal(displayPanel.style.top,'314px');assert.equal(displayPanel.style.getPropertyValue('max-height'),'min(274px, 420px)');
+  summary.rect={left:700,right:790,top:530,bottom:578,width:90,height:48};document.emit('scroll',{});
+  assert.equal(displayPanel.style.top,'104px');assert.equal(displayPanel.style.getPropertyValue('max-height'),'min(512px, 420px)');
+});
+check('Display outside interaction closes without taking focus and disposal removes native toggle listeners',()=>{
+  const outside=new Node();document.activeElement=outside;document.emit('pointerdown',{target:outside});
+  assert.equal(disclosure.open,false);assert.equal(displayPanel.popoverOpen,false);assert.equal(document.activeElement,outside);
+  api.detachMenu(summary,displayPanel);assert.equal(disclosure.events.get('toggle').length,0);assert.equal(summary.events.get('keydown').length,0);
+});
+
+const dataCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js',import.meta.url),'utf8');
+const dataApi=await import('data:text/javascript;base64,'+Buffer.from(dataCode.replace("'./controls.js'",JSON.stringify(controlsUrl))).toString('base64'));
+const emptyDataRoot=new Node(),emptyDisclosure=new Node(),emptySummary=new Node(),emptyDisplayPanel=new Node();
+emptyDisclosure.children=[emptySummary,emptyDisplayPanel];emptyDisplayPanel.rect={width:200,height:100};emptyDisplayPanel.children=[new Node()];
+emptyDataRoot.querySelector=selector=>selector==='.f-data-display'?emptyDisclosure:null;
+emptyDisclosure.querySelector=selector=>selector==='summary'?emptySummary:selector==='.f-data-display-options'?emptyDisplayPanel:null;
+check('DataTable wires display positioning even with no rendered rows and rerenders do not duplicate handlers',()=>{
+  dataApi.synchronize(emptyDataRoot,'empty-data');dataApi.synchronize(emptyDataRoot,'empty-data');
+  assert.equal(emptyDisclosure.events.get('toggle').length,1);emptyDisclosure.open=true;emptyDisclosure.emit('toggle',{});assert.equal(emptyDisplayPanel.popoverOpen,true);
+  dataApi.synchronize(emptyDataRoot,'empty-data');assert.equal(emptyDisclosure.open,true);assert.equal(emptyDisplayPanel.popoverOpen,true);
+});
+check('DataTable disposal closes its display popup and removes the shared lifecycle',()=>{
+  dataApi.detach('empty-data');assert.equal(emptyDisclosure.open,false);assert.equal(emptyDisplayPanel.popoverOpen,false);
+  assert.equal(emptyDisclosure.events.get('toggle').length,0);assert.equal(emptySummary.events.get('keydown').length,0);
+});
+check('Older-browser display portals survive table rerenders and restore their native disclosure on close',()=>{
+  const root=new Node(),details=new Node(),summary=new Node(),panel=new Node(),option=new Node();
+  panel.showPopover=undefined;panel.rect={width:200,height:100};panel.children=[option];details.children=[summary,panel];
+  root.querySelector=selector=>selector==='.f-data-display'?details:null;
+  details.querySelector=selector=>selector==='summary'?summary:selector==='.f-data-display-options'&&details.children.includes(panel)?panel:null;
+  const originalAppend=document.body.append;
+  panel.before=placeholder=>{
+    details.children.splice(details.children.indexOf(panel),0,placeholder);
+    placeholder.replaceWith=returned=>{details.children.splice(details.children.indexOf(placeholder),1,returned);document.body.children=document.body.children.filter(node=>node!==returned);};
+  };
+  document.body.append=function(...nodes){for(const node of nodes){if(node===panel)details.children=details.children.filter(child=>child!==panel);this.children.push(node);}};
+  try {
+    dataApi.synchronize(root,'legacy-data');details.open=true;details.emit('toggle',{});assert.equal(document.body.children.includes(panel),true);
+    dataApi.synchronize(root,'legacy-data');assert.equal(details.open,true);assert.equal(details.events.get('toggle').length,1);
+    document.emit('pointerdown',{target:option});assert.equal(details.open,true);
+    document.emit('pointerdown',{target:new Node()});assert.equal(details.open,false);assert.equal(details.children.includes(panel),true);assert.equal(document.body.children.includes(panel),false);
+  } finally {dataApi.detach('legacy-data');document.body.append=originalAppend;}
+});
 
 const opener=new Node(),dialog=new Node(),close=new Node(),last=new Node();dialog.id='dialog-test';dialog.children=[close,last];
 let closeRequests=0;

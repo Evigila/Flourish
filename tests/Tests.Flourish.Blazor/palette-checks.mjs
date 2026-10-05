@@ -27,6 +27,8 @@ const roles = [
   "click-dark",
   "info-text",
   "warning-background",
+  "preview-danger",
+  "click-danger",
 ];
 
 const light = {
@@ -41,6 +43,8 @@ const light = {
   "--f-preview-dark": "#2F5049",
   "--f-border": "#9FAEA9",
   "--f-danger": "#9D322D",
+  "--f-preview-danger": "#7E2824",
+  "--f-click-danger": "#712420",
   "--f-click-light": "#B5C9C4",
   "--f-click-dark": "#2A4842",
   "--f-info-text": "#1565C0",
@@ -59,6 +63,8 @@ const dark = {
   "--f-preview-dark": "#395A48",
   "--f-border": "#526F60",
   "--f-danger": "#FFB4AB",
+  "--f-preview-danger": "#8C3430",
+  "--f-click-danger": "#7E2F2B",
   "--f-click-light": "#C0CEC8",
   "--f-click-dark": "#335141",
   "--f-info-text": "#8CB8FF",
@@ -72,6 +78,7 @@ const approvedLiterals = new Set([
   "#B8C9BF", "#31483B", "#D5E5DE", "#395A48", "#526F60",
   "#9D322D", "#FFB4AB", "#B5C9C4", "#C0CEC8", "#2A4842", "#335141",
   "#1565C0", "#8CB8FF", "#F2A33A", "#E5A047",
+  "#7E2824", "#712420", "#8C3430", "#7E2F2B",
 ]);
 
 async function filesUnder(root, extensions) {
@@ -145,7 +152,7 @@ function matchingRule(css, description, predicate) {
   return matches[0];
 }
 
-test("foundation exposes the fifteen-role palette to documents and Flourish surfaces", async () => {
+test("foundation exposes the seventeen-role palette to documents and Flourish surfaces", async () => {
   const css = withoutComments(await readFile(foundationPath, "utf8"));
   const baseBlock = blockFor(css, ":root, .f-root");
   const rootElementBlock = blockFor(css, ".f-root");
@@ -202,6 +209,7 @@ test("click roles are exact ninety-percent preview channels", async () => {
   for (const [index, mode] of modes.entries()) {
     assert.equal(mode.get("--f-click-light"), darken(mode.get("--f-preview-light")), `${index ? "Dark" : "Light"} click-light is not preview-light × 0.9.`);
     assert.equal(mode.get("--f-click-dark"), darken(mode.get("--f-preview-dark")), `${index ? "Dark" : "Light"} click-dark is not preview-dark × 0.9.`);
+    assert.equal(mode.get("--f-click-danger"), darken(mode.get("--f-preview-danger")), `${index ? "Dark" : "Light"} click-danger is not preview-danger × 0.9.`);
   }
 });
 
@@ -293,10 +301,10 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   const dangerPress = one("controls", "Danger button press", rule => hasSelector(rule, ".f-button-danger:active"));
   assert.equal(property(danger.body, "background"), "var(--f-danger)");
   assert.equal(property(danger.body, "color"), "var(--f-surface)");
-  assert.equal(property(dangerHover.body, "background"), "var(--f-primary-preview)");
-  assert.equal(property(dangerHover.body, "color") ?? property(danger.body, "color"), "var(--f-surface)");
-  assert.equal(property(dangerPress.body, "background"), "var(--f-primary-click)");
-  assert.equal(property(dangerPress.body, "color") ?? property(danger.body, "color"), "var(--f-surface)");
+  assert.equal(property(dangerHover.body, "background"), "var(--f-preview-danger)");
+  assert.equal(property(dangerHover.body, "color"), "var(--f-surface-light)");
+  assert.equal(property(dangerPress.body, "background"), "var(--f-click-danger)");
+  assert.equal(property(dangerPress.body, "color"), "var(--f-surface-light)");
 
   const primarySelected = one("foundation", "Primary navigation selection", rule => rule.selector.trim() === ".f-primary-item.is-selected");
   const primarySelectedPress = one("foundation", "Primary navigation selected press", rule => rule.selector.includes(".f-primary-item") && rule.selector.includes(".is-selected") && rule.selector.includes(":active"));
@@ -352,12 +360,46 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   const dangerGrid = one("uniform-grid", "Danger uniform grid", rule => rule.selector.includes(".f-uniform-grid-variant-danger"));
   assert.equal(dangerGrid.declarations.get("--f-uniform-cell-background"), "var(--f-danger)");
   assert.equal(dangerGrid.declarations.get("--f-uniform-cell-foreground"), "var(--f-surface)");
-  assert.equal(dangerGrid.declarations.get("--f-uniform-cell-hover"), "var(--f-primary-preview)");
-  assert.equal(dangerGrid.declarations.get("--f-uniform-cell-click"), "var(--f-primary-click)");
+  assert.equal(dangerGrid.declarations.get("--f-uniform-cell-hover"), "var(--f-preview-danger)");
+  assert.equal(dangerGrid.declarations.get("--f-uniform-cell-click"), "var(--f-click-danger)");
+  assert.equal(dangerGrid.declarations.get("--f-uniform-cell-interaction-foreground"), "var(--f-surface-light)");
   const gridHover = one("uniform-grid", "Uniform-grid hover", rule => rule.selector.includes(".f-uniform-grid-button:hover"));
   const gridPress = one("uniform-grid", "Uniform-grid press", rule => rule.selector.includes(".f-uniform-grid-button:active"));
   assert.equal(property(gridHover.body, "background"), "var(--f-uniform-cell-hover,var(--f-target-preview))");
   assert.equal(property(gridPress.body, "background"), "var(--f-uniform-cell-click,var(--f-target-click))");
+});
+
+test("Notice and StatusNotice share all semantic foreground/background mappings", async () => {
+  const source = await readFile(join(designCssRoot, "controls.css"), "utf8");
+  const mappings = [
+    ["information", "info", "info-text", "surface"],
+    ["success", "success", "surface", "primary"],
+    ["warning", "warning", "warning-ink", "warning-background"],
+    ["error", "error", "surface", "danger"],
+    ["subtle", "subtle", "muted", "display-board"],
+  ];
+  for (const [notice, status, foreground, background] of mappings) {
+    const shared = matchingRule(source, `${notice} semantic mapping`, rule =>
+      rule.selector.split(",").includes(`.f-notice-${notice}`) && rule.selector.split(",").includes(`.notice-${status}`));
+    assert.equal(shared.declarations.get("--notice-text"), `var(--f-${foreground})`);
+    assert.equal(shared.declarations.get("--notice-background"), `var(--f-${background})`);
+  }
+  const legacy = await readFile(join(designCssRoot, "layout.css"), "utf8");
+  const notice = matchingRule(legacy, "StatusNotice base", rule => rule.selector === ".notice");
+  assert.equal(property(notice.body, "color"), "var(--notice-text,var(--f-info-text))");
+  assert.equal(property(notice.body, "background"), "var(--notice-background,var(--f-surface))");
+  assert.ok(!notice.declarations.has("--notice-text") && !notice.declarations.has("--notice-background"),
+    "The later StatusNotice base overrides its shared severity colors.");
+  const files = await filesUnder(designCssRoot, new Set([".css"]));
+  for (const path of files.filter(path => path !== join(designCssRoot, "controls.css"))) {
+    for (const rule of rules(await readFile(path, "utf8"))) {
+      if (/\.(?:f-)?notice-(?:information|info|success|warning|error|subtle)\b/.test(rule.selector)) {
+        assert.ok(!property(rule.body, "color") && !property(rule.body, "background")
+          && !rule.declarations.has("--notice-text") && !rule.declarations.has("--notice-background"),
+          `${relative(repositoryRoot, path)} overrides the shared semantic notice colors.`);
+      }
+    }
+  }
 });
 
 test("components do not restore per-subtree themes", async () => {
@@ -441,7 +483,8 @@ test("default reading, selected and preview foregrounds stay readable in both mo
       ["surface", "primary"], ["surface", "accent"], ["surface", "danger"], ["text", "surface-preview"],
       ["text", "surface-click"], ["surface", "primary-preview"], ["surface", "primary-click"],
       ["surface", "accent-click"], ["chrome-ink", "click-dark"],
-      ["info-text", "surface"], ["warning-ink", "warning-background"]];
+      ["info-text", "surface"], ["warning-ink", "warning-background"],
+      ["surface-light", "preview-danger"], ["surface-light", "click-danger"]];
     for (const [foreground, background] of pairs) {
       const values = [luminance(color(foreground)), luminance(color(background))];
       const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);

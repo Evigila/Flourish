@@ -23,7 +23,7 @@ else
                 <Field Label="姓名" Id="@(Prefix + "-name")"><TextBox @bind-Value="Model.Name" /></Field>
                 <Field Label="邮箱" Id="@(Prefix + "-email")"><TextBox @bind-Value="Model.Email" Type="email" /></Field>
             </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar><UniformGridButton Title="保存示例" Type="submit" /><UniformGridButton Title="恢复示例" OnClick="Reset" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar><UniformGridButton Title="保存示例" Variant="UniformGridVariant.Filled" Type="submit" /><UniformGridButton Title="恢复示例" Variant="UniformGridVariant.Outlined" OnClick="Reset" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
         </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormSurface>
     </EditForm>
     <p role="status">@Message</p>

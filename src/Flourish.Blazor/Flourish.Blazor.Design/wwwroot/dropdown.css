@@ -18,6 +18,10 @@
 
 .f-dropdown-panel .f-dropdown-item:active:not(:disabled):not(:has(input:disabled)) { color:var(--f-text); background:var(--f-target-click); }
 
+/* Destructive options share the same red feedback as Danger buttons and cells. */
+:is(.f-menu-panel .f-menu-danger,.row-action-menu-panel .danger-action):is(:hover,:focus-visible):not(:disabled):not([aria-disabled="true"]) { color:var(--f-surface-light); background:var(--f-preview-danger); }
+:is(.f-menu-panel .f-menu-danger,.row-action-menu-panel .danger-action):active:not(:disabled):not([aria-disabled="true"]) { color:var(--f-surface-light); background:var(--f-click-danger); }
+
 /* Native SelectBox pickers use the same geometry and colors as menu panels. */
 @supports (appearance:base-select) {
     /* A grid keeps its dense borderless editor and separate decorative marker. */

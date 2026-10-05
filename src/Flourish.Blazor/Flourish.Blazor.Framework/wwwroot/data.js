@@ -1,4 +1,6 @@
 // Widths belong to a component instance, never to a translated header or a global table preference.
+import { attachDisclosureMenu, detachMenu } from './controls.js';
+
 const instances = new Map();
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
@@ -68,7 +70,7 @@ function cancelDrag(state, restore) {
     if (drag.button.hasPointerCapture?.(drag.pointerId)) drag.button.releasePointerCapture(drag.pointerId);
 }
 function connect(root, instanceId) {
-    const state = { root, widths: new Map(), drag: null, listeners: [] };
+    const state = { root, widths: new Map(), drag: null, display: null, listeners: [] };
     const on = (target, name, handler, options) => {
         target.addEventListener(name, handler, options);
         state.listeners.push(() => target.removeEventListener(name, handler, options));
@@ -96,8 +98,6 @@ function connect(root, instanceId) {
     on(root, 'keydown', event => {
         if (event.key === 'Escape') {
             cancelDrag(state, true);
-            const details = root.querySelector('.f-data-display[open]');
-            if (details) { details.open = false; details.querySelector('summary')?.focus(); event.preventDefault(); }
         }
         const page = event.target.closest?.('[data-f-page]');
         if (page && event.key === 'Enter') {
@@ -123,18 +123,29 @@ function connect(root, instanceId) {
             }
         }
     }, true);
-    on(document, 'pointerdown', event => {
-        const details = root.querySelector('.f-data-display[open]');
-        if (details && !details.contains(event.target)) details.open = false;
-    });
     instances.set(instanceId, state);
     return state;
+}
+function synchronizeDisplay(state) {
+    const disclosure = state.root.querySelector('.f-data-display');
+    const trigger = disclosure?.querySelector('summary');
+    // An older-browser portal temporarily moves the same renderer-owned panel outside the details.
+    const panel = disclosure?.querySelector('.f-data-display-options')
+        ?? (state.display?.disclosure === disclosure && state.display.panel.isConnected ? state.display.panel : null);
+    if (state.display && (state.display.disclosure !== disclosure || state.display.panel !== panel)) {
+        detachMenu(state.display.trigger,state.display.panel);
+        state.display = null;
+    }
+    if (!disclosure || !trigger || !panel) return;
+    attachDisclosureMenu(disclosure,trigger,panel);
+    state.display = { disclosure,trigger,panel };
 }
 export function synchronize(root, instanceId) {
     if (!root?.isConnected) return;
     let state = instances.get(instanceId);
     if (state && state.root !== root) { detach(instanceId); state = null; }
     state ??= connect(root, instanceId);
+    synchronizeDisplay(state);
     const table = root.querySelector('[data-f-table]');
     if (!table) return;
     // Canvas measurement avoids a forced layout for every text cell.
@@ -148,6 +159,7 @@ export function detach(instanceId) {
     const state = instances.get(instanceId);
     if (!state) return;
     cancelDrag(state, false);
+    if (state.display) detachMenu(state.display.trigger,state.display.panel);
     state.listeners.forEach(remove => remove());
     instances.delete(instanceId);
 }

@@ -46,8 +46,8 @@
                 </button>
             </div>
             <details class="f-data-display">
-                <summary class="f-dropdown-trigger">@Text.Display <ExpansionIndicator /></summary>
-                <div class="f-data-display-options f-dropdown-panel">
+                <summary class="f-dropdown-trigger" aria-controls="@($"{_instanceId}-display")">@Text.Display <ExpansionIndicator /></summary>
+                <div id="@($"{_instanceId}-display")" class="f-data-display-options f-dropdown-panel f-menu-panel" popover="manual">
                     @foreach (var column in Columns)
                     {
                         <label class="f-dropdown-item @(!_hidden.Contains(column.Key) ? "is-selected" : null)">

@@ -14,16 +14,16 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="1"><UniformGridButton Title="单个操作" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="2"><UniformGridButton Title="主操作" /><UniformGridButton Title="次操作" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="3"><UniformGridButton Title="主操作" /><UniformGridButton Title="次操作" /><UniformGridButton Title="禁用操作" Disabled="true" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="1"><UniformGridButton Title="单个操作" Variant="UniformGridVariant.Filled" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="2"><UniformGridButton Title="主操作" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="次操作" Variant="UniformGridVariant.Outlined" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="3"><UniformGridButton Title="主操作" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="次操作" Variant="UniformGridVariant.Outlined" /><UniformGridButton Title="禁用操作" Variant="UniformGridVariant.Outlined" Disabled="true" /></ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
 }
 else
 {
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar Columns="3">
-        <UniformGridButton Title="提交申请" Busy="Busy" BusyLabel="模拟提交中" OnClick="Submit" />
-        <UniformGridButton Title="保存草稿" Disabled="Busy" OnClick="Draft" />
-        <UniformGridButton Title="取消" Disabled="Busy" OnClick="Cancel" />
+        <UniformGridButton Title="提交申请" Variant="UniformGridVariant.Filled" Busy="Busy" BusyLabel="模拟提交中" OnClick="Submit" />
+        <UniformGridButton Title="保存草稿" Variant="UniformGridVariant.Outlined" Disabled="Busy" OnClick="Draft" />
+        <UniformGridButton Title="取消" Variant="UniformGridVariant.Outlined" Disabled="Busy" OnClick="Cancel" />
     </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormActionBar>
     <p role="status">@Message</p>
 }

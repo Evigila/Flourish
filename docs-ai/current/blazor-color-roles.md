@@ -1,12 +1,10 @@
 # Blazor application color roles
 
-The user approved this Flourish-specific contract on 2026-10-04, including an independent dark palette. Later corrections restored Danger, added fixed click colors and corrected navigation and display-option colors. The latest notice instruction adds Info text and Warning background, bringing the palette to fifteen roles. It supersedes the earlier merge of information/warning paint into Primary. Historical change records remain unchanged.
+This is the user-approved current palette and interaction contract for Flourish.Blazor Design and Gallery. It contains seventeen roles with independent Light/Dark values. Framework-only consumers retain native system colors.
 
-This is an approved exception to the portable common standard's generated theme shades, separate focus color, full semantic notice palette and independent subtree themes for Flourish.Blazor. The portable standard and other platforms remain unchanged.
+This explicit project exception supersedes the portable standard's generated custom-theme shades, separate focus paint and full semantic-notice palette for Blazor. Independent subtree themes are removed. Common standards and other platforms remain unchanged; earlier contracts and run evidence stay in append-only history.
 
-## Palette
-
-These are the only default paint colors in Design and Gallery. Framework-only consumers keep native system colors. Transparent paint, currentColor and opacity effects do not introduce another color role.
+## Fixed palette
 
 | Role | Public token | Light | Dark |
 |---|---|---|---|
@@ -21,54 +19,69 @@ These are the only default paint colors in Design and Gallery. Framework-only co
 | Dark target preview | --f-preview-dark | #2F5049 | #395A48 |
 | Border | --f-border | #9FAEA9 | #526F60 |
 | Danger | --f-danger | #9D322D | #FFB4AB |
+| Danger target preview | --f-preview-danger | #7E2824 | #8C3430 |
+| Danger target click | --f-click-danger | #712420 | #7E2F2B |
 | Light target click | --f-click-light | #B5C9C4 | #C0CEC8 |
 | Dark target click | --f-click-dark | #2A4842 | #335141 |
 | Info text | --f-info-text | #1565C0 | #8CB8FF |
 | Warning background | --f-warning-background | #F2A33A | #E5A047 |
 
-Foundation defines palette values once. Other CSS consumes roles or role aliases. Surface names its light-mode white value as --f-surface-light; the active light Surface and the user-requested progress highlight reuse that value. It is an existing mode value, not a sixteenth paint role. Each click color is the matching preview's RGB channels multiplied by 0.9 and rounded to the nearest integer. These approved hexadecimal values are fixed tokens; CSS does not generate them with runtime color-mix. Shadows, backdrops and the authorized white progress sheen may apply approved alpha effects.
+foundation.css defines literal palette values once; other styles consume roles/aliases. Transparent paint, currentColor, opacity and approved alpha effects do not create another paint role. --f-surface-light names the existing white Light Surface value for reuse; it is not an eighteenth role. Fixed click values equal the corresponding preview RGB channels multiplied by 0.9 and rounded, without runtime color-mix.
 
-Dark Primary is deliberately light so ordinary selected items can use Surface as their foreground. Dark-mode chrome uses Canvas and Text; light-mode chrome uses Primary and Surface. Primary navigation on dark chrome uses Accent with Surface for persistent selection in both modes. This avoids turning the entire dark title bar into a bright primary surface.
+Dark Primary is intentionally light. Light chrome uses Primary/Surface; dark chrome uses Canvas/Text. Ordinary Dark selections can use Primary with Surface ink while primary navigation on dark chrome uses Accent/Surface.
 
-## Interaction and component mappings
+## Hover, press, selection and focus
 
-- Keyboard focus uses Accent. There is no separate focus paint color.
-- Hover uses the preview appropriate to the target's actual brightness. Ordinary light-mode surfaces use Light target preview; dark-mode surfaces and dark chrome use Dark target preview. A primary-filled control reverses this mapping in dark mode because dark Primary is light.
-- A held pointer press or native button activation uses Light target click or Dark target click, independently of hover and persistent selection. Releasing restores the hovered, idle or persistent selected state. A selected item keeps its selection while merely hovered, but still shows click feedback while pressed. Background changes retain a readable foreground rather than introducing a new text color.
-- Ordinary secondary/third-level navigation and other persistent selections use Primary with Surface foreground. Primary navigation on dark chrome uses Accent with Surface instead. A navigation link and its split disclosure action share the same persistent selection, independent of whether their child list is expanded. Third-level siblings share a Surface panel in both modes, rather than a preview-colored panel.
-- Filled buttons and cells use Primary with Surface foreground. Danger buttons and grid cells use Danger with Surface foreground; error/validation and extracted danger aliases retain the Danger role. Default Danger is dark in Light mode and light in Dark mode, matching Primary's brightness direction, so both use the same target-preview/click direction. Outlined buttons and cells use Canvas with a Border outline. Elevated buttons and cells use Surface and the shared control shadow. Quiet controls retain a transparent idle background.
-- Table headers use Border. Sort-title feedback stays inside the text button rather than filling a complete column-header cell.
-- Popup panels use Surface and restore the surface preview/click mapping, including when nested beneath dark title-bar chrome. Display-option labels always use Text while selected, unselected or hovered. Their idle row remains transparent; hover supplies the surface preview and press supplies its click token. The checked checkbox uses Primary and a visible check, so selection is distinguishable without changing the label to an inverted foreground.
-- Code boards and control previews share Display board. Dotted is optional; code uses Dotted=false and starts at the upper-left independently of ordinary content centering. Dot paint uses Border.
-- Shadow and modal-backdrop effects use Primary with alpha. Their transparency is an effect, not a second black or gray palette. Progress fill remains solid Primary. The latest user instruction restores its moving 105-degree white highlight: transparent ends and 47% of --f-surface-light at the center, in both themes. This gradient is a clipped overlay effect, not a second progress-fill palette. No other private gradient or paint literal is authorized.
-- Notice Information uses Surface with Info text. In Light mode this is white with blue reading text; Dark uses its existing Surface and lighter blue. Warning uses Warning background; --f-warning-ink aliases Text in Light and Surface in Dark, preserving readable ink on orange without adding another paint value. Success remains Primary/Surface and Error remains Danger/Surface. Subtle Notice is unchanged.
-- NoticeTrigger is a 17px circular body-size indicator in Design and 1em natively. Error uses Danger/Surface with a cross; Warning uses Warning background/Warning ink with an exclamation; Success uses Primary/Surface with a check; Information and compatible Subtle use Surface/Info text with an exclamation. Glyphs preserve severity while hovering/pressing; focus adds the standard Accent outline. Accessible names and descriptions remain available without the former text badge.
+- Keyboard focus uses Accent; no independent focus paint exists.
+- Hover selects the preview for the target's actual brightness: ordinary Light surfaces use Light preview; Dark surfaces/dark chrome use Dark preview. Primary-filled controls reverse that mapping in Dark because Dark Primary is light.
+- Held press/native activation uses the corresponding fixed click token. Release restores hover/idle/persistent selection. Selection survives hover and still shows press feedback; foreground stays readable.
+- Ordinary secondary/third-level and other persistent selections use Primary/Surface. Primary navigation on dark chrome uses Accent/Surface in both modes. A branch link/disclosure share selection independently of expansion.
+- Third-level panels and popups use Surface. A popup nested under chrome resets ordinary surface preview/click roles. Display-choice labels always use Text; idle rows remain transparent and the Primary-filled checkbox/check conveys selection.
+- Danger Filled buttons/grid cells and destructive menu choices retain red on interaction: Danger preview/click plus the existing white --f-surface-light ink. Idle Danger and error/validation paint retain their normal role mappings.
 
-## Removed and merged colors
+## Component mappings
 
-| Earlier source or use | Current role |
+| Component or purpose | Paint |
 |---|---|
-| Separate focus and surface-theme focus shades | Accent |
-| Boundary, strong boundary and line colors on navigation dividers, inputs, cards, tables, popup panels and split controls | Border |
-| Independent rounded-hover grays and generated pale green mixes | Light target preview or Dark target preview; a press uses the matching fixed click token |
-| Selected pale accent backgrounds and navigation | Primary with Surface foreground for ordinary selection; Accent with Surface for primary navigation on dark chrome |
-| Historical red danger/error and validation paint | Danger, including extracted danger/error/invalid-state aliases |
-| Earlier arbitrary orange and blue values | New approved Warning background and Info text tokens for Notice and NoticeTrigger; other legacy severity presentation remains unchanged |
-| Earlier preview-colored third-level panels | Surface |
-| Earlier inverted display-option label colors | Text in idle, selected and hovered states; selection remains on the checkbox |
-| Alternate surface grays and raised surface mixes | Canvas, Surface or Display board according to purpose |
-| Black popup/card shadows and black modal veils | Primary alpha effects |
-| Gallery-only dark display surfaces | Display board |
-| Custom scope palettes and ThemeScope sample | Removed; application-level Design configuration |
+| Filled Button / grid cell | Primary / Surface |
+| Outlined Button / grid cell | Canvas with Border |
+| Elevated Button / grid cell | Surface with shared approved shadow |
+| Quiet control idle | Transparent |
+| Danger Button / cell | Danger / Surface; deep red preview/click with Surface-light interaction ink |
+| Table header | Border; sortable text feedback stays on its inner button |
+| Popup / native enhanced select | Surface with Text and surface preview/click roles |
+| Code/control DisplayBoard | Display board; optional dots use Border |
+| Card / IdentityCard | Primary / PrimaryInk alias |
+| Dividers, outlines and legacy line aliases | Border |
+| Error / validation / legacy danger aliases | Danger |
+| Shadow / modal backdrop | Primary with approved alpha |
 
-NotificationSeverity, error labels, ARIA alerts/status and destructive-action behavior remain intact. Danger supplies error/validation paint; Info text and Warning background supply the newly requested Notice and NoticeTrigger colors. Legacy extracted CSS aliases such as --line, --danger or --surface-theme-accent resolve to the standard roles; they are compatibility bridges rather than public additional colors.
+UniformGrid has no enclosing rectangular fill/shadow behind missing cells; occupied cells own these variant mappings. Dotted is optional; code remains upper-left regardless of ordinary content centering.
+
+Notice and Primitives.StatusNotice share one Design semantic mapping:
+
+| Severity | Background / foreground |
+|---|---|
+| Information | Surface / Info text |
+| Success | Primary / Surface |
+| Warning | Warning background / Warning ink |
+| Error | Danger / Surface |
+| Subtle | Display board / Muted |
+
+--f-warning-ink aliases Text in Light and Surface in Dark, adding no paint value. StatusNotice retains paragraph markup and its independent Role/Announce API. Announcement, validation and destructive-action behavior remain semantic; color alone never supplies meaning.
+
+NoticeTrigger uses a 17px circle in Design (1em native). Error uses a cross and Danger/Surface, Warning an exclamation and Warning background/ink, Success a check and Primary/Surface, Information and compatible Subtle an exclamation and Surface/Info text. Hover/press preserve severity; focus adds Accent. Actual accessible names/descriptions remain available.
+
+Progress fill is solid Primary. Its approved moving 105-degree sheen has transparent ends at 20%/80% and 47% --f-surface-light white at 50% in both themes. It is a clipped alpha overlay, not a second progress-fill palette. No unrelated private gradient is authorized. Reduced-motion behavior is documented in the implementation/manual guides.
 
 ## Configuration and compatibility
 
-AddFlourishDesign, IAppearanceBuilder.SetColors/SetTheme and the scoped IAppearanceService remain supported. ApplicationLayout applies one application theme. ThemeScope and its independent Gallery guide are removed. Gallery now contains 78 component guides.
+AddFlourishDesign, IAppearanceBuilder.SetColors/SetTheme and scoped IAppearanceService remain supported. ApplicationLayout applies one theme; ThemeScope and its independent guide are removed.
 
-Primary and Accent remain configurable #RRGGBB seeds. The default light seeds select the dark defaults above when dark mode is active. A custom seed remains the exact configured value in both modes. Four mode seed variables allow CSS to select the active mode without an inline light color overriding dark mode. AppearanceState stores the configured seeds; the live foundation swatches show the active mode's roles.
+Primary/Accent remain configurable #RRGGBB seeds. Default Light seeds select the approved Dark defaults in Dark mode; custom seeds remain exact in both modes. Four mode seed variables let CSS choose active colors without an inline Light value overriding Dark. AppearanceState stores configured seeds and Foundations swatches show active roles. System uses Dark only under prefers-color-scheme:dark.
 
-No generated foreground, focus or hover shade is created for an arbitrary custom seed. The host must choose seeds that remain readable against Surface and the approved previews. AppearancePalette.Contrast remains a public diagnostic utility; it does not paint or generate another color. System mode uses the dark values only when prefers-color-scheme is dark. Font and reading-size rules remain unchanged.
+Custom seeds do not generate foreground/focus/hover shades; hosts choose readable seeds against Surface/previews. AppearancePalette.Contrast is a public diagnostic utility, not another paint source. Font/reading scales are separate approved mechanisms in the [implementation guide](blazor-extraction.md).
 
-The audit covers production Flourish.Blazor Framework/Design assets and Gallery. WPF/WinUI resources, historical change records, negative test inputs and Colligere's host-owned business palettes are outside this change. No dependency was added.
+Legacy extracted aliases such as --line, --danger and --surface-theme-accent map to these roles for compatibility. Historical arbitrary grays/mixes, separate focus shades, black shadows and preview-filled child panels do not add active colors. WPF/WinUI resources, negative test inputs, historical reports and external hosts' approved business palettes are outside this contract.
+
+Use [manual acceptance](blazor-manual-tests.md#reading-sizes-icons-and-colors) for real hover/press/release, custom seeds, popup layering and supported-browser checks. Current catalog totals are 77 guides, 546 API rows and 253 documented defaults.

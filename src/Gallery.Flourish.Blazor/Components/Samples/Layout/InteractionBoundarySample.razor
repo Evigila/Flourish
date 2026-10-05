@@ -19,14 +19,14 @@
         <div style="position:relative; min-height:240px;">
             <ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary Locked="true" Title="锁定状态">
                 <Message><p>此区域暂停交互。</p></Message>
-                <ChildContent><label>输入<input value="" /></label></ChildContent>
+                <ChildContent><ArkheideSystem.Flourish.Blazor.Components.Field Label="输入" Id="@(Id + "-locked-input")"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="EmptyValue" /></ArkheideSystem.Flourish.Blazor.Components.Field></ChildContent>
             </ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary>
         </div>
     }
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary Locked="Locked" Title="示例暂时不可编辑">
         <Message><p>虚构的同步操作正在进行。只暂停这个示例区域。</p><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Unlock">完成示例同步</ArkheideSystem.Flourish.Blazor.Components.Button></Message>
         <ChildContent>
-            <label>备注<input @bind="Note" /></label>
+            <ArkheideSystem.Flourish.Blazor.Components.Field Label="备注" Id="@(Id + "-note")"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="Note" /></ArkheideSystem.Flourish.Blazor.Components.Field>
             <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Save">保存备注</ArkheideSystem.Flourish.Blazor.Components.Button>
             @if (!Preview) { <p role="status">@(Saved ? "已保存虚构备注。" : "这是虚构的本地编辑器。")</p> }
         </ChildContent>
@@ -37,6 +37,7 @@
     [Parameter] public bool Preview { get; set; }
     private readonly string Id = $"boundary-sample-{Guid.NewGuid():N}";
     private bool Locked, Saved;
+    private string EmptyValue = string.Empty;
     private string Note = string.Empty;
     private void Save() => Saved = true;
     private void Unlock() => Locked = false;

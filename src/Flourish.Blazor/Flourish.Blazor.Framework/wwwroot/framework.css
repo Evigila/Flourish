@@ -109,6 +109,8 @@
 .f-data-tools { margin-inline-start:auto; }
 .f-data-display { position:relative; }
 .f-data-display-options { position:absolute; inset-block-start:100%; inset-inline-end:0; z-index:30; max-width:calc(100vw - 2em); max-height:70dvh; overflow:auto; background:Canvas; color:CanvasText; }
+.f-data-display-options.f-menu-panel { position:fixed; inset:auto; margin:0; width:max-content; }
+.f-data-display-options.f-menu-panel[data-f-open] { display:grid; }
 .f-data-display-options label { display:flex; }
 .f-data-scroll { width:100%; min-width:0; overflow:auto; overscroll-behavior-inline:contain; }
 .f-data-table { width:100%; border-collapse:separate; border-spacing:0; }

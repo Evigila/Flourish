@@ -2,7 +2,7 @@
 :root, .f-root {
  --f-primary-light:#153A32; --f-accent-light:#16745F; --f-primary-dark:#BBD7C9; --f-accent-dark:#75CBB2;
  --f-primary:var(--f-primary-light); --f-accent:var(--f-accent-light); --f-canvas:#F3F5F5; --f-surface-light:#FFFFFF; --f-surface:var(--f-surface-light); --f-text:#112924; --f-muted:#4F645D;
- --f-display-board:#E5E8EB; --f-preview-light:#C9DFDA; --f-preview-dark:#2F5049; --f-click-light:#B5C9C4; --f-click-dark:#2A4842; --f-danger:#9D322D; --f-info-text:#1565C0; --f-warning-background:#F2A33A; --f-warning-ink:var(--f-text); --f-border:#9FAEA9;
+ --f-display-board:#E5E8EB; --f-preview-light:#C9DFDA; --f-preview-dark:#2F5049; --f-click-light:#B5C9C4; --f-click-dark:#2A4842; --f-danger:#9D322D; --f-preview-danger:#7E2824; --f-click-danger:#712420; --f-info-text:#1565C0; --f-warning-background:#F2A33A; --f-warning-ink:var(--f-text); --f-border:#9FAEA9;
  --f-font:'Segoe UI',system-ui,sans-serif; --f-body-size:17px; --f-label-weight:400;
  --f-type-page:50px; --f-type-page-compact:38px; --f-type-h1:34px; --f-type-h2:28px; --f-type-h3:20px; --f-type-body:17px;
  --f-space-1:4px; --f-space-2:8px; --f-space-3:12px; --f-space-4:16px;
@@ -20,13 +20,13 @@
 .f-root { color-scheme:light; font-family:var(--f-font); font-size:var(--f-body-size); line-height:1.55; color:var(--f-text); background:var(--f-canvas); }
 .f-root.f-theme-dark {
  color-scheme:dark; --f-primary:var(--f-primary-dark); --f-accent:var(--f-accent-dark); --f-canvas:#18231D; --f-surface:#263A30; --f-text:#E7EFEA; --f-muted:#B8C9BF;
- --f-display-board:#31483B; --f-preview-light:#D5E5DE; --f-preview-dark:#395A48; --f-click-light:#C0CEC8; --f-click-dark:#335141; --f-danger:#FFB4AB; --f-info-text:#8CB8FF; --f-warning-background:#E5A047; --f-warning-ink:var(--f-surface); --f-border:#526F60;
+ --f-display-board:#31483B; --f-preview-light:#D5E5DE; --f-preview-dark:#395A48; --f-click-light:#C0CEC8; --f-click-dark:#335141; --f-danger:#FFB4AB; --f-preview-danger:#8C3430; --f-click-danger:#7E2F2B; --f-info-text:#8CB8FF; --f-warning-background:#E5A047; --f-warning-ink:var(--f-surface); --f-border:#526F60;
  --f-primary-ink:var(--f-surface); --f-accent-ink:var(--f-surface); --f-ink-soft:var(--f-muted); --f-surface-preview:var(--f-preview-dark); --f-target-preview:var(--f-surface-preview); --f-primary-preview:var(--f-preview-light); --f-surface-alternate:var(--f-canvas); --f-surface-raised:var(--f-surface);
  --f-surface-click:var(--f-click-dark); --f-target-click:var(--f-surface-click); --f-primary-click:var(--f-click-light); --f-accent-click:var(--f-click-light); --f-row-active:var(--f-target-click); --f-row-hover:var(--f-target-preview); --f-navigation-children-surface:var(--f-surface); --f-display-board-ink:var(--f-text); --f-soft:var(--f-display-board); --f-chrome:var(--f-canvas); --f-chrome-ink:var(--f-text);
 }
 @media(prefers-color-scheme:dark) {
  .f-root.f-theme-system { color-scheme:dark; --f-primary:var(--f-primary-dark); --f-accent:var(--f-accent-dark); --f-canvas:#18231D; --f-surface:#263A30; --f-text:#E7EFEA; --f-muted:#B8C9BF;
-  --f-display-board:#31483B; --f-preview-light:#D5E5DE; --f-preview-dark:#395A48; --f-click-light:#C0CEC8; --f-click-dark:#335141; --f-danger:#FFB4AB; --f-info-text:#8CB8FF; --f-warning-background:#E5A047; --f-warning-ink:var(--f-surface); --f-border:#526F60;
+  --f-display-board:#31483B; --f-preview-light:#D5E5DE; --f-preview-dark:#395A48; --f-click-light:#C0CEC8; --f-click-dark:#335141; --f-danger:#FFB4AB; --f-preview-danger:#8C3430; --f-click-danger:#7E2F2B; --f-info-text:#8CB8FF; --f-warning-background:#E5A047; --f-warning-ink:var(--f-surface); --f-border:#526F60;
   --f-primary-ink:var(--f-surface); --f-accent-ink:var(--f-surface); --f-ink-soft:var(--f-muted); --f-surface-preview:var(--f-preview-dark); --f-target-preview:var(--f-surface-preview); --f-primary-preview:var(--f-preview-light); --f-surface-alternate:var(--f-canvas); --f-surface-raised:var(--f-surface);
   --f-surface-click:var(--f-click-dark); --f-target-click:var(--f-surface-click); --f-primary-click:var(--f-click-light); --f-accent-click:var(--f-click-light); --f-row-active:var(--f-target-click); --f-row-hover:var(--f-target-preview); --f-navigation-children-surface:var(--f-surface); --f-display-board-ink:var(--f-text); --f-soft:var(--f-display-board); --f-chrome:var(--f-canvas); --f-chrome-ink:var(--f-text); }
 }

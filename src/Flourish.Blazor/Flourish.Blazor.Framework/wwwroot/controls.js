@@ -27,7 +27,7 @@ export function attachTextSelection(input) {
 }
 export function detachTextSelection(input) { inputs.get(input)?.(); inputs.delete(input); }
 
-function menuItems(panel) { return [...panel.querySelectorAll('[role="menuitem"]:not([disabled])')].filter(visible); }
+function menuItems(state) { return [...state.panel.querySelectorAll(state.itemSelector)].filter(visible); }
 function copyTheme(trigger, panel) {
     const style = getComputedStyle(trigger);
     // Preserve inherited presentation across a DOM portal without depending on a visual package.
@@ -52,15 +52,28 @@ function copyTheme(trigger, panel) {
 }
 function positionMenu(state) {
     if (!state.open) return;
-    const trigger = (state.openOnHover ? state.hoverRoot : state.trigger).getBoundingClientRect();
+    // Hover regions can fill an entire top-bar slot; both modes anchor to the actual control.
+    const trigger = state.trigger.getBoundingClientRect();
+    const panel = state.panel;
+    if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
+    else panel.style.removeProperty('max-height');
+    const maximumHeight = getComputedStyle(panel).maxHeight;
     const menu = state.panel.getBoundingClientRect();
     const width = document.documentElement.clientWidth;
     const height = window.innerHeight;
-    state.panel.style.left = `${Math.max(12, Math.min(trigger.right - menu.width, width - menu.width - 12))}px`;
+    panel.style.left = `${Math.max(12, Math.min(trigger.right - menu.width, width - menu.width - 12))}px`;
     // Hover surfaces meet their trigger region so crossing into the menu has no dead gap.
     const gap = state.openOnHover ? 0 : 6;
-    const below = trigger.bottom + gap;
-    state.panel.style.top = `${below + menu.height <= height - 12 ? below : Math.max(12, trigger.top - menu.height - gap)}px`;
+    const below = Math.max(0,height - trigger.bottom - gap - 12);
+    const above = Math.max(0,trigger.top - gap - 12);
+    const openAbove = menu.height > below && above > below;
+    const available = openAbove ? above : below;
+    // A long panel scrolls on its chosen side instead of overlapping the control or leaving the viewport.
+    panel.style.setProperty('max-height',maximumHeight && maximumHeight !== 'none'
+        ? `min(${available}px, ${maximumHeight})` : `${available}px`);
+    const panelHeight = Math.min(panel.getBoundingClientRect().height,available);
+    const top = openAbove ? trigger.top - panelHeight - gap : trigger.bottom + gap;
+    panel.style.top = `${Math.max(12,Math.min(top,height - panelHeight - 12))}px`;
 }
 export function attachMenu(trigger, panel, openOnHover=false) {
     if (!trigger || !panel) return;
@@ -76,7 +89,8 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         return;
     }
     const state = { trigger, panel, hoverRoot:trigger.closest('.f-action-menu') ?? trigger, openOnHover,
-        open:false, placeholder:null, restoreTheme:null, cleanup:[] };
+        itemSelector:'[role="menuitem"]:not([disabled])', disclosure:null,
+        open:false, placeholder:null, restoreTheme:null, maximumHeight:'', maximumHeightPriority:'', cleanup:[] };
     const listen = (target, type, callback, options) => {
         target.addEventListener(type, callback, options);
         state.cleanup.push(() => target.removeEventListener(type, callback, options));
@@ -86,7 +100,7 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         event.preventDefault();
         event.stopPropagation();
         if (!state.open) openMenu(state,true);
-        const items = menuItems(panel); (event.key === 'ArrowUp' ? items.at(-1) : items[0])?.focus();
+        const items = menuItems(state); (event.key === 'ArrowUp' ? items.at(-1) : items[0])?.focus();
     });
     listen(state.hoverRoot, 'pointerenter', event => {
         if (state.openOnHover && event.pointerType !== 'touch' && !trigger.disabled) openMenu(state,false);
@@ -108,7 +122,7 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         if (!state.open) return;
         if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeMenu(trigger,panel,true); return; }
         if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
-        const items = menuItems(panel); if (!items.length) return;
+        const items = menuItems(state); if (!items.length) return;
         event.preventDefault();
         const index = items.indexOf(document.activeElement);
         const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1
@@ -122,13 +136,31 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     state.cleanup.push(()=>observer.disconnect());
     menus.set(panel,state);
 }
+export function attachDisclosureMenu(disclosure, trigger, panel) {
+    if (!disclosure || !trigger || !panel) return;
+    attachMenu(trigger,panel);
+    const state = menus.get(panel);
+    if (!state.disclosure) {
+        state.disclosure = disclosure;
+        state.itemSelector = focusableSelector;
+        const synchronize = () => disclosure.open ? openMenu(state,false) : closeMenu(trigger,panel,false);
+        disclosure.addEventListener('toggle',synchronize);
+        state.cleanup.push(()=>disclosure.removeEventListener('toggle',synchronize));
+    }
+    // Native summary activation owns the open state; option clicks never dismiss a multi-selection panel.
+    if (disclosure.open && !state.open) openMenu(state,false);
+    else if (!disclosure.open && state.open) closeMenu(trigger,panel,false);
+}
 function openMenu(state, focusMenu) {
     if (state.open || state.trigger.disabled) return;
     const {trigger,panel} = state;
     if (activeMenu) closeMenu(activeMenu.trigger,activeMenu.panel,false);
     state.restoreTheme = copyTheme(trigger,panel);
+    state.maximumHeight = panel.style.getPropertyValue('max-height');
+    state.maximumHeightPriority = panel.style.getPropertyPriority('max-height');
     state.open = true;
     activeMenu = state;
+    if (state.disclosure) state.disclosure.open = true;
     panel.setAttribute('data-f-open','');
     if (typeof panel.showPopover === 'function') panel.showPopover();
     else {
@@ -137,7 +169,7 @@ function openMenu(state, focusMenu) {
     }
     trigger.setAttribute('aria-expanded','true');
     positionMenu(state);
-    if (focusMenu) menuItems(panel)[0]?.focus({preventScroll:true});
+    if (focusMenu) menuItems(state)[0]?.focus({preventScroll:true});
 }
 export function toggleMenu(trigger, panel, focusMenu=true) {
     if (!menus.has(panel)) attachMenu(trigger,panel);
@@ -151,12 +183,18 @@ export function toggleMenu(trigger, panel, focusMenu=true) {
 }
 export function closeMenu(trigger,panel,restoreFocus=false) {
     const state = menus.get(panel); if (!state) return;
+    const wasOpen = state.open;
     if (state.open && typeof panel.hidePopover === 'function' && panel.isConnected && panel.matches(':popover-open')) panel.hidePopover();
     panel.removeAttribute('data-f-open');
     state.open = false;
+    if (state.disclosure) state.disclosure.open = false;
     trigger.setAttribute('aria-expanded','false');
     if (state.placeholder?.isConnected) { state.placeholder.replaceWith(panel); state.placeholder = null; }
     state.restoreTheme?.(); state.restoreTheme = null;
+    if (wasOpen) {
+        if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
+        else panel.style.removeProperty('max-height');
+    }
     if (activeMenu === state) activeMenu = null;
     if (restoreFocus && trigger.isConnected) trigger.focus({preventScroll:true});
 }

@@ -24,10 +24,13 @@
         <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="Emphasized">
             <div class="access-panel">
                 <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="访客资料（虚构）" TitleId="@(Id + "-title")" />
-                <form class="access-form" @onsubmit="Enter" @onsubmit:preventDefault>
-                    <label for="@(Id + "-email")">演示邮箱</label>
-                    <input id="@(Id + "-email")" type="email" @bind="Email" required />
-                    <button type="submit">进入演示</button>
+                <form @onsubmit="Enter" @onsubmit:preventDefault>
+                    <ArkheideSystem.Flourish.Blazor.Components.FormLayout Columns="1">
+                        <ArkheideSystem.Flourish.Blazor.Components.Field Label="演示邮箱" Id="@(Id + "-email")" Required="true">
+                            <ArkheideSystem.Flourish.Blazor.Components.TextBox Type="email" @bind-Value="Email" />
+                        </ArkheideSystem.Flourish.Blazor.Components.Field>
+                        <ArkheideSystem.Flourish.Blazor.Components.Button Type="submit">进入演示</ArkheideSystem.Flourish.Blazor.Components.Button>
+                    </ArkheideSystem.Flourish.Blazor.Components.FormLayout>
                 </form>
                 @if (Entered) { <p class="access-message" role="status">已模拟 @Email 的访问；此示例不执行身份验证。</p> }
             </div>

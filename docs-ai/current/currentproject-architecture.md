@@ -69,7 +69,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   ├── ToggleSection.css — Styles enable switches and optional section content.
 │   │   │   │   │   ├── ToggleSwitch.css — Styles the switch track, thumb and binary states.
 │   │   │   │   │   └── UniformGrid.css — Styles equal-width grid spacing and responsive columns.
-│   │   │   │   ├── controls.css — Defines button, input, card, notice and floating-control appearance.
+│   │   │   │   ├── controls.css — Defines button, input, card and floating-control appearance, plus shared Notice and StatusNotice semantic colors.
 │   │   │   │   ├── data.css — Defines themed table, sorting, selection and row-action appearance.
 │   │   │   │   ├── design.css — Imports the optional theme's foundation, control, table and composition styles.
 │   │   │   │   ├── display-board.css — Styles preview board dots, code backgrounds, copy controls and board spacing.
@@ -192,7 +192,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   ├── patterns/ — Contains structural styles and browser measurements for page surfaces.
 │   │   │   │   │   ├── content-surface.css — Defines content stage, title and section layout behavior.
 │   │   │   │   │   ├── navigation-surface.css — Defines navigation surface geometry, collapsed states and responsive behavior.
-│   │   │   │   │   └── surfaces.js — Observes surface and title dimensions and resets page scroll when requested.
+│   │   │   │   │   └── surfaces.js — Observes surface dimensions and reuses stable heading compaction and page-scroll reset behavior.
 │   │   │   │   ├── primitives/ — Contains primitive browser behavior and structural CSS.
 │   │   │   │   │   ├── behavior.css — Defines primitive visibility, positioning and accessibility rules without a theme.
 │   │   │   │   │   ├── bottom-sheet.js — Synchronizes bottom sheet modal state and restores the invoking element's focus.
@@ -207,15 +207,15 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   ├── reference-dropdown.js — Determines whether a dropdown still contains keyboard focus.
 │   │   │   │   │   └── row-action-menu.js — Coordinates contextual menu opening, positioning and dismissal.
 │   │   │   │   ├── clipboard.js — Copies text on request and restores focus and selection after a clipboard fallback.
-│   │   │   │   ├── controls.js — Implements menu keyboard handling, modal focus and shared input text selection.
-│   │   │   │   ├── data.js — Measures and synchronizes column widths for one table instance.
+│   │   │   │   ├── controls.js — Positions and dismisses action/display popups, handles menu keys, modal focus and input selection.
+│   │   │   │   ├── data.js — Synchronizes table column widths and connects display selection to shared popup behavior.
 │   │   │   │   ├── display-board.css — Defines display board alignment, code overflow and copy-button placement without a visual theme.
 │   │   │   │   ├── expansion-indicator.css — Defines native triangle content and expanded orientation without a visual theme.
 │   │   │   │   ├── framework.css — Defines functional layouts, control states and the self-hosted icon font face without applying a visual theme.
 │   │   │   │   ├── layout.css — Defines structural page and form layout without themed colors or typography.
 │   │   │   │   ├── section-navigator.css — Positions section links and provides native focus and tooltip behavior.
 │   │   │   │   ├── section-navigator.js — Discovers headings, positions gutter links and synchronizes scrolling and cleanup.
-│   │   │   │   ├── shell.js — Synchronizes navigation expansion, scrolling and page-heading measurements.
+│   │   │   │   ├── shell.js — Synchronizes navigation and page headings without repeating collapse when short documents clamp scrolling.
 │   │   │   │   ├── split-button.css — Defines split-button alignment, independent action regions and label truncation.
 │   │   │   │   └── uniform-grid.css — Defines responsive grid tracks, optional dimensions and child-cell shapes.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
@@ -392,8 +392,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   ├── MaterialEffectService.cs — Applies the selected Windows material and immersive dark mode.
 │   │   │   └── ThemeService.cs — Applies WPF theme resources to attached application and window scopes.
 │   │   ├── Assets/ — Stores packaged framework artwork or built-in localization resources.
-│   │   │   ├── favicon.ico — Provides the packaged Windows application icon.
-│   │   │   └── favicon.png — Provides a raster copy of the framework icon.
+│   │   │   └── favicon.ico — Provides the packaged Windows application icon.
 │   │   ├── Commands/ — Registers action keys and dispatches their handlers.
 │   │   │   └── ShortcutService.cs — Registers scoped shortcuts and dispatches their commands.
 │   │   ├── Configuration/ — Validates startup options and manages owned persistent settings.
@@ -607,16 +606,16 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   ├── ComponentGuide.razor — Composes five guide sections with shared display boards, API tables and compiled samples.
 │   │   │   │   └── ComponentGuide.razor.css — Constrains guide width and spaces the API parameter area.
 │   │   │   ├── Pages/ — Contains routed Gallery pages or verification pages.
-│   │   │   │   ├── Appearance.razor — Separates colors, typography, spacing, radius and shadows into Foundations topic pages.
+│   │   │   │   ├── Appearance.razor — Shows Foundations topics, a three-cell rectangular theme chooser and standard palette action buttons.
 │   │   │   │   ├── AppearanceRedirect.razor — Redirects the former appearance route to the Foundations landing page.
 │   │   │   │   ├── Controls.razor — Renders searchable category directories and one live component guide per detail route.
 │   │   │   │   ├── Error.razor — Displays an error page and its diagnostic request identifier.
 │   │   │   │   ├── Examples.razor — Separates example links, form creation, enum dropdowns and linked search into topic pages.
 │   │   │   │   ├── Forms.razor — Demonstrates form composition, binding, validation and save feedback.
 │   │   │   │   ├── Framework.razor — Separates setup, top bar, navigation, commands, layout and interactions into Framework topic pages.
-│   │   │   │   ├── Icons.razor — Shows a searchable, paged Material Symbols catalog and shared icon component usage.
+│   │   │   │   ├── Icons.razor — Links official Material Symbols resources and shows the searchable catalog and icon usage.
 │   │   │   │   ├── NotFound.razor — Displays a missing-page message and a link back to Gallery.
-│   │   │   │   ├── Overview.razor — Displays four starting-page links in a two-by-two rectangular button grid and the minimal setup code.
+│   │   │   │   ├── Overview.razor — Displays four starting-page links in an automatically wrapping rectangular button grid and the minimal setup code.
 │   │   │   │   ├── RecordDetails.razor — Demonstrates a record detail page, editable fields and navigation actions.
 │   │   │   │   ├── Records.razor — Demonstrates record search, filtering, paging and row actions.
 │   │   │   │   └── SurfacePatterns.razor — Demonstrates reusable content, record list and page surface compositions.
@@ -684,13 +683,13 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   └── ToggleSwitchSample.razor — Demonstrates switch states and a locally bound reminder setting.
 │   │   │   │   └── Layout/ — Contains examples of application shells, page surfaces, headings and navigation behavior.
 │   │   │   │       ├── AccessBrandSample.razor — Demonstrates entry branding with optional context and descriptive content.
-│   │   │   │       ├── AccessSurfaceSample.razor — Demonstrates centered entry content and an optional emphasized surface.
+│   │   │   │       ├── AccessSurfaceSample.razor — Demonstrates an access surface with standard email fields, submit buttons and native validation.
 │   │   │   │       ├── ApplicationLayoutSample.razor — Demonstrates the configured application layout within a bounded local preview.
 │   │   │   │       ├── ApplicationShellSample.razor — Demonstrates an application shell with local content and optional secondary navigation.
 │   │   │   │       ├── ContentSurfaceSample.razor — Demonstrates a top bar and scrolling content surface with document switching.
-│   │   │   │       ├── InteractionBoundarySample.razor — Demonstrates pausing and resuming interaction in a local editing region.
-│   │   │   │       ├── NavigationGuardSample.razor — Demonstrates opt-in navigation protection for a local unsaved draft.
-│   │   │   │       ├── NavigationSurfaceSample.razor — Demonstrates a composed navigation surface with optional secondary navigation.
+│   │   │   │       ├── InteractionBoundarySample.razor — Demonstrates locking standard input and button controls inside a local editing region.
+│   │   │   │       ├── NavigationGuardSample.razor — Demonstrates standard draft editing and opt-in protection through an Underline test link.
+│   │   │   │       ├── NavigationSurfaceSample.razor — Demonstrates a navigation surface using standard primary items and secondary action buttons.
 │   │   │   │       ├── PageBodySample.razor — Demonstrates page-body width modes around local example content.
 │   │   │   │       ├── PageContentSample.razor — Demonstrates primitive page content with an optional in-page contents panel.
 │   │   │   │       ├── PageContentsSample.razor — Demonstrates an in-page contents list linked to real sample sections.
@@ -718,7 +717,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   ├── Services/ — Contains circuit-local demonstration data.
 │   │   │   └── RecordStore.cs — Keeps example records in one interactive server circuit's memory.
 │   │   ├── wwwroot/ — Contains static assets served by the application or Razor class library.
-│   │   │   └── gallery.svg — Provides the Blazor Gallery's vector logo.
+│   │   │   └── gallery.svg — Provides the smaller official Material Symbols browse logo and Gallery favicon.
 │   │   ├── appsettings.json — Sets host logging levels and allowed HTTP hosts.
 │   │   ├── Gallery.Flourish.Blazor.csproj — Defines the Blazor Gallery host, references Framework and Design, and embeds example Razor source.
 │   │   └── Program.cs — Configures five primary modules, secondary topics, third-level component pages, commands and optional Design.
@@ -850,16 +849,17 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   ├── Tests.Flourish.Blazor/ — Checks Blazor contracts, rendering and browser interop lifetimes.
 │   │   ├── CatalogChecks.cs — Checks all component parameters, inherited metadata, defaults and grid container ownership.
 │   │   ├── clipboard-dom.mjs — Checks exact clipboard text, fallback cleanup and focus and selection restoration.
-│   │   ├── controls-dom.mjs — Checks dropdowns, modal focus and input behavior against a simulated DOM.
+│   │   ├── controls-dom.mjs — Checks popup placement and lifecycles, modal focus and input behavior against a simulated DOM.
 │   │   ├── DataTableChecks.cs — Checks dropdown styling hooks, localized counts, paging, visibility and column sizing.
 │   │   ├── DisplayBoardChecks.cs — Checks preview isolation, exact code encoding and the code board's copy control.
 │   │   ├── DropdownChecks.cs — Checks dropdown keyboard selection, closing, validation and native input behavior.
 │   │   ├── Tests.Flourish.Blazor.csproj — Defines rendering and contract checks and links Gallery catalog models for API verification.
 │   │   ├── GridChecks.cs — Checks editable grid contracts, selection and host-owned operations.
+│   │   ├── heading-dom.mjs — Checks heading stability when content shrinks, scroll positions clamp or page dimensions change.
 │   │   ├── interaction-origin-dom.mjs — Checks pointer and keyboard focus origin changes against a simulated DOM.
 │   │   ├── LifecycleChecks.cs — Checks JavaScript registration, component disposal and circuit-local state.
 │   │   ├── measurement-lifecycle.test.mjs — Checks observer cleanup and measurements across browser component lifetimes.
-│   │   ├── palette-checks.mjs — Audits the thirteen color roles, interaction states, CSS aliases, approved paints and absence of local theme mechanisms.
+│   │   ├── palette-checks.mjs — Audits the seventeen color roles, interaction states, shared notice semantics, aliases and approved paints.
 │   │   ├── Program.cs — Runs platform-independent Blazor configuration, rendering and contract checks.
 │   │   ├── row-action-menu-dom.mjs — Checks disabled menu clicks, keyboard candidates, normal closing and listener behavior.
 │   │   ├── section-navigator-dom.mjs — Checks section discovery, scrolling, tooltip dismissal and browser-listener cleanup.

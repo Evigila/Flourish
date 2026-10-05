@@ -8,11 +8,11 @@
     @if (TopicKey == "colors")
     {
     <Section Title="主题">
-        <FormActions Columns="3">
-            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.System)" OnClick="() => ChangeTheme(ApplicationTheme.System)">跟随系统</Button>
-            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Light)" OnClick="() => ChangeTheme(ApplicationTheme.Light)">浅色</Button>
-            <Button Variant="ButtonVariant.Secondary" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Dark)" OnClick="() => ChangeTheme(ApplicationTheme.Dark)">深色</Button>
-        </FormActions>
+        <UniformGrid Shape="UniformGridShape.Rectangle" Columns="3" Rows="1">
+            <UniformGridButton Title="跟随系统" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.System)" OnClick="() => ChangeTheme(ApplicationTheme.System)" />
+            <UniformGridButton Title="浅色" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Light)" OnClick="() => ChangeTheme(ApplicationTheme.Light)" />
+            <UniformGridButton Title="深色" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Dark)" OnClick="() => ChangeTheme(ApplicationTheme.Dark)" />
+        </UniformGrid>
         <p role="status">当前选择：@ThemeLabel</p>
     </Section>
     }
@@ -29,7 +29,10 @@
                     <TextBox Id="palette-accent" @bind-Value="Palette.Accent" MaxLength="7" />
                 </Field>
             </FormLayout>
-            <FormActions><Button Type="submit">应用颜色</Button><Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette">恢复默认</Button></FormActions>
+            <div class="f-inline-actions">
+                <Button Variant="ButtonVariant.Filled" Type="submit" Text="应用颜色" />
+                <Button Variant="ButtonVariant.Outlined" OnClick="ResetPalette" Text="恢复默认" />
+            </div>
         </EditForm>
         @if (Message is not null) { <Notice Severity="NotificationSeverity.Success">@Message</Notice> }
         <UniformGrid>
@@ -130,7 +133,8 @@
       ("正文", "--f-text"), ("辅助文字", "--f-muted"), ("背景板", "--f-display-board"),
       ("浅目标预览", "--f-preview-light"), ("深目标预览", "--f-preview-dark"),
       ("浅目标点击", "--f-click-light"), ("深目标点击", "--f-click-dark"),
-      ("危险", "--f-danger"), ("Info正文色", "--f-info-text"), ("Warning背景色", "--f-warning-background"), ("边框", "--f-border") ];
+      ("危险", "--f-danger"), ("危险预览", "--f-preview-danger"), ("危险点击", "--f-click-danger"),
+      ("Info正文色", "--f-info-text"), ("Warning背景色", "--f-warning-background"), ("边框", "--f-border") ];
     private static readonly (string Name, string Value)[] Spacing =
     [ ("--f-space-1", "4px"), ("--f-space-2", "8px"), ("--f-space-3", "12px"), ("--f-space-4", "16px"),
       ("--f-space-5", "20px"), ("--f-space-6", "24px"), ("--f-space-8", "32px"), ("--f-space-11", "44px"),

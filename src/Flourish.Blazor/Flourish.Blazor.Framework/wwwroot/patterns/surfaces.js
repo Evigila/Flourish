@@ -1,3 +1,5 @@
+import { updateCompactHeading, resetCompactHeading } from '../shell.js';
+
 const surfaces = new WeakMap();
 export function synchronize(root, stage, top) {
     let state = surfaces.get(root);
@@ -5,8 +7,7 @@ export function synchronize(root, stage, top) {
         dispose(root);
         state = {stage, top, observer: null};
         state.update = () => {
-            const compact = root.hasAttribute('data-compact-heading');
-            root.toggleAttribute('data-compact-heading', compact ? stage.scrollTop >= 24 : stage.scrollTop > 96);
+            updateCompactHeading(root, stage);
             if (state.top) state.top.hidden = stage.scrollTop < 280;
         };
         stage.addEventListener('scroll', state.update, {passive:true});
@@ -23,5 +24,6 @@ export function dispose(root) {
     if (!state) return;
     state.stage.removeEventListener('scroll', state.update);
     state.observer?.disconnect();
+    resetCompactHeading(root);
     surfaces.delete(root);
 }

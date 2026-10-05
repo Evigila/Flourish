@@ -22,7 +22,7 @@
     {
     <Section Title="创建表单页面">
         <DisplayBoard Dotted="false" Centered="false" CopyText="@FormExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@FormExample" Language="razor" /></DisplayBoard>
-        <p>表单模型负责验证规则，应用负责保存。Field 关联标签与验证消息，FormLayout 和 FormActions 管理字段与按钮排列。</p>
+        <p>表单模型负责验证规则，应用负责保存。Field 关联标签与验证消息，FormLayout 和 FormActions 管理字段与按钮排列。建议主要操作显式使用 Filled，其余操作使用 Outlined。</p>
     </Section>
     }
     @if (TopicKey == "enum")
@@ -99,8 +99,8 @@
                     </Field>
                 </FormLayout>
                 <FormActions>
-                    <UniformGridButton Title="保存" Type="submit" Busy="Saving" />
-                    <UniformGridButton Title="取消" OnClick="Cancel" />
+                    <UniformGridButton Title="保存" Variant="UniformGridVariant.Filled" Type="submit" Busy="Saving" />
+                    <UniformGridButton Title="取消" Variant="UniformGridVariant.Outlined" OnClick="Cancel" />
                 </FormActions>
             </EditForm>
         </PageBody>

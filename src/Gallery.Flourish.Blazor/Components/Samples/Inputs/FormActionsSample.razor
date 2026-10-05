@@ -13,15 +13,15 @@
 
 @if (Preview)
 {
-    <FormActions Columns="2"><UniformGridButton Title="主操作" /><UniformGridButton Title="次操作" /></FormActions>
-    <FormActions Columns="3"><UniformGridButton Title="主操作" /><UniformGridButton Title="次操作" /><UniformGridButton Title="禁用操作" Disabled="true" /></FormActions>
+    <FormActions Columns="2"><UniformGridButton Title="主操作" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="次操作" Variant="UniformGridVariant.Outlined" /></FormActions>
+    <FormActions Columns="3"><UniformGridButton Title="主操作" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="次操作" Variant="UniformGridVariant.Outlined" /><UniformGridButton Title="禁用操作" Variant="UniformGridVariant.Outlined" Disabled="true" /></FormActions>
 }
 else
 {
     <FormActions Columns="3">
-        <UniformGridButton Title="提交报名" Busy="Saving" BusyLabel="模拟提交中" OnClick="Submit" />
-        <UniformGridButton Title="保存草稿" Disabled="Saving" OnClick="Draft" />
-        <UniformGridButton Title="重置" Disabled="Saving" OnClick="Reset" />
+        <UniformGridButton Title="提交报名" Variant="UniformGridVariant.Filled" Busy="Saving" BusyLabel="模拟提交中" OnClick="Submit" />
+        <UniformGridButton Title="保存草稿" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Draft" />
+        <UniformGridButton Title="重置" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Reset" />
     </FormActions>
     <p role="status">@Message</p>
 }

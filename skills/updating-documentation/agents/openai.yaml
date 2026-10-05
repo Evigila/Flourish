@@ -1,4 +1,0 @@
-interface:
-  display_name: "Updating Documentation"
-  short_description: "Update Flourish Docs and DocFX safely"
-  default_prompt: "Use $updating-documentation to update Flourish docs, build DocFX outputs, and preview both language sites."
